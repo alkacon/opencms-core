@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2004/10/14 15:05:54 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2004/10/31 21:30:17 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  *
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  */
 public interface I_CmsConstants {
 
@@ -1215,6 +1215,12 @@ public interface I_CmsConstants {
     
     /** Indicates to order the result by the lastmodified date. */
     int C_READMODE_ORDER_BY_LASTMODIFIED = 32;
+    
+    /** Indicates if only folder resources should be read. */
+    int C_READMODE_ONLY_FOLDERS = 64;
+
+    /** Indicates if only file resources should be read. */
+    int C_READMODE_ONLY_FILES = 128;
 
     /** Identifier for x-forwarded-for (i.e. proxied) request headers. */
     String C_HEADER_X_FORWARDED_FOR = "x-forwarded-for";

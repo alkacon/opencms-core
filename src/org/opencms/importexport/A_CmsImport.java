@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2004/10/14 08:22:13 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2004/10/31 21:30:18 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -256,11 +256,12 @@ public abstract class A_CmsImport implements I_CmsImport {
                         target.getResourceId(), 
                         key,
                         target.getTypeId(),
+                        target.isFolder(), 
                         0, 
-                        m_cms.getRequestContext().currentProject().getId(), 
-                        I_CmsConstants.C_STATE_NEW, // TODO: pass flags from import 
-                        target.getDateCreated(), 
-                        target.getUserCreated(),
+                        m_cms.getRequestContext().currentProject().getId(), // TODO: pass flags from import 
+                        I_CmsConstants.C_STATE_NEW, 
+                        target.getDateCreated(),
+                        target.getUserCreated(), 
                         target.getDateLastModified(), 
                         target.getUserLastModified(), 
                         CmsResource.DATE_RELEASED_DEFAULT, 

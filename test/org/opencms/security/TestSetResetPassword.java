@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/Attic/TestSetResetPassword.java,v $
- * Date   : $Date: 2004/10/28 13:44:10 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/10/31 21:30:18 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.security;
 
 import org.opencms.file.CmsObject;
-import org.opencms.file.TestCreateWriteResource;
 import org.opencms.test.OpenCmsTestCase;
 
 import junit.extensions.TestSetup;

@@ -11,6 +11,7 @@
 
 <!ELEMENT vfs (
 	resources,
+	defaultfiles,
 	translations?, 
 	xmlcontents?)>
 
@@ -39,6 +40,16 @@
 <!ELEMENT collectors (collector+)>
 <!ELEMENT collector EMPTY>
 <!ATTLIST collector class CDATA #REQUIRED order CDATA #REQUIRED>
+
+<!--
+# Default file names for directories.
+#
+# These are the default files that are read when a folder name 
+# is requested by the user in a http request.
+-->
+<!ELEMENT defaultfiles (defaultfile+)>
+<!ELEMENT defaultfile EMPTY>
+<!ATTLIST defaultfile name CDATA #REQUIRED>
 
 <!--
 # Translations for file and folder names.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishedResource.java,v $
- * Date   : $Date: 2004/08/27 08:57:22 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/10/31 21:30:18 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.db;
 
 import org.opencms.file.CmsResource;
-import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.util.CmsUUID;
 
@@ -48,14 +47,17 @@ import java.io.Serializable;
  * that is written during each publishing process.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.17 $ $Date: 2004/08/27 08:57:22 $
+ * @version $Revision: 1.18 $ $Date: 2004/10/31 21:30:18 $
  * @since 5.1.11
  * @see org.opencms.db.I_CmsProjectDriver#readPublishedResources(int, CmsUUID)
  */
 public class CmsPublishedResource extends Object implements Serializable, Cloneable {
-    
+
     /** The backup tag ID of the published resource. */
     private int m_backupTagId;
+    
+    /** Indicates if the published resource is a folder or a file. */
+    private boolean m_isFolder;
 
     /** The resource ID of the published resource.<p> */
     private CmsUUID m_resourceId;
@@ -78,30 +80,10 @@ public class CmsPublishedResource extends Object implements Serializable, Clonea
     /**
      * Creates an object for published VFS resources.<p>
      * 
-     * @param structureId the structure ID of the published resource
-     * @param resourceId the resource ID of the published resource
-     * @param backupTagId the resource's tag ID in the backup tables
-     * @param rootPath the root path of the published resource
-     * @param resourceType the type of the published resource
-     * @param resourceState the state of the resource *before* it was published
-     * @param siblingCount count of siblings of the published resource
-     */
-    public CmsPublishedResource(CmsUUID structureId, CmsUUID resourceId, int backupTagId, String rootPath, int resourceType, int resourceState, int siblingCount) {
-        m_structureId = structureId;
-        m_resourceId = resourceId;
-        m_backupTagId = backupTagId;
-        m_rootPath = rootPath;
-        m_resourceType = resourceType;
-        m_resourceState = resourceState;
-        m_siblingCount = siblingCount;
-    }
-    
-    /**
-     * Creates an object for published VFS resources.<p>
-     * 
      * @param resource an CmsResource object to create a CmsPublishedResource from
      */
     public CmsPublishedResource(CmsResource resource) {
+
         m_structureId = resource.getStructureId();
         m_resourceId = resource.getResourceId();
         m_backupTagId = -1;
@@ -109,12 +91,46 @@ public class CmsPublishedResource extends Object implements Serializable, Clonea
         m_resourceType = resource.getTypeId();
         m_resourceState = resource.getState();
         m_siblingCount = resource.getSiblingCount();
+        m_isFolder = resource.isFolder();
+    }
+
+    /**
+     * Creates an object for published VFS resources.<p>
+     * 
+     * @param structureId the structure ID of the published resource
+     * @param resourceId the resource ID of the published resource
+     * @param backupTagId the resource's tag ID in the backup tables
+     * @param rootPath the root path of the published resource
+     * @param resourceType the type of the published resource
+     * @param isFolder indicates if the published resource is a folder or a file
+     * @param resourceState the state of the resource *before* it was published
+     * @param siblingCount count of siblings of the published resource
+     */
+    public CmsPublishedResource(
+        CmsUUID structureId,
+        CmsUUID resourceId,
+        int backupTagId,
+        String rootPath,
+        int resourceType,
+        boolean isFolder,
+        int resourceState, 
+        int siblingCount) {
+
+        m_structureId = structureId;
+        m_resourceId = resourceId;
+        m_backupTagId = backupTagId;
+        m_rootPath = rootPath;
+        m_resourceType = resourceType;
+        m_resourceState = resourceState;
+        m_siblingCount = siblingCount;
+        m_isFolder = isFolder;
     }
 
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(Object obj) {
+
         if (obj == null) {
             return false;
         }
@@ -123,40 +139,18 @@ public class CmsPublishedResource extends Object implements Serializable, Clonea
             return false;
         }
 
-        return getStructureId().equals(((CmsPublishedResource) obj).getStructureId());
+        return getStructureId().equals(((CmsPublishedResource)obj).getStructureId());
     }
 
-    /**
-     * @see java.lang.Object#finalize()
-     */
-    protected void finalize() throws Throwable {
-        try {
-            m_structureId = null;
-            m_resourceId = null;
-            m_rootPath = null;
-        } catch (Throwable t) {
-            // ignore
-        }
-        super.finalize();
-    }
-    
     /**
      * Returns the backup tag ID of the published resource.<p>
      * 
      * @return the backup tag ID of the published resource
      */
     public int getBackupTagId() {
+
         return m_backupTagId;
     }
-
-    /**
-     * Returns the count of siblings of the published resource.<p>
-     * 
-     * @return the count of siblings of the published resource
-     */
-    public int getSiblingCount() {
-        return m_siblingCount;
-    } 
 
     /**
      * Returns the resource ID of the published resource.<p>
@@ -164,6 +158,7 @@ public class CmsPublishedResource extends Object implements Serializable, Clonea
      * @return the resource ID of the published resource
      */
     public CmsUUID getResourceId() {
+
         return m_resourceId;
     }
 
@@ -173,7 +168,18 @@ public class CmsPublishedResource extends Object implements Serializable, Clonea
      * @return the root path of the published resource
      */
     public String getRootPath() {
+
         return m_rootPath;
+    }
+
+    /**
+     * Returns the count of siblings of the published resource.<p>
+     * 
+     * @return the count of siblings of the published resource
+     */
+    public int getSiblingCount() {
+
+        return m_siblingCount;
     }
 
     /**
@@ -182,6 +188,7 @@ public class CmsPublishedResource extends Object implements Serializable, Clonea
      * @return the resource state of the published resource
      */
     public int getState() {
+
         return m_resourceState;
     }
 
@@ -191,6 +198,7 @@ public class CmsPublishedResource extends Object implements Serializable, Clonea
      * @return the structure ID of the published resource
      */
     public CmsUUID getStructureId() {
+
         return m_structureId;
     }
 
@@ -200,6 +208,7 @@ public class CmsPublishedResource extends Object implements Serializable, Clonea
      * @return the resource type of the published resource
      */
     public int getType() {
+
         return m_resourceType;
     }
 
@@ -207,6 +216,7 @@ public class CmsPublishedResource extends Object implements Serializable, Clonea
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
+
         return m_structureId.hashCode();
     }
 
@@ -216,6 +226,7 @@ public class CmsPublishedResource extends Object implements Serializable, Clonea
      * @return true if the resource is changed
      */
     public boolean isChanged() {
+
         return getState() == I_CmsConstants.C_STATE_CHANGED;
     }
 
@@ -225,6 +236,7 @@ public class CmsPublishedResource extends Object implements Serializable, Clonea
      * @return true if the resource is deleted
      */
     public boolean isDeleted() {
+
         return getState() == I_CmsConstants.C_STATE_DELETED;
     }
 
@@ -234,7 +246,8 @@ public class CmsPublishedResource extends Object implements Serializable, Clonea
      * @return true if this resource is a file, false otherwise
      */
     public boolean isFile() {
-        return getType() != CmsResourceTypeFolder.C_RESOURCE_TYPE_ID;
+
+        return !m_isFolder;
     }
 
     /**
@@ -243,7 +256,8 @@ public class CmsPublishedResource extends Object implements Serializable, Clonea
      * @return true if this is is a folder
      */
     public boolean isFolder() {
-        return getType() == CmsResourceTypeFolder.C_RESOURCE_TYPE_ID;
+
+        return m_isFolder;
     }
 
     /**
@@ -252,6 +266,7 @@ public class CmsPublishedResource extends Object implements Serializable, Clonea
      * @return true if the resource is new
      */
     public boolean isNew() {
+
         return getState() == I_CmsConstants.C_STATE_NEW;
     }
 
@@ -261,9 +276,10 @@ public class CmsPublishedResource extends Object implements Serializable, Clonea
      * @return true if the resource is unchanged
      */
     public boolean isUnChanged() {
+
         return getState() == I_CmsConstants.C_STATE_UNCHANGED;
     }
-    
+
     /**
      * Checks if this published resource represents a VFS resource.<p>
      * 
@@ -273,6 +289,7 @@ public class CmsPublishedResource extends Object implements Serializable, Clonea
      * @return true if this published resource is a VFS resource
      */
     public boolean isVfsResource() {
+
         return !getStructureId().equals(CmsUUID.getNullUUID());
     }
 
@@ -280,16 +297,42 @@ public class CmsPublishedResource extends Object implements Serializable, Clonea
      * @see java.lang.Object#toString()
      */
     public String toString() {
-        String objInfo = "[" + this.getClass().getName() + ": ";
 
-        objInfo += "root path: " + m_rootPath + ", ";
-        objInfo += "structure ID: " + m_structureId + ", ";
-        objInfo += "resource ID: " + m_resourceId + ", ";
-        objInfo += "backup tag ID: " + m_backupTagId + ", ";
-        objInfo += "siblings: " + m_siblingCount + ", ";
-        objInfo += "state: " + m_resourceState + ", ";
-        objInfo += "type: " + m_resourceType + "]";
+        StringBuffer result = new StringBuffer(128); 
+            
+        result.append("[");
+        result.append(this.getClass().getName());
+        result.append(": root path: ");
+        result.append(m_rootPath);
+        result.append(", structure ID: ");
+        result.append(m_structureId);
+        result.append(", resource ID: ");
+        result.append(m_resourceId);
+        result.append(", backup tag ID: ");
+        result.append(m_backupTagId);
+        result.append(", siblings: ");
+        result.append(m_siblingCount);
+        result.append(", state: ");
+        result.append(m_resourceState);
+        result.append(", type: ");
+        result.append(m_resourceType);
+        result.append("]");
 
-        return objInfo;
+        return result.toString();
+    }
+
+    /**
+     * @see java.lang.Object#finalize()
+     */
+    protected void finalize() throws Throwable {
+
+        try {
+            m_structureId = null;
+            m_resourceId = null;
+            m_rootPath = null;
+        } catch (Throwable t) {
+            // ignore
+        }
+        super.finalize();
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContent.java,v $
- * Date   : $Date: 2004/10/22 14:37:39 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/10/31 21:30:17 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,17 +57,11 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.5
  */
 public class CmsResourceTypeXmlContent extends A_CmsResourceType {
-
-    /** Configuration key for the resource type id. */
-    public static final String C_CONFIGURATION_RESOURCE_TYPE_ID = "resource.type.id";
-
-    /** Configuration key for the resource type name. */
-    public static final String C_CONFIGURATION_RESOURCE_TYPE_NAME = "resource.type.name";
 
     /** Configuration key for the (optional) schema. */
     public static final String C_CONFIGURATION_SCHEMA = "schema";
@@ -86,9 +80,9 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceType {
      */
     public void addConfigurationParameter(String paramName, String paramValue) {
 
-        if (C_CONFIGURATION_RESOURCE_TYPE_ID.equalsIgnoreCase(paramName)) {
+        if (I_CmsResourceType.C_CONFIGURATION_RESOURCE_TYPE_ID.equalsIgnoreCase(paramName)) {
             m_resourceType = Integer.valueOf(paramValue).intValue();
-        } else if (C_CONFIGURATION_RESOURCE_TYPE_NAME.equalsIgnoreCase(paramName)) {
+        } else if (I_CmsResourceType.C_CONFIGURATION_RESOURCE_TYPE_NAME.equalsIgnoreCase(paramName)) {
             m_resourceTypeName = paramValue.trim();
         } else if (C_CONFIGURATION_SCHEMA.equalsIgnoreCase(paramName)) {
             m_schema = paramValue.trim();
@@ -146,8 +140,8 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceType {
     public ExtendedProperties getConfiguration() {
 
         ExtendedProperties result = new ExtendedProperties();
-        result.put(C_CONFIGURATION_RESOURCE_TYPE_ID, new Integer(m_resourceType));
-        result.put(C_CONFIGURATION_RESOURCE_TYPE_NAME, m_resourceTypeName);
+        result.put(I_CmsResourceType.C_CONFIGURATION_RESOURCE_TYPE_ID, new Integer(m_resourceType));
+        result.put(I_CmsResourceType.C_CONFIGURATION_RESOURCE_TYPE_NAME, m_resourceTypeName);
         if (m_schema != null) {
             result.put(C_CONFIGURATION_SCHEMA, m_schema);
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsTree.java,v $
- * Date   : $Date: 2004/10/22 10:03:42 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/10/31 21:30:17 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.1
  */
@@ -176,7 +176,7 @@ public class CmsTree extends CmsWorkplace {
      *
      * @return the output for a tree node
      */
-    private String getNode(String path, String title, int type, boolean grey) {
+    private String getNode(String path, String title, int type, boolean folder, boolean grey) {
         StringBuffer result = new StringBuffer(64);
         String parent = CmsResource.getParentFolder(path);
         result.append("parent.aC(\"");
@@ -186,6 +186,13 @@ public class CmsTree extends CmsWorkplace {
         // type
         result.append(type);
         result.append(",");
+        // folder 
+        if (folder) {
+            result.append(1);
+        } else {
+            result.append(0);
+        }
+        result.append(",");
         // hashcode of path
         result.append(path.hashCode());
         result.append(",");
@@ -193,7 +200,11 @@ public class CmsTree extends CmsWorkplace {
         result.append((parent != null) ? parent.hashCode() : 0);
         result.append(",");
         // project status
-        result.append(grey);
+        if (grey) {
+            result.append(1);
+        } else {
+            result.append(0);
+        }
         result.append(");\n");    
         return result.toString();    
     }
@@ -224,7 +235,7 @@ public class CmsTree extends CmsWorkplace {
                 OpenCms.getLog(this).info(e);
             }
         }
-        return getNode(resource.getRootPath(), title, resource.getTypeId(), false);
+        return getNode(resource.getRootPath(), title, resource.getTypeId(), true, false);
     }
     
     /**
@@ -464,7 +475,13 @@ public class CmsTree extends CmsWorkplace {
                     grey = true;
                 } 
                     
-                result.append(getNode(resource.getRootPath(), resource.getName(), resource.getTypeId(), grey));
+                result.append(
+                    getNode(
+                        resource.getRootPath(), 
+                        resource.getName(), 
+                        resource.getTypeId(), 
+                        resource.isFolder(), 
+                        grey));
             }
         
             if (includeFiles()) {

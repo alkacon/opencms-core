@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsVfsConfiguration.java,v $
- * Date   : $Date: 2004/10/29 13:46:41 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/10/31 21:30:18 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,12 +74,18 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
 
     /** The widget attribute. */
     protected static final String A_WIDGET = "widget";
-    
+
     /** The collector node name. */
     protected static final String N_COLLECTOR = "collector";
 
     /** The collectors node name. */
     protected static final String N_COLLECTORS = "collectors";
+
+    /** The defaultfile node name. */
+    protected static final String N_DEFAULTFILE = "defaultfile";
+
+    /** The defaultfiles node name. */
+    protected static final String N_DEFAULTFILES = "defaultfiles";
 
     /** File translations node name. */
     protected static final String N_FILETRANSLATIONS = "filetranslations";
@@ -113,7 +119,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
 
     /** The xmlcontents node name. */
     protected static final String N_XMLCONTENTS = "xmlcontents";
-    
+
     /** The name of the DTD for this configuration. */
     private static final String C_CONFIGURATION_DTD_NAME = "opencms-vfs.dtd";
 
@@ -122,6 +128,9 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
 
     /** The configured XML content type manager. */
     CmsXmlContentTypeManager m_xmlContentTypeManager;
+
+    /** The list of configured default files. */
+    private List m_defaultFiles;
 
     /** Controls if file translation is enabled. */
     private boolean m_fileTranslationEnabled;
@@ -146,12 +155,12 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         setXmlFileName(C_DEFAULT_XML_FILE_NAME);
         m_fileTranslations = new ArrayList();
         m_folderTranslations = new ArrayList();
+        m_defaultFiles = new ArrayList();
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". VFS configuration    : initialized");
         }
     }
 
-    
     /**
      * Creates the xml output for resourcetype nodes.<p>
      * 
@@ -161,7 +170,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
      */
     public static void generateResourceTypeXml(Element startNode, List resourceTypes, boolean module) {
 
-        for (int i=0; i<resourceTypes.size(); i++) {
+        for (int i = 0; i < resourceTypes.size(); i++) {
             I_CmsResourceType resType = (I_CmsResourceType)resourceTypes.get(i);
             // only add this resource type to the xml output, if it is no additional type defined
             // in a module
@@ -171,9 +180,9 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
                 for (int j = 0; j < mappings.size(); j++) {
                     Element mapping = resourceType.addElement(N_MAPPING);
                     mapping.addAttribute(A_SUFFIX, (String)mappings.get(j));
-                }     
+                }
                 ExtendedProperties prop = resType.getConfiguration();
-                if (prop!= null) {
+                if (prop != null) {
                     List sortedRuntimeProperties = new ArrayList(prop.keySet());
                     Collections.sort(sortedRuntimeProperties);
                     Iterator it = sortedRuntimeProperties.iterator();
@@ -187,12 +196,24 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
                         } else if (valueObject instanceof Integer) {
                             value = ((Integer)valueObject).toString();
                         }
-                        resourceType.addElement(N_PARAM)
-                            .addAttribute(A_NAME, key)
-                            .addText(value);
+                        resourceType.addElement(N_PARAM).addAttribute(A_NAME, key).addText(value);
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Adds a directory default file.<p>
+     * 
+     * @param defaultFile the directory default file to add
+     */
+    public void addDefaultFile(String defaultFile) {
+
+        m_defaultFiles.add(defaultFile);
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
+                ". Default file         : " + m_defaultFiles.size() + " - " + defaultFile);
         }
     }
 
@@ -210,7 +231,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
     }
 
     /**
-     * Adds one foler translation rule.<p>
+     * Adds one folder translation rule.<p>
      * 
      * @param translation the folder translation rule to add
      */
@@ -252,13 +273,17 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         // add rules for VFS content collectors
         digester.addCallMethod("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_COLLECTORS + "/" + N_COLLECTOR, "addContentCollector", 2);
         digester.addCallParam("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_COLLECTORS + "/" + N_COLLECTOR, 0, A_CLASS);
-        digester.addCallParam("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_COLLECTORS + "/" + N_COLLECTOR, 1, A_ORDER);        
-        
+        digester.addCallParam("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_COLLECTORS + "/" + N_COLLECTOR, 1, A_ORDER);
+
         // generic <param> parameter rules
         digester.addCallMethod("*/" + I_CmsXmlConfiguration.N_PARAM, I_CmsConfigurationParameterHandler.C_ADD_PARAMETER_METHOD, 2);
         digester.addCallParam ("*/" +  I_CmsXmlConfiguration.N_PARAM, 0, I_CmsXmlConfiguration.A_NAME);
         digester.addCallParam ("*/" +  I_CmsXmlConfiguration.N_PARAM, 1);         
-                        
+                      
+        // add rule for default files
+        digester.addCallMethod("*/" + N_VFS + "/" + N_DEFAULTFILES + "/" + N_DEFAULTFILE, "addDefaultFile", 1);
+        digester.addCallParam("*/" + N_VFS + "/" + N_DEFAULTFILES + "/" + N_DEFAULTFILE, 0, A_NAME);
+
         // add rules for file translations
         digester.addCallMethod("*/" + N_VFS + "/" + N_TRANSLATIONS + "/" + N_FILETRANSLATIONS + "/" + N_TRANSLATION, "addFileTranslation", 0);
         digester.addCallMethod("*/" + N_VFS + "/" + N_TRANSLATIONS + "/" + N_FILETRANSLATIONS, "setFileTranslationEnabled", 1);
@@ -287,8 +312,9 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         if (OpenCms.getRunLevel() > 1) {
             m_resourceManager = OpenCms.getResourceManager();
             m_xmlContentTypeManager = OpenCms.getXmlContentTypeManager();
+            m_defaultFiles = OpenCms.getDefaultFiles();
         }
-        
+
         // generate vfs node and subnodes
         Element vfs = parent.addElement(N_VFS);
 
@@ -320,7 +346,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         Element resourcetypesElement = resources.addElement(N_RESOURCETYPES);
         List resourceTypes = m_resourceManager.getResourceTypes();
         generateResourceTypeXml(resourcetypesElement, resourceTypes, false);
-        
+
         // add VFS content collectors
         Element collectorsElement = resources.addElement(N_COLLECTORS);
         Iterator it = m_resourceManager.getRegisteredContentCollectors().iterator();
@@ -329,7 +355,14 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
             collectorsElement.addElement(N_COLLECTOR)
                 .addAttribute(A_CLASS, collector.getClass().getName())
                 .addAttribute(A_ORDER, String.valueOf(collector.getOrder()));
-        }        
+        }
+
+        // add default file names
+        Element defaultFileElement = vfs.addElement(N_DEFAULTFILES);
+        it = m_defaultFiles.iterator();
+        while (it.hasNext()) {
+            defaultFileElement.addElement(N_DEFAULTFILE).addAttribute(A_NAME, (String)it.next());
+        }
 
         // add translation rules
         Element translationsElement = vfs.addElement(N_TRANSLATIONS);
@@ -351,10 +384,10 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         while (it.hasNext()) {
             folderTransElement.addElement(N_TRANSLATION).setText(it.next().toString());
         }
-        
+
         // XML content configuration
-        Element xmlContentsElement = vfs.addElement(N_XMLCONTENTS);        
-        
+        Element xmlContentsElement = vfs.addElement(N_XMLCONTENTS);
+
         // XML content types 
         it = m_xmlContentTypeManager.getRegisteredContentTypes().iterator();
         while (it.hasNext()) {
@@ -368,8 +401,17 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         // return the vfs node
         return vfs;
     }
-    
-    
+
+    /**
+     * Returns the (umodifiable) list of configured directory default files.<p>
+     * 
+     * @return the (umodifiable) list of configured directory default files
+     */
+    public List getDefaultFiles() {
+
+        return Collections.unmodifiableList(m_defaultFiles);
+    }
+
     /**
      * @see org.opencms.configuration.I_CmsXmlConfiguration#getDtdFilename()
      */
@@ -447,8 +489,9 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
 
         m_fileTranslationEnabled = Boolean.valueOf(value).booleanValue();
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". File translation     : " + (m_fileTranslationEnabled ? "enabled" : "disabled"));
-        }          
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
+                ". File translation     : " + (m_fileTranslationEnabled ? "enabled" : "disabled"));
+        }
     }
 
     /**
@@ -460,8 +503,9 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
 
         m_folderTranslationEnabled = Boolean.valueOf(value).booleanValue();
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Folder translation   : " + (m_folderTranslationEnabled ? "enabled" : "disabled"));
-        }          
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
+                ". Folder translation   : " + (m_folderTranslationEnabled ? "enabled" : "disabled"));
+        }
     }
 
     /**

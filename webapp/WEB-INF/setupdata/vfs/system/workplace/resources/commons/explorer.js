@@ -106,6 +106,7 @@ function file(name, path, title, type, linkType, size, state, layoutstyle, proje
 	this.lockedInProjectName = lockedInProjectName;
 	this.lockedInProjectId = lockedInProjectId;
 	this.isInsideCurrentProject = (isInsideCurrentProject=='I') ? true : false;
+	this.isFolder = (size < 0) ? true : false;
 }
 
 
@@ -527,7 +528,7 @@ function printList(wo) {
 
 		if (vi.check_name) {
 			wo.write("<td nowrap unselectable=\"on\" id=\"td3_" + i + "\" " + ssclass + ">&nbsp;");
-			if (vi.liste[i].type == 0) {
+			if (vi.liste[i].isFolder) {
 				if ((mode == "projectview") || showlinks) {
 					wo.write(vi.liste[i].path);
 				} else if (vi.liste[i].state == 3) {
@@ -558,9 +559,10 @@ function printList(wo) {
 			}
 			wo.writeln("</td>");
 		}
+		var ressize = (vi.liste[i].isFolder) ? "" : "" + vi.liste[i].size;
 		if (vi.check_title)			wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi.liste[i].title + "&nbsp;</td>");
 		if (vi.check_type)			wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi_text + "</td>");
-		if (vi.check_size)			wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi.liste[i].size + "</td>");
+		if (vi.check_size)			wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + ressize + "</td>");
 		if (vi.check_permissions)		wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi.liste[i].permissions + "</td>");
 		if (vi.check_dateLastModified)		wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi.liste[i].dateLastModified + "</td>");
 		if (vi.check_userWhoLastModified)	wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi.liste[i].userWhoLastModified + "</td>");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/validation/Attic/CmsHtmlLinkValidator.java,v $
- * Date   : $Date: 2004/10/22 14:37:40 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2004/10/31 21:30:18 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import java.util.Map;
  * Objects using the CmsHtmlLinkValidator are responsible to handle detected broken links.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.21 $ $Date: 2004/10/22 14:37:40 $
+ * @version $Revision: 1.22 $ $Date: 2004/10/31 21:30:18 $
  * @since 5.3.0
  */
 public class CmsHtmlLinkValidator extends Object {
@@ -242,7 +242,7 @@ public class CmsHtmlLinkValidator extends Object {
 
             try {
                 // ... if the linked resource exists in the online project
-                m_driverManager.getVfsDriver().readFileHeader(
+                m_driverManager.getVfsDriver().readResource(
                     null, 
                     I_CmsConstants.C_PROJECT_ONLINE_ID, 
                     link, true);

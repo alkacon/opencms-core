@@ -44,12 +44,32 @@
 				<type class="org.opencms.file.types.CmsResourceTypeXmlContent">
 					<param name="resource.type.id">11</param>
 					<param name="resource.type.name">xmlcontent</param>
-				</type>		
+				</type>
+				<type class="org.opencms.file.types.CmsResourceTypeGallery">
+					<param name="resource.type.id">15</param>
+					<param name="resource.type.name">imagegallery</param>
+				</type>
+				<type class="org.opencms.file.types.CmsResourceTypeGallery">
+					<param name="resource.type.id">16</param>
+					<param name="resource.type.name">linkgallery</param>
+				</type>
+				<type class="org.opencms.file.types.CmsResourceTypeGallery">
+					<param name="resource.type.id">17</param>
+					<param name="resource.type.name">htmlgallery</param>
+				</type>
+				<type class="org.opencms.file.types.CmsResourceTypeGallery">
+					<param name="resource.type.id">18</param>
+					<param name="resource.type.name">downloadgallery</param>
+				</type>			
 			</resourcetypes>
 			<collectors>
 				<collector class="org.opencms.file.CmsDefaultResourceCollector" order="100" />
 			</collectors>		
 		</resources>
+		<defaultfiles>
+			<defaultfile name="index.html" />
+			<defaultfile name="index.jsp" />
+		</defaultfiles>
 		<translations>
 			<filetranslations enabled="true">
 				<translation>s#[\s]+#_#g</translation>

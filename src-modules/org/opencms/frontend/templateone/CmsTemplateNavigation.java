@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateNavigation.java,v $
- * Date   : $Date: 2004/10/28 14:04:02 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/10/31 21:30:18 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  * request parameters.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsTemplateNavigation extends CmsJspActionElement {
     
@@ -598,7 +598,7 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
             } catch (CmsException e) {
                 // ignore exception, reading property failed
             }
-            List defaultFileNames = OpenCms.getDefaultFilenames();
+            List defaultFileNames = OpenCms.getDefaultFiles();
             for (int i = 0; i < defaultFileNames.size(); i++) {
                 String currFileName = (String)defaultFileNames.get(i);
                 if (fileName.equals(currFileName)) {

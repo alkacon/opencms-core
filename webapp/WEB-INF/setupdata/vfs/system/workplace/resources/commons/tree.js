@@ -74,12 +74,13 @@ function treeObject(){
 }
 
 
-function nodeObject(name, type, id, parentId, grey, open){
+function nodeObject(name, type, folder, id, parentId, grey, open){
 	this.name = name;
 	this.type = type;
+	this.folder = (folder == 1) ? true : false;
 	this.id = id;
 	this.parentId = parentId;
-	this.grey = grey;
+	this.grey = (grey == 1) ? true : false;
 	this.open = open;
 	this.childs = null;
 }
@@ -248,9 +249,9 @@ function dfsTree(doc, node, depth, last, shape) {
 		}
 
 		if (last) {
-			if ((node.type == 0) && (node.childs == null)) {
+			if ((node.folder) && (node.childs == null)) {
 				loadSubnodes(doc, tree.icon[11], node); // corner unknown
-			} else if ((node.type == 0) && (node.childs.length > 0)) {
+			} else if ((node.folder) && (node.childs.length > 0)) {
 				if (node.open) {
 					showPicLink(doc, tree.icon[5], node); // corner minus
 				} else {
@@ -261,9 +262,9 @@ function dfsTree(doc, node, depth, last, shape) {
 			}
 			shape[depth] = 0;
 		} else {
-			if ((node.type == 0) && (node.childs == null)) {
+			if ((node.folder) && (node.childs == null)) {
 				loadSubnodes(doc, tree.icon[12], node); // cross unknown
-			} else if ((node.type == 0) && (node.childs.length > 0)) {
+			} else if ((node.folder) && (node.childs.length > 0)) {
 				if (node.open) {
 					showPicLink(doc, tree.icon[6], node); // cross minus
 				} else {
@@ -275,7 +276,7 @@ function dfsTree(doc, node, depth, last, shape) {
 			shape[depth] = 1;
 		}
 
-		if (node.type == 0) {
+		if (node.folder) {
 			// this node is a folder
 			if(node.id == vr.actDirId) {
 				showPic(doc, tree.icon[3]); // folder open
@@ -402,7 +403,7 @@ function getNodeNameById(nodeId) {
 		if (node.id == tree.root.id) {
 			return "/";
 		} else {
-			var isFolder = (node.type == 0);
+			var isFolder = (node.folder);
 			do {
 				result = ("/" + node.name + result);
 				node = tree.nodes[node.parentId];
@@ -418,7 +419,7 @@ function getNodeNameById(nodeId) {
 }
 
 
-function aC(name, type, id, parentId, grey) {
+function aC(name, type, folder, id, parentId, grey) {
 	var theParent = tree.nodes[parentId];
 	var oldNode = tree.nodes[id];
 
@@ -426,11 +427,11 @@ function aC(name, type, id, parentId, grey) {
 		// the node is not already present in the tree, so insert it
 		if (theParent == null) {
 			// this is the "root" node
-			tree.nodes[id] = new nodeObject(name, type, id, null, grey, false);
+			tree.nodes[id] = new nodeObject(name, type, folder, id, null, grey, false);
 			tree.root = tree.nodes[id];
 		} else {
 			// this is a regular subnode
-			tree.nodes[id] = new nodeObject(name, type, id, parentId, grey, false);
+			tree.nodes[id] = new nodeObject(name, type, folder, id, parentId, grey, false);
 			if (theParent.childs == null) {
 				theParent.childs = new Array();
 			}
@@ -438,7 +439,7 @@ function aC(name, type, id, parentId, grey) {
 		}
 	} else {
 		// the node is already part of the tree, so just update it
-		newNode = new nodeObject(name, type, id, parentId, oldNode.grey, oldNode.open);
+		newNode = new nodeObject(name, type, folder, id, parentId, oldNode.grey, oldNode.open);
 		newNode.childs = oldNode.childs;
 		tree.nodes[id] = newNode;
 		// the parents "child node list" must have been cleared before adding new nodes
@@ -649,7 +650,7 @@ function loadNode(doc, nodeId, nodeName, params) {
 // ensures that all folders up to the current folder are open
 function setCurrentFolder(nodeId) {
 	node = tree.nodes[nodeId];
-	if ((node != null) && (node.type != 0) && (node.parentId != null)) {
+	if ((node != null) && (! node.folder) && (node.parentId != null)) {
 		// if a file is selected set it's parent folder
 		node = tree.nodes[node.parentId];
 	}

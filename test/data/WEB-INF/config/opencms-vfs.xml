@@ -47,6 +47,10 @@
 				<collector class="org.opencms.file.CmsDefaultResourceCollector" order="100" />
 			</collectors>	
 		</resources>
+		<defaultfiles>
+			<defaultfile name="index.html" />
+			<defaultfile name="index.jsp" />
+		</defaultfiles>
 		<translations>
 			<filetranslations enabled="true">
 				<translation>s#[\s]+#_#g</translation>

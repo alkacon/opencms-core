@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeFolder.java,v $
- * Date   : $Date: 2004/10/22 14:37:39 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/10/31 21:30:17 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.List;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class CmsResourceTypeFolder extends A_CmsResourceType {
 
@@ -91,21 +91,6 @@ public class CmsResourceTypeFolder extends A_CmsResourceType {
                 ).changeLastModifiedProjectId(cms, securityManager, childResource);
             }            
         }
-    }
-
-    /**
-     * @see org.opencms.file.types.I_CmsResourceType#createResource(org.opencms.file.CmsObject, CmsSecurityManager, java.lang.String, byte[], List)
-     */
-    public CmsResource createResource(
-        CmsObject cms, 
-        CmsSecurityManager securityManager, 
-        String resourcename,
-        byte[] content, 
-        List properties
-    ) throws CmsException {
-        
-        resourcename = validateFoldername(resourcename);
-        return super.createResource(cms, securityManager, resourcename, content, properties);
     }
     
     /**
@@ -167,6 +152,21 @@ public class CmsResourceTypeFolder extends A_CmsResourceType {
             }            
         }        
     }
+    
+    /**
+     * @see org.opencms.file.types.I_CmsResourceType#createResource(org.opencms.file.CmsObject, CmsSecurityManager, java.lang.String, byte[], List)
+     */
+    public CmsResource createResource(
+        CmsObject cms, 
+        CmsSecurityManager securityManager, 
+        String resourcename,
+        byte[] content, 
+        List properties
+    ) throws CmsException {
+        
+        resourcename = validateFoldername(resourcename);
+        return super.createResource(cms, securityManager, resourcename, content, properties);
+    }
 
     /**
      * @see org.opencms.file.types.I_CmsResourceType#deleteResource(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, int)
@@ -205,6 +205,39 @@ public class CmsResourceTypeFolder extends A_CmsResourceType {
     }
     
     /**
+     * @see org.opencms.file.types.I_CmsResourceType#getLoaderId()
+     */
+    public int getLoaderId() {
+
+        // folders have no loader
+        return -1;
+    }     
+
+    /**
+     * @see org.opencms.file.types.I_CmsResourceType#getTypeId()
+     */
+    public int getTypeId() {
+        
+        return C_RESOURCE_TYPE_ID;
+    }
+
+    /**
+     * @see org.opencms.file.types.I_CmsResourceType#getTypeName()
+     */
+    public String getTypeName() {
+        
+        return C_RESOURCE_TYPE_NAME;
+    }
+    
+    /**
+     * @see org.opencms.file.types.A_CmsResourceType#isFolder()
+     */
+    public boolean isFolder() {
+
+        return true;
+    }
+    
+    /**
      * @see org.opencms.file.types.I_CmsResourceType#moveResource(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, java.lang.String)
      */
     public void moveResource(
@@ -231,31 +264,6 @@ public class CmsResourceTypeFolder extends A_CmsResourceType {
             resource, 
             I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
     }    
-    
-    /**
-     * @see org.opencms.file.types.I_CmsResourceType#getLoaderId()
-     */
-    public int getLoaderId() {
-
-        // folders have no loader
-        return -1;
-    }     
-
-    /**
-     * @see org.opencms.file.types.I_CmsResourceType#getTypeId()
-     */
-    public int getTypeId() {
-        
-        return C_RESOURCE_TYPE_ID;
-    }
-
-    /**
-     * @see org.opencms.file.types.I_CmsResourceType#getTypeName()
-     */
-    public String getTypeName() {
-        
-        return C_RESOURCE_TYPE_NAME;
-    }
 
     /**
      * @see org.opencms.file.types.I_CmsResourceType#replaceResource(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, int, byte[], List)

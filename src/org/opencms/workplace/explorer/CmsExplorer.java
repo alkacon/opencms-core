@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2004/08/25 07:47:21 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/10/31 21:30:17 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.1
  */
@@ -326,7 +326,6 @@ public class CmsExplorer extends CmsWorkplace {
         
         boolean showTitle = (preferences & I_CmsWpConstants.C_FILELIST_TITLE) > 0;
         boolean showPermissions = (preferences & I_CmsWpConstants.C_FILELIST_PERMISSIONS) > 0;
-        boolean showSize = (preferences & I_CmsWpConstants.C_FILELIST_SIZE) > 0;
         boolean showDateLastModified = (preferences & I_CmsWpConstants.C_FILELIST_DATE_LASTMODIFIED) > 0;
         boolean showUserWhoLastModified = (preferences & I_CmsWpConstants.C_FILELIST_USER_LASTMODIFIED) > 0;
         boolean showDateCreated = (preferences & I_CmsWpConstants.C_FILELIST_DATE_CREATED) > 0;
@@ -450,12 +449,8 @@ public class CmsExplorer extends CmsWorkplace {
             content.append(",");    
                     
             // position 6: size
-            if (res.isFolder() || (!showSize)) {
-                content.append("\"\",");
-            } else {
-                content.append(res.getLength());
-                content.append(",");                
-            }
+            content.append(res.getLength());
+            content.append(",");                
             
             // position 7: state
             content.append(res.getState());

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2004/10/29 13:46:41 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2004/10/31 21:30:18 $
+ * Version: $Revision: 1.59 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@
  */
 package org.opencms.importexport;
 
+import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
@@ -262,9 +263,11 @@ public class CmsImportVersion4 extends A_CmsImport {
                 // datecreated = System.currentTimeMillis();
             }
 
+            boolean isFolder = CmsFolder.isFolderType(resType);
+            
             // get UUIDs for the resource and content        
             CmsUUID newUuidresource = null;
-            if ((uuidresource != null) && (resType != CmsResourceTypeFolder.C_RESOURCE_TYPE_ID)) {
+            if ((uuidresource != null) && (! isFolder)) {
                 // create a UUID from the provided string
                 newUuidresource = new CmsUUID(uuidresource);
             } else {
@@ -306,16 +309,17 @@ public class CmsImportVersion4 extends A_CmsImport {
                 newUuidresource, 
                 destination,
                 resType,
-                new Integer(flags).intValue(),
+                isFolder,
+                new Integer(flags).intValue(), 
                 m_cms.getRequestContext().currentProject().getId(), 
                 I_CmsConstants.C_STATE_NEW, 
-                datecreated, 
-                newUsercreated,
+                datecreated,
+                newUsercreated, 
                 datelastmodified, 
                 newUserlastmodified, 
                 datereleased, 
-                dateexpired, 
-                1,
+                dateexpired,
+                1, 
                 size
             );
              
@@ -413,19 +417,24 @@ public class CmsImportVersion4 extends A_CmsImport {
                     I_CmsConstants.C_EXPORT_TAG_DESTINATION);
 
                 // <type>
+                boolean folder;
                 type = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_TYPE);
                 if (C_RESOURCE_TYPE_NEWPAGE_NAME.equals(type)) {
                     resType = C_RESOURCE_TYPE_NEWPAGE_ID;
+                    folder = false;
                 } else if (C_RESOURCE_TYPE_PAGE_NAME.equals(type)) {
                     resType = C_RESOURCE_TYPE_PAGE_ID;
+                    folder = false;
                 } else if (C_RESOURCE_TYPE_LINK_NAME.equals(type)) {
                     resType = C_RESOURCE_TYPE_LINK_ID;
+                    folder = false;
                 } else {
                      I_CmsResourceType rt = OpenCms.getResourceManager().getResourceType(type);
                      resType = rt.getTypeId();
+                     folder = rt.isFolder();
                 }
 
-                if (resType != CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
+                if (! folder) {
                     // <uuidresource>
                     uuidresource = CmsImport.getChildElementTextValue(
                         currentElement,

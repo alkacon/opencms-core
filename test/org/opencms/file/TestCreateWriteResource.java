@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestCreateWriteResource.java,v $
- * Date   : $Date: 2004/08/25 07:47:21 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/10/31 21:30:17 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import junit.framework.TestSuite;
  * Unit tests for the create and import methods.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class TestCreateWriteResource extends OpenCmsTestCase {
 
@@ -326,17 +326,17 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             CmsUUID.getNullUUID(),
             resourcename,
             CmsResourceTypeFolder.C_RESOURCE_TYPE_ID,
+            true,
             0,
             cms.getRequestContext().currentProject().getId(),
             I_CmsConstants.C_STATE_NEW,
             timestamp,
             cms.getRequestContext().currentUser().getId(),
-            timestamp,
-            cms.getRequestContext().currentUser().getId(), 
-            CmsResource.DATE_RELEASED_DEFAULT,
-            CmsResource.DATE_EXPIRED_DEFAULT, 
-            1,
-            -1
+            timestamp, 
+            cms.getRequestContext().currentUser().getId(),
+            CmsResource.DATE_RELEASED_DEFAULT, 
+            CmsResource.DATE_EXPIRED_DEFAULT,
+            1, -1
         );
         
         cms.importResource(resourcename, resource, null, null);
@@ -382,17 +382,17 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             CmsUUID.getNullUUID(),
             resourcename,
             CmsResourceTypeFolder.C_RESOURCE_TYPE_ID,
+            true,
             0,
             cms.getRequestContext().currentProject().getId(),
             I_CmsConstants.C_STATE_NEW,
             timestamp,
             cms.getRequestContext().currentUser().getId(),
-            timestamp,
-            cms.getRequestContext().currentUser().getId(), 
-            CmsResource.DATE_RELEASED_DEFAULT,
-            CmsResource.DATE_EXPIRED_DEFAULT, 
-            1,
-            -1
+            timestamp, 
+            cms.getRequestContext().currentUser().getId(),
+            CmsResource.DATE_RELEASED_DEFAULT, 
+            CmsResource.DATE_EXPIRED_DEFAULT,
+            1, -1
         );
         
         cms.importResource(resourcename, resource, null, null);
@@ -439,17 +439,17 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             CmsUUID.getNullUUID(),
             resourcename,
             CmsResourceTypePlain.C_RESOURCE_TYPE_ID,
+            false,
             0,
             cms.getRequestContext().currentProject().getId(),
             I_CmsConstants.C_STATE_NEW,
             timestamp,
             cms.getRequestContext().currentUser().getId(),
-            timestamp,
-            cms.getRequestContext().currentUser().getId(), 
-            CmsResource.DATE_RELEASED_DEFAULT,
-            CmsResource.DATE_EXPIRED_DEFAULT, 
-            1,
-            content.length
+            timestamp, 
+            cms.getRequestContext().currentUser().getId(),
+            CmsResource.DATE_RELEASED_DEFAULT, 
+            CmsResource.DATE_EXPIRED_DEFAULT,
+            1, content.length
         );
         
         cms.importResource(resourcename, resource, content, null);
@@ -500,17 +500,17 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             CmsUUID.getNullUUID(),
             resourcename,
             CmsResourceTypePlain.C_RESOURCE_TYPE_ID,
+            false,
             0,
             cms.getRequestContext().currentProject().getId(),
             I_CmsConstants.C_STATE_NEW,
             timestamp,
             cms.getRequestContext().currentUser().getId(),
-            timestamp,
-            cms.getRequestContext().currentUser().getId(), 
-            CmsResource.DATE_RELEASED_DEFAULT,
-            CmsResource.DATE_EXPIRED_DEFAULT, 
-            1,
-            content.length
+            timestamp, 
+            cms.getRequestContext().currentUser().getId(),
+            CmsResource.DATE_RELEASED_DEFAULT, 
+            CmsResource.DATE_EXPIRED_DEFAULT,
+            1, content.length
         );
         
         cms.importResource(resourcename, resource, content, null);
@@ -582,17 +582,17 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             file.getResourceId(),
             resourcename2,
             CmsResourceTypePlain.C_RESOURCE_TYPE_ID,
+            false,
             0,
             cms.getRequestContext().currentProject().getId(),
             I_CmsConstants.C_STATE_NEW,
             timestamp,
             cms.getRequestContext().currentUser().getId(),
-            timestamp,
-            cms.getRequestContext().currentUser().getId(), 
-            CmsResource.DATE_RELEASED_DEFAULT,
-            CmsResource.DATE_EXPIRED_DEFAULT, 
-            1,
-            content.length
+            timestamp, 
+            cms.getRequestContext().currentUser().getId(),
+            CmsResource.DATE_RELEASED_DEFAULT, 
+            CmsResource.DATE_EXPIRED_DEFAULT,
+            1, content.length
         );
         
         properties.add(prop2);         
@@ -634,17 +634,17 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             file.getResourceId(),
             resourcename1,
             CmsResourceTypePlain.C_RESOURCE_TYPE_ID,
+            false,
             0,
             cms.getRequestContext().currentProject().getId(),
             I_CmsConstants.C_STATE_NEW,
             timestamp,
             cms.getRequestContext().currentUser().getId(),
-            timestamp,
-            cms.getRequestContext().currentUser().getId(), 
-            CmsResource.DATE_RELEASED_DEFAULT,
-            CmsResource.DATE_EXPIRED_DEFAULT, 
-            1,
-            content.length
+            timestamp, 
+            cms.getRequestContext().currentUser().getId(),
+            CmsResource.DATE_RELEASED_DEFAULT, 
+            CmsResource.DATE_EXPIRED_DEFAULT,
+            1, content.length
         );
         
         properties.add(prop3);

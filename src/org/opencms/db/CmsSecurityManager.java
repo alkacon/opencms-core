@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2004/10/28 11:07:27 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/10/31 21:30:18 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,9 @@ package org.opencms.db;
 
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.file.*;
+import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.lock.CmsLock;
+import org.opencms.lock.CmsLockException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
@@ -49,12 +51,14 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workflow.CmsTask;
 import org.opencms.workflow.CmsTaskLog;
 
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
 import org.apache.commons.collections.ExtendedProperties;
+import org.apache.commons.collections.map.LRUMap;
 
 /**
  * The OpenCms security manager.<p>
@@ -63,16 +67,40 @@ import org.apache.commons.collections.ExtendedProperties;
  * are granted, the security manager invokes a method on the OpenCms driver manager to access the database.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
+    
+    /** Indicates allowed permissions. */
+    public static final int PERM_ALLOWED = 0;
+
+    /** Indicates denied permissions. */
+    public static final int PERM_DENIED = 1;
+
+    /** Indicates a resource was filtered during permission check. */
+    public static final int PERM_FILTERED = 2;
+
+    /** Indicates a resource was not locked for a write / control operation. */
+    public static final int PERM_NOTLOCKED = 3;
+
+    /** Indicates allowed permissions. */
+    private static final Integer PERM_ALLOWED_INTEGER = new Integer(PERM_ALLOWED);
+
+    /** Indicates denied permissions. */
+    private static final Integer PERM_DENIED_INTEGER = new Integer(PERM_DENIED);
 
     /** The initialized OpenCms driver manager to access the database. */
     protected CmsDriverManager m_driverManager;
 
     /** The factory to create runtime info objects. */
     protected I_CmsRuntimeInfoFactory m_runtimeInfoFactory;
+
+    /** The class used for cache key generation. */
+    private I_CmsCacheKey m_keyGenerator;
+
+    /** Cache for permission checks. */
+    private Map m_permissionCache;
 
     /**
      * Default constructor.<p>
@@ -551,7 +579,11 @@ public final class CmsSecurityManager {
         boolean checkLock,
         CmsResourceFilter filter) throws CmsException, CmsSecurityException, CmsVfsResourceNotFoundException {
 
-        m_driverManager.checkPermissions(context, resource, requiredPermissions, checkLock, filter);
+        // get the permissions
+        int permissions = hasPermissions(context, resource, requiredPermissions, checkLock, filter);
+        if (permissions != 0) {
+            checkPermissions(context, resource, requiredPermissions, permissions);
+        }
     }
 
     /**
@@ -615,14 +647,6 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Clears all internal chaches of the driver manager.<p>
-     */
-    public void clearcache() {
-
-        m_driverManager.clearcache();
-    }
-
-    /**
      * Copies the access control entries of a given resource to a destination resorce.<p>
      *
      * Already existing access control entries of the destination resource are removed.<p>
@@ -659,7 +683,7 @@ public final class CmsSecurityManager {
     /**
      * Copies a resource.<p>
      * 
-     * You must ensure that the destination path is anabsolute, vaild and
+     * You must ensure that the destination path is an absolute, vaild and
      * existing VFS path. Relative paths from the source are currently not supported.<p>
      * 
      * In case the target resource already exists, it is overwritten with the 
@@ -683,7 +707,7 @@ public final class CmsSecurityManager {
      * 
      * @see CmsObject#copyResource(String, String, int)
      * @see org.opencms.file.types.I_CmsResourceType#copyResource(CmsObject, CmsSecurityManager, CmsResource, String, int)
-     */  
+     */
     public void copyResource(CmsRequestContext context, CmsResource source, String destination, int siblingMode)
     throws CmsException {
 
@@ -1177,7 +1201,6 @@ public final class CmsSecurityManager {
                 "[" + this.getClass().getName() + "] deleteGroup() " + name,
                 CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
         }
-
     }
 
     /**
@@ -1220,7 +1243,6 @@ public final class CmsSecurityManager {
                 + "] deleteProject() "
                 + deleteProject.getName(), CmsSecurityException.C_SECURITY_PROJECTMANAGER_PRIVILEGES_REQUIRED);
         }
-
     }
 
     /**
@@ -1255,7 +1277,6 @@ public final class CmsSecurityManager {
         } finally {
             runtimeInfo.clear();
         }
-
     }
 
     /**
@@ -1294,7 +1315,6 @@ public final class CmsSecurityManager {
         } finally {
             runtimeInfo.clear();
         }
-
     }
 
     /**
@@ -1359,7 +1379,6 @@ public final class CmsSecurityManager {
                 "[" + this.getClass().getName() + "] deleteUser() " + username,
                 CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
         }
-
     }
 
     /**
@@ -1403,7 +1422,6 @@ public final class CmsSecurityManager {
                 "[" + this.getClass().getName() + "] deleteUser() " + username,
                 CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
         }
-
     }
 
     /**
@@ -1427,7 +1445,6 @@ public final class CmsSecurityManager {
         } finally {
             runtimeInfo.clear();
         }
-
     }
 
     /**
@@ -1443,7 +1460,6 @@ public final class CmsSecurityManager {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
                 ". Shutting down        : " + this.getClass().getName() + " ... ok!");
         }
-
     }
 
     /**
@@ -1754,7 +1770,7 @@ public final class CmsSecurityManager {
      * @return a publish list with all new/changed/deleted files from the current (offline) project that will be published actually
      * @throws CmsException if something goes wrong
      * @see org.opencms.db.CmsPublishList
-     */  
+     */
     public synchronized CmsPublishList getPublishList(
         CmsRequestContext context,
         CmsResource directPublishResource,
@@ -1892,13 +1908,10 @@ public final class CmsSecurityManager {
      * 
      * This test will not throw an exception in case the required permissions are not
      * available for the requested operation. Instead, it will return one of the 
-     * following values:<p>
-     * 
-     * <ul>
-     * <li><code>{@link CmsDriverManager#PERM_ALLOWED}</code></li>
-     * <li><code>{@link CmsDriverManager#PERM_FILTERED}</code></li>
-     * <li><code>{@link CmsDriverManager#PERM_DENIED}</code></li>
-     * </ul><p>
+     * following values:<ul>
+     * <li><code>{@link #PERM_ALLOWED}</code></li>
+     * <li><code>{@link #PERM_FILTERED}</code></li>
+     * <li><code>{@link #PERM_DENIED}</code></li></ul><p>
      * 
      * @param context the current request context
      * @param resource the resource on which permissions are required
@@ -1922,7 +1935,108 @@ public final class CmsSecurityManager {
         boolean checkLock,
         CmsResourceFilter filter) throws CmsException {
 
-        return m_driverManager.hasPermissions(context, resource, requiredPermissions, checkLock, filter);
+        // check if the resource is valid according to the current filter
+        // if not, throw a CmsResourceNotFoundException
+        if (!filter.isValid(context, resource)) {
+            return PERM_FILTERED;
+        }
+
+        // checking the filter is less cost intensive then checking the cache,
+        // this is why basic filter results are not cached
+        String cacheKey = m_keyGenerator.getCacheKeyForUserPermissions(
+            String.valueOf(filter.requireVisible()),
+            context,
+            resource,
+            requiredPermissions);
+        Integer cacheResult = (Integer)m_permissionCache.get(cacheKey);
+        if (cacheResult != null) {
+            return cacheResult.intValue();
+        }
+
+        int denied = 0;
+
+        // if this is the onlineproject, write is rejected 
+        if (context.currentProject().isOnlineProject()) {
+            denied |= CmsPermissionSet.PERMISSION_WRITE;
+        }
+
+        // check if the current user is admin
+        boolean isAdmin = isAdmin(context);
+
+        // if the resource type is jsp
+        // write is only allowed for administrators
+        if (!isAdmin && (resource.getTypeId() == CmsResourceTypeJsp.C_RESOURCE_TYPE_ID)) {
+            denied |= CmsPermissionSet.PERMISSION_WRITE;
+        }
+
+        // check lock status 
+        if (requiredPermissions.requiresWritePermission()
+        || requiredPermissions.requiresControlPermission()) {
+            // check lock state only if required
+            CmsLock lock = m_driverManager.getLock(context, null, resource);
+            // if the resource is not locked by the current user, write and control 
+            // access must case a permission error that must not be cached
+            if (checkLock || !lock.isNullLock()) {
+                if (!context.currentUser().getId().equals(lock.getUserId())) {
+                    return PERM_NOTLOCKED;
+                }
+            }
+        }
+
+        CmsPermissionSetCustom permissions;
+        if (isAdmin) {
+            // if the current user is administrator, anything is allowed
+            permissions = new CmsPermissionSetCustom(~0);
+        } else {
+            // otherwise, get the permissions from the access control list
+            permissions = getPermissions(context, resource, context.currentUser());
+        }
+
+        // revoke the denied permissions
+        permissions.denyPermissions(denied);
+
+        if ((permissions.getPermissions() & CmsPermissionSet.PERMISSION_VIEW) == 0) {
+            // resource "invisible" flag is set for this user
+            if (filter.requireVisible()) {
+                // filter requires visible permission - extend required permission set
+                requiredPermissions = new CmsPermissionSet(
+                    requiredPermissions.getAllowedPermissions() | CmsPermissionSet.PERMISSION_VIEW,
+                    requiredPermissions.getDeniedPermissions());
+            } else {
+                // view permissions can be ignored by filter
+                permissions.setPermissions(
+                    // modify permissions so that view is allowed
+                    permissions.getAllowedPermissions() | CmsPermissionSet.PERMISSION_VIEW,
+                    permissions.getDeniedPermissions() & ~CmsPermissionSet.PERMISSION_VIEW);                
+            }
+        }
+
+        Integer result;
+        if ((requiredPermissions.getPermissions() & (permissions.getPermissions()))
+            == requiredPermissions.getPermissions()) {
+            
+            result = PERM_ALLOWED_INTEGER;
+        } else {
+            result = PERM_DENIED_INTEGER;
+        }
+        m_permissionCache.put(cacheKey, result);
+
+        if ((result != PERM_ALLOWED_INTEGER) && OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug(
+                "Access to resource "
+                    + resource.getRootPath()
+                    + " "
+                    + "not permitted for user "
+                    + context.currentUser().getName()
+                    + ", "
+                    + "required permissions "
+                    + requiredPermissions.getPermissionString()
+                    + " "
+                    + "not satisfied by "
+                    + permissions.getPermissionString());
+        }
+
+        return result.intValue();
     }
 
     /**
@@ -1943,6 +2057,8 @@ public final class CmsSecurityManager {
      */
     public void importAccessControlEntries(CmsRequestContext context, CmsResource resource, Vector acEntries)
     throws CmsException {
+
+        checkPermissions(context, resource, CmsPermissionSet.ACCESS_CONTROL, true, CmsResourceFilter.ALL);
 
         m_driverManager.importAccessControlEntries(context, resource, acEntries);
     }
@@ -1971,9 +2087,26 @@ public final class CmsSecurityManager {
      * @param runtimeInfoFactory the initialized OpenCms runtime info factory
      * @throws CmsException if something goes wrong
      */
-    public void init(CmsConfigurationManager configurationManager, I_CmsRuntimeInfoFactory runtimeInfoFactory) throws CmsException {
+    public void init(CmsConfigurationManager configurationManager, I_CmsRuntimeInfoFactory runtimeInfoFactory)
+    throws CmsException {
 
-        m_driverManager = CmsDriverManager.newInstance(configurationManager, runtimeInfoFactory);
+        ExtendedProperties config = configurationManager.getConfiguration();
+
+        try {
+            // initialize the key generator
+            m_keyGenerator = (I_CmsCacheKey)Class.forName(
+                config.getString(I_CmsConstants.C_CONFIGURATION_CACHE + ".keygenerator")).newInstance();
+        } catch (Exception e) {
+            throw new CmsException("Unable to create security manager classes", e);
+        }
+
+        LRUMap hashMap = new LRUMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".permissions", 1000));
+        m_permissionCache = Collections.synchronizedMap(hashMap);
+        if (OpenCms.getMemoryMonitor().enabled()) {
+            OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_permissionCache", hashMap);
+        }
+
+        m_driverManager = CmsDriverManager.newInstance(configurationManager, this, runtimeInfoFactory);
 
         if (runtimeInfoFactory == null) {
             String message = "Critical error while loading security manager: runtime info factory is null";
@@ -2049,7 +2182,7 @@ public final class CmsSecurityManager {
      * @return true if the user is a member of the project manager group
      * @see CmsObject#isProjectManager()
      * @see #isManagerOfProject(CmsRequestContext)
-     */  
+     */
     public boolean isProjectManager(CmsRequestContext context) {
 
         return m_driverManager.isProjectManager(context);
@@ -2211,7 +2344,7 @@ public final class CmsSecurityManager {
             CmsResource directPublishResource = publishList.getDirectPublishResource();
 
             // or he has the explicit permission to direct publish a resource
-            hasPublishPermissions |= (CmsDriverManager.PERM_ALLOWED == hasPermissions(
+            hasPublishPermissions |= (PERM_ALLOWED == hasPermissions(
                 context,
                 directPublishResource,
                 CmsPermissionSet.ACCESS_DIRECT_PUBLISH,
@@ -2259,6 +2392,20 @@ public final class CmsSecurityManager {
     }
 
     /**
+     * Reaktivates a task from the Cms.<p>
+     *
+     * All users are granted.<p>
+     *
+     * @param context the current request context
+     * @param taskId the Id of the task to accept
+     * @throws CmsException if something goes wrong
+     */
+    public void reactivateTask(CmsRequestContext context, int taskId) throws CmsException {
+
+        m_driverManager.reactivateTask(context, taskId);
+    }
+
+    /**
      * Reads the agent of a task from the OpenCms.<p>
      *
      * @param task the task to read the agent from
@@ -2271,26 +2418,22 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Reads all file headers of a file in the OpenCms.<p>
-     * 
-     * This method returns a vector with the histroy of all file headers, i.e.
-     * the file headers of a file, independent of the project they were attached to.
-     * The reading excludes the filecontent.<p>
-     * 
-     * Access is granted, if:<p>
-     * 
-     * <ul>
-     * <li>the user can read the resource</li>
-     * </ul>
+     * Reads all available backup resources for the specified resource from the OpenCms VFS.<p>
      *
      * @param context the current request context
-     * @param filename the name of the file to be read
-     * @return vector of file headers read from the Cms
-     * @throws CmsException if operation was not succesful
+     * @param resourcename the name of the file to be read
+     * 
+     * @return a List of backup resources
+     * 
+     * @throws CmsException if something goes wrong
      */
-    public List readAllBackupFileHeaders(CmsRequestContext context, String filename) throws CmsException {
+    public List readAllBackupFileHeaders(CmsRequestContext context, String resourcename) throws CmsException {
 
-        return m_driverManager.readAllBackupFileHeaders(context, filename);
+        // read the resource and check the permissions first 
+        CmsResource resource = readResource(context, null, resourcename, CmsResourceFilter.ALL);
+
+        // now read the list of backup resources
+        return m_driverManager.readAllBackupFileHeaders(resource);
     }
 
     /**
@@ -2334,24 +2477,11 @@ public final class CmsSecurityManager {
      */
     public CmsBackupResource readBackupFile(CmsRequestContext context, int tagId, String filename) throws CmsException {
 
-        return m_driverManager.readBackupFile(context, tagId, filename);
-    }
-
-    /**
-     * Reads a file header from the history of the Cms.<p>
-     * 
-     * The reading excludes the filecontent. A file header is read from the backup resources.<p>
-     *
-     * @param context the current request context
-     * @param tagId the id of the tag revisiton of the file
-     * @param filename the name of the file to be read
-     * @return the file read from the Cms.
-     * @throws CmsException if operation was not succesful
-     */
-    public CmsBackupResource readBackupFileHeader(CmsRequestContext context, int tagId, String filename)
-    throws CmsException {
-
-        return m_driverManager.readBackupFileHeader(context, tagId, filename);
+        // read the resource (also checks read permission)
+        CmsResource resource = readResource(context, null, filename, CmsResourceFilter.ALL);
+        
+        // now read the backup resource
+        return m_driverManager.readBackupFile(tagId, resource);
     }
 
     /**
@@ -2391,50 +2521,36 @@ public final class CmsSecurityManager {
         boolean getFolders,
         boolean getFiles) throws CmsException {
 
+        // check the access permissions
+        checkPermissions(context, resource, CmsPermissionSet.ACCESS_READ, true, CmsResourceFilter.ALL);
+
         return m_driverManager.readChildResources(context, resource, filter, getFolders, getFiles);
     }
 
     /**
-     * Reads a file from the Cms.<p>
-     *
-     * Access is granted, if:<p>
+     * Reads a file (including it's content) from the OpenCms VFS.<p>
      * 
-     * <ul>
-     * <li>the user has access to the project</li>
-     * <li>the user can read the resource</li>
-     * </ul>
-     *
      * @param context the current request context
      * @param filename the name of the file to be read
      * @param filter the filter object
+     * 
      * @return the file read from the VFS
-     * @throws CmsException if operation was not succesful
+     * 
+     * @throws CmsException if something goes wrong
      */
     public CmsFile readFile(CmsRequestContext context, String filename, CmsResourceFilter filter) throws CmsException {
 
-        return m_driverManager.readFile(context, filename, filter);
+        // first read as resource, this also checks the permissions
+        CmsResource resource = readResource(context, null, filename, filter);
+
+        return m_driverManager.readFile(context, resource, filter);
     }
-
-    /**
-     * Reads all modified files of a given resource type that are either new, changed or deleted.<p>
-     * 
-     * The files in the result list include the file content.<p>
-     * 
-     * @param context the context (user/project) of this request
-     * @param projectId a project id for reading online or offline resources
-     * @param resourcetype the resourcetype of the files
-     * @return a list of Cms files
-     * @throws CmsException if operation was not successful
-     */
-    public List readFilesByType(CmsRequestContext context, int projectId, int resourcetype) throws CmsException {
-
-        return m_driverManager.readFilesByType(context, projectId, resourcetype);
-    }
-
+    
     /**
      * Reads a folder from the VFS, using the specified resource filter.<p>
      * 
      * @param context the current request context
+     * @param runtimeInfo the current runtime info
      * @param resourcename the name of the folder to read (full path)
      * @param filter the resource filter to use while reading
      *
@@ -2442,14 +2558,15 @@ public final class CmsSecurityManager {
      *
      * @throws CmsException if something goes wrong
      *
-     * @see #readResource(CmsRequestContext, String, CmsResourceFilter)
      * @see CmsObject#readFolder(String)
      * @see CmsObject#readFolder(String, CmsResourceFilter)
      */
-    public CmsFolder readFolder(CmsRequestContext context, String resourcename, CmsResourceFilter filter)
+    public CmsFolder readFolder(CmsRequestContext context, I_CmsRuntimeInfo runtimeInfo, String resourcename, CmsResourceFilter filter)
     throws CmsException {
-
-        return m_driverManager.readFolder(context, null, resourcename, filter);
+        
+        CmsResource resource = readResource(context, runtimeInfo, resourcename, filter);
+        
+        return m_driverManager.convertResourceToFolder(resource);
     }
 
     /**
@@ -2701,20 +2818,19 @@ public final class CmsSecurityManager {
      * 
      * @param context the context of the current request
      * @param resourceName the name of resource where the property is mapped to
-     * @param siteRoot the current site root
      * @param key the property key name
      * @param search true, if the property should be searched on all parent folders  if not found on the resource
+     * 
      * @return a CmsProperty object containing the structure and/or resource value
      * @throws CmsException if something goes wrong
      */
-    public CmsProperty readPropertyObject(
-        CmsRequestContext context,
-        String resourceName,
-        String siteRoot,
-        String key,
-        boolean search) throws CmsException {
+    public CmsProperty readPropertyObject(CmsRequestContext context, String resourceName, String key, boolean search)
+    throws CmsException {
 
-        return m_driverManager.readPropertyObject(context, resourceName, siteRoot, key, search);
+        // read the resource first (also checks the permissions)
+        CmsResource resource = readResource(context, null, resourceName, CmsResourceFilter.ALL);
+
+        return m_driverManager.readPropertyObject(context, resource, key, search);
     }
 
     /**
@@ -2724,15 +2840,18 @@ public final class CmsSecurityManager {
      * 
      * @param context the context of the current request
      * @param resourceName the name of resource where the property is mapped to
-     * @param siteRoot the current site root
      * @param search true, if the properties should be searched on all parent folders  if not found on the resource
+     * 
      * @return a list of CmsProperty objects containing the structure and/or resource value
      * @throws CmsException if something goes wrong
      */
-    public List readPropertyObjects(CmsRequestContext context, String resourceName, String siteRoot, boolean search)
+    public List readPropertyObjects(CmsRequestContext context, String resourceName, boolean search) 
     throws CmsException {
 
-        return m_driverManager.readPropertyObjects(context, resourceName, siteRoot, search);
+        // read the resource first (also checks the permissions)
+        CmsResource resource = readResource(context, null, resourceName, CmsResourceFilter.ALL);
+
+        return m_driverManager.readPropertyObjects(context, resource, search);
     }
 
     /**
@@ -2749,9 +2868,10 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Reads a resource from the VFS, using the specified resource filter.<p>
+     * Reads a resource from the OpenCms VFS, using the specified resource filter.<p>
      * 
      * @param context the current request context
+     * @param runtimeInfo the current runtime info
      * @param resourcePath the name of the resource to read (full path)
      * @param filter the resource filter to use while reading
      *
@@ -2763,10 +2883,20 @@ public final class CmsSecurityManager {
      * @see CmsObject#readResource(String)
      * @see CmsFile#upgrade(CmsResource, CmsObject)
      */
-    public CmsResource readResource(CmsRequestContext context, String resourcePath, CmsResourceFilter filter)
-    throws CmsException {
+    public CmsResource readResource(
+        CmsRequestContext context,
+        I_CmsRuntimeInfo runtimeInfo,
+        String resourcePath,
+        CmsResourceFilter filter) throws CmsException {
 
-        return m_driverManager.readResource(context, null, resourcePath, filter);
+        // read the resource from the VFS
+        CmsResource resource = m_driverManager.readResource(context, runtimeInfo, resourcePath, filter);
+
+        // check if the user has read access to the resource
+        checkPermissions(context, resource, CmsPermissionSet.ACCESS_READ, true, filter);
+
+        // access was granted - return the resource
+        return resource;
     }
 
     /**
@@ -2782,6 +2912,9 @@ public final class CmsSecurityManager {
      */
     public List readResources(CmsRequestContext context, CmsResource parent, CmsResourceFilter filter, boolean readTree)
     throws CmsException {
+
+        // check the access permissions
+        checkPermissions(context, parent, CmsPermissionSet.ACCESS_READ, true, CmsResourceFilter.ALL);
 
         return m_driverManager.readResources(context, parent, filter, readTree);
     }
@@ -2800,7 +2933,10 @@ public final class CmsSecurityManager {
     public List readSiblings(CmsRequestContext context, String resourcename, CmsResourceFilter filter)
     throws CmsException {
 
-        return m_driverManager.readSiblings(context, null, resourcename, filter);
+        // read the base resource first (will also check the permissions)
+        CmsResource resource = readResource(context, null, resourcename, filter);
+
+        return m_driverManager.readSiblings(context, null, resource, filter);
     }
 
     /**
@@ -2996,20 +3132,6 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Reaktivates a task from the Cms.<p>
-     *
-     * All users are granted.<p>
-     *
-     * @param context the current request context
-     * @param taskId the Id of the task to accept
-     * @throws CmsException if something goes wrong
-     */
-    public void reactivateTask(CmsRequestContext context, int taskId) throws CmsException {
-
-        m_driverManager.reactivateTask(context, taskId);
-    }
-
-    /**
      * Removes an access control entry for a given resource and principal.<p>
      * 
      * @param context the current request context
@@ -3191,7 +3313,8 @@ public final class CmsSecurityManager {
      *
      * @throws CmsException if operation was not succesfull
      */
-    public void setParentGroup(CmsRequestContext context, String groupName, String parentGroupName) throws CmsException {
+    public void setParentGroup(CmsRequestContext context, String groupName, String parentGroupName) 
+    throws CmsException {
 
         if (isAdmin(context)) {
 
@@ -3333,7 +3456,7 @@ public final class CmsSecurityManager {
      * 
      * @see CmsObject#undoChanges(String, boolean)
      * @see org.opencms.file.types.I_CmsResourceType#undoChanges(CmsObject, CmsSecurityManager, CmsResource, boolean)
-     */ 
+     */
     public void undoChanges(CmsRequestContext context, CmsResource resource) throws CmsException {
 
         // check if the user has write access
@@ -3797,6 +3920,14 @@ public final class CmsSecurityManager {
     }
 
     /**
+     * Clears the permission cache.<p>
+     */
+    protected void clearPermissionCache() {
+
+        m_permissionCache.clear();
+    }
+
+    /**
      * @see java.lang.Object#finalize()
      */
     protected void finalize() throws Throwable {
@@ -3816,4 +3947,46 @@ public final class CmsSecurityManager {
 
     }
 
+    /**
+     * Applies the permission check result of a previous call 
+     * to {@link #hasPermissions(CmsRequestContext, CmsResource, CmsPermissionSet, boolean, CmsResourceFilter)}.<p>
+     * 
+     * @param context the current request context
+     * @param resource the resource on which permissions are required
+     * @param requiredPermissions the set of permissions required to access the resource
+     * @param context the current request context
+     * 
+     * @throws CmsSecurityException if the required permissions are not satisfied
+     * @throws CmsVfsResourceNotFoundException if the required resource has been filtered
+     * @throws CmsLockException if the lock status is not as required
+     * 
+     * @see #hasPermissions(CmsRequestContext, CmsResource, CmsPermissionSet, boolean, CmsResourceFilter)
+     * @see #checkPermissions(CmsRequestContext, CmsResource, CmsPermissionSet, boolean, CmsResourceFilter)
+     */
+    private void checkPermissions(
+        CmsRequestContext context,
+        CmsResource resource,
+        CmsPermissionSet requiredPermissions,
+        int permissions) throws CmsSecurityException, CmsVfsResourceNotFoundException, CmsLockException {
+
+        switch (permissions) {
+            case PERM_FILTERED:
+                throw new CmsVfsResourceNotFoundException("Resource not found '" + context.getSitePath(resource) + "'");
+                
+            case PERM_DENIED:
+                throw new CmsSecurityException("Denied access to resource '"
+                    + context.getSitePath(resource)
+                    + "', required permissions are "
+                    + requiredPermissions.getPermissionString(), CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
+                
+            case PERM_NOTLOCKED:
+                throw new CmsLockException("Resource '"
+                    + context.getSitePath(resource)
+                    + "' not locked to current user!", CmsLockException.C_RESOURCE_NOT_LOCKED_BY_CURRENT_USER);
+                
+            case PERM_ALLOWED:
+            default:
+                return;
+        }
+    }
 }

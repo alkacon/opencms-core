@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/10/25 14:20:54 $
- * Version: $Revision: 1.80 $
+ * Date   : $Date: 2004/10/31 21:30:18 $
+ * Version: $Revision: 1.81 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.file;
  
-import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsPublishList;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.types.I_CmsResourceType;
@@ -72,7 +71,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.80 $
+ * @version $Revision: 1.81 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -903,7 +902,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */    
     public CmsProperty readPropertyObject(String resourcename, String propertydefinition, boolean search) throws CmsException {
-        return m_securityManager.readPropertyObject(m_context, m_context.addSiteRoot(resourcename), m_context.getAdjustedSiteRoot(resourcename), propertydefinition, search);
+        return m_securityManager.readPropertyObject(m_context, m_context.addSiteRoot(resourcename), propertydefinition, search);
     }
     
     /**
@@ -928,7 +927,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */    
     public List readPropertyObjects(String resourcename, boolean search) throws CmsException {
-        return m_securityManager.readPropertyObjects(m_context, addSiteRoot(resourcename), m_context.getAdjustedSiteRoot(resourcename), search);
+        return m_securityManager.readPropertyObjects(m_context, addSiteRoot(resourcename), search);
     }
     
     
@@ -1104,8 +1103,11 @@ public class CmsObject {
      */
     public CmsResource readResource(String resourcename, CmsResourceFilter filter) throws CmsException {
 
-        return m_securityManager.readResource(m_context, 
-            addSiteRoot(resourcename), filter);
+        return m_securityManager.readResource(
+            m_context, 
+            null,
+            addSiteRoot(resourcename), 
+            filter);
     }
 
     /**
@@ -1183,7 +1185,7 @@ public class CmsObject {
      */
     public CmsFolder readFolder(String resourcename, CmsResourceFilter filter) throws CmsException {
 
-        return m_securityManager.readFolder(m_context, addSiteRoot(resourcename), filter);
+        return m_securityManager.readFolder(m_context, null, addSiteRoot(resourcename), filter);
     }
     
     /**
@@ -1460,7 +1462,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public boolean hasPermissions(CmsResource resource, CmsPermissionSet requiredPermissions) throws CmsException {
-        return  CmsDriverManager.PERM_ALLOWED == m_securityManager.hasPermissions(m_context, resource, requiredPermissions, true, CmsResourceFilter.ALL);
+        return  CmsSecurityManager.PERM_ALLOWED == m_securityManager.hasPermissions(m_context, resource, requiredPermissions, true, CmsResourceFilter.ALL);
     }
     
     /**
@@ -1477,7 +1479,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public boolean hasPermissions(CmsResource resource, CmsPermissionSet requiredPermissions, boolean checkLock, CmsResourceFilter filter) throws CmsException {
-        return CmsDriverManager.PERM_ALLOWED == m_securityManager.hasPermissions(m_context, resource, requiredPermissions, checkLock, filter);
+        return CmsSecurityManager.PERM_ALLOWED == m_securityManager.hasPermissions(m_context, resource, requiredPermissions, checkLock, filter);
     }    
     
 
@@ -1905,12 +1907,8 @@ public class CmsObject {
      */
     public void importFolder(String importFile, String importPath) throws CmsException {
         
-        m_securityManager.clearcache();
-        
-        // import the resources
+        // import the folder
         m_securityManager.importFolder(this, m_context, importFile, importPath);
-        
-        m_securityManager.clearcache();
     }
         
     /**
@@ -2165,7 +2163,7 @@ public class CmsObject {
      * @deprecated use {@link #readPropertyObjects(String, boolean)} instead
      */
     public Map readProperties(String resource) throws CmsException {
-        List properties = m_securityManager.readPropertyObjects(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), false);
+        List properties = m_securityManager.readPropertyObjects(m_context, m_context.addSiteRoot(resource), false);
         return CmsProperty.toMap(properties);
     }
 
@@ -2180,7 +2178,7 @@ public class CmsObject {
      * @deprecated use {@link #readPropertyObjects(String, boolean)} instead
      */
     public Map readProperties(String resource, boolean search) throws CmsException {
-        List properties = m_securityManager.readPropertyObjects(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), search);
+        List properties = m_securityManager.readPropertyObjects(m_context, m_context.addSiteRoot(resource), search);
         return CmsProperty.toMap(properties);
     }
 
@@ -2195,7 +2193,7 @@ public class CmsObject {
      * @deprecated use new Object based methods
      */
     public String readProperty(String resource, String property) throws CmsException {
-        CmsProperty value = m_securityManager.readPropertyObject(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), property, false);
+        CmsProperty value = m_securityManager.readPropertyObject(m_context, m_context.addSiteRoot(resource), property, false);
         return value.isNullProperty() ? null : value.getValue();
     }
 
@@ -2212,7 +2210,7 @@ public class CmsObject {
      * @deprecated use new Object based methods
      */
     public String readProperty(String resource, String property, boolean search) throws CmsException {
-        CmsProperty value = m_securityManager.readPropertyObject(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), property, search);
+        CmsProperty value = m_securityManager.readPropertyObject(m_context, m_context.addSiteRoot(resource), property, search);
         return value.isNullProperty() ? null : value.getValue();
     }
 
@@ -2231,7 +2229,7 @@ public class CmsObject {
      * @deprecated use new Object based methods
      */
     public String readProperty(String resource, String property, boolean search, String propertyDefault) throws CmsException {
-        CmsProperty value = m_securityManager.readPropertyObject(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), property, search);
+        CmsProperty value = m_securityManager.readPropertyObject(m_context, m_context.addSiteRoot(resource), property, search);
         return value.isNullProperty() ? propertyDefault : value.getValue();
     }    
     
@@ -3171,21 +3169,6 @@ public class CmsObject {
     // VFS access methods:
     private int warning7; 
     
-    
-    /**
-     * Reads all modified files of a given resource type that are either new, changed or deleted.<p>
-     * 
-     * The files in the result list include the file content.<p>
-     * 
-     * @param projectId a project id for reading online or offline resources
-     * @param resourcetype the resourcetype of the files
-     * @return a list of Cms files
-     * @throws CmsException if operation was not successful
-     */   
-    public List readFilesByType(int projectId, int resourcetype) throws CmsException {
-        return m_securityManager.readFilesByType(m_context, projectId, resourcetype);
-    }    
-    
     /**
      * Builds a list of resources for a given path.<p>
      * 
@@ -3394,23 +3377,6 @@ public class CmsObject {
      */
     public CmsBackupResource readBackupFile(String filename, int tagId) throws CmsException {
         return (m_securityManager.readBackupFile(m_context, tagId, addSiteRoot(filename)));
-    }
-
-    /**
-     * Reads a file header from the Cms for history.
-     * <br>
-     * The reading excludes the filecontent.
-     *
-     * @param filename the complete path of the file to be read.
-     * @param tagId the version id of the resource
-     *
-     * @return file the read file.
-     *
-     * @throws CmsException , if the user has not the rights
-     * to read the file headers, or if the file headers couldn't be read.
-     */
-    public CmsResource readBackupFileHeader(String filename, int tagId) throws CmsException {
-        return (m_securityManager.readBackupFileHeader(m_context, tagId, addSiteRoot(filename)));
     }
 
     /**

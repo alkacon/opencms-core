@@ -58,6 +58,18 @@
 					</contextmenu>
 				</editoptions>
 			</explorertype>
+			<explorertype name="imagegallery" key="fileicon.imagegallery" icon="imagegallery.gif" reference="folder">
+				<newresource uri="newresource.jsp?newresourcetype=imagegallery" order="11"/>
+			</explorertype>
+			<explorertype name="linkgallery" key="fileicon.linkgallery" icon="linkgallery.gif" reference="folder">
+				<newresource uri="newresource.jsp?newresourcetype=linkgallery" order="12"/>
+			</explorertype>
+			<explorertype name="htmlgallery" key="fileicon.htmlgallery" icon="htmlgallery.gif" reference="folder">
+				<newresource uri="newresource.jsp?newresourcetype=htmlgallery" order="13"/>
+			</explorertype>
+			<explorertype name="downloadgallery" key="fileicon.downloadgallery" icon="downloadgallery.gif" reference="folder">
+				<newresource uri="newresource.jsp?newresourcetype=downloadgallery" order="14"/>
+			</explorertype>
 			<explorertype name="xmlcontent" key="fileicon.xmlcontent" icon="xmlcontent.gif">
 				<newresource uri="newresource.jsp?newresourcetype=xmlcontent" order="55"/>
 				<accesscontrol>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/10/29 13:58:00 $
- * Version: $Revision: 1.582 $
+ * Date   : $Date: 2004/10/31 21:30:18 $
+ * Version: $Revision: 1.583 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -24,6 +24,9 @@ OpenCms 5.x.x Caladan - xxx, 2004
 ! Source code for the 'templateone' default module is now available in the src-modules CVS subfolder
 * Fixed issue with password change being broken in the user administration 
 * VFS resource types and Workplace context menus can now be added by a module
+- Configuration of default files moved to opencms-vfs.xml
+! Modified VFS to allow multiple folder resource types
+! Added new resource types for image, download, link and html galleries
 
 OpenCms 5.5.3 Caladan (aka 6.0 alpha 2) - October 26, 2004
 ! Added 'templateone' default module as an extended template demo

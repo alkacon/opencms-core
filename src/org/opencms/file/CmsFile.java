@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsFile.java,v $
- * Date   : $Date: 2004/08/25 07:47:21 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/10/31 21:30:18 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,13 +46,13 @@ import java.io.Serializable;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class CmsFile extends CmsResource implements Cloneable, Serializable, Comparable {
 
     /** The id of the content database record. */
     private CmsUUID m_contentId;
-    
+
     /** The content of this file. */
     private byte[] m_fileContent;
 
@@ -139,6 +139,7 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
             resourceId,
             path,
             type,
+            false,
             flags,
             projectId,
             state,
@@ -154,6 +155,35 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
         // set content, id and length
         m_contentId = contentId;
         m_fileContent = content;
+    }
+
+    /**
+     * Utility method to upgrade a CmsResource to a CmsFile.<p>
+     * 
+     * Sometimes a CmsResource might already ba a (casted) CmsFile that
+     * also has the contents read. This methods tries to optimize 
+     * read access to the VFS by "upgrading" the CmsResource to a CmsFile 
+     * first. If this fails, the CmsFile is read from the VFS.<p> 
+     * 
+     * @param resource the resource to upgrade
+     * @param cms permission context for accessing the VFS
+     * @return the upgraded (or read) file
+     * @throws CmsException if something goes wrong
+     */
+    public static CmsFile upgrade(CmsResource resource, CmsObject cms) throws CmsException {
+
+        if (resource instanceof CmsFile) {
+            // resource is already a file
+            CmsFile file = (CmsFile)resource;
+            if ((file.getContents() != null) && (file.getContents().length > 0)) {
+                // file has the contents already available
+                return file;
+            }
+        }
+        // resource is no file, or contents are not available
+        String filename = cms.getSitePath(resource);
+        // read and return the file
+        return cms.readFile(filename, CmsResourceFilter.IGNORE_EXPIRATION);
     }
 
     /**
@@ -184,10 +214,10 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
             getSiblingCount(),
             getLength(),
             newContent);
-        
+
         if (isTouched()) {
             clone.setDateLastModified(getDateLastModified());
-        }     
+        }
 
         return clone;
     }
@@ -200,8 +230,8 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
     public CmsUUID getContentId() {
 
         return m_contentId;
-    } 
-    
+    }
+
     /**
      * Returns the content of this file.<p>
      *
@@ -210,6 +240,30 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
     public byte[] getContents() {
 
         return m_fileContent;
+    }
+
+    /**
+     * @see org.opencms.file.CmsResource#getLength()
+     */
+    public int getLength() {
+
+        return m_length;
+    }
+
+    /**
+     * @see org.opencms.file.CmsResource#isFile()
+     */
+    public boolean isFile() {
+
+        return true;
+    }
+
+    /**
+     * @see org.opencms.file.CmsResource#isFolder()
+     */
+    public boolean isFolder() {
+
+        return false;
     }
 
     /**
@@ -225,34 +279,5 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
         } else {
             m_length = 0;
         }
-    }
-
-    /**
-     * Utility method to upgrade a CmsResource to a CmsFile.<p>
-     * 
-     * Sometimes a CmsResource might already ba a (casted) CmsFile that
-     * also has the contents read. This methods tries to optimize 
-     * read access to the VFS by "upgrading" the CmsResource to a CmsFile 
-     * first. If this fails, the CmsFile is read from the VFS.<p> 
-     * 
-     * @param resource the resource to upgrade
-     * @param cms permission context for accessing the VFS
-     * @return the upgraded (or read) file
-     * @throws CmsException if something goes wrong
-     */
-    public static CmsFile upgrade(CmsResource resource, CmsObject cms) throws CmsException {
-
-        if (resource instanceof CmsFile) {
-            // resource is already a file
-            CmsFile file = (CmsFile)resource;
-            if ((file.getContents() != null) && (file.getContents().length > 0)) {
-                // file has the contents already available
-                return file;
-            }
-        }
-        // resource is no file, or contents are not available
-        String filename = cms.getSitePath(resource);
-        // read and return the file
-        return cms.readFile(filename, CmsResourceFilter.IGNORE_EXPIRATION);
     }
 }

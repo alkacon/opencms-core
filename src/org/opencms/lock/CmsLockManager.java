@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2004/10/22 14:37:40 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/10/31 21:30:18 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import java.util.Map;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com) 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 5.1.4
  * 
@@ -256,8 +256,11 @@ public final class CmsLockManager extends Object {
             return CmsLock.getNullLock();
         }
 
-        resource = internalReadFileHeader(driverManager, context, runtimeInfo, resourcename);
-
+        resource = driverManager.getVfsDriver().readResource(
+            runtimeInfo, 
+            context.currentProject().getId(), 
+            resourcename, true); 
+        
         if (resource == null) {
             // non-existent resources are never locked
             return CmsLock.getNullLock();
@@ -330,33 +333,6 @@ public final class CmsLockManager extends Object {
     }
 
     /**
-     * Reads a file header of a resource name without checking permissions.<p>
-     * 
-     * @param driverManager the driver manager
-     * @param context the current request context
-     * @param runtimeInfo the current runtime info
-     * @param resourcename the full resource name including the site root
-     * 
-     * @return the CmsResource instance
-     */
-    private CmsResource internalReadFileHeader(CmsDriverManager driverManager, CmsRequestContext context, I_CmsRuntimeInfo runtimeInfo, String resourcename) {
-        CmsResource resource = null;
-
-        try {
-            // reading resources using readFileHeader while the lock state is checked would
-            // inevitably result in an infinite loop...
-            resource = driverManager.getVfsDriver().readFileHeader(
-                runtimeInfo, 
-                context.currentProject().getId(), 
-                resourcename, true);
-        } catch (CmsException e) {
-            resource = null;
-        }
-
-        return resource;
-    }
-
-    /**
      * Reads all siblings from a given resource.<p>
      * 
      * @param driverManager the driver manager
@@ -372,7 +348,11 @@ public final class CmsLockManager extends Object {
         // reading siblings using the DriverManager methods while the lock state is checked would
         // inevitably result in an infinite loop...        
 
-        CmsResource resource = internalReadFileHeader(driverManager, context, runtimeInfo, resourcename);
+        CmsResource resource = driverManager.getVfsDriver().readResource(
+            runtimeInfo, 
+            context.currentProject().getId(), 
+            resourcename, true);         
+        
         List siblings = driverManager.getVfsDriver().readSiblings(null, context.currentProject(), resource, true);
 
         int n = siblings.size();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/10/29 13:46:41 $
- * Version: $Revision: 1.149 $
+ * Date   : $Date: 2004/10/31 21:30:17 $
+ * Version: $Revision: 1.150 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -107,7 +107,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.149 $
+ * @version $Revision: 1.150 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -136,8 +136,8 @@ public final class OpenCmsCore {
     /** The configuration manager that contains the information from the XML configuration. */
     private CmsConfigurationManager m_configurationManager;
 
-    /** Array of configured default file names (for faster access). */
-    private String[] m_defaultFilenames;
+    /** List of configured directory default file names. */
+    private List m_defaultFiles;
 
     /** The default user and group names. */
     private CmsDefaultUsers m_defaultUsers;
@@ -248,6 +248,7 @@ public final class OpenCmsCore {
      * @return the initialized OpenCms instance
      */
     public static OpenCmsCore getInstance() {
+        
         if (m_instance == null) {
             try {
                 // create a new core object with runlevel 1
@@ -266,6 +267,7 @@ public final class OpenCmsCore {
      * @return an unmodifiable set of the configured export points
      */
     public Set getExportPoints() {
+        
         return m_exportPoints;
     }
 
@@ -275,6 +277,7 @@ public final class OpenCmsCore {
      * @return the session manager
      */
     public OpenCmsSessionManager getSessionManager() {
+        
         return m_sessionManager;
     }
 
@@ -319,8 +322,8 @@ public final class OpenCmsCore {
                 }                
                 if (resource.isFolder()) {
                     // resource is (still) a folder, check default files specified in configuration
-                    for (int i = 0; i < m_defaultFilenames.length; i++) {
-                        String tmpResourceName = CmsResource.getFolderPath(cms.getSitePath(resource)) + m_defaultFilenames[i];
+                    for (int i = 0; i < m_defaultFiles.size(); i++) {
+                        String tmpResourceName = CmsResource.getFolderPath(cms.getSitePath(resource)) + m_defaultFiles.get(i);
                         try {      
                             resource = cms.readResource(tmpResourceName);
                             // no exception? So we have found the default file                         
@@ -379,6 +382,7 @@ public final class OpenCmsCore {
      * @param listener the listener to add
      */
     protected void addCmsEventListener(I_CmsEventListener listener) {
+        
         addCmsEventListener(listener, null);
     }
 
@@ -411,6 +415,7 @@ public final class OpenCmsCore {
      * @param handler the handler to add
      */
     protected void addRequestHandler(I_CmsRequestHandler handler) {
+        
         if (handler == null) {
             return;
         }
@@ -481,6 +486,7 @@ public final class OpenCmsCore {
      * @param event a CmsEvent
      */
     protected void fireCmsEvent(CmsEvent event) {
+
         fireCmsEventHandler((List)m_eventListeners.get(event.getTypeInteger()), event);
         fireCmsEventHandler((List)m_eventListeners.get(I_CmsEventListener.LISTENERS_FOR_ALL_EVENTS), event);
     }
@@ -492,6 +498,7 @@ public final class OpenCmsCore {
      * @param data event data
      */
     protected void fireCmsEvent(int type, Map data) {
+
         fireCmsEvent(new CmsEvent(type, data));
     }
 
@@ -502,8 +509,9 @@ public final class OpenCmsCore {
      * 
      * @return the configured list of default directory file names
      */
-    protected List getDefaultFilenames() {
-        return Collections.unmodifiableList(Arrays.asList(m_defaultFilenames));
+    protected List getDefaultFiles() {
+
+        return m_defaultFiles;
     }
 
     /**
@@ -512,6 +520,7 @@ public final class OpenCmsCore {
      * @return the default user and group name configuration
      */
     protected CmsDefaultUsers getDefaultUsers() {
+
         return m_defaultUsers;
     }
 
@@ -521,6 +530,7 @@ public final class OpenCmsCore {
      * @return The file name translator this OpenCms has read from the opencms.properties
      */
     protected CmsResourceTranslator getFileTranslator() {
+
         return m_fileTranslator;
     }
 
@@ -531,6 +541,7 @@ public final class OpenCmsCore {
      * @return the initialized import/export manager
      */
     protected CmsImportExportManager getImportExportManager() {
+
         return m_importExportManager;
     }
 
@@ -540,6 +551,7 @@ public final class OpenCmsCore {
      * @return  the link manager to resolve links in &lt;link&gt; tags
      */
     protected CmsLinkManager getLinkManager() {
+
         return m_linkManager;
     }
 
@@ -549,6 +561,7 @@ public final class OpenCmsCore {
      * @return the locale manager
      */
     protected CmsLocaleManager getLocaleManager() {
+
         return m_localeManager;
     }
 
@@ -558,6 +571,7 @@ public final class OpenCmsCore {
      * @return the lock manager used for the locking mechanism
      */
     protected CmsLockManager getLockManager() {
+
         return m_lockManager;
     }
 
@@ -572,6 +586,7 @@ public final class OpenCmsCore {
      * @return the log for the selected object channel
      */
     protected Log getLog(Object obj) {
+
         if ((obj == null) || (!m_log.isInitialized())) {
             return m_log;
         }
@@ -584,16 +599,17 @@ public final class OpenCmsCore {
      * @return the memory monitor
      */
     protected CmsMemoryMonitor getMemoryMonitor() {
+
         return m_memoryMonitor;
     }
-    
+
     /**
      * Returns the module manager.<p>
      * 
      * @return the module manager
      */
     protected CmsModuleManager getModuleManager() {
-        
+
         return m_moduleManager;
     }
 
@@ -603,9 +619,10 @@ public final class OpenCmsCore {
      * @return the password handler
      */
     protected I_CmsPasswordHandler getPasswordHandler() {
+
         return m_passwordHandler;
     }
-    
+
     /**
      * Returns the handler instance for the specified name, 
      * or null if the name does not match any handler name.<p>
@@ -614,15 +631,17 @@ public final class OpenCmsCore {
      * @return the handler instance for the specified name
      */
     protected I_CmsRequestHandler getRequestHandler(String name) {
+
         return (I_CmsRequestHandler)m_requestHandlers.get(name);
     }
-    
+
     /**
      * Returns the resource manager.<p>
      * 
      * @return the resource manager
      */
     protected CmsResourceManager getResourceManager() {
+
         return m_resourceManager;
     }
 
@@ -632,6 +651,7 @@ public final class OpenCmsCore {
      * @return the runlevel of this OpenCmsCore object instance
      */
     protected int getRunLevel() {
+
         return m_runLevel;
     }
 
@@ -642,6 +662,7 @@ public final class OpenCmsCore {
      * @return the value for the key, or null if the key was not found
      */
     protected Object getRuntimeProperty(Object key) {
+
         if (m_runtimeProperties == null) {
             return null;
         }
@@ -654,6 +675,7 @@ public final class OpenCmsCore {
      * @return the Map of runtime properties
      */
     protected Map getRuntimePropertyMap() {
+
         return m_runtimeProperties;
     }
 
@@ -674,16 +696,17 @@ public final class OpenCmsCore {
      * @return the initialized search manager
      */
     protected CmsSearchManager getSearchManager() {
+
         return m_searchManager;
     }
-    
+
     /**
      * Returns the initialized OpenCms security manager.<p>
      * 
      * @return the initialized OpenCms security manager
      */
     protected CmsSecurityManager getSecurityManager() {
-        
+
         return m_securityManager;
     }
 
@@ -693,6 +716,7 @@ public final class OpenCmsCore {
      * @return the session info storage for all active users
      */
     protected CmsSessionInfoManager getSessionInfoManager() {
+
         return m_sessionInfoManager;
     }
 
@@ -703,6 +727,7 @@ public final class OpenCmsCore {
      * @return the initialized site manager
      */
     protected CmsSiteManager getSiteManager() {
+
         return m_siteManager;
     }
 
@@ -712,6 +737,7 @@ public final class OpenCmsCore {
      * @return the properties for the static export
      */
     protected CmsStaticExportManager getStaticExportManager() {
+
         return m_staticExportManager;
     }
 
@@ -721,6 +747,7 @@ public final class OpenCmsCore {
      * @return the system information storage
      */
     protected CmsSystemInfo getSystemInfo() {
+
         return m_systemInfo;
     }
 
@@ -730,6 +757,7 @@ public final class OpenCmsCore {
      * @return the OpenCms Thread store
      */
     protected CmsThreadStore getThreadStore() {
+
         return m_threadStore;
     }
 
@@ -740,16 +768,17 @@ public final class OpenCmsCore {
      * @return the initialized workplace manager
      */
     protected CmsWorkplaceManager getWorkplaceManager() {
+
         return m_workplaceManager;
     }
-    
+
     /**
      * Returns the XML content type manager.<p>
      * 
      * @return the XML content type manager
      */
     protected CmsXmlContentTypeManager getXmlContentTypeManager() {
-        
+
         if (m_xmlContentTypeManager != null) {
             return m_xmlContentTypeManager;
         }
@@ -821,7 +850,7 @@ public final class OpenCmsCore {
      * @see #initCmsObject(CmsObject, CmsContextInfo)
      */
     protected CmsObject initCmsObject(String user) throws CmsException {
-        
+
         return initCmsObject(null, new CmsContextInfo(user));
     }
 
@@ -839,6 +868,7 @@ public final class OpenCmsCore {
      * @throws Exception in case of problems initializing OpenCms, this is usually fatal 
      */
     protected synchronized void initConfiguration(ExtendedProperties configuration) throws Exception {
+        
         // check the opencms.properties for the encoding setting
         String setEncoding = configuration.getString("defaultContentEncoding", OpenCms.getSystemInfo().getDefaultEncoding());
         String defaultEncoding = CmsEncoder.lookupEncoding(setEncoding, null);
@@ -922,7 +952,7 @@ public final class OpenCmsCore {
         m_configurationManager = new CmsConfigurationManager(getSystemInfo().getAbsoluteRfsPathRelativeToWebInf("config/"));
         // now load the XML configuration
         m_configurationManager.loadXmlConfiguration();
-        // set the given configuration as default parameters
+        // store the configuration read from "opencms.properties" in the configuration manager 
         m_configurationManager.setConfiguration(configuration);
         
         // get the system configuration
@@ -953,6 +983,7 @@ public final class OpenCmsCore {
         CmsVfsConfiguration vfsConfiguation = (CmsVfsConfiguration)m_configurationManager.getConfiguration(CmsVfsConfiguration.class);
         m_resourceManager = vfsConfiguation.getResourceManager();        
         m_xmlContentTypeManager = vfsConfiguation.getXmlContentTypeManager();
+        m_defaultFiles = vfsConfiguation.getDefaultFiles();
 
         // get the import/export configuration
         CmsImportExportConfiguration importExportConfiguration = (CmsImportExportConfiguration)m_configurationManager.getConfiguration(CmsImportExportConfiguration.class);
@@ -996,27 +1027,6 @@ public final class OpenCmsCore {
         // initialize translation engines
         m_directoryTranslator = vfsConfiguation.getFolderTranslator();
         m_fileTranslator = vfsConfiguation.getFileTranslator();
-
-        m_defaultFilenames = null;
-        // try to initialize default directory file names (e.g. index.html)
-        try {
-            m_defaultFilenames = configuration.getStringArray("directory.default.files");
-            for (int i = 0; i < m_defaultFilenames.length; i++) {
-                // remove possible white space
-                m_defaultFilenames[i] = m_defaultFilenames[i].trim();
-                if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                    getLog(CmsLog.CHANNEL_INIT).info(". Default file         : " + (i + 1) + " - " + m_defaultFilenames[i]);
-                }
-            }
-        } catch (Exception e) {
-            if (getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).warn(". Default file         : non-critical error " + e.toString());
-            }
-        }
-        // make sure we always have at last an emtpy array      
-        if (m_defaultFilenames == null) {
-            m_defaultFilenames = new String[0];
-        }
         
         if (m_runtimeProperties == null) {
             m_runtimeProperties = Collections.synchronizedMap(new HashMap());
@@ -1187,6 +1197,7 @@ public final class OpenCmsCore {
      * Initialize member variables.<p>
      */
     protected void initMembers() {
+
         synchronized (m_lock) {
             m_log = new CmsLog();
             m_resourceInitHandlers = new ArrayList();
@@ -1210,6 +1221,7 @@ public final class OpenCmsCore {
      * @param servlet the OpenCms servlet
      */
     protected void initServlet(OpenCmsServlet servlet) {
+
         synchronized (m_lock) {
             // add the servlets request handler
             addRequestHandler(servlet);
@@ -1218,7 +1230,7 @@ public final class OpenCmsCore {
                 getLog(CmsLog.CHANNEL_INIT).info(". OpenCms is running!  : Total startup time was " + CmsStringUtil.formatRuntime(getSystemInfo().getRuntime()));
                 getLog(CmsLog.CHANNEL_INIT).info(".                      ...............................................................");
                 getLog(CmsLog.CHANNEL_INIT).info(".");
-            }        
+            }
         }
     }
 
@@ -1228,6 +1240,7 @@ public final class OpenCmsCore {
      * @param listener the listener to remove
      */
     protected void removeCmsEventListener(I_CmsEventListener listener) {
+
         synchronized (m_eventListeners) {
             Iterator it = m_eventListeners.keySet().iterator();
             while (it.hasNext()) {
@@ -1278,6 +1291,7 @@ public final class OpenCmsCore {
      * @param value the value of the Object to add
      */
     protected void setRuntimeProperty(Object key, Object value) {
+
         if (m_runtimeProperties == null) {
             m_runtimeProperties = Collections.synchronizedMap(new HashMap());
         }
@@ -1290,6 +1304,7 @@ public final class OpenCmsCore {
      * @param sessionManager the session manager to set
      */
     protected void setSessionManager(OpenCmsSessionManager sessionManager) {
+
         m_sessionManager = sessionManager;
     }
 
@@ -1301,6 +1316,7 @@ public final class OpenCmsCore {
      * @param res the current servlet response
      */
     protected void showResource(HttpServletRequest req, HttpServletResponse res) {
+
         CmsObject cms = null;
         try {
             cms = initCmsObject(req, res);
@@ -1402,6 +1418,7 @@ public final class OpenCmsCore {
      * @param exportPoints the export points to add
      */
     private void addExportPoints(Set exportPoints) {
+
         // create a new immutable set of export points
         HashSet newSet = new HashSet(m_exportPoints.size() + exportPoints.size());
         newSet.addAll(exportPoints);
@@ -1419,6 +1436,7 @@ public final class OpenCmsCore {
      * @throws IOException in case of errors reading from the streams
      */
     private void checkBasicAuthorization(CmsObject cms, HttpServletRequest req, HttpServletResponse res) throws IOException {
+        
         // no user identified from the session and basic authentication is enabled
         String auth = req.getHeader("Authorization");
 
@@ -1471,6 +1489,7 @@ public final class OpenCmsCore {
      * @return String containing the HTML code of the error message.
      */
     private String createErrorBox(Throwable t, HttpServletRequest request, CmsObject cms) {
+        
         // load the property file that contains the html fragments for the dialog
         Properties htmlProps = new Properties();
         try {
@@ -1668,6 +1687,7 @@ public final class OpenCmsCore {
      * @param event the event to fire
      */
     private void fireCmsEventHandler(List listeners, CmsEvent event) {
+
         if ((listeners != null) && (listeners.size() > 0)) {
             // handle all event listeners that listen only to this event type
             I_CmsEventListener list[] = new I_CmsEventListener[0];
@@ -1749,6 +1769,7 @@ public final class OpenCmsCore {
         HttpServletRequest req, 
         HttpServletResponse res
     ) throws IOException, CmsException {
+        
         CmsObject cms;
 
         // try to get the current session
@@ -1819,6 +1840,7 @@ public final class OpenCmsCore {
         String user,
         String password
     ) throws CmsException {
+        
         String siteroot = null;
         // gather information from request / response if provided
         if ((req != null) && (res != null)) {
@@ -1928,6 +1950,7 @@ public final class OpenCmsCore {
      * @throws IOException if something goes wrong
      */
     private void requestAuthorization(HttpServletRequest req, HttpServletResponse res) throws IOException {
+        
         String servletPath = null;
         String redirectURL = null;
         
@@ -1982,6 +2005,7 @@ public final class OpenCmsCore {
      * @param level the level to set
      */
     private void setRunLevel(int level) {
+
         if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             getLog(CmsLog.CHANNEL_INIT).info("OpenCms: Changing runlevel from " + m_runLevel + " to " + level);
         }
@@ -1995,6 +2019,7 @@ public final class OpenCmsCore {
      * @throws CmsInitException the <code>cause</code> parameter
      */
     private void throwInitException(CmsInitException cause) throws CmsInitException {
+
         String message = cause.getMessage();
         if (message == null) {
             message = cause.toString();
@@ -2020,6 +2045,7 @@ public final class OpenCmsCore {
      * @param req the current request
      */
     private void updateUser(CmsObject cms, HttpServletRequest req) {
+        
         if (!cms.getRequestContext().isUpdateSessionEnabled()) {
             return;
         }

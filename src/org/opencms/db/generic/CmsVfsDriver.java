@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/10/29 17:26:24 $
- * Version: $Revision: 1.211 $
+ * Date   : $Date: 2004/10/31 21:30:17 $
+ * Version: $Revision: 1.212 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,6 @@ import org.opencms.file.CmsPropertydefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
-import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -72,7 +71,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.211 $ $Date: 2004/10/29 17:26:24 $
+ * @version $Revision: 1.212 $ $Date: 2004/10/31 21:30:17 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -118,7 +117,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         int newState = (structureState > resourceState) ? structureState : resourceState;
 
         // in case of folder type ensure, that the root path has a trailing slash
-        if (resourceType == CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
+        if (CmsFolder.isFolderType(resourceType)) {
             resourcePath = addTrailingSeparator(resourcePath);
         }
         
@@ -151,9 +150,9 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         int siblingCount = res.getInt(m_sqlManager.readQuery("C_RESOURCES_SIBLING_COUNT"));
 
         // in case of folder type ensure, that the root path has a trailing slash
-        if (resourceType == CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
+        if (CmsFolder.isFolderType(resourceType)) {
             resourcePath = addTrailingSeparator(resourcePath);
-        }
+        }        
         
         CmsUUID contentId;
         if (hasFileContentInResultSet) {
@@ -237,7 +236,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         int siblingCount = res.getInt(m_sqlManager.readQuery("C_RESOURCES_SIBLING_COUNT"));
 
         // in case of folder type ensure, that the root path has a trailing slash
-        if (resourceType == CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
+        if (CmsFolder.isFolderType(resourceType)) {
             resourcePath = addTrailingSeparator(resourcePath);
         }
         
@@ -289,13 +288,15 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         long dateReleased = res.getLong(m_sqlManager.readQuery("C_RESOURCES_DATE_RELEASED"));
         long dateExpired = res.getLong(m_sqlManager.readQuery("C_RESOURCES_DATE_EXPIRED"));     
         int resourceSize;
-        if (resourceType == CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
-            // ensure trailing slash in path
+        
+        // in case of folder type ensure, that the root path has a trailing slash
+        boolean isFolder = CmsFolder.isFolderType(resourceType);
+        if (isFolder) {
             resourcePath = addTrailingSeparator(resourcePath);
-            
             // folders must have -1 size
             resourceSize = -1;
         } else {
+            // not a folder
             resourceSize = res.getInt(m_sqlManager.readQuery("C_RESOURCES_SIZE"));
         }
         CmsUUID userCreated = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_USER_CREATED")));
@@ -304,7 +305,24 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
 
         int newState = (structureState > resourceState) ? structureState : resourceState;
 
-        CmsResource newResource = new CmsResource(structureId, resourceId, resourcePath, resourceType, resourceFlags, resourceProjectLastModified, newState, dateCreated, userCreated, dateLastModified, userLastModified, dateReleased, dateExpired, siblingCount, resourceSize);
+        CmsResource newResource = 
+            new CmsResource(
+                structureId, 
+                resourceId, 
+                resourcePath, 
+                resourceType, 
+                isFolder, 
+                resourceFlags, 
+                resourceProjectLastModified, 
+                newState, 
+                dateCreated, 
+                userCreated, 
+                dateLastModified, 
+                userLastModified, 
+                dateReleased, 
+                dateExpired, 
+                siblingCount, 
+                resourceSize);
 
         return newResource;
     }
@@ -329,7 +347,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         CmsUUID newStructureId = resource.getStructureId();
         
         try {
-            res = readFileHeader(runtimeInfo, project.getId(), resource.getRootPath(), true);
+            res = readResource(runtimeInfo, project.getId(), resource.getRootPath(), true);
 
             if (res.getState() == I_CmsConstants.C_STATE_DELETED) {
                 // if an existing resource is deleted, it will be finally removed now
@@ -695,7 +713,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
 
             while (res.next()) {
                 int type = res.getInt(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_TYPE"));                
-                if (type == CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
+                if (CmsFolder.isFolderType(type)) {
                     subFolders.add(createFolder(res, currentProject.getId(), false));
                 } else {
                     subFiles.add(createFile(res, currentProject.getId(), false));
@@ -759,11 +777,11 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#readFileHeader(I_CmsRuntimeInfo, int, org.opencms.util.CmsUUID, boolean)
+     * @see org.opencms.db.I_CmsVfsDriver#readResource(org.opencms.db.I_CmsRuntimeInfo, int, org.opencms.util.CmsUUID, boolean)
      */
-    public CmsFile readFileHeader(I_CmsRuntimeInfo runtimeInfo, int projectId, CmsUUID structureId, boolean includeDeleted) throws CmsException {
+    public CmsResource readResource(I_CmsRuntimeInfo runtimeInfo, int projectId, CmsUUID structureId, boolean includeDeleted) throws CmsException {
 
-        CmsFile file = null;
+        CmsResource resource = null;
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -776,17 +794,17 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             res = stmt.executeQuery();
             // create new file
             if (res.next()) {
-                file = createFile(res, projectId, false);
+                resource = createResource(res, projectId);
                 while (res.next()) {
                     // do nothing only move through all rows because of mssql odbc driver
                 }
                 
                 // check if this resource is marked as deleted
-                if ((file.getState() == org.opencms.main.I_CmsConstants.C_STATE_DELETED) && !includeDeleted) {
-                    throw new CmsException("[" + this.getClass().getName() + ".readFileHeader/2] " + file.getName(), CmsException.C_RESOURCE_DELETED);
+                if ((resource.getState() == org.opencms.main.I_CmsConstants.C_STATE_DELETED) && !includeDeleted) {
+                    throw new CmsException("[" + this.getClass().getName() + ".readResource/2] " + resource.getName(), CmsException.C_RESOURCE_DELETED);
                 }
             } else {                               
-                throw new CmsVfsResourceNotFoundException("[" + this.getClass().getName() + ".readFileHeader/2] " + structureId);
+                throw new CmsVfsResourceNotFoundException("[" + this.getClass().getName() + ".readResource/2] " + structureId);
             }
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
@@ -797,15 +815,15 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         } finally {
             m_sqlManager.closeAll(runtimeInfo, conn, stmt, res);
         }
-        return file;
+        return resource;
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#readFileHeader(I_CmsRuntimeInfo, int, java.lang.String, boolean)
+     * @see org.opencms.db.I_CmsVfsDriver#readResource(org.opencms.db.I_CmsRuntimeInfo, int, java.lang.String, boolean)
      */
-    public CmsFile readFileHeader(I_CmsRuntimeInfo runtimeInfo, int projectId, String path, boolean includeDeleted) throws CmsException {
+    public CmsResource readResource(I_CmsRuntimeInfo runtimeInfo, int projectId, String path, boolean includeDeleted) throws CmsException {
 
-        CmsFile file = null;
+        CmsResource resource = null;
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -820,17 +838,17 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
 
             res = stmt.executeQuery();
             if (res.next()) {
-                file = createFile(res, projectId, false);
+                resource = createResource(res, projectId);
                 while (res.next()) {
                     // do nothing only move through all rows because of mssql odbc driver
                 }
 
                 // check if this resource is marked as deleted
-                if ((file.getState() == I_CmsConstants.C_STATE_DELETED) && !includeDeleted) {
-                    throw new CmsException("[" + this.getClass().getName() + ".readFileHeader/3] " + file.getName(), CmsException.C_RESOURCE_DELETED);
+                if ((resource.getState() == I_CmsConstants.C_STATE_DELETED) && !includeDeleted) {
+                    throw new CmsException("[" + this.getClass().getName() + ".readResource/3] " + resource.getName(), CmsException.C_RESOURCE_DELETED);
                 }
             } else {
-                throw new CmsVfsResourceNotFoundException("[" + this.getClass().getName() + ".readFileHeader/3] " + path);
+                throw new CmsVfsResourceNotFoundException("[" + this.getClass().getName() + ".readResource/3] " + path);
             }
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
@@ -842,7 +860,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             m_sqlManager.closeAll(runtimeInfo, conn, stmt, res);
         }
 
-        return file;
+        return resource;
     }
 
     /**
@@ -1079,7 +1097,14 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     /**
      * @see org.opencms.db.I_CmsVfsDriver#readResourceTree(int, java.lang.String, int, int, long, long, int)
      */
-    public List readResourceTree (int projectId, String parentPath, int type, int state, long startTime, long endTime, int mode) throws CmsException {
+    public List readResourceTree (
+        int projectId, 
+        String parentPath, 
+        int type, 
+        int state, 
+        long startTime, 
+        long endTime, 
+        int mode) throws CmsException {
 
         List result = new ArrayList();
         
@@ -1089,6 +1114,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         
         // prepare the selection criteria
         prepareProjectCondition(projectId, mode, conditions, params);
+        prepareResourceCondition(projectId, mode, conditions);
         preparePathCondition(projectId, parentPath, mode, conditions, params);
         prepareTypeCondition(projectId, type, mode, conditions, params);
         prepareStateCondition(projectId, state, mode, conditions, params);
@@ -1141,6 +1167,20 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_BY_PROJECT_LASTMODIFIED"));
             conditions.append(C_END_CONDITION);
             params.add(String.valueOf(projectId));
+        }
+    }
+
+    private void prepareResourceCondition(int projectId, int mode, StringBuffer conditions) {
+        if ((mode & I_CmsConstants.C_READMODE_ONLY_FOLDERS) > 0) {    
+            // C_READMODE_ONLY_FOLDERS: add condition to match only folders
+            conditions.append(C_BEGIN_INCLUDE_CONDITION);
+            conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_ONLY_FOLDERS"));
+            conditions.append(C_END_CONDITION);
+        } else if ((mode & I_CmsConstants.C_READMODE_ONLY_FILES) > 0) {
+            // C_READMODE_ONLY_FILES: add condition to match only files
+            conditions.append(C_BEGIN_INCLUDE_CONDITION);
+            conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_ONLY_FILES"));
+            conditions.append(C_END_CONDITION);
         }
     }
     
@@ -2215,7 +2255,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         newStructureId = resource.getStructureId();
         
         try {
-            res = readFileHeader(
+            res = readResource(
                 runtimeInfo, 
                 project.getId(), 
                 resourcePath, true);
@@ -2331,7 +2371,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             m_sqlManager.closeAll(runtimeInfo, conn, stmt, null);
         }
 
-        return readFileHeader(runtimeInfo, project.getId(), newStructureId, false);
+        return readResource(runtimeInfo, project.getId(), newStructureId, false);
     }    
 
     /**

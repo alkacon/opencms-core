@@ -1,9 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2004/08/11 16:56:21 $
- * Version: $Revision: 1.40 $
- * Date   : $Date: 2004/08/11 16:56:21 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2004/10/31 21:30:17 $
+ * Version: $Revision: 1.41 $
+ * Date   : $Date: 2004/10/31 21:30:17 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import java.util.StringTokenizer;
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.40 $ $Date: 2004/08/11 16:56:21 $
+ * @version $Revision: 1.41 $ $Date: 2004/10/31 21:30:17 $
  */
 public class CmsSynchronize {
 
@@ -303,7 +303,7 @@ public class CmsSynchronize {
             m_report.print(m_report.key("report.sync_from_file_system_as"), I_CmsReport.C_FORMAT_NOTE);                     
             m_report.print(foldername);
             m_report.print(m_report.key("report.dots")); 
-                        
+
             CmsResource newFolder = m_cms.createResource(foldername, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
             // now check if there is some external method to be called which 
             // should modify the imported resource in the VFS
@@ -455,7 +455,7 @@ public class CmsSynchronize {
             
             // get the file type of the FS file
             int resType = OpenCms.getResourceManager().getDefaultTypeForName(resName).getTypeId();
-            CmsFile newFile = (CmsFile)m_cms.createResource(translate(folder) + filename, resType, content, new ArrayList());
+            CmsResource newFile = m_cms.createResource(translate(folder) + filename, resType, content, new ArrayList());
             
             m_report.print(m_cms.getSitePath(newFile));
             m_report.print(m_report.key("report.dots")); 
@@ -482,7 +482,7 @@ public class CmsSynchronize {
             
             m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK); 
         } catch (Exception e) {
-            throw new CmsSynchronizeException(e.toString());
+            throw new CmsSynchronizeException(e.getMessage(), e);
         }
     }
 

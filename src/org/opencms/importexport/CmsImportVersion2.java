@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2004/10/14 08:22:13 $
- * Version: $Revision: 1.75 $
+ * Date   : $Date: 2004/10/31 21:30:18 $
+ * Version: $Revision: 1.76 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.importexport;
 
 import org.opencms.file.CmsFile;
+import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertydefinition;
@@ -458,15 +459,16 @@ public class CmsImportVersion2 extends A_CmsImport {
                 newUuidresource,
                 targetName,
                 resourceTypeId,
-                0, 
-                m_cms.getRequestContext().currentProject().getId(),
-                I_CmsConstants.C_STATE_NEW, 
+                CmsFolder.isFolderType(resourceTypeId), 
+                0,
+                m_cms.getRequestContext().currentProject().getId(), 
+                I_CmsConstants.C_STATE_NEW,
                 lastmodified,
                 curUser,
                 lastmodified,
-                curUser,
-                CmsResource.DATE_RELEASED_DEFAULT, CmsResource.DATE_EXPIRED_DEFAULT, 
-                1,
+                curUser, CmsResource.DATE_RELEASED_DEFAULT, 
+                CmsResource.DATE_EXPIRED_DEFAULT,
+                1, 
                 size
             );
                         

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2004/10/25 14:17:16 $
-* Version: $Revision: 1.82 $
+* Date   : $Date: 2004/10/31 21:30:17 $
+* Version: $Revision: 1.83 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@ package com.opencms.defaults.master.genericsql;
 
 import org.opencms.db.CmsDbUtil;
 import org.opencms.db.CmsPublishedResource;
+import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
@@ -1731,7 +1732,8 @@ public class CmsDbAccess {
                 I_CmsConstants.C_UNKNOWN_ID,
                 contentDefinitionName,
                 subId, 
-                state,
+                false,
+                state, 
                 1));
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResource.java,v $
- * Date   : $Date: 2004/10/26 16:33:13 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2004/10/31 21:30:18 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.file;
 
-import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.util.CmsUUID;
 
@@ -45,7 +44,7 @@ import java.util.Comparator;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
 
@@ -133,8 +132,11 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     /** The release date of this resource. */
     private long m_dateReleased;
 
-    /** The flags of this resource ( not used yet; the access flags are stored in m_accessFlags). */
+    /** The flags of this resource. */
     private int m_flags;
+    
+    /** Indicates if this resource is a folder or not. */
+    private boolean m_isFolder;
 
     /** Boolean flag whether the timestamp of this resource was modified by a touch command. */
     private boolean m_isTouched;
@@ -168,10 +170,12 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
 
     /**
      * Constructor, creates a new CmsRecource object.<p>
+     * 
      * @param structureId the id of this resources structure record
      * @param resourceId the id of this resources resource record
      * @param rootPath the root path to the resource
      * @param type the type of this resource
+     * @param isFolder must be true if thr resource is a folder, or false if it is a file
      * @param flags the flags of this resource
      * @param projectId the project id this resource was last modified in
      * @param state the state of this resource
@@ -189,6 +193,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         CmsUUID resourceId,
         String rootPath,
         int type,
+        boolean isFolder,
         int flags,
         int projectId,
         int state,
@@ -198,13 +203,13 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         CmsUUID userLastModified,
         long dateReleased,
         long dateExpired,
-        int linkCount,
-        int size) {
+        int linkCount, int size) {
 
         m_structureId = structureId;
         m_resourceId = resourceId;
         m_rootPath = rootPath;
         m_typeId = type;
+        m_isFolder = isFolder;
         m_flags = flags;
         m_projectLastModified = projectId;
         m_state = state;
@@ -369,6 +374,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
             m_resourceId,
             m_rootPath,
             m_typeId,
+            m_isFolder,
             m_flags,
             m_projectLastModified,
             m_state,
@@ -378,8 +384,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
             m_userLastModified,
             m_dateReleased,
             m_dateExpired,
-            m_siblingCount,
-            m_length);
+            m_siblingCount, m_length);
 
         if (isTouched()) {
             clone.setDateLastModified(m_dateLastModified);
@@ -465,13 +470,17 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
-     * Gets the length of the content (i.e. the file size).<p>
+     * Returns the length of the resource.<p>
+     *
+     * If the resource is a file, then this is the byte size of the file content.
+     * If the resource is a folder, then the size is always -1.<p>
      *
      * @return the length of the content
      */
     public int getLength() {
 
-        return m_length;
+        // make sure folders always have a -1 size
+        return m_isFolder?-1:m_length;
     }
 
     /**
@@ -605,23 +614,23 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
-     * Determines if this resource is a file.<p>
+     * Returns <code>true</code> if the resource is a file, i.e. can have no sub-resources.<p>
      *
      * @return true if this resource is a file, false otherwise
      */
     public boolean isFile() {
 
-        return getTypeId() != CmsResourceTypeFolder.C_RESOURCE_TYPE_ID;
+        return !m_isFolder;
     }
 
     /**
-     * Checks if this resource is a folder.<p>
-     * 
-     * @return true if this is is a folder
+     * Returns <code>true</code> if the resource is a folder, i.e. can have sub-resources.<p>
+     *
+     * @return true if this resource is a folder, false otherwise
      */
     public boolean isFolder() {
 
-        return getTypeId() == CmsResourceTypeFolder.C_RESOURCE_TYPE_ID;
+        return m_isFolder;
     }
 
     /**
@@ -746,6 +755,8 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         result.append(m_resourceId);
         result.append(", type id: ");
         result.append(m_typeId);
+        result.append(", folder: ");
+        result.append(m_isFolder);
         result.append(", flags: ");
         result.append(m_flags);
         result.append(", project: ");

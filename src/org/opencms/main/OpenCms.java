@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2004/10/14 08:23:01 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2004/10/31 21:30:17 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.39 $
+ * @version $Revision: 1.40 $
  */
 public final class OpenCms {
 
@@ -122,9 +122,9 @@ public final class OpenCms {
      * 
      * @return the configured list of default directory file names
      */
-    public static List getDefaultFilenames() {
+    public static List getDefaultFiles() {
 
-        return OpenCmsCore.getInstance().getDefaultFilenames();
+        return OpenCmsCore.getInstance().getDefaultFiles();
     }
 
     /**
@@ -213,17 +213,17 @@ public final class OpenCms {
 
         return OpenCmsCore.getInstance().getMemoryMonitor();
     }
-   
+
     /**
      * Returns the module manager.<p>
      * 
      * @return the module manager
-     */    
+     */
     public static CmsModuleManager getModuleManager() {
-        
+
         return OpenCmsCore.getInstance().getModuleManager();
     }
-    
+
     /**
      * Returns the password handler.<p>
      * 
@@ -359,7 +359,7 @@ public final class OpenCms {
 
         return OpenCmsCore.getInstance().getWorkplaceManager();
     }
-    
+
     /**
      * Returns the XML content type manager.<p>
      * 
@@ -389,9 +389,9 @@ public final class OpenCms {
      * @see org.opencms.db.CmsDefaultUsers#getUserExport()
      * @see OpenCms#initCmsObject(CmsObject, CmsContextInfo)
      * @see #initCmsObject(String)
-     */        
+     */
     public static CmsObject initCmsObject(CmsObject adminCms, CmsContextInfo contextInfo) throws CmsException {
-        
+
         return OpenCmsCore.getInstance().initCmsObject(adminCms, contextInfo);
     }
 
@@ -442,14 +442,14 @@ public final class OpenCms {
 
         OpenCmsCore.getInstance().setRuntimeProperty(key, value);
     }
-    
+
     /**
      * Writes the XML configuration for the provided configuration class.<p>
      * 
      * @param clazz the configuration class to write the XML for
      */
     public static void writeConfiguration(Class clazz) {
-        
+
         OpenCmsCore.getInstance().writeConfiguration(clazz);
-    }    
+    }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/I_CmsResourceType.java,v $
- * Date   : $Date: 2004/10/29 13:46:41 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/10/31 21:30:17 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,8 +70,13 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
 
     /** The name of the addMapping() method. */
     String C_ADD_MAPPING_METHOD = "addMappingType";
+   
+    /** Configuration key for the resource type id. */
+    String C_CONFIGURATION_RESOURCE_TYPE_ID = "resource.type.id";
     
-    
+    /** Configuration key for the resource type name. */
+    String C_CONFIGURATION_RESOURCE_TYPE_NAME = "resource.type.name";
+
     /**
      * Maps a file extension to a resource type.<p>
      * 
@@ -81,9 +86,8 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * 
      * @param mapping the file extension mapped to the resource type
      */
-    void addMappingType(
-        String mapping);
-    
+    void addMappingType(String mapping);
+
     /**
      * Changes the project id of the resource to the current project, indicating that 
      * the resource was last modified in this project.<p>
@@ -274,7 +278,7 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @see CmsSecurityManager#createSibling(org.opencms.file.CmsRequestContext, CmsResource, String, List)
      */
     void createSibling(
-        CmsObject cms, 
+        CmsObject cms,
         CmsSecurityManager securityManager,
         CmsResource source, 
         String destination, 
@@ -331,14 +335,13 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @return the loader type id of this resource type
      */
     int getLoaderId();
-    
+
     /**
      * Returns the file extensions mappings for this resource type.<p>
      *
      * @return a list of file extensions mappings for this resource type
      */
     List getMapping();
-
 
     /**
      * Returns the type id of this resource type.<p>
@@ -379,9 +382,9 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @see CmsSecurityManager#createResource(org.opencms.file.CmsRequestContext, String, CmsResource, byte[], List, boolean)
      */
     CmsResource importResource(
-        CmsObject cms, 
-        CmsSecurityManager securityManager, 
-        String resourcename, 
+        CmsObject cms,
+        CmsSecurityManager securityManager,
+        String resourcename,
         CmsResource resource,
         byte[] content, 
         List properties
@@ -394,11 +397,18 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
     boolean isAdditionalModuleResourceType();
 
     /**
-     * Returns <code>true</code> if a resource type is direct editable.<p>
+     * Returns <code>true</code> if this resource type is direct editable.<p>
      * 
-     * @return <code>true</code> if a resource type is direct editable
+     * @return <code>true</code> if this resource type is direct editable
      */
     boolean isDirectEditable();
+
+    /**
+     * Returns <code>true</code> if this resource type is a folder.<p>
+     * 
+     * @return <code>true</code> if this resource type is a folder
+     */
+    boolean isFolder();
 
     /**
      * Locks a resource.<p>
@@ -611,9 +621,9 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * 
      * @see CmsObject#writePropertyObject(String, CmsProperty)
      * @see CmsSecurityManager#writePropertyObject(org.opencms.file.CmsRequestContext, CmsResource, CmsProperty)
-     */    
+     */
     void writePropertyObject(
-        CmsObject cms, 
+        CmsObject cms,
         CmsSecurityManager securityManager,
         CmsResource resource, 
         CmsProperty property
@@ -635,7 +645,7 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * 
      * @see CmsObject#writePropertyObjects(String, List)
      * @see CmsSecurityManager#writePropertyObjects(org.opencms.file.CmsRequestContext, CmsResource, List)
-     */    
+     */
     void writePropertyObjects(
         CmsObject cms, 
         CmsSecurityManager securityManager,

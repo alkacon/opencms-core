@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceXmlPage.java,v $
- * Date   : $Date: 2004/10/28 13:35:19 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/10/31 21:30:17 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.3.3
  */
@@ -443,7 +443,7 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
             // creation of an index file in a new folder, use default file name
             String defaultFile = "";
             try {
-                defaultFile = (String)OpenCms.getDefaultFilenames().get(0);
+                defaultFile = (String)OpenCms.getDefaultFiles().get(0);
             } catch (IndexOutOfBoundsException e) {
                 // list is empty, ignore    
             }

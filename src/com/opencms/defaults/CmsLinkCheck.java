@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsLinkCheck.java,v $
- * Date   : $Date: 2004/08/06 16:17:42 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/10/31 21:30:18 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -351,7 +351,8 @@ public class CmsLinkCheck extends CmsXmlTemplate implements I_CmsScheduledJob {
         StringBuffer mailContent = new StringBuffer(template.getProcessedDataValue("single_message"));
 
         // get all links from the database
-        linkList = new Vector(cms.readFilesByType(1, CmsResourceTypePointer.C_RESOURCE_TYPE_ID));
+        // linkList = new Vector(cms.readFilesByType(1, CmsResourceTypePointer.C_RESOURCE_TYPE_ID));
+        linkList = new Vector();
         for (int i = 0; i < linkList.size(); i++) {
             CmsFile linkElement = (CmsFile)linkList.elementAt(i);
             String linkName = cms.getSitePath(linkElement);

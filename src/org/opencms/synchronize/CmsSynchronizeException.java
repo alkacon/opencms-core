@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronizeException.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/10/31 21:30:17 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.main.CmsException;
  * all other implementations of I_CmsSyncModifications will not be executed.<p>
  * 
  * @author  Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsSynchronizeException extends CmsException {
 
@@ -57,5 +57,15 @@ public class CmsSynchronizeException extends CmsException {
      */
     public CmsSynchronizeException(String message) {
         super(message, 0, null, false);
+    }
+
+    /**
+     * Constructs a CmsSyncModificationException with the specified description message and root exception.<p>
+     * 
+     * @param message the exception message
+     * @param rootCause root cause exception
+     */
+    public CmsSynchronizeException(String message, Throwable rootCause) {
+        super(message, 0, rootCause, false);
     }
 }

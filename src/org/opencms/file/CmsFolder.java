@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsFolder.java,v $
- * Date   : $Date: 2004/08/25 07:47:21 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/10/31 21:30:18 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,8 @@
 
 package org.opencms.file;
 
-
-
+import org.opencms.loader.CmsLoaderException;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 
 import java.io.Serializable;
@@ -111,6 +111,7 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
             resourceId,
             path,
             type,
+            true,
             flags,
             projectId,
             state,
@@ -122,6 +123,38 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
             dateExpired,
             linkCount,
             -1);
+    }
+
+    /**
+     * Returns <code>true</code> if the given resource type id describes a folder type.<p>
+     * 
+     * @param typeId the resource type id to check 
+     * 
+     * @return true if the given resource type id describes a folder type
+     */
+    public static final boolean isFolderType(int typeId) {
+
+        try {
+            return OpenCms.getResourceManager().getResourceType(typeId).isFolder();
+        } catch (CmsLoaderException e) {
+            throw new RuntimeException("Unable to resolve resource type: " + typeId, e);
+        }
+    }
+
+    /**
+     * Returns <code>true</code> if the given resource type name describes a folder type.<p>
+     * 
+     * @param typeName the resource type name to check 
+     * 
+     * @return true if the given resource type name describes a folder type
+     */
+    public static final boolean isFolderType(String typeName) {
+
+        try {
+            return OpenCms.getResourceManager().getResourceType(typeName).isFolder();
+        } catch (CmsLoaderException e) {
+            throw new RuntimeException("Unable to resolve resource type: " + typeName, e);
+        }
     }
 
     /**
@@ -146,11 +179,35 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
             getSiblingCount(),
             getDateReleased(),
             getDateExpired());
-        
+
         if (isTouched()) {
             clone.setDateLastModified(getDateLastModified());
         }
-        
-        return clone;        
+
+        return clone;
+    }
+
+    /**
+     * @see org.opencms.file.CmsResource#getLength()
+     */
+    public int getLength() {
+
+        return -1;
+    }
+
+    /**
+     * @see org.opencms.file.CmsResource#isFile()
+     */
+    public boolean isFile() {
+
+        return false;
+    }
+
+    /**
+     * @see org.opencms.file.CmsResource#isFolder()
+     */
+    public boolean isFolder() {
+
+        return true;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishList.java,v $
- * Date   : $Date: 2004/09/20 08:19:04 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/10/31 21:30:18 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.db;
 
 import org.opencms.file.CmsResource;
-import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.util.CmsUUID;
 
@@ -53,7 +52,7 @@ import java.util.List;
  * creates Cms publish lists.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.12 $ $Date: 2004/09/20 08:19:04 $
+ * @version $Revision: 1.13 $ $Date: 2004/10/31 21:30:18 $
  * @since 5.3.0
  * @see org.opencms.db.CmsDriverManager#getPublishList(org.opencms.file.CmsRequestContext, CmsResource, boolean)
  */
@@ -99,7 +98,7 @@ public class CmsPublishList extends Object {
     protected void addFile(CmsResource resource) throws IllegalArgumentException {
         // it is essential that this method is only visible within the db package!
 
-        if (resource.getTypeId() == CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
+        if (resource.isFolder()) {
             throw new IllegalArgumentException("Cms resource '" + resource.getRootPath() + "' is not a Cms file resource!");
         }
 
@@ -135,7 +134,7 @@ public class CmsPublishList extends Object {
     protected void addFolder(CmsResource resource) throws IllegalArgumentException {
         // it is essential that this method is only visible within the db package!
 
-        if (resource.getTypeId() != CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
+        if (resource.isFile()) {
             throw new IllegalArgumentException("Cms resource '" + resource.getRootPath() + "' is not a Cms folder resource!");
         }
 
