@@ -56,7 +56,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 			<tr>
 				<td class=formular width=10%>
 					]]><LABEL value="input.name" /><![CDATA[:</td>
-				<td class=dialogtxt>]]><INPUTFIELD name="name" class="textfeld" size="31" length="50" method="setValue" /><![CDATA[</td>				
+				<td class=dialogtxt>]]><INPUTFIELD name="name" class="textfeld" size="31" length="100" method="setValue" /><![CDATA[</td>				
 				</tr>
 			<!-- End Textfield -->
 
@@ -143,7 +143,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 			<tr>
 				<td class=formular width=10%>
 					]]><LABEL value="input.name" /><![CDATA[:</td>
-				<td class=dialogtxt>]]><INPUTFIELD name="name" class="textfeld" size="31" length="50" method="setValue" /><![CDATA[</td>				
+				<td class=dialogtxt>]]><INPUTFIELD name="name" class="textfeld" size="31" length="100" method="setValue" /><![CDATA[</td>				
 				</tr>
 			<!-- End Textfield -->
 
