@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/13 08:15:40 $
- * Version: $Revision: 1.59 $
+ * Date   : $Date: 2000/06/13 09:06:05 $
+ * Version: $Revision: 1.60 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.59 $ $Date: 2000/06/13 08:15:40 $ * 
+ * @version $Revision: 1.60 $ $Date: 2000/06/13 09:06:05 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -2697,8 +2697,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
      * @exception CmsException Throws CmsException if operation was not succesful
      */    
 	 public CmsResource createResource(CmsProject project,
-                                         CmsProject onlineProject,
-                                         CmsResource resource)
+                                       CmsProject onlineProject,
+                                       CmsResource resource)
          throws CmsException {
 			PreparedStatement statement = null;
             try {   
@@ -3755,7 +3755,35 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		 }         
      }
 
- 
+    /**
+	 * Undeletes the file.
+	 * 
+     * @param project The project in which the resource will be used.
+	 * @param filename The complete path of the file.
+	 * 
+     * @exception CmsException Throws CmsException if operation was not succesful.
+	 */	
+	 public void undeleteFile(CmsProject project, String filename)
+         throws CmsException {
+         PreparedStatement statement = null;
+         try { 
+           statement = m_pool.getPreparedStatement(C_RESOURCES_REMOVE_KEY);  
+           // mark the file as deleted       
+           statement.setInt(1,C_STATE_CHANGED);
+           statement.setInt(2,C_UNKNOWN_ID);
+           statement.setString(3, filename);
+           statement.setInt(4,project.getId());
+           statement.executeUpdate();               
+         } catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+         }finally {
+				if( statement != null) {
+					m_pool.putPreparedStatement(C_RESOURCES_REMOVE_KEY, statement);
+				}
+		 }        
+     }
+     
+
      
    	/**
 	 * Returns a Vector with all subfolders.<BR/>
@@ -3974,9 +4002,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		 try {			 
 			 // create the statement
 			 statement = m_pool.getPreparedStatement(C_RESOURCES_UNLOCK_KEY);
-
 			 statement.setInt(1,project.getId());
-			 
 			 statement.executeUpdate();
 		 } catch( Exception exc ) {
 			 throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(), 
