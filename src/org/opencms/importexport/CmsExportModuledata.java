@@ -1,7 +1,7 @@
 /*
-* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExportModuledata.java,v $
-* Date   : $Date: 2003/07/31 19:20:09 $
-* Version: $Revision: 1.20 $
+* File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Attic/CmsExportModuledata.java,v $
+* Date   : $Date: 2003/08/06 07:44:07 $
+* Version: $Revision: 1.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -25,7 +25,7 @@
 * License along with this library; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-package com.opencms.file;
+package org.opencms.importexport;
 
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
@@ -34,6 +34,7 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.defaults.master.CmsMasterContent;
 import com.opencms.defaults.master.CmsMasterDataSet;
 import com.opencms.defaults.master.CmsMasterMedia;
+import com.opencms.file.CmsObject;
 import com.opencms.report.I_CmsReport;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.util.Utils;
@@ -59,7 +60,7 @@ import org.w3c.dom.Element;
  * @author Edna Falkenhan
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.20 $ $Date: 2003/07/31 19:20:09 $
+ * @version $Revision: 1.1 $ $Date: 2003/08/06 07:44:07 $
  */
 public class CmsExportModuledata extends CmsExport implements Serializable{
 
@@ -137,7 +138,7 @@ public class CmsExportModuledata extends CmsExport implements Serializable{
         try {
             m_cms.setContextToCos();    
             // export all the resources
-            exportAllResources(resourcesToExport);
+            exportAllResourcesVersion3(resourcesToExport);
            
         } catch (Exception e) {
             throw new CmsException("Error exporting COS channels", e);        

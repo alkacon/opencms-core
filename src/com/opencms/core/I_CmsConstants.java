@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2003/08/03 09:42:42 $
-* Version: $Revision: 1.255 $
+* Date   : $Date: 2003/08/06 07:44:07 $
+* Version: $Revision: 1.256 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.255 $ $Date: 2003/08/03 09:42:42 $
+ * @version $Revision: 1.256 $ $Date: 2003/08/06 07:44:07 $
  */
 public interface I_CmsConstants {
 
@@ -1204,6 +1204,12 @@ public interface I_CmsConstants {
      * Tag to identify denied permissions
      */
     String C_EXPORT_TAG_ACCESSCONTROL_DENIEDPERMISSIONS = "denied";
+    
+    /** prefix for ace principal group */
+    String C_EXPORT_ACEPRINCIPAL_GROUP="GROUP.";
+
+    /** prefix for ace principal user */
+    String C_EXPORT_ACEPRINCIPAL_USER="USER.";
 
     /**
      * A string in the configuration-file.

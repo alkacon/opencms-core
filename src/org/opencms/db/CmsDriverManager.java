@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/05 15:39:13 $
- * Version: $Revision: 1.136 $
+ * Date   : $Date: 2003/08/06 07:44:07 $
+ * Version: $Revision: 1.137 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.db;
 
+import org.opencms.importexport.*;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockDispatcher;
 import org.opencms.lock.CmsLockException;
@@ -75,7 +76,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.136 $ $Date: 2003/08/05 15:39:13 $
+ * @version $Revision: 1.137 $ $Date: 2003/08/06 07:44:07 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -986,9 +987,9 @@ public class CmsDriverManager extends Object {
      * </ul>
      * 
      * @param context the current request context
-     * @param source            the resource which access control entries are copied
-     * @param dest              the resource to which the access control entries are applied
-     * @throws CmsException     if something goes wrong
+     * @param source			the resource which access control entries are copied
+     * @param dest				the resource to which the access control entries are applied
+     * @throws CmsException		if something goes wrong
      */
     public void copyAccessControlEntries(CmsRequestContext context, CmsResource source, CmsResource dest) throws CmsException {
 
@@ -1103,11 +1104,11 @@ public class CmsDriverManager extends Object {
                 m_userDriver.createAccessControlEntry(context.currentProject(), newResource.getResourceAceId(), ace.getPrincipal(), ace.getPermissions().getAllowedPermissions(), ace.getPermissions().getDeniedPermissions(), ace.getFlags());
 
             }
-            m_vfsDriver.updateResourceState(context.currentProject(),newResource,C_UPDATE_ALL);
-            
-            if (lockCopy) {
+            m_vfsDriver.updateResourceState(context.currentProject(),newResource,C_UPDATE_ALL);            
+        
+        if (lockCopy) {
                 lockResource(context, destination);
-            }
+        }
         }
 
         clearAccessControlListCache();
@@ -1743,7 +1744,7 @@ public class CmsDriverManager extends Object {
         m_vfsDriver.writeProperties(linkProperties, context.currentProject().getId(), linkResource, linkResource.getType());
         
         if (lockResource) {
-            // lock the resource
+        // lock the resource
             lockResource(context,linkName);
         }
 
@@ -1762,9 +1763,9 @@ public class CmsDriverManager extends Object {
      * <li>the current user has write permission on the resource
      * </ul>
      * 
-     * @param context the current request context   
-     * @param resource          the resource
-     * @throws CmsException     if something goes wrong
+     * @param context the current request context	
+     * @param resource			the resource
+     * @throws CmsException		if something goes wrong
      */
     private void deleteAllAccessControlEntries(CmsRequestContext context, CmsResource resource) throws CmsException {
 
@@ -2639,11 +2640,11 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * The access control entries of a resource are readable by everyone.
      * 
-     * @param context the current request context   
-     * @param resource          the resource
-     * @param getInherited      true in order to include access control entries inherited by parent folders
-     * @return                  a vector of access control entries defining all permissions for the given resource
-     * @throws CmsException     if something goes wrong
+     * @param context the current request context	
+     * @param resource			the resource
+     * @param getInherited		true in order to include access control entries inherited by parent folders
+     * @return					a vector of access control entries defining all permissions for the given resource
+     * @throws CmsException		if something goes wrong
      */
     public Vector getAccessControlEntries(CmsRequestContext context, CmsResource resource, boolean getInherited) throws CmsException {
 
@@ -2672,10 +2673,10 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * The access control list of a resource is readable by everyone.
      * 
-     * @param context the current request context   
-     * @param resource          the resource 
-     * @return                  the access control list of the resource
-     * @throws CmsException     if something goes wrong
+     * @param context the current request context	
+     * @param resource			the resource 
+     * @return					the access control list of the resource
+     * @throws CmsException		if something goes wrong
      */
     public CmsAccessControlList getAccessControlList(CmsRequestContext context, CmsResource resource) throws CmsException {
 
@@ -2687,10 +2688,10 @@ public class CmsDriverManager extends Object {
      * If inheritedOnly is set, non-inherited entries of the resource are skipped.
      * 
      * @param context the current request context
-     * @param resource          the resource
-     * @param inheritedOnly     skip non-inherited entries if set
-     * @return                  the access control list of the resource
-     * @throws CmsException     if something goes wrong
+     * @param resource			the resource
+     * @param inheritedOnly		skip non-inherited entries if set
+     * @return					the access control list of the resource
+     * @throws CmsException		if something goes wrong
      */
     public CmsAccessControlList getAccessControlList(CmsRequestContext context, CmsResource resource, boolean inheritedOnly) throws CmsException {
 
@@ -2717,7 +2718,7 @@ public class CmsDriverManager extends Object {
         while (acEntries.hasNext()) {
             CmsAccessControlEntry acEntry = (CmsAccessControlEntry) acEntries.next();
 
-            // if the overwrite flag is set, reset the allowed permissions to the permissions of this entry 
+            // if the overwrite flag is set, reset the allowed permissions to the permissions of this entry	
             if ((acEntry.getFlags() & I_CmsConstants.C_ACCESSFLAGS_OVERWRITE) > 0)
                 acList.setAllowedPermissions(acEntry);
             else
@@ -3404,11 +3405,11 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * Permissions are readable by everyone.
      * 
-     * @param context the current request context   
-     * @param resource          the resource
-     * @param user              the user
-     * @return                  bitset with allowed permissions
-     * @throws CmsException     if something goes wrong
+     * @param context the current request context	
+     * @param resource			the resource
+     * @param user				the user
+     * @return					bitset with allowed permissions
+     * @throws CmsException 	if something goes wrong
      */
     public CmsPermissionSet getPermissions(CmsRequestContext context, CmsResource resource, CmsUser user) throws CmsException {
 
@@ -4376,35 +4377,35 @@ public class CmsDriverManager extends Object {
         CmsResource resource = readFileHeader(context, resourcename);
         CmsLock oldLock = getLock(context, resourcename);
         CmsLock exclusiveLock = null;
-        
+
         if (oldLock.isNullLock()) {
             throw new CmsLockException( "Unable to steal lock on a unlocked resource", CmsLockException.C_RESOURCE_UNLOCKED);
         }
-        
-        // stealing a lock: checking permissions will throw an exception coz the
-        // resource is still locked for the other user. thus, the resource is unlocked
-        // before the permissions of the new user are checked. if the new user 
-        // has insufficient permissions, the previous lock is restored.
 
-        // save the lock of the resource's exclusive locked sibling
-        exclusiveLock = m_lockDispatcher.getExclusiveLockedSibling(this, context, resourcename);
-        // save the lock of the resource itself
-        oldLock = getLock(context, resourcename);
+            // stealing a lock: checking permissions will throw an exception coz the
+            // resource is still locked for the other user. thus, the resource is unlocked
+            // before the permissions of the new user are checked. if the new user 
+            // has insufficient permissions, the previous lock is restored.
+
+            // save the lock of the resource's exclusive locked sibling
+            exclusiveLock = m_lockDispatcher.getExclusiveLockedSibling(this, context, resourcename);
+            // save the lock of the resource itself
+            oldLock = getLock(context, resourcename);
 
         // remove the lock
         m_lockDispatcher.removeResource(this, context, resourcename, true);  
-        
+
         try {
             // check if the user has write access to the resource
             checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);
         } catch (CmsSecurityException e) {
-            // restore the lock of the exclusive locked sibling in case a lock gets stolen by 
-            // a new user with insufficient permissions on the resource
-            m_lockDispatcher.addResource(this, context, exclusiveLock.getResourceName(), exclusiveLock.getUserId(), exclusiveLock.getProjectId());
+                // restore the lock of the exclusive locked sibling in case a lock gets stolen by 
+                // a new user with insufficient permissions on the resource
+                m_lockDispatcher.addResource(this, context, exclusiveLock.getResourceName(), exclusiveLock.getUserId(), exclusiveLock.getProjectId());
 
             throw e;
-        } 
-        
+        }
+
         if (resource.getState() != I_CmsConstants.C_STATE_UNCHANGED && resource.getProjectId() != context.currentProject().getId()) {
             // update the project flag of a modified resource as "modified inside the current project"
             m_vfsDriver.updateProjectId(context.currentProject(), resource);
@@ -4493,10 +4494,10 @@ public class CmsDriverManager extends Object {
     /**
      * Lookup and read the user or group with the given UUID.
      * 
-     * @param context the current request context   
-     * @param principalId       the UUID of the principal to lookup
-     * @return                  the principal (group or user) if found, otherwise null
-     * @throws CmsException     if something goeas wrong
+     * @param context the current request context	
+     * @param principalId		the UUID of the principal to lookup
+     * @return					the principal (group or user) if found, otherwise null
+     * @throws CmsException		if something goeas wrong
      */
     public I_CmsPrincipal lookupPrincipal(CmsUUID principalId) throws CmsException {
 
@@ -4524,10 +4525,10 @@ public class CmsDriverManager extends Object {
     /**
      * Lookup and read the user or group with the given name.
      * 
-     * @param context the current request context   
-     * @param principalName     the name of the principal to lookup
-     * @return                  the principal (group or user) if found, otherwise null
-     * @throws CmsException     if something goeas wrong    
+     * @param context the current request context	
+     * @param principalName		the name of the principal to lookup
+     * @return					the principal (group or user) if found, otherwise null
+     * @throws CmsException		if something goeas wrong	
      */
     public I_CmsPrincipal lookupPrincipal(String principalName) throws CmsException {
 
@@ -4649,10 +4650,10 @@ public class CmsDriverManager extends Object {
     /**
      * Method to create a new instance of a pool.<p>
      * 
-     * @param configurations    the configurations from the propertyfile
-     * @param poolName          the configuration name of the pool
-     * @return                  the pool url
-     * @throws CmsException     if something goes wrong
+     * @param configurations	the configurations from the propertyfile
+     * @param poolName			the configuration name of the pool
+     * @return					the pool url
+     * @throws CmsException		if something goes wrong
      */
     public String newPoolInstance(Configurations configurations, String poolName) throws CmsException {
 
@@ -4818,11 +4819,11 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * The access control entries of a resource are readable by everyone.
      * 
-     * @param context the current request context   
-     * @param resource          the resource
-     * @param principal         the id of a group or a user any other entity
-     * @return                  an access control entry that defines the permissions of the entity for the given resource
-     * @throws CmsException     if something goes wrong
+     * @param context the current request context	
+     * @param resource			the resource
+     * @param principal			the id of a group or a user any other entity
+     * @return					an access control entry that defines the permissions of the entity for the given resource
+     * @throws CmsException		if something goes wrong
      */
     public CmsAccessControlEntry readAccessControlEntry(CmsRequestContext context, CmsResource resource, CmsUUID principal) throws CmsException {
 
@@ -6179,13 +6180,13 @@ public class CmsDriverManager extends Object {
                 HashMap parentValue;
                 do {
                     try {
-                        parentValue = (HashMap) readProperties(context, resource, siteRoot, false);
-                        parentValue.putAll(value);
-                        value.clear();
-                        value.putAll(parentValue);
-                        resource = CmsResource.getParent(resource);
-                        // cont = (! ((resource.length() < siteRoot.length()) || (resource == null)));
-                        cont = (! "/".equals(resource));
+                    parentValue = (HashMap) readProperties(context, resource, siteRoot, false);
+                    parentValue.putAll(value);
+                    value.clear();
+                    value.putAll(parentValue);
+                    resource = CmsResource.getParent(resource);
+                    // cont = (! ((resource.length() < siteRoot.length()) || (resource == null)));
+                    cont = (! "/".equals(resource));
                     } catch (CmsSecurityException se) {
                         // a security exception (probably no read permission) we return the current result                      
                         cont = false;
@@ -6263,9 +6264,9 @@ public class CmsDriverManager extends Object {
                     siteRoot += "/";
                     do {
                         try {
-                            value = readProperty(context, resource, siteRoot, property, false);
-                            // cont = !((value != null) || (resource.length() < siteRoot.length()) || "/".equals(resource));
-                            cont = ((value == null) && (! "/".equals(resource)));
+                        value = readProperty(context, resource, siteRoot, property, false);
+                        // cont = !((value != null) || (resource.length() < siteRoot.length()) || "/".equals(resource));
+                        cont = ((value == null) && (! "/".equals(resource)));
                         } catch (CmsSecurityException se) {
                             // a security exception (probably no read permission) we return the current result                      
                             cont = false;
@@ -6713,10 +6714,10 @@ public class CmsDriverManager extends Object {
      * <li>the current user has control permission on the resource
      * </ul>
      * 
-     * @param context the current request context        
-     * @param resource          the resource
-     * @param principal         the id of a group or user to identify the access control entry
-     * @throws CmsException     if something goes wrong
+     * @param context the current request context		 
+     * @param resource			the resource
+     * @param principal			the id of a group or user to identify the access control entry
+     * @throws CmsException		if something goes wrong
      */
     public void removeAccessControlEntry(CmsRequestContext context, CmsResource resource, CmsUUID principal) throws CmsException {
 
@@ -7231,9 +7232,9 @@ public class CmsDriverManager extends Object {
 //     * <li>the current user has write permission on the resource
 //     * </ul>
 //     * 
-//     * @param context the current request context 
-//     * @param resource            the resource
-//     * @throws CmsException       if something goes wrong
+//     * @param context the current request context	
+//     * @param resource			the resource
+//     * @throws CmsException		if something goes wrong
 //     */
 //    private void undeleteAllAccessControlEntries(CmsRequestContext context, CmsResource resource) throws CmsException {
 //
@@ -7452,10 +7453,10 @@ public class CmsDriverManager extends Object {
      */
     public CmsLock unlockResource(CmsRequestContext context, String resourcename) throws CmsException {
         CmsLock oldLock = m_lockDispatcher.removeResource(this, context, resourcename, false);
-        clearResourceCache();
-
-        return oldLock;
-    }
+        clearResourceCache();   
+        
+        return oldLock;     
+        }
         
     /**
      * When a project is published this method aktualises the online link table.
@@ -7597,9 +7598,9 @@ public class CmsDriverManager extends Object {
      * </ul>
      * 
      * @param context the current request context
-     * @param resource          the resource
-     * @param acEntries         vector of access control entries applied to the resource
-     * @throws CmsException     if something goes wrong
+     * @param resource			the resource
+     * @param acEntries			vector of access control entries applied to the resource
+     * @throws CmsException		if something goes wrong
      */
     public void importAccessControlEntries(CmsRequestContext context, CmsResource resource, Vector acEntries) throws CmsException {
 
@@ -7626,9 +7627,9 @@ public class CmsDriverManager extends Object {
      * </ul>
      * 
      * @param context the current request context
-     * @param resource          the resource     
-     * @param acEntry           the entry to write
-     * @throws CmsException     if something goes wrong
+     * @param resource			the resource	 
+     * @param acEntry 			the entry to write
+     * @throws CmsException		if something goes wrong
      */
     public void writeAccessControlEntry(CmsRequestContext context, CmsResource resource, CmsAccessControlEntry acEntry) throws CmsException {
 

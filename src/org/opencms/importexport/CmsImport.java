@@ -1,7 +1,7 @@
 /*
-* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/08/03 09:42:42 $
-* Version: $Revision: 1.132 $
+* File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImport.java,v $
+* Date   : $Date: 2003/08/06 07:44:07 $
+* Version: $Revision: 1.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -26,7 +26,7 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-package com.opencms.file;
+package org.opencms.importexport;
 
 import org.opencms.loader.CmsPageLoader;
 import org.opencms.security.CmsAccessControlEntry;
@@ -35,6 +35,7 @@ import com.opencms.boot.CmsBase;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
+import com.opencms.file.*;
 import com.opencms.flex.util.CmsStringSubstitution;
 import com.opencms.flex.util.CmsUUID;
 import com.opencms.linkmanagement.CmsPageLinks;
@@ -66,7 +67,7 @@ import org.w3c.dom.NodeList;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.132 $ $Date: 2003/08/03 09:42:42 $
+ * @version $Revision: 1.1 $ $Date: 2003/08/06 07:44:07 $
  */
 public class CmsImport implements Serializable {
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
-* Date   : $Date: 2003/07/31 13:19:37 $
-* Version: $Revision: 1.82 $
+* Date   : $Date: 2003/08/06 07:44:07 $
+* Version: $Revision: 1.83 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -27,6 +27,8 @@
 */
 
 package com.opencms.file;
+
+import org.opencms.importexport.*;
 
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
@@ -67,7 +69,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.82 $ $Date: 2003/07/31 13:19:37 $
+ * @version $Revision: 1.83 $ $Date: 2003/08/06 07:44:07 $
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
 
