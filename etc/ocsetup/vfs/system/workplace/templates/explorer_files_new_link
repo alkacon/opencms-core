@@ -74,7 +74,7 @@ top.help_url='FunkButtonNeu/AnlegenNeuerVerknuepfung.html';
         document.getElementById("name"+to).value=temp1;
         document.getElementById("neulink"+to).value=temp2;
         if(temp1.length > 0){
-        	document.getElementById("WEITER").disabled=false;
+            document.getElementById("WEITER").disabled=false;
         }
     }
 
@@ -103,28 +103,28 @@ top.help_url='FunkButtonNeu/AnlegenNeuerVerknuepfung.html';
         t.checked=true;
     }
     
-	function setValues(){
-		var theName = ']]><process>LINKNAME</process><![CDATA[';
-		var theValue = ']]><process>LINKVALUE</process><![CDATA[';
-		var theNavtitle = ']]><process>NAVTITLE</process><![CDATA[';
-		
-		document.getElementById("name1").value = theName;
-		document.getElementById("neulink1").value = theValue;
-		document.getElementById("navtext").value = theNavtitle;
-		document.getElementById("name2").value = theName;
-		document.getElementById("neulink2").value = theValue;
-		if((theName != null) && (theName != '')){
-			if(document.getElementById('isInNav').style.visibility = "visible"){
-				document.getElementById("name1").focus();
-			} else {
-				document.getElementById("name2").focus();
-			}
-		}
-	}   
+    function setValues(){
+        var theName = ']]><process>LINKNAME</process><![CDATA[';
+        var theValue = ']]><process>LINKVALUE</process><![CDATA[';
+        var theNavtitle = ']]><process>NAVTITLE</process><![CDATA[';
+        
+        document.getElementById("name1").value = theName;
+        document.getElementById("neulink1").value = theValue;
+        document.getElementById("navtext").value = theNavtitle;
+        document.getElementById("name2").value = theName;
+        document.getElementById("neulink2").value = theValue;
+        if((theName != null) && (theName != '')){
+            if(document.getElementById('isInNav').style.visibility = "visible"){
+                document.getElementById("name1").focus();
+            } else {
+                document.getElementById("name2").focus();
+            }
+        }
+    }   
 //-->
 </script>
 
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
@@ -288,7 +288,7 @@ var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
 
 <head>
 
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
@@ -365,7 +365,7 @@ var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
 
 <head>
 
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 <title>OpenCms</title>
 
 <link rel=stylesheet type="text/css" href="../css/format.css">
@@ -387,31 +387,31 @@ var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
 <table border=2 cellspacing=0 cellpadding=0 width=500px height=180px>
 
 <tr><td><table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
-	<!--begin head-->
-	<tr><td class=head height=20px>]]><LABEL value="title.newlink" /><![CDATA[</td></tr>
-	<tr><td class=leerzeile>&nbsp;</td></tr>
+    <!--begin head-->
+    <tr><td class=head height=20px>]]><LABEL value="title.newlink" /><![CDATA[</td></tr>
+    <tr><td class=leerzeile>&nbsp;</td></tr>
 
-	<!--begin content-->
-	<tr>
-		<td class=formular>]]><process>LINKVALUE</process><![CDATA[</td>
-	</tr>
-	<tr>
-		<td class=dialogtxt>]]><LABEL value="error.message.linkcheckerror" /><![CDATA[</td>
-	</tr>
-		
-	<!--begin buttons-->
-	<tr><td class=formular>
-			<table cellspacing=0 cellpadding=5 width=100%>
-			<tr>
-				<INPUT type="hidden" name="step" ID="step" value="2">
-				<td class=formular align=right width=60%><INPUT class=button width = 100 type ="button" value="]]><LABEL value="button.previousscreen" /><![CDATA[" id=ZURUECK name=ZURUECK onClick="location='explorer_files_new_link.html?newlink=]]><process>newlink</process><![CDATA[&folder=]]><PROCESS>FOLDER</PROCESS><![CDATA[';"></td>
-				<td class=formular align=middle width=20%><INPUT class=button width = 100 type ="submit" value="]]><LABEL value="button.endwizard" /><![CDATA[" id =FERTIG name=FERTIG onClick="location='explorer_files_new_link.html';"></td>
-				<td class=formular align=middle width=20%><INPUT class=button width = 100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="location=lasturl"></td>
-			</tr>
-			</table>
-		</td>
-	</tr>
-	</table>
+    <!--begin content-->
+    <tr>
+        <td class=formular>]]><process>LINKVALUE</process><![CDATA[</td>
+    </tr>
+    <tr>
+        <td class=dialogtxt>]]><LABEL value="error.message.linkcheckerror" /><![CDATA[</td>
+    </tr>
+        
+    <!--begin buttons-->
+    <tr><td class=formular>
+            <table cellspacing=0 cellpadding=5 width=100%>
+            <tr>
+                <INPUT type="hidden" name="step" ID="step" value="2">
+                <td class=formular align=right width=60%><INPUT class=button width = 100 type ="button" value="]]><LABEL value="button.previousscreen" /><![CDATA[" id=ZURUECK name=ZURUECK onClick="location='explorer_files_new_link.html?newlink=]]><process>newlink</process><![CDATA[&folder=]]><PROCESS>FOLDER</PROCESS><![CDATA[';"></td>
+                <td class=formular align=middle width=20%><INPUT class=button width = 100 type ="submit" value="]]><LABEL value="button.endwizard" /><![CDATA[" id =FERTIG name=FERTIG onClick="location='explorer_files_new_link.html';"></td>
+                <td class=formular align=middle width=20%><INPUT class=button width = 100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="location=lasturl"></td>
+            </tr>
+            </table>
+        </td>
+    </tr>
+    </table>
 </TD></TR>
 </TABLE>
 </FORM>
@@ -421,7 +421,7 @@ var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
 
 </body>
 </HTML>
-	]]>
+    ]]>
 </TEMPLATE>
 
 <TEMPLATE name="error">
