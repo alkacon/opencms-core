@@ -13,7 +13,7 @@ import java.util.*;
  * Content definition for "/workplace/workplace.ini".
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.6 $ $Date: 2000/02/02 10:08:49 $
+ * @version $Revision: 1.7 $ $Date: 2000/02/03 09:38:18 $
  */
 public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChannels, I_CmsConstants {
 
@@ -156,6 +156,15 @@ public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChann
     public String getPictureUrl() throws CmsException {
         return getDataValue("path.picsurl");
     }
+    
+    /**
+     * Gets the path for help files.
+     * @return Path for help files.
+     * @exception CmsException if the corresponding XML tag doesn't exist in the workplace definition file.
+     */
+    public String getHelpPath() throws CmsException {
+        return getDataValue("path.help");
+    }    
     
     /**
      * Gets the available workplace views defined in the config file.

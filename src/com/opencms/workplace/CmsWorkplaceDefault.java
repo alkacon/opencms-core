@@ -7,6 +7,8 @@ import com.opencms.template.*;
 
 import java.util.*;
 
+import javax.servlet.http.*;
+
 /**
  * Common template class for displaying OpenCms workplace screens.
  * <P>
@@ -15,7 +17,7 @@ import java.util.*;
  * Most special workplace classes may extend this class.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.5 $ $Date: 2000/02/01 08:30:11 $
+ * @version $Revision: 1.6 $ $Date: 2000/02/03 09:38:18 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConstants {
@@ -23,9 +25,17 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
     /** URL of the pics folder in the webserver's docroot */
     private String m_picsurl = null;
     
-    /** URL of the workplace main screen */
-    private String m_workplaceUrl = null;
+    /** URL of the help folder */
+    private String m_helpfolder = null;
 
+    /** Reference to the config file */
+    private CmsXmlWpConfigFile m_configFile = null;    
+
+    /** Constant for the current language
+     * HACK: replace this by the corresponding value from the user object
+     */
+    private final static String C_CURRENT_LANGUAGE = "de";
+    
     /**
      * Gets the key that should be used to cache the results of
      * this template class. 
@@ -79,8 +89,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
      * @param userObj Hashtable with parameters <em>(not used here)</em>.
      * @return String with the pics URL.
      * @exception CmsException
-     */
-    
+     */    
     public Object picsUrl(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
             throws CmsException {
         if(m_picsurl == null) {            
@@ -89,22 +98,123 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
         }
         return m_picsurl + tagcontent;
     }
-
+ 
     /**
-     * Gets the main URL of the OpenCms workplace 
-     * (e.g. <code>/system/workplace/action/index.html</code>).
+     * User method to generate an URL for a help file.
+     * The system help file path and the currently selected language will
+     * be considered.
      * <P>
-     * Used for returning from classes to the workplace screen.
+     * The path to the help file folder can be set in the workplace ini.
+     * <P>
+     * In any workplace template file, this method can be invoked by
+     * <code>&lt;METHOD name="helpUrl"&gt;<em>HelpFileName</em>&lt;/METHOD&gt;</code>.
      * 
      * @param cms A_CmsObject Object for accessing system resources.
-     * @return URL of the workplace.
+     * @param tagcontent Unused in this special case of a user method. Can be ignored.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document <em>(not used here)</em>.  
+     * @param userObj Hashtable with parameters <em>(not used here)</em>.
+     * @return String with the pics URL.
+     * @exception CmsException
+     */    
+    public Object helpUrl(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
+            throws CmsException {        
+        if(m_helpfolder == null) { 
+            m_helpfolder = getConfigFile(cms).getHelpPath();
+        }
+        A_CmsRequestContext reqCont = cms.getRequestContext();
+        String servletPath = ((HttpServletRequest)reqCont.getRequest().getOriginalRequest()).getServletPath();
+        String currentLanguage = C_CURRENT_LANGUAGE.toLowerCase();
+        char separator = m_picsurl.charAt(m_picsurl.length()-1);
+        return servletPath + m_helpfolder + currentLanguage + separator + tagcontent;
+    }    
+    
+    /**
+     * Gets a reference to the default config file.
+     * The path to this file ist stored in <code>C_WORKPLACE_INI</code>
+     * 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @return Reference to the config file.
      * @exception CmsException
      */
-    public String workplaceUrl(A_CmsObject cms) throws CmsException {
-        if(m_workplaceUrl == null || "".equals(m_workplaceUrl)) {
-            CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
-            m_workplaceUrl = configFile.getWorkplaceMainPath();
+    public CmsXmlWpConfigFile getConfigFile(A_CmsObject cms) throws CmsException {
+        if(m_configFile == null) {
+            m_configFile = new CmsXmlWpConfigFile(cms);
         }
-        return m_workplaceUrl;
+        return m_configFile;
+    }
+    
+    /**
+     * Gets all fonts available in the workplace screens.
+     * <P>
+     * The given vectors <code>names</code> and <code>values</code> will 
+     * be filled with the appropriate information to be used for building
+     * a select box.
+     * <P>
+     * Used to build font select boxes in editors.
+     * 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param lang reference to the currently valid language file
+     * @param names Vector to be filled with the appropriate values in this method.
+     * @param values Vector to be filled with the appropriate values in this method.
+     * @return Index representing the user's current workplace view in the vectors.
+     * @exception CmsException
+     */
+    public Integer getFonts(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values) {
+        getConstantSelectEntries(names, values, C_SELECTBOX_FONTS);
+        return new Integer(0);
+    }
+
+    /** Gets all fonts available in the workplace screens.
+     * <P>
+     * The given vectors <code>names</code> and <code>values</code> will 
+     * be filled with the appropriate information to be used for building
+     * a select box.
+     * <P>
+     * Used to build font select boxes in editors.
+     * 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param lang reference to the currently valid language file
+     * @param names Vector to be filled with the appropriate values in this method.
+     * @param values Vector to be filled with the appropriate values in this method.
+     * @return Index representing the user's current workplace view in the vectors.
+     * @exception CmsException
+     */
+    public Integer getFontStyles(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values) {
+        getConstantSelectEntries(names, values, C_SELECTBOX_FONTSTYLES);
+        return new Integer(0);
+    }
+
+    /** Gets all fonts available in the workplace screens.
+     * <P>
+     * The given vectors <code>names</code> and <code>values</code> will 
+     * be filled with the appropriate information to be used for building
+     * a select box.
+     * <P>
+     * Used to build font select boxes in editors.
+     * 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param lang reference to the currently valid language file
+     * @param names Vector to be filled with the appropriate values in this method.
+     * @param values Vector to be filled with the appropriate values in this method.
+     * @return Index representing the user's current workplace view in the vectors.
+     * @exception CmsException
+     */
+    public Integer getFontSizes(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values) {
+        getConstantSelectEntries(names, values, C_SELECTBOX_FONTSIZES);
+        return new Integer(0);
+    }
+    
+    /**
+     * Help method used to fill the vectors returned to 
+     * <code>CmsSelectBox</code> with constant values.
+     * @param names Vector to be filled with the appropriate values in this method.
+     * @param values Vector to be filled with the appropriate values in this method.
+     * @param content String array containing the elements to be set.
+     */
+    private void getConstantSelectEntries(Vector names, Vector values, String[] contents) {
+        for(int i=0; i<contents.length; i++) {
+            names.addElement(contents[i]);
+            values.addElement(contents[i]);
+        }
     }
 }
