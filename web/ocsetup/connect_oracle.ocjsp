@@ -163,9 +163,18 @@
 									<tr><td>&nbsp;</td><td>User</td><td>Password</td></tr>
 									<tr>
 										<td>Database Server Connection</td><td><input type="text" name="dbCreateUser" size="8" style="width:120px;" value='<%= Bean.getDbCreateUser() %>'></td><td><input type="text" name="dbCreatePwd" size="8" style="width:120px;" value='<%= Bean.getDbCreatePwd() %>'></td>										
-									</tr>									
+									</tr>
+									<%
+									String user = Bean.getDbWorkUser();
+									if(user.equals(""))	{
+										user = request.getContextPath();
+									}
+									if(user.startsWith("/"))	{
+										user = user.substring(1,user.length());
+									}
+									%>
 									<tr>
-										<td>OpenCms Connection</td><td><input type="text" name="dbWorkUser" size="8" style="width:120px;" value='<%= Bean.getDbWorkUser() %>'></td><td><input type="text" name="dbWorkPwd" size="8" style="width:120px;" value='<%= Bean.getDbWorkPwd() %>'></td>
+										<td>OpenCms Connection</td><td><input type="text" name="dbWorkUser" size="8" style="width:120px;" value='<%= user %>'></td><td><input type="text" name="dbWorkPwd" size="8" style="width:120px;" value='<%= Bean.getDbWorkPwd() %>'></td>
 									</tr>
 									<tr><td colspan="3"><hr></td></tr>
 									<tr>
@@ -173,7 +182,7 @@
 									</tr>
 									<tr><td colspan="3"><hr></td></tr>
 									<tr><td colspan="3" align="center"><input type="checkbox" name="createDb" value="true" checked> Create database and tables<br>
-									<b>Warning:</b> Existing database will be dropped !<br></td></tr>
+									<b><font color="FF0000">Warning:</font></b> Existing database will be dropped !<br></td></tr>
 									
 								</table>
 							</td>

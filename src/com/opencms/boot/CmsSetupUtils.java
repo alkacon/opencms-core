@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetupUtils.java,v $
-* Date   : $Date: 2001/08/02 07:25:10 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2001/10/12 15:31:31 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -461,9 +461,6 @@ public class CmsSetupUtils {
         Statement stat;
         if(statement != null)  {
             try  {
-                System.err.println("-----------------------------------------");
-                //System.err.println("QUERY: "+statement);
-                System.err.println("-----------------------------------------");
                 stat = con.createStatement();
                 stat.executeUpdate(statement);
             }
@@ -471,7 +468,9 @@ public class CmsSetupUtils {
                 if(m_errorLogging)  {
                   m_errors.addElement(e.toString() + "\n");
                 }
-                e.printStackTrace();
+                System.err.println();
+                System.err.println("Exception:  " + e.toString());
+                System.err.println();
             }
         }
     }
