@@ -2,7 +2,7 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsSiteMatrix.java,v $
- * Date   : $Date: 2000/09/22 16:58:10 $
+ * Date   : $Date: 2000/09/26 13:09:28 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -110,26 +110,55 @@ private static Object[] createMatrix(Vector categories, Vector sites)
  * @param parameters Hashtable with all template class parameters.
  * @param templateSelector template section that should be processed.
  */
-public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector)
-throws CmsException
+public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException
 {
 	CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
-	StringBuffer list = new StringBuffer();
-	CmsSite site = null;
+	Vector sitelist = cms.getSiteMatrixInfo();
+	Vector categories = cms.getAllCategories();
+	Object[] matrixinfo = createMatrix(categories, sitelist);
+	Vector country_names = (Vector) matrixinfo[0];
+	Hashtable[][] matrix = (Hashtable[][]) matrixinfo[1];
+	StringBuffer line = null;
+	StringBuffer matrixbuffer = null;
 
-	Vector sites = cms.getAllSites();
-	for (int i = 0; i < sites.size(); i++)
+	//
+	xmlTemplateDocument.setData("domaincount", "" + country_names.size());
+	xmlTemplateDocument.setData("categorycount", "" + categories.size());
+
+	//
+	line = new StringBuffer();
+	for (int i = 0; i < country_names.size(); i++)
 	{
-		site = (CmsSite)sites.elementAt(i);
-
-		xmlTemplateDocument.setData("id", ""+site.getId());
-		xmlTemplateDocument.setData("name", site.getName());
-		xmlTemplateDocument.setData("description", site.getDescription());
-			
-		list.append(xmlTemplateDocument.getProcessedDataValue("row"));
+		xmlTemplateDocument.setData("domainname", (String) country_names.elementAt(i));
+		line.append(xmlTemplateDocument.getProcessedDataValue("domaindot"));
 	}
-	
-	xmlTemplateDocument.setData("list", list.toString())	;
+	xmlTemplateDocument.setData("domains", line.toString());
+	xmlTemplateDocument.setData("domainlist", xmlTemplateDocument.getProcessedDataValue("domainrow"));
+
+	//
+	matrixbuffer = new StringBuffer();
+	for (int i = 0; i < categories.size(); i++)
+	{
+		line = new StringBuffer();
+		xmlTemplateDocument.setData("categoryname", ((CmsCategory) categories.elementAt(i)).getName());
+		for (int j = 0; j < country_names.size(); j++)
+		{
+			if (matrix[i][j] != null)
+			{
+				// set some data for the site in question
+				line.append(xmlTemplateDocument.getProcessedDataValue("activedot"));
+			}
+			else
+			{
+				line.append(xmlTemplateDocument.getProcessedDataValue("emptydot"));
+			}
+		}
+		xmlTemplateDocument.setData("dots", line.toString());
+		matrixbuffer.append(xmlTemplateDocument.getProcessedDataValue((i == 0) ? "firstrow" : "row"));
+	}
+	xmlTemplateDocument.setData("lines", matrixbuffer.toString());
+
+	//
 	return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
 }
 /**
@@ -145,5 +174,39 @@ throws CmsException
 public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector)
 {
 	return false;
+}
+/**
+ * Insert the method's description here.
+ * Creation date: (09/25/00 10:49:18)
+ * @param cms com.opencms.file.CmsObject
+ */
+public static void printSiteMatrix(CmsObject cms) throws CmsException
+{
+	Vector sitelist = cms.getSiteMatrixInfo();
+	Vector categories = cms.getAllCategories();
+	Object[] matrixinfo = createMatrix(categories, sitelist);
+	Vector country_names = (Vector) matrixinfo[0];
+	Hashtable[][] matrix = (Hashtable[][]) matrixinfo[1];
+	StringBuffer line = null;
+
+	//
+	line = new StringBuffer("      ");
+	for (int i = 0; i < country_names.size(); i++)
+	{
+		line.append(((String) country_names.elementAt(i)) + " |");
+	}
+	System.out.println(line.toString());
+
+	//
+	for (int i = 0; i < categories.size(); i++)
+	{
+		line = new StringBuffer();
+		line.append(((CmsCategory) categories.elementAt(i)).getName() + " |");
+		for (int j = 0; j < country_names.size(); j++)
+		{
+			line.append((matrix[i][j] != null) ? " * |" : "   |");
+		}
+		System.out.println(line.toString());
+	}
 }
 }

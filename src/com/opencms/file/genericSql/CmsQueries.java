@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsQueries.java,v $
- * Date   : $Date: 2000/09/22 13:06:48 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/09/26 13:09:28 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.11 $ $Date: 2000/09/22 13:06:48 $
+ * @version $Revision: 1.12 $ $Date: 2000/09/26 13:09:28 $
  */
 public class CmsQueries
 {
@@ -317,7 +317,7 @@ public class CmsQueries
 
 	// statement needed for creating a sitematrix
 	public Integer C_GET_SITEMATRIXINFO_KEY = new Integer(459);
-	public String C_GET_SITEMATRIXINFO = "SELECT SITE_ID, " + C_DATABASE_PREFIX + "SITES.CATEGORY_ID, " + C_DATABASE_PREFIX + "SITES.LANGUAGE_ID, " + C_DATABASE_PREFIX + "SITES.COUNTRY_ID, " + C_DATABASE_PREFIX + "LANGUAGE.SHORTNAME AS LANG_NAME, " + C_DATABASE_PREFIX + "COUNTRY.SHORTNAME AS COUNTRY_NAME FROM " + C_DATABASE_PREFIX + "SITES," + C_DATABASE_PREFIX + "COUNTRY," + C_DATABASE_PREFIX + "LANGUAGE WHERE " + C_DATABASE_PREFIX + "SITES.LANGUAGE_ID=" + C_DATABASE_PREFIX + "LANGUAGE.LANGUAGE_ID AND " + C_DATABASE_PREFIX + "SITES.COUNTRY_ID=" + C_DATABASE_PREFIX + "COUNTRY.COUNTRY_ID";
+	public String C_GET_SITEMATRIXINFO = "SELECT SITE_ID, " + C_DATABASE_PREFIX + "SITES.CATEGORY_ID, " + C_DATABASE_PREFIX + "SITES.LANGUAGE_ID, " + C_DATABASE_PREFIX + "SITES.COUNTRY_ID, " + C_DATABASE_PREFIX + "LANGUAGE.SHORTNAME AS LANG_SNAME, " + C_DATABASE_PREFIX + "LANGUAGE.NAME AS LANG_NAME, " + C_DATABASE_PREFIX + "COUNTRY.SHORTNAME AS COUNTRY_SNAME, " + C_DATABASE_PREFIX + "COUNTRY.NAME AS COUNTRY_NAME FROM " + C_DATABASE_PREFIX + "SITES," + C_DATABASE_PREFIX + "COUNTRY," + C_DATABASE_PREFIX + "LANGUAGE WHERE " + C_DATABASE_PREFIX + "SITES.LANGUAGE_ID=" + C_DATABASE_PREFIX + "LANGUAGE.LANGUAGE_ID AND " + C_DATABASE_PREFIX + "SITES.COUNTRY_ID=" + C_DATABASE_PREFIX + "COUNTRY.COUNTRY_ID ORDER BY COUNTRY_NAME,LANG_NAME";
 	
 	
 	// Constants for Users table
