@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetup.java,v $
- * Date   : $Date: 2004/02/17 16:38:37 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/02/17 17:05:24 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ package org.opencms.setup;
 
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCmsCore;
+import org.opencms.util.CmsStringSubstitution;
 import org.opencms.util.CmsUUID;
 
 import java.io.File;
@@ -48,10 +49,10 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  */
 public class CmsSetup {
-    
+
     /** Required setup files per database server.<p> */
     public static final String[] requiredDbSetupFiles = {
             "step_3_database_setup.jsp",
@@ -71,8 +72,8 @@ public class CmsSetup {
      * Contains the properties from the opencms.properties file 
      */
     private ExtendedProperties m_extProperties;
-    
-    /**
+
+    /** 
      * Contains the HTML fragments for the output of the setup pages
      */
     private Properties m_htmlProps;
@@ -89,12 +90,12 @@ public class CmsSetup {
      * Database password used to drop and create database
      */
     private String m_dbCreatePwd;
-    
+
     private List m_databaseKeys;
     private List m_databaseNames;
     private Map m_databaseProperties;
     
-    /**
+    /** 
      * Default constructor.<p>
      */
     public CmsSetup() {
@@ -124,6 +125,16 @@ public class CmsSetup {
             errors.add(e.toString());
         }
     }
+    
+    /**
+     * Checks the ethernet address value and generates a dummy address, if necessary.<p>     *
+     */
+    public void checkEthernetAddress() {
+        // check the ethernet address in order to generate a random address, if not available                   
+        if ("".equals(getEthernetAddress())) {
+            setEthernetAddress(CmsUUID.getDummyEthernetAddress());
+        }
+    }
 
     /**
      * This method checks the validity of the given properties
@@ -137,11 +148,6 @@ public class CmsSetup {
             return false;
         }
 
-        // check the ethernet address
-        // in order to generate a random address, if not available                   
-        if ("".equals(getEthernetAddress())) {
-            setEthernetAddress(CmsUUID.getDummyEthernetAddress());
-        }
         // check the maximum file size, set it to unlimited, if not valid 
         String size = getFileMaxUploadSize();
         if (size == null || "".equals(size)) {
@@ -282,11 +288,9 @@ public class CmsSetup {
         if (m_database == null) {
             m_database = this.getExtProperty("db.name");
         }
-
         if (m_database == null || "".equals(m_database)) {
             m_database = (String) getDatabases().get(0);
         }
-
         return m_database;
     }
 
@@ -324,7 +328,7 @@ public class CmsSetup {
                                 hasMissingSetupFiles = true;
                                 System.err.println("[" + this.getClass().getName() + "] missing or unreadable database setup file: " + setupFile.getPath());
                                 break;
-                            }
+    }
                         }
 
                         if (!hasMissingSetupFiles) {
@@ -357,7 +361,7 @@ public class CmsSetup {
         FileInputStream input = null;
         String configPath = null;
         Properties databaseProperties = null;
-        
+
         if (m_databaseNames != null) {
             return m_databaseNames;
         }
@@ -386,17 +390,17 @@ public class CmsSetup {
                 try {
                     if (input != null) {
                         input.close();
-                    }
+    }
                 } catch (Exception e) {
                     // noop
                 }
             }
         }                      
-                
+
         return m_databaseNames;
     }
     
-    /**
+    /** 
      * Returns the map with the database properties of *all* available database configurations keyed
      * by their database key names (e.g. "mysql", "generic" or "oracle").<p>
      * 
@@ -642,6 +646,24 @@ public class CmsSetup {
     public String getEthernetAddress() {
         return getExtProperty("server.ethernet.address");
     }
+    
+    /** 
+     * Return the OpenCms server name
+     * 
+     * @return the OpenCms server name
+     */
+    public String getServerName() {
+        return getExtProperty("server.name");
+    }
+    
+    /** 
+     * Set the OpenCms server name
+     * 
+     * @param name the OpenCms server name
+     */
+    public void setServerName(String name) {
+        setExtProperty("server.name", name);
+    }
 
     /** 
      * Set the maximum file upload size.<p>
@@ -834,11 +856,22 @@ public class CmsSetup {
      * @return the HTML part or an empty String, if the part was not found
      */
     public String getHtmlPart(String part) {
+        return getHtmlPart(part, "");
+    }
+    
+    /**
+     * Returns the specified HTML part of the HTML property file to create the output.<p>
+     * 
+     * @param part the name of the desired part
+     * @param replaceString String which is inserted in the found HTML part at the location of "$replace$"
+     * @return the HTML part or an empty String, if the part was not found
+     */
+    public String getHtmlPart(String part, String replaceString) {
         String value = m_htmlProps.getProperty(part);
         if (value == null) {
             return "";
         } else {
-            return value;
+            return CmsStringSubstitution.substitute(value, "$replace$", replaceString);
         }
     }
 

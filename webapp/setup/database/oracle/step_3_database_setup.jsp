@@ -14,7 +14,7 @@
 <%
 
 	/* next page to be accessed */
-    String nextPage ="../../step_4_database_creation.jsp";
+	String nextPage ="../../step_4_database_creation.jsp";
 
 	boolean submited = false;
 
@@ -47,7 +47,7 @@
 			String dbWorkPwd =		request.getParameter("dbWorkPwd");
 			String dbDefaultTablespace = request.getParameter("dbDefaultTablespace");
 			String dbTemporaryTablespace = request.getParameter("dbTemporaryTablespace");
-            String dbIndexTablespace = request.getParameter("dbIndexTablespace");
+			String dbIndexTablespace = request.getParameter("dbIndexTablespace");
 
 			Bean.setDbCreateUser(dbCreateUser);
 			Bean.setDbCreatePwd(dbCreatePwd);
@@ -59,7 +59,7 @@
 			replacer.put("$$user$$",dbWorkUser);
 			replacer.put("$$password$$",dbWorkPwd);
 			replacer.put("$$defaultTablespace$$", dbDefaultTablespace);
-            replacer.put("$$indexTablespace$$", dbIndexTablespace);
+			replacer.put("$$indexTablespace$$", dbIndexTablespace);
 			replacer.put("$$temporaryTablespace$$", dbTemporaryTablespace);
 
 			Bean.setReplacer(replacer);
@@ -102,11 +102,11 @@ OpenCms Setup Wizard
 			document.forms[0].dbWorkPwd.focus();
 			return false;
 		}
-        else if (document.forms[0].createDb.value != "" && document.forms[0].dbIndexTablespace.value == "") {
-            alert("Please insert name of index tablespace");
-            document.forms[0].dbWorkPwd.focus();
-            return false;
-        }
+		else if (document.forms[0].createDb.value != "" && document.forms[0].dbIndexTablespace.value == "") {
+			alert("Please insert name of index tablespace");
+			document.forms[0].dbWorkPwd.focus();
+			return false;
+		}
 		else if (document.forms[0].createDb.value != "" && document.forms[0].dbTemporaryTablespace.value == "") {
 			alert("Please insert name of temporary tablespace");
 			document.forms[0].dbWorkPwd.focus();
@@ -126,7 +126,7 @@ OpenCms Setup Wizard
 <%= Bean.getHtmlPart("C_HEAD_END") %>
 OpenCms Setup Wizard - <%= Bean.getDatabase() %>
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
-<%= Bean.getHtmlPart("C_LOGO_OPENCMS") %>
+<%= Bean.getHtmlPart("C_LOGO_OPENCMS", "../../") %>
 <% if(setupOk)	{ %>
 <form method="POST" onSubmit="return checkSubmit()" class="nomargin">
 <table border="0" cellpadding="5" cellspacing="0" style="width: 100%; height: 100%;">
@@ -141,7 +141,7 @@ OpenCms Setup Wizard - <%= Bean.getDatabase() %>
 								Select Database
 							</td>
 							<td width="250">
-                                <select name="database" style="width:250px;" size="1" width="250" onchange="location.href='../../step_2_database_selection.jsp?database='+this.options[this.selectedIndex].value;">
+								<select name="database" style="width:250px;" size="1" width="250" onchange="location.href='../../step_2_database_selection.jsp?database='+this.options[this.selectedIndex].value;">
 								<!-- --------------------- JSP CODE --------------------------- -->
 								<%
 									/* get all available databases */
@@ -196,7 +196,7 @@ OpenCms Setup Wizard - <%= Bean.getDatabase() %>
 							<td>Connection String</td><td colspan="2"><input type="text" name="dbCreateConStr" size="22" style="width:250px;" value='<%= Bean.getDbCreateConStr() %>'></td>
 						</tr>
 						<tr>
-						    <td>Create Database</td><td><input type="checkbox" name="createDb" value="true" checked> User</td><td><input type="checkbox" name="createTables" value="true" checked> Tables<input type="hidden" name="createTables" value="false"></td>
+							<td>Create Database</td><td><input type="checkbox" name="createDb" value="true" checked> User</td><td><input type="checkbox" name="createTables" value="true" checked> Tables<input type="hidden" name="createTables" value="false"></td>
 						</tr>
 						<tr>
 							<td colspan="3" align="center"><b><span style="color: #FF0000;">Warning:</span></b> Existing database will be dropped !</font></b></td>
@@ -205,12 +205,12 @@ OpenCms Setup Wizard - <%= Bean.getDatabase() %>
 						<tr>
 							<td>Default Tablespace</td><td colspan="2"><input type="text" name="dbDefaultTablespace" size="8" style="width:250px;" value='<%= Bean.getDbDefaultTablespace() %>'></td>
 						</tr>
-                        <tr>
-                            <td>Index Tablespace</td><td colspan="2"><input type="text" name="dbIndexTablespace" size="8" style="width:250px;" value='<%= Bean.getDbIndexTablespace() %>'></td>
+						<tr>
+							<td>Index Tablespace</td><td colspan="2"><input type="text" name="dbIndexTablespace" size="8" style="width:250px;" value='<%= Bean.getDbIndexTablespace() %>'></td>
 						</tr>
-                        <tr>
-                            <td>Temporary Tablespace</td><td colspan="2"><input type="text" name="dbTemporaryTablespace" size="8" style="width:250px;" value='<%= Bean.getDbTemporaryTablespace() %>'></td>
-                        </tr>
+						<tr>
+							<td>Temporary Tablespace</td><td colspan="2"><input type="text" name="dbTemporaryTablespace" size="8" style="width:250px;" value='<%= Bean.getDbTemporaryTablespace() %>'></td>
+						</tr>
 					</table>
 				</td>
 			</tr>
@@ -223,7 +223,7 @@ OpenCms Setup Wizard - <%= Bean.getDatabase() %>
 <%= Bean.getHtmlPart("C_CONTENT_END") %>
 
 <%= Bean.getHtmlPart("C_BUTTONS_START") %>
-<input name="back" type="button" value="&#060;&#060; Back" class="dialogbutton" onclick="location.href='index.jsp';">
+<input name="back" type="button" value="&#060;&#060; Back" class="dialogbutton" onclick="location.href='../../index.jsp';">
 <input name="submit" type="submit" value="Continue &#062;&#062;" class="dialogbutton">
 <input name="cancel" type="button" value="Cancel" class="dialogbutton" onclick="location.href='../../cancel.jsp';" style="margin-left: 50px;">
 </form>

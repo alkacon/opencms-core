@@ -96,7 +96,7 @@ OpenCms Setup Wizard
 <%= Bean.getHtmlPart("C_HEAD_END") %>
 OpenCms Setup Wizard - <%= Bean.getDatabase() %>
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
-<%= Bean.getHtmlPart("C_LOGO_OPENCMS") %>
+<%= Bean.getHtmlPart("C_LOGO_OPENCMS", "../../") %>
 
 <% if(setupOk)	{ %>
 <form method="POST" onSubmit="return checkSubmit()" class="nomargin">
@@ -175,7 +175,7 @@ OpenCms Setup Wizard - <%= Bean.getDatabase() %>
 <%= Bean.getHtmlPart("C_CONTENT_END") %>
 
 <%= Bean.getHtmlPart("C_BUTTONS_START") %>
-<input name="back" type="button" value="&#060;&#060; Back" class="dialogbutton" onclick="location.href='index.jsp';">
+<input name="back" type="button" value="&#060;&#060; Back" class="dialogbutton" onclick="location.href='../../index.jsp';">
 <input name="submit" type="submit" value="Continue &#062;&#062;" class="dialogbutton">
 <input name="cancel" type="button" value="Cancel" class="dialogbutton" onclick="location.href='../../cancel.jsp';" style="margin-left: 50px;">
 </form>
