@@ -1,8 +1,8 @@
 
 /*
 * File   : $File$
-* Date   : $Date: 2001/02/05 16:57:27 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2001/02/12 10:45:59 $
+* Version: $Revision: 1.3 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -69,7 +69,6 @@ public class CmsSyncFolderThread extends Thread implements I_CmsConstants {
                 // if a new project was created for synchronisation, copy the resource to the project
                 if (m_newProject){
                     m_cms.copyResourceToProject((String)m_folders.elementAt(i));
-                    CmsFolder folder = m_cms.readFolder((String)m_folders.elementAt(i));
                 }
 		m_cms.syncFolder((String)m_folders.elementAt(i));
             }

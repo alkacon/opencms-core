@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsSyncFolder.java,v $
-* Date   : $Date: 2001/02/05 16:57:26 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2001/02/12 10:45:59 $
+* Version: $Revision: 1.3 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <P>
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.2 $ $Date: 2001/02/05 16:57:26 $
+ * @version $Revision: 1.3 $ $Date: 2001/02/12 10:45:59 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -120,34 +120,6 @@ public class CmsSyncFolder extends CmsWorkplaceDefault implements I_CmsConstants
 		if(initial != null) {
 		// remove all session values
 			session.removeValue("lasturl");
-			// set the currentProject to the synchronizeProject
-			Vector allProjects = cms.getAllAccessibleProjects();
-			int count = 0;
-			CmsProject cmsProject = null;
-			int projectId = cms.getRequestContext().currentProject().getId();
-			String projectName = cms.getRegistry().getSystemValue(C_SYNCHRONISATION_PROJECT);
-			for( int i = 0; i < allProjects.size(); i++ ) {
-				cmsProject = (CmsProject)allProjects.elementAt(i);
-				if (cmsProject.getName().equals(projectName)){
-					projectId = cmsProject.getId();
-					count++;
-				}
-			}
-			if (count == 1){
-				// only one syncproject was found, so set this project
-				reqCont.setCurrentProject(projectId);
-				m_newProject = false;
-			} else if (count == 0){
-				// there is no syncproject, so create a new one and set this as the current project
-				// the necessary resources will be copied later to this project
-				reqCont.setCurrentProject(cms.createProject(projectName, "Project for synchronisation", "Users", "Projectmanager").getId());
-				m_newProject = true;
-			} else {
-				// there are too many projects with the name of the syncproject, so return an error
-				xmlTemplateDocument.setData("details", "Too many projects for synchronisation.");
-				return startProcessing(cms, xmlTemplateDocument, elementName,
-							parameters, "error");
-			}
 			action = "start";
 		}
 		// create a vector with the resources to be synchronized
@@ -203,17 +175,45 @@ public class CmsSyncFolder extends CmsWorkplaceDefault implements I_CmsConstants
 				}
 
 				if(!"error".equals(templateSelector)) {
-					// start the thread for: synchronize the resources
-					// first clear the session entry if necessary
-					if(session.getValue(C_SESSION_THREAD_ERROR) != null) {
-						session.removeValue(C_SESSION_THREAD_ERROR);
-					}
-					Thread doSyncFolder = new CmsSyncFolderThread(cms, synchronizeResources, m_newProject);
-					doSyncFolder.start();
-					session.putValue(C_SYNCFOLDER_THREAD, doSyncFolder);
-					xmlTemplateDocument.setData("time", "5");
-					templateSelector = "wait";
-				} else {
+                                    // set the currentProject to the synchronizeProject
+			            Vector allProjects = cms.getAllAccessibleProjects();
+			            int count = 0;
+			            CmsProject cmsProject = null;
+			            int projectId = cms.getRequestContext().currentProject().getId();
+			            String projectName = cms.getRegistry().getSystemValue(C_SYNCHRONISATION_PROJECT);
+			            for( int i = 0; i < allProjects.size(); i++ ) {
+                                        cmsProject = (CmsProject)allProjects.elementAt(i);
+				        if (cmsProject.getName().equals(projectName)){
+					    projectId = cmsProject.getId();
+					    count++;
+				        }
+			            }
+			            if (count == 1){
+				        // only one syncproject was found, so set this project
+				        reqCont.setCurrentProject(projectId);
+				        m_newProject = false;
+			            } else if (count == 0){
+				        // there is no syncproject, so create a new one and set this as the current project
+				        // the necessary resources will be copied later to this project
+				        reqCont.setCurrentProject(cms.createProject(projectName, "Project for synchronisation", "Users", "Projectmanager").getId());
+				        m_newProject = true;
+			            } else {
+				        // there are too many projects with the name of the syncproject, so return an error
+				        xmlTemplateDocument.setData("details", "Too many projects for synchronisation.");
+				        return startProcessing(cms, xmlTemplateDocument, elementName,
+							parameters, "error");
+			            }
+                                    // start the thread for: synchronize the resources
+				    // first clear the session entry if necessary
+				    if(session.getValue(C_SESSION_THREAD_ERROR) != null) {
+				    	session.removeValue(C_SESSION_THREAD_ERROR);
+				    }
+				    Thread doSyncFolder = new CmsSyncFolderThread(cms, synchronizeResources, m_newProject);
+				    doSyncFolder.start();
+				    session.putValue(C_SYNCFOLDER_THREAD, doSyncFolder);
+				    xmlTemplateDocument.setData("time", "5");
+				    templateSelector = "wait";
+                                } else {
 					// at least one of the choosen folders was not writeable -> don't synchronize.
 					xmlTemplateDocument.setData("details", "The following folders were not writeable:"
 							+ notWriteable.toString());
