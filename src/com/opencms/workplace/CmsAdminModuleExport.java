@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleExport.java,v $
-* Date   : $Date: 2002/10/11 15:14:13 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2002/10/16 10:44:45 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -93,7 +93,7 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsCo
             int resourceCount = 0;
             int i = 0;
             
-            if (reg.getModuleType(exportName).equals(CmsRegistry.C_MODULE_TYPE_ADVANCED)) {
+            if (reg.getModuleType(exportName).equals(CmsRegistry.C_MODULE_TYPE_SIMPLE)) {
                 // ADVANCED MODULE
                 
                 // check if additional resources outside the system/modules/{exportName} folder were 
