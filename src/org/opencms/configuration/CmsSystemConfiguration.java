@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2004/08/06 16:17:42 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/08/19 12:26:13 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.mail.CmsMailHost;
 import org.opencms.mail.CmsMailSettings;
 import org.opencms.main.CmsContextInfo;
-import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsRequestHandler;
 import org.opencms.main.I_CmsResourceInit;
@@ -197,15 +196,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
      * Adds a new job description for the scheduler.<p>
      * 
      * @param jobInfo the job description to add
-     * 
-     * @throws CmsException if called after configuration is finished
      */
-    public void addJobFromConfiguration(CmsScheduledJobInfo jobInfo) throws CmsException {
+    public void addJobFromConfiguration(CmsScheduledJobInfo jobInfo) {
 
-        if (OpenCms.getRunLevel() > 1) {
-            throw new CmsConfigurationException(CmsConfigurationException.C_CONFIGURATION_ERROR);
-        }
-        
         m_configuredJobs.add(jobInfo);
         
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
