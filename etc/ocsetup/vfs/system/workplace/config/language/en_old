@@ -333,6 +333,7 @@
 				<delete>Delete</delete>
 				<edit>Edit Code</edit>
 				<editlink>Edit Link</editlink>
+				<editarticle>Edit article</editarticle>
 				<editcontrolfile>Edit Controlcode</editcontrolfile>
 				<history>History</history>
 				<htmledit>Edit Html</htmledit>
@@ -826,6 +827,7 @@ A new task was reactivated for you or your role.</content>
 			<deleteextension>Delete the association of file extension</deleteextension>
 			<deleteuser>Delete user</deleteuser>
 			<editpropertyinfo>Edit Property of</editpropertyinfo>
+			<enterarticle>Enter article</enterarticle>
 			<enternews>Enter news article</enternews>
 			<move>Move File</move>
 			<movefolder>Move Folder</movefolder>
