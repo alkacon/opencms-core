@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChown.java,v $
- * Date   : $Date: 2000/05/11 10:18:40 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/05/29 12:24:26 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.15 $ $Date: 2000/05/11 10:18:40 $
+ * @version $Revision: 1.16 $ $Date: 2000/05/29 12:24:26 $
  */
 public class CmsChown extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -157,7 +157,7 @@ public class CmsChown extends CmsWorkplaceDefault implements I_CmsWpConstants,
                     Vector allFiles=new Vector();
                     getAllResources(cms,filename,allFiles,allFolders);
                     
-                   cms.unlockResource(file.getAbsolutePath());
+                   //cms.unlockResource(file.getAbsolutePath());
                    // now modify all subfolders
                     for (int i=0;i<allFolders.size();i++) {
                         CmsFolder folder=(CmsFolder)allFolders.elementAt(i);  
