@@ -145,7 +145,7 @@
         <tag-class>org.opencms.jsp.CmsJspTagEditable</tag-class>
         <body-content>empty</body-content>
         <description>
-            This tag is used to enable the editarea within a template.
+            This tag is used to enable the direct editing within a template.
         </description>
         <attribute>
             <name>file</name>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/I_CmsEditorActionHandler.java,v $
- * Date   : $Date: 2004/02/19 19:14:03 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/02/23 11:35:39 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,23 +47,23 @@ import javax.servlet.jsp.JspException;
  * The class you enter must implement this interface to perform the editor action.<p>  
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.3.0
  */
 public interface I_CmsEditorActionHandler {
     
-    /** Prefix for edit area end elements, used on JPS pages that supply the direct edit html */
+    /** Prefix for direct edit end elements, used on JPS pages that supply the direct edit html */
     String C_DIRECT_EDIT_AREA_END = "end_directedit";
     
-    /** Prefix for edit area start elements, used on JPS pages that supply the direct edit html */
+    /** Prefix for direct edit start elements, used on JPS pages that supply the direct edit html */
     String C_DIRECT_EDIT_AREA_START = "start_directedit";
     
     /** Key to identify the direct edit configuration file */
     String C_DIRECT_EDIT_INCLUDE_FILE_URI = "__directEditIncludeFileUri";
 
     /** Default direct edit include file URI */
-    String C_DIRECT_EDIT_INCLUDE_FILE_URI_DEFAULT = "/system/workplace/jsp/editors/editarea.jsp";
+    String C_DIRECT_EDIT_INCLUDE_FILE_URI_DEFAULT = "/system/workplace/jsp/editors/direct_edit.jsp";
 
     /** Element name for direct edit includes */
     String C_DIRECT_EDIT_INCLUDES = "directedit_includes";
@@ -114,7 +114,7 @@ public interface I_CmsEditorActionHandler {
     
     /**
      * Checks the current edit mode.<p>
-     * The mode is used to select the appropriate elements for displaying the edit area.
+     * The mode is used to select the appropriate elements for displaying the direct edit button.
      * 
      * If the resource is displayed in online project -> editmode = null
      * If the resource is temporary -> editmode = inactive

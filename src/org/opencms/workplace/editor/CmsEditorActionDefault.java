@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorActionDefault.java,v $
- * Date   : $Date: 2004/02/19 19:14:03 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2004/02/23 11:35:40 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.JspException;
  * Provides a method to perform a user defined action when editing a page.<p> 
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 5.3.0
  */
@@ -157,19 +157,19 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
             boolean locked = !(lock.isNullLock() || (lock.getUserId().equals(userId) && lock.getProjectId() == currentProject));
         
             if (currentProject == I_CmsConstants.C_PROJECT_ONLINE_ID) {
-                // don't render edit area in online project
+                // don't render direct edit button in online project
                 return null;
             } else if (!cmsObject.getResourceType(res.getType()).isDirectEditable()) {
-                // don't render edit area for non-editable resources 
+                // don't render direct edit button for non-editable resources 
                 return null;
             } else if (CmsResource.getName(filename).startsWith(org.opencms.main.I_CmsConstants.C_TEMP_PREFIX)) {
-                // don't show edit area on temporary file
+                // don't show direct edit button on temporary file
                 return C_DIRECT_EDIT_MODE_INACTIVE;
             } else if (!cmsObject.isInsideCurrentProject(res)) {
-                // don't show edit area on files not belonging to the current project
+                // don't show direct edit button on files not belonging to the current project
                 return C_DIRECT_EDIT_MODE_INACTIVE;
             } else if (!cmsObject.hasPermissions(res, new CmsPermissionSet(I_CmsConstants.C_PERMISSION_WRITE))) {
-                // don't show edit area on files without write permissions
+                // don't show direct edit button on files without write permissions
                 if (locked) {
                     return C_DIRECT_EDIT_MODE_DISABLED;
                 } else {
