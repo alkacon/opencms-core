@@ -100,7 +100,6 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 	I_CmsSession session = (CmsSession) cms.getRequestContext().getSession(true);
 	//create new workplace templatefile object
 	CmsXmlWpTemplateFile template = new CmsXmlWpTemplateFile(cms, templateFile);
-
 	//get parameters
 	String selectBox = (String) parameters.get("selectbox");
 	String filterParam = (String) parameters.get("filterparameter");
@@ -123,7 +122,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 				if (selectBox != null) {
 					session.putValue("filter", selectBox);
 					template.setData("filternumber",selectBox);
-					System.err.println("### changed filter to " + session.getValue("filter"));
+					// System.err.println("### changed filter to " + session.getValue("filter"));
 				}
 	} else {
 		template.setData("filternumber", (String)session.getValue("filter"));
@@ -402,13 +401,13 @@ private byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, St
 				//Method deleteMethod = (Method) cdClass.getMethod("delete", new Class[] {CmsObject.class});
 				//deleteMethod.invoke(o, new Object[] {cms});
 			} catch (Exception e1) {
-       System.err.println("error: ");
+                    // System.err.println("error: ");
 				if (A_OpenCms.isLogging()) {
 					A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: delete method throwed an exception!");
 				}
-        System.err.println("error: ");
+                // System.err.println("error: ");
 				templateSelector = "deleteerror";
-        System.err.println("error: " +  e1.getMessage());
+                // System.err.println("error: " +  e1.getMessage());
 				template.setData("deleteerror", e1.getMessage());
 			}
 			//finally start the processing
@@ -468,43 +467,51 @@ private byte[] getContentHead(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 
 	//create new or fetch existing session
 	CmsSession session = (CmsSession) cms.getRequestContext().getSession(true);
-  String uri = cms.getRequestContext().getUri();
-  String sessionSelectBoxValue = uri+"selectBoxValue";
+    String uri = cms.getRequestContext().getUri();
+    String sessionSelectBoxValue = uri+"selectBoxValue";
 	//get filter method from session
 	//String selectBoxValue = (String) session.getValue("filter");
-  String selectBoxValue = (String) parameters.get("selectbox");
-  if(selectBoxValue == null) {
-    // set default value
-    if((String)session.getValue(sessionSelectBoxValue) != null) {
-      // came back from edit or something ... redisplay last filter
-      selectBoxValue = (String)session.getValue(sessionSelectBoxValue);
-    } else {
-     // the very first time here...
-      selectBoxValue = "0";
+    String selectBoxValue = (String) parameters.get("selectbox");
+    if(selectBoxValue == null) {
+        // set default value
+        if((String)session.getValue(sessionSelectBoxValue) != null) {
+            // came back from edit or something ... redisplay last filter
+            selectBoxValue = (String)session.getValue(sessionSelectBoxValue);
+        } else {
+            // the very first time here...
+            selectBoxValue = "0";
+        }
     }
-  }
-  boolean filterChanged = true;
-  if( selectBoxValue.equals((String)session.getValue(sessionSelectBoxValue)) ) {
-    filterChanged = false;
-  }else {
-    filterChanged = true;
-  }
-  // System.err.println("getContentHead selectBoxValue: " + selectBoxValue + " session: " + (String)session.getValue("selectBoxValue"));
-  session.putValue(sessionSelectBoxValue, selectBoxValue); // store in session for Selectbox!
-  session.putValue("filter",selectBoxValue);  // store filter in session for getContentList!
+    boolean filterChanged = true;
+    if( selectBoxValue.equals((String)session.getValue(sessionSelectBoxValue)) ) {
+        filterChanged = false;
+    }else {
+        filterChanged = true;
+    }
+    // System.err.println("getContentHead selectBoxValue: " + selectBoxValue + " session: " + (String)session.getValue("selectBoxValue"));
+
+    //get vector of filter names from the content definition
+	Vector filterMethods = getFilterMethods(cms);
+
+    if( Integer.parseInt(selectBoxValue) >=  filterMethods.size() ) {
+        // the stored seclectBoxValue is does not exist any more, ...
+        selectBoxValue = "0";
+    }
+    session.putValue(sessionSelectBoxValue, selectBoxValue); // store in session for Selectbox!
+    session.putValue("filter",selectBoxValue);  // store filter in session for getContentList!
 
 	String filterParam = (String) parameters.get("filterparameter");
-  //System.err.println("getContentHead selectBoxValue: " + selectBoxValue + " filterParam: " + filterParam);
-  String action = (String) parameters.get("action");
-  String setaction = (String) parameters.get("setaction");
-  //System.err.println("getContentHead: action: "+ action);
-  // create the key for the filterparameter in the session ... should be unique to avoid problems...
+    //System.err.println("getContentHead selectBoxValue: " + selectBoxValue + " filterParam: " + filterParam);
+    String action = (String) parameters.get("action");
+    String setaction = (String) parameters.get("setaction");
+    //System.err.println("getContentHead: action: "+ action);
+    // create the key for the filterparameter in the session ... should be unique to avoid problems...
 
-  String sessionFilterParam = uri+selectBoxValue+"filterparameter";
+    String sessionFilterParam = uri+selectBoxValue+"filterparameter";
 	//store filterparameter in the session, new enty for every filter of every url ...
 	if (filterParam != null) {
 		session.putValue(sessionFilterParam, filterParam);
-  }
+    }
 
 	//create appropriate class name with underscores for labels
 	String moduleName = "";
@@ -519,37 +526,34 @@ private byte[] getContentHead(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 	template.setData("filterlabel", lang.getLanguageValue(moduleName + ".label.filter"));
 	template.setData("filterparameterlabel", lang.getLanguageValue(moduleName + ".label.filterparameter"));
 
-	//get vector of filter names from the content definition
-	Vector filterMethods = getFilterMethods(cms);
-
 	//no filter selected so far, store a default filter in the session
 	CmsFilterMethod filterMethod = null;
 	if (selectBoxValue == null) {
-    //System.err.println("store the default filter in the session...");
+        //System.err.println("store the default filter in the session...");
 		CmsFilterMethod defaultFilter = (CmsFilterMethod) filterMethods.firstElement();
 		session.putValue("selectbox", defaultFilter.getFilterName());
 	}/*
 	if (filterParam != null) {
 		parameters.put("filterparameter", filterParam);
-  }*/
+    }*/
 
     // show param box ?
     CmsFilterMethod currentFilter = (CmsFilterMethod) filterMethods.elementAt(Integer.parseInt(selectBoxValue));
     if(currentFilter.hasUserParameter()) {
-      if(filterChanged) {
-        template.setData("filterparameter", currentFilter.getDefaultFilterParam());
-        // access default in getContentList() ....
-        session.putValue(sessionFilterParam, currentFilter.getDefaultFilterParam());
-      } else if(filterParam!= null) {
-        template.setData("filterparameter", filterParam);
-      } else {
-        // redisplay after edit or something like this ...
-        template.setData("filterparameter", (String)session.getValue(sessionFilterParam));
-      }
-      template.setData("insertFilter", template.getProcessedDataValue("selectboxWithParam", this, parameters));
-      template.setData("setfocus", template.getDataValue("focus"));
+        if(filterChanged) {
+            template.setData("filterparameter", currentFilter.getDefaultFilterParam());
+            // access default in getContentList() ....
+            session.putValue(sessionFilterParam, currentFilter.getDefaultFilterParam());
+        } else if(filterParam!= null) {
+            template.setData("filterparameter", filterParam);
+        } else {
+            // redisplay after edit or something like this ...
+            template.setData("filterparameter", (String)session.getValue(sessionFilterParam));
+        }
+        template.setData("insertFilter", template.getProcessedDataValue("selectboxWithParam", this, parameters));
+        template.setData("setfocus", template.getDataValue("focus"));
     }else{
-      template.setData("insertFilter", template.getProcessedDataValue("singleSelectbox", this, parameters));
+        template.setData("insertFilter", template.getProcessedDataValue("singleSelectbox", this, parameters));
     }
 
 	//if getCreateUrl equals null, the "create new entry" button
@@ -680,9 +684,12 @@ private byte[] getContentList(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 		}
 		templateSelector = "error";
 		template.setData("filtername", filterMethodName);
+    while(ite.getTargetException() instanceof InvocationTargetException) {
+      ite = ((InvocationTargetException) ite.getTargetException());
+    }
 		template.setData("filtererror", ite.getTargetException().getMessage());
     session.removeValue(sessionFilterParam);
-		//session.removeValue("filterparameter");
+		//session.removeValue("filter");
 	} catch (NoSuchMethodException nsm) {
 		if (A_OpenCms.isLogging()) {
 			A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: apply filter method was not found!");
@@ -758,7 +765,7 @@ private byte[] getContentList(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 			}
 
 		try {
-      id = ((A_CmsContentDefinition)entryObject).getUniqueId(cms);
+            id = ((A_CmsContentDefinition)entryObject).getUniqueId(cms);
 		} catch (Exception e) {
 			if (A_OpenCms.isLogging()) {
 				A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: getUniqueId throwed an Exception!");
