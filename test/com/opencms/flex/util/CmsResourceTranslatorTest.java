@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/test/flex/util/Attic/CmsResourceTranslatorTest.java,v $
- * Date   : $Date: 2003/02/11 16:41:04 $
+ * File   : $Source: /alkacon/cvs/opencms/test/com/opencms/flex/util/Attic/CmsResourceTranslatorTest.java,v $
+ * Date   : $Date: 2003/02/11 16:58:43 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -27,7 +27,7 @@
  *
  * First created on 11.02.2003
  */
-package com.opencms.test.flex.util;
+package com.opencms.flex.util;
 
 import com.opencms.flex.util.CmsResourceTranslator;
 

@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/test/Attic/AllTests.java,v $
- * Date   : $Date: 2003/02/11 16:41:04 $
+ * File   : $Source: /alkacon/cvs/opencms/test/Attic/AllTests.java,v $
+ * Date   : $Date: 2003/02/11 16:58:43 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -27,8 +27,6 @@
  *
  * First created on 11.02.2003
  */
-package com.opencms.test;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -42,8 +40,7 @@ public class AllTests {
     
     public static Test suite() {
         TestSuite suite = new TestSuite("OpenCms complete test");
-
-        suite.addTest(com.opencms.test.flex.util.AllTests.suite());        
+        suite.addTest(com.opencms.flex.util.AllTests.suite());        
         
         return suite;
     }
