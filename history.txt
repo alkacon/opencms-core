@@ -8,8 +8,8 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 4.5.17 Chusuk       - xx November 2001
-! Added class "com.opencms.defaults.master.CmsShowMedia".
+OpenCms 4.5.17 Chusuk       - 09 November 2001
+! Added class "com.opencms.defaults.master.CmsShowMedia" to show media in a generic way.
 ! New property "description" for type image. The description can be inserted when uploading
   a picture in the picturegallery.
 ! Webusers can be added with an additional group by everybody.
