@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsConfigurationManager.java,v $
- * Date   : $Date: 2004/03/18 15:03:17 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/04/05 05:31:23 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,8 +53,10 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.dom.DOMDocumentType;
 import org.xml.sax.EntityResolver;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 /**
  * Configuration manager for digesting the OpenCms XML configuration.<p>
@@ -66,6 +68,38 @@ import org.xml.sax.SAXException;
  * @since 5.3
  */
 public class CmsConfigurationManager implements I_CmsXmlConfiguration {
+    
+    /**
+     * Error handler used for errors during the parsing of the configuration.<p>
+     */
+    private class CmsErrorHandler implements ErrorHandler {
+
+        /**
+         * @see org.xml.sax.ErrorHandler#error(org.xml.sax.SAXParseException)
+         */
+        public void error(SAXParseException exception) throws SAXException {
+
+            OpenCms.getLog(this).error("Error parsing configuration file", exception);
+            throw exception;
+        }
+
+        /**
+         * @see org.xml.sax.ErrorHandler#fatalError(org.xml.sax.SAXParseException)
+         */
+        public void fatalError(SAXParseException exception) throws SAXException {
+
+            OpenCms.getLog(this).error("Fatel error parsing configuration file", exception);
+            throw exception;
+        }
+
+        /**
+         * @see org.xml.sax.ErrorHandler#warning(org.xml.sax.SAXParseException)
+         */
+        public void warning(SAXParseException exception) {
+
+            OpenCms.getLog(this).error("Warning  parsing configuration file", exception);         
+        }
+    }
     
     /**
      * Adds resolve rules for the configured system internal DTD.<p> 
@@ -110,7 +144,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
     private static final String C_DTD_FILE_NAME = "opencms-configuration.dtd";
     
     /** The number of days to keep old backups for */
-    private static final long C_MAX_BACKUP_DAYS = 30; 
+    private static final long C_MAX_BACKUP_DAYS = 15; 
     
     /** The config node */
     protected static final String N_CONFIG = "config";
@@ -367,7 +401,8 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
         m_digester = new Digester();
         m_digester.setValidating(true);
         m_digester.setEntityResolver(new CmsConfigurationEntitiyResolver());
-        m_digester.setRuleNamespaceURI(null);       
+        m_digester.setRuleNamespaceURI(null);   
+        m_digester.setErrorHandler(new CmsErrorHandler());
 
         // add this class to the Digester
         m_digester.push(configuration);
