@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskNew.java,v $
- * Date   : $Date: 2000/02/22 10:31:32 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/02/23 20:09:59 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.8 $ $Date: 2000/02/22 10:31:32 $
+ * @version $Revision: 1.9 $ $Date: 2000/02/23 20:09:59 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskNew extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -157,9 +157,9 @@ public class CmsTaskNew extends CmsWorkplaceDefault implements I_CmsConstants {
 				String splittetDate[] = Utils.split(timeoutString, ".");
 				GregorianCalendar cal = new GregorianCalendar(Integer.parseInt(splittetDate[2]),
 															  Integer.parseInt(splittetDate[1]) - 1,
-															  Integer.parseInt(splittetDate[0]));
+															  Integer.parseInt(splittetDate[0]), 0, 0, 0);
 				long timeout = cal.getTime().getTime();
-				
+                		
 				A_CmsTask task = cms.createTask(agentName, roleName, taskName, 
 												taskcomment, timeout, priority);
 				cms.setTaskPar(task.getId(),C_TASKPARA_ACCEPTATION, paraAcceptation);
@@ -202,7 +202,6 @@ public class CmsTaskNew extends CmsWorkplaceDefault implements I_CmsConstants {
 		throws CmsException {
 		// get all groups
 		Vector groups = cms.getGroups();
-		int retValue = -1;
 		
 		names.addElement(lang.getLanguageValue("task.label.emptyrole"));
 		values.addElement(lang.getLanguageValue("task.label.emptyrole"));
@@ -210,9 +209,6 @@ public class CmsTaskNew extends CmsWorkplaceDefault implements I_CmsConstants {
 		// fill the names and values
 		for(int z = 0; z < groups.size(); z++) {
 			String name = ((A_CmsGroup)groups.elementAt(z)).getName();
-			if(C_GROUP_USERS.equals(name)) {
-				retValue = z + 1;
-			}
 			names.addElement(name);
 			values.addElement(((A_CmsGroup)groups.elementAt(z)).getName());
 		}
@@ -221,7 +217,7 @@ public class CmsTaskNew extends CmsWorkplaceDefault implements I_CmsConstants {
 		values.addElement(C_ALL_ROLES);
 
 		// no current group, set index to -1
-        return new Integer(retValue);
+        return new Integer(-1);
     }
 
     /**

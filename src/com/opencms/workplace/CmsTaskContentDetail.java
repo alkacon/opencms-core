@@ -14,7 +14,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.5 $ $Date: 2000/02/22 10:31:32 $
+ * @version $Revision: 1.6 $ $Date: 2000/02/23 20:09:58 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsWpConstants {
@@ -108,7 +108,17 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsCo
 		String button6;
 		long startTime;
 		long timeout;
-		long now = new Date().getTime();
+		GregorianCalendar cal = new GregorianCalendar();
+        cal.setTime(new Date(System.currentTimeMillis()));
+        cal.set(Calendar.HOUR,0);
+        cal.set(Calendar.MINUTE,0);
+        cal.set(Calendar.SECOND,0);
+        cal.set(Calendar.MILLISECOND,0);
+        
+        GregorianCalendar newcal = new GregorianCalendar(cal.get(Calendar.YEAR),cal.get(Calendar.MONTH),
+                                                         cal.get(Calendar.DAY_OF_MONTH),0,0,0);
+        
+        long now = newcal.getTime().getTime();
 
 		try {
 			projectname = cms.readTask(task.getRoot()).getName();
@@ -126,7 +136,7 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsCo
 			button2 = xmlTemplateDocument.getProcessedXmlDataValue("button_forward", this);
 			button6 = xmlTemplateDocument.getProcessedXmlDataValue("button_reakt", this);
 			if(timeout < now ) {
-				style = xmlTemplateDocument.getProcessedXmlDataValue("style_alertok", this);
+				style = xmlTemplateDocument.getProcessedXmlDataValue("style_ok", this);
 			} else {
 				style = xmlTemplateDocument.getProcessedXmlDataValue("style_ok", this);
 			}

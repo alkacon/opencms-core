@@ -16,7 +16,7 @@ import java.lang.reflect.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;tasklist&gt;</code>.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.7 $ $Date: 2000/02/22 11:22:42 $
+ * @version $Revision: 1.8 $ $Date: 2000/02/23 20:09:59 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants, I_CmsConstants {
@@ -93,9 +93,19 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
 		String style;
 		long startTime;
 		long timeout;
-		long now = new Date().getTime();
-
-		for(int i = 0; i < list.size(); i++) {
+	    GregorianCalendar cal = new GregorianCalendar();
+        cal.setTime(new Date(System.currentTimeMillis()));
+        cal.set(Calendar.HOUR,0);
+        cal.set(Calendar.MINUTE,0);
+        cal.set(Calendar.SECOND,0);
+        cal.set(Calendar.MILLISECOND,0);
+        
+        GregorianCalendar newcal = new GregorianCalendar(cal.get(Calendar.YEAR),cal.get(Calendar.MONTH),
+                                                         cal.get(Calendar.DAY_OF_MONTH),0,0,0);
+        
+        long now = newcal.getTime().getTime();
+              
+        for(int i = 0; i < list.size(); i++) {
 			// get the actual project
 			A_CmsTask task = (A_CmsTask) list.elementAt(i);
 			projectname = "?";
@@ -111,8 +121,8 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
 			// choose the right state-icon
 			if(task.getState() == C_TASK_STATE_ENDED) {
 				if(timeout < now ) {
-					stateIcon = listdef.getProcessedXmlDataValue("alertok", callingObject);
-					style = listdef.getProcessedXmlDataValue("style_alertok", callingObject);
+					stateIcon = listdef.getProcessedXmlDataValue("ok", callingObject);
+					style = listdef.getProcessedXmlDataValue("style_ok", callingObject);
 				} else {
 					stateIcon = listdef.getProcessedXmlDataValue("ok", callingObject);
 					style = listdef.getProcessedXmlDataValue("style_ok", callingObject);

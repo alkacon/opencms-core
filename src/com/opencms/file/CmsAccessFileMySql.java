@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFileMySql.java,v $
- * Date   : $Date: 2000/02/22 11:16:44 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2000/02/23 20:09:58 $
+ * Version: $Revision: 1.31 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.util.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.30 $ $Date: 2000/02/22 11:16:44 $
+ * @version $Revision: 1.31 $ $Date: 2000/02/23 20:09:58 $
  */
  class CmsAccessFileMySql implements I_CmsAccessFile, I_CmsConstants, I_CmsLogChannels  {
 
@@ -1361,6 +1361,9 @@ import com.opencms.util.*;
                      (file.getState() == C_STATE_NEW)) {
                     // delete an exitsing old file in the online project
                     removeFile(onlineProject,file.getAbsolutePath());
+                    // HACK: remove a lock if nescessary. This is a temporary fix,
+                    // this has to be done in the resource broker
+                    file.setLocked(C_UNKNOWN_ID);
                     // write the new file
                     createFile(onlineProject,onlineProject,file,file.getAbsolutePath());
                     resources.addElement(file.getAbsolutePath()); 
@@ -1403,6 +1406,9 @@ import com.opencms.util.*;
                         // delete an exitsing old folder in the online project
                         removeFolder(onlineProject,folder.getAbsolutePath());
                         // write the new folder
+                        // HACK: remove a lock if nescessary. This is a temporary fix,
+                        // this has to be done in the resource broker
+                        folder.setLocked(C_UNKNOWN_ID);
                         createFolder(onlineProject,folder,folder.getAbsolutePath());
                         resources.addElement(folder.getAbsolutePath()); 
                     } else if (folder.getState() == C_STATE_DELETED) {

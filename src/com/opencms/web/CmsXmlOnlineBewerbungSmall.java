@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/web/Attic/CmsXmlOnlineBewerbungSmall.java,v $ 
- * Author : $Author: w.babachan $
- * Date   : $Date: 2000/02/21 16:26:35 $
- * Version: $Revision: 1.4 $
+ * Author : $Author: m.emmerich $
+ * Date   : $Date: 2000/02/23 20:09:58 $
+ * Version: $Revision: 1.5 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Mindfact interaktive medien ag.   All Rights Reserved.
@@ -41,8 +41,8 @@ import java.io.*;
  * This class is used to display the application form of mindfact and makes it
  * possible to send the application form as a mail.
  * 
- * @author $Author: w.babachan $
- * @version $Name:  $ $Revision: 1.4 $ $Date: 2000/02/21 16:26:35 $
+ * @author $Author: m.emmerich $
+ * @version $Name:  $ $Revision: 1.5 $ $Date: 2000/02/23 20:09:58 $
  * @see com.opencms.template.CmsXmlTemplate
  */
 public class CmsXmlOnlineBewerbungSmall extends CmsXmlTemplate {
@@ -509,7 +509,7 @@ public class CmsXmlOnlineBewerbungSmall extends CmsXmlTemplate {
 		try {
 			// Connection for the DB insert
 			Class.forName("org.gjt.mm.mysql.Driver");						
-			Connection con = DriverManager.getConnection("jdbc:mysql://cebitcms.mind.fact:3306/opencms","root","");
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/opencms","root","");
 			Statement stmt = con.createStatement();
 			
 			secretkey = createSecret();
@@ -594,7 +594,7 @@ public class CmsXmlOnlineBewerbungSmall extends CmsXmlTemplate {
 				  }
 			  }					
 		}		
-		return "http://toshi/extern/etm/recruiting/ApplicantInformation.asp?id=" + project.getId() +"&s=" + secretkey;
+		return "http://etm.mindfact.com/extern/etm/recruiting/ApplicantInformation.asp?id=" + project.getId() +"&s=" + secretkey;
 	}
 	
 	private int getLastInsertId(Connection con)
