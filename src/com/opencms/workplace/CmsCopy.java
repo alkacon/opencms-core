@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCopy.java,v $
-* Date   : $Date: 2003/07/02 11:03:12 $
-* Version: $Revision: 1.55 $
+* Date   : $Date: 2003/07/07 17:24:22 $
+* Version: $Revision: 1.56 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.55 $ $Date: 2003/07/02 11:03:12 $
+ * @version $Revision: 1.56 $ $Date: 2003/07/07 17:24:22 $
  */
 
 public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -248,7 +248,7 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
         Integer selected = new Integer(0);
 
         // Let's see if we have a session
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        // I_CmsSession session = cms.getRequestContext().getSession(true);
 
         // get current and root folder
         CmsFolder rootFolder = cms.rootFolder();
@@ -259,7 +259,8 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
         getTree(cms, rootFolder, names, values);
 
         // now search for the current folder
-        String currentFilelist = (String)session.getValue(C_PARA_FILELIST);
+        // String currentFilelist = (String)session.getValue(C_PARA_FILELIST);
+        String currentFilelist = CmsWorkplaceAction.getCurrentFolder(cms);
         for(int i = 0;i < values.size();i++) {
             if(((String)values.elementAt(i)).equals(currentFilelist)) {
                 selected = new Integer(i);

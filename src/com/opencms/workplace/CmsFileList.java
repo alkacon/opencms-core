@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
-* Date   : $Date: 2003/07/07 14:48:23 $
-* Version: $Revision: 1.68 $
+* Date   : $Date: 2003/07/07 17:24:22 $
+* Version: $Revision: 1.69 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,9 +29,10 @@
 
 package com.opencms.workplace;
 
+import org.opencms.workplace.CmsWorkplaceAction;
+
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
-import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
@@ -62,7 +63,7 @@ import org.w3c.dom.Element;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.68 $ $Date: 2003/07/07 14:48:23 $
+ * @version $Revision: 1.69 $ $Date: 2003/07/07 17:24:22 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -381,8 +382,10 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
             C_NAME_FILEFOLDER, C_LOCKEDBY, C_FILELIST_CLASS_VALUE
         };
         String servlets = cms.getRequestContext().getRequest().getServletUrl();
-        I_CmsSession session = cms.getRequestContext().getSession(true);
-        String currentFilelist = (String)session.getValue(C_PARA_FILELIST);
+        // I_CmsSession session = cms.getRequestContext().getSession(true);
+        // String currentFilelist = (String)session.getValue(C_PARA_FILELIST);
+        String currentFilelist = CmsWorkplaceAction.getCurrentFolder(cms);
+        
         if((currentFilelist == null) || (currentFilelist.length() == 0)) {
             currentFilelist = "/";
         }

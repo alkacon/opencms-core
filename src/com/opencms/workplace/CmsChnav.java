@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChnav.java,v $
-* Date   : $Date: 2003/07/02 11:03:12 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2003/07/07 17:24:22 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.13 $ $Date: 2003/07/02 11:03:12 $
+ * @version $Revision: 1.14 $ $Date: 2003/07/07 17:24:22 $
  */
 
 public class CmsChnav extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -165,7 +165,7 @@ public class CmsChnav extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
      * @throws Throws CmsException if something goes wrong.
      */
     private Hashtable getNavData(CmsObject cms, String filename) throws CmsException {
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        // I_CmsSession session = cms.getRequestContext().getSession(true);
         CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
         String[] filenames;
         String[] nicenames;
@@ -179,7 +179,8 @@ public class CmsChnav extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
         float max = 0;
 
         // get the current folder
-        currentFilelist = (String)session.getValue(C_PARA_FILELIST);
+        // currentFilelist = (String)session.getValue(C_PARA_FILELIST);
+        currentFilelist = CmsWorkplaceAction.getCurrentFolder(cms);
         if(currentFilelist == null) {
             currentFilelist = cms.readAbsolutePath(cms.rootFolder());
         }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceOthertype.java,v $
-* Date   : $Date: 2003/07/02 11:03:12 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2003/07/07 17:24:22 $
+* Version: $Revision: 1.34 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.33 $ $Date: 2003/07/02 11:03:12 $
+ * @version $Revision: 1.34 $ $Date: 2003/07/07 17:24:22 $
  */
 
 public class CmsNewResourceOthertype extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -83,7 +83,8 @@ public class CmsNewResourceOthertype extends CmsWorkplaceDefault implements I_Cm
             title = Encoder.redecodeUriComponent(cms.getRequestContext().getRequest().getParameter(C_PARA_TITLE));
             keywords = Encoder.redecodeUriComponent((String)parameters.get(C_PARA_KEYWORDS));
             description = Encoder.redecodeUriComponent((String)parameters.get(C_PARA_DESCRIPTION));
-            foldername = (String)session.getValue(C_PARA_FILELIST);
+            // foldername = (String)session.getValue(C_PARA_FILELIST);
+            foldername = CmsWorkplaceAction.getCurrentFolder(cms);
             if(foldername == null) {
                 foldername = cms.readAbsolutePath(cms.rootFolder());
             }

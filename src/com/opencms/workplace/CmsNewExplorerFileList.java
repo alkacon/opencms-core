@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
-* Date   : $Date: 2003/07/07 14:48:23 $
-* Version: $Revision: 1.72 $
+* Date   : $Date: 2003/07/07 17:24:22 $
+* Version: $Revision: 1.73 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -27,6 +27,8 @@
 */
 
 package com.opencms.workplace;
+
+import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
@@ -60,7 +62,7 @@ import java.util.Vector;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.72 $ $Date: 2003/07/07 14:48:23 $
+ * @version $Revision: 1.73 $ $Date: 2003/07/07 17:24:22 $
  */
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannels,I_CmsConstants,I_CmsWpConstants {
 
@@ -147,12 +149,15 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
         } else {
             if((currentFolder != null) && (!"".equals(currentFolder)) && 
                     folderExists(cms, currentFolder)) {
-            session.putValue(C_PARA_FILELIST, currentFolder);
+            // session.putValue(C_PARA_FILELIST, currentFolder);
+            CmsWorkplaceAction.setCurrentFolder(cms, currentFolder);
         }else {
-            currentFolder = (String)session.getValue(C_PARA_FILELIST);
+            // currentFolder = (String)session.getValue(C_PARA_FILELIST);
+            currentFolder = CmsWorkplaceAction.getCurrentFolder(cms);
             if((currentFolder == null) || (!folderExists(cms, currentFolder))) {
                 currentFolder = cms.readAbsolutePath(cms.rootFolder());
-                session.putValue(C_PARA_FILELIST, currentFolder);
+                // session.putValue(C_PARA_FILELIST, currentFolder);
+                CmsWorkplaceAction.setCurrentFolder(cms, currentFolder);
             }
         }
         }
@@ -182,7 +187,8 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
                 vfslinkView = false;
                 parameters.remove("mode");
             }
-            session.putValue(C_PARA_FILELIST, currentFolder);            
+            // session.putValue(C_PARA_FILELIST, currentFolder);          
+            CmsWorkplaceAction.setCurrentFolder(cms, currentFolder);  
         }
         
         if (DEBUG > 2) {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsExplorerTree.java,v $
-* Date   : $Date: 2003/07/04 16:00:24 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2003/07/07 17:24:22 $
+* Version: $Revision: 1.24 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Vector;
  * 
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.23 $ $Date: 2003/07/04 16:00:24 $
+ * @version $Revision: 1.24 $ $Date: 2003/07/07 17:24:22 $
  */
 
 public class CmsExplorerTree extends CmsWorkplaceDefault implements I_CmsWpConstants {
@@ -211,11 +211,13 @@ public class CmsExplorerTree extends CmsWorkplaceDefault implements I_CmsWpConst
         // if a filelist was included, overwrite the value in the session for later use.
         filelist = cms.getRequestContext().getRequest().getParameter(C_PARA_FILELIST);
         if(filelist != null) {
-            session.putValue(C_PARA_FILELIST, filelist);
+            // session.putValue(C_PARA_FILELIST, filelist);
+            CmsWorkplaceAction.setCurrentFolder(cms, filelist);
         }
         
         // get the current folder to be displayed as maximum folder in the tree.
-        currentFilelist = (String)session.getValue(C_PARA_FILELIST);
+        // currentFilelist = (String)session.getValue(C_PARA_FILELIST);
+        currentFilelist = CmsWorkplaceAction.getCurrentFolder(cms);
         if(currentFilelist == null) {
             currentFilelist = cms.readAbsolutePath(cms.rootFolder());
         }

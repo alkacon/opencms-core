@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceLink.java,v $
-* Date   : $Date: 2003/07/02 11:03:12 $
-* Version: $Revision: 1.37 $
+* Date   : $Date: 2003/07/07 17:24:22 $
+* Version: $Revision: 1.38 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.37 $ $Date: 2003/07/02 11:03:12 $
+ * @version $Revision: 1.38 $ $Date: 2003/07/07 17:24:22 $
  */
 
 public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -193,7 +193,9 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
                     // step 1 - create the link with checking http-link
                     // step 2 - create the link without link check
                     // get folder- and filename
-                    foldername = (String)session.getValue(C_PARA_FILELIST);
+                    // foldername = (String)session.getValue(C_PARA_FILELIST);
+                    foldername = CmsWorkplaceAction.getCurrentFolder(cms);
+
                     if(foldername == null) {
                         foldername = cms.readAbsolutePath(cms.rootFolder());
                     }
@@ -400,7 +402,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
      * @throws Throws CmsException if something goes wrong.
      */
     private Hashtable getNavData(CmsObject cms) throws CmsException {
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        // I_CmsSession session = cms.getRequestContext().getSession(true);
         CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
         String[] filenames;
         String[] nicenames;
@@ -414,7 +416,8 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
         float max = 0;
 
         // get the current folder
-        currentFilelist = (String)session.getValue(C_PARA_FILELIST);
+        // currentFilelist = (String)session.getValue(C_PARA_FILELIST);
+        currentFilelist = CmsWorkplaceAction.getCurrentFolder(cms);
         if(currentFilelist == null) {
             currentFilelist = cms.readAbsolutePath(cms.rootFolder());
         }

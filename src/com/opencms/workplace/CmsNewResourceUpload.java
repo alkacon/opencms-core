@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceUpload.java,v $
-* Date   : $Date: 2003/07/02 11:03:12 $
-* Version: $Revision: 1.39 $
+* Date   : $Date: 2003/07/07 17:24:22 $
+* Version: $Revision: 1.40 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.39 $ $Date: 2003/07/02 11:03:12 $
+ * @version $Revision: 1.40 $ $Date: 2003/07/07 17:24:22 $
  */
 public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
     
@@ -108,11 +108,14 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
         String unzip = (String) parameters.get("unzip");
         String nofolder = (String) parameters.get("NOFOLDER");
 
-        String currentFolder = (String)parameters.get(C_PARA_FILELIST);
+        // String currentFolder = (String)parameters.get(C_PARA_FILELIST);
+        String currentFolder = CmsWorkplaceAction.getCurrentFolder(cms);
         if(currentFolder != null) {
-            session.putValue(C_PARA_FILELIST, currentFolder);
+            // session.putValue(C_PARA_FILELIST, currentFolder);
+            CmsWorkplaceAction.setCurrentFolder(cms, currentFolder);
         }
-        currentFolder = (String)session.getValue(C_PARA_FILELIST);
+        // currentFolder = (String)session.getValue(C_PARA_FILELIST);
+        currentFolder = CmsWorkplaceAction.getCurrentFolder(cms);
         if(currentFolder == null) {
             currentFolder = cms.readAbsolutePath(cms.rootFolder());
         }
