@@ -47,7 +47,7 @@ function show_help()
 			
 			<tr>
 				<td class=dialogtxt colspan=2>
-					  ]]><label value="project.publish.message1"/> <PROCESS>projectname</PROCESS> <label value="project.publish.message2"/><![CDATA[
+					  ]]><label value="project.publish.message1"/><![CDATA[ ]]><PROCESS>projectname</PROCESS><![CDATA[ ]]><label value="project.publish.message2"/><![CDATA[
 				</td>
 			</tr>
 			<tr>
