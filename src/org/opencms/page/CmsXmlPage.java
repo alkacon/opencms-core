@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsXmlPage.java,v $
- * Date   : $Date: 2004/01/22 10:39:35 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2004/01/22 18:10:38 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.dom4j.io.XMLWriter;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  */
 public class CmsXmlPage {
     
@@ -339,7 +339,7 @@ public class CmsXmlPage {
 
             Attribute enabled = element.attribute("enabled");
             
-            return (enabled == null || enabled.getValue().equals("true"));
+            return (enabled == null || Boolean.valueOf(enabled.getValue()).booleanValue());
         }
         
         return false;
