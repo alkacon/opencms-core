@@ -10,10 +10,7 @@
 
 <script language=JavaScript>
 <!--
-function show_help()
-{
-	return '2_1_2_2.html';
-}
+top.help_url='Administration/Modulverwaltung/index.html';
 //-->
 </script>
 

@@ -7,10 +7,6 @@
 
 <script language=JavaScript>
 <!--
-function show_help()
-{
-	return admin_content.show_help();
-}
 //-->
 </script>
 

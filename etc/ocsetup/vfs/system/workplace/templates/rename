@@ -5,11 +5,7 @@
 <HTML>
 <script language=JavaScript>
 <!--
-top.help_url='2_2_2_2_4_1.html';
-function show_help()
-{
-	return '2_2_2_2_4_1.html';
-}
+top.help_url='ExplorerAnsicht/allgemeineAktionen/rename.html';
 
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 
@@ -98,11 +94,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 <HTML>
 <script language=JavaScript>
 <!--
-top.help_url='2_2_2_2_4_1.html';
-function show_help()
-{
-	return '2_2_2_2_4_1.html';
-}
+top.help_url='ExplorerAnsicht/allgemeineAktionen/rename.html';
 //-->
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 </script>

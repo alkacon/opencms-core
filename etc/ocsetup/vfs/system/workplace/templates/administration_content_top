@@ -6,10 +6,7 @@
 
 <script language=JavaScript>
 <!--
-	function show_help()
-	{
-		return '5_2.html';
-	}
+top.help_url='Administration/index.html';
 //-->
 </script>
 

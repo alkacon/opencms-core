@@ -7,10 +7,7 @@
 
 <script language=JavaScript>
 <!--
-function show_help()
-{
-	return '5_2_6_2.html';
-}
+top.help_url='Administration/downloadgallerien/neueDownloadgallerie.html';
 
 function check() {
 	if ((!document.NEU.READ.checked)&&(document.NEU.WRITE.checked))

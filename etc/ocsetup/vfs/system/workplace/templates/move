@@ -10,12 +10,7 @@
 
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 
-top.help_url='2_2_2_2_4_3.html';
-function show_help()
-{
-	return '2_2_2_2_4_3.html';
-}
-
+top.help_url='ExplorerAnsicht/allgemeineAktionen/Verschieben.html';
 //-->
 </script>
 
@@ -112,13 +107,7 @@ function show_help()
 
 <script language=JavaScript>
 <!--
-top.help_url='2_2_2_2_4_3.html';
-function show_help()
-{
-	return '2_2_2_2_4_3.html';
-}
-
-
+top.help_url='ExplorerAnsicht/allgemeineAktionen/Verschieben.html';
 
 function SubmitIfCR(form, key){
   if (key == 13 || key == 65293) {

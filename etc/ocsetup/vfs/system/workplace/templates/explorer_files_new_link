@@ -5,11 +5,7 @@
 <HTML>
 <script language=JavaScript>
 <!--
-top.help_url='2_2_2_2_3_6.html';
-function show_help()
-{
-	return '2_2_2_2_3_6.html';
-}
+top.help_url='FunkButtonNeu/AnlegenNeuerVerknuepfung.html';
 //-->
 </script>
 
@@ -95,11 +91,7 @@ return true;
 <HTML>
 <script language=JavaScript>
 <!--
-top.help_url='2_2_2_2_3_7.html';
-function show_help()
-{
-	return '2_2_2_2_3_7.html';
-}
+top.help_url='FunkButtonNeu/AnlegenNeuerVerknuepfung.html';
 
 var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
 //-->

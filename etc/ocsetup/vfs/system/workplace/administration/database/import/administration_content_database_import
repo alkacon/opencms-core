@@ -10,10 +10,7 @@
 
 <script language=JavaScript>
 <!--
-function show_help()
-{
-	return '5_2_5_3.html';
-}
+top.help_url='Administration/datenbankverwaltung/import.html';
 //-->
 </script>
 

@@ -6,12 +6,7 @@
 
 <script language=JavaScript>
 <!--
-top.help_url='2_2_2_2_8_2.html';
-function show_help()
-{
-	return '2_2_2_2_8_2.html';
-}
-
+top.help_url='ExplorerAnsicht/zugriffsAktionen/ChGroup.html';
 
 var selectedowner=null;
 
@@ -115,11 +110,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 
 <script language=JavaScript>
 <!--
-top.help_url='2_2_2_2_8_2.html';
-function show_help()
-{
-	return '2_2_2_2_8_2.html';
-}
+top.help_url='ExplorerAnsicht/zugriffsAktionen/ChGroup.html';
 
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 

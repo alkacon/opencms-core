@@ -5,10 +5,7 @@
 <HTML>
 <script language=JavaScript>
 <!--
-function show_help()
-{
-	return '2_2_2_2_6_1.html';
-}
+top.help_url='Administration/Modulverwaltung/index.html';
 //-->
 </script>
 <head>

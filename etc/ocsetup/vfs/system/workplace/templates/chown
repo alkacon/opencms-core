@@ -6,14 +6,7 @@
 
 <script language=JavaScript>
 <!--
-top.help_url='2_2_2_2_8_1.html';
-function show_help()
-{
-	return '2_2_2_2_8_1.html';
-}
-
-
-
+top.help_url='ExplorerAnsicht/zugriffsAktionen/eigentuemeraender.html';
 
 var selectedowner=null;
 
@@ -24,13 +17,6 @@ function checkSelected()
  location.href='chown.html?newowner='+selectedowner;
  //alert(document.USER.name.options[i].value);
 }
-
-
-
-
-
-
-
 
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 
@@ -120,11 +106,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 
 <script language=JavaScript>
 <!--
-top.help_url='2_2_2_2_8_1.html';
-function show_help()
-{
-	return '2_2_2_2_8_1.html';
-}
+top.help_url='ExplorerAnsicht/zugriffsAktionen/eigentuemeraender.html';
 
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 

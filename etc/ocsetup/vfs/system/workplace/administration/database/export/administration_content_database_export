@@ -17,10 +17,7 @@
 
 <script language=JavaScript>
 <!--
-function show_help()
-{
-	return '5_2_5_1.html';
-}
+top.help_url='Administration/datenbankverwaltung/exportieren.html';
 //-->
 </script>
 

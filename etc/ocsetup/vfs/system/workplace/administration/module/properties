@@ -6,10 +6,6 @@
 
 <script language=JavaScript>
 <!--
-function show_help()
-{
-	return '2_2_2_2_4_6.html';
-}
 //-->
 </script>
 
@@ -126,10 +122,6 @@ function show_help()
 <HTML>
 <script language=JavaScript>
 <!--
-function show_help()
-{
-	return '2_2_2_2_9.html';
-}
 
 function checkHowMuch(){
 
@@ -234,10 +226,6 @@ function checkHowMuch(){
 <HTML>
 <script language=JavaScript>
 <!--
-function show_help()
-{
-	return '2_2_2_2_4_6.html';
-}
 //-->
 </script>
 <head>

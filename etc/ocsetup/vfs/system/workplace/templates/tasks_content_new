@@ -13,10 +13,7 @@
 
 <script language=JavaScript>
 <!--
-function show_help()
-{
-	return '4_3.html';
-}
+top.help_url='Aufgaben/aufgabeerstellen.html';
 
 function fillDate()
 {

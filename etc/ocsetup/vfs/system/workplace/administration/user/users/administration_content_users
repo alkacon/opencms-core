@@ -10,10 +10,7 @@ SRC="../../../templates/js/opencms.js"></SCRIPT>
 
 <script language=JavaScript>
 <!--
-function show_help()
-{
-	return '5_2_1_1.html';
-}
+top.help_url='Administration/Benutzerverwaltung/Benutzer.html';
 //-->
 </script>
 
@@ -109,10 +106,7 @@ SRC="../../../templates/js/opencms.js"></SCRIPT>
 
 <script language=JavaScript>
 <!--
-function show_help()
-{
-	return '5_2_1_1_2.html';
-}
+top.help_url='Administration/Benutzerverwaltung/BenutzerBearbeiten.html';
 //-->
 </script>
 
@@ -302,12 +296,7 @@ name="picsUrl">bg_weiss.gif"</METHOD><![CDATA["  bgproperties=fixed marginwidth 
 
 <script language=JavaScript>
 <!--
-
-function show_help()
-{
-	return '5_2_1_1_1.html';
-}
-
+top.help_url='Administration/Benutzerverwaltung/BenutzerNeu.html';
 
 function checkFormData(a,b)
 {
@@ -537,10 +526,7 @@ function checkForm(){
  
 <script language=JavaScript>
 <!--
-function show_help()
-{
-	return '5_2_1_1_1.html';
-}
+top.help_url='Administration/Benutzerverwaltung/Benutzer.html';
 //-->
 </script>
 

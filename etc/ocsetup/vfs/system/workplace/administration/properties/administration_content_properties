@@ -6,10 +6,7 @@
 
 <script language=JavaScript>
 <!--
-	function show_help()
-	{
-		return '5_2_9.html';
-	}
+top.help_url='Administration/Eigenschaft.html';
 //-->
 	<!-- URL for pictures -->
 		var pfad="]]><METHOD name="picsUrl"/><![CDATA[";
@@ -42,10 +39,7 @@
 
 <script LANGUAGE="JavaScript">
 <!--
-function show_help()
-{
-	return '5_2_9_1.html';
-}
+top.help_url='Administration/Eigenschaft.html';
 //-->
 </script>
 
@@ -144,10 +138,7 @@ function show_help()
 
 <script language=JavaScript>
 <!--
-function show_help()
-{
-	return '5_2_9_2.html';
-}
+top.help_url='Administration/Eigenschaft.html';
 //-->
 </script>
 
@@ -233,10 +224,7 @@ function show_help()
 
 <script language=JavaScript>
 <!--
-function show_help()
-{
-	return '5_2_9_2_2.html';
-}
+top.help_url='Administration/Eigenschaft.html';
 //-->
 </script>
 

@@ -6,10 +6,7 @@
 	<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../../templates/js/opencms.js"></SCRIPT>
 	<script language=JavaScript>
 		<!--
-		function show_help()
-		{
-			return '5_2_5_1.html';
-		}
+		top.help_url='Administration/Modulverwaltung/index.html';
 		//-->
 	</script>
 <head>
@@ -155,10 +152,6 @@
 
 <script language=JavaScript>
 <!--
-function show_help()
-{
-	return '5_2_5_1.html';
-}
 
 function deleteAnItem(theList,itemNo) {
 var n=theList.length;

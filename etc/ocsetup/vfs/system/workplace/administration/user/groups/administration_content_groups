@@ -9,10 +9,7 @@
 
 <script language="JavaScript">
 <!--
-function show_help()
-{
-	return '5_2_1_2.html';
-}
+top.help_url='Administration/Benutzerverwaltung/Gruppe.html';
 //-->
 </script>
 
@@ -99,7 +96,7 @@ onLoad="window.top.body.admin_head.location.href='../../../action/administration
 ]]>
 </TEMPLATE>
 
-<!-- lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll -->
+
 
 <TEMPLATE name="newgroup">
 <![CDATA[
@@ -111,11 +108,7 @@ onLoad="window.top.body.admin_head.location.href='../../../action/administration
 
 <script language="JavaScript">
 <!--
-function show_help()
-{
-	return '5_2_1_2_1.html';
-}
-
+top.help_url='Administration/Benutzerverwaltung/GruppeNeu.html';
 
 function checkFormData()
 {
@@ -272,10 +265,7 @@ onLoad="window.top.body.admin_head.location.href='../../../action/administration
 
 <script language="JavaScript">
 <!--
-function show_help()
-{
-	return '5_2_1_2_2.html';
-}
+top.help_url='Administration/Benutzerverwaltung/GruppeBearbeiten.html';
 //-->
 </script>
 
@@ -407,10 +397,7 @@ onLoad="window.top.body.admin_head.location.href='../../../action/administration
  
 <script language=JavaScript>
 <!--
-function show_help()
-{
-	return '5_2_1_2.html';
-}
+top.help_url='Administration/Benutzerverwaltung/Gruppe.html';
 //-->
 </script>
 

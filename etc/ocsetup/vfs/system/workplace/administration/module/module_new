@@ -9,11 +9,7 @@
 
 <script language=JavaScript>
 <!--
-function show_help()
-{
-	return '2_2_2_2_3.html';
-}
-
+top.help_url='Administration/Modulverwaltung/index.html';
 //-->
 </script>
 
@@ -264,14 +260,6 @@ function show_help()
 <TEMPLATE name="errorreplace">
 <![CDATA[
 <HTML>
-<script language=JavaScript>
-<!--
-function show_help()
-{
-	return '2_2_2_2_6_1.html';
-}
-//-->
-</script>
 <head>
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 <title>OpenCms</title>

@@ -11,11 +11,7 @@
 var js_filename=': ]]><PROCESS>FILENAME</PROCESS><![CDATA[';
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 
-top.help_url='2_2_2_2_4_4.html';
-function show_help()
-{
-	return '2_2_2_2_4_4.html';
-}
+top.help_url='ExplorerAnsicht/allgemeineAktionen/delete.html';
 //-->
 </script>
 
@@ -112,11 +108,7 @@ function show_help()
 //for the filename to delete
 var js_filename=': ]]><PROCESS>FILENAME</PROCESS><![CDATA[';
 
-top.help_url='2_2_2_2_5_7.html';
-function show_help()
-{
-	return '2_2_2_2_5_7.html';
-}
+top.help_url='ExplorerAnsicht/allgemeineAktionen/delete.html';
 //-->
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 </script>

@@ -14,10 +14,7 @@ if(top.frames[0].document.projectchange.project.options[top.frames[0].document.p
 	window.top.head.location.href='../../../action/head.html';
 }
 
-function show_help()
-{
-	return '5_2_2_1.html';
-}
+top.help_url='Administration/projektverwaltung/Projekterstellen.html';
 
 function deleteAnItem(theList,itemNo) {
 var n=theList.length;

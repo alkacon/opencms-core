@@ -5,11 +5,7 @@
 <HTML>
 <script language=JavaScript>
 <!--
-top.help_url='2_2_2_2_3_3.html';
-function show_help()
-{
-	return '2_2_2_2_3_3.html';
-}
+top.help_url='FunkButtonNeu/index.html';
 //-->
 </script>
 
@@ -17,9 +13,6 @@ function show_help()
 
 <script language=JavaScript>
 <!--
-
-
-
 
 
 function checkforchars(whichform){
@@ -118,11 +111,7 @@ return true;
 <HTML>
 <script language=JavaScript>
 <!--
-top.help_url='2_2_2_2_3_3_1.html';
-function show_help()
-{
-	return '2_2_2_2_3_3_1.html';
-}
+top.help_url='FunkButtonNeu/index.html';
 //-->
 </script>
 

@@ -6,10 +6,6 @@
 	
 	<script language=JavaScript>
 	<!--
-	function show_help()
-	{
-		return '2_2_2_2_6_3.html';
-	}
 	//-->
 	</script>
 	
@@ -43,10 +39,6 @@
 	
 	<script language=JavaScript>
 	<!--
-	function show_help()
-	{
-		return '2_2_2_2_5_3.html';
-	}
 	//-->
 	</script>
 	

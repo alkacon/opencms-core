@@ -6,12 +6,8 @@
 
 <script language=JavaScript>
 <!--
-top.help_url='2_2_2_2_7.html';
-function show_help()
-{
-	return '2_2_2_2_7.html';
-}
-
+top.help_url='ExplorerAnsicht/eigenschaftsAktionen/ChType.html';
+ 
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 
 //-->
