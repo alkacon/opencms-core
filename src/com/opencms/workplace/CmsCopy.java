@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCopy.java,v $
- * Date   : $Date: 2000/04/20 09:59:32 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2000/04/26 10:33:39 $
+ * Version: $Revision: 1.22 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.21 $ $Date: 2000/04/20 09:59:32 $
+ * @version $Revision: 1.22 $ $Date: 2000/04/26 10:33:39 $
  */
 public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -200,15 +200,19 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
                     // now copy all subfolders
                     for (int i=0;i<allFolders.size();i++) {
                         CmsFolder folder=(CmsFolder)allFolders.elementAt(i);  
-                        cms.copyFolder(folder.getAbsolutePath(), newFolder+newFile+"/"+folder.getAbsolutePath().substring(file.getAbsolutePath().length()));
+                        if (folder.getState() != C_STATE_DELETED) {
+                            cms.copyFolder(folder.getAbsolutePath(), newFolder+newFile+"/"+folder.getAbsolutePath().substring(file.getAbsolutePath().length()));
                  
-                        checkFlags(cms,newFolder+newFile+"/"+folder.getAbsolutePath().substring(file.getAbsolutePath().length()),flags);                    
-                     }
+                            checkFlags(cms,newFolder+newFile+"/"+folder.getAbsolutePath().substring(file.getAbsolutePath().length()),flags);                    
+                        }
+                    }
                 
                     // now copy all files in the subfolders
                     for (int i=0;i<allFiles.size();i++) {
                         CmsFile newfile=(CmsFile)allFiles.elementAt(i);  
-                        copyFile(cms,newfile,newFolder+newFile+"/",newfile.getAbsolutePath().substring(file.getAbsolutePath().length()),flags,true);
+                        if (newfile.getState() != C_STATE_DELETED) {
+                            copyFile(cms,newfile,newFolder+newFile+"/",newfile.getAbsolutePath().substring(file.getAbsolutePath().length()),flags,true);
+                        }
                     }    
                 	// everything is done, so remove all session parameters		
                     session.removeValue(C_PARA_FILE);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDelete.java,v $
- * Date   : $Date: 2000/04/20 08:11:54 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2000/04/26 10:33:39 $
+ * Version: $Revision: 1.19 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
-  * @version $Revision: 1.18 $ $Date: 2000/04/20 08:11:54 $
+  * @version $Revision: 1.19 $ $Date: 2000/04/26 10:33:39 $
  */
 public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants, I_CmsNewsConstants {
@@ -159,15 +159,19 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
                 // now delete all files in the subfolders
                 for (int i=0;i<allFiles.size();i++) {
                     CmsFile newfile=(CmsFile)allFiles.elementAt(i);  
-                    cms.lockResource(newfile.getAbsolutePath());
-                    deleteFile(cms,newfile,true);
+                    if (newfile.getState() != C_STATE_DELETED) {
+                        cms.lockResource(newfile.getAbsolutePath());
+                        deleteFile(cms,newfile,true);
+                    }
                 }    
         
                 // now delete all subfolders
                 for (int i=0;i<allFolders.size();i++) {
                     CmsFolder folder=(CmsFolder)allFolders.elementAt(allFolders.size()-i-1);  
-                    cms.lockResource(folder.getAbsolutePath());
-                    cms.deleteFolder(folder.getAbsolutePath());
+                    if (folder.getState() != C_STATE_DELETED) {
+                        cms.lockResource(folder.getAbsolutePath());
+                        cms.deleteFolder(folder.getAbsolutePath());
+                    }
                 }
          
                 // finally delete the selected folder

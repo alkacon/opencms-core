@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsRename.java,v $
- * Date   : $Date: 2000/04/20 09:59:32 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2000/04/26 10:33:39 $
+ * Version: $Revision: 1.18 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.17 $ $Date: 2000/04/20 09:59:32 $
+ * @version $Revision: 1.18 $ $Date: 2000/04/26 10:33:39 $
  */
 public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -168,25 +168,31 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
                         // then copy all folders
                         for (int i=0;i<allFolders.size();i++) {                            
                             CmsFolder folder=(CmsFolder)allFolders.elementAt(i);  
-                            String newname=parent+newFile+"/"+folder.getAbsolutePath().substring(file.getAbsolutePath().length());                                               
-                            cms.copyFolder(folder.getAbsolutePath(), newname);
+                            if (folder.getState() != C_STATE_DELETED) {
+                                String newname=parent+newFile+"/"+folder.getAbsolutePath().substring(file.getAbsolutePath().length());                                               
+                                cms.copyFolder(folder.getAbsolutePath(), newname);
+                            }
                         }
                      
                         // now move the files
                         for (int i=0;i<allFiles.size();i++) {
                             CmsFile newfile=(CmsFile)allFiles.elementAt(i);
-                            String newname=parent+newFile+"/"+newfile.getAbsolutePath().substring(file.getAbsolutePath().length());                                                                       
-                            cms.lockResource(newfile.getAbsolutePath());
-                           // cms.moveFile(newfile.getAbsolutePath(),newname);
-                            moveFile(cms,newfile,newname,"true",true);          
-                            cms.unlockResource(newname);
+                            if (newfile.getState() != C_STATE_DELETED) {
+                                String newname=parent+newFile+"/"+newfile.getAbsolutePath().substring(file.getAbsolutePath().length());                                                                       
+                                cms.lockResource(newfile.getAbsolutePath());
+                                // cms.moveFile(newfile.getAbsolutePath(),newname);
+                                moveFile(cms,newfile,newname,"true",true);          
+                                cms.unlockResource(newname);
+                            }
                         }
                         
                         // finally remove the original folders
                         for (int i=0;i<allFolders.size();i++) {
                             CmsFolder folder=(CmsFolder)allFolders.elementAt(allFolders.size()-i-1);  
-                            cms.lockResource(folder.getAbsolutePath());
-                            cms.deleteFolder(folder.getAbsolutePath());
+                            if (folder.getState() != C_STATE_DELETED) {
+                                cms.lockResource(folder.getAbsolutePath());
+                                cms.deleteFolder(folder.getAbsolutePath());
+                            }
                         }
                         
                         // as the last step, delete the original folder

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChmod.java,v $
- * Date   : $Date: 2000/04/20 09:59:32 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/04/26 10:33:39 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.10 $ $Date: 2000/04/20 09:59:32 $
+ * @version $Revision: 1.11 $ $Date: 2000/04/26 10:33:39 $
  */
 public class CmsChmod extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -232,40 +232,44 @@ public class CmsChmod extends CmsWorkplaceDefault implements I_CmsWpConstants,
                    // now modify all subfolders
                     for (int i=0;i<allFolders.size();i++) {
                         CmsFolder folder=(CmsFolder)allFolders.elementAt(i);  
-                        cms.lockResource(folder.getAbsolutePath());
-                        cms.chmod(folder.getAbsolutePath(),flag);
-                        cms.unlockResource(folder.getAbsolutePath());
-                        // check if there is a corresponding 
-                        // directory in the content body folder
-                        String bodyFolder=C_CONTENTBODYPATH.substring(0,C_CONTENTBODYPATH.lastIndexOf("/"))+folder.getAbsolutePath();
-                        try {
-                            cms.readFolder(bodyFolder);
-                            cms.lockResource(bodyFolder);
-                            cms.chmod(bodyFolder,flag);
-                            cms.unlockResource(bodyFolder);
-                        } catch (CmsException ex) {
-                             // no folder is there, so do nothing
+                        if (folder.getState() != C_STATE_DELETED) {
+                            cms.lockResource(folder.getAbsolutePath());
+                            cms.chmod(folder.getAbsolutePath(),flag);
+                            cms.unlockResource(folder.getAbsolutePath());
+                            // check if there is a corresponding 
+                            // directory in the content body folder
+                            String bodyFolder=C_CONTENTBODYPATH.substring(0,C_CONTENTBODYPATH.lastIndexOf("/"))+folder.getAbsolutePath();
+                            try {
+                                cms.readFolder(bodyFolder);
+                                cms.lockResource(bodyFolder);
+                                cms.chmod(bodyFolder,flag);
+                                cms.unlockResource(bodyFolder);
+                            } catch (CmsException ex) {
+                                // no folder is there, so do nothing
+                            }
                         }
                     }
                 
                     // now modify all files in the subfolders
                     for (int i=0;i<allFiles.size();i++) {
                         CmsFile newfile=(CmsFile)allFiles.elementAt(i);  
-                        cms.lockResource(newfile.getAbsolutePath());
-                        cms.chmod(newfile.getAbsolutePath(),flag);
-                        cms.unlockResource(newfile.getAbsolutePath());
-                        if( (cms.getResourceType(newfile.getType()).getResourceName()).equals(C_TYPE_PAGE_NAME) ){
-				            String bodyPath=getBodyPath(cms, (CmsFile)newfile);
-				            int help = C_CONTENTBODYPATH.lastIndexOf("/");
-				            String hbodyPath=(C_CONTENTBODYPATH.substring(0,help))+(newfile.getAbsolutePath());
-				            if (hbodyPath.equals(bodyPath)){
-                                cms.lockResource(hbodyPath);
-					            cms.chmod(hbodyPath,flag);
-                                cms.unlockResource(hbodyPath);
-				            }
-                        }   
-                        
-                    }    
+                        if (newfile.getState() != C_STATE_DELETED) {
+                            cms.lockResource(newfile.getAbsolutePath());
+                            cms.chmod(newfile.getAbsolutePath(),flag);
+                            cms.unlockResource(newfile.getAbsolutePath());
+                            if( (cms.getResourceType(newfile.getType()).getResourceName()).equals(C_TYPE_PAGE_NAME) ){
+				                String bodyPath=getBodyPath(cms, (CmsFile)newfile);
+				                int help = C_CONTENTBODYPATH.lastIndexOf("/");
+				                String hbodyPath=(C_CONTENTBODYPATH.substring(0,help))+(newfile.getAbsolutePath());
+    				            if (hbodyPath.equals(bodyPath)){
+                                    cms.lockResource(hbodyPath);
+		    			            cms.chmod(hbodyPath,flag);
+                                    cms.unlockResource(hbodyPath);
+				                }
+                            }   
+                            
+                        }    
+                    }
                    cms.lockResource(file.getAbsolutePath());
                 }
               
