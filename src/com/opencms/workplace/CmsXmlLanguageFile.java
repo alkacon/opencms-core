@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlLanguageFile.java,v $
- * Date   : $Date: 2000/10/31 13:11:30 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2000/12/01 15:49:12 $
+ * Version: $Revision: 1.20 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import java.io.*;
  * Content definition for language files.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.19 $ $Date: 2000/10/31 13:11:30 $
+ * @version $Revision: 1.20 $ $Date: 2000/12/01 15:49:12 $
  */
 public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChannels,
 																   I_CmsWpConstants,
@@ -221,14 +221,16 @@ public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChann
 		Vector langFiles = new Vector();
 		//langFiles = cms.getFilesInFolder(m_languagePath + language + "/");
 		langFiles = cms.getFilesInFolder(m_languagePath + language + "/");
-
+	
 		// get all modules-language Files
 		Vector modules = new Vector();
 		modules = cms.getSubFolders(C_MODULES_PATH);
+	
 		String lang = "language/"+language+"/";
 		for(int i=0; i < modules.size(); i++){
 			Vector moduleLangFiles = new Vector();
 			moduleLangFiles = cms.getFilesInFolder( ((CmsFolder)modules.elementAt(i)).getAbsolutePath() + lang);
+	
 			for (int j=0; j < moduleLangFiles.size(); j++){
 				langFiles.addElement(moduleLangFiles.elementAt(j));
 			}
@@ -239,6 +241,7 @@ public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChann
 			file = (CmsFile)langFiles.elementAt(i);
 			if (file.getState() != C_STATE_DELETED) {
 				init(cms,file.getAbsolutePath());
+				
 				readIncludeFile(file.getAbsolutePath());
 			}
 		}

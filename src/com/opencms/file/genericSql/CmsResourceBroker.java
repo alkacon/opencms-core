@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/11/28 14:37:28 $
- * Version: $Revision: 1.201 $
+ * Date   : $Date: 2000/12/01 15:49:09 $
+ * Version: $Revision: 1.202 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.201 $ $Date: 2000/11/28 14:37:28 $
+ * @version $Revision: 1.202 $ $Date: 2000/12/01 15:49:09 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -107,6 +107,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	protected CmsCache m_propertyDefCache = null;
 	protected CmsCache m_propertyDefVectorCache = null;
 	protected CmsCache m_accessCache = null;
+	protected int m_cachelimit = 0;
 	protected String m_refresh = null;
 
 /**
@@ -2455,6 +2456,7 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
 	info.put("PropertyCache",""+m_propertyCache.size());
 	info.put("PropertyDefinitionCache",""+m_propertyDefCache.size());
 	info.put("PropertyDefinitionVectorCache",""+m_propertyDefVectorCache.size());
+	info.put("AccessCache",""+m_accessCache.size());
 
 	return info;
 	}
@@ -2585,7 +2587,9 @@ public Vector getFilesInFolder(CmsUser currentUser, CmsProject currentProject, S
 
 	// Todo: add caching for getFilesInFolder
 	//files=(Vector)m_subresCache.get(C_FILE+currentProject.getId()+foldername);
+	//System.err.println("--fof:"+foldername+":"+files);
 	//if ((files==null) || (files.size()==0)) {
+	
 
 	// try to get the files in the current project
 	try
@@ -2601,7 +2605,7 @@ public Vector getFilesInFolder(CmsUser currentUser, CmsProject currentProject, S
 			//can't handle it here.
 			throw e;
 	}
-	
+	//}
 	if (files == null)
 	{
 		//we are not allowed to read the folder (folder deleted)
@@ -2627,12 +2631,18 @@ public Vector getFilesInFolder(CmsUser currentUser, CmsProject currentProject, S
 				return files;
 		}
 	}
-	if (onlineFiles == null) //if it was null, the folder was marked deleted -> no files in online project.
-		return files;
+
+	
+	if(onlineFiles == null) //if it was null, the folder was marked deleted -> no files in online project.
+ 		return files;
+ 		
+	//m_subresCache.put(C_FILE+currentProject.getId()+foldername,files);
 		
 	return files = mergeResources(files, onlineFiles);
 
-	// m_subresCache.put(C_FILE+currentProject.getId()+foldername,files);
+
+
+	
 }
 /**
  * Returns a Vector with all resource-names that have set the given property to the given value.
@@ -3021,9 +3031,11 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
 		Vector folders = new Vector();
 		
 	   // Todo: add caching for getSubFolders
-	   //folders=(Vector)m_subresCache.get(C_FOLDER+currentProject.getId()+foldername);
+	   folders=(Vector)m_subresCache.get(C_FOLDER+currentProject.getId()+foldername);
+	 
 	   if ((folders==null) || (folders.size()==0)){
-		   
+	
+	   folders=new Vector();	    
 	   // try to get the folders in the current project
 	   try {
 			folders = helperGetSubFolders(currentUser, currentProject, foldername);
@@ -3045,7 +3057,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
 				// no onlinefolders, ignoring them
 			}			
 		}
-		//m_subresCache.put(C_FOLDER+currentProject.getId()+foldername,folders);
+		m_subresCache.put(C_FOLDER+currentProject.getId()+foldername,folders);
 	   }
 		// return the folders
 		return(folders);
@@ -3388,6 +3400,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
 		m_propertyDefCache = new CmsCache(config.getInteger(C_CONFIGURATION_CACHE + ".propertydef", 100));                  
 		m_propertyDefVectorCache = new CmsCache(config.getInteger(C_CONFIGURATION_CACHE + ".propertyvectordef", 100));
 		m_accessCache = new CmsCache(config.getInteger(C_CONFIGURATION_CACHE + ".access", 1000));
+		m_cachelimit = config.getInteger(C_CONFIGURATION_CACHE + ".maxsize", 20000);
 		m_refresh=config.getString(C_CONFIGURATION_CACHE + ".refresh", "");
 
 		// initialize the registry#
@@ -4079,7 +4092,17 @@ public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, int proj
 	// read the resource from the projectId, 
 	try
 	{
-		cmsFile = m_dbAccess.readFile(projectId, onlineProject(currentUser, currentProject).getId(), filename);
+		cmsFile=(CmsFile)m_resourceCache.get(C_FILECONTENT+projectId+filename);
+		if (cmsFile == null) {
+			
+			cmsFile = m_dbAccess.readFile(projectId, onlineProject(currentUser, currentProject).getId(), filename);
+			// only put it in thecache until the size is below the max site
+			if (cmsFile.getContents().length <m_cachelimit) {
+				m_resourceCache.put(C_FILECONTENT+projectId+filename,cmsFile);
+			} else {
+			
+			}
+		}
 		if (accessRead(currentUser, currentProject, (CmsResource) cmsFile))
 		{
 
@@ -4120,8 +4143,19 @@ public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, String f
 	// read the resource from the currentProject, or the online-project
 	try
 	{
-		cmsFile = m_dbAccess.readFile(currentProject.getId(), onlineProject(currentUser, currentProject).getId(), filename);
-	}
+		cmsFile=(CmsFile)m_resourceCache.get(C_FILECONTENT+currentProject.getId()+filename);
+		if (cmsFile == null) {
+			
+			cmsFile = m_dbAccess.readFile(currentProject.getId(), onlineProject(currentUser, currentProject).getId(), filename);
+			// only put it in thecache until the size is below the max site
+			if (cmsFile.getContents().length <m_cachelimit) {
+				m_resourceCache.put(C_FILECONTENT+currentProject.getId()+filename,cmsFile);
+			} else {
+			
+			}
+		}
+		
+		}
 	catch (CmsException exc)
 	{
 		// the resource was not readable
@@ -5816,6 +5850,7 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
 			}	
 			// update the cache
 			m_resourceCache.put(C_FILE+currentProject.getId()+file.getAbsolutePath(),file);
+			m_resourceCache.put(C_FILECONTENT+currentProject.getId()+file.getAbsolutePath(),file);
 			m_subresCache.clear();
 			m_accessCache.clear();
 			// inform about the file-system-change
