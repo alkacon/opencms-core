@@ -172,23 +172,23 @@ public class CmsShowMedia extends CmsXmlTemplate {
         Constructor c = cdClass.getConstructor(new Class[] {CmsObject.class, Integer.class});
         o = c.newInstance(new Object[] {cms, id});
       } catch (InvocationTargetException ite) {
-        if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO)) {
-            OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO, getClassName() + ": content definitionConstructor: Invocation target exception!");
+        if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_MAIN).info(getClassName() + ": content definitionConstructor: Invocation target exception!");
         }
       } catch (NoSuchMethodException nsm) {
-        if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO)) {
-          OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO, getClassName() + ":  content definitionConstructor: Requested method was not found!");
+        if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isInfoEnabled()) {
+          OpenCms.getLog(CmsLog.CHANNEL_MAIN).info(getClassName() + ":  content definitionConstructor: Requested method was not found!");
         }
       } catch (InstantiationException e) {
-        if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO)) {
-            OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO, getClassName() + ": content definition constructor: the reflected class is abstract!");
+        if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_MAIN).info(getClassName() + ": content definition constructor: the reflected class is abstract!");
         }
       } catch (Exception e) {
-        if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO)) {
-            OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO, getClassName() + ": content definitionConstructor: Other exception! " + e);
+        if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_MAIN).info(getClassName() + ": content definitionConstructor: Other exception! " + e);
         }
-        if(OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO)) {
-         OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO, e.getMessage() );
+        if(OpenCms.getLog(CmsLog.CHANNEL_MAIN).isInfoEnabled()) {
+         OpenCms.getLog(CmsLog.CHANNEL_MAIN).info(e.getMessage() );
         }
       }
     return o;

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2003/09/16 12:06:06 $
-* Version: $Revision: 1.123 $
+* Date   : $Date: 2003/09/17 08:31:28 $
+* Version: $Revision: 1.124 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.123 $ $Date: 2003/09/16 12:06:06 $
+ * @version $Revision: 1.124 $ $Date: 2003/09/17 08:31:28 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -552,10 +552,10 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
                     cms.getRequestContext().setCurrentProject(curProject);
                 }catch(CmsException e) {
                     cms.getRequestContext().setCurrentProject(curProject);
-                    if(OpenCms.isLogging(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN) ) {
-                        OpenCms.log(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN, getClassName()
+                    if(OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).isWarnEnabled() ) {
+                        OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn(getClassName()
                                 + "Could not write property " + C_PROPERTY_TITLE + " for file " + file + ".");
-                        OpenCms.log(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN, getClassName() + e);
+                        OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn(getClassName() + e);
                     }
                 }
             }
@@ -938,8 +938,8 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
         // Check the existance of the "file" parameter
         if(!existsContentParam) {
             String errorMessage = getClassName() + "No content found.";
-            if(OpenCms.isLogging(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN) ) {
-                OpenCms.log(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN, errorMessage);
+            if(OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).isWarnEnabled() ) {
+                OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn(errorMessage);
             }
             content = "";
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2003/09/16 19:12:39 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2003/09/17 08:31:30 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -226,8 +226,8 @@ public class CmsJspLoader implements I_CmsResourceLoader {
             responsestream.write(exportJsp(cms, file));
             responsestream.close();
         } catch (Throwable t) {
-            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) { 
-                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, this.getClass().getName() + " Error during static export of " + cms.readAbsolutePath(file) + ": " + t.getMessage());
+            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) { 
+                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(this.getClass().getName() + " Error during static export of " + cms.readAbsolutePath(file) + ": " + t.getMessage());
             }         
         }        
     }
@@ -500,11 +500,11 @@ public class CmsJspLoader implements I_CmsResourceLoader {
         m_cache = (CmsFlexCache)OpenCms.getRuntimeProperty(C_LOADER_CACHENAME);
         // Get the export URL from the runtime properties
         m_jspExportUrl = (String)OpenCms.getRuntimeProperty(C_LOADER_JSPEXPORTURL);
-        if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) { 
-            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". JSP Loader           : JSP repository (absolute path): " + m_jspRepository);        
-            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". JSP Loader           : JSP repository (web application path): " + m_jspWebAppRepository);              
-            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". JSP Loader           : JSP export URL: " + m_jspExportUrl);
-            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Loader init          : " + this.getClass().getName() + " initialized!");   
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) { 
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". JSP Loader           : JSP repository (absolute path): " + m_jspRepository);        
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". JSP Loader           : JSP repository (web application path): " + m_jspWebAppRepository);              
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". JSP Loader           : JSP export URL: " + m_jspExportUrl);
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader init          : " + this.getClass().getName() + " initialized!");   
         }
         // Get the "error pages are commited or not" flag from the runtime properties
         Boolean errorPagesAreNotCommited = (Boolean)OpenCms.getRuntimeProperty(C_LOADER_ERRORPAGECOMMIT);
@@ -797,8 +797,8 @@ public class CmsJspLoader implements I_CmsResourceLoader {
         
         File d = new File(jspPath).getParentFile();   
         if ((d == null) || (d.exists() && ! (d.isDirectory() && d.canRead()))) {
-            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) 
-                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "Could not access directory for " + jspPath);
+            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) 
+                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Could not access directory for " + jspPath);
             throw new ServletException("JspLoader: Could not access directory for " + jspPath);
         }   
          
@@ -933,8 +933,8 @@ public class CmsJspLoader implements I_CmsResourceLoader {
                 fs.write(contents);                
                 fs.close();
                 
-                if (OpenCms.isLogging(CmsLog.CHANNEL_FLEX, CmsLog.LEVEL_INFO)) {
-                    OpenCms.log(CmsLog.CHANNEL_FLEX, CmsLog.LEVEL_INFO, "Updated JSP file \"" + jspfilename + "\" for resource \"" + cms.readAbsolutePath(file) + "\"");
+                if (OpenCms.getLog(CmsLog.CHANNEL_FLEX).isInfoEnabled()) {
+                    OpenCms.getLog(CmsLog.CHANNEL_FLEX).info("Updated JSP file \"" + jspfilename + "\" for resource \"" + cms.readAbsolutePath(file) + "\"");
                 }
             } catch (FileNotFoundException e) {
                 throw new ServletException("JspLoader: Could not write to file '" + f.getName() + "'\n" + e, e);

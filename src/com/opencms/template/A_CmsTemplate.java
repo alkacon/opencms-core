@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsTemplate.java,v $
-* Date   : $Date: 2003/09/16 14:55:49 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2003/09/17 08:31:29 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import javax.servlet.http.HttpServletRequest;
  * Abstract template class. Contains all commonly used methods for handling cache properties.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.17 $ $Date: 2003/09/16 14:55:49 $
+ * @version $Revision: 1.18 $ $Date: 2003/09/17 08:31:29 $
  */
 public abstract class A_CmsTemplate implements I_CmsTemplate {
 
@@ -269,8 +269,8 @@ public abstract class A_CmsTemplate implements I_CmsTemplate {
      * @throws CmsException
      */
     protected void throwException(String errorMessage, int type) throws CmsException {
-        if(OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR) ) {
-            OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, getClassName() + errorMessage);
+        if(OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled() ) {
+            OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(getClassName() + errorMessage);
         }
         throw new CmsException(errorMessage, type);
     }
@@ -284,9 +284,9 @@ public abstract class A_CmsTemplate implements I_CmsTemplate {
      * @throws CmsException
      */
     protected void throwException(String errorMessage, Exception e) throws CmsException {
-        if(OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR) ) {
-            OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, getClassName() + errorMessage);
-            OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, getClassName() + "Exception: " + e);
+        if(OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled() ) {
+            OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(getClassName() + errorMessage);
+            OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(getClassName() + "Exception: " + e);
         }
         if(e instanceof CmsException) {
             throw (CmsException)e;

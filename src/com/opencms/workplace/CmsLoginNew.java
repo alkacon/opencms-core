@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLoginNew.java,v $
- * Date   : $Date: 2003/09/16 12:06:06 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2003/09/17 08:31:28 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  */
 
 public class CmsLoginNew extends CmsXmlTemplate {
@@ -157,8 +157,8 @@ public class CmsLoginNew extends CmsXmlTemplate {
             // get a session for this user so that he is authentificated at the
             // end of this request
             session = cms.getRequestContext().getSession(true);
-            if(OpenCms.isLogging(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN)) {
-                OpenCms.log(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN, "[CmsLogin] Login user " + username);
+            if(OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).isWarnEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn("[CmsLogin] Login user " + username);
             }
 
             // read the user data from the databsse

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsMail.java,v $
-* Date   : $Date: 2003/09/16 14:55:49 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2003/09/17 08:31:30 $
+* Version: $Revision: 1.23 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -91,7 +91,7 @@ import javax.mail.internet.MimeMultipart;
  * @author mla
  * @author Alexander Lucas <alexander.lucas@framfab.de>
  *
- * @version $Name:  $ $Revision: 1.22 $ $Date: 2003/09/16 14:55:49 $
+ * @version $Name:  $ $Revision: 1.23 $ $Date: 2003/09/17 08:31:30 $
  * @since OpenCms 4.1.37. Previously, this class was part of the <code>com.opencms.workplace</code> package.
  */
 public class CmsMail extends Thread {
@@ -637,8 +637,8 @@ public class CmsMail extends Thread {
         try {
             msg = buildMessage(m_mailserver);
         } catch (Exception e) {
-            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
-                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, getClassName() + "Error while building Email object: " + Utils.getStackTrace(e));
+            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(getClassName() + "Error while building Email object: " + Utils.getStackTrace(e));
             }
 
             // Do not continue here. We don't have a Message object we can send.
@@ -659,33 +659,33 @@ public class CmsMail extends Thread {
             }
 
             // First print out an error message...
-            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
-                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, getClassName() + "Error while transmitting mail to SMTP server: " + e);
+            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(getClassName() + "Error while transmitting mail to SMTP server: " + e);
             }
 
             // ... and now try an alternative server (if given)
             if (m_alternativeMailserver != null && !"".equals(m_alternativeMailserver)) {
-                if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
-                    OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, getClassName() + "Trying alternative server...");
+                if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
+                    OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(getClassName() + "Trying alternative server...");
                 }
                 try {
                     msg = buildMessage(m_alternativeMailserver);
                     Transport.send(msg);
-                    if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
-                        OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, getClassName() + "...OK. Mail sent.");
+                    if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
+                        OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(getClassName() + "...OK. Mail sent.");
                     }
                 } catch (Exception e2) {
 
                     // Get nested Exception used for pretty printed error message in logfile
                     for (; e2 instanceof MessagingException; e2 = ((MessagingException)e2).getNextException()) {
                     }
-                    if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
-                        OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, getClassName() + "PANIC! Could not send Email. Even alternative server failed! " + e2);
+                    if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
+                        OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(getClassName() + "PANIC! Could not send Email. Even alternative server failed! " + e2);
                     }
                 }
             } else {
-                if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
-                    OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, getClassName() + "PANIC! No alternative SMTP server given! Could not send Email!");
+                if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
+                    OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(getClassName() + "PANIC! No alternative SMTP server given! Could not send Email!");
                 }
             }
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsSqlManager.java,v $
- * Date   : $Date: 2003/09/16 14:55:49 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/09/17 08:31:28 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import java.util.Properties;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.11 $ $Date: 2003/09/16 14:55:49 $
+ * @version $Revision: 1.12 $ $Date: 2003/09/17 08:31:28 $
  */
 public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
     
@@ -101,8 +101,8 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
             m_queries.load(getClass().getClassLoader().getResourceAsStream(queryFilename));
         } catch(Exception exc) {
             // no query.properties found - write to logstream.
-            if(OpenCms.isLogging(CmsLog.CHANNEL_MODULE, CmsLog.LEVEL_WARN)) {
-                OpenCms.log(CmsLog.CHANNEL_MODULE, CmsLog.LEVEL_WARN, "[CmsProjectDriver] Couldn't load " + queryFilename + " errormessage: " + exc.getMessage());
+            if(OpenCms.getLog(CmsLog.CHANNEL_MODULE).isWarnEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_MODULE).warn("[CmsProjectDriver] Couldn't load " + queryFilename + " errormessage: " + exc.getMessage());
             }
         }
     }
@@ -230,8 +230,8 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
     public String get(String queryKey) {              
         String value = null;
         if ((value = m_queries.getProperty(queryKey)) == null) {
-            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
-                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[" + getClass().getName() + "] query '" + queryKey + "' not found!");
+            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("[" + getClass().getName() + "] query '" + queryKey + "' not found!");
             }
         }
         return value;

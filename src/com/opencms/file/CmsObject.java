@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/09/16 14:55:48 $
-* Version: $Revision: 1.409 $
+* Date   : $Date: 2003/09/17 08:31:30 $
+* Version: $Revision: 1.410 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.409 $
+ * @version $Revision: 1.410 $
  */
 public class CmsObject {
 
@@ -2718,10 +2718,10 @@ public class CmsObject {
                     }
                 }
             }
-            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
-                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, stamp1);
-                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, stamp2);
-                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[" + this.getClass().getName() + ".publishProject()/1] Exception: " + e);
+            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(stamp1);
+                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(stamp2);
+                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("[" + this.getClass().getName() + ".publishProject()/1] Exception: " + e);
             }
         } finally {
             if (changedResources == null || changedResources.size() < 1) {
@@ -2734,10 +2734,10 @@ public class CmsObject {
                     System.err.println(stamp2);
                     System.err.println(stamp3);
                 }
-                if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_DEBUG)) {
-                    OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_DEBUG, stamp1);
-                    OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_DEBUG, stamp2);
-                    OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_DEBUG, stamp3);
+                if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isDebugEnabled()) {
+                    OpenCms.getLog(CmsLog.CHANNEL_MAIN).debug(stamp1);
+                    OpenCms.getLog(CmsLog.CHANNEL_MAIN).debug(stamp2);
+                    OpenCms.getLog(CmsLog.CHANNEL_MAIN).debug(stamp3);
                 }
                 success = false;
             }

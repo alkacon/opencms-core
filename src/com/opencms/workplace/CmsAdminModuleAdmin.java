@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleAdmin.java,v $
-* Date   : $Date: 2003/09/16 12:06:07 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2003/09/17 08:31:28 $
+* Version: $Revision: 1.34 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -154,10 +154,10 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault {
      * @param templateSelector template section that should be processed.
      */
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
-        if(OpenCms.isLogging(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN) && C_DEBUG ) {
-            OpenCms.log(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN, this.getClassName() + "getting content of element " + ((elementName == null) ? "<root>" : elementName));
-            OpenCms.log(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN, this.getClassName() + "template file is: " + templateFile);
-            OpenCms.log(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN, this.getClassName() + "selected template section is: " + ((templateSelector == null) ? "<default>" : templateSelector));
+        if(OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).isWarnEnabled() && C_DEBUG ) {
+            OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn(this.getClassName() + "getting content of element " + ((elementName == null) ? "<root>" : elementName));
+            OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn(this.getClassName() + "template file is: " + templateFile);
+            OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn(this.getClassName() + "selected template section is: " + ((templateSelector == null) ? "<default>" : templateSelector));
         }
         CmsXmlTemplateFile templateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
         CmsRegistry reg = cms.getRegistry();
@@ -431,9 +431,8 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault {
                 reg.setModuleType( name, CmsRegistry.C_MODULE_TYPE_TRADITIONAL );
             }               
         }catch(CmsException e) {
-             if(OpenCms.isLogging(CmsLog.CHANNEL_MODULE, CmsLog.LEVEL_WARN)) {
-                 OpenCms.log(CmsLog.CHANNEL_MODULE,
-                    CmsLog.LEVEL_WARN, "Error while module administrating: " + e.toString());
+             if(OpenCms.getLog(CmsLog.CHANNEL_MODULE).isWarnEnabled()) {
+                 OpenCms.getLog(CmsLog.CHANNEL_MODULE).warn("Error in module administration: " + e.toString());
              }
         }
     }

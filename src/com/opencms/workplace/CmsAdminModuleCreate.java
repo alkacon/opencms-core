@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleCreate.java,v $
-* Date   : $Date: 2003/09/16 12:06:06 $
-* Version: $Revision: 1.37 $
+* Date   : $Date: 2003/09/17 08:31:28 $
+* Version: $Revision: 1.38 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -98,10 +98,10 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault {
      * @param templateSelector template section that should be processed.
      */
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
-        if(OpenCms.isLogging(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN) && C_DEBUG) {
-            OpenCms.log(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN, this.getClassName() + "getting content of element " + ((elementName == null) ? "<root>" : elementName));
-            OpenCms.log(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN, this.getClassName() + "template file is: " + templateFile);
-            OpenCms.log(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN, this.getClassName() + "selected template section is: " + ((templateSelector == null) ? "<default>" : templateSelector));
+        if(OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).isWarnEnabled() && C_DEBUG) {
+            OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn(this.getClassName() + "getting content of element " + ((elementName == null) ? "<root>" : elementName));
+            OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn(this.getClassName() + "template file is: " + templateFile);
+            OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn(this.getClassName() + "selected template section is: " + ((templateSelector == null) ? "<default>" : templateSelector));
         }
         CmsXmlTemplateFile templateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
         //CmsRequestContext reqCont = cms.getRequestContext();

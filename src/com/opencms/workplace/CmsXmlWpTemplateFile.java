@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpTemplateFile.java,v $
-* Date   : $Date: 2003/09/16 12:06:06 $
-* Version: $Revision: 1.67 $
+* Date   : $Date: 2003/09/17 08:31:28 $
+* Version: $Revision: 1.68 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.w3c.dom.Element;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.67 $ $Date: 2003/09/16 12:06:06 $
+ * @version $Revision: 1.68 $ $Date: 2003/09/17 08:31:28 $
  */
 
 public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile {
@@ -95,8 +95,8 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile {
      * Clears the internal language cache
      **/
     public static void clearcache() {
-        if(OpenCms.isLogging(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN) ) {
-            OpenCms.log(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN, "clear language file cache");
+        if(OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).isWarnEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn("clear language file cache");
         }
     }
 
@@ -237,8 +237,8 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile {
         }catch(Exception e) {
             String errorMessage = "Error while building workplace element \"" + tagname + "\": " + e;
             if(e instanceof CmsException) {
-                if(OpenCms.isLogging(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN)) {
-                    OpenCms.log(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN, getClassName() + errorMessage);
+                if(OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).isWarnEnabled()) {
+                    OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn(getClassName() + errorMessage);
                 }
                 throw (CmsException)e;
             }else {

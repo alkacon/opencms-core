@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsEditor.java,v $
-* Date   : $Date: 2003/09/16 12:06:07 $
-* Version: $Revision: 1.55 $
+* Date   : $Date: 2003/09/17 08:31:28 $
+* Version: $Revision: 1.56 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.http.HttpServletRequest;
  * <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.55 $ $Date: 2003/09/16 12:06:07 $
+ * @version $Revision: 1.56 $ $Date: 2003/09/17 08:31:28 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -325,8 +325,8 @@ public class CmsEditor extends CmsWorkplaceDefault {
 
             // Anything is wrong. Perhaps a wrong file name ???
             String errorMessage = "Error while reading file " + filename + ": " + e;
-            if(OpenCms.isLogging(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN)) {
-                OpenCms.log(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN, getClassName() + errorMessage);
+            if(OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).isWarnEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn(getClassName() + errorMessage);
             }
 
             // throw this exception again, so it can be displayed in the servlet.

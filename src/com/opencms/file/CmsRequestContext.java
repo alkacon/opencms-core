@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
- * Date   : $Date: 2003/09/16 14:55:48 $
- * Version: $Revision: 1.97 $
+ * Date   : $Date: 2003/09/17 08:31:30 $
+ * Version: $Revision: 1.98 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpSession;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  *
- * @version $Revision: 1.97 $
+ * @version $Revision: 1.98 $
  */
 public class CmsRequestContext {
 
@@ -505,9 +505,8 @@ public class CmsRequestContext {
             return;
         } else if ((getUri().startsWith(I_CmsWpConstants.C_VFS_PATH_SYSTEM)) && (! (m_req instanceof CmsExportRequest))) {
             // try to get encoding from session for special system folder only                
-            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_DEBUG)) {                                
-                OpenCms.log(CmsLog.CHANNEL_MAIN,
-                    CmsLog.LEVEL_DEBUG, "[" + getClass().getName() + "] can't get encoding property for resource "
+            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isDebugEnabled()) {                                
+                OpenCms.getLog(CmsLog.CHANNEL_MAIN).debug("Can't get encoding property for resource "
                     + m_req.getRequestedResource() + ", trying to get it from session.");
             }                    
             I_CmsSession session = getSession(false);
@@ -517,9 +516,8 @@ public class CmsRequestContext {
         }
         if (m_encoding == null || "".equals(m_encoding)) {
             // no encoding found - use default one
-            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_DEBUG)) {                                
-                OpenCms.log(CmsLog.CHANNEL_MAIN,
-                    CmsLog.LEVEL_DEBUG, "[" + getClass().getName() + "] no encoding found - using default: " + OpenCms.getDefaultEncoding());
+            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isDebugEnabled()) {                                
+                OpenCms.getLog(CmsLog.CHANNEL_MAIN).debug("No encoding found - using default: " + OpenCms.getDefaultEncoding());
             }                  
             m_encoding = OpenCms.getDefaultEncoding();
         }

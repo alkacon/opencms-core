@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCache.java,v $
- * Date   : $Date: 2003/09/16 19:12:39 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/09/17 08:31:30 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @see com.opencms.flex.cache.CmsFlexCacheKey
  * @see com.opencms.flex.cache.CmsFlexCacheEntry
@@ -374,8 +374,8 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         purgeDirectory(d);
          
         clear();
-        if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO)) 
-            OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO, "JSP repository purged - purgeJspRepository() called");
+        if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isInfoEnabled()) 
+            OpenCms.getLog(CmsLog.CHANNEL_MAIN).info("JSP repository purged - purgeJspRepository() called");
     }
     
     /**
@@ -734,8 +734,8 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         this.m_entryLruCache.clear();
         this.m_variationCache.clear();
         
-        if (OpenCms.isLogging(CmsLog.CHANNEL_FLEX, CmsLog.LEVEL_INFO)) 
-            OpenCms.log(CmsLog.CHANNEL_FLEX, CmsLog.LEVEL_INFO, "[FlexCache] Complete cache cleared - clear() called");
+        if (OpenCms.getLog(CmsLog.CHANNEL_FLEX).isInfoEnabled()) 
+            OpenCms.getLog(CmsLog.CHANNEL_FLEX).info("[FlexCache] Complete cache cleared - clear() called");
     }
     
     /**
@@ -844,8 +844,8 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
                 }
             }
         }
-        if (OpenCms.isLogging(CmsLog.CHANNEL_FLEX, CmsLog.LEVEL_INFO)) 
-            OpenCms.log(CmsLog.CHANNEL_FLEX, CmsLog.LEVEL_INFO, "[FlexCache] Part of the FlexCache cleared - clearOneHalf(" + suffix + ", " + entriesOnly + ") called");
+        if (OpenCms.getLog(CmsLog.CHANNEL_FLEX).isInfoEnabled()) 
+            OpenCms.getLog(CmsLog.CHANNEL_FLEX).info("[FlexCache] Part of the FlexCache cleared - clearOneHalf(" + suffix + ", " + entriesOnly + ") called");
     }
     
     /**
@@ -864,7 +864,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      * @see com.opencms.flex.util.I_CmsFlexLruCacheObject
      * @author Alexander Kandzior (a.kandzior@alkacon.com)
      * @author Thomas Weckert (t.weckert@alkacon.com)
-     * @version $Revision: 1.5 $ 
+     * @version $Revision: 1.6 $ 
      */
     class CmsFlexCacheVariation extends Object implements org.opencms.cache.I_CmsLruCacheObject {
         

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskNew.java,v $
-* Date   : $Date: 2003/09/16 12:06:07 $
-* Version: $Revision: 1.32 $
+* Date   : $Date: 2003/09/17 08:31:28 $
+* Version: $Revision: 1.33 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.32 $ $Date: 2003/09/16 12:06:07 $
+ * @version $Revision: 1.33 $ $Date: 2003/09/17 08:31:28 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -121,11 +121,11 @@ public class CmsTaskNew extends CmsWorkplaceDefault {
 
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) throws CmsException {
-        if(OpenCms.isLogging(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN) && C_DEBUG) {
-            OpenCms.log(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN, this.getClassName() + "getting content of element "
+        if(OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).isWarnEnabled() && C_DEBUG) {
+            OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn(this.getClassName() + "getting content of element "
                     + ((elementName == null) ? "<root>" : elementName));
-            OpenCms.log(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN, this.getClassName() + "template file is: " + templateFile);
-            OpenCms.log(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN, this.getClassName() + "selected template section is: "
+            OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn(this.getClassName() + "template file is: " + templateFile);
+            OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn(this.getClassName() + "selected template section is: "
                     + ((templateSelector == null) ? "<default>" : templateSelector));
         }
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms,
@@ -178,8 +178,8 @@ public class CmsTaskNew extends CmsWorkplaceDefault {
                 templateSelector = "done";
             }
             catch(Exception exc) {
-                if(OpenCms.isLogging(CmsLog.CHANNEL_MODULE, CmsLog.LEVEL_WARN) ) {
-                    OpenCms.log(CmsLog.CHANNEL_MODULE, CmsLog.LEVEL_WARN, "Could not create task. " + exc.getMessage());
+                if(OpenCms.getLog(CmsLog.CHANNEL_MODULE).isWarnEnabled() ) {
+                    OpenCms.getLog(CmsLog.CHANNEL_MODULE).warn("Could not create task. " + exc.getMessage());
                 }
                 xmlTemplateDocument.setData("details", Utils.getStackTrace(exc));
                 templateSelector = "error";
@@ -300,8 +300,8 @@ public class CmsTaskNew extends CmsWorkplaceDefault {
             C_USER_5 = document.getDataValue("user_5");
         }
         catch(CmsException exc) {
-            if(OpenCms.isLogging(CmsLog.CHANNEL_MODULE, CmsLog.LEVEL_WARN) ) {
-                OpenCms.log(CmsLog.CHANNEL_MODULE, CmsLog.LEVEL_WARN, "Couldn't get xml datablocks for CmsTaskNew");
+            if(OpenCms.getLog(CmsLog.CHANNEL_MODULE).isWarnEnabled() ) {
+                OpenCms.getLog(CmsLog.CHANNEL_MODULE).warn("Couldn't get xml datablocks for CmsTaskNew");
             }
         }
     }

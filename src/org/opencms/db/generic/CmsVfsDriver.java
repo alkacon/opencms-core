@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/09/16 14:55:48 $
- * Version: $Revision: 1.131 $
+ * Date   : $Date: 2003/09/17 08:31:29 $
+ * Version: $Revision: 1.132 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.131 $ $Date: 2003/09/16 14:55:48 $
+ * @version $Revision: 1.132 $ $Date: 2003/09/17 08:31:29 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -930,8 +930,8 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     public void destroy() throws Throwable {
         finalize();
 
-        if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
-            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, "[" + this.getClass().getName() + "] destroyed!");
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info("[" + this.getClass().getName() + "] destroyed!");
         }
     }
 
@@ -1548,8 +1548,8 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                     try {
                         createFileContent(newFileId, filecontent, 0, project.getId(), false);
                     } catch (CmsException se) {
-                        if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
-                            OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[" + this.getClass().getName() + "] " + se.getMessage());
+                        if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
+                            OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("[" + this.getClass().getName() + "] " + se.getMessage());
                         }
                     }
                 }
@@ -1605,19 +1605,19 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
 
         m_driverManager = driverManager;
 
-        if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             if (hasDistinctPoolUrls) {
-                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Assign. offline pool : " + offlinePoolUrl);
-                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Assign. online pool  : " + onlinePoolUrl);
-                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Assign. backup pool  : " + backupPoolUrl);
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Assign. offline pool : " + offlinePoolUrl);
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Assign. online pool  : " + onlinePoolUrl);
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Assign. backup pool  : " + backupPoolUrl);
             } else {
-                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Assign. pool         : " + offlinePoolUrl);
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Assign. pool         : " + offlinePoolUrl);
             }
         }
 
         if (successiveDrivers != null && !successiveDrivers.isEmpty()) {
-            if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
-                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, this.getClass().toString() + " does not support successive drivers.");
+            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(this.getClass().toString() + " does not support successive drivers.");
             }
         }
     }

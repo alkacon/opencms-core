@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlXercesParser.java,v $
-* Date   : $Date: 2003/09/16 14:55:49 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2003/09/17 08:31:29 $
+* Version: $Revision: 1.24 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.xml.sax.SAXException;
  * 
  * @author Alexander Kandzior
  * @author Alexander Lucas
- * @version $Revision: 1.23 $ $Date: 2003/09/16 14:55:49 $
+ * @version $Revision: 1.24 $ $Date: 2003/09/17 08:31:29 $
  */
 public class CmsXmlXercesParser implements I_CmsXmlParser {
     
@@ -91,8 +91,8 @@ public class CmsXmlXercesParser implements I_CmsXmlParser {
             DOMSerializer domSerializer = serializer.asDOMSerializer();
             domSerializer.serialize(doc);
         } catch (Exception e) {
-            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
-                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[CmsXmlXercesParser] " + e);
+            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("[CmsXmlXercesParser] " + e);
             }
         }
     }
@@ -114,8 +114,8 @@ public class CmsXmlXercesParser implements I_CmsXmlParser {
             DOMSerializer domSerializer = serializer.asDOMSerializer();
             domSerializer.serialize(doc);
         } catch (Exception e) {
-            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
-                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[CmsXmlXercesParser] " + e);
+            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("[CmsXmlXercesParser] " + e);
             }
         }
     }
@@ -163,9 +163,9 @@ public class CmsXmlXercesParser implements I_CmsXmlParser {
             parser.setFeature("http://apache.org/xml/features/dom/include-ignorable-whitespace", false);
         }
         catch(SAXException e) {
-            if(OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO)  && !c_xercesWarning) {
-                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO, "[CmsXmlXercesParser] Cannot set parser feature for apache xerces XML parser.");
-                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO, "[CmsXmlXercesParser] This is NOT critical, but you should better use xerces 1.1.1 or higher.");
+            if(OpenCms.getLog(CmsLog.CHANNEL_MAIN).isInfoEnabled()  && !c_xercesWarning) {
+                OpenCms.getLog(CmsLog.CHANNEL_MAIN).info("[CmsXmlXercesParser] Cannot set parser feature for apache xerces XML parser.");
+                OpenCms.getLog(CmsLog.CHANNEL_MAIN).info("[CmsXmlXercesParser] This is NOT critical, but you should better use xerces 1.1.1 or higher.");
                 c_xercesWarning = true;
             }
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/09/17 07:29:20 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2003/09/17 08:31:28 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.29 $ $Date: 2003/09/17 07:29:20 $
+ * @version $Revision: 1.30 $ $Date: 2003/09/17 08:31:28 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -331,8 +331,8 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     public void destroy() throws Throwable {
         finalize();
 
-        if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
-            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, "[" + this.getClass().getName() + "] destroyed!");
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info("[" + this.getClass().getName() + "] destroyed!");
         }
     }
 
@@ -358,8 +358,8 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
                 }
                 return result.toString();
             } catch (UnsupportedEncodingException exc) {
-                if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
-                    OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[CmsProjectDriver] file.encoding " + m_digestFileEncoding + " for passwords not supported. Using the default one.");
+                if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
+                    OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("[CmsProjectDriver] file.encoding " + m_digestFileEncoding + " for passwords not supported. Using the default one.");
                 }
                 return new String(m_digest.digest(value.getBytes()));
             }
@@ -438,35 +438,35 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
 
         m_driverManager = driverManager;
 
-        if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
-            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Assigned pool        : " + poolUrl);
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Assigned pool        : " + poolUrl);
         }
 
         String digest = config.getString(I_CmsConstants.C_CONFIGURATION_DB + ".user.digest.type", "MD5");
-        if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
-            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Digest configured    : " + digest);
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Digest configured    : " + digest);
         }
 
         m_digestFileEncoding = config.getString(I_CmsConstants.C_CONFIGURATION_DB + ".user.digest.encoding", "UTF-8");
-        if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
-            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Digest file encoding : " + m_digestFileEncoding);
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Digest file encoding : " + m_digestFileEncoding);
         }
 
         // create the digest
         try {
             m_digest = MessageDigest.getInstance(digest);
-            if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
-                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Using digest encoding: " + m_digest.getAlgorithm() + " from " + m_digest.getProvider().getName() + " version " + m_digest.getProvider().getVersion());
+            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Using digest encoding: " + m_digest.getAlgorithm() + " from " + m_digest.getProvider().getName() + " version " + m_digest.getProvider().getVersion());
             }
         } catch (NoSuchAlgorithmException e) {
-            if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
-                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Error setting digest : using clear passwords - " + e.getMessage());
+            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Error setting digest : using clear passwords - " + e.getMessage());
             }
         }
 
         if (successiveDrivers != null && !successiveDrivers.isEmpty()) {
-            if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
-                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, this.getClass().toString() + " does not support successive drivers.");
+            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(this.getClass().toString() + " does not support successive drivers.");
             }
         }
     }

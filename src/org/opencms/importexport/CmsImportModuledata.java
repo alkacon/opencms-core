@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Attic/CmsImportModuledata.java,v $
-* Date   : $Date: 2003/09/16 14:55:49 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2003/09/17 08:31:30 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.w3c.dom.NodeList;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.9 $ $Date: 2003/09/16 14:55:49 $
+ * @version $Revision: 1.10 $ $Date: 2003/09/17 08:31:30 $
  */
 public class CmsImportModuledata extends CmsImport implements Serializable {
 
@@ -564,23 +564,23 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
             Constructor co = cdClass.getConstructor(classes);
             cd = (CmsMasterContent)co.newInstance(objects);
         } catch (InvocationTargetException ite) {
-            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO)) {
-                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO, "[CmsImportModuledata] " + classname + " contentDefinitionConstructor: Invocation target exception!");
+            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isInfoEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_MAIN).info("[CmsImportModuledata] " + classname + " contentDefinitionConstructor: Invocation target exception!");
             }
         } catch (NoSuchMethodException nsm) {
-            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO)) {
-                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO, "[CmsImportModuledata] " + classname + " contentDefinitionConstructor: Requested method was not found!");
+            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isInfoEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_MAIN).info("[CmsImportModuledata] " + classname + " contentDefinitionConstructor: Requested method was not found!");
             }
         } catch (InstantiationException ie) {
-            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO)) {
-                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO, "[CmsImportModuledata] " + classname + " contentDefinitionConstructor: the reflected class is abstract!");
+            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isInfoEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_MAIN).info("[CmsImportModuledata] " + classname + " contentDefinitionConstructor: the reflected class is abstract!");
             }
         } catch (Exception e) {
-            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO)) {
-                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO, "[CmsImportModuledata] " + classname + " contentDefinitionConstructor: Other exception! " + e);
+            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isInfoEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_MAIN).info("[CmsImportModuledata] " + classname + " contentDefinitionConstructor: Other exception! " + e);
             }
-            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO)) {
-                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO, e.getMessage());
+            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isInfoEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_MAIN).info(e.getMessage());
             }
         }
         return cd;

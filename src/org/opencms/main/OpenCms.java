@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2003/09/16 12:06:10 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/09/17 08:31:30 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,8 @@ import com.opencms.file.CmsRegistry;
 
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+
 /**
  * The OpenCms "operating system" that provides 
  * public static methods which can be used by other classes to access 
@@ -50,7 +52,7 @@ import java.util.List;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public final class OpenCms {
     
@@ -305,27 +307,15 @@ public final class OpenCms {
     public static String getVersionNumber() {
         return OpenCmsCore.getInstance().getVersionNumber();
     }
-
+    
     /**
-     * Checks if a log channel is active for the selected level.<p>
-     * 
-     * @param channel the channel to log the message on
-     * @param level the log level to use
-     * @return <code>true</code> if the logging is active for the channel, <code>false</code> otherwise.
-     */
-    public static boolean isLogging(String channel, int level) {
-        return OpenCmsCore.getInstance().isLogging(channel, level);
-    }
-
-    /**
-     * Prints a message on the selected channel for the selected level.<p>
-     * 
-     * @param channel the channel to log the message on
-     * @param level the log level to use
-     * @param message the message to log
-     */
-    public static void log(String channel, int level, String message) {
-        OpenCmsCore.getInstance().log(channel, level, message);
+     * Returns the log for the selected channel.<p>
+     *  
+     * @param channel the channel to look up
+     * @return the log for the selected channel
+     */        
+    public static Log getLog(String channel) {
+        return OpenCmsCore.getInstance().getLog(channel);
     }
 
     /**

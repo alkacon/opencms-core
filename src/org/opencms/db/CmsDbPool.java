@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbPool.java,v $
- * Date   : $Date: 2003/09/16 14:55:49 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/09/17 08:31:29 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import source.org.apache.java.util.Configurations;
  * based pools might be added probably later.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.10 $ $Date: 2003/09/16 14:55:49 $
+ * @version $Revision: 1.11 $ $Date: 2003/09/17 08:31:29 $
  * @since 5.1
  */
 public final class CmsDbPool extends Object {
@@ -212,8 +212,8 @@ public final class CmsDbPool extends Object {
         PoolingDriver driver = new PoolingDriver();
         driver.registerPool(poolUrl, connectionPool);
 
-        if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
-            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Init. JDBC pool      : " + poolUrl + " (" + jdbcUrl + ")");
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Init. JDBC pool      : " + poolUrl + " (" + jdbcUrl + ")");
         }
 
         return poolUrl;

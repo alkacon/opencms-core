@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatabase.java,v $
-* Date   : $Date: 2003/09/16 19:12:39 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2003/09/17 08:31:28 $
+* Version: $Revision: 1.43 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.Vector;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Schouten
- * @version $Revision: 1.42 $ 
+ * @version $Revision: 1.43 $ 
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminDatabase extends CmsWorkplaceDefault {
@@ -97,8 +97,8 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault {
         File discFolder = new File(CmsBase.getAbsolutePath(cms.readPackagePath() + File.separator));
         if(!discFolder.exists()) {
             boolean success = discFolder.mkdir();
-            if(OpenCms.isLogging(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN) && (!success)) {
-                OpenCms.log(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN, "[CmsExportPointDriver] Couldn't create folder " + discFolder.getAbsolutePath() + ".");
+            if(OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).isWarnEnabled() && (!success)) {
+                OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn("[CmsExportPointDriver] Couldn't create folder " + discFolder.getAbsolutePath() + ".");
             }
         }
 
@@ -135,13 +135,13 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault {
         Hashtable parameters, 
         String templateSelector
     ) throws CmsException {               
-        if(C_DEBUG && OpenCms.isLogging(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN)) {
-            OpenCms.log(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN, this.getClassName()
+        if(C_DEBUG && OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).isWarnEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn(this.getClassName()
                     + "getting content of element "
                             + ((elementName == null) ? "<root>" : elementName));
-            OpenCms.log(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN, this.getClassName()
+            OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn(this.getClassName()
                     + "template file is: " + templateFile);
-            OpenCms.log(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN, this.getClassName()
+            OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn(this.getClassName()
                     + "selected template section is: "
                             + ((templateSelector == null) ? "<default>" : templateSelector));
         }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLinkBrowser.java,v $
-* Date   : $Date: 2003/09/16 12:06:06 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2003/09/17 08:31:28 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.14 $ $Date: 2003/09/16 12:06:06 $
+ * @version $Revision: 1.15 $ $Date: 2003/09/17 08:31:28 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -70,12 +70,12 @@ public class CmsLinkBrowser extends CmsWorkplaceDefault {
      */
 
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
-        if(OpenCms.isLogging(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN) && C_DEBUG) {
-            OpenCms.log(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN, getClassName() + "getting content of element "
+        if(OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).isWarnEnabled() && C_DEBUG) {
+            OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn(getClassName() + "getting content of element "
                     + ((elementName == null) ? "<root>" : elementName));
-            OpenCms.log(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN, getClassName()
+            OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn(getClassName()
                     + "template file is: " + templateFile);
-            OpenCms.log(CmsLog.CHANNEL_WORKPLACE_XML, CmsLog.LEVEL_WARN, getClassName()
+            OpenCms.getLog(CmsLog.CHANNEL_WORKPLACE_XML).warn(getClassName()
                     + "selected template section is: " + ((templateSelector == null) ? "<default>" : templateSelector));
         }
         I_CmsSession session = cms.getRequestContext().getSession(true);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/09/17 07:29:20 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2003/09/17 08:31:28 $
+ * Version: $Revision: 1.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import source.org.apache.java.util.Configurations;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.53 $ $Date: 2003/09/17 07:29:20 $
+ * @version $Revision: 1.54 $ $Date: 2003/09/17 08:31:28 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -205,8 +205,8 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
     public void destroy() throws Throwable {
         finalize();
 
-        if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
-            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, "[" + this.getClass().getName() + "] destroyed!");
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info("[" + this.getClass().getName() + "] destroyed!");
         }
     }
 
@@ -237,13 +237,13 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
 
         m_driverManager = driverManager;
 
-        if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
-            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Assigned pool        : " + poolUrl);
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Assigned pool        : " + poolUrl);
         }
 
         if (successiveDrivers != null && !successiveDrivers.isEmpty()) {
-            if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
-                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, this.getClass().toString() + " does not support successive drivers.");
+            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(this.getClass().toString() + " does not support successive drivers.");
             }
         }
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Attic/CmsJspTemplate.java,v $
- * Date   : $Date: 2003/09/16 19:12:39 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/09/17 08:31:30 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Hashtable;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.0 beta 1
  */
 public class CmsJspTemplate extends CmsDumpTemplate {
@@ -76,8 +76,8 @@ public class CmsJspTemplate extends CmsDumpTemplate {
      * @throws CmsException in case something goes wrong
      */
     public byte[] getContent(CmsObject cms, String jspFile, String elementName, Hashtable parameters) throws CmsException {
-        if (OpenCms.isLogging(CmsLog.CHANNEL_FLEX, CmsLog.LEVEL_DEBUG)) {
-            OpenCms.log(CmsLog.CHANNEL_FLEX, CmsLog.LEVEL_DEBUG, "[CmsJspTemplate] Now loading contents of file " + jspFile);
+        if (OpenCms.getLog(CmsLog.CHANNEL_FLEX).isDebugEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_FLEX).debug("[CmsJspTemplate] Now loading contents of file " + jspFile);
         }
 
         byte[] s = null;
@@ -92,8 +92,8 @@ public class CmsJspTemplate extends CmsDumpTemplate {
             throw new CmsException("[CmsJspTemplate] Error while reading JSP " + jspFile + "\n" + e, e);
         } catch (Exception e) {
             String errorMessage = "[CmsJspTemplate] Error while loading jsp file " + jspFile + ": " + e;
-            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
-                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[CmsJspTemplate] " + errorMessage);
+            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("[CmsJspTemplate] " + errorMessage);
             }
             if (e instanceof CmsException) {
                 throw (CmsException)e;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/17 07:29:20 $
- * Version: $Revision: 1.227 $
+ * Date   : $Date: 2003/09/17 08:31:29 $
+ * Version: $Revision: 1.228 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.227 $ $Date: 2003/09/17 07:29:20 $
+ * @version $Revision: 1.228 $ $Date: 2003/09/17 08:31:29 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -297,31 +297,31 @@ public class CmsDriverManager extends Object {
         try {
             // create a driver manager instance
             driverManager = new CmsDriverManager();
-            if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
-                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Driver manager init  : phase 1 - initializing database");
+            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Driver manager init  : phase 1 - initializing database");
             }
         } catch (Exception exc) {
             String message = "Critical error while loading driver manager";
-            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
-                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[CmsDriverManager] " + message);
+            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("[CmsDriverManager] " + message);
             }
 
             exc.printStackTrace(System.err);
             throw new CmsException(message, CmsException.C_RB_INIT_ERROR, exc);
         }
 
-        if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
-            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Driver manager init  : phase 2 - initializing pools");
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Driver manager init  : phase 2 - initializing pools");
         }        
 
         // read the pool names to initialize
         String driverPoolNames[] = configurations.getStringArray(I_CmsConstants.C_CONFIGURATION_DB + ".pools");
-        if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             String names = "";
             for (int p = 0; p < driverPoolNames.length; p++) {
                 names += driverPoolNames[p] + " ";
             }            
-            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Resource pools       : " + names);
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Resource pools       : " + names);
         }
         
         // initialize each pool
@@ -329,8 +329,8 @@ public class CmsDriverManager extends Object {
             driverManager.newPoolInstance(configurations, driverPoolNames[p]);
         }
         
-        if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
-            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Driver manager init  : phase 3 - initializing drivers");
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Driver manager init  : phase 3 - initializing drivers");
         }                
 
         // read the vfs driver class properties and initialize a new instance 
@@ -366,13 +366,13 @@ public class CmsDriverManager extends Object {
         try {
             // invoke the init method of the driver manager
             driverManager.init(configurations, vfsDriver, userDriver, projectDriver, workflowDriver, backupDriver);
-            if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
-                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Driver manager init  : phase 4 ok - finished");
+            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Driver manager init  : phase 4 ok - finished");
             }
         } catch (Exception exc) {
             String message = "Critical error while loading driver manager";
-            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
-                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[CmsDriverManager] " + message);
+            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("[CmsDriverManager] " + message);
             }
 
             exc.printStackTrace(System.err);
@@ -2537,8 +2537,8 @@ if (resVersions>1) {
     public void destroy() throws Throwable {
         finalize();
 
-        if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
-            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, "[" + this.getClass().getName() + "] destroyed!");
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info("[" + this.getClass().getName() + "] destroyed!");
         }
     }
 
@@ -4301,8 +4301,8 @@ if (resVersions>1) {
         m_limitedWorkplacePort = config.getInteger("workplace.limited.port", -1);
 
         // initialize the access-module.
-        if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
-            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Driver manager init  : phase 4 - connecting to the database");
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Driver manager init  : phase 4 - connecting to the database");
         }
 
         // store the access objects
@@ -4332,8 +4332,8 @@ if (resVersions>1) {
         m_refresh = config.getString(I_CmsConstants.C_CONFIGURATION_CACHE + ".refresh", "");
 
         // initialize the registry
-        if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
-            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Initializing registry: starting");
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Initializing registry: starting");
         }
         try {
             m_registry = new CmsRegistry(CmsBase.getAbsolutePath(config.getString(I_CmsConstants.C_CONFIGURATION_REGISTRY)));
@@ -4341,12 +4341,12 @@ if (resVersions>1) {
             throw ex;
         } catch (Exception ex) {
             // init of registry failed - throw exception
-            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR))
-                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, ". Critical init error/4: " + ex.getMessage());
+            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled())
+                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(". Critical init error/4: " + ex.getMessage());
             throw new CmsException("Init of registry failed", CmsException.C_REGISTRY_ERROR, ex);
         }
-        if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
-            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Initializing registry: finished");
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Initializing registry: finished");
         }
 
         m_projectDriver.fillDefaults();
@@ -4872,26 +4872,26 @@ if (resVersions>1) {
         try {
             // try to get the class
             driverClass = Class.forName(driverName);
-            if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
-                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Driver init          : starting " + driverName);
+            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Driver init          : starting " + driverName);
             }
 
             // try to create a instance
             driver = driverClass.newInstance();
-            if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
-                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Driver init          : initializing " + driverName);
+            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Driver init          : initializing " + driverName);
             }
 
             // invoke the init-method of this access class
             driver.getClass().getMethod("init", initParamClasses).invoke(driver, initParams);
-            if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
-                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Driver init          : finished, assigned pool " + driverPoolUrl);
+            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Driver init          : finished, assigned pool " + driverPoolUrl);
             }
 
         } catch (Exception exc) {
             String message = "Critical error while initializing " + driverName;
-            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
-                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[CmsDriverManager] " + message);
+            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("[CmsDriverManager] " + message);
             }
 
             exc.printStackTrace(System.err);
@@ -4912,26 +4912,26 @@ if (resVersions>1) {
         try {
             // try to get the class
             driverClass = Class.forName(driverName);
-            if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
-                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Driver init          : starting " + driverName);
+            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Driver init          : starting " + driverName);
             }
 
             // try to create a instance
             driver = driverClass.newInstance();
-            if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
-                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Driver init          : initializing " + driverName);
+            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Driver init          : initializing " + driverName);
             }
 
             // invoke the init-method of this access class
             driver.getClass().getMethod("init", initParamClasses).invoke(driver, initParams);
-            if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
-                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Driver init          : ok, finished");
+            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Driver init          : ok, finished");
             }
 
         } catch (Exception exc) {
             String message = "Critical error while initializing " + driverName;
-            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
-                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[CmsDriverManager] " + message);
+            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("[CmsDriverManager] " + message);
             }
 
             exc.printStackTrace(System.err);
@@ -4957,8 +4957,8 @@ if (resVersions>1) {
             poolUrl = CmsDbPool.createDriverManagerConnectionPool(configurations, poolName);
         } catch (Exception exc) {
             String message = "Critical error while initializing resource pool " + poolName;
-            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
-                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[CmsDriverManager] " + message);
+            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("[CmsDriverManager] " + message);
             }
 
             exc.printStackTrace(System.err);
@@ -5068,13 +5068,13 @@ if (resVersions>1) {
                         Class.forName((String) publishModules.elementAt(i)).getMethod("publishProject", new Class[] { CmsObject.class, Boolean.class, Integer.class, Integer.class, Long.class, Vector.class, Vector.class }).invoke(null, new Object[] { cms, new Boolean(isHistoryEnabled(cms)), new Integer(publishProjectId), new Integer(tagId), new Long(publishDate), changedResources, changedModuleMasters });
                     } catch (ClassNotFoundException ec) {
                         report.println(report.key("report.publish_class_for_module_does_not_exist_1") + (String) publishModules.elementAt(i) + report.key("report.publish_class_for_module_does_not_exist_2"), I_CmsReport.C_FORMAT_WARNING);
-                        if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO)) {
-                            OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO, "Error calling publish class of module " + (String) publishModules.elementAt(i) + "!: " + ec.getMessage());
+                        if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isInfoEnabled()) {
+                            OpenCms.getLog(CmsLog.CHANNEL_MAIN).info("Error calling publish class of module " + (String) publishModules.elementAt(i) + "!: " + ec.getMessage());
                         }
                     } catch (Exception ex) {
                         report.println(ex);
-                        if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO)) {
-                            OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO, "Error when publish data of module " + (String) publishModules.elementAt(i) + "!: " + ex.getMessage());
+                        if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isInfoEnabled()) {
+                            OpenCms.getLog(CmsLog.CHANNEL_MAIN).info("Error when publish data of module " + (String) publishModules.elementAt(i) + "!: " + ex.getMessage());
                         }
                     }
                 }
@@ -5090,8 +5090,8 @@ if (resVersions>1) {
                     try {
                         m_projectCache.remove(new Integer(publishProjectId));
                     } catch (Exception e) {
-                        if (OpenCms.isLogging(CmsLog.CHANNEL_TEMPLATE_XML, CmsLog.LEVEL_WARN)) {
-                            OpenCms.log(CmsLog.CHANNEL_TEMPLATE_XML, CmsLog.LEVEL_WARN, "Could not remove project " + publishProjectId + " from cache");
+                        if (OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).isWarnEnabled()) {
+                            OpenCms.getLog(CmsLog.CHANNEL_TEMPLATE_XML).warn("Could not remove project " + publishProjectId + " from cache");
                         }
                     }
                     if (publishProjectId == context.currentProject().getId()) {
@@ -5990,8 +5990,8 @@ if (resVersions>1) {
         try {
             props.load(getClass().getClassLoader().getResourceAsStream("mimetypes.properties"));
         } catch (Exception exc) {
-            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
-                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[" + this.getClass().getName() + "] could not read mimetypes from properties. " + exc.getMessage());
+            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("[" + this.getClass().getName() + "] could not read mimetypes from properties. " + exc.getMessage());
             }
         }
         return props;
@@ -8564,8 +8564,8 @@ if (resVersions>1) {
         try {
             projectResources = readProjectResources(context,context.currentProject());
         } catch (CmsException e) {
-            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
-                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "[CmsDriverManager.isInsideProject()] error reading project resources " + e.getMessage());
+            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("[CmsDriverManager.isInsideProject()] error reading project resources " + e.getMessage());
             }
                         
             return false;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cache/CmsLruCache.java,v $
- * Date   : $Date: 2003/09/16 19:12:39 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/09/17 08:31:31 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.opencms.main.OpenCms;
  *
  * @see org.opencms.cache.I_CmsLruCacheObject
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsLruCache extends java.lang.Object {
     
@@ -174,8 +174,8 @@ public class CmsLruCache extends java.lang.Object {
         
         // only objects with cache costs < the max. allowed object cache costs can be cached!
         if ((this.m_maxObjectCosts!=-1) && (theCacheObject.getLruCacheCosts()>this.m_maxObjectCosts)) {
-            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO)) 
-                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO, "[CmsLruCache] you are trying to cache objects with cache costs " + theCacheObject.getLruCacheCosts() + " which is bigger than the max. allowed costs " + this.m_maxObjectCosts);
+            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isInfoEnabled()) 
+                OpenCms.getLog(CmsLog.CHANNEL_MAIN).info("[CmsLruCache] you are trying to cache objects with cache costs " + theCacheObject.getLruCacheCosts() + " which is bigger than the max. allowed costs " + this.m_maxObjectCosts);
             return false;
         }
         
@@ -241,8 +241,8 @@ public class CmsLruCache extends java.lang.Object {
         
         // only objects with cache costs < the max. allowed object cache costs can be cached!
         if ((m_maxObjectCosts!=-1) && (theCacheObject.getLruCacheCosts()>m_maxObjectCosts)) {
-            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO)) {
-                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_INFO, "[CmsLruCache] you are trying to cache objects with cache costs " + theCacheObject.getLruCacheCosts() + " which is bigger than the max. allowed costs " + this.m_maxObjectCosts);
+            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isInfoEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_MAIN).info("[CmsLruCache] you are trying to cache objects with cache costs " + theCacheObject.getLruCacheCosts() + " which is bigger than the max. allowed costs " + this.m_maxObjectCosts);
             }
             remove(theCacheObject);
             return false;

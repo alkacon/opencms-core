@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManager.java,v $
- * Date   : $Date: 2003/09/16 14:55:48 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/09/17 08:31:30 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.1
  */
 public final class CmsSiteManager implements Cloneable {
@@ -75,8 +75,8 @@ public final class CmsSiteManager implements Cloneable {
      */
     public CmsSiteManager(String[] siteRoots, String siteDefault) {
                 
-        if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
-            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Site roots configured: " + (siteRoots.length + ((siteDefault!=null)?1:0)));
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Site roots configured: " + (siteRoots.length + ((siteDefault!=null)?1:0)));
         }
                         
         m_sites = new HashMap(siteRoots.length);        
@@ -87,8 +87,8 @@ public final class CmsSiteManager implements Cloneable {
             // check if this is a vailid site root entry
             if (pos < 0) {
                 // entry must have a "|" in the string
-                if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
-                    OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, ". Site root init error : malformed entry " + siteRoots[i]);
+                if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
+                    OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(". Site root init error : malformed entry " + siteRoots[i]);
                 }
                 continue;
             }
@@ -98,8 +98,8 @@ public final class CmsSiteManager implements Cloneable {
             
             if ((matcherStr.length() == 0) || (rootStr.length() == 0)) {
                 // both matcher and root must not be empty
-                if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
-                    OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, ". Site root init error : malformed entry " + siteRoots[i]);
+                if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
+                    OpenCms.getLog(CmsLog.CHANNEL_MAIN).error(". Site root init error : malformed entry " + siteRoots[i]);
                 }
                 continue;
             }            
@@ -109,8 +109,8 @@ public final class CmsSiteManager implements Cloneable {
             CmsSite site = new CmsSite(rootStr, matcher);
             m_sites.put(matcher, site);
             
-            if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
-                OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Site root added      : " + site.toString());
+            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Site root added      : " + site.toString());
             }
         }
         // TODO: check if default site root VFS resource actually exists (needs a CmsObject)
@@ -119,8 +119,8 @@ public final class CmsSiteManager implements Cloneable {
         } else {            
             m_defaultSite = new CmsSite(siteDefault, CmsSiteMatcher.C_DEFAULT_MATCHER);
         } 
-        if (OpenCms.isLogging(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO)) {
-            OpenCms.log(CmsLog.CHANNEL_INIT, CmsLog.LEVEL_INFO, ". Site root default    : " + m_defaultSite);
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Site root default    : " + m_defaultSite);
         }
     }
     
@@ -248,8 +248,8 @@ public final class CmsSiteManager implements Cloneable {
                 }      
             }
         } catch (Throwable t) {
-            if (OpenCms.isLogging(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR)) {
-                OpenCms.log(CmsLog.CHANNEL_MAIN, CmsLog.LEVEL_ERROR, "CmsSite.getAvailableSites() - Error reading site properties: " + t.getMessage());
+            if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("CmsSite.getAvailableSites() - Error reading site properties: " + t.getMessage());
             }            
         } finally {
             // restore the user's current context 

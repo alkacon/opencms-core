@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsCronScheduleJob.java,v $
-* Date   : $Date: 2003/09/16 12:06:10 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2003/09/17 08:31:30 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -68,13 +68,13 @@ public class CmsCronScheduleJob extends Thread {
             // invoke method launch
             String retValue = job.launch(m_cms, m_entry.getModuleParameter());
             // log the returnvalue to the logfile
-            if (OpenCms.isLogging(CmsLog.CHANNEL_CRON, CmsLog.LEVEL_WARN)) {
-                OpenCms.log(CmsLog.CHANNEL_CRON, CmsLog.LEVEL_WARN, "Successful launch of job " + m_entry + (retValue != null ? " Message: " + retValue : ""));
+            if (OpenCms.getLog(CmsLog.CHANNEL_CRON).isWarnEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_CRON).warn("Successful launch of job " + m_entry + (retValue != null ? " Message: " + retValue : ""));
             }
         } catch (Exception exc) {
             // log the exception
-            if (OpenCms.isLogging(CmsLog.CHANNEL_CRON, CmsLog.LEVEL_WARN)) {
-                OpenCms.log(CmsLog.CHANNEL_CRON, CmsLog.LEVEL_WARN, "Error running job for " + m_entry + " Error: " + Utils.getStackTrace(exc));
+            if (OpenCms.getLog(CmsLog.CHANNEL_CRON).isWarnEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_CRON).warn("Error running job for " + m_entry + " Error: " + Utils.getStackTrace(exc));
             }
         }
     }
