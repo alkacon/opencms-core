@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
- * Date   : $Date: 2000/10/11 18:26:16 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2000/10/13 13:09:13 $
+ * Version: $Revision: 1.61 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -66,7 +66,7 @@ import com.opencms.util.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.60 $ $Date: 2000/10/11 18:26:16 $  
+* @version $Revision: 1.61 $ $Date: 2000/10/13 13:09:13 $  
 * 
 * */
 
@@ -433,7 +433,13 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
 	 */
 	public void doGet(HttpServletRequest req, HttpServletResponse res) 
 		throws ServletException, IOException {	
-		
+
+		if (req.getRequestURI().indexOf("system/workplace/action/login.html")>0)
+		{
+			HttpSession session = req.getSession(false);
+			if (session!=null) session.invalidate();
+		}
+
 		CmsObject cms=null;
 		
 		CmsRequestHttpServlet cmsReq= new CmsRequestHttpServlet(req);
