@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/09/29 19:14:09 $
- * Version: $Revision: 1.508 $
+ * Date   : $Date: 2003/10/09 19:08:54 $
+ * Version: $Revision: 1.509 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,7 +19,15 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 5.1.11 Salusa Secundus - September xx, 2003
+OpenCms 5.1.11 Salusa Secundus - October 09, 2003
+! Added first version of handler interface in org.opencms.main package
+* Fixed issues regarding resource project state during module import / publish
+! Added site selector in JSP file tree dialog for linking to other sites 
+! Import now supports import of files from a folder, not only 
+  from ZIP file
+! Automatic VFS link conversion for links of 5.0.x in import version 2
+- Improvements in the new static export handling siblings,
+  also nw based on events and the publish history
 ! All files published in a project are now written to a DB table, so it's easy to get
   a list of all files that where published for that project
 ! Implemented improved behaviour for folder rename in Offline project
