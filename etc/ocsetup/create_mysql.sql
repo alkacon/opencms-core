@@ -1,4 +1,5 @@
+#
+# replacer = "$$database$$"
+############################
 
-DROP DATABASE opencms;
-
-CREATE DATABASE opencms;
+CREATE DATABASE $$database$$ ;
