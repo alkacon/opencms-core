@@ -1,7 +1,7 @@
 /*
 * File   : $Source $
-* Date   : $Date: 2001/10/26 12:43:45 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2001/11/15 11:12:56 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,4 +49,11 @@ public interface I_CmsTimedContentDefinition {
      * @return The date as a long value, or 0 if no purge date.
      */
     public long getPurgeDate();
+
+    /**
+     * Returns the date when the next other content becomes valid.
+     *
+     * @return The date as a long value, or 0 if not used.
+     */
+    public long getOtherChangeDate();
 }
