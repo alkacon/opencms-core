@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2000/03/16 20:14:08 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2000/03/22 10:29:03 $
+ * Version: $Revision: 1.58 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.57 $ $Date: 2000/03/16 20:14:08 $
+ * @version $Revision: 1.58 $ $Date: 2000/03/22 10:29:03 $
  */
 public interface I_CmsConstants
 {
@@ -737,5 +737,8 @@ public interface I_CmsConstants
     
     /** Start preferenses AccessFlags */
 	public static final String  C_START_ACCESSFLAGS = "StartAccessFlags";
+
+    /** Template element name used for the canonical root template */
+    public static final String C_ROOT_TEMPLATE_NAME = "root";
 }
 
