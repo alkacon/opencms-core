@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2002/10/23 14:07:05 $
-* Version: $Revision: 1.339 $
+* Date   : $Date: 2002/10/30 10:20:13 $
+* Version: $Revision: 1.340 $
 
 *
 * This library is part of OpenCms -
@@ -56,7 +56,7 @@ import org.w3c.dom.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.339 $ $Date: 2002/10/23 14:07:05 $
+ * @version $Revision: 1.340 $ $Date: 2002/10/30 10:20:13 $
 
  *
  */
@@ -2884,10 +2884,11 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
      * @param currentUser user who requestd themethod
      * @param currentProject current project of the user
      * @param exportFile the name (absolute Path) of the export resource (zip)
-     * @param exportPath the name (absolute Path) of folder from which should be exported
-     * @param excludeSystem, decides whether to exclude the system
-     * @param excludeUnchanged <code>true</code>, if unchanged files should be excluded.
+     * @param exportPaths the name (absolute Path) of folders from which should be exported
      * @param cms the cms-object to use for the export.
+     * @param includeSystem, desides if to include the system resources to the export.
+     * @param excludeUnchanged <code>true</code>, if unchanged files should be excluded.
+     * @param contentAge Max age of content to be exported (timestamp)
      * @param report the cmsReport to handle the log messages.
      *
      * @exception Throws CmsException if something goes wrong.

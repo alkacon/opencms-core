@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsRequestHttpServlet.java,v $
-* Date   : $Date: 2002/10/22 12:39:48 $
-* Version: $Revision: 1.32 $
+* Date   : $Date: 2002/10/30 10:19:43 $
+* Version: $Revision: 1.33 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
 
 package com.opencms.core;
 
+import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.flex.util.CmsResourceTranslator;
 import com.opencms.util.*;
 import java.util.*;
@@ -36,18 +37,19 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 
 /**
- * Implementation of the CmsRequest interface.
+ * Implementation of the I_CmsRequest interface which wraps a HttpServletRequest
+ * and includes handling of multipart - requests.<p>
  *
  * This implementation uses a HttpServletRequest as original request to create a
  * CmsRequestHttpServlet. This either can be a normal HttpServletRequest or a
- * CmsMultipartRequest which is used to upload file into the OpenCms. <br>
+ * CmsMultipartRequest which is used to upload file into the OpenCms.<p>
  *
  * This class contains a modification of the MultipartRequest published in the O'Reilly
  * book <it>Java Servlet Programming </it> by J. Junte, <a href=http://www.servlets.com/ > www.servlets.com </a>
  * <p>
  * It Constructs a new MultipartRequest to handle the specified request,
  * saving any uploaded files to the given directory, and limiting the upload size to
- * a maxumum size of 8 MB.
+ * a maximum size of 8 MB by default.
  * <p>
  * The idea is to modify the given MultiPartRequest to make it transparent to normal
  * requests and store file into CmsFile objects so that they can be transferred into
@@ -55,14 +57,10 @@ import javax.servlet.http.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.32 $ $Date: 2002/10/22 12:39:48 $
+ * 
+ * @version $Revision: 1.33 $ $Date: 2002/10/30 10:19:43 $
  */
-public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_CmsRequest {
-
-    /**
-     * Define the maximum size for an uploaded file (8 MB)
-     */
-    private static final int DEFAULT_MAX_POST_SIZE = 8192 * 1024; // 8 Meg
+public class CmsRequestHttpServlet implements I_CmsRequest {
 
     /**
      * Definition of the error message for an empty request.
@@ -90,11 +88,6 @@ public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_
     static final String C_REQUEST_NOBOUNDARY = "Separation boundary was not specified";
 
     /**
-     * The maximum size of the uploaded data.
-     */
-    private int m_maxSize = DEFAULT_MAX_POST_SIZE;
-
-    /**
      * The original request.
      */
     private HttpServletRequest m_req;
@@ -107,7 +100,7 @@ public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_
     /**
      * The type of theis CmsRequest.
      */
-    private int m_type = C_REQUEST_HTTP;
+    private int m_type = I_CmsConstants.C_REQUEST_HTTP;
 
     /**
      * Storage for all uploaded files.
@@ -179,7 +172,8 @@ public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_
                 }
                 req.setCharacterEncoding(encoding);
             }
-            A_OpenCms.log(C_OPENCMS_DEBUG, "Request character encoding is: '" + req.getCharacterEncoding() + "'");
+            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_DEBUG)) 
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, "Request character encoding is: '" + req.getCharacterEncoding() + "'");
         }
     }
 
@@ -242,7 +236,7 @@ public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_
      *
      * @param line Line from input stream.
      * @return Array of string containing disposition information.
-     * @exception IOException Throws an IOException if the line is malformatted.
+     * @throws IOException if the line is malformatted
      */
     private String[] extractDispositionInfo(String line) throws IOException {
 
@@ -366,7 +360,7 @@ public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_
      * exists but without a value.
      *
      * @param name The name of the parameter.
-     * @returns The value of the parameter.
+     * @return The value of the parameter.
      */
     public String getParameter(String name) {
         String parameter = null;
@@ -380,13 +374,6 @@ public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_
         else {
             parameter = m_req.getParameter(name);
         }
-
-        /*   if(parameter != null && !"".equals(parameter) && (parameter.indexOf("%") != -1)) {
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsRequestHttpServlet] encoding required for parameter " + name + "=" + parameter);
-        }
-        parameter = Encoder.unescape(parameter);
-        }*/
         return parameter;
     }
 
@@ -436,14 +423,7 @@ public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_
      */
     public String getRequestedResource() {
         if (m_requestedResource != null) return m_requestedResource;
-        m_requestedResource = m_req.getPathInfo();        
-        /*
-        if (m_requestedResource == null) {
-            m_requestedResource = "/index.html";
-        } else if (m_requestedResource.endsWith("/")) {          
-            m_requestedResource += "index.html"; 
-        }
-        */
+        m_requestedResource = m_req.getPathInfo();
         if (m_requestedResource == null) {
             m_requestedResource = "/";
         }       

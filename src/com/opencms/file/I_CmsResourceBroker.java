@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
-* Date   : $Date: 2002/10/23 14:07:04 $
-* Version: $Revision: 1.188 $
+* Date   : $Date: 2002/10/30 10:20:35 $
+* Version: $Revision: 1.189 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import com.opencms.report.*;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.188 $ $Date: 2002/10/23 14:07:04 $
+ * @version $Revision: 1.189 $ $Date: 2002/10/30 10:20:35 $
  *
  */
 
@@ -1063,9 +1063,10 @@ public CmsProject createProject(CmsUser currentUser, CmsProject currentProject, 
      * @param currentProject current project of the user
      * @param exportFile the name (absolute Path) of the export resource (zip)
      * @param exportPaths the name (absolute Path) of folders from which should be exported
+     * @param cms the cms-object to use for the export.
      * @param includeSystem, desides if to include the system resources to the export.
      * @param excludeUnchanged <code>true</code>, if unchanged files should be excluded.
-     * @param cms the cms-object to use for the export.
+     * @param contentAge Max age of content to be exported (timestamp)
      * @param report the cmsReport to handle the log messages.
      *
      * @exception Throws CmsException if something goes wrong.
