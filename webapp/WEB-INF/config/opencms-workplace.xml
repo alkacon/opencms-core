@@ -184,8 +184,8 @@
 				<newresource uri="newresource.html?newresourcetype=jsp" order="50"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.ProjectManagers" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.ProjectManagers" permissions="+r+v"/>
+					<accessentry principal="GROUP.Users" permissions="+r+v"/>
 				</accesscontrol>
 				<editoptions>
 					<defaultproperties enabled="true" shownavigation="false">
