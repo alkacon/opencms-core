@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsSqlManager.java,v $
- * Date   : $Date: 2004/03/29 10:39:53 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/04/07 07:38:22 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,14 +34,13 @@ package org.opencms.db.mysql;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.OpenCms;
 
-
 import java.util.Properties;
 
 /**
  * Handles SQL queries from query.properties of the MySQL driver package.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.13 $ $Date: 2004/03/29 10:39:53 $ 
+ * @version $Revision: 1.14 $ $Date: 2004/04/07 07:38:22 $ 
  * @since 5.1
  */
 public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
@@ -125,8 +124,9 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
                 || "ISO-8859-15".equalsIgnoreCase(encoding) 
                 || "US-ASCII".equalsIgnoreCase(encoding) 
                 || "Cp1252".equalsIgnoreCase(encoding));
-//          FIXME: Encoding for mySQL - use unicoded support in mySQL 4 and remove this
-            c_singleByteEncoding = new Boolean(false);
+            
+            // FIXME Encoding for mySQL - use unicoded support in mySQL 4
+            //c_singleByteEncoding = new Boolean(false);
         }
         return c_singleByteEncoding.booleanValue();
     }
