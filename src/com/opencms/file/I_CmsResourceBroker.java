@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
-* Date   : $Date: 2002/01/21 09:11:38 $
-* Version: $Revision: 1.169 $
+* Date   : $Date: 2002/02/14 14:36:31 $
+* Version: $Revision: 1.170 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.169 $ $Date: 2002/01/21 09:11:38 $
+ * @version $Revision: 1.170 $ $Date: 2002/02/14 14:36:31 $
  *
  */
 
@@ -1001,6 +1001,24 @@ public CmsProject createProject(CmsUser currentUser, CmsProject currentProject, 
      * @exception Throws CmsException if something goes wrong.
      */
     public void exportResources(CmsUser currentUser,  CmsProject currentProject, String exportFile, String[] exportPaths, CmsObject cms, boolean includeSystem, boolean excludeUnchanged, boolean exportUserdata)
+        throws CmsException;
+
+    /**
+     * Exports channels and moduledata to zip.
+     *
+     * <B>Security:</B>
+     * only Administrators can do this;
+     *
+     * @param currentUser user who requestd themethod
+     * @param currentProject current project of the user
+     * @param exportFile the name (absolute Path) of the export resource (zip)
+     * @param exportChannels the names (absolute Path) of channels from which should be exported
+     * @param exportModules the names of modules from which should be exported
+     * @param cms the cms-object to use for the export.
+     *
+     * @exception Throws CmsException if something goes wrong.
+     */
+    public void exportModuledata(CmsUser currentUser,  CmsProject currentProject, String exportFile, String[] exportChannels, String[] exportModules, CmsObject cms)
         throws CmsException;
 
     /**
@@ -3511,4 +3529,6 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
      * @return The encrypted value.
      */
     public String digest(String value);
+
+
 }

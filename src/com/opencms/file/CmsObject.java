@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2002/02/04 16:42:08 $
-* Version: $Revision: 1.219 $
+* Date   : $Date: 2002/02/14 14:36:52 $
+* Version: $Revision: 1.220 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.219 $ $Date: 2002/02/04 16:42:08 $
+ * @version $Revision: 1.220 $ $Date: 2002/02/14 14:36:52 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -1390,6 +1390,25 @@ public CmsFile exportResource(CmsFile file) throws CmsException {
     I_CmsResourceType rt = getResourceType(file.getType());
     return rt.exportResource(this, file);
 }
+
+    /**
+     * Exports channels and moduledata to zip.
+     *
+     * <B>Security:</B>
+     * only Administrators can do this;
+     *
+     * @param currentUser user who requestd themethod
+     * @param currentProject current project of the user
+     * @param exportFile the name (absolute Path) of the export resource (zip)
+     * @param exportChannels the names (absolute Path) of channels from which should be exported
+     * @param exportModules the names of modules from which should be exported
+     * @param cms the cms-object to use for the export.
+     *
+     * @exception Throws CmsException if something goes wrong.
+     */
+    public void exportModuledata(String exportFile, String[] exportChannels, String[] exportModules) throws CmsException {
+        m_rb.exportModuledata(m_context.currentUser(), m_context.currentProject(), exportFile, exportChannels, exportModules, this);
+    }
 
 /**
  * Creates a static export in the filesystem
@@ -3817,4 +3836,5 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
     public String digest(String value) {
         return m_rb.digest(value);
     }
+
 }
