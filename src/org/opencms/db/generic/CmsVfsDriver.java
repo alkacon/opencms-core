@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/08/26 10:01:42 $
- * Version: $Revision: 1.103 $
+ * Date   : $Date: 2003/08/27 09:52:42 $
+ * Version: $Revision: 1.104 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.103 $ $Date: 2003/08/26 10:01:42 $
+ * @version $Revision: 1.104 $ $Date: 2003/08/27 09:52:42 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -3656,6 +3656,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         }
     }
     
+
     /**
      * @see org.opencms.db.I_CmsVfsDriver#publishResource(com.opencms.file.CmsProject, com.opencms.file.CmsResource, com.opencms.file.CmsResource)
      */
@@ -3663,20 +3664,20 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         Connection conn = null;
         PreparedStatement stmt = null;
         int resourceSize = I_CmsConstants.C_UNKNOWN_ID;
-
+    
         try {
             conn = m_sqlManager.getConnection(I_CmsConstants.C_PROJECT_ONLINE_ID);
-
+    
             if (existsResourceId(I_CmsConstants.C_PROJECT_ONLINE_ID, offlineResource.getResourceId())) {
-
+    
                 // the resource/file record exists online already
-
+    
                 if (offlineResource.isFile()) {
                     // overwrite the online file content
                     resourceSize = offlineResource.getLength();
                     writeFileContent(offlineResource.getFileId(), ((CmsFile) offlineResource).getContents(), I_CmsConstants.C_PROJECT_ONLINE_ID, false);
                 }
-
+    
                 // overwrite the online resource record
                 stmt = m_sqlManager.getPreparedStatement(conn, I_CmsConstants.C_PROJECT_ONLINE_ID, "C_RESOURCES_UPDATE_RESOURCES");
                 stmt.setInt(1, offlineResource.getType());
@@ -3692,9 +3693,9 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                 stmt.setInt(11, this.countVfsLinks(I_CmsConstants.C_PROJECT_ONLINE_ID, onlineResource.getResourceId()));
                 stmt.setString(12, offlineResource.getResourceId().toString());
                 stmt.executeUpdate();
-
+    
                 m_sqlManager.closeAll(null, stmt, null);
-
+    
                 // overwrite the online structure record
                 stmt = m_sqlManager.getPreparedStatement(conn, I_CmsConstants.C_PROJECT_ONLINE_ID, "C_RESOURCES_UPDATE_STRUCTURE");
                 stmt.setString(1, offlineResource.getParentId().toString());
@@ -3704,15 +3705,15 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                 stmt.setString(5, offlineResource.getId().toString());
                 stmt.executeUpdate();
             } else {
-
+    
                 // the resource/file record does NOT exist online yet
-
+    
                 if (offlineResource.isFile() && !existsContentId(I_CmsConstants.C_PROJECT_ONLINE_ID, offlineResource.getFileId())) {
                     // create the file content online
                     resourceSize = offlineResource.getLength();
                     createFileContent(offlineResource.getFileId(), ((CmsFile) offlineResource).getContents(), 0, I_CmsConstants.C_PROJECT_ONLINE_ID, false);
                 }
-
+    
                 // create the resource record online
                 stmt = m_sqlManager.getPreparedStatement(conn, I_CmsConstants.C_PROJECT_ONLINE_ID, "C_RESOURCES_WRITE");
                 stmt.setString(1, offlineResource.getResourceId().toString());
@@ -3730,9 +3731,9 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                 stmt.setInt(13, offlineResource.getProjectId());
                 stmt.setInt(14, 1);
                 stmt.executeUpdate();
-
+    
                 m_sqlManager.closeAll(null, stmt, null);
-
+    
                 // create the structure record online
                 stmt = m_sqlManager.getPreparedStatement(conn, I_CmsConstants.C_PROJECT_ONLINE_ID, "C_STRUCTURE_WRITE");
                 stmt.setString(1, offlineResource.getId().toString());
@@ -3747,7 +3748,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
-    } 
+    }  
     
     public List readAllFileHeaders(CmsProject currentProject) throws CmsException {
         Connection conn = null;

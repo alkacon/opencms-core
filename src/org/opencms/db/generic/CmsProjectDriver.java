@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/08/26 16:00:43 $
- * Version: $Revision: 1.67 $
+ * Date   : $Date: 2003/08/27 09:52:42 $
+ * Version: $Revision: 1.68 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.67 $ $Date: 2003/08/26 16:00:43 $
+ * @version $Revision: 1.68 $ $Date: 2003/08/27 09:52:42 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1084,8 +1084,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             }
 
             // read the project resources of the project that gets published
-            projectResources = m_driverManager.readProjectResources(context.currentProject());
-
+            projectResources = m_driverManager.readProjectResources(context, context.currentProject());
 
             // read all changed/new/deleted folders in the offline project
             offlineFolders = m_driverManager.getVfsDriver().readFolders(context.currentProject().getId());
@@ -1100,7 +1099,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 sortedFolderMap.put(currentResourceName, currentFolder);
             }
     
-                 
+               
             sortedFolderList = (List) new ArrayList(sortedFolderMap.keySet());
             Collections.sort(sortedFolderList);
 
@@ -1264,7 +1263,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     }
 
                     m_driverManager.getVfsDriver().resetProjectId(context.currentProject(), currentFolder);
-                    
+
                     OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", (CmsResource)currentFolder)));
 
                     properties = null;
@@ -1560,7 +1559,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     }
 
                     m_driverManager.getVfsDriver().resetProjectId(context.currentProject(), currentFile);
-                    
+
                     OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", (CmsResource)currentFile)));
 
                     properties = null;

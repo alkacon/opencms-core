@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/08/26 16:00:43 $
-* Version: $Revision: 1.387 $
+* Date   : $Date: 2003/08/27 09:52:43 $
+* Version: $Revision: 1.388 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.387 $
+ * @version $Revision: 1.388 $
  */
 public class CmsObject {
 
@@ -2655,12 +2655,16 @@ public class CmsObject {
 
         publishedResources = new CmsPublishedResources(m_context.currentProject());
         try {
+           
             // first we remember the new resources for the link management
             newResources = m_driverManager.readPublishProjectView(m_context, m_context.currentProject().getId(), "new");
+            
             deletedResources = m_driverManager.readPublishProjectView(m_context, m_context.currentProject().getId(), "deleted");
+            
             changedResources = m_driverManager.readPublishProjectView(m_context, m_context.currentProject().getId(), "changed");
 
             updateOnlineProjectLinks(deletedResources, changedResources, null, CmsResourceTypePage.C_RESOURCE_TYPE_ID);
+           
             publishedResources = m_driverManager.publishProject(this, m_context, report);
 
             // update the online links table for the new resources (now they are there)
@@ -2672,7 +2676,7 @@ public class CmsObject {
 
             changedResources = publishedResources.getChangedResources();
             changedModuleMasters = publishedResources.getChangedModuleMasters();
-
+ 
             if (CmsXmlTemplateLoader.getOnlineElementCache() != null) {
                 CmsXmlTemplateLoader.getOnlineElementCache().cleanupCache(changedResources, changedModuleMasters);
             }
@@ -2866,7 +2870,7 @@ public class CmsObject {
      * @throws CmsException Throws CmsException if operation was not succesful
      */
     public Vector readAllProjectResources(int projectId) throws CmsException {
-        return m_driverManager.readAllProjectResources(projectId);
+        return m_driverManager.readAllProjectResources(m_context, projectId);
     }
 
     /**
@@ -4310,7 +4314,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public List readProjectResources(CmsProject project) throws CmsException {
-        return m_driverManager.readProjectResources(project);
+        return m_driverManager.readProjectResources(m_context, project);
     }
         
     /**
@@ -4323,5 +4327,5 @@ public class CmsObject {
     public CmsResource recoverResource(String resourcename) throws CmsException {
         return m_driverManager.recoverResource(m_context, m_context.addSiteRoot(resourcename));        
     }
-    
+
 }
