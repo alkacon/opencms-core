@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/11 10:38:38 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/07/11 13:31:20 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import source.org.apache.java.util.Configurations;
  * Definitions of all required VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.8 $ $Date: 2003/07/11 10:38:38 $
+ * @version $Revision: 1.9 $ $Date: 2003/07/11 13:31:20 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -183,9 +183,6 @@ public interface I_CmsVfsDriver {
     Vector getResourcesWithProperty(int projectId, String propertyDefinition, String propertyValue, int resourceType) throws CmsException;
     List getUndeletedResources(List resources);
     
-
-    
-    
     /**
      * Initializes this driver.<p>
      * 
@@ -285,9 +282,27 @@ public interface I_CmsVfsDriver {
      */
     void removeFile(CmsProject currentProject, CmsUUID resourceId) throws CmsException;
     void removeFile(CmsProject currentProject, CmsUUID parentId, String filename) throws CmsException;
-    
+
+	/**
+	 * Removes a folder and its subfolders physically in the database.<p>
+	 * The contents of the folders must have been already deleted
+	 *
+	 * @param currentProject the current project
+	 * @param folder the folder
+	 * @throws CmsException if something goes wrong
+	 */    
     void removeFolder(CmsProject currentProject, CmsFolder folder) throws CmsException;
-    void removeFolderForPublish(CmsProject currentProject, CmsUUID folderId) throws CmsException;
+    
+    /**
+     * Removes a single folder physically in the database.<p>
+     * The folder is removed without deleting its subresources.
+     * 
+     * @param currentProject the current project
+     * @param structureId the structure id of the folder
+     * @throws CmsException if something goes wrong
+     */
+    void removeFolder(CmsProject currentProject, CmsUUID structureId) throws CmsException;
+    
     void removeTemporaryFile(CmsFile file) throws CmsException;
     int renameResource(CmsUser currentUser, CmsProject currentProject, CmsResource resource, String newResourceName) throws CmsException;
     int updateAllResourceFlags(CmsProject theProject, int theValue) throws CmsException;

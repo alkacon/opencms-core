@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/11 10:38:38 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2003/07/11 13:31:20 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.24 $ $Date: 2003/07/11 10:38:38 $
+ * @version $Revision: 1.25 $ $Date: 2003/07/11 13:31:20 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -1053,10 +1053,21 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         
         try {
             conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_DELETE_PROJECT");
+            // stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_DELETE_PROJECT");
             // delete all project-resources.
-            stmt.setInt(1, project.getId());
-            stmt.executeQuery();
+            // stmt.setInt(1, project.getId());
+            // stmt.executeQuery();
+            
+			stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_DELETE_BY_PROJECTID");
+			stmt.setInt(1, project.getId());
+			stmt.executeUpdate();
+            
+			m_sqlManager.closeAll(null, stmt, null);
+			
+			stmt = m_sqlManager.getPreparedStatement(conn, project, "C_STRUCTURE_DELETE_BY_PROJECTID");
+			stmt.setInt(1, project.getId());
+			stmt.executeUpdate();
+			
             // delete all project-files.
             //clearFilesTable();
         } catch (SQLException e) {
@@ -1156,16 +1167,27 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         try {
             // delete resource data from database
             conn = m_sqlManager.getConnection(resource.getProjectId());            
-            stmt = m_sqlManager.getPreparedStatement(conn, resource.getProjectId(), "C_RESOURCES_ID_DELETE");
-            stmt.setString(1, resource.getId().toString());
-            stmt.executeUpdate();
-            
+            // stmt = m_sqlManager.getPreparedStatement(conn, resource.getProjectId(), "C_RESOURCES_ID_DELETE");
+            // stmt.setString(1, resource.getId().toString());
+            // stmt.executeUpdate();
+
+			// delete the file content
+			stmt = m_sqlManager.getPreparedStatement(conn, resource.getProjectId(), "C_FILE_CONTENT_DELETE");
+			stmt.setString(1, resource.getFileId().toString());
+			stmt.executeUpdate();
+			            
             m_sqlManager.closeAll(null, stmt, null);
 
-            // delete the file content
-            stmt = m_sqlManager.getPreparedStatement(conn, resource.getProjectId(), "C_FILE_CONTENT_DELETE");
-            stmt.setString(1, resource.getFileId().toString());
-            stmt.executeUpdate();
+			stmt = m_sqlManager.getPreparedStatement(conn, resource.getProjectId(), "C_RESOURCES_DELETE_BY_RESOURCEID");
+			stmt.setString(1, resource.getResourceId().toString());
+			stmt.executeUpdate();
+            
+			m_sqlManager.closeAll(null, stmt, null);
+			
+			stmt = m_sqlManager.getPreparedStatement(conn, resource.getProjectId(), "C_STRUCTURE_DELETE_BY_STRUCTUREID");
+			stmt.setString(1, resource.getId().toString());
+			stmt.executeUpdate();
+
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
@@ -2659,13 +2681,14 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
     	removeFile(currentProject, file.getId());          
     }
 
-    /**
-     * Deletes a folder in the database.
-     * This method is used to physically remove a folder form the database.
-     *
-     * @param folder The folder.
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
+	/**
+	 * Removes a folder and its subfolders physically in the database.<p>
+	 * The contents of the folders must have been already deleted
+	 *
+	 * @param currentProject the current project
+	 * @param folder the folder
+	 * @throws CmsException if something goes wrong
+	 */ 
     public void removeFolder(CmsProject currentProject, CmsFolder folder) throws CmsException {
         // the current implementation only deletes empty folders
         // check if the folder has any files in it
@@ -2677,19 +2700,20 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             folders = getUndeletedResources(folders);
             if (folders.size() == 0) {
                 //this folder is empty, delete it
-                Connection conn = null;
-                PreparedStatement stmt = null;
-                try {
-                    conn = m_sqlManager.getConnection(currentProject);
-                    stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_RESOURCES_ID_DELETE");
-                    // delete the folder
-                    stmt.setString(1, folder.getId().toString());
-                    stmt.executeUpdate();
-                } catch (SQLException e) {
-                    throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-                } finally {
-                    m_sqlManager.closeAll(conn, stmt, null);
-                }
+                // Connection conn = null;
+                // PreparedStatement stmt = null;
+                // try {
+                //     conn = m_sqlManager.getConnection(currentProject);
+                //     stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_RESOURCES_ID_DELETE");
+                //    // delete the folder
+                //    stmt.setString(1, folder.getId().toString());
+                //    stmt.executeUpdate();
+                // } catch (SQLException e) {
+                //    throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+                //} finally {
+                //    m_sqlManager.closeAll(conn, stmt, null);
+                // }
+                removeFolder(currentProject, folder.getId());
             } else {
                 throw new CmsException("[" + this.getClass().getName() + "] " + folder.getResourceName(), CmsException.C_NOT_EMPTY);
             }
@@ -2698,24 +2722,34 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         }
     }
 
-    /**
-     * Deletes a folder in the database.
-     * This method is used to physically remove a folder form the database.
-     * It is internally used by the publish project method.
-     *
-     * @param project The project in which the resource will be used.
-     * @param foldername The complete path of the folder.
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-    public void removeFolderForPublish(CmsProject currentProject, CmsUUID folderId) throws CmsException {
+	/**
+	 * Removes a single folder physically in the database.<p>
+	 * The folder is removed without deleting its subresources.
+	 * 
+	 * @param currentProject the current project
+	 * @param structureId the structure id of the folder
+	 * @throws CmsException if something goes wrong
+	 */
+    public void removeFolder(CmsProject currentProject, CmsUUID structureId) throws CmsException {
         PreparedStatement stmt = null;
         Connection conn = null;
         try {
             conn = m_sqlManager.getConnection(currentProject);
-            stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_RESOURCES_DELETE");
+            // stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_RESOURCES_DELETE");
             // delete the folder
-            stmt.setString(1, folderId.toString());
-            stmt.executeUpdate();
+            // stmt.setString(1, folderId.toString());
+            // stmt.executeUpdate();
+            
+			stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_RESOURCES_DELETE_BY_STRUCTUREID");
+			stmt.setString(1, structureId.toString());
+			stmt.executeUpdate();
+            
+			m_sqlManager.closeAll(null, stmt, null);
+			
+			stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_STRUCTURE_DELETE_BY_STRUCTUREID");
+			stmt.setString(1, structureId.toString());
+			stmt.executeUpdate();
+			
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {

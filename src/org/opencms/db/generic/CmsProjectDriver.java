@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/07/10 14:39:23 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2003/07/11 13:31:20 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.16 $ $Date: 2003/07/10 14:39:23 $
+ * @version $Revision: 1.17 $ $Date: 2003/07/11 13:31:20 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -566,10 +566,20 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         PreparedStatement stmt = null;
         try {
             conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_DELETE_PROJECT");
+            // stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_DELETE_PROJECT");
             // delete all project-resources.
+            // stmt.setInt(1, project.getId());
+            // stmt.executeQuery();
+            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_DELETE_BY_PROJECTID");
             stmt.setInt(1, project.getId());
-            stmt.executeQuery();
+            stmt.executeUpdate();
+            
+			m_sqlManager.closeAll(null, stmt, null);
+			
+            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_STRUCTURE_DELETE_BY_PROJECTID");
+            stmt.setInt(1, project.getId());
+            stmt.executeUpdate();
+            
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
@@ -1551,8 +1561,8 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                 }
             }
 
-            m_driverManager.getVfsDriver().removeFolderForPublish(onlineProject, currentFolder.getId());
-            m_driverManager.getVfsDriver().removeFolderForPublish(publishProject, currentFolder.getId());
+            m_driverManager.getVfsDriver().removeFolder(onlineProject, currentFolder.getId());
+            m_driverManager.getVfsDriver().removeFolder(publishProject, currentFolder.getId());
 
             // delete both online and offline access control entries applied to this folder
             m_driverManager.getUserDriver().removeAllAccessControlEntries(onlineProject, delOnlineFolder.getResourceAceId());
@@ -1925,7 +1935,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         } else if ("deleted".equalsIgnoreCase(filter)) {
             whereClause = " AND CMS_OFFLINE_STRUCTURE.STRUCTURE_STATE=" + I_CmsConstants.C_STATE_DELETED;
         } else if ("locked".equalsIgnoreCase(filter)) {
-            whereClause = " AND CMS_OFFLINE_RESOURCES.LOCKED_BY!='" + CmsUUID.getNullUUID() + "'";
+            whereClause = " AND CMS_OFFLINE_STRUCTURE.LOCKED_BY!='" + CmsUUID.getNullUUID() + "'";
         } else {
             whereClause = " AND CMS_OFFLINE_STRUCTURE.STRUCTURE_STATE!=" + I_CmsConstants.C_STATE_UNCHANGED;
         }        
