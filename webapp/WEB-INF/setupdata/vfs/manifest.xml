@@ -6373,6 +6373,33 @@
 		<accesscontrol/>
 	</file>
 	<file>
+		<source>system/workplace/jsp/editors/editarea.jsp</source>
+		<destination>system/workplace/jsp/editors/editarea.jsp</destination>
+		<type>jsp</type>
+		<uuidresource>ce070498-3f8b-11d8-8d70-ded2c236fb0d</uuidresource>
+		<uuidcontent>ce070499-3f8b-11d8-8d70-ded2c236fb0d</uuidcontent>
+		<datelastmodified>1073397858000</datelastmodified>
+		<userlastmodified>Admin</userlastmodified>
+		<datecreated>1073313069000</datecreated>
+		<usercreated>Admin</usercreated>
+		<flags>0</flags>
+		<properties>
+			<property>
+				<name>export</name>
+				<value><![CDATA[false]]></value>
+			</property>
+			<property>
+				<name>content-encoding</name>
+				<value><![CDATA[ISO-8859-1]]></value>
+			</property>
+			<property>
+				<name>Title</name>
+				<value><![CDATA[Direct editing area]]></value>
+			</property>
+		</properties>
+		<accesscontrol/>
+	</file>
+	<file>
 		<source>system/workplace/jsp/editors/editor.html</source>
 		<destination>system/workplace/jsp/editors/editor.html</destination>
 		<type>jsp</type>

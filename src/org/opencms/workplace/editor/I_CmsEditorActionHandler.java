@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/I_CmsEditorActionHandler.java,v $
- * Date   : $Date: 2004/01/06 14:30:31 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/01/06 16:15:51 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import javax.servlet.jsp.JspException;
  * The class you enter must implement this interface to perform the editor action.<p>  
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.3.0
  */
@@ -62,6 +62,41 @@ public interface I_CmsEditorActionHandler {
     
     /** Constant for: edit mode inactive */
     String C_EDITMODE_INACTIVE = "inactive";
+    
+    /**
+     * Prefix for edit area start elements.<p>
+     */
+    String C_EDIT_STARTAREA = "start_editarea";
+    
+    /**
+     * prefix for edit area end elements
+     */
+    String C_EDIT_ENDAREA = "end_editarea";
+
+    /**
+     * Key to identify the edit area attribute
+     */
+    String C_EDIT_AREA = "__editArea";
+    
+    /**
+     * Key to identify the edit body
+     */  
+    String C_EDIT_BODY = "__editBody";
+    
+    /**
+     * Key to identify the edit target
+     */
+    String C_EDIT_TARGET = "__editTarget";
+
+    /**
+     * Default editarea elements
+     */
+    String C_EDITAREA_DEFAULTS = "/system/workplace/jsp/editors/editarea.jsp";
+
+    /**
+     * Element name for editarea includes
+     */
+    String C_EDITAREA_INCLUDES = "editarea_includes";
     
     /**
      * Performs an action which is configurable in the implementation of the interface, e.g. save, exit, publish.<p>

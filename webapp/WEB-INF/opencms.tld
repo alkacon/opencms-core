@@ -7,7 +7,7 @@
 <!-- Created by Alexander Kandzior (a.kandzior@alkacon.com) on 6. April 2002, 17:28 -->
 
 <taglib>
-    <tlib-version>0.9.6</tlib-version>
+    <tlib-version>0.9.7</tlib-version>
     <jsp-version>1.2</jsp-version>
     <short-name>cms</short-name>
     <uri>http://www.opencms.org/taglib/cms</uri>
@@ -123,8 +123,23 @@
         </attribute>     
         <attribute>
             <name>element</name>
+        </attribute>
+        <attribute>
+            <name>editable</name>
         </attribute>        
     </tag>        
+
+    <tag>
+        <name>editable</name>
+        <tag-class>org.opencms.jsp.CmsJspTagEditable</tag-class>
+        <body-content>empty</body-content>
+        <description>
+            This tag is used to enable the editarea within a template.
+        </description>
+        <attribute>
+            <name>file</name>
+        </attribute>
+    </tag>
     
     <tag>
         <name>param</name>

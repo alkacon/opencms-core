@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorActionDefault.java,v $
- * Date   : $Date: 2004/01/06 15:28:08 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/01/06 16:15:51 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,12 +34,14 @@ import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
+import com.opencms.file.CmsResourceTypeXmlPage;
 import com.opencms.flex.jsp.CmsJspActionElement;
 import com.opencms.util.Encoder;
 import com.opencms.workplace.I_CmsWpConstants;
 
 import org.opencms.lock.CmsLock;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceAction;
 
@@ -51,7 +53,7 @@ import javax.servlet.jsp.JspException;
  * Provides a method to perform a user defined action when editing a page.<p> 
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.3.0
  */
@@ -137,9 +139,15 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
             
             CmsResource res = cmsObject.readFileHeader(filename);
             int currentProject = cmsObject.getRequestContext().currentProject().getId();
+            CmsUUID userId = cmsObject.getRequestContext().currentUser().getId();
+            CmsLock lock = cmsObject.getLock(filename);
+            boolean locked = !(lock.isNullLock() || (lock.getUserId().equals(userId) && lock.getProjectId() == currentProject));
         
             if (currentProject == I_CmsConstants.C_PROJECT_ONLINE_ID) {
                 // don't render edit area in online project
+                return null;
+            } else if ((res.getType() != CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID)) {
+                // don't render edit area for non-xmlpage resources
                 return null;
             } else if (CmsResource.getName(filename).startsWith(com.opencms.core.I_CmsConstants.C_TEMP_PREFIX)) {
                 // don't show edit area on temporary file
@@ -149,16 +157,14 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
                 return C_EDITMODE_INACTIVE;
             } else if (!cmsObject.hasPermissions(res, new CmsPermissionSet(I_CmsConstants.C_PERMISSION_WRITE))) {
                 // don't show edit area on files without write permissions
-                return C_EDITMODE_INACTIVE;
-            }  
-    
-            // check the lock state
-            org.opencms.lock.CmsLock lock = cmsObject.getLock(filename);
-            org.opencms.util.CmsUUID userId = cmsObject.getRequestContext().currentUser().getId();
-            if (!(lock.isNullLock() || (lock.getUserId().equals(userId) && lock.getProjectId() == currentProject))) {
-                // show disabled edit area on resources locked for other users
+                if (locked) {
+                    return C_EDITMODE_DISABLED;
+                } else {
+                    return C_EDITMODE_INACTIVE;
+                }
+            } else if (locked) {
                 return C_EDITMODE_DISABLED;
-            }  
+            }
   
             // otherwise the resource is editable
             return C_EDITMODE_ENABLED;

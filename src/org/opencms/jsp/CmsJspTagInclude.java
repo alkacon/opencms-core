@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInclude.java,v $
- * Date   : $Date: 2004/01/06 09:46:26 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/01/06 16:15:51 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,9 @@
 package org.opencms.jsp;
 
 import org.opencms.loader.CmsXmlTemplateLoader;
+import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
+import org.opencms.workplace.editor.I_CmsEditorActionHandler;
 
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
@@ -58,7 +60,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * Used to include another OpenCms managed resource in a JSP.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParamParent { 
     
@@ -68,6 +70,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
     private String m_property = null;    
     private String m_attribute = null;    
     private String m_element = null;
+    private boolean m_editable = false;
     
     /** Hashmap to save paramters to the include in */
     private HashMap m_parameterMap = null;
@@ -197,6 +200,26 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
             this.m_element = element;
         }
     }
+
+    /**
+     * Returns the editable flag.<p>
+     * 
+     * @return the editable flag
+     */
+    public String getEditable() {
+        return ""+m_editable;
+    }
+
+    /**
+     * Sets the editable flag.<p>
+     * 
+     * @param editable the flag to set, everything else than "true" is considered as false
+     */
+    public void setEditable(String editable) {
+        if (editable != null) {
+            m_editable = "true".equalsIgnoreCase(editable.trim());
+        }        
+    }
     
     /**
      * @see javax.servlet.jsp.tagext.Tag#release()
@@ -208,6 +231,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
         m_property = null;           
         m_element = null;
         m_parameterMap = null;
+        m_editable = false;
     }  
       
     /**
@@ -276,8 +300,8 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
                 }
             } 
               
-            // now perfrom the include action
-            includeTagAction(pageContext, target, m_element, m_parameterMap, req, res);
+            // now perform the include action
+            includeTagAction(pageContext, target, m_element, m_editable, m_parameterMap, req, res);
             
             // must call release here manually to make sure m_parameterMap is cleared
             release();
@@ -286,8 +310,27 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
         return EVAL_PAGE;
     }
     
+
     /**
-     * Include action method.<p>
+     * Include action method for non-editable targets.<p>
+     * 
+     * @param context the current JSP page context
+     * @param target the target for the include, might be <code>null</code>
+     * @param element the element to select form the target might be <code>null</code>
+     * @param paramMap a map of parameters for the include, will be merged with the request 
+     *      parameters, might be <code>null</code>
+     * @param req the current request
+     * @param res current response
+     * @throws JspException in case something goes wrong
+     */
+    public static void includeTagAction(PageContext context, String target, String element, Map paramMap, ServletRequest req, ServletResponse res) 
+    throws JspException {
+        
+        includeTagAction(context, target, element, false, paramMap, req, res);
+    }
+
+    /**
+     * Include action method for potentially editable targets.<p>
      * 
      * The logic in this mehod is more complex than it should be.
      * This is because of the XMLTemplate integration, which requires some settings 
@@ -299,13 +342,14 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
      * @param context the current JSP page context
      * @param target the target for the include, might be <code>null</code>
      * @param element the element to select form the target might be <code>null</code>
+     * @param editable the flag to indicate that the target is editable
      * @param paramMap a map of parameters for the include, will be merged with the request 
      *      parameters, might be <code>null</code>
      * @param req the current request
      * @param res the current response
      * @throws JspException in case something goes wrong
      */
-    public static void includeTagAction(PageContext context, String target, String element, Map paramMap, ServletRequest req, ServletResponse res) 
+    public static void includeTagAction(PageContext context, String target, String element, boolean editable, Map paramMap, ServletRequest req, ServletResponse res) 
     throws JspException {
         
         if (DEBUG) {
@@ -389,21 +433,47 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
         }          
 
         if (DEBUG) {
-            System.err.println("includeTagAction/3: target=" + target);
+            System.err.println("includeTagAction/3: target=" + target + ", editable=" + editable);
         }
        
         // save old parameters from request
         Map oldParamterMap = req.getParameterMap();
-        controller.getCurrentRequest().addParameterMap(parameterMap);  
+        
+        // check the edit mode
+        String editMode = null;
+        String editArea = null;
+        
+        if (editable) {
+            I_CmsEditorActionHandler actionClass = (I_CmsEditorActionHandler)OpenCms.getRuntimeProperty(I_CmsEditorActionHandler.EDITOR_ACTION);
+            editMode = actionClass.getEditMode(controller.getCmsObject(), target);
+            editArea = (String) context.getAttribute(I_CmsEditorActionHandler.C_EDIT_AREA);
+        }
         
         try {         
+            
+            // Include editarea start element if enabled
+            if (editMode != null && editArea != null) {
+
+                req.setAttribute(I_CmsEditorActionHandler.C_EDIT_BODY, element);
+                req.setAttribute(I_CmsEditorActionHandler.C_EDIT_TARGET, target);
+                includeElement(context, editArea, I_CmsEditorActionHandler.C_EDIT_STARTAREA + "_" + editMode, req, res);
+            }
+            
+            // add parameters (again) to set the correct element
+            controller.getCurrentRequest().addParameterMap(parameterMap); 
+            
             // Write out a C_FLEX_CACHE_DELIMITER char on the page, this is used as a parsing delimeter later
             context.getOut().print(CmsFlexResponse.C_FLEX_CACHE_DELIMITER);
             
             // Add an element to the include list (will be initialized if empty)
             controller.getCurrentResponse().addToIncludeList(target, parameterMap);
             
-            controller.getCurrentRequest().getRequestDispatcher(target).include(req, res);                
+            controller.getCurrentRequest().getRequestDispatcher(target).include(req, res); 
+            
+            // Include editarea end element if enabled
+            if (editMode != null && editArea != null) {
+                includeElement(context, editArea, I_CmsEditorActionHandler.C_EDIT_ENDAREA + "_" + editMode, req, res);
+            }
             
         } catch (javax.servlet.ServletException e) {
             if (DEBUG) {
@@ -426,6 +496,54 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
                 controller.getCurrentRequest().setParameterMap(oldParamterMap);
             }
         }           
+    }
+
+    /**
+     * Includes additional elements.<p>
+     * 
+     * @param context the current JSP page context
+     * @param target the source of the element
+     * @param element the editor element to include          
+     * @param req the current request
+     * @param res the current response
+     * @throws JspException in case something goes wrong         
+     */
+    private static void includeElement(PageContext context, String target, String element, ServletRequest req, ServletResponse res) 
+    throws JspException {
+
+        if (DEBUG) {
+            System.err.println("includeElement/1: target=" + target + ", element=" + element);
+        }
+
+        CmsFlexController controller = (CmsFlexController) req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
+
+        Map parameterMap = new HashMap();
+        addParameter(parameterMap, CmsJspTagTemplate.C_TEMPLATE_ELEMENT, element, true);
+        
+        try {
+            
+            controller.getCurrentRequest().addParameterMap(parameterMap); 
+            context.getOut().print(CmsFlexResponse.C_FLEX_CACHE_DELIMITER);
+            controller.getCurrentResponse().addToIncludeList(target, parameterMap);
+            controller.getCurrentRequest().getRequestDispatcher(target).include(req, res);
+            
+        } catch (javax.servlet.ServletException e) {
+            if (DEBUG) {
+                System.err.println("JspTagInclude: ServletException in Jsp 'include' tag processing: " + e);
+            }
+            if (DEBUG) {
+                System.err.println(com.opencms.util.Utils.getStackTrace(e));
+            }
+            throw new JspException(imprintExceptionMessage(e, target), e); 
+        } catch (java.io.IOException e) {
+            if (DEBUG) {
+                System.err.println("JspTagInclude: IOException in Jsp 'include' tag processing: " + e);
+            }
+            if (DEBUG) {
+                System.err.println(com.opencms.util.Utils.getStackTrace(e));
+            }
+            throw new JspException(imprintExceptionMessage(e, target), e);
+        }
     }
     
     /**
