@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2003/09/02 14:47:22 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/09/03 12:09:56 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -465,7 +465,6 @@ public class CmsImportVersion2 extends A_CmsImport {
       * @param uuidfile  the file uuid of the resource
       * @param uuidresource  the resource uuid of the resource
       * @param type the resource-type of the file
-      * @param access the access-flags of the file
       * @param lastmodified the timestamp of the file
       * @param properties a hashtable with properties for this resource
       * @param writtenFilenames filenames of the files and folder which have actually been successfully written

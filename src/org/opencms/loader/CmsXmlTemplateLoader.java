@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2003/09/02 14:47:54 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2003/09/03 12:10:31 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  */
 public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
     
@@ -112,7 +112,6 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
      * Compatibility method to ensure the legacy cache command line parameters
      * are still supported.<p>
      * 
-     * @param cms an initialized CmsObject
      * @param clearFiles if true, A_CmsXmlContent cache is cleared
      * @param clearTemplates if true, internal template cache is cleared
      */
@@ -501,7 +500,6 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
      * If the template cache of the template class is not yet set up, 
      * this will be done, too.<p>
      * 
-     * @param cms the cms context object
      * @param classname name of the requested template class
      * @return instance of the template class
      * @throws CmsException if something goes wrong
