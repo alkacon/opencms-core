@@ -1,6 +1,6 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDownGalleries.java,v $
- * Date   : $Date: 2000/05/25 15:11:35 $
+ * Date   : $Date: 2000/05/30 10:06:09 $
  * Version: $ $
  *
  * Copyright (C) 2000  The OpenCms Group 
@@ -41,7 +41,7 @@ import javax.servlet.http.*;
  * <p> 
  * 
  * @author Mario Stanke
- * @version $Revision: 1.1 $ $Date: 2000/05/25 15:11:35 $
+ * @version $Revision: 1.2 $ $Date: 2000/05/30 10:06:09 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminDownGalleries extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsFileListUsers {
@@ -253,8 +253,10 @@ public class CmsAdminDownGalleries extends CmsWorkplaceDefault implements I_CmsC
     public void getCustomizedColumnValues(A_CmsObject cms, CmsXmlWpTemplateFile filelistTemplate, A_CmsResource res, CmsXmlLanguageFile lang) 
         throws CmsException {
 		CmsXmlWpConfigFile config=this.getConfigFile(cms);
-		filelistTemplate.fastSetXmlData(C_FILELIST_ICON_VALUE, config.getWpPictureUrl()+"ic_file_download.gif");
-		filelistTemplate.setXmlData("SHORTNAME_VALUE", res.getName()); 
+		filelistTemplate.fastSetXmlData(C_FILELIST_ICON_VALUE, config.getWpPictureUrl()+"ic_file_download.gif"); 
+		filelistTemplate.setXmlData(C_FILELIST_NAME_VALUE, res.getName()); 
+		String title = cms.readProperty(res.getAbsolutePath(), C_PROPERTY_TITLE);
+		filelistTemplate.setXmlData(C_FILELIST_TITLE_VALUE, title);
 	}      
 
 	/**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPictureBrowser.java,v $
- * Date   : $Date: 2000/05/25 15:09:05 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/05/30 10:06:09 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * 
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.16 $ $Date: 2000/05/25 15:09:05 $
+ * @version $Revision: 1.17 $ $Date: 2000/05/30 10:06:09 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsPictureBrowser extends CmsWorkplaceDefault {
@@ -85,7 +85,7 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
 		
 		// test whether the pics folder exists at all
 		try {
-			cms.readFileHeader(getConfigFile(cms).getDownGalleryPath()); 
+			cms.readFileHeader(getConfigFile(cms).getPicGalleryPath()); 
 		} catch (CmsException e) { 
 			xmlTemplateDocument.setData("ERRORDETAILS", Utils.getStackTrace(e));
 			templateSelector="error";	
@@ -103,7 +103,7 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
 			}
 			folder = (String) session.getValue(C_PARA_FOLDER);
 			if (folder == null || "".equals(folder)) {
-				folder = getConfigFile(cms).getDownGalleryPath();
+				folder = getConfigFile(cms).getPicGalleryPath();
 			    session.putValue(C_PARA_FOLDER, folder);
 			}
 			String pageText = (String)parameters.get(C_PARA_PAGE);
@@ -181,7 +181,7 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
 		}
 		
 		if(folder == null || "".equals(folder)) {
-            folder = getConfigFile(cms).getDownGalleryPath();
+            folder = getConfigFile(cms).getPicGalleryPath();
             parameters.put(C_PARA_FOLDER, folder);
         }
 		
@@ -371,51 +371,6 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
 		} 
 		
         Vector folders = cms.getSubFolders(getConfigFile(cms).getPicGalleryPath()); 
-        int numFolders = folders.size();
-		
-        for(int i=0; i<numFolders; i++) {
-            A_CmsResource currFolder = (A_CmsResource)folders.elementAt(i);  
-			String name = currFolder.getName(); 
-			if (chosenFolder.equals(currFolder.getAbsolutePath())) {
-				ret = i;	
-			}
-			values.addElement(currFolder.getAbsolutePath());
-			names.addElement(name);
-		} 
-        return new Integer(ret);
-    } 	
-	
-	 /**
-     * Gets the filenames of all download galleries
-     * <P>
-     * The given vectors <code>names</code> and <code>values</code> will 
-     * be filled with the appropriate information to be used for building
-     * a select box. The values will be the paths to the galleries.
-     * 
-     * @param cms A_CmsObject Object for accessing system resources.
-     * @param names Vector to be filled with the appropriate values in this method.
-     * @param values Vector to be filled with the appropriate values in this method.
-     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
-     * @return Index of the selected Gallery
-     * @exception CmsException
-     */
-	
-	public Integer getDownGalleryNames(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
-		throws CmsException {
-		int ret=-1;
-		
-		HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
-		
-		// which folder is the gallery?
-		String chosenFolder = (String)parameters.get(C_PARA_FOLDER);
-		if (chosenFolder == null) {
-			chosenFolder = (String) session.getValue(C_PARA_FOLDER);
-		}
-		if (chosenFolder == null) {
-			chosenFolder = "";	
-		} 
-		
-        Vector folders = cms.getSubFolders(getConfigFile(cms).getDownGalleryPath()); 
         int numFolders = folders.size();
 		
         for(int i=0; i<numFolders; i++) {

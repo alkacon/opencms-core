@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDownloadBrowser.java,v $
- * Date   : $Date: 2000/05/25 15:11:35 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/05/30 10:06:09 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P> 
  * 
  * @author Mario Stanke
- * @version $Revision: 1.1 $ $Date: 2000/05/25 15:11:35 $
+ * @version $Revision: 1.2 $ $Date: 2000/05/30 10:06:09 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFileListUsers {
@@ -81,7 +81,7 @@ public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFile
 		HttpSession session = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);     
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
 			
-		// test whether the pics folder exists at all
+		// test whether the download folder exists at all
 		try {
 			cms.readFileHeader(getConfigFile(cms).getDownGalleryPath()); 
 		} catch (CmsException e) { 
