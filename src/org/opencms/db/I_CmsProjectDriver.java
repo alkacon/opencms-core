@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2004/09/07 09:30:36 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2004/10/22 14:37:39 $
+ * Version: $Revision: 1.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,15 +48,19 @@ import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 
+
 /**
  * Definitions of all required project driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.53 $ $Date: 2004/09/07 09:30:36 $
+ * @version $Revision: 1.54 $ $Date: 2004/10/22 14:37:39 $
  * @since 5.1
  */
 public interface I_CmsProjectDriver {
+    
+    /** The type ID to identify project driver implementations. */
+    int C_DRIVER_TYPE_ID = 1;    
 
     /**
     * Creates a project.<p>
@@ -89,19 +93,23 @@ public interface I_CmsProjectDriver {
      * Deletes a project from the cms.<p>
      * 
      * Therefore it deletes all files, resources and properties.
+     * 
+     * @param runtimeInfo the current runtime info
      * @param project the project to delete.
      * @throws CmsException Throws CmsException if something goes wrong
      */
-    void deleteProject(CmsProject project) throws CmsException;
+    void deleteProject(I_CmsRuntimeInfo runtimeInfo, CmsProject project) throws CmsException;
 
     /**
      * Removes the project id from all resources within a project.<p>
      * 
      * This must be done when a project will deleted
+     * 
+     * @param runtimeInfo the current runtime info
      * @param project the project to delete.
      * @throws CmsException Throws CmsException if something goes wrong
      */
-    void unmarkProjectResources(CmsProject project) throws CmsException;
+    void unmarkProjectResources(I_CmsRuntimeInfo runtimeInfo, CmsProject project) throws CmsException;
     
         
     /**
@@ -115,11 +123,13 @@ public interface I_CmsProjectDriver {
 
     /**
      * Deletes a specified project.<p>
-     *
+     * 
+     * @param runtimeInfo the current runtime info
      * @param project the project to be deleted
+     *
      * @throws CmsException if operation was not succesful
      */
-    void deleteProjectResources(CmsProject project) throws CmsException;
+    void deleteProjectResources(I_CmsRuntimeInfo runtimeInfo, CmsProject project) throws CmsException;
 
     /**
      * Deletes an entry in the published resource table.<p>
@@ -159,19 +169,19 @@ public interface I_CmsProjectDriver {
      * Initializes the SQL manager for this driver.<p>
      * 
      * To obtain JDBC connections from different pools, further 
-     * {online|offline|backup} pool Urls have to be specified.
+     * {online|offline|backup} pool Urls have to be specified.<p>
+     * 
+     * @param classname the classname of the SQL manager
      * 
      * @return the SQL manager for this driver
-     * @see org.opencms.db.generic.CmsSqlManager#setPoolUrlOffline(String)
-     * @see org.opencms.db.generic.CmsSqlManager#setPoolUrlOnline(String)
-     * @see org.opencms.db.generic.CmsSqlManager#setPoolUrlBackup(String)
      */
-    org.opencms.db.generic.CmsSqlManager initQueries();
+    org.opencms.db.generic.CmsSqlManager initSqlManager(String classname);
 
     /**
      * Publishes a deleted folder.<p>
      * 
      * @param context the current request context
+     * @param runtimeInfo the current runtime info
      * @param report the report to log the output to
      * @param m the number of the folder to publish
      * @param n the number of all folders to publish
@@ -182,14 +192,16 @@ public interface I_CmsProjectDriver {
      * @param publishHistoryId the publish history id
      * @param backupTagId the backup tag id
      * @param maxVersions the maxmum number of backup versions for each resource
+     * 
      * @throws Exception if something goes wrong
      */
-    void publishDeletedFolder(CmsRequestContext context, I_CmsReport report, int m, int n, CmsProject onlineProject, CmsFolder offlineFolder, boolean backupEnabled, long publishDate, CmsUUID publishHistoryId, int backupTagId, int maxVersions) throws Exception;
+    void publishDeletedFolder(CmsRequestContext context, I_CmsRuntimeInfo runtimeInfo, I_CmsReport report, int m, int n, CmsProject onlineProject, CmsFolder offlineFolder, boolean backupEnabled, long publishDate, CmsUUID publishHistoryId, int backupTagId, int maxVersions) throws Exception;
 
     /**
      * Publishes a new, changed or deleted file.<p>
-     *
+     * 
      * @param context the current request context
+     * @param runtimeInfo the current runtime info
      * @param report the report to log the output to
      * @param m the number of the file to publish
      * @param n the number of all files to publish
@@ -201,9 +213,10 @@ public interface I_CmsProjectDriver {
      * @param publishHistoryId the publish history id
      * @param backupTagId the backup tag id
      * @param maxVersions the maxmum number of backup versions for each resource
+     * 
      * @throws Exception if something goes wrong
      */
-    void publishFile(CmsRequestContext context, I_CmsReport report, int m, int n, CmsProject onlineProject, CmsResource offlineResource, Set publishedContentIds, boolean backupEnabled, long publishDate, CmsUUID publishHistoryId, int backupTagId, int maxVersions) throws Exception;
+    void publishFile(CmsRequestContext context, I_CmsRuntimeInfo runtimeInfo, I_CmsReport report, int m, int n, CmsProject onlineProject, CmsResource offlineResource, Set publishedContentIds, boolean backupEnabled, long publishDate, CmsUUID publishHistoryId, int backupTagId, int maxVersions) throws Exception;
     
     /**
      * Publishes the content record of a file.<p>
@@ -216,19 +229,22 @@ public interface I_CmsProjectDriver {
      * for a specific DB server to shift the binary content from the offline into the online table
      * in a more sophisticated way than in the generic ANSI-SQL implementation of this interface.
      * 
+     * @param runtimeInfo the current runtime info
      * @param offlineProject the offline project to read data
      * @param onlineProject the online project to write data
      * @param offlineFileHeader the offline header of the file of which the content gets published
      * @param publishedResourceIds a Set with the UUIDs of the already published content records
+     * 
      * @return the published file (online)
      * @throws Exception if something goes wrong
      */
-    CmsFile publishFileContent(CmsProject offlineProject, CmsProject onlineProject, CmsResource offlineFileHeader, Set publishedResourceIds) throws Exception;
+    CmsFile publishFileContent(I_CmsRuntimeInfo runtimeInfo, CmsProject offlineProject, CmsProject onlineProject, CmsResource offlineFileHeader, Set publishedResourceIds) throws Exception;
 
     /**
      * Publishes a new or changed folder.<p>
      * 
      * @param context the current request context
+     * @param runtimeInfo the current runtime info
      * @param report the report to log the output to
      * @param m the number of the folder to publish
      * @param n the number of all folders to publish
@@ -239,24 +255,27 @@ public interface I_CmsProjectDriver {
      * @param publishHistoryId the publish history id
      * @param backupTagId the backup tag id
      * @param maxVersions the maxmum number of backup versions for each resource
+     * 
      * @throws Exception if something goes wrong
      */
-    void publishFolder(CmsRequestContext context, I_CmsReport report, int m, int n, CmsProject onlineProject, CmsFolder currentFolder, boolean backupEnabled, long publishDate, CmsUUID publishHistoryId, int backupTagId, int maxVersions) throws Exception;
+    void publishFolder(CmsRequestContext context, I_CmsRuntimeInfo runtimeInfo, I_CmsReport report, int m, int n, CmsProject onlineProject, CmsFolder currentFolder, boolean backupEnabled, long publishDate, CmsUUID publishHistoryId, int backupTagId, int maxVersions) throws Exception;
 
     /**
      * Publishes a specified project to the online project.<p>
      * 
      * @param context the current request context
+     * @param runtimeInfo a container holding runtime infos
      * @param report an I_CmsReport instance to print output messages
      * @param onlineProject the online project
      * @param publishList a Cms publish list
      * @param backupEnabled true if published resources should be written to the Cms backup
      * @param backupTagId the backup tag ID
      * @param maxVersions maximum number of backup versions
+     * 
      * @throws Exception if something goes wrong
      * @see org.opencms.db.CmsDriverManager#getPublishList(CmsRequestContext, CmsResource, boolean)
      */
-    void publishProject(CmsRequestContext context, I_CmsReport report, CmsProject onlineProject, CmsPublishList publishList, boolean backupEnabled, int backupTagId, int maxVersions) throws Exception;
+    void publishProject(CmsRequestContext context, I_CmsRuntimeInfo runtimeInfo, I_CmsReport report, CmsProject onlineProject, CmsPublishList publishList, boolean backupEnabled, int backupTagId, int maxVersions) throws Exception;
 
     /**
      * Reads a project by task-id.<p>
@@ -396,13 +415,15 @@ public interface I_CmsProjectDriver {
     /**
      * Inserts an entry in the publish history for a published VFS resource.<p>
      * 
+     * @param runtimeInfo the current runtime info
      * @param currentProject the current project
      * @param publishId the ID of the current publishing process
      * @param tagId the current backup ID
      * @param resource the state of the resource *before* it was published
+     * 
      * @throws CmsException if something goes wrong
      */
-    void writePublishHistory(CmsProject currentProject, CmsUUID publishId, int tagId, CmsResource resource) throws CmsException;
+    void writePublishHistory(I_CmsRuntimeInfo runtimeInfo, CmsProject currentProject, CmsUUID publishId, int tagId, CmsResource resource) throws CmsException;
     
     /**
      * Inserts an entry in the publish history for a published COS resource.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/I_CmsWorkflowDriver.java,v $
- * Date   : $Date: 2004/08/27 08:57:22 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/10/22 14:37:39 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.util.*;
 import org.opencms.workflow.CmsTask;
 import org.opencms.workflow.CmsTaskLog;
 
+import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsUser;
@@ -42,15 +43,19 @@ import org.opencms.main.CmsException;
 
 import java.util.Vector;
 
+
 /**
  * Definitions of all required workflow driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.15 $ $Date: 2004/08/27 08:57:22 $
+ * @version $Revision: 1.16 $ $Date: 2004/10/22 14:37:39 $
  * @since 5.1
  */
 public interface I_CmsWorkflowDriver {
+    
+    /** The type ID to identify workflow driver implementations. */
+    int C_DRIVER_TYPE_ID = 4;    
 
     /**
      * Creates a new task.<p>
@@ -103,14 +108,13 @@ public interface I_CmsWorkflowDriver {
      * Initializes the SQL manager for this driver.<p>
      *  
      * To obtain JDBC connections from different pools, further 
-     * {online|offline|backup} pool Urls have to be specified.
+     * {online|offline|backup} pool Urls have to be specified.<p>
+     * 
+     * @param classname the classname of the SQL manager
      * 
      * @return the SQL manager for this driver
-     * @see org.opencms.db.generic.CmsSqlManager#setPoolUrlOffline(String)
-     * @see org.opencms.db.generic.CmsSqlManager#setPoolUrlOnline(String)
-     * @see org.opencms.db.generic.CmsSqlManager#setPoolUrlBackup(String)
      */
-    org.opencms.db.generic.CmsSqlManager initQueries();
+    org.opencms.db.generic.CmsSqlManager initSqlManager(String classname);
 
     /**
      * Finds an agent for a given role (group).
@@ -241,4 +245,11 @@ public interface I_CmsWorkflowDriver {
      */
     void writeTaskType(int autofinish, int escalationtyperef, String htmllink, String name, String permission, int priorityref, int roleref) throws CmsException;
 
+    /**
+     * Returns the SqlManager of this driver.<p>
+     * 
+     * @return the SqlManager of this driver
+     */
+    CmsSqlManager getSqlManager();
+    
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsException.java,v $
- * Date   : $Date: 2004/10/15 15:08:29 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/10/22 14:37:40 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.util.*;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class CmsException extends Exception {
 
@@ -122,6 +122,12 @@ public class CmsException extends Exception {
 
     /** Error code internal file. */
     public static final int C_INTERNAL_FILE = 15;
+    
+    /** Error code that a group to be created already exists. */
+    public static final int C_GROUP_ALREADY_EXISTS = 41;
+    
+    /** Error code that a user to be created already exists. */
+    public static final int C_USER_ALREADY_EXISTS = 42;    
 
     /** 
      * Error code for access denied exception for vfs resources.

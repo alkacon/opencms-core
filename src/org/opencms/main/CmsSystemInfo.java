@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2004/08/30 12:44:58 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2004/10/22 14:37:40 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * @since 5.3
  */
 public class CmsSystemInfo {
@@ -563,4 +563,5 @@ public class CmsSystemInfo {
         m_versionNumber = props.getProperty("version.number", C_DEFAULT_VERSION_NUMBER);
         m_versionName = m_versionNumber + " " + props.getProperty("version.name", C_DEFAULT_VERSION_NAME);
     }  
+    
 }

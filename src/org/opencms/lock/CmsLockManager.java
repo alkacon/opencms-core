@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2004/08/23 15:37:02 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/10/22 14:37:40 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.lock;
 
 import org.opencms.db.CmsDriverManager;
+import org.opencms.db.I_CmsRuntimeInfo;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
@@ -57,7 +58,7 @@ import java.util.Map;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com) 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 5.1.4
  * 
@@ -99,15 +100,17 @@ public final class CmsLockManager extends Object {
      * 
      * @param driverManager the driver manager
      * @param context the current request context
+     * @param runtimeInfo the current runtime info
      * @param resourcename the full resource name including the site root
      * @param userId the ID of the user who locked the resource
      * @param projectId the ID of the project where the resource is locked
      * @param mode flag indicating the mode (temporary or common) of a lock
+     * 
      * @throws CmsException if somethong goes wrong
      */
-    public void addResource(CmsDriverManager driverManager, CmsRequestContext context, String resourcename, CmsUUID userId, int projectId, int mode) throws CmsException {
+    public void addResource(CmsDriverManager driverManager, CmsRequestContext context, I_CmsRuntimeInfo runtimeInfo, String resourcename, CmsUUID userId, int projectId, int mode) throws CmsException {
         
-        CmsLock lock = getLock(driverManager, context, resourcename);
+        CmsLock lock = getLock(driverManager, context, runtimeInfo, resourcename);
 
         if (!lock.isNullLock() && !lock.getUserId().equals(context.currentUser().getId())) {
             throw new CmsLockException("Resource is already locked by another user", CmsLockException.C_RESOURCE_LOCKED_BY_OTHER_USER);
@@ -200,11 +203,13 @@ public final class CmsLockManager extends Object {
      * 
      * @param driverManager the driver manager
      * @param context the current request context
+     * @param runtimeInfo the current runtime info
      * @param resourcename the name of the specified resource
+     * 
      * @return the lock of the exclusive locked sibling
      * @throws CmsException if somethong goes wrong
      */
-    public CmsLock getExclusiveLockedSibling(CmsDriverManager driverManager, CmsRequestContext context, String resourcename) throws CmsException {
+    public CmsLock getExclusiveLockedSibling(CmsDriverManager driverManager, CmsRequestContext context, I_CmsRuntimeInfo runtimeInfo, String resourcename) throws CmsException {
         CmsResource sibling = null;
 
         // check first if the specified resource itself is already the exclusive locked sibling
@@ -214,7 +219,7 @@ public final class CmsLockManager extends Object {
         }
 
         // nope, fetch all siblings of the resource to the same content record
-        List siblings = internalReadSiblings(driverManager, context, resourcename);
+        List siblings = internalReadSiblings(driverManager, context, runtimeInfo, resourcename);
 
         for (int i = 0; i < siblings.size(); i++) {
             sibling = (CmsResource)siblings.get(i);
@@ -232,11 +237,13 @@ public final class CmsLockManager extends Object {
      * 
      * @param driverManager the driver manager
      * @param context the current request context
+     * @param runtimeInfo the current runtime info
      * @param resourcename the full resource name including the site root
+     * 
      * @return the CmsLock if the specified resource is locked, or the shared Null lock if the resource is not locked
      * @throws CmsException if something goes wrong
      */
-    public CmsLock getLock(CmsDriverManager driverManager, CmsRequestContext context, String resourcename) throws CmsException {
+    public CmsLock getLock(CmsDriverManager driverManager, CmsRequestContext context, I_CmsRuntimeInfo runtimeInfo, String resourcename) throws CmsException {
         CmsLock parentFolderLock = null;
         CmsLock siblingLock = null;
         CmsResource sibling = null;
@@ -249,7 +256,7 @@ public final class CmsLockManager extends Object {
             return CmsLock.getNullLock();
         }
 
-        resource = internalReadFileHeader(driverManager, context, resourcename);
+        resource = internalReadFileHeader(driverManager, context, runtimeInfo, resourcename);
 
         if (resource == null) {
             // non-existent resources are never locked
@@ -266,7 +273,7 @@ public final class CmsLockManager extends Object {
         // calculate the lock state
 
         // fetch all siblings of the resource to the same content record
-        List siblings = internalReadSiblings(driverManager, context, resourcename);
+        List siblings = internalReadSiblings(driverManager, context, runtimeInfo, resourcename);
 
         if ((parentFolderLock = getParentFolderLock(resourcename)) == null) {
             // all parent folders are unlocked
@@ -327,19 +334,21 @@ public final class CmsLockManager extends Object {
      * 
      * @param driverManager the driver manager
      * @param context the current request context
+     * @param runtimeInfo the current runtime info
      * @param resourcename the full resource name including the site root
+     * 
      * @return the CmsResource instance
      */
-    private CmsResource internalReadFileHeader(CmsDriverManager driverManager, CmsRequestContext context, String resourcename) {
+    private CmsResource internalReadFileHeader(CmsDriverManager driverManager, CmsRequestContext context, I_CmsRuntimeInfo runtimeInfo, String resourcename) {
         CmsResource resource = null;
 
         try {
             // reading resources using readFileHeader while the lock state is checked would
             // inevitably result in an infinite loop...
             resource = driverManager.getVfsDriver().readFileHeader(
+                runtimeInfo, 
                 context.currentProject().getId(), 
-                resourcename, 
-                true);
+                resourcename, true);
         } catch (CmsException e) {
             resource = null;
         }
@@ -352,17 +361,19 @@ public final class CmsLockManager extends Object {
      * 
      * @param driverManager the driver manager
      * @param context the current request context
+     * @param runtimeInfo the current runtime info
      * @param resourcename the name of the resource to find all siblings from
+     * 
      * @return list of CmsResources
      * @throws CmsException if something goes wrong
      */
-    private List internalReadSiblings(CmsDriverManager driverManager, CmsRequestContext context, String resourcename) throws CmsException {
+    private List internalReadSiblings(CmsDriverManager driverManager, CmsRequestContext context, I_CmsRuntimeInfo runtimeInfo, String resourcename) throws CmsException {
 
         // reading siblings using the DriverManager methods while the lock state is checked would
         // inevitably result in an infinite loop...        
 
-        CmsResource resource = internalReadFileHeader(driverManager, context, resourcename);
-        List siblings = driverManager.getVfsDriver().readSiblings(context.currentProject(), resource, true);
+        CmsResource resource = internalReadFileHeader(driverManager, context, runtimeInfo, resourcename);
+        List siblings = driverManager.getVfsDriver().readSiblings(null, context.currentProject(), resource, true);
 
         int n = siblings.size();
         for (int i = 0; i < n; i++) {
@@ -380,18 +391,20 @@ public final class CmsLockManager extends Object {
     /**
      * Proves if a resource is locked.<p>
      * 
-     * Use {@link org.opencms.lock.CmsLockManager#getLock(CmsDriverManager, CmsRequestContext, String)} 
+     * Use {@link org.opencms.lock.CmsLockManager#getLock(CmsDriverManager, CmsRequestContext, I_CmsRuntimeInfo, String)} 
      * to obtain a CmsLock object for the specified resource to get further information 
      * about how the resource is locked.<p>
      * 
      * @param driverManager the driver manager
      * @param context the current request context
+     * @param runtimeInfo the current runtime info
      * @param resourcename the full resource name including the site root
+     * 
      * @return true, if and only if the resource is currently locked
      * @throws CmsException if something goes wrong
      */
-    public boolean isLocked(CmsDriverManager driverManager, CmsRequestContext context, String resourcename) throws CmsException {
-        CmsLock lock = getLock(driverManager, context, resourcename);
+    public boolean isLocked(CmsDriverManager driverManager, CmsRequestContext context, I_CmsRuntimeInfo runtimeInfo, String resourcename) throws CmsException {
+        CmsLock lock = getLock(driverManager, context, runtimeInfo, resourcename);
         return !lock.isNullLock();
     }
 
@@ -399,17 +412,19 @@ public final class CmsLockManager extends Object {
      * Removes a resource from the lock manager.<p>
      * 
      * The forceUnlock option should be used with caution. forceUnlock will remove the lock
-     * by ignoring any rules which may cause wrong lock states.
+     * by ignoring any rules which may cause wrong lock states.<p>
      * 
      * @param driverManager the driver manager
      * @param context the current request context
+     * @param runtimeInfo the current runtime info
      * @param resourcename the full resource name including the site root
      * @param forceUnlock true, if a resource is forced to get unlocked, no matter by which user and in which project the resource is currently locked
+     * 
      * @return the previous CmsLock object of the resource, or null if the resource was unlocked
      * @throws CmsException if something goes wrong
      */
-    public CmsLock removeResource(CmsDriverManager driverManager, CmsRequestContext context, String resourcename, boolean forceUnlock) throws CmsException {
-        CmsLock lock = getLock(driverManager, context, resourcename);
+    public CmsLock removeResource(CmsDriverManager driverManager, CmsRequestContext context, I_CmsRuntimeInfo runtimeInfo, String resourcename, boolean forceUnlock) throws CmsException {
+        CmsLock lock = getLock(driverManager, context, runtimeInfo, resourcename);
         CmsResource sibling = null;
 
         // check some abort conditions first
@@ -452,7 +467,7 @@ public final class CmsLockManager extends Object {
         if (lock.getType() == CmsLock.C_TYPE_SHARED_EXCLUSIVE) {
             // when a resource with a shared lock gets unlocked, fetch all siblings of the resource 
             // to the same content record to identify the exclusive locked sibling
-            List siblings = internalReadSiblings(driverManager, context, resourcename);
+            List siblings = internalReadSiblings(driverManager, context, runtimeInfo, resourcename);
 
             for (int i = 0; i < siblings.size(); i++) {
                 sibling = (CmsResource)siblings.get(i);

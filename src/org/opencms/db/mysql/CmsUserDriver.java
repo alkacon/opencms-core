@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsUserDriver.java,v $
- * Date   : $Date: 2004/10/14 08:20:56 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/10/22 14:37:39 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,19 +31,23 @@
 
 package org.opencms.db.mysql;
 
-import org.opencms.util.CmsUUID;
+import org.opencms.db.I_CmsRuntimeInfo;
+import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
+import org.opencms.util.CmsUUID;
+
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Hashtable;
 
+
 /**
  * MySQL implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.18 $ $Date: 2004/10/14 08:20:56 $
+ * @version $Revision: 1.19 $ $Date: 2004/10/22 14:37:39 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -52,18 +56,22 @@ import java.util.Hashtable;
 public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#createUser(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, int, java.util.Hashtable, java.lang.String, int)
+     * @see org.opencms.db.I_CmsUserDriver#createUser(I_CmsRuntimeInfo, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, int, java.util.Hashtable, java.lang.String, int)
      */
-    public CmsUser createUser(String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Hashtable additionalInfos, String address, int type) throws CmsException {
-        //int id = m_sqlManager.nextPkId("C_TABLE_USERS");
+    public CmsUser createUser(I_CmsRuntimeInfo runtimeInfo, String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Hashtable additionalInfos, String address, int type) throws CmsException {
+
         CmsUUID id = new CmsUUID();
         PreparedStatement stmt = null;
         Connection conn = null;
 
-        try {
+        if (existsUser(runtimeInfo, name, type)) {
+            throw new CmsException("User " + name + " name already exists", CmsException.C_USER_ALREADY_EXISTS);
+        }
+        
+        try {           
             // user data is project independent- use a "dummy" project ID to receive
             // a JDBC connection from the offline connection pool
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(runtimeInfo);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_ADD");
 
             stmt.setString(1, id.toString());
@@ -85,28 +93,30 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
         } catch (IOException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(runtimeInfo, conn, stmt, null);
         }
 
-        return readUser(id);
+        return readUser(runtimeInfo, id);
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#initQueries()
+     * @see org.opencms.db.I_CmsUserDriver#initSqlManager(String)
      */
-    public org.opencms.db.generic.CmsSqlManager initQueries() {
-        return new org.opencms.db.mysql.CmsSqlManager();
+    public org.opencms.db.generic.CmsSqlManager initSqlManager(String classname) {
+
+        return CmsSqlManager.getInstance(classname);
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#writeUser(org.opencms.file.CmsUser)
+     * @see org.opencms.db.I_CmsUserDriver#writeUser(I_CmsRuntimeInfo, org.opencms.file.CmsUser)
      */
-    public void writeUser(CmsUser user) throws CmsException {
+    public void writeUser(I_CmsRuntimeInfo runtimeInfo, CmsUser user) throws CmsException {
+        
         PreparedStatement stmt = null;
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(runtimeInfo);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_WRITE");
             // write data to database
             stmt.setString(1, user.getDescription());
@@ -125,7 +135,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
         } catch (IOException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(runtimeInfo, conn, stmt, null);
         }
     }
 

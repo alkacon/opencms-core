@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2004/09/28 15:17:38 $
-* Version: $Revision: 1.80 $
+* Date   : $Date: 2004/10/22 14:37:39 $
+* Version: $Revision: 1.81 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -124,7 +124,7 @@ public class CmsDbAccess {
             return false;
             
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(null, conn, stmt, null);
         }
     }
 
@@ -156,7 +156,7 @@ public class CmsDbAccess {
         } catch (SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            m_sqlManager.closeAll(conn, null, null);
+            m_sqlManager.closeAll(null, conn, null, null);
         }
     }
     
@@ -261,7 +261,7 @@ public class CmsDbAccess {
         } catch (SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(null, conn, stmt, null);
         }
     }
 
@@ -317,7 +317,7 @@ public class CmsDbAccess {
         } catch (SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(null, conn, stmt, null);
         }
         return newMasterId;
     }
@@ -356,7 +356,7 @@ public class CmsDbAccess {
         } catch (SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(null, conn, stmt, null);
         }
     }
 
@@ -417,7 +417,7 @@ public class CmsDbAccess {
         } catch (SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(null, conn, stmt, null);
         }
     }
 
@@ -459,7 +459,7 @@ public class CmsDbAccess {
         } catch (SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(null, conn, stmt, res);
         }
     }
 
@@ -490,7 +490,7 @@ public class CmsDbAccess {
         } catch (SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(null, conn, stmt, res);
         }
     }
 
@@ -527,7 +527,7 @@ public class CmsDbAccess {
         } catch (SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(null, conn, stmt, res);
         }
         return retValue;
     }
@@ -568,7 +568,7 @@ public class CmsDbAccess {
         } catch (SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(null, conn, stmt, res);
         }
         return retValue;
     }
@@ -605,7 +605,7 @@ public class CmsDbAccess {
         } catch (SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(null, conn, stmt, res);
         }
         return theDataSets;
     }
@@ -662,7 +662,7 @@ public class CmsDbAccess {
             } catch (SQLException exc) {
                 throw new CmsException(CmsException.C_SQL_ERROR, exc);
             } finally {
-                m_sqlManager.closeAll(conn, stmt, null);
+                m_sqlManager.closeAll(null, conn, stmt, null);
             }
         } else {
             // set state to deleted and update the line
@@ -680,7 +680,7 @@ public class CmsDbAccess {
             } catch (SQLException exc) {
                 throw new CmsException(CmsException.C_SQL_ERROR, exc);
             } finally {
-                m_sqlManager.closeAll(conn, stmt, null);
+                m_sqlManager.closeAll(null, conn, stmt, null);
             }
         }
     }
@@ -722,7 +722,7 @@ public class CmsDbAccess {
         } catch (SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(null, conn, stmt, null);
         }
     }
 
@@ -780,7 +780,7 @@ public class CmsDbAccess {
         } catch (SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(null, conn, stmt, null);
         }
     }
 
@@ -1194,7 +1194,7 @@ public class CmsDbAccess {
             stmt.setString(1, masterId.toString());
             stmt.executeUpdate();
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(null, conn, stmt, null);
         }
     }
 
@@ -1214,7 +1214,7 @@ public class CmsDbAccess {
             stmt.setString(1, masterId.toString());
             stmt.executeUpdate();
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(null, conn, stmt, null);
         }
     }
 
@@ -1243,7 +1243,7 @@ public class CmsDbAccess {
                 stmt.executeUpdate();
             }
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(null, conn, stmt, null);
         }
 
         // update existing media
@@ -1261,7 +1261,7 @@ public class CmsDbAccess {
                 stmt.executeUpdate();
             }
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(null, conn, stmt, null);
         }
         // delete unneeded media
         stmt = null;
@@ -1276,7 +1276,7 @@ public class CmsDbAccess {
                 stmt.executeUpdate();
             }
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(null, conn, stmt, null);
         }
     }
 
@@ -1318,7 +1318,7 @@ public class CmsDbAccess {
                     }
                 }
             }
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(null, conn, stmt, null);
             
         // delete unneeded channel
         stmt = null;
@@ -1341,7 +1341,7 @@ public class CmsDbAccess {
                 }*/
             }
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(null, conn, stmt, null);
             cms.getRequestContext().restoreSiteRoot();
         }
     }
@@ -1407,7 +1407,7 @@ public class CmsDbAccess {
         } catch (SQLException e) {
             throw new CmsException(CmsException.C_SQL_ERROR, e);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(null, conn, stmt, res);
         }
         return retVector;
     }
@@ -1482,7 +1482,7 @@ public class CmsDbAccess {
         } catch (SQLException e) {
             throw new CmsException(CmsException.C_SQL_ERROR, e);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(null, conn, stmt, res);
         }
         return dataset;
     }
@@ -1574,13 +1574,13 @@ public class CmsDbAccess {
                 } catch (SQLException ex) {
                     throw new CmsException(CmsException.C_SQL_ERROR, ex);
                 } finally {
-                    m_sqlManager.closeAll(conn2, stmt2, null);
+                    m_sqlManager.closeAll(null, conn2, stmt2, null);
                 }
             }
         } catch (SQLException e) {
             throw new CmsException(CmsException.C_SQL_ERROR, e);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(null, conn, stmt, res);
         }
     }
 
@@ -1641,7 +1641,7 @@ public class CmsDbAccess {
         } catch (SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(null, conn, stmt, res);
         }
     }
 
@@ -1705,7 +1705,7 @@ public class CmsDbAccess {
         } catch (SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(null, conn, stmt, null);
         }
 
         // update changedModuleData Vector
@@ -1740,7 +1740,7 @@ public class CmsDbAccess {
         } catch (SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(null, conn, stmt, null);
         }
         // delete media
         try {
@@ -1754,7 +1754,7 @@ public class CmsDbAccess {
         } catch (SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(null, conn, stmt, null);
         }
         // delete the row
         try {
@@ -1769,7 +1769,7 @@ public class CmsDbAccess {
         } catch (SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(null, conn, stmt, null);
         }
     }
 
@@ -1803,7 +1803,7 @@ public class CmsDbAccess {
         } catch (SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(null, conn, stmt, null);
         }
         // copy media
         try {
@@ -1830,13 +1830,13 @@ public class CmsDbAccess {
                 } catch (SQLException ex) {
                     throw ex;
                 } finally {
-                    m_sqlManager.closeAll(conn2, stmt2, null);
+                    m_sqlManager.closeAll(null, conn2, stmt2, null);
                 }
             }
         } catch (SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(null, conn, stmt, res);
         }
 
         // copy channel relation
@@ -1863,13 +1863,13 @@ public class CmsDbAccess {
                 } catch (SQLException ex) {
                     throw ex;
                 } finally {
-                    m_sqlManager.closeAll(conn2, stmt2, null);
+                    m_sqlManager.closeAll(null, conn2, stmt2, null);
                 }
             }
         } catch (SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(null, conn, stmt, res);
         }
     }
 
@@ -1933,7 +1933,7 @@ public class CmsDbAccess {
         } catch (SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(null, conn, stmt, null);
         }
         // copy media
         try {
@@ -1961,13 +1961,13 @@ public class CmsDbAccess {
                 } catch (SQLException ex) {
                     throw ex;
                 } finally {
-                    m_sqlManager.closeAll(conn2, stmt2, null);
+                    m_sqlManager.closeAll(null, conn2, stmt2, null);
                 }
             }
         } catch (SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(null, conn, stmt, res);
         }
     }
 

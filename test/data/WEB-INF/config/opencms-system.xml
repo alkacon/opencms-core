@@ -37,6 +37,9 @@
 		<runtimeproperties>
 			<param name="compatibility.support.oldlocales">false</param>
 			<param name="compatibility.support.webAppNames">/opencms/opencms/</param>
-		</runtimeproperties>
+		</runtimeproperties>			
+		<runtimeclasses>
+			<runtimeinfo class="org.opencms.db.CmsRuntimeInfoFactory" />
+		</runtimeclasses>			
 	</system>
 </opencms>

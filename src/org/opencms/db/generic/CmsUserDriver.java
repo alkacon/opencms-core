@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2004/10/22 13:18:57 $
- * Version: $Revision: 1.64 $
+ * Date   : $Date: 2004/10/22 14:37:39 $
+ * Version: $Revision: 1.65 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,18 +33,19 @@ package org.opencms.db.generic;
 
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.I_CmsDriver;
+import org.opencms.db.I_CmsRuntimeInfo;
+import org.opencms.db.I_CmsRuntimeInfoFactory;
 import org.opencms.db.I_CmsUserDriver;
+import org.opencms.file.CmsGroup;
+import org.opencms.file.CmsProject;
+import org.opencms.file.CmsUser;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.util.CmsUUID;
-
-import org.opencms.file.CmsGroup;
-import org.opencms.file.CmsProject;
-import org.opencms.file.CmsUser;
-import org.opencms.i18n.CmsEncoder;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -64,10 +65,11 @@ import java.util.Vector;
 
 import org.apache.commons.collections.ExtendedProperties;
 
+
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.64 $ $Date: 2004/10/22 13:18:57 $
+ * @version $Revision: 1.65 $ $Date: 2004/10/22 14:37:39 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -101,15 +103,15 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     protected org.opencms.db.generic.CmsSqlManager m_sqlManager;
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#createAccessControlEntry(org.opencms.file.CmsProject, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID, int, int, int)
+     * @see org.opencms.db.I_CmsUserDriver#createAccessControlEntry(I_CmsRuntimeInfo, org.opencms.file.CmsProject, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID, int, int, int)
      */
-    public void createAccessControlEntry(CmsProject project, CmsUUID resource, CmsUUID principal, int allowed, int denied, int flags) throws CmsException {
+    public void createAccessControlEntry(I_CmsRuntimeInfo runtimeInfo, CmsProject project, CmsUUID resource, CmsUUID principal, int allowed, int denied, int flags) throws CmsException {
 
         PreparedStatement stmt = null;
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection(project);
+            conn = m_sqlManager.getConnection(runtimeInfo);
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_CREATE");
 
             stmt.setString(1, resource.toString());
@@ -123,33 +125,36 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(runtimeInfo, conn, stmt, null);
         }
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#createGroup(org.opencms.util.CmsUUID, java.lang.String, java.lang.String, int, java.lang.String, java.lang.Object)
+     * @see org.opencms.db.I_CmsUserDriver#createGroup(I_CmsRuntimeInfo, org.opencms.util.CmsUUID, java.lang.String, java.lang.String, int, java.lang.String, java.lang.Object)
      */
-    public CmsGroup createGroup(CmsUUID groupId, String groupName, String description, int flags, String parentGroupName, Object reservedParam) throws CmsException {
+    public CmsGroup createGroup(I_CmsRuntimeInfo runtimeInfo, CmsUUID groupId, String groupName, String description, int flags, String parentGroupName, Object reservedParam) throws CmsException {
+        
         CmsUUID parentId = CmsUUID.getNullUUID();
         CmsGroup group = null;
-
         Connection conn = null;
         PreparedStatement stmt = null;
 
+        if (existsGroup(runtimeInfo, groupName)) {
+            throw new CmsException("Group " + groupName + " already exists", CmsException.C_GROUP_ALREADY_EXISTS);
+        }
+        
         try {
-
             // get the id of the parent group if necessary
             if ((parentGroupName != null) && (!"".equals(parentGroupName))) {
-                parentId = readGroup(parentGroupName).getId();
+                parentId = readGroup(runtimeInfo, parentGroupName).getId();
             }
 
             if (reservedParam == null) {
                 // get a JDBC connection from the OpenCms standard {online|offline|backup} pools
-                conn = m_sqlManager.getConnection();
+                conn = m_sqlManager.getConnection(runtimeInfo);
             } else {
                 // get a JDBC connection from the reserved JDBC pools
-                conn = m_sqlManager.getConnection(((Integer) reservedParam).intValue());
+                conn = m_sqlManager.getConnection(runtimeInfo, ((Integer) reservedParam).intValue());
             }
             
             stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_CREATEGROUP");
@@ -166,25 +171,27 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, "[CmsGroup]: " + groupName + ", Id=" + groupId.toString(), CmsException.C_SQL_ERROR, e, true);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(runtimeInfo, conn, stmt, null);
         }
 
         return group;
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#createUser(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, int, java.util.Hashtable, java.lang.String, int)
+     * @see org.opencms.db.I_CmsUserDriver#createUser(I_CmsRuntimeInfo, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, int, java.util.Hashtable, java.lang.String, int)
      */
-    public CmsUser createUser(String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Hashtable additionalInfos, String address, int type) throws CmsException {
+    public CmsUser createUser(I_CmsRuntimeInfo runtimeInfo, String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Hashtable additionalInfos, String address, int type) throws CmsException {
+        
         CmsUUID id = new CmsUUID();
-
         Connection conn = null;
         PreparedStatement stmt = null;
+        
+        if (existsUser(runtimeInfo, name, type)) {
+            throw new CmsException("User " + name + " name already exists", CmsException.C_USER_ALREADY_EXISTS);
+        }
 
         try {
-            // write data to database
-
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(runtimeInfo);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_ADD");
 
             stmt.setString(1, id.toString());
@@ -205,29 +212,29 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         } catch (IOException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(runtimeInfo, conn, stmt, null);
         }
 
-        return this.readUser(id);
+        return this.readUser(runtimeInfo, id);
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#createUserInGroup(org.opencms.util.CmsUUID, org.opencms.util.CmsUUID, java.lang.Object)
+     * @see org.opencms.db.I_CmsUserDriver#createUserInGroup(I_CmsRuntimeInfo, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID, java.lang.Object)
      */
-    public void createUserInGroup(CmsUUID userid, CmsUUID groupid, Object reservedParam) throws CmsException {
+    public void createUserInGroup(I_CmsRuntimeInfo runtimeInfo, CmsUUID userid, CmsUUID groupid, Object reservedParam) throws CmsException {
         Connection conn = null;
         PreparedStatement stmt = null;
 
         // check if user is already in group
-        if (!internalValidateUserInGroup(userid, groupid, reservedParam)) {
+        if (!internalValidateUserInGroup(runtimeInfo, userid, groupid, reservedParam)) {
             // if not, add this user to the group
             try {
                 if (reservedParam == null) {
                     // get a JDBC connection from the OpenCms standard {online|offline|backup} pools
-                    conn = m_sqlManager.getConnection();
+                    conn = m_sqlManager.getConnection(runtimeInfo);
                 } else {
                     // get a JDBC connection from the reserved JDBC pools
-                    conn = m_sqlManager.getConnection(((Integer) reservedParam).intValue());
+                    conn = m_sqlManager.getConnection(runtimeInfo, ((Integer) reservedParam).intValue());
                 }
                 
                 stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_ADDUSERTOGROUP");
@@ -242,21 +249,21 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             } catch (SQLException e) {
                 throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
             } finally {
-                m_sqlManager.closeAll(conn, stmt, null);
+                m_sqlManager.closeAll(runtimeInfo, conn, stmt, null);
             }
         }
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#deleteAccessControlEntries(org.opencms.file.CmsProject, org.opencms.util.CmsUUID)
+     * @see org.opencms.db.I_CmsUserDriver#deleteAccessControlEntries(I_CmsRuntimeInfo, org.opencms.file.CmsProject, org.opencms.util.CmsUUID)
      */
-    public void deleteAccessControlEntries(CmsProject project, CmsUUID resource) throws CmsException {
+    public void deleteAccessControlEntries(I_CmsRuntimeInfo runtimeInfo, CmsProject project, CmsUUID resource) throws CmsException {
 
         PreparedStatement stmt = null;
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(runtimeInfo);
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_SETFLAGS_ALL");
 
             stmt.setInt(1, I_CmsConstants.C_ACCESSFLAGS_DELETED);
@@ -267,53 +274,55 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(runtimeInfo, conn, stmt, null);
         }
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#deleteGroup(java.lang.String)
+     * @see org.opencms.db.I_CmsUserDriver#deleteGroup(I_CmsRuntimeInfo, java.lang.String)
      */
-    public void deleteGroup(String delgroup) throws CmsException {
+    public void deleteGroup(I_CmsRuntimeInfo runtimeInfo, String name) throws CmsException {
         Connection conn = null;
         PreparedStatement stmt = null;
+        
         try {
             // create statement
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(runtimeInfo);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_DELETEGROUP");
 
-            stmt.setString(1, delgroup);
+            stmt.setString(1, name);
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(runtimeInfo, conn, stmt, null);
         }
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#deleteUser(java.lang.String)
+     * @see org.opencms.db.I_CmsUserDriver#deleteUser(I_CmsRuntimeInfo, java.lang.String)
      */
-    public void deleteUser(String userName) throws CmsException {
+    public void deleteUser(I_CmsRuntimeInfo runtimeInfo, String userName) throws CmsException {
         Connection conn = null;
         PreparedStatement stmt = null;
 
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(runtimeInfo);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_DELETE");
+            
             stmt.setString(1, userName);
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(runtimeInfo, conn, stmt, null);
         }
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#deleteUserInGroup(org.opencms.util.CmsUUID, org.opencms.util.CmsUUID)
+     * @see org.opencms.db.I_CmsUserDriver#deleteUserInGroup(I_CmsRuntimeInfo, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID)
      */
-    public void deleteUserInGroup(CmsUUID userId, CmsUUID groupId) throws CmsException {
+    public void deleteUserInGroup(I_CmsRuntimeInfo runtimeInfo, CmsUUID userId, CmsUUID groupId) throws CmsException {
         PreparedStatement stmt = null;
         Connection conn = null;
         try {
@@ -327,7 +336,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(null, conn, stmt, null);
         }
     }
 
@@ -356,19 +365,24 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#importUser(org.opencms.util.CmsUUID, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, int, java.util.Hashtable, java.lang.String, int, java.lang.Object)
+     * @see org.opencms.db.I_CmsUserDriver#importUser(I_CmsRuntimeInfo, org.opencms.util.CmsUUID, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, int, java.util.Hashtable, java.lang.String, int, java.lang.Object)
      */
-    public CmsUser importUser(CmsUUID id, String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Hashtable additionalInfos, String address, int type, Object reservedParam) throws CmsException {
+    public CmsUser importUser(I_CmsRuntimeInfo runtimeInfo, CmsUUID id, String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Hashtable additionalInfos, String address, int type, Object reservedParam) throws CmsException {
+        
         Connection conn = null;
         PreparedStatement stmt = null;
+        
+        if (existsUser(runtimeInfo, name, type)) {
+            throw new CmsException("User " + name + " name already exists", CmsException.C_USER_ALREADY_EXISTS);
+        }
 
         try {
             if (reservedParam == null) {
                 // get a JDBC connection from the OpenCms standard {online|offline|backup} pools
-                conn = m_sqlManager.getConnection();
+                conn = m_sqlManager.getConnection(runtimeInfo);
             } else {
                 // get a JDBC connection from the reserved JDBC pools
-                conn = m_sqlManager.getConnection(((Integer) reservedParam).intValue());
+                conn = m_sqlManager.getConnection(runtimeInfo, ((Integer) reservedParam).intValue());
             }
             
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_ADD");
@@ -391,22 +405,21 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         } catch (IOException e) {
             throw m_sqlManager.getCmsException(this, "[CmsAccessUserInfoMySql/addUserInformation(id,object)]:", CmsException.C_SERIALIZATION, e, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(runtimeInfo, conn, stmt, null);
         }
 
-        return readUser(id);
+        return readUser(runtimeInfo, id);
     }
 
     /**
-     * @see org.opencms.db.I_CmsDriver#init(org.apache.commons.collections.ExtendedProperties, java.util.List, org.opencms.db.CmsDriverManager)
+     * @see org.opencms.db.I_CmsDriver#init(org.apache.commons.collections.ExtendedProperties, java.util.List, org.opencms.db.CmsDriverManager, I_CmsRuntimeInfoFactory)
      */
-    public void init(ExtendedProperties configuration, List successiveDrivers, CmsDriverManager driverManager) {
+    public void init(ExtendedProperties configuration, List successiveDrivers, CmsDriverManager driverManager, I_CmsRuntimeInfoFactory runtimeInfoFactory) {
+        
         String poolUrl = configuration.getString("db.user.pool");
-
-        m_sqlManager = this.initQueries();
-        m_sqlManager.setPoolUrlOffline(poolUrl);
-        m_sqlManager.setPoolUrlOnline(poolUrl);
-        m_sqlManager.setPoolUrlBackup(poolUrl);
+        String classname = configuration.getString("db.user.sqlmanager");
+        m_sqlManager = this.initSqlManager(classname);
+        m_sqlManager.init(I_CmsUserDriver.C_DRIVER_TYPE_ID, poolUrl);        
 
         m_driverManager = driverManager;
 
@@ -444,10 +457,11 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#initQueries()
+     * @see org.opencms.db.I_CmsUserDriver#initSqlManager(String)
      */
-    public org.opencms.db.generic.CmsSqlManager initQueries() {
-        return new org.opencms.db.generic.CmsSqlManager();
+    public org.opencms.db.generic.CmsSqlManager initSqlManager(String classname) {
+
+        return CmsSqlManager.getInstance(classname);
     }
 
     /**
@@ -544,19 +558,19 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#publishAccessControlEntries(org.opencms.file.CmsProject, org.opencms.file.CmsProject, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID)
+     * @see org.opencms.db.I_CmsUserDriver#publishAccessControlEntries(I_CmsRuntimeInfo, org.opencms.file.CmsProject, org.opencms.file.CmsProject, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID)
      */
-    public void publishAccessControlEntries(CmsProject offlineProject, CmsProject onlineProject, CmsUUID offlineId, CmsUUID onlineId) throws CmsException {
+    public void publishAccessControlEntries(I_CmsRuntimeInfo runtimeInfo, CmsProject offlineProject, CmsProject onlineProject, CmsUUID offlineId, CmsUUID onlineId) throws CmsException {
         PreparedStatement stmt = null;
         Connection conn = null;
         ResultSet res = null;
 
         // at first, we remove all access contries of this resource in the online project
-        removeAccessControlEntries(onlineProject, onlineId);
+        removeAccessControlEntries(runtimeInfo, onlineProject, onlineId);
 
         // then, we copy the access control entries from the offline project into the online project
         try {
-            conn = m_sqlManager.getConnection(offlineProject.getId());
+            conn = m_sqlManager.getConnection(runtimeInfo);
             stmt = m_sqlManager.getPreparedStatement(conn, offlineProject, "C_ACCESS_READ_ENTRIES");
 
             stmt.setString(1, offlineId.toString());
@@ -566,14 +580,14 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             while (res.next()) {
                 CmsAccessControlEntry ace = internalCreateAce(res, onlineId);
                 if ((ace.getFlags() & I_CmsConstants.C_ACCESSFLAGS_DELETED) == 0) {
-                    writeAccessControlEntry(onlineProject, ace);
+                    writeAccessControlEntry(runtimeInfo, onlineProject, ace);
                 }
             }
 
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(runtimeInfo, conn, stmt, res);
         }
     }
 
@@ -619,7 +633,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(null, conn, stmt, res);
         }
     }
 
@@ -656,7 +670,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, true);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(null, conn, stmt, res);
         }
     }
 
@@ -673,7 +687,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         Connection conn = null;
         try {
             // get parent group
-            parent = readGroup(groupname);
+            parent = readGroup(null, groupname);
             // parent group exists, so get all childs
             if (parent != null) {
                 // create statement
@@ -692,7 +706,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             // close all db-resources
-            m_sqlManager.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(null, conn, stmt, res);
         }
         //check if the child vector has no elements, set it to null.
         if (childs.size() == 0) {
@@ -702,16 +716,16 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#readGroup(org.opencms.util.CmsUUID)
+     * @see org.opencms.db.I_CmsUserDriver#readGroup(I_CmsRuntimeInfo, org.opencms.util.CmsUUID)
      */
-    public CmsGroup readGroup(CmsUUID groupId) throws CmsException {
+    public CmsGroup readGroup(I_CmsRuntimeInfo runtimeInfo, CmsUUID groupId) throws CmsException {
         CmsGroup group = null;
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(runtimeInfo);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_READGROUP2");
 
             // read the group from the database
@@ -727,16 +741,16 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(runtimeInfo, conn, stmt, res);
         }
 
         return group;
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#readGroup(java.lang.String)
+     * @see org.opencms.db.I_CmsUserDriver#readGroup(I_CmsRuntimeInfo, java.lang.String)
      */
-    public CmsGroup readGroup(String groupName) throws CmsException {
+    public CmsGroup readGroup(I_CmsRuntimeInfo runtimeInfo, String groupName) throws CmsException {
 
         CmsGroup group = null;
         ResultSet res = null;
@@ -744,7 +758,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(runtimeInfo);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_READGROUP");
 
             // read the group from the database
@@ -761,7 +775,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(runtimeInfo, conn, stmt, res);
         }
         return group;
     }
@@ -790,7 +804,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(null, conn, stmt, res);
         }
         return groups;
     }
@@ -821,22 +835,22 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(null, conn, stmt, res);
         }
         return groups;
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#readUser(org.opencms.util.CmsUUID)
+     * @see org.opencms.db.I_CmsUserDriver#readUser(I_CmsRuntimeInfo, org.opencms.util.CmsUUID)
      */
-    public CmsUser readUser(CmsUUID id) throws CmsException {
+    public CmsUser readUser(I_CmsRuntimeInfo runtimeInfo, CmsUUID id) throws CmsException {
         PreparedStatement stmt = null;
         ResultSet res = null;
         CmsUser user = null;
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(runtimeInfo);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_READID");
 
             stmt.setString(1, id.toString());
@@ -859,21 +873,21 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         } catch (Exception e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(runtimeInfo, conn, stmt, res);
         }
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#readUser(java.lang.String, int)
+     * @see org.opencms.db.I_CmsUserDriver#readUser(I_CmsRuntimeInfo, java.lang.String, int)
      */
-    public CmsUser readUser(String name, int type) throws CmsException {
+    public CmsUser readUser(I_CmsRuntimeInfo runtimeInfo, String name, int type) throws CmsException {
         PreparedStatement stmt = null;
         ResultSet res = null;
         CmsUser user = null;
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(runtimeInfo);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_READ");
             stmt.setString(1, name);
             stmt.setInt(2, type);
@@ -892,7 +906,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         } catch (Exception e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(runtimeInfo, conn, stmt, res);
         }
 
         return user;
@@ -931,7 +945,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         } catch (Exception e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(null, conn, stmt, res);
         }
     }
 
@@ -966,7 +980,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         } catch (Exception e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(null, conn, stmt, res);
         }
         return users;
     }
@@ -995,7 +1009,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         } catch (Exception e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(null, conn, stmt, res);
         }
 
         return users;
@@ -1027,22 +1041,22 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         } catch (Exception e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(null, conn, stmt, res);
         }
 
         return users;
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#removeAccessControlEntries(org.opencms.file.CmsProject, org.opencms.util.CmsUUID)
+     * @see org.opencms.db.I_CmsUserDriver#removeAccessControlEntries(I_CmsRuntimeInfo, org.opencms.file.CmsProject, org.opencms.util.CmsUUID)
      */
-    public void removeAccessControlEntries(CmsProject project, CmsUUID resource) throws CmsException {
+    public void removeAccessControlEntries(I_CmsRuntimeInfo runtimeInfo, CmsProject project, CmsUUID resource) throws CmsException {
 
         PreparedStatement stmt = null;
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection(project);
+            conn = m_sqlManager.getConnection(runtimeInfo);
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_REMOVE_ALL");
 
             stmt.setString(1, resource.toString());
@@ -1052,20 +1066,20 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(runtimeInfo, conn, stmt, null);
         }
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#removeAccessControlEntry(org.opencms.file.CmsProject, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID)
+     * @see org.opencms.db.I_CmsUserDriver#removeAccessControlEntry(I_CmsRuntimeInfo, org.opencms.file.CmsProject, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID)
      */
-    public void removeAccessControlEntry(CmsProject project, CmsUUID resource, CmsUUID principal) throws CmsException {
+    public void removeAccessControlEntry(I_CmsRuntimeInfo runtimeInfo, CmsProject project, CmsUUID resource, CmsUUID principal) throws CmsException {
 
         PreparedStatement stmt = null;
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(runtimeInfo);
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_REMOVE");
 
             stmt.setString(1, resource.toString());
@@ -1075,7 +1089,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(runtimeInfo, conn, stmt, null);
         }
     }
 
@@ -1099,20 +1113,22 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(null, conn, stmt, null);
         }
     }
 
     /**
      * Checks if a user is member of a group.<P/>
-     *
+     * 
+     * @param runtimeInfo the current runtime info
      * @param userId the id of the user to check
      * @param groupId the id of the group to check
      * @param reservedParam reserved optional parameter, should be null on standard OpenCms installations
+     *
      * @return true if user is member of group
      * @throws CmsException if operation was not succesful
      */
-    private boolean internalValidateUserInGroup(CmsUUID userId, CmsUUID groupId, Object reservedParam) throws CmsException {
+    private boolean internalValidateUserInGroup(I_CmsRuntimeInfo runtimeInfo, CmsUUID userId, CmsUUID groupId, Object reservedParam) throws CmsException {
         boolean userInGroup = false;
         PreparedStatement stmt = null;
         ResultSet res = null;
@@ -1121,10 +1137,10 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         try {
             if (reservedParam == null) {
                 // get a JDBC connection from the OpenCms standard {online|offline|backup} pools
-                conn = m_sqlManager.getConnection();
+                conn = m_sqlManager.getConnection(runtimeInfo);
             } else {
                 // get a JDBC connection from the reserved JDBC pools
-                conn = m_sqlManager.getConnection(((Integer) reservedParam).intValue());
+                conn = m_sqlManager.getConnection(runtimeInfo, ((Integer) reservedParam).intValue());
             }
             
             stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_USERINGROUP");
@@ -1138,23 +1154,23 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(runtimeInfo, conn, stmt, res);
         }
 
         return userInGroup;
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#writeAccessControlEntry(org.opencms.file.CmsProject, org.opencms.security.CmsAccessControlEntry)
+     * @see org.opencms.db.I_CmsUserDriver#writeAccessControlEntry(I_CmsRuntimeInfo, org.opencms.file.CmsProject, org.opencms.security.CmsAccessControlEntry)
      */
-    public void writeAccessControlEntry(CmsProject project, CmsAccessControlEntry acEntry) throws CmsException {
+    public void writeAccessControlEntry(I_CmsRuntimeInfo runtimeInfo, CmsProject project, CmsAccessControlEntry acEntry) throws CmsException {
 
         PreparedStatement stmt = null;
         Connection conn = null;
         ResultSet res = null;
 
         try {
-            conn = m_sqlManager.getConnection(project);
+            conn = m_sqlManager.getConnection(runtimeInfo);
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_READ_ENTRY");
 
             stmt.setString(1, acEntry.getResource().toString());
@@ -1162,7 +1178,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
 
             res = stmt.executeQuery();
             if (!res.next()) {
-                createAccessControlEntry(project, acEntry.getResource(), acEntry.getPrincipal(), acEntry.getAllowedPermissions(), acEntry.getDeniedPermissions(), acEntry.getFlags());
+                createAccessControlEntry(runtimeInfo, project, acEntry.getResource(), acEntry.getPrincipal(), acEntry.getAllowedPermissions(), acEntry.getDeniedPermissions(), acEntry.getFlags());
                 return;
             }
 
@@ -1181,21 +1197,21 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(runtimeInfo, conn, stmt, res);
         }
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#writeGroup(org.opencms.file.CmsGroup)
+     * @see org.opencms.db.I_CmsUserDriver#writeGroup(I_CmsRuntimeInfo, org.opencms.file.CmsGroup)
      */
-    public void writeGroup(CmsGroup group) throws CmsException {
+    public void writeGroup(I_CmsRuntimeInfo runtimeInfo, CmsGroup group) throws CmsException {
         PreparedStatement stmt = null;
         Connection conn = null;
         if (group != null) {
             try {
 
                 // create statement
-                conn = m_sqlManager.getConnection();
+                conn = m_sqlManager.getConnection(runtimeInfo);
                 stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_WRITEGROUP");
 
                 stmt.setString(1, m_sqlManager.validateEmpty(group.getDescription()));
@@ -1207,7 +1223,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             } catch (SQLException e) {
                 throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
             } finally {
-                m_sqlManager.closeAll(conn, stmt, null);
+                m_sqlManager.closeAll(runtimeInfo, conn, stmt, null);
             }
         } else {
             throw new CmsException("[" + this.getClass().getName() + "] ", CmsException.C_NO_GROUP);
@@ -1232,19 +1248,19 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(null, conn, stmt, null);
         }
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#writeUser(org.opencms.file.CmsUser)
+     * @see org.opencms.db.I_CmsUserDriver#writeUser(I_CmsRuntimeInfo, org.opencms.file.CmsUser)
      */
-    public void writeUser(CmsUser user) throws CmsException {
+    public void writeUser(I_CmsRuntimeInfo runtimeInfo, CmsUser user) throws CmsException {
         PreparedStatement stmt = null;
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(runtimeInfo);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_WRITE");
             // write data to database
             stmt.setString(1, m_sqlManager.validateEmpty(user.getDescription()));
@@ -1263,20 +1279,19 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         } catch (IOException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(runtimeInfo, conn, stmt, null);
         }
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#writeUserType(org.opencms.util.CmsUUID, int)
+     * @see org.opencms.db.I_CmsUserDriver#writeUserType(I_CmsRuntimeInfo, org.opencms.util.CmsUUID, int)
      */
-    public void writeUserType(CmsUUID userId, int userType) throws CmsException {
+    public void writeUserType(I_CmsRuntimeInfo runtimeInfo, CmsUUID userId, int userType) throws CmsException {
         PreparedStatement stmt = null;
         Connection conn = null;
 
         try {
-
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(runtimeInfo);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_UPDATE_USERTYPE");
 
             // write data to database
@@ -1286,7 +1301,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(runtimeInfo, conn, stmt, null);
         }
     }
     
@@ -1296,4 +1311,70 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     public CmsSqlManager getSqlManager() {
         return m_sqlManager;
     }
+    
+    /**
+     * @see org.opencms.db.I_CmsUserDriver#existsUser(I_CmsRuntimeInfo, java.lang.String, int)
+     */
+    public boolean existsUser(I_CmsRuntimeInfo runtimeInfo, String username, int usertype) throws CmsException {
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+        Connection conn = null;
+        boolean result = false;
+
+        try {
+            conn = m_sqlManager.getConnection(runtimeInfo);
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_READ");
+            stmt.setString(1, username);
+            stmt.setInt(2, usertype);
+
+            res = stmt.executeQuery();
+
+            if (res.next()) {
+                result = true;
+            } else {
+                result = false;
+            }
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } catch (Exception e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e, false);
+        } finally {
+            m_sqlManager.closeAll(runtimeInfo, conn, stmt, res);
+        }
+        
+        return result;
+    }
+    
+    /**
+     * @see org.opencms.db.I_CmsUserDriver#existsGroup(I_CmsRuntimeInfo, java.lang.String)
+     */
+    public boolean existsGroup(I_CmsRuntimeInfo runtimeInfo, String groupName) throws CmsException {
+        ResultSet res = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        boolean result = false;
+
+        try {
+            conn = m_sqlManager.getConnection(runtimeInfo);
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_READGROUP");
+
+            stmt.setString(1, groupName);
+            res = stmt.executeQuery();
+
+            // create new Cms group object
+            if (res.next()) {
+                result = true;
+            } else {
+                result = false;
+            }
+
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } finally {
+            m_sqlManager.closeAll(runtimeInfo, conn, stmt, res);
+        }
+        
+        return result;
+    }
+    
 }

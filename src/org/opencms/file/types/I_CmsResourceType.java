@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/I_CmsResourceType.java,v $
- * Date   : $Date: 2004/09/20 05:38:42 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/10/22 14:37:39 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,7 @@
 package org.opencms.file.types;
 
 import org.opencms.configuration.I_CmsConfigurationParameterHandler;
-import org.opencms.db.CmsDriverManager;
+import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
@@ -57,7 +57,7 @@ import java.util.List;
  * If you implement a new resource type, it's a good idea to extend the  
  * abstract class {@link org.opencms.file.types.A_CmsResourceType}.<p>
  * 
- * Important: The {@link org.opencms.file.CmsObject} passes the {@link org.opencms.db.CmsDriverManager}
+ * Important: The {@link org.opencms.file.CmsObject} passes the {@link org.opencms.db.CmsSecurityManager}
  * object to implementations of this class. Using this object correctly is key to the 
  * resource type operations. Mistakes made in the implementation of a resource type
  * can screw up the system security and the database structure, and make you unhappy. 
@@ -94,17 +94,17 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * with the project.<p>
      * 
      * @param cms the initialized CmsObject
-     * @param driverManager the initialized OpenCms driver manager
+     * @param securityManager the initialized OpenCms security manager
      * @param resource the resource to apply this operation to
      * 
      * @throws CmsException if something goes wrong  
      * 
      * @see CmsObject#changeLastModifiedProjectId(String)
-     * @see CmsDriverManager#changeLastModifiedProjectId(org.opencms.file.CmsRequestContext, CmsResource)   
+     * @see CmsSecurityManager#changeLastModifiedProjectId(org.opencms.file.CmsRequestContext, CmsResource)   
      */
     void changeLastModifiedProjectId(
         CmsObject cms, 
-        CmsDriverManager driverManager, 
+        CmsSecurityManager securityManager, 
         CmsResource resource
     ) throws CmsException;
     
@@ -113,17 +113,17 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * that is "steals" the lock from another user.<p>
      * 
      * @param cms the current cms context
-     * @param driverManager the initialized OpenCms driver manager
+     * @param securityManager the initialized OpenCms security manager
      * @param resource the name of the resource to change the lock with complete path
      * 
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#changeLock(String)
-     * @see CmsDriverManager#changeLock(org.opencms.file.CmsRequestContext, CmsResource)
+     * @see CmsSecurityManager#changeLock(org.opencms.file.CmsRequestContext, CmsResource)
      */
     void changeLock(
         CmsObject cms, 
-        CmsDriverManager driverManager,        
+        CmsSecurityManager securityManager,        
         CmsResource resource
     ) throws CmsException;
 
@@ -135,18 +135,18 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * that a resource can not be directly requested with it's URL.<p>
      * 
      * @param cms the initialized CmsObject
-     * @param driverManager the initialized OpenCms driver manager
+     * @param securityManager the initialized OpenCms security manager
      * @param resource the resource to change the flags for
      * @param flags the new resource flags for this resource
      *
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#chflags(String, int)
-     * @see CmsDriverManager#chflags(org.opencms.file.CmsRequestContext, CmsResource, int)
+     * @see CmsSecurityManager#chflags(org.opencms.file.CmsRequestContext, CmsResource, int)
      */
     void chflags(
         CmsObject cms, 
-        CmsDriverManager driverManager, 
+        CmsSecurityManager securityManager, 
         CmsResource resource, 
         int flags
     ) throws CmsException;
@@ -161,18 +161,18 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * or a binary file an image etc.<p> 
      * 
      * @param cms the initialized CmsObject
-     * @param driverManager the initialized OpenCms driver manager
+     * @param securityManager the initialized OpenCms security manager
      * @param resource the resource to change the type for
      * @param type the new resource type for this resource
      *
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#chtype(String, int)
-     * @see CmsDriverManager#chtype(org.opencms.file.CmsRequestContext, CmsResource, int)
+     * @see CmsSecurityManager#chtype(org.opencms.file.CmsRequestContext, CmsResource, int)
      */
     void chtype(
         CmsObject cms, 
-        CmsDriverManager driverManager, 
+        CmsSecurityManager securityManager, 
         CmsResource resource, 
         int type
     ) throws CmsException;
@@ -193,7 +193,7 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * </ul><p>
      * 
      * @param cms the initialized CmsObject
-     * @param driverManager the initialized OpenCms driver manager
+     * @param securityManager the initialized OpenCms security manager
      * @param source the resource to copy
      * @param destination the name of the copy destination with complete path
      * @param siblingMode indicates how to handle siblings during copy
@@ -201,11 +201,11 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#copyResource(String, String, int)
-     * @see CmsDriverManager#copyResource(org.opencms.file.CmsRequestContext, CmsResource, String, int)
+     * @see CmsSecurityManager#copyResource(org.opencms.file.CmsRequestContext, CmsResource, String, int)
      */
     void copyResource(
         CmsObject cms,
-        CmsDriverManager driverManager,
+        CmsSecurityManager securityManager,
         CmsResource source,
         String destination,
         int siblingMode
@@ -220,17 +220,17 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * it is in fact only "enabled" in the current users project.<p>   
      * 
      * @param cms the initialized CmsObject
-     * @param driverManager the initialized OpenCms driver manager
+     * @param securityManager the initialized OpenCms security manager
      * @param resource the resource to apply this operation to
      * 
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#copyResourceToProject(String)
-     * @see CmsDriverManager#copyResourceToProject(org.opencms.file.CmsRequestContext, CmsResource)
+     * @see CmsSecurityManager#copyResourceToProject(org.opencms.file.CmsRequestContext, CmsResource)
      */
     void copyResourceToProject(
         CmsObject cms, 
-        CmsDriverManager driverManager, 
+        CmsSecurityManager securityManager, 
         CmsResource resource
     ) throws CmsException;
 
@@ -238,7 +238,7 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * Creates a new resource with the provided content and properties.<p>
      * 
      * @param cms the initialized CmsObject
-     * @param driverManager the initialized OpenCms driver manager
+     * @param securityManager the initialized OpenCms security manager
      * @param resourcename the name of the resource to create (full path)
      * @param content the content for the new resource
      * @param properties the properties for the new resource
@@ -249,11 +249,11 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * 
      * @see CmsObject#createResource(String, int, byte[], List)
      * @see CmsObject#createResource(String, int)
-     * @see CmsDriverManager#createResource(org.opencms.file.CmsRequestContext, String, int, byte[], List)
+     * @see CmsSecurityManager#createResource(org.opencms.file.CmsRequestContext, String, int, byte[], List)
      */
     CmsResource createResource(
         CmsObject cms, 
-        CmsDriverManager driverManager, 
+        CmsSecurityManager securityManager, 
         String resourcename, 
         byte[] content, 
         List properties
@@ -263,7 +263,7 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * Creates a new sibling of the source resource.<p>
      * 
      * @param cms the current cms context
-     * @param driverManager the initialized OpenCms driver manager
+     * @param securityManager the initialized OpenCms security manager
      * @param source the resource to create a sibling for
      * @param destination the name of the sibling to create with complete path
      * @param properties the individual properties for the new sibling
@@ -271,11 +271,11 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#createSibling(String, String, List)
-     * @see CmsDriverManager#createSibling(org.opencms.file.CmsRequestContext, CmsResource, String, List)
+     * @see CmsSecurityManager#createSibling(org.opencms.file.CmsRequestContext, CmsResource, String, List)
      */
     void createSibling(
         CmsObject cms, 
-        CmsDriverManager driverManager,
+        CmsSecurityManager securityManager,
         CmsResource source, 
         String destination, 
         List properties
@@ -293,18 +293,18 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * </ul><p>
      * 
      * @param cms the initialized CmsObject
-     * @param driverManager the initialized OpenCms driver manager
+     * @param securityManager the initialized OpenCms security manager
      * @param resource the name of the resource to delete (full path)
      * @param siblingMode indicates how to handle siblings of the deleted resource
      *
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#deleteResource(String, int)
-     * @see CmsDriverManager#deleteResource(org.opencms.file.CmsRequestContext, CmsResource, int)
+     * @see CmsSecurityManager#deleteResource(org.opencms.file.CmsRequestContext, CmsResource, int)
      */
     void deleteResource(
         CmsObject cms, 
-        CmsDriverManager driverManager, 
+        CmsSecurityManager securityManager, 
         CmsResource resource, 
         int siblingMode
     ) throws CmsException;
@@ -364,7 +364,7 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * the imported resource is (usually) moved to the "lost and found" folder.<p> 
      * 
      * @param cms the initialized CmsObject
-     * @param driverManager the initialized OpenCms driver manager
+     * @param securityManager the initialized OpenCms security manager
      * @param resourcename the target name (with full path) for the resource after import
      * @param resource the resource to be imported
      * @param content the content of the resource
@@ -374,13 +374,13 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * 
      * @throws CmsException if something goes wrong
      * 
-     * @see CmsDriverManager#moveToLostAndFound(org.opencms.file.CmsRequestContext, String, boolean)
+     * @see CmsSecurityManager#moveToLostAndFound(org.opencms.file.CmsRequestContext, String, boolean)
      * @see CmsObject#importResource(String, CmsResource, byte[], List)
-     * @see CmsDriverManager#createResource(org.opencms.file.CmsRequestContext, String, CmsResource, byte[], List, boolean)
+     * @see CmsSecurityManager#createResource(org.opencms.file.CmsRequestContext, String, CmsResource, byte[], List, boolean)
      */
     CmsResource importResource(
         CmsObject cms, 
-        CmsDriverManager driverManager, 
+        CmsSecurityManager securityManager, 
         String resourcename, 
         CmsResource resource,
         byte[] content, 
@@ -405,18 +405,18 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * </ul><p>
      * 
      * @param cms the initialized CmsObject
-     * @param driverManager the initialized OpenCms driver manager
+     * @param securityManager the initialized OpenCms security manager
      * @param resource the resource to lock
      * @param mode flag indicating the mode for the lock
      * 
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#lockResource(String, int)
-     * @see CmsDriverManager#lockResource(org.opencms.file.CmsRequestContext, CmsResource, int)
+     * @see CmsSecurityManager#lockResource(org.opencms.file.CmsRequestContext, CmsResource, int)
      */
     void lockResource(
         CmsObject cms, 
-        CmsDriverManager driverManager, 
+        CmsSecurityManager securityManager, 
         CmsResource resource, 
         int mode
     ) throws CmsException;
@@ -430,19 +430,19 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * project, and are unable to undelete them.<p>
      * 
      * @param cms the current cms context
-     * @param driverManager the initialized OpenCms driver manager
+     * @param securityManager the initialized OpenCms security manager
      * @param resource the resource to move
      * @param destination the destination resource name
      *
      * @throws CmsException if something goes wrong
      * @see CmsObject#moveResource(String, String)
      * @see CmsObject#renameResource(String, String)
-     * @see CmsDriverManager#copyResource(org.opencms.file.CmsRequestContext, CmsResource, String, int)
-     * @see CmsDriverManager#deleteResource(org.opencms.file.CmsRequestContext, CmsResource, int)
+     * @see CmsSecurityManager#copyResource(org.opencms.file.CmsRequestContext, CmsResource, String, int)
+     * @see CmsSecurityManager#deleteResource(org.opencms.file.CmsRequestContext, CmsResource, int)
      */
     void moveResource(
         CmsObject cms, 
-        CmsDriverManager driverManager,
+        CmsSecurityManager securityManager,
         CmsResource resource, 
         String destination
     ) throws CmsException;
@@ -451,7 +451,7 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * Replaces the content, type and properties of a resource.<p>
      * 
      * @param cms the current cms context
-     * @param driverManager the initialized OpenCms driver manager
+     * @param securityManager the initialized OpenCms security manager
      * @param resource the name of the resource to replace
      * @param type the new type of the resource
      * @param content the new content of the resource
@@ -460,11 +460,11 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#replaceResource(String, int, byte[], List)
-     * @see CmsDriverManager#replaceResource(org.opencms.file.CmsRequestContext, CmsResource, int, byte[], List)
+     * @see CmsSecurityManager#replaceResource(org.opencms.file.CmsRequestContext, CmsResource, int, byte[], List)
      */
     void replaceResource(
         CmsObject cms, 
-        CmsDriverManager driverManager, 
+        CmsSecurityManager securityManager, 
         CmsResource resource, 
         int type, 
         byte[] content, 
@@ -475,18 +475,18 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * Restores a file in the current project with a version from the backup archive.<p>
      * 
      * @param cms the current cms context
-     * @param driverManager the initialized OpenCms driver manager
+     * @param securityManager the initialized OpenCms security manager
      * @param resource the resource to restore from the archive
      * @param tag the tag (version) id to resource form the archive
      *
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#restoreResourceBackup(String, int)
-     * @see CmsDriverManager#restoreResource(org.opencms.file.CmsRequestContext, CmsResource, int)
+     * @see CmsSecurityManager#restoreResource(org.opencms.file.CmsRequestContext, CmsResource, int)
      */
     void restoreResourceBackup(
         CmsObject cms, 
-        CmsDriverManager driverManager, 
+        CmsSecurityManager securityManager, 
         CmsResource resource, 
         int tag
     ) throws CmsException;
@@ -499,7 +499,7 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * and also the "expires" date of a resource.<p>
      * 
      * @param cms the current cms context
-     * @param driverManager the initialized OpenCms driver manager
+     * @param securityManager the initialized OpenCms security manager
      * @param resource the resource to touch
      * @param dateLastModified the new last modified date of the resource
      * @param dateReleased the new release date of the resource, 
@@ -511,11 +511,11 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#touch(String, long, long, long, boolean)
-     * @see CmsDriverManager#touch(org.opencms.file.CmsRequestContext, CmsResource, long, long, long)
+     * @see CmsSecurityManager#touch(org.opencms.file.CmsRequestContext, CmsResource, long, long, long)
      */
     void touch(
         CmsObject cms,
-        CmsDriverManager driverManager,
+        CmsSecurityManager securityManager,
         CmsResource resource,
         long dateLastModified,
         long dateReleased,
@@ -530,18 +530,18 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * This is also used when doing an "undelete" operation.<p>
      * 
      * @param cms the current cms context
-     * @param driverManager the initialized OpenCms driver manager
+     * @param securityManager the initialized OpenCms security manager
      * @param resource the resource to undo the changes for
      * @param recursive if this operation is to be applied recursivly to all resources in a folder
      *
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#undoChanges(String, boolean)
-     * @see CmsDriverManager#undoChanges(org.opencms.file.CmsRequestContext, CmsResource)
+     * @see CmsSecurityManager#undoChanges(org.opencms.file.CmsRequestContext, CmsResource)
      */
     void undoChanges(
         CmsObject cms, 
-        CmsDriverManager driverManager, 
+        CmsSecurityManager securityManager, 
         CmsResource resource, 
         boolean recursive        
     ) throws CmsException;
@@ -550,17 +550,17 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * Unlocks a resource.<p>
      * 
      * @param cms the current cms context
-     * @param driverManager the initialized OpenCms driver manager
+     * @param securityManager the initialized OpenCms security manager
      * @param resource the resource to unlock
      * 
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#unlockResource(String)
-     * @see CmsDriverManager#unlockResource(org.opencms.file.CmsRequestContext, CmsResource)
+     * @see CmsSecurityManager#unlockResource(org.opencms.file.CmsRequestContext, CmsResource)
      */
     void unlockResource(
         CmsObject cms, 
-        CmsDriverManager driverManager, 
+        CmsSecurityManager securityManager, 
         CmsResource resource
     ) throws CmsException;
 
@@ -571,7 +571,7 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * have a binary content attached.<p>
      * 
      * @param cms the current cms context
-     * @param driverManager the initialized OpenCms driver manager
+     * @param securityManager the initialized OpenCms security manager
      * @param resource the resource to apply this operation to
      *
      * @return the written resource
@@ -579,11 +579,11 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#writeFile(CmsFile)
-     * @see CmsDriverManager#writeFile(org.opencms.file.CmsRequestContext, CmsFile)
+     * @see CmsSecurityManager#writeFile(org.opencms.file.CmsRequestContext, CmsFile)
      */
     CmsFile writeFile(
         CmsObject cms, 
-        CmsDriverManager driverManager, 
+        CmsSecurityManager securityManager, 
         CmsFile resource
     ) throws CmsException;
     
@@ -591,18 +591,18 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * Writes a property for a specified resource.<p>
      * 
      * @param cms the current cms context
-     * @param driverManager the initialized OpenCms driver manager
+     * @param securityManager the initialized OpenCms security manager
      * @param resource the resource to write the property for
      * @param property the property to write
      * 
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#writePropertyObject(String, CmsProperty)
-     * @see CmsDriverManager#writePropertyObject(org.opencms.file.CmsRequestContext, CmsResource, CmsProperty)
+     * @see CmsSecurityManager#writePropertyObject(org.opencms.file.CmsRequestContext, CmsResource, CmsProperty)
      */    
     void writePropertyObject(
         CmsObject cms, 
-        CmsDriverManager driverManager,
+        CmsSecurityManager securityManager,
         CmsResource resource, 
         CmsProperty property
     ) throws CmsException;
@@ -615,18 +615,18 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * otherwise an exception is thrown.<p>
      * 
      * @param cms the current cms context
-     * @param driverManager the initialized OpenCms driver manager
+     * @param securityManager the initialized OpenCms security manager
      * @param resource the resource to write the properties for
      * @param properties the list of properties to write
      * 
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#writePropertyObjects(String, List)
-     * @see CmsDriverManager#writePropertyObjects(org.opencms.file.CmsRequestContext, CmsResource, List)
+     * @see CmsSecurityManager#writePropertyObjects(org.opencms.file.CmsRequestContext, CmsResource, List)
      */    
     void writePropertyObjects(
         CmsObject cms, 
-        CmsDriverManager driverManager,
+        CmsSecurityManager securityManager,
         CmsResource resource, 
         List properties
     ) throws CmsException;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2004/09/27 17:12:36 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/10/22 14:37:40 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  */
 public class CmsSetupBean extends Object implements Serializable, Cloneable, I_CmsShellCommands {
     
@@ -1031,13 +1031,19 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
         String projectDriver = getDbProperty(m_databaseKey + ".project.driver");
         String workflowDriver = getDbProperty(m_databaseKey + ".workflow.driver");
         String backupDriver = getDbProperty(m_databaseKey + ".backup.driver");
+        String sqlManager = getDbProperty(m_databaseKey + ".sqlmanager");
 
         setExtProperty("db.name", m_databaseKey);
         setExtProperty("db.vfs.driver", vfsDriver);
+        setExtProperty("db.vfs.sqlmanager", sqlManager);
         setExtProperty("db.user.driver", userDriver);
+        setExtProperty("db.user.sqlmanager", sqlManager);
         setExtProperty("db.project.driver", projectDriver);
+        setExtProperty("db.project.sqlmanager", sqlManager);
         setExtProperty("db.workflow.driver", workflowDriver);
+        setExtProperty("db.workflow.sqlmanager", sqlManager);
         setExtProperty("db.backup.driver", backupDriver);
+        setExtProperty("db.backup.sqlmanager", sqlManager);
     }
     
     /**

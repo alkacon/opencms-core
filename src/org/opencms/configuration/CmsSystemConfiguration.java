@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2004/10/15 15:06:32 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/10/22 14:37:40 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.configuration;
 
+import org.opencms.db.I_CmsRuntimeInfoFactory;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.mail.CmsMailHost;
 import org.opencms.mail.CmsMailSettings;
@@ -133,7 +134,13 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     protected static final String N_RESOURCEINITHANDLER = "resourceinithandler";
     
     /** The node name for the job "reuseinstance" value. */
-    protected static final String N_REUSEINSTANCE = "reuseinstance";  
+    protected static final String N_REUSEINSTANCE = "reuseinstance"; 
+    
+    /** The node name for the runtime info. */
+    protected static final String N_RUNTIMECLASSES = "runtimeclasses";
+    
+    /** The node name for the runtime info factory. */
+    protected static final String N_RUNTIMEINFO = "runtimeinfo";       
     
     /** The node name for the scheduler. */
     protected static final String N_SCHEDULER = "scheduler";
@@ -212,6 +219,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     
     /** The runtime properties. */
     private Map m_runtimeProperties;
+    
+    /** The runtime info factory. */
+    private I_CmsRuntimeInfoFactory m_runtimeInfoFactory;
 
     /** The password handler. */
     private I_CmsPasswordHandler m_passwordHandler;
@@ -403,7 +413,11 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         // add compatibility parameter rules 
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_RUNTIMEPROPERTIES + "/" + N_PARAM, I_CmsConfigurationParameterHandler.C_ADD_PARAMETER_METHOD, 2);
         digester.addCallParam ("*/" + N_SYSTEM + "/" + N_RUNTIMEPROPERTIES + "/" + N_PARAM, 0, I_CmsXmlConfiguration.A_NAME);
-        digester.addCallParam ("*/" + N_SYSTEM + "/" + N_RUNTIMEPROPERTIES + "/" + N_PARAM, 1);     
+        digester.addCallParam ("*/" + N_SYSTEM + "/" + N_RUNTIMEPROPERTIES + "/" + N_PARAM, 1);   
+        
+        // add runtime classes configuration rules
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_RUNTIMECLASSES + "/" + N_RUNTIMEINFO, "setRuntimeInfoFactory", 1);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_RUNTIMECLASSES + "/" + N_RUNTIMEINFO, 0, A_CLASS);          
         
     }
     
@@ -550,6 +564,11 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
                     .addText((String)m_runtimeProperties.get(key));
             }
         }
+        
+        // create <runtimeinfo> node
+        Element runtimeinfoElement = systemElement.addElement(N_RUNTIMECLASSES);  
+        Element runtimeinfofactoryElement = runtimeinfoElement.addElement(N_RUNTIMEINFO);
+        runtimeinfofactoryElement.addAttribute(A_CLASS, getRuntimeInfoFactory().getClass().getName());        
         
         // return the vfs node
         return systemElement;
@@ -762,4 +781,44 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
 
         return m_runtimeProperties;
     }
+    
+    /**
+     * Sets the runtime info factory.<p>
+     * 
+     * @param className the class name of the configured runtime info factory
+     */
+    public void setRuntimeInfoFactory(String className) {
+        
+        Object objectInstance;
+        
+        try {
+            objectInstance = Class.forName(className).newInstance();
+        } catch (Throwable t) {
+            OpenCms.getLog(this).error(". Resource init class '" + className  + "' could not be instanciated", t);
+            return;
+        }
+        
+        if (objectInstance instanceof I_CmsRuntimeInfoFactory) {
+            m_runtimeInfoFactory = (I_CmsRuntimeInfoFactory)objectInstance;
+            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Runtime Info factory : " + className + " instanciated");
+            }
+        } else {        
+            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isFatalEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).fatal(". Runtime Info factory : " + className + " invalid");
+            }
+        }        
+        
+    }
+    
+    /**
+     * Returns the runtime info factory instance.<p>
+     * 
+     * @return the runtime info factory instance
+     */
+    public I_CmsRuntimeInfoFactory getRuntimeInfoFactory() {
+        
+        return m_runtimeInfoFactory;
+    }
+    
 }

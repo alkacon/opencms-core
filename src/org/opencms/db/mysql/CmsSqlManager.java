@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsSqlManager.java,v $
- * Date   : $Date: 2004/08/17 07:08:29 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/10/22 14:37:39 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,67 +28,29 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.db.mysql;
 
-import java.util.Properties;
 
 /**
- * Handles SQL queries from query.properties of the MySQL driver package.<p>
+ * MySQL implementation of the SQL manager.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.17 $ $Date: 2004/08/17 07:08:29 $ 
+ * @version $Revision: 1.18 $ $Date: 2004/10/22 14:37:39 $ 
  * @since 5.1
  */
 public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
-    
-    private static final String C_PROPERTY_FILENAME = "org/opencms/db/mysql/query.properties";
-    private static Properties c_queries; 
+
+    /** The filename/path of the SQL query properties. */
+    private static final String C_QUERY_PROPERTIES = "org/opencms/db/mysql/query.properties";
 
     /**
-     * Initializes the SQL manager.<p>
-     * 
      * @see org.opencms.db.generic.CmsSqlManager#CmsSqlManager()
-     */  
+     */
     public CmsSqlManager() {
-        super();
-        
-        if (c_queries == null) {
-            c_queries = loadProperties(C_PROPERTY_FILENAME);
-            precalculateQueries(c_queries);
-        }
-    }
-    
-    /**
-     * @see java.lang.Object#finalize()
-     */
-    protected void finalize() throws Throwable {
-        try {
-            if (c_queries != null) {
-                c_queries.clear();
-            }
-            c_queries = null;
-        } catch (Throwable t) {
-            // ignore
-        }
-        super.finalize();
-    }    
 
-    /**
-     * @see org.opencms.db.generic.CmsSqlManager#readQuery(java.lang.String)
-     */
-    public String readQuery(String queryName) {
-        if (c_queries == null) {
-            c_queries = loadProperties(C_PROPERTY_FILENAME);
-            precalculateQueries(c_queries);
-        }
-        
-        String value = c_queries.getProperty(queryName);
-        
-        if (value == null || "".equals(value)) {
-            value = super.readQuery(queryName);
-        }
-        
-        return value;
-    }  
+        super();      
+        loadQueryProperties(C_QUERY_PROPERTIES);
+    }
+
 }

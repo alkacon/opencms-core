@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/08/12 11:01:30 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2004/10/22 14:37:39 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,8 @@
 package org.opencms.db.oracle;
 
 import org.opencms.db.CmsDriverManager;
+import org.opencms.db.I_CmsRuntimeInfoFactory;
+import org.opencms.db.generic.CmsSqlManager;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -41,10 +43,11 @@ import java.util.List;
 
 import org.apache.commons.collections.ExtendedProperties;
 
+
 /** 
  * Oracle/OCI implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.30 $ $Date: 2004/08/12 11:01:30 $
+ * @version $Revision: 1.31 $ $Date: 2004/10/22 14:37:39 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -52,18 +55,19 @@ import org.apache.commons.collections.ExtendedProperties;
 public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {    
 
     /**
-     * @see org.opencms.db.I_CmsDriver#init(org.apache.commons.collections.ExtendedProperties, java.util.List, org.opencms.db.CmsDriverManager)
+     * @see org.opencms.db.I_CmsDriver#init(org.apache.commons.collections.ExtendedProperties, java.util.List, org.opencms.db.CmsDriverManager, I_CmsRuntimeInfoFactory)
      */
-    public void init(ExtendedProperties configuration, List successiveDrivers, CmsDriverManager driverManager) {
+    public void init(ExtendedProperties configuration, List successiveDrivers, CmsDriverManager driverManager, I_CmsRuntimeInfoFactory runtimeInfoFactory) {
 
-        super.init(configuration, successiveDrivers, driverManager);
+        super.init(configuration, successiveDrivers, driverManager, runtimeInfoFactory);
     }
     
     /**
-     * @see org.opencms.db.I_CmsProjectDriver#initQueries()
+     * @see org.opencms.db.I_CmsProjectDriver#initSqlManager(String)
      */
-    public org.opencms.db.generic.CmsSqlManager initQueries() {
-        return new org.opencms.db.oracle.CmsSqlManager();
+    public org.opencms.db.generic.CmsSqlManager initSqlManager(String classname) {
+
+        return CmsSqlManager.getInstance(classname);
     }
 
     /**

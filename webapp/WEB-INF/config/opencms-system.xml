@@ -24,7 +24,7 @@
 	   	<versionhistory enabled="true" count="10"/>		   	
 		<resourceinit />
 		<requesthandlers />
-		<passwordhandler class="com.opencms.legacy.CmsLegacyPasswordHandler">
+		<passwordhandler class="org.opencms.security.CmsDefaultPasswordHandler">
 			<encoding>UTF-8</encoding>
 			<digest-type>MD5</digest-type>
 		</passwordhandler>
@@ -36,6 +36,9 @@
 		<runtimeproperties>
 			<param name="compatibility.support.oldlocales">false</param>
 			<param name="compatibility.support.webAppNames">/opencms/opencms/</param>
-		</runtimeproperties>
+		</runtimeproperties>	
+		<runtimeclasses>
+			<runtimeinfo class="org.opencms.db.CmsRuntimeInfoFactory" />
+		</runtimeclasses>	
 	</system>
 </opencms>

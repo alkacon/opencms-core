@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeJsp.java,v $
- * Date   : $Date: 2004/09/22 11:56:23 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/10/22 14:37:39 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,7 @@
 package org.opencms.file.types;
 
 import org.opencms.configuration.CmsConfigurationException;
-import org.opencms.db.CmsDriverManager;
+import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
@@ -58,7 +58,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsResourceTypeJsp extends A_CmsResourceType {
 
@@ -86,11 +86,11 @@ public class CmsResourceTypeJsp extends A_CmsResourceType {
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#createResource(org.opencms.file.CmsObject, org.opencms.db.CmsDriverManager, java.lang.String, byte[], java.util.List)
+     * @see org.opencms.file.types.I_CmsResourceType#createResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, java.lang.String, byte[], java.util.List)
      */
     public CmsResource createResource(
         CmsObject cms,
-        CmsDriverManager driverManager,
+        CmsSecurityManager securityManager,
         String resourcename, 
         byte[] content,
         List properties
@@ -105,7 +105,7 @@ public class CmsResourceTypeJsp extends A_CmsResourceType {
         newProperties.add(new CmsProperty(I_CmsConstants.C_PROPERTY_EXPORT, null, "false"));
         newProperties.add(new CmsProperty(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, null, m_defaultEncoding));
 
-        return super.createResource(cms, driverManager, resourcename, content, newProperties);
+        return super.createResource(cms, securityManager, resourcename, content, newProperties);
     }
 
     /**

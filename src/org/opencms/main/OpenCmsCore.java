@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/10/14 08:23:01 $
- * Version: $Revision: 1.144 $
+ * Date   : $Date: 2004/10/22 14:37:40 $
+ * Version: $Revision: 1.145 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.configuration.CmsVfsConfiguration;
 import org.opencms.configuration.CmsWorkplaceConfiguration;
 import org.opencms.db.CmsDefaultUsers;
-import org.opencms.db.CmsDriverManager;
+import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
@@ -107,7 +107,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.144 $
+ * @version $Revision: 1.145 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -144,9 +144,9 @@ public final class OpenCmsCore {
 
     /** Directory translator, used to translate all accesses to resources. */
     private CmsResourceTranslator m_directoryTranslator;
-
-    /** The driver manager to access the database. */
-    private CmsDriverManager m_driverManager;
+    
+    /** The security manager to access the database and validate user permissions. */
+    private CmsSecurityManager m_securityManager;
 
     /** List to save the event listeners in. */
     private Map m_eventListeners;
@@ -453,8 +453,8 @@ public final class OpenCmsCore {
                     if (m_scheduleManager != null) {
                         m_scheduleManager.shutDown();
                     }
-                    if (m_driverManager != null) {
-                        m_driverManager.destroy();
+                    if (m_securityManager != null) {
+                        m_securityManager.destroy();
                     }
                 } catch (Throwable e) {
                     if (getLog(CmsLog.CHANNEL_INIT).isErrorEnabled()) {
@@ -965,9 +965,8 @@ public final class OpenCmsCore {
         m_passwordHandler = systemConfiguration.getPasswordHandler();
                 
         try {
-            // init the rb via the manager with the configuration
-            // and init the cms-object with the rb.
-            m_driverManager = CmsDriverManager.newInstance(configuration);
+            // init the OpenCms security manager
+            m_securityManager = CmsSecurityManager.newInstance(configuration, systemConfiguration.getRuntimeInfoFactory());
         } catch (Exception e) {
             if (getLog(this).isErrorEnabled()) {
                 getLog(this).error(OpenCmsCore.C_MSG_CRITICAL_ERROR + "3", e);
@@ -1679,12 +1678,12 @@ public final class OpenCmsCore {
         
         CmsUser user = contextInfo.getUser();        
         if (user == null) {
-            user = m_driverManager.readUser(contextInfo.getUserName());
+            user = m_securityManager.readUser(contextInfo.getUserName());
         }
                           
         CmsProject project = contextInfo.getProject();
         if (project == null) {
-            project = m_driverManager.readProject(contextInfo.getProjectName());
+            project = m_securityManager.readProject(contextInfo.getProjectName());
         }
         
         // first create the request context
@@ -1701,7 +1700,7 @@ public final class OpenCmsCore {
                 m_fileTranslator);
 
         // now initialize and return the CmsObject
-        CmsObject cms = new CmsObject(m_driverManager, context, sessionStorage);
+        CmsObject cms = new CmsObject(m_securityManager, context, sessionStorage);
         return cms;
     }
 
@@ -1840,8 +1839,8 @@ public final class OpenCmsCore {
         CmsSessionInfoManager sessionStorage
     ) throws CmsException {
         
-        CmsUser user = m_driverManager.readUser(userName);
-        CmsProject project = m_driverManager.readProject(projectId);
+        CmsUser user = m_securityManager.readUser(userName);
+        CmsProject project = m_securityManager.readProject(projectId);
         
         // get requested resource uri
         String requestedResource = null;        
@@ -2038,4 +2037,15 @@ public final class OpenCmsCore {
             }
         }
     }
+    
+    /**
+     * Returns the initialized OpenCms security manager.<p>
+     * 
+     * @return the initialized OpenCms security manager
+     */
+    protected CmsSecurityManager getSecurityManager() {
+        
+        return m_securityManager;
+    }
+    
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsBackupDriver.java,v $
- * Date   : $Date: 2004/08/17 16:07:57 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2004/10/22 14:37:39 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.db;
 
+import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.file.CmsBackupProject;
 import org.opencms.file.CmsBackupResource;
 import org.opencms.file.CmsProject;
@@ -45,6 +46,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Vector;
 
+
 /**
  * Definitions of all required backup driver methods.<p>
  * 
@@ -55,10 +57,13 @@ import java.util.Vector;
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com) 
- * @version $Revision: 1.36 $ $Date: 2004/08/17 16:07:57 $
+ * @version $Revision: 1.37 $ $Date: 2004/10/22 14:37:39 $
  * @since 5.1
  */
 public interface I_CmsBackupDriver {
+    
+    /** The type ID to identify backup driver implementations. */
+    int C_DRIVER_TYPE_ID = 0;
 
     /**
      * Creates a valid CmsBackupResource instance from a JDBC ResultSet.<p>
@@ -74,13 +79,15 @@ public interface I_CmsBackupDriver {
      * Creates a new property defintion in the databse.<p>
      *
      * Only the admin can do this.
-     *
+     * 
+     * @param runtimeInfo the current runtime info
      * @param name the name of the propertydefinitions to overwrite
      * @param mappingtype the mapping-type for the propertydefinitions
+     *
      * @return the new propertydefinition
      * @throws CmsException if something goes wrong
      */
-    CmsPropertydefinition createBackupPropertyDefinition(String name, int mappingtype) throws CmsException;
+    CmsPropertydefinition createBackupPropertyDefinition(I_CmsRuntimeInfo runtimeInfo, String name, int mappingtype) throws CmsException;
     
     /**
      * Deletes all backup versions of a backup resource that are older than a given project tag and
@@ -97,13 +104,15 @@ public interface I_CmsBackupDriver {
      * Deletes backup versions of a resource.<p>
      * 
      * Deletes the m-n oldest backup versions, if m is the number of backup versions, and n
-     * the number of max. allowed backup versions.
+     * the number of max. allowed backup versions.<p>
      * 
+     * @param runtimeInfo the current runtime info
      * @param existingBackups a list of backup resources ordered by their ascending creation date
      * @param maxVersions maximum number of versions per resource
+     * 
      * @throws CmsException if something goes wrong
      */
-    void deleteBackups(List existingBackups, int maxVersions) throws CmsException;
+    void deleteBackups(I_CmsRuntimeInfo runtimeInfo, List existingBackups, int maxVersions) throws CmsException;
 
 
     /**
@@ -117,14 +126,13 @@ public interface I_CmsBackupDriver {
      * Initializes the SQL manager for this driver.<p>
      * 
      * To obtain JDBC connections from different pools, further 
-     * {online|offline|backup} pool Urls have to be specified.
+     * {online|offline|backup} pool Urls have to be specified.<p>
+     * 
+     * @param classname the classname of the SQL manager
      * 
      * @return the SQL manager for this driver
-     * @see org.opencms.db.generic.CmsSqlManager#setPoolUrlOffline(String)
-     * @see org.opencms.db.generic.CmsSqlManager#setPoolUrlOnline(String)
-     * @see org.opencms.db.generic.CmsSqlManager#setPoolUrlBackup(String)
      */
-    org.opencms.db.generic.CmsSqlManager initQueries();
+    org.opencms.db.generic.CmsSqlManager initSqlManager(String classname);
 
     /**
      * Reads a backup file including the file content.<p>
@@ -155,13 +163,15 @@ public interface I_CmsBackupDriver {
     List readBackupFileHeaders() throws CmsException;
 
     /**
-     * Reads all backup file headers of a file excluding the file content.<p>.
-     *
+     * Reads all backup file headers of a file excluding the file content.<p>
+     * 
+     * @param runtimeInfo the current runtime info
      * @param resourcePath the path of the file to read
+     *
      * @return List with all backup file headers
      * @throws CmsException if something goes wrong
      */
-    List readBackupFileHeaders(String resourcePath) throws CmsException;
+    List readBackupFileHeaders(I_CmsRuntimeInfo runtimeInfo, String resourcePath) throws CmsException;
     
     /**
      * Returns the max. current backup version of a resource.<p>
@@ -219,13 +229,15 @@ public interface I_CmsBackupDriver {
     
     /**
      * Reads a property definition for the specified mapping type.<p>
-     *
+     * 
+     * @param runtimeInfo the current runtime info
      * @param name the name of the propertydefinition to read
      * @param mappingtype the mapping type for which the propertydefinition is valid
+     *
      * @return the propertydefinition that corresponds to the overgiven arguments - or null if there is no valid propertydefinition.
      * @throws CmsException if something goes wrong
      */
-    CmsPropertydefinition readBackupPropertyDefinition(String name, int mappingtype) throws CmsException;
+    CmsPropertydefinition readBackupPropertyDefinition(I_CmsRuntimeInfo runtimeInfo, String name, int mappingtype) throws CmsException;
 
     /**
      * Gets the next available backup version ID for a resource.<p>
@@ -237,30 +249,35 @@ public interface I_CmsBackupDriver {
     /**
      * Writes a project to the backup.<p>
      * 
+     * @param runtimeInfo the current runtime info
      * @param currentProject the current project
      * @param tagId the version ID of the backup
      * @param publishDate long timestamp when the current project was published 
      * @param currentUser the current user
+     * 
      * @throws CmsException if something goes wrong
      */
-    void writeBackupProject(CmsProject currentProject, int tagId, long publishDate, CmsUser currentUser) throws CmsException;
+    void writeBackupProject(I_CmsRuntimeInfo runtimeInfo, CmsProject currentProject, int tagId, long publishDate, CmsUser currentUser) throws CmsException;
 
     /**
      * Writes the properties of a resource to the backup.<p>
      * 
+     * @param runtimeInfo the current runtime info
      * @param publishProject the current project
      * @param resource the resource of the properties
      * @param properties the properties to write
      * @param backupId the id backup
      * @param tagId the tag ID of the backup
      * @param versionId the version ID of the backup
+     * 
      * @throws CmsException if something goes wrong
      */
-    void writeBackupProperties(CmsProject publishProject, CmsResource resource, List properties, CmsUUID backupId, int tagId, int versionId) throws CmsException;
+    void writeBackupProperties(I_CmsRuntimeInfo runtimeInfo, CmsProject publishProject, CmsResource resource, List properties, CmsUUID backupId, int tagId, int versionId) throws CmsException;
 
     /**
      * Writes a resource to the backup.<p>
      * 
+     * @param runtimeInfo the current runtime info
      * @param currentUser the current user
      * @param publishProject the current project
      * @param resource the resource that is written to the backup
@@ -268,20 +285,23 @@ public interface I_CmsBackupDriver {
      * @param tagId the version ID of the backup
      * @param publishDate long timestamp when the resource was published
      * @param maxVersions maximum number of backup versions
+     * 
      * @throws CmsException if something goes wrong
      */
-    void writeBackupResource(CmsUser currentUser, CmsProject publishProject, CmsResource resource, List properties, int tagId, long publishDate, int maxVersions) throws CmsException;
+    void writeBackupResource(I_CmsRuntimeInfo runtimeInfo, CmsUser currentUser, CmsProject publishProject, CmsResource resource, List properties, int tagId, long publishDate, int maxVersions) throws CmsException;
     
     /**
      * Writes a resource content to the backup.<p>
      * This method is for later use and should not be used now
      * 
+     * @param runtimeInfo the current runtime info
      * @param projectId the project to read from
      * @param resource the resource (file header) to read the content from
      * @param backupResource the backup resource to write the backup content to
+     * 
      * @throws CmsException if something goes wrong
      */
-    void writeBackupResourceContent(int projectId, CmsResource resource, CmsBackupResource backupResource) throws CmsException;
+    void writeBackupResourceContent(I_CmsRuntimeInfo runtimeInfo, int projectId, CmsResource resource, CmsBackupResource backupResource) throws CmsException;
     
     /**
      * Reads the max. backup tag ID for a specified resource.<p>
@@ -291,4 +311,24 @@ public interface I_CmsBackupDriver {
      * @throws CmsException if something goes wrong
      */
     int readMaxTagId(CmsResource resource) throws CmsException;
+    
+    /**
+     * Returns the SqlManager of this driver.<p>
+     * 
+     * @return the SqlManager of this driver
+     */
+    CmsSqlManager getSqlManager();
+    
+    /**
+     * Deletes a property defintion.<p>
+     *
+     * Only the admin can do this.
+     * 
+     * @param runtimeInfo the current runtime info
+     * @param metadef the propertydefinitions to be deleted.
+     *
+     * @throws CmsException if something goes wrong
+     */
+    void deleteBackupPropertyDefinition(I_CmsRuntimeInfo runtimeInfo, CmsPropertydefinition metadef) throws CmsException;    
+    
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsDriver.java,v $
- * Date   : $Date: 2004/02/13 13:41:44 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/10/22 14:37:39 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,8 +37,10 @@ import java.util.List;
 
 import org.apache.commons.collections.ExtendedProperties;
 
+
+
 /**
- * @version $Revision: 1.5 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.6 $ $Date: 2004/10/22 14:37:39 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public interface I_CmsDriver {
@@ -46,12 +48,14 @@ public interface I_CmsDriver {
     /**
      * Initializes the driver.<p>
      * 
-     * @param configuration hte configuration to read
-     * @param successiveDrivers a list of successive drivers to initialize
-     * @param driverManager backlink to the driver manager
+     * @param configuration the opencms.properties configuration file
+     * @param successiveDrivers a list of successive drivers to be initialized
+     * @param driverManager the initialized OpenCms driver manager
+     * @param runtimeInfoFactory the runtime info factory configured in opencms-system.xml, if a driver needs to create his own runtime info objects
+     * 
      * @throws CmsException if something goes wrong
      */
-    void init(ExtendedProperties configuration, List successiveDrivers, CmsDriverManager driverManager) throws CmsException;
+    void init(ExtendedProperties configuration, List successiveDrivers, CmsDriverManager driverManager, I_CmsRuntimeInfoFactory runtimeInfoFactory) throws CmsException;
     
     /**
      * Returns information about the driver.<p>
@@ -59,4 +63,5 @@ public interface I_CmsDriver {
      * @return an information string
      */
     String toString();
+    
 }

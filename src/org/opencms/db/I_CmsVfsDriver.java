@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2004/09/17 14:28:01 $
- * Version: $Revision: 1.92 $
+ * Date   : $Date: 2004/10/22 14:37:40 $
+ * Version: $Revision: 1.93 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,15 +46,19 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+
 /**
  * Definitions of all required VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.92 $ $Date: 2004/09/17 14:28:01 $
+ * @version $Revision: 1.93 $ $Date: 2004/10/22 14:37:40 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
+    
+    /** The type ID to identify user driver implementations. */
+    int C_DRIVER_TYPE_ID = 3;    
          
     /**
      * Creates a CmsFile instance from a JDBC ResultSet.<p>
@@ -80,15 +84,15 @@ public interface I_CmsVfsDriver {
     /**
      * Creates a resource content with the specified id.<p>
      * 
+     * @param runtimeInfo the current runtime info
      * @param project the current project
      * @param resourceId the resource id to create the content for
      * @param content the content to write
      * @param versionId for the content of a backup file you need to insert the versionId of the backup
-     * @param writeBackup true if the content should be written to the backup table
      * 
      * @throws CmsException if somethong goes wrong
      */
-    void createContent(CmsProject project, CmsUUID resourceId, byte[] content, int versionId, boolean writeBackup) throws CmsException;
+    void createContent(I_CmsRuntimeInfo runtimeInfo, CmsProject project, CmsUUID resourceId, byte[] content, int versionId) throws CmsException;
 
     /**
      * Creates a CmsFolder instance from a JDBC ResultSet.<p>
@@ -102,17 +106,17 @@ public interface I_CmsVfsDriver {
     CmsFolder createFolder(ResultSet res, int projectId, boolean hasProjectIdInResultSet) throws SQLException;
 
     /**
-     * Creates a new property defintion in the databse.<p>
-     *
-     * Only the admin can do this.
-     *
-     * @param name the name of the propertydefinitions to overwrite
+     * Creates a new property defintion in the database.<p>
+     * 
+     * @param runtimeInfo the current runtime info
      * @param projectId the project in which the propertydefinition is created
+     * @param name the name of the propertydefinitions to overwrite
      * @param mappingtype the mapping-type for the propertydefinitions
+     *
      * @return the new propertydefinition
      * @throws CmsException if something goes wrong
      */
-    CmsPropertydefinition createPropertyDefinition(String name, int projectId, int mappingtype) throws CmsException;
+    CmsPropertydefinition createPropertyDefinition(I_CmsRuntimeInfo runtimeInfo, int projectId, String name, int mappingtype) throws CmsException;
 
     /**
      * Creates a CmsResource instance from a JDBC ResultSet.<p>
@@ -127,40 +131,44 @@ public interface I_CmsVfsDriver {
     /**
      * Creates a new sibling for a specified resource.<p>
      * 
+     * @param runtimeInfo the current runtime info
      * @param project the project where to create the link
      * @param resource the link prototype
      * @param resourcename the name of the link
      * 
-     * @return a valid link resource
      * @throws CmsException if something goes wrong
      */
-    CmsResource createSibling(CmsProject project, CmsResource resource, String resourcename) throws CmsException;
+    void createSibling(I_CmsRuntimeInfo runtimeInfo, CmsProject project, CmsResource resource, String resourcename) throws CmsException;
     
     /**
      * Deletes all property values of a file or folder.<p>
      * 
      * You may specify which whether just structure or resource property values should
      * be deleted, or both of them.<p>
-     *
+     * 
+     * @param runtimeInfo the current runtime info
      * @param projectId the id of the project
      * @param resource the resource
      * @param deleteOption determines which property values should be deleted
+     * 
      * @throws CmsException if operation was not successful
      * @see org.opencms.file.CmsProperty#C_DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES
      * @see org.opencms.file.CmsProperty#C_DELETE_OPTION_DELETE_STRUCTURE_VALUES
      * @see org.opencms.file.CmsProperty#C_DELETE_OPTION_DELETE_RESOURCE_VALUES
      */     
-    void deleteProperties(int projectId, CmsResource resource, int deleteOption) throws CmsException;
+    void deletePropertyObjects(I_CmsRuntimeInfo runtimeInfo, int projectId, CmsResource resource, int deleteOption) throws CmsException;
 
     /**
      * Deletes a property defintion.<p>
      *
      * Only the admin can do this.
-     *
+     * 
+     * @param runtimeInfo the current runtime info
      * @param metadef the propertydefinitions to be deleted.
+     *
      * @throws CmsException if something goes wrong
      */
-    void deletePropertyDefinition(CmsPropertydefinition metadef) throws CmsException;
+    void deletePropertyDefinition(I_CmsRuntimeInfo runtimeInfo, CmsPropertydefinition metadef) throws CmsException;
 
     /**
      * Destroys this driver.<p>
@@ -180,60 +188,66 @@ public interface I_CmsVfsDriver {
      * Initializes the SQL manager for this driver.<p>
      * 
      * To obtain JDBC connections from different pools, further 
-     * {online|offline|backup} pool Urls have to be specified
+     * {online|offline|backup} pool Urls have to be specified.<p>
+     * 
+     * @param classname the classname of the SQL manager
      * 
      * @return the SQL manager for this driver
-     * @see org.opencms.db.generic.CmsSqlManager#setPoolUrlOffline(String)
-     * @see org.opencms.db.generic.CmsSqlManager#setPoolUrlOnline(String)
-     * @see org.opencms.db.generic.CmsSqlManager#setPoolUrlBackup(String)
      */
-    org.opencms.db.generic.CmsSqlManager initQueries();
+    org.opencms.db.generic.CmsSqlManager initSqlManager(String classname);
 
     /**
      * Reads all child-files and/or child-folders of a specified parent resource.<p>
      * 
+     * @param runtimeInfo the current runtime info
      * @param currentProject the current project
      * @param resource the parent folder
      * @param getFolders if true the child folders of the parent folder are returned in the result set
      * @param getFiles if true the child files of the parent folder are returned in the result set
+     * 
      * @return a list of all sub folders or sub files
      * @throws CmsException if something goes wrong
      */
-    List readChildResources(CmsProject currentProject, CmsResource resource, boolean getFolders, boolean getFiles) throws CmsException;
+    List readChildResources(I_CmsRuntimeInfo runtimeInfo, CmsProject currentProject, CmsResource resource, boolean getFolders, boolean getFiles) throws CmsException;
 
     /**
      * Reads a file specified by it's structure ID.<p>
      * 
+     * @param runtimeInfo the current runtime info
      * @param projectId the ID of the current project
      * @param includeDeleted true if should be read even if it's state is deleted
      * @param structureId the id of the file
+     * 
      * @return CmsFile the file
      * @throws CmsException if something goes wrong
      */
-    CmsFile readFile(int projectId, boolean includeDeleted, CmsUUID structureId) throws CmsException;
+    CmsFile readFile(I_CmsRuntimeInfo runtimeInfo, int projectId, boolean includeDeleted, CmsUUID structureId) throws CmsException;
 
     /**
      * Reads a file header specified by it's structure ID.<p>
-     *
+     * 
+     * @param runtimeInfo the current runtime info
      * @param projectId the Id of the project
      * @param structureId the Id of the resource.
      * @param includeDeleted true if already deleted files are included
+     *
      * @return file the read file.
      * @throws CmsException if operation was not succesful
      */
-    CmsFile readFileHeader(int projectId, CmsUUID structureId, boolean includeDeleted) throws CmsException;
+    CmsFile readFileHeader(I_CmsRuntimeInfo runtimeInfo, int projectId, CmsUUID structureId, boolean includeDeleted) throws CmsException;
 
     /**
      * Reads a file header specified by it's resource name.<p>
      * 
+     * @param runtimeInfo the current runtime info
      * @param projectId the Id of the project in which the resource will be used
      * @param filename the name of the file
      * @param includeDeleted true if already deleted files are included
-     *
+     * 
      * @return the read file.
      * @throws CmsException if operation was not succesful
      */
-    CmsFile readFileHeader(int projectId, String filename, boolean includeDeleted) throws CmsException;
+    CmsFile readFileHeader(I_CmsRuntimeInfo runtimeInfo, int projectId, String filename, boolean includeDeleted) throws CmsException;
 
     /**
      * Reads all files that are either new, changed or deleted.<p>
@@ -269,13 +283,14 @@ public interface I_CmsVfsDriver {
     /**
      * Reads a folder specified by it's resource name.<p>
      * 
+     * @param runtimeInfo the current runtime info
      * @param projectId the project in which the resource will be used
      * @param foldername the name of the folder to be read
-     *
+     * 
      * @return The read folder.
      * @throws CmsException if operation was not succesful
      */
-    CmsFolder readFolder(int projectId, String foldername) throws CmsException;
+    CmsFolder readFolder(I_CmsRuntimeInfo runtimeInfo, int projectId, String foldername) throws CmsException;
 
     /**
      * Reads all folders that are new, changed or deleted.<p>
@@ -288,14 +303,16 @@ public interface I_CmsVfsDriver {
 
     /**
      * Reads a property definition for the soecified resource type.<p>
-     *
+     * 
+     * @param runtimeInfo the current runtime info
      * @param name the name of the propertydefinition to read
      * @param projectId the id of the project
      * @param mappingtype the mapping type of the propertydefinition
+     *
      * @return the propertydefinition that corresponds to the overgiven arguments - or null if there is no valid propertydefinition.
      * @throws CmsException if something goes wrong
      */
-    CmsPropertydefinition readPropertyDefinition(String name, int projectId, int mappingtype) throws CmsException;
+    CmsPropertydefinition readPropertyDefinition(I_CmsRuntimeInfo runtimeInfo, String name, int projectId, int mappingtype) throws CmsException;
 
     /**
      * Reads all property definitions for the specified mapping type.<p>
@@ -312,14 +329,16 @@ public interface I_CmsVfsDriver {
      * 
      * The implementation must return {@link CmsProperty#getNullProperty()} if the property is not found.<p>
      * 
+     * @param runtimeInfo the current runtime info
      * @param key the key of the property
      * @param project the current project
      * @param resource the resource where the property is attached to
+     * 
      * @return a CmsProperty object containing both the structure and resource value of the property
      * @throws CmsException if something goes wrong
      * @see CmsProperty
      */
-    CmsProperty readPropertyObject(String key, CmsProject project, CmsResource resource) throws CmsException;
+    CmsProperty readPropertyObject(I_CmsRuntimeInfo runtimeInfo, String key, CmsProject project, CmsResource resource) throws CmsException;
     
     /**
      * Reads all property objects mapped to a specified resource from the database.<p>
@@ -394,32 +413,38 @@ public interface I_CmsVfsDriver {
     /**
      * Reads all siblings that point to the resource record of a specified resource.<p>
      * 
+     * @param runtimeInfo the current runtime info
      * @param currentProject the current project
      * @param resource the specified resource
      * @param includeDeleted true if deleted siblings should be included in the result List
+     * 
      * @return a List with the fileheaders
      * @throws CmsException if something goes wrong
      */
-    List readSiblings(CmsProject currentProject, CmsResource resource, boolean includeDeleted) throws CmsException;
+    List readSiblings(I_CmsRuntimeInfo runtimeInfo, CmsProject currentProject, CmsResource resource, boolean includeDeleted) throws CmsException;
     
     /**
      * Removes a file physically in the database.<p>
      * 
+     * @param runtimeInfo the current runtime info
      * @param currentProject the current project
      * @param resource the resource
      * @param removeFileContent if true, the content record is also removed; if false, only the structure/resource records are removed
+     * 
      * @throws CmsException if something goes wrong
      */
-    void removeFile(CmsProject currentProject, CmsResource resource, boolean removeFileContent) throws CmsException;
+    void removeFile(I_CmsRuntimeInfo runtimeInfo, CmsProject currentProject, CmsResource resource, boolean removeFileContent) throws CmsException;
 
     /**
      * Removes a folder physically in the database.<p>
-     *
+     * 
+     * @param runtimeInfo the current runtime info
      * @param currentProject the current project
      * @param resource the folder
+     * 
      * @throws CmsException if something goes wrong
      */
-    void removeFolder(CmsProject currentProject, CmsResource resource) throws CmsException;
+    void removeFolder(I_CmsRuntimeInfo runtimeInfo, CmsProject currentProject, CmsResource resource) throws CmsException;
     
     /**
      * Replaces the content and properties of an existing resource.<p>
@@ -446,34 +471,38 @@ public interface I_CmsVfsDriver {
     /**
      * Validates if the specified resource ID in the tables of the specified project {offline|online} exists.<p>
      * 
+     * @param runtimeInfo the current runtime info to read uncommitted data while resources are published, or null
      * @param projectId the project id
      * @param resourceId the resource id to test for
+     * 
      * @return true if a resource with the given id was found, false otherweise
      * @throws CmsException if something goes wrong
      */
-    boolean validateResourceIdExists(int projectId, CmsUUID resourceId) throws CmsException;
+    boolean validateResourceIdExists(I_CmsRuntimeInfo runtimeInfo, int projectId, CmsUUID resourceId) throws CmsException;
 
     /**
      * Validates if the specified structure ID in the tables of the specified project {offline|online} exists.<p>
      * 
+     * @param runtimeInfo the current runtime info
      * @param projectId the ID of current project
      * @param structureId the structure id
+     * 
      * @return true, if the specified structure ID in the tables of the specified project {offline|online} exists
      * @throws CmsException if something goes wrong
      */
-    boolean validateStructureIdExists(int projectId, CmsUUID structureId) throws CmsException;
+    boolean validateStructureIdExists(I_CmsRuntimeInfo runtimeInfo, int projectId, CmsUUID structureId) throws CmsException;
     
     /**
      * Writes the resource content with the specified content id.<p>
      * 
+     * @param runtimeInfo the current runtime info
      * @param project the current project
      * @param resourceId the id of the resource used to identify the content to update
      * @param content the new content of the file
-     * @param writeBackup true if the file content should be written to the backup table
      * 
      * @throws CmsException if something goes wrong
      */
-    void writeContent(CmsProject project, CmsUUID resourceId, byte[] content, boolean writeBackup) throws CmsException;
+    void writeContent(I_CmsRuntimeInfo runtimeInfo, CmsProject project, CmsUUID resourceId, byte[] content) throws CmsException;
 
     /**
      * Writes the structure and/or resource record(s) of an existing file.<p>
@@ -482,7 +511,7 @@ public interface I_CmsVfsDriver {
      * after creating, importing or restoring complete files
      * where all file header attribs are changed. Both the structure and resource 
      * records get written. Thus, using this method affects all siblings of
-     * a resource! Use {@link #writeResourceState(CmsProject, CmsResource, int)}
+     * a resource! Use {@link #writeResourceState(I_CmsRuntimeInfo, CmsProject, CmsResource, int)}
      * instead if you just want to update the file state, e.g. of a single sibling.<p>
      * 
      * The file state is set to "changed", unless the current state is "new"
@@ -496,6 +525,7 @@ public interface I_CmsVfsDriver {
      * has a higher file state value than the resource state. Otherwise the file state is
      * the resource state.<p>
      * 
+     * @param runtimeInfo the current runtime info
      * @param project the current project
      * @param resource the resource to be updated
      * @param changed determines whether the structure or resource state, or none of them, is set to "changed"
@@ -505,65 +535,59 @@ public interface I_CmsVfsDriver {
      * @see org.opencms.db.CmsDriverManager#C_UPDATE_RESOURCE_STATE
      * @see org.opencms.db.CmsDriverManager#C_UPDATE_STRUCTURE_STATE
      * @see org.opencms.db.CmsDriverManager#C_NOTHING_CHANGED
-     * @see #writeResourceState(CmsProject, CmsResource, int)
+     * @see #writeResourceState(I_CmsRuntimeInfo, CmsProject, CmsResource, int)
      */
-    void writeResource(CmsProject project, CmsResource resource, int changed) throws CmsException;
+    void writeResource(I_CmsRuntimeInfo runtimeInfo, CmsProject project, CmsResource resource, int changed) throws CmsException;
 
     /**
      * Writes the "last-modified-in-project" ID of a resource.<p>
      * 
+     * @param runtimeInfo the current runtime info
      * @param project the resource record is updated with the ID of this project
      * @param projectId the project id to write into the reource
      * @param resource the resource that gets updated
+     * 
      * @throws CmsException if something goes wrong
      */
-    void writeLastModifiedProjectId(CmsProject project, int projectId, CmsResource resource) throws CmsException;
+    void writeLastModifiedProjectId(I_CmsRuntimeInfo runtimeInfo, CmsProject project, int projectId, CmsResource resource) throws CmsException;
 
     /**
      * Writes a property object to the database mapped to a specified resource.<p>
      * 
+     * @param runtimeInfo the current runtime info
      * @param project the current project
      * @param resource the resource where the property should be attached to
      * @param property a CmsProperty object containing both the structure and resource value of the property
+     * 
      * @throws CmsException if something goes wrong
      * @see CmsProperty
      */
-    void writePropertyObject(CmsProject project, CmsResource resource, CmsProperty property) throws CmsException;
+    void writePropertyObject(I_CmsRuntimeInfo runtimeInfo, CmsProject project, CmsResource resource, CmsProperty property) throws CmsException;
     
     /**
      * Writes a list of property objects to the database mapped to a specified resource.<p>
      * 
+     * @param runtimeInfo the current runtime info
      * @param project the current project
      * @param resource the resource where the property should be attached to
      * @param properties a list of CmsProperty objects
      * @throws CmsException if something goes wrong
      * @see CmsProperty
      */
-    void writePropertyObjects(CmsProject project, CmsResource resource, List properties) throws CmsException;
+    void writePropertyObjects(I_CmsRuntimeInfo runtimeInfo, CmsProject project, CmsResource resource, List properties) throws CmsException;
     
-    /**
-     * Writes the complete structure and resource records of a file.<p>
-     *
-     * @param project the current project
-     * @param resource the resource to write
-     * @param filecontent the content of the resource
-     * @param changed defines which state must be modified
-     * @param userId the user who writes the file
-     * @throws CmsException if something goes wrong
-     */
-    //void writeResource(CmsProject project, CmsResource resource, byte[] filecontent, int changed, CmsUUID userId) throws CmsException;
-
     /**
      * Publishes the structure and resource records of an 
      * offline resource into it's online counterpart.<p>
      * 
+     * @param runtimeInfo the current runtime info
      * @param onlineProject the online project
      * @param onlineResource the online resource
      * @param offlineResource the offline resource
      * @param writeFileContent true, if also the content record of the specified offline resource should be written to the online table; false otherwise
      * @throws CmsException if somethong goes wrong
      */
-    void publishResource(CmsProject onlineProject, CmsResource onlineResource, CmsResource offlineResource, boolean writeFileContent) throws CmsException;
+    void publishResource(I_CmsRuntimeInfo runtimeInfo, CmsProject onlineProject, CmsResource onlineResource, CmsResource offlineResource, boolean writeFileContent) throws CmsException;
     
     /**
      * Writes file state in either the structure or resource record, or both of them.<p>
@@ -574,39 +598,40 @@ public interface I_CmsVfsDriver {
      * This method is frequently used while resources are published to set the file state
      * back to "unchanged".<p>
      * 
-     * Only file state attribs. get updated here. Use {@link #writeResource(CmsProject, CmsResource, int)}
+     * Only file state attribs. get updated here. Use {@link #writeResource(I_CmsRuntimeInfo, CmsProject, CmsResource, int)}
      * instead to write the complete file header.<p>
      * 
-     * Please refer to the javadoc of {@link #writeResource(CmsProject, CmsResource, int)} to read
+     * Please refer to the javadoc of {@link #writeResource(I_CmsRuntimeInfo, CmsProject, CmsResource, int)} to read
      * how setting resource state values affects the file state.<p>
      * 
+     * @param runtimeInfo the current runtime info
      * @param project the current project
      * @param resource the resource to be updated
      * @param changed determines whether the structure or resource state, or none of them, is set to "changed"
+     * 
      * @throws CmsException if somethong goes wrong
      * @see org.opencms.db.CmsDriverManager#C_UPDATE_RESOURCE_STATE
      * @see org.opencms.db.CmsDriverManager#C_UPDATE_STRUCTURE_STATE
      * @see org.opencms.db.CmsDriverManager#C_UPDATE_ALL
      */
-    void writeResourceState(CmsProject project, CmsResource resource, int changed) throws CmsException;
+    void writeResourceState(I_CmsRuntimeInfo runtimeInfo, CmsProject project, CmsResource resource, int changed) throws CmsException;
 
     /**
      * Creates a new resource from a given CmsResource object.<p>
      * 
      * This method works for both files and folders. Existing resources get overwritten.<p>
+     * 
+     * @param runtimeInfo the current runtime info
      * @param project the current project
      * @param resource the resource to be created
      * @param content the file content, or null in case of a folder
-     * 
-     * @return the new resource
-     * 
+     * @return the created Cms resource
      * @throws CmsException if somethong goes wrong
-     * 
-     * @see org.opencms.file.types.I_CmsResourceType#createResource(org.opencms.file.CmsObject, CmsDriverManager, String, byte[], List)
-     * @see org.opencms.file.types.I_CmsResourceType#importResource(org.opencms.file.CmsObject, CmsDriverManager, String, CmsResource, byte[], List)
+     * @see org.opencms.file.types.I_CmsResourceType#createResource(org.opencms.file.CmsObject, CmsSecurityManager, String, byte[], List)
+     * @see org.opencms.file.types.I_CmsResourceType#importResource(org.opencms.file.CmsObject, CmsSecurityManager, String, CmsResource, byte[], List)
      * @see org.opencms.file.CmsObject#createResource(String, int, byte[], List)
      * @see org.opencms.file.CmsObject#importResource(String, CmsResource, byte[], List)
      */
-    CmsResource createResource(CmsProject project, CmsResource resource, byte[] content) throws CmsException;
+    CmsResource createResource(I_CmsRuntimeInfo runtimeInfo, CmsProject project, CmsResource resource, byte[] content) throws CmsException;
     
 }

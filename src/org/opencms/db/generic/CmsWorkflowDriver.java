@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Attic/CmsWorkflowDriver.java,v $
- * Date   : $Date: 2004/08/27 08:57:21 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2004/10/22 14:37:39 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,11 @@ package org.opencms.db.generic;
 import org.opencms.db.CmsDbUtil;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.I_CmsDriver;
+import org.opencms.db.I_CmsRuntimeInfoFactory;
 import org.opencms.db.I_CmsWorkflowDriver;
+import org.opencms.file.CmsGroup;
+import org.opencms.file.CmsProject;
+import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
@@ -42,10 +46,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 import org.opencms.workflow.CmsTask;
 import org.opencms.workflow.CmsTaskLog;
-
-import org.opencms.file.CmsGroup;
-import org.opencms.file.CmsProject;
-import org.opencms.file.CmsUser;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -57,12 +57,13 @@ import java.util.Vector;
 
 import org.apache.commons.collections.ExtendedProperties;
 
+
 /**
  * Generic (ANSI-SQL) database server implementation of the workflow driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.33 $ $Date: 2004/08/27 08:57:21 $
+ * @version $Revision: 1.34 $ $Date: 2004/10/22 14:37:39 $
  * @since 5.1
  */
 public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkflowDriver {
@@ -104,7 +105,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
         } catch (SQLException exc) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(null, conn, stmt, null);
         }
         // create the task object, note that this does not user the "task type" table
         // because the generic SQL does not work with MySQL 4 
@@ -142,7 +143,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
         } catch (SQLException exc) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(null, conn, stmt, null);
         }
     }
 
@@ -176,20 +177,19 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
         } catch (SQLException exc) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(null, conn, stmt, null);
         }
     }
 
     /**
-     * @see org.opencms.db.I_CmsDriver#init(org.apache.commons.collections.ExtendedProperties, java.util.List, org.opencms.db.CmsDriverManager)
+     * @see org.opencms.db.I_CmsDriver#init(org.apache.commons.collections.ExtendedProperties, java.util.List, org.opencms.db.CmsDriverManager, I_CmsRuntimeInfoFactory)
      */
-    public void init(ExtendedProperties configuration, List successiveDrivers, CmsDriverManager driverManager) {
+    public void init(ExtendedProperties configuration, List successiveDrivers, CmsDriverManager driverManager, I_CmsRuntimeInfoFactory runtimeInfoFactory) {
+        
         String poolUrl = configuration.getString("db.workflow.pool");
-
-        m_sqlManager = this.initQueries();
-        m_sqlManager.setPoolUrlOffline(poolUrl);
-        m_sqlManager.setPoolUrlOnline(poolUrl);
-        m_sqlManager.setPoolUrlBackup(poolUrl);
+        String classname = configuration.getString("db.workflow.sqlmanager");
+        m_sqlManager = this.initSqlManager(classname);
+        m_sqlManager.init(I_CmsWorkflowDriver.C_DRIVER_TYPE_ID, poolUrl);        
 
         m_driverManager = driverManager;
 
@@ -205,10 +205,11 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
     }
 
     /**
-     * @see org.opencms.db.I_CmsWorkflowDriver#initQueries()
+     * @see org.opencms.db.I_CmsWorkflowDriver#initSqlManager(String)
      */
-    public org.opencms.db.generic.CmsSqlManager initQueries() {
-        return new org.opencms.db.generic.CmsSqlManager();
+    public org.opencms.db.generic.CmsSqlManager initSqlManager(String classname) {
+
+        return CmsSqlManager.getInstance(classname);
     }
 
     /**
@@ -306,7 +307,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
         } catch (SQLException exc) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(null, conn, stmt, null);
         }
     }
 
@@ -335,7 +336,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
             // close all db-resources
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(null, conn, stmt, null);
         }
         return newId;
     }
@@ -372,7 +373,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
         } catch (SQLException exc) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(null, conn, stmt, null);
         }
     }
 
@@ -412,7 +413,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
             // close all db-resources
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(null, conn, stmt, null);
         }
         return newId;
     }
@@ -440,7 +441,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
         } catch (Exception exc) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(null, conn, stmt, res);
         }
         return result;
     }
@@ -468,7 +469,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
             throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc, false);
         } finally {
             // close all db-resources
-            m_sqlManager.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(null, conn, stmt, res);
         }
         return task;
     }
@@ -501,7 +502,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
             throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc, false);
         } finally {
             // close all db-resources
-            m_sqlManager.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(null, conn, stmt, res);
         }
 
         return tasklog;
@@ -542,7 +543,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
             throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc, false);
         } finally {
             // close all db-resources
-            m_sqlManager.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(null, conn, stmt, res);
         }
         return logs;
     }
@@ -570,7 +571,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
             // close all db-resources
-            m_sqlManager.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(null, conn, stmt, res);
         }
         return result;
     }
@@ -656,7 +657,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
             throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc, false);
         } finally {
             // close all db-resources
-            m_sqlManager.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(null, conn, stmt, res);
         }
 
         return tasks;
@@ -684,7 +685,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
             // close all db-resources
-            m_sqlManager.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(null, conn, stmt, res);
         }
         return result;
     }
@@ -733,7 +734,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
         } catch (SQLException exc) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(null, conn, stmt, null);
         }
         return (readTask(task.getId()));
     }
@@ -756,7 +757,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
             } else {
                 // no user is specified so set to system user is only valid for system task log
                 // TODO: this is a workaround. not sure if this is correct
-                stmt.setString(3, m_driverManager.readUser(OpenCms.getDefaultUsers().getUserGuest(), I_CmsConstants.C_USER_TYPE_SYSTEMUSER).getId().toString());
+                stmt.setString(3, m_driverManager.readUser(null, OpenCms.getDefaultUsers().getUserGuest(), I_CmsConstants.C_USER_TYPE_SYSTEMUSER).getId().toString());
             }
             stmt.setTimestamp(4, starttime);
             stmt.setString(5, m_sqlManager.validateEmpty(comment));
@@ -766,7 +767,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
         } catch (SQLException exc) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(null, conn, stmt, null);
         }
     }
 
@@ -799,7 +800,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
             // close all db-resources
-            m_sqlManager.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(null, conn, stmt, res);
         }
     }
 
@@ -831,7 +832,15 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
             // close all db-resources
-            m_sqlManager.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(null, conn, stmt, res);
         }
     }
+    
+    /**
+     * @see org.opencms.db.I_CmsWorkflowDriver#getSqlManager()
+     */    
+    public CmsSqlManager getSqlManager() {
+        return m_sqlManager;
+    }
+    
 }

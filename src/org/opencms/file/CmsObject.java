@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/10/18 18:09:37 $
- * Version: $Revision: 1.77 $
+ * Date   : $Date: 2004/10/22 14:37:40 $
+ * Version: $Revision: 1.78 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.file;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsPublishList;
 import org.opencms.db.CmsPublishedResource;
+import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
@@ -72,7 +73,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.77 $
+ * @version $Revision: 1.78 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -82,31 +83,28 @@ public class CmsObject {
     /**
      * The request context.
      */
-    private CmsRequestContext m_context;
+    protected CmsRequestContext m_context;
 
     /**
-     * The driver manager to access the cms.
+     * The security manager to access the cms.
      */
-    private CmsDriverManager m_driverManager;
+    protected CmsSecurityManager m_securityManager;
 
     /**
      * Method that can be invoked to find out all currently logged in users.
      */
-    private CmsSessionInfoManager m_sessionStorage;
+    protected CmsSessionInfoManager m_sessionStorage;
 
     /**
      * Connectes an OpenCms user context to a running database.<p>
      * 
-     * @param driverManager the driver manager to access the database
+     * @param securityManager the security manager
      * @param context the request context that contains the user authentification
      * @param sessionStorage the core session
      */
-    public CmsObject (
-        CmsDriverManager driverManager,
-        CmsRequestContext context,
-        CmsSessionInfoManager sessionStorage
-    ) {
-       init(driverManager, context, sessionStorage);
+    public CmsObject(CmsSecurityManager securityManager, CmsRequestContext context, CmsSessionInfoManager sessionStorage) {
+
+        init(securityManager, context, sessionStorage);
     }
     
     /**
@@ -129,7 +127,7 @@ public class CmsObject {
             resource.getTypeId()
         ).changeLastModifiedProjectId(
             this, 
-            m_driverManager, 
+            m_securityManager, 
             resource);
     }
 
@@ -154,7 +152,7 @@ public class CmsObject {
             resource.getTypeId()
         ).chtype(
             this, 
-            m_driverManager, 
+            m_securityManager, 
             resource,
             type);
     }
@@ -178,7 +176,7 @@ public class CmsObject {
             resource.getTypeId()
         ).chflags(
             this, 
-            m_driverManager, 
+            m_securityManager, 
             resource,
             flags);
     }
@@ -232,7 +230,7 @@ public class CmsObject {
             resource.getTypeId()
         ).copyResource(
             this, 
-            m_driverManager, 
+            m_securityManager, 
             resource, 
             destination, 
             siblingMode);
@@ -257,7 +255,7 @@ public class CmsObject {
             resource.getTypeId()
          ).copyResourceToProject(
              this, 
-             m_driverManager, 
+             m_securityManager, 
              resource);
     }
     
@@ -297,7 +295,7 @@ public class CmsObject {
         return getResourceType(type)
             .createResource(
                 this, 
-                m_driverManager, 
+                m_securityManager, 
                 resourcename,
                 contentId,
                 content, 
@@ -322,7 +320,7 @@ public class CmsObject {
         return getResourceType(type)
             .createResource(
                 this, 
-                m_driverManager, 
+                m_securityManager, 
                 resourcename,
                 content, 
                 properties);
@@ -351,7 +349,7 @@ public class CmsObject {
             resource.getTypeId()
         ).deleteResource(
             this, 
-            m_driverManager, 
+            m_securityManager, 
             resource, 
             siblingMode);
     }      
@@ -370,7 +368,7 @@ public class CmsObject {
      */
     public String getLostAndFoundName(String resourcename) throws CmsException {
         
-        return m_driverManager.moveToLostAndFound(
+        return m_securityManager.moveToLostAndFound(
             m_context, 
             resourcename, 
             true);
@@ -402,7 +400,7 @@ public class CmsObject {
             resource.getTypeId()
         ).importResource(
             this, 
-            m_driverManager, 
+            m_securityManager, 
             resourcename, 
             resource,
             content, 
@@ -446,7 +444,7 @@ public class CmsObject {
             resource.getTypeId()
         ).lockResource(
             this, 
-            m_driverManager, 
+            m_securityManager, 
             resource, 
             mode);
     }     
@@ -473,7 +471,7 @@ public class CmsObject {
             resource.getTypeId()
         ).moveResource(
             this, 
-            m_driverManager, 
+            m_securityManager, 
             resource, 
             destination);     
     }
@@ -497,7 +495,7 @@ public class CmsObject {
      */
     public String moveToLostAndFound(String resourcename) throws CmsException {
         
-        return m_driverManager.moveToLostAndFound(
+        return m_securityManager.moveToLostAndFound(
             m_context, 
             resourcename, 
             false);
@@ -536,7 +534,7 @@ public class CmsObject {
             resource.getTypeId()
         ).replaceResource(
             this, 
-            m_driverManager, 
+            m_securityManager, 
             resource,
             type, 
             content, 
@@ -558,7 +556,7 @@ public class CmsObject {
             resource.getTypeId()
         ).restoreResourceBackup(
             this, 
-            m_driverManager, 
+            m_securityManager, 
             resource, 
             tag);
     }    
@@ -585,7 +583,7 @@ public class CmsObject {
             resource.getTypeId()
         ).touch(
             this, 
-            m_driverManager, 
+            m_securityManager, 
             resource, 
             dateLastModified, 
             dateReleased, 
@@ -626,7 +624,7 @@ public class CmsObject {
             resource.getTypeId()
         ).undoChanges(
             this, 
-            m_driverManager, 
+            m_securityManager, 
             resource, 
             recursive);     
     }    
@@ -645,7 +643,7 @@ public class CmsObject {
             resource.getTypeId()
         ).unlockResource(
             this, 
-            m_driverManager, 
+            m_securityManager, 
             resource);
     }
     
@@ -671,7 +669,7 @@ public class CmsObject {
             resource.getTypeId()
         ).writeFile(
             this, 
-            m_driverManager, 
+            m_securityManager, 
             resource);
     }    
     
@@ -691,7 +689,7 @@ public class CmsObject {
             resource.getTypeId()
         ).createSibling(
             this, 
-            m_driverManager, 
+            m_securityManager, 
             resource, 
             destination,
             properties);  
@@ -714,7 +712,7 @@ public class CmsObject {
             resource.getTypeId()
         ).changeLock(
             this, 
-            m_driverManager, 
+            m_securityManager, 
             resource);
     }    
     
@@ -733,7 +731,7 @@ public class CmsObject {
             resource.getTypeId()
         ).writePropertyObject(
             this, 
-            m_driverManager, 
+            m_securityManager, 
             resource, 
             property);
     }    
@@ -757,7 +755,7 @@ public class CmsObject {
             resource.getTypeId()
         ).writePropertyObjects(
             this, 
-            m_driverManager, 
+            m_securityManager, 
             resource, 
             properties);
     }    
@@ -779,7 +777,7 @@ public class CmsObject {
      */
     public List getResourcesInFolder(String resourcename, CmsResourceFilter filter) throws CmsException {
         
-        return m_driverManager.readChildResources(
+        return m_securityManager.readChildResources(
             m_context, 
             readResource(resourcename, CmsResourceFilter.ALL), 
             filter, 
@@ -823,7 +821,7 @@ public class CmsObject {
      */
     public List getFilesInFolder(String resourcename, CmsResourceFilter filter) throws CmsException {
         
-        return m_driverManager.readChildResources(
+        return m_securityManager.readChildResources(
             m_context, 
             readResource(resourcename, CmsResourceFilter.ALL), 
             filter, 
@@ -866,7 +864,7 @@ public class CmsObject {
      */
     public List getSubFolders(String resourcename, CmsResourceFilter filter) throws CmsException {
         
-        return m_driverManager.readChildResources(
+        return m_securityManager.readChildResources(
             m_context, 
             readResource(resourcename, CmsResourceFilter.ALL), 
             filter, 
@@ -877,17 +875,17 @@ public class CmsObject {
     /**
      * Initializes this CmsObject with the provided user context and database connection.<p>
      * 
-     * @param driverManager the driver manager to access the database
+     * @param securityManager the security manager
      * @param context the request context that contains the user authentification
      * @param sessionStorage the core session
      */
     private void init(
-            CmsDriverManager driverManager,
-            CmsRequestContext context,
-            CmsSessionInfoManager sessionStorage
-    ) {
+        CmsSecurityManager securityManager,
+        CmsRequestContext context,
+        CmsSessionInfoManager sessionStorage) {
+
         m_sessionStorage = sessionStorage;
-        m_driverManager = driverManager;
+        m_securityManager = securityManager;
         m_context = context;
     }
     
@@ -906,7 +904,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */    
     public CmsProperty readPropertyObject(String resourcename, String propertydefinition, boolean search) throws CmsException {
-        return m_driverManager.readPropertyObject(m_context, m_context.addSiteRoot(resourcename), m_context.getAdjustedSiteRoot(resourcename), propertydefinition, search);
+        return m_securityManager.readPropertyObject(m_context, m_context.addSiteRoot(resourcename), m_context.getAdjustedSiteRoot(resourcename), propertydefinition, search);
     }
     
     /**
@@ -931,7 +929,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */    
     public List readPropertyObjects(String resourcename, boolean search) throws CmsException {
-        return m_driverManager.readPropertyObjects(m_context, addSiteRoot(resourcename), m_context.getAdjustedSiteRoot(resourcename), search);
+        return m_securityManager.readPropertyObjects(m_context, addSiteRoot(resourcename), m_context.getAdjustedSiteRoot(resourcename), search);
     }
     
     
@@ -958,7 +956,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public CmsLock getLock(CmsResource resource) throws CmsException {
-        return m_driverManager.getLock(m_context, resource);
+        return m_securityManager.getLock(m_context, resource);
     }    
     
     /**
@@ -971,7 +969,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public CmsLock getLock(String resourcename) throws CmsException {
-        return m_driverManager.getLock(m_context, m_context.addSiteRoot(resourcename));
+        return m_securityManager.getLock(m_context, m_context.addSiteRoot(resourcename));
     }      
     
     /**
@@ -1048,7 +1046,7 @@ public class CmsObject {
      */
     public CmsFile readFile(String resourcename, CmsResourceFilter filter) throws CmsException {
 
-        return m_driverManager.readFile(m_context, addSiteRoot(resourcename), filter);
+        return m_securityManager.readFile(m_context, addSiteRoot(resourcename), filter);
     }    
     
     /**
@@ -1107,7 +1105,7 @@ public class CmsObject {
      */
     public CmsResource readResource(String resourcename, CmsResourceFilter filter) throws CmsException {
 
-        return m_driverManager.readResource(m_context, 
+        return m_securityManager.readResource(m_context, 
             addSiteRoot(resourcename), filter);
     }
 
@@ -1140,7 +1138,7 @@ public class CmsObject {
      */
     public List readResources(String resourcename, CmsResourceFilter filter, boolean readTree) throws CmsException {
         
-        return m_driverManager.readResources(
+        return m_securityManager.readResources(
             m_context,
             readResource(resourcename, CmsResourceFilter.ALL),
             filter,
@@ -1186,7 +1184,7 @@ public class CmsObject {
      */
     public CmsFolder readFolder(String resourcename, CmsResourceFilter filter) throws CmsException {
 
-        return m_driverManager.readFolder(m_context, addSiteRoot(resourcename), filter);
+        return m_securityManager.readFolder(m_context, addSiteRoot(resourcename), filter);
     }
     
     /**
@@ -1229,7 +1227,7 @@ public class CmsObject {
      */
     public List readProjectView(int projectId, int state) throws CmsException {
         
-        return m_driverManager.readProjectView(m_context, projectId, state);
+        return m_securityManager.readProjectView(m_context, projectId, state);
     }
     
     /**
@@ -1245,7 +1243,7 @@ public class CmsObject {
      */
     public boolean isInsideCurrentProject(String resourcename) {
         
-        return m_driverManager.isInsideCurrentProject(m_context, addSiteRoot(resourcename));
+        return m_securityManager.isInsideCurrentProject(m_context, addSiteRoot(resourcename));
     }      
     
     
@@ -1259,7 +1257,7 @@ public class CmsObject {
      */
     public boolean isAdmin() {
         
-        return m_driverManager.isAdmin(m_context);
+        return m_securityManager.isAdmin(m_context);
     }    
     
     /**
@@ -1274,7 +1272,7 @@ public class CmsObject {
      */
     public boolean isManagerOfProject() {
         
-        return m_driverManager.isManagerOfProject(m_context);
+        return m_securityManager.isManagerOfProject(m_context);
     }
     
     /**
@@ -1289,7 +1287,7 @@ public class CmsObject {
      */    
     public boolean isProjectManager() {
         
-        return m_driverManager.isProjectManager(m_context);
+        return m_securityManager.isProjectManager(m_context);
     }    
         
 
@@ -1331,7 +1329,7 @@ public class CmsObject {
             acEntry.setFlags(I_CmsConstants.C_ACCESSFLAGS_USER);
         }
 
-        m_driverManager.writeAccessControlEntry(m_context, res, acEntry);
+        m_securityManager.writeAccessControlEntry(m_context, res, acEntry);
     }
 
     /**
@@ -1358,7 +1356,7 @@ public class CmsObject {
             acEntry.setFlags(I_CmsConstants.C_ACCESSFLAGS_USER);
         }
 
-        m_driverManager.writeAccessControlEntry(m_context, res, acEntry);
+        m_securityManager.writeAccessControlEntry(m_context, res, acEntry);
     }    
     
 
@@ -1372,7 +1370,7 @@ public class CmsObject {
     public void cpacc(String sourceName, String destName) throws CmsException {
         CmsResource source = readResource(sourceName);
         CmsResource dest = readResource(destName);
-        m_driverManager.copyAccessControlEntries(m_context, source, dest);
+        m_securityManager.copyAccessControlEntries(m_context, source, dest);
     }    
     
     
@@ -1397,7 +1395,7 @@ public class CmsObject {
      */
     public Vector getAccessControlEntries(String resourceName, boolean getInherited) throws CmsException {
         CmsResource res = readResource(resourceName, CmsResourceFilter.ALL);
-        return m_driverManager.getAccessControlEntries(m_context, res, getInherited);
+        return m_securityManager.getAccessControlEntries(m_context, res, getInherited);
     }
 
     /**
@@ -1421,7 +1419,7 @@ public class CmsObject {
      */
     public CmsAccessControlList getAccessControlList(String resourceName, boolean inheritedOnly) throws CmsException {
         CmsResource res = readResource(resourceName, CmsResourceFilter.ALL);
-        return m_driverManager.getAccessControlList(m_context, res, inheritedOnly);
+        return m_securityManager.getAccessControlList(m_context, res, inheritedOnly);
     }    
     
 
@@ -1437,7 +1435,7 @@ public class CmsObject {
         CmsResource resource = readResource(resourceName, CmsResourceFilter.ALL);
         CmsUser user = m_context.currentUser();
 
-        return m_driverManager.getPermissions(m_context, resource, user);
+        return m_securityManager.getPermissions(m_context, resource, user);
     }
 
     /**
@@ -1463,7 +1461,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public boolean hasPermissions(CmsResource resource, CmsPermissionSet requiredPermissions) throws CmsException {
-        return  CmsDriverManager.PERM_ALLOWED == m_driverManager.hasPermissions(m_context, resource, requiredPermissions, true, CmsResourceFilter.ALL);
+        return  CmsDriverManager.PERM_ALLOWED == m_securityManager.hasPermissions(m_context, resource, requiredPermissions, true, CmsResourceFilter.ALL);
     }
     
     /**
@@ -1480,7 +1478,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public boolean hasPermissions(CmsResource resource, CmsPermissionSet requiredPermissions, boolean checkLock, CmsResourceFilter filter) throws CmsException {
-        return CmsDriverManager.PERM_ALLOWED == m_driverManager.hasPermissions(m_context, resource, requiredPermissions, checkLock, filter);
+        return CmsDriverManager.PERM_ALLOWED == m_securityManager.hasPermissions(m_context, resource, requiredPermissions, checkLock, filter);
     }    
     
 
@@ -1491,7 +1489,7 @@ public class CmsObject {
      * @return the user or group with the given UUID
      */
     public I_CmsPrincipal lookupPrincipal(CmsUUID principalId) {
-        return m_driverManager.lookupPrincipal(principalId);
+        return m_securityManager.lookupPrincipal(principalId);
     }
 
     /**
@@ -1501,7 +1499,7 @@ public class CmsObject {
      * @return the user or group with the given name
      */
     public I_CmsPrincipal lookupPrincipal(String principalName) {
-        return m_driverManager.lookupPrincipal(principalName);
+        return m_securityManager.lookupPrincipal(principalName);
     }    
     
 
@@ -1513,7 +1511,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public void importAccessControlEntries(CmsResource resource, Vector acEntries) throws CmsException {
-        m_driverManager.importAccessControlEntries(m_context, resource, acEntries);
+        m_securityManager.importAccessControlEntries(m_context, resource, acEntries);
     }    
 
     /**
@@ -1535,7 +1533,7 @@ public class CmsObject {
             principal = readUser(principalName);
         }
 
-        m_driverManager.removeAccessControlEntry(m_context, res, principal.getId());
+        m_securityManager.removeAccessControlEntry(m_context, res, principal.getId());
     }    
     
 
@@ -1564,7 +1562,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
    public List readProjectLogs(int projectId) throws CmsException {
-       return m_driverManager.readProjectLogs(projectId);
+       return m_securityManager.readProjectLogs(projectId);
    }
           
 
@@ -1586,7 +1584,7 @@ public class CmsObject {
       * @throws CmsException if something goes wrong
       */
     public CmsTask createTask(int projectid, String agentName, String roleName, String taskname, String taskcomment, int tasktype, long timeout, int priority) throws CmsException {
-        return m_driverManager.createTask(m_context.currentUser(), projectid, agentName, roleName, taskname, taskcomment, tasktype, timeout, priority);
+        return m_securityManager.createTask(m_context.currentUser(), projectid, agentName, roleName, taskname, taskcomment, tasktype, timeout, priority);
     }
 
     /**
@@ -1604,7 +1602,7 @@ public class CmsObject {
       * @throws CmsException if something goes wrong
       */
     public CmsTask createTask(String agentName, String roleName, String taskname, long timeout, int priority) throws CmsException {
-        return (m_driverManager.createTask(m_context, agentName, roleName, taskname, timeout, priority));
+        return (m_securityManager.createTask(m_context, agentName, roleName, taskname, timeout, priority));
     }
     
     
@@ -1617,7 +1615,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public void acceptTask(int taskId) throws CmsException {
-        m_driverManager.acceptTask(m_context, taskId);
+        m_securityManager.acceptTask(m_context, taskId);
     }
     
     
@@ -1630,7 +1628,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public void reaktivateTask(int taskId) throws CmsException {
-        m_driverManager.reaktivateTask(m_context, taskId);
+        m_securityManager.reactivateTask(m_context, taskId);
     }
     
 
@@ -1642,7 +1640,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public void setPriority(int taskId, int priority) throws CmsException {
-        m_driverManager.setPriority(m_context, taskId, priority);
+        m_securityManager.setPriority(m_context, taskId, priority);
     }
     
     /**
@@ -1654,7 +1652,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public void setTaskPar(int taskid, String parname, String parvalue) throws CmsException {
-        m_driverManager.setTaskPar(taskid, parname, parvalue);
+        m_securityManager.setTaskPar(taskid, parname, parvalue);
     }
 
     /**
@@ -1665,7 +1663,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public void setTimeout(int taskId, long timeout) throws CmsException {
-        m_driverManager.setTimeout(m_context, taskId, timeout);
+        m_securityManager.setTimeout(m_context, taskId, timeout);
     }
     
 
@@ -1678,7 +1676,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public void writeTaskLog(int taskid, String comment) throws CmsException {
-        m_driverManager.writeTaskLog(m_context, taskid, comment);
+        m_securityManager.writeTaskLog(m_context, taskid, comment);
     }
 
     /**
@@ -1690,7 +1688,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public void writeTaskLog(int taskId, String comment, int taskType) throws CmsException {
-        m_driverManager.writeTaskLog(m_context, taskId, comment, taskType);
+        m_securityManager.writeTaskLog(m_context, taskId, comment, taskType);
     }        
     
     
@@ -1703,7 +1701,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public CmsTask readTask(int id) throws CmsException {
-        return (m_driverManager.readTask(id));
+        return (m_securityManager.readTask(id));
     }
 
     /**
@@ -1714,7 +1712,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public Vector readTaskLogs(int taskid) throws CmsException {
-        return m_driverManager.readTaskLogs(taskid);
+        return m_securityManager.readTaskLogs(taskid);
     }
 
     /**
@@ -1729,7 +1727,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public Vector readTasksForProject(int projectId, int tasktype, String orderBy, String sort) throws CmsException {
-        return (m_driverManager.readTasksForProject(projectId, tasktype, orderBy, sort));
+        return (m_securityManager.readTasksForProject(projectId, tasktype, orderBy, sort));
     }
 
     /**
@@ -1745,7 +1743,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public Vector readTasksForRole(int projectId, String roleName, int tasktype, String orderBy, String sort) throws CmsException {
-        return (m_driverManager.readTasksForRole(projectId, roleName, tasktype, orderBy, sort));
+        return (m_securityManager.readTasksForRole(projectId, roleName, tasktype, orderBy, sort));
     }
 
     /**
@@ -1761,7 +1759,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public Vector readTasksForUser(int projectId, String userName, int tasktype, String orderBy, String sort) throws CmsException {
-        return (m_driverManager.readTasksForUser(projectId, userName, tasktype, orderBy, sort));
+        return (m_securityManager.readTasksForUser(projectId, userName, tasktype, orderBy, sort));
     }
     
     /**
@@ -1772,7 +1770,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public CmsUser readOriginalAgent(CmsTask task) throws CmsException {
-        return m_driverManager.readOriginalAgent(task);
+        return m_securityManager.readOriginalAgent(task);
     }
     
     /**
@@ -1783,7 +1781,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public CmsUser readOwner(CmsProject project) throws CmsException {
-        return m_driverManager.readOwner(project);
+        return m_securityManager.readOwner(project);
     }
 
     /**
@@ -1794,7 +1792,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public CmsUser readOwner(CmsTask task) throws CmsException {
-        return m_driverManager.readOwner(task);
+        return m_securityManager.readOwner(task);
     }
 
     /**
@@ -1805,7 +1803,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public CmsUser readOwner(CmsTaskLog log) throws CmsException {
-        return m_driverManager.readOwner(log);
+        return m_securityManager.readOwner(log);
     }    
     
     /**
@@ -1816,7 +1814,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public void endTask(int taskid) throws CmsException {
-        m_driverManager.endTask(m_context, taskid);
+        m_securityManager.endTask(m_context, taskid);
     }
 
     /**
@@ -1829,7 +1827,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public void forwardTask(int taskid, String newRoleName, String newUserName) throws CmsException {
-        m_driverManager.forwardTask(m_context, taskid, newRoleName, newUserName);
+        m_securityManager.forwardTask(m_context, taskid, newRoleName, newUserName);
     }
     
 
@@ -1842,7 +1840,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public String getTaskPar(int taskid, String parname) throws CmsException {
-        return (m_driverManager.getTaskPar(taskid, parname));
+        return (m_securityManager.getTaskPar(taskid, parname));
     }
 
     /**
@@ -1853,7 +1851,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public int getTaskType(String taskname) throws CmsException {
-        return m_driverManager.getTaskType(taskname);
+        return m_securityManager.getTaskType(taskname);
     }
 
     /**
@@ -1864,7 +1862,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public CmsUser readAgent(CmsTask task) throws CmsException {
-        return (m_driverManager.readAgent(task));
+        return (m_securityManager.readAgent(task));
     }    
     
 
@@ -1881,7 +1879,7 @@ public class CmsObject {
       * @throws CmsException if operation was not successful.
       */
     public Vector readGivenTasks(int projectId, String ownerName, int taskType, String orderBy, String sort) throws CmsException {
-        return (m_driverManager.readGivenTasks(projectId, ownerName, taskType, orderBy, sort));
+        return (m_securityManager.readGivenTasks(projectId, ownerName, taskType, orderBy, sort));
     }        
     
     /**
@@ -1892,7 +1890,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public void setName(int taskId, String name) throws CmsException {
-        m_driverManager.setName(m_context, taskId, name);
+        m_securityManager.setName(m_context, taskId, name);
     }    
     
     //-----------------------------------------------------------------------------------
@@ -1908,12 +1906,12 @@ public class CmsObject {
      */
     public void importFolder(String importFile, String importPath) throws CmsException {
         
-        m_driverManager.clearcache();
+        m_securityManager.clearcache();
         
         // import the resources
-        m_driverManager.importFolder(this, m_context, importFile, importPath);
+        m_securityManager.importFolder(this, m_context, importFile, importPath);
         
-        m_driverManager.clearcache();
+        m_securityManager.clearcache();
     }
         
     /**
@@ -1923,7 +1921,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public String readStaticExportPublishedResourceParameters(String rfsName) throws CmsException {
-        return  m_driverManager.readStaticExportPublishedResourceParameters(m_context, rfsName);
+        return  m_securityManager.readStaticExportPublishedResourceParameters(m_context, rfsName);
     }
 
     /**
@@ -1935,7 +1933,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public List readStaticExportResources(int parameterResources, long timestamp) throws CmsException {
-        return m_driverManager.readStaticExportResources(m_context, parameterResources, timestamp);
+        return m_securityManager.readStaticExportResources(m_context, parameterResources, timestamp);
     }
     
     /**
@@ -1944,7 +1942,7 @@ public class CmsObject {
      * @return the configurations of the properties file.
      */
     public ExtendedProperties getConfigurations() {
-        return m_driverManager.getConfigurations();
+        return m_securityManager.getConfigurations();
     }      
 
     /**
@@ -1974,7 +1972,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public void deleteAllStaticExportPublishedResources(int linkType) throws CmsException {
-        m_driverManager.deleteAllStaticExportPublishedResources(m_context, linkType);
+        m_securityManager.deleteAllStaticExportPublishedResources(m_context, linkType);
     }
     
     /**
@@ -1986,7 +1984,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public void deleteStaticExportPublishedResource(String resourceName, int linkType, String linkParameter) throws CmsException {
-        m_driverManager.deleteStaticExportPublishedResource(m_context, resourceName, linkType, linkParameter);
+        m_securityManager.deleteStaticExportPublishedResource(m_context, resourceName, linkType, linkParameter);
     }
 
     /**
@@ -1997,7 +1995,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public String digest(String value) throws CmsException {
-        return m_driverManager.digest(value);
+        return m_securityManager.digest(value);
     }
         
     /**
@@ -2015,7 +2013,7 @@ public class CmsObject {
      * @see org.opencms.validation.I_CmsHtmlLinkValidatable
      */    
     public Map validateHtmlLinks(CmsPublishList publishList, I_CmsReport report) throws Exception {       
-        return m_driverManager.validateHtmlLinks(this, publishList, report);  
+        return m_securityManager.validateHtmlLinks(this, publishList, report);  
     }
 
     /**
@@ -2029,7 +2027,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public void writeStaticExportPublishedResource(String resourceName, int linkType, String linkParameter, long timestamp) throws CmsException {
-        m_driverManager.writeStaticExportPublishedResource(m_context, resourceName, linkType, linkParameter, timestamp);
+        m_securityManager.writeStaticExportPublishedResource(m_context, resourceName, linkType, linkParameter, timestamp);
     }
     
     /**
@@ -2168,7 +2166,7 @@ public class CmsObject {
      * @deprecated use {@link #readPropertyObjects(String, boolean)} instead
      */
     public Map readProperties(String resource) throws CmsException {
-        List properties = m_driverManager.readPropertyObjects(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), false);
+        List properties = m_securityManager.readPropertyObjects(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), false);
         return CmsProperty.toMap(properties);
     }
 
@@ -2183,7 +2181,7 @@ public class CmsObject {
      * @deprecated use {@link #readPropertyObjects(String, boolean)} instead
      */
     public Map readProperties(String resource, boolean search) throws CmsException {
-        List properties = m_driverManager.readPropertyObjects(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), search);
+        List properties = m_securityManager.readPropertyObjects(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), search);
         return CmsProperty.toMap(properties);
     }
 
@@ -2198,7 +2196,7 @@ public class CmsObject {
      * @deprecated use new Object based methods
      */
     public String readProperty(String resource, String property) throws CmsException {
-        CmsProperty value = m_driverManager.readPropertyObject(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), property, false);
+        CmsProperty value = m_securityManager.readPropertyObject(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), property, false);
         return value.isNullProperty() ? null : value.getValue();
     }
 
@@ -2215,7 +2213,7 @@ public class CmsObject {
      * @deprecated use new Object based methods
      */
     public String readProperty(String resource, String property, boolean search) throws CmsException {
-        CmsProperty value = m_driverManager.readPropertyObject(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), property, search);
+        CmsProperty value = m_securityManager.readPropertyObject(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), property, search);
         return value.isNullProperty() ? null : value.getValue();
     }
 
@@ -2234,7 +2232,7 @@ public class CmsObject {
      * @deprecated use new Object based methods
      */
     public String readProperty(String resource, String property, boolean search, String propertyDefault) throws CmsException {
-        CmsProperty value = m_driverManager.readPropertyObject(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), property, search);
+        CmsProperty value = m_securityManager.readPropertyObject(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), property, search);
         return value.isNullProperty() ? propertyDefault : value.getValue();
     }    
     
@@ -2267,7 +2265,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public CmsUser addImportUser(String id, String name, String password, String description, String firstname, String lastname, String email, int flags, Hashtable additionalInfos, String address, int type) throws CmsException {
-        return m_driverManager.addImportUser(m_context, id, name, password, description, firstname, lastname, email, flags, additionalInfos, address, type);
+        return m_securityManager.addImportUser(m_context, id, name, password, description, firstname, lastname, email, flags, additionalInfos, address, type);
     }
     
     /**
@@ -2278,7 +2276,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public CmsGroup getParent(String groupname) throws CmsException {
-        return (m_driverManager.getParent(groupname));
+        return (m_securityManager.getParent(groupname));
     }  
     
     /**
@@ -2296,7 +2294,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public CmsUser addUser(String name, String password, String group, String description, Hashtable additionalInfos) throws CmsException {
-        return m_driverManager.addUser(m_context, name, password, group, description, additionalInfos);
+        return m_securityManager.addUser(m_context, name, password, group, description, additionalInfos);
     }
 
     /**
@@ -2310,7 +2308,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public void addUserToGroup(String username, String groupname) throws CmsException {
-        m_driverManager.addUserToGroup(m_context, username, groupname);
+        m_securityManager.addUserToGroup(m_context, username, groupname);
     }
 
     /**
@@ -2330,7 +2328,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public CmsUser addWebUser(String name, String password, String group, String description, Hashtable additionalInfos) throws CmsException {
-        return m_driverManager.addWebUser(name, password, group, description, additionalInfos);
+        return m_securityManager.addWebUser(name, password, group, description, additionalInfos);
     }
     
     /**
@@ -2349,7 +2347,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public CmsGroup createGroup(String name, String description, int flags, String parent) throws CmsException {
-        return m_driverManager.createGroup(m_context, name, description, flags, parent);
+        return m_securityManager.createGroup(m_context, name, description, flags, parent);
     }
 
     /**
@@ -2360,7 +2358,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public void changeUserType(CmsUUID userId, int userType) throws CmsException {
-        m_driverManager.changeUserType(m_context, userId, userType);
+        m_securityManager.changeUserType(m_context, userId, userType);
     }
 
     /**
@@ -2371,7 +2369,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public void changeUserType(String username, int userType) throws CmsException {
-        m_driverManager.changeUserType(m_context, username, userType);
+        m_securityManager.changeUserType(m_context, username, userType);
     }    
     
     /**
@@ -2385,7 +2383,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public void writeUser(CmsUser user) throws CmsException {
-        m_driverManager.writeUser(m_context, user);
+        m_securityManager.writeUser(m_context, user);
     }
 
     /**
@@ -2398,7 +2396,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public void writeWebUser(CmsUser user) throws CmsException {
-        m_driverManager.writeWebUser(user);
+        m_securityManager.writeWebUser(user);
     }    
     
     /**
@@ -2412,7 +2410,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public void deleteUser(CmsUUID userId) throws CmsException {
-        m_driverManager.deleteUser(m_context, userId);
+        m_securityManager.deleteUser(m_context, userId);
     }
 
     /**
@@ -2426,7 +2424,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public void deleteUser(String username) throws CmsException {
-        m_driverManager.deleteUser(m_context, username);
+        m_securityManager.deleteUser(m_context, username);
     }
 
     /**
@@ -2437,7 +2435,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public void deleteWebUser(CmsUUID userId) throws CmsException {
-        m_driverManager.deleteWebUser(userId);
+        m_securityManager.deleteWebUser(userId);
     }
     
     /**
@@ -2447,7 +2445,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public Vector getUsers() throws CmsException {
-        return (m_driverManager.getUsers(m_context));
+        return (m_securityManager.getUsers(m_context));
     }
     
     /**
@@ -2458,7 +2456,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public CmsUser readUser(CmsUUID userId) throws CmsException {
-        return m_driverManager.readUser(userId);
+        return m_securityManager.readUser(userId);
     }
 
     /**
@@ -2469,7 +2467,7 @@ public class CmsObject {
      * @throws CmsException if somthing goes wrong
      */
     public CmsUser readUser(String username) throws CmsException {
-        return m_driverManager.readUser(username);
+        return m_securityManager.readUser(username);
     }
 
     /**
@@ -2482,7 +2480,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful
      */
     public CmsUser readUser(String username, int type) throws CmsException {
-        return (m_driverManager.readUser(username, type));
+        return (m_securityManager.readUser(username, type));
     }
 
     /**
@@ -2495,7 +2493,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful
      */
     public CmsUser readUser(String username, String password) throws CmsException {
-        return (m_driverManager.readUser(username, password));
+        return (m_securityManager.readUser(username, password));
     }
 
     /**
@@ -2510,7 +2508,7 @@ public class CmsObject {
      * @throws CmsException  Throws CmsException if operation was not succesful
     */
     public CmsUser readWebUser(String username) throws CmsException {
-        return (m_driverManager.readWebUser(username));
+        return (m_securityManager.readWebUser(username));
     }
 
     /**
@@ -2526,7 +2524,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public CmsUser readWebUser(String username, String password) throws CmsException {
-        return (m_driverManager.readWebUser(username, password));
+        return (m_securityManager.readWebUser(username, password));
     }    
     
 
@@ -2538,7 +2536,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public Vector getChild(String groupname) throws CmsException {
-        return (m_driverManager.getChild(m_context, groupname));
+        return (m_securityManager.getChild(m_context, groupname));
     }
 
     /**
@@ -2551,7 +2549,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public Vector getChilds(String groupname) throws CmsException {
-        return (m_driverManager.getChilds(m_context, groupname));
+        return (m_securityManager.getChilds(m_context, groupname));
     }    
     
     /**
@@ -2564,7 +2562,7 @@ public class CmsObject {
      * @throws CmsException  if operation was not successful.
      */
     public void deleteGroup(String delgroup) throws CmsException {
-        m_driverManager.deleteGroup(m_context, delgroup);
+        m_securityManager.deleteGroup(m_context, delgroup);
     }
     
     /**
@@ -2576,7 +2574,7 @@ public class CmsObject {
      * @throws CmsException  if operation was not successfull.
      */
     public void setParentGroup(String groupName, String parentGroupName) throws CmsException {
-        m_driverManager.setParentGroup(m_context, groupName, parentGroupName);
+        m_securityManager.setParentGroup(m_context, groupName, parentGroupName);
     }
 
     /**
@@ -2588,7 +2586,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public void setPassword(String username, String newPassword) throws CmsException {
-        m_driverManager.setPassword(m_context, username, newPassword);
+        m_securityManager.setPassword(m_context, username, newPassword);
     }
 
     /**
@@ -2600,7 +2598,7 @@ public class CmsObject {
      * @throws CmsException if the user data could not be read from the database
      */
     public void setPassword(String username, String oldPassword, String newPassword) throws CmsException {
-        m_driverManager.resetPassword(username, oldPassword, newPassword);
+        m_securityManager.resetPassword(username, oldPassword, newPassword);
     }
 
     /**
@@ -2613,7 +2611,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful
      */
     public boolean userInGroup(String username, String groupname) throws CmsException {
-        return (m_driverManager.userInGroup(m_context, username, groupname));
+        return (m_securityManager.userInGroup(m_context, username, groupname));
     }
     
     /**
@@ -2623,7 +2621,7 @@ public class CmsObject {
      * @throws CmsException  if operation was not successful.
      */
     public void writeGroup(CmsGroup group) throws CmsException {
-        m_driverManager.writeGroup(m_context, group);
+        m_securityManager.writeGroup(m_context, group);
     }     
         
     /**
@@ -2637,7 +2635,7 @@ public class CmsObject {
      * @throws CmsSecurityException if the password is not valid
      */    
     public void validatePassword(String password) throws CmsSecurityException {
-        m_driverManager.validatePassword(password);
+        m_securityManager.validatePassword(password);
     }           
     
     /**
@@ -2647,7 +2645,7 @@ public class CmsObject {
      * @return the group of the given project
      */
     public CmsGroup readGroup(CmsProject project) {
-        return m_driverManager.readGroup(project);
+        return m_securityManager.readGroup(project);
     }
 
     /**
@@ -2658,7 +2656,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public CmsGroup readGroup(CmsTask task) throws CmsException {
-        return m_driverManager.readGroup(task);
+        return m_securityManager.readGroup(task);
     }
 
     /**
@@ -2669,7 +2667,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public CmsGroup readGroup(CmsUUID groupId) throws CmsException {
-        return m_driverManager.readGroup(groupId);
+        return m_securityManager.readGroup(groupId);
     }
 
     /**
@@ -2679,7 +2677,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public CmsGroup readGroup(String groupName) throws CmsException {
-        return (m_driverManager.readGroup(groupName));
+        return (m_securityManager.readGroup(groupName));
     }
     
     /**
@@ -2690,7 +2688,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public Vector getUsers(int type) throws CmsException {
-        return (m_driverManager.getUsers(m_context, type));
+        return (m_securityManager.getUsers(m_context, type));
     }
 
     /**
@@ -2702,7 +2700,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public Vector getUsersOfGroup(String groupname) throws CmsException {
-        return (m_driverManager.getUsersOfGroup(m_context, groupname));
+        return (m_securityManager.getUsersOfGroup(m_context, groupname));
     }
     
 
@@ -2713,7 +2711,7 @@ public class CmsObject {
      * @return the managergroup of the project
      */
     public CmsGroup readManagerGroup(CmsProject project) {
-        return m_driverManager.readManagerGroup(project);
+        return m_securityManager.readManagerGroup(project);
     }
 
     /**
@@ -2728,7 +2726,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public void removeUserFromGroup(String username, String groupname) throws CmsException {
-        m_driverManager.removeUserFromGroup(m_context, username, groupname);
+        m_securityManager.removeUserFromGroup(m_context, username, groupname);
     }    
 
     /**
@@ -2740,7 +2738,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public Vector getDirectGroupsOfUser(String username) throws CmsException {
-        return (m_driverManager.getDirectGroupsOfUser(m_context, username));
+        return (m_securityManager.getDirectGroupsOfUser(m_context, username));
     }
     
     /**
@@ -2751,7 +2749,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful
      */
     public Vector getGroups() throws CmsException {
-        return (m_driverManager.getGroups(m_context));
+        return (m_securityManager.getGroups(m_context));
     }
 
     /**
@@ -2762,7 +2760,7 @@ public class CmsObject {
      * @throws CmsException if operation was not succesful.
      */
     public Vector getGroupsOfUser(String username) throws CmsException {
-        return m_driverManager.getGroupsOfUser(m_context, username);
+        return m_securityManager.getGroupsOfUser(m_context, username);
     }
     
     /**
@@ -2774,7 +2772,7 @@ public class CmsObject {
      * @throws CmsException if operation was not succesful.
      */
     public Vector getGroupsOfUser(String username, String remoteAddress) throws CmsException {
-        return m_driverManager.getGroupsOfUser(m_context, username, remoteAddress);
+        return m_securityManager.getGroupsOfUser(m_context, username, remoteAddress);
     }       
 
     /**
@@ -2817,11 +2815,11 @@ public class CmsObject {
      */    
     public String loginUser(String username, String password, String remoteAddress, int type) throws CmsSecurityException {    
         // login the user
-        CmsUser newUser = m_driverManager.loginUser(username, password, remoteAddress, type);
+        CmsUser newUser = m_securityManager.loginUser(username, password, remoteAddress, type);
         // set the project back to the "Online" project
         CmsProject newProject;
         try {
-            newProject = m_driverManager.readProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
+            newProject = m_securityManager.readProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
         } catch (CmsException e) {
             // should not happen since the online project is always available
             throw new CmsSecurityException(CmsSecurityException.C_SECURITY_LOGIN_FAILED, e);
@@ -2829,7 +2827,7 @@ public class CmsObject {
         // switch the cms context to the new user and project
         m_context.switchUser(newUser, newProject);
         // init this CmsObject with the new user
-        init(m_driverManager, m_context, m_sessionStorage);
+        init(m_securityManager, m_context, m_sessionStorage);
         // fire a login event
         this.fireEvent(org.opencms.main.I_CmsEventListener.EVENT_LOGIN_USER, newUser);
         // return the users login name
@@ -2865,7 +2863,7 @@ public class CmsObject {
         int todo = 0;
         // TODO: move COS stuff to legacy package                
         try {
-            m_driverManager.postPublishBoResource(m_context, publishedBoResource, publishId, tagId);
+            m_securityManager.postPublishBoResource(m_context, publishedBoResource, publishId, tagId);
         } catch (CmsException e) {
             if (OpenCms.getLog(this).isErrorEnabled()) {
                 OpenCms.getLog(this).error("Error writing publish history entry for COS resource " + publishedBoResource.toString(), e);
@@ -2905,9 +2903,9 @@ public class CmsObject {
      */
     public void publishProject(I_CmsReport report, CmsPublishList publishList) throws CmsException {
 
-        synchronized (m_driverManager) {            
+        synchronized (m_securityManager) {            
             try {                                
-                m_driverManager.publishProject(this, publishList, report);
+                m_securityManager.publishProject(this, publishList, report);
             } catch (CmsException e) {
                 if (OpenCms.getLog(this).isErrorEnabled()) {
                     OpenCms.getLog(this).error(e);
@@ -2970,7 +2968,7 @@ public class CmsObject {
      * @throws CmsException if operation was not succesful
      */
     public List readAllProjectResources(int projectId) throws CmsException {
-        return m_driverManager.readAllProjectResources(m_context, projectId);
+        return m_securityManager.readAllProjectResources(m_context, projectId);
     }    
     
     
@@ -2983,7 +2981,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public CmsProject readProject(CmsTask task) throws CmsException {
-        return m_driverManager.readProject(task);
+        return m_securityManager.readProject(task);
     }
 
     /**
@@ -2995,7 +2993,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public CmsProject readProject(int id) throws CmsException {
-        return m_driverManager.readProject(id);
+        return m_securityManager.readProject(id);
     }
     
     /**
@@ -3006,7 +3004,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public CmsProject readProject(String name) throws CmsException {
-        return m_driverManager.readProject(name);
+        return m_securityManager.readProject(name);
     }         
     
     /**
@@ -3017,7 +3015,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public List readProjectResources(CmsProject project) throws CmsException {
-        return m_driverManager.readProjectResources(project);
+        return m_securityManager.readProjectResources(project);
     }
     
     /**
@@ -3028,7 +3026,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public List readPublishedResources(CmsUUID publishHistoryId) throws CmsException {
-        return m_driverManager.readPublishedResources(m_context, publishHistoryId);
+        return m_securityManager.readPublishedResources(m_context, publishHistoryId);
     }
 
     /**
@@ -3039,7 +3037,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public void unlockProject(int id) throws CmsException {
-        m_driverManager.unlockProject(m_context, id);
+        m_securityManager.unlockProject(m_context, id);
     }       
 
     /**
@@ -3050,7 +3048,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public void deleteProject(int id) throws CmsException {
-        m_driverManager.deleteProject(m_context, id);
+        m_securityManager.deleteProject(m_context, id);
     }    
     
     /**
@@ -3062,7 +3060,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public boolean accessProject(int projectId) throws CmsException {
-        return (m_driverManager.accessProject(m_context, projectId));
+        return (m_securityManager.accessProject(m_context, projectId));
     }
 
     /**
@@ -3075,8 +3073,8 @@ public class CmsObject {
      * @throws CmsException Throws CmsException if operation was not succesful
      */
     public void backupProject(int projectId, int versionId, long publishDate) throws CmsException {
-        CmsProject backupProject = m_driverManager.readProject(projectId);
-        m_driverManager.backupProject(m_context, backupProject, versionId, publishDate);
+        CmsProject backupProject = m_securityManager.readProject(projectId);
+        m_securityManager.backupProject(m_context, backupProject, versionId, publishDate);
     }
 
     /**
@@ -3088,7 +3086,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public int countLockedResources(int id) throws CmsException {
-        return m_driverManager.countLockedResources(m_context, id);
+        return m_securityManager.countLockedResources(m_context, id);
     } 
 
     /**
@@ -3102,7 +3100,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public CmsProject createProject(String name, String description, String groupname, String managergroupname) throws CmsException {
-        return m_driverManager.createProject(m_context, name, description, groupname, managergroupname, I_CmsConstants.C_PROJECT_TYPE_NORMAL);
+        return m_securityManager.createProject(m_context, name, description, groupname, managergroupname, I_CmsConstants.C_PROJECT_TYPE_NORMAL);
     }
 
     /**
@@ -3117,7 +3115,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public CmsProject createProject(String name, String description, String groupname, String managergroupname, int projecttype) throws CmsException {
-        return m_driverManager.createProject(m_context, name, description, groupname, managergroupname, projecttype);
+        return m_securityManager.createProject(m_context, name, description, groupname, managergroupname, projecttype);
     }
 
     /**
@@ -3127,7 +3125,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public CmsProject createTempfileProject() throws CmsException {
-        return m_driverManager.createTempfileProject(m_context);
+        return m_securityManager.createTempfileProject(m_context);
     }
     
     /**
@@ -3138,7 +3136,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public List getAllAccessibleProjects() throws CmsException {
-        return m_driverManager.getAllAccessibleProjects(m_context);
+        return m_securityManager.getAllAccessibleProjects(m_context);
     }
 
     /**
@@ -3149,7 +3147,7 @@ public class CmsObject {
     * @throws CmsException  Throws CmsException if operation was not succesful.
     */
     public Vector getAllBackupProjects() throws CmsException {
-        return m_driverManager.getAllBackupProjects();
+        return m_securityManager.getAllBackupProjects();
     }
 
     /**
@@ -3161,7 +3159,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public List getAllManageableProjects() throws CmsException {
-        return m_driverManager.getAllManageableProjects(m_context);
+        return m_securityManager.getAllManageableProjects(m_context);
     }    
     
     
@@ -3176,7 +3174,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public CmsPublishList getPublishList(CmsResource directPublishResource, boolean directPublishSiblings, I_CmsReport report) throws CmsException {
-        return m_driverManager.getPublishList(m_context, directPublishResource, directPublishSiblings);
+        return m_securityManager.getPublishList(m_context, directPublishResource, directPublishSiblings);
     }
     
     /**
@@ -3207,7 +3205,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful
      */   
     public List readFilesByType(int projectId, int resourcetype) throws CmsException {
-        return m_driverManager.readFilesByType(m_context, projectId, resourcetype);
+        return m_securityManager.readFilesByType(m_context, projectId, resourcetype);
     }    
     
     /**
@@ -3219,7 +3217,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public List readPath(String path, CmsResourceFilter filter) throws CmsException {
-        return m_driverManager.readPath(m_context.currentProject().getId(), m_context.addSiteRoot(path), filter);
+        return m_securityManager.readPath(m_context.currentProject().getId(), m_context.addSiteRoot(path), filter);
     }        
 
     /**
@@ -3231,7 +3229,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public CmsPropertydefinition readPropertydefinition(String name) throws CmsException {
-        return (m_driverManager.readPropertydefinition(m_context, name, I_CmsConstants.C_PROPERYDEFINITION_RESOURCE));
+        return (m_securityManager.readPropertydefinition(m_context, name, I_CmsConstants.C_PROPERYDEFINITION_RESOURCE));
     }
     
     /**
@@ -3244,7 +3242,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public List readSiblings(String resourcename, CmsResourceFilter filter) throws CmsException {
-        return m_driverManager.readSiblings(m_context, addSiteRoot(resourcename), filter);
+        return m_securityManager.readSiblings(m_context, addSiteRoot(resourcename), filter);
     }
 
     /**
@@ -3256,7 +3254,7 @@ public class CmsObject {
      * if the user has not the rights to write the file header..
      */
     public void writeFileHeader(CmsFile file) throws CmsException {
-        m_driverManager.writeResource(m_context, file);
+        m_securityManager.writeResource(m_context, file);
     } 
     
     /**
@@ -3268,7 +3266,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public int countLockedResources(String foldername) throws CmsException {
-        return m_driverManager.countLockedResources(m_context, addSiteRoot(foldername));
+        return m_securityManager.countLockedResources(m_context, addSiteRoot(foldername));
     }   
     
     /**
@@ -3280,7 +3278,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public CmsPropertydefinition createPropertydefinition(String name) throws CmsException {
-        return (m_driverManager.createPropertydefinition(m_context, name, I_CmsConstants.C_PROPERYDEFINITION_RESOURCE));
+        return (m_securityManager.createPropertydefinition(m_context, name, I_CmsConstants.C_PROPERYDEFINITION_RESOURCE));
     }
 
     /**
@@ -3291,7 +3289,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public void deletePropertydefinition(String name) throws CmsException {
-        m_driverManager.deletePropertydefinition(m_context, name, I_CmsConstants.C_PROPERYDEFINITION_RESOURCE);
+        m_securityManager.deletePropertydefinition(m_context, name, I_CmsConstants.C_PROPERYDEFINITION_RESOURCE);
     }
 
     /**
@@ -3311,7 +3309,7 @@ public class CmsObject {
     * @throws CmsException if operation was not succesful 
     */
     public List getResourcesInTimeRange(String folder, long starttime, long endtime) throws CmsException {
-        return m_driverManager.getResourcesInTimeRange(
+        return m_securityManager.getResourcesInTimeRange(
             m_context, 
             addSiteRoot(folder), 
             starttime, 
@@ -3329,7 +3327,7 @@ public class CmsObject {
      * @throws CmsException if operation was not succesful
      */
     public List getResourcesWithProperty(String propertyDefinition) throws CmsException {
-        return m_driverManager.getResourcesWithProperty(m_context, "/", propertyDefinition);
+        return m_securityManager.getResourcesWithProperty(m_context, "/", propertyDefinition);
     }
 
     /**
@@ -3345,7 +3343,7 @@ public class CmsObject {
      * @throws CmsException if operation was not succesful
      */
     public List getResourcesWithProperty(String folder, String propertyDefinition) throws CmsException {
-        return m_driverManager.getResourcesWithProperty(m_context, addSiteRoot(folder), propertyDefinition);
+        return m_securityManager.getResourcesWithProperty(m_context, addSiteRoot(folder), propertyDefinition);
     }
 
     /**
@@ -3358,7 +3356,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful
      */
     public List getResourcesWithPropertyDefinition(String propertyDefinition) throws CmsException {
-        return m_driverManager.getResourcesWithPropertyDefinition(m_context, propertyDefinition);
+        return m_securityManager.getResourcesWithPropertyDefinition(m_context, propertyDefinition);
     }
     
     /**
@@ -3370,7 +3368,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public List readAllPropertydefinitions() throws CmsException {
-        return m_driverManager.readAllPropertydefinitions(m_context, I_CmsConstants.C_PROPERYDEFINITION_RESOURCE);
+        return m_securityManager.readAllPropertydefinitions(m_context, I_CmsConstants.C_PROPERYDEFINITION_RESOURCE);
     }    
     
     //-----------------------------------------------------------------------------------
@@ -3391,7 +3389,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public void deleteBackups(long timestamp, int versions, I_CmsReport report) throws CmsException {
-       m_driverManager.deleteBackups(m_context, timestamp, versions, report);
+       m_securityManager.deleteBackups(m_context, timestamp, versions, report);
     }
 
     /**
@@ -3400,7 +3398,7 @@ public class CmsObject {
      * @return int The new version id
      */
     public int getBackupTagId() {
-        return m_driverManager.getBackupTagId();
+        return m_securityManager.getBackupTagId();
     }  
     
     /**
@@ -3417,7 +3415,7 @@ public class CmsObject {
      * to read the file, or if the file couldn't be read.
      */
     public CmsBackupResource readBackupFile(String filename, int tagId) throws CmsException {
-        return (m_driverManager.readBackupFile(m_context, tagId, addSiteRoot(filename)));
+        return (m_securityManager.readBackupFile(m_context, tagId, addSiteRoot(filename)));
     }
 
     /**
@@ -3434,7 +3432,7 @@ public class CmsObject {
      * to read the file headers, or if the file headers couldn't be read.
      */
     public CmsResource readBackupFileHeader(String filename, int tagId) throws CmsException {
-        return (m_driverManager.readBackupFileHeader(m_context, tagId, addSiteRoot(filename)));
+        return (m_securityManager.readBackupFileHeader(m_context, tagId, addSiteRoot(filename)));
     }
 
     /**
@@ -3445,7 +3443,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public CmsBackupProject readBackupProject(int tagId) throws CmsException {
-        return (m_driverManager.readBackupProject(tagId));
+        return (m_securityManager.readBackupProject(tagId));
     }
 
     /**
@@ -3463,6 +3461,6 @@ public class CmsObject {
      * @throws CmsException  if operation was not successful.
      */
     public List readAllBackupFileHeaders(String filename) throws CmsException {
-        return (m_driverManager.readAllBackupFileHeaders(m_context, addSiteRoot(filename)));
+        return (m_securityManager.readAllBackupFileHeaders(m_context, addSiteRoot(filename)));
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsBackupDriver.java,v $
- * Date   : $Date: 2004/08/27 08:57:22 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/10/22 14:37:39 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.db.mysql;
 
 import org.opencms.db.CmsDbUtil;
+import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.file.CmsBackupProject;
 import org.opencms.main.CmsException;
 import org.opencms.util.CmsUUID;
@@ -42,21 +43,23 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Vector;
 
+
 /**
  * MySQL implementation of the backup driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.16 $ $Date: 2004/08/27 08:57:22 $
+ * @version $Revision: 1.17 $ $Date: 2004/10/22 14:37:39 $
  * @since 5.1
  */
 public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
 
     /**
-     * @see org.opencms.db.I_CmsBackupDriver#initQueries()
+     * @see org.opencms.db.I_CmsBackupDriver#initSqlManager(String)
      */
-    public org.opencms.db.generic.CmsSqlManager initQueries() {
-        return new org.opencms.db.mysql.CmsSqlManager();
+    public org.opencms.db.generic.CmsSqlManager initSqlManager(String classname) {
+        
+        return CmsSqlManager.getInstance(classname);
     }
 
     /**
@@ -70,7 +73,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
 
         try {
             // create the statement
-            conn = m_sqlManager.getConnectionForBackup();
+            conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTS_READLAST_BACKUP");
             stmt.setInt(1, 300);
             res = stmt.executeQuery();
@@ -99,7 +102,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
         } catch (SQLException exc) {
             throw m_sqlManager.getCmsException(this, "getAllBackupProjects()", CmsException.C_SQL_ERROR, exc, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(null, conn, stmt, res);
         }
         return (projects);
     }

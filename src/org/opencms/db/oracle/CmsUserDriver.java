@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsUserDriver.java,v $
- * Date   : $Date: 2004/10/14 08:21:08 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2004/10/22 14:37:39 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,9 +31,13 @@
 
 package org.opencms.db.oracle;
 
-import org.opencms.util.CmsUUID;
+import org.opencms.db.CmsRuntimeInfo;
+import org.opencms.db.I_CmsRuntimeInfo;
+import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
+import org.opencms.util.CmsUUID;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.Blob;
@@ -42,12 +46,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Hashtable;
+
 import org.apache.commons.dbcp.DelegatingResultSet;
 
 /**
  * Oracle implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.30 $ $Date: 2004/10/14 08:21:08 $
+ * @version $Revision: 1.31 $ $Date: 2004/10/22 14:37:39 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -55,17 +60,20 @@ import org.apache.commons.dbcp.DelegatingResultSet;
 public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#createUser(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, int, java.util.Hashtable, java.lang.String, int)
+     * @see org.opencms.db.I_CmsUserDriver#createUser(I_CmsRuntimeInfo, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, int, java.util.Hashtable, java.lang.String, int)
      */
-    public CmsUser createUser(String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Hashtable additionalInfos, String address, int type) throws CmsException {
+    public CmsUser createUser(I_CmsRuntimeInfo runtimeInfo, String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Hashtable additionalInfos, String address, int type) throws CmsException {
 
         CmsUUID id = new CmsUUID();
         PreparedStatement stmt = null;
         Connection conn = null;
     
+        if (existsUser(runtimeInfo, name, type)) {
+            throw new CmsException("User " + name + " name already exists", CmsException.C_USER_ALREADY_EXISTS);
+        }
+        
         try {
-
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(runtimeInfo);
             
             // write data to database
             stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_USERS_ADD");
@@ -84,33 +92,36 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             stmt.close();
             stmt = null;
 
-            internalWriteUserInfo(id, additionalInfos, null);
+            internalWriteUserInfo(runtimeInfo, id, additionalInfos, null);
              
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, "createUser name=" + name + " id=" + id.toString(), CmsException.C_SQL_ERROR, e, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(runtimeInfo, conn, stmt, null);
         }
 
-        return readUser(id);
+        return readUser(runtimeInfo, id);
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#importUser(org.opencms.util.CmsUUID, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, int, java.util.Hashtable, java.lang.String, int, java.lang.Object)
+     * @see org.opencms.db.I_CmsUserDriver#importUser(I_CmsRuntimeInfo, org.opencms.util.CmsUUID, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, int, java.util.Hashtable, java.lang.String, int, java.lang.Object)
      */
-    public CmsUser importUser(CmsUUID id, String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Hashtable additionalInfos, String address, int type, Object reservedParam) throws CmsException {
+    public CmsUser importUser(I_CmsRuntimeInfo runtimeInfo, CmsUUID id, String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Hashtable additionalInfos, String address, int type, Object reservedParam) throws CmsException {
 
         PreparedStatement stmt = null;
         Connection conn = null;
      
+        if (existsUser(runtimeInfo, name, type)) {
+            throw new CmsException("User " + name + " name already exists", CmsException.C_USER_ALREADY_EXISTS);
+        }
+        
         try {
-
             if (reservedParam == null) {
                 // get a JDBC connection from the OpenCms standard {online|offline|backup} pools
-                conn = m_sqlManager.getConnection();
+                conn = m_sqlManager.getConnection(runtimeInfo);
             } else {
                 // get a JDBC connection from the reserved JDBC pools
-                conn = m_sqlManager.getConnection(((Integer) reservedParam).intValue());
+                conn = m_sqlManager.getConnection(runtimeInfo, ((Integer) reservedParam).intValue());
             }
 
             // write data to database
@@ -130,36 +141,36 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             stmt.close();
             stmt = null;
             
-            internalWriteUserInfo(id, additionalInfos, reservedParam);
+            internalWriteUserInfo(runtimeInfo, id, additionalInfos, reservedParam);
                         
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, "importUser name=" + name + " id=" + id.toString(), CmsException.C_SQL_ERROR, e, true);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(runtimeInfo, conn, stmt, null);
         }
-        return readUser(id);
+        return readUser(runtimeInfo, id);
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#initQueries()
+     * @see org.opencms.db.I_CmsUserDriver#initSqlManager(String)
      */
-    public org.opencms.db.generic.CmsSqlManager initQueries() {
-        return new org.opencms.db.oracle.CmsSqlManager();
+    public org.opencms.db.generic.CmsSqlManager initSqlManager(String classname) {
+
+        return CmsSqlManager.getInstance(classname);
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#writeUser(org.opencms.file.CmsUser)
+     * @see org.opencms.db.I_CmsUserDriver#writeUser(I_CmsRuntimeInfo, org.opencms.file.CmsUser)
      */
-    public void writeUser(CmsUser user) throws CmsException {
+    public void writeUser(I_CmsRuntimeInfo runtimeInfo, CmsUser user) throws CmsException {
 
         PreparedStatement stmt = null;
-
         Connection conn = null;
         
         try {
 
             // get connection
-            conn = m_sqlManager.getConnection();
+            conn = m_sqlManager.getConnection(runtimeInfo);
             
             // write data to database
             stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_USERS_WRITE");
@@ -176,24 +187,26 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             stmt.close();
             stmt = null;
             
-            internalWriteUserInfo(user.getId(), user.getAdditionalInfo(), null);
+            internalWriteUserInfo(runtimeInfo, user.getId(), user.getAdditionalInfo(), null);
             
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, "writeUser name=" + user.getName() + " id=" + user.getId().toString(), CmsException.C_SQL_ERROR, e, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(runtimeInfo, conn, stmt, null);
         }
     }
     
     /**
      * Writes the user info as blob.<p>
      * 
+     * @param runtimeInfo the current runtime info
      * @param userId the user id
      * @param additionalInfo the additional user info
      * @param reservedParam for future use
+     * 
      * @throws CmsException if something goes wrong
      */
-    private void internalWriteUserInfo (CmsUUID userId, Hashtable additionalInfo, Object reservedParam) throws CmsException {
+    private void internalWriteUserInfo (I_CmsRuntimeInfo runtimeInfo, CmsUUID userId, Hashtable additionalInfo, Object reservedParam) throws CmsException {
 
         PreparedStatement stmt = null;
         PreparedStatement commit = null;
@@ -209,12 +222,15 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             // get connection
             if (reservedParam == null) {
                 // get a JDBC connection from the OpenCms standard {online|offline|backup} pools
-                conn = m_sqlManager.getConnection();
+                conn = m_sqlManager.getConnection(runtimeInfo);
             } else {
                 // get a JDBC connection from the reserved JDBC pools
-                conn = m_sqlManager.getConnection(((Integer) reservedParam).intValue());
-            }            
-            conn.setAutoCommit(false);
+                conn = m_sqlManager.getConnection(runtimeInfo, ((Integer) reservedParam).intValue());
+            }      
+            
+            if (runtimeInfo == null || runtimeInfo instanceof CmsRuntimeInfo) {
+                conn.setAutoCommit(false);
+            }
                         
             // update user_info in this special way because of using blob
             stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_USERS_UPDATEINFO");
@@ -232,20 +248,21 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             output.close();
             value = null;
                          
-            commit = m_sqlManager.getPreparedStatement(conn, "C_COMMIT");
-            commit.execute();
+            if (runtimeInfo == null || runtimeInfo instanceof CmsRuntimeInfo) {
+                commit = m_sqlManager.getPreparedStatement(conn, "C_COMMIT");
+                commit.execute();
+                m_sqlManager.closeAll(null, null, commit, null);      
+            }
             
-            m_sqlManager.closeAll(null, stmt, res);
-            m_sqlManager.closeAll(null, commit, null);
-            
-//            commit.close();
-//            stmt.close();
+            m_sqlManager.closeAll(null, null, stmt, res);      
 
             commit = null;              
             stmt = null;
             res = null;
                           
-            conn.setAutoCommit(true);
+            if (runtimeInfo == null || runtimeInfo instanceof CmsRuntimeInfo) {
+                conn.setAutoCommit(true);
+            }
             
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, "internalWriteUserInfo id=" + userId.toString(), CmsException.C_SQL_ERROR, e, false);
@@ -267,27 +284,33 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
                     // ignore
                 }
             } 
-            if (stmt != null) {
-                try {
-                    rollback = m_sqlManager.getPreparedStatement(conn, "C_ROLLBACK");
-                    rollback.execute();
-                    rollback.close();
-                } catch (SQLException se) {
-                    // ignore
+            
+            if (runtimeInfo == null || runtimeInfo instanceof CmsRuntimeInfo) {
+                if (stmt != null) {
+                    try {
+                        rollback = m_sqlManager.getPreparedStatement(conn, "C_ROLLBACK");
+                        rollback.execute();
+                        rollback.close();
+                    } catch (SQLException se) {
+                        // ignore
+                    }
+                    try {
+                        stmt.close();
+                    } catch (SQLException exc) {
+                        // ignore
+                    }
                 }
-                try {
-                    stmt.close();
-                } catch (SQLException exc) {
-                    // ignore
-                }                
-            }                
-            if (conn != null) {
-                try {
-                    conn.setAutoCommit(true);
-                    conn.close();
-                } catch (SQLException se) {
-                    // ignore
-                }                   
+            }
+            
+            if (runtimeInfo == null || runtimeInfo instanceof CmsRuntimeInfo) {
+                if (conn != null) {
+                    try {
+                        conn.setAutoCommit(true);
+                        conn.close();
+                    } catch (SQLException se) {
+                        // ignore
+                    }
+                }
             }
         }
     }    

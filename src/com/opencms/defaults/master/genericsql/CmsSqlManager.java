@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsSqlManager.java,v $
- * Date   : $Date: 2004/07/18 16:27:13 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2004/10/22 14:37:39 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,11 +33,13 @@ package com.opencms.defaults.master.genericsql;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
+import org.opencms.db.CmsDbPool;
 import org.opencms.file.CmsObject;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -57,27 +59,31 @@ import java.util.Properties;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.21 $ $Date: 2004/07/18 16:27:13 $
+ * @version $Revision: 1.22 $ $Date: 2004/10/22 14:37:39 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
     
     /** the query properties for the cos */
-    private static Properties m_queries;
+    //private static Properties m_queries;
     
     /**
      * CmsSqlManager constructor
      */
     public CmsSqlManager(String dbPoolUrl, Class currentClass) {
-        super(dbPoolUrl, false);
         
-        if (m_queries == null) {
-            // collect all query.properties in all packages of superclasses
-            m_queries = new Properties();
-            loadQueries(currentClass);
-            combineQueries();   
-        }
+        if (!dbPoolUrl.startsWith(CmsDbPool.C_DBCP_JDBC_URL_PREFIX)) {
+            dbPoolUrl = CmsDbPool.C_DBCP_JDBC_URL_PREFIX + dbPoolUrl;
+        } 
+        m_poolUrl = dbPoolUrl;
+        
+        m_queries = new HashMap();
+        m_cachedQueries = new HashMap();
+        
+        loadQueries(currentClass);
+        combineQueries();
+        
     }
     
     /**
@@ -88,6 +94,9 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
      * @param the current Class of the dbaccess module.
      */
     protected void loadQueries(Class currentClass) {
+        
+        Properties properties = new Properties();
+        
         // creates the queryFilenam from the packagename and
         // filename query.properties
         String className = currentClass.getName();
@@ -101,7 +110,8 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
         try {
             // load the queries. Entries of the most recent class will overwrite
             // entries of superclasses.
-            m_queries.load(getClass().getClassLoader().getResourceAsStream(queryFilename));
+            properties.load(getClass().getClassLoader().getResourceAsStream(queryFilename));
+            m_queries.putAll(properties);
         } catch(Exception exc) {
             // no query.properties found - write to logstream.
             if(OpenCms.getLog(this).isErrorEnabled()) {
@@ -117,9 +127,9 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
      * ${property_key}<p>
      */
     protected void combineQueries() {
-        Enumeration keys = m_queries.keys();
-        while(keys.hasMoreElements()) {
-            String key = (String)keys.nextElement();
+        Iterator keys = m_queries.keySet().iterator();
+        while(keys.hasNext()) {
+            String key = (String)keys.next();
             // replace while there has been replacements performed
             while(replace(key));
         }
@@ -133,7 +143,7 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
      */
     protected boolean replace(String key) {
         boolean retValue = false;
-        String value = m_queries.getProperty(key);
+        String value = (String)m_queries.get(key);
         String newValue = new String();
         int index = 0;
         int lastIndex = 0;
@@ -149,7 +159,11 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
                     // copy the first part of the query
                     newValue += value.substring(lastIndex, index);
                     // copy the replcement-value
-                    newValue += m_queries.getProperty(replacer, "");
+                    String replacerStr = (String)m_queries.get(replacer);
+                    if (replacerStr == null) {
+                        replacerStr = "";
+                    }
+                    newValue += replacerStr;
                     // set up lastindex
                     lastIndex = nextIndex+1;
                 } else {
@@ -197,7 +211,11 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
         String media = "CMS_MODULE_MEDIA";
 
         // get the string of the SQL statement
-        statement = m_queries.getProperty(queryKey, "");
+        String statementStr = (String)m_queries.get(queryKey);
+        if(statementStr == null) {
+            statementStr = "";
+        }
+        statement = statementStr;
 
         // choose the right tables depending on the online/offline project
         if (cms.getRequestContext().currentProject().isOnlineProject()) {
@@ -232,7 +250,7 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
      */
     public String readQuery(String queryKey) {              
         String value = null;
-        if ((value = m_queries.getProperty(queryKey)) == null) {
+        if ((value = (String)m_queries.get(queryKey)) == null) {
             if (OpenCms.getLog(this).isErrorEnabled()) {
                 OpenCms.getLog(this).error("Query '" + queryKey + "' not found");
             }

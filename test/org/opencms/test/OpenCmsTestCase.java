@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2004/10/14 15:05:54 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2004/10/22 14:37:39 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * values in the provided <code>./test/data/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.45 $
+ * @version $Revision: 1.46 $
  * 
  * @since 5.3.5
  */
@@ -991,6 +991,30 @@ public class OpenCmsTestCase extends TestCase {
             fail("Exception " + e1.toString() + " does not equal " + e2.toString());
         }
     }
+    
+    /**
+     * Tests if the specified object is identical with another object.<p> 
+     * 
+     * @param o1 an object
+     * @param o2 another object
+     */
+    public void assertIsIdentical(Object o1, Object o2) {
+        if (o1 != o2) {
+            fail("Object " + o1.toString() + " is not identical to " + o2.toString());
+        }
+    }
+    
+    /**
+     * Tests if the specified object is not identical with another object.<p> 
+     * 
+     * @param o1 an object
+     * @param o2 another object
+     */
+    public void assertIsNotIdentical(Object o1, Object o2) {
+        if (o1 == o2) {
+            fail("Object " + o1.toString() + " is identical to " + o2.toString());
+        }
+    }    
     
     /**
      * Compares a stored Cms resource with another Cms resource instance using a specified filter.<p>

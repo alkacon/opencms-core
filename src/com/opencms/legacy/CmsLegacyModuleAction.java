@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsLegacyModuleAction.java,v $
- * Date   : $Date: 2004/08/18 11:53:54 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/10/22 14:37:40 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -138,7 +138,15 @@ public class CmsLegacyModuleAction extends A_CmsModuleAction {
             }
             
             String modulePath[] = (String[])module.getResources().toArray(new String[1]);
-            String scriptPath = modulePath[0] + "setup" + "/" + dbName + ".sql";
+            
+            String scriptPath;
+            if (dbName.toLowerCase().startsWith("mysql")) {
+                // use the mysql setup script for all MySQL variations (Innodb, MySQL 4.1 etc. pp.)
+                scriptPath = modulePath[0] + "setup/mysql.sql";
+            } else {
+                scriptPath = modulePath[0] + "setup/" + dbName + ".sql";
+            }
+            
             try {
                 String updateScript = new String(adminCms.readFile(scriptPath).getContents());
                 

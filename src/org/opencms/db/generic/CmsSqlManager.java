@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2004/09/06 08:49:33 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2004/10/22 14:37:39 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,13 +32,13 @@
 package org.opencms.db.generic;
 
 import org.opencms.db.CmsDbPool;
+import org.opencms.db.I_CmsRuntimeInfo;
+import org.opencms.file.CmsProject;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
-
-import org.opencms.file.CmsProject;
-import org.opencms.file.CmsVfsResourceNotFoundException;
 
 import java.io.ByteArrayInputStream;
 import java.io.Serializable;
@@ -48,187 +48,104 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+
 /**
- * Handles SQL queries from query.properties of the generic (ANSI-SQL) driver package.<p>
- * 
- * The following table gives an overview about how a project-ID (provided by a
- * method call in a Cms driver) is matched to a JDBC pool URL, and whether the 
- * table key is replaced in SQL queries or not:<p>
- * 
- * <table border="1">
- * <tr>
- * <th>DB table</th>
- * <th>project ID</th>
- * <th>table ID</th>
- * <th>replace table key in query</th>
- * </tr>
- * <tr>
- * <td>offline</td>
- * <td>> 1</td>
- * <td>2</td>
- * <td>yes</td>
- * </tr>
- * <tr>
- * <td>online</td>
- * <td>< 1</td>
- * <td>1</td>
- * <td>yes</td>
- * </tr>
- * <tr>
- * <td>backup</td>
- * <td>= 0</td>
- * <td>0</td>
- * <td>no</td>
- * </tr>
- * <tr>
- * <td>reserved</td>
- * <td>-1,..,-n</td>
- * <td>1,...,n</td>
- * <td>yes</td>
- * </tr>
- * </table>
+ * Generic (ANSI-SQL) implementation of the SQL manager.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.41 $ $Date: 2004/09/06 08:49:33 $
+ * @version $Revision: 1.42 $ $Date: 2004/10/22 14:37:39 $
  * @since 5.1
  */
 public class CmsSqlManager implements Serializable, Cloneable {
 
-    /** 
-     * The filename/path of the SQL query properties file.<p> 
-     */
-    private static final String C_PROPERTY_FILENAME = "org/opencms/db/generic/query.properties";
+    /** A pattern being replaced in SQL queries to generate SQL queries to access online/offline tables. */
+    protected static final String C_QUERY_PROJECT_SEARCH_PATTERN = "_${PROJECT}_";
 
-    /** 
-     * The properties hash holding the SQL queries.<p> 
-     */
-    private static Properties c_queries;
-    
-    /** 
-     * The backup table ID.<p>
-     * 
-     * The project-ID provided by a Cms driver method call is matched to this internal ID to 
-     * get the JDBC pool URL of the offline pool.<p> 
-     */    
-    protected static final int C_TABLE_ID_BACKUP = 0;
-    
-    /** 
-     * The offline table ID.<p>
-     * 
-     * The project-ID provided by a Cms driver method call is matched to this internal ID to 
-     * get the JDBC pool URL of the offline pool.<p> 
-     */
-    protected static final int C_TABLE_ID_OFFLINE = 2;
-    
-    /** 
-     * The online table ID.<p>
-     * 
-     * The project-ID provided by a Cms driver method call is matched to this internal ID to 
-     * get the JDBC pool URL of the offline pool.<p> 
-     */    
-    protected static final int C_TABLE_ID_ONLINE = 1;
+    /** The filename/path of the SQL query properties. */
+    private static final String C_QUERY_PROPERTIES = "org/opencms/db/generic/query.properties";
 
-    /** 
-     * Table key being replaced in SQL queries to generate SQL queries to access online/offline tables.<p> 
-     */
-    protected static final String C_TABLE_KEY_SEARCH_PATTERN = "_${PROJECT}_";
+    /** A map holding all SQL queries. */
+    protected Map m_queries;
 
-    /** 
-     * Caches all queries with replaced expressions to minimize costs of regex/matching operations.<p> 
-     */
+    /** A map to cache queries with replaced search pattern to minimize costs of regex/matching operations. */
     protected Map m_cachedQueries;
+
+    /** The connection pool URL of this SQL manager. */
+    protected String m_poolUrl;
     
-    /** 
-     * Stores the "regular" OpenCms JDBC pool URLs {online|offline|backup}.<p> 
-     */
-    protected List m_poolUrls;
-    
-    /** 
-     * Stores the "reserved" OpenCms JDBC pool URLs for special purposes.<p> 
-     */
-    protected List m_reservedPoolUrls;   
+    /** The type ID of the driver (vfs, user, project, workflow or backup) where this SQL manager belongs to. */
+    protected int m_driverType;
 
     /**
-     * Initializes the SQL manager.<p>
-     * 
-     * To obtain JDBC connections from different pools, further 
-     * {online|offline|backup} pool Urls have to be set.
-     * 
+     * Creates a new, empty SQL manager.<p>
      */
     public CmsSqlManager() {
-        if (c_queries == null) {
-            c_queries = loadProperties(C_PROPERTY_FILENAME);
-            precalculateQueries(c_queries);
-        }
-
-        m_poolUrls = new ArrayList(3);
-        for (int i = 0; i < 3; i++) {
-            m_poolUrls.add(i, null);
-        }
         
-        m_reservedPoolUrls = new ArrayList(64);
-        for (int i = 0; i < 64; i++) {
-            m_reservedPoolUrls.add(i, null);
-        }
-                
         m_cachedQueries = new HashMap();
+        m_queries = new HashMap();
+        loadQueryProperties(C_QUERY_PROPERTIES);
+        
     }
-
-    /**
-     * Initializes the SQL manager.<p>
-     * 
-     * Per default, the same JDBC pool URL is used to obtain JDBC 
-     * connections from one pool.<p>
-     * 
-     * To obtain JDBC connections from different pools, further 
-     * {online|offline|backup} pool Urls have to be specified.
-     * 
-     * @param poolUrl the default connection pool URL
-     * @param loadQueries flag indicating whether the query.properties should be loaded during initialization
-     */
-    protected CmsSqlManager(String poolUrl, boolean loadQueries) {
-        m_poolUrls = new ArrayList(3);
-        m_reservedPoolUrls = new ArrayList(64);
     
-        m_poolUrls = new ArrayList(3);
-        for (int i = 0; i < 3; i++) {
-            m_poolUrls.add(i, null);
+    /**
+     * Initializes this SQL manager.<p>
+     * 
+     * @param driverType the type ID of the driver (vfs,user,project,workflow or backup) where this SQL manager belongs to
+     * @param poolUrl the connection pool URL of this SQL manager
+     */
+    public void init(int driverType, String poolUrl) {
+        
+        if (!poolUrl.startsWith(CmsDbPool.C_DBCP_JDBC_URL_PREFIX)) {
+            poolUrl = CmsDbPool.C_DBCP_JDBC_URL_PREFIX + poolUrl;
+        }        
+        
+        m_driverType = driverType;
+        m_poolUrl = poolUrl;
+
+    }
+    
+    /**
+     * Creates a new instance of a SQL manager.<p>
+     * 
+     * @param classname the classname of the SQL manager
+     * 
+     * @return a new instance of the SQL manager
+     */
+    public static org.opencms.db.generic.CmsSqlManager getInstance(String classname) {
+        
+        org.opencms.db.generic.CmsSqlManager sqlManager;
+        
+        try {
+           Object objectInstance = Class.forName(classname).newInstance();
+           sqlManager = (org.opencms.db.generic.CmsSqlManager)objectInstance;
+        } catch (Throwable t) {
+            OpenCms.getLog(org.opencms.db.generic.CmsSqlManager.class.getName()).error(". SQL manager class '" + classname  + "' could not be instanciated", t);
+            return null;
         }
         
-        m_reservedPoolUrls = new ArrayList(64);
-        for (int i = 0; i < 64; i++) {
-            m_reservedPoolUrls.add(i, null);
-        }
-                    
-        setPoolUrlOffline(poolUrl);
-        setPoolUrlOnline(poolUrl);
-        setPoolUrlBackup(poolUrl);
-
-        if (loadQueries && c_queries == null) {
-            c_queries = loadProperties(C_PROPERTY_FILENAME);
-            precalculateQueries(c_queries);
-        }
+        return sqlManager;
+        
     }
 
     /**
-     * Replaces the search pattern "_T_" in SQL queries by the pattern _ONLINE_ or _OFFLINE_ 
+     * Replaces the search pattern {@link #C_QUERY_PROJECT_SEARCH_PATTERN} in SQL queries by the pattern _ONLINE_ or _OFFLINE_ 
      * depending on the ID of the current project.<p> 
      * 
      * @param projectId the ID of the current project
      * @param query the SQL query
      * @return String the SQL query with the table key search pattern replaced
      */
-    public static String replaceTableKey(int projectId, String query) {
+    protected static String replaceTableKey(int projectId, String query) {
+
         // make the statement project dependent
-        String replacePattern = (projectId == I_CmsConstants.C_PROJECT_ONLINE_ID || projectId < 0) ? "_ONLINE_" : "_OFFLINE_";
-        query = CmsStringUtil.substitute(query, C_TABLE_KEY_SEARCH_PATTERN, replacePattern);
+        String replacePattern = (projectId == I_CmsConstants.C_PROJECT_ONLINE_ID || projectId < 0) ? "_ONLINE_"
+        : "_OFFLINE_";
+        query = CmsStringUtil.substitute(query, C_QUERY_PROJECT_SEARCH_PATTERN, replacePattern);
 
         return query;
     }
@@ -236,17 +153,22 @@ public class CmsSqlManager implements Serializable, Cloneable {
     /**
      * Attemts to close the connection, statement and result set after a statement has been executed.<p>
      * 
+     * @param runtimeInfo the current runtime info project
      * @param con the JDBC connection
      * @param stmnt the statement
      * @param res the result set
      */
-    public void closeAll(Connection con, Statement stmnt, ResultSet res) {
+    public void closeAll(I_CmsRuntimeInfo runtimeInfo, Connection con, Statement stmnt, ResultSet res) {
 
         // NOTE: we have to close Connections/Statements that way, because a dbcp PoolablePreparedStatement
         // is not a DelegatedStatement; for that reason its not removed from the trace of the connection when it is closed.
         // So, the connection tries to close it again when the connection is closed itself; 
         // as a result there is an error that forces the connection to be destroyed and not pooled
 
+        if (runtimeInfo == null) {            
+            // makes eclipse happy...
+        }
+        
         try {
             // first, close the connection and (eventually) implicitly all assigned statements and result sets
             if (con != null && !con.isClosed()) {
@@ -254,6 +176,8 @@ public class CmsSqlManager implements Serializable, Cloneable {
             }
         } catch (SQLException e) {
             // intentionally left blank
+        } finally {
+            con = null;
         }
 
         try {
@@ -263,6 +187,8 @@ public class CmsSqlManager implements Serializable, Cloneable {
             }
         } catch (SQLException e) {
             // intentionally left blank
+        } finally {
+            stmnt = null;
         }
 
         try {
@@ -272,37 +198,10 @@ public class CmsSqlManager implements Serializable, Cloneable {
             }
         } catch (SQLException e) {
             // intentionally left blank
+        } finally {
+            res = null;
         }
-
-        res = null;
-        stmnt = null;
-        con = null;
-    }
-
-    /**
-     * @see java.lang.Object#finalize()
-     */
-    protected void finalize() throws Throwable {
-        try {       
-            if (m_cachedQueries != null) {
-                m_cachedQueries.clear();
-            }
-            
-            if (m_poolUrls != null) {
-                m_poolUrls.clear();
-            }
-            
-            if (m_reservedPoolUrls != null) {
-                m_reservedPoolUrls.clear();
-            }
-            
-            m_cachedQueries = null;
-            m_poolUrls = null;
-            m_reservedPoolUrls = null;
-        } catch (Throwable t) {
-            // ignore
-        }
-        super.finalize();
+        
     }
 
     /**
@@ -318,6 +217,7 @@ public class CmsSqlManager implements Serializable, Cloneable {
      * @throws SQLException if a database access error occurs
      */
     public byte[] getBytes(ResultSet res, String attributeName) throws SQLException {
+
         return res.getBytes(attributeName);
     }
 
@@ -333,7 +233,13 @@ public class CmsSqlManager implements Serializable, Cloneable {
      * @param logSilent if TRUE, no entry to the log is written
      * @return CmsException
      */
-    public CmsException getCmsException(Object o, String message, int exceptionType, Throwable rootCause, boolean logSilent) {
+    public CmsException getCmsException(
+        Object o,
+        String message,
+        int exceptionType,
+        Throwable rootCause,
+        boolean logSilent) {
+
         String className = "";
 
         if (o != null) {
@@ -373,126 +279,125 @@ public class CmsSqlManager implements Serializable, Cloneable {
         }
 
         switch (exceptionType) {
-            case CmsException.C_NOT_FOUND :
+            case CmsException.C_NOT_FOUND:
                 return new CmsVfsResourceNotFoundException(message);
             default:
         }
 
         return new CmsException(message, exceptionType, rootCause);
     }
+    
+    /**
+     * Returns a JDBC connection from the connection pool and saves runtime infos in the specified runtime info object.<p>
+     * 
+     * Use this method to get a connection for reading/writing project independent data such as users, groups.<p>
+     * 
+     * @param runtimeInfo an implementation of {@link I_CmsRuntimeInfo}
+     * @return a JDBC connection
+     * @throws SQLException if a database access error occurs
+     */
+    public Connection getConnection(I_CmsRuntimeInfo runtimeInfo) throws SQLException {
+        
+        return getConnection(runtimeInfo, 0);
+    }
+    
+    /**
+     * Returns a JDBC connection from the connection pool specified by the given CmsProject and saves 
+     * runtime infos in the specified runtime info object.<p>
+     * 
+     * Use this method to get a connection for reading/writing data either in online or offline projects
+     * such as files, folders.<p>
+     * 
+     * @param runtimeInfo an implementation of {@link I_CmsRuntimeInfo}
+     * @param project a Cms project (e.g. the current project from the request context)
+     * @return a JDBC connection
+     * @throws SQLException if a database access error occurs
+     */    
+    public Connection getConnection(I_CmsRuntimeInfo runtimeInfo, CmsProject project) throws SQLException {
+        
+        return getConnection(runtimeInfo, project.getId());
+    }    
+    
+    /**
+     * Returns a JDBC connection from the connection pool specified by the given project ID and saves 
+     * runtime infos in the specified runtime info object.<p>
+     * 
+     * The project ID is (usually) the ID of the current project.<p>
+     * 
+     * Use this method to get a connection for reading/writing data either in online or offline projects
+     * such as files, folders.<p>
+     * 
+     * @param runtimeInfo an implementation of {@link I_CmsRuntimeInfo}
+     * @param projectId the ID of a Cms project (e.g. the current project from the request context)
+     * @return a JDBC connection
+     * @throws SQLException if a database access error occurs
+     */     
+    public Connection getConnection(I_CmsRuntimeInfo runtimeInfo, int projectId) throws SQLException {
+        
+        if (runtimeInfo == null) {            
+            // makes eclipse happy...
+        }
+        
+        return getConnection(projectId);
+    }    
 
     /**
-     * Returns a JDBC connection from the (offline) pool.<p>
+     * Returns a JDBC connection from the connection pool.<p>
      * 
-     * Using this method makes only sense to read/write project 
-     * independent data such as user data.
+     * Use this method to get a connection for reading/writing project independent data
+     * such as users, groups.<p>
      * 
-     * @return a JDBC connection from the (offline) pool 
+     * @return a JDBC connection
      * @throws SQLException if a database access error occurs
      */
     public Connection getConnection() throws SQLException {
-        return getConnection(C_TABLE_ID_OFFLINE);
+
+        return getConnection(0);
     }
 
     /**
-     * Returns a JDBC connection from the pool specified by the given CmsProject.<p>
+     * Returns a JDBC connection from the connection pool specified by the given CmsProject.<p>
      * 
-     * @param project the specified CmsProject
+     * Use this method to get a connection for reading/writing data either in online or offline projects
+     * such as files, folders.<p>
+     * 
+     * @param project a Cms project (e.g. the current project from the request context)
      * @return a JDBC connection from the pool specified by the project-ID 
      * @throws SQLException if a database access error occurs
      */
     public Connection getConnection(CmsProject project) throws SQLException {
+
+        // the specified project is not evaluated in this implementation.
+        // extensions of this object might evaluate the project to return
+        // different connections...
+        
         return getConnection(project.getId());
     }
 
     /**
-     * Returns a JDBC connection from the pool specified by the given ID.<p>
+     * Returns a JDBC connection from the connection pool specified by the given project ID.<p>
      * 
-     * The ID is (usually) the ID of the current project.<p>
+     * The project ID is (usually) the ID of the current project.<p>
      * 
-     * <ul>
-     * <li>Offline: ID > 1</li>
-     * <li>Online: ID = 1</li>
-     * <li>Backup: ID = 0</li>
-     * <li>Reserved for special purposes: ID &lt; 0</li>
-     * </ul>
+     * Use this method to get a connection for reading/writing data either in online or offline projects
+     * such as files, folders.<p>
      * 
-     * @param id is matched to the correct JDBC pool URL to obtain a connection from the DriverManager
+     * @param projectId the ID of a Cms project (e.g. the current project from the request context)
      * @return a JDBC connection from the pool specified by the project-ID 
      * @throws SQLException if a database access error occurs
      */
-    public Connection getConnection(int id) throws SQLException {
-        Connection conn = null;
+    public Connection getConnection(int projectId) throws SQLException {
         
-        if (id >= 0) {
-            // match the ID to a JDBC pool URL of the OpenCms JDBC pools {online|offline|backup}
-            conn = DriverManager.getConnection(getPoolUrl(id));
-        } else {
-            // match the ID to a JDBC pool URL of the OpenCms "reserved" JDBC pools
-            conn = DriverManager.getConnection(getReservedPoolUrl(id));
+        // the specified project ID is not evaluated in this implementation.
+        // extensions of this object might evaluate the project ID to return
+        // different connections...        
+
+        if (projectId < 0) {
+            throw new SQLException("Unsupported project ID " + projectId + " to return a JDBC connection!");
         }
         
-        return conn;
-    }
-
-    /**
-     * Returns a JDBC connection from the backup pool.<p>
-     * 
-     * Using this method makes only sense to read/write 
-     * data to backup data. 
-     * 
-     * @return a JDBC connection from the backup pool 
-     * @throws SQLException if a database access error occurs
-     */
-    public Connection getConnectionForBackup() throws SQLException {
-        return getConnection(C_TABLE_ID_BACKUP);
-    }
-    
-    /**
-     * Returns the pool JDBC URL for a specified table ID.<p>
-     * 
-     * @param id the table ID
-     * @return the pool JDBC URL for the specified table ID including DBCP's pool URL prefix
-     * @see CmsDbPool#C_DBCP_JDBC_URL_PREFIX
-     */
-    protected String getPoolUrl(int id) {
-        if (id > 2) {
-            // it is sufficient to use the offline table ID for project-IDs >2,
-            // anything else will result in an ArrayOutOfBoundsException
-            id = C_TABLE_ID_OFFLINE;
-        }
-                
-        return (String) m_poolUrls.get(id);
-    }   
-
-    /**
-     * Returns the backup JDBC pool URL of the OpenCms standard JDBC pools.<p>
-     * 
-     * @return backup JDBC pool URL including DBCP's pool URL prefix
-     * @see CmsDbPool#C_DBCP_JDBC_URL_PREFIX
-     */
-    public String getPoolUrlBackup() {
-        return getPoolUrl(C_TABLE_ID_BACKUP);
-    }
-
-    /**
-     * Returns the offline JDBC pool URL of the OpenCms standard JDBC pools.<p>
-     * 
-     * @return offline JDBC pool URL including DBCP's pool URL prefix
-     * @see CmsDbPool#C_DBCP_JDBC_URL_PREFIX
-     */
-    public String getPoolUrlOffline() {
-        return getPoolUrl(C_TABLE_ID_OFFLINE);
-    }
-
-    /**
-     * Returns the online JDBC pool URL of the OpenCms standard JDBC pools.<p>
-     * 
-     * @return online JDBC pool URL including DBCP's pool URL prefix
-     * @see CmsDbPool#C_DBCP_JDBC_URL_PREFIX
-     */
-    public String getPoolUrlOnline() {
-        return getPoolUrl(C_TABLE_ID_ONLINE);
+        // match the ID to a JDBC pool URL of the OpenCms JDBC pools {online|offline|backup}
+        return DriverManager.getConnection(m_poolUrl);
     }
 
     /**
@@ -505,7 +410,9 @@ public class CmsSqlManager implements Serializable, Cloneable {
      * @return PreparedStatement a new PreparedStatement containing the pre-compiled SQL statement 
      * @throws SQLException if a database access error occurs
      */
-    public PreparedStatement getPreparedStatement(Connection con, CmsProject project, String queryKey) throws SQLException {
+    public PreparedStatement getPreparedStatement(Connection con, CmsProject project, String queryKey)
+    throws SQLException {
+
         return getPreparedStatement(con, project.getId(), queryKey);
     }
 
@@ -520,6 +427,7 @@ public class CmsSqlManager implements Serializable, Cloneable {
      * @throws SQLException if a database access error occurs
      */
     public PreparedStatement getPreparedStatement(Connection con, int projectId, String queryKey) throws SQLException {
+
         String rawSql = readQuery(projectId, queryKey);
         return getPreparedStatementForSql(con, rawSql);
     }
@@ -533,6 +441,7 @@ public class CmsSqlManager implements Serializable, Cloneable {
      * @throws SQLException if a database access error occurs
      */
     public PreparedStatement getPreparedStatement(Connection con, String queryKey) throws SQLException {
+
         String rawSql = readQuery(0, queryKey);
         return getPreparedStatementForSql(con, rawSql);
     }
@@ -546,50 +455,10 @@ public class CmsSqlManager implements Serializable, Cloneable {
      * @throws SQLException if a database access error occurs
      */
     public PreparedStatement getPreparedStatementForSql(Connection con, String query) throws SQLException {
+
         // unfortunately, this wrapper is essential, because some JDBC driver 
         // implementations don't accept the delegated objects of DBCP's connection pool. 
         return con.prepareStatement(query);
-    }
-    
-    /**
-     * Returns the JDBC pool URL for a specified reserved table ID.<p>
-     * 
-     * Reserved JDBC pool URLs should be used to have more than
-     * the default OpenCms JDBC connection pools to read/write data 
-     * in online tables for special purposes.<p>
-     * 
-     * @param id the reserved table ID, which has to be <=-1
-     * @return poolUrl the JDBC pool URL for this table ID
-     * @see #getConnection(int)
-     */
-    public String getReservedPoolUrl(int id) {
-        if (id < 0) {
-            id *= -1;
-        }
-                
-        return (String) m_reservedPoolUrls.get(id);
-    }     
-
-    /**
-     * Loads a Java properties hash containing SQL queries.<p>
-     * 
-     * @param propertyFilename the package/filename of the properties hash
-     * @return Properties the new properties instance.
-     */
-    protected synchronized Properties loadProperties(String propertyFilename) {
-        Properties properties = new Properties();
-
-        try {
-            properties.load(getClass().getClassLoader().getResourceAsStream(propertyFilename));
-        } catch (Throwable t) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error loading " + propertyFilename, t);
-            }
-            
-            properties = null;
-        }
-
-        return properties;
     }
 
     /**
@@ -602,47 +471,8 @@ public class CmsSqlManager implements Serializable, Cloneable {
      * @throws CmsException if an error occurs
      */
     public synchronized int nextId(String tableName) throws CmsException {
-        return org.opencms.db.CmsDbUtil.nextId(getPoolUrlOffline(), tableName);
-    } 
 
-    /**
-     * Replaces patterns ${XXX} by another property value, if XXX is a property key with a value.<p>
-     * 
-     * @param properties a hash containt key/value coded SQL statements
-     */
-    protected synchronized void precalculateQueries(Properties properties) {
-        String currentKey = null;
-        String currentValue = null;
-        int startIndex = 0;
-        int endIndex = 0;
-        int lastIndex = 0;
-
-        Iterator allKeys = properties.keySet().iterator();
-        while (allKeys.hasNext()) {
-            currentKey = (String)allKeys.next();
-            currentValue = (String)properties.get(currentKey);
-            startIndex = 0;
-            endIndex = 0;
-            lastIndex = 0;
-
-            while ((startIndex = currentValue.indexOf("${", lastIndex)) != -1) {
-                if ((endIndex = currentValue.indexOf('}', startIndex)) != -1
-                    && !currentValue.startsWith(C_TABLE_KEY_SEARCH_PATTERN, startIndex-1)) {
-                   
-                    String replaceKey = currentValue.substring(startIndex + 2, endIndex);
-                    String searchPattern = currentValue.substring(startIndex, endIndex + 1);
-                    String replacePattern = this.readQuery(replaceKey);
-
-                    if (replacePattern != null) {
-                        currentValue = CmsStringUtil.substitute(currentValue, searchPattern, replacePattern);
-                    }
-                }
-                
-                lastIndex = endIndex + 2;
-            }
-
-            properties.put(currentKey, currentValue);
-        }
+        return org.opencms.db.CmsDbUtil.nextId(m_poolUrl, tableName);
     }
 
     /**
@@ -653,13 +483,14 @@ public class CmsSqlManager implements Serializable, Cloneable {
      * @return the the SQL query in this property list with the specified key
      */
     public String readQuery(CmsProject project, String queryKey) {
+
         return readQuery(project.getId(), queryKey);
     }
 
     /**
      * Searches for the SQL query with the specified key and project-ID.<p>
      * 
-     * For projectIds &ne; 0, the pattern "_T_" in table names of queries is 
+     * For projectIds &ne; 0, the pattern {@link #C_QUERY_PROJECT_SEARCH_PATTERN} in table names of queries is 
      * replaced with "_ONLINE_" or "_OFFLINE_" to choose the right database 
      * tables for SQL queries that are project dependent!
      * 
@@ -668,6 +499,7 @@ public class CmsSqlManager implements Serializable, Cloneable {
      * @return the the SQL query in this property list with the specified key
      */
     public String readQuery(int projectId, String queryKey) {
+
         // get the SQL statement from the properties hash
         String query = readQuery(queryKey);
 
@@ -705,21 +537,116 @@ public class CmsSqlManager implements Serializable, Cloneable {
      * @return the the SQL query in this property list with the specified key
      */
     public String readQuery(String queryKey) {
-        if (c_queries == null) {
-            c_queries = loadProperties(C_PROPERTY_FILENAME);
-            precalculateQueries(c_queries);
-        }
-
+        
         String value = null;
-        if ((value = c_queries.getProperty(queryKey)) == null) {
+        if ((value = (String)m_queries.get(queryKey)) == null) {
             if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Query '" + queryKey + "' not found in " + C_PROPERTY_FILENAME);
+                OpenCms.getLog(this).error("Query '" + queryKey + "' not found!");
             }
         }
 
         return value;
     }
 
+    /**
+     * Replaces null or empty Strings with a String with one space character <code>" "</code>.<p>
+     * 
+     * @param value the string to validate
+     * @return the validate string or a String with one space character if the validated string is null or empty
+     */
+    public String validateEmpty(String value) {
+
+        if (CmsStringUtil.isNotEmpty(value)) {
+            return value;
+        }
+
+        return " ";
+    }
+
+    /**
+     * @see java.lang.Object#finalize()
+     */
+    protected void finalize() throws Throwable {
+
+        try {
+            if (m_cachedQueries != null) {
+                m_cachedQueries.clear();
+            }
+
+            if (m_queries != null) {
+                m_queries.clear();
+            }
+
+            m_cachedQueries = null;
+            m_queries = null;
+        } catch (Throwable t) {
+            // ignore
+        }
+
+        super.finalize();
+    }
+
+    /**
+     * Loads a Java properties hash containing SQL queries.<p>
+     * 
+     * @param propertyFilename the package/filename of the properties hash
+     */
+    protected void loadQueryProperties(String propertyFilename) {
+
+        Properties properties = new Properties();
+
+        try {
+            properties.load(getClass().getClassLoader().getResourceAsStream(propertyFilename));
+            m_queries.putAll(properties);
+            replaceQuerySearchPatterns();
+        } catch (Throwable t) {
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error("Error loading " + propertyFilename, t);
+            }
+
+            properties = null;
+        }
+    }
+
+    /**
+     * Replaces patterns ${XXX} by another property value, if XXX is a property key with a value.<p>
+     */
+    protected synchronized void replaceQuerySearchPatterns() {
+
+        String currentKey = null;
+        String currentValue = null;
+        int startIndex = 0;
+        int endIndex = 0;
+        int lastIndex = 0;
+
+        Iterator allKeys = m_queries.keySet().iterator();
+        while (allKeys.hasNext()) {
+            currentKey = (String)allKeys.next();
+            currentValue = (String)m_queries.get(currentKey);
+            startIndex = 0;
+            endIndex = 0;
+            lastIndex = 0;
+
+            while ((startIndex = currentValue.indexOf("${", lastIndex)) != -1) {
+                if ((endIndex = currentValue.indexOf('}', startIndex)) != -1
+                    && !currentValue.startsWith(C_QUERY_PROJECT_SEARCH_PATTERN, startIndex - 1)) {
+
+                    String replaceKey = currentValue.substring(startIndex + 2, endIndex);
+                    String searchPattern = currentValue.substring(startIndex, endIndex + 1);
+                    String replacePattern = this.readQuery(replaceKey);
+
+                    if (replacePattern != null) {
+                        currentValue = CmsStringUtil.substitute(currentValue, searchPattern, replacePattern);
+                    }
+                }
+
+                lastIndex = endIndex + 2;
+            }
+
+            m_queries.put(currentKey, currentValue);
+        }
+    }
+    
     /**
      * Sets the designated parameter to the given Java array of bytes.<p>
      * 
@@ -732,6 +659,7 @@ public class CmsSqlManager implements Serializable, Cloneable {
      * @throws SQLException if a database access error occurs
      */
     public void setBytes(PreparedStatement statement, int pos, byte[] content) throws SQLException {
+
         if (content.length < 2000) {
             statement.setBytes(pos, content);
         } else {
@@ -740,88 +668,13 @@ public class CmsSqlManager implements Serializable, Cloneable {
     }
     
     /**
-     * Sets the JDBC pool URL for a specified table ID.<p>
+     * Returns the connection pool URL of this SQL manager.<p>
      * 
-     * @param id the table ID
-     * @param poolUrl the JDBC pool URL excluding DBCP's pool URL prefix
-     * @see CmsDbPool#C_DBCP_JDBC_URL_PREFIX
+     * @return the connection pool URL
      */
-    protected void setPoolUrl(int id, String poolUrl) {
-        m_poolUrls.set(id, CmsDbPool.C_DBCP_JDBC_URL_PREFIX + poolUrl);
-    }
+    public String getPoolUrl() {
+        
+        return m_poolUrl;
+    }    
 
-    /**
-     * Sets the backup JDBC pool url.<p>
-     * 
-     * @param poolUrl backup JDBC pool url excluding DBCP's pool URL prefix
-     * @see CmsDbPool#C_DBCP_JDBC_URL_PREFIX
-     */
-    public void setPoolUrlBackup(String poolUrl) {
-        if (poolUrl != null) {
-            setPoolUrl(C_TABLE_ID_BACKUP, poolUrl);
-        }
-    }
-
-    /**
-     * Sets the offline JDBC pool url.<p>
-     * 
-     * @param poolUrl offline JDBC pool url excluding DBCP's pool URL prefix
-     * @see CmsDbPool#C_DBCP_JDBC_URL_PREFIX
-     */
-    public void setPoolUrlOffline(String poolUrl) {
-        if (poolUrl != null) {
-            setPoolUrl(C_TABLE_ID_OFFLINE, poolUrl);
-        }
-    }
-
-    /**
-     * Sets the online JDBC pool url.<p>
-     * 
-     * @param poolUrl online JDBC pool url excluding DBCP's pool URL prefix
-     * @see CmsDbPool#C_DBCP_JDBC_URL_PREFIX
-     */
-    public void setPoolUrlOnline(String poolUrl) {
-        if (poolUrl != null) {
-            setPoolUrl(C_TABLE_ID_ONLINE, poolUrl);
-        }
-    }
-    
-    /**
-     * Sets a reserved JDBC pool URL for a specified table ID.<p>
-     * 
-     * Reserved JDBC pool URLs should be used to have more than
-     * the default OpenCms JDBC connection pools to read/write data 
-     * in online tables for special purposes.<p>
-     * 
-     * To obtain a JDBC connection from a DriverManager pool
-     * identified by the specified poolUrl, the specified ID 
-     * has to be passed to getConnection.
-     * 
-     * @param id the reserved table ID, which has to be <=-1
-     * @param poolUrl the JDBC pool URL for this table ID excluding DBCP's pool URL prefix
-     * @see #getConnection(int)
-     * @see CmsDbPool#C_DBCP_JDBC_URL_PREFIX
-     */
-    public void setReservedPoolUrl(int id, String poolUrl) {
-        if (id < 0) {
-            id *= -1;
-        }
-
-        ((ArrayList) m_reservedPoolUrls).ensureCapacity(id);
-        m_reservedPoolUrls.set(id, CmsDbPool.C_DBCP_JDBC_URL_PREFIX + poolUrl);
-    }
-
-    /**
-     * Replaces null or empty Strings with a String with one space character <code>" "</code>.<p>
-     * 
-     * @param value the string to validate
-     * @return the validate string or a String with one space character if the validated string is null or empty
-     */
-    public String validateEmpty(String value) {
-        if (CmsStringUtil.isNotEmpty(value)) {
-            return value;
-        }
-
-        return " ";
-    }
 }
