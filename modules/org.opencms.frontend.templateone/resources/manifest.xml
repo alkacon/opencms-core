@@ -806,7 +806,7 @@
 			<properties>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[uri;locale]]></value>
+					<value><![CDATA[uri;locale;user]]></value>
 				</property>
 				<property type="shared">
 					<name>content-encoding</name>
@@ -836,7 +836,7 @@
 			<properties>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[locale;params=(headnavfolder,headnavmenudepth,startfolder,showmenus)]]></value>
+					<value><![CDATA[locale;params=(headnavfolder,headnavmenudepth,startfolder,showmenus);user]]></value>
 				</property>
 				<property type="shared">
 					<name>content-encoding</name>
@@ -866,7 +866,7 @@
 			<properties>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[uri]]></value>
+					<value><![CDATA[uri;user]]></value>
 				</property>
 				<property type="shared">
 					<name>content-encoding</name>
