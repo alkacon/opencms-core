@@ -20,7 +20,6 @@
     <property name="build.webinf"               value="${build.web}/WEB-INF"/>
     <property name="build.metainf"              value="${build.web}/META-INF"/>
     <property name="build.lib"                  value="${build.webinf}/lib"/>
-    <property name="build.oclib"                value="${build.webinf}/oclib"/>
     <property name="build.excludes"             value=""/>
 
     <property name="build.inputlib.servlet"     value="${build.inputlib}/servlet.jar"/>
@@ -103,7 +102,6 @@ ${build.inputlib.tidy}
         <mkdir dir="${build.classes}"/>
         <mkdir dir="${build.home}"/>
         <mkdir dir="${build.lib}"/>
-        <mkdir dir="${build.oclib}"/>
         <mkdir dir="${zip.home}"/>
         <mkdir dir="${pdf.home}"/>        
     </target>
@@ -157,7 +155,7 @@ ${build.inputlib.tidy}
             />
 
         <jar
-            jarfile="${build.oclib}/opencms.jar"
+            jarfile="${build.lib}/opencms.jar"
             basedir="${build.classes}"
             includes="com/opencms/**"
             excludes="com/opencms/build/**"
@@ -170,14 +168,13 @@ ${build.inputlib.tidy}
             <fileset dir="." includes="*.*" excludes="build.xml"/>
        </copy>
 
-       <copy file="${build.inputlib.xerces}" todir="${build.oclib}"/>
-       <copy file="${build.inputlib.mysql}" todir="${build.oclib}"/>
+       <copy file="${build.inputlib.xerces}" todir="${build.lib}"/>
        <copy file="${build.inputlib.mysql}" todir="${build.lib}"/>
-       <copy file="${build.inputlib.activation}" todir="${build.oclib}"/>
-       <copy file="${build.inputlib.mail}" todir="${build.oclib}"/>
-       <copy file="${build.inputlib.fesi}" todir="${build.oclib}"/>
-       <copy file="${build.inputlib.oro}" todir="${build.oclib}"/>
-       <copy file="${build.inputlib.tidy}" todir="${build.oclib}"/>
+       <copy file="${build.inputlib.activation}" todir="${build.lib}"/>
+       <copy file="${build.inputlib.mail}" todir="${build.lib}"/>
+       <copy file="${build.inputlib.fesi}" todir="${build.lib}"/>
+       <copy file="${build.inputlib.oro}" todir="${build.lib}"/>
+       <copy file="${build.inputlib.tidy}" todir="${build.lib}"/>
 
        <copy todir="${build.webinf}">
             <fileset dir="etc" excludes="*/CVS/*,MANIFEST.MF"/>
