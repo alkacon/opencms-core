@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/06/23 08:01:35 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2000/06/29 06:46:26 $
+ * Version: $Revision: 1.44 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.43 $ $Date: 2000/06/23 08:01:35 $
+ * @version $Revision: 1.44 $ $Date: 2000/06/29 06:46:26 $
  */
 public interface I_CmsQuerys {
     
@@ -76,9 +76,16 @@ public interface I_CmsQuerys {
 	public static final String C_RESOURCES_WRITE = "INSERT INTO " + C_DATABASE_PREFIX + "RESOURCES VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
     public static final Integer C_RESOURCES_GET_LOST_ID_KEY = new Integer(104);
-	public static final String C_RESOURCES_GET_LOST_ID = "SELECT A.FILE_ID FROM "+C_DATABASE_PREFIX+"FILES A LEFT JOIN "
-										+C_DATABASE_PREFIX+"RESOURCES B ON A.FILE_ID=B.FILE_ID WHERE B.FILE_ID is NULL";
+	
+    // generic SQL
+    //public static final String C_RESOURCES_GET_LOST_ID = "SELECT A.FILE_ID FROM "+C_DATABASE_PREFIX+"FILES A LEFT JOIN "
+	//									+C_DATABASE_PREFIX+"RESOURCES B ON A.FILE_ID=B.FILE_ID WHERE B.FILE_ID is NULL";
     
+    // Use this for Oracle !!!!!
+    public static final String C_RESOURCES_GET_LOST_ID = "SELECT FILE_ID FROM "+
+                                                         C_DATABASE_PREFIX+"FILES WHERE FILE_ID NOT IN ( SELECT FILE_ID FROM "+C_DATABASE_PREFIX+"RESOURCES)";
+    
+        
     public static final Integer C_RESOURCES_DELETE_PROJECT_KEY = new Integer(105);
 	public static final String C_RESOURCES_DELETE_PROJECT = "DELETE FROM " + C_DATABASE_PREFIX + "RESOURCES "
 															 + "WHERE PROJECT_ID = ?";

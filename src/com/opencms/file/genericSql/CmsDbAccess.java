@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/27 15:56:27 $
- * Version: $Revision: 1.81 $
+ * Date   : $Date: 2000/06/29 06:46:26 $
+ * Version: $Revision: 1.82 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.81 $ $Date: 2000/06/27 15:56:27 $ * 
+ * @version $Revision: 1.82 $ $Date: 2000/06/29 06:46:26 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -1655,8 +1655,9 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 	 public void deleteProject(CmsProject project)
 		 throws CmsException {
 		 // delete the properties
+    
 		 deleteProjectProperties(project);
-		 
+	 
 		 // delete the files and resources
 		 deleteProjectResources(project);
 
@@ -1670,6 +1671,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 
 			 statement.setInt(1,project.getId());
 			 statement.executeUpdate();
+       
 		 } catch( Exception exc ) {
 			 throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(), 
 				 CmsException.C_SQL_ERROR, exc);
@@ -2880,7 +2882,32 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                
                // create new resource
                if(res.next()) {
-                        file = new CmsResource(res.getInt(C_RESOURCES_RESOURCE_ID),
+                    int resId=res.getInt(C_RESOURCES_RESOURCE_ID);
+                    int parentId=res.getInt(C_RESOURCES_PARENT_ID);
+                    String resName=res.getString(C_RESOURCES_RESOURCE_NAME);
+                    int resType= res.getInt(C_RESOURCES_RESOURCE_TYPE);
+                    int resFlags=res.getInt(C_RESOURCES_RESOURCE_FLAGS);
+                    int userId=res.getInt(C_RESOURCES_USER_ID);
+                    int groupId= res.getInt(C_RESOURCES_GROUP_ID);
+                    int projectId=res.getInt(C_RESOURCES_PROJECT_ID);
+                    int fileId=res.getInt(C_RESOURCES_FILE_ID);
+                    int accessFlags=res.getInt(C_RESOURCES_ACCESS_FLAGS);
+                    int state= res.getInt(C_RESOURCES_STATE);
+                    int lockedBy= res.getInt(C_RESOURCES_LOCKED_BY);
+                    int launcherType= res.getInt(C_RESOURCES_LAUNCHER_TYPE);
+                    String launcherClass=  res.getString(C_RESOURCES_LAUNCHER_CLASSNAME);
+                    long created=res.getTimestamp(C_RESOURCES_DATE_CREATED).getTime();
+                    long modified=res.getTimestamp(C_RESOURCES_DATE_LASTMODIFIED).getTime();
+                    int modifiedBy=res.getInt(C_RESOURCES_LASTMODIFIED_BY);
+                    int resSize= res.getInt(C_RESOURCES_SIZE);
+                  
+                   
+                    file=new CmsResource(resId,parentId,fileId,resName,resType,resFlags,
+                                         userId,groupId,projectId,accessFlags,state,lockedBy,
+                                         launcherType,launcherClass,created,modified,modifiedBy,
+                                         resSize);
+                                         
+                        /*file = new CmsResource(res.getInt(C_RESOURCES_RESOURCE_ID),
 										   res.getInt(C_RESOURCES_PARENT_ID),
 										   res.getInt(C_RESOURCES_FILE_ID),
 										   res.getString(C_RESOURCES_RESOURCE_NAME),
@@ -2898,7 +2925,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                                            res.getTimestamp(C_RESOURCES_DATE_LASTMODIFIED).getTime(),
                                            res.getInt(C_RESOURCES_LASTMODIFIED_BY),
                                            res.getInt(C_RESOURCES_SIZE)
-                                           );
+                                           );*/
 					res.close();
                } else {
 				 res.close();
@@ -2942,7 +2969,32 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                
                // create new resource
                while(res.next()) {
-				    file = new CmsResource(res.getInt(C_RESOURCES_RESOURCE_ID),
+                    int resId=res.getInt(C_RESOURCES_RESOURCE_ID);
+                    int parentId=res.getInt(C_RESOURCES_PARENT_ID);
+                    String resName=res.getString(C_RESOURCES_RESOURCE_NAME);
+                    int resType= res.getInt(C_RESOURCES_RESOURCE_TYPE);
+                    int resFlags=res.getInt(C_RESOURCES_RESOURCE_FLAGS);
+                    int userId=res.getInt(C_RESOURCES_USER_ID);
+                    int groupId= res.getInt(C_RESOURCES_GROUP_ID);
+                    int projectId=res.getInt(C_RESOURCES_PROJECT_ID);
+                    int fileId=res.getInt(C_RESOURCES_FILE_ID);
+                    int accessFlags=res.getInt(C_RESOURCES_ACCESS_FLAGS);
+                    int state= res.getInt(C_RESOURCES_STATE);
+                    int lockedBy= res.getInt(C_RESOURCES_LOCKED_BY);
+                    int launcherType= res.getInt(C_RESOURCES_LAUNCHER_TYPE);
+                    String launcherClass=  res.getString(C_RESOURCES_LAUNCHER_CLASSNAME);
+                    long created=res.getTimestamp(C_RESOURCES_DATE_CREATED).getTime();
+                    long modified=res.getTimestamp(C_RESOURCES_DATE_LASTMODIFIED).getTime();
+                    int modifiedBy=res.getInt(C_RESOURCES_LASTMODIFIED_BY);
+                    int resSize= res.getInt(C_RESOURCES_SIZE);
+                  
+                   
+                    file=new CmsResource(resId,parentId,fileId,resName,resType,resFlags,
+                                         userId,groupId,projectId,accessFlags,state,lockedBy,
+                                         launcherType,launcherClass,created,modified,modifiedBy,
+                                         resSize);
+                   
+				    /*file = new CmsResource(res.getInt(C_RESOURCES_RESOURCE_ID),
 										   res.getInt(C_RESOURCES_PARENT_ID),
 										   res.getInt(C_RESOURCES_FILE_ID),
 										   res.getString(C_RESOURCES_RESOURCE_NAME),
@@ -2960,7 +3012,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                                            res.getTimestamp(C_RESOURCES_DATE_LASTMODIFIED).getTime(),
                                            res.getInt(C_RESOURCES_LASTMODIFIED_BY),
                                            res.getInt(C_RESOURCES_SIZE)
-                                           );
+                                           );*/
 					resources.addElement(file);
 			   }
 			res.close();
@@ -3154,13 +3206,14 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
         throws CmsException {
         PreparedStatement statement = null;
         try {
+        
 			// delete all project-resources.
 	      	statement = m_pool.getPreparedStatement(C_RESOURCES_DELETE_PROJECT_KEY);
-			statement.setInt(1,project.getId());
-			statement.executeQuery();
+			statement.setInt(1,project.getId());       
+			statement.executeQuery();           
             // delete all project-files.
             clearFilesTable();
-		} catch (SQLException e){
+         } catch (SQLException e){
            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
 		}finally {
 			if( statement != null) {
@@ -4512,16 +4565,16 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		PreparedStatement statementDestroy = null;
 		ResultSet res = null;
 		try{
-			statementSearch = m_pool.getPreparedStatement(C_RESOURCES_GET_LOST_ID_KEY);
-			res = statementSearch.executeQuery();
+      		statementSearch = m_pool.getPreparedStatement(C_RESOURCES_GET_LOST_ID_KEY);
+	        res = statementSearch.executeQuery();
 			// delete the lost fileId's
-			statementDestroy = m_pool.getPreparedStatement(C_FILE_DELETE_KEY);
+    		statementDestroy = m_pool.getPreparedStatement(C_FILE_DELETE_KEY);
 			while (res.next() ){
-				statementDestroy.setInt(1,res.getInt(C_FILE_ID));
+       			statementDestroy.setInt(1,res.getInt(C_FILE_ID));
 				statementDestroy.executeUpdate();
-				statementDestroy.clearParameters();
+            	statementDestroy.clearParameters();
 			}
-			res.close();
+     			res.close();
 		} catch (SQLException e){
     		throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
 		  }finally {
