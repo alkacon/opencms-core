@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/LinkSubstitution.java,v $
-* Date   : $Date: 2002/02/12 15:55:43 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2002/02/21 16:13:53 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -112,10 +112,16 @@ public class LinkSubstitution {
                         "		<encodequotationmarks value=\"false\"/>"+
                         "	</defaults>"+
                         "   <replacecontent>"+
+                        "       <string content=\"&amp;mdash;\" replace=\"$mdash$\"/>"+
+                        "       <string content=\"&amp;ndash;\" replace=\"$ndash$\"/>"+
+                        "       <string content=\"&amp;bull;\" replace=\"$bull$\"/>"+
                         "       <string content=\"&#\" replace=\"$Sonder$\"/>"+
                         "   </replacecontent>"+
                         "   <replacestrings usedefaults=\"true\">"+
                         "       <string content=\"$Sonder$\" replace=\"&#\"/>"+
+                        "       <string content=\"$mdash$\" replace=\"&amp;mdash;\"/>"+
+                        "       <string content=\"$ndash$\" replace=\"&amp;ndash;\"/>"+
+                        "       <string content=\"$bull$\" replace=\"&amp;bull;\"/>"+
                         "   </replacestrings>"+
                         "	<inlinetags>"+
                         "		<tag name=\"img\"/>"+
