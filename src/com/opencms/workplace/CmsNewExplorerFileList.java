@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
-* Date   : $Date: 2001/09/13 09:05:23 $
-* Version: $Revision: 1.37 $
+* Date   : $Date: 2001/09/13 09:55:50 $
+* Version: $Revision: 1.38 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.xml.sax.*;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.37 $ $Date: 2001/09/13 09:05:23 $
+ * @version $Revision: 1.38 $ $Date: 2001/09/13 09:55:50 $
  */
 
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannels,I_CmsConstants,I_CmsWpConstants {
@@ -149,7 +149,6 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
             A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsDumpTemplate] Now dumping contents of file "
                     + templateFile);
         }
-System.err.println("mgm--parameter"+parameters);
         I_CmsSession session = cms.getRequestContext().getSession(true);
         CmsXmlWpTemplateFile templateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
         CmsXmlLanguageFile lang = templateDocument.getLanguageFile();
@@ -267,9 +266,6 @@ System.err.println("mgm--parameter"+parameters);
                     stopat = startat + maxEntrys;
                 }
             }
-System.err.println("mgm--selected page found in parameters:"+selectedPage);
-System.err.println("mgm--we have "+resources.size()+" resources to show.");
-System.err.println("mgm--we show now: "+startat+" <= x < "+stopat);
         }
 
         for(int i = startat;i < stopat;i++) {
@@ -438,7 +434,6 @@ System.err.println("mgm--we show now: "+startat+" <= x < "+stopat);
             content.append(" top.dUL(document); \n");
         } else {
             // update all frames
-System.err.println("mgm--call : top.dU(document,"+numberOfPages+","+selectedPage+");");
             content.append(" top.dU(document,"+numberOfPages+","+selectedPage+"); \n");
         }
         content.append("}\n");
