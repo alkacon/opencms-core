@@ -16,6 +16,7 @@
 				sendURLString('EDITOR','URL',linkurl);
 			}
 			
+
 			function sendLinkWithText(linktext, linkurl, linktarget, linkanchor, linkstyle, linkstyleclass){
 				var sel = top.window.opener.self.document.EDITOR.EDIT_HTML.DOM.selection;
 				if(linktext.length == 0){
@@ -26,7 +27,9 @@
 				    linktext = linkanchor;
 				  }
 				}
-				if(sel != null && sel.type != "Control"){
+				//if text was selected
+				if(sel != null) {
+				  if(sel.type == "Text"){
 					var rng = sel.createRange();
 					if(rng != null){
 					  var thelink = "<a ";
@@ -46,9 +49,44 @@
 					    thelink += "class='"+linkstyleclass+"' ";
 					  }	
 					  thelink += ">" + linktext + "</a>";			  
-					  					  
+					  
+					  
 				      rng.pasteHTML(thelink);
+
 					}
+				  }
+				  // if anything else was selected, e.g. an image
+				  else if(sel.type == "Control") {
+					var rng = sel.createRange();
+					var el = rng.item(0);
+					if(el != null){
+					  var thelink = "<a ";
+					  if(linkurl.length > 0) {
+					    thelink += "href='"+linkurl+"' ";
+					  }
+					  if(linktarget.length > 0) {			  
+					    thelink += "target='"+linktarget+"' ";
+					  }					  
+					  if(linkanchor.length > 0) {			  
+					    thelink += "name='"+linkanchor+"' ";
+					  }
+					  if(linkstyle.length > 0) {		  
+					    thelink += "style='"+linkstyle+"' ";
+					  }					  
+					  if(linkstyleclass.length > 0) {		  
+					    thelink += "class='"+linkstyleclass+"' ";
+					  }	
+					  thelink += ">" + el.outerHTML + "</a>";	
+
+                      // if there is an existing link around the object
+					  if(el.parentElement.tagName == "A") {
+					    el.parentElement.outerHTML = thelink;
+					  }
+					  else {
+ 				        el.outerHTML = thelink;
+ 				      }
+					}
+				  }				  
 				}	
 			}
 			
@@ -86,7 +124,6 @@
 				return true;
 			}
 			
-			
 			/* Checks if the selected Text is an hyperlink */
 			function checkSelection() {
 			  
@@ -116,30 +153,41 @@
   			        break;
   			      }
                 }
+                fillTextfields(null, range.text);
+			  }
+			  else if("Control" == sel.type) {
+			    var range = sel.createRange();
+			    var el = range.item(0);
+			    if(el.parentElement.tagName == "A") {
+			      fillTextfields(el.parentElement, "");
+			    }
 			  }
 			}
 			
 			
 			function fillTextfields(el, linkname) {
 			 
-			  document.forms["NEU"].elements["NEUNAME"].value = linkname
-			  document.forms["NEU"].elements["neulink"].value = el.href
-			  document.forms["NEU"].elements["linkanchor"].value = el.name
-			  document.forms["NEU"].elements["linkstyle"].value = el.style.cssText;
-			  document.forms["NEU"].elements["linkstyleclass"].value = el.className;
+			  document.forms["NEU"].elements["NEUNAME"].value = linkname;
 			  
-			  if(el.target == "_self") {
-			    document.forms["NEU"].elements["linktarget"].selectedIndex = 0;
-			  }
-			  else if(el.target == "_blank") {
-			    document.forms["NEU"].elements["linktarget"].selectedIndex = 1;
-			  }
-			  else if(el.target == "_top") {
-			    document.forms["NEU"].elements["linktarget"].selectedIndex = 2;
-			  }
-			  			  			  			  			  
+			  if(el != null) {
+  			    document.forms["NEU"].elements["neulink"].value = el.href;
+			    document.forms["NEU"].elements["linkanchor"].value = el.name;
+			    document.forms["NEU"].elements["linkstyle"].value = el.style.cssText;
+			    document.forms["NEU"].elements["linkstyleclass"].value = el.className;
+			  
+			    if(el.target == "_self") {
+			      document.forms["NEU"].elements["linktarget"].selectedIndex = 0;
+			    }
+			    else if(el.target == "_blank") {
+			      document.forms["NEU"].elements["linktarget"].selectedIndex = 1;
+			    }
+			    else if(el.target == "_top") {
+			      document.forms["NEU"].elements["linktarget"].selectedIndex = 2;
+			    }
+			  }			  			  			  			  
 			
 			}
+			
 		//-->
 		</script>
 
