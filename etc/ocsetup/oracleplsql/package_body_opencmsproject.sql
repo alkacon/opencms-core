@@ -329,11 +329,45 @@ PACKAGE BODY OpenCmsProject IS
           WHEN NO_DATA_FOUND THEN
             vParentId := opencmsConstants.C_UNKNOWN_ID;
         END;
-        opencmsResource.createFolder(pUserId, pOnlineProjectId, pOnlineProjectId, recFolders,
-                                     vParentId, recFolders.resource_name, curNewFolder);
-        FETCH curNewFolder INTO recNewFolder;
-        CLOSE curNewFolder;
-        recNewFolder.state := opencmsConstants.C_STATE_UNCHANGED;
+        BEGIN
+          opencmsResource.createFolder(pUserId, pOnlineProjectId, pOnlineProjectId, recFolders,
+            	                         vParentId, recFolders.resource_name, curNewFolder);
+          FETCH curNewFolder INTO recNewFolder;
+          CLOSE curNewFolder;
+		  recNewFolder.state := opencmsConstants.C_STATE_UNCHANGED;
+		  opencmsResource.writeFolder(pProjectId, recNewFolder, 'FALSE');
+        EXCEPTION
+		  WHEN OTHERS THEN	  
+		  	IF sqlcode = userErrors.C_FILE_EXISTS THEN
+		  	  curNewFolder := opencmsResource.readFolder(pUserId, pOnlineProjectId, recFolders.resource_name);
+			  FETCH curNewFolder INTO recNewFolder;
+			  CLOSE curNewFolder;		  	  
+		  	  -- the folder already exists in the online-project
+              -- update the folder in the online-project
+              update cms_resources set
+                     resource_type = recFolders.resource_type,
+                     resource_flags = recFolders.resource_flags,
+                     user_id = recFolders.user_id,
+                     group_id = recFolders.group_id,
+                     project_id = pOnlineProjectId,
+                     access_flags = recFolders.access_flags,
+                     state = opencmsConstants.C_STATE_UNCHANGED,
+                     locked_by = recFolders.locked_by,
+                     launcher_type = recFolders.launcher_type,
+                     launcher_classname = recFolders.launcher_classname,
+                     date_lastmodified = sysdate,
+                     resource_lastmodified_by = recFolders.resource_lastmodified_by,
+                     resource_size = 0,
+                     file_id = recFolders.file_id
+                     where resource_id = recNewFolder.resource_id;
+              commit;
+		  	  curNewFolder := opencmsResource.readFolder(pUserId, pOnlineProjectId, recFolders.resource_name);
+			  FETCH curNewFolder INTO recNewFolder;
+			  CLOSE curNewFolder;              
+		    ELSE	    
+			  RAISE;
+		    END IF;
+        END;
         opencmsResource.writeFolder(pProjectId, recNewFolder, 'FALSE');
         -- copy properties
         opencmsProperty.writeProperties(opencmsProperty.readAllProperties(pUserId, pProjectId, recFolders.resource_name),
@@ -455,12 +489,42 @@ PACKAGE BODY OpenCmsProject IS
           WHEN NO_DATA_FOUND THEN
             vParentId := opencmsConstants.C_UNKNOWN_ID;
         END;
-        opencmsResource.createFile(pOnlineProjectId, pOnlineProjectId, recFiles, pUserId, vParentId,
-                                   recFiles.resource_name, 'FALSE', curNewFile);
-        FETCH curNewFile INTO recNewFile;
-        CLOSE curNewFile;
-        recNewFile.state := opencmsConstants.C_STATE_UNCHANGED;
-        opencmsResource.writeFile(pOnlineProjectId, recNewFile, 'FALSE');
+        BEGIN
+          opencmsResource.createFile(pOnlineProjectId, pOnlineProjectId, recFiles, pUserId, vParentId,
+                                     recFiles.resource_name, 'FALSE', curNewFile);
+          FETCH curNewFile INTO recNewFile;
+          CLOSE curNewFile;
+          recNewFile.state := opencmsConstants.C_STATE_UNCHANGED;
+          opencmsResource.writeFile(pOnlineProjectId, recNewFile, 'FALSE');
+        EXCEPTION
+          WHEN OTHERS THEN        
+            IF sqlcode = userErrors.C_FILE_EXISTS THEN            
+              -- the folder already exist in the online-project
+              curNewFile := opencmsResource.readFile(pUserId, pOnlineProjectId, recFiles.resource_name);
+              FETCH curNewFile INTO recNewFile;
+              CLOSE curNewFile;
+              -- update the file in the online-project
+              update cms_resources set
+                     resource_type = recFiles.resource_type,
+                     resource_flags = recFiles.resource_flags,
+                     user_id = recFiles.user_id,
+                     group_id = recFiles.group_id,
+                     project_id = pOnlineProjectId,
+                     access_flags = recFiles.access_flags,
+                     state = opencmsConstants.C_STATE_UNCHANGED,
+                     locked_by = recFiles.locked_by,
+                     launcher_type = recFiles.launcher_type,
+                     launcher_classname = recFiles.launcher_classname,
+                     date_lastmodified = sysdate,
+                     resource_lastmodified_by = recFiles.resource_lastmodified_by,
+                     resource_size = recFiles.resource_size,
+                     file_id = recFiles.file_id
+                     where resource_id = recNewFile.resource_id;
+              commit;
+            ELSE         
+              RAISE;
+            END IF;  
+        END;
         -- copy the properties
         opencmsProperty.writeProperties(opencmsProperty.readAllProperties(pUserId, pProjectId, recFiles.resource_name),
                                         recNewFile.resource_id, recNewFile.resource_type);
