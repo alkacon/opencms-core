@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateNavigation.java,v $
- * Date   : $Date: 2004/11/08 14:36:45 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/11/16 12:07:23 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  * request parameters.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsTemplateNavigation extends CmsJspActionElement {
     
@@ -85,6 +85,9 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
     public static final String C_PARAM_SHOWMENUS = "showmenus";
     /** Request parameter name for the current start folder.<p> */
     public static final String C_PARAM_STARTFOLDER = "startfolder";
+    
+    /** Name of the property key to determine if the current element is shown in headnav.<p> */
+    public static final String C_PROPERTY_HEADNAV_USE = "style_head_nav_showitem";
     
     /** Stores the path to the head navigation start folder.<p> */
     private String m_headNavFolder;
@@ -231,9 +234,12 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
             result.append("</a>\n");
             
             int count = -1;
+            String showItemProperty;
             for (int i=0; i<navElements.size(); i++) {
                 CmsJspNavElement nav = (CmsJspNavElement)navElements.get(i);
-                if (nav.isFolderLink()) {
+                showItemProperty = property(C_PROPERTY_HEADNAV_USE, nav.getResourceName(), "true");
+                boolean showItem = Boolean.valueOf(showItemProperty).booleanValue();
+                if (nav.isFolderLink() && showItem) {
                     // create an entry for every folder
                     count++;
                     String navText = nav.getNavText().toUpperCase();
@@ -279,9 +285,12 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
         List navElements = getNavigation().getNavigationForFolder(getHeadNavFolder());
  
         int count = -1;
+        String showItemProperty;
         for (int i=0; i<navElements.size(); i++) {
             CmsJspNavElement foldernav = (CmsJspNavElement)navElements.get(i);
-            if (foldernav.isFolderLink()) {
+            showItemProperty = property(C_PROPERTY_HEADNAV_USE, foldernav.getResourceName(), "true");
+            boolean showItem = Boolean.valueOf(showItemProperty).booleanValue();
+            if (foldernav.isFolderLink() && showItem) {
                 // create a menu entry for every found folder
                 count++;
                 String subfolder = foldernav.getResourceName();
