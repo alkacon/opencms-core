@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeJsp.java,v $
- * Date   : $Date: 2004/07/05 16:32:42 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/07/06 12:57:36 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsResourceTypeJsp extends A_CmsResourceType {
 
@@ -95,8 +95,13 @@ public class CmsResourceTypeJsp extends A_CmsResourceType {
         byte[] content,
         List properties
     ) throws CmsException {
-
-        List newProperties = new ArrayList(properties);
+        
+        List newProperties;       
+        if (properties == null) {
+            newProperties = new ArrayList(); 
+        } else {
+            newProperties = new ArrayList(properties);
+        }
         newProperties.add(new CmsProperty(I_CmsConstants.C_PROPERTY_EXPORT, null, "false"));
         newProperties.add(new CmsProperty(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, null, m_defaultEncoding));
 
