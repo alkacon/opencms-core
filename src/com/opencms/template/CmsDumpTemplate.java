@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsDumpTemplate.java,v $
-* Date   : $Date: 2001/05/15 19:29:05 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2001/05/17 14:10:31 $
+* Version: $Revision: 1.24 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -41,7 +41,7 @@ import com.opencms.template.cache.*;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.23 $ $Date: 2001/05/15 19:29:05 $
+ * @version $Revision: 1.24 $ $Date: 2001/05/17 14:10:31 $
  */
 public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate {
 
@@ -87,7 +87,7 @@ public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate 
      * @exception CmsException
      */
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters) throws CmsException {
-        if(C_DEBUG && (A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() && C_DEBUG) {
             A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsDumpTemplate] Now dumping contents of file " + templateFile);
         }
         byte[] s = null;
@@ -96,7 +96,7 @@ public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate 
         }
         catch(Exception e) {
             String errorMessage = "Error while reading file " + templateFile + ": " + e;
-            if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                 A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsDumpTemplate] " + errorMessage);
             }
             if(e instanceof CmsException) {

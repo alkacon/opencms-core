@@ -3,8 +3,8 @@ package com.opencms.dbpool;
 /*
  *
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/dbpool/Attic/CmsPool.java,v $
- * Date   : $Date: 2001/05/15 19:29:00 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2001/05/17 14:10:31 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -113,7 +113,7 @@ public class CmsPool extends Thread {
         setDaemon(true);
         // start the connection-guard for this pool
         start();
-		if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+		if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_POOL, "["+ getClass().getName() +"] " + m_poolname + ": created");
 		}
 	}
@@ -122,7 +122,7 @@ public class CmsPool extends Thread {
      * The run-method for the connection-guard
      */
     public void run() {
-        if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_POOL, "["+ getClass().getName() +"] " + m_poolname + ": starting connection-guard");
         }
         // never stop
@@ -133,7 +133,7 @@ public class CmsPool extends Thread {
             } catch(InterruptedException exc) {
                 // ignore this exception
             }
-            if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_POOL, "["+ getClass().getName() +"] " + m_poolname + ": checking for outtimed connections");
             }
             synchronized(m_availableConnections) {
@@ -145,7 +145,7 @@ public class CmsPool extends Thread {
                         m_availableConnections.removeElement(con);
                         m_connectionAmount--;
                         con.closeOriginalConnection();
-                        if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+                        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_POOL, "["+ getClass().getName() +"] " + m_poolname + ": closing one outtimed connection");
                         }
                     }
@@ -155,7 +155,7 @@ public class CmsPool extends Thread {
                     try {
                         createConnections(m_minConn - m_connectionAmount);
                     } catch(SQLException exc) {
-                        if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+                        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_POOL, "["+ getClass().getName() +"] " + m_poolname + ": unable to create new connection for broken one");
                         }
                     }
@@ -192,7 +192,7 @@ public class CmsPool extends Thread {
                 } else {
                     // no connection available - have to wait
                     // wait until there are available connections
-                    if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+                    if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                           A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_POOL, "["+ getClass().getName() +"] " + m_poolname + ": no connections available - have to wait");
                     }
                     try {
@@ -226,7 +226,7 @@ public class CmsPool extends Thread {
         if((con.getEstablishedTime() + (m_maxage)) < System.currentTimeMillis()) {
             // this connection is to old. destroy it and create a new-one!
             alive = false;
-            if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_POOL, "["+ getClass().getName() +"] " + m_poolname + ": connection is to old, destroy it.");
             }
         }
@@ -237,7 +237,7 @@ public class CmsPool extends Thread {
                 m_availableConnections.push(con);
                 m_availableConnections.notify();
             } else {
-                if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                     A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_POOL, "["+ getClass().getName() +"] " + m_poolname + ": connection was broken");
                 }
                 // no, the connection is dead -> trhow it away and close it
@@ -249,7 +249,7 @@ public class CmsPool extends Thread {
                     createConnections(1);
                     m_availableConnections.notify();
                 } catch(SQLException exc) {
-                    if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+                    if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                         A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_POOL, "["+ getClass().getName() +"] " + m_poolname + ": unable to create new connection for broken one");
                     }
                 }
@@ -276,7 +276,7 @@ public class CmsPool extends Thread {
 	 * @exception SQLException if a database-access error occurs.
 	 */
 	private Connection createConnection() throws SQLException {
-		if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+		if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_POOL, "["+ getClass().getName() +"] " + m_poolname + ": creating new connection. Current Amount is:" + m_connectionAmount);
 		}
         Connection con = null;
@@ -319,7 +319,7 @@ public class CmsPool extends Thread {
                 m_connectionAmount--;
             }
         }
-		if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+		if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_POOL, "["+ getClass().getName() +"] " + m_poolname + ": destroyed");
 		}
     }

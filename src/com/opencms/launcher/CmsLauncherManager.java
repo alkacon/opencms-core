@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsLauncherManager.java,v $
-* Date   : $Date: 2001/05/15 19:29:05 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2001/05/17 14:10:31 $
+* Version: $Revision: 1.15 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -38,7 +38,7 @@ import java.util.*;
  * given launcher id.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.14 $ $Date: 2001/05/15 19:29:05 $
+ * @version $Revision: 1.15 $ $Date: 2001/05/17 14:10:31 $
  */
 public class CmsLauncherManager implements I_CmsLogChannels {
 
@@ -78,7 +78,7 @@ public class CmsLauncherManager implements I_CmsLogChannels {
 
         // Initialize Hashtable
         launchers = new Hashtable();
-		if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+		if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsLauncherManager] launcher package is:" + launcherPackage);
         }
 
@@ -94,7 +94,7 @@ public class CmsLauncherManager implements I_CmsLogChannels {
                     // The launcher class could not be loaded.
                     // This is no critical error.
                     // We assume the launcher should not be integrated into the OpenCms system.
-                    if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+                    if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                         A_OpenCms.log(C_OPENCMS_INIT, "[CmsLauncherManager] OpenCms launcher \"" + C_KNOWN_LAUNCHERS[i] + "\" not found. Ignoring.");
                     }
                     continue;
@@ -107,14 +107,14 @@ public class CmsLauncherManager implements I_CmsLogChannels {
                         // So this class is anything, but NOT a OpenCms launcher.
                         // We have to stop the system.
                         String errorMessage = "Loaded launcher class \"" + C_KNOWN_LAUNCHERS[i] + "\" is no OpenCms launcher (does not implement I_CmsLauncher). Ignoring";
-                        if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+                        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                             A_OpenCms.log(C_OPENCMS_INIT, "[CmsLauncherManager] " + errorMessage);
                         }
                         continue;
                     }
                     else {
                         String errorMessage = "Unknown error while initializing launcher \"" + C_KNOWN_LAUNCHERS[i] + "\". Ignoring.";
-                        if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+                        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                             A_OpenCms.log(C_OPENCMS_INIT, "[CmsLauncherManager] " + errorMessage);
                             A_OpenCms.log(C_OPENCMS_INIT, "[CmsLauncherManager] " + e);
                         }
@@ -128,7 +128,7 @@ public class CmsLauncherManager implements I_CmsLogChannels {
             launcherId = new Integer(launcherInstance.getLauncherId());
             if(launchers.containsKey(launcherId)) {
                 String errorMessage = "Duplicate launcher ID " + launcherId + " in launcher \"" + C_KNOWN_LAUNCHERS[i] + "\".";
-                if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                     A_OpenCms.log(C_OPENCMS_INIT, "[CmsLauncherManager] " + errorMessage);
                 }
                 throw new CmsException(errorMessage, CmsException.C_LAUNCH_ERROR);
@@ -137,7 +137,7 @@ public class CmsLauncherManager implements I_CmsLogChannels {
             // Now everything is fine.
             // We can store the launcher in our Hashtable.
             launchers.put(launcherId, launcherInstance);
-            if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                 A_OpenCms.log(C_OPENCMS_INIT, "[CmsLauncherManager] OpenCms launcher \"" + C_KNOWN_LAUNCHERS[i] + "\" with launcher ID " + launcherId + " loaded successfully.");
             }
         }

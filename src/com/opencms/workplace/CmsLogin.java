@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLogin.java,v $
-* Date   : $Date: 2001/05/15 19:29:06 $
-* Version: $Revision: 1.40 $
+* Date   : $Date: 2001/05/17 14:10:32 $
+* Version: $Revision: 1.41 $
 *
 * Copyright (C) 2000  The OpenCms Group 
 * 
@@ -41,7 +41,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Waruschan Babachan
- * @version $Revision: 1.40 $ $Date: 2001/05/15 19:29:06 $
+ * @version $Revision: 1.41 $ $Date: 2001/05/17 14:10:32 $
  */
 
 public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -197,7 +197,7 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
                 // get a session for this user so that he is authentificated at the                
                 // end of this request
                 session = cms.getRequestContext().getSession(true);
-                if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                     A_OpenCms.log(C_OPENCMS_INFO, "[CmsLogin] Login user " + username);
                 }
                 

@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/05/15 19:29:03 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2001/05/17 14:10:31 $
+ * Version: $Revision: 1.51 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -50,7 +50,7 @@ import com.opencms.util.*;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.50 $ $Date: 2001/05/15 19:29:03 $ *
+ * @version $Revision: 1.51 $ $Date: 2001/05/17 14:10:31 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	/**
@@ -432,7 +432,7 @@ public void deleteProjectProperties(CmsProject project) throws CmsException {
             // destroy not possible - ignoring the exception
         }
 
-		if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+		if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] destroy complete.");
 		}
 	}
@@ -620,7 +620,7 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 				}
 				catch (CmsException exc)
 				{
-					if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING))
+					if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() )
 					{
 						A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] error publishing, copy properties for " + newFolder.toString() + " Message= " + exc.getMessage());
 					}
@@ -723,7 +723,7 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 					}
 					catch (CmsException exc)
 					{
-						if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING))
+						if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() )
 						{
 							A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] error publishing, deleting properties for " + onlineFolder.toString() + " Message= " + exc.getMessage());
 						}
@@ -762,7 +762,7 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 								}
 								catch (CmsException exc2)
 								{
-									if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING))
+									if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() )
 									{
 										A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] error publishing, copy properties for " + onlineFolder.toString() + " Message= " + exc.getMessage());
 									}
@@ -813,7 +813,7 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 					}
 					catch (CmsException exc)
 					{
-						if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING))
+						if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() )
 						{
 							A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] error publishing, deleting properties for " + currentOnlineFile.toString() + " Message= " + exc.getMessage());
 						}
@@ -824,7 +824,7 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 					}
 					catch (CmsException exc)
 					{
-						if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING))
+						if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() )
 						{
 							A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] error publishing, deleting resource for " + currentOnlineFile.toString() + " Message= " + exc.getMessage());
 						}
@@ -924,7 +924,7 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 					}
 					catch (CmsException exc)
 					{
-						if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING))
+						if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() )
 						{
 							A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] error publishing, deleting properties for " + onlineFile.toString() + " Message= " + exc.getMessage());
 						}
@@ -964,7 +964,7 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 						}
 						catch (CmsException exc)
 						{
-							if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING))
+							if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() )
 							{
 								A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] error publishing, copy properties for " + newFile.toString() + " Message= " + exc.getMessage());
 							}
@@ -986,7 +986,7 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 		}
 		catch (CmsException exc)
 		{
-			if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING))
+			if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() )
 			{
 				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] error publishing, deleting properties for " + currentFolder.toString() + " Message= " + exc.getMessage());
 			}

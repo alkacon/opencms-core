@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlXercesParser.java,v $
-* Date   : $Date: 2001/05/15 19:29:05 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2001/05/17 14:10:31 $
+* Version: $Revision: 1.13 $
 *
 * Copyright (C) 2000  The OpenCms Group 
 * 
@@ -43,7 +43,7 @@ import com.opencms.core.*;
  * 
  * @author Alexander Kandzior
  * @author Alexander Lucas
- * @version $Revision: 1.12 $ $Date: 2001/05/15 19:29:05 $
+ * @version $Revision: 1.13 $ $Date: 2001/05/17 14:10:31 $
  */
 public class CmsXmlXercesParser implements I_CmsXmlParser,I_CmsLogChannels {
     
@@ -94,7 +94,7 @@ public class CmsXmlXercesParser implements I_CmsXmlParser,I_CmsLogChannels {
             domSerializer.serialize(doc);
         }
         catch(Exception e) {
-            if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                 A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsXmlXercesParser] " + e);
             }
         }
@@ -124,7 +124,7 @@ public class CmsXmlXercesParser implements I_CmsXmlParser,I_CmsLogChannels {
             parser.setFeature("http://apache.org/xml/features/dom/include-ignorable-whitespace", false);
         }
         catch(SAXException e) {
-            if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING) && !c_xercesWarning) {
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()  && !c_xercesWarning) {
                 A_OpenCms.log(C_OPENCMS_INFO, "[CmsXmlXercesParser] Cannot set parser feature for apache xerces XML parser.");
                 A_OpenCms.log(C_OPENCMS_INFO, "[CmsXmlXercesParser] This is NOT critical, but you should better use xerces 1.1.1 or higher.");
                 c_xercesWarning = true;

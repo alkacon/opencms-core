@@ -1,8 +1,8 @@
 
 /*
 * File   : $File$
-* Date   : $Date: 2001/05/16 08:07:31 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2001/05/17 14:10:32 $
+* Version: $Revision: 1.10 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -72,7 +72,7 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsCo
      * @param templateSelector template section that should be processed.
      */
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
-        if(C_DEBUG && (A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() && C_DEBUG ) {
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "getting content of element " + ((elementName == null) ? "<root>" : elementName));
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: " + templateFile);
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector == null) ? "<default>" : templateSelector));
@@ -98,7 +98,7 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsCo
                     cms.readFileHeader(resourcen[i]);
                 }
                 catch(CmsException e) {
-                     if(A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING) {
+                     if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                          A_OpenCms.log(I_CmsLogChannels.C_MODULE_DEBUG,
                             "error exporting module: couldn't add " + resourcen[i] + " to Module\n" + Utils.getStackTrace(e));
                      }
@@ -109,7 +109,7 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsCo
                 cms.readFileHeader(resourcen[0]);
             }
             catch(CmsException e) {
-                 if(A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING) {
+                 if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                      A_OpenCms.log(I_CmsLogChannels.C_MODULE_DEBUG,
                         "error exporting module: couldn't add " + resourcen[0]
                         + " to Module\n" + "You dont have this module in this project!");

@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectDelete.java,v $
-* Date   : $Date: 2001/05/15 19:29:05 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2001/05/17 14:10:32 $
+* Version: $Revision: 1.11 $
 *
 * Copyright (C) 2000  The OpenCms Group 
 * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.10 $ $Date: 2001/05/15 19:29:05 $
+ * @version $Revision: 1.11 $ $Date: 2001/05/17 14:10:32 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -62,7 +62,7 @@ public class CmsAdminProjectDelete extends CmsWorkplaceDefault implements I_CmsC
     
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, 
             String templateSelector) throws CmsException {
-        if(C_DEBUG && (A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() && C_DEBUG) {
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "getting content of element " 
                     + ((elementName == null) ? "<root>" : elementName));
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: " 

@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectPublish.java,v $
-* Date   : $Date: 2001/05/15 19:29:05 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2001/05/17 14:10:32 $
+* Version: $Revision: 1.15 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.14 $ $Date: 2001/05/15 19:29:05 $
+ * @version $Revision: 1.15 $ $Date: 2001/05/17 14:10:32 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -64,7 +64,7 @@ public class CmsAdminProjectPublish extends CmsWorkplaceDefault implements I_Cms
 
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) throws CmsException {
-        if(C_DEBUG && (A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() && C_DEBUG ) {
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "getting content of element " + ((elementName == null) ? "<root>" : elementName));
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: " + templateFile);
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector == null) ? "<default>" : templateSelector));

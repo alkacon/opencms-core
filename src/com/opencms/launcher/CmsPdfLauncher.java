@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsPdfLauncher.java,v $
-* Date   : $Date: 2001/05/15 19:29:05 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2001/05/17 14:10:31 $
+* Version: $Revision: 1.8 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -59,7 +59,7 @@ import java.io.*;
  * be used to create output.
  *
  * @author Matthias Schreiber
- * @version $Revision: 1.7 $ $Date: 2001/05/15 19:29:05 $
+ * @version $Revision: 1.8 $ $Date: 2001/05/17 14:10:31 $
  */
 public class CmsPdfLauncher extends CmsXmlLauncher {
 
@@ -74,29 +74,29 @@ public class CmsPdfLauncher extends CmsXmlLauncher {
         if(parserClassName == null) {
             parserClassName = "org.apache.xerces.parsers.SAXParser";
         }
-		if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+		if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
             A_OpenCms.log(C_OPENCMS_INFO, "[CmsPdfLauncher] Using SAX parser: " + parserClassName);
         }
         try {
             return (Parser)Class.forName(parserClassName).newInstance();
         }
         catch(ClassNotFoundException e) {
-			if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+			if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                 A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsPdfLauncher] Could not find " + parserClassName);
             }
         }
         catch(InstantiationException e) {
-			if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+			if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                 A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsPdfLauncher] Could not instantiate " + parserClassName);
             }
         }
         catch(IllegalAccessException e) {
-			if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+			if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                 A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsPdfLauncher] Could not access " + parserClassName);
             }
         }
         catch(ClassCastException e) {
-			if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+			if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                 A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsPdfLauncher] " + parserClassName + " is not a SAX driver");
             }
         }
@@ -149,7 +149,7 @@ public class CmsPdfLauncher extends CmsXmlLauncher {
             driver.render();
         }
         catch(Exception e) {
-			if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+			if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                 A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsPdfLauncher] PDF-Renderer Error: " + e.getMessage());
             }
         }

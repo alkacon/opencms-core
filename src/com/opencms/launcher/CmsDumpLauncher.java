@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsDumpLauncher.java,v $
-* Date   : $Date: 2001/05/15 19:29:05 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2001/05/17 14:10:31 $
+* Version: $Revision: 1.24 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -47,7 +47,7 @@ import com.opencms.template.cache.*;
  * be used to create output.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.23 $ $Date: 2001/05/15 19:29:05 $
+ * @version $Revision: 1.24 $ $Date: 2001/05/17 14:10:31 $
  */
 public class CmsDumpLauncher extends A_CmsLauncher implements I_CmsConstants {
 
@@ -126,7 +126,7 @@ public class CmsDumpLauncher extends A_CmsLauncher implements I_CmsConstants {
                 }
             }
             else {
-                if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                     A_OpenCms.log(C_OPENCMS_INFO, getClassName() + "Empty URL parameter \"" + pname + "\" found.");
                 }
             }
@@ -138,7 +138,7 @@ public class CmsDumpLauncher extends A_CmsLauncher implements I_CmsConstants {
             Object tmpl = getTemplateClass(cms, templateClass);
             if(!(tmpl instanceof com.opencms.template.I_CmsDumpTemplate)) {
                 String errorMessage = "Error in " + file.getAbsolutePath() + ": " + templateClass + " is not a Cms dump template class.";
-                if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                     A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorMessage);
                 }
                 throw new CmsException(errorMessage, CmsException.C_XML_WRONG_TEMPLATE_CLASS);
@@ -148,7 +148,7 @@ public class CmsDumpLauncher extends A_CmsLauncher implements I_CmsConstants {
                 result = this.callCanonicalRoot(cms, (com.opencms.template.I_CmsTemplate)tmpl, file, newParameters);
             }
             catch(CmsException e) {
-                if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                     A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "There were errors while building output for template file \"" + file.getAbsolutePath() + "\" and template class \"" + templateClass + "\". See above for details.");
                 }
                 throw e;

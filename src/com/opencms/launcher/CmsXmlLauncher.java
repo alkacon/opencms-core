@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsXmlLauncher.java,v $
-* Date   : $Date: 2001/05/15 19:29:05 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2001/05/17 14:10:31 $
+* Version: $Revision: 1.27 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -55,7 +55,7 @@ import javax.servlet.http.*;
  * be used to create output.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.26 $ $Date: 2001/05/15 19:29:05 $
+ * @version $Revision: 1.27 $ $Date: 2001/05/17 14:10:31 $
  */
 public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_CmsConstants {
 
@@ -158,7 +158,7 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_
                         newParameters.put(elementName + "." + paramName, paramValue);
                     }
                     else {
-                        if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+                        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                             A_OpenCms.log(C_OPENCMS_INFO, getClassName() + "Empty parameter \"" + paramName + "\" found.");
                         }
                     }
@@ -188,7 +188,7 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_
                 }
             }
             else {
-                if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                     A_OpenCms.log(C_OPENCMS_INFO, getClassName() + "Empty URL parameter \"" + pname + "\" found.");
                 }
             }
@@ -214,7 +214,7 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_
                 I_CmsTemplate tmpl = getTemplateClass(cms, templateClass);
                 if(!(tmpl instanceof I_CmsXmlTemplate)) {
                     String errorMessage = "Error in " + file.getAbsolutePath() + ": " + templateClass + " is not a XML template class.";
-                    if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+                    if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                         A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorMessage);
                     }
                     throw new CmsException(errorMessage, CmsException.C_XML_WRONG_TEMPLATE_CLASS);
@@ -222,7 +222,7 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_
                 output = callCanonicalRoot(cms, (I_CmsTemplate)tmpl, masterTemplate, newParameters);
             }
             catch(CmsException e) {
-                if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                     A_OpenCms.log(C_OPENCMS_INFO, "[CmsXmlLauncher] There were exceptions while generating output for " + file.getAbsolutePath());
                     A_OpenCms.log(C_OPENCMS_INFO, "[CmsXmlLauncher] Clearing template file cache for this file.");
                 }

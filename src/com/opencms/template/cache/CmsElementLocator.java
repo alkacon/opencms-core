@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementLocator.java,v $
-* Date   : $Date: 2001/05/15 14:01:40 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2001/05/17 14:10:32 $
+* Version: $Revision: 1.8 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -89,9 +89,9 @@ public class CmsElementLocator implements com.opencms.boot.I_CmsLogChannels {
                 result = cmsTemplate.createElement(cms, desc.getTemplateName(), parameters);
                 put(desc, result);
             } catch(Throwable e) {
-                if(CmsBase.isLogging()) {
-                    CmsBase.log(C_OPENCMS_CRITICAL, toString() + " Could not initialize (sub-)element for class \"" + desc.getClassName() + "\". ");
-                    CmsBase.log(C_OPENCMS_CRITICAL, e.toString());
+                if(com.opencms.core.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                    A_OpenCms.log(C_OPENCMS_CRITICAL, toString() + " Could not initialize (sub-)element for class \"" + desc.getClassName() + "\". ");
+                    A_OpenCms.log(C_OPENCMS_CRITICAL, e.toString());
                     return null;
                 }
             }

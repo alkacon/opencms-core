@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
-* Date   : $Date: 2001/05/15 19:29:00 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2001/05/17 14:10:31 $
+* Version: $Revision: 1.10 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -63,7 +63,7 @@ import com.opencms.util.*;
  * Http requests.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.9 $ $Date: 2001/05/15 19:29:00 $
+ * @version $Revision: 1.10 $ $Date: 2001/05/17 14:10:31 $
  *
  * */
 public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_CmsLogChannels {
@@ -414,18 +414,18 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
      * Destroys all running threads before closing the VM.
      */
     public void destroy() {
-        if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
             A_OpenCms.log(C_OPENCMS_INFO, "[OpenCmsServlet] Performing Shutdown....");
         }
         try {
             m_opencms.destroy();
         }
         catch(CmsException e) {
-			if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+			if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
 				A_OpenCms.log(C_OPENCMS_CRITICAL, "[OpenCmsServlet]" + e.toString());
 			}
         }
-        if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
             A_OpenCms.log(C_OPENCMS_CRITICAL, "[OpenCmsServlet] Shutdown Completed");
         }
     }
@@ -631,7 +631,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
 
         // Initialize the logging
         A_OpenCms.initializeServletLogging(m_configurations);
-        if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] logging started");
         }
 
@@ -644,12 +644,12 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
             m_redirect.addElement(redirect);
             m_redirectlocation.addElement(redirectlocation);
             count++;
-            if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] redirect-rule: " + redirect + " -> " + redirectlocation);
             }
         }
         m_clusterurl = (String)m_configurations.getString(C_CLUSTERURL, "");
-        if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] Clusterurl: " + m_clusterurl);
         }
         try {
@@ -662,11 +662,11 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
         }
 
         //initalize the session storage
-        if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] initializing session storage");
         }
         m_sessionStorage = new CmsCoreSession();
-        if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] initializing... DONE");
         }
 
@@ -677,7 +677,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
         } catch (CmsException exc) {
             throw new ServletException("Error while initializing the cms-object for the classloader", exc);
         }
-        if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] initializing CmsClassLoader ");
         }
         // get the repositories for the classloader
@@ -718,7 +718,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
         //CmsClassLoader loader = (CmsClassLoader) (getClass().getClassLoader());
         //loader.init(cms, repositories);
         loader.init(cms);
-        if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] initializing CmsClassLoader... DONE");
         }
     }
@@ -794,7 +794,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
                         sessionData = m_opencms.restoreSession(oldSessionId);
                     }
                     catch(CmsException exc) {
-                        if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+                        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[OpenCmsServlet] cannot restore session: " + com.opencms.util.Utils.getStackTrace(exc));
                         }
                     }
@@ -951,7 +951,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
                         m_opencms.storeSession(session.getId(), sessionData);
                     }
                     catch(CmsException exc) {
-                        if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+                        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[OpenCmsServlet] cannot store session: " + com.opencms.util.Utils.getStackTrace(exc));
                         }
                     }

@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2001/05/15 19:29:07 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2001/05/17 14:10:32 $
+* Version: $Revision: 1.43 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.42 $ $Date: 2001/05/15 19:29:07 $
+ * @version $Revision: 1.43 $ $Date: 2001/05/17 14:10:32 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -425,7 +425,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
                     cms.writeProperty(tempPageFilename, C_PROPERTY_TITLE, title);
                 }
                 catch(CmsException e) {
-                    if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+                    if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                         A_OpenCms.log(C_OPENCMS_INFO, getClassName()
                                 + "Could not write property " + C_PROPERTY_TITLE + " for file " + file + ".");
                         A_OpenCms.log(C_OPENCMS_INFO, getClassName() + e);
@@ -749,7 +749,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         // Check the existance of the "file" parameter
         if(!existsContentParam) {
             String errorMessage = getClassName() + "No content found.";
-            if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                 A_OpenCms.log(C_OPENCMS_CRITICAL, errorMessage);
             }
             content = "";

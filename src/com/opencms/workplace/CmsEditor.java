@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsEditor.java,v $
-* Date   : $Date: 2001/05/15 19:29:06 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2001/05/17 14:10:32 $
+* Version: $Revision: 1.24 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.23 $ $Date: 2001/05/15 19:29:06 $
+ * @version $Revision: 1.24 $ $Date: 2001/05/17 14:10:32 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -214,7 +214,7 @@ public class CmsEditor extends CmsWorkplaceDefault {
 
             // Anything is wrong. Perhaps a wrong file name ???
             String errorMessage = "Error while reading file " + filename + ": " + e;
-            if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                 A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorMessage);
             }
 

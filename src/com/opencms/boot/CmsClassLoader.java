@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsClassLoader.java,v $
-* Date   : $Date: 2001/05/15 19:29:00 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2001/05/17 14:10:31 $
+* Version: $Revision: 1.5 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -106,7 +106,7 @@ import java.lang.reflect.*;
  * with a parent classloader. Normally this should be the classloader
  * that loaded this loader.
  * @author Alexander Lucas
- * @version $Revision: 1.4 $ $Date: 2001/05/15 19:29:00 $
+ * @version $Revision: 1.5 $ $Date: 2001/05/17 14:10:31 $
  * @see java.lang.ClassLoader
  */
 public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
@@ -177,7 +177,7 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
     //public void init(Object cms, Vector classRepository) throws IllegalArgumentException {
     public void init(Object cms) throws IllegalArgumentException {
 
-        if(C_DEBUG && CmsBase.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING) {
+        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && C_DEBUG && CmsBase.isLogging()) {
             CmsBase.log(C_OPENCMS_DEBUG, "[CmsClassLoader] initialize");
         }
         m_cms = cms;
@@ -220,7 +220,7 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
         if(!(repository.contains(newEntry)
                 && ((Integer)repositoryTypes.elementAt(repository.indexOf(newEntry))).intValue() == type)) {
             // OK. This entry is really a new one. Add it now.
-            if(CmsBase.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING) {
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && CmsBase.isLogging()) {
                 CmsBase.log(C_OPENCMS_INFO, "[CmsClassLoader] Adding repository " + newEntry);
             }
             repository.addElement(newEntry);
@@ -384,7 +384,7 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
      *             find a the requested class.
      */
     protected synchronized Class loadClass(String name, boolean resolve) throws ClassNotFoundException {
-        if(C_DEBUG && CmsBase.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING) {
+        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && C_DEBUG && CmsBase.isLogging()) {
             CmsBase.log(C_OPENCMS_DEBUG, "[CmsClassLoader] Class " + name + " requested.");
         }
         Class c = null;
@@ -399,7 +399,7 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
         // Let's have a look in our own class cache
         c = (Class)cache.get(name);
         if(c != null) {
-            if(C_DEBUG && CmsBase.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING) {
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && C_DEBUG && CmsBase.isLogging()) {
                 CmsBase.log(C_OPENCMS_DEBUG, "[CmsClassLoader] BINGO! Class " + name + "was found in cache.");
             }
 
@@ -410,7 +410,7 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
             }
             return c;
         }
-        if(C_DEBUG && CmsBase.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING) {
+        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && C_DEBUG && CmsBase.isLogging()) {
             CmsBase.log(C_OPENCMS_DEBUG, "[CmsClassLoader] Class " + name + " was NOT found in cache.");
         }
         // No class found.
@@ -442,7 +442,7 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
                 if(resolve) {
                     resolveClass(c);
                 }
-                if(C_DEBUG && (A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && C_DEBUG && A_OpenCms.isLogging()) {
                     A_OpenCms.log(C_OPENCMS_DEBUG, "Classloader returned class "
                             + name + " successfully!");
                 }
@@ -538,7 +538,7 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
 
 /*            if(isZipOrJarArchive(filename)) {
                 try {
-                    if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+                    if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                         A_OpenCms.log(C_OPENCMS_DEBUG, "Try to load archive file " + filename + ".");
                     }
                     myClassData = loadClassFromZipFile(readFile(filename), name);
@@ -588,7 +588,7 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
             if(resolve) {
                 resolveClass(c);
             }
-            if(C_DEBUG && CmsBase.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING) {
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && C_DEBUG && CmsBase.isLogging()) {
                 CmsBase.log(C_OPENCMS_DEBUG, "Classloader returned class "
                         + name + " successfully!");
             }

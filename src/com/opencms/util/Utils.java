@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Utils.java,v $
-* Date   : $Date: 2001/05/15 19:29:05 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2001/05/17 14:10:32 $
+* Version: $Revision: 1.22 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -287,7 +287,7 @@ public class Utils implements I_CmsConstants,I_CmsLogChannels {
             }
         }
         catch(Exception e) {
-            if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                 A_OpenCms.log(C_OPENCMS_CRITICAL, "[Utils] :" + e.toString());
             }
         }

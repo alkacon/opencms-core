@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsResponseHttpServlet.java,v $
-* Date   : $Date: 2001/05/15 19:29:00 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2001/05/17 14:10:31 $
+* Version: $Revision: 1.19 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -41,7 +41,7 @@ import javax.servlet.http.*;
  * CmsResponseHttpServlet.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.18 $ $Date: 2001/05/15 19:29:00 $
+ * @version $Revision: 1.19 $ $Date: 2001/05/17 14:10:31 $
  */
 public class CmsResponseHttpServlet implements I_CmsConstants, I_CmsResponse, I_CmsLogChannels {
     private static String C_LAST_MODIFIED = "Last-Modified";
@@ -90,7 +90,7 @@ public class CmsResponseHttpServlet implements I_CmsConstants, I_CmsResponse, I_
         // If m != null, the method could be found.
         boolean result = (m != null);
 
-        if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
             if(result) {
                 // We have JSKD 2
                 A_OpenCms.log(C_OPENCMS_INFO, "[CmsResponseHttpServlet] JSDK 2 detected. ");

@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpTemplateFile.java,v $
-* Date   : $Date: 2001/05/15 19:29:07 $
-* Version: $Revision: 1.53 $
+* Date   : $Date: 2001/05/17 14:10:32 $
+* Version: $Revision: 1.54 $
 *
 * Copyright (C) 2000  The OpenCms Group 
 * 
@@ -41,7 +41,7 @@ import java.util.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.53 $ $Date: 2001/05/15 19:29:07 $
+ * @version $Revision: 1.54 $ $Date: 2001/05/17 14:10:32 $
  */
 
 public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLogChannels,I_CmsWpConstants {
@@ -96,7 +96,7 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
      **/
     
     public static void clearcache() {
-        if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
             A_OpenCms.log(C_OPENCMS_INFO, "clear language file cache");
         }
         m_langFiles = new Hashtable();
@@ -251,7 +251,7 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
         catch(Exception e) {
             String errorMessage = "Error while building workplace element \"" + tagname + "\": " + e;
             if(e instanceof CmsException) {
-                if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                     A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorMessage);
                 }
                 throw (CmsException)e;

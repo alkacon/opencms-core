@@ -1,7 +1,7 @@
 /*
 * File   : $File$
-* Date   : $Date: 2001/05/15 19:29:06 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2001/05/17 14:10:32 $
+* Version: $Revision: 1.3 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -85,7 +85,7 @@ public class CmsAdminStaticExportThread extends Thread implements I_CmsConstants
                 everythingOk = false;
                 errormessage += (String)folderNames.elementAt(i) +" : "+e.getTypeText() +" "
                                     +e.getMessage() +"\n";
-                if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                     A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL,"error exporting "+
                                     folderNames.elementAt(i)+" : " + e.getMessage());
                 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementXml.java,v $
-* Date   : $Date: 2001/05/17 13:06:15 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2001/05/17 14:10:32 $
+* Version: $Revision: 1.8 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -86,9 +86,9 @@ public class CmsElementXml extends A_CmsElement implements com.opencms.boot.I_Cm
         try {
             templateClass = getTemplateClass(cms, m_className);
         } catch(Throwable e) {
-            if(CmsBase.isLogging()) {
-                CmsBase.log(C_OPENCMS_CRITICAL, toString() + " Could not load my template class \"" + m_className + "\". ");
-                CmsBase.log(C_OPENCMS_CRITICAL, e.toString());
+            if(com.opencms.core.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                A_OpenCms.log(C_OPENCMS_CRITICAL, toString() + " Could not load my template class \"" + m_className + "\". ");
+                A_OpenCms.log(C_OPENCMS_CRITICAL, e.toString());
                 return e.toString().getBytes();
             }
         }
@@ -144,21 +144,21 @@ public class CmsElementXml extends A_CmsElement implements com.opencms.boot.I_Cm
                         if(ce.getType() == ce.C_ACCESS_DENIED) {
                             // This was an access denied exception.
                             // This is not very critical at the moment.
-                            if(CmsBase.isLogging()) {
-                                CmsBase.log(C_OPENCMS_DEBUG, toString() + " Access denied in getContent for template class " + m_className);
+                            if(com.opencms.core.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                                A_OpenCms.log(C_OPENCMS_DEBUG, toString() + " Access denied in getContent for template class " + m_className);
                             }
                         } else {
                             // Any other CmsException.
                             // This could be more critical.
-                            if(CmsBase.isLogging()) {
-                                CmsBase.log(C_OPENCMS_INFO, toString() + " Error in getContent for template class " + m_className);
+                            if(com.opencms.core.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                                A_OpenCms.log(C_OPENCMS_INFO, toString() + " Error in getContent for template class " + m_className);
                             }
                         }
                         throw ce;
                     } else {
                         // No CmsException. This is really, really bad!
-                        if(CmsBase.isLogging()) {
-                            CmsBase.log(C_OPENCMS_CRITICAL, toString() + " Non OpenCms error occured in getContent for template class " + m_className);
+                        if(com.opencms.core.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                            A_OpenCms.log(C_OPENCMS_CRITICAL, toString() + " Non OpenCms error occured in getContent for template class " + m_className);
                         }
                         throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
                     }
