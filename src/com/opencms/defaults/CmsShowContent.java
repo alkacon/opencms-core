@@ -181,6 +181,18 @@ public class CmsShowContent extends CmsXmlTemplate {
             cdVec.add(cdObject);
             registerVariantDeps(cms, doc.getAbsoluteFilename(), null, null,
                                 (Hashtable)userObject, null, cdVec, null);
+            boolean showIt = true;
+            if(cdObject.isTimedContent()){
+                I_CmsTimedContentDefinition curTimed = (I_CmsTimedContentDefinition)cdObject;
+                long currentTime = System.currentTimeMillis();
+                if((currentTime < curTimed.getPublicationDate()) || (currentTime > curTimed.getPurgeDate())){
+                    showIt = false;
+                }
+            }
+            if(!showIt){
+                //  TODO: read an datablock from the template and set all the proccesstags with it then remove this exception
+                throw new CmsException("requested content is not valid.");
+            }
             if (template.hasData(C_METHODS_TO_USE_DATABLOCK)) {
                 // if the datablock methods is set inside the template
                 // only take the methods that are listed in this datablock
@@ -266,9 +278,20 @@ public class CmsShowContent extends CmsXmlTemplate {
             }
             // walk through Vector and fill content
             int size = cdObjects.size();
+            long currentTime = System.currentTimeMillis();
             for (int i=0; i < size; i++ ) {
-               setDatablocks(template, (A_CmsContentDefinition)cdObjects.elementAt(i), getMethods);
-               list.append(template.getProcessedDataValue(C_LISTENTRY_DATABLOCK, this));
+                boolean showIt = true;
+                A_CmsContentDefinition curCont = (A_CmsContentDefinition)cdObjects.elementAt(i);
+                if(curCont.isTimedContent()){
+                    I_CmsTimedContentDefinition curTimed = (I_CmsTimedContentDefinition)curCont;
+                    if((currentTime < curTimed.getPublicationDate()) || (currentTime > curTimed.getPurgeDate())){
+                        showIt = false;
+                    }
+                }
+                if(showIt){
+                   setDatablocks(template, curCont, getMethods);
+                   list.append(template.getProcessedDataValue(C_LISTENTRY_DATABLOCK, this));
+                }
             }
         } catch (Exception e) {
             if (e instanceof CmsException) {
