@@ -578,7 +578,7 @@ function closeAllWindows(){
         } else {
         	top.win.head.forms.urlform.resource.value=indexlocation;
         }
-        location='../action/explorer_files_new_page.html?initial=true&fromFolder=true';
+        location='../action/explorer_files_new_xmlpage.html?initial=true&fromFolder=true';
 
     </SCRIPT>
     </HEAD>
