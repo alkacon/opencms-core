@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChown.java,v $
- * Date   : $Date: 2000/05/02 10:03:34 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/05/03 11:16:41 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.13 $ $Date: 2000/05/02 10:03:34 $
+ * @version $Revision: 1.14 $ $Date: 2000/05/03 11:16:41 $
  */
 public class CmsChown extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -141,15 +141,15 @@ public class CmsChown extends CmsWorkplaceDefault implements I_CmsWpConstants,
                      String bodyFolder=C_CONTENTBODYPATH.substring(0,C_CONTENTBODYPATH.lastIndexOf("/"))+file.getAbsolutePath();
                      try {
                          cms.readFolder(bodyFolder);
-                         cms.lockResource(bodyFolder);
+                       //  cms.lockResource(bodyFolder);
                          cms.chown(bodyFolder,newowner);
-                         cms.unlockResource(bodyFolder);
+                       //  cms.unlockResource(bodyFolder);
                      } catch (CmsException ex) {
                          // no folder is there, so do nothing
                      }
                  }
                 
-                // the resource was a folder and the rekursive flag was set                   
+                // the resource was a folder and the recursive flag was set                   
                 // do a recursive chown on all files and subfolders
                 if (flags.equals("true")) {
                    // get all subfolders and files
@@ -162,17 +162,17 @@ public class CmsChown extends CmsWorkplaceDefault implements I_CmsWpConstants,
                     for (int i=0;i<allFolders.size();i++) {
                         CmsFolder folder=(CmsFolder)allFolders.elementAt(i);  
                         if (folder.getState() != C_STATE_DELETED) {
-                            cms.lockResource(folder.getAbsolutePath());
+                        
                             cms.chown(folder.getAbsolutePath(),newowner);
-                            cms.unlockResource(folder.getAbsolutePath());
+                        
                             // check if there is a corresponding 
                             // directory in the content body folder
                             String bodyFolder=C_CONTENTBODYPATH.substring(0,C_CONTENTBODYPATH.lastIndexOf("/"))+folder.getAbsolutePath();
                             try {
                                 cms.readFolder(bodyFolder);
-                                cms.lockResource(bodyFolder);
+                          
                                 cms.chown(bodyFolder,newowner);
-                                cms.unlockResource(bodyFolder);
+                           
                             } catch (CmsException ex) {
                                 // no folder is there, so do nothing
                             }
@@ -183,23 +183,23 @@ public class CmsChown extends CmsWorkplaceDefault implements I_CmsWpConstants,
                     for (int i=0;i<allFiles.size();i++) {
                         CmsFile newfile=(CmsFile)allFiles.elementAt(i);  
                         if (newfile.getState() != C_STATE_DELETED) {
-                            cms.lockResource(newfile.getAbsolutePath());
+                            
                             cms.chown(newfile.getAbsolutePath(),newowner);
-                            cms.unlockResource(newfile.getAbsolutePath());
+                           
                             if( (cms.getResourceType(newfile.getType()).getResourceName()).equals(C_TYPE_PAGE_NAME) ){
 				                String bodyPath=getBodyPath(cms, (CmsFile)newfile);
 				                int help = C_CONTENTBODYPATH.lastIndexOf("/");
 				                String hbodyPath=(C_CONTENTBODYPATH.substring(0,help))+(newfile.getAbsolutePath());
     				            if (hbodyPath.equals(bodyPath)){
-                                    cms.lockResource(hbodyPath);
+                                  
 		    			            cms.chown(hbodyPath,newowner);
-                                    cms.unlockResource(hbodyPath);
+                                 
 				                }
                             }   
                         }
                         
                     }    
-                   cms.lockResource(file.getAbsolutePath());
+                   
                 }
               
                 
