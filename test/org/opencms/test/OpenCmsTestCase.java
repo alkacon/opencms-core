@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2004/05/27 10:13:02 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/05/27 16:22:19 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * values in the provided <code>./test/data/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.3.5
  */
@@ -113,7 +113,7 @@ public class OpenCmsTestCase extends TestCase {
      * @param resourceName the name of the resource to compare
      * @param dateLastModified the last modification date
      */
-    protected void assertDateLastModified(CmsObject cms, String resourceName, long dateLastModified) {
+    public void assertDateLastModified(CmsObject cms, String resourceName, long dateLastModified) {
         try {
             // get the actual resource from the vfs
             CmsResource res = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
@@ -157,7 +157,7 @@ public class OpenCmsTestCase extends TestCase {
      * @param resourceName the name of the resource to compare
      * @param filter the filter continaing the flags defining which attributes to compare
      */
-    protected void assertFilter(CmsObject cms, String resourceName, OpenCmsTestResourceFilter filter) {
+    public void assertFilter(CmsObject cms, String resourceName, OpenCmsTestResourceFilter filter) {
 
         try {
             // get the stored resource
@@ -324,7 +324,7 @@ public class OpenCmsTestCase extends TestCase {
      * @param resourceName the name of the resource to compare
      * @param project the project
      */
-    protected void assertProject(CmsObject cms, String resourceName, CmsProject project) {
+    public void assertProject(CmsObject cms, String resourceName, CmsProject project) {
         try {
             // get the actual resource from the vfs
             CmsResource res = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
@@ -646,7 +646,7 @@ public class OpenCmsTestCase extends TestCase {
      * @param resourceName the name of the resource to compare
      * @param state the state
      */
-    protected void assertState(CmsObject cms, String resourceName, int state) {
+    public void assertState(CmsObject cms, String resourceName, int state) {
         try {
             // get the actual resource from the vfs
             CmsResource res = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
@@ -667,7 +667,7 @@ public class OpenCmsTestCase extends TestCase {
      * @param resourceName the name of the resource to compare
      * @param user the last modification user
      */
-    protected void assertUserLastModified(CmsObject cms, String resourceName, CmsUser user) {
+    public void assertUserLastModified(CmsObject cms, String resourceName, CmsUser user) {
         try {
             // get the actual resource from the vfs
             CmsResource res = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
@@ -897,8 +897,12 @@ public class OpenCmsTestCase extends TestCase {
      * Removes the initialized OpenCms database and all 
      * temporary files created during the test run.<p>
      */
-    protected void removeOpenCms() {
+    public void removeOpenCms() {
         
+        // output a message
+        m_shell.printPrompt(); 
+        System.out.println("----- Test cases finished -----");        
+
         // exit the shell
         m_shell.exit();
         
@@ -950,7 +954,7 @@ public class OpenCmsTestCase extends TestCase {
      * @throws FileNotFoundException in case of file access errors
      * @throws CmsException in case of OpenCms access errors
      */
-    protected CmsObject setupOpenCms(String importFolder, String targetFolder) throws FileNotFoundException, CmsException {
+    public CmsObject setupOpenCms(String importFolder, String targetFolder) throws FileNotFoundException, CmsException {
         // create a new database first
         setupDatabase();
         
@@ -1004,6 +1008,9 @@ public class OpenCmsTestCase extends TestCase {
         // init the storage
         m_resourceStrorage = new OpenCmsTestResourceStorage(cms);
         
+        // output a message 
+        System.out.println("----- Starting test cases -----");
+        
         // return the initialized cms context Object
         return cms;
     }
@@ -1017,7 +1024,7 @@ public class OpenCmsTestCase extends TestCase {
      * @param cms an initialized CmsObject
      * @param resourceName the name of the resource in the vfs
      */
-    protected void storeResources(CmsObject cms, String resourceName) {
+    public void storeResources(CmsObject cms, String resourceName) {
         
         String resName = "";
         
@@ -1073,5 +1080,13 @@ public class OpenCmsTestCase extends TestCase {
             return noMatches;
     }
     
-    
+    /**
+     * Writes a message to the current output stream.<p>
+     * 
+     * @param message the message to write
+     */
+    protected void echo(String message) {
+        m_shell.printPrompt();
+        System.out.println(message);
+    }      
 }

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE page SYSTEM "/system/shared/page.dtd">
+
+<page>
+  <elements>
+    <element name="body" language="en">
+      <links>
+        <link name="link0" type="A" internal="false">
+          <target><![CDATA[http://www.opencms.org/bugzilla/]]></target>
+        </link>
+        <link name="link1" type="A" internal="false">
+          <target><![CDATA[http://www.opencms.com/cgi-bin/cvsweb.cgi/opencms/todo.txt]]></target>
+          <query><![CDATA[rev=1.9]]></query>
+        </link>
+      </links>
+      <content><![CDATA[<H2>Release Notes for OpenCms&nbsp;5.0&nbsp;beta&nbsp;2</H2>
+<P>11/11/2002: This version is a major step towards the final release of OpenCms 5. It adds a number of important features especially for the JSP integration and caching mechanism. The most visible change from previous versions is the new structure of the OpenCms workplace in the virtual file system (VFS), which now has a much more streamlined directory layout. A long list of minor enhancements and fixes completes this release. </P>
+<P>OpenCms 5.0 beta 2 is Open Source software published under the LGPL license. </P>
+<P>The OpenCms 5.0 beta 2 includes all features from the last "major" release 4.6.1, the FLEX alpha 1, the 4.7.7 version and of course the 5.0 beta 1. It's at last as stable as all of these earlier versions. I encourage everyone to try this version and provide feedback on the opencms-dev mailing list. </P>
+<P>OpenCms 5.0 beta 2 supports Java 1.4. and 1.4.1. Because of required features related to file encoding and JDBC we recommend not using earlier releases of Java. </P>
+<P>The almost complete list of changes and improvements in OpenCms 5.0 beta 2:</P>
+<UL>
+<LI>JSP now support nested includes with XMLTemplates 
+<LI>The JSP cms:include tag functionality has been extended, the include target can now be set from a property, from an expression in the tag's body or from a request attribute 
+<LI>More new and improved JSP tags for easier template development 
+<LI>Exception handling in JSP now directly points to the problem (even if it is in an included element) 
+<LI>The FlexCache for caching of JSP now implements a LRU policy and can be fully configured in the opencms.properties 
+<LI>A new class com.opencms.flex.jsp.CmsJspActionBean provides access to the OpenCms taglibs features through JSP scriplet code 
+<LI>The new, streamlined 5.0 workplace directory layout is in place 
+<LI>The new "directory translation" feature allows setting resource name translation rules in opencms.properties for backward compatibility 
+<LI>The "file name translation" feature automatically replaces illegal characters (e.g. space, ? or &amp;) in uploaded file names and in extracted ZIP files, rules can be set in opencms.properties 
+<LI>The default file name for a directroy (the page that is displayed if a user just requests a directory name, usually "index.html") can now be defined in the opencms.properties and in the folder property default-file 
+<LI>The handling of default files (like "index.html") has changed: if a default file was found it is now returned directly by OpenCms (in previous versions a redirect to "index.html" was send) 
+<LI>The default file encoding is now UTF-8 for better international support, please note that this change is preliminary and subject to further observation 
+<LI>A default index.jsp "Welcome to OpenCms" page is now included in a new installation with a simple default template 
+<LI>New "replace" feature in the workplace context menus, it's now possible to replace e.g. an image in the VFS by an uploaded image with a different name directly, keeping the VFS name and file properties 
+<LI>If you upload a file in the workplace and a file with the same name already exists, you are now asked if you want to overwrite it (instead of OpenCms throwing an exception) 
+<LI>New "touch" feature in context menus allows setting of the file "last changed" timestamp 
+<LI>When exporting files with the "Database export" feature, you can now set a max age for the content to export, i.e. export only files that have changed after a specified date 
+<LI>Page body files (now stored in /system/bodies) are now automatically exported when a "page" type file is exported 
+<LI>The &lt;stylesheet&gt; tag in XMLTemplates can now also be defined in the mastertemplate (in addition to the frametemplate) 
+<LI>The &lt;stylesheet&gt; tag in XMLTemplates (for display of the style sheet in the HTML editor) can now start with a "/" 
+<LI>Added an option to the HTML editor to remove the "new body" function while keeping the body selector (to be used with default bodies) 
+<LI>Module management: Added support for "simple" modules 
+<LI>When importing resources the content of files is converted if the encoding parameter does not exist in the xml- or meta-tag, this should provide the ability to import content exported from 4.x versions into a 5.0 system 
+<LI>If the property definition for a property of an imported resource does not exist, it will be created during the import 
+<LI>Fixed some issues in the HTML editor with the new link dialog, it's now also possible to add links to images 
+<LI>The locale "uk" has been renamed to "en" 
+<LI>Usage of methods deprecated in Java 1.4 has been removed where possible 
+<LI>Issues with XML export of filenames that use special characters (like umlauts) have been resolved 
+<LI>Issues with XML export or registry with special characters (like umlauts) have been resolved 
+<LI>Fixed ElementCache for DumpLauncher, for dumped elements no file.encoding translation is allowed 
+<LI>Fixed ElementCache for MethodElements, switched handling from byte[] to String 
+<LI>Fixed a bug in the cache settings that prevented PDFs from offline projects to be displayed in Acrobat Reader 
+<LI>Refactoring of constant names for VFS paths and directories in com.opencms.workplace.I_CmsWpConstants 
+<LI>Some cleanup of code and JavaDoc documentation in packages *.core and *.flex (still a long way to go here) 
+<LI>Additional options for the setup wizard to enable / disable Flex JSP and directory translation options included 
+<LI>The deprecated FOP based PdfLauncher was removed 
+<LI>The login dialog page has moved to /system/login, it now features improved behaviour for active sessions 
+<LI>Changed the workplace style sheet to fix problems displaying special characters like german umlauts&nbsp;</LI></UL>
+<P>Please use our Bugzilla to report bugs in this release: <A href="${link0}" target=_self>http://www.opencms.org/bugzilla/</A></P>
+<P>You can find the "TODO" list for the final release here: <A href="${link1}" target=_self>http://www.opencms.com/cgi-bin/cvsweb.cgi/opencms/todo.txt?rev=1.9</A> 
+<P>The final release of 5.0 will be made available after this TODO items have been completed. We still need volunteers for some development tasks. Please have a look at the TODO list for details.</P>
+<P>Thank you for using OpenCms and have fun with OpenCms 5.0 beta 2 :-)</P>]]></content>
+    </element>
+  </elements>
+</page>

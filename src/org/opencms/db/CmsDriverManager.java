@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/05/26 16:03:38 $
- * Version: $Revision: 1.363 $
+ * Date   : $Date: 2004/05/27 16:22:19 $
+ * Version: $Revision: 1.364 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.363 $ $Date: 2004/05/26 16:03:38 $
+ * @version $Revision: 1.364 $ $Date: 2004/05/27 16:22:19 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -1014,6 +1014,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @throws CmsResourceNotFoundException if the required resource is not readable
      */
     public void checkPermissions(CmsRequestContext context, CmsResource resource, CmsPermissionSet requiredPermissions, CmsResourceFilter filter) throws CmsException, CmsSecurityException, CmsResourceNotFoundException {
+                
+        int warning = 0;
         
         // check if the resource is valid according to the current filter
         // if not, throw a CmsResourceNotFoundException
@@ -7390,6 +7392,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
         // NOTE: this is the new way to update the state !
         // if (res.getState() < I_CmsConstants.C_STATE_CHANGED)
+        //  check if the user has write access
+        checkPermissions(context, res, I_CmsConstants.C_WRITE_ACCESS, CmsResourceFilter.IGNORE_EXPIRATION);
 
         res.setState(I_CmsConstants.C_STATE_CHANGED);
         res.setDateLastModified(timestamp);

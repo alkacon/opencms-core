@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShell.java,v $
- * Date   : $Date: 2004/05/26 07:59:55 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2004/05/27 16:22:19 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * in more then one of the command objects, the method is only executed on the first matching object.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * @see org.opencms.main.CmsShellCommands
  * @see org.opencms.file.CmsRequestContext
  * @see org.opencms.file.CmsObject
@@ -714,7 +714,7 @@ public class CmsShell {
     /**
      * Prints the shell prompt.<p>
      */
-    private void printPrompt() {
+    public void printPrompt() {
         String prompt = m_prompt;
         prompt = CmsStringSubstitution.substitute(prompt, "${user}", m_cms.getRequestContext().currentUser().getName());
         prompt = CmsStringSubstitution.substitute(prompt, "${siteroot}", m_cms.getRequestContext().getSiteRoot());

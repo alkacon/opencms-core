@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE page SYSTEM "/system/shared/page.dtd">
+
+<page>
+  <elements>
+    <element name="body" language="en">
+      <links/>
+      <content><![CDATA[<H2>How to upgrade to OpenCms 5.0.0</H2>
+<P>In case you have created a website with OpenCms 4.x, this page provides you with some simple 
+steps how to upgrade your website to OpenCms 5.0.0. If you are already using one 
+of the 5.0 beta or release canditade versions, most of these steps will not be 
+necessary. </P>
+<P>This document only describes how to upgrade templates and pages created in 
+OpenCms 4.x. Not described here is how to upgrade OpenCms 4.x "traditional" 
+style modules. Very few OpenCms installations have so far made use of the module 
+mechanism. OpenCms 5.0 features a new "simple" style module type which is much 
+easier to use, more powerful, and also better documented. We recommend using 
+only the new "simple" type module style for all new OpenCms 5.0 installations. 
+</P>
+<H4>The upgrade process</H4>
+<P>Upgrading should be easy if you just follow these simple steps:</P>
+<OL>
+  <LI>Check out required settings for OpenCms 5.0 <FONT 
+  face=Monospace>opencms.properties</FONT> in your 4.x installation (see below).
+  <LI>Export your website root folder "/" on your OpenCms 
+  4.x installation. 
+  <LI>If you have written your own Java classes for OpenCms, these need to be 
+  re-compiled against the 5.0.0 opencms.jar. <BR>    No changes should be required, 
+  only re-compilation. 
+  <LI>Install OpenCms 5.0.0. <BR>Make 
+  sure you have turned on the "Directory translation" feature. 
+  <LI>Adjust the&nbsp;required settings in <FONT face=Monospace>opencms.properties</FONT> of your 5.0 
+  installation (see below). 
+  <LI>If you have written&nbsp; your own Java classes for OpenCms, these must be 
+  placed in the standard<FONT face=Monospace>/classes</FONT> or <FONT 
+  face=Monospace>/lib</FONT> folders of the web application.<BR>The <FONT 
+  face=Monospace>/occlasses</FONT> and <FONT face=Monospace>/oclib</FONT> 
+  folders of the 4.x versions do 
+  not longer exist. 
+  <LI>Restart your OpenCms 5.0 server so that the new settings and classes&nbsp;are read. 
+  <LI>Import the content you exported from the 4.x 
+  installation. 
+  <LI>Check if everything works.</LI></OL>
+<P>             
+        This should be it.</P>
+<H4>Adjustments in opencms.properties</H4>
+<P>The file <FONT face=Monospace>/WEB-INF/config/opencms.properties</FONT> is 
+where OpenCms stores most of the system settings. Some settings deal with 
+upgrading content from OpenCms 4.x to 5.0.0. Here's a copy of that section in 
+the <FONT face=Monospace>opencms.properties</FONT> file with the default 
+values:</P>
+
+<pre style="BORDER-RIGHT: #000000 1px solid; BORDER-TOP: #000000 1px solid; BORDER-LEFT: #000000 1px solid; BORDER-BOTTOM: #000000 1px solid; BACKGROUND-COLOR: #dddddd">
+#
+# Backward compatibility flags.
+# This should be set to true ONLY if you are migrating from 4.x to 5.0 versions of OpenCms.
+#################################################################################
+
+# "Old style" module locale backward compatibility support
+# Enables supports for proprietary 4.x module XML locales
+# Must be set to true only if old modules are used
+compatibility.support.oldlocales=false
+
+# Convert file content from 4.x to 5.x style during import
+# This is needed for the correct content conversion of the import.
+# Enter the URL of the OpenCms web application from which the content was exported,
+# e.g. http://localhost:8080/opencms/opencms/ for a standard local Tomcat installation.
+compatibility.support.import.old.webappurl=http://localhost:8080/opencms/opencms/
+
+# List of the resource properties which should be removed when resources are imported. 
+compatibility.support.import.remove.propertytags=module
+
+# List of old web application names for conversion in editor and in import bodies.
+# Example for a standard web application name: /opencms/opencms/
+compatibility.support.webAppNames=
+
+</pre>
+
+<P>Depending on the OpenCms version you use, you will have to 
+adjust the values of <FONT 
+face=Monospace>compatibility.support.import.old.webappurl</FONT> and/or <FONT 
+face=Monospace>compatibility.support.webAppNames</FONT>. OpenCms 4.x did 
+place some hard coded server and context information in your page files. This 
+will be replaced by OpenCms 5.0 with variables. To see what information you have 
+to provide, open the body file of a page in your OpenCms 4.x installation. In 
+OpenCms installations prior to 5.0 beta 2, these files where located in the 
+<FONT face=Monospace>/content/bodys/</FONT> folder. Open a 
+file in this folder that contains images     
+              
+             
+ you have edited with the source code editor. This will show you the 
+page XML. What to look for will depend on your OpenCms version:</P>
+<UL>
+  <LI>If you use OpenCms 4.6 (the last official stable 
+  release), you will see a <FONT face=Monospace>&lt;template&gt;</FONT>            section that 
+  is the exact copy of the source code you can edit with the 
+  WYSIWYG / Source code editor. Find an image tag (<FONT face=Monospace>img 
+  src</FONT>) and check out the path given there. It should be a full path with 
+  a server name. Let's say it's <FONT 
+  face=Monospace 
+ >http://www.foocompany.com/opencms/opencms/somepath/imagename.gif</FONT>. 
+  In that case, your old webapp URL is <FONT 
+  face=Monospace>http://www.foocompany.com/opencms/opencms/</FONT> and your 
+  webapp name is <FONT face=Monospace>/opencms/opencms/</FONT>. Place this 
+  values in the<FONT face=Monospace> opencms.properties</FONT> file. 
+  <LI>If you use OpenCms 4.7.7 or one of the 5.0 pre-release 
+  versions, your will find a <FONT face=Monospace>&lt;template&gt;</FONT> and 
+  a<FONT face=Monospace> &lt;edittemplate&gt;</FONT> tag in the page XML file. 
+  Check out the <FONT face=Monospace>&lt;template&gt;</FONT>              
+              
+      section of the file first. Find an image tag 
+  (<FONT face=Monospace>img src</FONT>) and check out the path given there. It 
+  should have the web application context hard coded, e.g. <FONT 
+  face=Monospace>/opencms/opencms/somepath/imagename.gif</FONT>. Use this as 
+  webapp name for <FONT face=Monospace>opencms.properties</FONT>    
+   . You might also find a full path with a server name. Let's say it's <FONT 
+  face=Monospace>http://www.foocompany.com/opencms/opencms/somepath/imagename.gif</FONT>. 
+  In that case, your old webapp URL is <FONT 
+  face=Monospace>http://www.foocompany.com/opencms/opencms/</FONT>. If you 
+  don't see such a full path in any of your page files, just use the default 
+  setting for webapp URL. </LI></UL>
+<H4>Things to check if something does not work</H4>
+<P>The steps described here should happen automatically during the import to the 
+OpenCms 5.0 version. However, if an imported&nbsp;page does not work as 
+expected, you might check out this list to see how you can repair your page 
+manually. </P>
+<OL>
+  <LI>OpenCms 5.0 has a different directory structure then 
+  the 4.x versions. All system files are now located under the <FONT 
+  face=Monospace>/system/</FONT> folder. The directory 
+  translation feature (enabled by default in the setup wizard) will 
+  automatically translate a request to an&nbsp;old path to the new path. For 
+  example, <FONT face=Monospace>/content/bodies/</FONT> will be translated to 
+  <FONT face=Monospace>/system/bodies/</FONT>. This is also true for the import, 
+  so files exported form one of the old directories will be imported in the new 
+  ones. Please note that some path information in page or template files will 
+  still be pointing to the old path after the import in the 5.0 
+  system.&nbsp;This is o.k. as long as the directory trnaslation feature is turned 
+  on. 
+  <LI>The encoding will be added to the XML of every page 
+  file. Old OpenCms versions did not specify the encoding with the XML tag but 
+  start with <FONT face=Monospace>&lt;?xml version="1.0"?&gt;</FONT> only. The 
+  OpenCms default encoding will be added to all of this files. A valid XML start 
+  tag looks like this: <FONT face=Monospace>&lt;?xml version="1.0" 
+  encoding="ISO-8859-1"?&gt;.</FONT> 
+  If your templates did not specify the encoding and the import does not correct 
+  that problem for you, you must add this manually. 
+  <LI>OpenCms 4.x "frametemplate" files are analyzed if they have a <FONT 
+  face=Monospace>&lt;meta http-equiv="content-type" ... &gt; </FONT>setting. This will be either added 
+  or changed to use the encoding form the OpenCms server by placing a call to 
+  the <FONT face=Monospace>getEncoding</FONT> 
+                
+          XMLTemplate method. In the end this line should look 
+  like this:
+  <pre>&lt;meta http-equiv="content-type" content="text/html; charset=]]&gt;&lt;method name="getEncoding"/&gt;&lt;![CDATA["&gt;</pre>
+  Please note that this applies only to OpenCms 4.x "frametemplate" files. 
+  <LI>If a page file has no <FONT face=Monospace>&lt;edittemplate&gt;</FONT> 
+  (always true if it was exported by a 4.6 version), this will be added 
+  automatically during import.</LI></OL>
+<P>In case a page or template does not work after import, check the XML of the 
+page file and of the template used by the page. Check all path information in 
+the page / template and check if the replacements of the XML encoding and the 
+"content-type" did work. Ensure the settings you have made in opencms.properties 
+for the webapp name and webapp URL where correct. If not, you must correct the settings, drop the database,
+and repeat the setup. </P></FONT>]]></content>
+    </element>
+  </elements>
+</page>
