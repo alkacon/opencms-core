@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/04/13 21:45:08 $
- * Version: $Revision: 1.105 $
+ * Date   : $Date: 2000/04/13 22:05:41 $
+ * Version: $Revision: 1.106 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.105 $ $Date: 2000/04/13 21:45:08 $
+ * @version $Revision: 1.106 $ $Date: 2000/04/13 22:05:41 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -177,7 +177,9 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		
 		// test, if the user is in the same groups like the project.
 		for(int i = 0; i < groups.size(); i++) {
-			if( ((A_CmsGroup) groups.elementAt(i)).getId() == testProject.getGroupId() ) {
+			int groupId = ((A_CmsGroup) groups.elementAt(i)).getId();
+			if( ( groupId == testProject.getGroupId() ) ||
+				( groupId == testProject.getManagerGroupId() ) ) {
 				return( true );
 			}
 		}
@@ -2866,7 +2868,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
       
     }
     
-      /**
+    /**
 	 * Moves the folder.
 	 * 
 	 * This operation includes a copy and a delete operation. These operations
@@ -2941,7 +2943,6 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 				CmsException.C_ACCESS_DENIED);
 		}
     }
-    
     
    	/**
 	 * Returns a Vector with all subfolders.<br>
@@ -3513,7 +3514,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 								
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + filename, 
-				CmsException.C_ACCESS_DENIED);
+				CmsException.C_NO_ACCESS);
 		}
 	}
 	

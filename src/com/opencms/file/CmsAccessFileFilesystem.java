@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFileFilesystem.java,v $
- * Date   : $Date: 2000/04/13 21:45:08 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2000/04/13 22:05:41 $
+ * Version: $Revision: 1.26 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.25 $ $Date: 2000/04/13 21:45:08 $
+ * @version $Revision: 1.26 $ $Date: 2000/04/13 22:05:41 $
  */
  class CmsAccessFileFilesystem implements I_CmsAccessFile, I_CmsConstants  {
    
@@ -105,7 +105,6 @@ import com.opencms.core.*;
            // If so, delete it
            try {
              CmsFile testfile=readFileHeader(project,filename);   
-            System.err.println("got file "+testfile);
             if (testfile.getState()==C_STATE_DELETED) {
                 // if the file is maked as deleted remove it!
                 removeFile(project,filename);
@@ -172,13 +171,11 @@ import com.opencms.core.*;
             CmsFile testfile=readFileHeader(project,filename);   
 
             if (testfile.getState()==C_STATE_DELETED) {
-                System.err.println("remove file");
                 // if the file is maked as deleted remove it!
                 removeFile(project,filename);
                 state=C_STATE_CHANGED;
             }
            } catch (CmsException e) {
-               System.err.println(e);
              // do nothing here
            }
          

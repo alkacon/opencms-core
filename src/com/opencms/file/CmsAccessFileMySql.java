@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFileMySql.java,v $
- * Date   : $Date: 2000/04/13 21:45:08 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2000/04/13 22:05:41 $
+ * Version: $Revision: 1.53 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.util.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.52 $ $Date: 2000/04/13 21:45:08 $
+ * @version $Revision: 1.53 $ $Date: 2000/04/13 22:05:41 $
  */
  class CmsAccessFileMySql implements I_CmsAccessFile, I_CmsConstants, I_CmsLogChannels  {
 
@@ -832,7 +832,6 @@ import com.opencms.util.*;
                 // check if the file content for this file is already existing in the
                 // offline project. If not, load it from the online project and add it
                 // to the offline project.
-                //System.err.println("WFH] Try to write File header for "+file.getAbsolutePath());
                   
                if ((file.getState() == C_STATE_UNCHANGED) && (changed == true) ) {
                     // read file content form the online project
@@ -847,10 +846,8 @@ import com.opencms.util.*;
                         throw new CmsException("["+this.getClass().getName()+"]"+file.getAbsolutePath(),CmsException.C_NOT_FOUND);  
                     }
                     // add the file content to the offline project.
-                    //System.err.println("WFH] Got file form online project");
                
                     try {
-                        //  System.err.println("WFH] Content is not there, so write content");
                         PreparedStatement statementFileWrite=m_Con.prepareStatement(C_FILE_WRITE);
                         statementFileWrite.setString(1,absoluteName(file.getAbsolutePath()));
                         statementFileWrite.setInt(2,project.getId());     
@@ -1274,8 +1271,6 @@ import com.opencms.util.*;
              Vector folders= getSubFolders(project,foldername);
              folders=getUndeletedResources(folders);
              if (folders.size()==0) {
-                 System.err.println("Folders in folder "+folders.size());
-                 System.err.println(folders);
                  //this folder is empty, delete it
                  try { 
                     // mark the folder as deleted       

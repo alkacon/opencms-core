@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessMetadefinitionMySql.java,v $
- * Date   : $Date: 2000/04/13 18:06:06 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2000/04/13 22:05:41 $
+ * Version: $Revision: 1.19 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -771,8 +771,6 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition, I_CmsCo
 		throws CmsException {
 		A_CmsPropertydefinition metadef = readMetadefinition(meta, resourceType);
 		
-		System.err.println("entering deleteMetainformation, metadef="+metadef.getName());
-		
 		if( metadef == null) {
 			// there is no metadefinition with the overgiven name for the resource
 			throw new CmsException("[" + this.getClass().getName() + "] " + meta, 
@@ -788,7 +786,6 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition, I_CmsCo
 				statementDeleteMetainfo.setString(2, path);
 				statementDeleteMetainfo.setInt(3, projectId);
 				statementDeleteMetainfo.executeUpdate();
-				System.err.println("exiting deleteMetainformation, metadef="+metadef.getName());
 			} catch(SQLException exc) {
 				throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(), 
 					CmsException.C_SQL_ERROR, exc);
