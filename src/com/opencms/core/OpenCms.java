@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
- * Date   : $Date: 2003/08/01 10:33:30 $
- * Version: $Revision: 1.153 $
+ * Date   : $Date: 2003/08/01 13:57:22 $
+ * Version: $Revision: 1.154 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.153 $
+ * @version $Revision: 1.154 $
  */
 public final class OpenCms extends A_OpenCms {
 
@@ -719,7 +719,7 @@ public final class OpenCms extends A_OpenCms {
 
         if (file != null) {
             // test if this file is only available for internal access operations
-            if ((file.getAccessFlags() & I_CmsConstants.C_ACCESS_INTERNAL_READ) > 0) {
+            if ((file.getFlags() & I_CmsConstants.C_ACCESS_INTERNAL_READ) > 0) {
                 throw new CmsException(CmsException.C_EXTXT[CmsException.C_INTERNAL_FILE] + cms.getRequestContext().getUri(), CmsException.C_INTERNAL_FILE);
             }
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/08/01 12:40:52 $
- * Version: $Revision: 1.77 $
+ * Date   : $Date: 2003/08/01 13:57:22 $
+ * Version: $Revision: 1.78 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.77 $ $Date: 2003/08/01 12:40:52 $
+ * @version $Revision: 1.78 $ $Date: 2003/08/01 13:57:22 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -222,7 +222,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
 
         int newState = (structureState > resourceState) ? structureState : resourceState;
 
-        return new CmsFile(structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, resProjectId, 0, newState, lockedBy, launcherType, dateCreated, userCreated, dateLastModified, userLastModified, content, resourceSize, lockedInProject, linkCount);
+        return new CmsFile(structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, resProjectId, newState, launcherType, dateCreated, userCreated, dateLastModified, userLastModified, content, resourceSize, linkCount);
     }
 
     /**
@@ -238,33 +238,22 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         CmsUUID fileId = new CmsUUID(res.getString(m_sqlManager.get("C_RESOURCES_FILE_ID")));
         int resourceState = res.getInt(m_sqlManager.get("C_RESOURCES_STATE"));
         int structureState = res.getInt(m_sqlManager.get("C_RESOURCES_STRUCTURE_STATE"));
-        CmsUUID lockedBy = new CmsUUID(res.getString(m_sqlManager.get("C_RESOURCES_LOCKED_BY")));
         int launcherType = res.getInt(m_sqlManager.get("C_RESOURCES_LAUNCHER_TYPE"));
         long dateCreated = SqlHelper.getTimestamp(res, m_sqlManager.get("C_RESOURCES_DATE_CREATED")).getTime();
         long dateLastModified = SqlHelper.getTimestamp(res, m_sqlManager.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
         int resourceSize = res.getInt(m_sqlManager.get("C_RESOURCES_SIZE"));
         CmsUUID userCreated = new CmsUUID(res.getString(m_sqlManager.get("C_RESOURCES_USER_CREATED")));
         CmsUUID userLastModified = new CmsUUID(res.getString(m_sqlManager.get("C_RESOURCES_USER_LASTMODIFIED")));
-        int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
-        int resProjectId = res.getInt(m_sqlManager.get("C_RESOURCES_PROJECT_ID"));
         byte[] content = m_sqlManager.getBytes(res, m_sqlManager.get("C_RESOURCES_FILE_CONTENT"));
         int linkCount = res.getInt(m_sqlManager.get("C_RESOURCES_LINK_COUNT"));
 
         if (org.opencms.db.generic.CmsProjectDriver.C_USE_TARGET_DATE && resourceType == org.opencms.db.generic.CmsProjectDriver.C_RESTYPE_LINK_ID && resourceFlags > 0) {
             dateLastModified = fetchDateFromResource(projectId, resourceFlags, dateLastModified);
         }
-        
-        if (!lockedBy.equals(CmsUUID.getNullUUID())) {
-            // resource is locked
-        } else {
-            // resource is not locked
-            resProjectId = projectId;
-            lockedInProject = projectId;
-        }        
 
         int newState = (structureState > resourceState) ? structureState : resourceState;
         
-        return new CmsFile(structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, resProjectId, 0, newState, lockedBy, launcherType, dateCreated, userCreated, dateLastModified, userLastModified, content, resourceSize, lockedInProject, linkCount);
+        return new CmsFile(structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, projectId, newState, launcherType, dateCreated, userCreated, dateLastModified, userLastModified, content, resourceSize, linkCount);
     }
 
     /**
@@ -302,7 +291,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
 
         int newState = (structureState > resourceState) ? structureState : resourceState;
         
-        return new CmsFolder(structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, resProjectId, 0, newState, lockedBy, dateCreated, userCreated, dateLastModified, userLastModified, lockedInProject, linkCount);
+        return new CmsFolder(structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, resProjectId, newState, dateCreated, userCreated, dateLastModified, userLastModified, linkCount);
     }
 
     /**
@@ -320,32 +309,21 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         CmsUUID fileId = new CmsUUID(res.getString(m_sqlManager.get("C_RESOURCES_FILE_ID")));
         int resourceState = res.getInt(m_sqlManager.get("C_RESOURCES_STATE"));
         int structureState = res.getInt(m_sqlManager.get("C_RESOURCES_STRUCTURE_STATE"));
-        CmsUUID lockedBy = new CmsUUID(res.getString(m_sqlManager.get("C_RESOURCES_LOCKED_BY")));
         int launcherType = res.getInt(m_sqlManager.get("C_RESOURCES_LAUNCHER_TYPE"));
         long dateCreated = SqlHelper.getTimestamp(res, m_sqlManager.get("C_RESOURCES_DATE_CREATED")).getTime();
         long dateLastModified = SqlHelper.getTimestamp(res, m_sqlManager.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
         int resourceSize = res.getInt(m_sqlManager.get("C_RESOURCES_SIZE"));
         CmsUUID userCreated = new CmsUUID(res.getString(m_sqlManager.get("C_RESOURCES_USER_CREATED")));
         CmsUUID userLastModified = new CmsUUID(res.getString(m_sqlManager.get("C_RESOURCES_USER_LASTMODIFIED")));
-        int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
         int linkCount = res.getInt(m_sqlManager.get("C_RESOURCES_LINK_COUNT"));
 
         if (org.opencms.db.generic.CmsProjectDriver.C_USE_TARGET_DATE && resourceType == org.opencms.db.generic.CmsProjectDriver.C_RESTYPE_LINK_ID && resourceFlags > 0) {
             dateLastModified = fetchDateFromResource(projectId, resourceFlags, dateLastModified);
-        }
-        
-        /*
-        if (!lockedBy.equals(CmsUUID.getNullUUID())) {
-            // resource is locked
-        } else {
-            // resource is not locked
-            resourceProjectId = lockedInProject = projectId;
-        } 
-        */        
+        }      
 
         int newState = (structureState > resourceState) ? structureState : resourceState;
                      
-        CmsResource newResource = new CmsResource(structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, resourceProjectId, 0, newState, lockedBy, launcherType, dateCreated, userCreated, dateLastModified, userLastModified, resourceSize, lockedInProject, linkCount);
+        CmsResource newResource = new CmsResource(structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, resourceProjectId, newState, launcherType, dateCreated, userCreated, dateLastModified, userLastModified, resourceSize, linkCount);
         
         return newResource;
     }
@@ -445,7 +423,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 stmt.setString(9, modifiedByUserId.toString());
                 stmt.setInt(10, newState);
                 stmt.setInt(11, file.getLength());
-                stmt.setString(12, file.isLockedBy().toString());
+                stmt.setString(12, CmsUUID.getNullUUID().toString());
                 stmt.setInt(13, project.getId());
                 stmt.setInt(14, 1);
                 stmt.executeUpdate();
@@ -628,17 +606,14 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             /* user.getId(),
             user.getDefaultGroupId(), */
             project.getId(),
-            com.opencms.core.I_CmsConstants.C_ACCESS_DEFAULT_FLAGS,
             com.opencms.core.I_CmsConstants.C_STATE_NEW,
-            CmsUUID.getNullUUID(),
             resourceType.getLoaderId(),
             0,
             user.getId(),
             0,
             user.getId(),
             contents,
-            contents.length, 
-            project.getId(),
+            contents.length,
             1);
     
         return createFile(project, newFile, user.getId(), parentId, filename);          
@@ -773,7 +748,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 stmt.setString(9, modifiedByUserId.toString());
                 stmt.setInt(10, state);
                 stmt.setInt(11, folder.getLength());
-                stmt.setString(12, folder.isLockedBy().toString());
+                stmt.setString(12, CmsUUID.getNullUUID().toString());
                 stmt.setInt(13, project.getId());
                 stmt.setInt(14, 1);
                 stmt.executeUpdate();
@@ -849,17 +824,12 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             folderName,
             CmsResourceTypeFolder.C_RESOURCE_TYPE_ID,
             flags,
-            /* user.getId(),
-            user.getDefaultGroupId(), */
             project.getId(),
-            com.opencms.core.I_CmsConstants.C_ACCESS_DEFAULT_FLAGS,
             com.opencms.core.I_CmsConstants.C_STATE_NEW,
-            CmsUUID.getNullUUID(),
             0,
             user.getId(), 
             0,
             user.getId(), 
-            project.getId(),
             1);
     
         return createFolder(user, project, newFolder, parentId, folderName);        
@@ -1051,7 +1021,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.setString(9, modifiedByUserId.toString());
             stmt.setInt(10, state);
             stmt.setInt(11, newResource.getLength());
-            stmt.setString(12, newResource.isLockedBy().toString());
+            stmt.setString(12, CmsUUID.getNullUUID().toString());
             stmt.setInt(13, project.getId());
             stmt.setInt(14, 1);
             stmt.executeUpdate();
@@ -3019,7 +2989,6 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         PreparedStatement stmt = null;
         Connection conn = null;
         int count = 0;
-        long dateModified = resource.isTouched() ? resource.getDateLastModified() : System.currentTimeMillis();
 		int state = resource.getState();
 		if (state == I_CmsConstants.C_STATE_UNCHANGED)
 			state = I_CmsConstants.C_STATE_CHANGED;
@@ -3032,15 +3001,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.setString(3,newname);
             stmt.setInt(4,state);
             stmt.setString(5,resource.getId().toString());
-            count = stmt.executeUpdate();
-            
-            // TODO: remove this later
-            // stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_RESOURCE_SETLASTMODIFIED");
-			// stmt.setTimestamp(1, new Timestamp(dateModified));
-			// stmt.setInt(2,state);
-			// stmt.setString(3,resource.getResourceId().toString());
-			// stmt.executeUpdate();
-            
+            count = stmt.executeUpdate();            
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
@@ -3063,7 +3024,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         try {
             conn = m_sqlManager.getConnection(projectId);
             stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_UPDATE_LOCK");
-            stmt.setString(1, res.isLockedBy().toString());
+            stmt.setString(1, CmsUUID.getNullUUID().toString());
             stmt.setInt(2, projectId);
             stmt.setString(3, res.getResourceId().toString());
             stmt.executeUpdate();
@@ -3256,7 +3217,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
 			stmt.setInt(6, resourceState);
             stmt.setInt(7, file.getLength());
             stmt.setString(8, file.getFileId().toString());
-            stmt.setString(9, file.isLockedBy().toString());
+            stmt.setString(9, CmsUUID.getNullUUID().toString());
             stmt.setInt(10, project.getId());
             stmt.setInt(11, countVfsLinks(project.getId(), file.getResourceId()));
             stmt.setString(12, file.getResourceId().toString());
@@ -3310,7 +3271,6 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         Connection conn = null;
         //CmsUUID modifiedByUserId = userId;
         long resourceDateModified = folder.isTouched() ? folder.getDateLastModified() : System.currentTimeMillis();
-        long structureDateModified = folder.getDateLastModified();
         
         //Savepoint savepoint = null;
         int structureState = folder.getState();
@@ -3338,7 +3298,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
 			stmt.setInt(6, structureState);    
             stmt.setInt(7, 0);
             stmt.setString(8, CmsUUID.getNullUUID().toString());
-            stmt.setString(9, folder.isLockedBy().toString());
+            stmt.setString(9, CmsUUID.getNullUUID().toString());
             //stmt.setInt(10, folder.getProjectId());
             stmt.setInt(10, project.getId());
             stmt.setInt(11, this.countVfsLinks(project.getId(), folder.getResourceId()));
@@ -3528,9 +3488,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
     public void writeResource(CmsProject project, CmsResource resource, byte[] filecontent, int changed, CmsUUID userId) throws CmsException {
         PreparedStatement stmt = null;
         Connection conn = null;
-        //CmsUUID modifiedByUserId = userId;
         long resourceDateModified = resource.isTouched() ? resource.getDateLastModified() : System.currentTimeMillis();
-        long structureDateModified = resource.getDateLastModified();
         
         boolean isFolder = false;
         //Savepoint savepoint = null;
@@ -3570,7 +3528,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.setInt(6, resourceState);
             stmt.setInt(7, filecontent.length);
             stmt.setString(8, resource.getFileId().toString());
-            stmt.setString(9, resource.isLockedBy().toString());
+            stmt.setString(9, CmsUUID.getNullUUID().toString());
             stmt.setInt(10, resource.getProjectId());
             stmt.setInt(11, this.countVfsLinks(project.getId(), resource.getResourceId()));
             stmt.setString(12, resource.getResourceId().toString());
@@ -3776,10 +3734,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
      */
     public void moveResource(CmsUser currentUser, CmsProject currentProject, CmsResource resource, CmsResource destinationFolder, String resourceName) throws CmsException {
         Connection conn = null;
-        PreparedStatement stmt = null;   
-        long dateModified = resource.isTouched() ? resource.getDateLastModified() : System.currentTimeMillis();
-        CmsUUID modifiedByUser = resource.isTouched() ? resource.getUserLastModified() : currentUser.getId();
-		        
+        PreparedStatement stmt = null;        
         try {
             conn = m_sqlManager.getConnection(currentProject);
             
@@ -3800,24 +3755,6 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.setInt(4, I_CmsConstants.C_STATE_DELETED);
             stmt.setString(5, resource.getId().toString());
             stmt.executeUpdate();            
-            
-            /*
-            stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_RESOURCE_MOVE");
-            stmt.setString(1, destinationFolder.getId().toString());
-            // stmt.setTimestamp(2, new Timestamp(dateModified));
-            stmt.setString(2, currentUser.getId().toString());
-            stmt.setInt(3, state);
-            stmt.setString(4, resourceName);              
-            stmt.setString(5, resource.getId().toString());
-            count = stmt.executeUpdate();
-            
-			// TODO: remove this later
-			stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_RESOURCE_SETLASTMODIFIED");
-			stmt.setTimestamp(1, new Timestamp(dateModified));
-			stmt.setInt(2, state);
-			stmt.setString(3,resource.getResourceId().toString());
-			stmt.executeUpdate();
-			*/
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/07/29 15:58:46 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2003/08/01 13:57:22 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the backup driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.24 $ $Date: 2003/07/29 15:58:46 $
+ * @version $Revision: 1.25 $ $Date: 2003/08/01 13:57:22 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
@@ -103,8 +103,6 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
         String userLastModifiedName = res.getString(m_sqlManager.get("C_RESOURCES_LASTMODIFIED_BY_NAME"));
         CmsUUID userCreated = new CmsUUID(res.getString(m_sqlManager.get("C_RESOURCES_USER_CREATED")));
         String userCreatedName = res.getString(m_sqlManager.get("C_RESOURCES_USER_CREATED_NAME"));        
-        int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
-        int linkCount = res.getInt(m_sqlManager.get("C_RESOURCES_LINK_COUNT"));
 
         if (hasContent) {
             content = m_sqlManager.getBytes(res, m_sqlManager.get("C_RESOURCES_FILE_CONTENT"));
@@ -112,7 +110,7 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
             content = new byte[0];
         }
 
-        return new CmsBackupResource(versionId, structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, projectID, 0, state, launcherType, dateCreated, userCreated, userCreatedName, dateLastModified, userLastModified, userLastModifiedName, content, resourceSize, lockedInProject);
+        return new CmsBackupResource(versionId, structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, projectID, state, launcherType, dateCreated, userCreated, userCreatedName, dateLastModified, userLastModified, userLastModifiedName, content, resourceSize);
     }
 
     /**
@@ -553,21 +551,22 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
     public void writeBackupResource(CmsUser currentUser, CmsProject publishProject, CmsResource resource, Map properties, int versionId, long publishDate) throws CmsException {
         Connection conn = null;
         PreparedStatement stmt = null;
-        String lastModifiedName = null;
-        String createdName = null;
         CmsUUID backupPkId = new CmsUUID();
         byte[] content = null;
 
-        try {
-            CmsUser lastModified = m_driverManager.getUserDriver().readUser(resource.getUserLastModified());
-            lastModifiedName = lastModified.getName() + " " + lastModified.getFirstname() + " " + lastModified.getLastname();
-
-            CmsUser created = m_driverManager.readUser(null, resource.getUserCreated());
-            createdName = created.getName() + " " + created.getFirstname() + " " + created.getLastname();
-        } catch (CmsException e) {
-            lastModifiedName = "";
-            createdName = "";
-        }
+        // TODO: ensure user name is also displayed even if user was deleted
+//        String lastModifiedName = null;
+//        String createdName = null;
+//        try {
+//            CmsUser lastModified = m_driverManager.getUserDriver().readUser(resource.getUserLastModified());
+//            lastModifiedName = lastModified.getName() + " " + lastModified.getFirstname() + " " + lastModified.getLastname();
+//
+//            CmsUser created = m_driverManager.readUser(null, resource.getUserCreated());
+//            createdName = created.getName() + " " + created.getFirstname() + " " + created.getLastname();
+//        } catch (CmsException e) {
+//            lastModifiedName = "";
+//            createdName = "";
+//        }
 
         try {
             conn = m_sqlManager.getConnectionForBackup();           
@@ -594,7 +593,7 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
                 stmt.setString(9, resource.getUserLastModified().toString());
                 stmt.setInt(10, resource.getState());
                 stmt.setInt(11, resource.getLength());
-                stmt.setString(12, resource.isLockedBy().toString());
+                stmt.setString(12, CmsUUID.getNullUUID().toString());
                 stmt.setInt(13, publishProject.getId());
                 // TODO: link count is set to 1 for the moment
                 stmt.setInt(14, 1);

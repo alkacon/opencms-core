@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResource.java,v $
- * Date   : $Date: 2003/08/01 09:11:53 $
- * Version: $Revision: 1.78 $
+ * Date   : $Date: 2003/08/01 13:57:22 $
+ * Version: $Revision: 1.79 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,12 +43,9 @@ import java.io.Serializable;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.78 $ 
+ * @version $Revision: 1.79 $ 
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
-
-    /** The access flags of this resource */
-    private int m_accessFlags;
 
     /** The ID of the content database record */
     private CmsUUID m_contentId;
@@ -73,12 +70,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
 
     /** The id of the loader which is used to process this resource */
     private int m_loaderId;
-
-    /** The id of the user who locked this resource */
-    private CmsUUID m_lockedByUserId;
-
-    /** The projectId of the project where the resource was last modified in */
-    private int m_lockedInProject;
     
     /** The ID of the parent's strcuture database record */
     private CmsUUID m_parentId;
@@ -99,7 +90,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     private int m_resourceType;
     
     /** The size of the content */
-    protected int m_size;
+    protected int m_length;
     
     /** The number of references */
     protected int m_linkCount;
@@ -130,16 +121,13 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @param resourceType the type of the resource
      * @param resourceFlags the flags of the resource
      * @param projectId the project id this resource belongs to
-     * @param accessFlags the access flags of this resource
      * @param state the state of this resource
-     * @param lockedByUser the user id of the user who has locked this resource
      * @param launcherType the launcher that is require to process this recource     
      * @param dateCreated the creation date of this resource
      * @param createdByUser the user who created this resource
      * @param dateLastModified the date of the last modification of the resource
      * @param lastModifiedByUser the user who changed the file
      * @param size the file content size of the resource
-     * @param lockedInProject id of the project the resource was last modified in
      * @param linkCount the number of references
      */
     public CmsResource(
@@ -151,16 +139,13 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         int resourceType, 
         int resourceFlags, 
         int projectId, 
-        int accessFlags, 
         int state, 
-        CmsUUID lockedByUser, 
         int launcherType, 
         long dateCreated, 
         CmsUUID createdByUser, 
         long dateLastModified, 
         CmsUUID lastModifiedByUser, 
         int size, 
-        int lockedInProject,
         int linkCount
     ) {
         m_structureId = structureId;
@@ -171,16 +156,13 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         m_resourceType = resourceType;
         m_resourceFlags = resourceFlags;
         m_projectId = projectId;
-        m_accessFlags = accessFlags;
         m_loaderId = launcherType;
         m_state = state;
-        m_lockedByUserId = lockedByUser;
         m_dateCreated = dateCreated;
         m_createdByUser = createdByUser;
         m_dateLastModified = dateLastModified;
         m_lastModifiedByUser = lastModifiedByUser;
-        m_size = size;
-        m_lockedInProject = lockedInProject;
+        m_length = size;
         m_linkCount = linkCount;
         
         m_isTouched = false;
@@ -323,7 +305,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @see java.lang.Object#clone()
      */
     public Object clone() {
-        return new CmsResource(m_structureId, m_resourceId, m_parentId, m_contentId, m_resourceName, m_resourceType, m_resourceFlags, m_projectId, m_accessFlags, m_state, m_lockedByUserId, m_loaderId, m_dateCreated, m_createdByUser, m_dateLastModified, m_lastModifiedByUser, m_size, m_lockedInProject, m_linkCount);
+        return new CmsResource(m_structureId, m_resourceId, m_parentId, m_contentId, m_resourceName, m_resourceType, m_resourceFlags, m_projectId, m_state, m_loaderId, m_dateCreated, m_createdByUser, m_dateLastModified, m_lastModifiedByUser, m_length, m_linkCount);
     }
 
     /**
@@ -354,13 +336,14 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
-     * Returns the accessflags of this resource.<p>
+     * Used to return the access flags of this resource,
+     * deprecated, will now always throw a <code>RuntimeException</code><p>
      *
      * @return the accessflags of this resource
-     * @deprecated no access flags are maintained on the resource in the new permission model
+     * @deprecated the access flags are not part of the resource in the revised resource model
      */
     public int getAccessFlags() {
-        return m_accessFlags;
+        throw new RuntimeException("getLockedInProject() not longer supported on CmsResource");
     }
     
     /**
@@ -408,7 +391,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      */
     public String getFullResourceName() {
         if (m_fullResourceName == null) {
-            throw new RuntimeException("Full resource name not set for resource " + getResourceName());
+            throw new RuntimeException("Full resource name not set for CmsResource " + getResourceName());
         }
         return m_fullResourceName;
     }
@@ -428,7 +411,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @return the length of the content
      */
     public int getLength() {
-        return m_size;
+        return m_length;
     }
 
     /**
@@ -450,18 +433,19 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
-     * Returns the ID of the project if the resource is locked in the database<p>
+     * Used to returns the ID of the project if the resource is locked in the database,
+     * deprecated, will now always throw a <code>RuntimeException</code><p>
      * 
      * Don't use this method to detect the lock state of a resource. 
      * Use {@link com.opencms.file.CmsObject#getLock(CmsResource)} instead.
      *
      * @return the project id
-     * @deprecated the lock state is not part of the resource anymore
+     * @deprecated the lock state is not part of the resource in the revised resource model
      * @see com.opencms.file.CmsObject#getLock(CmsResource)
      * @see org.opencms.lock.CmsLock#getProjectId()
      */
     public int getLockedInProject() {
-        return m_lockedInProject;
+        throw new RuntimeException("getLockedInProject() not longer supported on CmsResource");
     }
     
     /**
@@ -562,7 +546,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * path including the site root or not.<p>
      * 
      * @return true if the current state of this resource contains the full resource path
-     * @deprecated in the revised resource model
      */
     public boolean hasFullResourceName() {
         return (m_fullResourceName != null);
@@ -580,16 +563,16 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
-     * Proves is this resource is inside the specified project.<p>
+     * Used to check if this resource is inside the specified project,
+     * deprecated, will now always throw a <code>RuntimeException</code><p>
      * 
      * @param project the specified project
-     * @return false because this method is deprecated
-     * @deprecated the project state is not part of the resource anymore
+     * @return false
+     * @deprecated the project state is not part of the resource in the revised resource model
      * @see com.opencms.file.CmsObject#isInsideCurrentProject(CmsResource)
      */
     public boolean inProject(CmsProject project) {
-        //return project.getId() == getProjectId();
-        return false;
+        throw new RuntimeException("inProject() not longer supported on CmsResource");
     }
     
     /**
@@ -611,33 +594,35 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
-     * Checks if this resource is currently directly locked in the database.<p>
+     * Used to check if this resource is currently directly locked in the database,
+     * deprecated, will now always throw a <code>RuntimeException</code><p>
      * 
      * Don't use this method to detect the lock state of a resource. 
      * Use {@link com.opencms.file.CmsObject#getLock(CmsResource)} instead.
      *
-     * @return true, if and only if this resource is directly locked by a user
-     * @deprecated the lock state is not part of the resource anymore
+     * @return true
+     * @deprecated the lock state is not part of the resource in the revised resource model
      * @see com.opencms.file.CmsObject#getLock(CmsResource)
      * @see org.opencms.lock.CmsLock#isNullLock()
      */
     public boolean isLocked() {
-        return !isLockedBy().equals(CmsUUID.getNullUUID());
+        throw new RuntimeException("isLocked() not longer supported on CmsResource");
     }
 
     /**
-     * Returns the ID of the user if the resource is directly locked in the database.<p>
+     * Used to return the ID of the user if the resource is directly locked in the database,
+     * deprecated, will now always throw a <code>RuntimeException</code><p>
      * 
      * Don't use this method to detect the lock state of a resource. 
      * Use {@link com.opencms.file.CmsObject#getLock(CmsResource)} instead.
      *
-     * @return the CmsUUID of the user
-     * @deprecated the lock state is not part of the resource anymore
+     * @return the null UUID
+     * @deprecated the lock state is not part of the resource in the revised resource model
      * @see com.opencms.file.CmsObject#getLock(CmsResource)
      * @see org.opencms.lock.CmsLock#getUserId()
      */
     public CmsUUID isLockedBy() {
-        return m_lockedByUserId;
+        throw new RuntimeException("isLockedBy() not longer supported on CmsResource");
     }
 
     /**
@@ -655,7 +640,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @param flags the access flags to set
      */
     public void setAccessFlags(int flags) {
-        m_accessFlags = flags;
+        throw new RuntimeException("setAccessFlags() not longer supported on CmsResource");
     }
 
     /**
@@ -696,33 +681,35 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
     
     /**
-     * Sets the the user id that locked this resource.<p>
+     * Used to set the the user id that locked this resource,
+     * deprecated, will now always throw a <code>RuntimeException</code><p>
      * 
      * Don't use this method to detect the lock state of a resource. 
      * Use {@link com.opencms.file.CmsObject#getLock(CmsResource)} instead.
      *
      * @param user the user id to set
-     * @deprecated the lock state is not part of the resource anymore
+     * @deprecated the lock state is not part of the resource in the revised resource model
      * @see com.opencms.file.CmsObject#getLock(CmsResource)
      * @see org.opencms.lock.CmsLock#getUserId()
      */
     public void setLocked(CmsUUID user) {
-        m_lockedByUserId = user;
+        throw new RuntimeException("setLocked() not longer supported on CmsResource");
     }
 
     /**
-     * Sets the project id in which this resource is locked.<p>
+     * Used to set the project id in which this resource is locked,
+     * deprecated, will now always throw a <code>RuntimeException</code><p>
      * 
      * Don't use this method to detect the lock state of a resource. 
      * Use {@link com.opencms.file.CmsObject#getLock(CmsResource)} instead.
      *
      * @param projectId a project id
-     * @deprecated the lock state is not part of the resource anymore
+     * @deprecated the lock state is not part of the resource in the revised resource model
      * @see com.opencms.file.CmsObject#getLock(CmsResource)
      * @see org.opencms.lock.CmsLock#getProjectId()
      */
     public void setLockedInProject(int projectId) {
-        m_lockedInProject = projectId;
+        throw new RuntimeException("setLockedInProject() not longer supported on CmsResource");
     }
 
     /**
@@ -735,18 +722,19 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
-     * Sets the ID of the project where the resource has been last modified.<p>
+     * Used to sets the ID of the project where the resource has been last modified,
+     * deprecated, will now always throw a <code>RuntimeException</code><p>
      * 
      * It is unsafe to set the project state explicit, the project state is saved 
      * implicit when the resource get modified. Thus, this value is never written 
      * to the database.
      *
      * @param projectId the ID of the project where the resource has been last modified
-     * @deprecated the project state is not part of the resource anymore
+     * @deprecated the project state is not part of the resource in the revised resource model
      * @see org.opencms.db.generic.CmsVfsDriver#updateResourceState(CmsProject, CmsResource, int)
      */
     public void setProjectId(int projectId) {
-        m_projectId = projectId;
+        throw new RuntimeException("setProjectId() not longer supported on CmsResource");
     }
     
     /**
@@ -791,30 +779,28 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     public String toString() {
         StringBuffer output = new StringBuffer();
         output.append("[Resource]:");
-        output.append(m_resourceName);
-        output.append(" ID: ");
-        output.append(m_resourceId);
-        output.append(" ParentID: ");
-        output.append(m_parentId);
-        output.append(" , Project=");
-        output.append(m_projectId);
-        output.append(" : Resource-type=");
+        output.append(getResourceName());
+        output.append(" id: ");
+        output.append(getId());
+        output.append(" parentId: ");
+        output.append(getParentId());
+        output.append(" , project=");
+        output.append(getProjectId());
+        output.append(" : type=");
         output.append(getType());
-        output.append(" : Locked=");
-        output.append(isLockedBy());
         output.append(" : length=");
         output.append(getLength());
         output.append(" : state=");
         output.append(getState());
-        output.append(" : Date created=");
+        output.append(" : sate created=");
         output.append(new java.util.Date(getDateCreated()));
-        output.append(" : User created=");
+        output.append(" : user created=");
         output.append(getUserCreated());
-        output.append(" : Date lastmodified=");
+        output.append(" : date lastmodified=");
         output.append(new java.util.Date(getDateLastModified()));
-        output.append(" : User lastmodified=");
+        output.append(" : user lastmodified=");
         output.append(getUserLastModified());
-        output.append(" : Link count=");
+        output.append(" : link count=");
         output.append(getLinkCount());
         return output.toString();
     }

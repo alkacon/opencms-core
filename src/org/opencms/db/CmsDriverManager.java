@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/01 11:54:24 $
- * Version: $Revision: 1.118 $
+ * Date   : $Date: 2003/08/01 13:57:22 $
+ * Version: $Revision: 1.119 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.118 $ $Date: 2003/08/01 11:54:24 $
+ * @version $Revision: 1.119 $ $Date: 2003/08/01 13:57:22 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1766,16 +1766,13 @@ public class CmsDriverManager extends Object {
                 CmsResourceTypePointer.C_RESOURCE_TYPE_ID,
                 targetResource.getFlags(),
                 context.currentProject().getId(),
-                com.opencms.core.I_CmsConstants.C_ACCESS_DEFAULT_FLAGS,
                 com.opencms.core.I_CmsConstants.C_STATE_NEW,
-                CmsUUID.getNullUUID(),
                 targetResource.getLoaderId(),
                 System.currentTimeMillis(),
                 context.currentUser().getId(),
                 System.currentTimeMillis(),
                 context.currentUser().getId(),
                 0,
-                context.currentProject().getId(),
                 targetResource.getLinkCount()+1);
 
         // write the link
@@ -3526,7 +3523,6 @@ public class CmsDriverManager extends Object {
         CmsFolder offlineFolder = null;
         Vector resources = new Vector();
         Vector retValue = new Vector();
-        CmsLock lock = null;
 
         try {
             offlineFolder = readFolder(context, folder);
@@ -3555,13 +3551,12 @@ public class CmsDriverManager extends Object {
                     if (hasPermissions(context, res, I_CmsConstants.C_VIEW_ACCESS, false)) {
                         retValue.addElement(res);
                     }
-                    lock = getLock(context, offlineFolder);
-
-                    if (!lock.isNullLock()) {
-                        res.setLocked(lock.getUserId());
-                        res.setLockedInProject(lock.getProjectId());
-                        //res.setProjectId(lock.getProjectId());
-                    }
+//                    lock = getLock(context, offlineFolder);
+//
+//                    if (!lock.isNullLock()) {
+//                        res.setLocked(lock.getUserId());
+//                        res.setLockedInProject(lock.getProjectId());
+//                    }
                 }
 
                 m_resourceListCache.put(cacheKey, retValue);
@@ -6933,9 +6928,7 @@ public class CmsDriverManager extends Object {
                     /* ownerId,
                     groupId, */
                     context.currentProject().getId(),
-                    backupFile.getAccessFlags(),
                     state,
-                    offlineFile.isLockedBy(),
                     backupFile.getLoaderId(),
                     offlineFile.getDateCreated(),
                     backupFile.getUserCreated(),
@@ -6943,7 +6936,6 @@ public class CmsDriverManager extends Object {
                     context.currentUser().getId(),
                     backupFile.getContents(),
                     backupFile.getLength(),
-                    context.currentProject().getId(),
                     backupFile.getLinkCount());
             writeFile(context, newFile);
             clearResourceCache();
@@ -7231,52 +7223,52 @@ public class CmsDriverManager extends Object {
         fileSystemChanged(res.isFolder());
     }
     
-    /**
-     * Access the driver underneath to change the timestamp of a resource.
-     * 
-     * @param context.currentUser() the currentuser who requested this method
-     * @param context.currentProject() the current project of the user 
-     * @param resourceName the name of the resource to change
-     * @param timestamp timestamp the new timestamp of the changed resource
-     * @param user the user who is inserted as userladtmodified 
-     */
-    private void touchStructure(CmsRequestContext context, CmsResource res, long timestamp, CmsUUID user) throws CmsException {
-        
-        // NOTE: this is the new way to update the state !
-        if (res.getState() < I_CmsConstants.C_STATE_CHANGED)
-            res.setState(I_CmsConstants.C_STATE_CHANGED);
-                
-        res.setDateLastModified(timestamp);
-        res.setUserLastModified(user);
-        m_vfsDriver.updateResourceState(context.currentProject(), res, C_UPDATE_STRUCTURE);
-        
-        clearResourceCache();
-        fileSystemChanged(res.isFolder());        
-    }   
+//    /**
+//     * Access the driver underneath to change the timestamp of a resource.
+//     * 
+//     * @param context.currentUser() the currentuser who requested this method
+//     * @param context.currentProject() the current project of the user 
+//     * @param resourceName the name of the resource to change
+//     * @param timestamp timestamp the new timestamp of the changed resource
+//     * @param user the user who is inserted as userladtmodified 
+//     */
+//    private void touchStructure(CmsRequestContext context, CmsResource res, long timestamp, CmsUUID user) throws CmsException {
+//        
+//        // NOTE: this is the new way to update the state !
+//        if (res.getState() < I_CmsConstants.C_STATE_CHANGED)
+//            res.setState(I_CmsConstants.C_STATE_CHANGED);
+//                
+//        res.setDateLastModified(timestamp);
+//        res.setUserLastModified(user);
+//        m_vfsDriver.updateResourceState(context.currentProject(), res, C_UPDATE_STRUCTURE);
+//        
+//        clearResourceCache();
+//        fileSystemChanged(res.isFolder());        
+//    }   
     
-    /**
-     * Removes the deleted mark for all access control entries of a given resource
-     * 
-     * <B>Security:</B>
-     * Access is granted, if:
-     * <ul>
-     * <li>the current user has write permission on the resource
-     * </ul>
-     * 
-     * @param context the current request context	
-     * @param resource			the resource
-     * @throws CmsException		if something goes wrong
-     */
-    private void undeleteAllAccessControlEntries(CmsRequestContext context, CmsResource resource) throws CmsException {
-
-        checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);
-
-        m_userDriver.undeleteAllAccessControlEntries(context.currentProject(), resource.getResourceAceId());
-        clearAccessControlListCache();
-        
-        // not here
-        //touchResource(context, resource, System.currentTimeMillis());
-    }
+//    /**
+//     * Removes the deleted mark for all access control entries of a given resource
+//     * 
+//     * <B>Security:</B>
+//     * Access is granted, if:
+//     * <ul>
+//     * <li>the current user has write permission on the resource
+//     * </ul>
+//     * 
+//     * @param context the current request context	
+//     * @param resource			the resource
+//     * @throws CmsException		if something goes wrong
+//     */
+//    private void undeleteAllAccessControlEntries(CmsRequestContext context, CmsResource resource) throws CmsException {
+//
+//        checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);
+//
+//        m_userDriver.undeleteAllAccessControlEntries(context.currentProject(), resource.getResourceAceId());
+//        clearAccessControlListCache();
+//        
+//        // not here
+//        //touchResource(context, resource, System.currentTimeMillis());
+//    }
 
     /**
      * Undeletes a file in the Cms.<br>
@@ -7364,14 +7356,11 @@ public class CmsDriverManager extends Object {
                     onlineFolder.getType(),
                     onlineFolder.getFlags(),
                     context.currentProject().getId(),
-                    onlineFolder.getAccessFlags(),
                     I_CmsConstants.C_STATE_UNCHANGED,
-                    resource.isLockedBy(),
                     onlineFolder.getDateCreated(),
                     onlineFolder.getUserCreated(),
                     onlineFolder.getDateLastModified(),
                     onlineFolder.getUserLastModified(),
-                    context.currentProject().getId(),
                     resource.getLinkCount());
                     
             // write the file in the offline project
@@ -7401,9 +7390,7 @@ public class CmsDriverManager extends Object {
                     onlineFile.getType(),
                     onlineFile.getFlags(),
                     context.currentProject().getId(),
-                    onlineFile.getAccessFlags(),
                     I_CmsConstants.C_STATE_UNCHANGED,
-                    resource.isLockedBy(),
                     onlineFile.getLoaderId(),
                     onlineFile.getDateCreated(),
                     onlineFile.getUserCreated(),
@@ -7411,7 +7398,6 @@ public class CmsDriverManager extends Object {
                     onlineFile.getUserLastModified(),
                     onlineFile.getContents(),
                     onlineFile.getLength(),
-                    context.currentProject().getId(),
                     resource.getLinkCount());
             
             // write the file in the offline project

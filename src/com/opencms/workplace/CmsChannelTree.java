@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChannelTree.java,v $
-* Date   : $Date: 2003/07/31 19:20:09 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2003/08/01 13:57:22 $
+* Version: $Revision: 1.27 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  *
  *
  * @author Michael Emmerich
- * @version $Revision: 1.26 $ $Date: 2003/07/31 19:20:09 $
+ * @version $Revision: 1.27 $ $Date: 2003/08/01 13:57:22 $
  */
 
 public class CmsChannelTree extends CmsWorkplaceDefault {
@@ -175,17 +175,16 @@ public class CmsChannelTree extends CmsWorkplaceDefault {
         return cms.hasPermissions(res, C_VIEW_ACCESS);
     }
 
-    /**
-     * Check if this resource should be displayed in the filelist.
-     * @param cms The CmsObject
-     * @param res The resource to be checked.
-     * @return True or false.
-     * @throws CmsException if something goes wrong.
-     */
-
-    private boolean checkWriteable(CmsObject cms, CmsResource res) throws CmsException {
-    	return cms.hasPermissions(res, C_WRITE_ACCESS);
-    }
+//    /**
+//     * Check if this resource should be displayed in the filelist.
+//     * @param cms The CmsObject
+//     * @param res The resource to be checked.
+//     * @return True or false.
+//     * @throws CmsException if something goes wrong.
+//     */
+//    private boolean checkWriteable(CmsObject cms, CmsResource res) throws CmsException {
+//    	return cms.hasPermissions(res, C_WRITE_ACCESS);
+//    }
 
     /**
      * Overwrites the getContent method of the CmsWorkplaceDefault.<br>

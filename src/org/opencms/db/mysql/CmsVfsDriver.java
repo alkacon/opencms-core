@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/31 10:23:33 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2003/08/01 13:57:22 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,17 +34,13 @@ package org.opencms.db.mysql;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsFile;
-import com.opencms.file.CmsProject;
 import com.opencms.file.CmsResource;
-import com.opencms.file.CmsUser;
-import com.opencms.file.I_CmsResourceType;
 import com.opencms.flex.util.CmsUUID;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -52,7 +48,7 @@ import java.util.Iterator;
  * MySQL implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.14 $ $Date: 2003/07/31 10:23:33 $
+ * @version $Revision: 1.15 $ $Date: 2003/08/01 13:57:22 $
  * @since 5.1
  */
 public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {        

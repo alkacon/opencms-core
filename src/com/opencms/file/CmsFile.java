@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsFile.java,v $
-* Date   : $Date: 2003/07/29 15:58:47 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2003/08/01 13:57:22 $
+* Version: $Revision: 1.32 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import java.io.Serializable;
  * Describes a file in the Cms.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.31 $ $Date: 2003/07/29 15:58:47 $
+ * @version $Revision: 1.32 $ $Date: 2003/08/01 13:57:22 $
  */
 public class CmsFile extends CmsResource implements Cloneable, Serializable, Comparable {
 
@@ -56,9 +56,7 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
     * @param resourceType the type of this resource
     * @param resourceFlags the flags of this resource
     * @param projectId the project id this resource belongs to.
-    * @param accessFlags the access flags of this resource
     * @param state the state of this resource
-    * @param lockedByUser the user id of the user who has locked this resource
     * @param launcherType the launcher that is used to process this recource
     * @param dateCreated the creation date of this resource
     * @param createdByUser the id of the user who created this resource
@@ -66,7 +64,6 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
     * @param lastModifiedByUser the id of the user who did the last modification
     * @param fileContent the content of the file
     * @param size the size of the file content
-    * @param lockedInProject the id of the project the resource is locked in
     * @param vfsLinkType the link type
     */
     public CmsFile(
@@ -78,9 +75,7 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
         int resourceType,
         int resourceFlags,
         int projectId,
-        int accessFlags,
         int state,
-        CmsUUID lockedByUser,
         int launcherType,
         long dateCreated,
         CmsUUID createdByUser,
@@ -88,7 +83,6 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
         CmsUUID lastModifiedByUser,
         byte[] fileContent,
         int size,
-        int lockedInProject,
         int linkCount
     ) {
         // create the CmsResource.
@@ -101,16 +95,13 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
             resourceType, 
             resourceFlags, 
             projectId, 
-            accessFlags, 
             state, 
-            lockedByUser, 
             launcherType, 
             dateCreated, 
             createdByUser, 
             dateLastModified, 
             lastModifiedByUser, 
             size, 
-            lockedInProject,
             linkCount);
     
         // set content and size.
@@ -134,9 +125,7 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
             this.getType(),
             this.getFlags(),
             this.getProjectId(),
-            this.getAccessFlags(),
             this.getState(),
-            this.isLockedBy(),
             this.getLoaderId(),
             this.getDateCreated(),
             this.getUserCreated(),
@@ -144,7 +133,6 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
             this.getUserLastModified(),
             newContent,
             this.getLength(),
-            this.getLockedInProject(),
             this.getLinkCount());
             
         return clone;
@@ -186,7 +174,7 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
     public void setContents(byte[] value) {
         m_fileContent=value;
         if (m_fileContent.length >0) {
-            m_size=m_fileContent.length;
+            m_length=m_fileContent.length;
         }
     }  
 }

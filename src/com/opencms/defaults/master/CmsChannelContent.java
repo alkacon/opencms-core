@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2003/07/31 19:20:09 $
-* Version: $Revision: 1.49 $
+* Date   : $Date: 2003/08/01 13:57:22 $
+* Version: $Revision: 1.50 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,8 +56,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.49 $
- * $Date: 2003/07/31 19:20:09 $
+ * $Revision: 1.50 $
+ * $Date: 2003/08/01 13:57:22 $
  */
 public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsExtendedContentDefinition{
 
@@ -156,7 +156,7 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
             m_parentchannel = CmsResource.getParent(cms.readAbsolutePath(m_channel));
             // m_GroupId = m_channel.getGroupId();
             // m_UserId = m_channel.getOwnerId();
-            m_accessflags = m_channel.getAccessFlags();
+            // m_accessflags = m_channel.getAccessFlags();
             m_properties = m_cms.readProperties(cms.readAbsolutePath(m_channel));
             m_channelId = (String) m_properties.get(I_CmsConstants.C_PROPERTY_CHANNELID);
         } catch (CmsException exc) {
@@ -182,7 +182,7 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
         m_parentchannel = CmsResource.getParent(cms.readAbsolutePath(resource));
         // m_GroupId = resource.getGroupId();
         // m_UserId = resource.getOwnerId();
-        m_accessflags = resource.getAccessFlags();
+        // m_accessflags = resource.getAccessFlags();
         try{
             m_properties = cms.readProperties(fullName);
             channelId = (String)m_properties.get(I_CmsConstants.C_PROPERTY_CHANNELID);
@@ -215,12 +215,11 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
         m_channel = new CmsResource(CmsUUID.getNullUUID(), CmsUUID.getNullUUID(),
                                      CmsUUID.getNullUUID(), CmsUUID.getNullUUID(), "", CmsResourceTypeFolder.C_RESOURCE_TYPE_ID,
                                      0,
-                                     m_cms.getRequestContext().currentProject().getId(), I_CmsConstants.C_ACCESS_DEFAULT_FLAGS,
-                                     1,
-                                     m_cms.getRequestContext().currentUser().getId(), I_CmsConstants.C_UNKNOWN_ID,
+                                     m_cms.getRequestContext().currentProject().getId(), 1,
+                                     I_CmsConstants.C_UNKNOWN_ID,
                                      System.currentTimeMillis(), m_cms.getRequestContext().currentUser().getId(),
                                      System.currentTimeMillis(), m_cms.getRequestContext().currentUser().getId(),
-                                     0, m_cms.getRequestContext().currentProject().getId(), 1);
+                                     0, 1);
         m_properties = new Hashtable();
     }
 
@@ -444,7 +443,11 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
      * @return int with the projectId.
      */
     public int getLockedInProject() {
-        return m_channel.getLockedInProject();
+        try {
+            return m_cms.getLock(m_channel).getProjectId();
+        } catch (CmsException e) {
+            return I_CmsConstants.C_UNKNOWN_ID;
+        }
     }
 
     /**
@@ -504,7 +507,11 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
      * @return a int with the user who has locked the ressource.
      */
     public CmsUUID getLockstate() {
-        return m_channel.isLockedBy();
+        try {
+            return m_cms.getLock(m_channel).getUserId();
+        } catch (CmsException e) {
+            return CmsUUID.getNullUUID();
+        }
     }
 
     /**
