@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2004/01/16 16:52:00 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/01/16 16:58:55 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 5.1.12
  */
@@ -351,6 +351,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
             Collections.sort(bodies);
             int currentIndex = bodies.indexOf(getParamBodyname());   
             if (currentIndex == -1) {
+                // mark the default body as selected
                 currentIndex = bodies.indexOf(I_CmsConstants.C_XML_BODY_ELEMENT);
                 setParamBodyname(I_CmsConstants.C_XML_BODY_ELEMENT);
             }
