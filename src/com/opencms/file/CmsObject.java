@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2001/09/13 11:54:21 $
-* Version: $Revision: 1.188 $
+* Date   : $Date: 2001/09/21 06:34:29 $
+* Version: $Revision: 1.189 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.188 $ $Date: 2001/09/13 11:54:21 $
+ * @version $Revision: 1.189 $ $Date: 2001/09/21 06:34:29 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -1594,6 +1594,16 @@ public Vector getAllManageableProjects() throws CmsException {
 }
 
 /**
+* Returns a Vector with all projects from history
+*
+* @return Vector with all projects from history.
+*
+* @exception CmsException  Throws CmsException if operation was not succesful.
+*/
+public Vector getAllBackupProjects() throws CmsException {
+    return m_rb.getAllBackupProjects();
+}
+/**
  * Returns a Hashtable with all I_CmsResourceTypes.
  *
  * @rerun returns a Vector with all I_CmsResourceTypes.
@@ -2317,8 +2327,10 @@ public void publishProject(int id) throws CmsException {
         System.err.println("currentUser:"+m_context.currentUser().toString());
         e.printStackTrace();
         System.err.println("Vector of changed resources:");
-        for(int i=0; i<changedResources.size(); i++){
-            System.err.println("    -- "+i+" -->"+(String)changedResources.elementAt(i)+"<--");
+        if(changedResources != null){
+            for(int i=0; i<changedResources.size(); i++){
+                System.err.println("    -- "+i+" -->"+(String)changedResources.elementAt(i)+"<--");
+            }
         }
     }finally{
         if(changedResources == null || changedResources.size()<1){
@@ -2365,7 +2377,7 @@ public void publishResource(String resourcename) throws CmsException {
         // check access to project
         if(isAdmin() || isManagerOfProject()){
             int newProjectId = m_rb.createProject(m_context.currentUser(), m_context.currentProject(),
-                                              "Temp Project","","Users",
+                                              "Direct Publish","","Users",
                                               "Projectmanager", I_CmsConstants.C_PROJECT_TYPE_TEMPORARY).getId();
             getRequestContext().setCurrentProject(newProjectId);
             I_CmsResourceType rt = getResourceType(res.getType());
