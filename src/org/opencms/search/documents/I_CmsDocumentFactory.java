@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/I_CmsDocumentFactory.java,v $
- * Date   : $Date: 2005/03/23 19:08:22 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/03/24 10:25:26 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.apache.lucene.document.Document;
 /**
  * Implementation interface for lucene document factories used in OpenCms.<p>
  * 
- * @version $Revision: 1.16 $ $Date: 2005/03/23 19:08:22 $
+ * @version $Revision: 1.17 $ $Date: 2005/03/24 10:25:26 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  */
@@ -64,8 +64,14 @@ public interface I_CmsDocumentFactory {
     /** Search field for document keywords. */
     String DOC_KEYWORDS = "keywords";
 
+    /** Combined search field for all document "meta" information, that is title, keywords, description and root path. */
+    String DOC_META = "meta";
+
     /** Search field for document path within a site. */
     String DOC_PATH = "path";
+
+    /** Search field for document priority. */
+    String DOC_PRIORITY = "priority";
 
     /** Search field for optimized path searches. */
     String DOC_ROOT = "root";
@@ -75,9 +81,30 @@ public interface I_CmsDocumentFactory {
 
     /** Search field for document title. */
     String DOC_TITLE = "title";
-    
-    /** Combined search field for all document "meta" information, that is title, keywords, description and root path. */
-    String DOC_META = "meta";
+
+    /** Value for "high" search priority. */
+    String SEARCH_PRIORITY_HIGH_VALUE = "high";
+
+    /** Value for "low" search priority. */
+    String SEARCH_PRIORITY_LOW_VALUE = "low";
+
+    /** Value for "maximum" search priority. */
+    String SEARCH_PRIORITY_MAX_VALUE = "max";
+
+    /** Value for "normal" search priority. */
+    String SEARCH_PRIORITY_NORMAL_VALUE = "normal";
+
+    /**
+     * Extractes the content of a given resource according to the resource file type.<p>
+     * 
+     * @param cms the cms object
+     * @param resource a cms resource
+     * @param language the requested language
+     * @return the extracted content of the resource
+     * @throws CmsException if somethin goes wrong
+     */
+    I_CmsExtractionResult extractContent(CmsObject cms, A_CmsIndexResource resource, String language)
+    throws CmsException;
 
     /**
      * Returns the document key for the search manager.<p>
@@ -108,17 +135,6 @@ public interface I_CmsDocumentFactory {
      * @return the name of the documenttype
      */
     String getName();
-
-    /**
-     * Extractes the content of a given resource according to the resource file type.<p>
-     * 
-     * @param cms the cms object
-     * @param resource a cms resource
-     * @param language the requested language
-     * @return the extracted content of the resource
-     * @throws CmsException if somethin goes wrong
-     */
-    I_CmsExtractionResult extractContent(CmsObject cms, A_CmsIndexResource resource, String language) throws CmsException;
 
     /**
      * Creates a new instance of a lucene document type for the concrete file type.<p>

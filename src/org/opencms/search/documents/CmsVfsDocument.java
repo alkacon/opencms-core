@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsVfsDocument.java,v $
- * Date   : $Date: 2005/03/23 22:09:06 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/03/24 10:25:26 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,8 +56,10 @@ import org.apache.lucene.document.Field;
  * Lucene document factory class to extract index data from a vfs resource 
  * of any type derived from <code>CmsResource</code>.<p>
  * 
- * @version $Revision: 1.18 $ $Date: 2005/03/23 22:09:06 $
+ * @version $Revision: 1.18 
+ * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
  */
 public class CmsVfsDocument implements I_CmsDocumentFactory {
 
@@ -88,7 +90,8 @@ public class CmsVfsDocument implements I_CmsDocumentFactory {
      * @return the raw text content
      * @throws CmsException if something goes wrong
      */
-    public I_CmsExtractionResult extractContent(CmsObject cms, A_CmsIndexResource resource, String language) throws CmsException {
+    public I_CmsExtractionResult extractContent(CmsObject cms, A_CmsIndexResource resource, String language)
+    throws CmsException {
 
         if (resource == null) {
             throw new CmsIndexException("Can not get raw content for language " + language + " from a 'null' resource");
@@ -164,7 +167,7 @@ public class CmsVfsDocument implements I_CmsDocumentFactory {
         String value;
 
         StringBuffer meta = new StringBuffer(512);
-       
+
         if ((value = cms.readPropertyObject(path, I_CmsConstants.C_PROPERTY_TITLE, false).getValue()) != null) {
             document.add(Field.Text(I_CmsDocumentFactory.DOC_TITLE, value));
             meta.append(value);
@@ -183,17 +186,20 @@ public class CmsVfsDocument implements I_CmsDocumentFactory {
             meta.append(value);
             meta.append(" ");
         }
-        if ((value = cms.readPropertyObject(path, I_CmsConstants.C_PROPERTY_SEARCH_PRIORITY, true).getValue()) != null) {            
-            if (value.indexOf(CmsSearchIndex.SEARCH_BOOST_MAX_VALUE) > -1) {
-                meta.append(CmsSearchIndex.SEARCH_BOOST_PREFIX);
-                meta.append(CmsSearchIndex.SEARCH_BOOST_MAX_VALUE);
-                meta.append(" ");
-            } else if (value.indexOf(CmsSearchIndex.SEARCH_BOOST_HIGH_VALUE) > -1) {
-                meta.append(CmsSearchIndex.SEARCH_BOOST_PREFIX);
-                meta.append(CmsSearchIndex.SEARCH_BOOST_HIGH_VALUE);
-                meta.append(" ");
+
+        float boost = 1.0f;
+        if ((value = cms.readPropertyObject(path, I_CmsConstants.C_PROPERTY_SEARCH_PRIORITY, true).getValue()) != null) {
+            value = value.trim().toLowerCase();
+            if (value.equals(I_CmsDocumentFactory.SEARCH_PRIORITY_MAX_VALUE)) {
+                boost = 1.5f;
+            } else if (value.equals(I_CmsDocumentFactory.SEARCH_PRIORITY_HIGH_VALUE)) {
+                boost = 1.25f;
+            } else if (value.equals(I_CmsDocumentFactory.SEARCH_PRIORITY_LOW_VALUE)) {
+                boost = 0.75f;
             }
-        } 
+        }
+        // set document boost factor
+        document.setBoost(boost);
 
         String rootPath = CmsSearchIndex.rewriteResourcePath(resource.getRootPath(), false);
         document.add(Field.UnStored(I_CmsDocumentFactory.DOC_ROOT, rootPath));

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2005/03/23 22:09:06 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2005/03/24 10:25:26 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.apache.lucene.search.Searcher;
 /**
  * Implements the search within an index and the management of the index configuration.<p>
  *   
- * @version $Revision: 1.42 $ $Date: 2005/03/23 22:09:06 $
+ * @version $Revision: 1.43 $ $Date: 2005/03/24 10:25:26 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -93,24 +93,6 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
     /** Special root path start token for optimized path queries. */
     public static final String C_ROOT_PATH_TOKEN = "root";
-
-    /** Value for "high" search boost. */
-    public static final String SEARCH_BOOST_HIGH_VALUE = "high";
-
-    /** Value for "maximum" search boost. */
-    public static final String SEARCH_BOOST_MAX_VALUE = "max";
-    
-    /** Value search boost term prefix. */
-    public static final String SEARCH_BOOST_PREFIX = "boost@";
-
-    /** Boost query for meta field. */
-    public static final String SEARCH_BOOST_QUERY = " ("
-        + CmsSearchIndex.SEARCH_BOOST_PREFIX
-        + CmsSearchIndex.SEARCH_BOOST_HIGH_VALUE
-        + "^2.0 "
-        + CmsSearchIndex.SEARCH_BOOST_PREFIX
-        + CmsSearchIndex.SEARCH_BOOST_MAX_VALUE
-        + "^4.0)";
 
     /** Constant for a field list that cointains only the "meta" field. */
     private static final String[] C_DOC_META_FIELDS = new String[] {
@@ -301,7 +283,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             File f = new File(m_path);
 
             if (f.exists()) {
-                
+
                 indexWriter = new IndexWriter(m_path, analyzer, !m_incremental);
 
             } else {
@@ -536,13 +518,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 BooleanQuery fieldsQuery = new BooleanQuery();
                 // add one sub-query for each of the selected fields, e.g. "content", "title" etc.
                 for (int i = 0; i < fields.length; i++) {
-
-                    String queryStr = searchQuery;
-                    if (I_CmsDocumentFactory.DOC_META.equals(fields[i])) {
-                        queryStr += CmsSearchIndex.SEARCH_BOOST_QUERY;
-                    }
-
-                    fieldsQuery.add(QueryParser.parse(queryStr, fields[i], languageAnalyzer), false, false);
+                    fieldsQuery.add(QueryParser.parse(searchQuery, fields[i], languageAnalyzer), false, false);
                 }
                 // finally add the field queries to the main query
                 query.add(fieldsQuery, true, false);
