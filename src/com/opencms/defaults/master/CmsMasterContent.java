@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2002/06/10 13:42:05 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2002/06/28 16:22:09 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,8 +45,8 @@ import com.opencms.template.*;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.20 $
- * $Date: 2002/06/10 13:42:05 $
+ * $Revision: 1.21 $
+ * $Date: 2002/06/28 16:22:09 $
  */
 public abstract class CmsMasterContent
     extends A_CmsContentDefinition
@@ -125,6 +125,12 @@ public abstract class CmsMasterContent
         initValues();
         getDbAccessObject(getSubId()).read(m_cms, this, m_dataSet, id.intValue());
     }
+    
+    /**
+     * TESTFIX (a.kandzior@alkacon.com) New code:
+     * Empty constructor needed for instanciating CDs as JavaBeans on JSPs.
+     */    
+    public CmsMasterContent() {}
 
     /**
      * This method initialises all needed members with default-values.
