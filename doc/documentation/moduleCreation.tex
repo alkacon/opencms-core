@@ -25,18 +25,18 @@ The module ZIP file will then be unpacked and it's content will be copied to the
 Information about all installed modules is stored in the file \texttt{/WEB-INF/config/registry.xml}, 
 located in the OpenCms servers web application context.
 
-\section{How to import an existing module}
+\section{How to import a module into OpenCms}
 
 \begin{itemize}
 
-\item Select Administration in the View selection of the workplace.
+\item Select {\em Administration} in the {\em View} selection of the workplace.
 \begin{figure}[hbt]
 \begin{center}
 \includegraphics[width=\sgw]{pics/modules/import0}
 \end{center}
 \end{figure}
 
-\item Select the {\em Online} project in the {\em Project} selection:
+\item Select any ``offline" project (e.g. the default {\em Offline} project) in the {\em Project} selection:
 \begin{figure}[hbt]
 \begin{center}
 \includegraphics[width=\sgw]{pics/modules/import1}
@@ -85,16 +85,22 @@ the list of all modules.
 
 \end{itemize}
 
-{\bf Please note:} Some modules contain Java archives (JARs), class files or other resources that are automatically 
+\subsection{Restarting the OpenCms server after module import}
+
+A server restart {\em might} be required after you imported a new (or updated) module.
+
+Some modules contain Java archives (JARs), class files or other resources that are automatically 
 copied to the WEB-INF/classes/ or WEB-INF/lib/ folder of the OpenCms web application during the module import. 
 Such modules sometimes require a restart of the OpenCms Servlet container so that the Java Classloader can 
 load these new classes or resources.
 
 The individual module documentation should contain a note if a module requires a server restart after 
-installation. You will not always get an exception message during import if the module requires a server 
-restart. In case you upload several modules, one server restart is usually enough after uploading all modules.
+installation. You will {\bf not} always get an exception message during import if the module requires a server 
+restart. 
 
-\section{How to create, administrate and export a module}
+In case you upload several modules, one server restart is usually enough after uploading all modules.
+
+\section{How to create, administrate, replace and export a module}
 
 For a detailed description about the
 
@@ -103,6 +109,8 @@ For a detailed description about the
 \item creation of a new module
 
 \item administration of an existing module
+
+\item replacement of an existing module with a new version (i.e. updating)
 
 \item distribution of a module with the export function 
 
