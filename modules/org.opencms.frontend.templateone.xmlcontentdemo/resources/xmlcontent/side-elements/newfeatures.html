@@ -10,6 +10,9 @@
   <page language="en">
     <element name="text1">
       <links>
+        <link name="link2" type="A" internal="true">
+          <target><![CDATA[/sites/default/xmlcontent/onlineform.html]]></target>
+        </link>
         <link name="link0" type="A" internal="true">
           <target><![CDATA[/sites/default/xmlcontent/widgetdemo/list.jsp]]></target>
         </link>
@@ -17,7 +20,9 @@
           <target><![CDATA[/sites/default/xmlcontent/nestedcontent/list.jsp]]></target>
         </link>
       </links>
-      <content><![CDATA[<div class="element2"><strong>New features in this release</strong> <p>Among the many new features of XML content in this release are:</p><p>More widgets for the editor. Check out the <a href="${link0}" target="_self">Widget Demo</a> to see all currently available widgets in action.</p><p>It's now possible to &quot;nest&quot; OpenCms XML schemas, i.e. one XML content definition can include another. Have a look at the <a href="${link1}" target="_self">Nested XML Content</a> for an example.</p><p>The <tt>appinfo</tt> node of an OpenCms XML schema can now contain information for custom content validation, editor layout, default values and property mappings. Check out the schema sources in this demo for examples.</p></div>]]></content>
+      <content><![CDATA[<div class="element2"><strong>XML content Highlights</strong> <p>Among the many uses for the OpenCms 6.0 XML content are:</p><p>Automatic editor generation with multiple widgets. Check out the <a href="${link0}" target="_self">Widget Demo</a> to see all available widgets in action.</p><p>It's possible to &quot;nest&quot; OpenCms XML content, i.e. one XML content definition can include another. See the <a href="${link1}" target="_self">Nested XML Content</a> example.</p><p>XML content can be used for RAD in OpenCms. See the <a href="${link2}" target="_self">Email Form Editor</a> example.<br /></p><p>OpenCms XML contents are defined by a W3C XML schema that can contain
+additional information for custom content validation, editor layout,
+default values and property mappings.<br /></p></div>]]></content>
     </element>
   </page>
 </pages>

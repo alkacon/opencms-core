@@ -811,6 +811,10 @@
 			<flags>0</flags>
 			<properties>
 				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property>
 					<name>Title</name>
 					<value><![CDATA[Imprint]]></value>
 				</property>
