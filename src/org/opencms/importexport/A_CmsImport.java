@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2004/11/12 14:29:22 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2004/11/17 14:37:23 $
+ * Version: $Revision: 1.58 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,6 +53,7 @@ import java.io.ObjectInputStream;
 import java.security.MessageDigest;
 import java.util.*;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 import org.apache.commons.codec.binary.Base64;
@@ -348,7 +349,7 @@ public abstract class A_CmsImport implements I_CmsImport {
      * @return the digest in the new encoding
      */
     public String convertDigestEncoding(String value) {
-
+        
         byte data[] = new byte[value.length() / 2];
                 
         for (int i = 0; i < data.length; i++) {
@@ -387,6 +388,14 @@ public abstract class A_CmsImport implements I_CmsImport {
             if (m_importZip != null) {
                 // yes
                 ZipEntry entry = m_importZip.getEntry(filename);
+                
+                // path to file might be relative, too
+                if (entry == null && filename.startsWith("/")) {
+                    entry = m_importZip.getEntry(filename.substring(1));
+                } else if (entry == null) {
+                    throw new ZipException("File not found in zipfile: " + filename); 
+                }    
+                
                 InputStream stream = m_importZip.getInputStream(entry);
 
                 int charsRead = 0;
