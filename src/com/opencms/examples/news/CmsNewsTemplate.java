@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/news/Attic/CmsNewsTemplate.java,v $
- * Date   : $Date: 2000/05/03 10:12:43 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/05/09 08:31:34 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -56,7 +56,7 @@ import javax.servlet.http.*;
  *
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.8 $ $Date: 2000/05/03 10:12:43 $
+ * @version $Revision: 1.9 $ $Date: 2000/05/09 08:31:34 $
  * @see com.opencms.examples.CmsXmlNewsTemplateFile
  */
 public class CmsNewsTemplate extends CmsXmlTemplate implements I_CmsNewsConstants, I_CmsLogChannels {
@@ -69,10 +69,13 @@ public class CmsNewsTemplate extends CmsXmlTemplate implements I_CmsNewsConstant
     private final static String C_TAG_NEWSLISTENTRY = "newslistentry";
     
 	/** XML tag used for the wml navigation definition */
-    private final static String C_TAG_WMLMAINNAV = "wmlmainnav";
+    private final static String C_TAG_WMLNAV = "wmlnav";
 	
 	/** XML tag used for the wml content definition */
-    private final static String C_TAG_WMLCONTENT = "wmlcontent";
+    private final static String C_TAG_WMLARTICLE = "wmlarticle";
+	
+	/** XML tag used for the wml content definition */
+    private final static String C_TAG_WMLLINKLABEL = "linklabel";
 	
     /**
      * Indicates if the results of this class are cacheable.
@@ -255,7 +258,7 @@ public class CmsNewsTemplate extends CmsXmlTemplate implements I_CmsNewsConstant
     }
 	
 	/**
-     * Get the maximum number of articles to be displayed.
+     * Get the maximum number of articles to be displayed on a navigation deck.
      * The value will be taken from the user parameters or from the news constants
      * @param elementName Name of the current subtemplate
      * @param parameters User parameters
@@ -271,27 +274,45 @@ public class CmsNewsTemplate extends CmsXmlTemplate implements I_CmsNewsConstant
     }
 	
 	/**
-     * Get the index of article to be started with when creating article deck.
+     * Get the index of requested article. It's specified by the URL parameter <code>article</code>.
      * The value will be taken from the user parameters or from the news constants.
-     * @param elementName Name of the current subtemplate
      * @param parameters User parameters
-     * @return Maximum number of articles
+     * @return article index
      */
-	private String getStartArticle(Hashtable parameters) {
-        String startArticle = (String)parameters.get("first");
-
+	private String getSelectedArticle(Hashtable parameters) {
+		String startArticle = (String)parameters.get("article");
+		
         return startArticle;        
     }
 	
 	/**
-     * Get the title for a WML document.
+     * Get the index of requested navigation deck. It's specified by the URL parameter <code>nav</code>.
      * The value will be taken from the user parameters or from the news constants.
-     * @param elementName Name of the current subtemplate
      * @param parameters User parameters
-     * @return Maximum number of articles
+     * @return article index
+     */
+	private String getNavDeck(Hashtable parameters) {
+		String navDeck = (String)parameters.get("nav");
+		
+		if(navDeck == null || "".equals(navDeck)) {
+			navDeck = C_NEWS_WML_FIRSTNAVDECK;
+		}
+        return navDeck;        
+    }
+	
+	/**
+     * Prints a WML document title (parameter or constant).
+     * <P>
+     * Called by the template file using <code>&lt;METHOD name="getWmlTitle"&gt;</code>.
+     * 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param tagcontent Unused in this special case of a user method. Can be ignored.
+     * @param doc Reference to the A_CmsXmlContent object the initiating XLM document.  
+     * @param userObj Hashtable with parameters.
+     * @return document title.
      */
 	public String getWmlTitle(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
-			throws CmsException {
+            throws CmsException {
 		Hashtable parameters = (Hashtable)userObj;
         String elementName = (String)parameters.get("_ELEMENT_");
 		String wmlDeckTitle = (String)parameters.get(elementName + ".title");
@@ -317,7 +338,6 @@ public class CmsNewsTemplate extends CmsXmlTemplate implements I_CmsNewsConstant
             throws CmsException {
         Hashtable parameters = (Hashtable)userObj;
         String elementName = (String)parameters.get("_ELEMENT_");
-		int j = 0;
 		String result = "";
         
         CmsXmlTemplateFile newsTemplateFile = (CmsXmlTemplateFile)doc;
@@ -325,45 +345,48 @@ public class CmsNewsTemplate extends CmsXmlTemplate implements I_CmsNewsConstant
         // Get a vector of all available articles using the news content definition
         String newsFolder = getNewsFolder(elementName, parameters);
         Vector v = CmsNewsContentFile.getAllArticles(cms, newsFolder);
+		
 		String maxArticles = getMaxArticles(elementName, parameters); 
 		int max = new Integer(maxArticles).intValue();
-		String startArticle = getStartArticle(parameters);
+		String navDeck = getNavDeck(parameters); 
+		int nav = new Integer(navDeck).intValue();
+		String selectedArticle = getSelectedArticle(parameters);
 		
-		if(startArticle == null || "".equals(startArticle)) {
-			// No URL parameter <code>first</code> which defines article to start with detected, so create navigation deck. 
-			// Loop through the vector for all articles and generate main navigation, structure depends on user parameter "max"
-			for(int i=0; i<v.size(); i++) {
-            
-				if (i%max==0) {
-					j = i+max;
-					newsTemplateFile.setData("begin", "" + (i+1));
-					if (max<=1) {
-						newsTemplateFile.setData("enumeration", "" + (i+1));
-					}
-					else {
-						newsTemplateFile.setData("enumeration", (i+1) + "-" + j);
-					}
-					result = result + newsTemplateFile.getProcessedDataValue(C_TAG_WMLMAINNAV);
-				}
-			}
-		}
-		else {
-			// Article deck requested, first article specified by URL parameter <code>first</code>
-			int first = new Integer(startArticle).intValue();
-			first-=1;
+		 if(selectedArticle == null || "".equals(selectedArticle)) {
+			// There's no URL parameter <code>article</code> which defines a certain article to be displayed, 
+			// so a navigation deck is created. 
 			
-			// Loop through the vector for all articles and generate output for a subset of them, size depends on user parameter "max".
-			for(int i=first; i<(first+max); i++) {
+			// Loop through the vector for all articles and generate navigation, number of links depends on user parameter "max"
+			for(int i=(nav)*max; i<((nav+1)*max); i++) {
 				if (i<v.size()) {
 					Object o = v.elementAt(i);
-					CmsNewsContentFile doc2 = (CmsNewsContentFile)o;        
-					newsTemplateFile.setData("date", Utils.getNiceShortDate(doc2.getNewsDate()));
+					CmsNewsContentFile doc2 = (CmsNewsContentFile)o;
+					newsTemplateFile.setData("selection", "?article=" + i );
 					newsTemplateFile.setData("headline", doc2.getNewsHeadline());
-					newsTemplateFile.setData("shorttext", doc2.getNewsShortText());
-					newsTemplateFile.setData("author", doc2.getNewsAuthor());
-					newsTemplateFile.setData("index", "" + i );
-					result = result + newsTemplateFile.getProcessedDataValue(C_TAG_WMLCONTENT);        
+					result = result + newsTemplateFile.getProcessedDataValue(C_TAG_WMLNAV);
 				}
+			}
+			// More articles in the archive than user parameter <code>max<code> allows to be displayed 
+			// on one navigation deck, then insert a link to the next navigation deck.
+			nav+=1;
+			if (nav*max < v.size()) {
+				newsTemplateFile.setData("selection", "?nav=" +  nav);
+				newsTemplateFile.setData("headline", newsTemplateFile.getDataValue(C_TAG_WMLLINKLABEL));
+				result = result + newsTemplateFile.getProcessedDataValue(C_TAG_WMLNAV);
+			}
+		}
+		else { 
+			// Article deck requested, selected article is specified by URL parameter <code>article</code>
+			int selected = new Integer(selectedArticle).intValue();
+			
+			if (selected < v.size()) {
+				Object o = v.elementAt(selected);
+				CmsNewsContentFile doc2 = (CmsNewsContentFile)o;        
+				newsTemplateFile.setData("date", Utils.getNiceShortDate(doc2.getNewsDate()));
+				newsTemplateFile.setData("headline", doc2.getNewsHeadline());
+				newsTemplateFile.setData("shorttext", doc2.getNewsShortText());
+				newsTemplateFile.setData("author", doc2.getNewsAuthor());
+				result = result + newsTemplateFile.getProcessedDataValue(C_TAG_WMLARTICLE);   
 			}
 		}
         return result;
