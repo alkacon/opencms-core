@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetup.java,v $
-* Date   : $Date: 2003/05/22 11:10:57 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2003/05/22 14:16:50 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -248,15 +248,21 @@ public class CmsSetup {
 		String vfsDriver = this.getDbProperty(m_database + ".vfs.driver");
 		String userDriver = this.getDbProperty(m_database + ".user.driver");
 		String projectDriver = this.getDbProperty(m_database + ".project.driver");
+		String workflowDriver = this.getDbProperty(m_database + ".workflow.driver");
 		
+		setExtProperty("db.name", m_database);
 		setExtProperty("db.vfs.driver", vfsDriver);
 		setExtProperty("db.user.driver",userDriver);
 		setExtProperty("db.project.driver",projectDriver);
+		setExtProperty("db.workflow.driver",workflowDriver);
 	}
 
 	/** Gets the database */
 	public String getDatabase() {
 		if (m_database == null) {
+			m_database = this.getExtProperty("db.name");
+		}
+		if (m_database == null || "".equals(m_database)) {
 			m_database = (String)this.getDatabases().firstElement();
 		}
 		return m_database;
@@ -294,6 +300,8 @@ public class CmsSetup {
 		// TODO: set the driver in own methods
 		setExtProperty("db.pool." + getPool() + ".jdbcDriver", driver);
 		setExtProperty("db.pool." + getPool() + ".jdbcUrl", dbWorkConStr);
+		
+		this.setTestQuery(this.getDbTestQuery());
 	}
 
 	/** Returns a connection string */
@@ -353,10 +361,24 @@ public class CmsSetup {
 	
 	/** Returns the database driver belonging to the database */
 	public String getDbDriver() {
-
 		return this.getDbProperty(m_database + ".driver");
 	}
 
+	/** Returns the validation query belonging to the database */
+	public String getDbTestQuery() {
+		return this.getDbProperty(m_database + ".testQuery");
+	}
+
+	/** Sets the validation query to the given value */
+	public void setTestQuery(String query) {
+		setExtProperty("db.pool." + getPool() + ".testQuery", query);
+	}
+
+	/** Returns the validation query */
+	public String getTestQuery() {
+		return this.getExtProperty("db.pool." + getPool() + ".testQuery");
+	}
+		
 	/** Sets the minimum connections to the given value */
 	public void setMinConn(String minConn) {
 		setExtProperty("db.pool." + getPool() + ".maxIdle", minConn);
@@ -844,7 +866,11 @@ public class CmsSetup {
 	}
 	
 	public String getDbCreateConStr() {
-		return this.getDbProperty(m_database + ".constr");
+		String constr = this.getDbWorkConStr();
+		if (constr == null || "".equals(constr)) {
+			constr = this.getDbProperty(m_database + ".constr");
+		}
+		return constr;
 	}
 
 	public void setDbCreateConStr(String dbCreateConStr) {
