@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2003/07/09 11:38:18 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/07/10 08:10:18 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.1
  */
@@ -672,5 +672,21 @@ public abstract class CmsWorkplace {
             m_file_explorer_filelist = LinkSubstitution.getLinkSubstitution(getCms(), C_FILE_EXPLORER_FILELIST);            
         }
         return m_file_explorer_filelist;
+    }
+    
+    /**
+     * Returns the empty String "" if the provided value is null, otherwise just returns 
+     * the provided value.<p>
+     * 
+     * Use this method in forms if a getParamXXX method is used, but a String (not null)
+     * is required.
+     * 
+     * @param value the String to check
+     * @return the empty String "" if the provided value is null, otherwise just returns 
+     * the provided value
+     */
+    public String nullToEmpty(String value) {
+        if (value != null) return value;
+        return "";
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2003/07/09 10:58:09 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/07/10 08:10:18 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import com.opencms.file.CmsFile;
 import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsProject;
 import com.opencms.flex.jsp.CmsJspActionElement;
+import com.opencms.util.LinkSubstitution;
 import com.opencms.workplace.I_CmsWpConstants;
 
 import java.util.ArrayList;
@@ -55,7 +56,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.1
  */
@@ -126,14 +127,6 @@ public class CmsFrameset extends CmsWorkplace {
      * @return the file settings for the Workplace explorer view
      */
     public int getExplorerSettings() {
-        
-/*
- * 
- * 
- * 
- * 
- * 
- */        
         String explorerSettings = (String)getCms().getRequestContext().currentUser().getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_EXPLORERSETTINGS);
         if(explorerSettings != null) {
             return new Integer(explorerSettings).intValue();
@@ -150,57 +143,61 @@ public class CmsFrameset extends CmsWorkplace {
      * @return the Javascript for the contents of a resource-type file
      */
     private String getResourceEntry(String data, int id) {
-        StringBuffer result = new StringBuffer();
-        String resId = Integer.toString(id);
-
-        // first replace "resource_id" with the id
+        
+        StringBuffer result;
         int index = 0;
-        String myToken = "resource_id";
-        int foundAt = data.indexOf(myToken, index);
-        while(foundAt != -1) {
-            result.append(data.substring(index, foundAt) + resId);
-            index = foundAt + myToken.length();
-            foundAt = data.indexOf(myToken, index);
-        }
-        result.append(data.substring(index));
-
-        // now set in the language values
-        data = result.toString();
-        result = new StringBuffer();
-        myToken = "language_key";
+        String myToken;
+        int foundAt;
+        
+        result = new StringBuffer(1024);
+        
+        // first append the current value of resource_id
+        result.append("\nresource_id = ");
+        result.append(id);
+        result.append("\n");
+        
+        // set the language keys
+        myToken = "language_key(";
         index = 0;
         foundAt = data.indexOf(myToken, index);
         while(foundAt != -1) {
             int endIndex = data.indexOf(")", foundAt);
-            String langKey = data.substring(data.indexOf("(", foundAt) + 1, endIndex);
+            String langKey = data.substring(foundAt + 13, endIndex);
             langKey = key(langKey);
-            result.append(data.substring(index, foundAt) + langKey);
+            result.append(data.substring(index, foundAt));
+            result.append(langKey);
             index = endIndex + 1;
             foundAt = data.indexOf(myToken, index);
         }
         result.append(data.substring(index));
-
-        // at last we have to remove the spaces in the rules parameter
         data = result.toString();
-        result = new StringBuffer();
-        myToken = "rules_key";
+
+        // remove the spaces in the rules parameter
+        result = new StringBuffer(1024);
+        myToken = "rules_key(";
         index = 0;
         foundAt = data.indexOf(myToken, index);
         while(foundAt != -1) {
             int endIndex = data.indexOf(")", foundAt);
-            String rulesKey = data.substring(data.indexOf("(", foundAt) + 1, endIndex).trim();
-            int nextSpace = rulesKey.indexOf(" ");
-            while(nextSpace > -1){
-                rulesKey = rulesKey.substring(0, nextSpace)+rulesKey.substring(nextSpace+1);
-                nextSpace = rulesKey.indexOf(" ");
+            String rulesKey = data.substring(foundAt + 10, endIndex);
+            result.append(data.substring(index, foundAt));
+            int length = rulesKey.length();
+            char c;
+            for (int i=0; i<length; i++) {
+                if ((c = rulesKey.charAt(i)) != ' ') {
+                    result.append(c);
+                }
             }
-            result.append(data.substring(index, foundAt) + rulesKey);
             index = endIndex + 1;
             foundAt = data.indexOf(myToken, index);
         }
         result.append(data.substring(index));
+        
+        String str = result.toString();        
+        String jspWorkplaceUri = LinkSubstitution.getLinkSubstitution(getCms(), C_PATH_WORKPLACE);           
+        str = str.replaceAll("/WORKPLACE/", jspWorkplaceUri);
 
-        return result.toString();
+        return str;
     }
     
     /**
