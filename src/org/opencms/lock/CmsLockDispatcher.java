@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/Attic/CmsLockDispatcher.java,v $
- * Date   : $Date: 2003/07/31 16:37:02 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2003/08/01 08:48:53 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Map;
  * are instances of CmsLock objects.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.25 $ $Date: 2003/07/31 16:37:02 $
+ * @version $Revision: 1.26 $ $Date: 2003/08/01 08:48:53 $
  * @since 5.1.4
  * @see com.opencms.file.CmsObject#getLock(CmsResource)
  * @see org.opencms.lock.CmsLock
@@ -228,6 +228,39 @@ public final class CmsLockDispatcher extends Object {
             // no locked siblings found
             return new CmsLock(resourcename, parentFolderLock.getUserId(), parentFolderLock.getProjectId(), CmsLock.C_TYPE_INHERITED);
         }
+    }
+    
+    /**
+     * Returns the lock of the exclusive locked sibling pointing to the resource record of a 
+     * specified resource name.<p>
+     * 
+     * @param driverManager the driver manager
+     * @param context the current request context
+     * @param resourcename the name of the specified resource
+     * @return the lock of the exclusive locked sibling
+     * @throws CmsException if somethong goes wrong
+     */
+    public CmsLock getExclusiveLockedSibling(CmsDriverManager driverManager, CmsRequestContext context, String resourcename) throws CmsException {
+        CmsResource sibling = null;
+        
+        // check first if the specified resource itself is already the exclusive locked sibling
+        if (m_exclusiveLocks.containsKey(resourcename)) {
+            // yup...
+            return (CmsLock) m_exclusiveLocks.get(resourcename);
+        }        
+                
+        // nope, fetch all siblings of the resource to the same content record
+        List siblings = driverManager.getAllSiblings(context, resourcename);
+        
+        for (int i = 0; i < siblings.size(); i++) {
+            sibling = (CmsResource) siblings.get(i);
+            
+            if (m_exclusiveLocks.containsKey(sibling.getFullResourceName())) {
+                return (CmsLock) m_exclusiveLocks.get(sibling.getFullResourceName());
+            }
+        }
+        
+        return CmsLock.getNullLock();
     }
 
     /**
