@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/LinkSubstitution.java,v $
- * Date   : $Date: 2003/08/14 15:37:25 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2003/08/18 10:50:48 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import javax.servlet.http.HttpServletRequest;
  * Does the dynamic link replacement for the link tags.<p> 
  * 
  * @author Hanjo Riege
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  */
 public final class LinkSubstitution {
 
@@ -93,55 +93,6 @@ public final class LinkSubstitution {
      * Hide constructor since this class contains only static methods.<p>
      */
     private LinkSubstitution() { }
-
-    /**
-     * This methood calculates the relative path to a resource in OpenCms
-     * depending on the page where it is used.<p>
-     * 
-     * i.e.: baseFile  = "/folder1/folder2/index.html"
-     *       linkTarget= "/folder1/pics/pic.gif"
-     *       returns: "../pics/pic.gif"
-     *
-     * @param baseFile the name (incl. path) of the page containing the link
-     * @param linkTarget the name (incl. path) of the resource to link to
-     *
-     * @return the relative path to the target resource.
-     */
-    public static String getRelativePath(String baseFile, String linkTarget) {
-
-        // use tokenizer for better performance
-        java.util.StringTokenizer cur = new java.util.StringTokenizer(baseFile, "/");
-        java.util.StringTokenizer tar = new java.util.StringTokenizer(linkTarget, "/");
-
-        // get the minimum of the number of tokens for both paths
-        int maxAllowed = cur.countTokens();
-        if (maxAllowed > tar.countTokens()) {
-            maxAllowed = tar.countTokens();
-        }
-        // serch for the part of the path they have in common.
-        String currentToken = cur.nextToken();
-        String targetToken = tar.nextToken();
-        int counter = 1;
-        while (currentToken.equals(targetToken) && counter < maxAllowed) {
-            currentToken = cur.nextToken();
-            targetToken = tar.nextToken();
-            counter++;
-        }
-        StringBuffer result = new StringBuffer();
-
-        // link to the shared root path
-        counter = cur.countTokens();
-        for (int i = 0; i < counter; i++) {
-            result.append("../");
-        }
-
-        // finaly add the link to the target from the shared root path
-        result.append(targetToken);
-        while (tar.hasMoreTokens()) {
-            result.append("/" + tar.nextToken());
-        }
-        return result.toString();
-    }
 
     /**
     * Parses the html content for the editor. It replaces the links in <a href=""

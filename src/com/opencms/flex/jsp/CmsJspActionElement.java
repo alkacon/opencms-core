@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspActionElement.java,v $
- * Date   : $Date: 2003/08/14 15:37:25 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2003/08/18 10:50:48 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import javax.servlet.jsp.PageContext;
  * working at last in some elements.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  * 
  * @since 5.0 beta 2
  */
@@ -361,7 +361,7 @@ public class CmsJspActionElement {
      */
     public String toAbsolute(String target) {
         if (m_notInitialized) return C_NOT_INITIALIZED;
-        return m_controller.getCurrentRequest().toAbsolute(target);
+        return OpenCms.getLinkManager().getAbsoluteUri(target, m_controller.getCurrentRequest().getElementUri());
     }
             
     /**

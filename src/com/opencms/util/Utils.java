@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Utils.java,v $
-* Date   : $Date: 2003/08/14 15:37:25 $
-* Version: $Revision: 1.50 $
+* Date   : $Date: 2003/08/18 10:50:48 $
+* Version: $Revision: 1.51 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.defaults.I_CmsLifeCycle;
 import com.opencms.file.CmsObject;
-import com.opencms.file.CmsResource;
 import com.opencms.file.CmsUser;
 import com.opencms.file.I_CmsRegistry;
 
@@ -66,52 +65,6 @@ public final class Utils {
     private Utils() {
     }
     
-    /**
-     * Returns the absolute path of a resource based on the base and the relative
-     * Path to the resource.<p>
-     * 
-     * There are three cases for the relative path:
-     *   case 1:     a / at the beginning of the relPath: return the relPath
-     *   case 2:     one or more ../ at the beginning! of the relPath: return the absolute path to the resource
-     *   case 3:     ./ or something else at the beginning: return base + relpath (without the ./ of course)
-     *
-     * @param basePath the folder where the relativePath starts, or the absolute path of
-     *          a file (no folder) in this path
-     * @param relativePath the relative path to a reaource
-     * @return the absolute path of a resource 
-     */
-    public static String mergeAbsolutePath(String basePath, String relativePath) {
-
-        if (relativePath == null || "".equals(relativePath)) {
-            return basePath;
-        }
-        if (relativePath.startsWith("/") || basePath == null) {
-            // case 1:     a / at the beginning of the relPath -> return the relPath
-            return relativePath;
-        }
-        basePath = CmsResource.getPath(basePath);
-        String result = null;
-        if (relativePath.startsWith("./")) {
-            // case 3 a:     ./ at the beginning -> return base + relpath (without the ./ of course)
-            relativePath = relativePath.substring(2);
-        }
-        if (relativePath.startsWith("../")) {
-            // case 2:     one or more ../ at the beginning! of the relPath -> return the absolute path to the resource
-            int lastIndexOfSlash = relativePath.lastIndexOf("../");
-            int count = (lastIndexOfSlash / 3) + 1;
-            int baseCount = basePath.lastIndexOf('/') - 1;
-            for (int i = 0; i < count; i++) {
-                baseCount = basePath.lastIndexOf('/', baseCount) - 1;
-            }
-            result = basePath.substring(0, baseCount + 2) + relativePath.substring(lastIndexOfSlash + 3);
-
-        } else {
-            // case 3b: something else at the beginning -> return base + relpath (without the ./ of course)
-            result = basePath + relativePath;
-        }
-        return result;
-    }
-
     /**
      * Returns a string representation of the full name of a user.<p>
      * 
@@ -322,31 +275,6 @@ public final class Utils {
         return result.toString();
     }
 
-    /**
-     * Checks if a resource needs the https scheme.<p>
-     * 
-     * That's the case if the resource
-     * itself or a parent folder has the property 'export' set to 'https'.
-     *
-     * @param cms the current cms context
-     * @param res the resource to be checked
-     * @return true if the resource need the https scheme, false otherwise
-     * @throws CmsException if something goes wrong
-     */
-    public static boolean isHttpsResource (CmsObject cms, CmsResource res) throws CmsException {
-        String absolutePath = cms.readAbsolutePath(res);
-        while ((absolutePath != null) && (!absolutePath.equals(I_CmsConstants.C_ROOT))) {
-            // check for the property export
-            String prop = cms.readProperty(absolutePath, I_CmsConstants.C_PROPERTY_EXPORT);
-            if ((prop != null) && "https".equalsIgnoreCase(prop)) {
-                // found one
-                return true;
-            }
-            absolutePath = CmsResource.getParent(absolutePath);
-        }
-        return false;
-    }
-    
     /**
      * This method splits a String into substrings.
      *

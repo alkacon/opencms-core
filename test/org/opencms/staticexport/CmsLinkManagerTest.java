@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/staticexport/Attic/CmsLinkManagerTest.java,v $
- * Date   : $Date: 2003/08/14 15:37:27 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/08/18 10:51:21 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import junit.framework.TestCase;
 
 /** 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1
  */
@@ -48,6 +48,28 @@ public class CmsLinkManagerTest extends TestCase {
      */
     public CmsLinkManagerTest(String arg0) {
         super(arg0);
+    }
+    
+    public void testToAbsolute() {
+        CmsLinkManager linkManager = new CmsLinkManager();
+        
+        String test;
+        
+        test = linkManager.getRelativeUri("/dir1/dir2/index.html", "/dir1/dirB/index.html");
+        System.err.println(test);
+        assertEquals(test, "../dirB/index.html");
+
+        test = linkManager.getAbsoluteUri("../../index.html", "/dir1/dir2/dir3/");        
+        System.err.println(test);
+        assertEquals(test, "/dir1/index.html");
+        
+        test = linkManager.getAbsoluteUri("./../././.././dir2/./../index.html", "/dir1/dir2/dir3/");
+        System.err.println(test);
+        assertEquals(test, "/dir1/index.html");
+
+        test = linkManager.getAbsoluteUri("/dirA/index.html", "/dir1/dir2/dir3/");
+        System.err.println(test);
+        assertEquals(test, "/dirA/index.html");
     }
 
 }

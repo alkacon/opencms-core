@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/Attic/AllTests.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/staticexport/AllTests.java,v $
  * Date   : $Date: 2003/08/18 10:51:21 $
- * Version: $Revision: 1.8 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,19 +28,21 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+ 
+package org.opencms.staticexport;
 
-import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+
 /**
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.1 $
  * 
- * @since 5.0
+ * @since 5.1.8
  */
 public final class AllTests {
-    
+
     /**
      * Hide constructor to prevent generation of class instances.<p>
      */
@@ -48,44 +50,15 @@ public final class AllTests {
     }
     
     /**
-     * Creates the OpenCms JUnit test suite.<p>
+     * Returns the JUnit test suite for this package.<p>
      * 
-     * @return the OpenCms JUnit test suite
-     */
+     * @return the JUnit test suite for this package
+     */    
     public static Test suite() {
-        TestSuite suite = new TestSuite("OpenCms complete test");
-        
-        suite.addTest(com.opencms.flex.util.AllTests.suite());        
-        suite.addTest(org.opencms.importexport.AllTests.suite());        
-        suite.addTest(org.opencms.staticexport.AllTests.suite());        
-
-        TestSetup wrapper = new TestSetup(suite) {
-
-            protected void setUp() {
-                oneTimeSetUp();
-            }
-    
-            protected void tearDown() {
-                oneTimeTearDown();
-            }
-        };
-        
-        return wrapper;
+        TestSuite suite = new TestSuite("Test for org.opencms.staticexport");
+        //$JUnit-BEGIN$
+        suite.addTest(new TestSuite(CmsLinkManagerTest.class));
+        //$JUnit-END$
+        return suite;
     }
-    
-    /**
-     * One-time initialization code,
-     * might be used later to create a default OpenCms DB setup scenario.<p>
-     */
-    public static void oneTimeSetUp() {
-        System.out.println("Starting OpenCms test run...");
-    }
-    
-    /** 
-     * One-time cleanup code,
-     * might be used later to tear down a default OpenCms DB setup scenario.<p>
-     */
-    public static void oneTimeTearDown() {
-        System.out.println("... OpenCms test run finished!");
-    }    
 }

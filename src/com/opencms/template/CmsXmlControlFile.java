@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlControlFile.java,v $
-* Date   : $Date: 2003/08/14 15:37:26 $
-* Version: $Revision: 1.36 $
+* Date   : $Date: 2003/08/18 10:50:48 $
+* Version: $Revision: 1.37 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,7 +39,6 @@ import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 import com.opencms.template.cache.CmsElementDefinition;
 import com.opencms.template.cache.CmsElementDefinitionCollection;
-import com.opencms.util.Utils;
 import com.opencms.workplace.I_CmsWpConstants;
 
 import java.util.Enumeration;
@@ -55,7 +54,7 @@ import org.w3c.dom.NodeList;
  * Content definition for "clickable" and user requestable XML body files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.36 $ $Date: 2003/08/14 15:37:26 $
+ * @version $Revision: 1.37 $ $Date: 2003/08/18 10:50:48 $
  */
 public class CmsXmlControlFile extends A_CmsXmlContent {
 
@@ -443,7 +442,7 @@ public class CmsXmlControlFile extends A_CmsXmlContent {
                 elementClass = I_CmsConstants.C_XML_CONTROL_DEFAULT_CLASS;
             }
             if(elementTemplate != null){
-                elementTemplate = Utils.mergeAbsolutePath(getAbsoluteFilename(), elementTemplate);
+                elementTemplate = OpenCms.getLinkManager().getAbsoluteUri(elementTemplate, getAbsoluteFilename());
             }
             result.add(new CmsElementDefinition(elementName, elementClass, elementTemplate, elementTs, elementParameters));
         }

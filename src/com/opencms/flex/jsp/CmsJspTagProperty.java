@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagProperty.java,v $
- * Date   : $Date: 2003/06/05 19:02:04 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/08/18 10:50:48 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,6 +30,8 @@
  */
 
 package com.opencms.flex.jsp;
+
+import org.opencms.main.OpenCms;
 
 import com.opencms.core.CmsException;
 import com.opencms.flex.cache.CmsFlexController;
@@ -84,7 +86,7 @@ import javax.servlet.jsp.JspException;
  * </DL>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class CmsJspTagProperty extends javax.servlet.jsp.tagext.TagSupport {
     
@@ -302,7 +304,7 @@ public class CmsJspTagProperty extends javax.servlet.jsp.tagext.TagSupport {
                 break;
             default:
                 // Read properties of the file named in the attribute            
-                value = controller.getCmsObject().readProperty(controller.getCurrentRequest().toAbsolute(action), property, false, defaultValue);
+                value = controller.getCmsObject().readProperty(OpenCms.getLinkManager().getAbsoluteUri(action, controller.getCurrentRequest().getElementUri()), property, false, defaultValue);
         }           
         if (escape) value = Encoder.escapeHtml(value);    
         if (DEBUG > 0) {

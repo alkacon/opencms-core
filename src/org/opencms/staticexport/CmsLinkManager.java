@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2003/08/15 17:38:04 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/08/18 10:50:48 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,9 @@ import org.opencms.main.OpenCms;
 
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
-import com.opencms.util.Utils;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * Does the link replacement for the &lg;link&gt; tags.<p> 
@@ -45,14 +47,119 @@ import com.opencms.util.Utils;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsLinkManager {
+    
+    /** Base URL to calculate absolute links */
+    private static URL m_baseUrl;
 
     /**
      * Public constructor.<p>
      */
     public CmsLinkManager() {
+    }
+
+    /**
+     * Static initializer for the base URL.<p>
+     */
+    static {
+        m_baseUrl = null;
+        try {
+            m_baseUrl = new URL("http://127.0.0.1");
+        } catch (MalformedURLException e) {
+            // this won't happen
+        }
+    }
+    
+    /**
+     * Checks if the export is required for a given vfs resource.<p>
+     * 
+     * @param cms the current cms context
+     * @param vfsName the vfs resource name to check
+     * @return true if export is required for the given vfsName
+     */
+    private boolean exportRequired(CmsObject cms, String vfsName) {
+        boolean result = false;
+        if (OpenCms.getStaticExportManager().isStaticExportEnabled()) { 
+            try {
+                // let's look up export property in VFS
+                String exportValue = cms.readProperty(vfsName, I_CmsConstants.C_PROPERTY_EXPORT, true);
+                if (exportValue == null) {
+                    // no setting found for "export" property
+                    if (OpenCms.getStaticExportManager().getExportPropertyDefault()) {
+                        // if the default is "true" we always export
+                        result = true;
+                    } else {
+                        // check if the resource is exportable by suffix
+                        result = OpenCms.getStaticExportManager().isSuffixExportable(vfsName);
+                    }                        
+                } else {
+                    // "export" value found, if it was "true" we export
+                    result = "true".equalsIgnoreCase(exportValue.trim());
+                }
+            } catch (Throwable t) {
+                // ignore, no export required
+            }
+        }
+        return result;
+    }
+    
+    /**
+     * Calculates an absolute uri from a relative "uri" and the given absolute "baseUri".<p> 
+     * 
+     * If "uri" is already absolute, it is returned unchanged.
+     * This method also returns "uri" unchanged if it is not well-formed.<p>
+     *    
+     * @param relativeUri the relative uri to calculate an absolute uri for
+     * @param baseUri the base uri, this must be an absolute uri
+     * @return an absolute uri calculated from "uri" and "baseUri"
+     */
+    public String getAbsoluteUri(String relativeUri, String baseUri) {
+        if ((relativeUri == null) || (relativeUri.charAt(0) == '/')) {
+            return relativeUri;
+        }
+        try {
+            URL url = new URL(new URL(m_baseUrl, baseUri), relativeUri);
+            if (url.getQuery() == null) {
+                return url.getPath();
+            } else {
+                return url.getPath() + "?" + url.getQuery();
+            }
+        } catch (MalformedURLException e) {
+            return relativeUri;
+        }
+    }
+    
+    /**
+     * Calculates a realtive uri from "fromUri" to "toUri",
+     * both uri's must be absolute.<p>
+     * 
+     * @param fromUri the uri to start
+     * @param toUri the uri to calculate a relative path to
+     * @return a realtive uri from "fromUri" to "toUri"
+     */
+    public String getRelativeUri(String fromUri, String toUri) {
+        StringBuffer result = new StringBuffer();
+        int pos = 0;
+
+        while (true) {
+            int i = fromUri.indexOf ('/', pos);
+            int j = toUri.indexOf ('/', pos);
+            if ((i == -1) || (i != j) || !fromUri.regionMatches(pos, toUri, pos, i-pos)) {
+                break;
+            }
+            pos = i+1;
+        }
+
+        // count hops up from here to the common ancestor
+        for (int i = fromUri.indexOf('/', pos); i > 0; i = fromUri.indexOf('/', i+1)) {
+            result.append("../");
+        }
+
+        // append path down from common ancestor to there
+        result.append(toUri.substring(pos));
+        return result.toString();
     }
 
     /**
@@ -66,17 +173,12 @@ public class CmsLinkManager {
      */
     public String substituteLink(CmsObject cms, String link) {
         if (link == null || "".equals(link)) {
-            // not a valid link parameter, return an empty String
+            // not a valid parameter, return an empty String
             return "";
         }
-        
-        String absoluteLink;
-        if (!link.startsWith("/")) {
-            // this is a relative link, lets make an absolute out of it
-            absoluteLink = Utils.mergeAbsolutePath(cms.getRequestContext().getUri(), link);
-        } else {
-            absoluteLink = link;
-        }
+
+        // make sure we have an absolute link        
+        String absoluteLink = OpenCms.getLinkManager().getAbsoluteUri(link, cms.getRequestContext().getUri());
         
         String vfsName;
         String parameters;
@@ -91,48 +193,54 @@ public class CmsLinkManager {
         }
         
         String resultLink = null;
-        boolean exportRequired = false;
+        String uriBaseName = null;
+        boolean useRelativeLinks = false;
         
-        if (OpenCms.getStaticExportManager().isStaticExportEnabled() 
-        && cms.getRequestContext().currentProject().isOnlineProject()) {           
-            try {
-                // first check if we already have the result cached
-                resultLink = OpenCms.getStaticExportManager().getCachedOnlineLink(vfsName);
-                if (resultLink == null) {                
-                    // not cached, let's look up export property in VFS
-                    String exportValue = cms.readProperty(vfsName, I_CmsConstants.C_PROPERTY_EXPORT, true);
-                    if (exportValue == null) {
-                        // no setting found for "export" property
-                        if (OpenCms.getStaticExportManager().getExportPropertyDefault()) {
-                            // if the default is "true" we always export
-                            exportRequired = true;
-                        } else {
-                            // check if the resource is exportable by suffix
-                            exportRequired = OpenCms.getStaticExportManager().isSuffixExportable(vfsName);
-                        }                        
+        if (cms.getRequestContext().currentProject().isOnlineProject()) {
+            
+            // check if we need relative links in the exported pages
+            if (OpenCms.getStaticExportManager().relativLinksInExport()) {
+                // try to get base uri from cache  
+                uriBaseName = OpenCms.getStaticExportManager().getCachedOnlineLink(cms.getRequestContext().getUri());                
+                if (uriBaseName == null) {
+                    // base not cached, check if we must export it
+                    if (exportRequired(cms, cms.getRequestContext().getUri())) {
+                        // base uri must also be exported
+                        uriBaseName = OpenCms.getStaticExportManager().getRfsName(cms, cms.getRequestContext().getUri());
                     } else {
-                        // "export" value found, if it was "true" we export
-                        exportRequired = "true".equalsIgnoreCase(exportValue.trim());
+                        // base uri dosn't need to be exported
+                        uriBaseName = OpenCms.getStaticExportManager().getVfsPrefix() + cms.getRequestContext().getUri();
                     }
+                    // cache export base uri
+                    OpenCms.getStaticExportManager().cacheOnlineLink(cms.getRequestContext().getUri(), uriBaseName);
                 }
-            } catch (Throwable t) {
-                // ignore, no export required
+                // use relative links only on pages that get exported 
+                useRelativeLinks = uriBaseName.startsWith(OpenCms.getStaticExportManager().getRfsPrefix());
             }
-        }
-        
-        if (resultLink == null) {
-            // link was not already found in the cache
-            if (!exportRequired) {
-                // no export required
-                resultLink = OpenCms.getStaticExportManager().getVfsPrefix() + vfsName;
-            } else {
-                // export required, get export name
-                resultLink = OpenCms.getStaticExportManager().getRfsName(cms, vfsName);
+
+            // check if we have the absolute vfs name for the link target cached
+            resultLink = OpenCms.getStaticExportManager().getCachedOnlineLink(vfsName);
+            if (resultLink == null) {
+                // didn't find the link in the cache
+                if (exportRequired(cms, vfsName)) {
+                    // export required, get export name for target link
+                    resultLink = OpenCms.getStaticExportManager().getRfsName(cms, vfsName);
+                } else {
+                    // no export required for the target link
+                    resultLink = OpenCms.getStaticExportManager().getVfsPrefix() + vfsName;
+                }
+            }            
+            // cache the result 
+            OpenCms.getStaticExportManager().cacheOnlineLink(vfsName, resultLink);
+
+            if (useRelativeLinks) {
+                // we want relative links in export, so make the absolute link relative
+                resultLink = getRelativeUri(uriBaseName, resultLink);
             }
-            if (cms.getRequestContext().currentProject().isOnlineProject()) {
-                // cache the result for the online project
-                OpenCms.getStaticExportManager().cacheOnlineLink(vfsName, resultLink);
-            }
+
+        } else {
+            // offline project, no export required
+            resultLink = OpenCms.getStaticExportManager().getVfsPrefix() + vfsName;
         }
         
         // add cut off parameters and return the result

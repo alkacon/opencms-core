@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsResourceType.java,v $
- * Date   : $Date: 2003/08/15 18:36:52 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2003/08/18 10:50:48 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package com.opencms.file;
 
 import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
 import com.opencms.flex.util.CmsUUID;
 
 import java.util.Map;
@@ -42,7 +41,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.41 $
  * @since 5.1
  */
 public abstract class A_CmsResourceType implements I_CmsResourceType {

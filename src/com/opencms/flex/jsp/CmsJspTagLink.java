@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagLink.java,v $
- * Date   : $Date: 2003/08/14 15:37:25 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2003/08/18 10:50:48 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import javax.servlet.jsp.JspException;
  * export to work properly.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public class CmsJspTagLink extends javax.servlet.jsp.tagext.BodyTagSupport {
  
@@ -95,7 +95,7 @@ public class CmsJspTagLink extends javax.servlet.jsp.tagext.BodyTagSupport {
         if (link.indexOf(':') >= 0) {
             return OpenCms.getLinkManager().substituteLink(controller.getCmsObject(), link);
         } else {
-            return OpenCms.getLinkManager().substituteLink(controller.getCmsObject(), controller.getCurrentRequest().toAbsolute(link));
+            return OpenCms.getLinkManager().substituteLink(controller.getCmsObject(), OpenCms.getLinkManager().getAbsoluteUri(link, controller.getCurrentRequest().getElementUri()));
         }        
     }
 }

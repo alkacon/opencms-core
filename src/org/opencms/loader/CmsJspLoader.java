@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2003/08/14 15:37:25 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/08/18 10:50:48 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -892,7 +892,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
                             String pre = ((t7 == 0)?directive.substring(0, t2+t3+t5):"");
                             String suf = ((t7 == 0)?directive.substring(t2+t3+t5+filename.length()):"");
                             // Now try to update the referenced file 
-                            String absolute = controller.getCurrentRequest().toAbsolute(filename);
+                            String absolute = OpenCms.getLinkManager().getAbsoluteUri(filename, controller.getCurrentRequest().getElementUri());
                             if (DEBUG > 2) System.err.println("JspLoader: Absolute location=" + absolute);
                             String jspname = null;
                             try {

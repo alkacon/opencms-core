@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexRequest.java,v $
- * Date   : $Date: 2003/08/14 15:37:25 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2003/08/18 10:50:48 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,6 +47,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
@@ -57,7 +58,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
  * the CmsFlexCache.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  */
 public class CmsFlexRequest extends HttpServletRequestWrapper {
            
@@ -172,7 +173,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
     CmsFlexRequest(HttpServletRequest req, CmsFlexController controller, String resource) {
         super(req);
         m_controller = controller;
-        m_resource = toAbsolute(resource);
+        m_resource = OpenCms.getLinkManager().getAbsoluteUri(resource, m_controller.getCurrentRequest().getElementUri());
         // must reset request URI/URL buffer here because m_resource has changed
         m_requestUri = null; 
         m_requestUrl = null;
@@ -209,7 +210,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * @return the constructed CmsFlexRequestDispatcher
      */     
     public CmsFlexRequestDispatcher getRequestDispatcherToExternal(String vfs_target, String ext_target) {
-        return new CmsFlexRequestDispatcher(m_controller.getTopRequest().getRequestDispatcher(ext_target), toAbsolute(vfs_target), ext_target);
+        return new CmsFlexRequestDispatcher(m_controller.getTopRequest().getRequestDispatcher(ext_target), OpenCms.getLinkManager().getAbsoluteUri(vfs_target, m_controller.getCmsObject().getRequestContext().getUri()), ext_target);
     }
 
     /** 
@@ -220,7 +221,8 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * @return the constructed RequestDispatcher
      */    
     public javax.servlet.RequestDispatcher getRequestDispatcher(String target) {
-        return (javax.servlet.RequestDispatcher) new CmsFlexRequestDispatcher (m_controller.getTopRequest().getRequestDispatcher(toAbsolute(target)), toAbsolute(target), null);
+        String absolutUri = OpenCms.getLinkManager().getAbsoluteUri(target, m_controller.getCurrentRequest().getElementUri());
+        return (RequestDispatcher) new CmsFlexRequestDispatcher (m_controller.getTopRequest().getRequestDispatcher(absolutUri), absolutUri, null);
     }
 
     /** 
@@ -262,50 +264,6 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
         m_requestUrl = buf;      
         return m_requestUrl;
     }
-        
-    /** 
-     * Convert (if necessary) and return the absolute URI that represents the
-     * resource referenced by this possibly relative URI for this request.<p>
-     * 
-     * Adjust for resources in the OpenCms VFS by cutting of servlet context
-     * and servlet name.
-     * If this URI is already absolute, return it unchanged.
-     * Return URI also unchanged if it is not well-formed.<p>
-     *
-     * @param location URI to be (possibly) converted and then returned
-     * @return the location converted to an absolut location
-     */
-    public String toAbsolute(String location) {
-
-        if (DEBUG) System.err.println(getClass().getName() + " location=" + location);        
-        if (location == null) return null;
-        if (location.startsWith("/")) return location;
-
-        // Construct a new absolute URL if possible (cribbed from Tomcat)
-        java.net.URL url = null;
-        try {
-            url = new java.net.URL(location);
-        } catch (java.net.MalformedURLException e1) {
-            String requrl = getRequestURL().toString();
-            try {
-                url = new java.net.URL(new java.net.URL(requrl), location);
-            } catch (java.net.MalformedURLException e2) {
-                // Some other method will deal with that sooner or later
-                return location;
-            }
-        }
-        
-        // Now check if this is a opencms resource and if so remove the context / servlet path
-        String uri = url.getPath();
-        if (uri.startsWith(OpenCms.getOpenCmsContext())) {
-            uri = uri.substring(OpenCms.getOpenCmsContext().length());
-        }
-        if (url.getQuery() != null) uri += "?" + url.getQuery();                    
-        
-        if (DEBUG) System.err.println(getClass().getName() + " result=" + uri);                
-        return uri;
-    }     
-
             
     /**
      * Return the value of the specified request parameter, if any; otherwise,
@@ -325,7 +283,6 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
         else
             return (null);
     }
-
 
     /**
      * Returns a <code>Map</code> of the parameters of this request.<p>

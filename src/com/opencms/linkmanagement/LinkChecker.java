@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/linkmanagement/Attic/LinkChecker.java,v $
-* Date   : $Date: 2003/08/03 09:42:42 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2003/08/18 10:50:48 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -26,6 +26,8 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 package com.opencms.linkmanagement;
+
+import org.opencms.main.OpenCms;
 
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
@@ -114,7 +116,7 @@ public class LinkChecker {
                 work = work.substring(2);
             }else{
                 // now for relative links
-                work = com.opencms.util.Utils.mergeAbsolutePath(page, work);
+                work = OpenCms.getLinkManager().getAbsoluteUri(work, page);
                 // now we need the site prefix (lets take it from the page itself)
                 work = rootName +work;
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2003/08/14 15:37:25 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2003/08/18 10:50:48 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,6 @@ import com.opencms.template.cache.CmsUri;
 import com.opencms.template.cache.CmsUriDescriptor;
 import com.opencms.template.cache.CmsUriLocator;
 import com.opencms.util.Encoder;
-import com.opencms.util.Utils;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -79,7 +78,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
     
@@ -341,7 +340,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
             }
             templateName = doc.getMasterTemplate();
             if (templateName != null && !"".equals(templateName)) {
-                templateName = Utils.mergeAbsolutePath(cms.readAbsolutePath(file), templateName);
+                templateName = OpenCms.getLinkManager().getAbsoluteUri(templateName, cms.readAbsolutePath(file));
             }
 
             // Previously, the template class was loaded here.
@@ -709,7 +708,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
         }
         // save the original context settings
         String rnc = cms.getRequestContext().getEncoding().trim();
-        String oldUri = cms.getRequestContext().getUri();
+        // String oldUri = cms.getRequestContext().getUri();
         I_CmsRequest cms_req = cms.getRequestContext().getRequest();        
         HttpServletRequest originalreq = (HttpServletRequest)cms_req.getOriginalRequest();
         try {                        
@@ -720,7 +719,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
             String dnc = OpenCms.getDefaultEncoding().trim();
             String enc = cms.readProperty(cms.readAbsolutePath(fx), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, true, dnc).trim();
             // fake the called URI (otherwise XMLTemplate / ElementCache would not work)
-            cms.getRequestContext().setUri(cms.readAbsolutePath(fx));            
+            // cms.getRequestContext().setUri(cms.readAbsolutePath(fx));            
             cms_req.setOriginalRequest(req);
             cms.getRequestContext().setEncoding(enc);      
             if (DEBUG > 1) {
@@ -746,7 +745,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
             // restore the context settings
             cms_req.setOriginalRequest(originalreq);
             cms.getRequestContext().setEncoding(rnc);
-            cms.getRequestContext().setUri(oldUri);
+            // cms.getRequestContext().setUri(oldUri);
             if (DEBUG > 1) {
                 System.err.println("CmsXmlTemplateLoader.service(): Encodig reset to " + cms.getRequestContext().getEncoding());
                 System.err.println("CmsXmlTemplateLoader.service(): Uri reset to " + cms.getRequestContext().getUri());
