@@ -39,7 +39,7 @@
 		<!-- Schriftformatierung -->
 <table cellspacing=0 cellpadding=0 border=0 width="100%"> 
 	<tr>
-		<td class=menu>]]><SELECT class="textfeld" name="BLOCK" width="80" method="getFontStyles" onchange="return ParagraphStyle_onchange()"/><![CDATA[</td>
+		<td class=menu>]]><SELECT class="textfeld" name="BLOCK" width="100" method="getFontStyles" onchange="return ParagraphStyle_onchange()"/><![CDATA[</td>
 		<td class=menu>]]><SELECT class="textfeld" name="FONTFACE" width="120" method="getFonts" onchange="doEditHTML(22);"/><![CDATA[</td>
 		<td class=menu>]]><SELECT class="textfeld" name="FONTSIZE" width="40" method="getFontSizes" onchange="doEditHTML(23);"/><![CDATA[</td>		
 		<td class=menu>]]><BUTTON href="#" name="bt_bold" action="doEditHTML(24);" alt="bold"/><![CDATA[</td>

@@ -313,7 +313,7 @@ function doEditHTML(para)
 	    ColorSelected=-1;
 	    SelColor=-1;
 	    CheckFGCol= window.setInterval("setFGColor(SelColor)",500);
-		var SelColorWindow= window.open('edit_html_selcolor.html',"SelColor","width=500,height=400,resizable=no,top=200,left=100");
+		var SelColorWindow= window.open('edit_html_selcolor.html',"SelColor","width=500,height=400,resizable=no,top=200,left=450");
         SelColorWindow.opener = self;
 		//DECMD_SETFORECOLOR_onclick();
 		break;
@@ -321,7 +321,7 @@ function doEditHTML(para)
 		ColorSelected=-1;
 	    SelColor=-1;
 	    CheckBGCol= window.setInterval("setBGColor(SelColor)",500);
-		var SelColorWindow= window.open('edit_html_selcolor.html',"SelColor","width=500,height=400,resizable=no,top=200,left=100");
+		var SelColorWindow= window.open('edit_html_selcolor.html',"SelColor","width=500,height=400,resizable=no,top=200,left=450");
         SelColorWindow.opener = self;
 		//DECMD_SETBACKCOLOR_onclick();
 		break;
@@ -335,8 +335,8 @@ function doEditHTML(para)
 		DECMD_IMAGE_onclick();
 		break;		
     case 43:
-        window.open("picturebrowser.html", "PicBrowser", "width=500, height=500, resizable=yes, top=200, left=100");
-        break;
+        window.open("picturebrowser.html", "PicBrowser", "width=500, height=500, resizable=yes, top=200, left=450");
+		break;
  	default:
 		alert("Sorry, leider kann die Funktion nicht ausgeführt werden.");			
 	}	
@@ -507,11 +507,12 @@ function DECMD_OUTDENT_onclick()
   {
   if (arr != -1) 
     {
-     if (document.all.EDIT_HTML.QueryStatus( DECMD_GETFORECOLOR )   != DECMDF_DISABLED)
+     alert("Settig fg color");
+	 if (document.all.EDIT_HTML.QueryStatus( DECMD_GETFORECOLOR )   != DECMDF_DISABLED)
      {
 	  document.all.EDIT_HTML.ExecCommand(DECMD_SETFORECOLOR, OLECMDEXECOPT_DODEFAULT, arr);
 	 }
-      //window.clearInterval(CheckFGCol);
+      window.clearInterval(CheckFGCol);
       SelColor=-1; 
   	}
   }
@@ -522,11 +523,12 @@ function DECMD_OUTDENT_onclick()
   {
   if (arr != -1) 
     {
-     if (document.all.EDIT_HTML.QueryStatus( DECMD_SETBACKCOLOR )  != DECMDF_DISABLED )
+     alert("setting bg color");
+	 if (document.all.EDIT_HTML.QueryStatus( DECMD_SETBACKCOLOR )  != DECMDF_DISABLED )
      {
      document.all.EDIT_HTML.ExecCommand(DECMD_SETBACKCOLOR, OLECMDEXECOPT_DODEFAULT, arr);
      }
-     //window.clearInterval(CheckBGCol);
+     window.clearInterval(CheckBGCol);
      SelColor=-1;
   	}
   }
@@ -561,38 +563,108 @@ function InsertTable()
   var pVar = document.all.ObjTableInfo;
   var args = new Array();
   var arr = null;
-     
-  // Display table information dialog
+  
+  document.all.ObjTableInfo.TableAttrs =" ";
+  document.all.ObjTableInfo.CellAttrs =" ";
+   
+<!-- Preset values for the Table Dialog. Data is stored in an array that is submitted to the dialog -->
+  
   args["NumRows"] = document.all.ObjTableInfo.NumRows;
   args["NumCols"] = document.all.ObjTableInfo.NumCols;
-  args["TableAttrs"] = document.all.ObjTableInfo.TableAttrs;
+  args["TableAttrs"] =document.all.ObjTableInfo.TableAttrs;
   args["CellAttrs"] = document.all.ObjTableInfo.CellAttrs;
   args["Caption"] = document.all.ObjTableInfo.Caption;
-  
-  arr = null;
+  args["BorderLineWidth"] = 1;
+  args["CellSpacing"] = 1;
+  args["CellPadding"] = 1;
+  args["TableAlignment"] = "left";
+  args["TableWidth"]=100;
+  args["TableHeight"]=100;
+  args["TableWidthMode"]="%"; 
+  args["TableHeightMode"]="%"; 
     
-  arr = showModalDialog( "../templates/instable.htm",
-                             args,
-                             "font-family:Verdana; font-size:12; dialogWidth:34em; dialogHeight:25em");
-  if (arr != null)
-  {
+  arr = null; 
   
-    // Initialize table object
-    for ( elem in arr ) {
-      if ("NumRows" == elem && arr["NumRows"] != null) {
+<!-- Call the "addtable" dialog and receive its results in the arr array -->
+
+  arr = showModalDialog( "edit_html_newtable.html",
+                          args,
+                          "font-family:Verdana; font-size:12; dialogWidth:50em; dialogHeight:40em");
+  if (arr != null) 
+  { 
+
+<!-- Initialize table object. Values from the arr array are processed for creating the Control call -->
+    
+    for ( elem in arr ) 
+    {
+      if ("NumRows" == elem && arr["NumRows"] != null) 
+       {
         document.all.ObjTableInfo.NumRows = arr["NumRows"];
-      } else if ("NumCols" == elem && arr["NumCols"] != null) {
+       }
+      else if ("NumCols" == elem && arr["NumCols"] != null)
+       {
         document.all.ObjTableInfo.NumCols = arr["NumCols"];
-      } else if ("TableAttrs" == elem) {
-        document.all.ObjTableInfo.TableAttrs = arr["TableAttrs"];
-      } else if ("CellAttrs" == elem) {
-        document.all.CellAttrs = arr["CellAttrs"];
-      } else if ("Caption" == elem) {
+       }
+       else if ("BorderLineWidth" == elem)
+       {
+        document.all.ObjTableInfo.TableAttrs = document.all.ObjTableInfo.TableAttrs + "border="+arr["BorderLineWidth"]+" "; 
+       } 
+       else if ("CellSpacing" == elem)
+       {
+        document.all.ObjTableInfo.TableAttrs = document.all.ObjTableInfo.TableAttrs + "cellspacing="+arr["CellSpacing"]+" "; 
+       }
+       else if ("CellPadding" == elem)
+       {
+        document.all.ObjTableInfo.TableAttrs = document.all.ObjTableInfo.TableAttrs + "cellpadding="+arr["CellPadding"]+" "; 
+       }
+       else if ("TableWidth" == elem)
+        {
+         if(arr["TableWidthSelected"] == "TRUE")
+         {
+         	document.all.ObjTableInfo.TableAttrs = document.all.ObjTableInfo.TableAttrs + "width="+arr["TableWidth"]; 
+         	if(arr["TableWidthMode"] == "%") 
+            {
+          		document.all.ObjTableInfo.TableAttrs = document.all.ObjTableInfo.TableAttrs +"% "
+         	}
+        	else
+         	{
+         	    document.all.ObjTableInfo.TableAttrs = document.all.ObjTableInfo.TableAttrs +" "
+         	}
+         }
+       }
+       else if ("TableHeight" == elem) 
+        {
+         if(arr["TableHeigthSelected"] == "TRUE")
+         {
+         	document.all.ObjTableInfo.TableAttrs = document.all.ObjTableInfo.TableAttrs + "height="+arr["TableHeight"]; 
+         	if(arr["TableHeightMode"] == "%") 
+         	{
+          		document.all.ObjTableInfo.TableAttrs = document.all.ObjTableInfo.TableAttrs +"% "
+        	}
+         	else
+        	{
+          		document.all.ObjTableInfo.TableAttrs = document.all.ObjTableInfo.TableAttrs +" "
+         	}   
+          }      
+        }
+      else if ("TableAlignment" == elem) 
+       {
+        document.all.ObjTableInfo.CellAttrs = document.all.ObjTableInfo.CellAttrs + "align="+arr["TableAlignment"]+" "; 
+       }
+      else if ("TableColor" == elem)
+       {
+        if(arr["TableColorSelected"] == "TRUE")
+        {
+         document.all.ObjTableInfo.TableAttrs = document.all.ObjTableInfo.TableAttrs + "bgcolor="+arr["TableColor"];
+        }
+       }
+      else if ("Caption" == elem)
+        {
         document.all.ObjTableInfo.Caption = arr["Caption"];
-      }
+       }
     }
-    
-    EDITOR.EDIT_HTML.ExecCommand(DECMD_INSERTTABLE,OLECMDEXECOPT_DODEFAULT, pVar);  
+  
+    document.all.EDIT_HTML.ExecCommand(DECMD_INSERTTABLE, OLECMDEXECOPT_DODEFAULT, pVar);  
   }
 }
 function DECMD_HYPERLINK_onclick()
