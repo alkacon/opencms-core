@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2005/01/19 14:36:58 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/01/20 10:33:03 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * @since 5.1
  */
 public abstract class A_CmsResourceType implements I_CmsResourceType {
@@ -681,7 +681,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
      */
     protected Map getPropertyValues() {
         
-        return Collections.unmodifiableMap(m_propertyValues);
+        return m_propertyValues != null ? Collections.unmodifiableMap(m_propertyValues) : null;
     }
 
     /**
