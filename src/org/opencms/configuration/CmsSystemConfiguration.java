@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2004/07/08 12:18:54 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/07/08 12:58:46 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,17 +33,19 @@ package org.opencms.configuration;
 
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsContextInfo;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsResourceInit;
 import org.opencms.main.OpenCms;
-import org.opencms.scheduler.CmsScheduledJobInfo;
 import org.opencms.scheduler.CmsScheduleManager;
+import org.opencms.scheduler.CmsScheduledJobInfo;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.digester.Digester;
 
 import org.dom4j.Element;
@@ -139,6 +141,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     
     /** The name of the default XML file for this configuration. */
     private static final String C_DEFAULT_XML_FILE_NAME = "opencms-system.xml";    
+           
+    /** The list of jobs for the scheduler. */
+    private List m_configuredJobs;
     
     /** The configured locale manager for multi language support. */
     private CmsLocaleManager m_localeManager;
@@ -169,10 +174,37 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         m_versionHistoryEnabled = true;
         m_versionHistoryMaxCount = 10;
         m_resourceInitHandlers = new ArrayList();
+        m_configuredJobs = new ArrayList();
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". System configuration : initialized");
         }           
     }
+        
+    /**
+     * Adds a new job description for the scheduler.<p>
+     * 
+     * @param jobInfo the job description to add
+     * 
+     * @throws CmsException if called after configuration is finished
+     */
+    public void addJobFromConfiguration(CmsScheduledJobInfo jobInfo) throws CmsException {
+
+        if (OpenCms.getRunLevel() > 1) {
+            throw new CmsConfigurationException(CmsConfigurationException.C_CONFIGURATION_ERROR);
+        }
+        
+        m_configuredJobs.add(jobInfo);
+        
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
+                ". Scheduler config     : configured job named '" 
+                    + jobInfo.getJobName()                    
+                    + "' for class '"
+                    + jobInfo.getClassName()
+                    + "' with user "
+                    + jobInfo.getContextInfo().getUserName());
+        }          
+    }    
     
     /**
      * Adds a new instance of a resource init handler class.<p>
@@ -198,6 +230,14 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
                 OpenCms.getLog(CmsLog.CHANNEL_INIT).error(". Resource init class  : " + clazz + " invalid");
             }
         }
+    }
+    
+    /**
+     * Generates the schedule manager.<p>
+     */
+    public void addScheduleManager() {
+        
+        m_scheduleManager = new CmsScheduleManager(m_configuredJobs);   
     }
 
     /**
@@ -238,8 +278,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_MAIL + "/" + N_MAILHOST, 4, A_PASSWORD);
 
         // add scheduler creation rule
-        digester.addObjectCreate("*/" + N_SYSTEM + "/" + N_SCHEDULER, CmsScheduleManager.class);
-        digester.addSetNext("*/" + N_SYSTEM + "/" + N_SCHEDULER, "setScheduleManager");
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SCHEDULER, "addScheduleManager");
         
         // add scheduler job creation rule
         digester.addObjectCreate("*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB, CmsScheduledJobInfo.class);
@@ -311,6 +350,38 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
                     .addAttribute(A_PASSWORD, host.getPassword());
             }
         }
+        
+        // scheduler node
+        Element schedulerElement = systemElement.addElement(N_SCHEDULER);
+        i = m_configuredJobs.iterator();
+        while (i.hasNext()) {
+            CmsScheduledJobInfo jobInfo = (CmsScheduledJobInfo)i.next();
+            Element jobElement = schedulerElement.addElement(N_JOB);
+            jobElement.addElement(N_NAME).addText(jobInfo.getJobName());
+            jobElement.addElement(N_CLASS).addText(jobInfo.getClassName());
+            jobElement.addElement(N_REUSEINSTANCE).addText(String.valueOf(jobInfo.isReuseInstance()));
+            jobElement.addElement(N_CRONEXPRESSION).addCDATA(jobInfo.getCronExpression());
+            Element contextElement = jobElement.addElement(N_CONTEXT);
+            contextElement.addElement(N_USERNAME).setText(jobInfo.getContextInfo().getUserName());
+            contextElement.addElement(N_PROJECT).setText(jobInfo.getContextInfo().getProjectName());
+            contextElement.addElement(N_SITEROOT).setText(jobInfo.getContextInfo().getSiteRoot());
+            contextElement.addElement(N_REQUESTEDURI).setText(jobInfo.getContextInfo().getRequestedUri());
+            contextElement.addElement(N_LOCALE).setText(jobInfo.getContextInfo().getLocaleName());
+            contextElement.addElement(N_ENCODING).setText(jobInfo.getContextInfo().getEncoding());
+            contextElement.addElement(N_REMOTEADDR).setText(jobInfo.getContextInfo().getRemoteAddr());
+            Element parameterElement = jobElement.addElement(N_PARAMETERS);
+            ExtendedProperties jobParameters = jobInfo.getConfiguration();
+            if (jobParameters != null) {
+                Iterator it = jobParameters.getKeys();
+                while (it.hasNext()) {
+                    String name = (String)it.next();
+                    String value = jobParameters.get(name).toString();
+                    Element paramNode = parameterElement.addElement(N_PARAM);
+                    paramNode.addAttribute(A_NAME, name);
+                    paramNode.addText(value);
+                }
+            }
+        }
                 
         // version history
         systemElement.addElement(N_VERSIONHISTORY)
@@ -318,7 +389,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             .addAttribute(A_COUNT, new Integer(m_versionHistoryMaxCount).toString());       
         
         // resourceinit
-        // TODO: Use this
+        // TODO: create XML entries for resource init
         systemElement.addElement(N_RESOURCEINIT);        
         
         // return the vfs node
@@ -430,19 +501,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         m_mailSettings = mailSettings;
         if (OpenCms.getLog(this).isDebugEnabled()) {
             OpenCms.getLog(this).debug("Mail settings set " + m_mailSettings);
-        }          
-    }
-    
-    /**
-     * Sets the configured schedule manager.<p>
-     * 
-     * @param scheduleManager the configured schedule manager to set
-     */
-    public void setScheduleManager(CmsScheduleManager scheduleManager) {
-        
-        m_scheduleManager = scheduleManager;
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Scheduler config     : scheduler created");
         }          
     }
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/scheduler/TestCmsScheduler.java,v $
- * Date   : $Date: 2004/07/08 12:18:44 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/07/08 12:59:23 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,9 @@ package org.opencms.scheduler;
 import org.opencms.main.CmsContextInfo;
 import org.opencms.main.OpenCms;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 
 import junit.framework.TestCase;
@@ -52,7 +54,7 @@ import org.quartz.impl.StdSchedulerFactory;
  * Test cases for the OpenCms scheduler thread pool.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.1
  */
@@ -219,8 +221,6 @@ public class TestCmsScheduler extends TestCase {
         System.out.println("Trying to run an OpenCms job 5x with the OpenCms scheduler.");
         TestScheduledJob.m_runCount = 0;
         
-        CmsScheduleManager manager = new CmsScheduleManager();
-                
         CmsScheduledJobInfo jobInfo = new CmsScheduledJobInfo();
         CmsContextInfo contextInfo = new CmsContextInfo();
         contextInfo.setUserName(OpenCms.getDefaultUsers().getUserAdmin());
@@ -228,12 +228,14 @@ public class TestCmsScheduler extends TestCase {
         jobInfo.setClassName(TestScheduledJob.class.getName());  
         
         jobInfo.setCronExpression("0/2 * * * * ?");
-        
-        // add the job to the manager
-        manager.addJobFromConfiguration(jobInfo);
+                
+        List jobs = new ArrayList();
+        jobs.add(jobInfo);
+        // create the scheduler with the test job
+        CmsScheduleManager scheduler = new CmsScheduleManager(jobs);
         
         // initialize the manager, this will start the scheduled jobs
-        manager.initialize(null);
+        scheduler.initialize(null);
         
         int seconds = 0;
         do {
@@ -258,7 +260,8 @@ public class TestCmsScheduler extends TestCase {
             fail("Instance counter value of " + TestScheduledJob.m_instanceCountCopy + " invalid!");
         }             
        
-        manager.shutDown();        
+        // shutdown the scheduler
+        scheduler.shutDown();        
     }         
     
     /**
@@ -271,8 +274,6 @@ public class TestCmsScheduler extends TestCase {
         System.out.println("Trying to run a persistent OpenCms job 5x with the OpenCms scheduler.");
         TestScheduledJob.m_runCount = 0;
         
-        CmsScheduleManager manager = new CmsScheduleManager();
-                
         CmsScheduledJobInfo jobInfo = new CmsScheduledJobInfo();
         CmsContextInfo contextInfo = new CmsContextInfo(OpenCms.getDefaultUsers().getUserAdmin());
         jobInfo.setContextInfo(contextInfo);
@@ -280,11 +281,13 @@ public class TestCmsScheduler extends TestCase {
         jobInfo.setReuseInstance(true);
         jobInfo.setCronExpression("0/2 * * * * ?");
         
-        // add the job to the manager
-        manager.addJobFromConfiguration(jobInfo);
+        List jobs = new ArrayList();
+        jobs.add(jobInfo);
+        // create the scheduler with the test job
+        CmsScheduleManager scheduler = new CmsScheduleManager(jobs);
         
         // initialize the manager, this will start the scheduled jobs
-        manager.initialize(null);
+        scheduler.initialize(null);
         
         int seconds = 0;
         do {
@@ -309,6 +312,7 @@ public class TestCmsScheduler extends TestCase {
             fail("Instance counter was not incremented!");
         }        
        
-        manager.shutDown();        
+        // shutdown the scheduler
+        scheduler.shutDown();        
     }
 }
