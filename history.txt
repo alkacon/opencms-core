@@ -9,6 +9,7 @@ Legend:
 - General comment
 
 OpenCms 4.5.30 Chusuk       - xx December 2001
+* bugfix static export: if a extern link is in a link tag (should not happen) no strange folders are created.
 - Changed the configuration of the static export. It now enabled and configured by default.
   You can browse the exported ressource by pointing your browser to: 
   Http://localhost:8080/opencms/export/index.html.
