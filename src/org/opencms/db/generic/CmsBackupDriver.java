@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2004/04/01 04:49:40 $
- * Version: $Revision: 1.81 $
+ * Date   : $Date: 2004/04/01 10:23:11 $
+ * Version: $Revision: 1.82 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.db.generic;
 
 import org.opencms.db.CmsDbUtil;
-import org.opencms.db.CmsProperty;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.I_CmsBackupDriver;
 import org.opencms.db.I_CmsDriver;
@@ -45,6 +44,7 @@ import org.opencms.file.CmsBackupProject;
 import org.opencms.file.CmsBackupResource;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsProject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertydefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
@@ -72,7 +72,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com) 
- * @version $Revision: 1.81 $ $Date: 2004/04/01 04:49:40 $
+ * @version $Revision: 1.82 $ $Date: 2004/04/01 10:23:11 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
