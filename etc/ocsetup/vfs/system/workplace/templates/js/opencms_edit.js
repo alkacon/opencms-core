@@ -25,7 +25,12 @@ var EXPORTAS=14;
 var PRINT=15;
 
 
-var textSetted = false;
+// to load the file content into the editor
+function setText()
+{
+   	document.all.edit1.Text = unescape(text);
+	EDITOR.edit1.focus();
+}
 
 
 // Function action on button click
@@ -35,20 +40,26 @@ function doEdit(para)
 	{
 	case 1:
 	{
-		history.back();
+		document.EDITOR.save.value = "0";
+		document.EDITOR.EXIT.value = "1";
+		document.EDITOR.submit();
 		break;
 	}
-	//case 2:
-	//{
-	//	history.back();
-	//	break;
-	//}
-	//case 3:
-	//{
-		//	history.back();
-	//		break;
-	//}
-	
+	case SAVECLOSE:
+	{
+		document.EDITOR.CONTENT.value = escape(document.EDITOR.edit1.Text);
+		document.EDITOR.save.value = "1";
+		document.EDITOR.EXIT.value = "1";
+		document.EDITOR.submit();
+		break;
+	}
+	case SAVE:
+	{
+		document.EDITOR.CONTENT.value = escape(document.EDITOR.edit1.Text);
+		document.EDITOR.save.value = "1";
+		document.EDITOR.submit();
+		break;
+	}
 	case 4:
 	{
 		document.all.edit1.Undo();

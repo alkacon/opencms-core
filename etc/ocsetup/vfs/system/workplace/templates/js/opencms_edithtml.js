@@ -153,18 +153,20 @@ function doEditHTML(para)
 	switch (para)
 	{
 	case 1:
-		document.EDITHTML.EXIT.value = "cancel";
-		document.EDITHTML.submit();
+		document.EDITOR.EXIT.value = "1";
+		document.EDITOR.save.value = "0";
+		document.EDITOR.submit();
 		break;
-	case 2:
-		document.EDITHTML.EXIT.value = "save";
+	case SAVECLOSE:
+		document.EDITOR.save.value = "1";
+		document.EDITOR.EXIT.value = "1";
 		doSubmit();
-		document.EDITHTML.submit();
+		document.EDITOR.submit();
 		break;
-	case 3:
-		//document.all.form1.CONTENT.value = escape(document.all.edit1.DocumentHTML);
+	case SAVE:
+		document.EDITOR.save.value = "1";
 		doSubmit();
-		document.EDITHTML.submit();
+		document.EDITOR.submit();
 		break;
 	case 4:
 		DECMD_UNDO_onclick();
@@ -196,7 +198,7 @@ function doEditHTML(para)
 		MENU_FILE_EXPORT_onclick();
         break;
 	case 15:
-		EDITHTML.EDIT_HTML.PrintDocument(true);
+		EDITOR.EDIT_HTML.PrintDocument(true);
         break;
 		
 	case 21:
@@ -262,11 +264,17 @@ function doEditHTML(para)
 	}	
 }
 
+<!-- Includes the Document Source-Code into the HTML-Editor and sets up the contect menue-->
+function setText()
+{
+	document.EDITOR.EDIT_HTML.DocumentHTML = unescape(text);
+	EDITOR.EDIT_HTML.focus();
+}
 
 // Submitts the Document to the OpenCms System
 function doSubmit() 
 {
-	document.EDITHTML.CONTENT.value = escape(document.EDITHTML.EDIT_HTML.DocumentHTML);
+	document.EDITOR.CONTENT.value = escape(document.EDITOR.EDIT_HTML.DocumentHTML);
 }
 
 
@@ -274,131 +282,131 @@ function doSubmit()
 
 function DECMD_UNDO_onclick()
 {
-  EDITHTML.EDIT_HTML.ExecCommand(DECMD_UNDO,OLECMDEXECOPT_DODEFAULT);
-  EDITHTML.EDIT_HTML.focus();
+  EDITOR.EDIT_HTML.ExecCommand(DECMD_UNDO,OLECMDEXECOPT_DODEFAULT);
+  EDITOR.EDIT_HTML.focus();
 }
 function DECMD_REDO_onclick()
 {
-  EDITHTML.EDIT_HTML.ExecCommand(DECMD_REDO,OLECMDEXECOPT_DODEFAULT);
-  EDITHTML.EDIT_HTML.focus();
+  EDITOR.EDIT_HTML.ExecCommand(DECMD_REDO,OLECMDEXECOPT_DODEFAULT);
+  EDITOR.EDIT_HTML.focus();
 }
 function DECMD_FINDTEXT_onclick()
 {
-  EDITHTML.EDIT_HTML.ExecCommand(DECMD_FINDTEXT,OLECMDEXECOPT_PROMPTUSER);
-  EDITHTML.EDIT_HTML.focus();
+  EDITOR.EDIT_HTML.ExecCommand(DECMD_FINDTEXT,OLECMDEXECOPT_PROMPTUSER);
+  EDITOR.EDIT_HTML.focus();
 }
 
 function DECMD_CUT_onclick()
 {
-  EDITHTML.EDIT_HTML.ExecCommand(DECMD_CUT,OLECMDEXECOPT_DODEFAULT);
-  EDITHTML.EDIT_HTML.focus();
+  EDITOR.EDIT_HTML.ExecCommand(DECMD_CUT,OLECMDEXECOPT_DODEFAULT);
+  EDITOR.EDIT_HTML.focus();
 }
 
 function DECMD_COPY_onclick()
 {
-  EDITHTML.EDIT_HTML.ExecCommand(DECMD_COPY,OLECMDEXECOPT_DODEFAULT);
-  EDITHTML.EDIT_HTML.focus();
+  EDITOR.EDIT_HTML.ExecCommand(DECMD_COPY,OLECMDEXECOPT_DODEFAULT);
+  EDITOR.EDIT_HTML.focus();
 }
 function DECMD_PASTE_onclick()
 {
-  EDITHTML.EDIT_HTML.ExecCommand(DECMD_PASTE,OLECMDEXECOPT_DODEFAULT);
-  EDITHTML.EDIT_HTML.focus();
+  EDITOR.EDIT_HTML.ExecCommand(DECMD_PASTE,OLECMDEXECOPT_DODEFAULT);
+  EDITOR.EDIT_HTML.focus();
 }
 function MENU_FILE_IMPORT_onclick()
 {
   docComplete = false;
-  EDITHTML.EDIT_HTML.LoadDocument("", true);
-  EDITHTML.EDIT_HTML.focus();
+  EDITOR.EDIT_HTML.LoadDocument("", true);
+  EDITOR.EDIT_HTML.focus();
 }
 function MENU_FILE_EXPORT_onclick()
 {
-  if (EDITHTML.EDIT_HTML.IsDirty) {
-    if (EDITHTML.EDIT_HTML.CurrentDocumentPath != "") {
+  if (EDITOR.EDIT_HTML.IsDirty) {
+    if (EDITOR.EDIT_HTML.CurrentDocumentPath != "") {
       var path;
       
-      path = EDITHTML.EDIT_HTML.CurrentDocumentPath;
+      path = EDITOR.EDIT_HTML.CurrentDocumentPath;
       if (path.substring(0, 7) == "http://")
-        EDITHTML.EDIT_HTML.SaveDocument("", true);
+        EDITOR.EDIT_HTML.SaveDocument("", true);
       else
-        EDITHTML.EDIT_HTML.SaveDocument(EDIT_HTML.CurrentDocumentPath, false);
+        EDITOR.EDIT_HTML.SaveDocument(EDIT_HTML.CurrentDocumentPath, false);
     } else {
-      EDITHTML.EDIT_HTML.SaveDocument("", true);
+      EDITOR.EDIT_HTML.SaveDocument("", true);
     }
   }
-  EDITHTML.EDIT_HTML.focus();
+  EDITOR.EDIT_HTML.focus();
 }
 function MENU_FILE_SAVEAS_onclick()
 {
-  EDITHTML.EDIT_HTML.SaveDocument("", true);
-  EDITHTML.EDIT_HTML.focus();
+  EDITOR.EDIT_HTML.SaveDocument("", true);
+  EDITOR.EDIT_HTML.focus();
 }
 //=======================================================
 function ParagraphStyle_onchange() 
 {	 
-  document.all.EDIT_HTML.ExecCommand(DECMD_SETBLOCKFMT, OLECMDEXECOPT_DODEFAULT, document.all.BLOCK.value);
-  document.all.EDIT_HTML.focus();
+  EDITOR.EDIT_HTML.ExecCommand(DECMD_SETBLOCKFMT, OLECMDEXECOPT_DODEFAULT, document.all.BLOCK.value);
+  EDITOR.EDIT_HTML.focus();
 }
 function FontName_onchange()
 {
-  EDITHTML.EDIT_HTML.ExecCommand(DECMD_SETFONTNAME, OLECMDEXECOPT_DODEFAULT, EDITHTML.FONTFACE.value);
-  EDITHTML.EDIT_HTML.focus();
+  EDITOR.EDIT_HTML.ExecCommand(DECMD_SETFONTNAME, OLECMDEXECOPT_DODEFAULT, EDITOR.FONTFACE.value);
+  EDITOR.EDIT_HTML.focus();
 }
 function FontSize_onchange()
 {
-  EDITHTML.EDIT_HTML.ExecCommand(DECMD_SETFONTSIZE, OLECMDEXECOPT_DODEFAULT, parseInt(EDITHTML.FONTSIZE.value));
-  EDITHTML.EDIT_HTML.focus();
+  EDITOR.EDIT_HTML.ExecCommand(DECMD_SETFONTSIZE, OLECMDEXECOPT_DODEFAULT, parseInt(EDITOR.FONTSIZE.value));
+  EDITOR.EDIT_HTML.focus();
 }
 function DECMD_BOLD_onclick()
 {
-  EDITHTML.EDIT_HTML.ExecCommand(DECMD_BOLD,OLECMDEXECOPT_DODEFAULT);
-  EDITHTML.EDIT_HTML.focus();
+  EDITOR.EDIT_HTML.ExecCommand(DECMD_BOLD,OLECMDEXECOPT_DODEFAULT);
+  EDITOR.EDIT_HTML.focus();
 }
 function DECMD_ITALIC_onclick()
 {
-  EDITHTML.EDIT_HTML.ExecCommand(DECMD_ITALIC,OLECMDEXECOPT_DODEFAULT);
-  EDITHTML.EDIT_HTML.focus();
+  EDITOR.EDIT_HTML.ExecCommand(DECMD_ITALIC,OLECMDEXECOPT_DODEFAULT);
+  EDITOR.EDIT_HTML.focus();
 }
 function DECMD_UNDERLINE_onclick()
 {
-  EDITHTML.EDIT_HTML.ExecCommand(DECMD_UNDERLINE,OLECMDEXECOPT_DODEFAULT);
-  EDITHTML.EDIT_HTML.focus();
+  EDITOR.EDIT_HTML.ExecCommand(DECMD_UNDERLINE,OLECMDEXECOPT_DODEFAULT);
+  EDITOR.EDIT_HTML.focus();
 }
 //=======================================================
 function DECMD_JUSTIFYLEFT_onclick()
 {
-  EDITHTML.EDIT_HTML.ExecCommand(DECMD_JUSTIFYLEFT,OLECMDEXECOPT_DODEFAULT);
-  EDITHTML.EDIT_HTML.focus();
+  EDITOR.EDIT_HTML.ExecCommand(DECMD_JUSTIFYLEFT,OLECMDEXECOPT_DODEFAULT);
+  EDITOR.EDIT_HTML.focus();
 }
 
 function DECMD_JUSTIFYCENTER_onclick()
 {
-  EDITHTML.EDIT_HTML.ExecCommand(DECMD_JUSTIFYCENTER,OLECMDEXECOPT_DODEFAULT);
-  EDITHTML.EDIT_HTML.focus();
+  EDITOR.EDIT_HTML.ExecCommand(DECMD_JUSTIFYCENTER,OLECMDEXECOPT_DODEFAULT);
+  EDITOR.EDIT_HTML.focus();
 }
 function DECMD_JUSTIFYRIGHT_onclick()
 {
-  EDITHTML.EDIT_HTML.ExecCommand(DECMD_JUSTIFYRIGHT,OLECMDEXECOPT_DODEFAULT);
-  EDITHTML.EDIT_HTML.focus();
+  EDITOR.EDIT_HTML.ExecCommand(DECMD_JUSTIFYRIGHT,OLECMDEXECOPT_DODEFAULT);
+  EDITOR.EDIT_HTML.focus();
 }
 function DECMD_UNORDERLIST_onclick()
 {
-  EDITHTML.EDIT_HTML.ExecCommand(DECMD_UNORDERLIST,OLECMDEXECOPT_DODEFAULT);
-  EDITHTML.EDIT_HTML.focus();
+  EDITOR.EDIT_HTML.ExecCommand(DECMD_UNORDERLIST,OLECMDEXECOPT_DODEFAULT);
+  EDITOR.EDIT_HTML.focus();
 }
 function DECMD_ORDERLIST_onclick()
 {
-  EDITHTML.EDIT_HTML.ExecCommand(DECMD_ORDERLIST,OLECMDEXECOPT_DODEFAULT);
-  EDITHTML.EDIT_HTML.focus();
+  EDITOR.EDIT_HTML.ExecCommand(DECMD_ORDERLIST,OLECMDEXECOPT_DODEFAULT);
+  EDITOR.EDIT_HTML.focus();
 }
 function DECMD_INDENT_onclick()
 {
-  EDITHTML.EDIT_HTML.ExecCommand(DECMD_INDENT,OLECMDEXECOPT_DODEFAULT);
-  EDITHTML.EDIT_HTML.focus();
+  EDITOR.EDIT_HTML.ExecCommand(DECMD_INDENT,OLECMDEXECOPT_DODEFAULT);
+  EDITOR.EDIT_HTML.focus();
 }
 function DECMD_OUTDENT_onclick()
 {
-  EDITHTML.EDIT_HTML.ExecCommand(DECMD_OUTDENT,OLECMDEXECOPT_DODEFAULT);
-  EDITHTML.EDIT_HTML.focus();
+  EDITOR.EDIT_HTML.ExecCommand(DECMD_OUTDENT,OLECMDEXECOPT_DODEFAULT);
+  EDITOR.EDIT_HTML.focus();
 }
 function DECMD_SETFORECOLOR_onclick()
 {
@@ -408,7 +416,7 @@ function DECMD_SETFORECOLOR_onclick()
 
   if (arr != null)
   {
-    EDITHTML.EDIT_HTML.ExecCommand(DECMD_SETFORECOLOR,OLECMDEXECOPT_DODEFAULT, arr);
+    EDITOR.EDIT_HTML.ExecCommand(DECMD_SETFORECOLOR,OLECMDEXECOPT_DODEFAULT, arr);
   }
 }
 
@@ -420,9 +428,9 @@ function DECMD_SETBACKCOLOR_onclick()
 
   if (arr != null)
   {
-    EDITHTML.EDIT_HTML.ExecCommand(DECMD_SETBACKCOLOR,OLECMDEXECOPT_DODEFAULT, arr);
+    EDITOR.EDIT_HTML.ExecCommand(DECMD_SETBACKCOLOR,OLECMDEXECOPT_DODEFAULT, arr);
   }
-  EDITHTML.EDIT_HTML.focus();
+  EDITOR.EDIT_HTML.focus();
 }
 function InsertTable()
 {
@@ -460,18 +468,18 @@ function InsertTable()
       }
     }
     
-    EDITHTML.EDIT_HTML.ExecCommand(DECMD_INSERTTABLE,OLECMDEXECOPT_DODEFAULT, pVar);  
+    EDITOR.EDIT_HTML.ExecCommand(DECMD_INSERTTABLE,OLECMDEXECOPT_DODEFAULT, pVar);  
   }
 }
 function DECMD_HYPERLINK_onclick()
 {
-  EDITHTML.EDIT_HTML.ExecCommand(DECMD_HYPERLINK,OLECMDEXECOPT_PROMPTUSER);
-  EDITHTML.EDIT_HTML.focus();
+  EDITOR.EDIT_HTML.ExecCommand(DECMD_HYPERLINK,OLECMDEXECOPT_PROMPTUSER);
+  EDITOR.EDIT_HTML.focus();
 }
 function DECMD_IMAGE_onclick()
 {
-  EDITHTML.EDIT_HTML.ExecCommand(DECMD_IMAGE,OLECMDEXECOPT_PROMPTUSER);
-  EDITHTML.EDIT_HTML.focus();
+  EDITOR.EDIT_HTML.ExecCommand(DECMD_IMAGE,OLECMDEXECOPT_PROMPTUSER);
+  EDITOR.EDIT_HTML.focus();
 }
 
 

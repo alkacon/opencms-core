@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<WORKPLACE>
+<TEMPLATE>
+<![CDATA[
+<html>
+<head><META HTTP-EQUIV="Content-Type" CONTENT="texthtml; charset=iso-8859-1">
+<title>opencms</title>
+<link rel=stylesheet type="text/css" href="../css/format.css">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript">
+	<!-- Sets the Document Source-Code for later including into the text editor -->
+	var text="]]><METHOD name="setText"/><![CDATA[";
+
+	<!-- URL for pictures -->
+	var pfad="]]><METHOD name="picsUrl"/><![CDATA[";
+
+	<!-- URL for help file -->
+	var help="]]><METHOD name="helpUrl"/><![CDATA[";
+</SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/]]><PROCESS>jsfile</PROCESS><![CDATA["></SCRIPT>
+
+</head>
+
+<body background="]]><METHOD name="picsUrl">bg_grau.gif</METHOD><![CDATA[" scroll=no onLoad="setText();" leftmargin=5 topmargin=5 marginwidth = 5 marginheight = 5>
+<form 
+	name=EDITOR 
+	id=EDITOR
+	METHOD=POST>
+]]><ELEMENT name="editor"/> <![CDATA[
+</form>
+</body>
+</html>
+]]>
+</TEMPLATE>
+<ELEMENTDEF name="editor">
+	<CLASS>com.opencms.workplace.CmsEditor</CLASS>
+</ELEMENTDEF>
+</WORKPLACE>
