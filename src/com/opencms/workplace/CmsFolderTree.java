@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFolderTree.java,v $
-* Date   : $Date: 2003/02/03 15:25:20 $
-* Version: $Revision: 1.48 $
+* Date   : $Date: 2003/03/20 16:51:44 $
+* Version: $Revision: 1.49 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  *
  *
  * @author Michael Emmerich
- * @version $Revision: 1.48 $ $Date: 2003/02/03 15:25:20 $
+ * @version $Revision: 1.49 $ $Date: 2003/03/20 16:51:44 $
  */
 
 public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstants {
@@ -560,8 +560,10 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
                 // test if the folder is in the current project and if the user has
 
                 // write access to this folder.
-                if((res.inProject(cms.getRequestContext().currentProject()) && checkWriteable(cms,
-                        (CmsResource)res)) || offselect) {
+                // CHECK: The logic in CmsFolderTree was changed
+                // if((res.inProject(cms.getRequestContext().currentProject()) && checkWriteable(cms,
+                //        (CmsResource)res)) || offselect) {                
+                if(checkWriteable(cms, (CmsResource)res) || offselect) {
                     template.setData(C_TREESTYLE, C_FILE_INPROJECT);
                     output.append(template.getProcessedDataValue(C_TREELINE, this));
                 } else {
