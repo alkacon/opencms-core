@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
-* Date   : $Date: 2001/11/23 15:04:56 $
-* Version: $Revision: 1.50 $
+* Date   : $Date: 2001/11/27 10:49:31 $
+* Version: $Revision: 1.51 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.io.*;
  * Content definition for XML template files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.50 $ $Date: 2001/11/23 15:04:56 $
+ * @version $Revision: 1.51 $ $Date: 2001/11/27 10:49:31 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
@@ -937,6 +937,17 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
      */
     public void setData(String tag, Element data) {
         super.setData(tag, data);
+    }
+
+    /**
+     * Creates a datablock element by parsing the data string
+     * and stores this block into the datablock-hashtable.
+     *
+     * @param tag Key for this datablock.
+     * @param data String to be put in the datablock.
+     */
+    public void setParsedData(String tag, String data) throws CmsException {
+        super.setParsedData(tag, data);
     }
 
     /**

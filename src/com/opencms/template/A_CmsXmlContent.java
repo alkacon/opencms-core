@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2001/11/21 15:29:33 $
-* Version: $Revision: 1.51 $
+* Date   : $Date: 2001/11/27 10:49:31 $
+* Version: $Revision: 1.52 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import com.opencms.launcher.*;
  * getXmlDocumentTagName() and getContentDescription().
  *
  * @author Alexander Lucas
- * @version $Revision: 1.51 $ $Date: 2001/11/21 15:29:33 $
+ * @version $Revision: 1.52 $ $Date: 2001/11/27 10:49:31 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannels {
 
@@ -1775,6 +1775,36 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
                 }
             }
         }
+    }
+
+    /**
+     * Creates a datablock element by parsing the data string
+     * and stores this block into the datablock-hashtable.
+     *
+     * @param tag Key for this datablock.
+     * @param data String to be put in the datablock.
+     */
+    public void setParsedData(String tag, String data) throws CmsException{
+
+        StringBuffer tempXmlString = new StringBuffer();
+        tempXmlString.append("<?xml version=\"1.0\"?>\n");
+        tempXmlString.append("<" + getXmlDocumentTagName() + ">");
+        tempXmlString.append("<"+ tag +">\n");
+        tempXmlString.append("<![CDATA[");
+        tempXmlString.append(data);
+        tempXmlString.append("]]>");
+        tempXmlString.append("</"+ tag +">\n");
+        tempXmlString.append("</" + getXmlDocumentTagName() + ">\n");
+        I_CmsXmlParser parser = getXmlParser();
+        StringReader parserReader = new StringReader(tempXmlString.toString());
+        Document tempDoc = null;
+        try {
+            tempDoc = parser.parse(parserReader);
+        }catch(Exception e) {
+            throwException("PARSING ERROR! "+e.toString(), CmsException.C_XML_PARSING_ERROR);
+        }
+        Element templateNode = (Element)tempDoc.getDocumentElement().getFirstChild();
+        setData(tag, templateNode);
     }
 
     /**
