@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/11/14 16:59:35 $
- * Version: $Revision: 1.157 $
+ * Date   : $Date: 2003/12/11 12:03:35 $
+ * Version: $Revision: 1.158 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.157 $ $Date: 2003/11/14 16:59:35 $
+ * @version $Revision: 1.158 $ $Date: 2003/12/11 12:03:35 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -1927,67 +1927,6 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                 errorResNames += "[" + errorRes.getName() + "]";
             }
             throw new CmsException("[" + this.getClass().getName() + "] " + folder.getName() + errorResNames, CmsException.C_NOT_EMPTY);
-        }
-    }
-
-    /**
-     * @see org.opencms.db.I_CmsVfsDriver#removeTempFile(com.opencms.file.CmsResource)
-     */
-    public void removeTempFile(CmsResource file) throws CmsException {
-        PreparedStatement stmt = null;
-        PreparedStatement statementCont = null;
-        PreparedStatement statementProp = null;
-        Connection conn = null;
-        ResultSet res = null;
-        String fileId = null;
-        String structureId = null;
-        boolean hasBatch = false;
-
-        //String tempFilename = file.getRootName() + file.getPath() + I_CmsConstants.C_TEMP_PREFIX + file.getName() + "%";
-        String tempFilename = I_CmsConstants.C_TEMP_PREFIX + file.getName() + "%";
-
-        try {
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_GETTEMPFILES");
-            stmt.setString(1, tempFilename);
-            stmt.setString(2, file.getParentStructureId().toString());
-            res = stmt.executeQuery();
-
-            statementProp = m_sqlManager.getPreparedStatement(conn, "C_PROPERTIES_DELETEALL");
-            statementCont = m_sqlManager.getPreparedStatement(conn, "C_FILE_CONTENT_DELETE");
-
-            while (res.next()) {
-                hasBatch = true;
-
-                fileId = res.getString("FILE_ID");
-                structureId = res.getString("STRUCTURE_ID");
-
-                // delete the properties
-                statementProp.setString(1, structureId);
-                statementProp.addBatch();
-
-                // delete the file content
-                statementCont.setString(1, fileId);
-                statementCont.addBatch();
-            }
-
-            if (hasBatch) {
-                statementProp.executeBatch();
-                statementCont.executeBatch();
-
-                m_sqlManager.closeAll(null, stmt, res);
-
-                stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_DELETETEMPFILES");
-                stmt.setString(1, tempFilename);
-                stmt.setString(2, file.getParentStructureId().toString());
-                stmt.executeUpdate();
-            }
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
-            m_sqlManager.closeAll(null, statementProp, null);
-            m_sqlManager.closeAll(null, statementCont, null);
         }
     }
 

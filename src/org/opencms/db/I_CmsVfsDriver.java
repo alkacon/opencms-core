@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/11/07 12:36:10 $
- * Version: $Revision: 1.65 $
+ * Date   : $Date: 2003/12/11 12:02:44 $
+ * Version: $Revision: 1.66 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.65 $ $Date: 2003/11/07 12:36:10 $
+ * @version $Revision: 1.66 $ $Date: 2003/12/11 12:02:44 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -526,14 +526,6 @@ public interface I_CmsVfsDriver {
      * @throws CmsException if something goes wrong
      */
     void removeFolder(CmsProject currentProject, CmsFolder folder) throws CmsException;
-
-    /**
-     * Removes a temporary file physically in the database.<p>
-     * 
-     * @param file the resource from which to remove the temp files
-     * @throws CmsException if something goes wrong
-     */
-    void removeTempFile(CmsResource file) throws CmsException;
     
     /**
      * Replaces the content and properties of an existing resource.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/11/21 10:25:23 $
- * Version: $Revision: 1.139 $
+ * Date   : $Date: 2003/12/11 12:03:35 $
+ * Version: $Revision: 1.140 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.139 $ $Date: 2003/11/21 10:25:23 $
+ * @version $Revision: 1.140 $ $Date: 2003/12/11 12:03:35 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1610,11 +1610,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 // do not publish resources that are locked
                 publishCurrentResource = publishCurrentResource && currentLock.isNullLock();
 
-                // handle temporary files immediately here coz they aren't "published" anyway
-                if (currentLock.isNullLock()) {
-                    // remove any possible temporary files for this resource
-                    m_driverManager.getVfsDriver().removeTempFile(currentFileHeader);
-                }
+                // NOTE: temporary files are not removed any longer while publishing
 
                 if (currentFileHeader.getName().startsWith(I_CmsConstants.C_TEMP_PREFIX)) {
                     // trash the current resource if it is a temporary file
