@@ -2,8 +2,8 @@ package com.opencms.launcher;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/A_CmsLauncher.java,v $
- * Date   : $Date: 2000/10/24 07:26:39 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2000/12/21 16:49:10 $
+ * Version: $Revision: 1.23 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -59,7 +59,7 @@ import javax.servlet.http.*;
  * </UL>
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.22 $ $Date: 2000/10/24 07:26:39 $
+ * @version $Revision: 1.23 $ $Date: 2000/12/21 16:49:10 $
  */
 abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels, I_CmsConstants  {
 		
@@ -206,7 +206,6 @@ public void clearCache()
 			if(e instanceof CmsException) {
 				throw (CmsException)e;
 			} else {
-				e.printStackTrace();
 				throw new CmsException(errorText, CmsException.C_LAUNCH_ERROR, e);
 			}
 		}
@@ -304,7 +303,10 @@ public void clearCache()
 				out.flush();
 				out.close();
 			}
-		} catch(Exception e) {
+        } catch (IOException ioe) {
+            A_OpenCms.log(C_OPENCMS_INFO, getClassName() + "IO error while writing to response stream for " + cms.getRequestContext().getFileUri());
+            A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ioe);
+        } catch(Exception e) {
 			String errorMessage = "Cannot write output to HTTP response stream";
 			handleException(cms, e, errorMessage);
 		}
