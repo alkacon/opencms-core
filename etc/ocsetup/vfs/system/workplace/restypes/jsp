@@ -10,7 +10,7 @@
     addMenuEntry(resource_id, "language_key(explorer.context.copytoproject)",   "copy_to_project.html?initial=true",    "''",   "rules_key(d a dddd dddd dddd dddd dddd)");
     addMenuEntry(resource_id, "language_key(explorer.context.publish)",         "publish_resource.html?initial=true",   "''",   "rules_key(d d iaaa iiii dddd dddd dddd)");
     addMenuEntry(resource_id, "-",                                              " ",                                    "''",   "rules_key(a a aaaa aaaa dddd dddd dddd)");
-
+    
     addMenuEntry(resource_id, "language_key(explorer.context.edit)",            "edit_text.html?init=true",             "'_top'","rules_key(d d iiii aaai dddd dddd dddd)");
     addMenuEntry(resource_id, "-",                                              " ",                                    "''",   "rules_key(d d aaaa aaaa dddd dddd dddd)");
 
@@ -21,6 +21,9 @@
     addMenuEntry(resource_id, "language_key(explorer.context.touch)",           "touch.html?initial=true",              "''",   "rules_key(d d iiii aaai dddd dddd dddd)");
     addMenuEntry(resource_id, "language_key(explorer.context.undochanges)",     "undochanges.html?initial=true",        "''",   "rules_key(d d iiid iaid dddd dddd dddd)");
     addMenuEntry(resource_id, "language_key(explorer.context.undelete)",        "undelete.html?initial=true",           "''",   "rules_key(d d ddda dddi dddd dddd dddd)");
+    addMenuEntry(resource_id, "-",                                              " ",                                    "''",   "rules_key(d d aaaa aaaa dddd dddd dddd)");
+
+    addMenuEntry(resource_id, "language_key(explorer.context.showvfslinks)",    "explorer_files.html?initial=true&mode=vfslink",       "''",   "rules_key(d d aaai aaai dddd dddd dddd)");
     addMenuEntry(resource_id, "-",                                              " ",                                    "''",   "rules_key(d d aaaa aaaa dddd dddd dddd)");
 
     addMenuEntry(resource_id, "language_key(explorer.context.chown)",           "chown.html?initial=true",              "''",   "rules_key(d d iiii aaai dddd dddd dddd)");

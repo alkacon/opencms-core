@@ -78,7 +78,6 @@ importResources "ocsetup/vfs"
 publishProject "2"
 writeExportPath "export/"
 createDefaultProject "Offline" "The Offline Project"
-addGroup "WebUsers" "Group for webusers"
 importModuleFromDefault "org.opencms.default.zip"
 importModuleFromDefault "org.opencms.welcome.zip"
 exit
