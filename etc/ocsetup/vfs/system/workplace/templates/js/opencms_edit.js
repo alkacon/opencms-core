@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/opencms_edit.js,v $
-* Date   : $Date: 2001/07/31 15:50:12 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2002/01/17 16:38:50 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ function setText()
     // Workaround: focus() the text editor here and set the text
     // using the onFocus event of the editor.
 
-    document.EDITOR.edit1.focus();
+    if(document.forms.EDITOR.edit1)document.forms.EDITOR.edit1.focus();
 }
 
 // load the file content into the editor. this is called by the onFocus event of the edit control

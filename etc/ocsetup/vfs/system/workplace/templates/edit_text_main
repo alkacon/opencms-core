@@ -2,7 +2,7 @@
 <WORKPLACE>
 <TEMPLATE name="ie">
 <![CDATA[
-<!-- Buttonleiste -->
+<!-- Buttonleiste internetexplorer-->
 <table cellspacing=0 cellpadding=0 border=0 width="100%">
 	<tr>
 		<td class=menu>]]><BUTTON href="javascript:doEdit(2);" name="bt_saveclose" action="" alt="saveclose"/><![CDATA[</td>
@@ -125,9 +125,13 @@
 	<!-- write the text area -->
 	<script language="JavaScript">
 	<!--
-		getDimensions();
-		
+
+		if(!ie)getDimensions();
+        else windowHeight="50%";
+
+
 		str = '<textarea class="textarea" name="edit1" onfocus=setTextDelayed(); rows='+windowHeight+' cols='+windowWidth+' wrap=virtual style="width:100%"></textarea>';
+
 		document.write(str);
 	//-->
 	</script>
