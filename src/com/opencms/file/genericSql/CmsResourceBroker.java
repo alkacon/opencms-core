@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2002/12/06 23:16:56 $
-* Version: $Revision: 1.345 $
+* Date   : $Date: 2002/12/12 19:00:41 $
+* Version: $Revision: 1.346 $
 
 *
 * This library is part of OpenCms -
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.345 $ $Date: 2002/12/06 23:16:56 $
+ * @version $Revision: 1.346 $ $Date: 2002/12/12 19:00:41 $
 
  *
  */
@@ -1670,7 +1670,7 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
                 }
                 this.clearResourceCache(resource);
                 m_accessCache.clear();
-                offlineRes = readFileHeader(currentUser, currentProject, currentProject.getId(),resource);
+                offlineRes = readFileHeader(currentUser, currentProject, currentProject.getId(), resource);
             } catch (CmsException exc){
                 // if the resource does not exist in the offlineProject - it's ok
             }
@@ -4414,14 +4414,20 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
                     currentResource = (CmsResource)files.elementAt(i);
                     if (currentResource.getState() != C_STATE_DELETED) {
                         lockResource(currentUser, currentProject, currentResource.getResourceName(), true);
+                    } else {
+                        // don't lock the resource but shift it to the current project
+                        changeLockedInProject(currentProject.getId(), currentResource.getResourceName());
                     }
                 }
 
-                // lock all files in this folder
+                // lock all folders in this folder
                 for(int i = 0; i < folders.size(); i++) {
                     currentResource = (CmsResource)folders.elementAt(i);
                     if (currentResource.getState() != C_STATE_DELETED) {
                         lockResource(currentUser, currentProject, currentResource.getResourceName(), true);
+                    }else {
+                        // don't lock the resource but shift it to the current project
+                        changeLockedInProject(currentProject.getId(), currentResource.getResourceName());
                     }
                 }
             }
@@ -4742,10 +4748,18 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
                                                 Long.class, Vector.class, Vector.class}).invoke(null, new Object[] {cms,
                                                 new Boolean(isHistoryEnabled(cms)), new Integer(id), new Integer(versionId), new Long(publishDate),
                                                 changedResources, changedModuleMasters});
-                    } catch(Exception ex){
-                    ex.printStackTrace();
-                        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                            A_OpenCms.log(A_OpenCms.C_OPENCMS_INFO, "Error when publish data of module "+(String)publishModules.elementAt(i)+"!: "+ex.getMessage());
+                    } 
+                    catch (ClassNotFoundException ec) {    
+                        report.println(report.key("report.publish_class_for_module_does_not_exist_1") +
+                            (String)publishModules.elementAt(i) + report.key("report.publish_class_for_module_does_not_exist_2"), I_CmsReport.C_FORMAT_WARNING);
+                        if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
+                            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "Error calling publish class of module " + (String)publishModules.elementAt(i) + "!: " + ec.getMessage());
+                        }                                         
+                    }
+                    catch(Exception ex){
+                        report.println(ex);
+                        if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
+                            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "Error when publish data of module " + (String)publishModules.elementAt(i)+"!: " + ex.getMessage());
                         }
                     }
                 }
@@ -4759,7 +4773,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
                 // the project was stored in the backuptables for history
                 //new projectmechanism: the project can be still used after publishing
                 // it will be deleted if the project_flag = C_PROJECT_STATE_TEMP
-                if (publishProject.getType() == C_PROJECT_TYPE_TEMPORARY) {
+                if (publishProject.getType() == C_PROJECT_TYPE_TEMPORARY){
                     m_dbAccess.deleteProject(publishProject);
                     try{
                         m_projectCache.remove(id);
