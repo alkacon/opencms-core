@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Attic/CmsWorkflowDriver.java,v $
- * Date   : $Date: 2003/08/07 18:47:27 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/08/12 09:17:02 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the workflow driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $ $Date: 2003/08/07 18:47:27 $
+ * @version $Revision: 1.4 $ $Date: 2003/08/12 09:17:02 $
  * @since 5.1
  */
 public class CmsWorkflowDriver extends Object implements I_CmsWorkflowDriver {
@@ -133,6 +133,10 @@ public class CmsWorkflowDriver extends Object implements I_CmsWorkflowDriver {
 
     /**
      * Semi-constructor to create a CmsTask instance from a JDBC result set.
+     * 
+     * @param res the result set from the query
+     * @return the CmsTash created from the data
+     * @throws SQLException if something goes wrong
      */
     protected final CmsTask createTaskFromResultSet(ResultSet res) throws SQLException {
         int autofinish = res.getInt(m_sqlManager.get("C_TASK_AUTOFINISH"));
@@ -193,12 +197,12 @@ public class CmsWorkflowDriver extends Object implements I_CmsWorkflowDriver {
         return result;
     }
     /**
-     * Get a parameter value for a task.
+     * Get a parameter value for a task.<p>
      *
-     * @param task The task.
-     * @param parname Name of the parameter.
-     *
-     * @throws CmsException Throws CmsException if something goes wrong.
+     * @param taskId the id of the task
+     * @param parname Name of the parameter
+     * @return the parameter value
+     * @throws CmsException if something goes wrong
      */
     public String getTaskPar(int taskId, String parname) throws CmsException {
 
@@ -258,6 +262,13 @@ public class CmsWorkflowDriver extends Object implements I_CmsWorkflowDriver {
         return result;
     }
     
+    /**
+     * Constructs a sql condition for the given task type.<p>
+     * 
+     * @param first flag to indicate the first condition
+     * @param tasktype the type to query
+     * @return the sql condition
+     */
     protected String getTaskTypeConditon(boolean first, int tasktype) {
 
         String result = "";
@@ -268,38 +279,34 @@ public class CmsWorkflowDriver extends Object implements I_CmsWorkflowDriver {
 
         switch (tasktype) {
             case I_CmsConstants.C_TASKS_ALL :
-                {
                     result = result + m_sqlManager.get("C_TASK_ROOT") + "<>0";
                     break;
-                }
+
             case I_CmsConstants.C_TASKS_OPEN :
-                {
                     result = result + m_sqlManager.get("C_TASK_STATE") + "=" + I_CmsConstants.C_TASK_STATE_STARTED;
                     break;
-                }
+
             case I_CmsConstants.C_TASKS_ACTIVE :
-                {
                     result = result + m_sqlManager.get("C_TASK_STATE") + "=" + I_CmsConstants.C_TASK_STATE_STARTED;
                     break;
-                }
+
             case I_CmsConstants.C_TASKS_DONE :
-                {
                     result = result + m_sqlManager.get("C_TASK_STATE") + "=" + I_CmsConstants.C_TASK_STATE_ENDED;
                     break;
-                }
+
             case I_CmsConstants.C_TASKS_NEW :
-                {
                     result = result + m_sqlManager.get("C_TASK_PERCENTAGE") + "='0' AND " + m_sqlManager.get("C_TASK_STATE") + "=" + I_CmsConstants.C_TASK_STATE_STARTED;
                     break;
-                }
+
             default :
-                {
-                }
         }
 
         return result;
     }
     
+    /**
+     * @see java.lang.Object#finalize()
+     */
     protected void finalize() throws Throwable {
         if (m_sqlManager!=null) {
             m_sqlManager.finalize();
@@ -320,6 +327,9 @@ public class CmsWorkflowDriver extends Object implements I_CmsWorkflowDriver {
         }
     }    
 
+    /**
+     * @see org.opencms.db.I_CmsWorkflowDriver#init(source.org.apache.java.util.Configurations, java.lang.String, org.opencms.db.CmsDriverManager)
+     */
     public void init(Configurations config, String dbPoolUrl, CmsDriverManager driverManager) {
         m_sqlManager = this.initQueries(dbPoolUrl);
         m_driverManager = driverManager;
@@ -336,6 +346,14 @@ public class CmsWorkflowDriver extends Object implements I_CmsWorkflowDriver {
         return new org.opencms.db.generic.CmsSqlManager(dbPoolUrl);
     }
 
+    /**
+     * Adds a task parameter to a task.<p>
+     * @param taskId the id of the task
+     * @param parname the name of the parameter
+     * @param parvalue the value of the parameter
+     * @return the id of the new parameter
+     * @throws CmsException if something goes wrong
+     */
     protected int insertTaskPar(int taskId, String parname, String parvalue) throws CmsException {
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -358,6 +376,19 @@ public class CmsWorkflowDriver extends Object implements I_CmsWorkflowDriver {
         return newId;
     }
 
+    /**
+     * Inserts a new task.<p>
+     * 
+     * @param autofinish tbd
+     * @param escalationtyperef tbd
+     * @param htmllink tbd
+     * @param name tbd
+     * @param permission tbd
+     * @param priorityref tbd
+     * @param roleref tbd
+     * @return tbd
+     * @throws CmsException tbd
+     */
     protected int insertTaskType(int autofinish, int escalationtyperef, String htmllink, String name, String permission, int priorityref, int roleref) throws CmsException {
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -462,7 +493,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsWorkflowDriver {
     /**
      * Reads log entries for a task.
      *
-     * @param taskid The id of the task for the tasklog to read .
+     * @param taskId The id of the task for the tasklog to read .
      * @return A Vector of new TaskLog objects
      * @throws CmsException Throws CmsException if something goes wrong.
      */
@@ -506,11 +537,12 @@ public class CmsWorkflowDriver extends Object implements I_CmsWorkflowDriver {
     }
 
     /**
-     * Reads all tasks of a user in a project.
+     * Reads all tasks of a user in a project.<p>
+     * 
      * @param project The Project in which the tasks are defined.
      * @param agent The task agent
-     * @param owner The task owner .
-     * @param group The group who has to process the task.
+     * @param owner The task owner
+     * @param role the task role
      * @param tasktype C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW
      * @param orderBy Chooses, how to order the tasks.
      * @param sort Sort Ascending or Descending (ASC or DESC)
@@ -604,11 +636,11 @@ public class CmsWorkflowDriver extends Object implements I_CmsWorkflowDriver {
     }
 
     /**
-     * Set a Parameter for a task.
+     * Set a Parameter for a task.<p>
      *
-     * @param task The task.
-     * @param parname Name of the parameter.
-     * @param parvalue Value if the parameter.
+     * @param taskId the task
+     * @param parname the name of the parameter
+     * @param parvalue the value of the parameter
      *
      * @return The id of the inserted parameter or 0 if the parameter exists for this task.
      *
@@ -646,6 +678,13 @@ public class CmsWorkflowDriver extends Object implements I_CmsWorkflowDriver {
         return result;
     }
 
+    /**
+     * Updates a task parameter.<p>
+     * 
+     * @param parid the id of the parameter
+     * @param parvalue the value of the parameter 
+     * @throws CmsException if something goes wrong
+     */
     protected void updateTaskPar(int parid, String parvalue) throws CmsException {
 
         PreparedStatement stmt = null;
@@ -662,6 +701,20 @@ public class CmsWorkflowDriver extends Object implements I_CmsWorkflowDriver {
             m_sqlManager.closeAll(conn, stmt, null);
         }
     }
+    
+    /**
+     * Updates a task.<p>
+     * 
+     * @param taskId the id of the task
+     * @param autofinish tbd
+     * @param escalationtyperef tbd
+     * @param htmllink tbd
+     * @param name tbd
+     * @param permission tbd
+     * @param priorityref tbd
+     * @param roleref tbd
+     * @throws CmsException if something goes wrong
+     */
     protected void updateTaskType(int taskId, int autofinish, int escalationtyperef, String htmllink, String name, String permission, int priorityref, int roleref) throws CmsException {
 
         PreparedStatement stmt = null;
@@ -685,15 +738,18 @@ public class CmsWorkflowDriver extends Object implements I_CmsWorkflowDriver {
         }
     }
 
+    /**
+     * @see org.opencms.db.I_CmsWorkflowDriver#writeSystemTaskLog(int, java.lang.String)
+     */
     public void writeSystemTaskLog(int taskid, String comment) throws CmsException {
         this.writeTaskLog(taskid, CmsUUID.getNullUUID(), new java.sql.Timestamp(System.currentTimeMillis()), comment, I_CmsConstants.C_TASKLOG_USER);
     }
 
     /**
-     * Updates a task.
+     * Updates a task.<p>
      *
      * @param task The task that will be written.
-     *
+     * @return the CmsTask from the database
      * @throws CmsException Throws CmsException if something goes wrong.
      */
     public CmsTask writeTask(CmsTask task) throws CmsException {
@@ -736,10 +792,10 @@ public class CmsWorkflowDriver extends Object implements I_CmsWorkflowDriver {
     }
 
     /**
-     * Writes new log for a task.
+     * Writes new log for a task.<p>
      *
-     * @param taskid The id of the task.
-     * @param user User who added the Log.
+     * @param taskId The id of the task.
+     * @param userId User who added the Log.
      * @param starttime Time when the log is created.
      * @param comment Description for the log.
      * @param type Type of the log. 0 = Sytem log, 1 = User Log
@@ -777,7 +833,15 @@ public class CmsWorkflowDriver extends Object implements I_CmsWorkflowDriver {
     }
 
     /**
-     * Creates a new tasktype set in the database.
+     * Creates a new tasktype set in the database.<p>
+     * 
+     * @param autofinish tbd
+     * @param escalationtyperef tbd
+     * @param htmllink tbd
+     * @param name tbd
+     * @param permission tbd
+     * @param priorityref tbd
+     * @param roleref tbd
      * @return The id of the inserted parameter or 0 if the parameter exists for this task.
      *
      * @throws CmsException Throws CmsException if something goes wrong.
