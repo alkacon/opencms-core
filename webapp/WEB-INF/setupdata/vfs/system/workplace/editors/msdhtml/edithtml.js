@@ -41,8 +41,20 @@ function hasSelectedText() {
 	    // if this is undefined, the selection is a MS IE "ControlSelection", which can not be used
 	    selectedRange = range;
 	}
+	
+	if (typeof(range.tagName) != 'undefined') {
+		alert(range.tagName);
+	}
 
 	if ((selectedRange == null) || (selectedRange.htmlText == "") || (selectedRange.htmlText == null)) {
+		// no text selected, check if an image is selected
+		range = range.item(0);
+		if (typeof(range.tagName) != 'undefined') {
+			var imgTag = range.tagName;
+			if (imgTag == "IMG" || imgTag == "img") {
+				return true;	
+			}
+		}
 	    // no valid selection, display message
 	    return false;
 	} else {
@@ -64,70 +76,119 @@ function createLink(linkInformation) {
 	}
 	if (linkInformation["type"] == "anchor") {
 		// create an anchor
-		if (linkInformation["name"].length > 0) {
-			foundRange.execCommand("CreateLink", false, "/");
-			var el = foundRange.parentElement();
-			while ((el.tagName != "BODY") && (el.tagName != "A")) {
-  				if (el.tagName == "IMG") {
-      				// set border to 0 for images, this is what you want in 99% of all cases
-      				el.border = 0;
-  				}
-  				el = el.parentElement;
+		if (typeof(foundRange.text) != 'undefined') {
+			// common text link
+			if (linkInformation["name"].length > 0) {
+				foundRange.execCommand("CreateLink", false, "/");
+				var el = foundRange.parentElement();
+				while ((el.tagName != "BODY") && (el.tagName != "A")) {
+	  				if (el.tagName == "IMG") {
+	      				// set border to 0 for images, this is what you want in 99% of all cases
+	      				el.border = 0;
+	  				}
+	  				el = el.parentElement;
+				}
+	   			el.name = linkInformation["name"];
+	    		el.removeAttribute("HREF", false);
+	
+	  			if (USE_LINKSTYLEINPUTS) {
+	      			if (linkInformation["style"].length > 0) {
+	          			el.style.cssText = linkInformation["style"];
+	      			}
+	
+		      		if (linkInformation["class"].length > 0) {
+		          		el.className = linkInformation["class"];
+	    	  		}
+	  			}
 			}
-   			el.name = linkInformation["name"];
-    		el.removeAttribute("HREF", false);
-
-  			if (USE_LINKSTYLEINPUTS) {
-      			if (linkInformation["style"].length > 0) {
-          			el.style.cssText = linkInformation["style"];
-      			}
-
-	      		if (linkInformation["class"].length > 0) {
-	          		el.className = linkInformation["class"];
-    	  		}
-  			}
+		} else {
+			// image link
+			var el = foundRange.item(0);	
+			var thelink = "<a ";
+			thelink += "name='"+linkInformation["name"]+"' ";				  
+			if (USE_LINKSTYLEINPUTS) {
+				if(linkInformation["style"].length > 0) {		  
+					thelink += "style='"+linkInformation["style"]+"' ";
+				}					  
+				if(linkInformation["class"].length > 0) {		  
+					thelink += "class='"+linkInformation["class"]+"' ";
+				}
+			}	
+			thelink += ">" + el.outerHTML + "</a>";					  
+			if(el.parentElement.tagName == "A") {
+		    	el.parentElement.outerHTML = thelink;
+		  	} else {
+	        	el.outerHTML = thelink;
+	      	}
 		}
 	} else {
 		// create a complete link
-		if (linkInformation["href"].length > 0) {
-			foundRange.execCommand("CreateLink", false, "/");
-
-			var el = foundRange.parentElement();
-			while ((el.tagName != "BODY") && (el.tagName != "A")) {
-  				if (el.tagName == "IMG") {
-      				// Set border to 0 for images, this is what you want in 99% of all cases
-      				el.border = 0;
-  				}
-  				el = el.parentElement;
+		if (typeof(foundRange.text) != 'undefined') {
+			// common text link
+			if (linkInformation["href"].length > 0) {
+				foundRange.execCommand("CreateLink", false, "/");
+	
+				var el = foundRange.parentElement();
+				while ((el.tagName != "BODY") && (el.tagName != "A")) {
+	  				if (el.tagName == "IMG") {
+	      				// Set border to 0 for images, this is what you want in 99% of all cases
+	      				el.border = 0;
+	  				}
+	  				el = el.parentElement;
+				}
+	
+	  			if (linkInformation["href"].length > 0) {	
+	      			el.setAttribute("HREF", linkInformation["href"], 0);
+	  			} else {
+	      			el.removeAttribute("HREF", false);
+	  			}
+	
+	  			if ((linkInformation["target"].length > 0) && (linkInformation["href"].length > 0)) {
+	      			el.target = linkInformation["target"];
+	  			} else {
+	      			el.removeAttribute("TARGET", false);
+	  			}
+	
+	  			if (USE_LINKSTYLEINPUTS) {
+	      			if (linkInformation["style"].length > 0) {
+	          			el.style.cssText = linkInformation["style"];
+	      			}
+	
+		      		if (linkInformation["class"].length > 0) {
+		          		el.className = linkInformation["class"];
+	    	  		}
+	  			}
 			}
-
-  			if (linkInformation["href"].length > 0) {	
-      			el.setAttribute("HREF", linkInformation["href"], 0);
-  			} else {
-      			el.removeAttribute("HREF", false);
-  			}
-
-  			if ((linkInformation["target"].length > 0) && (linkInformation["href"].length > 0)) {
-      			el.target = linkInformation["target"];
-  			} else {
-      			el.removeAttribute("TARGET", false);
-  			}
-
-  			if (USE_LINKSTYLEINPUTS) {
-      			if (linkInformation["style"].length > 0) {
-          			el.style.cssText = linkInformation["style"];
-      			}
-
-	      		if (linkInformation["class"].length > 0) {
-	          		el.className = linkInformation["class"];
-    	  		}
-  			}
+		} else {
+			// image link
+			var el = foundRange.item(0);	
+			var thelink = "<a ";
+			if(linkInformation["href"].length > 0) {
+				thelink += "href='"+linkInformation["href"]+"' ";
+			}
+			if((linkInformation["target"].length > 0) && (linkInformation["href"].length > 0)) {			  
+				thelink += "target='"+linkInformation["target"]+"' ";
+			}					  
+			if (USE_LINKSTYLEINPUTS) {
+				if(linkInformation["style"].length > 0) {		  
+					thelink += "style='"+linkInformation["style"]+"' ";
+				}					  
+				if(linkInformation["class"].length > 0) {		  
+					thelink += "class='"+linkInformation["class"]+"' ";
+				}
+			}	
+			thelink += ">" + el.outerHTML + "</a>";					  
+			if(el.parentElement.tagName == "A") {
+		    	el.parentElement.outerHTML = thelink;
+		  	} else {
+	        	el.outerHTML = thelink;
+	      	}
 		}
 	}		
 }
 
 function getSelectedLink() {
-	// Get the editor element, a complete range of the editor and the editor selection
+	// get the editor element, a complete range of the editor and the editor selection
 	var link = null;
 	linkEditorAll = EDITOR.EDIT_HTML.DOM.all.tags("A");
 	linkEditorRange = EDITOR.EDIT_HTML.DOM.body.createTextRange();
@@ -140,14 +201,16 @@ function getSelectedLink() {
 
 	// Create a range on the current selection
 	var range = linkEditorSelection.createRange();
-
+	
+	
+		
 	if (typeof(range.text) != 'undefined') {
 	    // if this is undefined, the selection is a MS IE "ControlSelection", which can not be used for adding a link	
 	    for (i = 0; i < allLinks.length; i++) {
 	
-	        // cCreate range on whole text
+	        // create range on whole text
 	        var mainrange = linkEditorRange;
-	
+			
 	        // move range to the current A-element
 	        mainrange.moveToElementText(allLinks[i]);
 	
@@ -186,9 +249,26 @@ function getSelectedLink() {
 	            break;
 	        }
 	    }
-	    if (foundRange == null) {
+	    
+	    if (foundLink == null) {
 	    	foundRange = range;
 	    }
+	} else if ("Control" == linkEditorSelection.type) {
+		var el = range.item(0);
+		if (el.tagName == "IMG" || el.tagName == "img") {		
+			if(el.parentElement.tagName == "A") {
+				link = new Object();
+	            foundLink = el.parentElement;
+	            link["href"] = encodeURIComponent(foundLink.getAttribute("HREF", 2));
+	            link["target"] = foundLink.target;
+	            link["name"] = foundLink.getAttribute("NAME", 2);
+	            if (USE_LINKSTYLEINPUTS) {
+	            	link["style"] = encodeURIComponent(foundLink.style.getAttribute("CSSTEXT", 2));
+	            	link["class"] = foundLink.getAttribute("CLASSNAME", 2);
+	            }
+			}
+			foundRange = range;
+		}	
 	}
 	return link;
 }
