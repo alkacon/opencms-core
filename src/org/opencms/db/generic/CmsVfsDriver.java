@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/11/15 09:46:23 $
- * Version: $Revision: 1.217 $
+ * Date   : $Date: 2004/11/16 16:08:20 $
+ * Version: $Revision: 1.218 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.db.generic;
 
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.db.CmsDriverManager;
+import org.opencms.db.CmsRuntimeInfoFactory;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsRuntimeInfo;
 import org.opencms.db.I_CmsVfsDriver;
@@ -71,7 +72,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.217 $ $Date: 2004/11/15 09:46:23 $
+ * @version $Revision: 1.218 $ $Date: 2004/11/16 16:08:20 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -399,7 +400,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
 
             // update the link Count
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_SIBLING_COUNT");
-            stmt.setInt(1, this.internalCountSiblings(null, project.getId(), resource.getResourceId()));
+            stmt.setInt(1, this.internalCountSiblings(runtimeInfo, project.getId(), resource.getResourceId()));
             stmt.setString(2, resource.getResourceId().toString());
             stmt.executeUpdate();
 
@@ -1434,7 +1435,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     public void removeFile(I_CmsRuntimeInfo runtimeInfo, CmsProject currentProject, CmsResource resource, boolean removeFileContent) throws CmsException {
         PreparedStatement stmt = null;
         Connection conn = null;
-        int linkCount = 0;
+        int siblingCount = 0;
 
         try {
             conn = m_sqlManager.getConnection(runtimeInfo, currentProject);
@@ -1447,9 +1448,9 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             m_sqlManager.closeAll(null, null, stmt, null);
 
             // count the references to the resource
-            linkCount = internalCountSiblings(runtimeInfo, currentProject.getId(), resource.getResourceId());
+            siblingCount = internalCountSiblings(runtimeInfo, currentProject.getId(), resource.getResourceId());
 
-            if (linkCount > 0) {
+            if (siblingCount > 0) {
 
                 // update the link Count
                 stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_RESOURCES_UPDATE_SIBLING_COUNT");
@@ -1538,7 +1539,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         try {
             // write the file content
             if (resContent != null) {
-                writeContent(null, currentProject, res.getResourceId(), resContent);
+                writeContent(CmsRuntimeInfoFactory.getNullRuntimeInfo(), currentProject, res.getResourceId(), resContent);
             }
 
             // update the resource record
@@ -1713,7 +1714,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             stmt.setInt(5, resourceState);
             stmt.setInt(6, resource.getLength());
             stmt.setInt(7, projectId);
-            stmt.setInt(8, internalCountSiblings(null, project.getId(), resource.getResourceId()));
+            stmt.setInt(8, internalCountSiblings(runtimeInfo, project.getId(), resource.getResourceId()));
             stmt.setString(9, resource.getResourceId().toString());
             stmt.executeUpdate();
             

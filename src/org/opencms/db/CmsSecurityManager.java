@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2004/11/15 09:46:23 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/11/16 16:08:20 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.collections.map.LRUMap;
  * are granted, the security manager invokes a method on the OpenCms driver manager to access the database.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -1748,7 +1748,7 @@ public final class CmsSecurityManager {
      */
     public Vector getGroupsOfUser(CmsRequestContext context, String username, String remoteAddress) throws CmsException {
 
-        return m_driverManager.getGroupsOfUser(context, null, username, remoteAddress);
+        return m_driverManager.getGroupsOfUser(context, CmsRuntimeInfoFactory.getNullRuntimeInfo(), username, remoteAddress);
     }
 
     /**
@@ -1761,7 +1761,7 @@ public final class CmsSecurityManager {
      */
     public CmsLock getLock(CmsRequestContext context, CmsResource resource) throws CmsException {
 
-        return m_driverManager.getLock(context, null, resource);
+        return m_driverManager.getLock(context, CmsRuntimeInfoFactory.getNullRuntimeInfo(), resource);
     }
 
     /**
@@ -1774,7 +1774,7 @@ public final class CmsSecurityManager {
      */
     public CmsLock getLock(CmsRequestContext context, String resourcename) throws CmsException {
 
-        return m_driverManager.getLock(context, null, resourcename);
+        return m_driverManager.getLock(context, CmsRuntimeInfoFactory.getNullRuntimeInfo(), resourcename);
     }
 
     /**
@@ -2019,7 +2019,7 @@ public final class CmsSecurityManager {
         if (requiredPermissions.requiresWritePermission()
         || requiredPermissions.requiresControlPermission()) {
             // check lock state only if required
-            CmsLock lock = m_driverManager.getLock(context, null, resource);
+            CmsLock lock = m_driverManager.getLock(context, CmsRuntimeInfoFactory.getNullRuntimeInfo(), resource);
             // if the resource is not locked by the current user, write and control 
             // access must case a permission error that must not be cached
             if (checkLock || !lock.isNullLock()) {
@@ -2476,7 +2476,7 @@ public final class CmsSecurityManager {
     public List readAllBackupFileHeaders(CmsRequestContext context, String resourcename) throws CmsException {
 
         // read the resource and check the permissions first 
-        CmsResource resource = readResource(context, null, resourcename, CmsResourceFilter.ALL);
+        CmsResource resource = readResource(context, CmsRuntimeInfoFactory.getNullRuntimeInfo(), resourcename, CmsResourceFilter.ALL);
 
         // now read the list of backup resources
         return m_driverManager.readAllBackupFileHeaders(resource);
@@ -2524,7 +2524,7 @@ public final class CmsSecurityManager {
     public CmsBackupResource readBackupFile(CmsRequestContext context, int tagId, String filename) throws CmsException {
 
         // read the resource (also checks read permission)
-        CmsResource resource = readResource(context, null, filename, CmsResourceFilter.ALL);
+        CmsResource resource = readResource(context, CmsRuntimeInfoFactory.getNullRuntimeInfo(), filename, CmsResourceFilter.ALL);
         
         // now read the backup resource
         return m_driverManager.readBackupFile(tagId, resource);
@@ -2587,7 +2587,7 @@ public final class CmsSecurityManager {
     public CmsFile readFile(CmsRequestContext context, String filename, CmsResourceFilter filter) throws CmsException {
 
         // first read as resource, this also checks the permissions
-        CmsResource resource = readResource(context, null, filename, filter);
+        CmsResource resource = readResource(context, CmsRuntimeInfoFactory.getNullRuntimeInfo(), filename, filter);
 
         return m_driverManager.readFile(context, resource, filter);
     }
@@ -2679,7 +2679,7 @@ public final class CmsSecurityManager {
      */
     public CmsGroup readGroup(String groupname) throws CmsException {
 
-        return m_driverManager.readGroup(null, groupname);
+        return m_driverManager.readGroup(CmsRuntimeInfoFactory.getNullRuntimeInfo(), groupname);
     }
 
     /**
@@ -2876,7 +2876,7 @@ public final class CmsSecurityManager {
     throws CmsException {
 
         // read the resource first (also checks the permissions)
-        CmsResource resource = readResource(context, null, resourceName, CmsResourceFilter.ALL);
+        CmsResource resource = readResource(context, CmsRuntimeInfoFactory.getNullRuntimeInfo(), resourceName, CmsResourceFilter.ALL);
 
         return m_driverManager.readPropertyObject(context, resource, key, search);
     }
@@ -2897,7 +2897,7 @@ public final class CmsSecurityManager {
     throws CmsException {
 
         // read the resource first (also checks the permissions)
-        CmsResource resource = readResource(context, null, resourceName, CmsResourceFilter.ALL);
+        CmsResource resource = readResource(context, CmsRuntimeInfoFactory.getNullRuntimeInfo(), resourceName, CmsResourceFilter.ALL);
 
         return m_driverManager.readPropertyObjects(context, resource, search);
     }
@@ -2982,9 +2982,9 @@ public final class CmsSecurityManager {
     throws CmsException {
 
         // read the base resource first (will also check the permissions)
-        CmsResource resource = readResource(context, null, resourcename, filter);
+        CmsResource resource = readResource(context, CmsRuntimeInfoFactory.getNullRuntimeInfo(), resourcename, filter);
 
-        return m_driverManager.readSiblings(context, null, resource, filter);
+        return m_driverManager.readSiblings(context, CmsRuntimeInfoFactory.getNullRuntimeInfo(), resource, filter);
     }
 
     /**
@@ -3103,7 +3103,7 @@ public final class CmsSecurityManager {
      */
     public CmsUser readUser(CmsUUID id) throws CmsException {
 
-        return m_driverManager.readUser(null, id);
+        return m_driverManager.readUser(CmsRuntimeInfoFactory.getNullRuntimeInfo(), id);
     }
 
     /**
@@ -3118,7 +3118,7 @@ public final class CmsSecurityManager {
      */
     public CmsUser readUser(String username) throws CmsException {
 
-        return m_driverManager.readUser((I_CmsRuntimeInfo)null, username);
+        return m_driverManager.readUser(CmsRuntimeInfoFactory.getNullRuntimeInfo(), username);
     }
 
     /**
@@ -3134,7 +3134,7 @@ public final class CmsSecurityManager {
      */
     public CmsUser readUser(String username, int type) throws CmsException {
 
-        return m_driverManager.readUser(null, username, type);
+        return m_driverManager.readUser(CmsRuntimeInfoFactory.getNullRuntimeInfo(), username, type);
     }
 
     /**
@@ -3586,7 +3586,7 @@ public final class CmsSecurityManager {
      */
     public boolean userInGroup(CmsRequestContext context, String username, String groupname) throws CmsException {
 
-        return m_driverManager.userInGroup(context, null, username, groupname);
+        return m_driverManager.userInGroup(context, CmsRuntimeInfoFactory.getNullRuntimeInfo(), username, groupname);
     }
 
     /**

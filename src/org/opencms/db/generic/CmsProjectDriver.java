@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/11/15 09:46:23 $
- * Version: $Revision: 1.198 $
+ * Date   : $Date: 2004/11/16 16:08:20 $
+ * Version: $Revision: 1.199 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.db.CmsDbUtil;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsPublishList;
 import org.opencms.db.CmsPublishedResource;
+import org.opencms.db.CmsRuntimeInfoFactory;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsProjectDriver;
 import org.opencms.db.I_CmsRuntimeInfo;
@@ -72,7 +73,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.198 $ $Date: 2004/11/15 09:46:23 $
+ * @version $Revision: 1.199 $ $Date: 2004/11/16 16:08:20 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -344,16 +345,16 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         }
         
         String adminUser = OpenCms.getDefaultUsers().getUserAdmin();
-        CmsUser admin = m_driverManager.readUser((I_CmsRuntimeInfo)null, adminUser);
+        CmsUser admin = m_driverManager.readUser(CmsRuntimeInfoFactory.getNullRuntimeInfo(), adminUser);
 
         String administratorsGroup = OpenCms.getDefaultUsers().getGroupAdministrators();
-        CmsGroup administrators = m_driverManager.readGroup((I_CmsRuntimeInfo)null, administratorsGroup);
+        CmsGroup administrators = m_driverManager.readGroup(CmsRuntimeInfoFactory.getNullRuntimeInfo(), administratorsGroup);
             
         String usersGroup = OpenCms.getDefaultUsers().getGroupUsers();
-        CmsGroup users = m_driverManager.readGroup((I_CmsRuntimeInfo)null, usersGroup);
+        CmsGroup users = m_driverManager.readGroup(CmsRuntimeInfoFactory.getNullRuntimeInfo(), usersGroup);
         
         String projectmanagersGroup = OpenCms.getDefaultUsers().getGroupProjectmanagers();
-        CmsGroup projectmanager = m_driverManager.readGroup((I_CmsRuntimeInfo)null, projectmanagersGroup);        
+        CmsGroup projectmanager = m_driverManager.readGroup(CmsRuntimeInfoFactory.getNullRuntimeInfo(), projectmanagersGroup);        
             
         m_driverManager.getWorkflowDriver().writeTaskType(1, 0, "../taskforms/adhoc.asp", "Ad-Hoc", "30308", 1, 1);
 
@@ -393,7 +394,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         );
         
         m_driverManager.getVfsDriver().createResource(
-            null, 
+            CmsRuntimeInfoFactory.getNullRuntimeInfo(), 
             onlineProject, 
             onlineRootFolder, 
             null);       
@@ -401,7 +402,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         onlineRootFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
         
         m_driverManager.getVfsDriver().writeResource(
-            null, 
+            CmsRuntimeInfoFactory.getNullRuntimeInfo(), 
             onlineProject, 
             onlineRootFolder, CmsDriverManager.C_UPDATE_ALL);
         
@@ -429,13 +430,13 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
         // create the root-folder for the offline project       
         CmsResource offlineRootFolder = m_driverManager.getVfsDriver().createResource(
-            null,
+            CmsRuntimeInfoFactory.getNullRuntimeInfo(),
             setupProject,
             onlineRootFolder,
             null);
         offlineRootFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
         m_driverManager.getVfsDriver().writeResource(
-            null,
+            CmsRuntimeInfoFactory.getNullRuntimeInfo(),
             setupProject,
             offlineRootFolder,
             CmsDriverManager.C_UPDATE_ALL);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2004/11/11 11:46:53 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/11/16 16:08:20 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.file.types;
 
 import org.opencms.configuration.CmsConfigurationException;
+import org.opencms.db.CmsRuntimeInfoFactory;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -55,7 +56,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * @since 5.1
  */
 public abstract class A_CmsResourceType implements I_CmsResourceType {
@@ -413,7 +414,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         // make sure lock is switched
         CmsResource destinationResource = securityManager.readResource(
             cms.getRequestContext(), 
-            null,
+            CmsRuntimeInfoFactory.getNullRuntimeInfo(),
             cms.getRequestContext().addSiteRoot(destination), 
             CmsResourceFilter.ALL);  
         if (isNew) {

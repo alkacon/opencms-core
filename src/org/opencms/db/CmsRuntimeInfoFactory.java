@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsRuntimeInfoFactory.java,v $
- * Date   : $Date: 2004/10/22 14:36:02 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/11/16 16:08:20 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,14 +32,18 @@
 package org.opencms.db;
 
 
+
 /**
  * A default implementation of {@link org.opencms.db.CmsRuntimeInfo}.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.5.2
  */
 public class CmsRuntimeInfoFactory implements I_CmsRuntimeInfoFactory {
+        
+    /** The "null" runtime info object. */
+    private static final I_CmsRuntimeInfo C_NULL_RUNTIME_INFO = new CmsRuntimeInfo();
 
     /**
      * @see org.opencms.db.I_CmsRuntimeInfoFactory#getRuntimeInfo(org.opencms.db.CmsDriverManager, int)
@@ -47,6 +51,18 @@ public class CmsRuntimeInfoFactory implements I_CmsRuntimeInfoFactory {
     public I_CmsRuntimeInfo getRuntimeInfo(CmsDriverManager driverManager, int runtimeFlags) {
                
         return new CmsRuntimeInfo();
+    }
+    
+    /**
+     * Returns the "null" runtime info object.<p>
+     * 
+     * The null runtime info object should be used in methods that have a runtime info object in their 
+     * signature, but where you don't need a valid runtime info object in your code.<p>
+     * 
+     * @return the "null" runtime info object
+     */
+    public static I_CmsRuntimeInfo getNullRuntimeInfo() {
+        return C_NULL_RUNTIME_INFO;
     }
 
 }

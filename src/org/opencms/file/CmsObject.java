@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/11/15 09:46:23 $
- * Version: $Revision: 1.84 $
+ * Date   : $Date: 2004/11/16 16:08:20 $
+ * Version: $Revision: 1.85 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.file;
  
 import org.opencms.db.CmsPublishList;
+import org.opencms.db.CmsRuntimeInfoFactory;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.lock.CmsLock;
@@ -71,7 +72,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.84 $
+ * @version $Revision: 1.85 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -1125,7 +1126,7 @@ public class CmsObject {
 
         return m_securityManager.readResource(
             m_context, 
-            null,
+            CmsRuntimeInfoFactory.getNullRuntimeInfo(),
             addSiteRoot(resourcename), 
             filter);
     }
@@ -1205,7 +1206,7 @@ public class CmsObject {
      */
     public CmsFolder readFolder(String resourcename, CmsResourceFilter filter) throws CmsException {
 
-        return m_securityManager.readFolder(m_context, null, addSiteRoot(resourcename), filter);
+        return m_securityManager.readFolder(m_context, CmsRuntimeInfoFactory.getNullRuntimeInfo(), addSiteRoot(resourcename), filter);
     }
     
     /**

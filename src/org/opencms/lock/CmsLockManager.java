@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2004/10/31 21:30:18 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/11/16 16:08:20 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import java.util.Map;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com) 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 5.1.4
  * 
@@ -353,7 +353,7 @@ public final class CmsLockManager extends Object {
             context.currentProject().getId(), 
             resourcename, true);         
         
-        List siblings = driverManager.getVfsDriver().readSiblings(null, context.currentProject(), resource, true);
+        List siblings = driverManager.getVfsDriver().readSiblings(runtimeInfo, context.currentProject(), resource, true);
 
         int n = siblings.size();
         for (int i = 0; i < n; i++) {
