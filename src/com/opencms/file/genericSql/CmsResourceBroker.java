@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/09/29 08:56:31 $
- * Version: $Revision: 1.145 $
+ * Date   : $Date: 2000/09/29 16:50:57 $
+ * Version: $Revision: 1.146 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.template.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.145 $ $Date: 2000/09/29 08:56:31 $
+ * @version $Revision: 1.146 $ $Date: 2000/09/29 16:50:57 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1605,7 +1605,10 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
 			m_subresCache.clear();
 										
 			// write metainfos for the folder
-			writeProperties(currentUser,currentProject, newFolder.getAbsolutePath(), propertyinfos);
+			m_dbAccess.writeProperties(propertyinfos, newFolder.getResourceId(), newFolder.getType());
+			
+			// writeProperties(currentUser,currentProject, newFolder.getAbsolutePath(), propertyinfos);
+			
 			// inform about the file-system-change
 			fileSystemChanged();
 			// return the folder
