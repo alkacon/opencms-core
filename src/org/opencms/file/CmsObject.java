@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/02/27 14:28:08 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/03/02 21:51:02 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class CmsObject {
 
@@ -1495,9 +1495,8 @@ public class CmsObject {
      * Returns a List with all initialized resource types.<p>
      *
      * @return a List with all initialized resource types
-     * @throws CmsException if something goes wrong
      */
-    public List getAllResourceTypes() throws CmsException {
+    public List getAllResourceTypes() {
         I_CmsResourceType resourceTypes[] = m_driverManager.getAllResourceTypes();
         List result = new ArrayList(resourceTypes.length);
         

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/02/22 13:52:27 $
- * Version: $Revision: 1.62 $
+ * Date   : $Date: 2004/03/02 21:51:03 $
+ * Version: $Revision: 1.63 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import javax.servlet.jsp.PageContext;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.62 $
+ * @version $Revision: 1.63 $
  * 
  * @since 5.1
  */
@@ -661,13 +661,8 @@ public abstract class CmsWorkplace {
      * @return all visible resource types in a map with the resource type id as key value
      */
     private static Map initWorkplaceResourceTypes(CmsObject cms) {
-        List allResTypes = new ArrayList();
+        List allResTypes = cms.getAllResourceTypes();
         Map resourceTypes = new HashMap();
-        try {
-            allResTypes = cms.getAllResourceTypes();
-        } catch (CmsException e) {
-            // ignore
-        }
         Iterator i = allResTypes.iterator();
         while (i.hasNext()) {
             // loop through all types and check which types can be displayed for the user

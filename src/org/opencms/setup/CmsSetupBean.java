@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2004/02/25 14:12:43 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/03/02 21:51:02 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.dom4j.Element;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  */
 public class CmsSetupBean extends Object implements Serializable, Cloneable, I_CmsShellCommands {
     
@@ -152,20 +152,20 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
     }
 
     /**
-     * Restores the registry.xml either to or from a backup file, depending
+     * Restores the opencms.xml either to or from a backup file, depending
      * whether the setup wizard is executed the first time (the backup registry
      * doesnt exist) or not (the backup registry exists).
      * 
-     * @param originalRegistryFilename something like "registry.ori"
-     * @param registryFilename the registry's real file name "registry.xml"
+     * @param filename something like e.g. "opencms.ori"
+     * @param originalFilename the configurations real file name, e.g. "opencms.xml"
      */
-    public void backupRegistry(String registryFilename, String originalRegistryFilename) {
-        File originalRegistry = new File(m_configRfsPath + originalRegistryFilename);
+    public void backupConfiguration(String filename, String originalFilename) {
+        File file = new File(m_configRfsPath + originalFilename);
 
-        if (originalRegistry.exists()) {
-            this.copyFile(originalRegistryFilename, registryFilename);
+        if (file.exists()) {
+            this.copyFile(originalFilename, filename);
         } else {
-            this.copyFile(registryFilename, originalRegistryFilename);
+            this.copyFile(filename, originalFilename);
         }
     }
     
@@ -895,7 +895,8 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
             // save Properties to file "opencms.properties" 
             saveProperties(getProperties(), "opencms.properties", true);        
             // backup the registry
-            backupRegistry("registry.xml", "registry.ori");
+            backupConfiguration("opencms.xml", "opencms.xml.ori");
+            backupConfiguration("registry.xml", "registry.xml.ori");
         }             
         return importWorkplace;
     }
@@ -962,8 +963,8 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
      */
     public void saveProperties(ExtendedProperties properties, String file, boolean backup) {
         if (new File(m_configRfsPath + file).isFile()) {
-            String backupFile = file.substring(0, file.lastIndexOf('.')) + ".ori";
-            String tempFile = file.substring(0, file.lastIndexOf('.')) + ".tmp";
+            String backupFile = file + ".ori";
+            String tempFile = file + ".tmp";
 
             m_errors.clear();
 

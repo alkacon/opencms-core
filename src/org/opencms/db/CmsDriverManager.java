@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/02/27 14:28:08 $
- * Version: $Revision: 1.333 $
+ * Date   : $Date: 2004/03/02 21:51:37 $
+ * Version: $Revision: 1.334 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import java.net.URLConnection;
 import java.util.*;
 
 import org.apache.commons.collections.ExtendedProperties;
-import org.apache.commons.collections.LRUMap;
+import org.apache.commons.collections.map.LRUMap;
 
 /**
  * This is the driver manager.<p>
@@ -71,7 +71,7 @@ import org.apache.commons.collections.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.333 $ $Date: 2004/02/27 14:28:08 $
+ * @version $Revision: 1.334 $ $Date: 2004/03/02 21:51:37 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -194,36 +194,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     }
 
     /**
-     * Create a compare class to be used in the vector.<p>
-     */
-     class Resource {
-        private String m_path;
-
-        /**
-         * Create a new Resource object.<p>
-         * 
-         * @param path the path for this resource
-         */
-        public Resource(String path) {
-            this.m_path = path;
-        }
-
-        /**
-         * @see java.lang.Object#equals(java.lang.Object)
-         */
-        public boolean equals(Object obj) {
-            return ((obj instanceof CmsResource) && m_path.equals(((CmsResource)obj).getName()));
-        }
-
-        /**
-         * @see java.lang.Object#hashCode()
-         */
-        public int hashCode() {
-            return m_path.hashCode();
-        }
-    }
-
-    /**
      * Key for all properties
      */
     public static final String C_CACHE_ALL_PROPERTIES = "__CACHE_ALL_PROPERTIES__";
@@ -267,61 +237,41 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * Separator for user cache
      */
     private static final String C_USER_CACHE_SEP = "\u0000";
-
-    /**
-     * Dummy task used in createDirectPublishProject
-     */
-    protected static final CmsTask noTask = new CmsTask();
         
     /**
      * Cache for access control lists
      */
-    protected Map m_accessControlListCache = null;
+    private Map m_accessControlListCache;
 
     /** 
      * The backup driver
      */
-    protected I_CmsBackupDriver m_backupDriver;
-    
-    /**
-     * Cache limit
-     */
-    protected int m_cachelimit = 0;
+    private I_CmsBackupDriver m_backupDriver;
 
     /**
      * The configuration of the property-file.
      */
-    protected ExtendedProperties m_configuration = null;
-
-    /**
-     * The configured drivers 
-     */
-    protected HashMap m_drivers = null;
+    private ExtendedProperties m_configuration;
 
     /**
      * Constant to count the file-system changes if Folders are involved.
      */
-    protected long m_fileSystemFolderChanges = 0;
+    private long m_fileSystemFolderChanges;
     
     /**
      * Cache for groups
      */
-    protected Map m_groupCache = null;
+    private Map m_groupCache;
 
     /**
      * The portnumber the workplace access is limited to.
      */
-    protected int m_limitedWorkplacePort = -1;
+    private int m_limitedWorkplacePort = -1;
 
     /**
      * The lock manager
      */
-    protected CmsLockManager m_lockManager = OpenCms.getLockManager();
-
-    /**
-     * Cache for online project data
-     */
-    protected CmsProject m_onlineProjectCache = null;
+    private CmsLockManager m_lockManager = OpenCms.getLockManager();
 
     /** 
      * The class used for password validation 
@@ -336,85 +286,85 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     /**
      * Cache for permission checks
      */
-    protected Map m_permissionCache = null;
+    private Map m_permissionCache;
     
     /**
      * Cache for offline projects
      */
-    protected Map m_projectCache = null;
+    private Map m_projectCache;
 
     /** 
      * The project driver 
      */
-    protected I_CmsProjectDriver m_projectDriver;
+    private I_CmsProjectDriver m_projectDriver;
     
     /**
      * Cache for properties
      */
-    protected Map m_propertyCache = null;
+    private Map m_propertyCache;
     
     /**
      * Cache for property definitions
      */
-    protected Map m_propertyDefCache = null;
+    private Map m_propertyDefCache;
     
     /**
      * Cache for property definition lists
      */
-    protected Map m_propertyDefVectorCache = null;
+    private Map m_propertyDefVectorCache;
     
     /**
      * Comment for <code>m_refresh</code>
      */
-    protected String m_refresh = null;
+    private String m_refresh;
 
     /**
     * The Registry
     */
-    protected CmsRegistry m_registry = null;
+    private CmsRegistry m_registry;
     
     /**
      * Cache for resources
      */
-    protected Map m_resourceCache = null;
+    private Map m_resourceCache;
     
     /**
      * Cache for resource lists
      */
-    protected Map m_resourceListCache = null;
+    private Map m_resourceListCache;
 
     /**
      * Hashtable with resource-types.
      */
-    protected I_CmsResourceType[] m_resourceTypes = null;
+    private I_CmsResourceType[] m_resourceTypes = null;
     
     /**
      * Cache for user data
      */
-    protected Map m_userCache = null;
+    private Map m_userCache;
 
     /** The user driver. */
-    protected I_CmsUserDriver m_userDriver;
+    private I_CmsUserDriver m_userDriver;
     
     /**
      * Cache for user groups
      */
-    protected Map m_userGroupsCache = null;
+    private Map m_userGroupsCache;
 
     /** 
      * The VFS driver 
      */
-    protected I_CmsVfsDriver m_vfsDriver;
+    private I_CmsVfsDriver m_vfsDriver;
 
     /** 
      * The workflow driver
      */
-    protected I_CmsWorkflowDriver m_workflowDriver;
+    private I_CmsWorkflowDriver m_workflowDriver;
     
     /**
      * The HTML link validator
      */
-    protected CmsHtmlLinkValidator m_htmlLinkValidator;
+    private CmsHtmlLinkValidator m_htmlLinkValidator;
 
     /**
      * Reads the required configurations from the opencms.properties file and creates
@@ -430,11 +380,12 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * <li>finally, the driver instances are passed to the driver manager during initialization</li>
      * </ul>
      * 
-     * @param configuration The configurations from the propertyfile.
+     * @param configuration the configurations from the propertyfile
+     * @param resourceTypes the initialized configured resource types
      * @return CmsDriverManager the instanciated driver manager.
      * @throws CmsException if the driver manager couldn't be instanciated.
      */
-    public static final CmsDriverManager newInstance(ExtendedProperties configuration) throws CmsException {
+    public static final CmsDriverManager newInstance(ExtendedProperties configuration, List resourceTypes) throws CmsException {
 
         // initialize static hastables
         CmsDbUtil.init();
@@ -447,7 +398,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         I_CmsProjectDriver projectDriver = null;
         I_CmsWorkflowDriver workflowDriver = null;
         I_CmsBackupDriver backupDriver = null;
-
+        
         CmsDriverManager driverManager = null;
         try {
             // create a driver manager instance
@@ -543,9 +494,38 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             I_CmsEventListener.EVENT_PUBLISH_PROJECT
         });
         
+        // set the resource type list
+        driverManager.setResourceTypes(resourceTypes);
+        
         // return the configured driver manager
         return driverManager;
     }
+    
+    /**
+     * Sets the internal list of configured resource types.<p>
+     * 
+     * @param resourceTypes the list of configured resource types
+     */
+    private void setResourceTypes(List resourceTypes) throws CmsException {
+        m_resourceTypes = new I_CmsResourceType[resourceTypes.size() * 2];
+        for (int i = 0; i < resourceTypes.size(); i++) {
+            // add the resource-type
+            try {
+                I_CmsResourceType resTypeClass = (I_CmsResourceType)resourceTypes.get(i);
+                int pos = resTypeClass.getResourceType();
+                if (pos > m_resourceTypes.length) {
+                    I_CmsResourceType[] buffer = new I_CmsResourceType[pos * 2];
+                    System.arraycopy(m_resourceTypes, 0, buffer, 0, m_resourceTypes.length);
+                    m_resourceTypes = buffer;
+                }
+                m_resourceTypes[pos] = resTypeClass;
+            } catch (Exception e) {
+                OpenCms.getLog(this).error("Error initializing resource types", e);
+                throw new CmsException("[" + getClass().getName() + "] Error while getting ResourceType: " + resourceTypes.get(i) + " from registry ", CmsException.C_UNKNOWN_EXCEPTION);
+            }
+        }
+    }
+    
 
     /**
      * Accept a task from the Cms.<p>
@@ -1146,7 +1126,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         m_propertyCache.clear();
         m_propertyDefCache.clear();
         m_propertyDefVectorCache.clear();
-        m_onlineProjectCache = null;
         m_accessControlListCache.clear();
         m_permissionCache.clear();
     }
@@ -3082,42 +3061,17 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         // remove the online-project, it is not manageable!
         projects.removeElement(onlineProject());
         // return the vector of projects
-        return (projects);
+        return projects;
     }
 
     /**
      * Returns an array with all all initialized resource types.<p>
      * 
      * @return array with all initialized resource types
-     * @throws CmsException if something goes wrong
      */
-    public I_CmsResourceType[] getAllResourceTypes() throws CmsException {
-        // check, if the resourceTypes were read bevore
-        if (m_resourceTypes == null) {
-            synchronized (this) {
-                // get the resourceTypes from the registry
-                List resTypes = m_registry.getResourceTypes();
-                m_resourceTypes = new I_CmsResourceType[resTypes.size() * 2];
-                for (int i = 0; i < resTypes.size(); i++) {
-                    // add the resource-type
-                    try {
-                        I_CmsResourceType resTypeClass = (I_CmsResourceType)Class.forName((String)resTypes.get(i)).newInstance();
-                        int pos = resTypeClass.getResourceType();
-                        if (pos > m_resourceTypes.length) {
-                            I_CmsResourceType[] buffer = new I_CmsResourceType[pos * 2];
-                            System.arraycopy(m_resourceTypes, 0, buffer, 0, m_resourceTypes.length);
-                            m_resourceTypes = buffer;
-                        }
-                        m_resourceTypes[pos] = resTypeClass;
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        throw new CmsException("[" + getClass().getName() + "] Error while getting ResourceType: " + resTypes.get(i) + " from registry ", CmsException.C_UNKNOWN_EXCEPTION);
-                    }
-                }
-            }
-        }
+    public I_CmsResourceType[] getAllResourceTypes() {
         // return the resource-types.
-        return (m_resourceTypes);
+        return m_resourceTypes;
     }
 
     /**
@@ -4412,7 +4366,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_permissionCache", hashMap);
         }
 
-        m_cachelimit = config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".maxsize", 20000);
         m_refresh = config.getString(I_CmsConstants.C_CONFIGURATION_CACHE + ".refresh", "");
 
         // initialize the registry

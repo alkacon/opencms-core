@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCache.java,v $
- * Date   : $Date: 2004/02/22 14:00:45 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2004/03/02 21:51:02 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.collections.ExtendedProperties;
-import org.apache.commons.collections.LRUMap;
+import org.apache.commons.collections.map.LRUMap;
 
 /**
  * This class implements the FlexCache.<p>
@@ -86,7 +86,7 @@ import org.apache.commons.collections.LRUMap;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * 
  * @see org.opencms.flex.CmsFlexCacheKey
  * @see org.opencms.flex.CmsFlexCacheEntry
@@ -129,26 +129,26 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         /**
          * Initialize the map with the given size.<p>
          * 
-         * @param size the maximum number of key to cache 
+         * @param maxSize the maximum number of key to cache 
          */
-        public CmsFlexKeyMap(int size) {
-            super(size);
+        public CmsFlexKeyMap(int maxSize) {
+            super(maxSize);
         }
         
         /**
          * Ensures that all variations that referenced by this key are released
          * if the key is released.<p>
          * 
-         * @see org.apache.commons.collections.LRUMap#processRemovedLRU(java.lang.Object, java.lang.Object)
+         * @see org.apache.commons.collections.map.LRUMap#removeLRU(org.apache.commons.collections.map.AbstractLinkedMap.LinkEntry)
          */
-        protected void processRemovedLRU(Object key, Object value) {
-            CmsFlexCacheVariation v = (CmsFlexCacheVariation)value;
+        protected boolean removeLRU(LinkEntry entry) {
+            CmsFlexCacheVariation v = (CmsFlexCacheVariation)entry.getValue();
             if (v == null) {
-                return;
+                return true;
             }
             Map m = v.m_map;
             if ((m == null) || (m.size() == 0)) {
-                return;
+                return true;
             }
             Object entries[] = m.values().toArray();
             synchronized (m_variationCache) {
@@ -160,6 +160,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
                 v.m_map = null;
                 v.m_key = null;
             }            
+            return true;
         }        
     }
     
@@ -263,7 +264,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
             });
         }
         
-        // make the flex cache available to other classes through the runtime properties
+        // HACK: make the flex cache available to other classes through the runtime properties
         OpenCms.setRuntimeProperty(CmsFlexCache.C_LOADER_CACHENAME, this);
         
         if (DEBUG > 0) {

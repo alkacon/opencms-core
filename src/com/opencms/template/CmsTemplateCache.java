@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsTemplateCache.java,v $
-* Date   : $Date: 2004/03/01 02:07:42 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2004/03/02 21:51:02 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@ package com.opencms.template;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
-import org.apache.commons.collections.LRUMap;
+import org.apache.commons.collections.map.LRUMap;
 
 
 public class CmsTemplateCache implements I_CmsTemplateCache {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2004/02/25 16:41:37 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2004/03/02 21:51:02 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.41 $
+ * @version $Revision: 1.42 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -96,11 +96,11 @@ public class CmsJspLoader implements I_CmsResourceLoader {
     private static final int DEBUG = 0;
     
     /** The CmsFlexCache used to store generated cache entries in */
-    private static CmsFlexCache m_cache;
+    private CmsFlexCache m_cache;
     
     /** Flag to indicate if error pages are mared a "commited" */
     // TODO: This is a hack, investigate this issue with different runtime environments
-    private static boolean m_errorPagesAreNotCommited = false; // should work for Tomcat 4.1
+    private boolean m_errorPagesAreNotCommited = false; // should work for Tomcat 4.1
     
     /** The directory to store the generated JSP pages in (absolute path) */
     private static String m_jspRepository = null;

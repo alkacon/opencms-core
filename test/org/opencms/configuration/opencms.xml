@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<opencms>
+    <configuration>
+        <config class="org.opencms.configuration.CmsVfsConfiguration"/>
+        <config class="org.opencms.configuration.CmsTestConfiguration"/>
+    </configuration>  
+    <tests>
+    	<test1>Hello Test 1</test1>
+    	<test2>Hello Test 2</test2>    	
+    </tests>     
+    <vfs>
+        <resourceloaders>
+            <loader class="com.opencms.legacy.CmsXmlTemplateLoader" />            
+            <loader class="org.opencms.loader.CmsDumpLoader" />
+            <loader class="org.opencms.loader.CmsPointerLoader" />
+            <loader class="org.opencms.loader.CmsJspLoader" />
+            <loader class="org.opencms.loader.CmsXmlPageLoader" />
+        </resourceloaders>    
+        <resourcetypes>
+            <type class="org.opencms.file.CmsResourceTypeXMLTemplate" />
+            <type class="org.opencms.file.CmsResourceTypeFolder" />
+            <type class="org.opencms.file.CmsResourceTypePlain" />
+            <type class="org.opencms.file.CmsResourceTypePointer" />
+            <type class="org.opencms.file.CmsResourceTypeBinary" />
+            <type class="org.opencms.file.CmsResourceTypeImage" />
+            <type class="org.opencms.file.CmsResourceTypeJsp" />
+            <type class="org.opencms.file.CmsResourceTypeXmlPage" />
+        </resourcetypes>
+        <resourcehistory>
+            <enabled>true</enabled>
+            <weeks></weeks>
+            <deleteversions>false</deleteversions>
+            <versions>10</versions>
+        </resourcehistory>        
+    </vfs>           
+</opencms>    

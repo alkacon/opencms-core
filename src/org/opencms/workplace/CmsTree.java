@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsTree.java,v $
- * Date   : $Date: 2004/02/21 17:11:42 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2004/03/02 21:51:03 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @since 5.1
  */
@@ -122,12 +122,7 @@ public class CmsTree extends CmsWorkplace {
         retValue.append("\tinitResources(\"" + encoding + "\", \"" + C_PATH_WORKPLACE + "\", \"" + skinUri + "\", \"" + servletUrl + "\");\n");
         
         // get all available resource types
-        List allResTypes = new ArrayList();
-        try {
-            allResTypes = cms.getAllResourceTypes();
-        } catch (CmsException e) { 
-            // empty
-        }
+        List allResTypes = cms.getAllResourceTypes();
         Iterator i = allResTypes.iterator();
         while (i.hasNext()) {
             // loop through all types and check which types can be displayed

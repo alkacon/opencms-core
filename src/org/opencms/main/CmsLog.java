@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsLog.java,v $
- * Date   : $Date: 2004/02/14 22:55:44 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/03/02 21:51:02 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.apache.log4j.PropertyConfigurator;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class CmsLog implements Log {
 
@@ -59,7 +59,11 @@ public class CmsLog implements Log {
      * Creates a new OpenCms logger.<p>
      */
     protected CmsLog() {
-        // no initialization is required
+        // check for "OpenCmsLog" system variable (used for testing)
+        String openCmsLog = System.getProperty("OpenCmsLog");
+        if (openCmsLog != null) {
+            m_configFile = openCmsLog;
+        }
     }
 
     /**
@@ -259,9 +263,6 @@ public class CmsLog implements Log {
     private void doLog(Object message, Throwable t) {
         System.err.println(message);
         if (t != null) {
-            System.err.println("<");
-            System.err.println(t.toString());
-            System.err.println(">");
             t.printStackTrace(System.err);
         }           
     }

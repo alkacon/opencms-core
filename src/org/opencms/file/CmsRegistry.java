@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2004/02/26 11:35:34 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/03/02 21:51:03 $
+ * Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsRegistry extends A_CmsXmlContent {
 
@@ -1552,41 +1552,6 @@ public class CmsRegistry extends A_CmsXmlContent {
      */
     public List getResourceInit() {
         return getSystemSubNodes("resourceinit");
-    }
-
-    /**
-     * Returns a list of all configured resource loader classes.<p>
-     *
-     * @return a list of all configured resource loader classes
-     */
-    public List getResourceLoaders() {
-        return getSystemSubNodes("resourceloader");
-    }
-
-    /**
-     * Returns a list of all configured resource type classes.<p>
-     *
-     * @return a list of all configured resource type classes
-     */
-    public List getResourceTypes() {
-        List result = new ArrayList();
-        try {
-            Element systemElement = (Element)m_xmlReg.getElementsByTagName("system").item(0);
-            NodeList resTypes = systemElement.getElementsByTagName("resourcetype").item(0).getChildNodes();
-            for (int x = 0; x < resTypes.getLength(); x++) {
-                try {
-                    String className = ((Element)resTypes.item(x)).getFirstChild().getNodeValue();
-                    result.add(className);
-                } catch (Exception exc) {
-                    System.err.println(exc);
-                    // ignore the exeption
-                }
-            }
-        } catch (Exception e) {
-            // no returnvalues
-            System.err.println(e);
-        }
-        return result;
     }
 
     /**
