@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/dbpool/Attic/CmsDbcp.java,v $
- * Date   : $Date: 2003/05/20 11:47:36 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/05/21 09:56:06 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,19 +30,19 @@
  */
 package com.opencms.dbpool;
 
-import java.sql.Driver;
-
 import org.apache.commons.dbcp.ConnectionFactory;
 import org.apache.commons.dbcp.DriverManagerConnectionFactory;
 import org.apache.commons.dbcp.PoolableConnectionFactory;
 import org.apache.commons.dbcp.PoolingDriver;
+import org.apache.commons.pool.KeyedObjectPoolFactory;
 import org.apache.commons.pool.impl.GenericObjectPool;
+import org.apache.commons.pool.impl.StackKeyedObjectPoolFactory;
 
 import source.org.apache.java.util.Configurations;
 
 /**
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2003/05/20 11:47:36 $
+ * @version $Revision: 1.3 $ $Date: 2003/05/21 09:56:06 $
  */
 public class CmsDbcp extends Object {
 
@@ -82,14 +82,24 @@ public class CmsDbcp extends Object {
         String password = config.getString(key + "." + C_KEY_PASSWORD);
         String poolUrl = config.getString(key + "." + C_KEY_POOL_URL);
 
+        // create an instance of the JDBC driver
         Class.forName(jdbcDriver).newInstance();
+        
+        // initialize a keyed object pool to store connections
         GenericObjectPool connectionPool = new GenericObjectPool(null);
         connectionPool.setMaxActive(maxActive);
         connectionPool.setMaxIdle(maxIdle);
         connectionPool.setMaxWait(maxWait);
-
+        // initialize a connection factory to make the DriverManager taking connections from the pool
         ConnectionFactory connectionFactory = new DriverManagerConnectionFactory(jdbcUrl, username, password);
-        PoolableConnectionFactory poolableConnectionFactory = new PoolableConnectionFactory(connectionFactory, connectionPool, null, null, false, true);
+        
+        // initialize a keyed object pool to store PreparedStatements
+        KeyedObjectPoolFactory statementFactory = new StackKeyedObjectPoolFactory(5000);
+                
+        // initialize a factory to obtain pooled connections and prepared statements
+        new PoolableConnectionFactory(connectionFactory, connectionPool, statementFactory, testQuery, false, true);
+        
+        // initialize a new pooling driver using the pool
         PoolingDriver driver = new PoolingDriver();
         driver.registerPool(poolUrl, connectionPool);
 
