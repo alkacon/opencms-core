@@ -10,6 +10,8 @@ Legend:
 
 OpenCms 4.7.6 Ecaz - xx 2002
 ! Added gallery for external links and checking tool for external links
+! Added first version of linkmanagement.
+! Added the status report for publishProject, publishResource, import and export
 
 OpenCms 4.6.1 Ecaz - 08 May 2002
 ! The WYSIWYG-Editor now supports modification of previously created tables.
