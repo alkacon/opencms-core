@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
  * Author : $Author: a.schouten $
- * Date   : $Date: 2001/11/09 11:23:40 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2001/11/09 17:13:49 $
+ * Version: $Revision: 1.10 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Framfab Deutschland ag.   All Rights Reserved.
@@ -607,11 +607,11 @@ public class CmsDbAccess {
         String media;
         if(isOnlineProject(cms)) {
             moduleMaster = "CMS_MODULE_ONLINE_MASTER";
-            channelRel = "MODULE_ONLINE_CHANNEL_REL";
+            channelRel = "CMS_MODULE_ONLINE_CHANNEL_REL";
             media = "CMS_MODULE_ONLINE_MEDIA";
         } else {
             moduleMaster = "CMS_MODULE_MASTER";
-            channelRel = "MODULE_CHANNEL_REL";
+            channelRel = "CMS_MODULE_CHANNEL_REL";
             media = "CMS_MODULE_MEDIA";
         }
         statement = Utils.replace(statement, "$CMS_MODULE_MASTER", moduleMaster);
