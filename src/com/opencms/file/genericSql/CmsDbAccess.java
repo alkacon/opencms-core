@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/10/13 14:26:48 $
- * Version: $Revision: 1.159 $
+ * Date   : $Date: 2000/10/16 14:45:31 $
+ * Version: $Revision: 1.160 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import com.opencms.util.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.159 $ $Date: 2000/10/13 14:26:48 $ * 
+ * @version $Revision: 1.160 $ $Date: 2000/10/16 14:45:31 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	
@@ -4313,11 +4313,13 @@ public void newSiteUrlRecord(String url, int siteID, String primary_url) throws 
 			res = statement.executeQuery();
 			if (res.next()){
 				newId = res.getInt(m_cq.C_SYSTEMID_ID);
-				res.close();
 			}else{
-				res.close();
+				//the resultset will be closed in the finally clause.
 				throw new CmsException("[" + this.getClass().getName() + "] "+" cant read Id! ",CmsException.C_NO_GROUP);		
 			}
+			//close it now, and dont in the finally clause.
+			res.close();
+			res = null;
 			
 			statement = pool.getNextPreparedStatement(firstStatement, m_cq.C_SYSTEMID_WRITE_KEY);
 			statement.setInt(1,newId+1);
@@ -4331,7 +4333,22 @@ public void newSiteUrlRecord(String url, int siteID, String primary_url) throws 
 			
 		} catch (SQLException e){
 			throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
-		}
+		} finally {
+			//close the resultset.
+			if (res != null)
+			{
+				try {
+					res.close();
+				} catch (SQLException se)
+				{
+				}
+			}
+			
+			//put the statement back.
+			if (firstStatement != null)
+				m_pool.putPreparedStatement(m_cq.C_SYSTEMID_LOCK_KEY, firstStatement);
+			
+		}		
 		return(	newId );
 	}
 /**
@@ -4775,6 +4792,13 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 		} catch( Exception exc ) {
 		 	throw new CmsException("readAllFileHeaders "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
 		}finally {
+				if ( res != null) {
+			  try {
+				  res.close();
+			  } catch (SQLException se)
+			  {}
+			}
+
 			if( statement != null) {
 				m_pool.putPreparedStatement(m_cq.C_RESOURCES_READ_ALL_KEY, statement);
 			}
@@ -4807,11 +4831,17 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 				 returnValue.put(result.getString(m_cq.C_PROPERTYDEF_NAME),
 								 result.getString(m_cq.C_PROPERTY_VALUE));
 			 }
-			 result.close();
 		} catch( SQLException exc ) {
 			throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(), 
 				CmsException.C_SQL_ERROR, exc);
 		}finally {
+				if ( result != null) {
+			  try {
+				  result.close();
+			  } catch (SQLException se)
+			  {}
+			}
+
 			if( statement != null) {
 				m_pool.putPreparedStatement(m_cq.C_PROPERTIES_READALL_KEY, statement);
 			}
@@ -4846,11 +4876,17 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 															 result.getInt(m_cq.C_PROPERTYDEF_RESOURCE_TYPE),
 															 result.getInt(m_cq.C_PROPERTYDEF_TYPE) ) );
 			 }
-			 result.close();
 		 } catch( SQLException exc ) {
 			 throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(), 
 				 CmsException.C_SQL_ERROR, exc);
 		 }finally {
+		 			if ( result != null) {
+			  try {
+				  result.close();
+			  } catch (SQLException se)
+			  {}
+			}
+
 			if( statement != null) {
 				m_pool.putPreparedStatement(m_cq.C_PROPERTYDEF_READALL_B_KEY, statement);
 			}
@@ -4884,11 +4920,17 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 															 result.getInt(m_cq.C_PROPERTYDEF_RESOURCE_TYPE),
 															 result.getInt(m_cq.C_PROPERTYDEF_TYPE) ) );
 			 }
-			 result.close();
 		 } catch( SQLException exc ) {
 			 throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(), 
 				 CmsException.C_SQL_ERROR, exc);
 		 }finally {
+		 			if ( result != null) {
+			  try {
+				  result.close();
+			  } catch (SQLException se)
+			  {}
+			}
+
 			if( statement != null) {
 				m_pool.putPreparedStatement(m_cq.C_PROPERTYDEF_READALL_A_KEY, statement);
 			}
@@ -4946,10 +4988,16 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 			} else {
 				  throw new CmsException("["+this.getClass().getName()+"]"+fileId,CmsException.C_NOT_FOUND);  
 			}
-			res.close();       
 		} catch (SQLException e){
 			throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}finally {
+					if ( res != null) {
+			  try {
+				  res.close();
+			  } catch (SQLException se)
+			  {}
+			}
+
 			if( statement != null) {
 				m_pool.putPreparedStatement(m_cq.C_FILE_READ_KEY, statement);
 			}
@@ -5002,7 +5050,6 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 								groupId,projectID,accessFlags,state,lockedBy,
 								launcherType,launcherClass,created,modified,modifiedBy,
 								new byte[0],resSize);	
-						  res.close();                 
 						 // check if this resource is marked as deleted
 						if (file.getState() == C_STATE_DELETED) {
 							throw new CmsException("["+this.getClass().getName()+"] "+file.getAbsolutePath(),CmsException.C_RESOURCE_DELETED);  
@@ -5017,6 +5064,13 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 		 } catch( Exception exc ) {
 			throw new CmsException("readFile "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
 		} finally {
+					if ( res != null) {
+			  try {
+				  res.close();
+			  } catch (SQLException se)
+			  {}
+			}
+
 			if( statement != null) {
 				m_pool.putPreparedStatement(m_cq.C_RESOURCES_READBYID_KEY, statement);
 			}
@@ -5193,12 +5247,17 @@ public CmsFile readFile(int projectId, String filename) throws SQLException, Cms
 	 
 				files.addElement(file);
 			   }
-			res.close();
 		 } catch (SQLException e){
 			throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		 } catch (Exception ex) {
 			throw new CmsException("["+this.getClass().getName()+"]", ex);	
 		}finally {
+			if ( res != null) {
+			  try {
+				  res.close();
+			  } catch (SQLException se)
+			  {}
+			}
 			if( statement != null) {
 				m_pool.putPreparedStatement(m_cq.C_RESOURCES_READFILESBYPROJECT_KEY, statement);
 			}
@@ -5248,15 +5307,15 @@ public CmsFile readFile(int projectId, String filename) throws SQLException, Cms
 				folder = new CmsFolder(resId,parentId,fileId,resName,resType,resFlags,userId,
 									  groupId,projectID,accessFlags,state,lockedBy,created,
 									  modified,modifiedBy);	
-		    res.close();
 		    }
 
 		} finally {
-			if ( res != null)
-			try {
-				res.close();
-			} catch (SQLException se)
-			{} 
+			if ( res != null) {
+			  try {
+				  res.close();
+			  } catch (SQLException se)
+			  {}
+			}
 			if( statement != null) {
 				m_pool.putPreparedStatement(m_cq.C_RESOURCES_READ_KEY, statement);
 			}
@@ -5387,7 +5446,6 @@ public CmsFile readFile(int projectId, String filename) throws SQLException, Cms
 								  res.getString(m_cq.C_GROUPS_GROUP_NAME),
 								  res.getString(m_cq.C_GROUPS_GROUP_DESCRIPTION),
 								  res.getInt(m_cq.C_GROUPS_GROUP_FLAGS));
-			   res.close();
 			 } else {
 				 throw new CmsException("[" + this.getClass().getName() + "] "+groupname,CmsException.C_NO_GROUP);
 			 }
@@ -5396,6 +5454,12 @@ public CmsFile readFile(int projectId, String filename) throws SQLException, Cms
 		 } catch (SQLException e){
 			 throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		} finally {
+					if (res != null) {
+						try {
+							res.close();
+						} catch (SQLException se)
+						{}
+					}
 	        if( statement != null) {
 		         m_pool.putPreparedStatement(m_cq.C_GROUPS_READGROUP_KEY,statement);
 	        }
