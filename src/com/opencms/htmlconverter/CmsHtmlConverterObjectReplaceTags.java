@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/htmlconverter/Attic/CmsHtmlConverterObjectReplaceTags.java,v $
-* Date   : $Date: 2001/11/21 10:58:33 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2003/09/12 12:16:42 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -82,32 +82,33 @@ final class CmsHtmlConverterObjectReplaceTags {
 
     /**
      * constructor creates object with parameters
-     * @param p String prefix
-     * @param tN String tagName
-     * @param tA String tagAttribute
-     * @param tAV String tagAttributeValue
-     * @param rST String replaceStartTag
-     * @param rET String replaceEndTag
-     * @param s String suffix
-     * @param gRFA boolean getReplaceFromAttrs
-     * @param sA String startAttribute
-     * @param eA String endAttribute
+     * @param prefix String prefix
+     * @param tagName String tagName
+     * @param tagAttrib String tagAttribute
+     * @param tagAttribValue String tagAttributeValue
+     * @param replaceStartTag String replaceStartTag
+     * @param replaceEndTag String replaceEndTag
+     * @param suffix String suffix
+     * @param getReplaceFromAttrs boolean getReplaceFromAttrs
+     * @param startAttribute String startAttribute
+     * @param endAttribute String endAttribute
      * @param param String parameter
+     * @param replaceParamAttr flag to indicate param replacement
      */
-    protected CmsHtmlConverterObjectReplaceTags (String p, String tN, String tA, String tAV, String rST, String rET, String s, boolean gRFA, String sA, String eA, String param, boolean rPA) {
-        m_prefix = p;
-        m_tagName = tN;
-        m_tagAttrib = tA;
-        m_tagAttribValue = tAV;
-        m_replaceStartTag = rST;
-        m_replaceEndTag = rET;
-        m_suffix = s;
-        m_getReplaceFromAttrs = gRFA;
-        m_startAttribute = sA;
-        m_endAttribute = eA;
+    protected CmsHtmlConverterObjectReplaceTags (String prefix, String tagName, String tagAttrib, String tagAttribValue, String replaceStartTag, String replaceEndTag, String suffix, boolean getReplaceFromAttrs, String startAttribute, String endAttribute, String param, boolean replaceParamAttr) {
+        m_prefix = prefix;
+        m_tagName = tagName;
+        m_tagAttrib = tagAttrib;
+        m_tagAttribValue = tagAttribValue;
+        m_replaceStartTag = replaceStartTag;
+        m_replaceEndTag = replaceEndTag;
+        m_suffix = suffix;
+        m_getReplaceFromAttrs = getReplaceFromAttrs;
+        m_startAttribute = startAttribute;
+        m_endAttribute = endAttribute;
         m_parameter = param;
-        m_replaceParamAttr = rPA;
-        if (rET.equals(null) || rET.equals("")) {
+        m_replaceParamAttr = replaceParamAttr;
+        if (replaceEndTag.equals(null) || replaceEndTag.equals("")) {
             m_inline = true;
         }
     }
@@ -165,7 +166,7 @@ final class CmsHtmlConverterObjectReplaceTags {
      * @return String with prefix, content and suffix
      */
     protected String getReplaceEndTag() {
-        if (m_inline == true) {
+        if (m_inline) {
             return "";
         }
         return m_prefix +m_replaceEndTag +m_suffix;
