@@ -8,9 +8,9 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 4.5.0  XXXXXXXXXX   - XX XXXXXX 2001
+OpenCms 4.5.0  Gom Jabbar   - 07 August 2001
 * if elementcache aktiv and workplace classes are used for a 
-  page file, the elementdefinitions wasent found. 
+  page file, the elementdefinitions wasnt found. 
 
 
 OpenCms 4.4.0  Gom Jabbar   - 03 August 2001
