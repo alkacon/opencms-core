@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/validation/Attic/CmsHtmlLinkValidator.java,v $
- * Date   : $Date: 2004/08/17 07:09:28 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/09/07 09:30:53 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import java.util.Map;
  * Objects using the CmsHtmlLinkValidator are responsible to handle detected broken links.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.19 $ $Date: 2004/08/17 07:09:28 $
+ * @version $Revision: 1.20 $ $Date: 2004/09/07 09:30:53 $
  * @since 5.3.0
  */
 public class CmsHtmlLinkValidator extends Object {
@@ -99,7 +99,7 @@ public class CmsHtmlLinkValidator extends Object {
      * @param cms the current user's Cms object the current request context
      * @param offlineResources a list of offline Cms resources
      * @return a Map with Lists of invalid hrefs keyed by resource names
-     * @see CmsDriverManager#getPublishList(org.opencms.file.CmsRequestContext, CmsResource, boolean, I_CmsReport)
+     * @see CmsDriverManager#getPublishList(org.opencms.file.CmsRequestContext, CmsResource, boolean)
      */
     public Map validateResources(CmsObject cms, List offlineResources) {
         return validateResources(cms, offlineResources, new CmsShellReport());
@@ -114,7 +114,7 @@ public class CmsHtmlLinkValidator extends Object {
      * @param offlineResources a list of offline Cms resources
      * @param report an instance of I_CmsReport to print messages
      * @return a map with lists of invalid links keyed by resource names
-     * @see CmsDriverManager#getPublishList(org.opencms.file.CmsRequestContext, CmsResource, boolean, I_CmsReport)
+     * @see CmsDriverManager#getPublishList(org.opencms.file.CmsRequestContext, CmsResource, boolean)
      */
     public Map validateResources(CmsObject cms, List offlineResources, I_CmsReport report) {
         CmsResource resource = null;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishList.java,v $
- * Date   : $Date: 2004/09/01 15:10:15 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/09/07 09:30:36 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,13 +51,13 @@ import java.util.List;
  * This allows the Cms app to pass the list around between classes, but with restricted access to 
  * create this list.<p>
  * 
- * {@link org.opencms.db.CmsDriverManager#getPublishList(org.opencms.file.CmsRequestContext, CmsResource, boolean, org.opencms.report.I_CmsReport)}
+ * {@link org.opencms.db.CmsDriverManager#getPublishList(org.opencms.file.CmsRequestContext, CmsResource, boolean)}
  * creates Cms publish lists.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.10 $ $Date: 2004/09/01 15:10:15 $
+ * @version $Revision: 1.11 $ $Date: 2004/09/07 09:30:36 $
  * @since 5.3.0
- * @see org.opencms.db.CmsDriverManager#getPublishList(org.opencms.file.CmsRequestContext, CmsResource, boolean, org.opencms.report.I_CmsReport)
+ * @see org.opencms.db.CmsDriverManager#getPublishList(org.opencms.file.CmsRequestContext, CmsResource, boolean)
  */
 public class CmsPublishList extends Object {
 

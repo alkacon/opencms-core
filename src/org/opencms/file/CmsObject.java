@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/09/01 15:10:36 $
- * Version: $Revision: 1.72 $
+ * Date   : $Date: 2004/09/07 09:30:45 $
+ * Version: $Revision: 1.73 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.72 $
+ * @version $Revision: 1.73 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -3172,7 +3172,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public CmsPublishList getPublishList(CmsResource directPublishResource, boolean directPublishSiblings, I_CmsReport report) throws CmsException {
-        return m_driverManager.getPublishList(m_context, directPublishResource, directPublishSiblings, report);
+        return m_driverManager.getPublishList(m_context, directPublishResource, directPublishSiblings);
     }
     
     /**

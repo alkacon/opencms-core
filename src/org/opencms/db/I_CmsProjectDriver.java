@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2004/08/11 10:40:26 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2004/09/07 09:30:36 $
+ * Version: $Revision: 1.53 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.52 $ $Date: 2004/08/11 10:40:26 $
+ * @version $Revision: 1.53 $ $Date: 2004/09/07 09:30:36 $
  * @since 5.1
  */
 public interface I_CmsProjectDriver {
@@ -254,7 +254,7 @@ public interface I_CmsProjectDriver {
      * @param backupTagId the backup tag ID
      * @param maxVersions maximum number of backup versions
      * @throws Exception if something goes wrong
-     * @see org.opencms.db.CmsDriverManager#getPublishList(CmsRequestContext, CmsResource, boolean, I_CmsReport)
+     * @see org.opencms.db.CmsDriverManager#getPublishList(CmsRequestContext, CmsResource, boolean)
      */
     void publishProject(CmsRequestContext context, I_CmsReport report, CmsProject onlineProject, CmsPublishList publishList, boolean backupEnabled, int backupTagId, int maxVersions) throws Exception;
 
