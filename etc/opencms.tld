@@ -59,6 +59,19 @@
     </tag>        
 
     <tag>
+        <name>template</name>
+        <tag-class>com.opencms.flex.jsp.CmsJspTagTemplate</tag-class>
+        <body-content>JSP</body-content>
+        <description>
+            This tag allows conditions display of template elements.
+        </description>
+        <attribute>
+            <name>part</name>
+            <required>true</required>
+        </attribute>        
+    </tag>
+    
+    <tag>
         <name>label</name>
         <tag-class>com.opencms.flex.jsp.CmsJspTagWpLabel</tag-class>
         <body-content>tagdependent</body-content>
@@ -94,6 +107,9 @@
         </attribute>
         <attribute>
             <name>body</name>
+        </attribute>        
+        <attribute>
+            <name>part</name>
         </attribute>        
     </tag>        
     

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagInclude.java,v $
-* Date   : $Date: 2002/11/08 16:04:32 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2002/11/08 21:54:54 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,6 +33,8 @@ import com.opencms.file.CmsObject;
 import com.opencms.flex.cache.CmsFlexRequest;
 import com.opencms.flex.cache.CmsFlexResponse;
 import com.opencms.flex.util.CmsPropertyLookup;
+import com.opencms.launcher.CmsXmlLauncher;
+import com.opencms.workplace.I_CmsWpConstants;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -47,7 +49,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * This Tag is used to include another OpenCms managed resource in a JSP.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspParamParent { 
     
@@ -58,6 +60,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspParamPar
     private String m_property = null;    
     private String m_attribute = null;    
     private String m_body = null;
+    private String m_part = null;
     
     /** Hashmap to save paramters to the include in */
     private HashMap m_parameterMap = null;
@@ -154,6 +157,24 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspParamPar
             updateTarget();
         }
     }
+
+    /**
+     * Returns the part.
+     * @return String
+     */
+    public String getPart() {
+        return m_part;
+    }
+
+    /**
+     * Sets the part
+     * @param part the part to set
+     */
+    public void setPart(String part) {
+        if (part != null) {
+            this.m_part = part.toLowerCase();
+        }
+    }
     
     /**
      * Sets the include body attribute to indicate the body is to be evaluated.
@@ -182,6 +203,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspParamPar
         m_suffix = null;
         m_property = null;           
         m_body = null; 
+        m_part = null;
         m_parameterMap = null;
     }    
     
@@ -203,6 +225,14 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspParamPar
             com.opencms.flex.cache.CmsFlexResponse c_res = (com.opencms.flex.cache.CmsFlexResponse)res;    
 
             String target = null;           
+            
+            if (m_part != null) {
+                addParameter(CmsJspTagTemplate.C_TEMPLATE_PART, m_part);
+                // HACK to get the body part name
+                if ("body".equals(m_part.toLowerCase().trim())) {
+                    addParameter(CmsXmlLauncher.C_ELEMENT_REPLACE, "body:" + I_CmsWpConstants.C_VFS_PATH_BODIES + c_req.getCmsRequestedResource().substring(1));
+                }
+            }
             
             // Try to find out what to do
             if (m_target != null) {

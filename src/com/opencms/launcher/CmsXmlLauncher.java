@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsXmlLauncher.java,v $
-* Date   : $Date: 2002/10/30 10:29:46 $
-* Version: $Revision: 1.39 $
+* Date   : $Date: 2002/11/08 21:55:05 $
+* Version: $Revision: 1.40 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,9 +56,12 @@ import javax.servlet.http.*;
  * be used to create output.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.39 $ $Date: 2002/10/30 10:29:46 $
+ * @version $Revision: 1.40 $ $Date: 2002/11/08 21:55:05 $
  */
 public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_CmsConstants {
+    
+    /** Magic elemet replace name */
+    public static final String C_ELEMENT_REPLACE = "_CMS_ELEMENTREPLACE";
 
     /**
      * Starts generating the output.
@@ -98,7 +101,7 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_
         }
 
         // check if printversion is requested
-        String replace = req.getParameter("_CMS_ELEMENTREPLACE");
+        String replace = req.getParameter(C_ELEMENT_REPLACE);
         boolean elementreplace = false;
         CmsElementDefinition replaceDef = null;
         if(replace != null){
