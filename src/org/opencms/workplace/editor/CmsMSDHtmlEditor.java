@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsMSDHtmlEditor.java,v $
- * Date   : $Date: 2003/11/26 15:59:58 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/11/26 16:07:17 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.jsp.JspException;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.1.12
  */
@@ -274,8 +274,14 @@ public class CmsMSDHtmlEditor extends CmsEditor {
      */
     public void actionSave() { 
         // TODO: save modified content
-        
-        //commitTempFile();
+        try {
+            CmsDefaultPage page = (CmsDefaultPage)CmsXmlPage.newInstance(getCms(), getCms().readFile(this.getParamTempfile()));
+            page.setElementData("body", "de", getParamContent().getBytes());
+            getCms().writeFile(page.marshal());
+            commitTempFile();
+        } catch (CmsException e) {
+            
+        }       
     }
     
     /**
