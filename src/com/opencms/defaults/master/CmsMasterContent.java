@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
- * Author : $Author: e.falkenhan $
- * Date   : $Date: 2001/11/14 13:19:21 $
- * Version: $Revision: 1.9 $
+ * Author : $Author: m.dernen $
+ * Date   : $Date: 2001/11/15 11:11:43 $
+ * Version: $Revision: 1.10 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Framfab Deutschland ag.   All Rights Reserved.
@@ -39,8 +39,8 @@ import com.opencms.template.*;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.9 $
- * $Date: 2001/11/14 13:19:21 $
+ * $Revision: 1.10 $
+ * $Date: 2001/11/15 11:11:43 $
  */
 public abstract class CmsMasterContent
     extends A_CmsContentDefinition
@@ -789,7 +789,7 @@ public abstract class CmsMasterContent
      * @return Vector with names of all subchannels
      * @throws com.opencms.core.CmsException in case of unrecoverable errors
      */
-    protected Vector getAllSubChannelsOfRootChannel (CmsObject cms)
+    public Vector getAllSubChannelsOfRootChannel (CmsObject cms)
             throws CmsException {
         Vector allChannels = new Vector();
         try {
@@ -851,4 +851,12 @@ public abstract class CmsMasterContent
             }
         }
     }
+
+    /**
+     * Get the root channel of the module
+     * @return the root channel of the module
+     */
+     public String getRootChannel() {
+        return getDbAccessObject(this.getSubId()).getRootChannel();
+     }
 }
