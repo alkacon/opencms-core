@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/generic/Attic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/06/05 14:15:48 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/06/09 16:37:26 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.6 $ $Date: 2003/06/05 14:15:48 $
+ * @version $Revision: 1.7 $ $Date: 2003/06/09 16:37:26 $
  * @since 5.1.2
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -1978,8 +1978,8 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
      *
      * @throws CmsException Throws CmsException if something goes wrong.
      */
-    public Vector readAllPropertydefinitions(I_CmsResourceType resourcetype) throws CmsException {
-        return (readAllPropertydefinitions(resourcetype.getResourceType()));
+    public Vector readAllPropertydefinitions(int projectId, I_CmsResourceType resourcetype) throws CmsException {
+        return (readAllPropertydefinitions(projectId, resourcetype.getResourceType()));
     }
 
     /**
@@ -1992,7 +1992,8 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
      *
      * @throws CmsException Throws CmsException if something goes wrong.
      */
-    public Vector readAllPropertydefinitions(int resourcetype) throws CmsException {
+    // TODO: check if propertydefs have online and offline tables
+    public Vector readAllPropertydefinitions(int projectId, int resourcetype) throws CmsException {
         Vector metadefs = new Vector();
         ResultSet res = null;
         PreparedStatement stmt = null;

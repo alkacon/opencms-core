@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2003/06/06 12:48:11 $
-* Version: $Revision: 1.227 $
+* Date   : $Date: 2003/06/09 16:36:30 $
+* Version: $Revision: 1.228 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,8 @@
 
 package com.opencms.core;
 
+import com.opencms.security.CmsPermissionSet;
+
 /**
  * This interface is a pool for constants in OpenCms.<p>
  * 
@@ -38,7 +40,7 @@ package com.opencms.core;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.227 $ $Date: 2003/06/06 12:48:11 $
+ * @version $Revision: 1.228 $ $Date: 2003/06/09 16:36:30 $
  */
 public interface I_CmsConstants {
 
@@ -376,6 +378,11 @@ public interface I_CmsConstants {
      */
     final static int C_PERMISSION_VIEW = 4;
 
+	// Constants used for checking access
+	final static CmsPermissionSet C_READ_ACCESS = new CmsPermissionSet(I_CmsConstants.C_ACCESS_READ);
+	final static CmsPermissionSet C_WRITE_ACCESS = new CmsPermissionSet(I_CmsConstants.C_ACCESS_WRITE);
+	final static CmsPermissionSet C_VIEW_ACCESS = new CmsPermissionSet(I_CmsConstants.C_ACCESS_VISIBLE);
+ 
     /**
      * Group may read this resource
      */
