@@ -396,6 +396,7 @@
                 <deleteproject>Delete Project</deleteproject>
                 <syncfolder>Synchronize Folders</syncfolder>
                 <syncproperties>Properties for Synchronisation</syncproperties>
+                <touch>Touch</touch>
                 <undelete>Undelete Resource</undelete>
                 <undochanges>Undo Changes</undochanges>
                 <unlock>Unlock File</unlock>
@@ -509,6 +510,7 @@
                 <property>Properties</property>
                 <publish>Publish Directly</publish>
                 <rename>Rename</rename>
+                <touch>Touch</touch>
                 <type>Change File Type</type>
                 <undelete>Undelete</undelete>
                 <undochanges>Undo Changes</undochanges>
@@ -609,6 +611,7 @@
             <newowner>New Owner</newowner>
             <newpwd>New Password</newpwd>       
             <newpwdrepeat>Confirm Password</newpwdrepeat>   
+						<newtimestamp>Change timestamp</newtimestamp>
             <next>next</next>
             <nochange>No change</nochange>
             <none>-- none --</none>
@@ -1203,6 +1206,7 @@ A new task was reactivated for you or your role.</content>
             <size>Size</size>
             <state>State</state>
             <title>Title</title>
+            <touch>Touch</touch>
             <type>Type</type>
             <upload>Upload File</upload>
             <uploadimage>Upload new Image</uploadimage>

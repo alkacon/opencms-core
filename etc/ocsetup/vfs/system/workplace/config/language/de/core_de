@@ -395,6 +395,7 @@
                 <deleteproject>Projekt löschen</deleteproject>
                 <syncfolder>Ordner synchronisieren</syncfolder>
                 <syncproperties>Einstellungen für die Synchronisation</syncproperties>
+                <touch>Aktualisiere</touch>
                 <undelete>Ressource wiederherstellen</undelete>
                 <undochanges>Änderungen verwerfen</undochanges>
                 <unlock>Datei freigeben</unlock>
@@ -508,6 +509,7 @@
                 <property>Eigenschaften</property>
                 <publish>Direkt veröffentlichen</publish>
                 <rename>Umbenennen</rename>
+                <touch>Aktualisieren</touch>
                 <type>Dateityp ändern</type>
                 <undelete>Wiederherstellen</undelete>
                 <undochanges>Änderungen verwerfen</undochanges>
@@ -607,7 +609,8 @@
             <newgroup>Neue Gruppe</newgroup>
             <newowner>Neuer Eigentümer</newowner>
             <newpwd>Neues Kennwort</newpwd>     
-            <newpwdrepeat>Kennwort bestätigen</newpwdrepeat>    
+            <newpwdrepeat>Kennwort bestätigen</newpwdrepeat> 
+						<newtimestamp>Datum aktualisieren</newtimestamp>
             <next>nach</next>
             <nochange>Wert beibehalten</nochange>
             <none>-- keine --</none>
@@ -1204,6 +1207,7 @@ Für Sie oder Ihre Rolle wurde eine Aufgabe reaktiviert.</content>
             <size>Größe</size>
             <state>Status</state>
             <title>Titel</title>
+            <touch>Aktualisiere</touch>
             <type>Typ</type>
             <upload>Datei hochladen</upload>
             <uploadimage>Neue Bilddatei hochladen</uploadimage>

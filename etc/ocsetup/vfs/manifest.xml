@@ -3422,6 +3422,15 @@
             <properties/>
         </file>
         <file>
+            <source>system/workplace/action/touch.html</source>
+            <destination>system/workplace/action/touch.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>				
+        <file>
             <source>system/workplace/action/chpwd.html</source>
             <destination>system/workplace/action/chpwd.html</destination>
             <type>XMLTemplate</type>
@@ -10909,6 +10918,15 @@
             <access>15</access>
             <properties/>
         </file>
+        <file>
+            <source>system/workplace/templates/touch</source>
+            <destination>system/workplace/templates/touch</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>				
         <file>
             <source>system/workplace/templates/chpwd</source>
             <destination>system/workplace/templates/chpwd</destination>

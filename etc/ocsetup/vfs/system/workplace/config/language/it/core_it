@@ -394,6 +394,7 @@
                 <restoreresource>Ripristina Versione</restoreresource>
                 <syncfolder>Sincronizza Cartelle</syncfolder>
                 <syncproperties>Proprietà per la Sincronizzazione</syncproperties>
+                <touch>Touch</touch>
                 <undelete>Recupera Risorsa</undelete>
                 <undochanges>Annulla Modifiche</undochanges>
                 <unlock>Sblocca File</unlock>
@@ -506,6 +507,7 @@
                 <property>Proprietà</property>
                 <publish>Pubblica Direttamente</publish>
                 <rename>Rinomina</rename>
+                <touch>Touch</touch>
                 <type>Cambia Tipo di File</type>
                 <undelete>Recupera</undelete>
                 <undochanges>Annulla Modifiche</undochanges>
@@ -605,6 +607,7 @@
             <newposition>Nuova Posizione</newposition>
             <newpwd>Nuova Password</newpwd>
             <newpwdrepeat>Conferma Password</newpwdrepeat>
+						<newtimestamp>Change timestamp</newtimestamp>
             <next>successivo</next>
             <nochange>Nessuna modifica</nochange>
             <nolinkvalue>Per favore inserisci il collegamento!</nolinkvalue>
@@ -1200,6 +1203,7 @@ Un nuovo compito è stato riattivato per te o per il tuo ruolo.</content>
             <size>Dimensione</size>
             <state>Stato</state>
             <title>Titolo</title>
+            <touch>Touch</touch>
             <type>Tipo</type>
             <upload>Carica File</upload>
             <uploadimage>Carica nuova Immagine</uploadimage>
