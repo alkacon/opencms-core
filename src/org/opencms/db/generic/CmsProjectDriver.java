@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/07/08 14:35:29 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2003/07/09 11:10:48 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.13 $ $Date: 2003/07/08 14:35:29 $
+ * @version $Revision: 1.14 $ $Date: 2003/07/09 11:10:48 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1140,7 +1140,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
 
         // read all folders in the offline project
         offlineFolders = m_driverManager.getVfsDriver().readFolders(publishProject, false, true);
-        
+
         i = offlineFolders.iterator();
         while (i.hasNext()) {
             currentFolder = (CmsFolder)i.next();
@@ -1500,8 +1500,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         offlineFiles.clear();
         offlineFiles = null;
         
-        // now delete the "deleted" folders
-        
+        // now delete the "deleted" folders       
         if (deletedFolders.isEmpty()) {
             return changedResources;
         }

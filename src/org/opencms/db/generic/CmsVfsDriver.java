@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/09 10:58:09 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2003/07/09 11:10:48 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.15 $ $Date: 2003/07/09 10:58:09 $
+ * @version $Revision: 1.16 $ $Date: 2003/07/09 11:10:48 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -2627,15 +2627,24 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
     /**
      * @see org.opencms.db.I_CmsVfsDriver#removeFile(int, com.opencms.flex.util.CmsUUID)
      */
-    public void removeFile(CmsProject currentProject, CmsUUID resourceId) throws CmsException {
+    public void removeFile(CmsProject currentProject, CmsUUID structureId) throws CmsException {
         PreparedStatement stmt = null;
         Connection conn = null;
         
         try {
             conn = m_sqlManager.getConnection(currentProject);
-            stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_FILE_DELETE_BY_ID");            
-            stmt.setString(1, resourceId.toString());
-            stmt.executeUpdate();
+            // stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_FILE_DELETE_BY_ID");            
+            // stmt.setString(1, structureId.toString());
+            // stmt.executeUpdate();
+			stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_FILE_CONTENT_DELETE_BY_STRUCTURE_ID");
+			stmt.setString(1, structureId.toString());
+			stmt.executeUpdate();
+			stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_FILE_RESOURCE_DELETE_BY_STRUCTURE_ID");
+			stmt.setString(1, structureId.toString());
+			stmt.executeUpdate();
+			stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_FILE_STRUCTURE_DELETE_BY_STRUCTURE_ID");
+			stmt.setString(1, structureId.toString());
+			stmt.executeUpdate();
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
@@ -2643,21 +2652,13 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         }
     }
     
-    public void removeFile(CmsProject currentProject, CmsUUID parentId, String filename) throws CmsException {
-        PreparedStatement stmt = null;
-        Connection conn = null;
-        
-        try {
-            conn = m_sqlManager.getConnection(currentProject);            
-            stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_FILE_DELETE_BY_NAME");
-            stmt.setString(1,parentId.toString());
-            stmt.setString(2,filename);            
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
-        }        
+    /**
+	 * @see org.opencms.db.I_CmsVfsDriver#removeFile(com.opencms.file.CmsProject, com.opencms.flex.util.CmsUUID, java.lang.String)
+	 */
+	public void removeFile(CmsProject currentProject, CmsUUID parentId, String filename) throws CmsException {
+  
+	    CmsFile file = readFileHeader(currentProject.getId(), parentId, filename, true);
+    	removeFile(currentProject, file.getId());          
     }
 
     /**
