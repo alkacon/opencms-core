@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
- * Date   : $Date: 2000/03/16 19:26:44 $
- * Version: $Revision: 1.64 $
+ * Date   : $Date: 2000/03/16 20:14:08 $
+ * Version: $Revision: 1.65 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.64 $ $Date: 2000/03/16 19:26:44 $
+ * @version $Revision: 1.65 $ $Date: 2000/03/16 20:14:08 $
  */
 public interface I_CmsWpConstants {
 
@@ -660,29 +660,5 @@ public interface I_CmsWpConstants {
 	/** Constant for task-log */
 	public static final int C_TASKLOGTYPE_PRIORITYCHANGED = 109;
     
-    // Contants for preferences
-    	
-    /** Task preferenses filter */
-	public static final String  C_TASK_FILTER = "TaskFilter";
-    
-    /** Task preferenses view all */
-	public static final String  C_TASK_VIEW_ALL = "TaskViewAll";
-    
-    /** Task preferenses message flags */
-	public static final String C_TASK_MESSAGES  = "TaskMessages";
-    
-    /** Start preferenses Language */
-	public static final String  C_START_LANGUAGE = "StartLanguage";
-    
-    /** Start preferenses Project */
-	public static final String  C_START_PROJECT = "StartProject";
-    
-    /** Start preferenses View */
-	public static final String  C_START_VIEW = "StartView";
-    
-    /** Start preferenses DefaultGroup */
-	public static final String  C_START_DEFAULTGROUP = "StartDefaultGroup";
-    
-    /** Start preferenses AccessFlags */
-	public static final String  C_START_ACCESSFLAGS = "StartAccessFlags";
+ 
 }

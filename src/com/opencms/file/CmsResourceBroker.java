@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/03/16 13:50:34 $
- * Version: $Revision: 1.81 $
+ * Date   : $Date: 2000/03/16 20:14:08 $
+ * Version: $Revision: 1.82 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.81 $ $Date: 2000/03/16 13:50:34 $
+ * @version $Revision: 1.82 $ $Date: 2000/03/16 20:14:08 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2751,6 +2751,21 @@ System.err.println(">>> readFile(2) error for\n" +
 											   onlineProject(currentUser, currentProject), 
 											   folder + filename, 0, contents, 
 											   getResourceType(currentUser, currentProject, type));
+            // update the access flags
+            Hashtable startSettings=null;
+            Integer accessFlags=null;
+            startSettings=(Hashtable)currentUser.getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);                    
+            if (startSettings != null) {
+                accessFlags=(Integer)startSettings.get(C_START_ACCESSFLAGS);
+                if (accessFlags != null) {
+                    file.setAccessFlags(accessFlags.intValue());
+                    m_fileRb.writeFileHeader(currentProject,onlineProject(currentUser,currentProject),
+                                             file,false);
+                }
+            }
+                
+                
+            
 			// write the metainfos
 			m_metadefRb.writeMetainformations((A_CmsResource) file, metainfos );
 			// inform about the file-system-change
