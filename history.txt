@@ -8,7 +8,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 4.3.35 Bela Tegeuse - ?? July 2001
+OpenCms 4.3.35 Bela Tegeuse - 30 July 2001
 * The calendar-window will now be closed after use.
 * Fixed bug: The ressource-type binary will now be suggested in upload-dialogues.
 * Fixed bug when publishing a deleted resource: have to copy the deleted folder in
