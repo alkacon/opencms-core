@@ -1,7 +1,7 @@
 /*
-* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsDummyRequest.java,v $
-* Date   : $Date: 2001/07/31 15:50:12 $
-* Version: $Revision: 1.3 $
+* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsExportRequest.java,v $
+* Date   : $Date: 2001/11/15 15:56:45 $
+* Version: $Revision: 1.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -33,21 +33,21 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 
 
-public class CmsDummyRequest implements I_CmsRequest {
-
-
-    /**
-     * The original request.
-     */
-    private HttpServletRequest m_req;
+public class CmsExportRequest implements I_CmsRequest {
 
     /**
      * The resource requested.
      */
     private String m_resourcePath;
 
-    public CmsDummyRequest(HttpServletRequest req) {
-        m_req = req;
+    /**
+     * the parameters for this request.
+     */
+    private Hashtable m_parameters = null;
+
+    public CmsExportRequest(HttpServletRequest req) {
+    }
+    public CmsExportRequest() {
     }
     public byte[] getFile(String name) {
         return null;
@@ -57,22 +57,41 @@ public class CmsDummyRequest implements I_CmsRequest {
         return enu;
     }
     public Object getOriginalRequest() {
-
-        return m_req;
+        return null;
     }
     public int getOriginalRequestType() {
         /**@todo: Implement this com.opencms.core.I_CmsRequest method*/
         return 0;
     }
     public String getParameter(String name) {
+        if(m_parameters != null){
+            String[] res = (String[])m_parameters.get(name);
+            if(res != null){
+                return res[0];
+            }
+        }
         return null;
     }
     public Enumeration getParameterNames() {
-        Enumeration enu = (new Vector()).elements();
-        return enu;
+        if(m_parameters == null){
+            Enumeration enu = (new Vector()).elements();
+            return enu;
+        }else{
+            return m_parameters.keys();
+        }
     }
     public String[] getParameterValues(String key) {
+        if(m_parameters != null){
+            return (String[])m_parameters.get(key);
+        }
         return null;
+    }
+    /**
+     * sets the parameters for this static export.
+     * @param parameters The Hashtable with the parameters (contains String[])
+     */
+    public void setParameters(Hashtable parameters){
+        m_parameters = parameters;
     }
     public String getRequestedResource() {
         return m_resourcePath;

@@ -1,7 +1,7 @@
 /*
-* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsDummyResponse.java,v $
-* Date   : $Date: 2001/07/31 15:50:12 $
-* Version: $Revision: 1.2 $
+* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsExportResponse.java,v $
+* Date   : $Date: 2001/11/15 15:56:45 $
+* Version: $Revision: 1.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -31,7 +31,7 @@ package com.opencms.core;
 import java.io.*;
 
 
-public class CmsDummyResponse implements I_CmsResponse {
+public class CmsExportResponse implements I_CmsResponse {
 
     /**
      * The OutputStream to the discfile.
@@ -43,7 +43,7 @@ public class CmsDummyResponse implements I_CmsResponse {
      */
     private boolean m_outputWritten = false;
 
-    public CmsDummyResponse() {
+    public CmsExportResponse() {
 
     }
 
