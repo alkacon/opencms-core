@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/web/Attic/CmsXmlOnlineBewerbung.java,v $
- * Date   : $Date: 2000/02/20 16:46:37 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/02/20 18:45:25 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import java.io.*;
  * possible to send the application form as a mail.
  * 
  * @author $Author: w.babachan $
- * @version $Name:  $ $Revision: 1.7 $ $Date: 2000/02/20 16:46:37 $
+ * @version $Name:  $ $Revision: 1.8 $ $Date: 2000/02/20 18:45:25 $
  * @see com.opencms.template.CmsXmlTemplate
  */
 public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
@@ -395,6 +395,9 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 				mailTable.put(C_HASH_CONTENT,content);
 										
 				// write in database
+				// returns a string that contain HTML Link
+				//String link=startWorkflow(cms,mailInfo);
+				//System.err.println("link->"+link);
 				writeInDatabase(mailInfo);
 				
 				// send mail
@@ -868,8 +871,7 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 		Connection con=null;
 		Statement stmt=null;
 		
-		try {
-			
+		try {			
 			// get the values
 			String text=(String)mailInfo.get(C_HASH_TEXT);
 			String certificates=(String)mailInfo.get(C_HASH_CERTIFICATES);
@@ -897,17 +899,14 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 			String email=(String)mailInfo.get(C_HASH_EMAIL);
 			String url=(String)mailInfo.get(C_HASH_URL);
 			String ip=(String)mailInfo.get(C_HASH_IP);
-			
 			// Database driver
 			Class.forName("org.gjt.mm.mysql.Driver");			
-			con=DriverManager.getConnection("jdbc:mysql://localhost:3306/mindfactApplication","root","");
-			con.setAutoCommit(false);
+			con=DriverManager.getConnection("jdbc:mysql://localhost:3306/opencms?user=root;password=");			
+			//con.setAutoCommit(false);
 			stmt=con.createStatement();
-			
 			// Date and time is required to show the date and time that the record is build in database.
 			GregorianCalendar gDate=new GregorianCalendar();
 			gDate.setTime(new java.util.Date());
-			
 			int day=gDate.get(Calendar.DAY_OF_MONTH);
 			int month=(gDate.get(Calendar.MONTH))+1;
 			int year=gDate.get(Calendar.YEAR);
@@ -935,11 +934,10 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 			insert=insert + "','" + entry + "','" + salary;
 			insert=insert + "','" + how + "','" + text;
 			insert=insert + "','" + certificates + "','" + ip + "','" + date + "','" + time +"')";
-			
 			stmt.executeUpdate(insert);
 			con.commit();
 			con.close();
-		} catch (ClassNotFoundException e1) {
+		} catch (ClassNotFoundException e1) {			
 			if (A_OpenCms.isLogging()) {
 				A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL,e1.getMessage());
 			}
@@ -952,7 +950,7 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 			try {
 				con.rollback();
 			}
-			catch (SQLException e3){				
+			catch (SQLException e3){
 				while((e3=e3.getNextException())!=null){
 					if (A_OpenCms.isLogging()) {
 						A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL,e3.getMessage());
@@ -962,6 +960,118 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 								
 		}
 	}
+	
+	private String startWorkflow(A_CmsObject cms, Hashtable formData)
+		throws CmsException {
+		
+		String secretkey = null;
+		A_CmsTask project = null;
+		
+		try {
+			// Connection for the DB insert
+			Class.forName("org.gjt.mm.mysql.Driver");						
+			Connection con = DriverManager.getConnection("jdbc:mysql://cebitcms.mind.fact:3306/opencms","root","");
+			Statement stmt = con.createStatement();
+			
+			secretkey = createSecret();
+			System.out.println(secretkey);
+			
+			String recname = (String)formData.get(C_HASH_FIRSTNAME) + " " +(String)formData.get(C_HASH_SURNAME);
+			String recstreet = (String)formData.get(C_HASH_STREET);
+			String recpostalcode = (String)formData.get(C_HASH_PLZ);
+			String reccity = (String)formData.get(C_HASH_CITY);
+			String recphone = (String)formData.get(C_HASH_PRIVATEFON);
+			String recfax = (String)formData.get(C_HASH_FAX);
+			String recemail = (String)formData.get(C_HASH_EMAIL);
+			String receducation = "-";
+			String recbirthdate = (String)formData.get(C_HASH_BIRTHDATE);
+			String rectraining = "-";
+			String recexperience = (String)formData.get(C_HASH_OLDPOSITION);
+			String recstarttime = (String)formData.get(C_HASH_ENTRY);
+			String recjob = (String)formData.get(C_HASH_NEWPOSITION);
+			
+			
+			String insert = "INSERT INTO GlobeRecruitingData SET " +
+							"name='" + recname + "', " + 
+							"street='" + recstreet + "'," +
+							"postalcode='" + recpostalcode + "', " + 
+							"city='" + reccity + "', " +
+							"phone='" + recphone +"', " +
+							"fax='" + recfax +"', " +
+							"email='" + recemail + "', " + 
+							"education='" + receducation + "', " + 
+							"birthdate='" + recbirthdate +"', " +
+							"training='" + rectraining +"', " + 
+							"experience='" + recexperience + "', " + 
+							"rowversion=0," +
+							"starttime='" + recstarttime + "', " +
+							"incomingtime=CURRENT_TIMESTAMP, " + 
+							"job='" + recjob + "'," +
+							"secretkey='" + secretkey + "'";
+			
+
+			stmt.executeUpdate(insert);
+			
+			int recdataid = getLastInsertId(con);
+			
+			A_CmsGroup role = cms.readGroup("Personalabt.");
+			long timeout = System.currentTimeMillis()+ 241920000;
+			
+			// get the tasktypes for the recruiting workflow
+			int projtyperef = cms.getTaskType("recruiting");
+			int tasktyperef = cms.getTaskType("StartApplication");
+			int followingtasktyperef = cms.getTaskType("CheckApplication");
+			
+			String projname = recjob;
+			String taskname = "Bewerbung von " + recname;
+			
+			project = cms.createProject(projname, projtyperef, null, timeout, 0);
+			
+			A_CmsTask newtask = cms.createTask(project.getId(), null, null, taskname, "", tasktyperef, timeout, 0);
+			cms.endTask(newtask.getId());
+			cms.writeTaskLog(newtask.getId(), "Bewerbung eingegangen.",1);
+			
+			newtask = cms.createTask(project.getId(), null, role.getName(), taskname, "", followingtasktyperef, timeout, 0);
+			cms.setTaskPar(project.getId(), "Recruiting", Integer.toString(recdataid));
+			
+		} catch (ClassNotFoundException e1) {
+			if (A_OpenCms.isLogging()) {
+				A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL,e1.getMessage());
+			}
+		} catch (SQLException e2){
+			  while((e2=e2.getNextException())!=null){
+				  if (A_OpenCms.isLogging()) {
+					  A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL,e2.getMessage());
+				  }
+			  }					
+		}		
+		return "http://toshi/etm/recruiting/ApplicantInformation.asp?id=" + project.getId() +"&s=" + secretkey;
+	}
+	
+	private int getLastInsertId(Connection con)
+		throws CmsException {
+		ResultSet res =null;
+		int id = -1;
+		
+		try {
+			PreparedStatement statementGetLastInsertId = con.prepareStatement("SELECT LAST_INSERT_ID() AS id");
+			res = statementGetLastInsertId.executeQuery();
+			id = res.getInt("id");
+		} catch (SQLException e){
+			throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		}
+		return id;
+	}
+
+	private String createSecret(){
+
+		String result = "";
+		
+		for(int i=0; i<16; i++) {
+			result = result + Integer.toString((int)Math.round(10 * Math.random()));
+		}
+		return result;
+	}	
 }
 
 
