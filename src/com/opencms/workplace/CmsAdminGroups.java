@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminGroups.java,v $
-* Date   : $Date: 2003/01/20 23:59:18 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2003/06/25 16:20:04 $
+* Version: $Revision: 1.22 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.21 $ $Date: 2003/01/20 23:59:18 $
+ * @version $Revision: 1.22 $ $Date: 2003/06/25 16:20:04 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -217,7 +217,7 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
                                 if(C_NO_SUPERGROUP_SELECTED.equals(supergroup)) {
                                     supergroup = ""; // no supergroup
                                 }
-                                CmsGroup newGroup = cms.addGroup(groupname, description, 0, supergroup);
+                                CmsGroup newGroup = cms.createGroup(groupname, description, 0, supergroup);
                                 newGroup.setProjectManager(projectManager);
                                 newGroup.setProjectCoWorker(projectCoWorker);
                                 newGroup.setRole(role);
