@@ -1,9 +1,6 @@
 
     vi.resource[resource_id]=new res("XMLTemplate",vi.iconPath+"ic_XMLTemplate.gif");
 
-
-    vi.resource[resource_id]=new res("page",vi.iconPath+"ic_file_page.gif");
-    
     addMenuEntry(resource_id, "language_key(explorer.context.lock)",            "lock.html?initial=true",               "''",   "rules_key(d d aaai dddd dddd dddd dddd)");
     addMenuEntry(resource_id, "language_key(explorer.context.overridelock)",    "lockchange.html?initial=true",         "''",   "rules_key(d d dddd dddd aaai aaai aaai)");
     addMenuEntry(resource_id, "language_key(explorer.context.unlock)",          "unlock.html?initial=true",             "''",   "rules_key(d d dddd aaai dddd dddd dddd)");
@@ -14,7 +11,7 @@
     addMenuEntry(resource_id, "language_key(explorer.context.publish)",         "publish_resource.html?initial=true",   "''",   "rules_key(d d iaaa iiii dddd dddd dddd)");
     addMenuEntry(resource_id, "-",                                              " ",                                    "''",   "rules_key(a a aaaa aaaa dddd dddd dddd)");
 
-    addMenuEntry(resource_id, "language_key(explorer.context.edit)",            "edit_text.html?init=true",                        "_top", "rules_key(d d iiii aaai dddd dddd dddd)");
+    addMenuEntry(resource_id, "language_key(explorer.context.edit)",            "edit_text.html?init=true",             "_top", "rules_key(d d iiii aaai dddd dddd dddd)");
     addMenuEntry(resource_id, "-",                                              " ",                                    "''",   "rules_key(d d aaaa aaaa dddd dddd dddd)");
 
     addMenuEntry(resource_id, "language_key(explorer.context.copy)",            "copy.html?initial=true",               "''",   "rules_key(d d aaai aaai dddd dddd dddd)");
