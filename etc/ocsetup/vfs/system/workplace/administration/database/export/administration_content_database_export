@@ -10,6 +10,16 @@
 							</tr>
 ]]></nounchangedbox>
 
+<userdata></userdata>
+<userdatabox><![CDATA[
+							<tr> 
+								<td>&nbsp;</td>
+								<td class=formular>
+									<input type=checkbox name="userdata" value="userdata" checked>]]><LABEL value="database.label.userdata"/><![CDATA[
+								</td>
+							</tr>
+]]></userdatabox>
+
 <TEMPLATE>
 <![CDATA[
 
@@ -175,6 +185,7 @@ function selectAll(theList) {
 									<input type="hidden" name="ALLRES" id="ALLRES" value="">
 								</td>
 							</tr>
+							]]><PROCESS>userdata</PROCESS><![CDATA[
 							]]><PROCESS>nounchanged</PROCESS><![CDATA[
 							<tr>
 								<td class=formular width=10%>]]><LABEL value="database.label.filename"/><![CDATA[:</td>
