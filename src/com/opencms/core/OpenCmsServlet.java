@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
- * Date   : $Date: 2000/09/25 10:50:08 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2000/09/25 16:05:11 $
+ * Version: $Revision: 1.58 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -66,7 +66,7 @@ import com.opencms.util.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.57 $ $Date: 2000/09/25 10:50:08 $  
+* @version $Revision: 1.58 $ $Date: 2000/09/25 16:05:11 $  
 * 
 * */
 
@@ -653,7 +653,6 @@ private CmsObject initMultisite(I_CmsRequest cmsReq, I_CmsResponse cmsRes) throw
 		try
 		{
 			site = cms.getSiteFromUrl(requestUrl);
-			//System.out.println("OpenCmsServlet.initMultiSite(): " + requestUrl);
 			m_opencms.initUser(cms, cmsReq, cmsRes, site.getGuestUser(), site.getGuestGroup(), site.getOnlineProjectId());
 		}
 		catch (CmsException ce)
