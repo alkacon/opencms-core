@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearch.java,v $
- * Date   : $Date: 2005/03/27 20:37:38 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2005/04/04 13:17:48 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.search.documents.I_CmsDocumentFactory;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -63,7 +64,7 @@ import org.apache.lucene.search.SortField;
  * <li>contentdefinition - the name of the content definition class of a resource</li>
  * </ul>
  * 
- * @version $Revision: 1.25 $ $Date: 2005/03/27 20:37:38 $
+ * @version $Revision: 1.26 $ $Date: 2005/04/04 13:17:48 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -126,6 +127,12 @@ public class CmsSearch implements Serializable, Cloneable {
 
     /** The number of pages for the result list. */
     protected int m_pageCount;
+
+    /** The restriction for the search parameters, used for "search in seach result". */
+    protected CmsSearchParameters m_parameterRestriction;
+
+    /** The search parameters used for searching, build out of the given individual parameter values. */
+    protected CmsSearchParameters m_parameters;
 
     /** The URL which leads to the previous result page. */
     protected String m_prevUrl;
@@ -326,6 +333,30 @@ public class CmsSearch implements Serializable, Cloneable {
     }
 
     /**
+     * Returns the search parameters used for searching, build out of the given individual parameter values.<p>
+     *
+     * @return the search parameters used for searching, build out of the given individual parameter values
+     */
+    public CmsSearchParameters getParameters() {
+
+        if (m_parameters == null) {
+            m_parameters = new CmsSearchParameters(
+                m_query,
+                m_fields != null ? Arrays.asList(m_fields) : null,
+                m_searchRoots != null ? Arrays.asList(m_searchRoots) : null,
+                m_categories != null ? Arrays.asList(m_categories) : null,
+                m_calculateCategories,
+                m_sortOrder);
+
+            if (m_parameterRestriction != null) {
+                m_parameters = m_parameters.restrict(m_parameterRestriction);
+            }
+        }
+
+        return m_parameters;
+    }
+
+    /**
      * Gets the URL for the link to the previous result page.<p>
      * 
      * @return the URL to the previous result page
@@ -375,8 +406,13 @@ public class CmsSearch implements Serializable, Cloneable {
             params.append("&index=");
             params.append(CmsEncoder.encode(m_indexName));
             params.append("&searchRoot=");
-            // TODO: handle the multiple search roots possible know (could be easy, just use multiple parameters?)
+            
+            // TODO: Better move this whole method into class "CmsSearchParameters"
             int todo = 0;
+            // TODO: handle the multiple search roots (could be easy, just use multiple parameters?)
+            // TODO: handle the categories
+            // TODO: handle the search fields
+            
             params.append(CmsEncoder.encode(m_searchRoots[0]));
             m_searchParameters = params.toString();
             return m_searchParameters;
@@ -404,16 +440,8 @@ public class CmsSearch implements Serializable, Cloneable {
             }
 
             try {
-                CmsSearchResultList result = m_index.search(
-                    m_cms,
-                    m_searchRoots,
-                    m_query,
-                    m_sortOrder,
-                    m_fields,
-                    m_categories,
-                    m_calculateCategories,
-                    m_page,
-                    m_matchesPerPage);
+
+                CmsSearchResultList result = m_index.search(m_cms, getParameters(), m_page, m_matchesPerPage);
 
                 if (result.size() > 0) {
 
@@ -689,6 +717,22 @@ public class CmsSearch implements Serializable, Cloneable {
     }
 
     /**
+     * Restrict the result of the next search to the results of the last search, 
+     * restricted with the provided parameters.<p>
+     * 
+     * Use this for "seach in search result" functions.<p> 
+     * 
+     * @param restriction the restriction to use
+     * 
+     * @see CmsSearchParameters#restrict(CmsSearchParameters)
+     */
+    public void setResultRestriction(CmsSearchParameters restriction) {
+
+        resetLastResult();
+        m_parameterRestriction = restriction;
+    }
+
+    /**
      * Convenience method to set exactly one search root.<p>
      * 
      * @param searchRoot the search root to set
@@ -738,6 +782,8 @@ public class CmsSearch implements Serializable, Cloneable {
         m_result = null;
         m_lastException = null;
         m_categoriesFound = null;
+        m_parameters = null;
+        m_parameterRestriction = null;
     }
 
 }

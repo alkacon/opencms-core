@@ -1708,7 +1708,7 @@
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Textfile with Alkacon in the Title]]></value>
+					<value><![CDATA[Alkacon OpenCms in the Title]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>

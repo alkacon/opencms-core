@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2005/03/27 20:37:38 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2005/04/04 13:17:48 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,13 +62,12 @@ import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.PhraseQuery;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.TermQuery;
 
 /**
  * Implements the search within an index and the management of the index configuration.<p>
  *   
- * @version $Revision: 1.47 $
+ * @version $Revision: 1.48 $
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
@@ -444,15 +443,8 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      * Performs a search on the index within the given fields.<p>
      * 
      * The result is returned as List with entries of type I_CmsSearchResult.<p>
-     * 
      * @param cms the current user's Cms object
-     * @param searchRoots only resource that are sub-resource of one of the search roots are included in the search result
-     * @param searchQuery the search term to search the index
-     * @param sortOrder the sort order for the search
-     * @param fields the list of fields to search
-     * @param categories the list of categories to limit the search to
-     * @param calculateCategories if <code>true</code>, the category count is calculated for all search results
-     *      (use with caution, this option uses much performance)
+     * @param params the parameters to use for the search
      * @param page the page to calculate the search result list, or -1 to return all found documents in the search result
      * @param matchesPerPage the number of search results per page, or -1 to return all found documents in the search result
      * @return the List of results found or an empty list
@@ -460,12 +452,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      */
     public synchronized CmsSearchResultList search(
         CmsObject cms,
-        String[] searchRoots,
-        String searchQuery,
-        Sort sortOrder,
-        String[] fields,
-        String[] categories,
-        boolean calculateCategories,
+        CmsSearchParameters params,
         int page,
         int matchesPerPage) throws CmsException {
 
@@ -474,17 +461,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         long timeResultProcessing;
 
         if (OpenCms.getLog(this).isDebugEnabled()) {
-            StringBuffer searchFields = new StringBuffer();
-            if (fields != null) {
-                for (int i = 0; i < fields.length; i++) {
-                    searchFields.append(fields[i]);
-                    if (i + 1 < fields.length) {
-                        searchFields.append(", ");
-                    }
-                }
-            }
-            OpenCms.getLog(this).debug(
-                "Searching for \"" + searchQuery + "\" in fields [" + searchFields + "] of index " + m_name);
+            OpenCms.getLog(this).debug("Searching for \"" + params + "\" in index " + m_name);
         }
 
         CmsRequestContext context = cms.getRequestContext();
@@ -513,11 +490,11 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
             // complete the search root
             String[] roots;
-            if ((searchRoots != null) && (searchRoots.length > 0)) {
+            if ((params.getRoots() != null) && (params.getRoots().size() > 0)) {
                 // add the site root to all the search root
-                roots = new String[searchRoots.length];
-                for (int i = 0; i < searchRoots.length; i++) {
-                    roots[i] = cms.getRequestContext().addSiteRoot(searchRoots[i]);
+                roots = new String[params.getRoots().size()];
+                for (int i = 0; i < params.getRoots().size(); i++) {
+                    roots[i] = cms.getRequestContext().addSiteRoot((String)params.getRoots().get(i));
                 }
             } else {
                 // just use the site root as the search root
@@ -549,30 +526,35 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             // add the calculated phrase query for the root path
             query.add(pathQuery, true, false);
 
-            if ((categories != null) && (categories.length > 0)) {
+            if ((params.getCategories() != null) && (params.getCategories().size() > 0)) {
                 // add query categories (if required)
                 BooleanQuery categoryQuery = new BooleanQuery();
-                for (int i = 0; i < categories.length; i++) {
-                    Term term = new Term(I_CmsDocumentFactory.DOC_CATEGORY, categories[i]);
+                for (int i = 0; i < params.getCategories().size(); i++) {
+                    Term term = new Term(I_CmsDocumentFactory.DOC_CATEGORY, (String)params.getCategories().get(i));
                     TermQuery termQuery = new TermQuery(term);
                     categoryQuery.add(termQuery, false, false);
                 }
                 query.add(categoryQuery, true, false);
             }
 
-            if ((fields != null) && (fields.length > 0)) {
+            if ((params.getFields() != null) && (params.getFields().size() > 0)) {
                 // this is a "regular" query over one or more fields
                 BooleanQuery fieldsQuery = new BooleanQuery();
                 // add one sub-query for each of the selected fields, e.g. "content", "title" etc.
-                for (int i = 0; i < fields.length; i++) {
-                    fieldsQuery.add(QueryParser.parse(searchQuery, fields[i], languageAnalyzer), false, false);
+                for (int i = 0; i < params.getFields().size(); i++) {
+                    fieldsQuery.add(
+                        QueryParser.parse(
+                            params.getQuery(), 
+                            (String)params.getFields().get(i), languageAnalyzer), 
+                            false, 
+                            false);
                 }
                 // finally add the field queries to the main query
                 query.add(fieldsQuery, true, false);
             } else {
                 // if no fields are provided, just use the "content" field by default
                 query.add(
-                    QueryParser.parse(searchQuery, I_CmsDocumentFactory.DOC_CONTENT, languageAnalyzer),
+                    QueryParser.parse(params.getQuery(), I_CmsDocumentFactory.DOC_CONTENT, languageAnalyzer),
                     true,
                     false);
             }
@@ -594,7 +576,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
             // collect the categories
             CmsSearchCategoryCollector categoryCollector;
-            if (calculateCategories) {
+            if (params.isCalculateCategories()) {
                 // USE THIS OPTION WITH CAUTION
                 // this may slow down searched by an order of magnitude
                 categoryCollector = new CmsSearchCategoryCollector(searcher);
@@ -605,7 +587,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             }
 
             // perform the search operation          
-            hits = searcher.search(finalQuery, sortOrder);
+            hits = searcher.search(finalQuery, params.getSort());
 
             int hitCount = hits.length();
 
@@ -665,7 +647,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             timeResultProcessing += System.currentTimeMillis();
 
         } catch (Exception exc) {
-            throw new CmsException("Searching for \"" + searchQuery + "\" failed", exc);
+            throw new CmsException("Searching for \"" + params + "\" failed", exc);
         } finally {
 
             // re-set thread to previous priority

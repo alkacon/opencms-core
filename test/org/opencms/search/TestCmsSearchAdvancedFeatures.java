@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearchAdvancedFeatures.java,v $
- * Date   : $Date: 2005/03/27 20:37:39 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/04/04 13:17:50 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +54,7 @@ import junit.framework.TestSuite;
  * Unit test for advanced search features.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
 
@@ -88,6 +89,7 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         suite.addTest(new TestCmsSearchAdvancedFeatures("testSortSearchResults"));
         suite.addTest(new TestCmsSearchAdvancedFeatures("testSearchCategories"));
         suite.addTest(new TestCmsSearchAdvancedFeatures("testMultipleSearchRoots"));
+        suite.addTest(new TestCmsSearchAdvancedFeatures("testSearchRestriction"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -104,7 +106,122 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
 
         return wrapper;
     }
-    
+
+    /**
+     * Tests searching with restrictions.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testSearchRestriction() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing searching in search results");        
+        
+        CmsSearch searchBean = new CmsSearch();
+        List searchResult;               
+        String query = "OpenCms";
+
+        searchBean.init(cms);
+        searchBean.setIndex(INDEX_OFFLINE);                        
+        searchBean.setMatchesPerPage(1000);
+        searchBean.setQuery(query);
+
+        // first part of the rest is identical to "testMultipleSearchRoots()"
+        String[][] roots = new String[][]{
+            new String[]{"/folder1/"},
+            new String[]{"/folder2/"},
+            new String[]{"/types/"},
+            new String[]{"/folder2/", "/types/"},
+            new String[]{"/folder1/", "/types/"},
+            new String[]{"/folder1/", "/folder2/"},
+            new String[]{"/folder1/", "/folder2/", "/types/"}};
+
+        int[] expected = new int[]{7, 4, 1, 5, 8, 11, 12};
+        
+        for (int i=0; i<expected.length; i++) {
+            int expect = expected[i];
+            String[] rootList = roots[i];
+            searchBean.setSearchRoots(rootList);
+            searchResult = searchBean.getSearchResult();        
+            Iterator j = searchResult.iterator();
+            System.out.println("Result for search " + i + " (found " + searchResult.size() + ", expected " + expect + ")");       
+            while (j.hasNext()) {
+                CmsSearchResult res = (CmsSearchResult)j.next();
+                System.out.print(CmsStringUtil.padRight(cms.getRequestContext().removeSiteRoot(res.getPath()), 50));            
+                System.out.print(CmsStringUtil.padRight(res.getTitle(), 40));              
+                System.out.println("  score: " + res.getScore());               
+            }
+            assertEquals(expect, searchResult.size());
+        }
+
+        
+        // now create a restriction to search for an additional "Alkacon" (effectivly searching for "OpenCms Alkacon")
+        CmsSearchParameters restriction;
+        restriction = new CmsSearchParameters("Alkacon", null, null, null, false, null);
+               
+        expected = new int[]{3, 2, 1, 3, 4, 5, 6};
+        
+        for (int i=0; i<expected.length; i++) {
+            int expect = expected[i];
+            String[] rootList = roots[i];
+            searchBean.setSearchRoots(rootList);
+            searchBean.setResultRestriction(restriction);
+            searchResult = searchBean.getSearchResult();        
+            Iterator j = searchResult.iterator();
+            System.out.println("Result for search " + i + " (found " + searchResult.size() + ", expected " + expect + ")");       
+            while (j.hasNext()) {
+                CmsSearchResult res = (CmsSearchResult)j.next();
+                System.out.print(CmsStringUtil.padRight(cms.getRequestContext().removeSiteRoot(res.getPath()), 50));            
+                System.out.print(CmsStringUtil.padRight(res.getTitle(), 40));              
+                System.out.println("  score: " + res.getScore());               
+            }
+            assertEquals(expect, searchResult.size());
+        }
+        
+        // another run of tests using searching only in the "meta" field
+        restriction = new CmsSearchParameters("Alkacon", Arrays.asList(new String[]{"meta"}), null, null, false, null);
+
+        expected = new int[] {0, 0, 1, 1, 1, 0, 1};
+
+        for (int i = 0; i < expected.length; i++) {
+            int expect = expected[i];
+            String[] rootList = roots[i];
+            searchBean.setSearchRoots(rootList);
+            searchBean.setResultRestriction(restriction);
+            searchResult = searchBean.getSearchResult();
+            Iterator j = searchResult.iterator();
+            System.out.println("Result for search " + i + " (found " + searchResult.size() + ", expected " + expect + ")");       
+            while (j.hasNext()) {
+                CmsSearchResult res = (CmsSearchResult)j.next();
+                System.out.print(CmsStringUtil.padRight(cms.getRequestContext().removeSiteRoot(res.getPath()), 50));
+                System.out.print(CmsStringUtil.padRight(res.getTitle(), 40));
+                System.out.println("  score: " + res.getScore());
+            }
+            assertEquals(expect, searchResult.size());
+        }
+        
+        // another run of tests using categories that have been defined in "testSearchCategories()"
+        restriction = new CmsSearchParameters(null, null, null, Arrays.asList(new String[]{"category_1", "category_3"}), false, null);        
+        
+        expected = new int[]{7, 0, 1, 1, 8, 7, 8};
+        
+        for (int i = 0; i < expected.length; i++) {
+            int expect = expected[i];
+            String[] rootList = roots[i];
+            searchBean.setSearchRoots(rootList);
+            searchBean.setResultRestriction(restriction);
+            searchResult = searchBean.getSearchResult();
+            Iterator j = searchResult.iterator();
+            System.out.println("Result for search " + i + " (found " + searchResult.size() + ", expected " + expect + ")");       
+            while (j.hasNext()) {
+                CmsSearchResult res = (CmsSearchResult)j.next();
+                System.out.print(CmsStringUtil.padRight(cms.getRequestContext().removeSiteRoot(res.getPath()), 50));
+                System.out.print(CmsStringUtil.padRight(res.getTitle(), 40));
+                System.out.println("  score: " + res.getScore());
+            }
+            assertEquals(expect, searchResult.size());
+        }
+    }    
     
     /**
      * Tests searching with multiple search roots.<p>
