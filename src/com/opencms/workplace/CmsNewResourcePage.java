@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePage.java,v $
- * Date   : $Date: 2000/02/29 16:44:48 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/03/09 17:01:27 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.15 $ $Date: 2000/02/29 16:44:48 $
+ * @version $Revision: 1.16 $ $Date: 2000/03/09 17:01:27 $
  */
 public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -324,7 +324,7 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
             while (enum.hasMoreElements()) {
                 CmsResource res =(CmsResource)enum.nextElement();
                 
-                // check if deleted
+                // check if the resource is not marked as deleted
                 if (res.getState() != C_STATE_DELETED) {
                     String navpos= cms.readMetainformation(res.getAbsolutePath(),C_METAINFO_NAVPOS);                    
 
