@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2003/08/11 15:53:53 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/08/14 15:37:26 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,8 +32,8 @@
 package org.opencms.importexport;
 
 import org.opencms.loader.CmsPageLoader;
+import org.opencms.main.OpenCms;
 
-import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.*;
@@ -286,12 +286,12 @@ public class CmsImportVersion2 extends A_CmsImport {
             excludeList = new Vector();
         }
 
-        m_webAppNames = (List)A_OpenCms.getRuntimeProperty("compatibility.support.webAppNames");
+        m_webAppNames = (List)OpenCms.getRuntimeProperty("compatibility.support.webAppNames");
         if (m_webAppNames == null)
             m_webAppNames = new ArrayList();
 
         // get the old webapp url from the OpenCms properties
-        m_webappUrl = (String)A_OpenCms.getRuntimeProperty("compatibility.support.import.old.webappurl");
+        m_webappUrl = (String)OpenCms.getRuntimeProperty("compatibility.support.import.old.webappurl");
         if (m_webappUrl == null) {
             // use a default value
             m_webappUrl = "http://localhost:8080/opencms/opencms";
@@ -302,12 +302,12 @@ public class CmsImportVersion2 extends A_CmsImport {
         }
 
         // get list of unwanted properties
-        List deleteProperties = (List)A_OpenCms.getRuntimeProperty("compatibility.support.import.remove.propertytags");
+        List deleteProperties = (List)OpenCms.getRuntimeProperty("compatibility.support.import.remove.propertytags");
         if (deleteProperties == null)
             deleteProperties = new ArrayList();
 
         // get list of immutable resources
-        List immutableResources = (List)A_OpenCms.getRuntimeProperty("import.immutable.resources");
+        List immutableResources = (List)OpenCms.getRuntimeProperty("import.immutable.resources");
         if (immutableResources == null)
             immutableResources = new ArrayList();
         if (DEBUG > 0)
@@ -777,7 +777,7 @@ public class CmsImportVersion2 extends A_CmsImport {
              if (DEBUG > 0) {
                  System.err.println("[" + this.getClass().getName() + ".convertFile()]: Encoding not set, using default encoding and setting it in <?xml...?>.");
              }
-             encoding = A_OpenCms.getDefaultEncoding();
+             encoding = OpenCms.getDefaultEncoding();
              fileContent = setEncoding(fileContent, encoding);
          }
          // check the frametemplates

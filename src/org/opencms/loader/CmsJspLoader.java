@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2003/08/10 11:49:48 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/08/14 15:37:25 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,9 @@
 
 package org.opencms.loader;
 
+import org.opencms.main.OpenCms;
+
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.CmsExportRequest;
 import com.opencms.core.I_CmsConstants;
@@ -75,7 +76,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -225,8 +226,8 @@ public class CmsJspLoader implements I_CmsResourceLoader {
             responsestream.write(exportJsp(cms, file));
             responsestream.close();
         } catch (Throwable t) {
-            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) { 
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, this.getClass().getName() + " Error during static export of " + cms.readAbsolutePath(file) + ": " + t.getMessage());
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) { 
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, this.getClass().getName() + " Error during static export of " + cms.readAbsolutePath(file) + ": " + t.getMessage());
             }         
         }        
     }
@@ -238,14 +239,27 @@ public class CmsJspLoader implements I_CmsResourceLoader {
 
         CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
 
-        // export request must be from inside cms, so we already have the controller initialized
-        CmsFlexRequest f_req = controller.getCurrentRequest();
-        CmsFlexResponse f_res = controller.getCurrentResponse();
+        CmsFlexRequest f_req;
+        CmsFlexResponse f_res;
+
+        if (controller != null) {
+            // re-use currently wrapped request / response
+            f_req = controller.getCurrentRequest();
+            f_res = controller.getCurrentResponse();
+        } else {
+            // create new request / response wrappers
+            controller = new CmsFlexController(cms, file, m_cache, req, res);
+            req.setAttribute(CmsFlexController.ATTRIBUTE_NAME, controller);
+            f_req = new CmsFlexRequest(req, controller);
+            f_res = new CmsFlexResponse(res, controller, false, true);
+            controller.pushRequest(f_req);
+            controller.pushResponse(f_res);
+        }
         
         byte[] result = null;
 
         try {
-            f_req.getRequestDispatcher(cms.readAbsolutePath(file)).include(f_req, f_res);
+            f_req.getRequestDispatcher(cms.readAbsolutePath(file)).include(f_req, f_res);                                    
         } catch (java.net.SocketException e) {
             // uncritical, might happen if client (browser) did not wait until end of page delivery
         }
@@ -253,6 +267,12 @@ public class CmsJspLoader implements I_CmsResourceLoader {
             if (!res.isCommitted() || m_errorPagesAreNotCommited) {
                 // If a JSP errorpage was triggered the response will be already committed here
                 result = f_res.getWriterBytes();
+                result = Encoder.changeEncoding(result, OpenCms.getDefaultEncoding(), cms.getRequestContext().getEncoding());                
+                // Process headers and write output                                          
+                res.setContentLength(result.length);
+                CmsFlexResponse.processHeaders(f_res.getHeaders(), res);
+                res.getOutputStream().write(result);
+                res.getOutputStream().flush();                
             }
         }
         return result;
@@ -464,32 +484,30 @@ public class CmsJspLoader implements I_CmsResourceLoader {
      * Initialize the ResourceLoader,
      * here the configuration for the JSP repository (directories used) is set.
      *
-     * @param openCms the initialized OpenCms object
      * @param conf the OpenCms configuration 
      */
-    public void init(A_OpenCms openCms, Configurations conf) {
+    public void init(Configurations conf) {
         m_jspRepository = com.opencms.boot.CmsBase.getBasePath();
         if (m_jspRepository.indexOf("WEB-INF") >= 0) {
             // Should always be true, just make sure we don't generate an exception in untested environments
             m_jspRepository = m_jspRepository.substring(0, m_jspRepository.indexOf("WEB-INF")-1);
         }
-        source.org.apache.java.util.Configurations c = openCms.getConfiguration();
-        m_jspWebAppRepository = c.getString("flex.jsp.repository", "/WEB-INF/jsp");
+        m_jspWebAppRepository = conf.getString("flex.jsp.repository", "/WEB-INF/jsp");
         m_jspRepository += m_jspWebAppRepository.replace('/', File.separatorChar);
         if (!m_jspRepository.endsWith(File.separator)) m_jspRepository += File.separator;
         if (DEBUG > 0) System.err.println("JspLoader: Setting jsp repository to " + m_jspRepository);
         // Get the cache from the runtime properties
-        m_cache = (CmsFlexCache)A_OpenCms.getRuntimeProperty(C_LOADER_CACHENAME);
+        m_cache = (CmsFlexCache)OpenCms.getRuntimeProperty(C_LOADER_CACHENAME);
         // Get the export URL from the runtime properties
-        m_jspExportUrl = (String)A_OpenCms.getRuntimeProperty(C_LOADER_JSPEXPORTURL);
-        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) { 
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". JSP Loader           : JSP repository (absolute path): " + m_jspRepository);        
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". JSP Loader           : JSP repository (web application path): " + m_jspWebAppRepository);              
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". JSP Loader           : JSP export URL: " + m_jspExportUrl);
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Loader init          : " + this.getClass().getName() + " initialized!");   
+        m_jspExportUrl = (String)OpenCms.getRuntimeProperty(C_LOADER_JSPEXPORTURL);
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) { 
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". JSP Loader           : JSP repository (absolute path): " + m_jspRepository);        
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". JSP Loader           : JSP repository (web application path): " + m_jspWebAppRepository);              
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". JSP Loader           : JSP export URL: " + m_jspExportUrl);
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Loader init          : " + this.getClass().getName() + " initialized!");   
         }
         // Get the "error pages are commited or not" flag from the runtime properties
-        Boolean errorPagesAreNotCommited = (Boolean)A_OpenCms.getRuntimeProperty(C_LOADER_ERRORPAGECOMMIT);
+        Boolean errorPagesAreNotCommited = (Boolean)OpenCms.getRuntimeProperty(C_LOADER_ERRORPAGECOMMIT);
         if (errorPagesAreNotCommited != null) m_errorPagesAreNotCommited = errorPagesAreNotCommited.booleanValue();
     }
     
@@ -587,7 +605,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
                         // default encoding. In case another encoding is set 
                         // in the 'content-encoding' property of the file, 
                         // we need to re-encode the output here. 
-                        result = Encoder.changeEncoding(result, A_OpenCms.getDefaultEncoding(), cms.getRequestContext().getEncoding());
+                        result = Encoder.changeEncoding(result, OpenCms.getDefaultEncoding(), cms.getRequestContext().getEncoding());
 
                         // Check for export request links 
                         if (exportmode) {
@@ -694,7 +712,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
                         // default encoding. In case another encoding is set
                         // in the 'content-encoding' property of the file,
                         // we need to re-encode the output here
-                        result = Encoder.changeEncoding(result, A_OpenCms.getDefaultEncoding(), cms.getRequestContext().getEncoding());                                              
+                        result = Encoder.changeEncoding(result, OpenCms.getDefaultEncoding(), cms.getRequestContext().getEncoding());                                              
                     }
                 } catch (IllegalStateException e) {
                     // Uncritical, might happen if JSP error page was used
@@ -781,8 +799,8 @@ public class CmsJspLoader implements I_CmsResourceLoader {
         
         File d = new File(jspPath).getParentFile();   
         if ((d == null) || (d.exists() && ! (d.isDirectory() && d.canRead()))) {
-            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) 
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "Could not access directory for " + jspPath);
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) 
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "Could not access directory for " + jspPath);
             throw new ServletException("JspLoader: Could not access directory for " + jspPath);
         }   
          
@@ -829,7 +847,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
                 // corectly. Internally a JSP will always be stored in the 
                 // system default encoding since they are just a variation of
                 // the "plain" resource type.
-                String page = new String(contents, A_OpenCms.getDefaultEncoding());
+                String page = new String(contents, OpenCms.getDefaultEncoding());
                 StringBuffer buf = new StringBuffer(contents.length);
 
                 int p0 = 0, i2 = 0, slen = C_DIRECTIVE_START.length(), elen = C_DIRECTIVE_END.length();
@@ -912,13 +930,13 @@ public class CmsJspLoader implements I_CmsResourceLoader {
                     // Encoding project:
                     // Contents of original file where not modified,
                     // just translate to the required JSP encoding (if necessary)
-                    contents = Encoder.changeEncoding(contents, A_OpenCms.getDefaultEncoding(), jspEncoding);   
+                    contents = Encoder.changeEncoding(contents, OpenCms.getDefaultEncoding(), jspEncoding);   
                 }                                         
                 fs.write(contents);                
                 fs.close();
                 
-                if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) 
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "Updated JSP file \"" + jspfilename + "\" for resource \"" + cms.readAbsolutePath(file) + "\"");
+                if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) 
+                    OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "Updated JSP file \"" + jspfilename + "\" for resource \"" + cms.readAbsolutePath(file) + "\"");
             } catch (FileNotFoundException e) {
                 throw new ServletException("JspLoader: Could not write to file '" + f.getName() + "'\n" + e, e);
             }

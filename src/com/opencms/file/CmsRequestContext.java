@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
- * Date   : $Date: 2003/08/10 11:49:48 $
- * Version: $Revision: 1.90 $
+ * Date   : $Date: 2003/08/14 15:37:26 $
+ * Version: $Revision: 1.91 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,9 +32,9 @@
 package com.opencms.file;
 
 import org.opencms.db.CmsDriverManager;
+import org.opencms.main.OpenCms;
 
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.CmsExportRequest;
 import com.opencms.core.CmsSession;
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpSession;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  *
- * @version $Revision: 1.90 $
+ * @version $Revision: 1.91 $
  */
 public class CmsRequestContext {
 
@@ -126,7 +126,7 @@ public class CmsRequestContext {
         m_updateSession = true;
         m_language = new Vector();
         m_savedSiteRoot = null;
-        m_siteRoot = A_OpenCms.getSiteManager().getDefaultSite().getSiteRoot();
+        m_siteRoot = OpenCms.getSiteManager().getDefaultSite().getSiteRoot();
     }
 
     /**
@@ -501,8 +501,8 @@ public class CmsRequestContext {
             return;
         } else if ((getUri().startsWith(I_CmsWpConstants.C_VFS_PATH_SYSTEM)) && (! (m_req instanceof CmsExportRequest))) {
             // try to get encoding from session for special system folder only                
-            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_DEBUG)) {                                
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG,
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_DEBUG)) {                                
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG,
                     "[" + getClass().getName() + "] can't get encoding property for resource "
                     + m_req.getRequestedResource() + ", trying to get it from session.");
             }                    
@@ -513,11 +513,11 @@ public class CmsRequestContext {
         }
         if (m_encoding == null || "".equals(m_encoding)) {
             // no encoding found - use default one
-            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_DEBUG)) {                                
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG,
-                    "[" + getClass().getName() + "] no encoding found - using default: " + A_OpenCms.getDefaultEncoding());
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_DEBUG)) {                                
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG,
+                    "[" + getClass().getName() + "] no encoding found - using default: " + OpenCms.getDefaultEncoding());
             }                  
-            m_encoding = A_OpenCms.getDefaultEncoding();
+            m_encoding = OpenCms.getDefaultEncoding();
         }
     }
 

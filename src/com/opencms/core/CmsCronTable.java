@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsCronTable.java,v $
-* Date   : $Date: 2003/04/01 15:20:18 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2003/08/14 15:37:24 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,7 +34,7 @@ import java.util.*;
 /**
  * Describes a complete crontable with cronentries.
  */
-class CmsCronTable {
+public class CmsCronTable {
 
     /** This vector contains all CronEntries for this table */
     private Vector m_cronEntries = new Vector();
@@ -51,7 +51,7 @@ class CmsCronTable {
      * @throws IOException if the string couldn't be read
      * @throws CmsException if the string contains a invalid parameterline.
      */
-    CmsCronTable(String table) throws IOException, CmsException {
+    public CmsCronTable(String table) throws IOException, CmsException {
         this(new StringReader(table));
     }
 
@@ -71,7 +71,7 @@ class CmsCronTable {
      * @throws IOException if the reader couldn't be read
      * @throws CmsException if the string contains a invalid parameterline.
      */
-    void update(Reader reader) throws IOException, CmsException {
+    public void update(Reader reader) throws IOException, CmsException {
         m_cronEntries = new Vector();
         LineNumberReader lnreader = new LineNumberReader(reader);
         String line = lnreader.readLine();
@@ -88,7 +88,7 @@ class CmsCronTable {
      * @throws IOException if the reader couldn't be read
      * @throws CmsException if the string contains a invalid parameterline.
      */
-    void update(String table) throws IOException, CmsException {
+    public void update(String table) throws IOException, CmsException {
         update(new StringReader(table));
     }
 

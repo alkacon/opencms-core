@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdministration.java,v $
-* Date   : $Date: 2003/08/03 15:11:59 $
-* Version: $Revision: 1.41 $
+* Date   : $Date: 2003/08/14 15:37:24 $
+* Version: $Revision: 1.42 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,10 +29,10 @@
 
 package com.opencms.workplace;
 
+import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
 
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsFile;
@@ -54,7 +54,7 @@ import java.util.Map;
  *
  * Creation date: (09.08.00 14:01:21)
  * @author Hanjo Riege
- * @version $Name:  $ $Revision: 1.41 $ $Date: 2003/08/03 15:11:59 $
+ * @version $Name:  $ $Revision: 1.42 $ $Date: 2003/08/14 15:37:24 $
  */
 
 public class CmsAdministration extends CmsWorkplaceDefault {
@@ -236,14 +236,14 @@ public class CmsAdministration extends CmsWorkplaceDefault {
             }
         }
         
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() && C_DEBUG) {
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "getting content of element "
+        if(OpenCms.isLogging(C_OPENCMS_DEBUG) && C_DEBUG) {
+            OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "getting content of element "
                     + ((elementName == null) ? "<root>" : elementName));
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: "
+            OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: "
                     + templateFile);
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: "
+            OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: "
                     + ((templateSelector == null) ? "<default>" : templateSelector));
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "sentBy: " + sentBy );                    
+            OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "sentBy: " + sentBy );                    
         }          
         
         List iconVector = (List) new ArrayList();
@@ -408,8 +408,8 @@ public class CmsAdministration extends CmsWorkplaceDefault {
             }
         }
         catch(Exception e) {
-             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()){
-                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG,
+             if(OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_DEBUG)){
+                 OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG,
                     "cmsAdministration.sort : adminpoints unsorted cause I cant get a valid floatvalue \n" + e.toString());
              }
         }

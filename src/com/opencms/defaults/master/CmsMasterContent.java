@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2003/07/31 17:02:45 $
-* Version: $Revision: 1.41 $
+* Date   : $Date: 2003/08/14 15:37:26 $
+* Version: $Revision: 1.42 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,8 +29,8 @@
 package com.opencms.defaults.master;
 
 import org.opencms.loader.CmsXmlTemplateLoader;
+import org.opencms.main.OpenCms;
 
-import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.defaults.A_CmsContentDefinition;
@@ -53,8 +53,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.41 $
- * $Date: 2003/07/31 17:02:45 $
+ * $Revision: 1.42 $
+ * $Date: 2003/08/14 15:37:26 $
  */
 public abstract class CmsMasterContent
     extends A_CmsContentDefinition
@@ -637,7 +637,7 @@ public abstract class CmsMasterContent
         enableHistory, versionId, publishDate, changedResources, changedModuleData);
         // update the cache
         CmsXmlTemplateLoader.getOnlineElementCache().cleanupCache(changedResources, changedModuleData);
-        A_OpenCms.fireCmsEvent(cms, com.opencms.flex.I_CmsEventListener.EVENT_PUBLISH_BO_RESOURCE, new HashMap(0));
+        OpenCms.fireCmsEvent(cms, com.opencms.flex.I_CmsEventListener.EVENT_PUBLISH_BO_RESOURCE, new HashMap(0));
     }
 
     /**

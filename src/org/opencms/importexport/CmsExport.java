@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2003/08/11 15:53:53 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/08/14 15:37:26 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,9 +31,9 @@
  
 package org.opencms.importexport;
 
+import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAccessControlEntry;
 
-import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsFile;
@@ -82,7 +82,7 @@ import org.w3c.dom.Text;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $ $Date: 2003/08/11 15:53:53 $
+ * @version $Revision: 1.4 $ $Date: 2003/08/14 15:37:26 $
  */
 public class CmsExport implements Serializable {
 
@@ -388,7 +388,7 @@ public class CmsExport implements Serializable {
             Element info = m_docXml.createElement(I_CmsConstants.C_EXPORT_TAG_INFO);
             m_docXml.getDocumentElement().appendChild(info);
             addElement(m_docXml, info, I_CmsConstants.C_EXPORT_TAG_CREATOR, m_cms.getRequestContext().currentUser().getName());
-            addElement(m_docXml, info, I_CmsConstants.C_EXPORT_TAG_OC_VERSION, A_OpenCms.getVersionName());
+            addElement(m_docXml, info, I_CmsConstants.C_EXPORT_TAG_OC_VERSION, OpenCms.getVersionName());
             addElement(m_docXml, info, I_CmsConstants.C_EXPORT_TAG_DATE, Utils.getNiceDate(new Date().getTime()));
             addElement(m_docXml, info, I_CmsConstants.C_EXPORT_TAG_PROJECT, m_cms.getRequestContext().currentProject().getName());
             addElement(m_docXml, info, I_CmsConstants.C_EXPORT_TAG_VERSION, I_CmsConstants.C_EXPORT_VERSION);
@@ -434,7 +434,7 @@ public class CmsExport implements Serializable {
         try {
             ZipEntry entry = new ZipEntry(I_CmsConstants.C_EXPORT_XMLFILENAME);
             m_exportZipStream.putNextEntry(entry);
-            A_CmsXmlContent.getXmlParser().getXmlText(m_docXml, m_exportZipStream, A_OpenCms.getDefaultEncoding());
+            A_CmsXmlContent.getXmlParser().getXmlText(m_docXml, m_exportZipStream, OpenCms.getDefaultEncoding());
             m_exportZipStream.closeEntry();
         } catch (Exception exc) {
             m_report.println(exc);

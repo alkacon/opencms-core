@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeNewPage.java,v $
- * Date   : $Date: 2003/08/03 09:42:42 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/08/14 15:37:26 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,8 +32,8 @@
 package com.opencms.file;
 
 import org.opencms.loader.CmsPageLoader;
+import org.opencms.main.OpenCms;
 
-import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.linkmanagement.CmsPageLinks;
@@ -46,7 +46,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.1
  */
 public class CmsResourceTypeNewPage extends A_CmsResourceType {
@@ -120,7 +120,7 @@ public class CmsResourceTypeNewPage extends A_CmsResourceType {
      * @return the default body start string for a new XML template 
      */
     public static String getDefaultBodyStart() {
-        return "<?xml version=\"1.0\" encoding=\"" + A_OpenCms.getDefaultEncoding() + "\"?>\n<XMLTEMPLATE>\n<TEMPLATE>\n<![CDATA[\n";
+        return "<?xml version=\"1.0\" encoding=\"" + OpenCms.getDefaultEncoding() + "\"?>\n<XMLTEMPLATE>\n<TEMPLATE>\n<![CDATA[\n";
     }
 
     /**

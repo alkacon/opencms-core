@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsMain.java,v $
- * Date   : $Date: 2003/07/28 15:03:24 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2003/08/14 15:37:26 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.lang.reflect.Method;
  *
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.14 $ $Date: 2003/07/28 15:03:24 $
+ * @version $Revision: 1.15 $ $Date: 2003/08/14 15:37:26 $
  */
 public class CmsMain extends Object {
 
@@ -139,7 +139,7 @@ public class CmsMain extends Object {
      * @param mode can be C_MODE_CLASSIC or C_MODE_ECMASCRIPT
      */
     private static void begin(FileInputStream fis, String base, int mode)  {
-        String classname = "com.opencms.core.CmsShell";
+        String classname = "org.opencms.main.CmsShell";
         if(base == null || "".equals(base)) {
             System.out.println("No OpenCms home folder given. Trying to guess...");
             base = searchBaseFolder(System.getProperty("user.dir"));

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsDumpTemplate.java,v $
-* Date   : $Date: 2003/08/04 12:22:38 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2003/08/14 15:37:26 $
+* Version: $Revision: 1.43 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,9 +30,9 @@
 package com.opencms.template;
 
 import org.opencms.loader.CmsXmlTemplateLoader;
+import org.opencms.main.OpenCms;
 
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
@@ -50,7 +50,7 @@ import java.util.Hashtable;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.42 $ $Date: 2003/08/04 12:22:38 $
+ * @version $Revision: 1.43 $ $Date: 2003/08/14 15:37:26 $
  */
 public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate {
 
@@ -88,8 +88,8 @@ public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate 
      * @throws CmsException
      */
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters) throws CmsException {
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() && C_DEBUG) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, "[CmsDumpTemplate] Now dumping contents of file " + templateFile);
+        if(OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_DEBUG) && C_DEBUG) {
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, "[CmsDumpTemplate] Now dumping contents of file " + templateFile);
         }
         byte[] s = null;
         try {
@@ -100,7 +100,7 @@ public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate 
                 // Here we suppose that in Cms non-xml files are stored in default content encoding
                 // (that's why we need to force this encoding for all workplace
                 // files - they need to operate with Cms files in this encoding)
-                s = Encoder.changeEncoding(file.getContents(), A_OpenCms.getDefaultEncoding(), cms.getRequestContext().getEncoding());
+                s = Encoder.changeEncoding(file.getContents(), OpenCms.getDefaultEncoding(), cms.getRequestContext().getEncoding());
             } else {
                 // we got a binary file - so just push it into result as it is
                 s = file.getContents();
@@ -108,8 +108,8 @@ public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate 
         }
         catch(Exception e) {
             String errorMessage = "Error while reading file " + templateFile + ": " + e;
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsDumpTemplate] " + errorMessage);
+            if(OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_DEBUG) ) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsDumpTemplate] " + errorMessage);
             }
             if(e instanceof CmsException) {
                 throw (CmsException)e;

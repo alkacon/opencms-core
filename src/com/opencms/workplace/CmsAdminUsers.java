@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminUsers.java,v $
-* Date   : $Date: 2003/08/07 18:47:27 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2003/08/14 15:37:24 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,8 +29,8 @@
 
 package com.opencms.workplace;
 
-import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
+import org.opencms.main.OpenCms;
+
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsGroup;
@@ -48,7 +48,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.29 $ $Date: 2003/08/07 18:47:27 $
+ * @version $Revision: 1.30 $ $Date: 2003/08/14 15:37:24 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -126,12 +126,12 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) throws CmsException {
 
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() && C_DEBUG) {
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "getting content of element "
+        if(OpenCms.isLogging(C_OPENCMS_DEBUG) && C_DEBUG) {
+            OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "getting content of element "
                     + ((elementName == null) ? "<root>" : elementName));
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: "
+            OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: "
                     + templateFile);
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: "
+            OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: "
                     + ((templateSelector == null) ? "<default>" : templateSelector));
         }
         I_CmsSession session = cms.getRequestContext().getSession(true);
@@ -250,11 +250,11 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
                     user = "";
                     selectedGroups = new Vector();
                     notSelectedGroups = new Vector();
-                    selectedGroups.addElement(A_OpenCms.getDefaultUsers().getGroupUsers()); // preselect Users
+                    selectedGroups.addElement(OpenCms.getDefaultUsers().getGroupUsers()); // preselect Users
                     Vector groups = cms.getGroups();
                     for(int z = 0;z < groups.size();z++) {
                         String aName = ((CmsGroup)groups.elementAt(z)).getName();
-                        if(!A_OpenCms.getDefaultUsers().getGroupUsers().equals(aName)) {
+                        if(!OpenCms.getDefaultUsers().getGroupUsers().equals(aName)) {
                             notSelectedGroups.addElement(aName);
                         }
                     }
@@ -468,12 +468,12 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
                                     theUser.setAddress(street);
                                     theUser.setAdditionalInfo(C_ADDITIONAL_INFO_ZIPCODE, zipcode);
                                     theUser.setAdditionalInfo(C_ADDITIONAL_INFO_TOWN, town);
-                                    if((A_OpenCms.getDefaultUsers().getUserAdmin().equals(theUser.getName()))
-                                            && (!selectedGroups.contains(A_OpenCms.getDefaultUsers().getGroupAdministrators()))) {
+                                    if((OpenCms.getDefaultUsers().getUserAdmin().equals(theUser.getName()))
+                                            && (!selectedGroups.contains(OpenCms.getDefaultUsers().getGroupAdministrators()))) {
                                         throw new CmsException("cant remove Admin from "
-                                                + A_OpenCms.getDefaultUsers().getGroupAdministrators(), CmsException.C_NOT_ADMIN);
+                                                + OpenCms.getDefaultUsers().getGroupAdministrators(), CmsException.C_NOT_ADMIN);
                                     }
-                                    if(disabled && selectedGroups.contains(A_OpenCms.getDefaultUsers().getGroupAdministrators())) {
+                                    if(disabled && selectedGroups.contains(OpenCms.getDefaultUsers().getGroupAdministrators())) {
                                         throw new CmsException("disabled admin",
                                                  CmsException.C_NOT_ADMIN);
                                     }
@@ -638,7 +638,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
         // fill the names and values
         for(int z = 0;z < groups.size();z++) {
             String name = ((CmsGroup)groups.elementAt(z)).getName();
-            if(A_OpenCms.getDefaultUsers().getGroupUsers().equals(name)) {
+            if(OpenCms.getDefaultUsers().getGroupUsers().equals(name)) {
                 retValue = z;
             }
             names.addElement(name);
@@ -750,7 +750,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
             // fill the names and values
             for(int z = 0;z < notSelectedGroups.size();z++) {
                 String name = (String)notSelectedGroups.elementAt(z);
-                if(A_OpenCms.getDefaultUsers().getGroupUsers().equals(name)) {
+                if(OpenCms.getDefaultUsers().getGroupUsers().equals(name)) {
                     retValue = z;
                 }
                 names.addElement(name);

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlXercesParser.java,v $
-* Date   : $Date: 2003/01/31 17:03:19 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2003/08/14 15:37:26 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,8 +29,9 @@
 
 package com.opencms.template;
 
+import org.opencms.main.OpenCms;
+
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -53,7 +54,7 @@ import org.xml.sax.SAXException;
  * 
  * @author Alexander Kandzior
  * @author Alexander Lucas
- * @version $Revision: 1.20 $ $Date: 2003/01/31 17:03:19 $
+ * @version $Revision: 1.21 $ $Date: 2003/08/14 15:37:26 $
  */
 public class CmsXmlXercesParser implements I_CmsXmlParser {
     
@@ -68,7 +69,7 @@ public class CmsXmlXercesParser implements I_CmsXmlParser {
      * @return Empty document.
      */
     public Document createEmptyDocument(String docNod) throws Exception {
-        String docXml = new String("<?xml version=\"1.0\" encoding=\"" + A_OpenCms.getDefaultEncoding() + "\"?>");
+        String docXml = new String("<?xml version=\"1.0\" encoding=\"" + OpenCms.getDefaultEncoding() + "\"?>");
         docXml = docXml + "<" + docNod + ">" + "</" + docNod + ">";
         StringReader reader = new StringReader(docXml);
         return parse(reader);
@@ -90,9 +91,8 @@ public class CmsXmlXercesParser implements I_CmsXmlParser {
             DOMSerializer domSerializer = serializer.asDOMSerializer();
             domSerializer.serialize(doc);
         } catch (Exception e) {
-            if (I_CmsLogChannels.C_LOGGING
-                && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsXmlXercesParser] " + e);
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsXmlXercesParser] " + e);
             }
         }
     }
@@ -114,9 +114,8 @@ public class CmsXmlXercesParser implements I_CmsXmlParser {
             DOMSerializer domSerializer = serializer.asDOMSerializer();
             domSerializer.serialize(doc);
         } catch (Exception e) {
-            if (I_CmsLogChannels.C_LOGGING
-                && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsXmlXercesParser] " + e);
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsXmlXercesParser] " + e);
             }
         }
     }
@@ -164,9 +163,9 @@ public class CmsXmlXercesParser implements I_CmsXmlParser {
             parser.setFeature("http://apache.org/xml/features/dom/include-ignorable-whitespace", false);
         }
         catch(SAXException e) {
-            if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)  && !c_xercesWarning) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsXmlXercesParser] Cannot set parser feature for apache xerces XML parser.");
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsXmlXercesParser] This is NOT critical, but you should better use xerces 1.1.1 or higher.");
+            if(OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)  && !c_xercesWarning) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsXmlXercesParser] Cannot set parser feature for apache xerces XML parser.");
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsXmlXercesParser] This is NOT critical, but you should better use xerces 1.1.1 or higher.");
                 c_xercesWarning = true;
             }
         }
@@ -196,6 +195,6 @@ public class CmsXmlXercesParser implements I_CmsXmlParser {
             }
         }
         // in other cases we just return default encoding
-        return A_OpenCms.getDefaultEncoding();
+        return OpenCms.getDefaultEncoding();
     }
 }

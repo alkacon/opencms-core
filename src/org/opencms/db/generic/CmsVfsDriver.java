@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/08/13 15:56:46 $
- * Version: $Revision: 1.91 $
+ * Date   : $Date: 2003/08/14 15:37:25 $
+ * Version: $Revision: 1.92 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,9 +34,9 @@ package org.opencms.db.generic;
 import org.opencms.db.CmsAdjacencyTree;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.I_CmsVfsDriver;
+import org.opencms.main.OpenCms;
 
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsFile;
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.91 $ $Date: 2003/08/13 15:56:46 $
+ * @version $Revision: 1.92 $ $Date: 2003/08/14 15:37:25 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -1035,8 +1035,8 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 try {
                     createFileContent(newFileId, filecontent, 0, project.getId(), false);
                 } catch (CmsException se) {
-                    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                        A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + "] " + se.getMessage());
+                    if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+                        OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + "] " + se.getMessage());
                     }
                 }
              }                    
@@ -1368,8 +1368,8 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
     public void destroy() throws Throwable {
         finalize();
                 
-        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[" + this.getClass().getName() + "] destroyed!");
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[" + this.getClass().getName() + "] destroyed!");
         }
     }    
 
@@ -1906,8 +1906,8 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
 		m_sqlManager = this.initQueries(dbPoolUrl);
         m_driverManager = driverManager;
 
-        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". VFS driver init      : ok");
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". VFS driver init      : ok");
         }
 	}
 

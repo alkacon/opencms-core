@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsDumpLoader.java,v $
- * Date   : $Date: 2003/08/10 11:49:48 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/08/14 15:37:25 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,9 @@
 
 package org.opencms.loader;
 
+import org.opencms.main.OpenCms;
+
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
@@ -57,7 +58,7 @@ import source.org.apache.java.util.Configurations;
  * by other loaders.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsDumpLoader implements I_CmsResourceLoader {
     
@@ -90,8 +91,8 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
             responsestream.write(file.getContents());
             responsestream.close();
         } catch (Throwable t) {
-            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) { 
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, this.getClass().getName() + " Error during statoc export of " + cms.readAbsolutePath(file) + ": " + t.getMessage());
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) { 
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, this.getClass().getName() + " Error during statoc export of " + cms.readAbsolutePath(file) + ": " + t.getMessage());
             }         
         }        
     }
@@ -125,12 +126,11 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
      * Initialize the ResourceLoader,
      * not much done here, only the FlexCache is initialized for dump elements.<p>
      *
-     * @param openCms the initialized OpenCms object
      * @param conf the OpenCms configuration 
      */
-    public void init(A_OpenCms openCms, Configurations conf) {        
-        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) { 
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Loader init          : " + this.getClass().getName() + " initialized!");
+    public void init(Configurations conf) {        
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) { 
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Loader init          : " + this.getClass().getName() + " initialized!");
         }        
     }
     

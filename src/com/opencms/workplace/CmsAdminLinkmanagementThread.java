@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminLinkmanagementThread.java,v $
- * Date   : $Date: 2003/07/23 09:58:55 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2003/08/14 15:37:24 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,8 +28,9 @@
 
 package com.opencms.workplace;
 
+import org.opencms.main.OpenCms;
+
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsObject;
 import com.opencms.linkmanagement.LinkChecker;
@@ -41,7 +42,7 @@ import com.opencms.report.I_CmsReport;
  * A thread to check anchors in pages.
  * 
  * @author Hanjo Riege
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  */
 public class CmsAdminLinkmanagementThread extends A_CmsReportThread{
 
@@ -73,8 +74,8 @@ public class CmsAdminLinkmanagementThread extends A_CmsReportThread{
             m_report.println(m_report.key("report.check_links_end"), I_CmsReport.C_FORMAT_HEADLINE);            
         } catch(CmsException e) {
             m_report.println(e);
-            if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL) ) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, e.getMessage());                
+            if(OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL) ) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, e.getMessage());                
             }
         } finally {
             if (m_directPublishResourceName != null) {
@@ -91,8 +92,8 @@ public class CmsAdminLinkmanagementThread extends A_CmsReportThread{
                 } catch (Exception e) {
                     m_report.println(e);
                     // ignore exception, nothing we can do here
-                    if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL) ) {
-                        A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, e.getMessage());
+                    if(OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL) ) {
+                        OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, e.getMessage());
                     }                
                 }
             }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
-* Date   : $Date: 2003/08/04 12:22:38 $
-* Version: $Revision: 1.85 $
+* Date   : $Date: 2003/08/14 15:37:24 $
+* Version: $Revision: 1.86 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,10 +30,10 @@ package com.opencms.workplace;
 
 import org.opencms.loader.CmsXmlTemplateLoader;
 import org.opencms.lock.CmsLock;
+import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
@@ -64,7 +64,7 @@ import java.util.Vector;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.85 $ $Date: 2003/08/04 12:22:38 $
+ * @version $Revision: 1.86 $ $Date: 2003/08/14 15:37:24 $
  */
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsConstants,I_CmsWpConstants {
 
@@ -134,8 +134,8 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsConstants,
 
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters) throws CmsException {
-        if(A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_DEBUG) && I_CmsLogChannels.C_LOGGING && (DEBUG > 0)) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, "[CmsDumpTemplate] Now dumping contents of file "
+        if(OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_DEBUG) && (DEBUG > 0)) {
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, "[CmsDumpTemplate] Now dumping contents of file "
                     + templateFile);
         }
         I_CmsSession session = cms.getRequestContext().getSession(true);

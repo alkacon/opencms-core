@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDefaultUsers.java,v $
- * Date   : $Date: 2003/08/12 10:09:53 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/08/14 15:37:25 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,9 @@
  
 package org.opencms.db;
 
+import org.opencms.main.OpenCms;
+
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
 import com.opencms.core.I_CmsConstants;
 
 import java.util.HashMap;
@@ -45,7 +46,7 @@ import source.org.apache.java.util.Configurations;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $ $Date: 2003/08/12 10:09:53 $
+ * @version $Revision: 1.4 $ $Date: 2003/08/14 15:37:25 $
  * @since 5.1.5
  */
 public class CmsDefaultUsers {
@@ -125,36 +126,36 @@ public class CmsDefaultUsers {
     public static CmsDefaultUsers initialize(Configurations conf) throws Exception {
         CmsDefaultUsers defaultUsers = null;
         // Read the default user configuration
-        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {            
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Default user names   : checking...");
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {            
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Default user names   : checking...");
         }        
         try {
             String[] defaultUserArray = conf.getStringArray("db.default.users");
             defaultUsers = new CmsDefaultUsers(defaultUserArray);        
         } catch (Exception e) {
-            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, ". Critical init error/6: " + e.getMessage());
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, ". Critical init error/6: " + e.getMessage());
             }
             throw e;
         }
-        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {            
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Admin user           : " + defaultUsers.getUserAdmin());
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Guest user           : " + defaultUsers.getUserGuest());
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Administrators group : " + defaultUsers.getGroupAdministrators());
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Projectmanagers group: " + defaultUsers.getGroupProjectmanagers());
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Users group          : " + defaultUsers.getGroupUsers());
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Guests group         : " + defaultUsers.getGroupGuests());
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {            
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Admin user           : " + defaultUsers.getUserAdmin());
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Guest user           : " + defaultUsers.getUserGuest());
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Administrators group : " + defaultUsers.getGroupAdministrators());
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Projectmanagers group: " + defaultUsers.getGroupProjectmanagers());
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Users group          : " + defaultUsers.getGroupUsers());
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Guests group         : " + defaultUsers.getGroupGuests());
         } 
         try {
             String[] translationArray = conf.getStringArray("import.name.translations");
             defaultUsers.setNameTranslations(translationArray);  
         } catch (Exception e) {
-            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Name translation     : non-critical error " + e.getMessage());
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Name translation     : non-critical error " + e.getMessage());
             }
         }        
-        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {            
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Default user names   : initialized");
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {            
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Default user names   : initialized");
         }          
         
         return defaultUsers;         
@@ -251,8 +252,8 @@ public class CmsDefaultUsers {
                     m_groupTranslations = new HashMap();
                 } 
                 m_groupTranslations.put(name1, name2);  
-                if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Name translation     : group " + name1 + " to " + name2);
+                if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+                    OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Name translation     : group " + name1 + " to " + name2);
                 }                
             } else if (valid && ucmatch.startsWith(I_CmsConstants.C_EXPORT_ACEPRINCIPAL_USER)) {
                 String name1 = match.substring(I_CmsConstants.C_EXPORT_ACEPRINCIPAL_USER.length(), pos);
@@ -261,12 +262,12 @@ public class CmsDefaultUsers {
                     m_userTranslations = new HashMap();
                 } 
                 m_userTranslations.put(name1, name2);      
-                if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Name translation     : user " + name1 + " to " + name2);
+                if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+                    OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Name translation     : user " + name1 + " to " + name2);
                 }                             
             } else {
-                if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Name translation     : ignoring invalid entry '" + match + "'");
+                if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+                    OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Name translation     : ignoring invalid entry '" + match + "'");
                 }                 
             }
         }         

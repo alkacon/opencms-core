@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsCronScheduleJobStarter.java,v $
-* Date   : $Date: 2003/01/20 17:57:49 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2003/08/14 15:37:24 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,8 @@
 
 package com.opencms.core;
 
+import org.opencms.main.*;
+
 import com.opencms.boot.CmsBase;
 import com.opencms.boot.I_CmsLogChannels;
 
@@ -36,7 +38,7 @@ import java.util.Calendar;
 /**
  * This class starts all needed jobs for the current time.
  */
-class CmsCronScheduleJobStarter extends Thread {
+public class CmsCronScheduleJobStarter extends Thread {
 
     /** The crontable to use */
     private CmsCronTable m_table;
@@ -48,7 +50,7 @@ class CmsCronScheduleJobStarter extends Thread {
     private Calendar m_lastRun;
 
     /** OpenCms to get access to the system */
-    private A_OpenCms m_opencms;
+    private OpenCmsCore m_opencms;
 
     /**
      * Creates a new instance of CmsCronScheduleJobStarter.
@@ -57,7 +59,7 @@ class CmsCronScheduleJobStarter extends Thread {
      * @param thisRun the start time of this run.
      * @param lastRun the last start time.
      */
-    CmsCronScheduleJobStarter(A_OpenCms opencms, CmsCronTable table, Calendar thisRun, Calendar lastRun) {
+    public CmsCronScheduleJobStarter(OpenCmsCore opencms, CmsCronTable table, Calendar thisRun, Calendar lastRun) {
         m_table = table;
         m_lastRun = lastRun;
         m_thisRun = thisRun;
@@ -72,7 +74,7 @@ class CmsCronScheduleJobStarter extends Thread {
         for(int i = 0; i < m_table.size(); i++) {
             if(m_table.get(i).check(m_lastRun, m_thisRun)) {
                 // we have to start the job for this entry
-                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && CmsBase.isLogging()) {
+                if(CmsBase.isLogging()) {
                     CmsBase.log(I_CmsLogChannels.C_OPENCMS_CRONSCHEDULER, "Starting job for " + m_table.get(i));
                 }
                 m_opencms.startScheduleJob(m_table.get(i));

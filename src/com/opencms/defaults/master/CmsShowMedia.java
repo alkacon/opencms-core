@@ -24,8 +24,9 @@ package com.opencms.defaults.master;
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+import org.opencms.main.OpenCms;
+
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
@@ -171,23 +172,23 @@ public class CmsShowMedia extends CmsXmlTemplate {
         Constructor c = cdClass.getConstructor(new Class[] {CmsObject.class, Integer.class});
         o = c.newInstance(new Object[] {cms, id});
       } catch (InvocationTargetException ite) {
-        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, getClassName() + ": content definitionConstructor: Invocation target exception!");
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, getClassName() + ": content definitionConstructor: Invocation target exception!");
         }
       } catch (NoSuchMethodException nsm) {
-        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-          A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, getClassName() + ":  content definitionConstructor: Requested method was not found!");
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
+          OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, getClassName() + ":  content definitionConstructor: Requested method was not found!");
         }
       } catch (InstantiationException e) {
-        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, getClassName() + ": content definition constructor: the reflected class is abstract!");
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, getClassName() + ": content definition constructor: the reflected class is abstract!");
         }
       } catch (Exception e) {
-        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, getClassName() + ": content definitionConstructor: Other exception! " + e);
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, getClassName() + ": content definitionConstructor: Other exception! " + e);
         }
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-         A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, e.getMessage() );
+        if(OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
+         OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, e.getMessage() );
         }
       }
     return o;

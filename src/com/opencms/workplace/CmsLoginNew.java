@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLoginNew.java,v $
- * Date   : $Date: 2003/08/11 11:00:11 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2003/08/14 15:37:24 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,11 +28,11 @@
 
 package com.opencms.workplace;
 
+import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
@@ -52,7 +52,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  */
 
 public class CmsLoginNew extends CmsXmlTemplate {
@@ -134,15 +134,15 @@ public class CmsLoginNew extends CmsXmlTemplate {
                 if (DEBUG > 1) System.err.println("CmsLoginNew: cms.loginUser() failed");
             }
 
-            if((username != null) && (username.equals(A_OpenCms.getDefaultUsers().getUserGuest()))) {
+            if((username != null) && (username.equals(OpenCms.getDefaultUsers().getUserGuest()))) {
                 // please no Guest user in the workplace
                 // use the same behaviour as if the access was unauthorized
                 validLogin = false;
                 if (DEBUG > 1) System.err.println("CmsLoginNew: user was guest user");
             } else if ((username != null) 
-                && (! cms.userInGroup(username, A_OpenCms.getDefaultUsers().getGroupUsers())) 
-                && (! cms.userInGroup(username, A_OpenCms.getDefaultUsers().getGroupProjectmanagers())) 
-                && (! cms.userInGroup(username, A_OpenCms.getDefaultUsers().getGroupAdministrators()))) {
+                && (! cms.userInGroup(username, OpenCms.getDefaultUsers().getGroupUsers())) 
+                && (! cms.userInGroup(username, OpenCms.getDefaultUsers().getGroupProjectmanagers())) 
+                && (! cms.userInGroup(username, OpenCms.getDefaultUsers().getGroupAdministrators()))) {
                 // user MUST be in at last one of the default groups for administrators, users or project managers
                 // use the same behaviour as if the access was unauthorized
                 validLogin = false;
@@ -157,8 +157,8 @@ public class CmsLoginNew extends CmsXmlTemplate {
             // get a session for this user so that he is authentificated at the
             // end of this request
             session = cms.getRequestContext().getSession(true);
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsLogin] Login user " + username);
+            if(OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsLogin] Login user " + username);
             }
 
             // read the user data from the databsse
@@ -191,10 +191,10 @@ public class CmsLoginNew extends CmsXmlTemplate {
             // trigger call of "login()" JavaScript in Template on page load
             xmlTemplateDocument.setData("onload", "onload='login();'");
         } else if ((! logout) && ((cms.getRequestContext().currentUser()) != null) 
-            && (! A_OpenCms.getDefaultUsers().getUserGuest().equals(cms.getRequestContext().currentUser().getName())) 
-            && ((cms.userInGroup(cms.getRequestContext().currentUser().getName(), A_OpenCms.getDefaultUsers().getGroupUsers())) 
-                || (cms.userInGroup(cms.getRequestContext().currentUser().getName(), A_OpenCms.getDefaultUsers().getGroupProjectmanagers())) 
-                || (cms.userInGroup(cms.getRequestContext().currentUser().getName(), A_OpenCms.getDefaultUsers().getGroupAdministrators())))) {
+            && (! OpenCms.getDefaultUsers().getUserGuest().equals(cms.getRequestContext().currentUser().getName())) 
+            && ((cms.userInGroup(cms.getRequestContext().currentUser().getName(), OpenCms.getDefaultUsers().getGroupUsers())) 
+                || (cms.userInGroup(cms.getRequestContext().currentUser().getName(), OpenCms.getDefaultUsers().getGroupProjectmanagers())) 
+                || (cms.userInGroup(cms.getRequestContext().currentUser().getName(), OpenCms.getDefaultUsers().getGroupAdministrators())))) {
             // the user is already logged in and no logout parameter is present, open a new window
             if (DEBUG > 1) System.err.println("CmsLoginNew: re-using old login");            
             xmlTemplateDocument.setData("onload", "onload='login();'");        
@@ -317,7 +317,7 @@ public class CmsLoginNew extends CmsXmlTemplate {
     throws CmsException {
         String title = (String)super.getTitle(cms, tagcontent, doc, userObject);
         if(title == null) title = "";
-        title += " - " + A_OpenCms.getVersionName();
+        title += " - " + OpenCms.getVersionName();
         return title;
     }
 
@@ -333,7 +333,7 @@ public class CmsLoginNew extends CmsXmlTemplate {
      */
     public Object version(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
     throws CmsException {
-        return A_OpenCms.getVersionName();
+        return OpenCms.getVersionName();
     }
 
     /**
@@ -366,13 +366,13 @@ public class CmsLoginNew extends CmsXmlTemplate {
     throws CmsException {
         try {
             cms.readFileHeader(CmsWorkplaceAction.C_JSP_WORKPLACE_URI);
-            return A_OpenCms.getLinkManager().substituteLink(cms, CmsWorkplaceAction.C_JSP_WORKPLACE_URI);
+            return OpenCms.getLinkManager().substituteLink(cms, CmsWorkplaceAction.C_JSP_WORKPLACE_URI);
         } catch (CmsSecurityException se) {
-            return A_OpenCms.getLinkManager().substituteLink(cms, CmsWorkplaceAction.C_JSP_WORKPLACE_URI);
+            return OpenCms.getLinkManager().substituteLink(cms, CmsWorkplaceAction.C_JSP_WORKPLACE_URI);
         } catch (CmsException ce) {
             // return default xml uri
         }
-        return A_OpenCms.getLinkManager().substituteLink(cms, CmsWorkplaceAction.C_XML_WORKPLACE_URI);
+        return OpenCms.getLinkManager().substituteLink(cms, CmsWorkplaceAction.C_XML_WORKPLACE_URI);
     }    
 
     /**

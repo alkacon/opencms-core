@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/SqlHelper.java,v $
-* Date   : $Date: 2003/07/21 11:05:04 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2003/08/14 15:37:25 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,8 +29,9 @@
 
 package com.opencms.util;
 
+import org.opencms.main.OpenCms;
+
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -40,7 +41,7 @@ import java.sql.Timestamp;
  * This is a helper class for sql queries.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.16 $ $Date: 2003/07/21 11:05:04 $
+ * @version $Revision: 1.17 $ $Date: 2003/08/14 15:37:25 $
  */
 public final class SqlHelper {
 
@@ -75,8 +76,8 @@ public final class SqlHelper {
                 if (i >= C_MAX_RETRIES) {
                     throw exc;
                 } else {
-                    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                        A_OpenCms.log(I_CmsLogChannels.C_MODULE_INFO, "Trying to get timestamp "
+                    if (OpenCms.isLogging(I_CmsLogChannels.C_MODULE_INFO)) {
+                        OpenCms.log(I_CmsLogChannels.C_MODULE_INFO, "Trying to get timestamp "
                                 + column + " #" + i);
                     }
                 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/08/11 18:30:52 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2003/08/14 15:37:25 $
+ * Version: $Revision: 1.53 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,9 +34,9 @@ package org.opencms.db.generic;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.I_CmsProjectDriver;
 import org.opencms.lock.CmsLock;
+import org.opencms.main.OpenCms;
 
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.*;
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.52 $ $Date: 2003/08/11 18:30:52 $
+ * @version $Revision: 1.53 $ $Date: 2003/08/14 15:37:25 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -551,8 +551,8 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
             stmt.setTimestamp(1, new java.sql.Timestamp(System.currentTimeMillis() - C_SESSION_TIMEOUT));
             stmt.execute();
         } catch (Exception e) {
-            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[" + this.getClass().getName() + "] error while deleting old sessions: " + com.opencms.util.Utils.getStackTrace(e));
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[" + this.getClass().getName() + "] error while deleting old sessions: " + com.opencms.util.Utils.getStackTrace(e));
             }
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
@@ -588,8 +588,8 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
     public void destroy() throws Throwable {
         finalize();
                 
-        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[" + this.getClass().getName() + "] destroyed!");
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[" + this.getClass().getName() + "] destroyed!");
         }
     }
 
@@ -632,19 +632,19 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
             // ignore the exception - the project was not readable so fill in the defaults
         }
         
-        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Database init        : filling default values");
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Database init        : filling default values");
         }
               
         // set the groups
-        CmsGroup guests = m_driverManager.getUserDriver().createGroup(CmsUUID.getConstantUUID(A_OpenCms.getDefaultUsers().getGroupGuests()), A_OpenCms.getDefaultUsers().getGroupGuests(), "The guest group", I_CmsConstants.C_FLAG_ENABLED, null);
-        CmsGroup administrators = m_driverManager.getUserDriver().createGroup(CmsUUID.getConstantUUID(A_OpenCms.getDefaultUsers().getGroupAdministrators()), A_OpenCms.getDefaultUsers().getGroupAdministrators(), "The administrators group", I_CmsConstants.C_FLAG_ENABLED | I_CmsConstants.C_FLAG_GROUP_PROJECTMANAGER, null);
-        CmsGroup users = m_driverManager.getUserDriver().createGroup(CmsUUID.getConstantUUID(A_OpenCms.getDefaultUsers().getGroupUsers()), A_OpenCms.getDefaultUsers().getGroupUsers(), "The users group", I_CmsConstants.C_FLAG_ENABLED | I_CmsConstants.C_FLAG_GROUP_ROLE | I_CmsConstants.C_FLAG_GROUP_PROJECTCOWORKER, null);
-        CmsGroup projectmanager = m_driverManager.getUserDriver().createGroup(CmsUUID.getConstantUUID(A_OpenCms.getDefaultUsers().getGroupProjectmanagers()), A_OpenCms.getDefaultUsers().getGroupProjectmanagers(), "The projectmanager group", I_CmsConstants.C_FLAG_ENABLED | I_CmsConstants.C_FLAG_GROUP_PROJECTMANAGER | I_CmsConstants.C_FLAG_GROUP_PROJECTCOWORKER | I_CmsConstants.C_FLAG_GROUP_ROLE, users.getName());
+        CmsGroup guests = m_driverManager.getUserDriver().createGroup(CmsUUID.getConstantUUID(OpenCms.getDefaultUsers().getGroupGuests()), OpenCms.getDefaultUsers().getGroupGuests(), "The guest group", I_CmsConstants.C_FLAG_ENABLED, null);
+        CmsGroup administrators = m_driverManager.getUserDriver().createGroup(CmsUUID.getConstantUUID(OpenCms.getDefaultUsers().getGroupAdministrators()), OpenCms.getDefaultUsers().getGroupAdministrators(), "The administrators group", I_CmsConstants.C_FLAG_ENABLED | I_CmsConstants.C_FLAG_GROUP_PROJECTMANAGER, null);
+        CmsGroup users = m_driverManager.getUserDriver().createGroup(CmsUUID.getConstantUUID(OpenCms.getDefaultUsers().getGroupUsers()), OpenCms.getDefaultUsers().getGroupUsers(), "The users group", I_CmsConstants.C_FLAG_ENABLED | I_CmsConstants.C_FLAG_GROUP_ROLE | I_CmsConstants.C_FLAG_GROUP_PROJECTCOWORKER, null);
+        CmsGroup projectmanager = m_driverManager.getUserDriver().createGroup(CmsUUID.getConstantUUID(OpenCms.getDefaultUsers().getGroupProjectmanagers()), OpenCms.getDefaultUsers().getGroupProjectmanagers(), "The projectmanager group", I_CmsConstants.C_FLAG_ENABLED | I_CmsConstants.C_FLAG_GROUP_PROJECTMANAGER | I_CmsConstants.C_FLAG_GROUP_PROJECTCOWORKER | I_CmsConstants.C_FLAG_GROUP_ROLE, users.getName());
 
         // add the users
-        CmsUser guest = m_driverManager.getUserDriver().addImportUser(CmsUUID.getConstantUUID(A_OpenCms.getDefaultUsers().getUserGuest()), A_OpenCms.getDefaultUsers().getUserGuest(), m_driverManager.getUserDriver().digest(""), m_driverManager.getUserDriver().digest(""), "The guest user", " ", " ", " ", 0, 0, I_CmsConstants.C_FLAG_ENABLED, new Hashtable(), guests, " ", " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
-        CmsUser admin = m_driverManager.getUserDriver().addImportUser(CmsUUID.getConstantUUID(A_OpenCms.getDefaultUsers().getUserAdmin()), A_OpenCms.getDefaultUsers().getUserAdmin(), m_driverManager.getUserDriver().digest("admin"), m_driverManager.getUserDriver().digest(""), "The admin user", " ", " ", " ", 0, 0, I_CmsConstants.C_FLAG_ENABLED, new Hashtable(), administrators, " ", " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
+        CmsUser guest = m_driverManager.getUserDriver().addImportUser(CmsUUID.getConstantUUID(OpenCms.getDefaultUsers().getUserGuest()), OpenCms.getDefaultUsers().getUserGuest(), m_driverManager.getUserDriver().digest(""), m_driverManager.getUserDriver().digest(""), "The guest user", " ", " ", " ", 0, 0, I_CmsConstants.C_FLAG_ENABLED, new Hashtable(), guests, " ", " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
+        CmsUser admin = m_driverManager.getUserDriver().addImportUser(CmsUUID.getConstantUUID(OpenCms.getDefaultUsers().getUserAdmin()), OpenCms.getDefaultUsers().getUserAdmin(), m_driverManager.getUserDriver().digest("admin"), m_driverManager.getUserDriver().digest(""), "The admin user", " ", " ", " ", 0, 0, I_CmsConstants.C_FLAG_ENABLED, new Hashtable(), administrators, " ", " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
         m_driverManager.getUserDriver().addUserToGroup(guest.getId(), guests.getId());
         m_driverManager.getUserDriver().addUserToGroup(admin.getId(), administrators.getId());
         m_driverManager.getWorkflowDriver().writeTaskType(1, 0, "../taskforms/adhoc.asp", "Ad-Hoc", "30308", 1, 1);
@@ -1007,8 +1007,8 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         m_sqlManager = this.initQueries(dbPoolUrl);      
         m_driverManager = driverManager;  
 
-        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Project driver init  : ok");
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Project driver init  : ok");
         }
     }
 
@@ -1139,8 +1139,8 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                         props = m_driverManager.getVfsDriver().readProperties(context.currentProject().getId(), currentFolder, currentFolder.getType());
                         m_driverManager.getVfsDriver().writeProperties(props, onlineProject.getId(), newFolder, newFolder.getType());
                     } catch (CmsException exc) {
-                        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[" + this.getClass().getName() + "] error publishing, copy properties for " + newFolder.toString() + " Message= " + exc.getMessage());
+                        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
+                            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[" + this.getClass().getName() + "] error publishing, copy properties for " + newFolder.toString() + " Message= " + exc.getMessage());
                         }
                     }
                     
@@ -1199,8 +1199,8 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                         props = m_driverManager.getVfsDriver().readProperties(context.currentProject().getId(), currentFolder, currentFolder.getType());
                         m_driverManager.getVfsDriver().writeProperties(props, onlineProject.getId(), onlineFolder, currentFolder.getType());
                     } catch (CmsException exc) {
-                        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[" + this.getClass().getName() + "] error publishing, deleting properties for " + onlineFolder.toString() + " Message= " + exc.getMessage());
+                        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
+                            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[" + this.getClass().getName() + "] error publishing, deleting properties for " + onlineFolder.toString() + " Message= " + exc.getMessage());
                         }
                     }
                     
@@ -1320,8 +1320,8 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                         m_driverManager.getVfsDriver().deleteAllProperties(onlineProject.getId(), currentOnlineFile);
                         m_driverManager.getVfsDriver().deleteAllProperties(context.currentProject().getId(), currentFile);
                     } catch (CmsException exc) {
-                        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[" + this.getClass().getName() + "] error publishing, deleting properties for " + currentOnlineFile.toString() + " Message= " + exc.getMessage());
+                        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
+                            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[" + this.getClass().getName() + "] error publishing, deleting properties for " + currentOnlineFile.toString() + " Message= " + exc.getMessage());
                         }
                     }
                     
@@ -1329,8 +1329,8 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                         m_driverManager.getVfsDriver().removeFile(onlineProject, currentOnlineFile);
                         m_driverManager.getVfsDriver().removeFile(context.currentProject(), currentFile);
                     } catch (CmsException exc) {
-                        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[" + this.getClass().getName() + "] error publishing, deleting resource for " + currentOnlineFile.toString() + " Message= " + exc.getMessage());
+                        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
+                            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[" + this.getClass().getName() + "] error publishing, deleting resource for " + currentOnlineFile.toString() + " Message= " + exc.getMessage());
                         }
                     }
                     
@@ -1338,8 +1338,8 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
     					m_driverManager.getUserDriver().removeAllAccessControlEntries(onlineProject, currentOnlineFile.getResourceAceId());
     					m_driverManager.getUserDriver().removeAllAccessControlEntries(context.currentProject(), currentFile.getResourceAceId());
     				} catch (CmsException exc) {
-    					if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-    						A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[" + this.getClass().getName() + "] error publishing, deleting resource for " + currentOnlineFile.toString() + " Message= " + exc.getMessage());
+    					if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
+    						OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[" + this.getClass().getName() + "] error publishing, deleting resource for " + currentOnlineFile.toString() + " Message= " + exc.getMessage());
     					}
     				}
                       
@@ -1348,8 +1348,8 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                         m_driverManager.getUserDriver().removeAllAccessControlEntries(context.currentProject(), currentFile.getResourceAceId());
     
                     } catch (CmsException exc) {
-                        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[" + this.getClass().getName() + "] error publishing, deleting resource for " + currentOnlineFile.toString() + " Message= " + exc.getMessage());
+                        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
+                            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[" + this.getClass().getName() + "] error publishing, deleting resource for " + currentOnlineFile.toString() + " Message= " + exc.getMessage());
                         }
                     }
                 } else if (currentFile.getState() == I_CmsConstants.C_STATE_CHANGED) {
@@ -1402,8 +1402,8 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                         props = m_driverManager.getVfsDriver().readProperties(context.currentProject().getId(), currentFile, currentFile.getType());
                         m_driverManager.getVfsDriver().writeProperties(props, onlineProject.getId(), onlineFile, currentFile.getType());
                     } catch (CmsException exc) {
-                        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[" + this.getClass().getName() + "] error publishing, deleting properties for " + onlineFile.toString() + " Message= " + exc.getMessage());
+                        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
+                            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[" + this.getClass().getName() + "] error publishing, deleting properties for " + onlineFile.toString() + " Message= " + exc.getMessage());
                         }
                     }
                     
@@ -1475,8 +1475,8 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                         props = m_driverManager.getVfsDriver().readProperties(context.currentProject().getId(), currentFile, currentFile.getType());
                         m_driverManager.getVfsDriver().writeProperties(props, onlineProject.getId(), newFile, newFile.getType());
                     } catch (CmsException exc) {
-                        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[" + this.getClass().getName() + "] error publishing, copy properties for " + newFile.toString() + " Message= " + exc.getMessage());
+                        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
+                            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[" + this.getClass().getName() + "] error publishing, copy properties for " + newFile.toString() + " Message= " + exc.getMessage());
                         }
                     }
                     
@@ -1535,8 +1535,8 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                 m_driverManager.getVfsDriver().deleteAllProperties(onlineProject.getId(), delOnlineFolder);
                 m_driverManager.getVfsDriver().deleteAllProperties(context.currentProject().getId(), currentFolder);
             } catch (CmsException exc) {
-                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[" + this.getClass().getName() + "] error publishing, deleting properties for " + currentFolder.toString() + " Message= " + exc.getMessage());
+                if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
+                    OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[" + this.getClass().getName() + "] error publishing, deleting properties for " + currentFolder.toString() + " Message= " + exc.getMessage());
                 }
             }
 
@@ -2000,8 +2000,8 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         }
         oout.close();
         value = bout.toByteArray();
-        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() && (notSerializable.length() > 0)) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[" + this.getClass().getName() + "] warning, following entrys are not serializeable in the session: " + notSerializable.toString() + ".");
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO) && (notSerializable.length() > 0)) {
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[" + this.getClass().getName() + "] warning, following entrys are not serializeable in the session: " + notSerializable.toString() + ".");
         }
         return value;
     }

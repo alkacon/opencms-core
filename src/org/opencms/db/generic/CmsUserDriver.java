@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/08/12 09:33:15 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2003/08/14 15:37:25 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,10 +33,10 @@ package org.opencms.db.generic;
 
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.I_CmsUserDriver;
+import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAccessControlEntry;
 
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsGroup;
@@ -67,7 +67,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.14 $ $Date: 2003/08/12 09:33:15 $
+ * @version $Revision: 1.15 $ $Date: 2003/08/14 15:37:25 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -562,8 +562,8 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
                 }
                 return result.toString();
             } catch (UnsupportedEncodingException exc) {
-                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsProjectDriver] file.encoding " + m_digestFileEncoding + " for passwords not supported. Using the default one.");
+                if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+                    OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsProjectDriver] file.encoding " + m_digestFileEncoding + " for passwords not supported. Using the default one.");
                 }
                 return new String(m_digest.digest(value.getBytes()));
             }
@@ -862,8 +862,8 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
     public void destroy() throws Throwable {
         finalize();
                 
-        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[" + this.getClass().getName() + "] destroyed!");
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[" + this.getClass().getName() + "] destroyed!");
         }
     }   
 
@@ -875,29 +875,29 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
         m_driverManager = driverManager;
     
         String digest = config.getString(I_CmsConstants.C_CONFIGURATION_DB + ".user.digest.type", "MD5");
-        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Digest configured    : " + digest);
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Digest configured    : " + digest);
         }
     
         m_digestFileEncoding = config.getString(I_CmsConstants.C_CONFIGURATION_DB + ".user.digest.encoding", "UTF-8");
-        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Digest file encoding : " + m_digestFileEncoding);
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Digest file encoding : " + m_digestFileEncoding);
         }
     
         // create the digest
         try {
             m_digest = MessageDigest.getInstance(digest);
-            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Using digest encoding: " + m_digest.getAlgorithm() + " from " + m_digest.getProvider().getName() + " version " + m_digest.getProvider().getVersion());
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Using digest encoding: " + m_digest.getAlgorithm() + " from " + m_digest.getProvider().getName() + " version " + m_digest.getProvider().getVersion());
             }
         } catch (NoSuchAlgorithmException e) {
-            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Error setting digest : using clear passwords - " + e.getMessage());
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Error setting digest : using clear passwords - " + e.getMessage());
             }
         }
         
-        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". User driver init     : ok");
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". User driver init     : ok");
         }
     }
 

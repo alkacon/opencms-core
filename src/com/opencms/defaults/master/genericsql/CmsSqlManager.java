@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsSqlManager.java,v $
- * Date   : $Date: 2003/07/22 00:29:22 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/08/14 15:37:25 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,9 +30,10 @@
  */
 package com.opencms.defaults.master.genericsql;
 
+import org.opencms.main.OpenCms;
+
 import com.opencms.boot.CmsBase;
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
 import com.opencms.file.CmsObject;
 import com.opencms.flex.util.CmsStringSubstitution;
 
@@ -58,7 +59,7 @@ import java.util.Properties;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $ $Date: 2003/07/22 00:29:22 $
+ * @version $Revision: 1.6 $ $Date: 2003/08/14 15:37:25 $
  */
 public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
     
@@ -230,8 +231,8 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
     public String get(String queryKey) {              
         String value = null;
         if ((value = m_queries.getProperty(queryKey)) == null) {
-            if (A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + getClass().getName() + "] query '" + queryKey + "' not found!");
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + getClass().getName() + "] query '" + queryKey + "' not found!");
             }
         }
         return value;

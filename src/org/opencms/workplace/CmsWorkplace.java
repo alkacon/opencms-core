@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2003/08/11 11:00:11 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2003/08/14 15:37:25 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,10 +30,10 @@
  */
 package org.opencms.workplace;
 
+import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
 
-import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 5.1
  */
@@ -237,7 +237,7 @@ public abstract class CmsWorkplace {
         
         // check out the user information for a default view that might be stored there
         if (startSettings != null) {
-            settings.setCurrentView(A_OpenCms.getLinkManager().substituteLink(cms, (String)startSettings.get(I_CmsConstants.C_START_VIEW)));
+            settings.setCurrentView(OpenCms.getLinkManager().substituteLink(cms, (String)startSettings.get(I_CmsConstants.C_START_VIEW)));
         }
                   
         return settings;   
@@ -332,7 +332,7 @@ public abstract class CmsWorkplace {
             boolean useVfs = true;
             // check registry for setting of workplace images
             try {
-                useVfs = (new Boolean(A_OpenCms.getRegistry().getSystemValue("UseWpPicturesFromVFS"))).booleanValue();
+                useVfs = (new Boolean(OpenCms.getRegistry().getSystemValue("UseWpPicturesFromVFS"))).booleanValue();
             } catch (CmsException e) {
                 // by default (useVfs == true) we assume that we want to use exported resources
             }            
@@ -686,7 +686,7 @@ public abstract class CmsWorkplace {
     public String getExplorerFileListFullUri() {
         if (m_file_explorer_filelist != null) return m_file_explorer_filelist;
         synchronized (this) {
-            m_file_explorer_filelist = A_OpenCms.getLinkManager().substituteLink(getCms(), C_FILE_EXPLORER_FILELIST);            
+            m_file_explorer_filelist = OpenCms.getLinkManager().substituteLink(getCms(), C_FILE_EXPLORER_FILELIST);            
         }
         return m_file_explorer_filelist;
     }

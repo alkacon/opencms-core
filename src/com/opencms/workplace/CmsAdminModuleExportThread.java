@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleExportThread.java,v $
- * Date   : $Date: 2003/07/23 09:58:55 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/08/14 15:37:24 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,8 +28,9 @@
 
 package com.opencms.workplace;
 
+import org.opencms.main.OpenCms;
+
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsObject;
 import com.opencms.file.I_CmsRegistry;
@@ -42,7 +43,7 @@ import com.opencms.report.I_CmsReport;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.0 rc 1
  */
 public class CmsAdminModuleExportThread extends A_CmsReportThread {
@@ -100,8 +101,8 @@ public class CmsAdminModuleExportThread extends A_CmsReportThread {
         }
         catch(CmsException e) {
             m_report.println(e);
-            if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL) ) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, e.getMessage());
+            if(OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL) ) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, e.getMessage());
             }
             if (DEBUG) System.err.println("CmsAdminModuleExportThread() Exception:" + e.getMessage());
         }

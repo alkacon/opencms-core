@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleDeleteThread.java,v $
- * Date   : $Date: 2003/08/07 18:47:27 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2003/08/14 15:37:24 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,8 +28,9 @@
 
 package com.opencms.workplace;
 
+import org.opencms.main.OpenCms;
+
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
@@ -47,7 +48,7 @@ import java.util.Vector;
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Hanjo Riege
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * @since 5.0 rc 1
  */
 public class CmsAdminModuleDeleteThread extends A_CmsReportThread {
@@ -99,8 +100,8 @@ public class CmsAdminModuleDeleteThread extends A_CmsReportThread {
             CmsProject project = m_cms.createProject(
                 "DeleteModule", 
                 "A System generated project to delete the module " + moduleName, 
-                A_OpenCms.getDefaultUsers().getGroupAdministrators(),
-                A_OpenCms.getDefaultUsers().getGroupAdministrators(),
+                OpenCms.getDefaultUsers().getGroupAdministrators(),
+                OpenCms.getDefaultUsers().getGroupAdministrators(),
                 I_CmsConstants.C_PROJECT_TYPE_TEMPORARY
             );            
             m_cms.getRequestContext().setCurrentProject(project.getId());
@@ -127,8 +128,8 @@ public class CmsAdminModuleDeleteThread extends A_CmsReportThread {
         }
         catch(CmsException e) {
             m_report.println(e);
-            if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL) ) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, e.getMessage());
+            if(OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL) ) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, e.getMessage());
             }
             if (DEBUG) System.err.println("CmsAdminModuleDeleteThread() Exception:" + e.getMessage());
         }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2003/08/11 18:30:52 $
-* Version: $Revision: 1.260 $
+* Date   : $Date: 2003/08/14 15:37:24 $
+* Version: $Revision: 1.261 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.260 $ $Date: 2003/08/11 18:30:52 $
+ * @version $Revision: 1.261 $ $Date: 2003/08/14 15:37:24 $
  */
 public interface I_CmsConstants {
 
@@ -48,11 +48,6 @@ public interface I_CmsConstants {
      * The copyright message for OpenCms.
      */
     String C_COPYRIGHT[] = {"", "Copyright (c) 2002-2003 Alkacon Software", "Copyright (c) 2000-2002 The OpenCms Group", "OpenCms comes with ABSOLUTELY NO WARRANTY", "This is free software, and you are welcome to", "redistribute it under certain conditions.", "Please see the GNU Lesser General Public Licence for", "further details.", "" };
-
-    /**
-     * Replacekey for the webapplication name (used in opencms.properties)
-     */
-    String C_WEB_APP_REPLACE_KEY = "${WEB_APP_NAME}";
 
     /**
      * The minimum-size of a passwordstring.
@@ -334,7 +329,7 @@ public interface I_CmsConstants {
      * All may read this resource.
      */
     int C_ACCESS_READ = C_PERMISSION_READ + C_ACCESS_PUBLIC_READ;
-    // + C_ACCESS_GROUP_READ
+    
     /**
      * All may write this resource.
      */
@@ -354,7 +349,7 @@ public interface I_CmsConstants {
      * Group has full access to this resource.
      */
     int C_ACCESS_GROUP = C_ACCESS_GROUP_WRITE + C_ACCESS_GROUP_VISIBLE;
-    // + C_ACCESS_GROUP_READ
+
     /**
      *  has full access to this resource.
      */
@@ -626,12 +621,6 @@ public interface I_CmsConstants {
     /** Task order value */
     String C_ORDER_PRIORITY = "priorityref";
 
-    /** Task sort value ascending  */
-    String C_SORT_ASC = "ASC";
-
-    /** Task sort value descending */
-    String C_SORT_DESC = "DESC";
-
     /** Task priority high */
     int C_TASK_PRIORITY_HIGH = 1;
 
@@ -688,149 +677,6 @@ public interface I_CmsConstants {
 
     /** state values of task messages when members */
     int C_TASK_MESSAGES_MEMBERS = 8;
-    String C_FILE = "FILE";
-    String C_FILECONTENT = "CONTENT";
-    String C_FOLDER = "FOLDER";
-    String C_USER = "USER";
-    String C_GROUP = "GROUP";
-
-    /**
-     * Values for the database import and export
-     */
-
-    /** Export type value - exports users and resources */
-    int C_EXPORTUSERSFILES = 0;
-
-    /**Export type value - exports only users */
-    int C_EXPORTONLYUSERS = 1;
-
-    /**Export type value - exports only resources */
-    int C_EXPORTONLYFILES = 2;
-
-    /**Are files imported - NO */
-    int C_NO_FILES_IMPORTED = 0;
-
-    /**Are files imported - yes */
-    int C_FILES_IMPORTED = 1;
-
-    /**
-     * root element in the XML file (the document node)
-     * needed, to insert other elements
-     */
-    String C_FELEMENT = "CMS_EXPORT";
-
-    /** first XML element tag for the resources */
-    String C_TFILES = "FILES";
-
-    /** XML tag to defines one resource */
-    String C_TFILEOBJ = "FILEOBJ";
-
-    /** XML tag to defines the resource name */
-    String C_TFNAME = "NAME";
-
-    /** XML tag to defines the resource type */
-    String C_TFTYPE = "TYPE";
-
-    /** XML tag to defines the resource typename */
-    String C_TFTYPENAME = "TYPENAME";
-
-    /** XML tag to defines user acces */
-    String C_TFUSER = "USER";
-
-    /** XML tag to defines group acces */
-    String C_TFGROUP = "GROUP";
-
-    /** XML tag to defines file acces */
-    String C_TFACCESS = "ACCESFLAG";
-
-    /** XML tag to defines the resource property */
-    String C_TFPROPERTYINFO = "PROPERTYINFO";
-
-    /** XML tag to defines the resource property */
-    String C_TFPROPERTYNAME = "PROPERTYNAME";
-
-    /** XML tag to defines the resource propertytype */
-    String C_TFPROPERTYTYPE = "PROPERTYTYP";
-
-    /** XML tag to defines the resource propertyvalue */
-    String C_TFPROPERTYVALUE = "PROPERTYVALUE";
-
-    /** XML tag to defines the resource content if resource is a file */
-    String C_FCONTENT = "CONTENT";
-
-    /** first XML element tag for the groups */
-    String C_TGROUPS = "GROUPS";
-
-    /** XML tag to defines one group */
-    String C_TGROUPOBJ = "GROUPOBJ";
-
-    /** XML tag to defines the group name */
-    String C_TGNAME = "NAME";
-
-    /** XML tag to defines the parentgroup name */
-    String C_TGPARENTGROUP = "PARENTGROUP";
-
-    /** XML tag to defines the description of group */
-    String C_TGDESC = "DESC";
-
-    /** XML tag to defines the flag of group */
-    String C_TGFLAG = "FLAG";
-
-    /** XML tag to defines all users of the group */
-    String C_TGROUPUSERS = "GROUPUSERS";
-
-    /** XML tag to defines the name of  user in group */
-    String C_TGUSER = "USER";
-
-    /** first XML element tag for the users */
-    String C_TUSERS = "USERS";
-
-    /** XML tag to defines one user */
-    String C_TUSEROBJ = "USEROBJ";
-
-    /** XML tag to defines the user login */
-    String C_TULOGIN = "LOGIN";
-
-    /** XML tag to defines the user PASSWD default "Kennwort" */
-    String C_TUPASSWD = "PASSWD";
-
-    /** XML tag to defines the user Lastname */
-    String C_TUNAME = "NAME";
-
-    /** XML tag to defines the user Firstname */
-    String C_TUFIRSTNAME = "FIRSTNAME";
-
-    /** XML tag to defines the user Description */
-    String C_TUDESC = "DESC";
-
-    /** XML tag to defines the user EMail */
-    String C_TUEMAIL = "EMAIL";
-
-    /** XML tag to defines the user defaultgroup */
-    String C_TUDGROUP = "DEFAULTGROUP";
-
-    /** XML tag to defines if the user is disabled */
-    String C_TUDISABLED = "DISABLED";
-
-    /** XML tag to defines the user flag */
-    String C_TUFLAG = "FLAG";
-
-    /** XML tag to defines the groups in which the user is in */
-    String C_TUSERGROUPS = "USERGROUPS";
-
-    /** XML tag to defines the user group name */
-    String C_TUGROUP = "GROUP";
-
-    /** XML tag to defines additional user info */
-    String C_TUADDINFO = "ADDINFO";
-
-    /** XML tag to defines additional user info key */
-    String C_TUINFOKEY = "INFOKEY";
-
-    /** XML tag to defines additional user info value */
-    String C_TUINFOVALUE = "INFOVALUE";
-
-    // Contants for preferences
 
     /** Task preferenses filter */
     String C_TASK_FILTER = "task.filter.";

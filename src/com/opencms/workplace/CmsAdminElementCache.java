@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminElementCache.java,v $
-* Date   : $Date: 2003/07/19 01:51:38 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2003/08/14 15:37:24 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,8 +29,8 @@
 package com.opencms.workplace;
 
 import org.opencms.loader.CmsXmlTemplateLoader;
+import org.opencms.main.OpenCms;
 
-import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsObject;
 import com.opencms.template.cache.CmsElementCache;
@@ -42,7 +42,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Hanjo Riege
- * @version $Revision: 1.7 $ $Date: 2003/07/19 01:51:38 $
+ * @version $Revision: 1.8 $ $Date: 2003/08/14 15:37:24 $
  */
 public class CmsAdminElementCache extends CmsWorkplaceDefault {
 
@@ -60,13 +60,13 @@ public class CmsAdminElementCache extends CmsWorkplaceDefault {
 
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) throws CmsException {
-        if(com.opencms.boot.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && C_DEBUG && A_OpenCms.isLogging()) {
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName()
+        if(C_DEBUG && OpenCms.isLogging(C_OPENCMS_DEBUG)) {
+            OpenCms.log(C_OPENCMS_DEBUG, this.getClassName()
                     + "getting content of element "
                             + ((elementName == null) ? "<root>" : elementName));
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName()
+            OpenCms.log(C_OPENCMS_DEBUG, this.getClassName()
                     + "template file is: " + templateFile);
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName()
+            OpenCms.log(C_OPENCMS_DEBUG, this.getClassName()
                     + "selected template section is: "
                             + ((templateSelector == null) ? "<default>" : templateSelector));
         }

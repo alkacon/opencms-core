@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManager.java,v $
- * Date   : $Date: 2003/08/06 16:32:48 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/08/14 15:37:26 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,9 @@
 
 package org.opencms.site;
 
+import org.opencms.main.OpenCms;
+
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
@@ -55,7 +56,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.1
  */
 public final class CmsSiteManager implements Cloneable {
@@ -74,8 +75,8 @@ public final class CmsSiteManager implements Cloneable {
      */
     public CmsSiteManager(String[] siteRoots, String siteDefault) {
                 
-        if (A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Site roots configured: " + (siteRoots.length + ((siteDefault!=null)?1:0)));
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Site roots configured: " + (siteRoots.length + ((siteDefault!=null)?1:0)));
         }
                         
         m_sites = new HashMap(siteRoots.length);        
@@ -86,8 +87,8 @@ public final class CmsSiteManager implements Cloneable {
             // check if this is a vailid site root entry
             if (pos < 0) {
                 // entry must have a "|" in the string
-                if (A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, ". Site root init error : malformed entry " + siteRoots[i]);
+                if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+                    OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, ". Site root init error : malformed entry " + siteRoots[i]);
                 }
                 continue;
             }
@@ -97,8 +98,8 @@ public final class CmsSiteManager implements Cloneable {
             
             if ((matcherStr.length() == 0) || (rootStr.length() == 0)) {
                 // both matcher and root must not be empty
-                if (A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, ". Site root init error : malformed entry " + siteRoots[i]);
+                if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+                    OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, ". Site root init error : malformed entry " + siteRoots[i]);
                 }
                 continue;
             }            
@@ -108,8 +109,8 @@ public final class CmsSiteManager implements Cloneable {
             CmsSite site = new CmsSite(rootStr, matcher);
             m_sites.put(matcher, site);
             
-            if (A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Site root added      : " + site.toString());
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Site root added      : " + site.toString());
             }
         }
         // TODO: check if default site root VFS resource actually exists (needs a CmsObject)
@@ -118,8 +119,8 @@ public final class CmsSiteManager implements Cloneable {
         } else {            
             m_defaultSite = new CmsSite(siteDefault, CmsSiteMatcher.C_DEFAULT_MATCHER);
         } 
-        if (A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Site root default    : " + m_defaultSite);
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Site root default    : " + m_defaultSite);
         }
     }
     
@@ -191,7 +192,7 @@ public final class CmsSiteManager implements Cloneable {
      * @return a list of all site available for the current user
      */
     public static List getAvailableSites(CmsObject cms, boolean workplaceMode) {
-        Map sites = A_OpenCms.getSiteManager().getSiteList();
+        Map sites = OpenCms.getSiteManager().getSiteList();
         List siteroots = new ArrayList(sites.size() + 1);
         Map siteServers = new HashMap(sites.size() + 1);
         List result = new ArrayList(sites.size() + 1);
@@ -208,8 +209,8 @@ public final class CmsSiteManager implements Cloneable {
             }            
         }        
         // add default site
-        if (workplaceMode && A_OpenCms.getSiteManager().getDefaultSite() != null) {
-            String folder = A_OpenCms.getSiteManager().getDefaultSite().getSiteRoot() + "/";
+        if (workplaceMode && OpenCms.getSiteManager().getDefaultSite() != null) {
+            String folder = OpenCms.getSiteManager().getDefaultSite().getSiteRoot() + "/";
             if (! siteroots.contains(folder)) {
                 siteroots.add(folder);
             }   
@@ -247,8 +248,8 @@ public final class CmsSiteManager implements Cloneable {
                 }      
             }
         } catch (Throwable t) {
-            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "CmsSite.getAvailableSites() - Error reading site properties: " + t.getMessage());
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "CmsSite.getAvailableSites() - Error reading site properties: " + t.getMessage());
             }            
         } finally {
             // restore the user's current context 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsCronScheduleJob.java,v $
-* Date   : $Date: 2003/01/20 17:57:49 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2003/08/14 15:37:24 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import com.opencms.util.Utils;
 /**
  * This thread launches one job in its own thread.
  */
-class CmsCronScheduleJob extends Thread {
+public class CmsCronScheduleJob extends Thread {
 
     /** The CmsObject to get access to the system */
     private CmsObject m_cms;
@@ -49,7 +49,7 @@ class CmsCronScheduleJob extends Thread {
      * @param cms the CmsObject with an logged in user.
      * @poaram entry the entry to launch.
      */
-    CmsCronScheduleJob(CmsObject cms, CmsCronEntry entry) {
+    public CmsCronScheduleJob(CmsObject cms, CmsCronEntry entry) {
         m_cms = cms;
         m_entry = entry;
     }
@@ -67,12 +67,12 @@ class CmsCronScheduleJob extends Thread {
             // invoke method launch
             String retValue = job.launch(m_cms, m_entry.getModuleParameter());
             // log the returnvalue to the logfile
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && CmsBase.isLogging()) {
+            if( CmsBase.isLogging()) {
                 CmsBase.log(I_CmsLogChannels.C_OPENCMS_CRONSCHEDULER, "Successful launch of job " + m_entry +  (retValue != null ? " Message: " + retValue : "") );
             }
         } catch(Exception exc) {
             // log the exception
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && CmsBase.isLogging()) {
+            if( CmsBase.isLogging()) {
                 CmsBase.log(I_CmsLogChannels.C_OPENCMS_CRONSCHEDULER, "Error running job for " + m_entry + " Error: " + Utils.getStackTrace(exc));
             }
         }

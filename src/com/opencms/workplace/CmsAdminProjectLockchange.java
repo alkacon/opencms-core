@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectLockchange.java,v $
-* Date   : $Date: 2003/07/31 13:19:36 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2003/08/14 15:37:24 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,8 +28,8 @@
 
 package com.opencms.workplace;
 
-import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
+import org.opencms.main.OpenCms;
+
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsProject;
@@ -42,7 +42,7 @@ import java.util.Hashtable;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.12 $ $Date: 2003/07/31 13:19:36 $
+ * @version $Revision: 1.13 $ $Date: 2003/08/14 15:37:24 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -62,12 +62,12 @@ public class CmsAdminProjectLockchange extends CmsWorkplaceDefault {
     
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, 
             Hashtable parameters, String templateSelector) throws CmsException {
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() && C_DEBUG) {
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "getting content of element " 
+        if(OpenCms.isLogging(C_OPENCMS_DEBUG) && C_DEBUG) {
+            OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "getting content of element " 
                     + ((elementName == null) ? "<root>" : elementName));
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: " 
+            OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: " 
                     + templateFile);
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " 
+            OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " 
                     + ((templateSelector == null) ? "<default>" : templateSelector));
         }
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, 
@@ -91,8 +91,8 @@ public class CmsAdminProjectLockchange extends CmsWorkplaceDefault {
             catch(CmsException exc) {
                 
                 // error while lockchange
-                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                    A_OpenCms.log(C_OPENCMS_INFO, exc.getMessage());
+                if(OpenCms.isLogging(C_OPENCMS_INFO) ) {
+                    OpenCms.log(C_OPENCMS_INFO, exc.getMessage());
                 }
                 
                 // get errorpage:

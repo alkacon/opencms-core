@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/A_CmsElement.java,v $
-* Date   : $Date: 2003/08/07 18:47:27 $
-* Version: $Revision: 1.47 $
+* Date   : $Date: 2003/08/14 15:37:25 $
+* Version: $Revision: 1.48 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,10 +29,10 @@
 package com.opencms.template.cache;
 
 import org.opencms.loader.CmsXmlTemplateLoader;
+import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
 
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
@@ -127,8 +127,8 @@ public abstract class A_CmsElement {
      * @return a CmsElementVariant of dependencies that must be deleted from extern store for this element
      */
     public Vector addVariant(Object key, CmsElementVariant variant) {
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_ELEMENTCACHE, toString() + " adding variant \"" + key + "\" to cache. ");
+        if(OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_ELEMENTCACHE)) {
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_ELEMENTCACHE, toString() + " adding variant \"" + key + "\" to cache. ");
         }
         if(key != null){
             CmsElementVariant old = (CmsElementVariant)m_variants.get(key);
@@ -145,8 +145,8 @@ public abstract class A_CmsElement {
      *
      */
     public void removeVariant(Object key){
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_ELEMENTCACHE, toString() + " removing variant \"" + key + "\" from cache. ");
+        if(OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_ELEMENTCACHE)) {
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_ELEMENTCACHE, toString() + " removing variant \"" + key + "\" from cache. ");
         }
         if(key != null){
             m_variants.remove(key);
@@ -233,11 +233,11 @@ public abstract class A_CmsElement {
         if(result != null && result.size() == 0){
             result = null;
         }
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+        if(OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_ELEMENTCACHE)) {
             if(result != null) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_ELEMENTCACHE, toString() + " getting variant \"" + key + "\" from cache. ");
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_ELEMENTCACHE, toString() + " getting variant \"" + key + "\" from cache. ");
             } else {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_ELEMENTCACHE, toString() + " Variant \"" + key + "\" is not in element cache. ");
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_ELEMENTCACHE, toString() + " Variant \"" + key + "\" is not in element cache. ");
             }
         }
         return result;
@@ -317,8 +317,8 @@ public abstract class A_CmsElement {
 
                 }catch(Exception e){
                     // do nothing, set everything to false and log the error
-                    if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                        A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_ELEMENTCACHE, toString()
+                    if(OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_ELEMENTCACHE)) {
+                        OpenCms.log(I_CmsLogChannels.C_OPENCMS_ELEMENTCACHE, toString()
                                     + " could not find out if the element is proxy cacheable. "+ e.getMessage());
                     }
                 }
@@ -458,7 +458,7 @@ public abstract class A_CmsElement {
                                 // An error occured while getting the element's content.
                                 // Do some error handling here.
                                 if(I_CmsConstants.C_USER_TYPE_SYSTEMUSER == cms.getRequestContext().currentUser().getType()
-                                    && !A_OpenCms.getDefaultUsers().getUserGuest().equals(cms.getRequestContext().currentUser().getName())){
+                                    && !OpenCms.getDefaultUsers().getUserGuest().equals(cms.getRequestContext().currentUser().getName())){
                                     // a systemuser gets the real message.(except guests)
                                     errorMessage = e.toString();
                                 }
@@ -467,22 +467,22 @@ public abstract class A_CmsElement {
                                 if(e instanceof CmsException) {
                                     CmsException ce = (CmsException)e;
                                     if(ce instanceof CmsSecurityException) {
-                                        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                                            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, toString() + " Access denied in element " + lookupName);
+                                        if(OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+                                            OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, toString() + " Access denied in element " + lookupName);
                                         }
                                         throw ce;
                                     } else {
                                         // Any other CmsException. This may be critical
-                                        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                                            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, toString() + " Error in element " + lookupName);
-                                            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, toString() + e);
+                                        if(OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+                                            OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, toString() + " Error in element " + lookupName);
+                                            OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, toString() + e);
                                         }
                                     }
                                 } else {
                                     // Any other Non-CmsException.
-                                    if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                                        A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, toString() + " Non-CmsException in element " + lookupName);
-                                        A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, toString() + e);
+                                    if(OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+                                        OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, toString() + " Non-CmsException in element " + lookupName);
+                                        OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, toString() + e);
                                     }
                                 }
                             }
@@ -494,8 +494,8 @@ public abstract class A_CmsElement {
                             // The subelement object is null, i.e. the element could not be found.
                             // Do nothing but a little bit logging here.
                             if(resolveDebug) System.err.println("= Cannot find Element object for \"" + lookupName +"\". Ignoring this link. ");
-                            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_ELEMENTCACHE, toString() + " Cannot find Element object for \"" + lookupName +"\". Ignoring this link. ");
+                            if(OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_ELEMENTCACHE)) {
+                                OpenCms.log(I_CmsLogChannels.C_OPENCMS_ELEMENTCACHE, toString() + " Cannot find Element object for \"" + lookupName +"\". Ignoring this link. ");
                             }
                         }
 
@@ -509,8 +509,8 @@ public abstract class A_CmsElement {
                         // No element definition could be found.
                         // Do some logging only and ignore this element
                         baos.write(("[" + lookupName + "] Element not defined.").getBytes());
-                        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_ELEMENTCACHE, toString() + " No element definition found for \"" + lookupName +"\". Ignoring this link. ");
+                        if(OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_ELEMENTCACHE)) {
+                            OpenCms.log(I_CmsLogChannels.C_OPENCMS_ELEMENTCACHE, toString() + " No element definition found for \"" + lookupName +"\". Ignoring this link. ");
                         }
                         if(resolveDebug) {
                             System.err.println("= No element definition found for \"" + lookupName +"\". Ignoring this link. ");
@@ -531,15 +531,15 @@ public abstract class A_CmsElement {
                             buffer = metEle.getContent(elementCache, cms, elDefs, null,parameters, methodParameter);
                         }catch(Exception e){
                             if(e instanceof CmsException) {
-                                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, toString() + " Error in method " + methodName );
-                                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, toString() + e);
+                                if(OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+                                    OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, toString() + " Error in method " + methodName );
+                                    OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, toString() + e);
                                 }
                             }else{
                                 // Any other Non-CmsException.
-                                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, toString() + " Non-CmsException in method " + methodName);
-                                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, toString() + e);
+                                if(OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+                                    OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, toString() + " Non-CmsException in method " + methodName);
+                                    OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, toString() + e);
                                 }
                             }
                         }
@@ -547,8 +547,8 @@ public abstract class A_CmsElement {
                         // The subelement object is null, i.e. the element could not be found.
                         // Do nothing but a little bit logging here.
                         if(resolveDebug) System.err.println("= Cannot find methodElemtn object for \"" + methodName +"\". Ignoring this link. ");
-                        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_ELEMENTCACHE, toString() + " Cannot find method Element object for \"" + methodName +"\". Ignoring this link. ");
+                        if(OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_ELEMENTCACHE)) {
+                            OpenCms.log(I_CmsLogChannels.C_OPENCMS_ELEMENTCACHE, toString() + " Cannot find method Element object for \"" + methodName +"\". Ignoring this link. ");
                         }
                     }
                     // If we have some results print them out.
@@ -560,8 +560,8 @@ public abstract class A_CmsElement {
             return baos.toByteArray();
         } catch(IOException e) {
             // Something went wrong while writing to the OutputStream
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, toString() + " Critical: IOException while writing to OutputStream. ");
+            if(OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, toString() + " Critical: IOException while writing to OutputStream. ");
             }
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
         }

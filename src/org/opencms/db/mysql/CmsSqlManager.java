@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsSqlManager.java,v $
- * Date   : $Date: 2003/06/13 14:48:16 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/08/14 15:37:26 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,8 @@
  
 package org.opencms.db.mysql;
 
-import com.opencms.core.A_OpenCms;
+import org.opencms.main.OpenCms;
+
 import com.opencms.util.Encoder;
 
 import java.util.Properties;
@@ -40,7 +41,7 @@ import java.util.Properties;
  * Handles SQL queries from query.properties of the MySQL driver package.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2003/06/13 14:48:16 $ 
+ * @version $Revision: 1.3 $ $Date: 2003/08/14 15:37:26 $ 
  * @since 5.1
  */
 public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
@@ -116,7 +117,7 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
      */
     public static boolean singleByteEncoding() {
         if (c_escapeStrings == null) {
-            String encoding = A_OpenCms.getDefaultEncoding();
+            String encoding = OpenCms.getDefaultEncoding();
             c_escapeStrings = new Boolean("ISO-8859-1".equalsIgnoreCase(encoding) || "ISO-8859-15".equalsIgnoreCase(encoding) || "US-ASCII".equalsIgnoreCase(encoding) || "Cp1252".equalsIgnoreCase(encoding));
         }
         return c_escapeStrings.booleanValue();

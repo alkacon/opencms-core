@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/08/10 11:49:48 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2003/08/14 15:37:25 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,9 +33,9 @@ package org.opencms.db.generic;
 
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.I_CmsBackupDriver;
+import org.opencms.main.OpenCms;
 
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsBackupProject;
@@ -65,7 +65,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the backup driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.26 $ $Date: 2003/08/10 11:49:48 $
+ * @version $Revision: 1.27 $ $Date: 2003/08/14 15:37:25 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
@@ -162,8 +162,8 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
     public void destroy() throws Throwable {
         finalize();
 
-        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[" + this.getClass().getName() + "] destroyed!");
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[" + this.getClass().getName() + "] destroyed!");
         }
     }
 
@@ -240,9 +240,9 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
                 
         m_maxResourceVersionCount = config.getInteger(I_CmsConstants.C_CONFIGURATION_HISTORY + ".maxCountPerResource", 10);
 
-        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". max. backup/resource : " + m_maxResourceVersionCount);
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Backup driver init   : ok");
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". max. backup/resource : " + m_maxResourceVersionCount);
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Backup driver init   : ok");
         }
     }
 

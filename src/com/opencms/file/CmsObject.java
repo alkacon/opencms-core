@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/08/14 12:50:53 $
-* Version: $Revision: 1.375 $
+* Date   : $Date: 2003/08/14 15:37:26 $
+* Version: $Revision: 1.376 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@ package com.opencms.file;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.loader.CmsXmlTemplateLoader;
 import org.opencms.lock.CmsLock;
+import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
@@ -39,7 +40,6 @@ import org.opencms.security.I_CmsPrincipal;
 import org.opencms.synchronize.CmsSynchronize;
 
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsCoreSession;
 import com.opencms.core.CmsException;
 import com.opencms.core.CmsExportRequest;
@@ -77,7 +77,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.375 $
+ * @version $Revision: 1.376 $
  */
 public class CmsObject {
 
@@ -1612,7 +1612,7 @@ public class CmsObject {
      * @param data A data object that contains data used by the event listeners
      */
     private void fireEvent(int type, Object data) {
-        A_OpenCms.fireCmsEvent(this, type, Collections.singletonMap("data", data));
+        OpenCms.fireCmsEvent(this, type, Collections.singletonMap("data", data));
     }
 
     /**
@@ -1812,7 +1812,7 @@ public class CmsObject {
     public CmsObject getCmsObjectForStaticExport(CmsExportRequest dReq, CmsExportResponse dRes) throws CmsException {
 
         CmsObject cmsForStaticExport = new CmsObject();
-        cmsForStaticExport.init(m_driverManager, dReq, dRes, A_OpenCms.getDefaultUsers().getUserGuest(), I_CmsConstants.C_PROJECT_ONLINE_ID, getRequestContext().getSiteRoot(), null, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
+        cmsForStaticExport.init(m_driverManager, dReq, dRes, OpenCms.getDefaultUsers().getUserGuest(), I_CmsConstants.C_PROJECT_ONLINE_ID, getRequestContext().getSiteRoot(), null, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
         return cmsForStaticExport;
     }
 
@@ -2716,10 +2716,10 @@ public class CmsObject {
                     }
                 }
             }
-            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, stamp1);
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, stamp2);
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + ".publishProject()/1] Exception: " + e);
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, stamp1);
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, stamp2);
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + ".publishProject()/1] Exception: " + e);
             }
         } finally {
             if (changedResources == null || changedResources.size() < 1) {
@@ -2732,10 +2732,10 @@ public class CmsObject {
                     System.err.println(stamp2);
                     System.err.println(stamp3);
                 }
-                if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_DEBUG)) {
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, stamp1);
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, stamp2);
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, stamp3);
+                if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_DEBUG)) {
+                    OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, stamp1);
+                    OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, stamp2);
+                    OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, stamp3);
                 }
                 success = false;
             }
@@ -2805,8 +2805,8 @@ public class CmsObject {
                 int newProjectId = m_driverManager.createDirectPublishProject(
                     m_context, projectName, 
                     "", 
-                    A_OpenCms.getDefaultUsers().getGroupUsers(), 
-                    A_OpenCms.getDefaultUsers().getGroupProjectmanagers(), 
+                    OpenCms.getDefaultUsers().getGroupUsers(), 
+                    OpenCms.getDefaultUsers().getGroupProjectmanagers(), 
                     I_CmsConstants.C_PROJECT_TYPE_TEMPORARY
                 ).getId();
                 retValue = newProjectId;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexRequest.java,v $
- * Date   : $Date: 2003/07/12 11:29:22 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2003/08/14 15:37:25 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,8 @@
 
 package com.opencms.flex.cache;
 
-import com.opencms.core.A_OpenCms;
+import org.opencms.main.OpenCms;
+
 import com.opencms.file.CmsObject;
 import com.opencms.flex.CmsEvent;
 import com.opencms.flex.I_CmsEventListener;
@@ -56,7 +57,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
  * the CmsFlexCache.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  */
 public class CmsFlexRequest extends HttpServletRequestWrapper {
            
@@ -135,22 +136,22 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
                 boolean p_on = l.contains("online");
                 boolean p_off = l.contains("offline");                
                 if (l.contains("purge") && firstCall) {
-                    A_OpenCms.fireCmsEvent(new CmsEvent(cms, I_CmsEventListener.EVENT_FLEX_PURGE_JSP_REPOSITORY, new java.util.HashMap(0)));
-                    A_OpenCms.fireCmsEvent(new CmsEvent(cms, I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR, Collections.singletonMap("action", new Integer(CmsFlexCache.C_CLEAR_ENTRIES))));
+                    OpenCms.fireCmsEvent(new CmsEvent(cms, I_CmsEventListener.EVENT_FLEX_PURGE_JSP_REPOSITORY, new java.util.HashMap(0)));
+                    OpenCms.fireCmsEvent(new CmsEvent(cms, I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR, Collections.singletonMap("action", new Integer(CmsFlexCache.C_CLEAR_ENTRIES))));
                     dorecompile = false;
                 } else if ((l.contains("clearcache") || dorecompile) && firstCall) {
                     if (! (p_on || p_off)) {
-                        A_OpenCms.fireCmsEvent(new CmsEvent(cms, I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR, Collections.singletonMap("action", new Integer(CmsFlexCache.C_CLEAR_ALL))));
+                        OpenCms.fireCmsEvent(new CmsEvent(cms, I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR, Collections.singletonMap("action", new Integer(CmsFlexCache.C_CLEAR_ALL))));
                     } else {
-                        if (p_on) A_OpenCms.fireCmsEvent(new CmsEvent(cms, I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR, Collections.singletonMap("action", new Integer(CmsFlexCache.C_CLEAR_ONLINE_ALL))));
-                        if (p_off) A_OpenCms.fireCmsEvent(new CmsEvent(cms, I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR, Collections.singletonMap("action", new Integer(CmsFlexCache.C_CLEAR_OFFLINE_ALL))));
+                        if (p_on) OpenCms.fireCmsEvent(new CmsEvent(cms, I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR, Collections.singletonMap("action", new Integer(CmsFlexCache.C_CLEAR_ONLINE_ALL))));
+                        if (p_off) OpenCms.fireCmsEvent(new CmsEvent(cms, I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR, Collections.singletonMap("action", new Integer(CmsFlexCache.C_CLEAR_OFFLINE_ALL))));
                     }                    
                 } else if (l.contains("clearvariations") && firstCall) {
                     if (! (p_on || p_off)) {
-                        A_OpenCms.fireCmsEvent(new CmsEvent(cms, I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR, Collections.singletonMap("action", new Integer(CmsFlexCache.C_CLEAR_ENTRIES))));
+                        OpenCms.fireCmsEvent(new CmsEvent(cms, I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR, Collections.singletonMap("action", new Integer(CmsFlexCache.C_CLEAR_ENTRIES))));
                     } else {
-                        if (p_on) A_OpenCms.fireCmsEvent(new CmsEvent(cms, I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR, Collections.singletonMap("action", new Integer(CmsFlexCache.C_CLEAR_ONLINE_ENTRIES))));
-                        if (p_off)  A_OpenCms.fireCmsEvent(new CmsEvent(cms, I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR, Collections.singletonMap("action", new Integer(CmsFlexCache.C_CLEAR_OFFLINE_ENTRIES))));              
+                        if (p_on) OpenCms.fireCmsEvent(new CmsEvent(cms, I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR, Collections.singletonMap("action", new Integer(CmsFlexCache.C_CLEAR_ONLINE_ENTRIES))));
+                        if (p_off)  OpenCms.fireCmsEvent(new CmsEvent(cms, I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR, Collections.singletonMap("action", new Integer(CmsFlexCache.C_CLEAR_OFFLINE_ENTRIES))));              
                     }
                 }
             }
@@ -236,8 +237,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
     public String getRequestURI() {
         if (m_requestUri != null) return m_requestUri;
         StringBuffer buf = new StringBuffer(128);
-        buf.append(getContextPath());
-        buf.append(getServletPath());
+        buf.append(OpenCms.getOpenCmsContext());
         buf.append(getElementUri());
         m_requestUri = buf.toString();
         return m_requestUri;
@@ -297,8 +297,8 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
         
         // Now check if this is a opencms resource and if so remove the context / servlet path
         String uri = url.getPath();
-        if (uri.startsWith(A_OpenCms.getOpenCmsContext())) {
-            uri = uri.substring(A_OpenCms.getOpenCmsContext().length());
+        if (uri.startsWith(OpenCms.getOpenCmsContext())) {
+            uri = uri.substring(OpenCms.getOpenCmsContext().length());
         }
         if (url.getQuery() != null) uri += "?" + url.getQuery();                    
         

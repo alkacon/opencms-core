@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsPageLoader.java,v $
- * Date   : $Date: 2003/08/10 11:49:48 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/08/14 15:37:25 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,9 @@
 
 package org.opencms.loader;
 
+import org.opencms.main.OpenCms;
+
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsFile;
@@ -54,7 +55,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since 5.1
  */
 public class CmsPageLoader implements I_CmsResourceLoader {   
@@ -75,9 +76,9 @@ public class CmsPageLoader implements I_CmsResourceLoader {
     public void export(CmsObject cms, CmsFile file) throws CmsException {  
         CmsFile templateFile = getTemplateFile(cms, file);  
         if (templateFile.getLoaderId() == CmsJspLoader.C_RESOURCE_LOADER_ID) {
-            A_OpenCms.getLoaderManager().getLoader(CmsJspLoader.C_RESOURCE_LOADER_ID).export(cms, templateFile);           
+            OpenCms.getLoaderManager().getLoader(CmsJspLoader.C_RESOURCE_LOADER_ID).export(cms, templateFile);           
         } else {
-            A_OpenCms.getLoaderManager().getLoader(CmsXmlTemplateLoader.C_RESOURCE_LOADER_ID).export(cms, file);
+            OpenCms.getLoaderManager().getLoader(CmsXmlTemplateLoader.C_RESOURCE_LOADER_ID).export(cms, file);
         }     
     }    
 
@@ -87,9 +88,9 @@ public class CmsPageLoader implements I_CmsResourceLoader {
     public byte[] export(CmsObject cms, CmsFile file, HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException, CmsException {
         CmsFile templateFile = getTemplateFile(cms, file);  
         if (templateFile.getLoaderId() == CmsJspLoader.C_RESOURCE_LOADER_ID) {
-            return A_OpenCms.getLoaderManager().getLoader(CmsJspLoader.C_RESOURCE_LOADER_ID).export(cms, templateFile, req, res);           
+            return OpenCms.getLoaderManager().getLoader(CmsJspLoader.C_RESOURCE_LOADER_ID).export(cms, templateFile, req, res);           
         } else {
-            return A_OpenCms.getLoaderManager().getLoader(CmsXmlTemplateLoader.C_RESOURCE_LOADER_ID).export(cms, file, req, res);
+            return OpenCms.getLoaderManager().getLoader(CmsXmlTemplateLoader.C_RESOURCE_LOADER_ID).export(cms, file, req, res);
         }  
     }    
                
@@ -133,9 +134,9 @@ public class CmsPageLoader implements I_CmsResourceLoader {
     /**
      * @see org.opencms.loader.I_CmsResourceLoader#init(com.opencms.core.A_OpenCms, source.org.apache.java.util.Configurations)
      */
-    public void init(A_OpenCms openCms, Configurations conf) {
-        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) { 
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Loader init          : " + this.getClass().getName() + " initialized!");
+    public void init(Configurations conf) {
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) { 
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Loader init          : " + this.getClass().getName() + " initialized!");
         }  
     }
 
@@ -150,9 +151,9 @@ public class CmsPageLoader implements I_CmsResourceLoader {
             throw new ServletException(e.getMessage(), e);            
         }        
         if (templateFile.getLoaderId() == CmsJspLoader.C_RESOURCE_LOADER_ID) {
-            A_OpenCms.getLoaderManager().getLoader(CmsJspLoader.C_RESOURCE_LOADER_ID).load(cms, templateFile, req, res);
+            OpenCms.getLoaderManager().getLoader(CmsJspLoader.C_RESOURCE_LOADER_ID).load(cms, templateFile, req, res);
         } else {
-            A_OpenCms.getLoaderManager().getLoader(CmsXmlTemplateLoader.C_RESOURCE_LOADER_ID).load(cms, file, req, res);
+            OpenCms.getLoaderManager().getLoader(CmsXmlTemplateLoader.C_RESOURCE_LOADER_ID).load(cms, file, req, res);
         }
     }
 

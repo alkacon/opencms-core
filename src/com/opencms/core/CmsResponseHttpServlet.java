@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsResponseHttpServlet.java,v $
-* Date   : $Date: 2003/07/18 12:44:46 $
-* Version: $Revision: 1.30 $
+* Date   : $Date: 2003/08/14 15:37:24 $
+* Version: $Revision: 1.31 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,8 @@
 
 package com.opencms.core;
 
+import org.opencms.main.*;
+
 import com.opencms.boot.I_CmsLogChannels;
 
 import java.io.IOException;
@@ -42,7 +44,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.30 $ $Date: 2003/07/18 12:44:46 $
+ * @version $Revision: 1.31 $ $Date: 2003/08/14 15:37:24 $
  */
 public class CmsResponseHttpServlet implements I_CmsResponse {
 
@@ -78,11 +80,11 @@ public class CmsResponseHttpServlet implements I_CmsResponse {
      * @param req The original HttpServletRequest used to create this CmsRequest.
      * @param res The original HttpServletResponse used to create this CmsResponse.
      */
-    CmsResponseHttpServlet(HttpServletRequest req, HttpServletResponse res) {
+    public CmsResponseHttpServlet(HttpServletRequest req, HttpServletResponse res) {
         m_res = res;
         m_req = req;
         // write OpenCms server identification in the response header
-        m_res.setHeader("Server", "OpenCms/" + A_OpenCms.getVersionNumber());
+        m_res.setHeader("Server", "OpenCms/" + OpenCms.getVersionNumber());
     }
     
     /**
@@ -103,13 +105,13 @@ public class CmsResponseHttpServlet implements I_CmsResponse {
         // If m != null, the method could be found.
         boolean result = (m != null);
 
-        if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+        if(OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
             if(result) {
                 // We have JSDK 2
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Compatibility check  : JSDK 2 detected. ");
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Compatibility check  : JSDK 2 detected. ");
             } else {
                 // We have JSDK 1
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Compatibility check  : JSDK 1 detected. ");
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Compatibility check  : JSDK 1 detected. ");
             }
         }
         return result;
@@ -190,8 +192,8 @@ public class CmsResponseHttpServlet implements I_CmsResponse {
         try {
             m_res.sendRedirect(hostName + contextPath + servlet + location);
         } catch(IOException exc) {
-            if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsResponseHttpServlet] Couldn't redirect to: " + hostName + contextPath + servlet + location);
+            if(OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsResponseHttpServlet] Couldn't redirect to: " + hostName + contextPath + servlet + location);
             }
         }
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/util/Attic/CmsFlexLruCache.java,v $
- * Date   : $Date: 2003/07/12 11:29:22 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2003/08/14 15:37:25 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,9 @@
  
 package com.opencms.flex.util;
 
+import org.opencms.main.OpenCms;
+
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
 
 /**
  * Implements an LRU (last recently used) cache.<p>
@@ -53,7 +54,7 @@ import com.opencms.core.A_OpenCms;
  *
  * @see com.opencms.flex.util.I_CmsFlexLruCacheObject
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public class CmsFlexLruCache extends java.lang.Object {
     
@@ -173,8 +174,8 @@ public class CmsFlexLruCache extends java.lang.Object {
         
         // only objects with cache costs < the max. allowed object cache costs can be cached!
         if ((this.m_maxObjectCosts!=-1) && (theCacheObject.getLruCacheCosts()>this.m_maxObjectCosts)) {
-            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_FLEX_CACHE)) 
-                A_OpenCms.log(I_CmsLogChannels.C_FLEX_CACHE, "[FlexLruCache] you are trying to cache objects with cache costs " + theCacheObject.getLruCacheCosts() + " which is bigger than the max. allowed costs " + this.m_maxObjectCosts);
+            if (OpenCms.isLogging(I_CmsLogChannels.C_FLEX_CACHE)) 
+                OpenCms.log(I_CmsLogChannels.C_FLEX_CACHE, "[FlexLruCache] you are trying to cache objects with cache costs " + theCacheObject.getLruCacheCosts() + " which is bigger than the max. allowed costs " + this.m_maxObjectCosts);
             return false;
         }
         
@@ -233,8 +234,8 @@ public class CmsFlexLruCache extends java.lang.Object {
         
         // only objects with cache costs < the max. allowed object cache costs can be cached!
         if ((this.m_maxObjectCosts!=-1) && (theCacheObject.getLruCacheCosts()>this.m_maxObjectCosts)) {
-            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_FLEX_CACHE))
-                A_OpenCms.log(I_CmsLogChannels.C_FLEX_CACHE, "[FlexLruCache] you are trying to cache objects with cache costs " + theCacheObject.getLruCacheCosts() + " which is bigger than the max. allowed costs " + this.m_maxObjectCosts);
+            if (OpenCms.isLogging(I_CmsLogChannels.C_FLEX_CACHE))
+                OpenCms.log(I_CmsLogChannels.C_FLEX_CACHE, "[FlexLruCache] you are trying to cache objects with cache costs " + theCacheObject.getLruCacheCosts() + " which is bigger than the max. allowed costs " + this.m_maxObjectCosts);
             this.remove(theCacheObject);
             return false;
         }

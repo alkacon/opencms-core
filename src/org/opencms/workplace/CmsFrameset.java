@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2003/08/11 11:00:11 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2003/08/14 15:37:25 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,10 +30,10 @@
  */
 package org.opencms.workplace;
 
+import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
 
-import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsFile;
@@ -60,7 +60,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 5.1
  */
@@ -198,8 +198,8 @@ public class CmsFrameset extends CmsWorkplace {
         result.append(data.substring(index));
         
         String str = result.toString();        
-        String jspWorkplaceUri = A_OpenCms.getLinkManager().substituteLink(getCms(), C_PATH_WORKPLACE);  
-        String xmlWorkplaceUri = A_OpenCms.getLinkManager().substituteLink(getCms(), CmsWorkplaceAction.C_PATH_XML_WORKPLACE);          
+        String jspWorkplaceUri = OpenCms.getLinkManager().substituteLink(getCms(), C_PATH_WORKPLACE);  
+        String xmlWorkplaceUri = OpenCms.getLinkManager().substituteLink(getCms(), CmsWorkplaceAction.C_PATH_XML_WORKPLACE);          
         str = str.replaceAll("/JSPWORKPLACE/", jspWorkplaceUri);
         str = str.replaceAll("/XMLWORKPLACE/", xmlWorkplaceUri);
         

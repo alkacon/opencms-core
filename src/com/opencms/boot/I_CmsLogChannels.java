@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/I_CmsLogChannels.java,v $
-* Date   : $Date: 2003/06/13 10:04:21 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2003/08/14 15:37:26 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,25 +36,9 @@ package com.opencms.boot;
  * @author Alexander Lucas
  * @author Andreas Schouten
  * 
- * @version $Revision: 1.12 $ $Date: 2003/06/13 10:04:21 $
+ * @version $Revision: 1.13 $ $Date: 2003/08/14 15:37:26 $
  */
 public interface I_CmsLogChannels {
-
-    /**
-     * This static final constant is a "preprocessor" constant. If it is set to
-     * true - all logging-code is enabled and will be compiled into the classes.
-     * If it is set to false the logging-code will not be compiled into the
-     * classes. All resulting classes will shrink in size and OpenCms will
-     * perform much better. For live-systems you could set this to false, 
-     * in case you really have performance issues.
-     *
-     * If logging is disabled here, you can't switch it on again via the
-     * opencms.properties!
-     *
-     * This value should generally be set to true!
-     */
-    static final boolean C_PREPROCESSOR_IS_LOGGING = true;
-    static final boolean C_LOGGING = C_PREPROCESSOR_IS_LOGGING;
     
     /** Debugging messages */
     static final String C_OPENCMS_INIT = "opencms_init";

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Encoder.java,v $
-* Date   : $Date: 2003/07/15 16:04:01 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2003/08/14 15:37:25 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
 
 package com.opencms.util;
 
-import com.opencms.core.A_OpenCms;
+import org.opencms.main.OpenCms;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -366,6 +366,6 @@ public final class Encoder {
      */
     public static String redecodeUriComponent(String input) {
        if (input == null) return input;
-       return new String(changeEncoding(input.getBytes(), C_UTF8_ENCODING, A_OpenCms.getDefaultEncoding())); 
+       return new String(changeEncoding(input.getBytes(), C_UTF8_ENCODING, OpenCms.getDefaultEncoding())); 
     }
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminStaticExport.java,v $
-* Date   : $Date: 2003/08/11 18:30:52 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2003/08/14 15:37:24 $
+* Version: $Revision: 1.25 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,7 +28,8 @@
 
 package com.opencms.workplace;
 
-import com.opencms.core.A_OpenCms;
+import org.opencms.main.OpenCms;
+
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
@@ -45,7 +46,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * <P>
  *
  * @author Hanjo Riege
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -67,10 +68,10 @@ public class CmsAdminStaticExport extends CmsWorkplaceDefault {
 
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) throws CmsException {
-        if(com.opencms.boot.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && C_DEBUG && A_OpenCms.isLogging()) {
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName()+"getting content of element "+((elementName == null) ? "<root>" : elementName));
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName()+"template file is: " + templateFile);
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName()+"selected template section is: "+((templateSelector == null) ? "<default>" : templateSelector));
+        if(C_DEBUG && OpenCms.isLogging(C_OPENCMS_DEBUG)) {
+            OpenCms.log(C_OPENCMS_DEBUG, this.getClassName()+"getting content of element "+((elementName == null) ? "<root>" : elementName));
+            OpenCms.log(C_OPENCMS_DEBUG, this.getClassName()+"template file is: " + templateFile);
+            OpenCms.log(C_OPENCMS_DEBUG, this.getClassName()+"selected template section is: "+((templateSelector == null) ? "<default>" : templateSelector));
         }
 
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
@@ -107,7 +108,7 @@ public class CmsAdminStaticExport extends CmsWorkplaceDefault {
                 }
             }
             xmlTemplateDocument.setData("exportpoints", allStartPoints);
-            xmlTemplateDocument.setData("path", A_OpenCms.getStaticExportProperties().getExportPath());
+            xmlTemplateDocument.setData("path", OpenCms.getStaticExportProperties().getExportPath());
         }
 
         // special feature to test the regular expressions
@@ -210,7 +211,7 @@ public class CmsAdminStaticExport extends CmsWorkplaceDefault {
      */
     public Boolean isExportActive(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) throws CmsException {
         boolean isProMan = isProjectManager(cms, lang, parameters).booleanValue();
-        return new Boolean(A_OpenCms.getStaticExportProperties().isStaticExportEnabled() && isProMan);
+        return new Boolean(OpenCms.getStaticExportProperties().isStaticExportEnabled() && isProMan);
     }
 
     /**
@@ -230,6 +231,6 @@ public class CmsAdminStaticExport extends CmsWorkplaceDefault {
      */
     public Boolean isExportActiveAdmin(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) throws CmsException {
         boolean isAdmin = isAdmin(cms, lang, parameters).booleanValue();
-        return new Boolean(A_OpenCms.getStaticExportProperties().isStaticExportEnabled() && isAdmin);
+        return new Boolean(OpenCms.getStaticExportProperties().isStaticExportEnabled() && isAdmin);
     }
 }

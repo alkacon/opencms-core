@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/LinkSubstitution.java,v $
- * Date   : $Date: 2003/08/06 16:32:48 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2003/08/14 15:37:25 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,8 @@
 
 package com.opencms.util;
 
-import com.opencms.core.A_OpenCms;
+import org.opencms.main.OpenCms;
+
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsObject;
 import com.opencms.htmlconverter.CmsHtmlConverter;
@@ -44,7 +45,7 @@ import javax.servlet.http.HttpServletRequest;
  * Does the dynamic link replacement for the link tags.<p> 
  * 
  * @author Hanjo Riege
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  */
 public final class LinkSubstitution {
 
@@ -168,7 +169,7 @@ public final class LinkSubstitution {
             // configure the converter
             converter.setConverterConfString(m_converterConfiguration);
             URL url = new URL(webappUrl + fileName);
-            converter.setServletPrefix(A_OpenCms.getOpenCmsContext(), null);
+            converter.setServletPrefix(OpenCms.getOpenCmsContext(), null);
             converter.setOriginalUrl(url);
             // convert html code
             body = converter.convertHTML(body);

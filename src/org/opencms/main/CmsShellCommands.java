@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
- * Date   : $Date: 2003/08/13 14:05:54 $
- * Version: $Revision: 1.110 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
+ * Date   : $Date: 2003/08/14 15:37:26 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,13 +29,15 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package com.opencms.core;
+package org.opencms.main;
 
 import org.opencms.db.I_CmsDriver;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.I_CmsPrincipal;
 
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsProject;
@@ -64,12 +66,10 @@ import java.util.Vector;
 /**
  * This class is a commad line interface to OpenCms which 
  * can be used for the initial setup and to test the system.<p>
- *
- * @author Andreas Schouten
- * @author Anders Fugmann
  * 
- * @version $Revision: 1.110 $ $Date: 2003/08/13 14:05:54 $
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
+ * @version $Revision: 1.1 $ $Date: 2003/08/14 15:37:26 $ 
  * @see com.opencms.file.CmsObject
  */
 class CmsShellCommands {
@@ -82,7 +82,7 @@ class CmsShellCommands {
     /**
      * The wrapped OpenCms object which provides the system environment.
      */
-    private OpenCms m_openCms;
+    private OpenCmsCore m_openCms;
 
     /**
      * Generate a new instance of CmsShellCommands.<p>
@@ -91,10 +91,10 @@ class CmsShellCommands {
      * @param cms an initialized CmsObject (i.e. "command shell")
      * @throws Exception if something goes wrong
      */
-    public CmsShellCommands(OpenCms openCms, CmsObject cms) throws Exception {
+    public CmsShellCommands(OpenCmsCore openCms, CmsObject cms) throws Exception {
         m_openCms = openCms;
         m_cms = cms;
-        m_openCms.initUser(m_cms, null, null, A_OpenCms.getDefaultUsers().getUserGuest(), A_OpenCms.getSiteManager().getDefaultSite().getSiteRoot(), I_CmsConstants.C_PROJECT_ONLINE_ID, null);
+        m_openCms.initUser(m_cms, null, null, OpenCms.getDefaultUsers().getUserGuest(), OpenCms.getSiteManager().getDefaultSite().getSiteRoot(), I_CmsConstants.C_PROJECT_ONLINE_ID, null);
 
         // print the version-string
         version();
@@ -136,7 +136,7 @@ class CmsShellCommands {
      * @param resourceType name of a resource type, e.g. 'plain'
      * @param extension a file extension, e.g. 'html'
      */
-    public void addFileExtension(String resourceType, String extension) {     
+    public void addFileExtension(String resourceType, String extension) {
         try {
             m_cms.addFileExtension(extension, resourceType);
         } catch (Exception exc) {
@@ -490,8 +490,8 @@ class CmsShellCommands {
             CmsProject project = m_cms.createProject(
                 name, 
                 description, 
-                A_OpenCms.getDefaultUsers().getGroupUsers(), 
-                A_OpenCms.getDefaultUsers().getGroupProjectmanagers(), 
+                OpenCms.getDefaultUsers().getGroupUsers(), 
+                OpenCms.getDefaultUsers().getGroupProjectmanagers(), 
                 I_CmsConstants.C_PROJECT_TYPE_NORMAL
             );
             m_cms.getRequestContext().setCurrentProject(project.getId());
@@ -689,6 +689,35 @@ class CmsShellCommands {
             CmsShell.printException(exc);
         }
     }
+    
+
+    /**
+     * Displays the classes of the configured drivers.<p>
+     */
+    public void getDriverInfo() {
+        try {
+            Map drivers = m_cms.getDrivers();
+            for (Iterator i = drivers.keySet().iterator(); i.hasNext();) {
+                System.out.println(i.next());    
+            }
+        } catch (Exception exc) {
+            CmsShell.printException(exc);
+        }
+    }
+    
+    /**
+     * Displays further information of a driver class.<p>
+     * 
+     * @param driverName the driver class name
+     */
+    public void getDriverInfo(String driverName) {
+        try {
+            Map drivers = m_cms.getDrivers();
+            System.out.println(((I_CmsDriver)drivers.get(driverName)).toString());
+        } catch (Exception exc) {
+            CmsShell.printException(exc);
+        }
+    }    
 
     /**
      * Deletes the folder.
@@ -1194,34 +1223,6 @@ class CmsShellCommands {
         }
     }
 
-    /**
-     * Displays the classes of the configured drivers.<p>
-     */
-    public void getDriverInfo() {
-        try {
-            Map drivers = m_cms.getDrivers();
-            for (Iterator i = drivers.keySet().iterator(); i.hasNext();) {
-                System.out.println(i.next());    
-            }
-        } catch (Exception exc) {
-            CmsShell.printException(exc);
-        }
-    }
-    
-    /**
-     * Displays further information of a driver class.<p>
-     * 
-     * @param driverName the driver class name
-     */
-    public void getDriverInfo(String driverName) {
-        try {
-            Map drivers = m_cms.getDrivers();
-            System.out.println(((I_CmsDriver)drivers.get(driverName)).toString());
-        } catch (Exception exc) {
-            CmsShell.printException(exc);
-        }
-    }
-    
     /**
      * Returns a Vector with all subfiles.<BR/>
      *
@@ -1848,8 +1849,8 @@ class CmsShellCommands {
             CmsProject project = m_cms.createProject(
                 "ModuleImport", 
                 "A temporary project to import the module " + importFile, 
-                A_OpenCms.getDefaultUsers().getGroupAdministrators(), 
-                A_OpenCms.getDefaultUsers().getGroupAdministrators(), 
+                OpenCms.getDefaultUsers().getGroupAdministrators(), 
+                OpenCms.getDefaultUsers().getGroupAdministrators(), 
                 I_CmsConstants.C_PROJECT_TYPE_TEMPORARY
             );
             int id = project.getId();
@@ -1912,8 +1913,8 @@ class CmsShellCommands {
             CmsProject project = m_cms.createProject(
                 "SystemUpdate", 
                 "A temporary project for a system update", 
-                A_OpenCms.getDefaultUsers().getGroupAdministrators(), 
-                A_OpenCms.getDefaultUsers().getGroupAdministrators(), 
+                OpenCms.getDefaultUsers().getGroupAdministrators(), 
+                OpenCms.getDefaultUsers().getGroupAdministrators(), 
                 I_CmsConstants.C_PROJECT_TYPE_TEMPORARY
             );
             int id = project.getId();
@@ -3279,7 +3280,7 @@ class CmsShellCommands {
      * Returns a version-string for this OpenCms.
      */
     public void version() {
-        System.out.println(A_OpenCms.getVersionName());
+        System.out.println(OpenCms.getVersionName());
     }
 
     /**

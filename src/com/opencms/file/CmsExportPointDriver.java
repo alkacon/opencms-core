@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExportPointDriver.java,v $
- * Date   : $Date: 2003/07/31 13:19:37 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/08/14 15:37:26 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,9 @@
  
 package com.opencms.file;
 
+import org.opencms.main.OpenCms;
+
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 
 import java.io.File;
@@ -91,8 +92,8 @@ public void createFolder(String foldername, String key) throws CmsException {
     // check if this folder already exits
     if (!discFolder.exists()) {
         boolean success = discFolder.mkdirs();
-        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() && (!success)) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsExportPointDriver] Couldn't create folder " + absoluteName(foldername, key) + ".");
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO) && (!success)) {
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsExportPointDriver] Couldn't create folder " + absoluteName(foldername, key) + ".");
         }
         //  throw new CmsException("[" + this.getClass().getName() + "] "+foldername,CmsException.C_FILESYSTEM_ERROR);
     }

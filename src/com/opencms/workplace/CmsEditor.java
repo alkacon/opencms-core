@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsEditor.java,v $
-* Date   : $Date: 2003/07/31 07:37:43 $
-* Version: $Revision: 1.52 $
+* Date   : $Date: 2003/08/14 15:37:24 $
+* Version: $Revision: 1.53 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,10 +31,9 @@ package com.opencms.workplace;
 
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockException;
+import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsWorkplaceAction;
 
-import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsFile;
@@ -56,7 +55,7 @@ import javax.servlet.http.HttpServletRequest;
  * <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.52 $ $Date: 2003/07/31 07:37:43 $
+ * @version $Revision: 1.53 $ $Date: 2003/08/14 15:37:24 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -242,7 +241,7 @@ public class CmsEditor extends CmsWorkplaceDefault {
         xmlTemplateDocument.setData(C_PARA_RESOURCE, file);
         xmlTemplateDocument.setData(C_PARA_JSFILE, jsfile);
         xmlTemplateDocument.setData("editorframe", editorframe);
-        xmlTemplateDocument.setData("OpenCmsContext", A_OpenCms.getOpenCmsContext());
+        xmlTemplateDocument.setData("OpenCmsContext", OpenCms.getOpenCmsContext());
         // Announcement of path and file name in the header of the browser.
         if(checkit==true){
             xmlTemplateDocument.setData("fileName", editFile.getResourceName());
@@ -325,8 +324,8 @@ public class CmsEditor extends CmsWorkplaceDefault {
 
             // Anything is wrong. Perhaps a wrong file name ???
             String errorMessage = "Error while reading file " + filename + ": " + e;
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorMessage);
+            if(OpenCms.isLogging(C_OPENCMS_CRITICAL)) {
+                OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorMessage);
             }
 
             // throw this exception again, so it can be displayed in the servlet.

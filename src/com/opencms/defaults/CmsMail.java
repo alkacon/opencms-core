@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsMail.java,v $
-* Date   : $Date: 2003/07/31 13:19:37 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2003/08/14 15:37:26 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,8 +28,9 @@
 
 package com.opencms.defaults;
 
+import org.opencms.main.OpenCms;
+
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsObject;
@@ -90,7 +91,7 @@ import javax.mail.internet.MimeMultipart;
  * @author mla
  * @author Alexander Lucas <alexander.lucas@framfab.de>
  *
- * @version $Name:  $ $Revision: 1.18 $ $Date: 2003/07/31 13:19:37 $
+ * @version $Name:  $ $Revision: 1.19 $ $Date: 2003/08/14 15:37:26 $
  * @since OpenCms 4.1.37. Previously, this class was part of the <code>com.opencms.workplace</code> package.
  */
 public class CmsMail extends Thread {
@@ -200,7 +201,7 @@ public class CmsMail extends Thread {
         super("OpenCms: Sending mail from " + from.getName());
         
         // Get Registry
-        I_CmsRegistry reg = A_OpenCms.getRegistry();
+        I_CmsRegistry reg = OpenCms.getRegistry();
 
         // check sender email address
         String fromAddress = from.getEmail();
@@ -262,7 +263,7 @@ public class CmsMail extends Thread {
     public CmsMail(CmsObject cms, CmsUser from, CmsGroup to, String subject, String content, String type) throws CmsException {
 
         // Get Registry
-        I_CmsRegistry reg = A_OpenCms.getRegistry();
+        I_CmsRegistry reg = OpenCms.getRegistry();
 
         // check sender email address
         String fromAddress = from.getEmail();
@@ -480,7 +481,7 @@ public class CmsMail extends Thread {
         m_to = users;
         m_subject = (subject == null ? "" : subject);
         m_content = (content == null ? "" : content);
-        I_CmsRegistry reg = A_OpenCms.getRegistry();
+        I_CmsRegistry reg = OpenCms.getRegistry();
         m_mailserver = reg.getSystemValue("smtpserver");
         m_alternativeMailserver = reg.getSystemValue("smtpserver2");
         m_type = type;
@@ -636,8 +637,8 @@ public class CmsMail extends Thread {
         try {
             msg = buildMessage(m_mailserver);
         } catch (Exception e) {
-            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, getClassName() + "Error while building Email object: " + Utils.getStackTrace(e));
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, getClassName() + "Error while building Email object: " + Utils.getStackTrace(e));
             }
 
             // Do not continue here. We don't have a Message object we can send.
@@ -658,33 +659,33 @@ public class CmsMail extends Thread {
             }
 
             // First print out an error message...
-            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, getClassName() + "Error while transmitting mail to SMTP server: " + e);
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, getClassName() + "Error while transmitting mail to SMTP server: " + e);
             }
 
             // ... and now try an alternative server (if given)
             if (m_alternativeMailserver != null && !"".equals(m_alternativeMailserver)) {
-                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, getClassName() + "Trying alternative server...");
+                if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+                    OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, getClassName() + "Trying alternative server...");
                 }
                 try {
                     msg = buildMessage(m_alternativeMailserver);
                     Transport.send(msg);
-                    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                        A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, getClassName() + "...OK. Mail sent.");
+                    if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+                        OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, getClassName() + "...OK. Mail sent.");
                     }
                 } catch (Exception e2) {
 
                     // Get nested Exception used for pretty printed error message in logfile
                     for (; e2 instanceof MessagingException; e2 = ((MessagingException)e2).getNextException()) {
                     }
-                    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                        A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, getClassName() + "PANIC! Could not send Email. Even alternative server failed! " + e2);
+                    if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+                        OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, getClassName() + "PANIC! Could not send Email. Even alternative server failed! " + e2);
                     }
                 }
             } else {
-                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, getClassName() + "PANIC! No alternative SMTP server given! Could not send Email!");
+                if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+                    OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, getClassName() + "PANIC! No alternative SMTP server given! Could not send Email!");
                 }
             }
         }

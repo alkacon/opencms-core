@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
- * Date   : $Date: 2003/08/07 18:47:27 $
- * Version: $Revision: 1.84 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShell.java,v $
+ * Date   : $Date: 2003/08/14 15:37:26 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,9 +29,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package com.opencms.core;
+package org.opencms.main;
+
 
 import com.opencms.boot.CmsBase;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
 
 import java.io.FileInputStream;
@@ -53,7 +56,7 @@ import source.org.apache.java.util.ExtendedProperties;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.84 $ $Date: 2003/08/07 18:47:27 $
+ * @version $Revision: 1.1 $ $Date: 2003/08/14 15:37:26 $
  */
 public class CmsShell {
 
@@ -76,7 +79,7 @@ public class CmsShell {
     boolean m_logMemory;
 
     /** The OpenCms system object */
-    private OpenCms m_openCms;
+    private OpenCmsCore m_openCms;
     
     /** Internal shell command object */
     private CmsShellCommands m_shellCommands;
@@ -85,18 +88,18 @@ public class CmsShell {
      * Creates a new CmsShell.<p>
      */
     public CmsShell() {
-        A_OpenCms.initVersion(this);
         try {
             String propsPath = CmsBase.getPropertiesPath(true);
             System.out.println("%%% props: " + propsPath);
             Configurations conf = new Configurations(new ExtendedProperties(propsPath));
-            m_openCms = new OpenCms(conf);
+            m_openCms = new OpenCmsCore(conf);
+            m_openCms.initVersion(this);
             m_cms = new CmsObject();
             m_logMemory = conf.getBoolean("log.memory", false);
             m_shortException = false;
             m_exitCalled = false;
             m_echo = false;
-            m_openCms.initUser(m_cms, null, null, A_OpenCms.getDefaultUsers().getUserGuest(), A_OpenCms.getSiteManager().getDefaultSite().getSiteRoot(), I_CmsConstants.C_PROJECT_ONLINE_ID, null);
+            m_openCms.initUser(m_cms, null, null, OpenCms.getDefaultUsers().getUserGuest(), OpenCms.getSiteManager().getDefaultSite().getSiteRoot(), I_CmsConstants.C_PROJECT_ONLINE_ID, null);
         } catch (Exception exc) {
             printException(exc);
         }

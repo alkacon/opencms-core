@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlLanguageFile.java,v $
-* Date   : $Date: 2003/07/22 00:29:22 $
-* Version: $Revision: 1.45 $
+* Date   : $Date: 2003/08/14 15:37:24 $
+* Version: $Revision: 1.46 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,10 +35,11 @@ package com.opencms.workplace;
  * been changed to use the standard <code>java.util.ResouceBundle</code> technology.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.45 $ $Date: 2003/07/22 00:29:22 $
+ * @version $Revision: 1.46 $ $Date: 2003/08/14 15:37:24 $
  */
+import org.opencms.main.OpenCms;
+
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
@@ -127,7 +128,7 @@ public class CmsXmlLanguageFile {
             if (DEBUG > 0) System.err.println("CmsXmlLanguageFile(): reading old locale support property");
             synchronized(this) {
                 // set compatiblity flag for old locales
-                Boolean flag = (Boolean)A_OpenCms.getRuntimeProperty("compatibility.support.oldlocales");
+                Boolean flag = (Boolean)OpenCms.getRuntimeProperty("compatibility.support.oldlocales");
                 m_supportOldLocale = (flag != null)?flag:new Boolean(false);                
             }
         }
@@ -181,18 +182,18 @@ public class CmsXmlLanguageFile {
             result = m_messages.getString(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING);
         } catch (MissingResourceException e) {
             // exception - just use the default encoding
-            result = A_OpenCms.getDefaultEncoding();
+            result = OpenCms.getDefaultEncoding();
         }
         if (result.startsWith("{")) {
             // this is a "supported set" - try to figure out the encoding to use
-            if (result.indexOf(A_OpenCms.getDefaultEncoding()) >= 0) {
+            if (result.indexOf(OpenCms.getDefaultEncoding()) >= 0) {
                 // the current default encoding is supported, so we use this
-                result = A_OpenCms.getDefaultEncoding();
+                result = OpenCms.getDefaultEncoding();
             } else {
                 // default encoding is not supported, so we use the first given encoding in the set       
                 int index = result.indexOf(";");
                 if (index <= 1) {
-                    result = A_OpenCms.getDefaultEncoding();
+                    result = OpenCms.getDefaultEncoding();
                 } else { 
                     result = result.substring(1, index);   
                 }             
@@ -255,8 +256,8 @@ public class CmsXmlLanguageFile {
         
         // key was not found
         if (DEBUG > 1) System.err.println("CmsXmlLanguageFile.getLanguageValue(): '" + keyName + "' not found at all (this is bad)");
-        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, this.getClass().getName() + 
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, this.getClass().getName() + 
                 ".getLanguageValue() - Missing value for locale key: " + keyName);
         }        
         return "??? " + keyName + " ???";	

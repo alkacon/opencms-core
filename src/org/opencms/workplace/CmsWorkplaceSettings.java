@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2003/08/07 16:27:53 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2003/08/14 15:37:25 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,7 +30,8 @@
  */
 package org.opencms.workplace;
 
-import com.opencms.core.A_OpenCms;
+import org.opencms.main.OpenCms;
+
 import com.opencms.file.CmsUser;
 
 
@@ -39,7 +40,7 @@ import com.opencms.file.CmsUser;
  * will be stored in the session of a user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 5.1
  */
@@ -68,7 +69,7 @@ public class CmsWorkplaceSettings {
     CmsWorkplaceSettings() { 
         m_explorerPage = 1;
         m_explorerChecksum = -1;
-        m_currentSite = A_OpenCms.getSiteManager().getDefaultSite().getSiteRoot(); 
+        m_currentSite = OpenCms.getSiteManager().getDefaultSite().getSiteRoot(); 
     }
     
     /**

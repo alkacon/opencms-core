@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexCache.java,v $
- * Date   : $Date: 2003/07/22 00:29:22 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2003/08/14 15:37:25 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,11 +32,11 @@
 package com.opencms.flex.cache;
 
 import org.opencms.loader.I_CmsResourceLoader;
+import org.opencms.main.OpenCms;
 
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
-import com.opencms.core.OpenCms;
 import com.opencms.file.CmsObject;
+import com.opencms.flex.I_CmsEventListener;
 import com.opencms.flex.util.CmsFlexLruCache;
 import com.opencms.flex.util.CmsLruHashMap;
 import com.opencms.flex.util.I_CmsFlexLruCacheObject;
@@ -55,11 +55,15 @@ import source.org.apache.java.util.Configurations;
  * caching behaviour of the entries.
  * The first hash-level is calculated from the resource name, i.e. the
  * name of the resource as it is referred to in the VFS of OpenCms.
- * A suffix [online] or [offline] is appended to te resource name
- * to distinguish between the online and offline projects of OpenCms.
  * The second hash-level is calculated from the cache-key of the resource,
  * which also is a String representing the specifc variation of the cached entry.<p>
  *
+ * A suffix [online] or [offline] is appended to te resource name
+ * to distinguish between the online and offline projects of OpenCms.
+ * Also, for support of JSP based workplace pages, a suffix [workplace]
+ * is appended. The same cached workplace pages are used both in the online and 
+ * all offline projects.<p> 
+ * 
  * Entries in the first level of the cache are of type CmsFlexCacheVariation,
  * which is a sub-class of CmsFlexCache.
  * This class is a simple data type that contains of a Map of CmsFlexCacheEntries,
@@ -79,21 +83,19 @@ import source.org.apache.java.util.Configurations;
  * For every entry a key is saved which contains the resource name and the variation.
  * </ul>
  *
- * Currenty the whole cache is flushed if something is published.
- * Implement partial cache flushing, i.e. remove only changed elements at publish
- * or change event (in case of offline resources).<p>
+ * The whole cache is flushed if something is published.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @see com.opencms.flex.cache.CmsFlexCacheKey
  * @see com.opencms.flex.cache.CmsFlexCacheEntry
  * @see com.opencms.flex.util.CmsFlexLruCache
  * @see com.opencms.flex.util.I_CmsFlexLruCacheObject
  */
-public class CmsFlexCache extends java.lang.Object implements com.opencms.flex.I_CmsEventListener {
+public class CmsFlexCache extends Object implements I_CmsEventListener {
     
     /** Initial Cache size, this should be a power of 2 because of the Java collections implementation */
     public static final int C_INITIAL_CAPACITY_CACHE = 512;
@@ -154,28 +156,27 @@ public class CmsFlexCache extends java.lang.Object implements com.opencms.flex.I
      *
      * @param openCms the OpenCms instance
      */
-    public CmsFlexCache(OpenCms openCms) {
-        Configurations opencmsProperties = openCms.getConfiguration();
-        m_enabled = opencmsProperties.getBoolean("flex.cache.enabled", true);
-        m_cacheOffline = opencmsProperties.getBoolean("flex.cache.offline", true);
+    public CmsFlexCache(Configurations conf) {
+        m_enabled = conf.getBoolean("flex.cache.enabled", true);
+        m_cacheOffline = conf.getBoolean("flex.cache.offline", true);
         
-        boolean forceGC = opencmsProperties.getBoolean("flex.cache.forceGC", false);
-        int maxCacheBytes = opencmsProperties.getInteger("flex.cache.maxCacheBytes", 2000000);
-        int avgCacheBytes = opencmsProperties.getInteger("flex.cache.avgCacheBytes", 1500000);
-        int maxEntryBytes = opencmsProperties.getInteger("flex.cache.maxEntryBytes", 400000);  
-        int maxVariations = opencmsProperties.getInteger("flex.cache.maxEntries", 4000);
-        int maxKeys = opencmsProperties.getInteger("flex.cache.maxKeys", 4000);
+        boolean forceGC = conf.getBoolean("flex.cache.forceGC", false);
+        int maxCacheBytes = conf.getInteger("flex.cache.maxCacheBytes", 2000000);
+        int avgCacheBytes = conf.getInteger("flex.cache.avgCacheBytes", 1500000);
+        int maxEntryBytes = conf.getInteger("flex.cache.maxEntryBytes", 400000);  
+        int maxVariations = conf.getInteger("flex.cache.maxEntries", 4000);
+        int maxKeys = conf.getInteger("flex.cache.maxKeys", 4000);
      
         this.m_entryLruCache = new CmsFlexLruCache(maxCacheBytes, avgCacheBytes, maxEntryBytes, forceGC);             
         this.m_variationCache = new CmsFlexLruCache(maxVariations, (int)(maxVariations*0.75), -1, false);
         
         if (m_enabled) {
             this.m_resourceMap = java.util.Collections.synchronizedMap(new CmsLruHashMap(CmsFlexCache.C_INITIAL_CAPACITY_CACHE, maxKeys));     
-            A_OpenCms.addCmsEventListener(this);
+            OpenCms.addCmsEventListener(this);
         }
         
         // make the flex cache available to other classes through the runtime properties
-        A_OpenCms.setRuntimeProperty(I_CmsResourceLoader.C_LOADER_CACHENAME, this);
+        OpenCms.setRuntimeProperty(I_CmsResourceLoader.C_LOADER_CACHENAME, this);
         
         if (DEBUG > 0) System.err.println("FlexCache: Initializing with parameters enabled=" + m_enabled + " cacheOffline=" + m_cacheOffline);
     }
@@ -368,8 +369,8 @@ public class CmsFlexCache extends java.lang.Object implements com.opencms.flex.I
         purgeDirectory(d);
          
         clear();
-        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) 
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "JSP repository purged - purgeJspRepository() called");
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) 
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "JSP repository purged - purgeJspRepository() called");
     }
     
     /**
@@ -728,8 +729,8 @@ public class CmsFlexCache extends java.lang.Object implements com.opencms.flex.I
         this.m_entryLruCache.clear();
         this.m_variationCache.clear();
         
-        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_FLEX_CACHE)) 
-            A_OpenCms.log(I_CmsLogChannels.C_FLEX_CACHE, "[FlexCache] Complete cache cleared - clear() called");
+        if (OpenCms.isLogging(I_CmsLogChannels.C_FLEX_CACHE)) 
+            OpenCms.log(I_CmsLogChannels.C_FLEX_CACHE, "[FlexCache] Complete cache cleared - clear() called");
     }
     
     /**
@@ -838,8 +839,8 @@ public class CmsFlexCache extends java.lang.Object implements com.opencms.flex.I
                 }
             }
         }
-        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_FLEX_CACHE)) 
-            A_OpenCms.log(I_CmsLogChannels.C_FLEX_CACHE, "[FlexCache] Part of the FlexCache cleared - clearOneHalf(" + suffix + ", " + entriesOnly + ") called");
+        if (OpenCms.isLogging(I_CmsLogChannels.C_FLEX_CACHE)) 
+            OpenCms.log(I_CmsLogChannels.C_FLEX_CACHE, "[FlexCache] Part of the FlexCache cleared - clearOneHalf(" + suffix + ", " + entriesOnly + ") called");
     }
     
     /**
@@ -858,7 +859,7 @@ public class CmsFlexCache extends java.lang.Object implements com.opencms.flex.I
      * @see com.opencms.flex.util.I_CmsFlexLruCacheObject
      * @author Alexander Kandzior (a.kandzior@alkacon.com)
      * @author Thomas Weckert (t.weckert@alkacon.com)
-     * @version $Revision: 1.23 $ 
+     * @version $Revision: 1.24 $ 
      */
     class CmsFlexCacheVariation extends Object implements com.opencms.flex.util.I_CmsFlexLruCacheObject {
         

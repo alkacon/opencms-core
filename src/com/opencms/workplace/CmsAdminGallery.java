@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminGallery.java,v $
- * Date   : $Date: 2003/08/07 18:47:27 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/08/14 15:37:24 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,7 +30,8 @@
 
 package com.opencms.workplace;
 
-import com.opencms.core.A_OpenCms;
+import org.opencms.main.OpenCms;
+
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsFolder;
@@ -49,7 +50,7 @@ import java.util.Vector;
  * workplace gallery implementations.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public abstract class CmsAdminGallery extends CmsWorkplaceDefault implements I_CmsFileListUsers {
      
@@ -195,7 +196,7 @@ public abstract class CmsAdminGallery extends CmsWorkplaceDefault implements I_C
         values.addElement("Aufforderung"); // without significance for the user
         for(int z = 0;z < groups.size();z++) {
             String name = ((CmsGroup)groups.elementAt(z)).getName();
-            if(! A_OpenCms.getDefaultUsers().getGroupGuests().equals(name)){
+            if(! OpenCms.getDefaultUsers().getGroupGuests().equals(name)){
                 names.addElement(name);
                 values.addElement(name);
             }

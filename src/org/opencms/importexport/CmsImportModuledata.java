@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Attic/CmsImportModuledata.java,v $
-* Date   : $Date: 2003/08/07 18:47:27 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2003/08/14 15:37:26 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,8 +34,9 @@
 
 package org.opencms.importexport;
 
+import org.opencms.main.OpenCms;
+
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.defaults.master.CmsMasterContent;
@@ -73,7 +74,7 @@ import org.w3c.dom.NodeList;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $ $Date: 2003/08/07 18:47:27 $
+ * @version $Revision: 1.4 $ $Date: 2003/08/14 15:37:26 $
  */
 public class CmsImportModuledata extends CmsImport implements Serializable {
 
@@ -293,7 +294,7 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
             }
         } catch (Exception e) {
             try {
-                groupId = m_cms.readGroup(A_OpenCms.getDefaultUsers().getGroupUsers()).getId();
+                groupId = m_cms.readGroup(OpenCms.getDefaultUsers().getGroupUsers()).getId();
             } catch (Exception e2) { }
         }
 
@@ -569,23 +570,23 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
             Constructor co = cdClass.getConstructor(classes);
             cd = (CmsMasterContent)co.newInstance(objects);
         } catch (InvocationTargetException ite) {
-            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsImportModuledata] " + classname + " contentDefinitionConstructor: Invocation target exception!");
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsImportModuledata] " + classname + " contentDefinitionConstructor: Invocation target exception!");
             }
         } catch (NoSuchMethodException nsm) {
-            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsImportModuledata] " + classname + " contentDefinitionConstructor: Requested method was not found!");
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsImportModuledata] " + classname + " contentDefinitionConstructor: Requested method was not found!");
             }
         } catch (InstantiationException ie) {
-            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsImportModuledata] " + classname + " contentDefinitionConstructor: the reflected class is abstract!");
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsImportModuledata] " + classname + " contentDefinitionConstructor: the reflected class is abstract!");
             }
         } catch (Exception e) {
-            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsImportModuledata] " + classname + " contentDefinitionConstructor: Other exception! " + e);
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsImportModuledata] " + classname + " contentDefinitionConstructor: Other exception! " + e);
             }
-            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, e.getMessage());
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, e.getMessage());
             }
         }
         return cd;

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWorkplaceDefault.java,v $
-* Date   : $Date: 2003/08/07 18:47:27 $
-* Version: $Revision: 1.60 $
+* Date   : $Date: 2003/08/14 15:37:24 $
+* Version: $Revision: 1.61 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,10 +29,10 @@
 
 package com.opencms.workplace;
 
+import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
@@ -58,7 +58,7 @@ import java.util.Vector;
  * Most special workplace classes may extend this class.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.60 $ $Date: 2003/08/07 18:47:27 $
+ * @version $Revision: 1.61 $ $Date: 2003/08/14 15:37:24 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -351,7 +351,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsConstant
     public Boolean isTheAdminUser(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) throws CmsException {
         CmsRequestContext reqCont = cms.getRequestContext();
         if(reqCont.isAdmin()){
-            return new Boolean(reqCont.currentUser().getName().equals(A_OpenCms.getDefaultUsers().getUserAdmin()));
+            return new Boolean(reqCont.currentUser().getName().equals(OpenCms.getDefaultUsers().getUserAdmin()));
         }else{
             return new Boolean(false);
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChmod.java,v $
- * Date   : $Date: 2003/08/07 18:47:27 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2003/08/14 15:37:24 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -27,9 +27,9 @@
  */
 package com.opencms.workplace;
 
+import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsWorkplaceAction;
 
-import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
@@ -43,7 +43,7 @@ import java.util.Hashtable;
  * Template class for displaying the chmod screen of the OpenCms workplace.<P>
  *
  * @author Michael Emmerich
- * @version $Revision: 1.43 $ $Date: 2003/08/07 18:47:27 $
+ * @version $Revision: 1.44 $ $Date: 2003/08/14 15:37:24 $
  */
 
 public class CmsChmod extends CmsWorkplaceDefault {
@@ -115,7 +115,7 @@ public class CmsChmod extends CmsWorkplaceDefault {
 			CmsRequestContext requestContext = cms.getRequestContext();
 			if((requestContext.currentUser().equals(cms.readOwner(file)))
 			|| (cms.userInGroup(requestContext.currentUser().getName(),
-            A_OpenCms.getDefaultUsers().getGroupAdministrators()))) {
+            OpenCms.getDefaultUsers().getGroupAdministrators()))) {
 
 				// calculate the new access flags
 //				TODO: check how to set the appropriate access using acl

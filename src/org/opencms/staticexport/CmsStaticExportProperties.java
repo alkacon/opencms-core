@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsStaticExportProperties.java,v $
- * Date   : $Date: 2003/08/12 19:41:02 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/08/14 15:37:25 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,10 +31,14 @@
 
 package org.opencms.staticexport;
 
+import org.opencms.main.OpenCms;
+
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
+import com.opencms.flex.I_CmsEventListener;
+import com.opencms.flex.util.CmsLruHashMap;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -49,9 +53,15 @@ import java.util.Vector;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
-public class CmsStaticExportProperties {
+public class CmsStaticExportProperties implements I_CmsEventListener {
+    
+    /** Cache for the export uris */
+    private CmsLruHashMap m_cacheExportUris;
+    
+    /** Cache for the online links */
+    private CmsLruHashMap m_cacheOnlineLinks;
     
     /** List of all resources that have the "exportname" property set */
     private Map m_exportnameResources;
@@ -81,6 +91,70 @@ public class CmsStaticExportProperties {
         m_exportRelativeLinks = false;
         m_staticExportEnabled = false;
         m_exportPropertyDefault = true;
+        m_cacheOnlineLinks = new CmsLruHashMap(1024);
+        m_cacheExportUris = new CmsLruHashMap(1024);      
+        
+        // register this object as event listener
+        OpenCms.addCmsEventListener(this);  
+    }
+    
+    /**
+     * Caches a calculated export uri.<p>
+     * 
+     * @param rfsName the name of the resource in the "real" file system
+     * @param vfsName the name of the resource in the VFS
+     */
+    public void cacheExportUri(Object rfsName, Object vfsName) {
+        m_cacheExportUris.put(rfsName, vfsName);        
+    }
+    
+    /**
+     * Caches a calculated online link.<p>
+     * 
+     * @param linkName the link
+     * @param vfsName the name of the VFS resource 
+     */
+    public void cacheOnlineLink(Object linkName, Object vfsName) {
+        m_cacheOnlineLinks.put(linkName, vfsName);
+    }
+    
+    /**
+     * Implements the CmsEvent interface,
+     * the static export properties uses the events to clear 
+     * the list of cached keys in case a project is published.<p>
+     *
+     * @param event CmsEvent that has occurred
+     */
+    public void cmsEvent(com.opencms.flex.CmsEvent event) {
+        switch (event.getType()) {
+            case com.opencms.flex.I_CmsEventListener.EVENT_PUBLISH_PROJECT:
+            case com.opencms.flex.I_CmsEventListener.EVENT_CLEAR_CACHES:   
+                m_cacheOnlineLinks.clear();
+                m_cacheExportUris.clear();        
+                break;
+            default:
+                // no operation
+        }
+    }    
+    
+    /**
+     * Returns a cached vfs resource name for the given rfs name
+     * 
+     * @param rfsName the name of the ref resource to get the cached vfs resource name for
+     * @return a cached vfs resource name for the given rfs name, or null 
+     */    
+    public String getCachedExportUri(Object rfsName) {
+        return (String)m_cacheExportUris.get(rfsName);
+    }
+    
+    /**
+     * Returns a cached link for the given vfs name
+     * 
+     * @param vfsName the name of the vfs resource to get the cached link for
+     * @return a cached link for the given vfs name, or null 
+     */
+    public String getCachedOnlineLink(Object vfsName) {
+        return (String)m_cacheOnlineLinks.get(vfsName);
     }
     
     /**
@@ -149,6 +223,7 @@ public class CmsStaticExportProperties {
     /**
      * Set the list of all resources that have the "exportname" property set.<p>
      * 
+     * @param cms the current cms context
      * @param resources the list of all resources that have the "exportname" property set
      */
     public void setExportnames(CmsObject cms, Vector resources) {    
@@ -207,7 +282,7 @@ public class CmsStaticExportProperties {
     /**
      * Sets the prefix for exported links in the "real" file system.<p>
      * 
-     * @param exportPrefix the prefix for exported links in the "real" file system
+     * @param rfsPrefix the prefix for exported links in the "real" file system
      */
     public void setRfsPrefix(String rfsPrefix) {
         m_rfsPrefix = rfsPrefix;
@@ -225,7 +300,7 @@ public class CmsStaticExportProperties {
     /**
      * Sets the prefix for internal links in the vfs.<p>
      * 
-     * @param internPrefix the prefix for internal links in the vfs
+     * @param vfsPrefix the prefix for internal links in the vfs
      */
     public void setVfsPrefix(String vfsPrefix) {
         m_vfsPrefix = vfsPrefix;

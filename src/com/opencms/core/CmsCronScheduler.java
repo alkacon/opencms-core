@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsCronScheduler.java,v $
-* Date   : $Date: 2003/07/23 09:59:14 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2003/08/14 15:37:24 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,8 @@
 
 package com.opencms.core;
 
+import org.opencms.main.*;
+
 import com.opencms.boot.I_CmsLogChannels;
 
 import java.util.*;
@@ -37,13 +39,13 @@ import java.util.*;
  * after the system has stopped. It awaiks every minute and starts
  * cronjobs at issue.
  */
-class CmsCronScheduler extends Thread {
+public class CmsCronScheduler extends Thread {
 
     /** The crontable to use */
     private CmsCronTable m_table;
 
     /** The A_OpenCms to get access to the system */
-    private A_OpenCms m_opencms;
+    private OpenCmsCore m_opencms;
     
     /** Flag to indicate if OpenCms has already been shut down */
     private boolean m_destroyed = false;
@@ -53,7 +55,7 @@ class CmsCronScheduler extends Thread {
      * @param opencms to get access to A_OpenCms
      * @param table the CmsCronTable with all CmsCronEntry's to launch.
      */
-    CmsCronScheduler(A_OpenCms opencms, CmsCronTable table) {
+    public CmsCronScheduler(OpenCmsCore opencms, CmsCronTable table) {
         super("OpenCms: CronScheduler");
         // store the crontable
         m_table = table;
@@ -106,8 +108,8 @@ class CmsCronScheduler extends Thread {
     public void shutDown() {
         m_destroyed = true;
         interrupt(); 
-        if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[" + this.getClass().getName() + "] destroyed!");
+        if(OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[" + this.getClass().getName() + "] destroyed!");
         }
     } 
 }

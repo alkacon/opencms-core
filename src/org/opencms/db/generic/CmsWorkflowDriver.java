@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Attic/CmsWorkflowDriver.java,v $
- * Date   : $Date: 2003/08/12 09:17:02 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/08/14 15:37:25 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,9 +33,9 @@ package org.opencms.db.generic;
 
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.I_CmsWorkflowDriver;
+import org.opencms.main.OpenCms;
 
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsGroup;
@@ -59,7 +59,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the workflow driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $ $Date: 2003/08/12 09:17:02 $
+ * @version $Revision: 1.5 $ $Date: 2003/08/14 15:37:25 $
  * @since 5.1
  */
 public class CmsWorkflowDriver extends Object implements I_CmsWorkflowDriver {
@@ -322,8 +322,8 @@ public class CmsWorkflowDriver extends Object implements I_CmsWorkflowDriver {
     public void destroy() throws Throwable {
         finalize();
                 
-        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[" + this.getClass().getName() + "] destroyed!");
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[" + this.getClass().getName() + "] destroyed!");
         }
     }    
 
@@ -334,8 +334,8 @@ public class CmsWorkflowDriver extends Object implements I_CmsWorkflowDriver {
         m_sqlManager = this.initQueries(dbPoolUrl);
         m_driverManager = driverManager;
 
-        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Workflow driver init : ok");
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Workflow driver init : ok");
         }        
     }
 
@@ -818,7 +818,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsWorkflowDriver {
             } else {
                 // no user is specified so set to system user is only valid for system task log
                 // TODO: this is a workaround. not sure if this is correct
-                stmt.setString(3, m_driverManager.getUserDriver().readUser(A_OpenCms.getDefaultUsers().getUserGuest(), I_CmsConstants.C_USER_TYPE_SYSTEMUSER).getId().toString());
+                stmt.setString(3, m_driverManager.getUserDriver().readUser(OpenCms.getDefaultUsers().getUserGuest(), I_CmsConstants.C_USER_TYPE_SYSTEMUSER).getId().toString());
             }
             stmt.setTimestamp(4, starttime);
             stmt.setString(5, m_sqlManager.validateNull(comment));

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceMessages.java,v $
- * Date   : $Date: 2003/07/12 11:29:22 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/08/14 15:37:25 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,9 @@
  
 package org.opencms.workplace;
 
+import org.opencms.main.OpenCms;
+
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
@@ -52,7 +53,7 @@ import java.util.Set;
  * Provides access to the localized lables for the workplace.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.1
  */
@@ -171,18 +172,18 @@ public class CmsWorkplaceMessages {
             result = m_messages.getString(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING);
         } catch (MissingResourceException e) {
             // exception - just use the default encoding
-            result = A_OpenCms.getDefaultEncoding();
+            result = OpenCms.getDefaultEncoding();
         }
         if (result.startsWith("{")) {
             // this is a "supported set" - try to figure out the encoding to use
-            if (result.indexOf(A_OpenCms.getDefaultEncoding()) >= 0) {
+            if (result.indexOf(OpenCms.getDefaultEncoding()) >= 0) {
                 // the current default encoding is supported, so we use this
-                result = A_OpenCms.getDefaultEncoding();
+                result = OpenCms.getDefaultEncoding();
             } else {
                 // default encoding is not supported, so we use the first given encoding in the set       
                 int index = result.indexOf(";");
                 if (index <= 1) {
-                    result = A_OpenCms.getDefaultEncoding();
+                    result = OpenCms.getDefaultEncoding();
                 } else { 
                     result = result.substring(1, index);   
                 }             
@@ -245,8 +246,8 @@ public class CmsWorkplaceMessages {
         
         // key was not found
         if (DEBUG > 1) System.err.println("CmsWorkplaceMessages.key(): '" + keyName + "' not found at all (this is bad)");
-        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, this.getClass().getName() 
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, this.getClass().getName() 
             + ".getLanguageValue() - Missing value for locale key: " + keyName);
         }        
         return "??? " + keyName + " ???";

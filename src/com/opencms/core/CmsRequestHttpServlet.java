@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsRequestHttpServlet.java,v $
-* Date   : $Date: 2003/07/22 00:29:22 $
-* Version: $Revision: 1.37 $
+* Date   : $Date: 2003/08/14 15:37:24 $
+* Version: $Revision: 1.38 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -27,6 +27,8 @@
 */
 
 package com.opencms.core;
+
+import org.opencms.main.*;
 
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.flex.util.CmsResourceTranslator;
@@ -62,7 +64,7 @@ import javax.servlet.http.HttpSession;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * 
- * @version $Revision: 1.37 $ $Date: 2003/07/22 00:29:22 $
+ * @version $Revision: 1.38 $ $Date: 2003/08/14 15:37:24 $
  */
 public class CmsRequestHttpServlet implements I_CmsRequest {
 
@@ -132,7 +134,7 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
      *
      * @param req The original HttpServletRequest used to create this CmsRequest.
      */
-    CmsRequestHttpServlet(HttpServletRequest req, CmsResourceTranslator translator) throws IOException {
+    public CmsRequestHttpServlet(HttpServletRequest req, CmsResourceTranslator translator) throws IOException {
         m_req = req;
         m_translator = translator;
         
@@ -167,12 +169,12 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
                 }
                 // If encoding not found in session - use default one
                 if (encoding == null) {
-                    encoding = A_OpenCms.getDefaultEncoding();
+                    encoding = OpenCms.getDefaultEncoding();
                 }
                 req.setCharacterEncoding(encoding);
             }
-            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_DEBUG)) 
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, "Request character encoding is: '" + req.getCharacterEncoding() + "'");
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_DEBUG)) 
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, "Request character encoding is: '" + req.getCharacterEncoding() + "'");
         }
     }
 

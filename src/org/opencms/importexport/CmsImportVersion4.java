@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2003/08/11 15:53:53 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/08/14 15:37:26 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,7 +30,8 @@
  */
 package org.opencms.importexport;
 
-import com.opencms.core.A_OpenCms;
+import org.opencms.main.OpenCms;
+
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
@@ -139,7 +140,7 @@ public class CmsImportVersion4 extends A_CmsImport {
             for (int i = 0; i < groupNodes.getLength(); i++) {
                 currentElement = (Element)groupNodes.item(i);
                 name = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_NAME);
-                name = A_OpenCms.getDefaultUsers().translateGroup(name);  
+                name = OpenCms.getDefaultUsers().translateGroup(name);  
                 description = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_DESCRIPTION);
                 flags = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_FLAGS);
                 parentgroup = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_PARENTGROUP);
@@ -189,7 +190,7 @@ public class CmsImportVersion4 extends A_CmsImport {
           for (int i = 0; i < userNodes.getLength(); i++) {
               currentElement = (Element)userNodes.item(i);
               name = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_NAME);
-              name = A_OpenCms.getDefaultUsers().translateUser(name);              
+              name = OpenCms.getDefaultUsers().translateUser(name);              
               // decode passwords using base 64 decoder
               dec = new sun.misc.BASE64Decoder();
               pwd = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_PASSWORD);
@@ -226,7 +227,7 @@ public class CmsImportVersion4 extends A_CmsImport {
               for (int j = 0; j < groupNodes.getLength(); j++) {
                   currentGroup = (Element)groupNodes.item(j);
                   String userInGroup=getTextNodeValue(currentGroup, I_CmsConstants.C_EXPORT_TAG_NAME);
-                  userInGroup = A_OpenCms.getDefaultUsers().translateGroup(userInGroup);  
+                  userInGroup = OpenCms.getDefaultUsers().translateGroup(userInGroup);  
                   userGroups.addElement(userInGroup);
               }
               // import this user
@@ -271,11 +272,11 @@ public class CmsImportVersion4 extends A_CmsImport {
            excludeList = new Vector();
        }
        // get list of unwanted properties
-       List deleteProperties = (List)A_OpenCms.getRuntimeProperty("compatibility.support.import.remove.propertytags");
+       List deleteProperties = (List)OpenCms.getRuntimeProperty("compatibility.support.import.remove.propertytags");
        if (deleteProperties == null)
            deleteProperties = new ArrayList();
        // get list of immutable resources
-       List immutableResources = (List)A_OpenCms.getRuntimeProperty("import.immutable.resources");
+       List immutableResources = (List)OpenCms.getRuntimeProperty("import.immutable.resources");
        if (immutableResources == null)
            immutableResources = new ArrayList();
        try {
@@ -305,7 +306,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                }
                // <userlastmodified>
                userlastmodified = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_USERLASTMODIFIED);
-               userlastmodified = A_OpenCms.getDefaultUsers().translateUser(userlastmodified);
+               userlastmodified = OpenCms.getDefaultUsers().translateUser(userlastmodified);
                // <datecreated>
                if ((timestamp = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_DATECREATED)) != null) {
                    datecreated = Long.parseLong(timestamp);
@@ -314,7 +315,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                }
                // <usercreated>
                usercreated = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_USERCREATED);
-               usercreated = A_OpenCms.getDefaultUsers().translateUser(usercreated);
+               usercreated = OpenCms.getDefaultUsers().translateUser(usercreated);
                // <flags>              
                flags = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_FLAGS);
 
@@ -352,10 +353,10 @@ public class CmsImportVersion4 extends A_CmsImport {
                            String principal=id.substring(id.indexOf(".")+1, id.length());
 
                            if (id.startsWith(I_CmsConstants.C_EXPORT_ACEPRINCIPAL_GROUP)) {
-                               principal = A_OpenCms.getDefaultUsers().translateGroup(principal);  
+                               principal = OpenCms.getDefaultUsers().translateGroup(principal);  
                                principalId=m_cms.readGroup(principal).getId().toString();
                            } else {
-                               principal = A_OpenCms.getDefaultUsers().translateUser(principal);  
+                               principal = OpenCms.getDefaultUsers().translateUser(principal);  
                                principalId=m_cms.readUser(principal).getId().toString();
                            }                                                    
                            String acflags = getTextNodeValue(currentEntry, I_CmsConstants.C_EXPORT_TAG_FLAGS);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2003/08/11 15:53:53 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/08/14 15:37:26 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,8 @@
 
 package org.opencms.importexport;
 
-import com.opencms.core.A_OpenCms;
+import org.opencms.main.OpenCms;
+
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
@@ -268,11 +269,11 @@ public class CmsImportVersion3 extends A_CmsImport {
             excludeList = new Vector();
         }
         // get list of unwanted properties
-        List deleteProperties = (List)A_OpenCms.getRuntimeProperty("compatibility.support.import.remove.propertytags");
+        List deleteProperties = (List)OpenCms.getRuntimeProperty("compatibility.support.import.remove.propertytags");
         if (deleteProperties == null)
             deleteProperties = new ArrayList();
         // get list of immutable resources
-        List immutableResources = (List)A_OpenCms.getRuntimeProperty("import.immutable.resources");
+        List immutableResources = (List)OpenCms.getRuntimeProperty("import.immutable.resources");
         if (immutableResources == null)
             immutableResources = new ArrayList();
         try {

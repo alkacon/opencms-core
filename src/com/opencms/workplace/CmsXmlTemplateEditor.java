@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2003/08/03 15:11:59 $
-* Version: $Revision: 1.115 $
+* Date   : $Date: 2003/08/14 15:37:24 $
+* Version: $Revision: 1.116 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,11 +30,10 @@
 package com.opencms.workplace;
 
 import org.opencms.lock.CmsLock;
+import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.workplace.CmsWorkplaceAction;
 
-import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
@@ -67,7 +66,7 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.115 $ $Date: 2003/08/03 15:11:59 $
+ * @version $Revision: 1.116 $ $Date: 2003/08/14 15:37:24 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -521,7 +520,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
             if (isSimplePage) {
                 style = cms.readProperty(layoutTemplateFilename, C_PROPERTY_TEMPLATE);
                 if (style != null) {
-                    style =  hostName + A_OpenCms.getOpenCmsContext() + style;
+                    style =  hostName + OpenCms.getOpenCmsContext() + style;
                 } else {
                     style = "";
                 }
@@ -553,10 +552,10 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
                     cms.getRequestContext().setCurrentProject(curProject);
                 }catch(CmsException e) {
                     cms.getRequestContext().setCurrentProject(curProject);
-                    if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                        A_OpenCms.log(C_OPENCMS_INFO, getClassName()
+                    if(OpenCms.isLogging(C_OPENCMS_INFO) ) {
+                        OpenCms.log(C_OPENCMS_INFO, getClassName()
                                 + "Could not write property " + C_PROPERTY_TITLE + " for file " + file + ".");
-                        A_OpenCms.log(C_OPENCMS_INFO, getClassName() + e);
+                        OpenCms.log(C_OPENCMS_INFO, getClassName() + e);
                     }
                 }
             }
@@ -568,7 +567,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
                     cms.getRequestContext().setCurrentProject(curProject);         
                     style = cms.readProperty(layoutTemplateFilename, C_PROPERTY_TEMPLATE);    
                     if (style != null) {
-                        style = hostName + A_OpenCms.getOpenCmsContext() + style;
+                        style = hostName + OpenCms.getOpenCmsContext() + style;
                     } else {
                         style = "";
                     }
@@ -745,7 +744,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
 		content = bodyTemplateFile.getEditableTemplateContent(this, parameters, body, editor.equals(C_SELECTBOX_EDITORVIEWS[0]), style);
 		
 		// set the context & servlet path in editor content
-		content = CmsStringSubstitution.substitute(content, C_MACRO_OPENCMS_CONTEXT + "/", A_OpenCms.getOpenCmsContext() + "/");
+		content = CmsStringSubstitution.substitute(content, C_MACRO_OPENCMS_CONTEXT + "/", OpenCms.getOpenCmsContext() + "/");
         
         // escape content
         content = Encoder.escapeWBlanks(content, Encoder.C_UTF8_ENCODING);
@@ -926,7 +925,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
                 prop = cms.readProperty(file + "/", C_PROPERTY_CONTENT_ENCODING);
             } 
         } catch (Exception e) {}
-        if (prop == null) prop = A_OpenCms.getDefaultEncoding();
+        if (prop == null) prop = OpenCms.getDefaultEncoding();
         return prop;
     }
     
@@ -939,8 +938,8 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
         // Check the existance of the "file" parameter
         if(!existsContentParam) {
             String errorMessage = getClassName() + "No content found.";
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(C_OPENCMS_CRITICAL, errorMessage);
+            if(OpenCms.isLogging(C_OPENCMS_CRITICAL) ) {
+                OpenCms.log(C_OPENCMS_CRITICAL, errorMessage);
             }
             content = "";
         }

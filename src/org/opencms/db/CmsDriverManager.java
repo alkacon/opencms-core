@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/14 12:50:53 $
- * Version: $Revision: 1.155 $
+ * Date   : $Date: 2003/08/14 15:37:25 $
+ * Version: $Revision: 1.156 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.importexport.CmsImportModuledata;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockDispatcher;
 import org.opencms.lock.CmsLockException;
+import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
@@ -46,7 +47,6 @@ import org.opencms.security.I_CmsPrincipal;
 
 import com.opencms.boot.CmsBase;
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.exceptions.CmsResourceNotFoundException;
@@ -79,7 +79,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.155 $ $Date: 2003/08/14 12:50:53 $
+ * @version $Revision: 1.156 $ $Date: 2003/08/14 15:37:25 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -99,9 +99,6 @@ public class CmsDriverManager extends Object {
     public static final int C_UPDATE_ALL = 3; 
     public static final int C_UPDATE_RESOURCE = 4;
     public static final int C_UPDATE_STRUCTURE = 5;
-    
-    protected Map m_accessCache = null;
-    protected Map m_accessControlListCache = null;
 
     /** The backup driver. */
     protected I_CmsBackupDriver m_backupDriver;
@@ -126,41 +123,43 @@ public class CmsDriverManager extends Object {
      * Constant to count the file-system changes if Folders are involved.
      */
     protected long m_fileSystemFolderChanges = 0;
-    protected Map m_groupCache = null;
 
     /**
      * The portnumber the workplace access is limited to.
      */
     protected int m_limitedWorkplacePort = -1;
 
-    protected CmsProject m_onlineProjectCache = null;
-    protected Map m_projectCache = null;
-
     /** the project driver. */
     protected I_CmsProjectDriver m_projectDriver;
-    protected Map m_propertyCache = null;
-    protected Map m_propertyDefCache = null;
-    protected Map m_propertyDefVectorCache = null;
     protected String m_refresh = null;
 
     /**
     * The Registry
     */
     protected I_CmsRegistry m_registry = null;
-    protected Map m_resourceCache = null;
-    protected Map m_resourceListCache = null;
-
+    
     /**
      * Hashtable with resource-types.
      */
     protected I_CmsResourceType[] m_resourceTypes = null;
 
     // Define caches for often read resources
+    protected CmsProject m_onlineProjectCache = null;
     protected Map m_userCache = null;
+    protected Map m_projectCache = null;
+    protected Map m_propertyCache = null;
+    protected Map m_propertyDefCache = null;
+    protected Map m_propertyDefVectorCache = null;    
+    protected Map m_resourceCache = null;
+    protected Map m_resourceListCache = null;
+    protected Map m_userGroupsCache = null;
+    protected Map m_groupCache = null;
+    protected Map m_accessCache = null;
+    protected Map m_accessControlListCache = null;
+    protected Map m_permissionCache = null;    
 
     /** The user driver. */
     protected I_CmsUserDriver m_userDriver;
-    protected Map m_userGroupsCache = null;
 
     /** The VFS driver. */
     protected I_CmsVfsDriver m_vfsDriver;
@@ -289,31 +288,31 @@ public class CmsDriverManager extends Object {
         try {
             // create a driver manager instance
             driverManager = new CmsDriverManager();
-            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver manager init  : phase 1 - initializing database");
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver manager init  : phase 1 - initializing database");
             }
         } catch (Exception exc) {
             String message = "Critical error while loading driver manager";
-            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsDriverManager] " + message);
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsDriverManager] " + message);
             }
 
             exc.printStackTrace(System.err);
             throw new CmsException(message, CmsException.C_RB_INIT_ERROR, exc);
         }
 
-        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver manager init  : phase 2 - initializing pools");
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver manager init  : phase 2 - initializing pools");
         }        
 
         // read the pool names to initialize
         String driverPoolNames[] = configurations.getStringArray(I_CmsConstants.C_CONFIGURATION_DB + ".pools");
-        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
             String names = "";
             for (int p = 0; p < driverPoolNames.length; p++) {
                 names += driverPoolNames[p] + " ";
             }            
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Resource pools       : " + names);
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Resource pools       : " + names);
         }
         
         // initialize each pool
@@ -321,8 +320,8 @@ public class CmsDriverManager extends Object {
             driverManager.newPoolInstance(configurations, driverPoolNames[p]);
         }
         
-        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver manager init  : phase 3 - initializing drivers");
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver manager init  : phase 3 - initializing drivers");
         }                
 
         // read the vfs driver class properties and initialize a new instance 
@@ -353,13 +352,13 @@ public class CmsDriverManager extends Object {
         try {
             // invoke the init method of the driver manager
             driverManager.init(configurations, vfsDriver, userDriver, projectDriver, workflowDriver, backupDriver);
-            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver manager init  : phase 4 ok - finished");
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver manager init  : phase 4 ok - finished");
             }
         } catch (Exception exc) {
             String message = "Critical error while loading driver manager";
-            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsDriverManager] " + message);
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsDriverManager] " + message);
             }
 
             exc.printStackTrace(System.err);
@@ -370,7 +369,7 @@ public class CmsDriverManager extends Object {
         // set the pool for the COS
         // TODO: check if there is a better place for this
         driverPoolUrl = configurations.getString(I_CmsConstants.C_CONFIGURATION_DB + ".cos.pool");
-        A_OpenCms.setRuntimeProperty("cosPoolUrl", driverPoolUrl);
+        OpenCms.setRuntimeProperty("cosPoolUrl", driverPoolUrl);
         CmsIdGenerator.setDefaultPool(driverPoolUrl);
                 
         // return the configured driver manager
@@ -940,6 +939,7 @@ public class CmsDriverManager extends Object {
         m_accessControlListCache.clear();
         m_resourceCache.clear();
         m_resourceListCache.clear();
+        m_permissionCache.clear();
     }
 
     /**
@@ -958,6 +958,7 @@ public class CmsDriverManager extends Object {
         m_onlineProjectCache = null;
         m_accessCache.clear();
         m_accessControlListCache.clear();
+        m_permissionCache.clear();
     }
 
     /**
@@ -1684,8 +1685,8 @@ public class CmsDriverManager extends Object {
         String description = "Project for temporary files";
         if (isAdmin(context)) {
             // read the needed groups from the cms
-            CmsGroup group = readGroup(context, A_OpenCms.getDefaultUsers().getGroupUsers());
-            CmsGroup managergroup = readGroup(context, A_OpenCms.getDefaultUsers().getGroupAdministrators());
+            CmsGroup group = readGroup(context, OpenCms.getDefaultUsers().getGroupUsers());
+            CmsGroup managergroup = readGroup(context, OpenCms.getDefaultUsers().getGroupAdministrators());
 
             // create a new task for the project
             CmsTask task = createProject(context, name, 1, group.getName(), System.currentTimeMillis(), I_CmsConstants.C_TASK_PRIORITY_NORMAL);
@@ -2303,11 +2304,11 @@ public class CmsDriverManager extends Object {
 
         // Check the security
         // Avoid to delete admin or guest-user
-        if (isAdmin(context) && !(username.equals(A_OpenCms.getDefaultUsers().getUserAdmin()) || username.equals(A_OpenCms.getDefaultUsers().getUserGuest()))) {
+        if (isAdmin(context) && !(username.equals(OpenCms.getDefaultUsers().getUserAdmin()) || username.equals(OpenCms.getDefaultUsers().getUserGuest()))) {
             m_userDriver.deleteUser(username);
             // delete user from cache
             clearUserCache(user);
-        } else if (username.equals(A_OpenCms.getDefaultUsers().getUserAdmin()) || username.equals(A_OpenCms.getDefaultUsers().getUserGuest())) {
+        } else if (username.equals(OpenCms.getDefaultUsers().getUserAdmin()) || username.equals(OpenCms.getDefaultUsers().getUserGuest())) {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] deleteUser() " + username, CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         } else {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] deleteUser() " + username, CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
@@ -2332,8 +2333,8 @@ public class CmsDriverManager extends Object {
     public void destroy() throws Throwable {
         finalize();
 
-        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[" + this.getClass().getName() + "] destroyed!");
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[" + this.getClass().getName() + "] destroyed!");
         }
     }
 
@@ -2751,7 +2752,7 @@ public class CmsDriverManager extends Object {
         for (int i = 0; i < groups.size(); i++) {
             Vector projectsByGroup;
             // is this the admin-group?
-            if (((CmsGroup) groups.elementAt(i)).getName().equals(A_OpenCms.getDefaultUsers().getGroupAdministrators())) {
+            if (((CmsGroup) groups.elementAt(i)).getName().equals(OpenCms.getDefaultUsers().getGroupAdministrators())) {
                 // yes - all unlocked projects are accessible for him
                 projectsByGroup = m_projectDriver.getAllProjects(I_CmsConstants.C_PROJECT_STATE_UNLOCKED);
             } else {
@@ -2817,7 +2818,7 @@ public class CmsDriverManager extends Object {
             // get all projects, which can be managed by the current group
             Vector projectsByGroup;
             // is this the admin-group?
-            if (((CmsGroup) groups.elementAt(i)).getName().equals(A_OpenCms.getDefaultUsers().getGroupAdministrators())) {
+            if (((CmsGroup) groups.elementAt(i)).getName().equals(OpenCms.getDefaultUsers().getGroupAdministrators())) {
                 // yes - all unlocked projects are accessible for him
                 projectsByGroup = m_projectDriver.getAllProjects(I_CmsConstants.C_PROJECT_STATE_UNLOCKED);
             } else {
@@ -3941,6 +3942,22 @@ public class CmsDriverManager extends Object {
      * @throws CmsException if something goes wrong
      */
     public boolean hasPermissions(CmsRequestContext context, CmsResource resource, CmsPermissionSet requiredPermissions, boolean strongCheck) throws CmsException {
+                       
+        StringBuffer cacheBuffer = new StringBuffer(64);
+        cacheBuffer.append(context.currentUser().getName());
+        cacheBuffer.append(context.currentProject().isOnlineProject()?"_0_":"_1_");
+        cacheBuffer.append(requiredPermissions.getPermissionString());
+        cacheBuffer.append("_");
+        cacheBuffer.append(strongCheck);
+        cacheBuffer.append("_");
+        cacheBuffer.append(resource.getResourceId().toString());
+
+        String cacheKey = cacheBuffer.toString();
+        Boolean cacheResult = (Boolean)m_permissionCache.get(cacheKey);
+        if (cacheResult != null) {
+            return cacheResult.booleanValue();
+        }
+        
         CmsLock lock = getLock(context, resource);
         CmsPermissionSet permissions = null;
         int denied = 0;
@@ -3950,20 +3967,24 @@ public class CmsDriverManager extends Object {
             denied |= I_CmsConstants.C_PERMISSION_WRITE;
         }
 
+        // check if the current user is admin
+        boolean isAdmin = isAdmin(context);
+
         // if the resource type is jsp or xml template
-        // write is only allowed for administrators
-        if (((resource.getType() == CmsResourceTypeXMLTemplate.C_RESOURCE_TYPE_ID) || (resource.getType() == CmsResourceTypeJsp.C_RESOURCE_TYPE_ID)) && !isAdmin(context)) {            
+        // write is only allowed for administrators        
+        if (!isAdmin && ((resource.getType() == CmsResourceTypeXMLTemplate.C_RESOURCE_TYPE_ID) || (resource.getType() == CmsResourceTypeJsp.C_RESOURCE_TYPE_ID))) {            
             denied |= I_CmsConstants.C_PERMISSION_WRITE;
         }
 
         if (!lock.isNullLock()) {
             // if the resource is locked by another user, write is rejected
             // read must still be possible, since the explorer file list needs some properties
-            if (!context.currentUser().getId().equals(lock.getUserId()))
+            if (!context.currentUser().getId().equals(lock.getUserId())) {         
                 denied |= I_CmsConstants.C_PERMISSION_WRITE;
-        }
+            }
+        }        
 
-        if (isAdmin(context)) {
+        if (isAdmin) {
             // if the current user is administrator, anything is allowed
             permissions = new CmsPermissionSet(~0);
         } else {
@@ -3974,10 +3995,14 @@ public class CmsDriverManager extends Object {
 
         permissions.denyPermissions(denied);
 
-        if (strongCheck)
-            return (requiredPermissions.getPermissions() & (permissions.getPermissions())) == requiredPermissions.getPermissions();
-        else
-            return (requiredPermissions.getPermissions() & (permissions.getPermissions())) > 0;
+        boolean result;
+        if (strongCheck) {
+            result = (requiredPermissions.getPermissions() & (permissions.getPermissions())) == requiredPermissions.getPermissions();
+        } else {
+            result = (requiredPermissions.getPermissions() & (permissions.getPermissions())) > 0;
+        }
+        m_permissionCache.put(cacheKey, new Boolean(result));
+        return result;
     }
 
     /**
@@ -4129,8 +4154,8 @@ public class CmsDriverManager extends Object {
         m_limitedWorkplacePort = config.getInteger("workplace.limited.port", -1);
 
         // initialize the access-module.
-        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver manager init  : phase 4 - connecting to the database");
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver manager init  : phase 4 - connecting to the database");
         }
 
         // store the access objects
@@ -4154,13 +4179,14 @@ public class CmsDriverManager extends Object {
         m_propertyDefVectorCache = Collections.synchronizedMap(new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".propertyvectordef", 100)));
         m_accessCache = Collections.synchronizedMap(new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".access", 1000)));
         m_accessControlListCache = Collections.synchronizedMap(new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".access", 1000)));
+        m_permissionCache = Collections.synchronizedMap(new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".access", 1000)));
 
         m_cachelimit = config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".maxsize", 20000);
         m_refresh = config.getString(I_CmsConstants.C_CONFIGURATION_CACHE + ".refresh", "");
 
         // initialize the registry
-        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Initializing registry: starting");
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Initializing registry: starting");
         }
         try {
             m_registry = new CmsRegistry(CmsBase.getAbsolutePath(config.getString(I_CmsConstants.C_CONFIGURATION_REGISTRY)));
@@ -4168,12 +4194,12 @@ public class CmsDriverManager extends Object {
             throw ex;
         } catch (Exception ex) {
             // init of registry failed - throw exception
-            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL))
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, ". Critical init error/4: " + ex.getMessage());
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL))
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, ". Critical init error/4: " + ex.getMessage());
             throw new CmsException("Init of registry failed", CmsException.C_REGISTRY_ERROR, ex);
         }
-        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Initializing registry: finished");
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Initializing registry: finished");
         }
 
         m_projectDriver.fillDefaults();
@@ -4191,7 +4217,7 @@ public class CmsDriverManager extends Object {
      * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public boolean isAdmin(CmsRequestContext context) throws CmsException {
-        return userInGroup(context, context.currentUser().getName(), A_OpenCms.getDefaultUsers().getGroupAdministrators());
+        return userInGroup(context, context.currentUser().getName(), OpenCms.getDefaultUsers().getGroupAdministrators());
     }
 
     /**
@@ -4209,8 +4235,8 @@ public class CmsDriverManager extends Object {
                 return false;
             }
         } catch (CmsException e) {
-            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "Could not get registry value for " + I_CmsConstants.C_REGISTRY_HISTORY + "." + I_CmsConstants.C_ENABLE_HISTORY);
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "Could not get registry value for " + I_CmsConstants.C_REGISTRY_HISTORY + "." + I_CmsConstants.C_ENABLE_HISTORY);
             }
             return false;
         }
@@ -4263,7 +4289,7 @@ public class CmsDriverManager extends Object {
      * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public boolean isProjectManager(CmsRequestContext context) throws CmsException {
-        return userInGroup(context, context.currentUser().getName(), A_OpenCms.getDefaultUsers().getGroupProjectmanagers());
+        return userInGroup(context, context.currentUser().getName(), OpenCms.getDefaultUsers().getGroupProjectmanagers());
     }
 
     public boolean isTempfileProject(CmsProject project) {
@@ -4282,7 +4308,7 @@ public class CmsDriverManager extends Object {
      * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public boolean isUser(CmsRequestContext context) throws CmsException {
-        return userInGroup(context, context.currentUser().getName(), A_OpenCms.getDefaultUsers().getGroupUsers());
+        return userInGroup(context, context.currentUser().getName(), OpenCms.getDefaultUsers().getGroupUsers());
     }
 
     /**
@@ -4293,9 +4319,9 @@ public class CmsDriverManager extends Object {
      */
     protected boolean isWebgroup(CmsGroup group) throws CmsException {
         try {
-            CmsUUID user = m_userDriver.readGroup(A_OpenCms.getDefaultUsers().getGroupUsers()).getId();
-            CmsUUID admin = m_userDriver.readGroup(A_OpenCms.getDefaultUsers().getGroupAdministrators()).getId();
-            CmsUUID manager = m_userDriver.readGroup(A_OpenCms.getDefaultUsers().getGroupProjectmanagers()).getId();
+            CmsUUID user = m_userDriver.readGroup(OpenCms.getDefaultUsers().getGroupUsers()).getId();
+            CmsUUID admin = m_userDriver.readGroup(OpenCms.getDefaultUsers().getGroupAdministrators()).getId();
+            CmsUUID manager = m_userDriver.readGroup(OpenCms.getDefaultUsers().getGroupProjectmanagers()).getId();
             if ((group.getId().equals(user)) || (group.getId().equals(admin)) || (group.getId().equals(manager))) {
                 return false;
             } else {
@@ -4692,26 +4718,26 @@ public class CmsDriverManager extends Object {
         try {
             // try to get the class
             driverClass = Class.forName(driverName);
-            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver init          : starting " + driverName);
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver init          : starting " + driverName);
             }
 
             // try to create a instance
             driver = driverClass.newInstance();
-            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver init          : initializing " + driverName);
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver init          : initializing " + driverName);
             }
 
             // invoke the init-method of this access class
             driver.getClass().getMethod("init", initParamClasses).invoke(driver, initParams);
-            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver init          : finished, assigned pool " + driverPoolUrl);
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver init          : finished, assigned pool " + driverPoolUrl);
             }
 
         } catch (Exception exc) {
             String message = "Critical error while initializing " + driverName;
-            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsDriverManager] " + message);
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsDriverManager] " + message);
             }
 
             exc.printStackTrace(System.err);
@@ -4735,13 +4761,13 @@ public class CmsDriverManager extends Object {
 
         try {
             poolUrl = CmsDbPool.createDriverConnectionPool(configurations, poolName);
-            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Initializing pool    : " + poolUrl);
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Initializing pool    : " + poolUrl);
             }
         } catch (Exception exc) {
             String message = "Critical error while initializing resource pool " + poolName;
-            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsDriverManager] " + message);
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsDriverManager] " + message);
             }
 
             exc.printStackTrace(System.err);
@@ -4824,13 +4850,13 @@ public class CmsDriverManager extends Object {
                         Class.forName((String) publishModules.elementAt(i)).getMethod("publishProject", new Class[] { CmsObject.class, Boolean.class, Integer.class, Integer.class, Long.class, Vector.class, Vector.class }).invoke(null, new Object[] { cms, new Boolean(isHistoryEnabled(cms)), new Integer(publishProjectId), new Integer(versionId), new Long(publishDate), changedResources, changedModuleMasters });
                     } catch (ClassNotFoundException ec) {
                         report.println(report.key("report.publish_class_for_module_does_not_exist_1") + (String) publishModules.elementAt(i) + report.key("report.publish_class_for_module_does_not_exist_2"), I_CmsReport.C_FORMAT_WARNING);
-                        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
-                            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "Error calling publish class of module " + (String) publishModules.elementAt(i) + "!: " + ec.getMessage());
+                        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
+                            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "Error calling publish class of module " + (String) publishModules.elementAt(i) + "!: " + ec.getMessage());
                         }
                     } catch (Exception ex) {
                         report.println(ex);
-                        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
-                            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "Error when publish data of module " + (String) publishModules.elementAt(i) + "!: " + ex.getMessage());
+                        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
+                            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "Error when publish data of module " + (String) publishModules.elementAt(i) + "!: " + ex.getMessage());
                         }
                     }
                 }
@@ -4849,8 +4875,8 @@ public class CmsDriverManager extends Object {
                     try {
                         m_projectCache.remove(new Integer(publishProjectId));
                     } catch (Exception e) {
-                        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CACHE, "Could not remove project " + publishProjectId + " from cache");
+                        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CACHE)) {
+                            OpenCms.log(I_CmsLogChannels.C_OPENCMS_CACHE, "Could not remove project " + publishProjectId + " from cache");
                         }
                     }
                     if (publishProjectId == context.currentProject().getId()) {
@@ -5756,8 +5782,8 @@ public class CmsDriverManager extends Object {
         try {
             props.load(getClass().getClassLoader().getResourceAsStream("mimetypes.properties"));
         } catch (Exception exc) {
-            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + "] could not read mimetypes from properties. " + exc.getMessage());
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + "] could not read mimetypes from properties. " + exc.getMessage());
             }
         }
         return props;
@@ -8399,8 +8425,8 @@ public class CmsDriverManager extends Object {
         try {
             projectResources = m_vfsDriver.readProjectResources(context.currentProject());
         } catch (CmsException e) {
-            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsDriverManager.isInsideProject()] error reading project resources " + e.getMessage());
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsDriverManager.isInsideProject()] error reading project resources " + e.getMessage());
             }
                         
             return false;
@@ -8480,7 +8506,7 @@ public class CmsDriverManager extends Object {
                     contents, 
                     contents.length, 
                     1);
-                newResource = (CmsResource) m_vfsDriver.createFile(context.currentProject(), newFile, context.currentUser().getId(), parentFolder.getId(), CmsResource.getName(resourcename));
+                newResource = m_vfsDriver.createFile(context.currentProject(), newFile, context.currentUser().getId(), parentFolder.getId(), CmsResource.getName(resourcename));
             } else {
                 // create the folder in the offline project  
                 newFolder = new CmsFolder(
@@ -8498,7 +8524,7 @@ public class CmsDriverManager extends Object {
                     0, 
                     context.currentUser().getId(), 
                     1);
-                newResource = (CmsResource) m_vfsDriver.createFolder(context.currentUser(), context.currentProject(), newFolder, parentFolder.getId(), CmsResource.getName(resourcename));
+                newResource = m_vfsDriver.createFolder(context.currentUser(), context.currentProject(), newFolder, parentFolder.getId(), CmsResource.getName(resourcename));
             }
 
             writeProperties(context, resourcename, properties);

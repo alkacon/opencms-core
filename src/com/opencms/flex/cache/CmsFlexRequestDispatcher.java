@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexRequestDispatcher.java,v $
- * Date   : $Date: 2003/07/19 01:51:38 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2003/08/14 15:37:25 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,9 @@
 
 package com.opencms.flex.cache;
 
+import org.opencms.main.OpenCms;
+
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsObject;
 
@@ -57,7 +58,7 @@ import javax.servlet.http.HttpServletResponse;
  * </ol>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public class CmsFlexRequestDispatcher implements RequestDispatcher {
         
@@ -214,8 +215,8 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
                     } catch (com.opencms.core.CmsException e) {
                         if (e.getType() == CmsException.C_FLEX_CACHE) {
                             // Invalid key is ignored but logged, used key is cache=never
-                            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) 
-                                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[FlexCache] Invalid cache key for external resource \"" + m_vfsTarget + "\": " + cacheProperty);
+                            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) 
+                                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[FlexCache] Invalid cache key for external resource \"" + m_vfsTarget + "\": " + cacheProperty);
                             // There will be a vaild key in the response ("cache=never") even after an exception
                             cache.putKey(w_res.getCmsCacheKey());
                         } else {
@@ -243,7 +244,7 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
                 resource = cms.readFileHeader(m_vfsTarget);
                 int type = resource.getLoaderId();
                 if (DEBUG > 0) System.err.println("FlexDispatcher: Loading resource type " + type);
-                loader = A_OpenCms.getLoaderManager().getLoader(type);
+                loader = OpenCms.getLoaderManager().getLoader(type);
             } catch (java.lang.ClassCastException e) {
                 throw new ServletException("FlexDispatcher: CmsResourceLoader interface not implemented for cms resource " + m_vfsTarget + "\n" + e, e);
             } catch (com.opencms.core.CmsException e) {

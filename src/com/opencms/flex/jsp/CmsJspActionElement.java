@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspActionElement.java,v $
- * Date   : $Date: 2003/07/19 01:51:37 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2003/08/14 15:37:25 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,9 +36,9 @@ import org.opencms.loader.CmsJspLoader;
 import org.opencms.loader.CmsPointerLoader;
 import org.opencms.loader.CmsXmlTemplateLoader;
 import org.opencms.loader.I_CmsResourceLoader;
+import org.opencms.main.OpenCms;
 
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
@@ -80,7 +80,7 @@ import javax.servlet.jsp.PageContext;
  * working at last in some elements.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  * 
  * @since 5.0 beta 2
  */
@@ -707,7 +707,7 @@ public class CmsJspActionElement {
             target = toAbsolute(target);
             try {
                 CmsResource resource = getCmsObject().readFileHeader(target);
-                loader = A_OpenCms.getLoaderManager().getLoader(resource.getLoaderId());
+                loader = OpenCms.getLoaderManager().getLoader(resource.getLoaderId());
             } catch (java.lang.ClassCastException e) {
                 // no loader omplementation found
                 return "??? " + e.getMessage() + " ???";
@@ -754,8 +754,8 @@ public class CmsJspActionElement {
      * @param t the Throwable that was catched
      */
     private void handleException(Throwable t) {
-        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_FLEX_LOADER)) {
-            A_OpenCms.log(I_CmsLogChannels.C_FLEX_LOADER, Utils.getStackTrace(t));
+        if (OpenCms.isLogging(I_CmsLogChannels.C_FLEX_LOADER)) {
+            OpenCms.log(I_CmsLogChannels.C_FLEX_LOADER, Utils.getStackTrace(t));
         } 
         if (! (m_handleExceptions || getRequestContext().currentProject().isOnlineProject())) {    
             if (DEBUG > 0) {        

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsCronEntry.java,v $
-* Date   : $Date: 2003/07/21 11:07:17 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2003/08/14 15:37:24 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,7 +33,7 @@ import java.util.*;
 import com.opencms.flex.util.CmsStringSubstitution;
 import com.opencms.util.*;
 
-class CmsCronEntry {
+public class CmsCronEntry {
 
 	/**
 	 * The minute, when to lauch.

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleNew.java,v $
-* Date   : $Date: 2003/08/01 07:53:00 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2003/08/14 15:37:24 $
+* Version: $Revision: 1.24 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,8 +28,9 @@
 
 package com.opencms.workplace;
 
+import org.opencms.main.OpenCms;
+
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
@@ -82,10 +83,10 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
      * @param templateSelector template section that should be processed.
      */
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() && C_DEBUG ) {
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "getting content of element " + ((elementName == null) ? "<root>" : elementName));
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: " + templateFile);
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector == null) ? "<default>" : templateSelector));
+        if(OpenCms.isLogging(C_OPENCMS_DEBUG) && C_DEBUG ) {
+            OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "getting content of element " + ((elementName == null) ? "<root>" : elementName));
+            OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: " + templateFile);
+            OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector == null) ? "<default>" : templateSelector));
         }
 
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
@@ -125,10 +126,9 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
                         + I_CmsRegistry.C_MODULE_PATH);
             if (!modulefolder.exists()) {
                 boolean success = modulefolder.mkdir();
-                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING
-                    && A_OpenCms.isLogging()
+                if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)
                     && (!success)) {
-                    A_OpenCms.log(
+                    OpenCms.log(
                         I_CmsLogChannels.C_OPENCMS_INFO,
                         "[CmsExportPointDriver] Couldn't create folder "
                             + com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath())
@@ -181,10 +181,9 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
                         + I_CmsRegistry.C_MODULE_PATH);
             if (!discFolder.exists()) {
                 boolean success = discFolder.mkdir();
-                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING
-                    && A_OpenCms.isLogging()
+                if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)
                     && (!success)) {
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO,
+                    OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO,
                         "[CmsExportPointDriver] Couldn't create folder "
                             + com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath())
                             + "/"

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsDelete.java,v $
- * Date   : $Date: 2003/07/31 12:17:35 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/08/14 15:37:25 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 package org.opencms.workplace;
 
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsResource;
@@ -44,6 +43,7 @@ import javax.servlet.jsp.PageContext;
 
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockException;
+import org.opencms.main.OpenCms;
 
 /**
  * Provides methods for the delete resources dialog.<p> 
@@ -54,7 +54,7 @@ import org.opencms.lock.CmsLockException;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.1
  */
@@ -196,8 +196,8 @@ public class CmsDelete extends CmsDialog {
         } catch (CmsException e) {
             lock = CmsLock.getNullLock();
     
-            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) { 
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, this.getClass().getName() + " error getting lock state for resource " + getParamResource() + " " + e.getMessage());
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) { 
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, this.getClass().getName() + " error getting lock state for resource " + getParamResource() + " " + e.getMessage());
             }  
             return false;           
         }

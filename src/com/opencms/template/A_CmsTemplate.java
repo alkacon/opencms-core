@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsTemplate.java,v $
-* Date   : $Date: 2003/08/03 15:12:00 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2003/08/14 15:37:26 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,8 +28,9 @@
 
 package com.opencms.template;
 
+import org.opencms.main.OpenCms;
+
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsFile;
@@ -44,7 +45,7 @@ import javax.servlet.http.HttpServletRequest;
  * Abstract template class. Contains all commonly used methods for handling cache properties.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.14 $ $Date: 2003/08/03 15:12:00 $
+ * @version $Revision: 1.15 $ $Date: 2003/08/14 15:37:26 $
  */
 public abstract class A_CmsTemplate implements I_CmsTemplate {
 
@@ -268,8 +269,8 @@ public abstract class A_CmsTemplate implements I_CmsTemplate {
      * @throws CmsException
      */
     protected void throwException(String errorMessage, int type) throws CmsException {
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, getClassName() + errorMessage);
+        if(OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL) ) {
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, getClassName() + errorMessage);
         }
         throw new CmsException(errorMessage, type);
     }
@@ -283,9 +284,9 @@ public abstract class A_CmsTemplate implements I_CmsTemplate {
      * @throws CmsException
      */
     protected void throwException(String errorMessage, Exception e) throws CmsException {
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, getClassName() + errorMessage);
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, getClassName() + "Exception: " + e);
+        if(OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL) ) {
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, getClassName() + errorMessage);
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, getClassName() + "Exception: " + e);
         }
         if(e instanceof CmsException) {
             throw (CmsException)e;

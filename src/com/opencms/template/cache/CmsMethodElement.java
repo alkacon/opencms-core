@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsMethodElement.java,v $
-* Date   : $Date: 2003/08/10 11:49:48 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2003/08/14 15:37:25 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,8 +28,9 @@
 
 package com.opencms.template.cache;
 
+import org.opencms.main.OpenCms;
+
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsObject;
 import com.opencms.template.A_CmsCacheDirectives;
@@ -128,9 +129,9 @@ public class CmsMethodElement extends A_CmsElement {
             try {
                 templateClass = getTemplateClass(cms, m_className);
             } catch(Throwable e) {
-                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, toString() + " Could not load my template class \"" + m_className + "\". ");
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, e.toString());
+                if(OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+                    OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, toString() + " Could not load my template class \"" + m_className + "\". ");
+                    OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, e.toString());
                     return e.toString().getBytes();
                 }
             }
@@ -210,8 +211,8 @@ public class CmsMethodElement extends A_CmsElement {
      * @throws CmsException
      */
     protected void throwException(String errorMessage, int type) throws CmsException {
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, errorMessage);
+        if(OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL) ) {
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, errorMessage);
         }
         throw new CmsException(errorMessage, type);
     }
