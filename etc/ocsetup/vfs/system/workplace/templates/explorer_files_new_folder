@@ -36,7 +36,7 @@
         if(okay==false)alert("]]><LABEL value="error.message.badcharacter" /><![CDATA["+badchar);
 
         if(document.getElementById("name"+whichone).value.length<1)lengthOkay=false;
-        if(document.getElementById("title"+whichone).value.length<1)lengthOkay=false;
+
         if(whichone==1){
             if(document.getElementById("navtext").value.length<1)lengthOkay=false;
         }
@@ -118,7 +118,7 @@
                     </tr>
                     <tr>
                         <td colspan=2 class=dialogtxt>
-                        <input type="checkbox" onClick="javascript:switchLayer2(this);" checked>&nbsp;&nbsp;]]><LABEL value="input.addtonav" /><![CDATA[
+                        <input type="checkbox" onClick="javascript:switchLayer2(this);">&nbsp;&nbsp;]]><LABEL value="input.addtonav" /><![CDATA[
                         </td>
                     </tr>
                     <tr>
@@ -207,7 +207,7 @@
                     </tr>
                     <tr>
                         <td class=formular>
-                            navtext:
+                            ]]><LABEL value="input.navtext" /><![CDATA[:
                         </td>
                         <td class=dialogtxt>
                             <input type="textfield" id="navtext" maxlength=100 style="width:400px;" class="textfeld2"> 
@@ -215,7 +215,7 @@
                     </tr>
                     <tr>
                         <td class=formular>
-                            navpos:
+                            ]]><LABEL value="input.navpos" /><![CDATA[:
                         </td>
                         <td class=dialogtxt>
                             ]]><SELECT class="textfeld" name="navpos" width="400" method="getNavPos" /><![CDATA[
