@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/30 17:02:24 $
- * Version: $Revision: 1.106 $
+ * Date   : $Date: 2003/07/31 09:53:21 $
+ * Version: $Revision: 1.107 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.106 $ $Date: 2003/07/30 17:02:24 $
+ * @version $Revision: 1.107 $ $Date: 2003/07/31 09:53:21 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -4607,7 +4607,7 @@ public class CmsDriverManager extends Object {
         // its sufficient to use source instead of dest, since there is only one resource
         source.setDateLastModified(System.currentTimeMillis());
         source.setUserLastModified(context.currentUser().getId());
-        m_vfsDriver.updateResourceState(context.currentProject(), source, C_UPDATE_RESOURCE);
+        m_vfsDriver.updateResourceState(context.currentProject(), source, C_UPDATE_STRUCTURE);
     }
 
     /**

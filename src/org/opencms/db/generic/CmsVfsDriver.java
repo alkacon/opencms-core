@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/30 13:22:24 $
- * Version: $Revision: 1.65 $
+ * Date   : $Date: 2003/07/31 09:53:21 $
+ * Version: $Revision: 1.66 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.65 $ $Date: 2003/07/30 13:22:24 $
+ * @version $Revision: 1.66 $ $Date: 2003/07/31 09:53:21 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -3126,37 +3126,37 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
     }
 
     /**
-    * Writes the fileheader to the Cms.
+    * Writes the fileheader to the Database.
     *
-    * @param project The project in which the resource will be used.
-    * @param onlineProject The online project of the OpenCms.
-    * @param file The new file.
-    * @param changed Flag indicating if the file state must be set to changed.
-    * @param userId The id of the user who has changed the resource.
+    * @param project the project in which the resource will be used
+    * @param file the new file
+    * @param changed flag indicating if the file state must be set to changed. possible values are 
+    * <ul>
+    * <li>C_UPDATE_RESOURCE_STATE: Updates the resource state</li>
+    * <li>C_UPDATE_STRUCTURE_STATE: Updates the structure state</li>
+    * </ul>
+    * @param userId the id of the user who has changed the resource
     *
-    * @throws CmsException Throws CmsException if operation was not succesful.
+    * @throws CmsException if operation was not succesful
     */
     public void writeFileHeader(CmsProject project, CmsFile file, int changed, CmsUUID userId) throws CmsException {
         // this task is split into two statements because Oracle doesnt support muti-table updates
         PreparedStatement stmt = null;
         Connection conn = null;
-        //CmsUUID modifiedByUserId = userId;
         long resourceDateModified = file.isTouched() ? file.getDateLastModified() : System.currentTimeMillis();
-        long structureDateModified = file.getDateLastModified();
         
-        //Savepoint savepoint = null;
         // since we are only writing the file header, the content is unchanged
         // for this reason, the resource state is left unchanged
-		int structureState = file.getState();
+        int structureState = file.getState();
         int resourceState = file.getState();
-		if (structureState != com.opencms.core.I_CmsConstants.C_STATE_NEW && (changed > CmsDriverManager.C_NOTHING_CHANGED)) {
-			if (changed == CmsDriverManager.C_UPDATE_RESOURCE_STATE)
+        //if (structureState != com.opencms.core.I_CmsConstants.C_STATE_NEW && (changed > CmsDriverManager.C_NOTHING_CHANGED)) {
+            if (changed == CmsDriverManager.C_UPDATE_RESOURCE_STATE)
                 resourceState = com.opencms.core.I_CmsConstants.C_STATE_CHANGED;
             else if (changed == CmsDriverManager.C_UPDATE_STRUCTURE_STATE)
                 structureState = com.opencms.core.I_CmsConstants.C_STATE_CHANGED;
             else 
                 resourceState = structureState = com.opencms.core.I_CmsConstants.C_STATE_CHANGED;
-        }
+        //}
     
         try {
             conn = m_sqlManager.getConnection(project);
@@ -3173,7 +3173,6 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.setInt(7, file.getLength());
             stmt.setString(8, file.getFileId().toString());
             stmt.setString(9, file.isLockedBy().toString());
-            //stmt.setInt(10, file.getProjectId());
             stmt.setInt(10, project.getId());
             stmt.setInt(11, countVfsLinks(project.getId(), file.getResourceId()));
             stmt.setString(12, file.getResourceId().toString());
