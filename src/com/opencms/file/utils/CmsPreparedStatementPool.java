@@ -1,8 +1,8 @@
 /*
  *
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/utils/Attic/CmsPreparedStatementPool.java,v $
- * Date   : $Date: 2000/06/08 17:12:57 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/06/17 11:41:37 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -191,6 +191,7 @@ public class CmsPreparedStatementPool {
 			temp.notify();
 		}
 		
+        System.err.println("**** --> key: "+key+" *** "+pstmt);
 		return pstmt;
 	}
 	
@@ -207,6 +208,7 @@ public class CmsPreparedStatementPool {
 		 * kontrolliert werden, ob das Statement ein neu geschaffenes Statement ist.
 		 * Wenn ja, dann Statement verwerfen, ansonsten eintragen ...
 		 */
+        System.err.println("**** <-- key: "+key+" *** "+pstmt);
 		Vector temp = (Vector) m_prepStatements.get(key);
 		
 		synchronized (temp) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServletNotify.java,v $
- * Date   : $Date: 2000/02/22 10:27:18 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/06/17 11:41:36 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,9 +39,9 @@ import javax.servlet.http.*;
  * and must be removed from the CmsSession storage.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2000/02/22 10:27:18 $  
+ * @version $Revision: 1.5 $ $Date: 2000/06/17 11:41:36 $  
  */
- class OpenCmsServletNotify implements HttpSessionBindingListener {
+ public class OpenCmsServletNotify implements HttpSessionBindingListener {
     
     String m_id=null;
     CmsSession m_sessionStorage=null;
@@ -53,7 +53,7 @@ import javax.servlet.http.*;
      * @param id The session Id to which this object is bound to.
      * @param sessionStorage The reference to the session strorage.
      */
-     OpenCmsServletNotify(String id,CmsSession sessionStorage) {
+     public OpenCmsServletNotify(String id,CmsSession sessionStorage) {
         m_id=id;
         m_sessionStorage=sessionStorage;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
- * Date   : $Date: 2000/06/09 12:21:25 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2000/06/17 11:41:36 $
+ * Version: $Revision: 1.44 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -66,7 +66,7 @@ import com.opencms.util.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.43 $ $Date: 2000/06/09 12:21:25 $  
+* @version $Revision: 1.44 $ $Date: 2000/06/17 11:41:36 $  
 * 
 * */
 
@@ -396,9 +396,9 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
         session=req.getSession(false);
         // if the user was authenticated via sessions, update the information in the
         // sesssion stroage
-        if ((session!= null)) /* &&
-            (cms.getRequestContext().currentUser().getName().equals(C_USER_GUEST)))*/ {
-             m_sessionStorage.putUser(session.getId(),
+        if ((session!= null))  {
+            if (!cms.getRequestContext().currentUser().getName().equals(C_USER_GUEST)) {
+                m_sessionStorage.putUser(session.getId(),
                                       cms.getRequestContext().currentUser().getName(),
                                       cms.getRequestContext().currentGroup().getName(),
 									  new Integer(cms.getRequestContext().currentProject().getId()));
@@ -410,6 +410,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
                 notify = new OpenCmsServletNotify(session.getId(),m_sessionStorage);
                 session.putValue("NOTIFY",notify);                  
              }
+            }
         }                  
      }
     

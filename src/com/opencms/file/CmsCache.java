@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsCache.java,v $
- * Date   : $Date: 2000/06/14 10:00:26 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/06/17 11:41:36 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -35,11 +35,10 @@ import com.opencms.core.*;
  * data read from the File DB.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 2000/06/14 10:00:26 $
+ * @version $Revision: 1.6 $ $Date: 2000/06/17 11:41:36 $
  */
 
-class CmsCache implements I_CmsConstants
-{
+public class CmsCache implements I_CmsConstants {
 	private Hashtable cache;
 	private Hashtable index;
 	private int max_objects;

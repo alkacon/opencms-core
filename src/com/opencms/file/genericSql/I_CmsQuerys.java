@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/06/16 13:36:42 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2000/06/17 11:41:37 $
+ * Version: $Revision: 1.42 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.41 $ $Date: 2000/06/16 13:36:42 $
+ * @version $Revision: 1.42 $ $Date: 2000/06/17 11:41:37 $
  */
 public interface I_CmsQuerys {
     
@@ -100,7 +100,8 @@ public interface I_CmsQuerys {
                                                +"LAUNCHER_CLASSNAME = ? ," 
                                                +"DATE_LASTMODIFIED = ? ,"
                                                +"RESOURCE_LASTMODIFIED_BY = ? ,"
-                                               +"SIZE = ? "
+                                               +"SIZE = ? , "
+                                               +"FILE_ID = ? "
                                                +"WHERE RESOURCE_ID = ?";
     
     public static final Integer C_RESOURCES_ID_DELETE_KEY = new Integer(108);
@@ -148,7 +149,7 @@ public interface I_CmsQuerys {
                                                +"LAUNCHER_CLASSNAME = ? ," 
                                                +"DATE_LASTMODIFIED = ? ,"
                                                +"RESOURCE_LASTMODIFIED_BY = ? ,"
-                                               +"SIZE = ? "
+                                               +"SIZE = ? , "
                                                +"FILE_ID = ? "
                                                +"WHERE RESOURCE_ID = ?";
     
@@ -446,12 +447,12 @@ public interface I_CmsQuerys {
 
 	public static final Integer C_PROJECTS_WRITE_KEY = new Integer(409);
 	public static final String C_PROJECTS_WRITE = "UPDATE " + C_DATABASE_PREFIX + "PROJECTS " + 
-												  "set USER_ID = ?, " +
-												  "set GROUP_ID = ?, " +
-												  "set MANAGERGROUP_ID = ?, " +
-												  "set PROJECT_FLAGS = ?, " +
-												  "set PROJECT_PUBLISHDATE = ?, " +
-												  "set PROJECT_PUBLISHED_BY = ? " + 
+												  "SET USER_ID = ?, " +
+												  "GROUP_ID = ?, " +
+												  "MANAGERGROUP_ID = ?, " +
+												  "PROJECT_FLAGS = ?, " +
+												  "PROJECT_PUBLISHDATE = ?, " +
+												  "PROJECT_PUBLISHED_BY = ? " + 
 												  "where PROJECT_ID = ?";
 
 	// Constants for Users table
@@ -460,7 +461,7 @@ public interface I_CmsQuerys {
 	public static final String C_USERS_USER_PASSWORD = "USER_PASSWORD";
 	public static final String C_USERS_USER_DESCRIPTION = "USER_DESCRIPTION";
 	public static final String C_USERS_USER_FIRSTNAME = "USER_FIRSTNAME";
-	public static final String C_USERS_USER_LASTNAME = "USER_EMAIL";
+	public static final String C_USERS_USER_LASTNAME = "USER_LASTNAME";
 	public static final String C_USERS_USER_LASTLOGIN = "USER_LASTLOGIN";
 	public static final String C_USERS_USER_LASTUSED = "USER_LASTUSED";
 	public static final String C_USERS_USER_FLAGS = "USER_FLAGS";

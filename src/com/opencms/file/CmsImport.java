@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
- * Date   : $Date: 2000/06/09 07:17:09 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/06/17 11:41:36 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import org.w3c.dom.*;
  * into the cms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.5 $ $Date: 2000/06/09 07:17:09 $
+ * @version $Revision: 1.6 $ $Date: 2000/06/17 11:41:36 $
  */
 public class CmsImport implements I_CmsConstants {
 	
@@ -221,7 +221,8 @@ public class CmsImport implements I_CmsConstants {
 			
 			if(source == null) {
 				// this is a directory
-				fullname = m_cms.createFolder(path, name, properties).getAbsolutePath();
+                CmsFolder cmsfolder= m_cms.createFolder(path, name, properties);
+       			fullname = cmsfolder.getAbsolutePath();
 			} else {
 				// this is a file
 				// first delete the file, so it can be overwritten
@@ -234,8 +235,10 @@ public class CmsImport implements I_CmsConstants {
 				fullname = m_cms.createFile(path, name, getFileBytes(source), type, properties).getAbsolutePath();
 			}
 			// lock the new resource
-			m_cms.lockResource(fullname);
-			m_cms.chmod(fullname, Integer.parseInt(access));
+    
+			//m_cms.lockResource(fullname);
+		
+            m_cms.chmod(fullname, Integer.parseInt(access));
 			m_cms.chgrp(fullname, group);
 			m_cms.chown(fullname, user);
 			System.out.println("OK");

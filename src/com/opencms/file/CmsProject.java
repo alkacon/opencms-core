@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsProject.java,v $
- * Date   : $Date: 2000/06/09 09:40:45 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2000/06/17 11:41:36 $
+ * Version: $Revision: 1.20 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -37,7 +37,7 @@ import java.sql.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.19 $ $Date: 2000/06/09 09:40:45 $
+ * @version $Revision: 1.20 $ $Date: 2000/06/17 11:41:36 $
  */
 public class CmsProject implements I_CmsConstants,
                                                         Cloneable{
@@ -182,7 +182,7 @@ public class CmsProject implements I_CmsConstants,
 	 * 
 	 * @param flags The flag to bes set.
 	 */
-	void setFlags(int flags) {
+	public void setFlags(int flags) {
 		m_flags = flags;
 	}
 	
@@ -255,7 +255,7 @@ public class CmsProject implements I_CmsConstants,
 	 * 
 	 * @param the publishing date of this project.
 	 */
-	void setPublishingDate(long publishingDate) {
+	public void setPublishingDate(long publishingDate) {
 		m_publishingdate = publishingDate;
 	}
 	
@@ -273,7 +273,7 @@ public class CmsProject implements I_CmsConstants,
 	 * 
 	 * @param the published-by value.
 	 */
-	void setPublishedBy(int id) {
+	public void setPublishedBy(int id) {
 		m_publishedBy = id;
 	}
        

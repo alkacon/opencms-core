@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/06/14 14:20:45 $
- * Version: $Revision: 1.86 $
+ * Date   : $Date: 2000/06/17 11:41:36 $
+ * Version: $Revision: 1.87 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.86 $ $Date: 2000/06/14 14:20:45 $ 
+ * @version $Revision: 1.87 $ $Date: 2000/06/17 11:41:36 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -1319,9 +1319,9 @@ public class CmsObject implements I_CmsConstants {
 	 */
 	public CmsUser readUser(String username) 
 		throws CmsException { 
-		return( c_rb.readUser(m_context.currentUser(), 
+		return c_rb.readUser(m_context.currentUser(), 
 							  m_context.currentProject(), 
-							  username) );
+							  username);
 	}
     
      /**

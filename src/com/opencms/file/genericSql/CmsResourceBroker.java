@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/16 15:59:14 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2000/06/17 11:41:37 $
+ * Version: $Revision: 1.54 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.53 $ $Date: 2000/06/16 15:59:14 $
+ * @version $Revision: 1.54 $ $Date: 2000/06/17 11:41:37 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -72,6 +72,13 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 */
 	private CmsDbAccess m_dbAccess = null;
 	
+    
+    
+    /**
+     *  Define the caches
+    */    
+    private CmsCache m_userCache=null;
+    
     // Internal ResourceBroker methods   
     
     /**
@@ -90,6 +97,11 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsResourceBroker] init the dbaccess-module.");
 		}
 		m_dbAccess = new CmsDbAccess(config);		
+        
+        // initalize the caches
+        // todo: define cache sizes in opencms.property file
+        m_userCache=new CmsCache(50);
+        
     }
 	
     /**
@@ -368,7 +380,20 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public void publishProject(CmsUser currentUser, CmsProject currentProject,
 								 int id)
         throws CmsException {
-		// TODO: implement this     
+		 m_dbAccess.publishProject(currentUser,id,onlineProject(currentUser, currentProject));  
+         
+         // inform about the file-system-change
+		 fileSystemChanged();
+			 
+         // the project-state will be set to "published", the date will be set.
+		 // the project must be written to the cms.
+             
+         CmsProject project=m_dbAccess.readProject(id);
+             
+	     project.setFlags(C_PROJECT_STATE_ARCHIVE);
+		 project.setPublishingDate(new Date().getTime());
+		 project.setPublishedBy(currentUser.getId());
+         m_dbAccess.writeProject(project);
     }
     
 	/**
@@ -1352,7 +1377,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public CmsUser readAgent(CmsUser currentUser, CmsProject currentProject, 
 							   CmsTask task) 
         throws CmsException {
-		return m_dbAccess.readUser(task.getAgentUser());
+		return readUser(currentUser,currentProject,task.getAgentUser());
     }
     
     
@@ -1372,7 +1397,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public CmsUser readOriginalAgent(CmsUser currentUser, CmsProject currentProject, 
 									   CmsTask task) 
         throws CmsException {
-		return m_dbAccess.readUser(task.getOriginalUser());
+		return readUser(currentUser,currentProject,task.getOriginalUser());
     }
     
 	/**
@@ -1390,7 +1415,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public CmsUser readOwner(CmsUser currentUser, CmsProject currentProject, 
 							   CmsResource resource) 
         throws CmsException {
-		return m_dbAccess.readUser(resource.getOwnerId() );
+		return readUser(currentUser,currentProject,resource.getOwnerId() );
     }
 	
 	/**
@@ -1407,7 +1432,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 */
 	public CmsUser readOwner(CmsUser currentUser, CmsProject currentProject, CmsTaskLog log) 
         throws CmsException {
-		return m_dbAccess.readUser(log.getUser());
+		return readUser(currentUser,currentProject,log.getUser());
     }
 							
 	/**
@@ -1426,7 +1451,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public CmsUser readOwner(CmsUser currentUser, CmsProject currentProject, 
 							   CmsTask task) 
         throws CmsException {
-		return this.m_dbAccess.readUser(task.getInitiatorUser());
+		return readUser(currentUser,currentProject,task.getInitiatorUser());
     }
 							
 	/**
@@ -1443,7 +1468,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 */
 	public CmsGroup readGroup(CmsUser currentUser, CmsProject currentProject, 
 							   CmsResource resource) 
-        throws CmsException {
+        throws CmsException {      
         return m_dbAccess.readGroup(resource.getGroupId()) ;
     }
 							
@@ -1482,7 +1507,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public CmsUser readOwner(CmsUser currentUser, CmsProject currentProject, 
 							   CmsProject project) 
         throws CmsException {
-		return m_dbAccess.readUser(project.getOwnerId());
+		return readUser(currentUser,currentProject,project.getOwnerId());
     }
 	
 	/**
@@ -1627,7 +1652,16 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 							  String username)
         throws CmsException {
 		
-		return m_dbAccess.readUser(username, C_USER_TYPE_SYSTEMUSER);
+        CmsUser user=null;
+        // try to read the user from cache
+        user=(CmsUser)m_userCache.get(username);
+        if (user==null) {
+            user=m_dbAccess.readUser(username, C_USER_TYPE_SYSTEMUSER);
+            m_userCache.put(username,user);
+        } else {
+            System.err.println("--- got from Cache "+user);
+        }
+		return user;
     }
 	
     /**
@@ -1646,7 +1680,16 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 							  int id)
         throws CmsException {
 		
-		return m_dbAccess.readUser(id);
+        CmsUser user=null;
+        // try to read the user from cache
+        user=(CmsUser)m_userCache.get(id);
+        if (user==null) {
+            user=m_dbAccess.readUser(id);
+            m_userCache.put(id,user);
+        } else {
+            System.err.println("--- got from Cache "+user);
+        }
+		return user;
     }
     
      /**
@@ -1666,7 +1709,16 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 							  String username,int type)
         throws CmsException {
 		
-		return m_dbAccess.readUser(username, type);
+        CmsUser user=null;
+        // try to read the user from cache
+        user=(CmsUser)m_userCache.get(username);
+        if (user==null) {
+            user=m_dbAccess.readUser(username, type);
+            m_userCache.put(username,user);
+        } else {
+            System.err.println("--- got from Cache "+user);
+        }
+		return user;
     }
 	
 	/**
@@ -1687,7 +1739,12 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 							  String username, String password)
         throws CmsException {
 		
- 		return m_dbAccess.readUser(username, password, C_USER_TYPE_SYSTEMUSER);
+        CmsUser user=m_dbAccess.readUser(username, password, C_USER_TYPE_SYSTEMUSER);
+        // store user in cache
+        if (user==null) {
+             m_userCache.put(username,user);
+        }
+ 		return user;
     }
 
 
@@ -1942,7 +1999,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public void deleteUser(CmsUser currentUser, CmsProject currentProject, 
 						   int userId)
         throws CmsException {
-        CmsUser user = m_dbAccess.readUser(userId);
+        CmsUser user = readUser(currentUser,currentProject,userId);
         String username = user.getName();
 		// Check the security
 		// Avoid to delete admin or guest-user
@@ -2897,7 +2954,6 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 														  folder + newFolderName + 
 														  C_FOLDER_SEPERATOR,
 														  0);
-            newFolder.setLocked(currentUser.getId());
             // update the access flags
             Hashtable startSettings=null;
             Integer accessFlags=null;
@@ -3277,10 +3333,12 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		if( accessLock(currentUser, currentProject, cmsResource) ) {
 			
 			if(cmsResource.isLocked()) {
-	            // if the force switch is not set, throw an exception
-                if (force==false) {
-                    throw new CmsException("["+this.getClass().getName()+"] "+resourcename,CmsException.C_LOCKED); 
-                }
+                //if (cmsResource.isLockedBy()!=currentUser.getId()) {
+	            // if the force switch is not set, throw an exception                
+                    if (force==false) {
+                        throw new CmsException("["+this.getClass().getName()+"] "+resourcename,CmsException.C_LOCKED); 
+                    }
+               // }
             }    
             // lock the resouece
             cmsResource.setLocked(currentUser.getId());
@@ -3424,7 +3482,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public CmsUser lockedBy(CmsUser currentUser, CmsProject currentProject,
 							  String resource)
         throws CmsException {
-		return m_dbAccess.readUser(readFileHeader(currentUser, currentProject, resource).isLockedBy() ) ;
+		return readUser(currentUser,currentProject,readFileHeader(currentUser, currentProject, resource).isLockedBy() ) ;
     }
 	
 	/**
@@ -3445,7 +3503,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public CmsUser lockedBy(CmsUser currentUser, CmsProject currentProject,
 							  CmsResource resource)
         throws CmsException {
-		return m_dbAccess.readUser(resource.isLockedBy() ) ;
+		return readUser(currentUser,currentProject,resource.isLockedBy() ) ;
     }
 	
 	/**
@@ -4507,6 +4565,8 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
         }
 
       	// check, if the resource is locked by the current user
+        // TODO: Find a way to get this work again!!!!!
+        
 		/*if(resource.isLockedBy() != currentUser.getId()) {
 			// resource is not locked by the current user, no writing allowed
 			return(false);					
