@@ -52,6 +52,7 @@
 			<previous>Previous</previous>
 			<previousscreen><![CDATA[<<]]> Back</previousscreen>
 			<print>Print</print>
+			<publish>Publish project</publish>
 			<redo>Redo</redo>
 			<reload>Reload</reload>
 			<remove>Remove <![CDATA[>>]]></remove>
@@ -626,6 +627,8 @@
 			<lockchange>
 				<message1>Are you sure you want to release all locks in project</message1>
 				<message2>now?</message2>
+				<message3>All locks in project</message3>
+				<message4>will be released now.</message4>
 				<title>Release all locks for project</title>
 			</lockchange>
 			<resentfilelist>

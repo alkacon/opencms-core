@@ -52,6 +52,7 @@
 			<previous>Zurück</previous>
 			<previousscreen><![CDATA[<<]]> Zurück</previousscreen>
 			<print>Drucken</print>
+			<publish>Projekt veröffentlichen</publish>
 			<redo>Wiederherstellen</redo>
 			<reload>Aktualisieren</reload>
 			<remove>Entfernen <![CDATA[>>]]></remove>
@@ -630,6 +631,8 @@
 			<lockchange>
 				<message1>Sind Sie sicher, dass sie alle Dateisperrungen für Projekt</message1>
 				<message2>aufheben wollen?</message2>
+				<message3>In dem Projekt</message3>
+				<message4>befinden sich noch gesperrte Elemente. Möchten Sie die Sperrungen nun aufheben?</message4>
 				<title>Dateisperrungen für Projekt aufheben</title>
 			</lockchange>
 			<resentfilelist>
