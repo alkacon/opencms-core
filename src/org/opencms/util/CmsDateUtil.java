@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsDateUtil.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/02/08 18:18:27 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,35 +31,44 @@
 
 package org.opencms.util;
 
+import org.opencms.i18n.CmsMessages;
+import org.opencms.main.OpenCms;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-
-import org.opencms.i18n.CmsMessages;
-import org.opencms.main.OpenCms;
+import java.util.TimeZone;
 
 /**
  * 
  * Utilities to get and set formated dates in OpenCms.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public final class CmsDateUtil {
-   
+
+    /** The default format to use when formatting http headers. */
+    public static final DateFormat C_HEADER_DEFAULT = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US);
+
     /**
      * Hides the public constructor.<p>
      */
     private CmsDateUtil() {
 
         // noop
-    }   
+    }
 
-    /** The default format to use when formatting headers. */
-    public static final SimpleDateFormat C_HEADER_DEFAULT = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US);
-    
+    /**
+     * Static initializer to set GMT timezone as required by HTTP protocol for date headers.<p>
+     */
+    static {
+
+        C_HEADER_DEFAULT.setTimeZone(TimeZone.getTimeZone("GMT"));
+    }
+
     /**
      * Returns a formated date String from a Date value,
      * the formatting based on the provided options.<p>
@@ -120,8 +129,7 @@ public final class CmsDateUtil {
 
         return getDateTime(new Date(time), CmsMessages.SHORT, OpenCms.getLocaleManager().getDefaultLocale());
     }
-    
-    
+
     /**
      * Returns a formated date and time String form a timestamp value based on the
      * HTTP-Header date format.<p>
@@ -130,10 +138,10 @@ public final class CmsDateUtil {
      * @return the formatted date 
      */
     public static String getHeaderDate(long time) {
+
         return C_HEADER_DEFAULT.format(new Date(time));
     }
 
-    
     /**
      * Parses a formated date and time string in HTTP-Header date format and returns the 
      * time value.<p>
@@ -143,9 +151,8 @@ public final class CmsDateUtil {
      * @throws ParseException if parsing fails
      */
     public static long parseHeaderDate(String timestamp) throws ParseException {
+
         return C_HEADER_DEFAULT.parse(timestamp).getTime();
     }
-    
-
 
 }

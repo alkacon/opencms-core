@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLock.java,v $
- * Date   : $Date: 2004/06/14 14:25:58 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/02/08 18:18:26 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.opencms.util.CmsUUID;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.18 $ $Date: 2004/06/14 14:25:58 $
+ * @version $Revision: 1.19 $ $Date: 2005/02/08 18:18:26 $
  * @since 5.1.4
  * @see org.opencms.file.CmsObject#getLock(org.opencms.file.CmsResource)
  * @see org.opencms.lock.CmsLockManager
@@ -75,7 +75,7 @@ public class CmsLock extends Object implements Cloneable {
      * A lock that allows the user to edit the resource’s structure record only, 
      * but not it’s resource record nor content record.<p>
      * 
-     * This lock is assigned to files if another link to the same resource record has
+     * This lock is assigned to files if a sibling of the resource record has
      * already an exclusive lock. 
      */    
     public static final int C_TYPE_SHARED_EXCLUSIVE = 2;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestLock.java,v $
- * Date   : $Date: 2004/11/25 13:04:33 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/02/08 18:18:27 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.opencms.test.OpenCmsTestResourceFilter;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class TestLock extends OpenCmsTestCase {
   
@@ -79,6 +79,7 @@ public class TestLock extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         suite.setName(TestLock.class.getName());
              
+        suite.addTest(new TestLock("testLockWithDeletedNewFiles"));
         suite.addTest(new TestLock("testLockForFile"));
         suite.addTest(new TestLock("testLockForFolder"));
         suite.addTest(new TestLock("testLockForFolderPrelockedShared"));
@@ -103,6 +104,45 @@ public class TestLock extends OpenCmsTestCase {
         
         return wrapper;
     }     
+        
+    /**
+     * Tests lock status after a new file has been deleted in offline project.<p>
+     * 
+     * Issue description:
+     * User A creates a new file, but deletes it without ever publishing it.
+     * Now user B create a new file with the same name / path.
+     * The file was still in the lock manager but for user A, this generated 
+     * an error for user B.<p>
+     * 
+     * Solution:
+     * Remove new files that are deleted from the lock manager.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testLockWithDeletedNewFiles() throws Throwable {
+        
+        CmsObject cms = getCmsObject();     
+        echo("Testing lock status of a deleted new file");
+        
+        String source = "/folder1/newfile.html";
+
+        // create a new resource as default test user
+        cms.createResource(source, CmsResourceTypePlain.C_RESOURCE_TYPE_ID);
+        // the source file must now have an exclusive lock
+        assertLock(cms, source, CmsLock.C_TYPE_EXCLUSIVE);        
+        // now delete the created resource
+        cms.deleteResource(source, I_CmsConstants.C_DELETE_OPTION_DELETE_SIBLINGS);
+        
+        // now login as user "test2"
+        cms.loginUser("test2", "test2");
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));    
+                
+        // now create the resource again
+        cms.createResource(source, CmsResourceTypePlain.C_RESOURCE_TYPE_ID); 
+        
+        // the newly created resource must now be locked to user "test2"
+        assertLock(cms, source, CmsLock.C_TYPE_EXCLUSIVE);
+    }    
     
     /**
      * Tests lock status of a resource for basic operations.<p>

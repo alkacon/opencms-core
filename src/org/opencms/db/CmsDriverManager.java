@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/02/04 16:56:45 $
- * Version: $Revision: 1.473 $
+ * Date   : $Date: 2005/02/08 18:18:27 $
+ * Version: $Revision: 1.474 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -94,7 +94,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.473 $ $Date: 2005/02/04 16:56:45 $
+ * @version $Revision: 1.474 $ $Date: 2005/02/08 18:18:27 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -2607,7 +2607,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         }
 
         // check if siblings of the resource exist and must be deleted as well
-        List resources;
+
         if (resource.isFolder()) {
             // folder can have no siblings
             siblingMode = I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS;
@@ -2615,6 +2615,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
         // if selected, add all siblings of this resource to the list of resources to be deleted    
         boolean allSiblingsRemoved;
+        List resources;
         if (siblingMode == I_CmsConstants.C_DELETE_OPTION_DELETE_SIBLINGS) {
             resources = new ArrayList(readSiblings(dbc, resource, CmsResourceFilter.ALL));
             allSiblingsRemoved = true;
@@ -2694,6 +2695,11 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                         m_vfsDriver.removeFile(dbc, dbc.currentProject(), currentResource, true);
                     }
 
+                    // ensure an exclusive lock is removed in the lock manager for a deleted new resource,
+                    // otherwise it would "stick" in the lock manager, preventing other users from creating 
+                    // a file with the same name (issue with tempfiles in editor)
+                    m_lockManager.removeResource(this, dbc, currentResource, true);
+                    
                 } else {
                     // the resource exists online => mark the resource as deleted
                     // strcuture record is removed during next publish
