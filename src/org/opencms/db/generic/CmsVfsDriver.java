@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/18 08:22:42 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2003/07/18 11:56:39 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.36 $ $Date: 2003/07/18 08:22:42 $
+ * @version $Revision: 1.37 $ $Date: 2003/07/18 11:56:39 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -379,8 +379,8 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
     public CmsFile createFile(CmsProject project, CmsFile file, CmsUUID userId, CmsUUID parentId, String filename, boolean isVfsLink) throws CmsException {
         int vfsLinkType = I_CmsConstants.C_UNKNOWN_ID;
         int newState = 0;
-        CmsUUID modifiedByUserId = userId;
-        long dateModified = System.currentTimeMillis();
+        CmsUUID modifiedByUserId = null, createdByUserId = null;
+        long dateModified = 0, dateCreated = 0;
         Connection conn = null;
         PreparedStatement stmt = null;
 
@@ -389,13 +389,23 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             throw new CmsException("The resource name '" + filename + "' is too long! (max. allowed length must be <= " + I_CmsConstants.C_MAX_LENGTH_RESOURCE_NAME + " chars.!)", CmsException.C_BAD_NAME);
         }
 
-        // adjust attribs. in case a resource is created while a project is published 
+        // force some attribs when creating or publishing a file 
         if (project.getId() == I_CmsConstants.C_PROJECT_ONLINE_ID) {
-            newState = file.getState();
-            modifiedByUserId = file.getUserLastModified();
+            newState = I_CmsConstants.C_STATE_UNCHANGED;
+            
+            dateCreated = file.getDateCreated();
+            createdByUserId = file.getUserCreated();
+            
             dateModified = file.getDateLastModified();
+            modifiedByUserId = file.getUserLastModified();
         } else {
             newState = I_CmsConstants.C_STATE_NEW;
+            
+            dateCreated = System.currentTimeMillis();
+            createdByUserId = userId;
+
+            dateModified = dateCreated;            
+            modifiedByUserId = createdByUserId;
         }
 
         // prove if the resource already exists
@@ -434,8 +444,8 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 stmt.setInt(3, file.getFlags());
                 stmt.setString(4, file.getFileId().toString());
                 stmt.setInt(5, file.getLauncherType());
-                stmt.setTimestamp(6, new Timestamp(file.getDateCreated()));
-                stmt.setString(7, userId.toString());
+                stmt.setTimestamp(6, new Timestamp(dateCreated));
+                stmt.setString(7, createdByUserId.toString());
                 stmt.setTimestamp(8, new Timestamp(dateModified));
                 stmt.setString(9, modifiedByUserId.toString());
                 stmt.setInt(10, newState);
