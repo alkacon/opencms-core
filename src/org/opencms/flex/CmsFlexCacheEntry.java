@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheEntry.java,v $
- * Date   : $Date: 2003/11/14 12:29:12 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/11/17 07:49:10 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.flex;
 import org.opencms.cache.I_CmsLruCacheObject;
 import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryMonitor;
+import org.opencms.monitor.I_CmsMemoryMonitorable;
 
 import com.opencms.core.CmsException;
 
@@ -65,9 +66,9 @@ import javax.servlet.ServletException;
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @see com.opencms.flex.util.I_CmsFlexLruCacheObject
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
-public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject {
+public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_CmsMemoryMonitorable {
     
     /** Initial size for lists */
     public static final int C_INITIAL_CAPACITY_LISTS = 11;
@@ -455,9 +456,9 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject {
      */
     protected void finalize() throws java.lang.Throwable {
         try {
-            if (OpenCms.getLog(this).isDebugEnabled()) {
-                OpenCms.getLog(this).debug("Finalizing FlexCache entry with id: " + m_id);
-            }        
+//            if (OpenCms.getLog(this).isDebugEnabled()) {
+//                OpenCms.getLog(this).debug("Finalizing FlexCache entry with id: " + m_id);
+//            }        
             clear();
         } catch (Throwable t) {
             // ignore
@@ -475,5 +476,12 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject {
         // also remove references to other objects
         m_variationKey = null;
         m_variationMap = null;                        
+    }
+
+    /**
+     * @see org.opencms.monitor.I_CmsMemoryMonitorable#getMemorySize()
+     */
+    public int getMemorySize() {
+        return getLruCacheCosts();
     }
 }
