@@ -32,7 +32,7 @@ var disableKontext = true;
 
 <!-- begin content list with galleries-->
 <table cellspacing=1 cellpadding=1 border=0>
-]]><FILELIST method="getFiles" template="explorerFilelistTemplate" customtemplate="downBrowserTemplate"/><![CDATA[ 
+]]><FILELIST method="getFiles" template="/system/workplace/templates/explorerFilelistTemplate" customtemplate="/system/workplace/templates/downBrowserTemplate"/><![CDATA[ 
 </table>
 <!-- end Inhalt Aufgaben Projektbezogen -->
 

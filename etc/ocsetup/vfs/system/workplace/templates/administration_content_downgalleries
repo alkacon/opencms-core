@@ -8,7 +8,7 @@
 <!--
 function show_help()
 {
-	//return '5_2_2_2.html';
+    //return '5_2_2_2.html';
 }
 //-->
 </script>
@@ -34,7 +34,7 @@ function show_help()
 
 <!-- begin content list with galleries-->
 <table cellspacing=1 cellpadding=1 border=0>
-]]><FILELIST method="getFiles" template="explorerFilelistTemplate" customtemplate="downListTemplate"/><![CDATA[ 
+]]><FILELIST method="getFiles" template="/system/workplace/templates/explorerFilelistTemplate" customtemplate="/system/workplace/templates/downListTemplate"/><![CDATA[ 
 </table>
 <!-- end Inhalt Aufgaben Projektbezogen -->
 
