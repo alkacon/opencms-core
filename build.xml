@@ -18,6 +18,7 @@
     <property name="opencms.input.warfiles"            	location="${opencms.input}/webapp" />
     <property name="opencms.input.libs" 				location="${opencms.input.warfiles}/WEB-INF/lib" />
     <property name="opencms.input.externlibs" 			location="${opencms.output}/lib" />
+    <property name="opencms.input.defaultconfiguration" location="${opencms.input.warfiles}/WEB-INF/config/opencms.properties" />
         
     <property name="opencms.inputlib.servlet"     		location="${opencms.input.libs}/servlet.jar" />
     <property name="opencms.inputlib.activation"  		location="${opencms.input.libs}/activation.jar" />
@@ -210,7 +211,7 @@ ${opencms.inputlib.dbcp}
 		</copy>
        	
 	   	<copy 
-	   		file="${opencms.input.warfiles}/WEB-INF/config/opencms.properties" 
+	   		file="${opencms.input.defaultconfiguration}" 
 	   		tofile="${opencms.output.classes}/opencms.properties" overwrite="true">	   		
     		<filterset>
       			<filter token="DRIVERS_VFS" value="${drivers.vfs}"/>
