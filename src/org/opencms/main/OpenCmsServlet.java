@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsServlet.java,v $
- * Date   : $Date: 2004/01/25 12:42:45 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/01/25 19:22:02 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
     
@@ -86,9 +86,12 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
      * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
-        // TODO: Check init procedure (what about the listeners)
         if (OpenCmsCore.getInstance().getRunLevel() < 3) {
+            // check if setup was completed correctly
             init(getServletConfig());
+            if (OpenCmsCore.getInstance().getRunLevel() < 3) {
+                throw new ServletException("OpenCms not properly configured!");
+            }
         }
         String path = req.getPathInfo();
         if ((path != null) && path.startsWith(C_HANDLE)) {
@@ -202,7 +205,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
     public synchronized void init(ServletConfig config) throws ServletException {
         super.init(config);
         // upgrade the runlevel
-        OpenCmsCore.getInstance().upgradeRunlevel(config.getServletContext());            
+        OpenCmsCore.getInstance().upgradeRunlevel(config.getServletContext());  
         // add this as handler for 404 requests
         OpenCmsCore.getInstance().addRequestHandler(this);
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/01/25 12:42:45 $
- * Version: $Revision: 1.63 $
+ * Date   : $Date: 2004/01/25 19:22:02 $
+ * Version: $Revision: 1.64 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -103,7 +103,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.63 $
+ * @version $Revision: 1.64 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -128,6 +128,9 @@ public final class OpenCmsCore {
     
     /** One instance to rule them all, one instance to find them... */        
     private static OpenCmsCore m_instance;
+
+    /** The session manager */
+    private static OpenCmsSessionManager m_sessionManager;
     
     /** URI of the authentication form (read from properties) in case of form based authentication */
     private String m_authenticationFormURI;    
@@ -213,9 +216,6 @@ public final class OpenCmsCore {
     
     /** The name of the OpenCms server */
     private String m_serverName;
-
-    /** The session manager */
-    private OpenCmsSessionManager m_sessionManager;
     
     /** The session info storage for all active users */
     private CmsSessionInfoManager m_sessionInfoManager;
@@ -316,7 +316,7 @@ public final class OpenCmsCore {
     }
     
     /**
-     * Adds the specified request handler to the Map of OpenCms request handlers.<p>
+     * Adds the specified request handler to the Map of OpenCms request handlers. <p>
      * 
      * @param handler the handler to add
      */
@@ -325,16 +325,19 @@ public final class OpenCmsCore {
             return;
         }
         String[] names = handler.getHandlerNames();
-        for (int i=0; i<names.length; i++) {
+        for (int i = 0; i < names.length; i++) {
             String name = names[i];
             if (m_requestHandlers.get(name) != null) {
-            if (getLog(this).isErrorEnabled()) {
+                if (getLog(this).isErrorEnabled()) {
                     getLog(this).error("Duplicate OpenCms request handler, ignoring '" + name + "'");
-            }
+                }
                 continue;
-        }
+            }
             m_requestHandlers.put(name, handler);
-    }
+            if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                getLog(CmsLog.CHANNEL_INIT).info(". Added RequestHandler : " + name + " (" + handler.getClass().getName() + ")");
+            }
+        }
     }
     
     /**
@@ -1926,6 +1929,15 @@ public final class OpenCmsCore {
         // check if basic or form based authentication should be used      
         m_useBasicAuthentication = configuration.getBoolean("auth.basic", true);        
         m_authenticationFormURI = configuration.getString("auth.form_uri" , I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "action/authenticate.html");
+        
+        // check if the session manager is initialized (will be initialized from servlet listener)
+        if (m_sessionManager != null) {
+            if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                getLog(CmsLog.CHANNEL_INIT).info(". Session manager      : initialized");
+            }
+        } else {
+            getLog(CmsLog.CHANNEL_INIT).error(". Session manager     : NOT initialized");
+        }
     }
     
     /**
@@ -2548,7 +2560,7 @@ public final class OpenCmsCore {
             m_instance.initContext(context);
         } catch (CmsInitException e) {
             if (e.getType() != CmsInitException.C_INIT_WIZARD_ENABLED) {
-                // do not output the "wizard enabled" message on the log 
+                // do not output the "wizard enabled" message on the log
                 if (getLog(CmsLog.CHANNEL_INIT).isErrorEnabled()) {
                     getLog(CmsLog.CHANNEL_INIT).error("Critical error during OpenCms initialization", e);
                 }
@@ -2557,8 +2569,8 @@ public final class OpenCmsCore {
         } catch (Throwable t) {
             if (getLog(CmsLog.CHANNEL_INIT).isErrorEnabled()) {
                 getLog(CmsLog.CHANNEL_INIT).error("Critical error during OpenCms initialization", t);
-            }            
-            m_instance = null;            
+            }
+            m_instance = null;
         }
         return m_instance;
     }
