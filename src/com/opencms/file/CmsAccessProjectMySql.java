@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessProjectMySql.java,v $
- * Date   : $Date: 2000/04/13 19:48:07 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2000/04/13 20:12:19 $
+ * Version: $Revision: 1.21 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.util.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.20 $ $Date: 2000/04/13 19:48:07 $
+ * @version $Revision: 1.21 $ $Date: 2000/04/13 20:12:19 $
  */
 class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 
@@ -157,9 +157,9 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
      * SQL Command for reading projects.
      */    
     private static final String C_PROJECT_GET_BY_GROUP = "Select * from " + C_DATABASE_PREFIX + "PROJECTS where " + 
-														 C_GROUP_ID + " = ? and " +
-														 C_PROJECT_FLAGS + " = " + 
-														 C_PROJECT_STATE_UNLOCKED;
+														 "( " + C_GROUP_ID + " = ? or " +
+														 C_MANAGERGROUP_ID + " = ? ) and " +
+														 C_PROJECT_FLAGS + " = " + C_PROJECT_STATE_UNLOCKED;
 	
 	/**
      * SQL Command for reading projects.
@@ -423,6 +423,7 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 				m_con.prepareStatement(C_PROJECT_GET_BY_GROUP);
 			
 			statementGetProjectsByGroup.setInt(1,group.getId());
+			statementGetProjectsByGroup.setInt(2,group.getId());
 			result = statementGetProjectsByGroup.executeQuery();
 			 
 			 while(result.next()) {
