@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/11/14 16:59:35 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2004/01/06 17:14:11 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.48 $ $Date: 2003/11/14 16:59:35 $
+ * @version $Revision: 1.49 $ $Date: 2004/01/06 17:14:11 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -86,8 +86,15 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
      * The file.encoding to code passwords after encryption with digest.
      */
     protected String m_digestFileEncoding = null;
+    
+    /**
+     * The driver manager
+     */
     protected CmsDriverManager m_driverManager;
 
+    /**
+     * The sql manager
+     */ 
     protected org.opencms.db.generic.CmsSqlManager m_sqlManager;
 
     /**
@@ -118,7 +125,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#createGroup(org.opencms.util.CmsUUID, java.lang.String, java.lang.String, int, java.lang.String)
+     * @see org.opencms.db.I_CmsUserDriver#createGroup(org.opencms.util.CmsUUID, java.lang.String, java.lang.String, int, java.lang.String, java.lang.Object)
      */
     public CmsGroup createGroup(CmsUUID groupId, String groupName, String description, int flags, String parentGroupName, Object reservedParam) throws CmsException {
         CmsUUID parentId = CmsUUID.getNullUUID();
@@ -391,8 +398,8 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         super.finalize();
     }
 
-    /** (non-Javadoc)
-     * @see org.opencms.db.I_CmsUserDriver#importUser(org.opencms.util.CmsUUID, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, long, int, java.util.Hashtable, com.opencms.file.CmsGroup, java.lang.String, java.lang.String, int)
+    /**
+     * @see org.opencms.db.I_CmsUserDriver#importUser(org.opencms.util.CmsUUID, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, long, int, java.util.Hashtable, com.opencms.file.CmsGroup, java.lang.String, java.lang.String, int, java.lang.Object)
      */
     public CmsUser importUser(CmsUUID id, String name, String password, String recoveryPassword, String description, String firstname, String lastname, String email, long lastlogin, long lastused, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type, Object reservedParam) throws CmsException {
         Connection conn = null;
@@ -438,7 +445,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     }
 
     /**
-     * @see org.opencms.db.I_CmsDriver#init(source.org.apache.java.util.Configurations, java.util.List, org.opencms.db.CmsDriverManager)
+     * @see org.opencms.db.I_CmsDriver#init(org.apache.commons.collections.ExtendedProperties, java.util.List, org.opencms.db.CmsDriverManager)
      */
     public void init(ExtendedProperties configuration, List successiveDrivers, CmsDriverManager driverManager) {
         String poolUrl = configuration.getString("db.user.pool");
@@ -484,7 +491,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#initQueries(java.lang.String)
+     * @see org.opencms.db.I_CmsUserDriver#initQueries()
      */
     public org.opencms.db.generic.CmsSqlManager initQueries() {
         return new org.opencms.db.generic.CmsSqlManager();
@@ -711,7 +718,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#getChildGroups(java.lang.String)
+     * @see org.opencms.db.I_CmsUserDriver#readChildGroups(java.lang.String)
      */
     public Vector readChildGroups(String groupname) throws CmsException {
 
@@ -846,7 +853,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#readGroupsOfUser(org.opencms.util.CmsUUID)
+     * @see org.opencms.db.I_CmsUserDriver#readGroupsOfUser(org.opencms.util.CmsUUID, java.lang.String)
      */
     public Vector readGroupsOfUser(CmsUUID userId, String paramStr) throws CmsException {
         //CmsGroup group;

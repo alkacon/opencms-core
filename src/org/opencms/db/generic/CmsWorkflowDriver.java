@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Attic/CmsWorkflowDriver.java,v $
- * Date   : $Date: 2003/11/14 16:59:35 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2004/01/06 17:14:11 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.25 $ $Date: 2003/11/14 16:59:35 $
+ * @version $Revision: 1.26 $ $Date: 2004/01/06 17:14:11 $
  * @since 5.1
  */
 public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkflowDriver {
@@ -86,8 +86,15 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
      * Table-key for max-id
      */
     protected static String C_TABLE_TASKTYPE = "CMS_TASKTYPE";
+    
+    /**
+     * The driver manager
+     */
     protected CmsDriverManager m_driverManager;
 
+    /**
+     * The sql manager
+     */
     protected org.opencms.db.generic.CmsSqlManager m_sqlManager;
 
     /**
@@ -186,7 +193,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
     }
 
     /**
-     * @see org.opencms.db.I_CmsDriver#init(source.org.apache.java.util.Configurations, java.util.List, org.opencms.db.CmsDriverManager)
+     * @see org.opencms.db.I_CmsDriver#init(org.apache.commons.collections.ExtendedProperties, java.util.List, org.opencms.db.CmsDriverManager)
      */
     public void init(ExtendedProperties configuration, List successiveDrivers, CmsDriverManager driverManager) {
         String poolUrl = configuration.getString("db.workflow.pool");
@@ -210,7 +217,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
     }
 
     /**
-     * @see org.opencms.db.I_CmsWorkflowDriver#initQueries(java.lang.String)
+     * @see org.opencms.db.I_CmsWorkflowDriver#initQueries()
      */
     public org.opencms.db.generic.CmsSqlManager initQueries() {
         return new org.opencms.db.generic.CmsSqlManager();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/11/14 16:59:36 $
- * Version: $Revision: 1.76 $
+ * Date   : $Date: 2004/01/06 17:14:11 $
+ * Version: $Revision: 1.77 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,8 +69,9 @@ import org.apache.commons.collections.ExtendedProperties;
  * Generic (ANSI-SQL) database server implementation of the backup driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.76 $ $Date: 2003/11/14 16:59:36 $
+ * @author Michael Emmerich (m.emmerich@alkacon.com)
+ * @author Carsten Weinholz (c.weinholz@alkacon.com) 
+ * @version $Revision: 1.77 $ $Date: 2004/01/06 17:14:11 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -82,7 +83,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
     protected org.opencms.db.generic.CmsSqlManager m_sqlManager;
 
     /**
-     * @see org.opencms.db.I_CmsBackupDriver#createCmsBackupResourceFromResultSet(java.sql.ResultSet, boolean)
+     * @see org.opencms.db.I_CmsBackupDriver#createBackupResource(java.sql.ResultSet, boolean)
      */
     public CmsBackupResource createBackupResource(ResultSet res, boolean hasContent) throws SQLException {
         byte[] content = null;
@@ -186,7 +187,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
 
     
     /**
-     * @see org.opencms.db.I_CmsBackupDriver#deleteBackup(com.opencms.file.CmsBackupResource, long, int)
+     * @see org.opencms.db.I_CmsBackupDriver#deleteBackup(com.opencms.file.CmsBackupResource, int, int)
      */
     public void deleteBackup(CmsBackupResource resource, int tag, int versions) throws CmsException {
         ResultSet res = null;
@@ -280,7 +281,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
     }
 
     /**
-     * @see org.opencms.db.I_CmsDriver#init(source.org.apache.java.util.Configurations, java.util.List, org.opencms.db.CmsDriverManager)
+     * @see org.opencms.db.I_CmsDriver#init(org.apache.commons.collections.ExtendedProperties, java.util.List, org.opencms.db.CmsDriverManager)
      */
     public void init(ExtendedProperties configuration, List successiveDrivers, CmsDriverManager driverManager) {
         String poolUrl = configuration.getString("db.backup.pool");
@@ -304,7 +305,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
     }
 
     /**
-     * @see org.opencms.db.I_CmsBackupDriver#initQueries(java.lang.String)
+     * @see org.opencms.db.I_CmsBackupDriver#initQueries()
      */
     public org.opencms.db.generic.CmsSqlManager initQueries() {
         return new org.opencms.db.generic.CmsSqlManager();
@@ -416,7 +417,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
     }
 
     /**
-     * @see org.opencms.db.I_CmsBackupDriver#readBackupFile(int, com.opencms.flex.util.CmsUUID)
+     * @see org.opencms.db.I_CmsBackupDriver#readBackupFile(int, org.opencms.util.CmsUUID)
      */
     public CmsBackupResource readBackupFile(int tagId, CmsUUID resourceId) throws CmsException {
         CmsBackupResource file = null;
@@ -452,7 +453,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
     }
 
     /**
-     * @see org.opencms.db.I_CmsBackupDriver#readBackupFileHeader(int, com.opencms.flex.util.CmsUUID)
+     * @see org.opencms.db.I_CmsBackupDriver#readBackupFileHeader(int, org.opencms.util.CmsUUID)
      */
     public CmsBackupResource readBackupFileHeader(int tagId, CmsUUID resourceId) throws CmsException {
         CmsBackupResource file = null;
@@ -488,7 +489,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
     }
 
     /**
-     * @see org.opencms.db.I_CmsBackupDriver#readAllBackupFileHeaders()
+     * @see org.opencms.db.I_CmsBackupDriver#readBackupFileHeaders()
      */
     public List readBackupFileHeaders() throws CmsException {
         CmsBackupResource currentBackupResource = null;
@@ -525,7 +526,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
     }
 
     /**
-     * @see org.opencms.db.I_CmsBackupDriver#readAllBackupFileHeaders(com.opencms.flex.util.CmsUUID)
+     * @see org.opencms.db.I_CmsBackupDriver#readBackupFileHeaders(org.opencms.util.CmsUUID)
      */
     public List readBackupFileHeaders(CmsUUID resourceId) throws CmsException {
         CmsBackupResource currentBackupResource = null;
@@ -555,7 +556,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
     }
 
     /**
-     * @see org.opencms.db.I_CmsBackupDriver#readMaxBackupVersion(com.opencms.flex.util.CmsUUID)
+     * @see org.opencms.db.I_CmsBackupDriver#readBackupMaxVersion(org.opencms.util.CmsUUID)
      */
     public int readBackupMaxVersion(CmsUUID resourceId) throws CmsException {
         PreparedStatement stmt = null;
@@ -665,7 +666,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
     }
 
     /**
-     * @see org.opencms.db.I_CmsBackupDriver#getAllBackupProjects()
+     * @see org.opencms.db.I_CmsBackupDriver#readBackupProjects()
      */
     public Vector readBackupProjects() throws CmsException {
         Vector projects = new Vector();
@@ -715,7 +716,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
     }
 
     /**
-     * @see org.opencms.db.I_CmsBackupDriver#getBackupProjectTag(long)
+     * @see org.opencms.db.I_CmsBackupDriver#readBackupProjectTag(long)
      */
     public int readBackupProjectTag(long maxdate) throws CmsException {
         ResultSet res = null;
@@ -777,7 +778,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
     }
     
     /**
-     * @see org.opencms.db.I_CmsBackupDriver#readPropertyDefinition(java.lang.String, int)
+     * @see org.opencms.db.I_CmsBackupDriver#readBackupPropertyDefinition(java.lang.String, int)
      */
     public CmsPropertydefinition readBackupPropertyDefinition(String name, int type) throws CmsException {
         CmsPropertydefinition propDef = null;
@@ -807,7 +808,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
     }    
 
     /**
-     * @see org.opencms.db.I_CmsBackupDriver#nextBackupVersionId()
+     * @see org.opencms.db.I_CmsBackupDriver#readNextBackupTagId()
      */
     public int readNextBackupTagId() {
         PreparedStatement stmt = null;
@@ -914,7 +915,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
     }
 
     /**
-     * @see org.opencms.db.I_CmsBackupDriver#writeBackupProperties(com.opencms.file.CmsProject, com.opencms.file.CmsResource, java.util.Map, com.opencms.flex.util.CmsUUID, int, int)
+     * @see org.opencms.db.I_CmsBackupDriver#writeBackupProperties(com.opencms.file.CmsProject, com.opencms.file.CmsResource, java.util.Map, org.opencms.util.CmsUUID, int, int)
      */
     public void writeBackupProperties(CmsProject publishProject, CmsResource resource, Map properties, CmsUUID backupId, int tagId, int versionId) throws CmsException {
         Connection conn = null;
@@ -1063,8 +1064,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
     }
 
     /**
-     * For later use
-     * @see org.opencms.db.I_CmsBackupDriver#writeBackupResourceContent(com.opencms.file.CmsResource, com.opencms.file.CmsBackupResource)
+     * @see org.opencms.db.I_CmsBackupDriver#writeBackupResourceContent(int, com.opencms.file.CmsResource, com.opencms.file.CmsBackupResource)
      */
     public void writeBackupResourceContent(int projectId, CmsResource resource, CmsBackupResource backupResource) throws CmsException {
         // get the offline file

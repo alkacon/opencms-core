@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2003/11/13 10:29:26 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2004/01/06 17:14:11 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -96,7 +96,7 @@ import java.util.Properties;
  * </table>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.29 $ $Date: 2003/11/13 10:29:26 $
+ * @version $Revision: 1.30 $ $Date: 2004/01/06 17:14:11 $
  * @since 5.1
  */
 public class CmsSqlManager extends Object implements Serializable, Cloneable {
@@ -161,9 +161,6 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
      * To obtain JDBC connections from different pools, further 
      * {online|offline|backup} pool Urls have to be set.
      * 
-     * @see setOfflinePoolUrl(String)
-     * @see setOnlinePoolUrl(String)
-     * @see setBackupPoolUrl(String)
      */
     public CmsSqlManager() {
         if (c_queries == null) {
@@ -195,9 +192,6 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
      * 
      * @param poolUrl the default connection pool URL
      * @param loadQueries flag indicating whether the query.properties should be loaded during initialization
-     * @see setOfflinePoolUrl(String)
-     * @see setOnlinePoolUrl(String)
-     * @see setBackupPoolUrl(String)
      */
     protected CmsSqlManager(String poolUrl, boolean loadQueries) {
         m_poolUrls = (List) new ArrayList(3);
@@ -245,7 +239,6 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
      * @param con the JDBC connection
      * @param stmnt the statement
      * @param res the result set
-     * @see com.opencms.dbpool.CmsConnection#close()
      */
     public void closeAll(Connection con, Statement stmnt, ResultSet res) {
 
@@ -401,7 +394,6 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
      * 
      * @return a JDBC connection from the (offline) pool 
      * @throws SQLException if a database access error occurs
-     * @see getConnection(int)
      */
     public Connection getConnection() throws SQLException {
         return getConnection(C_TABLE_ID_OFFLINE);
@@ -413,7 +405,6 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
      * @param project the specified CmsProject
      * @return a JDBC connection from the pool specified by the project-ID 
      * @throws SQLException if a database access error occurs
-     * @see getConnection(int)
      */
     public Connection getConnection(CmsProject project) throws SQLException {
         return getConnection(project.getId());
@@ -457,7 +448,6 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
      * 
      * @return a JDBC connection from the backup pool 
      * @throws SQLException if a database access error occurs
-     * @see getConnection(int)
      */
     public Connection getConnectionForBackup() throws SQLException {
         return getConnection(C_TABLE_ID_BACKUP);

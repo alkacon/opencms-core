@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/12/11 12:03:35 $
- * Version: $Revision: 1.158 $
+ * Date   : $Date: 2004/01/06 17:14:11 $
+ * Version: $Revision: 1.159 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,12 +75,19 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.158 $ $Date: 2003/12/11 12:03:35 $
+ * @version $Revision: 1.159 $ $Date: 2004/01/06 17:14:11 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
 
+    /**
+     * The driver manager
+     */    
     protected CmsDriverManager m_driverManager;
+    
+    /**
+     * The sql manager
+     */
     protected org.opencms.db.generic.CmsSqlManager m_sqlManager;
 
     /**
@@ -903,7 +910,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * @see org.opencms.db.I_CmsDriver#init(source.org.apache.java.util.Configurations, java.util.List, org.opencms.db.CmsDriverManager)
+     * @see org.opencms.db.I_CmsDriver#init(org.apache.commons.collections.ExtendedProperties, java.util.List, org.opencms.db.CmsDriverManager)
      */
     public void init(ExtendedProperties configuration, List successiveDrivers, CmsDriverManager driverManager) {
         String offlinePoolUrl = null;
@@ -947,7 +954,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#initQueries(java.lang.String)
+     * @see org.opencms.db.I_CmsVfsDriver#initQueries()
      */
     public org.opencms.db.generic.CmsSqlManager initQueries() {
         return new org.opencms.db.generic.CmsSqlManager();
@@ -1789,7 +1796,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#readSiblings(com.opencms.file.CmsProject, com.opencms.file.CmsResource)
+     * @see org.opencms.db.I_CmsVfsDriver#readSiblings(com.opencms.file.CmsProject, com.opencms.file.CmsResource, boolean)
      */
     public List readSiblings(CmsProject currentProject, CmsResource resource, boolean includeDeleted) throws CmsException {
         PreparedStatement stmt = null;
@@ -1822,7 +1829,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#removeFile(com.opencms.file.CmsProject, com.opencms.file.CmsResource)
+     * @see org.opencms.db.I_CmsVfsDriver#removeFile(com.opencms.file.CmsProject, com.opencms.file.CmsResource, boolean)
      */
     public void removeFile(CmsProject currentProject, CmsResource resource, boolean removeFileContent) throws CmsException {
         PreparedStatement stmt = null;
