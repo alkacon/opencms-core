@@ -371,7 +371,7 @@ onLoad="window.top.body.admin_head.admincontenturl='administration_content_userm
 </TEMPLATE>
 
 <TEMPLATE name="deleteerror"> 
-<ERRORPAGE title="error.title.deletegroup" message="error.message.deletegroup" reason="error.reason.none" suggestion="error.suggestion.deletegroup" ref="administration_content_users.html" /> 
+<ERRORPAGE title="error.title.deletegroup" message="error.message.deletegroup" reason="error.reason.deletegroup" suggestion="error.suggestion.deletegroup" ref="administration_content_groups.html" ><PROCESS>DELETEDETAILS</PROCESS></ERRORPAGE> 
 </TEMPLATE>
 
 <TEMPLATE name="errordatamissing1">

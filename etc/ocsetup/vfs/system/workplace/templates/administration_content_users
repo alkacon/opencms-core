@@ -486,8 +486,7 @@ wirklich loeschen?
  
 <TEMPLATE name="deleteerror">
 <![CDATA[
-]]><ERRORPAGE title="error.title.deleteuser" message="error.message.deleteuser" reason="error.reason.none" suggestion="error.suggestion.deleteuser" ref="administration_content_users.html" /><![CDATA[
-]]>
+]]><ERRORPAGE title="error.title.deleteuser" message="error.message.deleteuser" reason="error.reason.deleteuser" suggestion="error.suggestion.deleteuser" ref="administration_content_users.html" ><PROCESS>DELETEDETAILS</PROCESS></ERRORPAGE>
 </TEMPLATE>
 
 <TEMPLATE name="passworderror1">

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminUsers.java,v $
- * Date   : $Date: 2000/04/06 12:39:03 $
- * Version: $Revision: 1.1 $Selector
+ * Date   : $Date: 2000/04/07 08:59:07 $
+ * Version: $Revision: 1.2 $Selector
 
  *
  * Copyright (C) 2000  The OpenCms Group 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Mario Stanke
- * @version $Revision: 1.1 $ $Date: 2000/04/06 12:39:03 $
+ * @version $Revision: 1.2 $ $Date: 2000/04/07 08:59:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -491,6 +491,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
 				templateSelector="";
 			} catch (Exception e) {
 				// user == null or delete failed
+				xmlTemplateDocument.setXmlData("DELETEDETAILS", Utils.getStackTrace(e));
 				templateSelector="deleteerror";
 			}
 		} // delete user
@@ -655,7 +656,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
      * @exception CmsException
      */
 	
-	public void changeGroups(A_CmsObject cms, A_CmsUser theUser, String defaultGroupName, Vector newGroups) 
+	private void changeGroups(A_CmsObject cms, A_CmsUser theUser, String defaultGroupName, Vector newGroups) 
 		throws CmsException {
 		String username = (String) theUser.getName();
 		Vector oldGroups = cms.getGroupsOfUser(username);

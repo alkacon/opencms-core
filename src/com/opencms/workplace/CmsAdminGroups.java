@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminGroups.java,v $
- * Date   : $Date: 2000/04/06 15:16:08 $
- * Version: $Revision: 1.2 $Selector
+ * Date   : $Date: 2000/04/07 08:59:07 $
+ * Version: $Revision: 1.3 $Selector
 
  *
  * Copyright (C) 2000  The OpenCms Group 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Mario Stanke
- * @version $Revision: 1.2 $ $Date: 2000/04/06 15:16:08 $
+ * @version $Revision: 1.3 $ $Date: 2000/04/07 08:59:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -395,6 +395,7 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
 				templateSelector="";
 			} catch (Exception e) {
 				// groupname == null or delete failed
+				xmlTemplateDocument.setXmlData("DELETEDETAILS", Utils.getStackTrace(e));
 				templateSelector="deleteerror";
 			}
 		} 
