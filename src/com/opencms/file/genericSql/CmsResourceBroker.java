@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/09/29 16:50:57 $
- * Version: $Revision: 1.146 $
+ * Date   : $Date: 2000/10/02 15:19:21 $
+ * Version: $Revision: 1.147 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.template.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.146 $ $Date: 2000/09/29 16:50:57 $
+ * @version $Revision: 1.147 $ $Date: 2000/10/02 15:19:21 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2726,6 +2726,22 @@ public CmsCategory getCategory(CmsUser currentUser, CmsProject currentProject, i
 	public Configurations getConfigurations(CmsUser currentUser, CmsProject currentProject) {
 		return m_configuration;
 	}
+/**
+ * Returns a CmsCountry object
+ *
+ * <B>Security:</B>
+ * All users are granted.
+ * 
+ * @return com.opencms.file.CmsCountry
+ * @param currentUser com.opencms.file.CmsUser
+ * @param currentProject com.opencms.file.CmsProject
+ * @param countryId int
+ * @exception com.opencms.core.CmsException The exception description.
+ */
+public CmsCountry getCountry(CmsUser currentUser, CmsProject currentProject, int countryId) throws com.opencms.core.CmsException
+{
+	return m_dbAccess.getCountry(countryId);
+}
 	/**
 	 * Returns the list of groups to which the user directly belongs to<P/>
 	 * 
@@ -2902,6 +2918,22 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
 		 }
 		 return allGroups;
 	}
+/**
+ * Returns a CmsLanguage object
+ *
+ * <B>Security:</B>
+ * All users are granted.
+ * 
+ * @return com.opencms.file.CmsLanguage
+ * @param currentUser com.opencms.file.CmsUser
+ * @param currentProject com.opencms.file.CmsProject
+ * @param languageId int
+ * @exception com.opencms.core.CmsException The exception description.
+ */
+public CmsLanguage getLanguage(CmsUser currentUser, CmsProject currentProject, int languageId) throws com.opencms.core.CmsException
+{
+	return m_dbAccess.getLanguage(languageId);
+}
 /**
  * Returns the parent group of a group<P/>
  * 

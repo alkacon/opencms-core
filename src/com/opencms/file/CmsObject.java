@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/09/29 08:56:28 $
- * Version: $Revision: 1.124 $
+ * Date   : $Date: 2000/10/02 15:19:18 $
+ * Version: $Revision: 1.125 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.124 $ $Date: 2000/09/29 08:56:28 $ 
+ * @version $Revision: 1.125 $ $Date: 2000/10/02 15:19:18 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -994,6 +994,27 @@ public Configurations getConfigurations() {
 	return m_rb.getConfigurations(getRequestContext().currentUser(), getRequestContext().currentProject());
 }
 /**
+ * Returns a CmsCountry object
+ * Creation date: (02-10-2000 17:15:36)
+ * @return com.opencms.file.CmsCountry
+ * @param countryId int
+ * @exception com.opencms.core.CmsException The exception description.
+ */
+public CmsCountry getCountry(int countryId) throws com.opencms.core.CmsException
+{
+	return m_rb.getCountry(m_context.currentUser(), m_context.currentProject(), countryId);
+}
+/**
+ * Insert the method's description here.
+ * Creation date: (02-10-2000 16:47:15)
+ * @return com.opencms.file.CmsSite
+ * @exception com.opencms.core.CmsException The exception description.
+ */
+public CmsSite getCurrentSite() throws com.opencms.core.CmsException
+{
+	return this.getSite(this.onlineProject().getId());
+}
+/**
  * Gets all groups to which a given user directly belongs.
  * 
  * @param username the name of the user to get all groups for.
@@ -1062,6 +1083,17 @@ public Vector getGroups() throws CmsException {
  */
 public Vector getGroupsOfUser(String username) throws CmsException {
 	return (m_rb.getGroupsOfUser(m_context.currentUser(), m_context.currentProject(), username));
+}
+/**
+ * Returns a CmsLanguage object
+ * Creation date: (02-10-2000 17:14:29)
+ * @return com.opencms.file.CmsLanguage
+ * @param languageId int
+ * @exception com.opencms.core.CmsException The exception description.
+ */
+public CmsLanguage getLanguage(int languageId) throws com.opencms.core.CmsException
+{
+	return m_rb.getLanguage(m_context.currentUser(), m_context.currentProject(), languageId);
 }
 /**
  * Returns the parent group of a group.

@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/09/29 08:56:28 $
- * Version: $Revision: 1.119 $
+ * Date   : $Date: 2000/10/02 15:19:18 $
+ * Version: $Revision: 1.120 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.119 $ $Date: 2000/09/29 08:56:28 $
+ * @version $Revision: 1.120 $ $Date: 2000/10/02 15:19:18 $
  * 
  */
 
@@ -1132,6 +1132,19 @@ public CmsCategory getCategory(CmsUser currentUser, CmsProject currentProject, i
 	 * @return The Configurations of the properties-file.
 	 */
 	public Configurations getConfigurations(CmsUser currentUser, CmsProject currentProject);
+/**
+ * Returns a CmsCountry object
+ *
+ * <B>Security:</B>
+ * All users are granted.
+ * 
+ * @return com.opencms.file.CmsCountry
+ * @param currentUser com.opencms.file.CmsUser
+ * @param currentProject com.opencms.file.CmsProject
+ * @param countryId int
+ * @exception com.opencms.core.CmsException The exception description.
+ */
+public CmsCountry getCountry(CmsUser currentUser, CmsProject currentProject, int countryId) throws com.opencms.core.CmsException;
 	/**
 	 * Returns the list of groups to which the user directly belongs to<P/>
 	 * 
@@ -1229,6 +1242,19 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
 	public Vector getGroupsOfUser(CmsUser currentUser, CmsProject currentProject, 
 								  String username)
 		throws CmsException;
+/**
+ * Returns a CmsLanguage object
+ *
+ * <B>Security:</B>
+ * All users are granted.
+ * 
+ * @return com.opencms.file.CmsLanguage
+ * @param currentUser com.opencms.file.CmsUser
+ * @param currentProject com.opencms.file.CmsProject
+ * @param languageId int
+ * @exception com.opencms.core.CmsException The exception description.
+ */
+public CmsLanguage getLanguage(CmsUser currentUser, CmsProject currentProject, int languageId) throws com.opencms.core.CmsException;
 	/**
 	 * Returns the parent group of a group<P/>
 	 * 

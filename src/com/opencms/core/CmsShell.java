@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/09/29 08:56:27 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2000/10/02 15:19:18 $
+ * Version: $Revision: 1.46 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  * 
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.45 $ $Date: 2000/09/29 08:56:27 $
+ * @version $Revision: 1.46 $ $Date: 2000/10/02 15:19:18 $
  */
 public class CmsShell implements I_CmsConstants {
 
@@ -876,6 +876,25 @@ public void getCategory(String categoryId)
 			printException(exc);
 		}
 	}
+/**
+ * Insert the method's description here.
+ * Creation date: (02-10-2000 17:17:51)
+ * @param countryId java.lang.String
+ */
+public void getCountry(String countryId)
+{
+	try
+	{
+		CmsCountry country = m_cms.getCountry(Integer.parseInt(countryId));
+		System.out.println("Name: " + country.getName());
+		System.out.println("Short name: " + country.getShortName());
+		System.out.println("Priority: " + country.getPriority());
+	}
+	catch (Exception exc)
+	{
+		printException(exc);
+	}
+}
 	/**
 	 * Returns the current project for the user.
 	 */
@@ -890,8 +909,9 @@ public void getCurrentSite()
 {
 	try
 	{
-		int onlineProjectId = m_cms.onlineProject().getId();
-		CmsSite site = m_cms.getSite(onlineProjectId);
+		//int onlineProjectId = m_cms.onlineProject().getId();
+		CmsSite site = m_cms.getCurrentSite();
+		
 		System.out.println("Site: " + site.toString());
 	}
 	catch (CmsException e)
@@ -957,6 +977,25 @@ public void getCurrentSite()
 			printException(exc);
 		}
 	}
+/**
+ * Insert the method's description here.
+ * Creation date: (02-10-2000 17:16:41)
+ * @param languageId java.lang.String
+ */
+public void getLanguage(String languageId)
+{
+	try
+	{
+		CmsLanguage language = m_cms.getLanguage(Integer.parseInt(languageId));
+		System.out.println("Name: " + language.getName());
+		System.out.println("Short name: " + language.getShortName());
+		System.out.println("Priority: " + language.getPriority());
+	}
+	catch (Exception exc)
+	{
+		printException(exc);
+	}
+}
 	/**
 	 * Imports a module into the cms.
 	 * 
