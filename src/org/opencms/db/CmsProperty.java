@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsProperty.java,v $
- * Date   : $Date: 2004/03/31 15:25:38 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/04/01 06:24:58 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import java.util.RandomAccess;
  * a structure or resource record ID..<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2004/03/31 15:25:38 $
+ * @version $Revision: 1.3 $ $Date: 2004/04/01 06:24:58 $
  * @since build_5_1_14
  */
 public class CmsProperty extends Object implements Serializable, Cloneable, Comparable {
@@ -116,9 +116,10 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
      * Creates a new CmsProperty object.<p>
      * 
      * The structure and resource property values are initialized to null. The structure and
-     * resource IDs are initialized to {@link CmsUUID#getNullUUID()}.<p>
+     * resource IDs are initialized to {@link org.opencms.util.CmsUUID#getNullUUID()}.<p>
      */
     public CmsProperty() {
+
         m_key = null;
         m_structureValue = null;
         m_resourceValue = null;

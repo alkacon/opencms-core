@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsPermissionSet.java,v $
- * Date   : $Date: 2004/03/31 14:01:10 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/04/01 06:24:01 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.security;
 
 import org.opencms.main.I_CmsConstants;
@@ -44,62 +45,21 @@ import java.util.StringTokenizer;
  * <code>C_PERMISSION_WRITE</code> (w) the right to write the contents of a resource<br>
  * <code>C_PERMISSION_VIEW</code> (v) the right to see a resource in listings (workplace)<br>
  * <code>C_PERMISSION_CONTROL</code> (c) the right to set permissions of a resource<br>
+ * <code>C_PERMISSION_DIRECT_PUBLISH</code> (d) the right direct publish a resource even without publish project permissions<br>
  * 
- * @version $Revision: 1.11 $ $Date: 2004/03/31 14:01:10 $
+ * @version $Revision: 1.12 $ $Date: 2004/04/01 06:24:01 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsPermissionSet {
 
-    /**
-     * Hashtable of all available permissions
-     */
+    /**  Hashtable of all available permissions */
     static HashMap m_permissions = null;
 
-    /**
-     * The set of allowed permissions
-     */
+    /** The set of allowed permissions */
     int m_allowed;
 
-    /**
-     * The set of denied permissions
-     */
+    /** The set of denied permissions */
     int m_denied;
-
-    /**
-     * Returns the message keys of each permission known in the system.<p>
-     * 
-     * @return Enumeration of message keys
-     */
-    public static Set getPermissionKeys() {
-        return permissions().keySet();
-    }
-
-    /**
-     * Returns the value of a single permission.<p>
-     * 
-     * @param key the key of the permission
-     * @return the value of the given permission
-     */
-    public static int getPermissionValue(String key) {
-        return ((Integer)permissions().get(key)).intValue();
-    }
-
-    /**
-     * Initializes and returns the hashtable of all permissions known in the system.<p>
-     * 
-     * @return hastable with permission keys and values
-     */
-    private static HashMap permissions() {
-        if (m_permissions == null) {
-            m_permissions = new HashMap();
-            m_permissions.put("security.permission.read", new Integer(I_CmsConstants.C_PERMISSION_READ));
-            m_permissions.put("security.permission.write", new Integer(I_CmsConstants.C_PERMISSION_WRITE));
-            m_permissions.put("security.permission.view", new Integer(I_CmsConstants.C_PERMISSION_VIEW));
-            m_permissions.put("security.permission.control", new Integer(I_CmsConstants.C_PERMISSION_CONTROL));
-            m_permissions.put("security.permission.direct_publish", new Integer(I_CmsConstants.C_PERMISSION_DIRECT_PUBLISH));
-        }
-        return m_permissions;
-    }
 
     /**
      * Constructor to create an empty permission set.<p>
@@ -150,8 +110,8 @@ public class CmsPermissionSet {
             String prefix = tok.nextToken();
             String suffix = tok.nextToken();
             switch (suffix.charAt(0)) {
-                case 'R' :
-                case 'r' :
+                case 'R':
+                case 'r':
                     if (prefix.charAt(0) == '+') {
                         m_allowed |= I_CmsConstants.C_PERMISSION_READ;
                     }
@@ -159,8 +119,8 @@ public class CmsPermissionSet {
                         m_denied |= I_CmsConstants.C_PERMISSION_READ;
                     }
                     break;
-                case 'W' :
-                case 'w' :
+                case 'W':
+                case 'w':
                     if (prefix.charAt(0) == '+') {
                         m_allowed |= I_CmsConstants.C_PERMISSION_WRITE;
                     }
@@ -168,8 +128,8 @@ public class CmsPermissionSet {
                         m_denied |= I_CmsConstants.C_PERMISSION_WRITE;
                     }
                     break;
-                case 'V' :
-                case 'v' :
+                case 'V':
+                case 'v':
                     if (prefix.charAt(0) == '+') {
                         m_allowed |= I_CmsConstants.C_PERMISSION_VIEW;
                     }
@@ -177,8 +137,8 @@ public class CmsPermissionSet {
                         m_denied |= I_CmsConstants.C_PERMISSION_VIEW;
                     }
                     break;
-                case 'C' :
-                case 'c' :
+                case 'C':
+                case 'c':
                     if (prefix.charAt(0) == '+') {
                         m_allowed |= I_CmsConstants.C_PERMISSION_CONTROL;
                     }
@@ -186,16 +146,16 @@ public class CmsPermissionSet {
                         m_denied |= I_CmsConstants.C_PERMISSION_CONTROL;
                     }
                     break;
-                case 'D' :
-                case 'd' :
+                case 'D':
+                case 'd':
                     if (prefix.charAt(0) == '+') {
                         m_allowed |= I_CmsConstants.C_PERMISSION_DIRECT_PUBLISH;
                     }
                     if (prefix.charAt(0) == '-') {
                         m_denied |= I_CmsConstants.C_PERMISSION_DIRECT_PUBLISH;
-                    }                    
+                    }
                     break;
-                default :
+                default:
                     // ignore
                     break;
             }
@@ -203,32 +163,54 @@ public class CmsPermissionSet {
     }
 
     /**
-     * Returns a clone of this Objects instance.<p>
+     * Returns the message keys of each permission known in the system.<p>
      * 
-     * @return a clone of this instance
+     * @return Enumeration of message keys
      */
-    public Object clone() {
-        return new CmsPermissionSet(m_allowed, m_denied);
+    public static Set getPermissionKeys() {
+
+        return permissions().keySet();
     }
 
     /**
-     * Sets permissions additionally as allowed permissions.<p>
+     * Returns the value of a single permission.<p>
      * 
-     * @param permissions bitset of permissions to allow
+     * @param key the key of the permission
+     * @return the value of the given permission
      */
-    public void grantPermissions(int permissions) {
+    public static int getPermissionValue(String key) {
 
-        m_allowed |= permissions;
+        return ((Integer)permissions().get(key)).intValue();
     }
 
     /**
-     * Sets permissions additionally as denied permissions.<p>
+     * Initializes and returns the hashtable of all permissions known in the system.<p>
      * 
-     * @param permissions bitset of permissions to deny
+     * @return hastable with permission keys and values
      */
-    public void denyPermissions(int permissions) {
+    private static HashMap permissions() {
 
-        m_denied |= permissions;
+        if (m_permissions == null) {
+            m_permissions = new HashMap();
+            m_permissions.put("security.permission.read", new Integer(I_CmsConstants.C_PERMISSION_READ));
+            m_permissions.put("security.permission.write", new Integer(I_CmsConstants.C_PERMISSION_WRITE));
+            m_permissions.put("security.permission.view", new Integer(I_CmsConstants.C_PERMISSION_VIEW));
+            m_permissions.put("security.permission.control", new Integer(I_CmsConstants.C_PERMISSION_CONTROL));
+            m_permissions.put("security.permission.direct_publish", new Integer(
+                I_CmsConstants.C_PERMISSION_DIRECT_PUBLISH));
+        }
+        return m_permissions;
+    }
+
+    /**
+     * Sets permissions from another permission set additionally both as allowed and denied permissions.<p>
+     * 
+     * @param permissionSet the set of permissions to set additionally.
+     */
+    public void addPermissions(CmsPermissionSet permissionSet) {
+
+        m_allowed |= permissionSet.m_allowed;
+        m_denied |= permissionSet.m_denied;
     }
 
     /**
@@ -244,50 +226,23 @@ public class CmsPermissionSet {
     }
 
     /**
-     * Sets permissions from another permission set additionally both as allowed and denied permissions.<p>
+     * Returns a clone of this Objects instance.<p>
      * 
-     * @param permissionSet the set of permissions to set additionally.
+     * @return a clone of this instance
      */
-    public void addPermissions(CmsPermissionSet permissionSet) {
+    public Object clone() {
 
-        m_allowed |= permissionSet.m_allowed;
-        m_denied |= permissionSet.m_denied;
+        return new CmsPermissionSet(m_allowed, m_denied);
     }
 
     /**
-     * Sets permissions as allowed and denied permissions in the permission set.<p>
-     * Permissions formerly set are overwritten.
+     * Sets permissions additionally as denied permissions.<p>
      * 
-     * @param allowedPermissions bitset of permissions to allow
-     * @param deniedPermissions  bitset of permissions to deny
+     * @param permissions bitset of permissions to deny
      */
-    public void setPermissions(int allowedPermissions, int deniedPermissions) {
+    public void denyPermissions(int permissions) {
 
-        m_allowed = allowedPermissions;
-        m_denied = deniedPermissions;
-    }
-
-    /**
-     * Set permissions from another permission set both as allowed and denied permissions.<p>
-     * Permissions formerly set are overwritten.
-     * 
-     * @param permissionSet the set of permissions
-     */
-    public void setPermissions(CmsPermissionSet permissionSet) {
-
-        m_allowed = permissionSet.m_allowed;
-        m_denied = permissionSet.m_denied;
-    }
-
-    /**
-     * Returns the permissions calculated from this permission set.<p>
-     * These are all permissions allowed but not denied.
-     *  
-     * @return the resulting permission set
-     */
-    public int getPermissions() {
-
-        return m_allowed & ~m_denied;
+        m_denied |= permissions;
     }
 
     /**
@@ -311,6 +266,17 @@ public class CmsPermissionSet {
     }
 
     /**
+     * Returns the permissions calculated from this permission set.<p>
+     * These are all permissions allowed but not denied.
+     *  
+     * @return the resulting permission set
+     */
+    public int getPermissions() {
+
+        return m_allowed & ~m_denied;
+    }
+
+    /**
      * Returns the string representation of the current permissions in this permission set.<p>
      * 
      * @return string of the format {{+|-}{r|w|v|c|d}}*
@@ -320,7 +286,7 @@ public class CmsPermissionSet {
         StringBuffer p = new StringBuffer("");
 
         if ((m_denied & I_CmsConstants.C_PERMISSION_READ) > 0) {
-            p.append("-r");            
+            p.append("-r");
         } else if ((m_allowed & I_CmsConstants.C_PERMISSION_READ) > 0) {
             p.append("+r");
         }
@@ -342,14 +308,49 @@ public class CmsPermissionSet {
         } else if ((m_allowed & I_CmsConstants.C_PERMISSION_CONTROL) > 0) {
             p.append("+c");
         }
-        
+
         if ((m_denied & I_CmsConstants.C_PERMISSION_DIRECT_PUBLISH) > 0) {
             p.append("-d");
         } else if ((m_allowed & I_CmsConstants.C_PERMISSION_DIRECT_PUBLISH) > 0) {
             p.append("+d");
-        }        
-        
+        }
+
         return p.toString();
+    }
+
+    /**
+     * Sets permissions additionally as allowed permissions.<p>
+     * 
+     * @param permissions bitset of permissions to allow
+     */
+    public void grantPermissions(int permissions) {
+
+        m_allowed |= permissions;
+    }
+
+    /**
+     * Set permissions from another permission set both as allowed and denied permissions.<p>
+     * Permissions formerly set are overwritten.
+     * 
+     * @param permissionSet the set of permissions
+     */
+    public void setPermissions(CmsPermissionSet permissionSet) {
+
+        m_allowed = permissionSet.m_allowed;
+        m_denied = permissionSet.m_denied;
+    }
+
+    /**
+     * Sets permissions as allowed and denied permissions in the permission set.<p>
+     * Permissions formerly set are overwritten.
+     * 
+     * @param allowedPermissions bitset of permissions to allow
+     * @param deniedPermissions  bitset of permissions to deny
+     */
+    public void setPermissions(int allowedPermissions, int deniedPermissions) {
+
+        m_allowed = allowedPermissions;
+        m_denied = deniedPermissions;
     }
 
     /**

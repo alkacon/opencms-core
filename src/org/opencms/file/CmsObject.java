@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/03/31 14:01:10 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/04/01 06:24:38 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  */
 public class CmsObject {
 
@@ -2586,32 +2586,29 @@ public class CmsObject {
     }
 
     /**
-     * Reads all property-definitions for the given resource type.
+     * Reads all property definitions for the given resource type by id.<p>
      *
-     * @param resourceType the resource type to read the property-definitions for.
+     * @param resourceType the resource type to read the property-definitions for.<p>
      *
-     * @return a Vector with property-defenitions for the resource type.
-     * The Vector may be empty.
+     * @return a Vector with the property defenitions for the resource type (may be empty)
      *
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if something goes wrong
      */
     public Vector readAllPropertydefinitions(int resourceType) throws CmsException {
-        return (m_driverManager.readAllPropertydefinitions(m_context, resourceType));
+        return m_driverManager.readAllPropertydefinitions(m_context, resourceType);
     }
 
     /**
-     * Reads all property-definitions for the given resource type.
+     * Reads all property definitions for the given resource type by name.<p>
      *
-     * @param resourcetype the name of the resource type to read the
-     * property-definitions for.
+     * @param resourceType the resource type to read the property-definitions for.<p>
      *
-     * @return a Vector with property-defenitions for the resource type.
-     * The Vector may be empty.
+     * @return a Vector with the property defenitions for the resource type (may be empty)
      *
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if something goes wrong
      */
-    public Vector readAllPropertydefinitions(String resourcetype) throws CmsException {
-        return (m_driverManager.readAllPropertydefinitions(m_context, resourcetype));
+    public Vector readAllPropertydefinitions(String resourceType) throws CmsException {
+        return m_driverManager.readAllPropertydefinitions(m_context, resourceType);
     }
 
     /**
