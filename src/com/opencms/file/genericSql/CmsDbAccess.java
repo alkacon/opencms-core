@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/09 12:57:17 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2000/06/09 13:14:10 $
+ * Version: $Revision: 1.49 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.48 $ $Date: 2000/06/09 12:57:17 $ * 
+ * @version $Revision: 1.49 $ $Date: 2000/06/09 13:14:10 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	
@@ -2452,14 +2452,14 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
                 // marked as deleted are deleted in the online project.
                 if (file.getState()== C_STATE_CHANGED) {
                     // delete an exitsing old file in the online project
-                    //removeFile(onlineProject,file.getAbsolutePath());
+                    removeFile(onlineProject,file.getAbsolutePath());
                     // write the new file
 					file=readFile(project.getId(),onlineProject.getId(),file.getAbsolutePath());
            
                     file.setLocked(C_UNKNOWN_ID);
                     file.setState(C_STATE_UNCHANGED);
-                    //createFile(onlineProject,onlineProject,file,C_UNKNOWN_ID,file.getParentId(), file.getFileId(),
-					//					   file.getAbsolutePath(),file.getResourceLastModifiedBy());
+                    createFile(onlineProject,onlineProject,file,C_UNKNOWN_ID,file.getParentId(), file.getFileId(),
+										   file.getAbsolutePath(),file.getResourceLastModifiedBy());
                    
                  } else if (file.getState() == C_STATE_DELETED) {
                     removeFile(onlineProject,file.getAbsolutePath());
@@ -2504,7 +2504,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
                      // in the online project.
                     if (folder.getState()== C_STATE_CHANGED){
                         // delete an exitsing old folder in the online project
-                        //removeFolderForPublish(onlineProject,folder.getAbsolutePath());
+                        removeFolderForPublish(onlineProject,folder.getAbsolutePath());
                         // write the new folder
                      
                         folder.setLocked(C_UNKNOWN_ID);
@@ -2514,7 +2514,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
                         //writeFolder(onlineProject,newFolder,false);                       
                  
                     } else if (folder.getState() == C_STATE_DELETED) {
-                       // removeFolderForPublish(onlineProject,folder.getAbsolutePath());
+                        removeFolderForPublish(onlineProject,folder.getAbsolutePath());
                     } else if (folder.getState() == C_STATE_NEW) {
                 }
             }
@@ -2908,11 +2908,10 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	 * 
      * @exception CmsException Throws CmsException if operation was not succesful
      */    
-	 public CmsFile createFile(int resourceId, int parentId,int fileId,
-							   CmsUser user,
+	 public CmsFile createFile(CmsUser user,
                                CmsProject project,
                                CmsProject onlineProject,
-                               String filename, int flags,int resourceLastModifiedBy, 
+                               String filename, int flags,int parentId, 
 							   byte[] contents, CmsResourceType resourceType)
 							
          throws CmsException {
@@ -2929,12 +2928,10 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
                     state=C_STATE_CHANGED;
                }              
            }
-           if (resourceId == C_UNKNOWN_ID){
-				resourceId = nextId(C_TABLE_RESOURCES);
-		   }
-           if (fileId == C_UNKNOWN_ID){
-				fileId = nextId(C_TABLE_FILES);
-		   }
+    
+		   int	resourceId = nextId(C_TABLE_RESOURCES);
+           int fileId = nextId(C_TABLE_FILES);
+           
 		   PreparedStatement statement = null;
 		   PreparedStatement statementFileWrite = null;
            try {             
@@ -2957,7 +2954,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
                 statement.setTimestamp(15,new Timestamp(System.currentTimeMillis()));
                 statement.setTimestamp(16,new Timestamp(System.currentTimeMillis()));
                 statement.setInt(17,contents.length);
-                statement.setInt(18,resourceLastModifiedBy);
+                statement.setInt(18,user.getId());
                 statement.executeUpdate();
                 
                 statementFileWrite = m_pool.getPreparedStatement(C_FILES_WRITE_KEY);

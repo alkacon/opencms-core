@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/09 13:05:26 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2000/06/09 13:14:11 $
+ * Version: $Revision: 1.40 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.39 $ $Date: 2000/06/09 13:05:26 $
+ * @version $Revision: 1.40 $ $Date: 2000/06/09 13:14:11 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2942,7 +2942,49 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 							   Hashtable propertyinfos) 
 						
          throws CmsException {
-         return null;
+      
+		// check for mandatory metainfos
+		checkMandatoryProperties(currentUser, currentProject, type, propertyinfos);
+		
+		// checks, if the filename is valid, if not it throws a exception
+		validFilename(filename);
+		
+		CmsFolder cmsFolder = m_dbAccess.readFolder(currentProject.getId(), folder);
+		if( accessCreate(currentUser, currentProject, (CmsResource)cmsFolder) ) {
+				
+			// write-access was granted - create and return the file.
+			CmsFile file = m_dbAccess.createFile(currentUser, currentProject, 
+											   onlineProject(currentUser, currentProject), 
+											   folder + filename, 0, cmsFolder.getResourceId(),
+                                               contents, 
+											   getResourceType(currentUser, currentProject, type));
+ 
+            // update the access flags
+            Hashtable startSettings=null;
+            Integer accessFlags=null;
+            startSettings=(Hashtable)currentUser.getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);                    
+            if (startSettings != null) {
+                accessFlags=(Integer)startSettings.get(C_START_ACCESSFLAGS);
+                if (accessFlags != null) {
+                    file.setAccessFlags(accessFlags.intValue());
+                }
+            }
+            if(currentGroup != null) {                
+                file.setGroupId(currentGroup.getId());
+            }
+            //m_dbAccess.writeFileHeader(currentProject,onlineProject(currentUser,currentProject),
+             //                          file,false);
+  
+			// write the metainfos
+			writeProperties(currentUser,currentProject,file.getAbsolutePath(), propertyinfos );
+			// inform about the file-system-change
+			fileSystemChanged();
+			return file ;
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + folder + filename, 
+				CmsException.C_NO_ACCESS);
+		}
+
      }
 	 
 	 /**
@@ -4022,4 +4064,67 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		// in the future here will maybe a event-story be added
 		m_fileSystemChanges++;
 	}
+    
+    /**
+	 * Checks, if all mandatory metainfos for the resource type are set as key in the
+	 * metainfo-hashtable. It throws a exception, if a mandatory metainfo is missing.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param resourceType The type of the rersource to check the metainfos for.
+	 * @param propertyinfos The propertyinfos to check.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	private void checkMandatoryProperties(CmsUser currentUser, 
+										 CmsProject currentProject, 
+										 String resourceType, 
+										 Hashtable propertyinfos) 
+		throws CmsException {
+		// read the mandatory metadefs
+		Vector metadefs = readAllPropertydefinitions(currentUser, currentProject, 
+												 resourceType, C_PROPERTYDEF_TYPE_MANDATORY);
+		
+		// check, if the mandatory metainfo is given
+		for(int i = 0; i < metadefs.size(); i++) {
+			if( propertyinfos.containsKey(metadefs.elementAt(i) ) ) {
+				// mandatory metainfo is missing - throw exception
+				throw new CmsException("[" + this.getClass().getName() + "] " + (String)metadefs.elementAt(i),
+					CmsException.C_MANDATORY_PROPERTY);
+			}
+		}
+	}
+    
+    /**
+	 * Checks ii characters in a String are allowed for filenames
+	 * 
+	 * @param filename String to check
+	 * 
+	 * @exception throws a exception, if the check fails.
+	 */	
+	private void validFilename( String filename ) 
+		throws CmsException {
+		
+		if (filename == null) {
+			throw new CmsException("[" + this.getClass().getName() + "] " + filename, 
+				CmsException.C_BAD_NAME);
+		}
+
+		int l = filename.length();
+
+		for (int i=0; i<l; i++) {
+			char c = filename.charAt(i);
+			if ( 
+				((c < 'a') || (c > 'z')) &&
+				((c < '0') || (c > '9')) &&
+				((c < 'A') || (c > 'Z')) &&
+				(c != '-') && (c != '/') && (c != '.') &&
+				(c != '|') && (c != '_') && (c != '~') 
+				) {
+				throw new CmsException("[" + this.getClass().getName() + "] " + filename, 
+					CmsException.C_BAD_NAME);
+			}
+		}
+	}
+	
 }
