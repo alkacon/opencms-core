@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/util/Attic/CmsPropertyLookup.java,v $
- * Date   : $Date: 2002/09/16 12:38:07 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2002/09/19 12:26:12 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,29 +42,64 @@ import com.opencms.flex.cache.CmsFlexRequest;
  * file, then on the parent folder of the folder etc. until
  * it reached the root folder.<p>
  * 
- * It also caches it's results to ensure that this expensive operation 
+ * TODO: It also caches it's results to ensure that this expensive operation 
  * is not repeated to often.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsPropertyLookup {
     
-
-    public static String lookupProperty(CmsObject cms, String fileName, String propertyName, boolean search)
+    /**
+     * Look up a specified property with optional direcory upward cascading.
+     * 
+     * @param cms The current CmsObject
+     * @param resource The resource to look up the property for
+     * @param property The name of the property to look up
+     * @param search If true, the property will be looked up on all parent folders
+     *   if it is not attached to the the resource, if false not (ie. normal 
+     *   property lookup)
+     * @return The value of the property found, null if nothing was found
+     * @throws CmsException In case there were problems reading the property on the CmsObject
+     */
+    public static String lookupProperty(CmsObject cms, String resource, String property, boolean search)
     throws CmsException {
         if (search) {
-            String f = fileName;
-            String prop = cms.readProperty(f, propertyName);
+            String f = resource;
+            String prop = cms.readProperty(f, property);
             while ((prop == null) && (! "".equals(f))) {
                 f = f.substring(0, f.lastIndexOf("/"));
-                prop = cms.readProperty(f + "/", propertyName);
+                prop = cms.readProperty(f + "/", property);
             }      
             return prop;
         } else {
-            return cms.readProperty(fileName, propertyName);
+            return cms.readProperty(resource, property);
         }        
     }
 
+    /**
+     * Look up a specified property with optional direcory upward cascading.
+     * A default value will be returned if the property is not found on the
+     * resource (or it's parent folders in case search is set to "true").
+     * 
+     * @param cms The current CmsObject
+     * @param resource The resource to look up the property for
+     * @param property The name of the property to look up
+     * @param search If true, the property will be looked up on all parent folders
+     *   if it is not attached to the the resource, if false not (ie. normal 
+     *   property lookup)
+     * @param propertyDefault A default value that will be returned if
+     *   the property was not found at the selected resource
+     * @return The value of the property found, null if nothing was found
+     * @throws CmsException In case there were problems reading the property on the CmsObject
+     */
+    public static String lookupProperty(CmsObject cms, String resource, String property, boolean search, String propertyDefault)
+    throws CmsException {
+        String prop = lookupProperty(cms, resource, property, search);
+        if ((prop == null) || "".equals(prop)) {
+            prop = propertyDefault;
+        }
+        return prop;
+    }
 
 }
