@@ -77,6 +77,9 @@ public class CmsShowMedia extends CmsXmlTemplate {
                 media = (CmsMasterMedia)vec.firstElement();
                 picture = media.getMedia();
                 String mType = media.getMimetype();
+                if (mType == null || mType.equals("")) {
+                    mType = "application/octet-stream";
+                }
                 req.getResponse().setContentType( mType );
             } else {
                 // got pos info ...
@@ -84,7 +87,11 @@ public class CmsShowMedia extends CmsXmlTemplate {
                     if (((CmsMasterMedia)vec.elementAt(i)).getPosition() == pos) {
                         media = (CmsMasterMedia)vec.elementAt(i);
                         picture = media.getMedia();
-                        req.getResponse().setContentType( media.getMimetype() );
+                        String mType = media.getMimetype();
+                        if (mType == null || mType.equals("")) {
+                            mType = "application/octet-stream";
+                        }
+                        req.getResponse().setContentType( mType );
                         break;
                     }
                 }
@@ -92,13 +99,13 @@ public class CmsShowMedia extends CmsXmlTemplate {
             if(picture==null){
                 picture = emptyGIF;
                 // set the mimetype ...
-                req.getResponse().setContentType("images/jpg");
+                req.getResponse().setContentType("images/gif");
             }
 
         } else{
             picture = emptyGIF;
             // set the mimetype ...
-            req.getResponse().setContentType("images/jpg");
+            req.getResponse().setContentType("images/gif");
     	}
 
 		/*if(req.isStreaming()) {
