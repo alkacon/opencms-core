@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsRequest.java,v $
-* Date   : $Date: 2002/02/06 15:01:54 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2002/09/19 15:49:25 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Michael Emmerich
  * @author Alexander Kandzior
- * @version $Revision: 1.8 $ $Date: 2002/02/06 15:01:54 $
+ * @version $Revision: 1.9 $ $Date: 2002/09/19 15:49:25 $
  */
 public interface I_CmsRequest {
 
@@ -69,6 +69,11 @@ public interface I_CmsRequest {
      * @return The original request of the CmsRequest.
      */
     public Object getOriginalRequest();
+    
+    /**
+     * Sets the original request to another value 
+     */
+    public void setOriginalRequest(Object request);
 
     /**
      * Returns the type of the request that was used to create the CmsRequest.

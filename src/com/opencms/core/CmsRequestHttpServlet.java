@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsRequestHttpServlet.java,v $
-* Date   : $Date: 2002/09/11 13:32:26 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2002/09/19 15:49:25 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.http.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.29 $ $Date: 2002/09/11 13:32:26 $
+ * @version $Revision: 1.30 $ $Date: 2002/09/19 15:49:25 $
  */
 public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_CmsRequest {
 
@@ -341,6 +341,13 @@ public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_
      */
     public Object getOriginalRequest() {
         return m_req;
+    }
+    
+    /**
+     * Overwrites the original request that was used to create the CmsRequest.
+     */
+    public void setOriginalRequest(Object request) {
+        m_req = (HttpServletRequest)request;
     }
 
     /**

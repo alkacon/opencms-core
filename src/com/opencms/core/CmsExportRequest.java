@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsExportRequest.java,v $
-* Date   : $Date: 2002/02/06 15:01:54 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2002/09/19 15:49:25 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -80,6 +80,9 @@ public class CmsExportRequest implements I_CmsRequest {
     public Object getOriginalRequest() {
         throw new java.lang.UnsupportedOperationException("Method getOriginalRequest not supported in StaticExport.");
     }
+    public void setOriginalRequest(Object request) {
+        throw new java.lang.UnsupportedOperationException("Method setOriginalRequest not supported in StaticExport.");
+    }    
     public int getOriginalRequestType() {
         throw new java.lang.UnsupportedOperationException("Method getOriginalRequestType not supported in StaticExport.");
     }

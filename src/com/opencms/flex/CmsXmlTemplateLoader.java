@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2002/09/12 08:58:15 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2002/09/19 15:49:34 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,13 +39,14 @@ import com.opencms.flex.cache.*;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
  * Description of the class CmsDumpLoader here.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsXmlTemplateLoader extends com.opencms.launcher.CmsXmlLauncher implements I_CmsResourceLoader {
     
@@ -112,10 +113,13 @@ public class CmsXmlTemplateLoader extends com.opencms.launcher.CmsXmlLauncher im
             I_CmsRequest cms_req = cms.getRequestContext().getRequest();
             byte[] result = null;
             
+            HttpServletRequest originalreq = (HttpServletRequest)cms_req.getOriginalRequest();            
             com.opencms.file.CmsFile fx = req.getCmsObject().readFile(file.getAbsolutePath());            
             
             cms.getRequestContext().setUri(fx.getAbsolutePath());            
+            cms_req.setOriginalRequest(req);
             result = generateOutput(cms, fx, fx.getLauncherClassname(), cms_req, m_openCms);            
+            cms_req.setOriginalRequest(originalreq);
             cms.getRequestContext().setUri(null);
 
             if(result != null) {
