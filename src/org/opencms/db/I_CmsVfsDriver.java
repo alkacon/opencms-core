@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/10 14:39:23 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/07/11 10:38:38 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import source.org.apache.java.util.Configurations;
  * Definitions of all required VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.7 $ $Date: 2003/07/10 14:39:23 $
+ * @version $Revision: 1.8 $ $Date: 2003/07/11 10:38:38 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -182,6 +182,9 @@ public interface I_CmsVfsDriver {
     Vector getResourcesWithProperty(int projectId, String propertyDefinition) throws CmsException;
     Vector getResourcesWithProperty(int projectId, String propertyDefinition, String propertyValue, int resourceType) throws CmsException;
     List getUndeletedResources(List resources);
+    
+
+    
     
     /**
      * Initializes this driver.<p>
@@ -377,4 +380,17 @@ public interface I_CmsVfsDriver {
      * @throws CmsException if something goes wrong
      */
     List getSubResources(CmsProject currentProject, CmsFolder parentFolder, boolean getSubFolders) throws CmsException;
+    
+    
+    /**
+     * Gets all resources with a modification date within a given time frame.<p>
+     * 
+     * @param currentProject the current project
+     * @param starttime the begin of the time range
+     * @param endtime the end of the time range
+     * @return List with all resources
+     * @throws CmsException if operation was not succesful 
+     */
+    List getResourcesInTimeRange(int currentProject, long starttime, long endtime) throws CmsException;
+    
 }

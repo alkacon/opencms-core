@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/11 08:30:14 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2003/07/11 10:38:38 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * This is the driver manager.
  * 
- * @version $Revision: 1.33 $ $Date: 2003/07/11 08:30:14 $
+ * @version $Revision: 1.34 $ $Date: 2003/07/11 10:38:38 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -3296,7 +3296,133 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
                                            throws CmsException {
         return m_vfsDriver.getResourcesWithProperty(currentProject.getId(), propertyDefinition);
     }
+    
+    
+    
+    
+    /**
+    * Returns a List with all sub resources of a given folder that have set the given property.<p>
+    *
+    * <B>Security:</B>
+    * All users are granted.
+    *
+    * @param currentUser the user who requested this method
+    * @param currentProject the current project of the user
+    * @param folder the folder to get the subresources from
+    * @param propertyDefinition the name of the propertydefinition to check
+    * @return List with all resources
+    *
+    * @throws CmsException Throws CmsException if operation was not succesful
+    */
+    public List getResourcesWithProperty(CmsUser currentUser, CmsProject currentProject,String folder,String propertyDefinition)
+        throws CmsException {
+        List result = new ArrayList();           
+        
+        // get the folder tree of the given folder
+        List folders=getFolderTree(currentUser, currentProject, readFolder(currentUser,currentProject,folder));
+        // extract all id's in a hashmap. This hashmap is used as a compare list to check if
+        // the resources with the given property are within the foldertree.
+        HashMap storage=new HashMap();
+        Iterator j=folders.iterator();
+        while (j.hasNext()){
+            CmsResource fold=(CmsResource)j.next();
+            // check if this folder is not marked as deleted
+            if (fold.getState()!=I_CmsConstants.C_STATE_DELETED) {
+                // check the read access to the folder
+                if (hasPermissions(currentUser, currentProject, fold, I_CmsConstants.C_READ_ACCESS, false)){                   
+                    // this is a valid folder, add it to the compare list 
+                    CmsUUID id=fold.getId();
+                    storage.put(id,id);
+                }
+            }
+        }
 
+        //now get all resources which contain the selected property
+        Vector resources=m_vfsDriver.getResourcesWithProperty(currentProject.getId(), propertyDefinition);
+
+        // now select only those resources which are in the folder tree below the given folder
+        for (int i=0;i<resources.size();i++) {
+            CmsResource res=(CmsResource)resources.elementAt(i);
+            // ckeck if the parent id of the resource is within the folder tree            
+            if (storage.containsKey(res.getParentId())){
+                //this resource is inside the folder tree.
+                // now check if it is not marked as deleted
+                if (res.getState()!=I_CmsConstants.C_STATE_DELETED) {
+                    // check the read access
+                    if (hasPermissions(currentUser, currentProject, res, I_CmsConstants.C_READ_ACCESS, false)) {
+                        // this is a valid resouce, add it to the result list
+                         result.add(res);
+                    }
+                }
+            }
+
+        }
+        return result;
+      }
+    
+    
+    /**
+    * Returns a List with all sub resources of a given folder that have benn modified
+    * in a given time range<p>
+    *
+    * <B>Security:</B>
+    * All users are granted.
+    *
+    * @param currentUser the user who requested this method
+    * @param currentProject the current project of the user
+    * @param folder the folder to get the subresources from
+    * @param starttime the begin of the time range
+    * @param endtime the end of the time range
+    * @return List with all resources
+    *
+    * @throws CmsException if operation was not succesful
+    */
+    public List getResourcesInTimeRange(CmsUser currentUser, CmsProject currentProject,
+                                         String folder, long starttime, long endtime) 
+        throws CmsException {    
+        List result = new ArrayList();
+       
+        // get the folder tree of the given folder
+        List folders=getFolderTree(currentUser, currentProject, readFolder(currentUser,currentProject,folder));
+        // extract all id's in a hashmap. This hashmap is used as a compare list to check if
+        // the resources with the given property are within the foldertree.
+        HashMap storage=new HashMap();
+        Iterator j=folders.iterator();
+        while (j.hasNext()){
+            CmsResource fold=(CmsResource)j.next();
+            // check if this folder is not marked as deleted
+            if (fold.getState()!=I_CmsConstants.C_STATE_DELETED) {
+                // check the read access to the folder
+                if (hasPermissions(currentUser, currentProject, fold, I_CmsConstants.C_READ_ACCESS, false)){                   
+                // this is a valid folder, add it to the compare list 
+                CmsUUID id=fold.getId();
+                storage.put(id,id);
+                }
+            }
+        }
+        //now get all resources which contain the selected property
+        List resources=m_vfsDriver.getResourcesInTimeRange(currentProject.getId(), starttime, endtime);
+
+        Iterator i=resources.iterator();
+        // now select only those resources which are in the folder tree below the given folder
+        while (i.hasNext()) {
+            CmsResource res=(CmsResource)i.next();
+            // ckeck if the parent id of the resource is within the folder tree            
+            if (storage.containsKey(res.getParentId())){
+                //this resource is inside the folder tree.
+                // now check if it is not marked as deleted
+                if (res.getState()!=I_CmsConstants.C_STATE_DELETED) {
+                    // check the read access
+                    if (hasPermissions(currentUser, currentProject, res, I_CmsConstants.C_READ_ACCESS, false)) {
+                        // this is a valid resouce, add it to the result list
+                         result.add(res);
+                    }
+                }
+            }
+
+        }
+        return result;
+      }
     /**
      * Returns a I_CmsResourceType.
      *

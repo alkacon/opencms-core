@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/11 06:25:23 $
-* Version: $Revision: 1.307 $
+* Date   : $Date: 2003/07/11 10:38:38 $
+* Version: $Revision: 1.308 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.307 $
+ * @version $Revision: 1.308 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -1710,6 +1710,50 @@ public List getFilesInFolder(String foldername, boolean includeDeleted) throws C
  */
 public Vector getFilesWithProperty(String propertyDefinition, String propertyValue) throws CmsException {
     return m_driverManager.getFilesWithProperty(m_context.currentUser(), m_context.currentProject(), propertyDefinition, propertyValue);
+}
+
+/**
+* Returns a List with all sub resources of a given folder that have set the given property.<p>
+*
+* <B>Security:</B>
+* All users are granted.
+*
+* @param folder the folder to get the subresources from
+* @param propertyDefinition the name of the propertydefinition to check
+* @return List with all resources
+*
+* @throws CmsException if operation was not succesful
+*/
+public List getResourcesWithProperty(String folder,String propertyDefinition)
+    throws CmsException {
+    return m_driverManager.getResourcesWithProperty(m_context.currentUser(), 
+                                                          m_context.currentProject(),
+                                                          addSiteRoot(folder),propertyDefinition);                                
+  }
+
+
+/**
+* Returns a List with all sub resources of a given folder that have benn modified
+* in a given time range<p>
+*
+* <B>Security:</B>
+* All users are granted.
+*
+* @param folder the folder to get the subresources from
+* @param starttime the begin of the time range
+* @param endtime the end of the time range
+* @return List with all resources
+*
+* @throws CmsException if operation was not succesful 
+*/
+public List getResourcesInTimeRange(String folder, long starttime, long endtime) 
+    throws CmsException {                       
+            
+    return m_driverManager.getResourcesInTimeRange(m_context.currentUser(), 
+                                                    m_context.currentProject(),
+                                                    addSiteRoot(folder),starttime,
+                                                    endtime);                                
+
 }
 /**
  * This method can be called, to determine if the file-system was changed in the past.

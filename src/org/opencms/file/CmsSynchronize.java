@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsSynchronize.java,v $
- * Date   : $Date: 2003/07/10 14:39:23 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/07/11 10:38:38 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import com.opencms.file.CmsResource;
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.3 $ $Date: 2003/07/10 14:39:23 $
+ * @version $Revision: 1.4 $ $Date: 2003/07/11 10:38:38 $
  */
 public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
 
@@ -648,49 +648,56 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
         HashMap syncList = new HashMap();
         String line = "";
         StringTokenizer tok;
-        //	the sync list file in the server fs
-        File syncListFile;
-        syncListFile = new File(m_synchronizePath, C_SYNCLIST_FILENAME);
-        // try to read the sync list file if it is there
-        if (syncListFile.exists()) {
-            // prepare the streams to write the data
-            FileReader fIn = null;
-            LineNumberReader lIn = null;
-            try {
-                fIn = new FileReader(syncListFile);
-                lIn = new LineNumberReader(fIn);
-                // read one line from the file
-                line = lIn.readLine();
-                while (line != null) {
+        
+        // check the registry if the sync process was run on this computer before.
+        // if not, do NOT read the sync list form the server fielsysten, otherweise
+        // all entries in the synchronization folder would be deleted.
+        String syncrun=m_cms.getRegistry().getSystemValue("syncrun");
+        if (syncrun!=null) {
+            //the sync list file in the server fs
+            File syncListFile;
+            syncListFile = new File(m_synchronizePath, C_SYNCLIST_FILENAME);
+            // try to read the sync list file if it is there
+            if (syncListFile.exists()) {
+                // prepare the streams to write the data
+                FileReader fIn = null;
+                LineNumberReader lIn = null;
+                try {
+                    fIn = new FileReader(syncListFile);
+                    lIn = new LineNumberReader(fIn);
+                    // read one line from the file
                     line = lIn.readLine();
-                    // extract the data and create a CmsSychroizedList object
-                    //  from it
-                    if (line != null) {
-                        tok = new StringTokenizer(line, ":");
-                        if (tok != null) {
-                            String resName = tok.nextToken();
-                            String tranResName = tok.nextToken();
-                            long modifiedVfs = new Long(tok.nextToken()).longValue();
-                            long modifiedFs = new Long(tok.nextToken()).longValue();
-                            CmsSynchronizeList sync = new CmsSynchronizeList(resName, tranResName, modifiedVfs, modifiedFs);
-                            syncList.put(translate(resName), sync);
+                    while (line != null) {
+                        line = lIn.readLine();
+                        // extract the data and create a CmsSychroizedList object
+                        //  from it
+                        if (line != null) {
+                            tok = new StringTokenizer(line, ":");
+                            if (tok != null) {
+                                String resName = tok.nextToken();
+                                String tranResName = tok.nextToken();
+                                long modifiedVfs = new Long(tok.nextToken()).longValue();
+                                long modifiedFs = new Long(tok.nextToken()).longValue();
+                                CmsSynchronizeList sync = new CmsSynchronizeList(resName, tranResName, modifiedVfs, modifiedFs);
+                                syncList.put(translate(resName), sync);
+                            }
                         }
                     }
+                } catch (IOException e) {
+                    throw new CmsException(e.getMessage());
+                } finally {    
+                    // close all streams that were used
+                    try {
+                        if (lIn != null) {
+                            lIn.close();
+                        }
+                        if (fIn != null) {
+                            fIn.close();
+                        }
+                    } catch (IOException e) {}
                 }
-            } catch (IOException e) {
-                throw new CmsException(e.getMessage());
-            } finally {
-                // close all streams that were used
-                try {
-                    if (lIn != null) {
-                        lIn.close();
-                    }
-                    if (fIn != null) {
-                        fIn.close();
-                    }
-                } catch (IOException e) {}
             }
-        }
+        }  
         return syncList;
     }
 
@@ -726,6 +733,9 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
         } catch (IOException e) {
             throw new CmsException(e.getMessage());
         } finally {
+            // update the registry and mark that the sync process has run at least
+            // one time
+            m_cms.getRegistry().setSystemValue("syncrun","true");    
             // close all streams that were used
             try {
                 pOut.flush();

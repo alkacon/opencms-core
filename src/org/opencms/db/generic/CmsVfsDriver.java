@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/11 07:48:05 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2003/07/11 10:38:38 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.23 $ $Date: 2003/07/11 07:48:05 $
+ * @version $Revision: 1.24 $ $Date: 2003/07/11 10:38:38 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -3615,6 +3615,51 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         } 
         
         return subResources; 
+    }
+    
+    /**
+    * Gets all resources with a modification date within a given time frame.<p>
+    * 
+    * @param projectId the current project
+    * @param starttime the begin of the time range
+    * @param endtime the end of the time range
+    * @return List with all resources
+    *
+    * @throws CmsException if operation was not succesful
+    * @see org.opencms.db.I_CmsVfsDriver#getResourcesInTimeRange(int currentProject, long startime, long endtime)
+    */
+    public List getResourcesInTimeRange(int projectId, long starttime, long endtime) 
+        throws CmsException {       
+        List result= new ArrayList();
+        
+        ResultSet res = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        
+        try {
+            conn = m_sqlManager.getConnection(projectId);
+            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_GET_RESOURCE_IN_TIMERANGE");
+            stmt.setTimestamp(1,new Timestamp(starttime));
+            stmt.setTimestamp(2,new Timestamp(endtime));
+            res = stmt.executeQuery();
+            String lastResourcename = "";
+
+            while (res.next()) {                
+                    CmsResource resource = createCmsResourceFromResultSet(res, projectId);
+                      if (!resource.getName().equalsIgnoreCase(lastResourcename)) {
+                          result.add(resource);
+                      }
+                      lastResourcename = resource.getName();
+                  }
+            } catch (SQLException e) {
+                throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+            } catch (Exception exc) {
+                throw new CmsException("getResourcesWithProperty" + exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+            } finally {
+                 m_sqlManager.closeAll(conn, stmt, res);
+            }
+       
+        return result;        
     }
     
 }
