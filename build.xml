@@ -11,6 +11,7 @@
     <property name="opencms.output"						location="${basedir}/../" />    	
 
     <property name="opencms.output.classes"             location="${opencms.output}/build/classes-core" />
+    <property name="opencms.output.tests"               location="${opencms.output}/build/classes-test" />
     <property name="opencms.output.jars"                location="${opencms.output}/build/jars-core" />
     <property name="opencms.output.warfiles"            location="${opencms.output}/build/${app.name}" />
     <property name="opencms.output.distfiles"           location="${opencms.output}/zip" />    
@@ -38,6 +39,7 @@
     <property name="opencms.inputlib.collections"     	location="${opencms.input.libs}/commons-collections-3.0.jar" />
     <property name="opencms.inputlib.fileupload"   		location="${opencms.input.libs}/commons-fileupload-1.0.jar" />
     <property name="opencms.inputlib.httpclient"   		location="${opencms.input.libs}/commons-httpclient-2.0.jar" />
+    <property name="opencms.inputlib.beanutils"   		location="${opencms.input.libs}/commons-beanutils-1.6.1.jar" />
     <property name="opencms.inputlib.log4j"     		location="${opencms.input.libs}/log4j-1.2.8.jar" /> 
     <property name="opencms.inputlib.dom4j"     		location="${opencms.input.libs}/dom4j-1.4.jar" />
     <property name="opencms.inputlib.htmlparser"		location="${opencms.input.libs}/htmlparser-1.4.jar" />
@@ -45,6 +47,7 @@
     <property name="opencms.inputlib.poi"				location="${opencms.input.libs}/poi-2.0-final-20040126.jar" />
     <property name="opencms.inputlib.snowball"			location="${opencms.input.libs}/snowball-0.1.jar" />
     <property name="opencms.inputlib.pdfbox"			location="${opencms.input.libs}/PDFBox-0.6.4.jar" />
+    <property name="opencms.inputlib.junit"      		location="${opencms.input.libs}/junit-3-8-1.jar" /> 
     <property name="opencms.inputlib.oracle"      		location="${opencms.input.externlibs}/ojdbc14.jar" /> 
  
 	<property name="drivers.vfs"						value="db" />
@@ -166,6 +169,7 @@ ${opencms.inputlib.pdfbox}
     	description="Delete existing ouput directories">
     	
         <delete dir="${opencms.output.classes}" />
+        <delete dir="${opencms.output.tests}" />
         <delete dir="${opencms.output.jars}" />
         <delete dir="${opencms.output.warfiles}" />
         <delete dir="${opencms.output}/build" />
@@ -192,7 +196,6 @@ ${opencms.inputlib.pdfbox}
                        ${opencms.inputlib.xerces}:
                        ${opencms.inputlib.xml-apis}:
                        ${opencms.inputlib.oracle}:
-                       ${opencms.inputlib.oracle9}:
                        ${opencms.inputlib.mysql}:
                        ${opencms.inputlib.oro}:
                        ${opencms.inputlib.tidy}:
@@ -466,5 +469,108 @@ ${opencms.inputlib.pdfbox}
             <zipfileset dir="${opencms.input}" includes="build.xml,install.html,license.txt,history.txt"/>
         </zip>
     </target>
+	
+	
+    <target name="compile-tests" 
+    	depends="jar" if="libsAvailable" description="Compile the OpenCms test classes">
+    	
+        <mkdir dir="${opencms.output.tests}" />    	
+    	
+        <uptodate property="classesUpToDate" targetfile="${opencms.output.jars}/opencms-tests.jar">
+        	<srcfiles dir= "${opencms.input}/test" includes="**/*.java" excludes="${build.excludes},${excludes},**/data/**"/>
+        	<srcfiles dir= "${opencms.input}/test" includes="**/*.properties,**/*.txt,**/*.xml,**/*.dtd" excludes="${excludes},**/data/**" />
+        </uptodate>
+            	
+       	<javac
+            srcdir="${opencms.input}/test"
+            destdir="${opencms.output.tests}"
+            excludes="${build.excludes},**/data/**"
+            classpath="${opencms.output.jars}/opencms.jar:
+                       ${opencms.output.jars}/opencms-legacy.jar:       
+                       ${opencms.inputlib.junit}:
+		               ${opencms.inputlib.servlet}:
+                       ${opencms.inputlib.activation}:
+                       ${opencms.inputlib.mail}:
+                       ${opencms.inputlib.xerces}:
+                       ${opencms.inputlib.xml-apis}:
+                       ${opencms.inputlib.oracle}:
+                       ${opencms.inputlib.mysql}:
+                       ${opencms.inputlib.oro}:
+                       ${opencms.inputlib.tidy}:
+                       ${opencms.inputlib.dbcp}:
+                       ${opencms.inputlib.pool}:
+                       ${opencms.inputlib.digester}:
+                       ${opencms.inputlib.logging}:
+                       ${opencms.inputlib.collections}:
+                       ${opencms.inputlib.fileupload}:
+                       ${opencms.inputlib.httpclient}:
+                       ${opencms.inputlib.dom4j}:
+                       ${opencms.inputlib.log4j}:
+                       ${opencms.inputlib.htmlparser}:
+                       ${opencms.inputlib.uuid}:
+                       ${opencms.inputlib.lucene}:
+                       ${opencms.inputlib.poi}:
+                       ${opencms.inputlib.snowball}:
+                       ${opencms.inputlib.pdfbox}"
+            debug="on"
+            optimize="on"
+            deprecation="on" />
+		
+        <copy todir="${opencms.output.tests}">
+            <fileset dir="${opencms.input}/test" includes="**/*.properties,**/*.txt,**/*.xml,**/*.dtd" excludes="${excludes},**/data/**"/>
+        </copy>
+    	
+        <mkdir dir="${opencms.output.tests}/../webapp/" />      	
+        <copy todir="${opencms.output.tests}/../webapp/">
+            <fileset dir="${opencms.input.warfiles}" />
+        </copy>       	    	       
+    	
+        <mkdir dir="${opencms.output.tests}/../test/data/" />  
+        <copy todir="${opencms.output.tests}/../test/data/">
+            <fileset dir="${opencms.input}/test/data" />
+        </copy>       	    	       
+    </target>
+	
+
+	<target name="unittests" depends="compile-tests"
+		description="Runs the core Junit test cases">
+		
+		<junit printsummary="yes" fork="yes" haltonfailure="yes">
+			<classpath>
+				<pathelement path="${opencms.output.tests}"/>
+				<pathelement location="${opencms.output.jars}/opencms.jar"/>
+				<pathelement location="${opencms.output.jars}/opencms-legacy.jar"/>
+				<pathelement location="${opencms.inputlib.beanutils}"/>
+				<pathelement location="${opencms.inputlib.fileupload}"/>
+				<pathelement location="${opencms.inputlib.servlet}"/>				
+				<pathelement location="${opencms.inputlib.mail}"/>
+				<pathelement location="${opencms.inputlib.xerces}"/>
+				<pathelement location="${opencms.inputlib.xml-apis}"/>
+				<pathelement location="${opencms.inputlib.oracle}"/>
+				<pathelement location="${opencms.inputlib.mysql}"/>
+				<pathelement location="${opencms.inputlib.oro}"/>
+				<pathelement location="${opencms.inputlib.tidy}"/>
+				<pathelement location="${opencms.inputlib.dbcp}"/>
+				<pathelement location="${opencms.inputlib.fileupload}"/>
+				<pathelement location="${opencms.inputlib.pool}"/>
+				<pathelement location="${opencms.inputlib.digester}"/>
+				<pathelement location="${opencms.inputlib.logging}"/>
+				<pathelement location="${opencms.inputlib.collections}"/>
+				<pathelement location="${opencms.inputlib.httpclient}"/>
+				<pathelement location="${opencms.inputlib.dom4j}"/>
+				<pathelement location="${opencms.inputlib.log4j}"/>
+				<pathelement location="${opencms.inputlib.htmlparser}"/>
+				<pathelement location="${opencms.inputlib.uuid}"/>
+				<pathelement location="${opencms.inputlib.lucene}"/>
+				<pathelement location="${opencms.inputlib.poi}"/>
+				<pathelement location="${opencms.inputlib.snowball}"/>
+				<pathelement location="${opencms.inputlib.pdfbox}"/>
+			</classpath>
+			
+			<formatter type="plain"/>
+			
+			<test name="org.opencms.test.AllTests"/>			
+		</junit>
+	</target>
 
 </project>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/05/21 15:21:48 $
- * Version: $Revision: 1.544 $
+ * Date   : $Date: 2004/05/27 17:50:40 $
+ * Version: $Revision: 1.545 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,9 @@ OpenCms 5.3.5 Ix - xx, 2004
 - Refactored package org.opencms.page to org.opencms.xml.page
 ! Added "Relase Date" and "Expiration Date" to the structure table of the resource
 - Using long values instead of Timestamps for date infromation in VFS resource tables
+! Added Junit test setup for OpenCms VFS tests
+! Added a couple of initial Junit test cases for the CmsObject
+! Added target "unittests" to build.xml to execute all OpenCms Junit tests
 
 OpenCms 5.3.4 Ix - April 14, 2004
 - Updated all jars, also added version numbers to all jars
