@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/08/12 08:52:51 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/08/20 13:14:51 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,8 @@ package org.opencms.db.oracle;
 
 import oracle.jdbc.driver.OracleResultSet;
 
+import org.opencms.db.I_CmsSqlManager;
+
 import com.opencms.core.CmsException;
 import com.opencms.flex.util.CmsUUID;
 
@@ -48,7 +50,7 @@ import java.sql.SQLException;
  * Oracle/OCI implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $ $Date: 2003/08/12 08:52:51 $
+ * @version $Revision: 1.5 $ $Date: 2003/08/20 13:14:51 $
  * @since 5.1
  */
 public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {     
@@ -88,8 +90,9 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
     /**
      * @see org.opencms.db.I_CmsVfsDriver#initQueries(java.lang.String)
      */
-    public org.opencms.db.generic.CmsSqlManager initQueries(String dbPoolUrl) {
-        return new org.opencms.db.oracle.CmsSqlManager(dbPoolUrl);
+    public I_CmsSqlManager initQueries(String dbPoolUrl) {
+        //return new org.opencms.db.oracle.CmsSqlManager(dbPoolUrl);
+        return (I_CmsSqlManager) org.opencms.db.oracle.CmsSqlManager.getInstance(dbPoolUrl);
     }
 
     /**

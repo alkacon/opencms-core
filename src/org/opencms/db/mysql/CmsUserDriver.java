@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsUserDriver.java,v $
- * Date   : $Date: 2003/06/17 16:25:36 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/08/20 13:14:51 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
 
 package org.opencms.db.mysql;
 
+import org.opencms.db.I_CmsSqlManager;
+
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsUser;
@@ -46,7 +48,7 @@ import java.util.Hashtable;
 /**
  * MySQL implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.3 $ $Date: 2003/06/17 16:25:36 $
+ * @version $Revision: 1.4 $ $Date: 2003/08/20 13:14:51 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -147,8 +149,9 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
     /**
      * @see org.opencms.db.I_CmsUserDriver#initQueries(java.lang.String)
      */
-    public org.opencms.db.generic.CmsSqlManager initQueries(String dbPoolUrl) {
-        return new org.opencms.db.mysql.CmsSqlManager(dbPoolUrl);
+    public I_CmsSqlManager initQueries(String dbPoolUrl) {
+        //return new org.opencms.db.mysql.CmsSqlManager(dbPoolUrl);
+        return (I_CmsSqlManager) org.opencms.db.mysql.CmsSqlManager.getInstance(dbPoolUrl);
     }
 
     /**

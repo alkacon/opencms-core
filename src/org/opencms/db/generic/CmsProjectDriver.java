@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/08/20 11:44:58 $
- * Version: $Revision: 1.59 $
+ * Date   : $Date: 2003/08/20 13:16:17 $
+ * Version: $Revision: 1.60 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.db.generic;
 
+import org.opencms.db.*;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsProjectDriver;
@@ -74,7 +75,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.59 $ $Date: 2003/08/20 11:44:58 $
+ * @version $Revision: 1.60 $ $Date: 2003/08/20 13:16:17 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -136,7 +137,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
      */
     protected int[] m_maxIds;
 
-    protected org.opencms.db.generic.CmsSqlManager m_sqlManager;
+    protected I_CmsSqlManager m_sqlManager;
 
     /**
      * Creates a serializable object in the systempropertys.
@@ -682,9 +683,11 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 	 * @see java.lang.Object#finalize()
 	 */
     protected void finalize() throws Throwable {
+        /*
         if (m_sqlManager!=null) {
             m_sqlManager.finalize();
         }
+        */
         
         m_sqlManager = null;      
         m_driverManager = null;        
@@ -1034,8 +1037,9 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     /**
      * @see org.opencms.db.I_CmsProjectDriver#initQueries(java.lang.String)
      */
-    public org.opencms.db.generic.CmsSqlManager initQueries(String dbPoolUrl) {
-        return new org.opencms.db.generic.CmsSqlManager(dbPoolUrl);
+    public I_CmsSqlManager initQueries(String dbPoolUrl) {
+        //return new org.opencms.db.generic.CmsSqlManager(dbPoolUrl);
+        return (I_CmsSqlManager) org.opencms.db.generic.CmsSqlManager.getInstance(dbPoolUrl);
     }
 
     /**

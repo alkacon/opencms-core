@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2003/08/20 11:44:58 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/08/20 13:16:17 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.db;
 
+
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsProject;
@@ -49,7 +50,7 @@ import java.util.Vector;
  * Definitions of all required project driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.8 $ $Date: 2003/08/20 11:44:58 $
+ * @version $Revision: 1.9 $ $Date: 2003/08/20 13:16:17 $
  * @since 5.1
  */
 public interface I_CmsProjectDriver {
@@ -122,7 +123,7 @@ public interface I_CmsProjectDriver {
      * @param dbPoolUrl the URL of the connection pool
      * @return the SQL manager for this package
      */     
-    org.opencms.db.generic.CmsSqlManager initQueries(String dbPoolUrl);
+    I_CmsSqlManager initQueries(String dbPoolUrl);
     
     Vector publishProject(CmsRequestContext m_context, CmsProject onlineProject, boolean backupEnabled, I_CmsReport report, Hashtable exportpoints) throws CmsException;
     Vector readAllProjectResources(int projectId) throws CmsException;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsBackupDriver.java,v $
- * Date   : $Date: 2003/08/20 11:44:58 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/08/20 13:16:17 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.db;
 
+
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsBackupProject;
 import com.opencms.file.CmsBackupResource;
@@ -54,7 +55,7 @@ import java.util.Vector;
  * of resource that were saved during one backup process.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.9 $ $Date: 2003/08/20 11:44:58 $
+ * @version $Revision: 1.10 $ $Date: 2003/08/20 13:16:17 $
  * @since 5.1
  */
 public interface I_CmsBackupDriver {
@@ -108,7 +109,7 @@ public interface I_CmsBackupDriver {
      * @param dbPoolUrl the URL of the connection pool
      * @return the SQL manager for this package
      */
-    org.opencms.db.generic.CmsSqlManager initQueries(String dbPoolUrl);
+    I_CmsSqlManager initQueries(String dbPoolUrl);
 
     /**
      * Gets the next available backup version ID for a resource.<p>

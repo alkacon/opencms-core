@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2003/08/14 15:37:25 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/08/20 13:14:52 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.db.generic;
 
 import org.opencms.db.CmsDbPool;
+import org.opencms.db.I_CmsSqlManager;
 import org.opencms.main.OpenCms;
 
 import com.opencms.boot.I_CmsLogChannels;
@@ -59,10 +60,15 @@ import java.util.Properties;
  * Handles SQL queries from query.properties of the generic (ANSI-SQL) driver package.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.9 $ $Date: 2003/08/14 15:37:25 $
+ * @version $Revision: 1.10 $ $Date: 2003/08/20 13:14:52 $
  * @since 5.1
  */
-public class CmsSqlManager extends Object implements Serializable, Cloneable {
+public class CmsSqlManager extends Object implements Serializable, Cloneable, I_CmsSqlManager {
+    
+    /**
+     * The shared instance of this SqlManager.
+     */
+    private static I_CmsSqlManager sharedInstance = null;
     
     /**
      * The filename/path of the SQL query properties file.
@@ -84,26 +90,45 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
      */
     protected Map m_cachedQueries;
     
+    /**
+     * Table pattern being replaced in SQL queries to generate SQL queries to access online/offline tables.
+     */
     protected static final String C_TABLE_KEY_SEARCH_PATTERN = "_T_";
 
     /**
-     * CmsSqlManager constructor.
+     * CmsSqlManager constructor.<p>
+     * 
+     * Never invoke this constructor! Use {@link org.opencms.db.generic.CmsSqlManager#getInstance(String)} instead.
      * 
      * @param dbPoolUrl the URL to access the connection pool
      */
-    public CmsSqlManager(String dbPoolUrl) {
+    protected CmsSqlManager(String dbPoolUrl) {
         m_dbPoolUrl = CmsDbPool.C_DBCP_JDBC_URL_PREFIX + dbPoolUrl;
-        
+
         if (c_queries == null) {
-            c_queries = loadProperties(C_PROPERTY_FILENAME);  
-            precalculateQueries(c_queries);          
+            c_queries = loadQueryProperties(C_PROPERTY_FILENAME);
+            precalculateQueries(c_queries);
         }
-        
+
         m_cachedQueries = (Map) new HashMap();
     }
     
     /**
-     * CmsSqlManager constructor.
+     * Returns the shared instance of the generic SQL manager.<p>
+     * 
+     * @param dbPoolUrl the URL to access the connection pool
+     * @return the shared instance of the generic SQL manager
+     */
+    public static synchronized I_CmsSqlManager getInstance(String dbPoolUrl) {
+        if (sharedInstance == null) {
+            sharedInstance = (I_CmsSqlManager) new org.opencms.db.generic.CmsSqlManager(dbPoolUrl);
+        }
+
+        return sharedInstance;        
+    }
+    
+    /**
+     * CmsSqlManager constructor.<p>
      * 
      * @param dbPoolUrl the URL to access the correct connection pool
      * @param loadQueries flag indicating whether the query.properties should be loaded during initialization
@@ -112,18 +137,13 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
         m_dbPoolUrl = CmsDbPool.C_DBCP_JDBC_URL_PREFIX + dbPoolUrl;
     
         if (loadQueries && c_queries == null) {
-            c_queries = loadProperties(C_PROPERTY_FILENAME);   
+            c_queries = loadQueryProperties(C_PROPERTY_FILENAME);   
             precalculateQueries(c_queries);         
         }
     }
 
     /**
-     * Attemts to close the connection, statement and result set after a statement has been executed.
-     * 
-     * @param con the JDBC connection
-     * @param stmnt the statement
-     * @param res the result set
-     * @see com.opencms.dbpool.CmsConnection#close()
+     * @see org.opencms.db.I_CmsSqlManager#closeAll(java.sql.Connection, java.sql.Statement, java.sql.ResultSet)
      */
     public void closeAll(Connection con, Statement stmnt, ResultSet res) {
         try {
@@ -150,10 +170,7 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
     }
     
     /**
-     * Free any allocated resources when the garbage 
-     * collection tries to trash this object.
-     * 
-     * @throws Throwable if something goes wrong
+     * @see java.lang.Object#finalize()
      */
     protected void finalize() throws Throwable {
         if (c_queries != null) {
@@ -172,26 +189,14 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
     }
 
     /**
-     * Searches for the SQL query with the specified key and CmsProject.
-     * 
-     * @param project the specified CmsProject
-     * @param queryKey the key of the SQL query
-     * @return the the SQL query in this property list with the specified key
+     * @see org.opencms.db.I_CmsSqlManager#get(com.opencms.file.CmsProject, java.lang.String)
      */
     public String get(CmsProject project, String queryKey) {
         return get(project.getId(), queryKey);
     }
 
     /**
-     * Searches for the SQL query with the specified key and project-ID.<p>
-     * 
-     * The pattern "_T_" in table names is replaced with "_ONLINE_" or 
-     * "_OFFLINE_" to choose the right database tables for SQL queries 
-     * that are project dependent!
-     * 
-     * @param projectId the ID of the specified CmsProject
-     * @param queryKey the key of the SQL query
-     * @return the the SQL query in this property list with the specified key
+     * @see org.opencms.db.I_CmsSqlManager#get(int, java.lang.String)
      */
     public String get(int projectId, String queryKey) {       
         // get the SQL statement from the properties hash
@@ -239,16 +244,16 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
     }
 
     /**
-     * Searches for the SQL query with the specified key.
-     * 
-     * @param queryKey the SQL query key
-     * @return the the SQL query in this property list with the specified key
+     * @see org.opencms.db.I_CmsSqlManager#get(java.lang.String)
      */
-    public String get(String queryKey) {              
+    public String get(String queryKey) {
         if (c_queries == null) {
+            /*
             c_queries = loadProperties(C_PROPERTY_FILENAME);
             precalculateQueries(c_queries);
-        }      
+            */
+            throw new RuntimeException(this.getClass().getName() + " is not initialized!");
+        }
 
         String value = null;
         if ((value = c_queries.getProperty(queryKey)) == null) {
@@ -261,30 +266,14 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
     }
 
     /**
-     * Retrieves the value of the designated column in the current row of this ResultSet object as 
-     * a byte array in the Java programming language. The bytes represent the raw values returned 
-     * by the driver. Overwrite this method if another database server requires a different 
-     * handling of byte attributes in tables.
-     * 
-     * @param res the result set
-     * @param attributeName the name of the table attribute
-     * @return byte[] the column value; if the value is SQL NULL, the value returned is null 
-     * @throws SQLException if a database access error occurs
+     * @see org.opencms.db.I_CmsSqlManager#getBytes(java.sql.ResultSet, java.lang.String)
      */
     public byte[] getBytes(ResultSet res, String attributeName) throws SQLException {       
         return res.getBytes(attributeName);
     }
     
     /**
-     * Wraps an exception in a new CmsException object. Optionally, a log message is
-     * written to the "critical" OpenCms logging channel.
-     * 
-     * @param o the object caused the exception
-     * @param message a message that is written to the log
-     * @param exceptionType the type of the exception
-     * @param rootCause the exception that was thrown
-     * @param logSilent if TRUE, no entry to the log is written
-     * @return CmsException
+     * @see org.opencms.db.I_CmsSqlManager#getCmsException(java.lang.Object, java.lang.String, int, java.lang.Throwable, boolean)
      */
     public CmsException getCmsException(Object o, String message, int exceptionType, Throwable rootCause, boolean logSilent) {
         String className = "";
@@ -333,12 +322,7 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
     }
     
     /**
-     * Receives a JDBC connection from the (offline) pool. Use this method with caution! 
-     * Using this method to makes only sense to read/write project independent data such 
-     * as user data!
-     * 
-     * @return a JDBC connection from the (offline) pool 
-     * @throws SQLException if a database access error occurs
+     * @see org.opencms.db.I_CmsSqlManager#getConnection()
      */
     public Connection getConnection() throws SQLException {
         // To receive a JDBC connection from the offline pool, 
@@ -347,61 +331,35 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
     }
 
     /**
-     * Receives a JDBC connection from the pool specified by the given CmsProject.
-     * 
-     * @param project the specified CmsProject
-     * @return a JDBC connection from the pool specified by the project-ID 
-     * @throws SQLException if a database access error occurs
+     * @see org.opencms.db.I_CmsSqlManager#getConnection(com.opencms.file.CmsProject)
      */
     public Connection getConnection(CmsProject project) throws SQLException {
         return getConnection(project.getId());
     }
 
     /**
-     * Receives a JDBC connection from the pool specified by the given project-ID.
-     * 
-     * @param projectId the ID of the specified CmsProject
-     * @return a JDBC connection from the pool specified by the project-ID 
-     * @throws SQLException if a database access error occurs
+     * @see org.opencms.db.I_CmsSqlManager#getConnection(int)
      */
     public Connection getConnection(int projectId) throws SQLException {
         return DriverManager.getConnection(m_dbPoolUrl);
     }
 
     /**
-     * Receives a JDBC connection from the backup pool. Use this method with caution! 
-     * Using this method to makes only sense to read/write data to backup data. 
-     * 
-     * @return a JDBC connection from the backup pool 
-     * @throws SQLException if a database access error occurs
+     * @see org.opencms.db.I_CmsSqlManager#getConnectionForBackup()
      */
     public Connection getConnectionForBackup() throws SQLException {
         return DriverManager.getConnection(m_dbPoolUrl);
     }
 
     /**
-     * Receives a PreparedStatement for a JDBC connection specified by the key of a SQL query
-     * and the CmsProject.
-     * 
-     * @param con the JDBC connection
-     * @param project the specified CmsProject
-     * @param queryKey the key of the SQL query
-     * @return PreparedStatement a new PreparedStatement containing the pre-compiled SQL statement 
-     * @throws SQLException if a database access error occurs
+     * @see org.opencms.db.I_CmsSqlManager#getPreparedStatement(java.sql.Connection, com.opencms.file.CmsProject, java.lang.String)
      */
     public PreparedStatement getPreparedStatement(Connection con, CmsProject project, String queryKey) throws SQLException {
         return getPreparedStatement(con, project.getId(), queryKey);
     }
 
     /**
-     * Receives a PreparedStatement for a JDBC connection specified by the key of a SQL query
-     * and the project-ID.
-     * 
-     * @param con the JDBC connection
-     * @param projectId the ID of the specified CmsProject
-     * @param queryKey the key of the SQL query
-     * @return PreparedStatement a new PreparedStatement containing the pre-compiled SQL statement 
-     * @throws SQLException if a database access error occurs
+     * @see org.opencms.db.I_CmsSqlManager#getPreparedStatement(java.sql.Connection, int, java.lang.String)
      */
     public PreparedStatement getPreparedStatement(Connection con, int projectId, String queryKey) throws SQLException {
         String rawSql = get(projectId, queryKey);
@@ -409,12 +367,7 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
     }
 
     /**
-     * Receives a PreparedStatement for a JDBC connection specified by the key of a SQL query.
-     * 
-     * @param con the JDBC connection
-     * @param queryKey the key of the SQL query
-     * @return PreparedStatement a new PreparedStatement containing the pre-compiled SQL statement 
-     * @throws SQLException if a database access error occurs
+     * @see org.opencms.db.I_CmsSqlManager#getPreparedStatement(java.sql.Connection, java.lang.String)
      */
     public PreparedStatement getPreparedStatement(Connection con, String queryKey) throws SQLException {
         String rawSql = get(Integer.MIN_VALUE, queryKey);
@@ -422,12 +375,7 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
     }
     
     /**
-     * Receives a PreparedStatement for a JDBC connection specified by the SQL query.
-     * 
-     * @param con the JDBC connection
-     * @param query the kSQL query
-     * @return PreparedStatement a new PreparedStatement containing the pre-compiled SQL statement 
-     * @throws SQLException if a database access error occurs
+     * @see org.opencms.db.I_CmsSqlManager#getPreparedStatementForSql(java.sql.Connection, java.lang.String)
      */
     public PreparedStatement getPreparedStatementForSql(Connection con, String query) throws SQLException {
         // unfortunately, this wrapper is essential, because some JDBC driver 
@@ -441,7 +389,7 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
      * @param propertyFilename the package/filename of the properties hash
      * @return Properties the new properties instance.
      */
-    protected synchronized Properties loadProperties(String propertyFilename) {
+    protected synchronized Properties loadQueryProperties(String propertyFilename) {
         Properties properties = new Properties();
 
         try {
@@ -462,26 +410,14 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
     }
     
     /**
-     * Generates a new primary key for a given database table. IMPORTANT: this method makes only
-     * sense for old-style tables where the primary key is NOT a CmsUUID!
-     * 
-     * @param tableName the table for which a new primary key should be generated.
-     * @return int the new primary key
-     * @throws CmsException if an error occurs
+     * @see org.opencms.db.I_CmsSqlManager#nextId(java.lang.String)
      */
     public synchronized int nextId(String tableName) throws CmsException {
         return org.opencms.db.CmsIdGenerator.nextId(m_dbPoolUrl, tableName);
     }
 
     /**
-     * Sets the designated parameter to the given Java array of bytes. The driver converts this 
-     * to an SQL VARBINARY or LONGVARBINARY (depending on the argument's size relative to the 
-     * driver's limits on VARBINARY values) when it sends it to the database. 
-     * 
-     * @param statement the PreparedStatement where the content is set
-     * @param posn the first parameter is 1, the second is 2, ...
-     * @param content the parameter value 
-     * @throws SQLException if a database access error occurs
+     * @see org.opencms.db.I_CmsSqlManager#setBytes(java.sql.PreparedStatement, int, byte[])
      */
     public void setBytes(PreparedStatement statement, int posn, byte[] content) throws SQLException {
         if (content.length < 2000) {
@@ -492,10 +428,7 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
     }
 
     /**
-     * Replaces null Strings by an empty string.
-     * 
-     * @param value the string to validate
-     * @return String the validate string or an empty string if the validated string is null
+     * @see org.opencms.db.I_CmsSqlManager#validateNull(java.lang.String)
      */
     public String validateNull(String value) {
         if (value != null && value.length() != 0) {
@@ -506,9 +439,7 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
     }
     
     /**
-     * Makes all changes permanent since the previous commit/rollback if auto-commit is turned off.
-     * 
-     * @param conn the connection to commit
+     * @see org.opencms.db.I_CmsSqlManager#commit(java.sql.Connection)
      */
     public void commit(Connection conn) {
         try {
@@ -521,10 +452,7 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
     }
     
     /**
-     * Undoes all changes made in the current transaction, optionally after the given Savepoint object was set.
-     * 
-     * @param conn the connection to roll back
-     * @param savepoint an optional savepoint after which all changes are rolled back
+     * @see org.opencms.db.I_CmsSqlManager#rollback(java.sql.Connection, java.sql.Savepoint)
      */
     public void rollback(Connection conn, Savepoint savepoint) {
         try {
@@ -541,10 +469,7 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
     } 
     
     /**
-     * Removes the given Savepoint object from the current transaction.
-     * 
-     * @param conn the connection from which the savepoint object is removed
-     * @param savepoint the Savepoint object to be removed 
+     * @see org.opencms.db.I_CmsSqlManager#releaseSavepoint(java.sql.Connection, java.sql.Savepoint)
      */
     public void releaseSavepoint(Connection conn, Savepoint savepoint) {
         try {

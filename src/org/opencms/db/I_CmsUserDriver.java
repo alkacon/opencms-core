@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2003/08/20 11:44:58 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/08/20 13:16:17 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Vector;
  * Definitions of all required user driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.11 $ $Date: 2003/08/20 11:44:58 $
+ * @version $Revision: 1.12 $ $Date: 2003/08/20 13:16:17 $
  * @since 5.1
  */
 public interface I_CmsUserDriver extends I_CmsDriver {
@@ -267,7 +267,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param dbPoolUrl the URL of the connection pool
      * @return the SQL manager for this package
      */     
-    org.opencms.db.generic.CmsSqlManager initQueries(String dbPoolUrl);
+    I_CmsSqlManager initQueries(String dbPoolUrl);
 
     /**
      * Checks if a user is member of a group.<P/>

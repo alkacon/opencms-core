@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/08/20 11:44:58 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2003/08/20 13:16:17 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.db;
 
+
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsFolder;
@@ -53,7 +54,7 @@ import java.util.Vector;
  * Definitions of all required VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.38 $ $Date: 2003/08/20 11:44:58 $
+ * @version $Revision: 1.39 $ $Date: 2003/08/20 13:16:17 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -226,7 +227,7 @@ public interface I_CmsVfsDriver {
      * @param dbPoolUrl the URL of the connection pool
      * @return the SQL manager for this package
      */
-    org.opencms.db.generic.CmsSqlManager initQueries(String dbPoolUrl);
+    I_CmsSqlManager initQueries(String dbPoolUrl);
     
     Vector readAllPropertydefinitions(int projectId, I_CmsResourceType resourcetype) throws CmsException;
     Vector readAllPropertydefinitions(int projectId, int resourcetype) throws CmsException;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/Attic/CmsWorkflowDriver.java,v $
- * Date   : $Date: 2003/06/13 14:48:16 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/08/20 13:14:51 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,12 +31,14 @@
 
 package org.opencms.db.oracle;
 
+import org.opencms.db.I_CmsSqlManager;
+
 
 /**
  * Oracle/OCI implementation of the workflow driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2003/06/13 14:48:16 $
+ * @version $Revision: 1.3 $ $Date: 2003/08/20 13:14:51 $
  * @since 5.1
  */
 public class CmsWorkflowDriver extends org.opencms.db.generic.CmsWorkflowDriver {  
@@ -44,8 +46,9 @@ public class CmsWorkflowDriver extends org.opencms.db.generic.CmsWorkflowDriver 
     /**
      * @see org.opencms.db.I_CmsWorkflowDriver#initQueries(java.lang.String)
      */
-    public org.opencms.db.generic.CmsSqlManager initQueries(String dbPoolUrl) {
-        return new org.opencms.db.oracle.CmsSqlManager(dbPoolUrl);
+    public I_CmsSqlManager initQueries(String dbPoolUrl) {
+        //return new org.opencms.db.oracle.CmsSqlManager(dbPoolUrl);
+        return (I_CmsSqlManager) org.opencms.db.oracle.CmsSqlManager.getInstance(dbPoolUrl);
     }
 
 }

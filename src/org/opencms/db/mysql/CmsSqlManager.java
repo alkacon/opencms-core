@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsSqlManager.java,v $
- * Date   : $Date: 2003/08/14 15:37:26 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/08/20 13:14:51 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
  
 package org.opencms.db.mysql;
 
+import org.opencms.db.I_CmsSqlManager;
 import org.opencms.main.OpenCms;
 
 import com.opencms.util.Encoder;
@@ -41,28 +42,45 @@ import java.util.Properties;
  * Handles SQL queries from query.properties of the MySQL driver package.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $ $Date: 2003/08/14 15:37:26 $ 
+ * @version $Revision: 1.4 $ $Date: 2003/08/20 13:14:51 $ 
  * @since 5.1
  */
 public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
     
+    private static I_CmsSqlManager sharedInstance = null;
     private static final String C_PROPERTY_FILENAME = "org/opencms/db/mysql/query.properties";
     private static Properties c_queries = null; 
     private static Boolean c_escapeStrings = null;   
     
     /**
-     * CmsSqlManager constructor.
+     * CmsSqlManager constructor.<p>
+     * 
+     * Never invoke this constructor! Use {@link org.opencms.db.mysql.CmsSqlManager#getInstance(String)} instead.
      * 
      * @param dbPoolUrl the URL to access the correct connection pool
      */
-    public CmsSqlManager(String dbPoolUrl) {
+    protected CmsSqlManager(String dbPoolUrl) {
         super(dbPoolUrl);
-        
+
         if (c_queries == null) {
-            c_queries = loadProperties(C_PROPERTY_FILENAME);
+            c_queries = loadQueryProperties(C_PROPERTY_FILENAME);
             precalculateQueries(c_queries);
         }
     }
+    
+    /**
+     * Returns the shared instance of the MySQL SQL manager.<p>
+     * 
+     * @param dbPoolUrl the URL to access the connection pool
+     * @return the shared instance of the generic SQL manager
+     */    
+    public static synchronized I_CmsSqlManager getInstance(String dbPoolUrl) {
+        if (sharedInstance == null) {
+            sharedInstance = (I_CmsSqlManager) new org.opencms.db.mysql.CmsSqlManager(dbPoolUrl);
+        }
+
+        return sharedInstance;        
+    }    
     
     /**
      * @see java.lang.Object#finalize()
@@ -81,7 +99,7 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
      */
     public String get(String queryName) {
         if (c_queries == null) {
-            c_queries = loadProperties(C_PROPERTY_FILENAME);
+            c_queries = loadQueryProperties(C_PROPERTY_FILENAME);
             precalculateQueries(c_queries);
         }
         
