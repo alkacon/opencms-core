@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/A_CmsReport.java,v $
- * Date   : $Date: 2003/10/08 18:10:56 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/10/09 07:58:41 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.List;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)  
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public abstract class A_CmsReport implements I_CmsReport {
     
@@ -101,30 +101,30 @@ public abstract class A_CmsReport implements I_CmsReport {
      */
     public String formatRuntime() {
         long runtime = getRuntime();
-        long seconds = runtime / C_SECONDS;
-        long minutes = runtime / C_MINUTES;
-        long hours = runtime / C_HOURS;        
+        long seconds = (runtime / C_SECONDS) % 60;
+        long minutes = (runtime / C_MINUTES) % 60;
+        long hours = runtime / C_HOURS;
         StringBuffer strBuf = new StringBuffer();
-        
+
         if (hours < 10) {
-            strBuf.append("0");
+            strBuf.append('0');
         }
         strBuf.append(hours);
-                
-        strBuf.append(":");
-        
+
+        strBuf.append(':');
+
         if (minutes < 10) {
-            strBuf.append("0");
+            strBuf.append('0');
         }
         strBuf.append(minutes);
-        
-        strBuf.append(":");
-        
+
+        strBuf.append(':');
+
         if (seconds < 10) {
-            strBuf.append("0");
+            strBuf.append('0');
         }
         strBuf.append(seconds);
-       
+        
         return strBuf.toString();
     }
     
