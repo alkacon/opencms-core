@@ -8,4 +8,4 @@ pdflatex OpenCmsDoc.tex
 
 del *.aux,*.idx,*.log,*.dvi,*.toc
 
-pause
+

@@ -36,7 +36,7 @@ based on Java technology.
 Netscape Navigator or Microsoft Internet Explorer must be
 installed on the client. You should use IE 5.5 or higher or
 Netscape Navigator 7.0 or higher. Configuration details for each of
-the Browsers can be found in the Appendix. 
+the Browsers can be found in chapter \ref{browsersettings}. 
 
 We divided the user's guide, which explains how to use the system's
 most important functions, into two parts: Part 1 consists of a
@@ -47,31 +47,33 @@ more detailed.
 \textbf{NOTE:} Our explanations are based on the assumption that
 OpenCms has been successfully installed and is running on your web
 server or local computer.
-
+\newpage
 \section{Part 1: OpenCms - The demo}
 
 The following demo is based on a real life scenario and was
 designed to get you up and running as quickly as possible.
+The module \texttt{org.opencms.welcome} must be present in your OpenCms system
+(it is installed per default by the OpenCms setup).
 
 Open your Internet browser and enter
 
-http://localhost:8080/opencms/opencms/index.html
+http://localhost:8080/opencms/opencms/index.jsp
 
-to access the OpenCms site.
+to access the OpenCms welcome site.
 
-The OpenCms site start page is displayed. The navigator contains
-the links to all of the pages. Click on "projects".
+The OpenCms site welcome page is displayed (Figure~\ref{demopage01}). The navigator on top contains
+the links to all of the pages. Click on "Release notes".
 
-The demo page is displayed (Figure~\ref{demopage01}). The first
-part of the demo consists of modifying the page in OpenCms by
+The release notes page is displayed. The first
+part of the demo consists of modifying this page in OpenCms by
 following the instructions described below.
 
-\begin{figure}[hbt]
+\begin{figure}[!hbt]
 \begin{center}
 \includegraphics[width=\sgw]
                    {pics/usermanual/demoPage01}
-\caption[Empty demo page]
-           {Empty demo page}
+\caption[Welcome page]
+           {Welcome page}
 \label{demopage01}
 \end{center}
 \end{figure}
@@ -94,7 +96,7 @@ http://localhost:8080/opencms/opencms/system/login/
 In the login dialog box (Figure~\ref{loginbox}), enter "Admin" as
 the user name and "admin" as the password.
 
-\begin{figure}[hbt]
+\begin{figure}[!hbt]
 \begin{minipage}[b]{0.499\linewidth}
    \begin{center}
 \includegraphics[width=\sgw]
@@ -112,7 +114,7 @@ old one (you will be prompted to confirm this action). You are now
 in the "Workplace," in the so-called "Explorer" view
 (Figure~\ref{explorer}). This is where the actual editing starts.
 
-\begin{figure}[hbt]
+\begin{figure}[!hbt]
 \begin{center}
 \includegraphics[width=\sgw]
                    {pics/usermanual/explorer}
@@ -124,7 +126,7 @@ in the "Workplace," in the so-called "Explorer" view
 
 \textbf{NOTE:} OpenCms is a project based application, which means
 that you cannot modify the pages online. You first have to create
-an editing project.
+an editing (offline) project.
 
 \subsubsection{Creating a new project}
 
@@ -132,7 +134,7 @@ Switch to the administration window by clicking on "View" on the
 menu bar and selecting "Administration" from the drop-down menu
 (Figure~\ref{view}).
 
-\begin{figure}[hbt]
+\begin{figure}[!hbt]
 \begin{center}
 \includegraphics[width=\sgw]
                    {pics/usermanual/view}
@@ -145,7 +147,7 @@ menu bar and selecting "Administration" from the drop-down menu
 The Administration view is opened. The following buttons are
 displayed: (Figure~\ref{adminview}):
 
-\begin{figure}[hbt]
+\begin{figure}[!hbt]
 \begin{center}
 \includegraphics[width=\sgw]
                    {pics/usermanual/adminView}
@@ -158,7 +160,7 @@ displayed: (Figure~\ref{adminview}):
 Click on "Project Management." A new page is opened that contains
 the following buttons (Figure~\ref{projectmanager}):
 
-\begin{figure}[hbt]
+\begin{figure}[!hbt]
 \begin{center}
 \includegraphics[width=\sgw]
                    {pics/usermanual/projectManager}
@@ -170,13 +172,13 @@ the following buttons (Figure~\ref{projectmanager}):
 
 Click on "New Project" to create a new project.
 
-The dialog window "Create a new project" is opened
+The dialog window ``Create a new project" is opened
 (Figure~\ref{createnewproject}). Enter the project data:
 
 \begin{itemize}
 \item Project name: Nice try
 \item Description: Create test project
-\item project Directories: /projects/
+\item project Directories: /release/
 \item Project members: Users
 \item Project leader: Project manager
 \end{itemize}
@@ -184,11 +186,11 @@ The dialog window "Create a new project" is opened
 Click on the "OK" button.
 
 \textbf{NOTE:} Clicking on the folder icon next to the
-"Directories" field opens a second window that contains a list of
-the existing directories. Select the directory "examples" for your
+``Directories" field opens a second window that contains a list of
+the existing directories. Here you can select other directories for your
 new project. The window closes automatically.
 
-\begin{figure}[hbt]
+\begin{figure}[!hbt]
 \begin{center}
 \includegraphics[width=\sgw]
                    {pics/usermanual/newProject}
@@ -198,14 +200,14 @@ new project. The window closes automatically.
 \end{center}
 \end{figure}
 
-Switch back to the Explorer view by selecting it from the "View"
-drop-down menu. Select the "projects" directory (the same one you
+Switch back to the Explorer view by selecting it from the ``View"
+drop-down menu. Select the ``release" directory (the same one you
 selected when creating your project) from the drop-down menu. The
-Explorer view is opened. Open your "Nice try" project by selecting
+Explorer view is opened. Open your ``Nice try" project by selecting
 it from the Project drop-down menu on the menu bar
 (Figure~\ref{projectview}).
 
-\begin{figure}[hbt]
+\begin{figure}[!hbt]
 \begin{center}
 \includegraphics[width=\sgw]
                    {pics/usermanual/projectView}
@@ -218,18 +220,19 @@ it from the Project drop-down menu on the menu bar
 The view for your project is open. You can now edit any one of its pages.
 
 \textbf{NOTE:} You have surely noticed that all of the folders in
-the folder tree are inactive except for "projects", "download",
-"pics" and "/system/bodies/". Once the project is selected,
-OpenCms only allows you to modify files in your project directory.
+the folder tree are inactive except for ``/release/", ``/system/galleries/download/",
+``/system/galleries/pics/", ``/system/galleries/externallinks/", 
+``/system/galleries/htmlgalleries/" and ``/system/bodies/". 
+Once the project is selected, OpenCms only allows you to modify files in your project directories.
 
 \subsubsection{Editing pages}
 
 A page must be locked for all other users before it can be opened.
-Click on the icon next to the text "index.html" with the left
+Click on the icon next to the text "installation.html" with the left
 mouse button to display the context-sensitive menu
 (Figure~\ref{lockpage}). Click on the menu item "Lock."
 
-\begin{figure}[hbt]
+\begin{figure}[!hbt]
 \begin{center}
 \includegraphics[width=\sgw]
                    {pics/usermanual/pageMenuUnlocked}
@@ -245,7 +248,7 @@ icon not appear, check your browser settings (see above) or
 refresh the view with the button
 \includegraphics{pics/usermanual/ic_refresh}.
 
-Click on the icon next to the text "index.html" with the left
+Click on the icon next to the text "installation.html" with the left
 mouse button again to display the context-sensitive menu. Click on
 "Edit page" to open the HTML editor.
 
@@ -255,7 +258,7 @@ You are now in the OpenCms HTML editor (Figure~\ref{htmleditor}).
 Here you will find a number of editing icons that should be
 familiar from other applications, such as Word.
 
-\begin{figure}[hbt]
+\begin{figure}[!hbt]
 \begin{center}
 \includegraphics[width=\sgw]
                    {pics/usermanual/htmlEditor}
@@ -266,7 +269,7 @@ familiar from other applications, such as Word.
 \end{figure}
 
 In the text editor, which is just below the icons, the text that
-you saw at the beginning of the demo (Figure~\ref{demopage01}) is
+you saw at the release notes page is
 displayed. Make changes to the text and its format (bold, italics,
 underline).
 
@@ -281,7 +284,7 @@ The "Template" drop-down menu is on the right part of the menu bar
 structures and layouts. You will see the changes by clicking on
 the "preview" button in the upper right corner of the editor.
 
-\begin{figure}[hbt]
+\begin{figure}[!hbt]
 \begin{center}
 \includegraphics[width=\sgw]
                    {pics/usermanual/selectTemplate}
@@ -306,17 +309,16 @@ The Explorer view is displayed.
 The page's details are currently displayed in red, which means
 that the page has been edited. Additionally there is a little red
 flag, which means that this page was locked and changed in the
-current project. Click on the page icon of "index.html" of the
-page you just edited with the left mouse to "unlock" it. Click on
+current project. Click on the page icon of "installation.html" with the left mouse to "unlock" it. Click on
 the menu item "Unlock" in the context-sensitive menu to unlock the
 page. The lock disappears (Figure~\ref{unlockpage}).
 
-\begin{figure}[hbt]
+\begin{figure}[!hbt]
 \begin{center}
 \includegraphics[width=\sgw]
                    {pics/usermanual/unlockPage}
-\caption[Unlock an editing page]
-           {Unlock an editing page}
+\caption[Unlock an edited page]
+           {Unlock an edited page}
 \label{unlockpage}
 \end{center}
 \end{figure}
@@ -329,7 +331,7 @@ is displayed in the overview. Click on the project's icon to
 access the context-sensitive menu. Select the menu item "Publish"
 (Figure~\ref{publishproject}). Click on "OK."
 
-\begin{figure}[hbt]
+\begin{figure}[!hbt]
 \begin{center}
 \includegraphics[width=\sgw]
                    {pics/usermanual/publishProject01}
@@ -339,16 +341,19 @@ access the context-sensitive menu. Select the menu item "Publish"
 \end{center}
 \end{figure}
 
-Start the demo application again:\\
-http://localhost:8080/opencms/opencms/projects/index.html The test page
-is displayed with your modifications (Figure~\ref{demopage02}).
+\textbf{Note:} You can also publish the current project by clicking on the
+icon between the project selector and the view selector on top of the OpenCms workplace.
 
-\begin{figure}[hbt]
+Start the demo application again:\\
+http://localhost:8080/opencms/opencms/release/installation.html.\\
+The test page is displayed with your modifications (Figure~\ref{demopage02}).
+
+\begin{figure}[!hbt]
 \begin{center}
 \includegraphics[width=\sgw]
                    {pics/usermanual/demoPage02}
-\caption[Modified demo page]
-           {Modified demo page}
+\caption[Modified installation page]
+           {Modified installation page}
 \label{demopage02}
 \end{center}
 \end{figure}
@@ -357,8 +362,8 @@ is displayed with your modifications (Figure~\ref{demopage02}).
 \subsection{Creating a new page}
 
 You can add new pages and folders for your web page from the
-Explorer view. Create a new project by following the steps
-described above. Go to the "projects" directory by clicking on the
+Explorer view. Create a new project or select the ``Nice try" project by following the steps
+described above. Go to the "release" directory by clicking on the
 appropriate folder in the directory tree with the left mouse
 button.
 
@@ -368,7 +373,7 @@ Click on the "new" icon
 
 Click on the radio button "Page."
 
-\begin{figure}[hbt]
+\begin{figure}[!hbt]
 \begin{center}
 \includegraphics[width=\sgw]
                    {pics/usermanual/newPage01}
@@ -384,12 +389,12 @@ dialog window "Create a new page" (Figure~\ref{newpage02}):
 \begin{itemize}
 \item Name: help
 \item Title: Test page
-\item Template: OpenCms-Maintemplate
+\item Template: Welcome / Release notes template
 \item Text in Navigation: Help
 \item Insert after: at the last position
 \end{itemize}
 
-\begin{figure}[hbt]
+\begin{figure}[!hbt]
 \begin{center}
 \includegraphics[width=\sgw]
                    {pics/usermanual/newPage02}
@@ -403,12 +408,12 @@ dialog window "Create a new page" (Figure~\ref{newpage02}):
 later be displayed as the link in the online navigator.
 
 Click on "Finish". This takes you back to the Explorer view and
-displays the details your new page in blue with a lock
+displays the details of your new page in blue with a lock
 (Figure~\ref{explnewpage}). You can either continue editing the
 page (see above) or use the context-sensitive menu to unlock it
 for other users.
 
-\begin{figure}[hbt]
+\begin{figure}[!hbt]
 \begin{center}
 \includegraphics[width=\sgw]
                    {pics/usermanual/explNewPage}
@@ -419,24 +424,25 @@ for other users.
 \end{figure}
 
 Publish the project as explained under "Publishing a project" and
-open the demo application:
-http://localhost:8080/opencms/opencms/projects/index.html
+open the installation page:\\
+http://localhost:8080/opencms/opencms/release/installation.html
 
-The demo page is displayed with the new link. Click on the link to
-view your new page (Figure~\ref{demopage03}).
+The installation page is displayed with the new link to your page ``help.html". Click on the link to
+view your new page (Figure~\ref{demopage03}) without any content. 
+Of course you can enter additional text with the html editor as desribed above.
 
-\begin{figure}[hbt]
+\begin{figure}[!hbt]
 \begin{center}
 \includegraphics[width=\sgw]
                    {pics/usermanual/demoPage03}
-\caption[Demo page with new link]
-           {Demo page with new link}
+\caption[New help page listed in navigation]
+           {New help page listed in navigation}
 \label{demopage03}
 \end{center}
 \end{figure}
 
 This is the end of our demo. Thank you for your attention. Additional and more detailed information about OpenCms is described in Part 2 of the guide.
-
+\newpage
 \section{Part 2: OpenCms - The mechanics}
 
 \subsection{The user interface}
@@ -464,7 +470,7 @@ file explorer. The directory tree structure, the file view and the
 menu bar make it easy for users to access files and functions
 (Figure~\ref{workplace}) :
 
-\begin{figure}[hbt]
+\begin{figure}[!hbt]
 \begin{center}
 \includegraphics[width=\sgw]
                    {pics/usermanual/workplace}
@@ -503,7 +509,7 @@ layout is based on previously defined format templates. The format
 templates ensure that the content is uniformly displayed.
 \end{itemize}
 
-\begin{figure}[hbt]
+\begin{figure}[!hbt]
 \begin{center}
 \includegraphics[width=\sgw]
                    {pics/usermanual/browserScreen}
@@ -538,7 +544,7 @@ backup table after publish. The information about all versions can
 be accessed via the "History" option in the context-sensitive menu
 (Figure~\ref{history01}).
 
-\begin{figure}[hbt]
+\begin{figure}[!hbt]
 \begin{center}
 \includegraphics[width=\sgw]
                    {pics/usermanual/history01}
@@ -550,11 +556,11 @@ be accessed via the "History" option in the context-sensitive menu
 
 To create new content, the user creates a new file or directory by
 clicking on the "New" button on the menu bar. This opens a dialog
-window in which the user selects the element to create: "Folder,"
-"Page," "Link", "Text", "XMLTemplate" or "Upload new file." The
+window in which the user selects the element to create: ``Folder,"
+``Page," ``Link", ``Text", ``XMLTemplate", ``JSP" or ``Upload new file." The
 name, title and navigator text as well as the position of the file
 or directory in the navigator, are defined in separate dialog
-boxes. Selecting the option "Upload new file" enables users to load
+boxes. Selecting the option ``Upload new file" enables users to load
 files that are stored on their PC's local hard disks into an
 OpenCms directory. Users access their assigned directories and
 files via the file explorer.
@@ -574,15 +580,18 @@ the editing phase to prevent them from being accessed or modified
 by several users at the same time. A file or directory is unlocked
 when the user has finished modifying it.
 
+\item Publish directly: A single resource can be published
+directly. This item is enabled when a changed file is unlocked.
+
 \item Edit page: Clicking opens a WYSIWYG editor in which the file can be modified.
 At this stage, no HTML knowledge is required to modify a page.
+
+\item Edit sourcecode: Clicking opens a text editor in which the file can be modified.
+This requires at least basic HTML knowledge to modify a page.
 
 \item Edit control code: Clicking opens a text editor in which
 control codes can be edited. Extensive HTML knowledge is required
 to make modifications of this type.
-
-\item Publish directly: A single resource can be published
-directly. This item is enabled when a changed file is unlocked.
 
 \item History: The history file displays all of the file's previous
 versions. The history file enables users to see who made which
@@ -594,18 +603,24 @@ attributes for the individual files and directories are set on the
 system side by using the functions "Change owner," "Change group"
 and "Change permissions".
 
-\item Standard functions such as "Copy,"
-"Rename" and "Delete" can be selected from the context-sensitive
-menus.
+\item Change navigation: Here the navigation text and position of a resource can be changed.
 
-\item Undelete resources \index{undelete} When a resource
+\item Properties: To every resource properties can be attached as key / value pairs, e.g. the title or the description is stored as a resource property.
+Properties can be added, modified or deleted.
+
+\item Standard functions such as ``Copy,"
+``Rename", ``Move" and ``Delete" can be selected from the context-sensitive
+menus. ``Touch" changes the timestamp of a resource, which marks it as changed, 
+and it will be published when the project is published.
+
+\item Undelete resources: \index{undelete} When a resource
 that already exists in the online project is deleted it is marked
 by crossing out its entry in the file list. Now it is possible to
 undelete these resources. When undeleting a folder all
 subresources in this folder that were marked as deleted are
 undeleted, too. You must have write access to undelete a resource.
 
-\begin{figure}[hbt]
+\begin{figure}[!hbt]
 \begin{center}
 \includegraphics[width=\sgw]
                    {pics/newProject/undel03}
@@ -628,7 +643,7 @@ all changes of subresources are undone, too. This feature copies
 the information from the online project, so all changes that were
 not published are lost and new resources are deleted.
 
-\begin{figure}[hbt]
+\begin{figure}[!hbt]
 \begin{center}
 \includegraphics[width=\sgw]
                    {pics/newProject/undo01}
@@ -651,7 +666,7 @@ on the detail button. To restore the version click on the "Restore
 version"-button. You must have write access to the file if you
 want to restore a version.
 
-\begin{figure}[hbt]
+\begin{figure}[!hbt]
 \begin{minipage}[b]{0.49\linewidth}
 \begin{center}
 \includegraphics[width=\sgw]
@@ -676,7 +691,7 @@ Resources can now be published directly. They must be unlocked to
 enable the function in the context menu. Only the projectmanager
 and the administrator are allowed to publish resources.
 
-\begin{figure}[hbt]
+\begin{figure}[!hbt]
 \begin{center}
 \includegraphics[width=\sgw]
                    {pics/newProject/publish03}
@@ -704,7 +719,7 @@ project with this new feature in the context menu. Only the
 projectmanager and the administrator are allowed to copy resources
 to the project.
 
-\begin{figure}[hbt]
+\begin{figure}[!hbt]
 \begin{center}
 \includegraphics[width=\sgw]
                    {pics/newProject/copyPro02}
@@ -744,7 +759,7 @@ users and user groups.
 Based on the requirements, additional groups such as editors,
 designers, testers etc. can be created.
 
-\begin{figure}[hbt]
+\begin{figure}[!hbt]
 \begin{center}
 \includegraphics[width=\sgw]
                    {pics/usermanual/newGroup}
@@ -780,7 +795,7 @@ navigator, the content and the individual pages - basically the
 layout for the whole site - is uniform
 (Figure~\ref{thehtmleditor}):
 
-\begin{figure}[hbt]
+\begin{figure}[!hbt]
 \begin{center}
 \includegraphics[width=\sgw]
                    {pics/usermanual/theHtmlEditor}
@@ -822,7 +837,7 @@ gray. A task's priority is defined by icons (low, normal and
 high). The task descriptions provide a clear overview of a user's
 task account.
 
-\begin{figure}[hbt]
+\begin{figure}[!hbt]
 \begin{center}
 \includegraphics[width=\sgw]
                    {pics/usermanual/taskView}
