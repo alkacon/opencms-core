@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsSynchronize.java,v $
- * Date   : $Date: 2001/02/16 09:16:16 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2001/03/23 10:33:17 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -44,14 +44,9 @@ import source.org.apache.java.util.*;
  * into the cms and back.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.3 $ $Date: 2001/02/16 09:16:16 $
+ * @version $Revision: 1.4 $ $Date: 2001/03/23 10:33:17 $
  */
 public class CmsSynchronize implements I_CmsConstants{
-
-	/**
-	 * The name of the synchronizationpath-property.
-	 */
-	static final String C_SYNCHRONISATION_PATH = "syncpath";
 
 	/**
 	 * flag to synchronize no filesystem,
