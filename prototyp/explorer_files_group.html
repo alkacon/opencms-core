@@ -30,7 +30,7 @@ function show_help()
 			
 			<!-- Beginn Tabellenkopf blau-->
 			<tr> 
-           		<td colspan=2 class="head">Gruppe von xyz ändern</td>
+           		<td colspan=2 class="head">Gruppe &auml;ndern von xyz</td>
 			</tr>
 			<!-- Ende Tabellenkopf blau-->
 			
@@ -41,17 +41,33 @@ function show_help()
 			<!-- Ende Leerzeile-->
 			
 			<tr>
-				<td class=dialogtxt colspan=2>
-					Besitzer: Admin<br>
-					Gruppe: Administrators
-				</td>
+			<td class=dialogtxt colspan=2>
+				<table cellspacing=2 cellpadding=0 border=0>
+				<tr>
+					<td class=dialogtxt>Titel:</td>
+					<td class=dialogtxt>Presse</td>
+				</tr>
+				<tr>
+					<td class=dialogtxt>Status:</td>
+					<td class=dialogtxt>Unver&auml;ndert</td>
+				</tr>
+				<tr>
+					<td class=dialogtxt>Eigent&uuml;mer:</td>
+					<td class=dialogtxt>Michaela Schleich (m.schleich)</td>
+				</tr>
+				<tr>
+					<td class=dialogtxt>Gruppe:</td>
+					<td class=dialogtxt>HTML</td>
+				</tr>
+				</table>
+			</td>
 			</tr>
 			
 			<!-- Beginn Dropdown-->
 			<tr>
 				<td class=formular>Neue Gruppe:</td>
 				<td class=dialogtxt>
-					<select name="name" width=150 style="width:150px" >
+					<select name="name" width = 150 style="WIDTH: 150px">
 						<option value="Administrators" selected>Administrators
 						<option value="HTML Programmers">HTML Programmers
 						<option value="Screen Desigeners">Screen Desigeners
@@ -72,8 +88,8 @@ function show_help()
 			<tr><td class=dialogtxt colspan=2>
 				<table cellspacing=0 cellpadding=5 width=100%>
 				<tr>
-					<td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="OK" id=OK name=OK onClick="location.href='explorer_files_projekt.html'"></td>
-					<td class=formular align=left width=50%><INPUT class=button width=100 type="button" value="Abbrechen" id=CANCEL name=CANCEL onClick="location.href='explorer_files_projekt.html'"></td>
+					<td class=formular align=right width=50%><INPUT class=button width = 100 type="button" value="OK" id=OK name=OK onClick="location.href='explorer_files_projekt.html'"></td>
+					<td class=formular align=left width=50%><INPUT class=button width = 100 type="button" value="Abbrechen" id=CANCEL name=CANCEL onClick="location.href='explorer_files_projekt.html'"></td>
 				</tr>
 				</table>
 			</td>

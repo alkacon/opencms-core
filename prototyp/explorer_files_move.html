@@ -14,9 +14,10 @@ function show_help()
 
 <title>OpenCms Arbeitsplatz von Alexander Kandzior</title>
 <link rel=stylesheet type="text/css" href="css/format.css">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="js/opencms.js"></SCRIPT>
 
 </HEAD>
-<BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
+<BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="window.top.head.formID='MOVE';">
 
 <!-- Tabelle um vertikal und horizontal zu zentrieren-->
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
@@ -24,60 +25,64 @@ function show_help()
 
 <!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
 <form id=MOVE name=MOVE>
-<table cellspacing=0 cellpadding=0 border=2 width=310>
+<table cellspacing=0 cellpadding=0 border=2 width=330>
 	<tr><td>
 		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
 			
 			<!-- Beginn Tabellenkopf blau-->
 			<tr> 
-           		<td colspan=2 class="head">Datei xyz verschieben</td>
+           		<td colspan=3 class="head">Verschieben von xyz.html</td>
 			</tr>
 			<!-- Ende Tabellenkopf blau-->
 			
 			<!-- Beginn Leerzeile-->
 			<tr> 
-           		<td colspan=2 class="leerzeile">&nbsp;</td>
+           		<td colspan=3 class="leerzeile">&nbsp;</td>
 			</tr>
 			<!-- Ende Leerzeile-->
 			
 			<tr>
-				<td class=dialogtxt colspan=2>
-					Besitzer: Admin<br>
-					Gruppe: Administrators
-				</td>
+			<td class=dialogtxt colspan=3>
+				<table cellspacing=2 cellpadding=0 border=0>
+				<tr>
+					<td class=dialogtxt>Titel:</td>
+					<td class=dialogtxt>Immer f&uuml;r Sie da</td>
+				</tr>
+				<tr>
+					<td class=dialogtxt>Status:</td>
+					<td class=dialogtxt>Unver&auml;ndert</td>
+				</tr>
+				<tr>
+					<td class=dialogtxt>Eigent&uuml;mer:</td>
+					<td class=dialogtxt>Michaela Schleich (m.schleich)</td>
+				</tr>
+				<tr>
+					<td class=dialogtxt>Gruppe:</td>
+					<td class=dialogtxt>HTML</td>
+				</tr>
+				</table>
+			</td>
 			</tr>
 			
-			<!-- Beginn Dropdown-->
+			<!-- Beginn Folder selection -->
 			<tr>
-				<td class=formular>Verschieben nach:</td>
-				<td class=dialogtxt>
-					<select name="name" width=150 style="width:150px" >
-						<option value="/" selected>Hauptverzeichnis
-						<option value="/bildung">bildung
-						<option value="/download">download
-						<option value="/erzbistum">erzbistum
-						<option value="/medien">medien
-						<option value="/medien/bilder">medien/bilder
-						<option value="/medien/toene">medien/toene
-						<option value="/seelsorge">seelsorge
-						<option value="/sozial">sozial
-					</select>
-                                 
-				</td>
+				<td class=formular nowrap>Verschieben nach:</td>
+				<td class=dialogtxt><input type="text" name="FOLDERS" class="textfeld" size=20></td>
+				<td class=formular width=100%><a href="javascript:opensmallwin('explorer_explorer_tree.html', 'explorer_viewer', 180, 300)"><img src="pics/ic_file_folder.gif" border="0" alt="Durchsuchen"></a></td>
 			</tr>
-			<!-- Ende Dropdown-->
+			<!-- Ende Folder selection -->
 			<tr> 
-           		<td colspan=2 class="dialogtxt"><INPUT type="checkbox" id=RIGHT name=RIGHT checked> aktuelle Rechte beibehalten</td>
+           		<td colspan=3 class="dialogtxt"><INPUT type="checkbox" id=RIGHT name=RIGHT checked> aktuelle Rechte beibehalten</td>
 			</tr>
 
 			<!-- Beginn Leerzeile-->
 			<tr> 
-           		<td colspan=2 class="leerzeile">&nbsp;</td>
+           		<td colspan=3 class="leerzeile">&nbsp;</td>
 			</tr>
 			<!-- Ende Leerzeile-->
 			
 			<!-- Beginn Buttonleisete-->
-			<tr><td class=dialogtxt colspan=2>
+			<tr><td class=dialogtxt colspan=3>
 				<table cellspacing=0 cellpadding=5 width=100%>
 				<tr>
 					<td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="OK" id=OK name=OK onClick="location.href='explorer_files_projekt.html'"></td>

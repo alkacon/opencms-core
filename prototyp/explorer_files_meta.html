@@ -30,7 +30,7 @@ function show_help()
 			
 			<!-- Beginn Tabellenkopf blau-->
 			<tr> 
-           		<td class="head">Eigenschaften von xyz ändern</td>
+           		<td class="head">Eigenschaften &auml;ndern von xyz.html</td>
 			</tr>
 			<!-- Ende Tabellenkopf blau-->
 			
@@ -41,9 +41,27 @@ function show_help()
 			<!-- Ende Leerzeile-->
 			
 			<!-- Beginn Inhalt-->
-			<tr><td class=dialogtxt>
-					Besitzer: Admin<br>
-					Gruppe: Administrators</td>
+			<tr>
+			<td class=dialogtxt>
+				<table cellspacing=2 cellpadding=0 border=0>
+				<tr>
+					<td class=dialogtxt>Titel:</td>
+					<td class=dialogtxt>Immer f&uuml;r Sie da</td>
+				</tr>
+				<tr>
+					<td class=dialogtxt>Status:</td>
+					<td class=dialogtxt>Unver&auml;ndert</td>
+				</tr>
+				<tr>
+					<td class=dialogtxt>Eigent&uuml;mer:</td>
+					<td class=dialogtxt>Michaela Schleich (m.schleich)</td>
+				</tr>
+				<tr>
+					<td class=dialogtxt>Gruppe:</td>
+					<td class=dialogtxt>HTML</td>
+				</tr>
+				</table>
+			</td>
 			</tr>
 			<tr><td class=dialogtxt>
 				<table border=1 width=100%>
@@ -61,7 +79,7 @@ function show_help()
 								<td class=formular align=left width=40%><INPUT class=button width=100 type="button" value="Organisieren..." id=ORGANIZE name=ORGANIZE onClick="location.href='explorer_files_meta_organize.html'"></td>
 								<td class=formular align=center width=30%><INPUT  class=button width=100 type="button" value="Neu" id=NEW name=NEW onClick="location.href='explorer_files_meta_new.html'"></td>
 								<td class=formular align=center width=30%><INPUT class=button width=100 type="button" value="Bearbeiten" id=CHANGE name=CHANGE onClick="location.href='explorer_files_meta_edit.html'"></td>
-								<td class=formular align=center width=30%><INPUT class=button width=100 type="button" value="Löschen" id=DELETE name=DELETE onClick="confirm('Wollen Sie die Eigenschaft wirklich löschen?')"></td>
+								<td class=formular align=center width=30%><INPUT class=button width=100 type="button" value="Löschen" id=DELETE name=DELETE onClick="location.href='explorer_files_meta_delete.html'"></td>
 								</tr>
 								</table>
 							</td></tr>

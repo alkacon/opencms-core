@@ -6,9 +6,9 @@
 <!--
 
 
-function selectFolder(pathStr)
+function selectFolder(formName,pathStr)
 {
-	window.opener.self.document.PROJECTNEW.FOLDERS.value = pathStr;
+	eval('window.opener.self.document.'+ formName +'.FOLDERS.value="'+pathStr+'"');
 }
 //-->
 </script>
@@ -24,44 +24,41 @@ function selectFolder(pathStr)
 	</tr>
 	<tr>
 		<td align=left><A href="#"><IMG border=0  src="pics/ic_tree_start.gif" width=16 height=16></a></td>
-		<td colspan=2><p class=einzug><a href="javascript:selectFolder('Hauptverzeichnis');" class="treefolder">/&nbsp;(Hauptverzeichnis)</a></p></td>
+		<td colspan=2><p class=einzug><a href="javascript:selectFolder('PROJECTNEW','Hauptverzeichnis');" class="treefolder">/&nbsp;(Hauptverzeichnis)</a></p></td>
 	</tr>
 	<tr>
 		<td align=left><IMG border=0  src="pics/ic_tree_kreuz.gif" width=16 height=16></td>
 		<td align=left><A href="#"><IMG border=0  src="pics/ic_tree_folder.gif" width=16 height=16></a></td>
-		<td align=left><p class=einzug><a href="javascript:selectFolder('/bildung');" class="treefolder">bildung</a></p></td>
+		<td align=left><p class=einzug><a href="javascript:selectFolder('PROJECTNEW','/bildung');" class="treefolder">bildung</a></p></td>
 	</tr>
 	<tr>
 		<td align=left><IMG border=0  src="pics/ic_tree_kreuz.gif" width=16 height=16></td>
 		<td align=left><A href="#"><IMG border=0  src="pics/ic_tree_folder.gif" width=16 height=16></a></td>
-		<td align=left><p class=einzug><a href="javascript:selectFolder('/download');" class="treefolder">download</a></p></td>
+		<td align=left><p class=einzug><a href="javascript:selectFolder('PROJECTNEW','/download');" class="treefolder">download</a></p></td>
 	</tr>
 	
 	<tr>
 		<td align=left><IMG border=0  src="pics/ic_tree_kreuz.gif" width=16 height=16></td>
 		<td align=left><A href="#"><IMG border=0  src="pics/ic_tree_folder.gif" width=16 height=16></a></td>
-		<td align=left><p class=einzug><a href="javascript:selectFolder('/erzbistum');" class="treefolder">erzbistum</a></p></td>
+		<td align=left><p class=einzug><a href="javascript:selectFolder('PROJECTNEW','/erzbistum');" class="treefolder">erzbistum</a></p></td>
 	</tr>
 	<tr>
 		<td align=left><A href="#"><IMG border=0  src="pics/ic_tree_pkreuz.gif" width=16 height=16></a></td>
 		<td align=left><A href="#" onclick=""><IMG border=0  src="pics/ic_tree_folder.gif" width=16 height=16></a></td>
-		<td align=left><p class=einzug><a href="javascript:selectFolder('/medien');" class="treefolder">medien</a></p></td>
+		<td align=left><p class=einzug><a href="javascript:selectFolder('PROJECTNEW','/medien');" class="treefolder">medien</a></p></td>
 	</tr>
 	<tr>
 		<td align=left><IMG border=0  src="pics/ic_tree_kreuz.gif" width=16 height=16></td>
 		<td align=left><A href="#"><IMG border=0  src="pics/ic_tree_folder.gif" width=16 height=16></a></td>
-		<td align=left><p class=einzug><a href="javascript:selectFolder('/seelsorge');" class="treefolder">seelsorge</a></p></td>
+		<td align=left><p class=einzug><a href="javascript:selectFolder('PROJECTNEW','/seelsorge');" class="treefolder">seelsorge</a></p></td>
 	</tr>
 	<tr>
 		<td align=left><IMG border=0  src="pics/ic_tree_end.gif" width=16 height=16></td>
 		<td align=left><A href="#"><IMG border=0  src="pics/ic_tree_folder.gif" width=16 height=16></a></td>
-		<td align=left><p class=einzug><a href="javascript:selectFolder('/sozial');" class="treefolder">sozial</a></p></td>
+		<td align=left><p class=einzug><a href="javascript:selectFolder('PROJECTNEW','/sozial');" class="treefolder">sozial</a></p></td>
 	</tr>
 	<tr>
 		<td><br><br></td>
-	</tr>
-	<tr>
-		<td align=center colspan="3"><INPUT class=button width=100 type="button" value="Schließen" id=CANCEL name=CANCEL onClick="window.close();"></td>
 	</tr>
 </table>
 
