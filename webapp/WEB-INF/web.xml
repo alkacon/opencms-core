@@ -18,6 +18,11 @@
 		<param-value>/opencms/*</param-value>
 	</context-param>
     
+    <context-param>
+        <param-name>DefaultWebApplication</param-name>
+        <param-value>ROOT</param-value>
+    </context-param>    
+    
     <listener>
         <listener-class>org.opencms.main.OpenCmsListener</listener-class>
     </listener>    
@@ -32,6 +37,7 @@
             The main servlet that handles all requests to the OpenCms VFS.  
         </description>
         <servlet-class>org.opencms.main.OpenCmsServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
     </servlet>
 
     <servlet-mapping>

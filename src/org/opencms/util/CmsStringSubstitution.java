@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsStringSubstitution.java,v $
- * Date   : $Date: 2004/02/16 01:30:51 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/02/16 15:42:16 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.0
  */
 public final class CmsStringSubstitution {
@@ -155,10 +155,9 @@ public final class CmsStringSubstitution {
     }
     
     /**
-     * Formats a runtime in the format mm:ss, to be used e.g. in reports.<p>
+     * Formats a runtime in the format hh:mm:ss, to be used e.g. in reports.<p>
      * 
-     * If the runtime is greater then 1 hour, the format hh:mm:ss is used.
-     * If it is greater then 24 hours, the format dd:hh:mm:ss is used.<p> 
+     * If the runtime is greater then 24 hours, the format dd:hh:mm:ss is used.<p> 
      * 
      * @param runtime the time to format
      * @return the formatted runtime
@@ -178,13 +177,11 @@ public final class CmsStringSubstitution {
             strBuf.append(':');
         }
         
-        if ((hours > 0) || (days > 0)) {
-            if (hours < 10) {
-                strBuf.append('0');
-            }
-            strBuf.append(hours);
-            strBuf.append(':');
+        if (hours < 10) {
+            strBuf.append('0');
         }
+        strBuf.append(hours);
+        strBuf.append(':');
         
         if (minutes < 10) {
             strBuf.append('0');        

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsResponseHttpServlet.java,v $
-* Date   : $Date: 2004/02/14 22:58:32 $
-* Version: $Revision: 1.39 $
+* Date   : $Date: 2004/02/16 15:42:31 $
+* Version: $Revision: 1.40 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.39 $ $Date: 2004/02/14 22:58:32 $
+ * @version $Revision: 1.40 $ $Date: 2004/02/16 15:42:31 $
  */
 public class CmsResponseHttpServlet implements I_CmsResponse {
 
@@ -104,13 +104,13 @@ public class CmsResponseHttpServlet implements I_CmsResponse {
         // If m != null, the method could be found.
         boolean result = (m != null);
 
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isDebugEnabled()) {
             if (result) {
                 // We have JSDK 2
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Compatibility check  : JSDK 2 detected. ");
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).debug("Compatibility check - JSDK 2 detected. ");
             } else {
                 // We have JSDK 1
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Compatibility check  : JSDK 1 detected. ");
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).debug("Compatibility check - JSDK 1 detected. ");
             }
         }
         return result;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2004/02/16 01:30:51 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/02/16 15:41:54 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.3
  */
 public class CmsSystemInfo {
@@ -60,6 +60,9 @@ public class CmsSystemInfo {
     
     /** Default encoding, can be overwritten in "opencms.properties" */
     private String m_defaultEncoding;    
+    
+    /** The default web application (usually "ROOT") */
+    private String m_defaultWebApplicationName;
 
     /** The filename of the log file */
     private String m_logFileName;
@@ -171,6 +174,15 @@ public class CmsSystemInfo {
     public String getDefaultEncoding() {
         return m_defaultEncoding;
     }   
+    
+    /**
+     * Returns the default web application name (usually "ROOT").<p>
+     * 
+     * @return the default web application name
+     */
+    public String getDefaultWebApplicationName() {
+        return m_defaultWebApplicationName;
+    }
     
 
     /**
@@ -291,6 +303,22 @@ public class CmsSystemInfo {
     }
     
     /**
+     * Sets the default web application name (usually "ROOT").<p>
+     * 
+     * @param defaultWebApplicationName the default web application name to set
+     */
+    protected void setDefaultWebApplicationName(String defaultWebApplicationName) {
+        // cut off all leading / trailing slashes 
+        if (defaultWebApplicationName.endsWith("/")) {
+            defaultWebApplicationName = defaultWebApplicationName.substring(0, defaultWebApplicationName.length()-1);
+        }        
+        if (defaultWebApplicationName.startsWith("/")) {
+            defaultWebApplicationName = defaultWebApplicationName.substring(1);
+        }             
+        m_defaultWebApplicationName = defaultWebApplicationName;
+    }
+    
+    /**
      * Sets the filename of the logfile.<p>
      *  
      * @param logFileName filename of the logfile to set
@@ -308,15 +336,15 @@ public class CmsSystemInfo {
      * @param context the OpenCms request context
      */
     protected void setOpenCmsContext(String context) {
-        if ((context != null) && (context.startsWith("/ROOT"))) {
-            context = context.substring("/ROOT".length());
+        if ((context != null) && (context.startsWith("/" + getDefaultWebApplicationName()))) {
+            context = context.substring(("/" + getDefaultWebApplicationName()).length());
         }
         if (context == null) {
             context = "";
         }
         m_openCmsContext = context;
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". OpenCms context is   : " + m_openCmsContext);
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("OpenCms: Context is " + m_openCmsContext);
         }        
     }    
 
@@ -362,8 +390,8 @@ public class CmsSystemInfo {
             basePath = basePath + "/";
         }
         m_webInfPath = CmsLinkManager.normalizeRfsPath(basePath);
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info("OpenCms: Base application path is " + m_webInfPath);
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("OpenCms: WEB-INF path is " + m_webInfPath);
         }        
     }
     

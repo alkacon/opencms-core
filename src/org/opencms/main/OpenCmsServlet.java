@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsServlet.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/02/16 15:41:54 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
     
@@ -93,8 +93,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
             }
         }
         String path = req.getPathInfo();
-        if ((path != null) && path.startsWith(C_HANDLE)) {
-            OpenCmsCore.getInstance().initStartupClasses(req, res);            
+        if ((path != null) && path.startsWith(C_HANDLE)) {          
             invokeHandler(req, res);                                     
         } else {
             OpenCmsCore.getInstance().showResource(req, res);
@@ -203,10 +202,12 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
      */
     public synchronized void init(ServletConfig config) throws ServletException {
         super.init(config);
-        // upgrade the runlevel
+        // upgrade the runlevel 
+        // usually this should have already been done by the context listener
+        // however, after a fresh install / setup this will be done from here
         OpenCmsCore.getInstance().upgradeRunlevel(config.getServletContext());  
-        // add this as handler for 404 requests
-        OpenCmsCore.getInstance().addRequestHandler(this);
+        // finalize OpenCms initialization
+        OpenCmsCore.getInstance().initServlet(this);
     }
     
     /**

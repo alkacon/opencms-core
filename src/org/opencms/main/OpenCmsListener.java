@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsListener.java,v $
- * Date   : $Date: 2003/11/11 20:56:50 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/16 15:41:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import javax.servlet.ServletContextListener;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.1
  */
 public class OpenCmsListener implements ServletContextListener {
@@ -57,7 +57,7 @@ public class OpenCmsListener implements ServletContextListener {
         }  
         
         // upgrade the runlevel
-        OpenCmsCore.getInstance().upgradeRunlevel(event.getServletContext());            
+        OpenCmsCore.getInstance().upgradeRunlevel(event.getServletContext());
     }
 
     /**
