@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsCopy.java,v $
- * Date   : $Date: 2004/02/26 11:35:35 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2004/03/01 16:07:57 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * 
  * @since 5.1
  */
@@ -253,11 +253,8 @@ public class CmsCopy extends CmsDialog {
                     // set request attribute to reload the explorer tree view
                     List folderList = new ArrayList(2);
                     String target = CmsResource.getParentFolder(getParamTarget());
-                    if (!target.equals(CmsResource.getParentFolder(getParamResource()))) {
-                        // update target folder if its not the same as the source folder
-                        folderList.add(target);
-                    }
-                    getJsp().getRequest().setAttribute(C_REQUEST_ATTRIBUTE_RELOADTREE, folderList);
+                    folderList.add(target);
+                    getJsp().getRequest().setAttribute(C_REQUEST_ATTRIBUTE_RELOADTREE, folderList);              
                 }
                 getJsp().include(C_FILE_EXPLORER_FILELIST); 
             } else  {
