@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsSession.java,v $
- * Date   : $Date: 2000/07/18 16:13:47 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/07/20 12:37:34 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -38,9 +38,9 @@ import javax.servlet.http.*;
  * session-failover in distributed-server environments.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 2000/07/18 16:13:47 $  
+ * @version $Revision: 1.9 $ $Date: 2000/07/20 12:37:34 $  
  */
-public class CmsSession implements HttpSession {
+public class CmsSession {
 	
 	/**
 	 * The original HttpSession
@@ -56,26 +56,6 @@ public class CmsSession implements HttpSession {
 		m_session = originalSession;
 	}
 	
-	public String getId() {
-		return m_session.getId();
-	}
-	
-	public HttpSessionContext getSessionContext() {
-		return m_session.getSessionContext();
-	}
-
-	public long getCreationTime() {
-		return m_session.getCreationTime();
-	}
-	
-	public long getLastAccessedTime() {
-		return m_session.getLastAccessedTime();
-	}
-	
-	public void invalidate() {
-		m_session.invalidate();
-	}
-	
 	public void putValue(String name, Object value) {
 		m_session.putValue(name, value);
 	}
@@ -86,13 +66,5 @@ public class CmsSession implements HttpSession {
 	
 	public void removeValue(String name) {
 		m_session.removeValue(name);
-	}
-	
-	public String[] getValueNames() {
-		return m_session.getValueNames();
-	}
-
-	public boolean isNew() {
-		return m_session.isNew();
 	}
 }
