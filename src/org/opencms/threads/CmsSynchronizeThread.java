@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/CmsSynchronizeThread.java,v $
- * Date   : $Date: 2003/09/10 16:13:06 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/09/11 12:45:37 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Vector;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.1.10
  */
 public class CmsSynchronizeThread extends A_CmsReportThread {
@@ -87,13 +87,13 @@ public class CmsSynchronizeThread extends A_CmsReportThread {
     public void run() {
         Iterator i;            
         getReport().println(getReport().key("report.sync_begin"), I_CmsReport.C_FORMAT_HEADLINE);
-        getReport().println(getReport().key("report.sync_rfs_folder") + " " + getCms().getRegistry().getSystemValue(I_CmsConstants.C_SYNCHRONISATION_PATH).replace('\\', '/'), I_CmsReport.C_FORMAT_HEADLINE);                
+        getReport().println(getReport().key("report.sync_rfs_folder") + getCms().getRegistry().getSystemValue(I_CmsConstants.C_SYNCHRONISATION_PATH).replace('\\', '/'), I_CmsReport.C_FORMAT_HEADLINE);                
         i = m_resources.iterator();         
         while (i.hasNext()) {                        
             // synchronize the resource
             String resource = (String)i.next();            
             try {
-                getReport().println(getReport().key("report.sync_vfs_resource") + " " + resource, I_CmsReport.C_FORMAT_HEADLINE);                
+                getReport().println(getReport().key("report.sync_vfs_resource") + resource, I_CmsReport.C_FORMAT_HEADLINE);                
                 getCms().syncFolder(resource, getReport());
             } catch (CmsException e) {
                 getReport().println(e);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsSynchronizeReport.java,v $
- * Date   : $Date: 2003/09/10 16:13:06 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/09/11 12:45:37 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,13 +54,13 @@ import javax.servlet.jsp.PageContext;
  * Provides an output window for a CmsReport.<p> 
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.1.10
  */
-public class CmsSynchronizeReport extends CmsDialog {
+public class CmsSynchronizeReport extends CmsReport {
         
-    public static final String DIALOG_TYPE = "synchronize";
+    public static final String DIALOG_TYPE = "sync";
     // always start individual action id's with 100 to leave enough room for more default actions
 
     /**
@@ -89,9 +89,12 @@ public class CmsSynchronizeReport extends CmsDialog {
      * @throws JspException if problems including sub-elements occur
      */
     public void actionReport() throws JspException {
+        // save initialized instance of this class in request attribute for included sub-elements
+        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
         switch (getAction()) {
             case ACTION_REPORT_UPDATE:
-                CmsReport.loadReportUpdate(getJsp());  
+                setParamAction(REPORT_UPDATE);   
+                getJsp().include(C_FILE_REPORT_OUTPUT);  
                 break;
             case ACTION_REPORT_BEGIN:
             case ACTION_CONFIRMED:
@@ -99,13 +102,18 @@ public class CmsSynchronizeReport extends CmsDialog {
                 Vector resources;
                 try {
                     resources = getSynchronizeResources();
-                } catch (CmsException e) {
-                    // TODO: Show nice error dialog
-                    System.err.println(e);
-                    break;
+                } catch (CmsException e) {        
+                    // show error dialog
+                    setParamErrorstack(e.getStackTraceAsString());
+                    setParamMessage(key("error.message." + getParamDialogtype()));
+                    setParamReasonSuggestion(getErrorSuggestionDefault());
+                    getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);    
+                    break;                              
                 }
                 CmsSynchronizeThread thread = new CmsSynchronizeThread(getCms(), resources);
-                CmsReport.loadReportBegin(getJsp(), thread.getId().toString());  
+                setParamAction(REPORT_BEGIN);
+                setParamThread(thread.getId().toString());
+                getJsp().include(C_FILE_REPORT_OUTPUT);  
                 break;
         }
     }

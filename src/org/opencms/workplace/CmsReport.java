@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsReport.java,v $
- * Date   : $Date: 2003/09/08 18:21:28 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/09/11 12:45:37 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,19 +36,15 @@ import org.opencms.report.A_CmsReportThread;
 import com.opencms.flex.jsp.CmsJspActionElement;
 import com.opencms.flex.util.CmsUUID;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
  * Provides an output window for a CmsReport.<p> 
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1.10
  */
@@ -81,33 +77,33 @@ public class CmsReport extends CmsDialog {
      */
     public CmsReport(PageContext context, HttpServletRequest req, HttpServletResponse res) {
         this(new CmsJspActionElement(context, req, res));
-    }            
+    }          
     
     /**
-     * Loads a new report sub-element that will generate the report master frameset.<p>
+     * Returns an initialized CmsReport instance that is read from the request attributes.<p>
      * 
-     * @param jsp an initialized JSP context
-     * @param threadId the id of the Thread to report
-     * @throws JspException in case something goes wrong
+     * This method is used by dialog elements. 
+     * The dialog elements do not initialize their own workplace class, 
+     * but use the initialized instance of the "master" class.
+     * This is required to ensure that parameters of the "master" class
+     * can properly be kept on the dialog elements.<p>
+     * 
+     * To prevent null pointer exceptions, an empty dialog is returned if 
+     * nothing is found in the request attributes.<p>
+     *  
+     * @param context the JSP page context
+     * @param req the JSP request
+     * @param res the JSP response
+     * @return an initialized CmsDialog instance that is read from the request attributes
      */
-    public static void loadReportBegin(CmsJspActionElement jsp, String threadId) throws JspException {
-        Map paramMap = new HashMap(jsp.getRequest().getParameterMap());
-        paramMap.put(PARAM_ACTION, REPORT_BEGIN);
-        paramMap.put(PARAM_THREAD, threadId);
-        jsp.include(C_FILE_REPORT_OUTPUT, null, paramMap);            
-    }
-    
-    /**
-     * Loads a report update.<p>
-     * 
-     * @param jsp an initialized JSP context
-     * @throws JspException in case something goes wrong
-     */    
-    public static void loadReportUpdate(CmsJspActionElement jsp) throws JspException {
-        Map paramMap = new HashMap(jsp.getRequest().getParameterMap());
-        paramMap.put(PARAM_ACTION, REPORT_UPDATE);
-        jsp.include(C_FILE_REPORT_OUTPUT, null, paramMap);            
-    }
+    public static CmsReport initCmsReport(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+        CmsReport wp = (CmsReport)req.getAttribute(CmsWorkplace.C_SESSION_WORKPLACE_CLASS);
+        if (wp == null) {
+            // ensure that we don't get null pointers if the page is directly called
+            wp = new CmsReport(new CmsJspActionElement(context, req, res));
+        }           
+        return wp;
+    }   
    
     /**
      * Returns the Thread id to display in this report.<p>
