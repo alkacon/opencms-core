@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManager.java,v $
- * Date   : $Date: 2003/08/01 17:39:25 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/08/01 19:29:47 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.1
  */
 public final class CmsSiteManager implements Cloneable {
@@ -181,25 +181,16 @@ public final class CmsSiteManager implements Cloneable {
         // create ad return the site manager 
         return new CmsSiteManager(siteRoots, siteDefault);
     }
-
-    /**
-     * Returns a list of all site available for the current user.<p>
-     * 
-     * @param cms the current cms context 
-     * @return a list of all site available for the current user
-     */
-    public static List getAvailableSites(CmsObject cms) {
-        return getAvailableSites(cms, true);    
-    }
     
     /**
      * Returns a list of all site available for the current user.<p>
      * 
      * @param cms the current cms context 
-     * @param includeDefaults if true, the root and current site is included for the admin user
+     * @param workplaceMode if true, the root and current site is included for the admin user
+     * and the view permission is required to see the site root
      * @return a list of all site available for the current user
      */
-    public static List getAvailableSites(CmsObject cms, boolean includeDefaults) {
+    public static List getAvailableSites(CmsObject cms, boolean workplaceMode) {
         Map sites = A_OpenCms.getSiteManager().getSiteList();
         List siteroots = new ArrayList(sites.size() + 1);
         Map siteServers = new HashMap(sites.size() + 1);
@@ -217,7 +208,7 @@ public final class CmsSiteManager implements Cloneable {
             }            
         }        
         // add default site
-        if (includeDefaults && A_OpenCms.getSiteManager().getDefaultSite() != null) {
+        if (workplaceMode && A_OpenCms.getSiteManager().getDefaultSite() != null) {
             String folder = A_OpenCms.getSiteManager().getDefaultSite().getSiteRoot() + "/";
             if (! siteroots.contains(folder)) {
                 siteroots.add(folder);
@@ -229,7 +220,7 @@ public final class CmsSiteManager implements Cloneable {
         try {
             // for all operations here we need no context
             cms.getRequestContext().setSiteRoot("/");
-            if (includeDefaults && cms.getRequestContext().isAdmin()) {
+            if (workplaceMode && cms.getRequestContext().isAdmin()) {
                 if (! siteroots.contains("/")) {
                     siteroots.add("/");
                 }   
@@ -243,7 +234,7 @@ public final class CmsSiteManager implements Cloneable {
                 String folder = (String)i.next();
                 try {
                     CmsResource res = cms.readFileHeader(folder);
-                    if(cms.hasPermissions(res, I_CmsConstants.C_VIEW_ACCESS)) {
+                    if(!workplaceMode || cms.hasPermissions(res, I_CmsConstants.C_VIEW_ACCESS)) {
                         String title = cms.readProperty(folder, I_CmsConstants.C_PROPERTY_TITLE);
                         if (title == null) {
                             title = folder;
