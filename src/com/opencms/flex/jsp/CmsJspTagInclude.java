@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagInclude.java,v $
- * Date   : $Date: 2003/02/26 15:19:24 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2003/03/02 13:56:43 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * Used to include another OpenCms managed resource in a JSP.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  */
 public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParamParent { 
     
@@ -281,13 +281,13 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
      * @param context the current JSP page context
      * @param target the target for the include, might be <code>null</code>
      * @param element the element to select form the target might be <code>null</code>
-     * @param parameterMap a map of parameters for the include, will be merged with the request 
+     * @param paramMap a map of parameters for the include, will be merged with the request 
      *      parameters, might be <code>null</code>
      * @param req the current request
      * @param res the current response
      * @throws JspException in case something goes wrong
      */
-    static void includeTagAction(PageContext context, String target, String element, Map parameterMap, CmsFlexRequest req, CmsFlexResponse res) 
+    static void includeTagAction(PageContext context, String target, String element, Map paramMap, CmsFlexRequest req, CmsFlexResponse res) 
     throws JspException {
         
         if (target == null) {
@@ -295,9 +295,10 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
             target = req.getCmsObject().getRequestContext().getUri();
         }
         
-        if (parameterMap == null) {
-            // make sure we have a map available
-            parameterMap = new HashMap();
+        Map parameterMap = new HashMap();      
+        if (paramMap != null) {
+            // add all parameters 
+            parameterMap.putAll(paramMap);
         }
         
         if (element != null) {

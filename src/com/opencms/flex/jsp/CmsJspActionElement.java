@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspActionElement.java,v $
- * Date   : $Date: 2003/02/26 15:19:24 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/03/02 13:56:43 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * </pre>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.0 beta 2
  */
@@ -206,15 +206,19 @@ public class CmsJspActionElement {
     public void include(String target, String element, Map parameterMap) throws JspException {
         if (m_notInitialized) return;
         if (parameterMap != null) {
-            // ensure parameters are always of type String[] not just String
-            Iterator i = parameterMap.keySet().iterator();
-            while (i.hasNext()) {
-                String key = (String)i.next();
-                Object value = parameterMap.get(key);
-                if (value instanceof String) {
-                    String[] newValue = new String[] { (String) value };
-                    parameterMap.put(key, newValue);
+            try {
+                // ensure parameters are always of type String[] not just String
+                Iterator i = parameterMap.keySet().iterator();
+                while (i.hasNext()) {
+                    String key = (String)i.next();
+                    Object value = parameterMap.get(key);
+                    if (value instanceof String) {
+                        String[] newValue = new String[] {(String)value };
+                        parameterMap.put(key, newValue);
+                    }
                 }
+            } catch (UnsupportedOperationException e) {
+                // parameter map is immutable, just use it "as is"
             }
         }
         CmsJspTagInclude.includeTagAction(m_context, target, element, parameterMap, m_request, m_response);
