@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/03/15 14:32:14 $
- * Version: $Revision: 1.80 $
+ * Date   : $Date: 2000/03/16 13:50:34 $
+ * Version: $Revision: 1.81 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.80 $ $Date: 2000/03/15 14:32:14 $
+ * @version $Revision: 1.81 $ $Date: 2000/03/16 13:50:34 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2372,7 +2372,7 @@ System.err.println(">>> readFile(2) error for\n" +
 	 * <ul>
 	 * <li>the user has access to the project</li>
 	 * <li>the user can read and write this resource and all subresources</li>
-	 * <li>the resource is not locked</li>
+	 * <li>the resource is locked by the calling user</li>
 	 * </ul>
 	 * 
 	 * @param currentUser The user who requested this method.
@@ -2397,8 +2397,7 @@ System.err.println(">>> readFile(2) error for\n" +
 			onlineFolder = null;
 		}
 		// check, if the user may delete the resource
-		if( (!cmsFolder.isLocked()) &&
-			accessCreate(currentUser, currentProject, (A_CmsResource)cmsFolder) ) {
+		if( accessWrite(currentUser, currentProject, cmsFolder) ) {
 				
 			// write-acces  was granted - delete the folder and metainfos.
 			m_metadefRb.deleteAllMetainformations((A_CmsResource) cmsFolder);
