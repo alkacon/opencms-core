@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/09/29 07:59:40 $
-* Version: $Revision: 1.64 $
+* Date   : $Date: 2003/09/30 14:46:34 $
+* Version: $Revision: 1.65 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -987,9 +987,11 @@ public class CmsDbAccess {
     protected Vector createVectorOfCd(ResultSet res, Class contentDefinitionClass, CmsObject cms, boolean viewonly) throws SQLException {
         Constructor constructor;
         Vector retValue = new Vector();
+       
         try { // to get the constructor to create an empty contentDefinition
             constructor = contentDefinitionClass.getConstructor(new Class[] { CmsObject.class, CmsMasterDataSet.class });
         } catch (NoSuchMethodException exc) {
+            
             if (OpenCms.getLog(this).isWarnEnabled()) {
                 OpenCms.getLog(this).warn("Cannot locate constructor", exc);
             }
@@ -999,7 +1001,8 @@ public class CmsDbAccess {
         while (res.next()) { // while there is data in the resultset
             CmsMasterDataSet dataset = new CmsMasterDataSet();
             try { // to invoce the constructor to get a new empty instance
-                CmsMasterContent content = (CmsMasterContent)constructor.newInstance(new Object[] { cms, dataset });
+                CmsMasterContent content = (CmsMasterContent)constructor.newInstance(new Object[] { cms, dataset });              
+                
                 sqlFillValues(res, cms, dataset);
                 // add the cd only if read (and visible) permissions are granted.
                 // the visible-permissens will be checked, if viewonly is set to true
