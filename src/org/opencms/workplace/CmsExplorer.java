@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2003/07/04 13:55:05 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/07/07 14:48:23 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.1
  */
@@ -163,7 +163,7 @@ public class CmsExplorer extends CmsWorkplace {
             filelist = I_CmsWpConstants.C_FILELIST_NAME 
                 + I_CmsWpConstants.C_FILELIST_TITLE
                 + I_CmsWpConstants.C_FILELIST_TYPE
-                + I_CmsWpConstants.C_FILELIST_CHANGED;
+                + I_CmsWpConstants.C_FILELIST_DATE_LASTMODIFIED;
         }
         return filelist;
     }
@@ -282,13 +282,16 @@ public class CmsExplorer extends CmsWorkplace {
         content.append("\");\n");
         content.append("top.rD();\n\n");
 
-        // now look which filelist colums we want to show
-        int filelist = getDefaultPreferences(getCms());
-        boolean showTitle = (filelist & I_CmsWpConstants.C_FILELIST_TITLE) > 0;
-        boolean showDateChanged = (filelist & I_CmsWpConstants.C_FILELIST_CHANGED) > 0;
-        boolean showOwner = (filelist & I_CmsWpConstants.C_FILELIST_OWNER) > 0;
-        boolean showGroup = (filelist & I_CmsWpConstants.C_FILELIST_GROUP) > 0;
-        boolean showSize = (filelist & I_CmsWpConstants.C_FILELIST_SIZE) > 0;
+        // now check which filelist colums we want to show
+        int preferences = getDefaultPreferences(getCms());
+        
+        boolean showTitle = (preferences & I_CmsWpConstants.C_FILELIST_TITLE) > 0;
+        boolean showPermissions = (preferences & I_CmsWpConstants.C_FILELIST_PERMISSIONS) > 0;
+        boolean showSize = (preferences & I_CmsWpConstants.C_FILELIST_SIZE) > 0;
+        boolean showDateLastModified = (preferences & I_CmsWpConstants.C_FILELIST_DATE_LASTMODIFIED) > 0;
+        boolean showUserWhoLastModified = (preferences & I_CmsWpConstants.C_FILELIST_USER_LASTMODIFIED) > 0;
+        boolean showDateCreated = (preferences & I_CmsWpConstants.C_FILELIST_DATE_CREATED) > 0;
+        boolean showUserWhoCreated = (preferences & I_CmsWpConstants.C_FILELIST_USER_CREATED) > 0;
 
         // now get the entries for the filelist
         Vector resources = getRessources(getCms(), getSettings().getExplorerMode(), getSettings().getExplorerFolder());
@@ -319,20 +322,21 @@ public class CmsExplorer extends CmsWorkplace {
         for (int i = startat;i < stopat;i++) {
             CmsResource res = (CmsResource)resources.elementAt(i);
             content.append("top.aF(");
-            // the name
+            // position 1: name
             content.append("\"");
             content.append(res.getName());
             content.append("\",");
-            // the path
+            // position 2: path
             if(projectView || vfslinkView){
                 content.append("\"");
+                // TODO: Check this (won't work with new repository)
                 content.append(res.getPath());
                 content.append("\",");
             }else{
                 //is taken from top.setDirectory
                 content.append("\"\",");
             }
-            // the title
+            // position 3: title
             if(showTitle){
                 String title = "";
                 try {
@@ -349,11 +353,24 @@ public class CmsExplorer extends CmsWorkplace {
             }else{
                 content.append("\"\",");
             }
-            // the type
+            // position 4: type
             content.append(res.getType());
             content.append(",");
-            // date of last change
-            if(showDateChanged){
+            // position 5: size
+            if(res.isFolder() || (!showSize)) {
+                content.append("\"\",");
+            }else {
+                content.append(res.getLength());
+                content.append(",");                
+            }
+            // position 6: state
+            content.append(res.getState());
+            content.append(",");            
+            // position 7: project
+            content.append(res.getProjectId());
+            content.append(",");                             
+            // position 8: date of last modification
+            if(showDateLastModified){
                 content.append("\"");
                 content.append(getSettings().getMessages().getDateTime(res.getDateLastModified()));
                 content.append("\",");
@@ -361,28 +378,32 @@ public class CmsExplorer extends CmsWorkplace {
             }else{
                 content.append("\"\",");
             }
-            // unused field, was intended for the user who changed the resource last
-            content.append("\"\",");
-            // date
-            // unused field, was intended for: content.append("\"" + Utils.getNiceDate(res.getDateCreated()) + "\",");
-            content.append("\"\",");
-            // size
-            if(res.isFolder() || (!showSize)) {
+            // position 9: user who last modified the resource
+            if(showUserWhoLastModified){
+                content.append("\"");  
+                try {            
+                    content.append(getCms().readUser(res.getResourceLastModifiedBy()).getName());
+                } catch (CmsException e) {
+                   content.append(e.getMessage());
+                }
+                content.append("\",");                
+            } else {
                 content.append("\"\",");
-            }else {
-                content.append(res.getLength());
-                content.append(",");                
             }
-            // state
-            content.append(res.getState());
-            content.append(",");            
-            // project
-            content.append(res.getProjectId());
-            content.append(",");            
-            // owner
-            if(showOwner){
+            // position 10: date of creation
+            if(showDateCreated){
+                content.append("\"");
+                content.append(getSettings().getMessages().getDateTime(res.getDateCreated()));
+                content.append("\",");
+                
+            }else{
+                content.append("\"\",");
+            }         
+            // position 11: user who created the resource
+            if(showUserWhoCreated){
                 content.append("\"");                
                 try {
+                    // TODO: Change this to user who created the resource
                     content.append(getCms().readUser(res.getOwnerId()).getName());
                 } catch (CmsException e) {
                     content.append(e.getMessage());
@@ -391,22 +412,19 @@ public class CmsExplorer extends CmsWorkplace {
             }else{
                 content.append("\"\",");
             }
-            // group
-            if(showGroup){
+            // position 12: permissions
+            if(showPermissions){
                 content.append("\"");  
-                try {              
-                    content.append(getCms().readGroup(res).getName());
+                try {            
+                    content.append(getCms().getPermissions(getCms().readAbsolutePath(res)).getPermissionString());
                 } catch (CmsException e) {
                    content.append(e.getMessage());
                 }
                 content.append("\",");                
-            }else{
+            } else {
                 content.append("\"\",");
-            }
-            // accessFlags
-            content.append(res.getAccessFlags());
-            content.append(",");            
-            // locked by
+            }     
+            // position 13: locked by
             if(res.isLockedBy().isNullUUID()) {
                 content.append("\"\",");
             }else {
@@ -418,7 +436,6 @@ public class CmsExplorer extends CmsWorkplace {
                 }
                 content.append("\",");                
             }
-            // locked in project
             int lockedInProject = res.getLockedInProject();
             String lockedInProjectName = "";
             try {
@@ -426,14 +443,16 @@ public class CmsExplorer extends CmsWorkplace {
             } catch(CmsException exc) {
                 // ignore the exception - this is an old project so ignore it
             }
-            content.append("\"");            
+            // position 14: name of project where resource belongs to            
+            content.append("\"");
             content.append(lockedInProjectName);
             content.append("\",");
+            // position 15: id of project where resource belongs to
             content.append(lockedInProject);
             content.append(");\n");
         }
 
-        //  now the tree, only if changed
+        // now the tree, only if changed
         if(newTreePlease && (!(listonly || vfslinkView))) {
             content.append("\ntop.rT();\n");
             List tree = null;

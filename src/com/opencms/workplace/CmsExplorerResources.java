@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsExplorerResources.java,v $
-* Date   : $Date: 2003/07/02 11:03:12 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2003/07/07 14:48:23 $
+* Version: $Revision: 1.22 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -147,7 +147,7 @@ public class CmsExplorerResources extends CmsWorkplaceDefault implements I_CmsCo
             filelist = new Integer(explorerSettings).intValue();
         }
         else {
-            filelist = C_FILELIST_NAME + C_FILELIST_TITLE + C_FILELIST_TYPE + C_FILELIST_CHANGED;
+            filelist = C_FILELIST_NAME + C_FILELIST_TITLE + C_FILELIST_TYPE + C_FILELIST_DATE_LASTMODIFIED;
         }
         return filelist;
     }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPreferencesPanels.java,v $
-* Date   : $Date: 2003/06/25 13:52:24 $
-* Version: $Revision: 1.50 $
+* Date   : $Date: 2003/07/07 14:48:23 $
+* Version: $Revision: 1.51 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.opencms.workplace.CmsWorkplaceAction;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.50 $ $Date: 2003/06/25 13:52:24 $
+ * @version $Revision: 1.51 $ $Date: 2003/07/07 14:48:23 $
  */
 
 public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWpConstants, I_CmsConstants {
@@ -84,6 +84,9 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
 
     /** Datablock value for checkbox lockedby */
     private static final String C_CHECKLOCKEDBY = "CHECKLOCKEDBY";
+
+    private static final String C_CHECKDATECREATED = "CHECKDATECREATED";
+    private static final String C_CHECKUSERLASTMODIFIED = "CHECKUSERLASTMODIFIED";
 
     /** Datablock value for checkbox view all */
     private static final String C_CHVIEWALL = "CHVIEWALL";
@@ -412,26 +415,32 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         if(parameters.get("CBTYPE") != null) {
             explorerSettings += C_FILELIST_TYPE;
         }
-        if(parameters.get("CBCHANGED") != null) {
-            explorerSettings += C_FILELIST_CHANGED;
-        }
         if(parameters.get("CBSIZE") != null) {
             explorerSettings += C_FILELIST_SIZE;
         }
+        if(parameters.get("CBACCESS") != null) {
+            explorerSettings += C_FILELIST_PERMISSIONS;
+        }
+        if(parameters.get("CBCHANGED") != null) {
+            explorerSettings += C_FILELIST_DATE_LASTMODIFIED;
+        }
+        if(parameters.get("CBUSERLASTMODIFIED") != null) {
+            explorerSettings += C_FILELIST_USER_LASTMODIFIED;
+        }           
+        if(parameters.get("CBDATECREATED") != null) {
+            explorerSettings += C_FILELIST_DATE_CREATED;
+        }        
+        if(parameters.get("CBOWNER") != null) {
+            explorerSettings += C_FILELIST_USER_CREATED;
+        }
         if(parameters.get("CBSTATE") != null) {
             explorerSettings += C_FILELIST_STATE;
-        }
-        if(parameters.get("CBOWNER") != null) {
-            explorerSettings += C_FILELIST_OWNER;
+        }        
+        if(parameters.get("CBLOCKEDBY") != null) {
+            explorerSettings += C_FILELIST_LOCKEDBY;
         }
         if(parameters.get("CBGROUP") != null) {
             explorerSettings += C_FILELIST_GROUP;
-        }
-        if(parameters.get("CBACCESS") != null) {
-            explorerSettings += C_FILELIST_ACCESS;
-        }
-        if(parameters.get("CBLOCKEDBY") != null) {
-            explorerSettings += C_FILELIST_LOCKED;
         }
         return explorerSettings;
     }
@@ -937,7 +946,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         if(explorerSettings != null) {
             explorerSettingsValue = new Integer(explorerSettings).intValue();
         } else {
-            explorerSettingsValue = C_FILELIST_TITLE + C_FILELIST_TYPE + C_FILELIST_CHANGED;
+            explorerSettingsValue = C_FILELIST_TITLE + C_FILELIST_TYPE + C_FILELIST_DATE_LASTMODIFIED;
         }
 
         // now update the datablocks in the template
@@ -951,7 +960,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         } else {
             xmlTemplateDocument.setData(C_CHECKTYPE, " ");
         }
-        if((explorerSettingsValue & C_FILELIST_CHANGED) > 0) {
+        if((explorerSettingsValue & C_FILELIST_DATE_LASTMODIFIED) > 0) {
             xmlTemplateDocument.setData(C_CHECKCHANGED, C_CHECKED);
         } else {
             xmlTemplateDocument.setData(C_CHECKCHANGED, " ");
@@ -966,7 +975,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         } else {
             xmlTemplateDocument.setData(C_CHECKSTATE, " ");
         }
-        if((explorerSettingsValue & C_FILELIST_OWNER) > 0) {
+        if((explorerSettingsValue & C_FILELIST_USER_CREATED) > 0) {
             xmlTemplateDocument.setData(C_CHECKOWNER, C_CHECKED);
         } else {
             xmlTemplateDocument.setData(C_CHECKOWNER, " ");
@@ -976,16 +985,26 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         } else {
             xmlTemplateDocument.setData(C_CHECKGROUP, " ");
         }
-        if((explorerSettingsValue & C_FILELIST_ACCESS) > 0) {
+        if((explorerSettingsValue & C_FILELIST_PERMISSIONS) > 0) {
             xmlTemplateDocument.setData(C_CHECKACCESS, C_CHECKED);
         } else {
             xmlTemplateDocument.setData(C_CHECKACCESS, " ");
         }
-        if((explorerSettingsValue & C_FILELIST_LOCKED) > 0) {
+        if((explorerSettingsValue & C_FILELIST_LOCKEDBY) > 0) {
             xmlTemplateDocument.setData(C_CHECKLOCKEDBY, C_CHECKED);
         } else {
             xmlTemplateDocument.setData(C_CHECKLOCKEDBY, " ");
         }
+        if((explorerSettingsValue & C_FILELIST_DATE_CREATED) > 0) {
+            xmlTemplateDocument.setData(C_CHECKDATECREATED, C_CHECKED);
+        } else {
+            xmlTemplateDocument.setData(C_CHECKDATECREATED, " ");
+        }   
+        if((explorerSettingsValue & C_FILELIST_USER_LASTMODIFIED) > 0) {
+            xmlTemplateDocument.setData(C_CHECKUSERLASTMODIFIED, C_CHECKED);
+        } else {
+            xmlTemplateDocument.setData(C_CHECKUSERLASTMODIFIED, " ");
+        } 
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
-* Date   : $Date: 2003/06/25 13:52:24 $
-* Version: $Revision: 1.126 $
+* Date   : $Date: 2003/07/07 14:48:23 $
+* Version: $Revision: 1.127 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ package com.opencms.workplace;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.126 $ $Date: 2003/06/25 13:52:24 $
+ * @version $Revision: 1.127 $ $Date: 2003/07/07 14:48:23 $
  */
 
 public interface I_CmsWpConstants {
@@ -1024,42 +1024,32 @@ public interface I_CmsWpConstants {
     /** The name column*/
     String C_FILELIST_COLUMN_NAME = "COLUMN_NAME";
 
-
     /** The title column*/
     String C_FILELIST_COLUMN_TITLE = "COLUMN_TITLE";
-
 
     /** The type column*/
     String C_FILELIST_COLUMN_TYPE = "COLUMN_TYPE";
 
-
     /** The changed column*/
     String C_FILELIST_COLUMN_CHANGED = "COLUMN_CHANGED";
-
 
     /** The size column*/
     String C_FILELIST_COLUMN_SIZE = "COLUMN_SIZE";
 
-
     /** The state column*/
     String C_FILELIST_COLUMN_STATE = "COLUMN_STATE";
-
 
     /** The owner column*/
     String C_FILELIST_COLUMN_OWNER = "COLUMN_OWNER";
 
-
     /** The group column*/
     String C_FILELIST_COLUMN_GROUP = "COLUMN_GROUP";
-
 
     /** The access column*/
     String C_FILELIST_COLUMN_ACCESS = "COLUMN_ACCESS";
 
-
     /** The locked column*/
     String C_FILELIST_COLUMN_LOCKED = "COLUMN_LOCKED";
-
 
     /** The customizable column*/
     String C_FILELIST_COLUMN_CUSTOMIZED = "COLUMN_CUSTOMIZED";
@@ -1160,45 +1150,44 @@ public interface I_CmsWpConstants {
     /** Name of the filelist preferences */
     String C_USERPREF_FILELIST = "filelist";
 
-
+    // The order of the filelist columns has changed in the JSP workplace,
+    // but the old variable values are kept so that the XML workplace still works 
+    /** Flag for displaying the name column */
+    int C_FILELIST_NAME = 512;
+    
     /** Flag for displaying the title column */
     int C_FILELIST_TITLE = 1;
-
 
     /** Flag for displaying the filetype column */
     int C_FILELIST_TYPE = 2;
 
-
-    /** Flag for displaying the changed column */
-    int C_FILELIST_CHANGED = 4;
-
-
     /** Flag for displaying the size column */
     int C_FILELIST_SIZE = 8;
+    
+    /** Flag for displaying the access column */
+    int C_FILELIST_PERMISSIONS = 128;
+        
+    /** Flag for displaying the changed column */
+    int C_FILELIST_DATE_LASTMODIFIED = 4;
+    
+    /** Flag for displaying the user who last modified column */
+    int C_FILELIST_USER_LASTMODIFIED = 2048;
 
+    /** Flag for displaying the date created column */
+    int C_FILELIST_DATE_CREATED = 1024;   
+    
+    /** Flag for displaying the owner column */
+    int C_FILELIST_USER_CREATED = 32; 
 
     /** Flag for displaying the state column */
     int C_FILELIST_STATE = 16;
 
-
-    /** Flag for displaying the owner column */
-    int C_FILELIST_OWNER = 32;
-
-
+    /** Flag for displaying the locked column */
+    int C_FILELIST_LOCKEDBY = 256;
+    
+    // not longer used in the JSP workplace 
     /** Flag for displaying the group column */
     int C_FILELIST_GROUP = 64;
-
-
-    /** Flag for displaying the access column */
-    int C_FILELIST_ACCESS = 128;
-
-
-    /** Flag for displaying the locked column */
-    int C_FILELIST_LOCKED = 256;
-
-
-    /** Flag for displaying the name column */
-    int C_FILELIST_NAME = 512;
 
 
     /** Parameter of user management */

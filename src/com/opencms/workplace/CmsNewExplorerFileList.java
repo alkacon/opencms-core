@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
-* Date   : $Date: 2003/07/04 16:00:24 $
-* Version: $Revision: 1.71 $
+* Date   : $Date: 2003/07/07 14:48:23 $
+* Version: $Revision: 1.72 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import java.util.Vector;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.71 $ $Date: 2003/07/04 16:00:24 $
+ * @version $Revision: 1.72 $ $Date: 2003/07/07 14:48:23 $
  */
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannels,I_CmsConstants,I_CmsWpConstants {
 
@@ -293,8 +293,8 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
         // now look which filelist colums we want to show
         int filelist = getDefaultPreferences(cms);
         boolean showTitle = (filelist & C_FILELIST_TITLE) > 0;
-        boolean showDateChanged = (filelist & C_FILELIST_CHANGED) > 0;
-        boolean showOwner = (filelist & C_FILELIST_OWNER) > 0;
+        boolean showDateChanged = (filelist & C_FILELIST_DATE_LASTMODIFIED) > 0;
+        boolean showOwner = (filelist & C_FILELIST_USER_CREATED) > 0;
         boolean showGroup = (filelist & C_FILELIST_GROUP) > 0;
         boolean showSize = (filelist & C_FILELIST_SIZE) > 0;
 
@@ -601,7 +601,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
         if(explorerSettings != null) {
             filelist = new Integer(explorerSettings).intValue();
         }else {
-            filelist = C_FILELIST_NAME + C_FILELIST_TITLE + C_FILELIST_TYPE + C_FILELIST_CHANGED;
+            filelist = C_FILELIST_NAME + C_FILELIST_TITLE + C_FILELIST_TYPE + C_FILELIST_DATE_LASTMODIFIED;
         }
         return filelist;
     }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
-* Date   : $Date: 2003/07/04 16:00:24 $
-* Version: $Revision: 1.67 $
+* Date   : $Date: 2003/07/07 14:48:23 $
+* Version: $Revision: 1.68 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.w3c.dom.Element;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.67 $ $Date: 2003/07/04 16:00:24 $
+ * @version $Revision: 1.68 $ $Date: 2003/07/07 14:48:23 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -193,22 +193,22 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
         if((filelist & C_FILELIST_STATE) == 0) {
             template.setData(C_FILELIST_COLUMN_STATE + suffix, "");
         }
-        if((filelist & C_FILELIST_CHANGED) == 0) {
+        if((filelist & C_FILELIST_DATE_LASTMODIFIED) == 0) {
             template.setData(C_FILELIST_COLUMN_CHANGED + suffix, "");
         }
         if((filelist & C_FILELIST_SIZE) == 0) {
             template.setData(C_FILELIST_COLUMN_SIZE + suffix, "");
         }
-        if((filelist & C_FILELIST_OWNER) == 0) {
+        if((filelist & C_FILELIST_USER_CREATED) == 0) {
             template.setData(C_FILELIST_COLUMN_OWNER + suffix, "");
         }
         if((filelist & C_FILELIST_GROUP) == 0) {
             template.setData(C_FILELIST_COLUMN_GROUP + suffix, "");
         }
-        if((filelist & C_FILELIST_ACCESS) == 0) {
+        if((filelist & C_FILELIST_PERMISSIONS) == 0) {
             template.setData(C_FILELIST_COLUMN_ACCESS + suffix, "");
         }
-        if((filelist & C_FILELIST_LOCKED) == 0) {
+        if((filelist & C_FILELIST_LOCKEDBY) == 0) {
             template.setData(C_FILELIST_COLUMN_LOCKED + suffix, "");
         }
         return template;
@@ -348,7 +348,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
             filelist = new Integer(explorerSettings).intValue();
         }
         else {
-            filelist = C_FILELIST_NAME + C_FILELIST_TITLE + C_FILELIST_TYPE + C_FILELIST_CHANGED;
+            filelist = C_FILELIST_NAME + C_FILELIST_TITLE + C_FILELIST_TYPE + C_FILELIST_DATE_LASTMODIFIED;
         }
         return filelist;
     }
@@ -470,7 +470,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
                         typename = lang.getLanguageValue("fileicon." + typename);
                         template.fastSetXmlData(C_FILELIST_TYPE_VALUE, typename);
                     }
-                    if((filelist & C_FILELIST_CHANGED) != 0) {
+                    if((filelist & C_FILELIST_DATE_LASTMODIFIED) != 0) {
 
                         // get the folder date
                         long time = res.getDateLastModified();
@@ -486,7 +486,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
                         // get the folder state
                         template.fastSetXmlData(C_FILELIST_STATE_VALUE, getState(cms, res, lang));
                     }
-                    if((filelist & C_FILELIST_OWNER) != 0) {
+                    if((filelist & C_FILELIST_USER_CREATED) != 0) {
 
                         // get the owner of the folder
                         CmsUser owner = cms.readOwner(res);
@@ -507,7 +507,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
                         template.fastSetXmlData(C_FILELIST_ACCESS_VALUE, cms.getPermissionString(res.getName()));
                     }
                     */
-                    if((filelist & C_FILELIST_LOCKED) != 0) {
+                    if((filelist & C_FILELIST_LOCKEDBY) != 0) {
 
                         // get the locked by
                         CmsUUID lockedby = res.isLockedBy();
@@ -576,7 +576,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
                         typename = lang.getLanguageValue("fileicon." + typename);
                         template.fastSetXmlData(C_FILELIST_TYPE_VALUE, typename);
                     }
-                    if((filelist & C_FILELIST_CHANGED) != 0) {
+                    if((filelist & C_FILELIST_DATE_LASTMODIFIED) != 0) {
 
                         // get the file date
                         long time = file.getDateLastModified();
@@ -592,7 +592,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
                         // get the file state
                         template.fastSetXmlData(C_FILELIST_STATE_VALUE, getState(cms, file, lang));
                     }
-                    if((filelist & C_FILELIST_OWNER) != 0) {
+                    if((filelist & C_FILELIST_USER_CREATED) != 0) {
 
                         // get the owner of the file
                         CmsUser owner = cms.readOwner(file);
@@ -613,7 +613,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
                         template.fastSetXmlData(C_FILELIST_ACCESS_VALUE, cms.getPermissionString(res.getName()));
                     }
                     */
-                    if((filelist & C_FILELIST_ACCESS) != 0) {
+                    if((filelist & C_FILELIST_PERMISSIONS) != 0) {
 
                         // get the locked by
                         CmsUUID lockedby = file.isLockedBy();

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDownloadBrowser.java,v $
-* Date   : $Date: 2003/07/02 11:03:12 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2003/07/07 14:48:23 $
+* Version: $Revision: 1.24 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.23 $ $Date: 2003/07/02 11:03:12 $
+ * @version $Revision: 1.24 $ $Date: 2003/07/07 14:48:23 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -344,11 +344,11 @@ public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFile
         // not display the following columns
         prefs = ((prefs & C_FILELIST_NAME) == 0) ? prefs : (prefs - C_FILELIST_NAME);
         prefs = ((prefs & C_FILELIST_TITLE) == 0) ? prefs : (prefs - C_FILELIST_TITLE);
-        prefs = ((prefs & C_FILELIST_OWNER) == 0) ? prefs : (prefs - C_FILELIST_OWNER);
+        prefs = ((prefs & C_FILELIST_USER_CREATED) == 0) ? prefs : (prefs - C_FILELIST_USER_CREATED);
         prefs = ((prefs & C_FILELIST_GROUP) == 0) ? prefs : (prefs - C_FILELIST_GROUP);
-        prefs = ((prefs & C_FILELIST_ACCESS) == 0) ? prefs : (prefs - C_FILELIST_ACCESS);
+        prefs = ((prefs & C_FILELIST_PERMISSIONS) == 0) ? prefs : (prefs - C_FILELIST_PERMISSIONS);
         prefs = ((prefs & C_FILELIST_STATE) == 0) ? prefs : (prefs - C_FILELIST_STATE);
-        prefs = ((prefs & C_FILELIST_LOCKED) == 0) ? prefs : (prefs - C_FILELIST_LOCKED);
+        prefs = ((prefs & C_FILELIST_LOCKEDBY) == 0) ? prefs : (prefs - C_FILELIST_LOCKEDBY);
         return prefs;
     }
 
