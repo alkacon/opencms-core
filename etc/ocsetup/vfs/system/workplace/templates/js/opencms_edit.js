@@ -32,6 +32,10 @@ function setText()
 	EDITOR.edit1.focus();
 }
 
+function doSubmit()
+{
+	document.EDITOR.CONTENT.value = escape(document.EDITOR.edit1.Text);
+}
 
 // Function action on button click
 function doEdit(para)
@@ -47,7 +51,7 @@ function doEdit(para)
 	}
 	case SAVECLOSE:
 	{
-		document.EDITOR.CONTENT.value = escape(document.EDITOR.edit1.Text);
+		doSubmit();
 		document.EDITOR.save.value = "1";
 		document.EDITOR.EXIT.value = "1";
 		document.EDITOR.submit();
@@ -55,7 +59,7 @@ function doEdit(para)
 	}
 	case SAVE:
 	{
-		document.EDITOR.CONTENT.value = escape(document.EDITOR.edit1.Text);
+		doSubmit();
 		document.EDITOR.save.value = "1";
 		document.EDITOR.submit();
 		break;
