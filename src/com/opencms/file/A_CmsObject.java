@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.7 $ $Date: 1999/12/23 16:48:30 $ 
+ * @version $Revision: 1.8 $ $Date: 2000/01/03 12:46:39 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -40,14 +40,15 @@ public abstract class A_CmsObject {
 	 * @param currentProject The current project for this request.
 	 */
 	abstract public void init(HttpServletRequest req, HttpServletResponse resp, 
-							  String user, String currentGroup, String currentProject );	
+							  String user, String currentGroup, String currentProject )
+		throws CmsException;
 	
 	/**
 	 * Returns the current request-context.
 	 * 
 	 * @return the current request-context.
 	 */
-	abstract A_CmsRequestContext getRequestContext();
+	abstract public A_CmsRequestContext getRequestContext();
 
 	/**
 	 * Returns the root-folder object.
@@ -753,7 +754,8 @@ public abstract class A_CmsObject {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract public Vector getUsers();
+	abstract public Vector getUsers()
+		throws CmsException;
 
 	/**
 	 * Returns all groups in the Cms.
@@ -772,7 +774,8 @@ public abstract class A_CmsObject {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract public A_CmsUser readUser(String username);	
+	abstract public A_CmsUser readUser(String username) 
+		throws CmsException;	
 
 	/**
 	 * Returns a user in the Cms, if the password is correct.
@@ -783,7 +786,8 @@ public abstract class A_CmsObject {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract public A_CmsUser readUser(String username, String password);	
+	abstract public A_CmsUser readUser(String username, String password)
+		throws CmsException;	
 
 	/**
 	 * Logs a user into the Cms, if the password is correct.

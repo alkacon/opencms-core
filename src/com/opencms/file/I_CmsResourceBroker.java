@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.6 $ $Date: 1999/12/23 16:48:30 $
+ * @version $Revision: 1.7 $ $Date: 2000/01/03 12:46:39 $
  */
 interface I_CmsResourceBroker {
 
@@ -355,10 +355,10 @@ interface I_CmsResourceBroker {
 	 * else it returns false.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-	public boolean isAdmin(A_CmsUser currentUser, A_CmsProject currentProject)
-         throws CmsException;
+	public boolean isAdmin(A_CmsUser currentUser, A_CmsProject currentProject) 
+		throws CmsException;
     
-    	/**
+    /**
 	 * Determines, if the users current group is the projectleader-group.<BR/>
 	 * All projectleaders can create new projects, or close their own projects.
 	 * 
@@ -369,8 +369,10 @@ interface I_CmsResourceBroker {
 	 * @param currentProject The current project of the user.
 	 * @return true, if the users current group is the projectleader-group, 
 	 * else it returns false.
+	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-	public boolean isProjectLeader(A_CmsUser currentUser, A_CmsProject currentProject);
+	public boolean isProjectLeader(A_CmsUser currentUser, A_CmsProject currentProject) 
+		throws CmsException;
 
 	/**
 	 * Returns the anonymous user object.<P/>
@@ -381,14 +383,16 @@ interface I_CmsResourceBroker {
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
 	 * @return the anonymous user object.
+	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public A_CmsUser anonymousUser(A_CmsUser currentUser, A_CmsProject currentProject);
+	public A_CmsUser anonymousUser(A_CmsUser currentUser, A_CmsProject currentProject) 
+		throws CmsException;
 	
 	/**
 	 * Returns a user object.<P/>
 	 * 
 	 * <B>Security:</B>
-	 * All users are granted, except the anonymous user.
+	 * All users are granted.
 	 * 
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
@@ -404,7 +408,7 @@ interface I_CmsResourceBroker {
 	 * Returns a user object if the password for the user is correct.<P/>
 	 * 
 	 * <B>Security:</B>
-	 * All users are granted, except the anonymous user.
+	 * All users are granted.
 	 * 
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.

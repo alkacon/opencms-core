@@ -13,7 +13,7 @@ import com.opencms.core.*;
  * <p>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.4 $ $Date: 1999/12/23 16:48:30 $ 
+ * @version $Revision: 1.5 $ $Date: 2000/01/03 12:46:39 $ 
  * 
  */
 public abstract class A_CmsRequestContext
@@ -28,8 +28,10 @@ public abstract class A_CmsRequestContext
 	 * @param currentGroup The current group for this request.
 	 * @param currentProject The current project for this request.
 	 */
-	abstract void init(HttpServletRequest req, HttpServletResponse resp, 
-					   String user, String currentGroup, String currentProject);
+	abstract void init(I_CmsResourceBroker rb, HttpServletRequest req, 
+					   HttpServletResponse resp, String user, String currentGroup, 
+					   String currentProject) 
+		throws CmsException;
 	
 	/**
 	 * Returns the uri for this CmsObject.
@@ -93,8 +95,11 @@ public abstract class A_CmsRequestContext
 	 * 
 	 * @return true, if the users current group is the admin-group, 
 	 * else it returns false.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */	
-	abstract public boolean isAdmin();
+	abstract public boolean isAdmin()
+		throws CmsException;
 
 	/**
 	 * Determines, if the users current group is the projectleader-group.<BR>
@@ -102,8 +107,11 @@ public abstract class A_CmsRequestContext
 	 * 
 	 * @return true, if the users current group is the projectleader-group, 
 	 * else it returns false.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */	
-	abstract public  boolean isProjectLeader();
+	abstract public  boolean isProjectLeader()
+		throws CmsException;
 
 	/**
 	 * Returns the current project for the user.

@@ -13,10 +13,15 @@ import com.opencms.core.*;
  * <p>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 1999/12/23 16:49:21 $
+ * @version $Revision: 1.2 $ $Date: 2000/01/03 12:46:39 $
  * 
  */
-public class CmsRequestContext extends A_CmsRequestContext {
+public class CmsRequestContext extends A_CmsRequestContext implements I_CmsConstants {
+
+	/**
+	 * The rb to get access to the OpenCms.
+	 */
+	private I_CmsResourceBroker m_rb;
 	
 	/**
 	 * The current http-request.
@@ -34,7 +39,7 @@ public class CmsRequestContext extends A_CmsRequestContext {
 	private A_CmsUser m_user;
 	
 	/**
-	 * The current user.
+	 * The current group of the user.
 	 */
 	private A_CmsGroup m_currentGroup;
 	
@@ -52,14 +57,15 @@ public class CmsRequestContext extends A_CmsRequestContext {
 	 * @param currentGroup The current group for this request.
 	 * @param currentProject The current project for this request.
 	 */
-	void init(HttpServletRequest req, HttpServletResponse resp, 
-			  String user, String currentGroup, String currentProject) {
+	void init(I_CmsResourceBroker rb, HttpServletRequest req, HttpServletResponse resp, 
+			  String user, String currentGroup, String currentProject) 
+		throws CmsException {
+		m_rb = rb;
 		m_req = req;
 		m_resp = resp;
-		// TODO: implement this!
-		// m_user = user;
-		// m_currentGroup = currentGroup;
-		// m_currentProject = currentProject;
+		m_user = m_rb.readUser(null, null, user);
+		m_currentProject = m_rb.readProject(m_user, null, currentProject);
+		m_currentGroup = m_rb.readGroup(m_user, m_currentProject, currentGroup);
 	}
 	
 	/**
@@ -68,7 +74,11 @@ public class CmsRequestContext extends A_CmsRequestContext {
 	 * @return the uri for this CmsObject.
 	 */
 	public String getUri() {
-		return("Unknown");	// TODO: implement this!
+		if( m_req != null ) {
+			return( translatePath(m_req.getRequestURI()) );
+		} else {
+			return( this.C_ROOT );
+		}
 	}
 	
 	/**
@@ -132,7 +142,7 @@ public class CmsRequestContext extends A_CmsRequestContext {
 	 */
 	void setUserCurrentGroup(String groupname) 
 		throws CmsException {
-		return; // TODO: implement this!
+		m_currentGroup = m_rb.readGroup(m_user, m_currentProject, groupname);
 	}
 
 	/**
@@ -140,9 +150,12 @@ public class CmsRequestContext extends A_CmsRequestContext {
 	 * 
 	 * @return true, if the users current group is the admin-group, 
 	 * else it returns false.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */	
-	public boolean isAdmin() {
-		return false; // TODO: implement this!
+	public boolean isAdmin() 
+		throws CmsException {
+		return( m_rb.isAdmin(m_user, m_currentProject) );
 	}
 
 	/**
@@ -151,9 +164,12 @@ public class CmsRequestContext extends A_CmsRequestContext {
 	 * 
 	 * @return true, if the users current group is the projectleader-group, 
 	 * else it returns false.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */	
-	public  boolean isProjectLeader() {
-		return false; // TODO: implement this!
+	public  boolean isProjectLeader() 
+		throws CmsException	{
+		return( m_rb.isProjectLeader(m_user, m_currentProject) );
 	}
 
 	/**
@@ -173,7 +189,8 @@ public class CmsRequestContext extends A_CmsRequestContext {
 	 */
 	public A_CmsProject setCurrentProject(String projectname)
 		throws CmsException  {
-		return null; // TODO: implement this!
+		m_currentProject = m_rb.readProject(m_user, m_currentProject, projectname);
+		return( m_currentProject );
 	}
 
 	/**
@@ -187,6 +204,23 @@ public class CmsRequestContext extends A_CmsRequestContext {
 	 * was false and no valid session is associated with this request. 
 	 */
 	public HttpSession getSession(boolean create) {
-		return null; // TODO: implement this!
+		if( m_req != null ) {
+			return( m_req.getSession(create) );
+		} else {
+			return null; // no request available!
+		}
+	}
+	
+	/**
+	 * Translates the url-path to the cms-path.
+	 * 
+	 * @param path The url-path.
+	 * 
+	 * @return the cms-path.
+	 */
+	private String translatePath(String path) {
+		// TODO: find a mechanism to translate the path nicely.
+		// TODO: in this moment there is NO translation!
+		return( path );
 	}
 }

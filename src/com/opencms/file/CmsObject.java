@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 1999/12/23 16:49:21 $ 
+ * @version $Revision: 1.2 $ $Date: 2000/01/03 12:46:39 $ 
  */
 public class CmsObject extends A_CmsObject {
 	
@@ -52,9 +52,10 @@ public class CmsObject extends A_CmsObject {
 	 * @param currentProject The current project for this request.
 	 */
 	public void init(HttpServletRequest req, HttpServletResponse resp, 
-					 String user, String currentGroup, String currentProject ) {
+					 String user, String currentGroup, String currentProject ) 
+		throws CmsException {
 		m_context = new CmsRequestContext();
-		m_context.init(req, resp, user, currentGroup, currentProject);
+		m_context.init(c_rb, req, resp, user, currentGroup, currentProject);
 	}
 	
 	/**
@@ -62,7 +63,7 @@ public class CmsObject extends A_CmsObject {
 	 * 
 	 * @return the current request-context.
 	 */
-	A_CmsRequestContext getRequestContext() {
+	public A_CmsRequestContext getRequestContext() {
 		return( m_context );
 	}
 
@@ -865,8 +866,9 @@ public class CmsObject extends A_CmsObject {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public Vector getUsers() { 
-		return null; // TODO: implement this! 
+	public Vector getUsers() 
+		throws CmsException { 
+		return( c_rb.getUsers(m_context.currentUser(), m_context.getCurrentProject()) );
 	}
 
 	/**
@@ -888,8 +890,11 @@ public class CmsObject extends A_CmsObject {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public A_CmsUser readUser(String username) { 
-		return null; // TODO: implement this! 
+	public A_CmsUser readUser(String username) 
+		throws CmsException { 
+		return( c_rb.readUser(m_context.currentUser(), 
+							  m_context.getCurrentProject(), 
+							  username) );
 	}
 	
 
@@ -902,8 +907,10 @@ public class CmsObject extends A_CmsObject {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public A_CmsUser readUser(String username, String password) { 
-		return null; // TODO: implement this! 
+	public A_CmsUser readUser(String username, String password) 
+		throws CmsException { 
+		return( c_rb.readUser(m_context.currentUser(), m_context.getCurrentProject(),
+							  username, password) );
 	}	
 
 	/**
@@ -997,7 +1004,8 @@ public class CmsObject extends A_CmsObject {
 	 */
 	public Vector getGroupsOfUser(String username)
 		throws CmsException { 
-		return null; // TODO: implement this! 
+		return( c_rb.getGroupsOfUser(m_context.currentUser(), 
+									 m_context.getCurrentProject(), username ));
 	}
 	
 	/**
