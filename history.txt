@@ -16,7 +16,8 @@ OpenCms 4.5.15 Chusuk       - xx October 2001
   and /default/cos (for channels) are created in the online and the offline project.
 ! When creating a project the channels can be added to the project, too.
 ! The element cache can handle dependencies for variants.
-! The defaultnavigation uses now the dependencies feature. 
+! The defaultnavigation uses now the dependencies feature.
+! Added previewfunction in the generic Backoffice.
 * Bugfix 1796: temporary files are not exported.
 * Changes in Synchronize: when creating a resource in the virtual filesystem no exception is thrown
   if the resourcename is not valid.
