@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsDumpLauncher.java,v $
-* Date   : $Date: 2002/01/11 13:36:59 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2002/01/11 14:07:14 $
+* Version: $Revision: 1.28 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import com.opencms.template.cache.*;
  * be used to create output.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.27 $ $Date: 2002/01/11 13:36:59 $
+ * @version $Revision: 1.28 $ $Date: 2002/01/11 14:07:14 $
  */
 public class CmsDumpLauncher extends A_CmsLauncher implements I_CmsConstants {
 
@@ -138,13 +138,15 @@ public class CmsDumpLauncher extends A_CmsLauncher implements I_CmsConstants {
 
         if(elementCacheEnabled) {
             // lets check if ssl is active
-            String scheme = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getScheme();
-            boolean httpsReq = "https".equalsIgnoreCase(scheme);
-            if(cmsUri.isHttpsResource() != httpsReq){
-                if(httpsReq){
-                    throw new CmsException(" "+file.getAbsolutePath()+" needs a http request", CmsException.C_HTTPS_PAGE_ERROR);
-                }else{
-                    throw new CmsException(" "+file.getAbsolutePath()+" needs a https request", CmsException.C_HTTPS_REQUEST_ERROR);
+            if(cms.getRequestContext().currentProject().getId() == cms.onlineProject().getId()){
+                String scheme = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getScheme();
+                boolean httpsReq = "https".equalsIgnoreCase(scheme);
+                if(cmsUri.isHttpsResource() != httpsReq){
+                    if(httpsReq){
+                        throw new CmsException(" "+file.getAbsolutePath()+" needs a http request", CmsException.C_HTTPS_PAGE_ERROR);
+                    }else{
+                        throw new CmsException(" "+file.getAbsolutePath()+" needs a https request", CmsException.C_HTTPS_REQUEST_ERROR);
+                    }
                 }
             }
             result = elementCache.callCanonicalRoot(cms, newParameters);
