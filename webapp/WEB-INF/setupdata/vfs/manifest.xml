@@ -4224,7 +4224,7 @@
 		<file>
 			<destination>system/workplace/administration/properties</destination>
 			<type>folder</type>
-			<datelastmodified>Tue, 09 Nov 2004 12:13:25 GMT+01:00</datelastmodified>
+			<datelastmodified>Tue, 23 Nov 2004 13:54:26 GMT+01:00</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 08 Nov 2004 18:07:04 GMT+01:00</datecreated>
 			<usercreated>Admin</usercreated>
@@ -4245,6 +4245,10 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[ic_admin_properties]]></value>
+				</property>
+				<property>
+					<name>activemethod</name>
+					<value><![CDATA[com.opencms.workplace.CmsWorkplaceDefault.isNotOnlineProject]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
