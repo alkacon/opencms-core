@@ -4185,7 +4185,7 @@
                 <property>
                     <name>NavPos</name>
                     <type>0</type>
-                    <value><![CDATA[14]]></value>
+                    <value><![CDATA[-30]]></value>
                 </property>
             </properties>
         </file>
@@ -4232,7 +4232,7 @@
                 <property>
                     <name>NavPos</name>
                     <type>0</type>
-                    <value><![CDATA[16]]></value>
+                    <value><![CDATA[-60]]></value>
                 </property>
             </properties>
         </file>
@@ -4297,7 +4297,7 @@
                 <property>
                     <name>NavPos</name>
                     <type>0</type>
-                    <value><![CDATA[15]]></value>
+                    <value><![CDATA[-20]]></value>
                 </property>
             </properties>
         </file>
@@ -4339,7 +4339,7 @@
                 <property>
                     <name>NavPos</name>
                     <type>0</type>
-                    <value><![CDATA[23.0]]></value>
+                    <value><![CDATA[-10]]></value>
                 </property>
             </properties>
         </file>
@@ -4434,7 +4434,7 @@
                 <property>
                     <name>NavPos</name>
                     <type>0</type>
-                    <value><![CDATA[3]]></value>
+                    <value><![CDATA[-160]]></value>
                 </property>
             </properties>
         </file>
@@ -4594,7 +4594,7 @@
                 <property>
                     <name>NavPos</name>
                     <type>0</type>
-                    <value><![CDATA[4]]></value>
+                    <value><![CDATA[-130]]></value>
                 </property>
             </properties>
         </file>
@@ -4646,7 +4646,7 @@
                 <property>
                     <name>NavPos</name>
                     <type>0</type>
-                    <value><![CDATA[7]]></value>
+                    <value><![CDATA[-100]]></value>
                 </property>
             </properties>
         </file>
@@ -4774,7 +4774,7 @@
                 <property>
                     <name>NavPos</name>
                     <type>0</type>
-                    <value><![CDATA[3.7]]></value>
+                    <value><![CDATA[-140]]></value>
                 </property>
             </properties>
         </file>
@@ -4826,7 +4826,7 @@
                 <property>
                     <name>NavPos</name>
                     <type>0</type>
-                    <value><![CDATA[25.0]]></value>
+                    <value><![CDATA[-80]]></value>
                 </property>
             </properties>
         </file>
@@ -4951,7 +4951,7 @@
                 <property>
                     <name>NavPos</name>
                     <type>0</type>
-                    <value><![CDATA[25.5]]></value>
+                    <value><![CDATA[-70]]></value>
                 </property>
             </properties>
         </file>
@@ -4998,7 +4998,7 @@
                 <property>
                     <name>NavPos</name>
                     <type>0</type>
-                    <value><![CDATA[12]]></value>
+                    <value><![CDATA[-50]]></value>
                 </property>
             </properties>
         </file>
@@ -5374,7 +5374,7 @@
                 <property>
                     <name>NavPos</name>
                     <type>0</type>
-                    <value><![CDATA[6]]></value>
+                    <value><![CDATA[-110]]></value>
                 </property>
             </properties>
         </file>
@@ -5488,7 +5488,7 @@
                 <property>
                     <name>NavPos</name>
                     <type>0</type>
-                    <value><![CDATA[1]]></value>
+                    <value><![CDATA[-180]]></value>
                 </property>
             </properties>
         </file>
@@ -5774,7 +5774,7 @@
                 <property>
                     <name>NavPos</name>
                     <type>0</type>
-                    <value><![CDATA[5]]></value>
+                    <value><![CDATA[-120]]></value>
                 </property>
             </properties>
         </file>
@@ -5826,7 +5826,7 @@
                 <property>
                     <name>NavPos</name>
                     <type>0</type>
-                    <value><![CDATA[3.5]]></value>
+                    <value><![CDATA[-150]]></value>
                 </property>
             </properties>
         </file>
@@ -5873,7 +5873,7 @@
                 <property>
                     <name>NavPos</name>
                     <type>0</type>
-                    <value><![CDATA[13]]></value>
+                    <value><![CDATA[-40]]></value>
                 </property>
             </properties>
         </file>
@@ -5920,7 +5920,7 @@
                 <property>
                     <name>NavPos</name>
                     <type>0</type>
-                    <value><![CDATA[2]]></value>
+                    <value><![CDATA[-170]]></value>
                 </property>
             </properties>
         </file>
