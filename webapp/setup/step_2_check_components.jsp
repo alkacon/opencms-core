@@ -10,9 +10,11 @@
 	boolean hasUserAccepted = (request.getParameter("accept") != null) && (request.getParameter("accept").equals("true"));
 	boolean isSetupOk = (Bean.getProperties() != null);
 
+	String descriptions = "";
 	CmsSetupTests setupTests = null;
 	CmsSetupTestResult testResult = null;
 	String resultIcon = null;
+	String helpIcon = null;
 	String violatedConditions = "";
 	String questionableConditions = "";
 
@@ -20,6 +22,8 @@
 		if(!isSubmitted) {
 			setupTests = new CmsSetupTests();
 			setupTests.runTests(pageContext, Bean);
+		} else {
+			response.sendRedirect(nextPage);
 		}
 	} else {
 		Bean.initHtmlParts();
@@ -30,20 +34,29 @@ OpenCms Setup Wizard - Check components
 <%= Bean.getHtmlPart("C_HEAD_START") %>
 <%= Bean.getHtmlPart("C_STYLES") %>
 <%= Bean.getHtmlPart("C_STYLES_SETUP") %>
+<%= Bean.getHtmlPart("C_SCRIPT_HELP") %>
+<script type="text/javascript" language="JavaScript">
+<!--
+
+function toggleContinueButton() {
+	var form = document.components;	
+	form.submit.disabled = !form.accept.checked;
+}
+
+//-->
+</script>
 <%= Bean.getHtmlPart("C_HEAD_END") %>
 OpenCms Setup Wizard - Check components
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
 <% if (isSetupOk) { %>
-<form action="<%= nextPage %>" method="post" class="nomargin">
+<form action="<%= nextPage %>" method="post" class="nomargin" name="components">
 <table border="0" cellpadding="0" cellspacing="0" style="width: 100%; height: 350px;">
 <tr>
-	<td style="vertical-align: middle; height: 100%;">
+	<td style="vertical-align: top; height: 100%;">
 <%  
 	if (isSubmitted) {
 		if (hasSystemInfo && !hasUserAccepted) {
 			out.print("<b>To continue the OpenCms setup you have to recognize that your system may not work with OpenCms!");
-		} else {
-			response.sendRedirect(nextPage);
 		}
 	} else { 	
 %>	
@@ -59,18 +72,26 @@ OpenCms Setup Wizard - Check components
 			
 			if (testResult.isRed()) {
 				resultIcon = "cross";
-				violatedConditions += testResult.getInfo();
+				violatedConditions += "<p>" + testResult.getInfo() + "</p>";
 			} else if (testResult.isYellow()) {
 				resultIcon = "unknown";
-				questionableConditions += testResult.getInfo();
+				questionableConditions += "<p>" + testResult.getInfo() + "</p>";
 			} else {
 				resultIcon = "check";
 			}
+					
+			if (!testResult.isGreen() && testResult.getHelp() != null && !"".equals(testResult.getHelp())) {
+				descriptions += Bean.getHtmlPart("C_HELP_START", "" + i) + testResult.getHelp() + Bean.getHtmlPart("C_HELP_END");
+				helpIcon = Bean.getHtmlHelpIcon("" + i, "");
+			} else {
+				helpIcon = "";
+			}
+			
 %>
 			<tr>
 				<td style="text-align: left; width: 130px;"><%= testResult.getName() %>:</td>
 				<td style="text-align: left; font-weight:bold; width: 300px;"><%= testResult.getResult() %></td>
-				<td style="text-align: right; width: 200px;"><img src="resources/<%= resultIcon %>.gif"></td>
+				<td style="text-align: right; width: 200px;"><%= helpIcon %>&nbsp;<img src="resources/<%= resultIcon %>.gif"></td>
 			</tr>
 <%
 		}	
@@ -111,7 +132,7 @@ OpenCms Setup Wizard - Check components
 			<% if (!setupTests.isGreen()) { %>
 				<tr><td colspan="3">
 				<table border="0"><tr>
-					<td style="vertical-align: top;"><input type="checkbox" name="accept" value="true"> </td>
+					<td style="vertical-align: top;"><input type="checkbox" name="accept" value="true" onClick="toggleContinueButton()"> </td>
 					<td>I have noticed that my system may not have the necessary components to use OpenCms. Continue anyway.</td>
 				</tr></table>
 				</td></tr>
@@ -129,17 +150,22 @@ OpenCms Setup Wizard - Check components
 <input name="back" type="button" value="&#060;&#060; Back" class="dialogbutton" onclick="location.href='<%= prevPage %>';">
 <%
 String disabled = "";
-if (isSubmitted && hasSystemInfo && !hasUserAccepted) {
+if (!setupTests.isGreen() && !hasUserAccepted) {
 	disabled = " disabled=\"disabled\"";
-} %>
+}
+%>
 <input name="submit" type="submit" value="Continue &#062;&#062;" class="dialogbutton"<%= disabled %>>
 <input name="cancel" type="button" value="Cancel" class="dialogbutton" onclick="location.href='index.jsp';" style="margin-left: 50px;">
 </form>
 <%= Bean.getHtmlPart("C_BUTTONS_END") %>
+
+<%= descriptions %>
+
 <% } else	{ %>
 
 <%@ include file="error.jsp" %>
 
 <%= Bean.getHtmlPart("C_CONTENT_END") %>
+
 <% } %>
 <%= Bean.getHtmlPart("C_HTML_END") %>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupTestResult.java,v $
- * Date   : $Date: 2004/02/20 13:38:50 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/20 16:28:56 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import java.io.Serializable;
  * Contains info about the result of a setup test.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2004/02/20 13:38:50 $
+ * @version $Revision: 1.3 $ $Date: 2004/02/20 16:28:56 $
  * @since 5.3
  */
 public class CmsSetupTestResult extends Object implements Serializable, Cloneable {
@@ -50,6 +50,9 @@ public class CmsSetupTestResult extends Object implements Serializable, Cloneabl
     
     /** A string describing the result of the test.<p> */
     private String m_result;
+    
+    /** A string offering some help in case a test failed.<p> */
+    private String m_help;
     
     private boolean m_red;
     private boolean m_yellow;
@@ -65,6 +68,7 @@ public class CmsSetupTestResult extends Object implements Serializable, Cloneabl
         setName("");
         setInfo("");
         setResult("");
+        setHelp("");
     }
 
     /**
@@ -99,7 +103,7 @@ public class CmsSetupTestResult extends Object implements Serializable, Cloneabl
      * 
      * @param info the description of the test 
      */
-    public void setInfo(String info) {
+    protected void setInfo(String info) {
         m_info = info;
     }
 
@@ -108,7 +112,7 @@ public class CmsSetupTestResult extends Object implements Serializable, Cloneabl
      * 
      * @param name the name of the test
      */
-    public void setName(String name) {
+    protected void setName(String name) {
         m_name = name;
     }
 
@@ -117,7 +121,7 @@ public class CmsSetupTestResult extends Object implements Serializable, Cloneabl
      * 
      * @param result the result of the test
      */
-    public void setResult(String result) {
+    protected void setResult(String result) {
         this.m_result = result;
     }
 
@@ -175,6 +179,26 @@ public class CmsSetupTestResult extends Object implements Serializable, Cloneabl
         m_green = false;
         m_red = false;
         m_yellow = true;
+    }
+
+    /**
+     * Returns the help string what to do if a test failed.<p>
+     * This string will be displayed in a help bubble.<p>
+     * 
+     * @return the help string what to do if a test failed
+     */
+    public String getHelp() {
+        return m_help;
+    }
+
+    /**
+     * Sets the help string what to do if a test failed.<p>
+     * This string will be displayed in a help bubble.<p>
+     * 
+     * @param help the help string what to do if a test failed
+     */
+    protected void setHelp(String help) {
+        m_help = help;
     }
 
 }

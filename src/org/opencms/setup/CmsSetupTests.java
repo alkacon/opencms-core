@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupTests.java,v $
- * Date   : $Date: 2004/02/20 14:03:25 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/20 16:28:56 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import javax.servlet.jsp.PageContext;
  * Runs various tests to give users infos about whether their system is compatible to OpenCms.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2004/02/20 14:03:25 $
+ * @version $Revision: 1.3 $ $Date: 2004/02/20 16:28:56 $
  * @since 5.3
  */
 public class CmsSetupTests extends Object implements Serializable, Cloneable {
@@ -149,12 +149,13 @@ public class CmsSetupTests extends Object implements Serializable, Cloneable {
 
             if (!supportedJDK) {
                 testResult.setRed();
+                testResult.setHelp("No help available.");
             } else {
                 testResult.setGreen();
             }
         } catch (Exception e) {
             testResult.setRed();
-            testResult.setName("<p>Unable to test JDK version!</p>");
+            testResult.setResult("Unable to test JDK version!");
             testResult.setInfo(e.toString());
         } finally {
             m_testResults.add(testResult);
@@ -196,15 +197,17 @@ public class CmsSetupTests extends Object implements Serializable, Cloneable {
 
             if (unsupportedServletEngine > -1) {
                 testResult.setRed();
-                testResult.setInfo("<p>" + unsupportedServletEngineInfo[unsupportedServletEngine] + "</p>");
+                testResult.setInfo(unsupportedServletEngineInfo[unsupportedServletEngine]);
+                testResult.setHelp("No help available.");
             } else if (!supportedServletEngine) {
                 testResult.setYellow();
+                testResult.setHelp("No help available.");
             } else {
                 testResult.setGreen();
             }
         } catch (Exception e) {
             testResult.setRed();
-            testResult.setName("<p>Unable to test servlet engine!</p>");
+            testResult.setResult("Unable to test servlet engine!");
             testResult.setInfo(e.toString());
         } finally {
             m_testResults.add(testResult);
@@ -223,16 +226,45 @@ public class CmsSetupTests extends Object implements Serializable, Cloneable {
 
             testResult.setName("Operating system");
             testResult.setResult(osName + " " + osVersion);
+            testResult.setHelp("No help available.");
             
             // there is still no handling to test the operating system
             testResult.setGreen();
         } catch (Exception e) {
             testResult.setRed();
-            testResult.setName("<p>Unable to test the operating system!</p>");
+            testResult.setResult("Unable to test the operating system!");
             testResult.setInfo(e.toString());
         } finally {
             m_testResults.add(testResult);
         }
+    }
+    
+    /**
+     * Tests if the OpenCms WAR file is unpacked.<p>
+     */
+    public void testWarFileUnpacked() {
+        CmsSetupTestResult testResult = new CmsSetupTestResult();
+
+        try {
+            testResult.setName("Unpacked WAR file");
+            
+            File file = new File(m_pageContext.getServletConfig().getServletContext().getRealPath("/") + "WEB-INF" + File.separator + "config" + File.separator + "opencms.properties");
+            if (file.exists() && file.canRead() && file.canWrite()) {
+                testResult.setGreen();
+                testResult.setResult("yes");
+            } else {
+                testResult.setRed();
+                testResult.setInfo("OpenCms cannot be installed unless the OpenCms WAR file is unpacked!");
+                testResult.setHelp("No help available.");
+                testResult.setResult("no");
+            }
+        } catch (Exception e) {
+            testResult.setRed();
+            testResult.setResult("Unable to test if the OpenCms WAR file is unpacked!");
+            testResult.setInfo(e.toString());
+        } finally {
+            m_testResults.add(testResult);
+        }        
     }
 
     /**
