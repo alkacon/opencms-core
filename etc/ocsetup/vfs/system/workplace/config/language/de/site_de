@@ -46,6 +46,15 @@
 					<deletesite></deletesite>
 				</suggestion>
 			</error>
+			<sitematrix>
+				<context>
+					<edit>Edit site</edit>
+					<editconf>Edit site configuration</editconf>
+					<preview>Preview site</preview>
+					<delete>Delete site</delete>
+					<properties>Properties</properties>
+				</context>
+			</sitematrix>
 		</sitemanagement>
 </LANGUAGE>
 

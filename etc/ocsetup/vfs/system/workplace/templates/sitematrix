@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<XMLTEMPLATE>
+<WORKPLACE>
 
 <TEMPLATE>
 <![CDATA[
@@ -78,25 +78,25 @@ function initContextMenus() {
   cM2.addMenu('m001',165);
 
   
-  cM.menus['m001'].addItem('i001','Edit Site','javascript:editSite(currSiteNodeId);');
-  cM.menus['m001'].addItem('i002','Edit Site Configuration','javascript:editSiteConfig(currSiteNodeId);');
-  cM.menus['m001'].addItem('i003','Preview Site','javascript:previewSite(currSiteNodeId);');
+  cM.menus['m001'].addItem('i001',']]><LABEL value="sitemanagement.sitematrix.context.edit"/><![CDATA[','javascript:editSite(currSiteNodeId);');
+  cM.menus['m001'].addItem('i002',']]><LABEL value="sitemanagement.sitematrix.context.editconf"/><![CDATA[','javascript:editSiteConfig(currSiteNodeId);');
+  cM.menus['m001'].addItem('i003',']]><LABEL value="sitemanagement.sitematrix.context.preview"/><![CDATA[','javascript:previewSite(currSiteNodeId);');
 
   cM.menus['m001'].addItem('i004','---','');
-  cM.menus['m001'].addItem('i005','Delete','javascript:deleteSite(currSiteNodeId);');
+  cM.menus['m001'].addItem('i005',']]><LABEL value="sitemanagement.sitematrix.context.delete"/><![CDATA[','javascript:deleteSite(currSiteNodeId);');
   cM.menus['m001'].addItem('i006','---','');
-  cM.menus['m001'].addItem('i007','Properties','javascript:siteProperties(currSiteNodeId);');
+  cM.menus['m001'].addItem('i007',']]><LABEL value="sitemanagement.sitematrix.context.properties"/><![CDATA[','javascript:siteProperties(currSiteNodeId);');
 
 
-  cM2.menus['m001'].addItem('i001','Edit Site','javascript:editSite(currSiteNodeId);');
-  cM2.menus['m001'].addItem('i002','Edit Site Configuration','javascript:editSiteConfig(currSiteNodeId);');
-  cM2.menus['m001'].addItem('i003','Preview Site','javascript:previewSite(currSiteNodeId);');
+  cM2.menus['m001'].addItem('i001',']]><LABEL value="sitemanagement.sitematrix.context.edit"/><![CDATA[','javascript:editSite(currSiteNodeId);');
+  cM2.menus['m001'].addItem('i002',']]><LABEL value="sitemanagement.sitematrix.context.editconf"/><![CDATA[','javascript:editSiteConfig(currSiteNodeId);');
+  cM2.menus['m001'].addItem('i003',']]><LABEL value="sitemanagement.sitematrix.context.preview"/><![CDATA[','javascript:previewSite(currSiteNodeId);');
 
   cM2.menus['m001'].addItem('i004','---','');
-  cM2.menus['m001'].addItem('i005','Delete','javascript:deleteSite(currSiteNodeId);');
+  cM2.menus['m001'].addItem('i005',']]><LABEL value="sitemanagement.sitematrix.context.delete"/><![CDATA[','javascript:deleteSite(currSiteNodeId);');
   cM2.menus['m001'].addItem('i006','---','');
-  cM2.menus['m001'].addItem('i007','Properties','javascript:siteProperties(currSiteNodeId);');
-  
+  cM2.menus['m001'].addItem('i007',']]><LABEL value="sitemanagement.sitematrix.context.properties"/><![CDATA[','javascript:siteProperties(currSiteNodeId);');
+
    drawContextMenus();
   
 }
@@ -151,4 +151,4 @@ function drawContextMenus() {
 ]]>
 </sitenode>
 
-</XMLTEMPLATE>
+</WORKPLACE>
