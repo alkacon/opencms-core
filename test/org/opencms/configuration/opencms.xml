@@ -3,11 +3,25 @@
 
 <opencms>
     <configuration>
+        <config class="org.opencms.configuration.CmsSystemConfiguration"/>
         <config class="org.opencms.configuration.CmsVfsConfiguration"/>
         <config class="org.opencms.configuration.CmsWorkplaceConfiguration"/>
         <config class="org.opencms.configuration.CmsImportExportConfiguration"/>
         <config class="org.opencms.configuration.CmsTestConfiguration"/>
     </configuration>  
+	<system>
+	   	<versionhistory enabled="true" count="10"/>	   	
+		<localehandler class="org.opencms.i18n.CmsDefaultLocaleHandler"/>	
+		<tempfileproject></tempfileproject>			   	
+		<mail>
+			<mailfrom>nobody@nowhere.com</mailfrom>
+			<mailhosts>
+				<mailhost name="my.smtp.server" protocol="smtp" auth="true" user="username" password="secure"/>
+				<mailhost name="alternative.smtp.server"/>
+			</mailhosts>
+		</mail>
+		<resourceinit />
+	</system>    
     <tests>
     	<test name="test1">Hello Test 1</test>    	        	
     	<test name="test2">Hello Test 2</test>    	
@@ -63,7 +77,6 @@
         		<translation>s#/default/vfs/system/workplace/templates/js/(.*)#/system/workplace/scripts/$1#</translation>
         	</foldertranslations>
         </translations>
-        <versionhistory enabled="true" count="10"/>
     </vfs>   
     <workplace>
     	<defaultlocale>en</defaultlocale>
@@ -86,10 +99,10 @@
     	<autolock>true</autolock>
     	<enableusermanagement>true</enableusermanagement>
     	<maxfileuploadsize>-1</maxfileuploadsize>
-    	<labledfolders>
+    	<labeledfolders>
     		<resource uri="/system/"/>
     		<resource uri="/system/login/"/>
-    	</labledfolders>    	
+    	</labeledfolders>    	
     </workplace>      
 	<importexport>
 		<importexporthandlers>
@@ -130,10 +143,10 @@
 				<resource uri="/channels/"/>
 				<resource uri="/sites/"/>
 			</immutables>
-			<princialtranslations>
-				<princialtranslation type="user" from="Admin" to="cmsadmin" />
-				<princialtranslation type="group" from="Administrators" to="cmsadministrators" />
-			</princialtranslations>
+			<principaltranslations>
+				<principaltranslation type="user" from="Admin" to="cmsadmin" />
+				<principaltranslation type="group" from="Administrators" to="cmsadministrators" />
+			</principaltranslations>
         	<ignoredproperties>
         		<property name="module"/>
         	</ignoredproperties>     			

@@ -2,7 +2,7 @@
 <registry>
 	<system>
 
-		<!-- system -->
+		<!-- system (new) -->
 		<localehandler>
 			<class>org.opencms.i18n.CmsDefaultLocaleHandler</class>
 		</localehandler>		
@@ -26,7 +26,26 @@
 		<UseWpPicturesFromVFS>false</UseWpPicturesFromVFS>
 		<searchbylucene>off</searchbylucene>
 
-		
+
+		<!-- scheduler (new) -->
+		<crontab>
+			<!--
+		    <cronjob>
+		    	<min>*</min>
+		        <hour>*</hour>
+		        <dayofmonth>*</dayofmonth>
+		        <month>*</month>
+		        <dayofweek>*</dayofweek>
+				<class>org.opencms.monitor.CmsMemoryMonitor</class>
+		        <user>cmsadmin</user>
+				<group>cmsadministrators</group>
+				<params></params>
+		    </cronjob>
+			//-->
+		</crontab>
+
+
+		<!-- search (new) -->
 		<search>
             <directory>index</directory>
             <mergefactor>100000</mergefactor>
@@ -157,21 +176,6 @@
                	</folder>                
             </index>
         </search>
-		<crontab>
-			<!--
-		    <cronjob>
-		    	<min>*</min>
-		        <hour>*</hour>
-		        <dayofmonth>*</dayofmonth>
-		        <month>*</month>
-		        <dayofweek>*</dayofweek>
-				<class>org.opencms.monitor.CmsMemoryMonitor</class>
-		        <user>cmsadmin</user>
-				<group>cmsadministrators</group>
-				<params></params>
-		    </cronjob>
-			//-->
-		</crontab>
 		@REGISTRY_CONFIGURATION@
 	</system>
 	<modules/>
