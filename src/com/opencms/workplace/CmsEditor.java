@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsEditor.java,v $
-* Date   : $Date: 2002/05/02 07:14:34 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2002/06/30 21:50:12 $
+* Version: $Revision: 1.32 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.31 $ $Date: 2002/05/02 07:14:34 $
+ * @version $Revision: 1.32 $ $Date: 2002/06/30 21:50:12 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -116,6 +116,9 @@ public class CmsEditor extends CmsWorkplaceDefault {
         if((file == null) || ("".equals(file))){
             file = (String)session.getValue(C_PARA_FILE);
             session.removeValue(C_PARA_FILE);
+        }        
+        if((file != null) && (! "".equals(file))) {
+            session.putValue("te_file", file);
         }
         String content = (String)parameters.get(C_PARA_CONTENT);
         // try to get the value from the session because we might come from the error page
@@ -209,7 +212,6 @@ public class CmsEditor extends CmsWorkplaceDefault {
                 xmlTemplateDocument.setData("linklist", xmlTemplateDocument.getProcessedDataValue("linklist_disabled", this));
             }
         }
-
         // Put the "file" datablock for processing in the template file.
         // It will be inserted in a hidden input field and given back when submitting.
         xmlTemplateDocument.setData(C_PARA_FILE, file);
@@ -315,5 +317,21 @@ public class CmsEditor extends CmsWorkplaceDefault {
             content = "";
         }
         return content;
+    }
+    
+    public Object getCharset(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) {
+        // Try to find property on file and all parent folders
+        String prop = null;
+        try {
+            I_CmsSession session = cms.getRequestContext().getSession(true);
+            String file = (String)session.getValue("te_file");
+            prop = cms.readProperty(file, "charset");
+            while ((prop == null) && (! "".equals(file))) {
+                file = file.substring(0, file.lastIndexOf("/"));
+                prop = cms.readProperty(file + "/", "charset");
+            } 
+        } catch (Exception e) {}
+        if (prop == null) prop = "ISO-8859-1";
+        return prop;
     }
 }
