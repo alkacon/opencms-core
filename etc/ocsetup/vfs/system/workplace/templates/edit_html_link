@@ -12,10 +12,7 @@
 	<head>
 		<script language=JavaScript>
 		<!--
-			function sendVfsLink(linkurl){
-				sendURLString('EDITOR','URL',linkurl);
-			}
-			
+
 			function sendLinkWithText(linktext, linkurl, linktarget, linkanchor, linkstyle, linkstyleclass){
 				var sel = top.window.opener.self.document.EDITOR.EDIT_HTML.DOM.selection;
 				if(linktext.length == 0){
@@ -46,8 +43,10 @@
 					    thelink += "class='"+linkstyleclass+"' ";
 					  }	
 					  thelink += ">" + linktext + "</a>";			  
-					  					  
+					  
+					  
 				      rng.pasteHTML(thelink);
+
 					}
 				}	
 			}
@@ -85,7 +84,6 @@
     			}
 				return true;
 			}
-			
 			
 			/* Checks if the selected Text is an hyperlink */
 			function checkSelection() {
@@ -140,6 +138,9 @@
 			  			  			  			  			  
 			
 			}
+			
+			
+			
 		//-->
 		</script>
 
@@ -158,39 +159,34 @@
     			</tr>
 				<tr>
         			<td class=formular width=35%>]]><LABEL value="input.linkname" /><![CDATA[:</td>
-        			<td class=dialogtxt>
+        			<td colspan=2 class=dialogtxt>
         				<input type="text" name="NEUNAME" class="textfeld3" size="30" />
         			</td>
-        			            		<td class=formular>&nbsp;</td>                    		
     			</tr>
     			<tr>
             		<td class=formular>]]><LABEL value="input.linkto" /><![CDATA[:</td>
             		<td class=dialogtxt>
                 		<input type="text" name="neulink" class="textfeld3" size="30" value="http://" />   
             		</td>
-            		<td class=formular><a href="javascript:treewin=opensmallwin('folder_tree.html?foldertree=/&formname=NEU&variable=neulink&onlineselect=yes&viewfile=yes', 'explorer_viewer', 300, 400),treewin.focus();"><img src="]]><METHOD name="picsUrl">ic_file_folder.gif</METHOD><![CDATA[" border="0" alt="]]><LABEL value="label.selectfolder" /><![CDATA["></a></td>                    		
     			</tr>
    			<tr>
             		<td class=formular>]]><LABEL value="input.linkanchor" /><![CDATA[:</td>
             		<td class=dialogtxt>
                 		<input type="text" name="linkanchor" class="textfeld3" size="15" />   
             		</td>
-            		<td class=formular>&nbsp;</td>                    		
     			</tr>    			
   			<tr>
             		<td class=formular>]]><LABEL value="input.linkstyle" /><![CDATA[:</td>
             		<td class=dialogtxt>
                 		<input type="text" name="linkstyle" class="textfeld3" size="15"  />   
             		</td>
-            		            		<td class=formular>&nbsp;</td>
-            		            </tr>                    		
      			<tr>
             		<td class=formular>]]><LABEL value="input.linkstyleclass" /><![CDATA[:</td>
             		<td class=dialogtxt>
                 		<input type="text" name="linkstyleclass" class="textfeld3" size="15" />   
             		</td>
-            		            		<td class=formular>&nbsp;</td>                    		
-    			</tr>            				    			
+    			</tr>            		
+    			</tr>  			    			
     			<tr>
             		<td class=formular>]]><LABEL value="input.linktarget" /><![CDATA[:</td>
             		<td class=dialogtxt>
@@ -200,7 +196,6 @@
 					    <option value="_top">]]><LABEL value="input.linktargettop" /><![CDATA[</option>
 					  </select>
             		</td>
-            		            		<td class=formular>&nbsp;</td>                    		
     			</tr>    			
     			<tr>
         			<td colspan=3 class=leerzeile>&nbsp;</td>
@@ -223,5 +218,3 @@
 </TEMPLATE>
 
 </WORKPLACE>
-
-
