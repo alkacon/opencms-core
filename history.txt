@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/02/20 12:45:54 $
- * Version: $Revision: 1.524 $
+ * Date   : $Date: 2004/02/20 19:52:34 $
+ * Version: $Revision: 1.525 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ OpenCms 5.3.3 Ix - February xx, 2004
 ! Setup wizard: Added facility to select modules during installation
 ! Setup wizard: Improved help, addded context help
 ! Setup wizard: Added facility to run multiple tests to check the environment settings
+! Setup wizard: Added automatic indexing of all resources as last setp in setup
 * Errors that occur in JSP includes are now correctly displayed in error dialog
 ! Added interface to allow resource loader implementations to extend the include process
 
