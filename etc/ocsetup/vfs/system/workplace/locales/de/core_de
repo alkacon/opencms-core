@@ -5,27 +5,27 @@
         <button>
             <all>Alle</all>
             <unzip>Zip-File entpacken</unzip>
-            <add><![CDATA[<<]]> HinzufÃ¼gen</add>
-            <addnew>HinzufÃ¼gen</addnew>
+            <add><![CDATA[<<]]> Hinzufügen</add>
+            <addnew>Hinzufügen</addnew>
             <aligncenter>Zentrieren</aligncenter>
             <alignleft>Links ausrichten</alignleft>
             <alignright>Rechts ausrichten</alignright>
-            <back>ZurÃ¼ck</back>
+            <back>Zurück</back>
             <bold>Fett</bold>
             <cancel>Abbrechen</cancel>
-            <changepasswd>Kennwort Ã¤ndern</changepasswd>
+            <changepasswd>Kennwort ändern</changepasswd>
             <color>Farbe</color>
             <copy>Kopieren</copy>
             <cut>Ausschneiden</cut>
             <clear>Leeren</clear>
-            <close>SchlieÃŸen</close>
+            <close>Schließen</close>
             <default>Voreinstellungen</default>
-            <delete>LÃ¶schen</delete>
+            <delete>Löschen</delete>
             <detail>Details...</detail>
             <downloadlist>Downloadgalerien</downloadlist>
             <edit>Bearbeiten</edit>
             <endwizard>Fertig stellen</endwizard>
-            <executedelete>Jetzt lÃ¶schen</executedelete>
+            <executedelete>Jetzt löschen</executedelete>
             <exit>Abmelden</exit>
             <fileexport>Exportieren</fileexport>
             <fileexportas>Exportieren als</fileexportas>
@@ -38,7 +38,7 @@
             <htmllist>HTML-Galerien</htmllist>
             <image>Bildparameter</image>
             <imagelist>Bildergalerien</imagelist>
-            <indentin>Einzug vergrÃ¶ÃŸern</indentin>
+            <indentin>Einzug vergrößern</indentin>
             <indentout>Einzug verkleinern</indentout>
             <italic>Kursiv</italic>
             <linkto>Link</linkto>
@@ -47,39 +47,39 @@
             <login>Anmelden</login>
             <new>Neu</new>
             <newarticle>Neuer Artikel</newarticle>
-            <newbody>Neuer TextkÃ¶rper</newbody>
+            <newbody>Neuer Textkörper</newbody>
             <newtask>Neue Aufgabe</newtask>
             <newpropertydef>Organisieren...</newpropertydef>
             <next>Weiter</next>
             <nextscreen>Weiter <![CDATA[>>]]></nextscreen>
             <ol>Nummerierung</ol>
             <ok>OK</ok>
-            <parent>AufwÃ¤rts</parent>
-            <paste>EinfÃ¼gen</paste>
+            <parent>Aufwärts</parent>
+            <paste>Einfügen</paste>
             <preferences>Einstellungen</preferences>
             <preview>Vorschau</preview>
-            <previous>ZurÃ¼ck</previous>
-            <previousscreen><![CDATA[<<]]> ZurÃ¼ck</previousscreen>
+            <previous>Zurück</previous>
+            <previousscreen><![CDATA[<<]]> Zurück</previousscreen>
             <print>Drucken</print>
-            <publish>Projekt verÃ¶ffentlichen</publish>
+            <publish>Projekt veröffentlichen</publish>
             <redo>Wiederherstellen</redo>
             <reload>Aktualisieren</reload>
             <remove>Entfernen <![CDATA[>>]]></remove>
             <save>Speichern</save>
-            <saveclose>Speichern und SchlieÃŸen</saveclose>
+            <saveclose>Speichern und Schließen</saveclose>
             <search>Suchen</search>
             <searchreplace>Suchen und Ersetzen</searchreplace>
             <send>Senden</send>
-            <submit>Ãœbernehmen</submit>
+            <submit>Übernehmen</submit>
             <showdetails>Details anzeigen</showdetails>
             <specialchars>Sonderzeichen</specialchars>
             <syncfolder>Ordner synchronisieren</syncfolder>
             <table>Tabelle</table>
             <test>Testen</test>
             <toggledetails>Details ein- / ausschalten</toggledetails>            
-            <ul>AufzÃ¤hlung</ul>
+            <ul>Aufzählung</ul>
             <underline>Unterstrichen</underline>
-            <undo>RÃ¼ckgÃ¤ngig</undo>
+            <undo>Rückgängig</undo>
             <upload>Hochladen</upload>
             <update>Neu Laden</update>
             <view>Anschauen</view>
@@ -90,7 +90,7 @@
             <months>
                 <jan>Januar</jan>
                 <feb>Februar</feb>
-                <mar>MÃ¤rz</mar>
+                <mar>März</mar>
                 <apr>April</apr>
                 <may>Mai</may>
                 <jun>Juni</jun>
@@ -114,8 +114,8 @@
         
         <database>
             <label>
-                <nosystem>Ordner 'system' ausschlieÃŸen</nosystem>
-                <nounchanged><![CDATA[Unver&auml;nderte Dateien im Projekt ausschlieÃŸen]]></nounchanged>
+                <nosystem>Ordner 'system' ausschließen</nosystem>
+                <nounchanged><![CDATA[Unver&auml;nderte Dateien im Projekt ausschließen]]></nounchanged>
                 <userdata>inklusive Gruppen- und Benutzerdaten</userdata>
                 <titleexport>Datenbank exportieren</titleexport>
                 <titleexportmoduledata>Moduldaten exportieren</titleexportmoduledata>
@@ -127,7 +127,7 @@
                 <import>Datenbank Import</import>
                 <importend>Datenbank Import beendet.</importend>
                 <exportend>Datenbank Export beendet.</exportend>
-                <contentage>Export nur von Dateien geÃ¤ndert seit</contentage>
+                <contentage>Export nur von Dateien geändert seit</contentage>
             </label>
         </database>
         
@@ -136,7 +136,7 @@
                 <exportadd>Wollen Sie den Export mit diesen in den opencms.properties konfigurierten Daten starten?</exportadd>
                 <titleexport>Statischer Export</titleexport>
                 <filename>Exportieren nach</filename>
-                <testtitle>Hier kÃ¶nnen die RegulÃ¤ren AusdrÃ¼cke getestet werden</testtitle>
+                <testtitle>Hier können die Regulären Ausdrücke getestet werden</testtitle>
                 <testlink>Link:</testlink>
                 <testregexp>Ausdruck:</testregexp>
                 <testresult>Ergebnis:</testresult>
@@ -146,10 +146,10 @@
 
         <linkmanagement>
             <label>
-                <title>Link ÃœberprÃ¼fung</title>
+                <title>Link Überprüfung</title>
                 <text1>Aktuelles Projekt (</text1>
-                <text2>) wird auf Links ohne Ziel Ã¼berprÃ¼ft.</text2>
-                <textende>ÃœberprÃ¼fung beendet.</textende>
+                <text2>) wird auf Links ohne Ziel überprüft.</text2>
+                <textende>Überprüfung beendet.</textende>
             </label>
         </linkmanagement>
         
@@ -163,116 +163,116 @@
 
         <elementcache>
             <label>
-                <title>Elementcache LÃ¶schen</title>
+                <title>Elementcache Löschen</title>
                 <uri>Uri Cache</uri>
                 <element>Element Cache</element>
-                <text>Wollen Sie den Cache wirklich lÃ¶schen?</text>
+                <text>Wollen Sie den Cache wirklich löschen?</text>
             </label>
         </elementcache>
         <error>     
             <message>
                 <accessdenied>Leider konnte auf die Resource nicht zugegriffen werden.</accessdenied>
                 <badcharacter>Unerlaubtes Zeichen in Eingabefeld: </badcharacter>
-                <chgrp>Leider konnte die Gruppe nicht geÃ¤ndert werden.</chgrp>
-                <chmod>Leider konnte die Berechtigung nicht geÃ¤ndert werden.</chmod>
-                <chnav>Leider konnte die Position nicht geÃ¤ndert werden.</chnav>
-                <chown>Leider konnte der EigentÃ¼mer nicht geÃ¤ndert werden.</chown>
-                <chpwd>Leider konnte das Kennwort nicht geÃ¤ndert werden.</chpwd>
-                <chtype>Leider konnte der Dateityp nicht geÃ¤ndert werden.</chtype>
+                <chgrp>Leider konnte die Gruppe nicht geändert werden.</chgrp>
+                <chmod>Leider konnte die Berechtigung nicht geändert werden.</chmod>
+                <chnav>Leider konnte die Position nicht geändert werden.</chnav>
+                <chown>Leider konnte der Eigentümer nicht geändert werden.</chown>
+                <chpwd>Leider konnte das Kennwort nicht geändert werden.</chpwd>
+                <chtype>Leider konnte der Dateityp nicht geändert werden.</chtype>
                 <copy>Leider konnte die Datei nicht kopiert werden.</copy>
-                <copytoproject>Leider konnte die Ressource nicht in das Projekt Ã¼bernommen werden.</copytoproject>
+                <copytoproject>Leider konnte die Ressource nicht in das Projekt übernommen werden.</copytoproject>
                 <createasproject>Sie haben nicht das Recht ein Projekt anzulegen.</createasproject>
-                <datamissing>Sie haben noch nicht alle notwendigen EintrÃ¤ge in das Formular gemacht.</datamissing>
-                <delete>Leider konnte die Datei nicht gelÃ¶scht werden.</delete>
-                <deleteuser> Leider konnte der Benutzer nicht gelÃ¶scht werden.</deleteuser>
-                <deleteextension>Die Dateierweiterung konnte leider nicht gelÃ¶scht werden.</deleteextension>
-                <deletegroup>Leider konnte die Gruppe nicht gelÃ¶scht werden.</deletegroup>
+                <datamissing>Sie haben noch nicht alle notwendigen Einträge in das Formular gemacht.</datamissing>
+                <delete>Leider konnte die Datei nicht gelöscht werden.</delete>
+                <deleteuser> Leider konnte der Benutzer nicht gelöscht werden.</deleteuser>
+                <deleteextension>Die Dateierweiterung konnte leider nicht gelöscht werden.</deleteextension>
+                <deletegroup>Leider konnte die Gruppe nicht gelöscht werden.</deletegroup>
                 <editorsave>Leider konnte die Datei nicht gespeichert werden.</editorsave>
                 <foldercreate>Leider konnte das Verzeichnis nicht angelegt werden.</foldercreate>
-                <downbrowser>Sie kÃ¶nnen den Downloadbrowser noch nicht benutzen.</downbrowser>
+                <downbrowser>Sie können den Downloadbrowser noch nicht benutzen.</downbrowser>
                 <gallerynoright>Die neue Galerie konnte leider nicht angelegt werden.</gallerynoright>
-                <changeuser>Leider konnten die Benutzerdaten nicht geÃ¤ndert werden.</changeuser>
+                <changeuser>Leider konnten die Benutzerdaten nicht geändert werden.</changeuser>
                 <adduser> Leider konnte der Benutzer nicht angelegt werden.</adduser>
                 <addgroup>Die Gruppe konnte nicht angelegt werden.</addgroup>
                 <database>Leider konnte die Datenbank nicht exportiert oder importiert werden.</database>
-                <histproperties>Leider trat ein Fehler beim AusfÃ¼hren der Aktion auf.</histproperties>
-                <htmlbrowser>Sie kÃ¶nnen den HTML-Browser noch nicht benutzen.</htmlbrowser>                
-                <linkcheckerror>Zu der angegebenen URL konnte keine Verbindung aufgebaut werden. Sie haben die MÃ¶glichkeit, die VerknÃ¼pfung trotzdem speichern oder sie zu korrigieren.</linkcheckerror>
-                <linkbrowser>Sie kÃ¶nnen den Linkbrowser noch nicht benutzen.</linkbrowser>
+                <histproperties>Leider trat ein Fehler beim Ausführen der Aktion auf.</histproperties>
+                <htmlbrowser>Sie können den HTML-Browser noch nicht benutzen.</htmlbrowser>                
+                <linkcheckerror>Zu der angegebenen URL konnte keine Verbindung aufgebaut werden. Sie haben die Möglichkeit, die Verknüpfung trotzdem speichern oder sie zu korrigieren.</linkcheckerror>
+                <linkbrowser>Sie können den Linkbrowser noch nicht benutzen.</linkbrowser>
                 <linkgallery>Leider trat ein Fehler beim Anlegen der neuen Galerie auf!</linkgallery>
                 <lock>Leider konnte die Datei nicht auf Sie gesperrt werden.</lock>
-                <lockchange>Leider konnte die Dateisperrung nicht Ã¼bernommen werden.</lockchange>
+                <lockchange>Leider konnte die Dateisperrung nicht übernommen werden.</lockchange>
                 <login>Der Benutzer konnte nicht im System angemeldet werden.</login> 
                 <projectlockchange>Leider konnte das Projekt nicht wieder freigegeben werden.</projectlockchange>
-                <newlink>Leider konnte die VerknÃ¼pfung nicht angelegt werden.</newlink>
+                <newlink>Leider konnte die Verknüpfung nicht angelegt werden.</newlink>
                 <newproject>Leider konnte das Projekt nicht angelegt werden.</newproject>
                 <newprop>Die neue Eigenschaft konnte leider nicht angelegt werden.</newprop>
                 <newextension>Die neue Dateiendung konnte leider nicht zugeordnet werden.</newextension>
                 <newtask>Leider konnte die Aufgabe nicht angelegt werden.</newtask>
-                <picbrowser>Sie kÃ¶nnen den Bilderbrowser noch nicht benutzen.</picbrowser>
+                <picbrowser>Sie können den Bilderbrowser noch nicht benutzen.</picbrowser>
                 <picgallery>Leider trat ein Fehler beim Anlegen der neuen Galerie auf!</picgallery>
-                <propinuse>Diese Eigenschaft wird von Dateien verwendet.<![CDATA[<br>]]>Sie kÃ¶nnen sie nicht lÃ¶schen.</propinuse>
+                <propinuse>Diese Eigenschaft wird von Dateien verwendet.<![CDATA[<br>]]>Sie können sie nicht löschen.</propinuse>
                 <projectdatamissing>Das neue Projekt konnte nicht angelegt werden.</projectdatamissing>
-                <publishproject>Leider konnte das Projekt nicht verÃ¶ffentlicht werden.</publishproject>
-                <publishresource>Leider konnte die Ressource nicht verÃ¶ffentlicht werden.</publishresource>
+                <publishproject>Leider konnte das Projekt nicht veröffentlicht werden.</publishproject>
+                <publishresource>Leider konnte die Ressource nicht veröffentlicht werden.</publishresource>
                 <rename>Leider konnte die Ressource nicht umbenannt werden.</rename>
                 <restoreresource>Leider konnte diese Version der Ressource nicht wiederhergestellt werden.</restoreresource>
-                <rmdefault>Leider konnten nicht alle BenutzerzugehÃ¶rigkeiten geÃ¤ndert werden.</rmdefault>
-                <deleteproject>Leider konnte das Projekt nicht gelÃ¶scht werden.</deleteproject>
-                <search>Bitte fÃ¼llen Sie alle Felder der jeweiligen Suche.</search>
-                <staticexport>Leider konnte der statische Export nicht vollstÃ¤ndig ausgfÃ¼hrt werden.</staticexport>
+                <rmdefault>Leider konnten nicht alle Benutzerzugehörigkeiten geändert werden.</rmdefault>
+                <deleteproject>Leider konnte das Projekt nicht gelöscht werden.</deleteproject>
+                <search>Bitte füllen Sie alle Felder der jeweiligen Suche.</search>
+                <staticexport>Leider konnte der statische Export nicht vollständig ausgführt werden.</staticexport>
                 <syncfolder>Leider konnten die Ordner nicht synchronisiert werden.</syncfolder>
-                <syncproperties>Die Daten fÃ¼r die Synchronisierung konnten nicht gespeichert werden.</syncproperties>
+                <syncproperties>Die Daten für die Synchronisierung konnten nicht gespeichert werden.</syncproperties>
                 <undelete>Leider konnte die Ressource nicht wiederhergestellt werden.</undelete>
-                <undochanges>Leider konnten die Ã„nderungen nicht verworfen werden.</undochanges>
+                <undochanges>Leider konnten die Änderungen nicht verworfen werden.</undochanges>
                 <unlock>Leider konnte die Datei nicht wieder freigegeben werden.</unlock>
                 <upload>Die Datei konnte nicht hochgeladen werden.</upload>
-                <contentage>Das eingegebene Datumsformat ist ungÃ¼ltig.\nBitte verwenden Sie das folgende Format: mm-tt-jjjj hh:mm:ss</contentage>
+                <contentage>Das eingegebene Datumsformat ist ungültig.\nBitte verwenden Sie das folgende Format: mm-tt-jjjj hh:mm:ss</contentage>
             </message>
             <reason>
-                <accessdenied>Sie haben keine Zugriffsrechte fÃ¼r die gewÃ¤hlte Aktion oder das Verzeichnis ist von einem anderen Nutzer gesperrt.</accessdenied>
-                <addgroup>Das Feld Gruppenname muÃŸ ausgefÃ¼llt werden.</addgroup>
-                <channelsmissing>Sie mÃ¼ssen mindestens einen Channel angeben.</channelsmissing>
+                <accessdenied>Sie haben keine Zugriffsrechte für die gewählte Aktion oder das Verzeichnis ist von einem anderen Nutzer gesperrt.</accessdenied>
+                <addgroup>Das Feld Gruppenname muß ausgefüllt werden.</addgroup>
+                <channelsmissing>Sie müssen mindestens einen Channel angeben.</channelsmissing>
                 <chgrp>Sie haben dazu keine Berechtigung.</chgrp>
                 <chmod>Sie haben dazu keine Berechtigung.</chmod>
-                <chnav>Eventuell haben Sie nicht die Berechtigung fÃ¼r diese Aktion.</chnav>
+                <chnav>Eventuell haben Sie nicht die Berechtigung für diese Aktion.</chnav>
                 <chown>Sie haben dazu keine Berechtigung.</chown>
-                <chpwd>Die eingegeben KennwÃ¶rter stimmen nicht Ã¼berein.</chpwd>
+                <chpwd>Die eingegeben Kennwörter stimmen nicht überein.</chpwd>
                 <chpwd2>Das alte Kennwort ist nicht korrekt.</chpwd2>
-                <chpwd3>Das Kennwort muÃŸ mindestens aus 4 Zeichen bestehen.</chpwd3>
+                <chpwd3>Das Kennwort muß mindestens aus 4 Zeichen bestehen.</chpwd3>
                 <chtype>Sie haben dazu keine Berechtigung.</chtype>
                 <copy>Eventuell existiert der Zielordner nicht oder es gibt dort bereits eine Datei mit diesem Namen.</copy>
-                <copytoproject>Eventuell haben Sie nicht die Berechtigung fÃ¼r diese Aktion.</copytoproject>
-                <delete>Eventuell haben Sie nicht die Berechtigung fÃ¼r diese Aktion.</delete>
-                <deleteuser>Die Benutzer Admin und Guest kÃ¶nnen nicht gelÃ¶scht werden.</deleteuser>
+                <copytoproject>Eventuell haben Sie nicht die Berechtigung für diese Aktion.</copytoproject>
+                <delete>Eventuell haben Sie nicht die Berechtigung für diese Aktion.</delete>
+                <deleteuser>Die Benutzer Admin und Guest können nicht gelöscht werden.</deleteuser>
                 <deleteextension>siehe Details</deleteextension>
-                <deletegroup>Zu dieser Gruppe gehÃ¶rten noch Benutzer.</deletegroup>
+                <deletegroup>Zu dieser Gruppe gehörten noch Benutzer.</deletegroup>
                 <database>Es trat ein Systemfehler auf.</database>
-                <datamissing>Die Felder Benutzer, Name und Email mÃ¼ssen ausgefÃ¼llt werden.</datamissing> 
+                <datamissing>Die Felder Benutzer, Name und Email müssen ausgefüllt werden.</datamissing> 
                 <disadmin>Ein Benutzer in der Gruppe Administrators kann nicht gesperrt werden.</disadmin>
-                <downbrowser>Der Ordner fÃ¼r die Downloadgalerien existiert noch nicht.</downbrowser>
+                <downbrowser>Der Ordner für die Downloadgalerien existiert noch nicht.</downbrowser>
                 <downnogallery>Es existiert noch keine Downloadgalerie.</downnogallery>
                 <editorsave>Eventuell wurde die Datei zwischenzeitlich von einem anderen Benutzer gesperrt.</editorsave>
                 <extinuse>Diese Endung ist bereits einem Dateitypen zugewiesen.</extinuse>
-                <extNav1>Das ausgewÃ¤hlte Hauptlogo oder Verzeichnislogo ist keine gÃ¼ltige Image-Datei oder der Pfad existiert nicht.</extNav1>
-                <extNav2>Um einen Link in der stat. Navigation hinzuzufÃ¼gen,  sind ein Linktext und ein gÃ¼ltiger Pfad erforderlich.</extNav2>
+                <extNav1>Das ausgewählte Hauptlogo oder Verzeichnislogo ist keine gültige Image-Datei oder der Pfad existiert nicht.</extNav1>
+                <extNav2>Um einen Link in der stat. Navigation hinzuzufügen,  sind ein Linktext und ein gültiger Pfad erforderlich.</extNav2>
                 <extNav3>Die Farbauswahl ist nicht im Format #000000 bis #FFFFFF angegeben.</extNav3>
-                <foldercreate>Eventuell haben Sie nicht die Berechtigung fÃ¼r diese Aktion oder es existiert schon ein Ordner mit diesem Namen.</foldercreate>
+                <foldercreate>Eventuell haben Sie nicht die Berechtigung für diese Aktion oder es existiert schon ein Ordner mit diesem Namen.</foldercreate>
                 <gallerynoright>Sie haben in diesem Projekt keine Berechtigung die Galerie anzulegen</gallerynoright>
                 <htmlnogallery>Es existiert noch keine HTML-Galerie.</htmlnogallery>
-                <htmlbrowser>Der Ordner fÃ¼r die Bildergalerien existiert noch nicht.</htmlbrowser>                               
+                <htmlbrowser>Der Ordner für die Bildergalerien existiert noch nicht.</htmlbrowser>                               
                 <linknogallery>Es existiert noch keine Linkgalerie.</linknogallery>
-                <linkbrowser>Der Ordner fÃ¼r die Linkgalerien existiert noch nicht.</linkbrowser>
-                <lock>Entweder haben Sie nicht die Zugriffsrechte diese Datei zu sperren, oder die KÃ¶rperdatei wurde von einer anderen Steuerdatei gesperrt.</lock>
-                <lockchange>Die Datei ist noch von einem anderen Benutzer geÃ¶ffnet.</lockchange>
-                <login>Die Anmeldedaten sind ungÃ¼ltig oder falsch eingegeben.</login>
-                <picbrowser>Der Ordner fÃ¼r die Bildergalerien existiert noch nicht.</picbrowser>
-                <picdatamissing>Sie mÃ¼ssen einen Ordnernamen und Verwalter wÃ¤hlen.</picdatamissing>
+                <linkbrowser>Der Ordner für die Linkgalerien existiert noch nicht.</linkbrowser>
+                <lock>Entweder haben Sie nicht die Zugriffsrechte diese Datei zu sperren, oder die Körperdatei wurde von einer anderen Steuerdatei gesperrt.</lock>
+                <lockchange>Die Datei ist noch von einem anderen Benutzer geöffnet.</lockchange>
+                <login>Die Anmeldedaten sind ungültig oder falsch eingegeben.</login>
+                <picbrowser>Der Ordner für die Bildergalerien existiert noch nicht.</picbrowser>
+                <picdatamissing>Sie müssen einen Ordnernamen und Verwalter wählen.</picdatamissing>
                 <picnogallery>Es existiert noch keine Bildergalerie.</picnogallery>
                 <projectlockchange>Es ist ein Fehler aufgetreten.</projectlockchange>
                 <namemissing>Bitte geben Sie einen Namen ein.</namemissing>
                 <titlemissing>Bitte geben Sie einen Titel ein.</titlemissing>
-                <newproject>Die Projektdaten sind ungÃ¼ltig oder falsch eingegeben.</newproject>
+                <newproject>Die Projektdaten sind ungültig oder falsch eingegeben.</newproject>
                 <newextformat>Ihre Eingabe war im falschen Format.</newextformat>
                 <newlink>Sie haben eventuell keine Berechtigung, einen Link anzulegen oder es existiert bereits eine Datei gleichen Namens.</newlink>
                 <newprop>siehe Details</newprop>
@@ -283,28 +283,28 @@
                 <newextension1>Dateiendung</newextension1>
                 <newextension2>konnte nicht dem Dateitypen</newextension2>
                 <newextension3>zugeordnet werden.</newextension3> 
-                <newtask>Die Daten fÃ¼r die Aufgabe sind ungÃ¼ltig oder falsch eingegeben.</newtask>
-                <nogroup>Sie mÃ¼ssen mindestens eine Gruppe auswÃ¤hlen.</nogroup>
+                <newtask>Die Daten für die Aufgabe sind ungültig oder falsch eingegeben.</newtask>
+                <nogroup>Sie müssen mindestens eine Gruppe auswählen.</nogroup>
                 <none></none>
                 <picgallery>Sie haben keine Berechtigung eine neue Galerie in diesem Projekt anzulegen.</picgallery>
                 <publishproject>In dem Projekt sind eventuell noch gesperrte Dateien enthalten.</publishproject>
-                <publishresource>Sie mÃ¼ssen Projektmanager dieses Projektes sein.</publishresource>
-                <projectdatamissing>Die Felder Projektname und Verzeichnisse mÃ¼ssen ausgefÃ¼llt werden.</projectdatamissing>
+                <publishresource>Sie müssen Projektmanager dieses Projektes sein.</publishresource>
+                <projectdatamissing>Die Felder Projektname und Verzeichnisse müssen ausgefüllt werden.</projectdatamissing>
                 <restoreresource>Sie haben keine Berechtigung, diese Version wiederherzustellen.</restoreresource>
-                <rmdefault>Einer oder mehrere Benutzer, die aus der Gruppe gelÃ¶scht werden sollten, hatten diese als Default Gruppe eingestellt.</rmdefault>
-                <deleteproject>Sie haben nicht das Recht dieses Projekt zu lÃ¶schen.</deleteproject>
+                <rmdefault>Einer oder mehrere Benutzer, die aus der Gruppe gelöscht werden sollten, hatten diese als Default Gruppe eingestellt.</rmdefault>
+                <deleteproject>Sie haben nicht das Recht dieses Projekt zu löschen.</deleteproject>
                 <staticexport>Eventuell existiert der angegebene Export-Ordner nicht.</staticexport>
                 <syncfolder>Eventuell existieren die zu synchronisierenden Ressourcen oder der Synchronisationspfad nicht.</syncfolder>
-                <syncproperties>Eventuell existieren die angegebenen Ressourcen nicht im gewÃ¤hlten Projekt.</syncproperties>
-                <syncdatamissing>Sie haben noch kein Projekt, keine zu synchronisierenden Ressourcen oder keinen Zielpfad gewÃ¤hlt.</syncdatamissing>
+                <syncproperties>Eventuell existieren die angegebenen Ressourcen nicht im gewählten Projekt.</syncproperties>
+                <syncdatamissing>Sie haben noch kein Projekt, keine zu synchronisierenden Ressourcen oder keinen Zielpfad gewählt.</syncdatamissing>
                 <undelete>Sie haben keine Berechtigung, die Ressource wiederherzustellen.</undelete>
-                <undochanges>Sie haben keine Berechtigung, die Ã„nderungen zu verwerfen.</undochanges>
-                <unlock>Die Dateisperre wurde von einem anderen Benutzer Ã¼bernommen.</unlock>
+                <undochanges>Sie haben keine Berechtigung, die Änderungen zu verwerfen.</undochanges>
+                <unlock>Die Dateisperre wurde von einem anderen Benutzer übernommen.</unlock>
                 <upload>Der Dateiinhalt ist leer</upload>
             </reason>
             <suggestion>
-                <accessdenied>Bitte Ã¼berprÃ¼fen Sie die Zugriffsrechte und die Sperrung des Verzeichnisses</accessdenied>
-                <adduser>Bitte Ã¼berprÃ¼fen Sie Ihre Eingabe oder wenden Sie sich an den Systemadministrator.</adduser>
+                <accessdenied>Bitte überprüfen Sie die Zugriffsrechte und die Sperrung des Verzeichnisses</accessdenied>
+                <adduser>Bitte überprüfen Sie Ihre Eingabe oder wenden Sie sich an den Systemadministrator.</adduser>
                 <chgrp>Kontaktieren Sie Ihren Systemadministrator.</chgrp>
                 <chmod>Kontaktieren Sie Ihren Systemadministrator.</chmod>
                 <chown>Kontaktieren Sie Ihren Systemadministrator.</chown>
@@ -313,102 +313,102 @@
                 <chtype>Kontaktieren Sie Ihren Systemadministrator.</chtype>
                 <copy></copy>
                 <copytoproject>Bitte kontaktieren Sie den Manager des Projektes oder Ihren Systemadministrator.</copytoproject>
-                <delete>Bitte Ã¼berprÃ¼fen Sie Zugriffsrechte und Sperrung des Verzeichnisses oder kontaktieren Sie den Projektmanager oder Ihren Systemadministrator.</delete>
+                <delete>Bitte überprüfen Sie Zugriffsrechte und Sperrung des Verzeichnisses oder kontaktieren Sie den Projektmanager oder Ihren Systemadministrator.</delete>
                 <deleteextension>Kontaktieren Sie Ihren Systemadministrator.</deleteextension>
                 <deleteuser></deleteuser>
                 <deletegroup>Kontaktieren Sie Ihren Systemadministrator.</deletegroup>
-                <database>Sie mÃ¼ssen Administrationsrechte besitzen, um einen Export oder Import durchfÃ¼hren zu kÃ¶nnen.</database>
-                <disadmin>Wenn sie den Benutzer sperren mÃ¶chten, mÃ¼ssen Sie ihn zuerst aus der Gruppe Administrators herausnehmen.</disadmin>
-                <downbrowser>Legen sie den Ordner fÃ¼r die Downloadgalerien an oder kontaktieren Sie Ihren Systemadministrator.</downbrowser>
-                <downnogallery>Bitte legen Sie erst eine Galerie unter dem MenÃ¼punkt Administration/Downloadgalerien an.</downnogallery>
-                <editorsave>Speichern Sie den Dateiinhalt in einem lokalen Editor zwischen, schlieÃŸen Sie die Datei und Ã¼berprÃ¼fen Sie die Sperrung.</editorsave>
-                <htmlbrowser>Legen sie den Ordner fÃ¼r die HTML-Galerien an oder kontaktieren Sie Ihren Systemadministrator.</htmlbrowser>
-                <htmlnogallery>Bitte legen Sie erst eine Galerie unter dem MenÃ¼punkt Administration/HTML-Galerie an.</htmlnogallery>                
-                <linkbrowser>Legen sie den Ordner fÃ¼r die Linkgalerien an oder kontaktieren Sie Ihren Systemadministrator.</linkbrowser>
-                <linknogallery>Bitte legen Sie erst eine Galerie unter dem MenÃ¼punkt Administration/Externe Link-Verwaltung an.</linknogallery>
+                <database>Sie müssen Administrationsrechte besitzen, um einen Export oder Import durchführen zu können.</database>
+                <disadmin>Wenn sie den Benutzer sperren möchten, müssen Sie ihn zuerst aus der Gruppe Administrators herausnehmen.</disadmin>
+                <downbrowser>Legen sie den Ordner für die Downloadgalerien an oder kontaktieren Sie Ihren Systemadministrator.</downbrowser>
+                <downnogallery>Bitte legen Sie erst eine Galerie unter dem Menüpunkt Administration/Downloadgalerien an.</downnogallery>
+                <editorsave>Speichern Sie den Dateiinhalt in einem lokalen Editor zwischen, schließen Sie die Datei und überprüfen Sie die Sperrung.</editorsave>
+                <htmlbrowser>Legen sie den Ordner für die HTML-Galerien an oder kontaktieren Sie Ihren Systemadministrator.</htmlbrowser>
+                <htmlnogallery>Bitte legen Sie erst eine Galerie unter dem Menüpunkt Administration/HTML-Galerie an.</htmlnogallery>                
+                <linkbrowser>Legen sie den Ordner für die Linkgalerien an oder kontaktieren Sie Ihren Systemadministrator.</linkbrowser>
+                <linknogallery>Bitte legen Sie erst eine Galerie unter dem Menüpunkt Administration/Externe Link-Verwaltung an.</linknogallery>
                 <lock></lock>
-                <lockchange>Bitte versuchen Sie es spÃ¤ter erneut, oder kontaktieren Sie Ihren Systemadministrator.</lockchange>
-                <login>Bitte Ã¼berprÃ¼fen Sie Ihre Eingabe oder wenden Sie sich an den Systemadministrator.</login>
-                <picnogallery>Bitte legen Sie erst eine Galerie unter dem MenÃ¼punkt Administration/Bildergalerien an.</picnogallery>
-                <projectlockchange>Bitte versuchen Sie es spÃ¤ter erneut, oder kontaktieren Sie Ihren Systemadministrator.</projectlockchange>
-                <newlink>Bitte Ã¼berprÃ¼fen Sie Ihre Eingaben oder wenden Sie sich an den Systemadministrator.</newlink>
-                <newproject>Bitte Ã¼berprÃ¼fen Sie Ihre Eingabe oder wenden Sie sich an den Systemadministrator.</newproject>
-                <newprop>Bitte versuchen Sie es spÃ¤ter erneut, oder kontaktieren Sie Ihren Systemadministrator.</newprop>
+                <lockchange>Bitte versuchen Sie es später erneut, oder kontaktieren Sie Ihren Systemadministrator.</lockchange>
+                <login>Bitte überprüfen Sie Ihre Eingabe oder wenden Sie sich an den Systemadministrator.</login>
+                <picnogallery>Bitte legen Sie erst eine Galerie unter dem Menüpunkt Administration/Bildergalerien an.</picnogallery>
+                <projectlockchange>Bitte versuchen Sie es später erneut, oder kontaktieren Sie Ihren Systemadministrator.</projectlockchange>
+                <newlink>Bitte überprüfen Sie Ihre Eingaben oder wenden Sie sich an den Systemadministrator.</newlink>
+                <newproject>Bitte überprüfen Sie Ihre Eingabe oder wenden Sie sich an den Systemadministrator.</newproject>
+                <newprop>Bitte versuchen Sie es später erneut, oder kontaktieren Sie Ihren Systemadministrator.</newprop>
                 <newextformat>Geben Sie immer nur eine Endung auf einmal ein. Sternchen oder Punkt brauchen nicht eingegeben zu werden.</newextformat>
                 <newextension>Kontaktieren Sie Ihren Systemadministrator.</newextension>
-                <newtask>Bitte Ã¼berprÃ¼fen Sie Ihre Eingabe oder wenden Sie sich an den Systemadministrator.</newtask>
+                <newtask>Bitte überprüfen Sie Ihre Eingabe oder wenden Sie sich an den Systemadministrator.</newtask>
                 <none></none> 
-                <picbrowser>Legen sie den Ordner fÃ¼r die Bildergalerien an oder kontaktieren Sie Ihren Systemadministrator.</picbrowser>
-                <publishproject>Bitte versuchen Sie es spÃ¤ter erneut, oder kontaktieren Sie Ihren Systemadministrator.</publishproject>
+                <picbrowser>Legen sie den Ordner für die Bildergalerien an oder kontaktieren Sie Ihren Systemadministrator.</picbrowser>
+                <publishproject>Bitte versuchen Sie es später erneut, oder kontaktieren Sie Ihren Systemadministrator.</publishproject>
                 <publishresource>Bitte kontaktieren Sie den Projektmanager des Projektes oder den Systemadministrator.</publishresource>
-                <restoreresource>Bitte Ã¼berprÃ¼fen Sie die Zugriffsrechte auf die Ressource.</restoreresource>
-                <rmdefault>Sie mÃ¼ssen die Default Gruppe dieser Benutzer zuerst Ã¤ndern.</rmdefault>
-                <deleteproject>Bitte versuchen Sie es spÃ¤ter erneut, oder kontaktieren Sie Ihren Systemadministrator.</deleteproject>
-                <syncfolder>Bitte Ã¼berprÃ¼fen Sie die EintrÃ¤ge fÃ¼r die Synchronisierung in der Registrierungsdatei oder kontaktieren Sie Ihren Systemadministrator.</syncfolder>
-                <syncproperties>Bitte Ã¼berprÃ¼fen Sie, ob die angegebenen Ressourcen im Projekt existieren.</syncproperties>
-                <undelete>Bitte Ã¼berprÃ¼fen Sie die Zugriffsrechte auf die Ressource.</undelete>
-                <undochanges>Bitte Ã¼berprÃ¼fen Sie die Zugriffsrechte auf die Ressource.</undochanges>
-                <unlock>Bitte versuchen Sie es spÃ¤ter erneut, oder kontaktieren Sie Ihren Systemadministrator.</unlock>
-                <upload>Bitte Ã¼berprÃ¼fen Sie den Dateinamen, oder kontaktieren Sie Ihren Systemadministrator.</upload>
+                <restoreresource>Bitte überprüfen Sie die Zugriffsrechte auf die Ressource.</restoreresource>
+                <rmdefault>Sie müssen die Default Gruppe dieser Benutzer zuerst ändern.</rmdefault>
+                <deleteproject>Bitte versuchen Sie es später erneut, oder kontaktieren Sie Ihren Systemadministrator.</deleteproject>
+                <syncfolder>Bitte überprüfen Sie die Einträge für die Synchronisierung in der Registrierungsdatei oder kontaktieren Sie Ihren Systemadministrator.</syncfolder>
+                <syncproperties>Bitte überprüfen Sie, ob die angegebenen Ressourcen im Projekt existieren.</syncproperties>
+                <undelete>Bitte überprüfen Sie die Zugriffsrechte auf die Ressource.</undelete>
+                <undochanges>Bitte überprüfen Sie die Zugriffsrechte auf die Ressource.</undochanges>
+                <unlock>Bitte versuchen Sie es später erneut, oder kontaktieren Sie Ihren Systemadministrator.</unlock>
+                <upload>Bitte überprüfen Sie den Dateinamen, oder kontaktieren Sie Ihren Systemadministrator.</upload>
             </suggestion>
             <title> 
                 <accessdenied>Zugriff verweigert</accessdenied>
                 <adduser>Benutzer neu anlegen</adduser>
                 <addgroup>Gruppe neu anlegen</addgroup>
-                <changeuser>Benutzer Ã¤ndern</changeuser>
-                <chgrp>Gruppe Ã¤ndern</chgrp>
-                <chmod>Zugriff Ã¤ndern</chmod>
-                <chnav>Position Ã¤ndern</chnav>
-                <chown>EigentÃ¼mer Ã¤ndern</chown>
-                <chpwd>Kennwort Ã¤ndern</chpwd>
-                <chtype>Dateityp Ã¤ndern</chtype>
+                <changeuser>Benutzer ändern</changeuser>
+                <chgrp>Gruppe ändern</chgrp>
+                <chmod>Zugriff ändern</chmod>
+                <chnav>Position ändern</chnav>
+                <chown>Eigentümer ändern</chown>
+                <chpwd>Kennwort ändern</chpwd>
+                <chtype>Dateityp ändern</chtype>
                 <copy>Datei kopieren</copy>
-                <copytoproject>In Projekt Ã¼bernehmen</copytoproject>
-                <delete>Datei lÃ¶schen</delete>
-                <deleteextension>Dateierweiterung lÃ¶schen</deleteextension>
-                <deleteuser>Benutzer lÃ¶schen</deleteuser>
-                <deletegroup>Gruppe lÃ¶schen</deletegroup>
+                <copytoproject>In Projekt übernehmen</copytoproject>
+                <delete>Datei löschen</delete>
+                <deleteextension>Dateierweiterung löschen</deleteextension>
+                <deleteuser>Benutzer löschen</deleteuser>
+                <deletegroup>Gruppe löschen</deletegroup>
                 <database>Datenbank Export/Import</database>
-                <downbrowser>Downloadgalerie Ã¶ffnen</downbrowser> 
+                <downbrowser>Downloadgalerie öffnen</downbrowser> 
                 <downgallery>Neue Bildergalerie anlegen</downgallery>
                 <editorsave>Datei speichern</editorsave>
                 <foldercreate>Neues Verzeichnis anlegen</foldercreate>
                 <histproperties>Verwaltung Historieneigenschaften</histproperties>
                 <htmlbrowser>HTML-Galerie anlegen</htmlbrowser>                
-                <linkbrowser>Linkgalerie Ã¶ffnen</linkbrowser>
+                <linkbrowser>Linkgalerie öffnen</linkbrowser>
                 <linkgallery>Linkgalerie anlegen</linkgallery>
                 <lock>Datei sperren</lock>
-                <lockchange>Datei Sperrung Ã¼bernehmen</lockchange>
+                <lockchange>Datei Sperrung übernehmen</lockchange>
                 <login>Anmeldungsfehler</login>
-                <projectlockchange>Dateisperrungen fÃ¼r Projekt aufheben</projectlockchange>
-                <newlink>Neue VerknÃ¼pfung anlegen</newlink>
+                <projectlockchange>Dateisperrungen für Projekt aufheben</projectlockchange>
+                <newlink>Neue Verknüpfung anlegen</newlink>
                 <newproject>Neues Projekt</newproject>
-                <newprop>Neue Eigenschaft fÃ¼r Dateityp</newprop>
+                <newprop>Neue Eigenschaft für Dateityp</newprop>
                 <newextension>Neue Dateiendung zuordnen</newextension>
                 <newtask>Neue Aufgabe</newtask>
-                <picbrowser>Bildergalerie Ã¶ffnen</picbrowser>
+                <picbrowser>Bildergalerie öffnen</picbrowser>
                 <picgallery>Bildergalerie anlegen</picgallery>
-                <publishproject>Projekt verÃ¶ffentlichen</publishproject>
-                <publishresource>Direkt verÃ¶ffentlichen</publishresource>
+                <publishproject>Projekt veröffentlichen</publishproject>
+                <publishresource>Direkt veröffentlichen</publishresource>
                 <restoreresource>Historisierte Version wiederherstellen</restoreresource>
                 <rename>Umbenennen</rename>
-                <deleteproject>Projekt lÃ¶schen</deleteproject>
+                <deleteproject>Projekt löschen</deleteproject>
                 <syncfolder>Ordner synchronisieren</syncfolder>
-                <syncproperties>Einstellungen fÃ¼r die Synchronisation</syncproperties>
+                <syncproperties>Einstellungen für die Synchronisation</syncproperties>
                 <touch>Aktualisiere</touch>
                 <undelete>Ressource wiederherstellen</undelete>
-                <undochanges>Ã„nderungen verwerfen</undochanges>
+                <undochanges>Änderungen verwerfen</undochanges>
                 <unlock>Datei freigeben</unlock>
                 <upload>Datei hochladen</upload>
             </title>    
         </error>
         
         <fileicon>
-            <binary>BinÃ¤r</binary>
+            <binary>Binär</binary>
             <compatiblePlain>compatiblePlain</compatiblePlain>
             <folder>Ordner</folder>
             <image>Bild</image>
-            <linkto>VerknÃ¼pfung</linkto>
+            <linkto>Verknüpfung</linkto>
             <newspage>News-Artikel</newspage>
             <othertype>anderer Typ</othertype>
             <page>Seite</page>
@@ -436,12 +436,12 @@
             <htmlgallery>HTML-Galerien<![CDATA[<br>]]>verwalten</htmlgallery>            
             <imagelist>Bilderliste</imagelist>
             <import>Import</import>
-            <linkmanagement>Projekt prÃ¼fen</linkmanagement>
-            <linkcheckviewer>Ergebnisse LinkprÃ¼fung</linkcheckviewer>
+            <linkmanagement>Projekt prüfen</linkmanagement>
+            <linkcheckviewer>Ergebnisse Linkprüfung</linkcheckviewer>
             <logfileviewer>Logfileviewer</logfileviewer>
             <module>Modul- verwaltung</module>
             <mountpoint>Mountpoint- </mountpoint>
-            <newlink>Neue externe VerknÃ¼pfung</newlink>
+            <newlink>Neue externe Verknüpfung</newlink>
             <newgallery>Neue Galerie</newgallery>
             <newproject>Neues Projekt</newproject>
             <picgallery>Bildergalerien<![CDATA[<br>]]>verwalten</picgallery>
@@ -460,41 +460,41 @@
             <context>
                 <copy>Kopieren</copy>
                 <cut>Ausschneiden</cut>
-                <deletecell>Zelle lÃ¶schen</deletecell>
-                <deletecol>Spalte lÃ¶schen</deletecol>
-                <deleterow>Zeile lÃ¶schen</deleterow>
-                <insertcell>Zelle einfÃ¼gen</insertcell>
-                <insertcol>Spalte einfÃ¼gen</insertcol>
-                <insertrow>Zeile einfÃ¼gen</insertrow>
+                <deletecell>Zelle löschen</deletecell>
+                <deletecol>Spalte löschen</deletecol>
+                <deleterow>Zeile löschen</deleterow>
+                <insertcell>Zelle einfügen</insertcell>
+                <insertcol>Spalte einfügen</insertcol>
+                <insertrow>Zeile einfügen</insertrow>
                 <mergecell>Zellen verbinden</mergecell>
-                <paste>EinfÃ¼gen</paste>             
+                <paste>Einfügen</paste>             
                 <splitcell>Zellen teilen</splitcell>
             </context>
             <message>
             	<confirmhttp>Die Link URL sieht wie eine externe URL aus\naber es fehlt das notwendige Protokoll (z.B. 'http://').\n\nSoll das http Protokoll zur URL addiert werden?</confirmhttp>
-            	<noselection>Fehler: Keine gÃ¼ltige Auswahl.\nBitte markieren Sie den Text oder das Bild, welches verlinkt werden soll.</noselection>            	
+            	<noselection>Fehler: Keine gültige Auswahl.\nBitte markieren Sie den Text oder das Bild, welches verlinkt werden soll.</noselection>            	
             </message>
         </editor>
         <explorer>
-            <linkto>VerknÃ¼pfung mit</linkto>
-            <state0>unverÃ¤ndert</state0>
-            <state1>geÃ¤ndert</state1>
+            <linkto>Verknüpfung mit</linkto>
+            <state0>unverändert</state0>
+            <state1>geändert</state1>
             <state2>neu</state2>
-            <state3>gelÃ¶scht</state3>
+            <state3>gelöscht</state3>
             <statenip>keine Projektdatei</statenip>
             <lockedby>Zur Bearbeitung gesperrt von </lockedby>
             <lockedin><![CDATA[ im Projekt ]]></lockedin>
-            <altbelongto><![CDATA[ gehÃ¶rt zu Projekt ]]></altbelongto>
+            <altbelongto><![CDATA[ gehört zu Projekt ]]></altbelongto>
             <context>
-                <access>Zugriff Ã¤ndern</access>
-                <chgrp>Gruppe Ã¤ndern</chgrp>
-                <chown>EigentÃ¼mer Ã¤ndern</chown>
-                <chnav>Navigation Ã¤ndern</chnav>
+                <access>Zugriff ändern</access>
+                <chgrp>Gruppe ändern</chgrp>
+                <chown>Eigentümer ändern</chown>
+                <chnav>Navigation ändern</chnav>
                 <copy>Kopieren</copy>
-                <copytoproject>In Projekt Ã¼bernehmen</copytoproject>
-                <delete>LÃ¶schen</delete>
+                <copytoproject>In Projekt übernehmen</copytoproject>
+                <delete>Löschen</delete>
                 <edit>Quelltext editieren</edit>
-                <editlink>VerknÃ¼pfung editieren</editlink>
+                <editlink>Verknüpfung editieren</editlink>
                 <editarticle>Artikel bearbeiten</editarticle>
                 <editcontrolfile>Steuerdatei bearbeiten</editcontrolfile>
                 <history>Historie</history>
@@ -503,17 +503,17 @@
                 <move>Verschieben</move>
                 <noaccess>Keine ausreichenden Zugriffsrechte</noaccess>
                 <newsedit>News bearbeiten</newsedit>
-                <overridelock>Sperrung Ã¼bernehmen</overridelock>
+                <overridelock>Sperrung übernehmen</overridelock>
                 <pageedit>Seite bearbeiten</pageedit>
                 <project>Als Projekt anlegen</project>
                 <property>Eigenschaften</property>
-                <publish>Direkt verÃ¶ffentlichen</publish>
+                <publish>Direkt veröffentlichen</publish>
                 <rename>Umbenennen</rename>
                 <replace>Ersetzen</replace>
                 <touch>Aktualisieren</touch>
-                <type>Dateityp Ã¤ndern</type>
+                <type>Dateityp ändern</type>
                 <undelete>Wiederherstellen</undelete>
-                <undochanges>Ã„nderungen verwerfen</undochanges>
+                <undochanges>Änderungen verwerfen</undochanges>
                 <unlock>Freigeben</unlock>
             </context>
         </explorer>
@@ -522,23 +522,23 @@
             <access>Rechte</access>
             <activepropertydef>aktive Eigenschaften</activepropertydef>
             <addtonav>in Navigation mit aufnehmen</addtonav>
-            <add>HinzufÃ¼gen</add>
+            <add>Hinzufügen</add>
             <adress>Adresse</adress>
             <alignment>Ausrichtung</alignment>
             <allprojects>alle Projekte anzeigen</allprojects>
-            <allgroups>mÃ¶gliche Gruppen</allgroups>
+            <allgroups>mögliche Gruppen</allgroups>
             <allusers>alle anderen Benutzer</allusers>
-            <body>TextkÃ¶rper</body>
+            <body>Textkörper</body>
             <border>Rand</border>
             <borderinfo>in Bildschirmpunkten</borderinfo>
             <center>Zentriert</center>
-            <changed>GeÃ¤ndert am</changed>
-            <changesubresources>Alle Unterverzeichnisse / Dateien Ã¤ndern</changesubresources>
-            <channelavailable>verfÃ¼gbare Channels</channelavailable>
-            <channelselected>ausgewÃ¤hlte Channels</channelselected>
+            <changed>Geändert am</changed>
+            <changesubresources>Alle Unterverzeichnisse / Dateien ändern</changesubresources>
+            <channelavailable>verfügbare Channels</channelavailable>
+            <channelselected>ausgewählte Channels</channelselected>
             <city>Ort</city>
             <color>Farbe</color>
-            <colorcode>GewÃ¤hlte Farbe</colorcode>
+            <colorcode>Gewählte Farbe</colorcode>
             <columns>Spalten</columns>
             <copyto>Kopieren nach</copyto>
             <currentgroup>Aktuelle Gruppe</currentgroup>
@@ -546,10 +546,10 @@
             <defaulttasks>Voreinstellung bei Aufgabenerstellung</defaulttasks>
             <defaultgroup>Starte mit Gruppe</defaultgroup>
             <description>Beschreibung</description>
-            <editpropertyinfo>Wert Ã¤ndern in</editpropertyinfo>
+            <editpropertyinfo>Wert ändern in</editpropertyinfo>
             <editor>Editor</editor>
             <email>EMail</email>
-            <exportadd>hinzufÃ¼gen</exportadd>
+            <exportadd>hinzufügen</exportadd>
             <exportchannels>zu exportierende Channels</exportchannels>
             <exportmodules>zu exportierende Module</exportmodules>
             <exportresources>zu exportierende Ressourcen</exportresources>
@@ -565,17 +565,17 @@
             <groupdefinition>Diese Gruppe definieren als</groupdefinition>
             <groupsprojectmanager>Projektleiter</groupsprojectmanager>
             <groupsprojectworker>Projektmitarbeiter</groupsprojectworker>
-            <height>HÃ¶he</height>
+            <height>Höhe</height>
             <histenabled>Historie aktivieren</histenabled>
-            <histweeks1>Versionen lÃ¶schen, die Ã¤lter sind als</histweeks1>
+            <histweeks1>Versionen löschen, die älter sind als</histweeks1>
             <histweeks2>Wochen</histweeks2>
             <inpercent><![CDATA[% vom Fenster]]></inpercent>
             <inpixel>Bildschirmpunkte</inpixel>
-            <insert>EinfÃ¼gen nach</insert>
+            <insert>Einfügen nach</insert>
             <intern>Intern</intern>
             <keeprights>aktuelle Rechte beibehalten</keeprights>
 						<keepproperties>aktuelle Eigenschaften beibehalten</keepproperties>
-            <keywords>SchlÃ¼sselwÃ¶rter</keywords>
+            <keywords>Schlüsselwörter</keywords>
             <lang>Sprache</lang>
             <lastelement>an letzter Position</lastelement>
             <lastname>Name</lastname>
@@ -590,7 +590,7 @@
             <linkanchor>Ankerlink</linkanchor>
             <linkstyle>Styleangaben</linkstyle>
             <linkstyleclass>Stylesheet Klasse</linkstyleclass>            
-            <nolinkvalue>Bitte geben Sie die VerknÃ¼pfung an!</nolinkvalue>
+            <nolinkvalue>Bitte geben Sie die Verknüpfung an!</nolinkvalue>
             <lockedby>Gesperrt durch</lockedby>
             <lockuser>Benutzer sperren</lockuser>
             <messageaccept>Benachrichtigung bei Annahme</messageaccept>
@@ -598,8 +598,8 @@
             <messagecompleted>Benachrichtigung bei Abhaken</messagecompleted>
             <messagemembers>Alle Rollenmitglieder von Aufgabe benachrichtigen</messagemembers>
             <moveto>Verschieben nach</moveto>
-            <promptgroup>Bitte Verwalter wÃ¤hlen ...</promptgroup>
-            <propertydef>Eigenschaft wÃ¤hlen</propertydef>
+            <promptgroup>Bitte Verwalter wählen ...</promptgroup>
+            <propertydef>Eigenschaft wählen</propertydef>
             <navtext>Navigationstext</navtext>
             <navpos>Position in Navigation</navpos>
             <newposition>Neue Position</newposition>
@@ -609,15 +609,15 @@
             <navtitle>Navigationstext</navtitle>
             <newfileothertype>Anlegen von Datei mit Typ</newfileothertype>
             <newgroup>Neue Gruppe</newgroup>
-            <newowner>Neuer EigentÃ¼mer</newowner>
+            <newowner>Neuer Eigentümer</newowner>
             <newpwd>Neues Kennwort</newpwd>     
-            <newpwdrepeat>Kennwort bestÃ¤tigen</newpwdrepeat> 
+            <newpwdrepeat>Kennwort bestätigen</newpwdrepeat> 
 						<newtimestamp>Datum aktualisieren</newtimestamp>
             <next>nach</next>
             <nochange>Wert beibehalten</nochange>
             <none>-- keine --</none>
             <oldpwd>Aktuelles Kennwort</oldpwd>
-            <owner>EigentÃ¼mer</owner>
+            <owner>Eigentümer</owner>
             <page>Seite:</page>
             <padding>Rahmen</padding>
             <paddinginfo>Bildschirmpunkte in den Zellen</paddinginfo>
@@ -625,12 +625,12 @@
             <remove>Entfernen</remove>
             <right>Rechts</right>
             <rights>Berechtigungen</rights>
-            <rolefortasks>Rolle fÃ¼r Aufgaben</rolefortasks>
+            <rolefortasks>Rolle für Aufgaben</rolefortasks>
             <rows>Zeilen</rows>
             <search>Suche</search>
             <settings>Einstellungen</settings>
             <showlockdialog>Sperr Dialoge anzeigen</showlockdialog>
-            <size>GrÃ¶ÃŸe</size>
+            <size>Größe</size>
             <spacing>Abstand</spacing>
             <spacinginfo>Bildschirmpunkte zwischen Zellen</spacinginfo>
             <startupgroup>Starte mit Gruppe</startupgroup>
@@ -638,8 +638,8 @@
             <startupproject>Starte mit Projekt</startupproject>
             <startupview>Starte mit Ansicht</startupview>
             <state>Status</state>
-            <street>StraÃŸe</street>
-            <superordinatedgroup>Ã¼bergeordnete Gruppe</superordinatedgroup>
+            <street>Straße</street>
+            <superordinatedgroup>übergeordnete Gruppe</superordinatedgroup>
             <suggestfiletype>Folgender Dateityp wird empfohlen</suggestfiletype>
             <taskfilter>Standard Filter</taskfilter>
             <title>Titel</title>
@@ -649,7 +649,7 @@
             <user>Benutzer</user>
             <username>Benutzername</username>
             <useralsoin>und indirekt zu den Gruppen</useralsoin>
-            <userbelongstogroup>gehÃ¶rt direkt zu den Gruppen</userbelongstogroup> 
+            <userbelongstogroup>gehört direkt zu den Gruppen</userbelongstogroup> 
             <usersingroup>Benutzer in Gruppe</usersingroup>
             <width>Breite</width>
             <zipcode>PLZ</zipcode>
@@ -691,21 +691,21 @@
             <editedby>Bearbeitet von</editedby>
             <errormessage>Fehlermeldung</errormessage>
             <externallink>Externer Link</externallink>
-            <filesize>DateigrÃ¶ÃŸe</filesize>
+            <filesize>Dateigröße</filesize>
             <folders>Verzeichnisse</folders>
             <group>Gruppe</group>
             <groupsprojectmanager>Projektleiter</groupsprojectmanager>
             <groupsprojectworker>Projektmitarbeiter</groupsprojectworker>
-            <historyheader><![CDATA[Zuletzt bearbeitet am&nbsp;&nbsp;&nbsp;&nbsp;VerÃ¶ffentlicht am&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bearbeitet von]]></historyheader>
+            <historyheader><![CDATA[Zuletzt bearbeitet am&nbsp;&nbsp;&nbsp;&nbsp;Veröffentlicht am&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bearbeitet von]]></historyheader>
             <histrestoreversion>Wiederherstellen</histrestoreversion>
             <histshowversion>Inhalt anzeigen</histshowversion>
-            <histdetailok>SchlieÃŸen</histdetailok>
+            <histdetailok>Schließen</histdetailok>
             <histproperties>Verwaltung Historieneigenschaften</histproperties>
             <imagelist>Bilderliste</imagelist>
             <inactive>nicht aktiv</inactive>
-            <linkto>VerknÃ¼pfung</linkto>
+            <linkto>Verknüpfung</linkto>
             <linklist>Externe Links</linklist>
-            <loading>LÃ¤dt...</loading>
+            <loading>Lädt...</loading>
             <modulecreatedate>Erstellt am</modulecreatedate>
             <modulname>Modulname</modulname>
             <propertydef>Eigenschaft</propertydef>
@@ -721,25 +721,25 @@
             <pictype>Bildtyp</pictype>
             <preferencesexplorer>Dateiangaben</preferencesexplorer>
             <preferencestasks>Aufgabenfilter</preferencestasks>
-            <preferencesuser>PersÃ¶nliche Daten</preferencesuser>
+            <preferencesuser>Persönliche Daten</preferencesuser>
             <project>Projekt</project>
             <projectdescription>Beschreibung</projectdescription>
             <projectname>Projektname</projectname>
-            <projecttype>Projekt nach dem VerÃ¶ffentlichen lÃ¶schen</projecttype>
-            <projectstaticexport>Statischer Export nach dem VerÃ¶ffentlichen</projectstaticexport>
-            <publishedat>VerÃ¶ffentlicht am</publishedat>
-            <publishedby>VerÃ¶ffentlicht von</publishedby>
-            <readrights>Leseberechtigung fÃ¼r andere</readrights>
+            <projecttype>Projekt nach dem Veröffentlichen löschen</projecttype>
+            <projectstaticexport>Statischer Export nach dem Veröffentlichen</projectstaticexport>
+            <publishedat>Veröffentlicht am</publishedat>
+            <publishedby>Veröffentlicht von</publishedby>
+            <readrights>Leseberechtigung für andere</readrights>
             <resourcetype>Ressourcetyp</resourcetype>
             <search>Suchen</search>
-            <selectfolder>Ordner auswÃ¤hlen...</selectfolder>
-            <size>GrÃ¶ÃŸe</size>
-            <specialchar>Sonderzeichen einfÃ¼gen</specialchar>
+            <selectfolder>Ordner auswählen...</selectfolder>
+            <size>Größe</size>
+            <specialchar>Sonderzeichen einfügen</specialchar>
             <state>Status</state>
             <suredeletingproject1>Sind Sie sicher, dass sie das Projekt</suredeletingproject1>
-            <suredeletingproject2>lÃ¶schen und damit alle nicht verÃ¶ffentlichten Ã„nderungen in diesem Projekt verwerfen wollen?</suredeletingproject2>
+            <suredeletingproject2>löschen und damit alle nicht veröffentlichten Änderungen in diesem Projekt verwerfen wollen?</suredeletingproject2>
             <syncdestinationpath>Zielpfad</syncdestinationpath>
-            <syncproperties>Einstellungen fÃ¼r die Synchronisation</syncproperties>
+            <syncproperties>Einstellungen für die Synchronisation</syncproperties>
             <title>Titel</title>
             <upload>Hochladen von Datei</upload>
             <uploaddate>Hochgeladen am</uploaddate>
@@ -748,7 +748,7 @@
             <version>Version</version>
             <view>Ansicht</view>
             <wptitle>OpenCms Arbeitsplatz von</wptitle>
-            <writerights>Schreibberechtigung fÃ¼r andere</writerights>
+            <writerights>Schreibberechtigung für andere</writerights>
         </label>
         
         <media>
@@ -756,16 +756,16 @@
             <mediaPosition>Position</mediaPosition>
             <mediaName>Name</mediaName>
             <mediaText>Text</mediaText>
-            <mediaSize>GrÃ¶sse</mediaSize>
+            <mediaSize>Grösse</mediaSize>
             <mediaType>Typ</mediaType>
         </media>
 
         <message>
-            <chtype>Bitte wÃ¤hlen Sie den neuen Dateityp</chtype>
-            <login1>Dies ist ein geschÃ¼tzer Bereich.</login1>
+            <chtype>Bitte wählen Sie den neuen Dateityp</chtype>
+            <login1>Dies ist ein geschützer Bereich.</login1>
             <login2>Bitte geben Sie Ihren Benutzernamen und Ihr Kennwort ein.</login2>
             <login3>Die Versionen der Workplace-Templates und der Workplace-Klassen sind unterschiedlich. Bitte eins von Beiden updaten.</login3>
-            <nocolor>Keine Farbe gewÃ¤hlt</nocolor>
+            <nocolor>Keine Farbe gewählt</nocolor>
             <reason>Grund</reason>
             <wait>Bitte warten...</wait>
         </message>
@@ -774,18 +774,18 @@
             <title>
                 <ok>Abhaken</ok>
                 <accept>Annehmen</accept>
-                <copytoproject>In Projekt Ãœbernehmen</copytoproject>
-                <delete>Datei lÃ¶schen</delete>
-                <deletefolder>Ordner lÃ¶schen</deletefolder>
-                <deletepropertyinfo>Eigenschaft lÃ¶schen von</deletepropertyinfo>
+                <copytoproject>In Projekt Übernehmen</copytoproject>
+                <delete>Datei löschen</delete>
+                <deletefolder>Ordner löschen</deletefolder>
+                <deletepropertyinfo>Eigenschaft löschen von</deletepropertyinfo>
                 <lock>Datei sperren</lock>
                 <lockfolder>Ordner sperren</lockfolder>
-                <lockchange>Datei Sperrung Ã¼bernehmen</lockchange>
-                <lockchangefolder>Ordner Sperrung Ã¼bernehmen</lockchangefolder>
+                <lockchange>Datei Sperrung übernehmen</lockchange>
+                <lockchangefolder>Ordner Sperrung übernehmen</lockchangefolder>
                 <lockedinfolder>Ressourcen freigeben</lockedinfolder>
-                <publishresource>Direkt verÃ¶ffentlichen</publishresource>
+                <publishresource>Direkt veröffentlichen</publishresource>
                 <syncfolder>Ordner synchronisieren</syncfolder>
-                <undochanges>Ã„nderungen verwerfen</undochanges>
+                <undochanges>Änderungen verwerfen</undochanges>
                 <unlock>Datei freigeben</unlock>
                 <unlockfolder>Ordner freigeben</unlockfolder>
             </title>
@@ -793,13 +793,13 @@
                 <ok>Aufgabe wirklich abhaken?</ok>
                 <accept>Aufgabe annehmen?</accept>
                 <copytoproject>Wollen Sie die Ressource<![CDATA[&nbsp;]]></copytoproject>
-                <delete>Soll die Datei wirklich gelÃ¶scht werden?</delete>
-                <deletefolder>Soll der Ordner wirklich gelÃ¶scht werden?</deletefolder>
-                <deletepropertyinfo>Wollen Sie die gewÃ¤hlte Eigenschaft wirklich lÃ¶schen?</deletepropertyinfo>
+                <delete>Soll die Datei wirklich gelöscht werden?</delete>
+                <deletefolder>Soll der Ordner wirklich gelöscht werden?</deletefolder>
+                <deletepropertyinfo>Wollen Sie die gewählte Eigenschaft wirklich löschen?</deletepropertyinfo>
                 <lock>Soll die Datei wirklich zur Bearbeitung gesperrt werden?</lock>
                 <lockfolder>Soll der Ordner wirklich zur Bearbeitung gesperrt werden?</lockfolder>
-                <lockchange>Wollen Sie die Sperrung wirklich Ã¼bernehmen?</lockchange>
-                <lockchangefolder>Wollen Sie die Sperrung wirklich Ã¼bernehmen?</lockchangefolder>
+                <lockchange>Wollen Sie die Sperrung wirklich übernehmen?</lockchange>
+                <lockchangefolder>Wollen Sie die Sperrung wirklich übernehmen?</lockchangefolder>
                 <lockedinfolder>Im Ordner existieren noch gesperrte Ressourcen. Sollen die Ressourcen freigegeben werden?</lockedinfolder>
                 <publishresource>Soll die Ressource</publishresource>
 				<resourceexists>Die Datei <![CDATA[&nbsp;]]></resourceexists>
@@ -811,39 +811,39 @@
             <message2>
                 <ok><![CDATA[&nbsp;]]></ok>
                 <accept><![CDATA[&nbsp;]]></accept>
-                <copytoproject><![CDATA[&nbsp;]]>wirklich in das Projekt Ã¼bernehmen?</copytoproject>
+                <copytoproject><![CDATA[&nbsp;]]>wirklich in das Projekt übernehmen?</copytoproject>
                 <delete><![CDATA[&nbsp;]]></delete>
                 <deletefolder><![CDATA[&nbsp;]]></deletefolder>
                 <deletepropertyinfo><![CDATA[&nbsp;]]></deletepropertyinfo>
-                <lock>Auf die Datei kann dann kein anderer auÃŸer Ihnen zugreifen, bis Sie die Datei wieder freigeben.</lock>
-                <lockfolder>Auf den Ordner kann dann kein anderer auÃŸer Ihnen zugreifen, bis Sie den Ordner wieder freigeben.</lockfolder>
+                <lock>Auf die Datei kann dann kein anderer außer Ihnen zugreifen, bis Sie die Datei wieder freigeben.</lock>
+                <lockfolder>Auf den Ordner kann dann kein anderer außer Ihnen zugreifen, bis Sie den Ordner wieder freigeben.</lockfolder>
                 <lockchange>Die Datei wird zur Zeit von einem anderen Benutzer gesperrt.</lockchange>
                 <lockchangefolder>Der Ordner wird zur Zeit von einem anderen Benutzer gesperrt.</lockchangefolder>
-                <publishresource>zuletzt geÃ¤ndert am</publishresource>
+                <publishresource>zuletzt geändert am</publishresource>
 				<resourceexists><![CDATA[&nbsp;]]> existiert bereits!</resourceexists>
                 <syncfolder>Die Dateien im OpenCms-System bzw. auf der Festplatte werden dabei auf den neusten Stand gebracht.</syncfolder>
-                <undochanges>wurde zuletzt geÃ¤ndert am</undochanges>
+                <undochanges>wurde zuletzt geändert am</undochanges>
                 <unlock> Die Datei kann dann auch wieder online gestellt werden.</unlock>
                 <unlockfolder> Der Ordner kann dann auch wieder online gestellt werden.</unlockfolder>              
             </message2>
             <message3>
                 <deletepropdef1>Soll die Eigenschaft</deletepropdef1>
-                <deletepropdef2>fÃ¼r Dateityp </deletepropdef2>
-                <deletepropdef3> wirklich gelÃ¶scht werden?</deletepropdef3>
+                <deletepropdef2>für Dateityp </deletepropdef2>
+                <deletepropdef3> wirklich gelöscht werden?</deletepropdef3>
                 <publishresource>von</publishresource>
-				<resourceexists>Soll die bestehende Datei Ã¼berschrieben werden?</resourceexists>
+				<resourceexists>Soll die bestehende Datei überschrieben werden?</resourceexists>
                 <undochanges>von</undochanges>
             </message3>
             <message4>
                 <deleteextension1>Soll die Zuordnung der Dateiendung</deleteextension1>
                 <deleteextension2>zum Dateityp </deleteextension2>
-                <deleteextension3> wirklich gelÃ¶scht werden?</deleteextension3>
-                <publishresource>wirklich direkt verÃ¶ffentlicht werden?</publishresource>
-                <restoreresource>Wollen Sie die Ã„nderungen verwerfen und die historisierte Version wiederherstellen?</restoreresource>
-                <undochanges>Wollen Sie alle nicht verÃ¶ffentlichten Ã„nderungen an der Ressource verwerfen?</undochanges>
+                <deleteextension3> wirklich gelöscht werden?</deleteextension3>
+                <publishresource>wirklich direkt veröffentlicht werden?</publishresource>
+                <restoreresource>Wollen Sie die Änderungen verwerfen und die historisierte Version wiederherstellen?</restoreresource>
+                <undochanges>Wollen Sie alle nicht veröffentlichten Änderungen an der Ressource verwerfen?</undochanges>
             </message4>
-            <message5>Wollen Sie diese Gruppe wirklich lÃ¶schen?</message5>
-            <message6>Wollen Sie diesen Benutzer wirklich lÃ¶schen?</message6>
+            <message5>Wollen Sie diese Gruppe wirklich löschen?</message5>
+            <message6>Wollen Sie diesen Benutzer wirklich löschen?</message6>
             
             
         </messagebox>
@@ -858,9 +858,9 @@
         <project>
             <context>
                 <createtask>Aufgabe erstellen</createtask>
-                <publish>VerÃ¶ffentlichen</publish>
+                <publish>Veröffentlichen</publish>
                 <removelock>Sperrung aufheben</removelock>
-                <delete>LÃ¶schen</delete>
+                <delete>Löschen</delete>
             </context>
             <state>
                 <FILESLOCKED>Dateien in Bearbeitung</FILESLOCKED>
@@ -868,30 +868,30 @@
             </state>
             <publish>
                 <message1>Sind Sie sicher, dass sie das Projekt</message1>
-                <message2>nun verÃ¶ffentlichen wollen?</message2>
-                <title>Projekt verÃ¶ffentlichen</title>
-                <message_linkcheck>Das Projekt wird auf Links ohne Ziel Ã¼berprÃ¼ft.</message_linkcheck>
+                <message2>nun veröffentlichen wollen?</message2>
+                <title>Projekt veröffentlichen</title>
+                <message_linkcheck>Das Projekt wird auf Links ohne Ziel überprüft.</message_linkcheck>
                 <message_brokenlinks>Auf folgenden Seiten wurden Links ohne Ziel gefunden.</message_brokenlinks>
-                <message_brokenlinks2>Wollen Sie das Projekt trotzdem verÃ¶ffentlichen?</message_brokenlinks2>
-                <message_publish>Das Projekt wird verÃ¶ffentlicht.</message_publish>
-                <message_publish2>Das Projekt wurde erfolgreich verÃ¶ffentlicht.</message_publish2>
+                <message_brokenlinks2>Wollen Sie das Projekt trotzdem veröffentlichen?</message_brokenlinks2>
+                <message_publish>Das Projekt wird veröffentlicht.</message_publish>
+                <message_publish2>Das Projekt wurde erfolgreich veröffentlicht.</message_publish2>
             </publish>
             <lockchange>
-                <message1>Sind Sie sicher, dass sie alle Dateisperrungen fÃ¼r Projekt</message1>
+                <message1>Sind Sie sicher, dass sie alle Dateisperrungen für Projekt</message1>
                 <message2>aufheben wollen?</message2>
                 <message3>In dem Projekt</message3>
-                <message4>befinden sich noch gesperrte Elemente. MÃ¶chten Sie die Sperrungen nun aufheben?</message4>
-                <title>Dateisperrungen fÃ¼r Projekt aufheben</title>
+                <message4>befinden sich noch gesperrte Elemente. Möchten Sie die Sperrungen nun aufheben?</message4>
+                <title>Dateisperrungen für Projekt aufheben</title>
             </lockchange>
             <resentfilelist>
                 <label>
                     <filter>Filter</filter>
                 </label>
                 <filter>
-                    <all>Alle Ã„nderungen</all>
+                    <all>Alle Änderungen</all>
                     <new>Neue Dateien</new>
-                    <changed>GeÃ¤nderte Dateien</changed>
-                    <deleted>GelÃ¶schte Dateien</deleted>
+                    <changed>Geänderte Dateien</changed>
+                    <deleted>Gelöschte Dateien</deleted>
                     <locked>Gesperrte Dateien</locked>
                 </filter>
             </resentfilelist>
@@ -899,7 +899,7 @@
 
         <module>
             <context>
-                <delete>LÃ¶schen</delete>
+                <delete>Löschen</delete>
                 <property>Eigenschaften</property>
                 <admin>Administieren</admin>
                 <export>Exportieren</export>
@@ -911,29 +911,29 @@
                 <uploadlocal>Modul von lokalem Rechner hochladen</uploadlocal>
                 <uploadserver>Modul vom Server hochladen</uploadserver>
                 <name>Name:</name>
-                <overwrites>Ãœberschreiben von Dateien</overwrites>
-                <fileoverwrite>Die folgenden Dateien sind schon vorhanden. Wollen Sie diese Ãœberschreiben?</fileoverwrite>
+                <overwrites>Überschreiben von Dateien</overwrites>
+                <fileoverwrite>Die folgenden Dateien sind schon vorhanden. Wollen Sie diese Überschreiben?</fileoverwrite>
                 <description>Beschreibung</description>
                 <moduledescription>Modulebeschreibung</moduledescription>
                 <uploadfrom>Hochgeladen von</uploadfrom>
                 <documentation>Dokumentation</documentation>
-                <dependences>AbhÃ¤ngigkeiten</dependences>
+                <dependences>Abhängigkeiten</dependences>
                 <repository>Repository</repository>
                 <parameter>Parameter</parameter>
-                <changeparameter>Eigenschaften Ã¤ndern von Module</changeparameter>
+                <changeparameter>Eigenschaften ändern von Module</changeparameter>
                 <moduleproperty>Moduleigenschaft</moduleproperty>
                 <modulepropertys>Moduleigenschaften</modulepropertys>
                 <type>Type</type>
                 <value>Wert</value>
-                <deletemodule>Modul lÃ¶schen</deletemodule>
-                <deletetext>Soll das Modul wirklich gelÃ¶scht werden?</deletetext>
+                <deletemodule>Modul löschen</deletemodule>
+                <deletetext>Soll das Modul wirklich gelöscht werden?</deletetext>
                 <modulecreate>Module erstellen</modulecreate>
                 <moduleadmin>Module administrieren</moduleadmin>
                 <packetname>Paketname</packetname>
                 <adminpoint>Administrationspunkt</adminpoint>
                 <maintenance>Ereignis-Verarbeitungsklasse</maintenance>
-                <publishclass>Klasse fÃ¼r VerÃ¶ffentlichung</publishclass>
-                <dependon>AbhÃ¤ngig von</dependon>
+                <publishclass>Klasse für Veröffentlichung</publishclass>
+                <dependon>Abhängig von</dependon>
                 <minversion>min Version</minversion>
                 <maxversion>max Version</maxversion>
                 <adminparameter>Eigenschaften bearbeiten</adminparameter>
@@ -941,27 +941,33 @@
                 <export1>Sind Sie sicher, dass sie das Modul </export1>
                 <export2> exportieren wollen</export2>
 				<moduletype>Modul Typ Simple</moduletype>
+                <importbegin>Importiere Modul</importbegin>
+                <importend>Modul importiert</importend>
+                <deletebegin>Lösche Module</deletebegin>
+                <deleteend>Modul gelöscht</deleteend>
+                <exportbegin>Exportiere Modul</exportbegin>
+                <exportend>Modul exportiert</exportend>				
             </lable>
             <error>
-                <parametertitle>Eigenschaft fÃ¼r Modul Ã¤ndern</parametertitle>
-                <parametermessage>Leider konnte die Eigenschaft nicht geÃ¤ndert werden.</parametermessage>
+                <parametertitle>Eigenschaft für Modul ändern</parametertitle>
+                <parametermessage>Leider konnte die Eigenschaft nicht geändert werden.</parametermessage>
                 <parameterreason>Ihre Eingabe war im falschen Format. Bitte keine Sonderzeichen im Namen und einen zum Typ passenden Wert.</parameterreason>
-                <replace>Modul Ã¼berschreiben</replace>
-                <replacemessage>Modul existiert schon in anderer Version. Bitte lÃ¶schen Sie erst die alte Version.</replacemessage>
-                <dependences>Modul-AbhÃ¤ngigkeiten wurden verletzt:</dependences>
-                <precondition>Folgende Vorbedingungen des Moduls werden nicht erfÃ¼llt:</precondition>
+                <replace>Modul überschreiben</replace>
+                <replacemessage>Modul existiert schon in anderer Version. Bitte löschen Sie erst die alte Version.</replacemessage>
+                <dependences>Modul-Abhängigkeiten wurden verletzt:</dependences>
+                <precondition>Folgende Vorbedingungen des Moduls werden nicht erfüllt:</precondition>
                 <preconditiondelete>The module is needed by</preconditiondelete>
                 <deletetitle>Delete Module</deletetitle>
-                <deletetext1>Folgende Dateien sind geÃ¤ndert worden. Welche sollen gelÃ¶scht werden?</deletetext1>
-                <deletetext2>Welche zusÃ¤tzlichen Files sollen gelÃ¶scht werden?</deletetext2>
-                <deletetext3>Folgende Dateien kÃ¶nnen nicht gelÃ¶scht werden, da sie noch von anderen Modulen benÃ¶tigt werden:</deletetext3>
+                <deletetext1>Folgende Dateien sind geändert worden. Welche sollen gelöscht werden?</deletetext1>
+                <deletetext2>Welche zusätzlichen Files sollen gelöscht werden?</deletetext2>
+                <deletetext3>Folgende Dateien können nicht gelöscht werden, da sie noch von anderen Modulen benötigt werden:</deletetext3>
                 <deletetext4>Folgende Dateien fehlen bereits:</deletetext4>
                 <createtitle>Modul anlegen</createtitle>
                 <createmessage>Das Modul konnte nicht erstellt werden.</createmessage>
                 <createreason>Bitte geben Sie einen Packet Namen und eine Version an.</createreason>
                 <empty> </empty>
                 <existsreason>Es existiert schon ein Modul mit diesem Namen.</existsreason>
-                <existsugg>Ã„ndern Sie den Namen fÃ¼r ein neues Modul oder wÃ¤hlen Sie aus dem Kontexmenu administrieren fÃ¼r dieses Modul.</existsugg>
+                <existsugg>Ändern Sie den Namen für ein neues Modul oder wählen Sie aus dem Kontexmenu administrieren für dieses Modul.</existsugg>
                 <noprojectreason>Der Modulordner im Verzeichniss /system/modules/ konnte nicht angelegt werden.</noprojectreason>
                 <noprojectsugg>Legen Sie ein Project an in dem das Hauptverzeichniss enthalten ist.</noprojectsugg>
             </error>
@@ -979,10 +985,10 @@
         <task>
             <email>
                 <create>
-                    <subject>OpenCms Aufgabenverwaltung: Neue Aufgabe fÃ¼r</subject>                 
+                    <subject>OpenCms Aufgabenverwaltung: Neue Aufgabe für</subject>                 
                     <content>Automatische Nachricht der OpenCms-Aufgabenverwaltung:
 
-FÃ¼r Sie oder Ihre Rolle wurde eine neue Aufgabe erstellt.</content>
+Für Sie oder Ihre Rolle wurde eine neue Aufgabe erstellt.</content>
                 </create>
                 <accept>
                     <subject>OpenCms Aufgabenverwaltung: Aufgabe angenommen von</subject>
@@ -1009,71 +1015,71 @@ Eine von Ihnen gestellte Aufgabe wurde abgehakt.</content>
 Sie haben eine neue Nachricht zu einer Aufgabe erhalten.</content>
                 </message>
                 <query>
-                    <subject>OpenCms Aufgabenverwaltung: RÃ¼ckfrage erhalten von</subject>
+                    <subject>OpenCms Aufgabenverwaltung: Rückfrage erhalten von</subject>
                     <content>Automatische Nachricht der OpenCms-Aufgabenverwaltung:
 
-Sie haben eine RÃ¼ckfrage zu einer Aufgabe erhalten.</content>
+Sie haben eine Rückfrage zu einer Aufgabe erhalten.</content>
                 </query>
                 <take>
-                    <subject>OpenCms Aufgabenverwaltung: Aufgabe Ã¼bernommen von</subject>
+                    <subject>OpenCms Aufgabenverwaltung: Aufgabe übernommen von</subject>
                     <content>Automatische Nachricht der OpenCms-Aufgabenverwaltung:
 
-Eine von Ihnen gestellte Aufgabe ist durch eine dritte Person Ã¼bernommen worden.</content>
+Eine von Ihnen gestellte Aufgabe ist durch eine dritte Person übernommen worden.</content>
                 </take>
                 <reakt>
-                    <subject>OpenCms Aufgabenverwaltung: Aufgabe reaktiviert fÃ¼r</subject>
+                    <subject>OpenCms Aufgabenverwaltung: Aufgabe reaktiviert für</subject>
                     <content>Automatische Nachricht der OpenCms-Aufgabenverwaltung:
 
-FÃ¼r Sie oder Ihre Rolle wurde eine Aufgabe reaktiviert.</content>
+Für Sie oder Ihre Rolle wurde eine Aufgabe reaktiviert.</content>
                 </reakt>
             </email>
             <label>
-                <selectdate>Datum wÃ¤hlen</selectdate>
+                <selectdate>Datum wählen</selectdate>
                 <allprojects>alle Projekte anzeigen</allprojects>
-                <changeuser>Benutzer Ã¤ndern:</changeuser>
+                <changeuser>Benutzer ändern:</changeuser>
                 <task>Aufgabe</task>
-                <foruser>FÃ¼r Benutzer</foruser>
-                <forrole>FÃ¼r Rolle</forrole>
+                <foruser>Für Benutzer</foruser>
+                <forrole>Für Rolle</forrole>
                 <editor>Bearbeiter</editor>
                 <documentation>Dokumentation</documentation>
                 <filter>Filter</filter>
                 <actuator>Aufgabensteller</actuator>
-                <due>FÃ¤llig am</due>
+                <due>Fällig am</due>
                 <from>Gestellt am</from>
                 <project>Projekt</project>
                 <allroles>alle Rollen</allroles>
-                <emptyrole>Bitte Rolle wÃ¤hlen...</emptyrole>
-                <emptyuser>Bitte Benutzer wÃ¤hlen...</emptyuser>
+                <emptyrole>Bitte Rolle wählen...</emptyrole>
+                <emptyuser>Bitte Benutzer wählen...</emptyuser>
                 <newtask>Neue Aufgabe erstellen</newtask>
                 <task>Aufgabe</task>
-                <taskfor>Aufgabe fÃ¼r</taskfor>
-                <timeout>FÃ¤llig am</timeout>
+                <taskfor>Aufgabe für</taskfor>
+                <timeout>Fällig am</timeout>
                 <messageat>
                     <acceptation>Benachrichtigung bei Annahme</acceptation>
                     <all>Alle Rollenmitglieder von Aufgabe benachrichtigen </all>
                     <completion>Benachrichtigung bei Abhaken</completion>
                     <delivery>Benachrichtigung bei Weiterleitung</delivery>
                 </messageat>                
-                <priority>PrioritÃ¤t</priority>
+                <priority>Priorität</priority>
                 <prioritylevel>
-                    <high>Hohe PrioritÃ¤t</high>
-                    <low>Niedrige PrioritÃ¤t</low>
-                    <middle>Mittlere PrioritÃ¤t</middle>
+                    <high>Hohe Priorität</high>
+                    <low>Niedrige Priorität</low>
+                    <middle>Mittlere Priorität</middle>
                 </prioritylevel>
                 <state>
                     <new>Neue Aufgabe</new>
                     <activ>Aufgabe in Bearbeitung</activ>
-                    <alert>ÃœberfÃ¤llige Aufgabe</alert>
+                    <alert>Überfällige Aufgabe</alert>
                     <ok>Aufgabe abgehakt</ok>
-                    <alertok>ÃœberfÃ¤llige Aufgabe</alertok>
+                    <alertok>Überfällige Aufgabe</alertok>
                 </state>
             </label>
             <filter>
-                <a1>Neue Aufgaben fÃ¼r mich</a1>
+                <a1>Neue Aufgaben für mich</a1>
                 <a2>Meine aktiven Aufgaben</a2>
                 <a3>Von mir erledigte Aufgaben</a3>
-                <b1>Neue Aufgaben fÃ¼r meine Rollen</b1>
-                <b2>Aktive Aufgaben fÃ¼r meine Rollen</b2>
+                <b1>Neue Aufgaben für meine Rollen</b1>
+                <b2>Aktive Aufgaben für meine Rollen</b2>
                 <b3>Erledigte Aufgaben von meinen Rollen</b3>
                 <c1>Alle neuen Aufgaben</c1>
                 <c2>Alle aktiven Aufgaben</c2>
@@ -1086,25 +1092,25 @@ FÃ¼r Sie oder Ihre Rolle wurde eine Aufgabe reaktiviert.</content>
                 <m100>Aufgabe angelegt</m100>
                 <m101>Aufgabe angenommen</m101>
                 <m102>Kommentar</m102>
-                <m103>Ãœbernahme der Aufgabe</m103>
+                <m103>Übernahme der Aufgabe</m103>
                 <m104>Aufgabe abgehakt</m104>
                 <m105>Aufgabe reaktiviert</m105>
                 <m106>Aufgabe weitergeleitet</m106>
                 <m107>Nachricht</m107>
-                <m108>FÃ¤lligkeit geÃ¤ndert</m108>
-                <m109>PrioritÃ¤t geÃ¤ndert</m109>
+                <m108>Fälligkeit geändert</m108>
+                <m109>Priorität geändert</m109>
             </headline>
             <button>
                 <accept>Annehmen</accept>
                 <comment>Neuer Kommentar</comment>
-                <due>FÃ¤lligkeit</due>
+                <due>Fälligkeit</due>
                 <forward>Weiterleiten</forward>
                 <message>Nachricht</message>
                 <ok>Abhaken</ok>
-                <priority>PrioritÃ¤t</priority>
-                <query>RÃ¼ckfragen</query>
+                <priority>Priorität</priority>
+                <query>Rückfragen</query>
                 <reakt>Reaktivieren</reakt>
-                <take>Ãœbernehmen</take>
+                <take>Übernehmen</take>
             </button>
             <dialog>
                 <comment>
@@ -1116,30 +1122,30 @@ FÃ¼r Sie oder Ihre Rolle wurde eine Aufgabe reaktiviert.</content>
                     <head>Nachricht an</head>
                 </message>
                 <query>
-                    <title>RÃ¼ckfrage stellen</title>
-                    <head>RÃ¼ckfrage an</head>
+                    <title>Rückfrage stellen</title>
+                    <head>Rückfrage an</head>
                 </query>
                 <take>
-                    <title>Ãœbernehmen</title>
-                    <for>fÃ¼r</for>
-                    <realy>wirklich Ã¼bernehmen?</realy>
-                    <logmessage>Ãœbernahme der Aufgabe fÃ¼r</logmessage>
+                    <title>Übernehmen</title>
+                    <for>für</for>
+                    <realy>wirklich übernehmen?</realy>
+                    <logmessage>Übernahme der Aufgabe für</logmessage>
                 </take>
                 <due>
-                    <title>FÃ¤lligkeit Ã¤ndern</title>
-                    <head>FÃ¤llig am</head>
-                    <logmessage1>FÃ¤lligkeit geÃ¤ndert von</logmessage1>
+                    <title>Fälligkeit ändern</title>
+                    <head>Fällig am</head>
+                    <logmessage1>Fälligkeit geändert von</logmessage1>
                     <logmessage2>auf</logmessage2>
-                    <checkdate>Bitte Ã¼berprÃ¼fen Sie das eingegebene Datum.</checkdate>
+                    <checkdate>Bitte überprüfen Sie das eingegebene Datum.</checkdate>
                     <format>Das Datum muss das Format tt.mm.jjjj haben.</format>
                     <past>Das Datum darf nicht in der Vergangenheit liegen.</past>
                     <day>Der Tag ist nicht korrekt.</day>
                     <month>Der Monat ist nicht korrekt.</month>
                 </due>
                 <priority>
-                    <title>PrioritÃ¤t Ã¤ndern</title>                 
-                    <head>PrioritÃ¤t</head>
-                    <logmessage1>PrioritÃ¤t geÃ¤ndert von</logmessage1>
+                    <title>Priorität ändern</title>                 
+                    <head>Priorität</head>
+                    <logmessage1>Priorität geändert von</logmessage1>
                     <logmessage2>auf</logmessage2>
                     <logmessageprio1>hoch</logmessageprio1>
                     <logmessageprio2>mittel</logmessageprio2>
@@ -1147,7 +1153,7 @@ FÃ¼r Sie oder Ihre Rolle wurde eine Aufgabe reaktiviert.</content>
                 </priority>
                 <forward>
                     <title>Weiterleiten</title>                 
-                    <head>Aufgabe fÃ¼r</head>
+                    <head>Aufgabe für</head>
                     <logmessage>Aufgabe weitergeleitet an</logmessage>
                 </forward>
                 <reakt>
@@ -1160,22 +1166,22 @@ FÃ¼r Sie oder Ihre Rolle wurde eine Aufgabe reaktiviert.</content>
             <access>Rechte</access>
             <admindatatypes>Verwaltung von Dateitypen</admindatatypes>
             <adminproperties>Verwaltung von Eigenschaften</adminproperties>
-            <changelink>VerknÃ¼pfung Ã¤ndern</changelink>
+            <changelink>Verknüpfung ändern</changelink>
             <changetable>Tabelle bearbeiten</changetable>
-            <changed>GeÃ¤ndert am</changed>
-            <chgrp>Gruppe Ã¤ndern von</chgrp>
-            <chmod>Zugriff Ã¤ndern von</chmod>
-            <chown>EigentÃ¼mer Ã¤ndern von</chown>
-            <chpwd>Kennwort Ã¤ndern</chpwd>
-            <chtype>Dateityp Ã¤ndern von</chtype>
+            <changed>Geändert am</changed>
+            <chgrp>Gruppe ändern von</chgrp>
+            <chmod>Zugriff ändern von</chmod>
+            <chown>Eigentümer ändern von</chown>
+            <chpwd>Kennwort ändern</chpwd>
+            <chtype>Dateityp ändern von</chtype>
             <copy>Datei kopieren</copy>
             <copyfolder>Verzeichnis kopieren</copyfolder>
-            <deletegroup>Gruppe lÃ¶schen</deletegroup>
-            <deleteproject>Projekt lÃ¶schen</deleteproject>
-            <deletepropdef>LÃ¶schen der Eigenschaft</deletepropdef>
-            <deleteextension>LÃ¶schen der Dateiendung</deleteextension>
-            <deleteuser>Benutzer lÃ¶schen</deleteuser>
-            <editpropertyinfo>Eigenschaft editieren fÃ¼r</editpropertyinfo>
+            <deletegroup>Gruppe löschen</deletegroup>
+            <deleteproject>Projekt löschen</deleteproject>
+            <deletepropdef>Löschen der Eigenschaft</deletepropdef>
+            <deleteextension>Löschen der Dateiendung</deleteextension>
+            <deleteuser>Benutzer löschen</deleteuser>
+            <editpropertyinfo>Eigenschaft editieren für</editpropertyinfo>
             <enterarticle>Artikel eingeben</enterarticle>
             <enternews>News-Artikel eingeben</enternews>
             <move>Datei verschieben</move>
@@ -1190,17 +1196,17 @@ FÃ¼r Sie oder Ihre Rolle wurde eine Aufgabe reaktiviert.</content>
             <newdowngal>Downloadgalerie anlegen</newdowngal>
             <newfileother>Neue Datei anlegen</newfileother>
             <newfolder>Neues Verzeichnis anlegen</newfolder>
-            <newlink>Neue VerknÃ¼pfung anlegen</newlink>
+            <newlink>Neue Verknüpfung anlegen</newlink>
             <newpicgal>Bildergalerie anlegen</newpicgal>    
-            <newpropertyinfo>Neue Eigenschaft definieren fÃ¼r</newpropertyinfo>
+            <newpropertyinfo>Neue Eigenschaft definieren für</newpropertyinfo>
             <newpropertydef>Neue Eigenschaft anlegen</newpropertydef>
-            <newpropdeffor>Neue Eigenschaft fÃ¼r Dateityp</newpropdeffor>
+            <newpropdeffor>Neue Eigenschaft für Dateityp</newpropdeffor>
             <newextension>Neue Dateiendung zuordnen</newextension>
-            <newextensionfor>Neue Dateiendung fÃ¼r Dateityp</newextensionfor>
+            <newextensionfor>Neue Dateiendung für Dateityp</newextensionfor>
             <newhtmlgal>HTML-Galerie anlegen</newhtmlgal>                        
             <newpage>Neue Seite anlegen</newpage>
             <newtable>Tabelle anlegen</newtable>
-            <owner>EigentÃ¼mer</owner>
+            <owner>Eigentümer</owner>
             <picbrowser>OpenCms Bilderliste</picbrowser>
             <preferences>Einstellungen</preferences>
             <property>Eigenschaften von</property>
@@ -1210,7 +1216,7 @@ FÃ¼r Sie oder Ihre Rolle wurde eine Aufgabe reaktiviert.</content>
             <replace>Datei ersetzen</replace>
             <rootfolder>Hauptverzeichnis</rootfolder>
             <setup>Setup</setup>
-            <size>GrÃ¶ÃŸe</size>
+            <size>Größe</size>
             <state>Status</state>
             <title>Titel</title>
             <touch>Aktualisiere</touch>
@@ -1234,15 +1240,15 @@ FÃ¼r Sie oder Ihre Rolle wurde eine Aufgabe reaktiviert.</content>
             <messagebox>
                 <title>
                     <editentry>Channel editieren</editentry>
-                    <deletechannel>Channel lÃ¶schen</deletechannel>
+                    <deletechannel>Channel löschen</deletechannel>
                     <newchannel>Neuen Channel erstellen </newchannel>
                 </title>
                 <dialog>
-                    <delete>Channel wirklich lÃ¶schen?</delete>
+                    <delete>Channel wirklich löschen?</delete>
                 </dialog>
                 <button>
                     <edit>Channel editieren</edit>
-                    <delete>Channel lÃ¶schen</delete>
+                    <delete>Channel löschen</delete>
                 </button>
                 <radiobutton>
                     <active>aktiv</active>
@@ -1250,8 +1256,8 @@ FÃ¼r Sie oder Ihre Rolle wurde eine Aufgabe reaktiviert.</content>
                 </radiobutton>
             </messagebox>
             <error>
-                <message1>Der Channel konnte nicht gelÃ¶scht werden!</message1>
-                <message2>Sie mÃ¼ssen einen gÃ¼ltigen Channelnamen angeben!</message2>
+                <message1>Der Channel konnte nicht gelöscht werden!</message1>
+                <message2>Sie müssen einen gültigen Channelnamen angeben!</message2>
                 <message3>Fehler beim Speichern des Channel:</message3>
             </error>
         </com_opencms_defaults_master_CmsChannelBackoffice>

@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <WORKPLACE>
+
 <TEMPLATE>
 <![CDATA[
 <HTML>
-
-
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 
 <script language=JavaScript>
 <!--
@@ -15,29 +14,32 @@
     var headline="]]><process>text</process><![CDATA[";
     parent.refreshResult(value);
     parent.fillHead(headline);
- }
+}
 
- function finish(){
+function finish(){
     parent.finish();
- }
-
+}
 //-->
 </script>
 <SCRIPT LANGUAGE="Javascript">
 function reload()
 {
-location.href="result.html?action=working" ;
+location.href="]]><process>updateUri</process><![CDATA[";
 }
 </SCRIPT>
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
 
 </HEAD>
-<BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="]]><process>autoUpdate</process><![CDATA[update();]]><process>endMethod</process><![CDATA[">
+<BODY bgcolor="#c0c0c0" marginwidth="0" marginheight="0" topmargin="0" leftmargin="0" onLoad="]]><process>autoUpdate</process><![CDATA[update();]]><process>endMethod</process><![CDATA[">
 </BODY>
 </html>
 ]]>
 </TEMPLATE>
+
 <endMethod><![CDATA[finish();]]></endMethod>
 <autoUpdate><![CDATA[setTimeout('reload()', 2000);]]></autoUpdate>
+<updateUri><![CDATA[result.html?action=working]]></updateUri>
+<finishUri><![CDATA[parent.frames[1].location.href='../../action/administration_content_top.html?sender=/system/workplace/administration/';]]></finishUri>
+<headLabel><LABEL value="linkmanagement.label.title" /></headLabel>
+
 </WORKPLACE>

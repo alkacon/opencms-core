@@ -2735,6 +2735,15 @@
             </properties>
         </file>
         <file>
+            <source>system/workplace/administration/module/empty.html</source>
+            <destination>system/workplace/administration/module/empty.html</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>47</access>
+            <properties/>
+        </file>        
+        <file>
             <source>system/workplace/administration/module/delete_warning_content</source>
             <destination>system/workplace/administration/module/delete_warning_content</destination>
             <type>plain</type>
@@ -3293,6 +3302,15 @@
             <access>47</access>
             <properties/>
         </file>
+        <file>
+            <source>system/workplace/administration/project/currentprojects/empty.html</source>
+            <destination>system/workplace/administration/project/currentprojects/empty.html</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>47</access>
+            <properties/>
+        </file>        
         <file>
             <source>system/workplace/administration/project/currentprojects/index.html</source>
             <destination>system/workplace/administration/project/currentprojects/index.html</destination>

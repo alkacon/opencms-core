@@ -13,7 +13,7 @@
             <back>Back</back>
             <bold>Bold</bold>
             <cancel>Cancel</cancel>
-            <changepasswd>Change Password</changepasswd>
+            <changepasswd>Change password</changepasswd>
             <color>Color</color>
             <copy>Copy</copy>
             <cut>Cut</cut>
@@ -22,7 +22,7 @@
             <default>Default</default>
             <delete>Delete</delete>
             <detail>Details...</detail>
-            <downloadlist>Download Gallery</downloadlist>
+            <downloadlist>Download gallery</downloadlist>
             <edit>Edit</edit>
             <endwizard>Finish</endwizard>
             <executedelete>Delete now</executedelete>
@@ -34,22 +34,22 @@
             <goto>Goto</goto>
             <help>Help</help>
             <hidedetails>Hide details</hidedetails>
-            <htmlgallery>HTML-Gallery</htmlgallery>                        
-            <htmllist>HTML-Gallery</htmllist>                        
-            <image>Insert Image</image>
-            <imagelist>Image Gallery</imagelist>
+            <htmlgallery>HTML gallery</htmlgallery>                        
+            <htmllist>HTML gallery</htmllist>                        
+            <image>Insert image</image>
+            <imagelist>Image gallery</imagelist>
             <indentin>Indent</indentin>
             <indentout>Unindent</indentout>
             <italic>Italic</italic>
             <linkto>Link</linkto>
-            <linkinternal>Internal Link</linkinternal>
-            <linklist>External links Gallery</linklist>
+            <linkinternal>Internal link</linkinternal>
+            <linklist>External links gallery</linklist>
             <login>Login</login>
             <new>New</new>
-            <newarticle>New Article</newarticle>
-            <newbody>New Body</newbody>
-            <newtask>New Task</newtask>
-            <newpropertydef>Define Properties...</newpropertydef>
+            <newarticle>New article</newarticle>
+            <newbody>New body</newbody>
+            <newtask>New task</newtask>
+            <newpropertydef>Define properties...</newpropertydef>
             <next>Next</next>
             <nextscreen>Continue <![CDATA[>>]]></nextscreen>
             <ol>Enumeration</ol>
@@ -104,7 +104,7 @@
             <weekday>
                 <mo>Mo</mo>
                 <tu>Tu</tu>
-                <we>W</we>
+                <we>We</we>
                 <th>Th</th>
                 <fr>Fr</fr>
                 <sa>Sa</sa>
@@ -117,46 +117,46 @@
                 <nosystem>exclude system folder</nosystem>
                 <nounchanged>exclude files unchanged in the current project</nounchanged>
                 <userdata>include group- and userdata</userdata>
-                <filename>Name of Exportfile</filename>
-                <files>existing Files</files>
-                <titleexport>Export Database</titleexport>
-                <titleexportmoduledata>Export Moduledata</titleexportmoduledata>
-                <titleimport>Import Database from Server</titleimport>
-                <upload>Upload Database from </upload>
-                <uploadlocal>Upload Database from local computer</uploadlocal>
-                <import>Import Database</import>
-                <importend>Import Database ready.</importend>
-                <exportend>Export Database ready.</exportend>
+                <filename>Name of exportfile</filename>
+                <files>existing files</files>
+                <titleexport>Export database</titleexport>
+                <titleexportmoduledata>Export module data</titleexportmoduledata>
+                <titleimport>Import database from Server</titleimport>
+                <upload>Upload database from </upload>
+                <uploadlocal>Upload database from local computer</uploadlocal>
+                <import>Import database</import>
+                <importend>The database has been imported</importend>
+                <exportend>The database has been exported</exportend>
                 <contentage>Export only files changed after</contentage>
             </label>
         </database>
 
         <staticexport>
             <label>
-                <exportadd>This will start the static export with these configuration made in the opencms.properties.</exportadd>
+                <exportadd>This will start the static export with the configuration set in the opencms.properties.</exportadd>
                 <titleexport>Static Export</titleexport>
                 <filename>Export to</filename>
                 <testtitle>This is just for testing the regular expressions</testtitle>
                 <testlink>Link:</testlink>
                 <testregexp>Expression:</testregexp>
                 <testresult>Result:</testresult>
-                <exportend>Static Export ready.</exportend>
+                <exportend>Static export has been finished</exportend>
             </label>
         </staticexport>
         
         <linkmanagement>
             <label>
                 <title>Link Check</title>
-                <text1>Aktual project (</text1>
-                <text2>) is checked for broken Links.</text2>
-                <textende>Check ready.</textende>
+                <text1>Current project (</text1>
+                <text2>) is checked for broken Links</text2>
+                <textende>Link check has been finished</textende>
             </label>
         </linkmanagement>
 
         <flex>
             <cache>
                 <label>
-                    <title>Flex Cache Administration</title>
+                    <title>Flex cache administration</title>
                 </label>
             </cache>
         </flex>
@@ -210,7 +210,7 @@
                 <newextension>Sorry, the new file extension could not be assigned.</newextension>
                 <newlink>Sorry, the link could not be created.</newlink>
                 <newtask>Sorry, the new task could not be created.</newtask>
-                <picbrowser>Sorry, you can't use the picture browser yet.</picbrowser>
+                <picbrowser>Sorry, you can't use the image gallery yet.</picbrowser>
                 <picgallery>You don't have permission to create a new gallery in this project.</picgallery>
                 <propinuse>Some file uses this property.<![CDATA[<br>]]>You cannot delete it.</propinuse>
                 <projectdatamissing>Sorry, the new project could not be created.</projectdatamissing>
@@ -267,9 +267,9 @@
                 <lock>Either you don't have the needed permissions, or the contents of this file are locked by someone else.</lock>
                 <lockchange>The file is locked by another user.</lockchange>
                 <login>The data entered is not correct.</login>
-                <picbrowser>The folder for the picture galleries doesn't exist.</picbrowser>
+                <picbrowser>The folder for the image galleries doesn't exist.</picbrowser>
                 <picdatamissing>You need to pic a foldername and a caretaker of the gallery.</picdatamissing>
-                <picnogallery>There is no picture gallery yet.</picnogallery>
+                <picnogallery>There is no image gallery yet.</picnogallery>
                 <projectdatamissing>The fields Project name and Folders need to be filled in.</projectdatamissing>
                 <projectlockchange>There was an error.</projectlockchange>
                 <namemissing>The field Name must be filled out.</namemissing>
@@ -303,7 +303,7 @@
                 <upload>The file content is empty.</upload>
             </reason>
             <suggestion>
-                <accessdenied>Check the access rights of the resource and the lock state of the folder.</accessdenied>
+                <accessdenied>Check the access permissions of the resource and the lock state of the folder.</accessdenied>
                 <adduser>Please check the entered data or contact your system administrator.</adduser>
                 <chgrp>Please contact your system administrator.</chgrp>
                 <chmod>Please contact your system administrator.</chmod>
@@ -320,16 +320,16 @@
                 <database>You must have Admin permissions to export or import the database.</database>
                 <disadmin>If you want to disable the user, remove him from the Administrators group first.</disadmin>
                 <downbrowser>Create the folder for the download galleries or contact your system administrator.</downbrowser>
-                <downnogallery>Please first create a gallery with the menu item Administration/Download Galleries.</downnogallery> 
+                <downnogallery>Please first create a gallery with the menu item Administration/Download gallery management.</downnogallery> 
                 <editorsave>Save the filecontent into a local editor, close the file and check the lock state.</editorsave>
                 <htmlbrowser>Create the folder for the HTML galleries or contact your system administrator.</htmlbrowser>  
-                <htmlnogallery>Please first create a gallery with the menu item Administration/HTML Management.</htmlnogallery>                                                             
+                <htmlnogallery>Please first create a gallery with the menu item Administration/HTML gallery management.</htmlnogallery>                                                             
                 <linkbrowser>Create the folder for the link galleries or contact your system administrator.</linkbrowser>
-                <linknogallery>Please first create a gallery with the menu item Administration/External Link Management.</linknogallery>
+                <linknogallery>Please first create a gallery with the menu item Administration/External link gallery management.</linknogallery>
                 <lock></lock>
                 <lockchange>Please try again later, or contact your system administrator.</lockchange>
                 <login>Please check the entered data or contact your system administrator.</login>
-                <picnogallery>Please first create a gallery with the menu item Administration/Picture Galleries.</picnogallery>
+                <picnogallery>Please first create a gallery with the menu item Administration/Image gallery management.</picnogallery>
                 <projectlockchange>Please try again later, or contact your system administrator.</projectlockchange>
                 <newproject>Please check the entered data or contact your system administrator.</newproject>
                 <newprop>Please try again later, or contact your system administrator.</newprop>
@@ -338,8 +338,8 @@
                 <newlink>Please check the entered data or contact your system administrator.</newlink>
                 <newtask>Please check the entered data or contact your system administrator.</newtask>
                 <none></none>
-                <picbrowser>Create the folder for the picture galleries or contact your system administrator.</picbrowser>
-                <picgallery>Creating a picture gallery</picgallery>
+                <picbrowser>Create the folder for the image galleries or contact your system administrator.</picbrowser>
+                <picgallery>Create an image gallery</picgallery>
                 <publishproject>Please try again later, or contact your system administrator.</publishproject>
                 <publishresource>Please contact the projectmanager of the project or your system administrator.</publishresource>
                 <restoreresource>Please check the write access on the resource.</restoreresource>
@@ -354,53 +354,53 @@
             </suggestion>
             <title> 
                 <accessdenied>Access denied</accessdenied>
-                <adduser>Create new User</adduser>
-                <addgroup>Create new Group</addgroup>
+                <adduser>Create new user</adduser>
+                <addgroup>Create new group</addgroup>
                 <changeuser>Change User</changeuser>
-                <chgrp>Change Group</chgrp>
-                <chmod>Change Permissions</chmod>
-                <chnav>Change Position</chnav>
-                <chown>Change Owner</chown>
-                <chpwd>Change Password</chpwd>
-                <chtype>Change File Type</chtype>
-                <copy>Copy File</copy>
-                <copytoproject>Copy To Project</copytoproject>
-                <delete>Delete File</delete>
-                <deleteuser>Delete User</deleteuser>
+                <chgrp>Change group</chgrp>
+                <chmod>Change permissions</chmod>
+                <chnav>Change position</chnav>
+                <chown>Change owner</chown>
+                <chpwd>Change password</chpwd>
+                <chtype>Change file type</chtype>
+                <copy>Copy file</copy>
+                <copytoproject>Copy to project</copytoproject>
+                <delete>Delete file</delete>
+                <deleteuser>Delete user</deleteuser>
                 <deleteextension>Delete file extension</deleteextension>
-                <deletegroup>Delete Group</deletegroup>
-                <database>Database Import/Export</database>
-                <downbrowser>DownloadBrowser</downbrowser>
-                <downgallery>Creating new Download Gallery</downgallery>
-                <editorsave>Save File</editorsave>
-                <foldercreate>Create Folder</foldercreate>
+                <deletegroup>Delete group</deletegroup>
+                <database>Database import/export</database>
+                <downbrowser>Download browser</downbrowser>
+                <downgallery>Create new download gallery</downgallery>
+                <editorsave>Save file</editorsave>
+                <foldercreate>Create folder</foldercreate>
                 <histproperties>Manage history properties</histproperties>
-                <htmlbrowser>Create new HTML-Galerie</htmlbrowser>                      
-                <linkbrowser>Link Browser</linkbrowser>
-                <linkgallery>Creating new Link Gallery</linkgallery>
-                <lock>Lock File</lock>
-                <lockchange>Steal Lock</lockchange>
-                <login>Login Error</login>
+                <htmlbrowser>Create new HTML gallery</htmlbrowser>                      
+                <linkbrowser>Link browser</linkbrowser>
+                <linkgallery>Create new link gallery</linkgallery>
+                <lock>Lock file</lock>
+                <lockchange>Steal lock</lockchange>
+                <login>Login error</login>
                 <projectlockchange>Release lock for project</projectlockchange>
                 <newprop>New property for resource type</newprop>
                 <newextension>Associate new file extension</newextension>
-                <newlink>New Link</newlink>
-                <newproject>New Project</newproject>
-                <newtask>New Task</newtask>
-                <picbrowser>Picture Browser</picbrowser>
-                <picgallery>Creating new Picture Gallery</picgallery>
-                <publishproject>Publish Project</publishproject>
-                <publishresource>Publish Resource</publishresource>
-                <rename>Rename Resource</rename>
-                <restoreresource>Restore Version</restoreresource>
-                <deleteproject>Delete Project</deleteproject>
-                <syncfolder>Synchronize Folders</syncfolder>
-                <syncproperties>Properties for Synchronisation</syncproperties>
+                <newlink>New link</newlink>
+                <newproject>New project</newproject>
+                <newtask>New task</newtask>
+                <picbrowser>Image browser</picbrowser>
+                <picgallery>Create new image gallery</picgallery>
+                <publishproject>Publish project</publishproject>
+                <publishresource>Publish resource</publishresource>
+                <rename>Rename resource</rename>
+                <restoreresource>Restore version</restoreresource>
+                <deleteproject>Delete project</deleteproject>
+                <syncfolder>Synchronize folders</syncfolder>
+                <syncproperties>Properties for synchronisation</syncproperties>
                 <touch>Touch</touch>
-                <undelete>Undelete Resource</undelete>
-                <undochanges>Undo Changes</undochanges>
-                <unlock>Unlock File</unlock>
-                <upload>Upload File</upload>
+                <undelete>Undelete resource</undelete>
+                <undochanges>Undo changes</undochanges>
+                <unlock>Unlock file</unlock>
+                <upload>Upload file</upload>
             </title>    
         </error>
         
@@ -410,50 +410,50 @@
                 <folder>Folder</folder>
                 <image>Image</image>
                 <linkto>Link</linkto>
-                <newspage>News-Article</newspage>
-                <othertype>Other Type</othertype>
+                <newspage>Article</newspage>
+                <othertype>Other type</othertype>
                 <page>Page</page>
                 <plain>Text</plain>
                 <jsp>JSP</jsp>
-                <velocity>Velocity Template</velocity>
+                <velocity>Velocity</velocity>
                 <script>Script</script>
-                <upload>Upload new File</upload>
+                <upload>Upload new file</upload>
                 <XMLTemplate>XML Template</XMLTemplate>
                 <pdfpage>PDF document</pdfpage>
         </fileicon>
         
         <icon>
-            <currentprojects>Current Projects</currentprojects>
+            <currentprojects>Current projects</currentprojects>
             <channels>Channels</channels>
-            <clock>Scheduled Tasks</clock>
-            <database>Database- management</database>
-            <datatypes>Resource type- management</datatypes>
-            <downloadgallery>Download galleries<![CDATA[<br>]]>management</downloadgallery>
+            <clock>Scheduled tasks</clock>
+            <database>Database management</database>
+            <datatypes>Resource type management</datatypes>
+            <downloadgallery>Download gallery<![CDATA[<br>]]>management</downloadgallery>
             <export>Export</export>
-            <exportmoduledata>Export Moduldata</exportmoduledata>
-            <extlinkgallery>External links galleries<![CDATA[<br>]]>management</extlinkgallery>
+            <exportmoduledata>Export module data</exportmoduledata>
+            <extlinkgallery>External links gallery<![CDATA[<br>]]>management</extlinkgallery>
             <groups>Edit Groups</groups> 
             <histproperties>Manage history properties</histproperties>
-            <htmlgallery>HTML-Gallery<![CDATA[<br>]]>management</htmlgallery>                        
+            <htmlgallery>HTML gallery<![CDATA[<br>]]>management</htmlgallery>                        
             <imagelist>image list</imagelist>
             <import>Import</import>
-            <linkmanagement>Check Project</linkmanagement>
-            <linkcheckviewer>LinkCheck Viewer</linkcheckviewer>
-            <logfileviewer>Logfileviewer</logfileviewer>
-            <module>Module- management</module>
+            <linkmanagement>Check internal links</linkmanagement>
+            <linkcheckviewer>Check external links</linkcheckviewer>
+            <logfileviewer>Logfile viewer</logfileviewer>
+            <module>Module management</module>
             <mountpoint>Mountpoints</mountpoint> 
-            <newgallery>new gallery</newgallery>
+            <newgallery>New gallery</newgallery>
             <newlink>New external link</newlink>
             <newproject>New Project</newproject>
-            <picgallery>Picture galleries<![CDATA[<br>]]>management</picgallery>
+            <picgallery>Image gallery<![CDATA[<br>]]>management</picgallery>
             <processmanagement>Scheduler</processmanagement>
-            <project>Project- management</project>
-            <projecthistory>Project History</projecthistory>
+            <project>Project management</project>
+            <projecthistory>Project history</projecthistory>
             <properties>Properties<![CDATA[<br>]]>management</properties>
-            <staticexport>Static Export</staticexport>
-            <syncfolder>Synchronisation- management</syncfolder>
-            <user>User- management</user>
-            <users>Edit Users</users>
+            <staticexport>Static export</staticexport>
+            <syncfolder>Synchronisation management</syncfolder>
+            <user>User management</user>
+            <users>Edit users</users>
             <usermessages>Messages</usermessages>
         </icon>
         
@@ -462,14 +462,14 @@
                 <copy>Copy</copy>
                 <cut>Cut</cut>  
                 <paste>Paste</paste>                
-                <deletecell>Delete Cell</deletecell>
-                <deletecol>Delete Column</deletecol>
-                <deleterow>Delete Row</deleterow>
-                <insertcell>Add Cell</insertcell>
-                <insertcol>Add Column</insertcol>
-                <insertrow>Add Row</insertrow>
-                <mergecell>Merge Cells</mergecell>
-                <splitcell>Split Cells</splitcell>
+                <deletecell>Delete cell</deletecell>
+                <deletecol>Delete column</deletecol>
+                <deleterow>Delete row</deleterow>
+                <insertcell>Add cell</insertcell>
+                <insertcol>Add column</insertcol>
+                <insertrow>Add row</insertrow>
+                <mergecell>Merge cells</mergecell>
+                <splitcell>Split cells</splitcell>
             </context>
             <message>
             	<confirmhttp>The link URL you entered looks like a server name\nbut misses the required protocol (eg. 'http://').\n\nShould the http protocol be added to the URL?</confirmhttp>
@@ -487,64 +487,64 @@
             <lockedin><![CDATA[ in project ]]></lockedin>
             <altbelongto><![CDATA[ belongs to project ]]></altbelongto>
             <context>
-                <access>Change Permissions</access>
-                <chgrp>Change Group</chgrp>
-                <chown>Change Owner</chown>
-                <chnav>Change Navigation</chnav>
+                <access>Change permissions</access>
+                <chgrp>Change group</chgrp>
+                <chown>Change owner</chown>
+                <chnav>Change navigation</chnav>
                 <copy>Copy</copy>
-                <copytoproject>Copy To Project</copytoproject>
+                <copytoproject>Copy to project</copytoproject>
                 <delete>Delete</delete>
-                <edit>Edit Sourcecode</edit>
-                <editlink>Edit Link</editlink>
+                <edit>Edit sourcecode</edit>
+                <editlink>Edit link</editlink>
                 <editarticle>Edit article</editarticle>
-                <editcontrolfile>Edit Controlcode</editcontrolfile>
+                <editcontrolfile>Edit controlcode</editcontrolfile>
                 <history>History</history>
-                <htmledit>Edit Html</htmledit>
+                <htmledit>Edit as HTML</htmledit>
                 <lock>Lock</lock>
                 <move>Move</move>
-                <newsedit>Edit News</newsedit>
+                <newsedit>Edit news</newsedit>
                 <noaccess>Insufficient access rights</noaccess>
-                <overridelock>Steal Lock</overridelock>
-                <pageedit>Edit Page</pageedit>
+                <overridelock>Steal lock</overridelock>
+                <pageedit>Edit page</pageedit>
                 <project>Create as project</project>
                 <property>Properties</property>
-                <publish>Publish Directly</publish>
+                <publish>Publish directly</publish>
                 <rename>Rename</rename>
                 <replace>Replace</replace>
                 <touch>Touch</touch>
-                <type>Change File Type</type>
+                <type>Change file type</type>
                 <undelete>Undelete</undelete>
-                <undochanges>Undo Changes</undochanges>
+                <undochanges>Undo changes</undochanges>
                 <unlock>Unlock</unlock>
             </context>
         </explorer>
         
         <input>
             <access>Permissions</access>
-            <activepropertydef>active Properties</activepropertydef>
-            <addtonav>add to Navigation</addtonav>
+            <activepropertydef>active properties</activepropertydef>
+            <addtonav>add to navigation</addtonav>
             <add>Add</add>
             <adress>Location</adress>
             <alignment>Aligment</alignment>
-            <allprojects>Show all Projects</allprojects>
+            <allprojects>Show all projects</allprojects>
             <allgroups>possible groups</allgroups>
             <allusers>All other users</allusers>
             <body>Body</body>
             <border>Border</border>
-            <borderinfo>in Pixels</borderinfo>
+            <borderinfo>in pixels</borderinfo>
             <center>Center</center>
             <changed>Date changed</changed>
-            <changesubresources>Modify all subfolders /files</changesubresources>
+            <changesubresources>Modify all subfolders / files</changesubresources>
             <channelavailable>available channels</channelavailable>
             <channelselected>selected channels</channelselected>
             <city>City</city>
             <color>Color</color>
-            <colorcode>Choosen Color</colorcode>
+            <colorcode>Choosen color</colorcode>
             <columns>Columns</columns>
             <copyto>Copy to</copyto>
-            <currentgroup>Current Group</currentgroup>
+            <currentgroup>Current group</currentgroup>
             <default_body>Copy body from</default_body>
-            <defaulttasks>Defaults for new Tasks:</defaulttasks>
+            <defaulttasks>Defaults for new tasks:</defaulttasks>
             <defaultgroup>start with group</defaultgroup>
             <description>Description</description>
             <editpropertyinfo>Change value to</editpropertyinfo>
@@ -556,13 +556,13 @@
             <exportresources>resources to export</exportresources> 
             <filter>Filter</filter>
             <firstelement>at the first position</firstelement>
-            <firstname>First Name</firstname> 
+            <firstname>First name</firstname> 
             <foldername>Foldername</foldername>
             <galadmin>Caretaker</galadmin>
             <gallery>Gallery</gallery>
             <group>Group</group>
             <groupname>Group Name</groupname>
-            <groupdefinition>Define this Group as</groupdefinition>
+            <groupdefinition>Define this group as</groupdefinition>
             <groupsprojectmanager>Projectmanager</groupsprojectmanager>
             <groupsprojectworker>Projectuser</groupsprojectworker>
             <height>Height</height>
@@ -573,9 +573,9 @@
             <inpixel>Pixel</inpixel>
             <insert>Insert after</insert>
             <intern>Internal</intern>
-            <keeprights>keep current Permissions</keeprights>
-						<keepproperties>keep current Properties</keepproperties>
-            <keywords>Key Words</keywords>
+            <keeprights>keep current permissions</keeprights>
+            <keepproperties>keep current properties</keepproperties>
+            <keywords>Keywords</keywords>
             <lang>Language</lang>
             <lastelement>at the last position</lastelement>
             <lastname>Name</lastname>
@@ -586,13 +586,13 @@
             <linktargetself>Same window</linktargetself>
             <linktargetblank>New window</linktargetblank>
             <linktargettop>Top window</linktargettop>  
-            <linktargetnamed>Named Window</linktargetnamed>
+            <linktargetnamed>Named window</linktargetnamed>
             <linkanchor>Anchor</linkanchor>
-            <linkstyle>Styledefinitions</linkstyle>
+            <linkstyle>Style definitions</linkstyle>
             <linkstyleclass>Stylesheet class</linkstyleclass>                        
-            <nolinkvalue>Please insert the link!</nolinkvalue>
+            <nolinkvalue>Please insert a link!</nolinkvalue>
             <lockedby>Locked by</lockedby>
-            <lockuser>Disable User</lockuser>
+            <lockuser>Disable user</lockuser>
             <messageaccept>Message when accepted</messageaccept>
             <messageforward>Message when forwarded</messageforward>
             <messagecompleted>Mesage when completed</messagecompleted>
@@ -602,46 +602,46 @@
             <promptgroup>Please choose group ...</promptgroup>
             <propertydef>Select Property</propertydef>
             <navtext>Navigationtext</navtext>
-            <navpos>Position in Navigation</navpos>
-            <newposition>New Position</newposition>
-            <newpropertydefvalue>Enter Property Value</newpropertydefvalue>
-            <newpropertydef>New Property</newpropertydef>
+            <navpos>Position in navigation</navpos>
+            <newposition>New position</newposition>
+            <newpropertydefvalue>Enter property value</newpropertydefvalue>
+            <newpropertydef>New property</newpropertydef>
             <name>Name</name>
-            <navtitle>Text in Navigation</navtitle>
-            <newfileothertype>Create new File of type</newfileothertype>
-            <newgroup>New Group</newgroup>
-            <newowner>New Owner</newowner>
-            <newpwd>New Password</newpwd>       
-            <newpwdrepeat>Confirm Password</newpwdrepeat>   
+            <navtitle>Text in navigation</navtitle>
+            <newfileothertype>Create new file with type</newfileothertype>
+            <newgroup>New group</newgroup>
+            <newowner>New owner</newowner>
+            <newpwd>New password</newpwd>       
+            <newpwdrepeat>Confirm password</newpwdrepeat>   
 						<newtimestamp>Change timestamp</newtimestamp>
             <next>next</next>
             <nochange>No change</nochange>
             <none>-- none --</none>
-            <oldpwd>Current Password</oldpwd>
+            <oldpwd>Current password</oldpwd>
             <owner>Owner</owner>
             <padding>Padding</padding>
-            <paddinginfo>Pixel in the Cells</paddinginfo>
+            <paddinginfo>Pixel in the cells</paddinginfo>
             <password>Password</password> 
             <remove>Remove</remove>
             <right>Right</right>
             <rights>Rights</rights>
-            <rolefortasks>Role for Tasks</rolefortasks>
+            <rolefortasks>Role for tasks</rolefortasks>
             <rows>Rows</rows> 
             <search>Search</search>
             <settings>Settings</settings>
             <showlockdialog>Show lock dialog</showlockdialog>
             <size>Size</size>
             <spacing>Spacing</spacing>
-            <spacinginfo>Pixel between the Cells</spacinginfo>
-            <startupgroup>Start with Group</startupgroup>
-            <startupnewfile>Permissions for new Files:</startupnewfile>
-            <startupproject>Start with Project</startupproject>
-            <startupview>Start with View</startupview>
+            <spacinginfo>Pixel between the cells</spacinginfo>
+            <startupgroup>Start with group</startupgroup>
+            <startupnewfile>Permissions for new files:</startupnewfile>
+            <startupproject>Start with project</startupproject>
+            <startupview>Start with view</startupview>
             <state>State</state>
             <street>Street</street>
-            <superordinatedgroup>Parent Group</superordinatedgroup>
-            <suggestfiletype>Suggested File type</suggestfiletype>
-            <taskfilter>Startup Filter</taskfilter>
+            <superordinatedgroup>Parent group</superordinatedgroup>
+            <suggestfiletype>Suggested file type</suggestfiletype>
+            <taskfilter>Startup filter</taskfilter>
             <title>Title</title>
             <template>Template</template>
             <type>Type</type>
@@ -650,7 +650,7 @@
             <username>Username</username>
             <useralsoin>indirectly in the groups</useralsoin>
             <userbelongstogroup>User directly in the groups</userbelongstogroup>
-            <usersingroup>Members of this Group</usersingroup>
+            <usersingroup>Members of this group</usersingroup>
             <width>Width</width>
             <zipcode>ZIP</zipcode>          
         </input>        
@@ -661,76 +661,76 @@
             <allchannels>Channels</allchannels>
             <author>Author</author>
             <byproperty>by property</byproperty>
-            <byresourcename>by resourcename</byresourcename>
-            <byfilecontent>by filecontent</byfilecontent>
-            <changegroup>Edit Group</changegroup>
+            <byresourcename>by resource name</byresourcename>
+            <byfilecontent>by file content</byfilecontent>
+            <changegroup>Edit group</changegroup>
             <close>Close</close>
-            <content>Filecontent</content>
-            <createdby>Task Agent</createdby>
-            <createnewproject>Create new Project</createnewproject>
-            <createnewuser>Create new User</createnewuser>
-            <createnewgroup>Create new Group</createnewgroup>
-            <cronmanagement>Scheduled Tasks</cronmanagement>
+            <content>File content</content>
+            <createdby>Task agent</createdby>
+            <createnewproject>Create new project</createnewproject>
+            <createnewuser>Create new user</createnewuser>
+            <createnewgroup>Create new group</createnewgroup>
+            <cronmanagement>Scheduled tasks</cronmanagement>
             <cronsyntax>Syntax: minute(*|0-59) hour(*|0-23) day(*|1-31) month(*|0-11) day of week(*|0-6) user group startclass parameter</cronsyntax>
             <date>Date</date>
             <datecreated>Date created</datecreated>
             <description>Description</description>
-            <downloadlist>Download Browser</downloadlist>
-            <ebtitle>Create a new Section</ebtitle>
-            <ebfolderlogo>Folderlogo</ebfolderlogo>
-            <eblogo>Mainlogo</eblogo>
-            <ebsecpic>Sectionslogo</ebsecpic>
-            <eblink>Link in stat. Navigation</eblink>
-            <ebcolor>Colours in Template</ebcolor>
+            <downloadlist>Download gallery</downloadlist>
+            <ebtitle>Create a new section</ebtitle>
+            <ebfolderlogo>Folder logo</ebfolderlogo>
+            <eblogo>Main logo</eblogo>
+            <ebsecpic>Sections logo</ebsecpic>
+            <eblink>Link in static navigation</eblink>
+            <ebcolor>Colours in template</ebcolor>
             <ebtemplatecolor>Template</ebtemplatecolor>
-            <ebmouseover>Mouseover Navigation</ebmouseover>
-            <ebnavborder>Border Navigation</ebnavborder>
+            <ebmouseover>Mouseover navigation</ebmouseover>
+            <ebnavborder>Border navigation</ebnavborder>
             <ebborder>Border</ebborder>
             <editedat>Last edited at</editedat>
             <editedby>Edited by</editedby>
-            <errormessage>Errormessage</errormessage>
-            <externallink>External Link</externallink>
+            <errormessage>Error message</errormessage>
+            <externallink>External link</externallink>
             <filesize>File size</filesize>
             <folders>Folders</folders>
             <group>Group</group>
-            <groupsprojectmanager>Manager Group</groupsprojectmanager>
-            <groupsprojectworker>User Group</groupsprojectworker>
+            <groupsprojectmanager>Manager group</groupsprojectmanager>
+            <groupsprojectworker>User group</groupsprojectworker>
             <historyheader><![CDATA[Last edited at&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Published at&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Edited by]]></historyheader>
             <histrestoreversion>Restore Version</histrestoreversion>
             <histshowversion>Show Content</histshowversion>
             <histdetailok>Close</histdetailok>
             <histproperties>Manage history properties</histproperties>
-            <imagelist>Imagelist</imagelist>
+            <imagelist>Image gallery</imagelist>
             <inactive>inactive</inactive>
             <linkto>Link</linkto>
-            <linklist>External Links</linklist>
+            <linklist>External links</linklist>
             <loading>Loading...</loading>
             <modulecreatedate>Date created</modulecreatedate>
-            <modulname>Modulename</modulname>
+            <modulname>Module name</modulname>
             <propertydef>Property</propertydef>
             <path>Folder</path>
-            <mimetype>MimeTyp</mimetype>
+            <mimetype>Mimetype</mimetype>
             <messagepending>pending messages</messagepending>
             <messagetoall>Message to all</messagetoall>
             <sendmessage>send</sendmessage>            
             <name>Name</name>
-            <newsstate>News-State</newsstate>
-            <articlestate>Article State</articlestate>
-            <notavailable>N/A</notavailable>
+            <newsstate>News state</newsstate>
+            <articlestate>Article state</articlestate>
+            <notavailable>n/a</notavailable>
             <page>Page</page>
-            <pictype>Picture Type</pictype>
+            <pictype>Image type</pictype>
             <preferencesexplorer>Explorer</preferencesexplorer>
             <preferencestasks>Tasks</preferencestasks>
-            <preferencesuser>Personal Data</preferencesuser>
+            <preferencesuser>Personal data</preferencesuser>
             <project>Project</project>
             <projectdescription>Description</projectdescription>
-            <projectname>Project Name</projectname>
+            <projectname>Project name</projectname>
             <projecttype>Delete project after publishing</projecttype>
             <projectstaticexport>Static export after publishing</projectstaticexport>
             <publishedat>Published</publishedat>
             <publishedby>Published by</publishedby>
             <readrights>permission to read for others</readrights>
-            <resourcetype>Resourcetype</resourcetype>
+            <resourcetype>Resource type</resourcetype>
             <search>Search</search>
             <selectfolder>Select folder...</selectfolder>
             <size>Size</size>
@@ -738,7 +738,7 @@
             <state>State</state>
             <suredeletingproject1>Are you sure that you want to delete the project</suredeletingproject1>
             <suredeletingproject2>and delete all changes that are made in this project?</suredeletingproject2>
-            <syncproperties>Properties for Synchronisation</syncproperties>
+            <syncproperties>Properties for synchronisation</syncproperties>
             <syncdestinationpath>Destination path</syncdestinationpath>
             <title>Title</title>
             <upload>File upload</upload>
@@ -752,7 +752,7 @@
         </label>
 
         <media>
-            <mediaAltText>Alt-Text</mediaAltText>
+            <mediaAltText>Alternative text</mediaAltText>
             <mediaPosition>Position</mediaPosition>
             <mediaName>Name</mediaName>
             <mediaText>Text</mediaText>
@@ -761,10 +761,10 @@
         </media>
         
         <message>
-            <chtype>Please select a new File type</chtype>
+            <chtype>Please select a new file type</chtype>
             <login1>This is a password protected area.</login1>
             <login2>Please enter your user name and password.</login2>
-            <login3>The version of workplace-templates and workplace-classes are different. Please update one.</login3>
+            <login3>The version of workplace templates and workplace classes are different. Please update one.</login3>
             <nocolor>No color has been selected</nocolor>
             <reason>Reason</reason>
             <wait>Please wait...</wait>
@@ -774,33 +774,33 @@
             <title>
                 <ok>Completed</ok>
                 <accept>Accept</accept>
-                <copytoproject>Copy To Project</copytoproject>
-                <delete>Delete File</delete>
-                <deletefolder>Delete Folder</deletefolder>
-                <deletepropertyinfo>Delete Property</deletepropertyinfo>
-                <lock>Lock File</lock>
-                <lockfolder>Lock Folder</lockfolder>
-                <lockchange>Steal File Lock</lockchange>
-                <lockchangefolder>Steal Folder Lock</lockchangefolder>
-                <lockedinfolder>Unlock Resources</lockedinfolder>
-                <publishresource>Publish Resource</publishresource>
-                <restoreresource>Restore Version</restoreresource>
-                <syncfolder>Synchronize Folders</syncfolder>
-                <undochanges>Undo Changes</undochanges>
-                <unlock>Unlock File</unlock>
-                <unlockfolder>Unlock Folder</unlockfolder>
+                <copytoproject>Copy to project</copytoproject>
+                <delete>Delete file</delete>
+                <deletefolder>Delete folder</deletefolder>
+                <deletepropertyinfo>Delete property</deletepropertyinfo>
+                <lock>Lock file</lock>
+                <lockfolder>Lock folder</lockfolder>
+                <lockchange>Steal file lock</lockchange>
+                <lockchangefolder>Steal folder lock</lockchangefolder>
+                <lockedinfolder>Unlock resources</lockedinfolder>
+                <publishresource>Publish resource</publishresource>
+                <restoreresource>Restore version</restoreresource>
+                <syncfolder>Synchronize folders</syncfolder>
+                <undochanges>Undo changes</undochanges>
+                <unlock>Unlock file</unlock>
+                <unlockfolder>Unlock folder</unlockfolder>
             </title>
             <message1>
-                <ok>Really mark Task as completed?</ok>
-                <accept>Accept Task?</accept>
+                <ok>Really mark task as completed?</ok>
+                <accept>Accept task?</accept>
                 <copytoproject>Do you really want to copy <![CDATA[&nbsp;]]></copytoproject>
-                <delete>Really delete File?</delete>
-                <deletefolder>Really delete Folder?</deletefolder>
-                <deletepropertyinfo>Really delete the selected Property?</deletepropertyinfo>
-                <lock>Really lock the selected File?</lock>
-                <lockfolder>Really lock the selected Folder?</lockfolder>
-                <lockchange>Really steal the File Lock?</lockchange>
-                <lockchangefolder>Really steal the Folder Lock?</lockchangefolder>
+                <delete>Really delete file?</delete>
+                <deletefolder>Really delete folder?</deletefolder>
+                <deletepropertyinfo>Really delete the selected property?</deletepropertyinfo>
+                <lock>Really lock the selected file?</lock>
+                <lockfolder>Really lock the selected folder?</lockfolder>
+                <lockchange>Really steal the file lock?</lockchange>
+                <lockchangefolder>Really steal the folder lock?</lockchangefolder>
                 <lockedinfolder>There are locked resources in the folder. Unlock all resources?</lockedinfolder>
                 <publishresource>Do you really want to publish</publishresource>
 				<resourceexists>The file <![CDATA[&nbsp;]]></resourceexists>
@@ -816,16 +816,16 @@
                 <delete><![CDATA[&nbsp;]]></delete>
                 <deletefolder><![CDATA[&nbsp;]]></deletefolder>
                 <deletepropertyinfo><![CDATA[&nbsp;]]></deletepropertyinfo>
-                <lock>Only you will be able the edit the File until you unlock it.</lock>
+                <lock>Only you will be able the edit the file until you unlock it.</lock>
                 <lockfolder>Only you will be able to change the folder until you unlock it.</lockfolder>
-                <lockchange>The File is currently locked by another user.</lockchange>
-                <lockchangefolder>The Folder is currently locked by another user.</lockchangefolder>
+                <lockchange>The file is currently locked by another user.</lockchange>
+                <lockchangefolder>The folder is currently locked by another user.</lockchangefolder>
                 <publishresource>last modified on</publishresource>
 				<resourceexists><![CDATA[&nbsp;]]> already exists!</resourceexists>
-                <syncfolder>The files in OpenCms system or the server filesystem will be updated.</syncfolder>
+                <syncfolder>The files in OpenCms system and the server filesystem will be updated.</syncfolder>
                 <undochanges>was last modified on</undochanges>
-                <unlock> Other Users can then edit the File again.</unlock>
-                <unlockfolder> Other Users can then edit the Folder again.</unlockfolder>               
+                <unlock> Other users can then edit the file again.</unlock>
+                <unlockfolder> Other users can then edit the folder again.</unlockfolder>               
             </message2>
             <message3>
                 <deletepropdef1>Do you really want to delete the property definition</deletepropdef1>
@@ -849,16 +849,16 @@
         
         <panel>
             <explorer>Explorer</explorer>           
-            <start>Startup Options</start>
+            <start>Startup options</start>
             <task>Tasks</task>
             <user>User Data</user>
         </panel>
         
         <project>
             <context>
-                <createtask>Create Task</createtask>
+                <createtask>Create task</createtask>
                 <publish>Publish</publish>
-                <removelock>Remove Lock</removelock>
+                <removelock>Remove lock</removelock>
                 <delete>Delete</delete>
             </context>
             <state>
@@ -869,11 +869,11 @@
                 <message1>Are you sure you want to publish project '</message1>
                 <message2>' now?</message2>
                 <title>Publish Project</title>
-                <message_linkcheck>The Project is checked for broken Links.</message_linkcheck>
-                <message_brokenlinks>On this pages broken links were found.</message_brokenlinks>
-                <message_brokenlinks2>Will you publish the project anyway?</message_brokenlinks2>
-                <message_publish>publishing...</message_publish>
-                <message_publish2>publishing... The Project is published.</message_publish2>
+                <message_linkcheck>Checking for broken links...</message_linkcheck>
+                <message_brokenlinks>Broken links where found.</message_brokenlinks>
+                <message_brokenlinks2>Do you want to publish anyway?</message_brokenlinks2>
+                <message_publish>Publishing...</message_publish>
+                <message_publish2>The project has been published.</message_publish2>
             </publish>
             <lockchange>
                 <message1>Are you sure you want to release all locks in project</message1>
@@ -906,73 +906,79 @@
             <lable>
                 <local>Local computer</local>
                 <server>Server</server>
-                <upload>Upload Module from</upload>
+                <upload>Upload module from</upload>
                 <uploadlocal>Load module from local computer</uploadlocal>
                 <uploadserver>Load module from server</uploadserver>
                 <name>Name:</name>
                 <overwrites>Overwriting files</overwrites>
                 <fileoverwrite>These files are already in the system. Do you want to replace them?</fileoverwrite>
                 <description>Description</description>
-                <moduledescription>Moduledescription</moduledescription>
+                <moduledescription>Module description</moduledescription>
                 <uploadfrom>Uploaded from</uploadfrom>
                 <documentation>Documentation</documentation>
                 <dependences>Dependences</dependences>
                 <repository>Repository</repository>
                 <parameter>Parameter</parameter>
-                <changeparameter>Change Properties of module</changeparameter>
-                <moduleproperty>Moduleproperty</moduleproperty>
-                <modulepropertys>Modulepropertys</modulepropertys>
+                <changeparameter>Change properties of module</changeparameter>
+                <moduleproperty>Module property</moduleproperty>
+                <modulepropertys>Module propertys</modulepropertys>
                 <type>Type</type>
                 <value>Value</value>
-                <deletemodule>Delete Module</deletemodule>
+                <deletemodule>Delete module</deletemodule>
                 <deletetext>Are you sure that you want to delete the module?</deletetext>
                 <modulecreate>Create module</modulecreate>
                 <moduleadmin>Module administration</moduleadmin>
-                <packetname>Packetname</packetname>
-                <adminpoint>Administrationpoint</adminpoint>
-                <maintenance>Maintenance class</maintenance>
-                <publishclass>Class for Publishing</publishclass>
+                <packetname>Package name</packetname>
+                <adminpoint>Administration point</adminpoint>
+                <maintenance>Maintenance event class</maintenance>
+                <publishclass>Publish event class</publishclass>
                 <dependon>Depend on</dependon>
                 <minversion>min version</minversion>
                 <maxversion>max version</maxversion>
-                <adminparameter>edit Parameter</adminparameter>
-                <export>Export Module: </export>
-                <export1>Sind Sie sicher, dass sie das Modul </export1>
-                <export2> exportieren wollen</export2>
-				<moduletype>Module Type Simple</moduletype>
+                <adminparameter>edit parameter</adminparameter>
+                <export>Export module: </export>
+                <export1>Are you sure that you want to export module </export1>
+                <export2> now</export2>
+				<moduletype>Simple module type</moduletype>
+				<importbegin>Importing module</importbegin>
+				<importend>Finished importing module</importend>
+				<deletebegin>Deleting module</deletebegin>
+				<deleteend>Finished deleting module</deleteend>
+				<exportbegin>Exporting module</exportbegin>
+				<exportend>Finished exporting module</exportend>
             </lable>
             <error>
                 <parametertitle>Change property for module</parametertitle>
                 <parametermessage>Sorry, the property could not be changed.</parametermessage>
                 <parameterreason>Your input was in the wrong format.</parameterreason>
-                <replace>Replace modul</replace>
-                <replacemessage>Module exists in an other version. Please delete the old version first.</replacemessage>
+                <replace>Replace module</replace>
+                <replacemessage>Module exists in another version. Please delete the old version first.</replacemessage>
                 <dependences>Module dependences</dependences>
                 <precondition>These precondition are not fulfilled:</precondition>
                 <preconditiondelete>The module is needed by</preconditiondelete>
-                <deletetitle>Delete Module</deletetitle>
+                <deletetitle>Delete module</deletetitle>
                 <deletetext1>The following files have been changed. Which should be deleted?</deletetext1>
                 <deletetext2>Which additional files should be deleted?</deletetext2>
                 <deletetext3>The following files could not be deleted, because the are used by other modules.</deletetext3>
                 <deletetext4>The following files are already missing:</deletetext4>             
-                <createtitle>Create Module</createtitle>
+                <createtitle>Create module</createtitle>
                 <createmessage>Sorry, the new module could not be created.</createmessage>
-                <createreason>The fields packetname and version must be filled out.</createreason>
+                <createreason>The fields package name and version must be filled out.</createreason>
                 <empty> </empty>
-                <existsreason>This module already exist.</existsreason>
-                <existsugg>Change the packetname.</existsugg>
-                <noprojectreason>Could not create the modulefolder in /system/modules/ .</noprojectreason>
-                <noprojectsugg>Create a project including the rootfolder.</noprojectsugg>
+                <existsreason>This module already exists.</existsreason>
+                <existsugg>Change the package name.</existsugg>
+                <noprojectreason>Could not create the module folder in /system/modules/.</noprojectreason>
+                <noprojectsugg>Create a project including the root folder.</noprojectsugg>
             </error>            
         </module>
 
         <select>
-            <edit>Code-Editor</edit>
+            <edit>Sourcecode-Editor</edit>
             <edithtml>WYSIWYG-Editor</edithtml>
             <admin>Administration</admin>
             <explorer>Explorer</explorer>
             <tasks>Tasks</tasks>
-            <oldexplorer>Old Explorer</oldexplorer>
+            <oldexplorer>Old explorer</oldexplorer>
         </select>
         
         <task>
@@ -1159,26 +1165,26 @@ A new task was reactivated for you or your role.</content>
             <access>Permissions</access>
             <admindatatypes>Resource type management</admindatatypes>
             <adminproperties>Property management</adminproperties>
-            <changelink>Change Link</changelink>
+            <changelink>Change link</changelink>
             <changetable>Modify table</changetable>            
-            <changed>Date Changed</changed>
-            <chgrp>Change Group of</chgrp>
-            <chmod>Change Permissions of</chmod>
-            <chown>Change Owner of</chown>
-            <chpwd>Change Password</chpwd>
-            <chtype>Change File type</chtype>
-            <copy>Copy File</copy>
-            <copyfolder>Copy Folder</copyfolder>
+            <changed>Date changed</changed>
+            <chgrp>Change group of</chgrp>
+            <chmod>Change permissions of</chmod>
+            <chown>Change owner of</chown>
+            <chpwd>Change password</chpwd>
+            <chtype>Change file type</chtype>
+            <copy>Copy file</copy>
+            <copyfolder>Copy folder</copyfolder>
             <deletegroup>Delete group</deletegroup>
             <deleteproject>Delete project</deleteproject>
-            <deletepropdef>Delete the property definition</deletepropdef>
-            <deleteextension>Delete the association of file extension</deleteextension>
+            <deletepropdef>Delete property definition</deletepropdef>
+            <deleteextension>Delete association of file extension</deleteextension>
             <deleteuser>Delete user</deleteuser>
-            <editpropertyinfo>Edit Property of</editpropertyinfo>
+            <editpropertyinfo>Edit property of</editpropertyinfo>
             <enterarticle>Enter article</enterarticle>
             <enternews>Enter news article</enternews>
-            <move>Move File</move>
-            <movefolder>Move Folder</movefolder>
+            <move>Move file</move>
+            <movefolder>Move folder</movefolder>
             <group>Group</group>
             <history>History of</history>
             <historydetails>Show details of</historydetails>
@@ -1186,36 +1192,36 @@ A new task was reactivated for you or your role.</content>
             <login>Login</login>
             <name>Name</name>
             <new>New</new>  
-            <newdowngal>Create new Download Gallery</newdowngal>
-            <newfileother>Create a new File</newfileother>
-            <newfolder>Create a new Folder</newfolder>
-            <newlink>Create a new Link</newlink>
-            <newpicgal>Create new Picture Gallery</newpicgal>   
-            <newpropertyinfo>Define new Property for</newpropertyinfo>
-            <newpropertydef>Create new Property</newpropertydef>
+            <newdowngal>Create new download gallery</newdowngal>
+            <newfileother>Create a new file</newfileother>
+            <newfolder>Create a new folder</newfolder>
+            <newlink>Create a new link</newlink>
+            <newpicgal>Create new image gallery</newpicgal>   
+            <newpropertyinfo>Define new property for</newpropertyinfo>
+            <newpropertydef>Create new property</newpropertydef>
             <newpropdeffor>New property definition for the resource type</newpropdeffor>
             <newextension>Associate new file extension</newextension>
             <newextensionfor>New file extension for resource type</newextensionfor>
-            <newhtmlgal>Create new HTML-Gallery</newhtmlgal>                        
-            <newpage>Create new Page</newpage>
-            <newtable>Create new Table</newtable>
+            <newhtmlgal>Create new HTML gallery</newhtmlgal>                        
+            <newpage>Create new page</newpage>
+            <newtable>Create new table</newtable>
             <owner>Owner</owner>
-            <picbrowser>OpenCms Image Browser</picbrowser>
+            <picbrowser>OpenCms image gallery</picbrowser>
             <preferences>Preferences</preferences>
             <property>Properties of</property>
             <propinuse>Property definition already in use</propinuse>
-            <rename>Rename File</rename>
-            <renamefolder>Rename Folder</renamefolder>
+            <rename>Rename file</rename>
+            <renamefolder>Rename folder</renamefolder>
             <replace>Replace file</replace>
-            <rootfolder>(Root Folder)</rootfolder>
+            <rootfolder>(Root folder)</rootfolder>
             <setup>Setup</setup>            
             <size>Size</size>
             <state>State</state>
             <title>Title</title>
             <touch>Touch</touch>
             <type>Type</type>
-            <upload>Upload File</upload>
-            <uploadimage>Upload new Image</uploadimage>
+            <upload>Upload file</upload>
+            <uploadimage>Upload new image</uploadimage>
         </title>
         <com_opencms_defaults_master_CmsChannelBackoffice>
             <label>
@@ -1232,20 +1238,20 @@ A new task was reactivated for you or your role.</content>
             </label>
             <messagebox>
                 <title>
-                    <editentry>Edit Channel</editentry>
-                    <deletechannel>Delete Channel</deletechannel>
-                    <newchannel>Create new Channel</newchannel>
+                    <editentry>Edit channel</editentry>
+                    <deletechannel>Delete channel</deletechannel>
+                    <newchannel>Create new channel</newchannel>
                 </title>
                 <dialog>
                     <delete>Do you really want to delete this channel?</delete>
                 </dialog>
                 <button>
-                    <edit>Edit Channel</edit>
-                    <delete>Delete Channel</delete>
+                    <edit>Edit channel</edit>
+                    <delete>Delete channel</delete>
                 </button>
                 <radiobutton>
-                    <active>aktiv</active>
-                    <inactive>inaktiv</inactive>
+                    <active>active</active>
+                    <inactive>not active</inactive>
                 </radiobutton>
             </messagebox>
             <error>

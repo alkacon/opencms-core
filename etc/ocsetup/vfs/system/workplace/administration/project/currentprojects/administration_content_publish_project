@@ -140,6 +140,8 @@ location.href="administration_content_publish_project.html?action=working&time=]
 ]]>
 </TEMPLATE>
 
+<!-- This is the default template for the html report -->
+
 <TEMPLATE name="showresult">
 <![CDATA[
 <HTML>
@@ -149,57 +151,55 @@ location.href="administration_content_publish_project.html?action=working&time=]
 
 <script language=JavaScript>
 <!--
- var pageStart="<HTML><head>"+
-                    "<META HTTP-EQUIV='Content-Type' CONTENT='text/html;  '>"+
-                    "<link rel=stylesheet type='text/css' href=']]><method name="resourcesUri">format.css</method><![CDATA['>"+
-                "</HEAD>"+
-                "<BODY bgcolor='#ffffff' marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onload=\"window.scrollTo(0,100000);\">";
- var pageEnd="</BODY></HTML>";
+var pageStart="<html>\n<head>\n" +
+    "<meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=iso-8859-1'>\n"+ 
+    "<script language='JavaScript'>\n" + 
+    "function init() { setTimeout('window.scrollBy(0,100000)',100); }\n" +
+    "</script>\n" +
+    "<style type='text/css'>\n<!--\n" +
+    "body { color: #000000; font-family: sans-serif; font-size: 11px; }\n" +
+    "p { color: #000000; font-family: sans-serif; font-size: 11px; }\n" +
+    "span.head { color: #000099; font-family: sans-serif; font-size: 11px; font-weight: bold; }\n"+
+    "-->\n</style>\n" +
+    "</head>\n" +
+    "<body bgcolor='#ffffff' marginwidth='0' marginheight='0' topmargin='0' leftmargin='0' onload='init()'>\n";
+                                               
+var pageEnd="</body>\n</html>";
 
- var pageBody="";
+var pageBody="";
 
- var actionParameter="]]><process>actionParameter</process><![CDATA[";
+var actionParameter="]]><process>actionParameter</process><![CDATA[";
 
- function getActionParameter(){
+function getActionParameter(){
     return actionParameter;
- }
- /**
-  *  initiates the iframe to show the result
-  */
- function initiate(){
+}
+function initiate(){
     refreshResult("");
- }
- /**
-  * adds new lines to the iframe body.
-  * param addon The lines to add to the result.
-  */
- function refreshResult(addOn){
+}
+function refreshResult(addOn){
     pageBody += addOn;
     showframe.document.open();
     showframe.document.write(pageStart + pageBody + pageEnd);
     showframe.document.close();
- }
- /**
-  */
- function finish(){
+}
+function finish(){
     document.getElementById("ok").disabled=false;
- }
- function finish2(){
+}
+function finish2(){
     document.getElementById("cancel").disabled=false;
     document.getElementById("next").disabled=false;
- }
- function finish3(){
-    location.href="administration_content_publish_project.html?action=doThePublish";
- }
- function fillHead(content){
+}
+function finish3(){
+    location.href=]]><process>jsActionUri2</process><![CDATA[;
+}
+function fillHead(content){
     document.getElementById("headline").innerHTML=content;
- }
-
+}
 //-->
 </script>
 
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
@@ -207,27 +207,17 @@ location.href="administration_content_publish_project.html?action=working&time=]
 </HEAD>
 <BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="initiate();">
 
-<!-- Tabelle um vertikal und horizontal zu zentrieren-->
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=middle valign=center>
-<!-- Tabellenaufbau fuer Dialog mit OK und Abbrechen-->
-<table cellspacing=0 cellpadding=0 border=1 width=950>
+<table cellspacing=0 cellpadding=0 border=1 width="90%">
     <tr><td>
         <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
-
-            <!-- Beginn Tabellenkopf blau-->
             <tr>
-                <td class="head">]]><LABEL value="project.publish.title" /><![CDATA[</td>
+                <td class="head">]]><process>headLabel</process><![CDATA[</td>
             </tr>
-            <!-- Ende Tabellenkopf blau-->
-
-            <!-- Beginn Leerzeile-->
             <tr>
                 <td class="leerzeile">&nbsp;</td>
             </tr>
-            <!-- Ende Leerzeile-->
-
-            <!-- Beginn Inhalt-->
             <tr><td class=dialogtxt>
                 <table border=0 width=100%>
                     <tr><td class=dialogtxt>
@@ -237,24 +227,26 @@ location.href="administration_content_publish_project.html?action=working&time=]
                             </tr>
                             <tr>
                                 <td height=280px>
-                                    <iframe align="center" width="100%" height="100%" scrolling="yes" name="showframe" id="showframe">
+                                    <iframe src="empty.html" align="center" width="100%" height="100%" scrolling="yes" name="showframe" id="showframe">
                                     </iframe>
                                 </td>
                             </tr>
                         </table>
                     </td></tr>
-
-                    <!-- Beginn Buttonleiste-->
                     <tr><td class=dialogtxt>
                         <table cellspacing=0 border=0 cellpadding=5 width=100%>
                             <tr>
-                                <td class=formular align=center width=0%><input type="button" class="button" disabled="true" width=100 value="]]><LABEL value="button.cancel" /><![CDATA[" name="cancel" id="cancel" onClick="window.top.head.location.href='../../../action/head.html';"></td>
-                                <td class=formular align=center width=100%><input type="button" class="button" disabled="true" width=100 value="]]><LABEL value="button.next" /><![CDATA[" name="next" id="next" onClick="location='administration_content_publish_project.html?action=doThePublish';"></td>
-                                <td class=formular align=center width=100%><input type="button" class="button" disabled="true" width=100 value="]]><LABEL value="button.ok" /><![CDATA[" name="ok" id="ok" onClick="window.top.head.location.href='../../../action/head.html';"></td>
+                                <td class="formular" align="left"><input type="button" class="button" disabled="true" width="100" value="]]><LABEL value="button.cancel" /><![CDATA[" name="cancel" id="cancel" onClick="]]><process>cancelUri</process><![CDATA["></td>
+                                <td width="20">&nbsp;</td>                            
+                                <td class="formular" align="center" width=100%><input type="button" class="button" disabled="true" width="100" value="]]><LABEL value="button.next" /><![CDATA[" name="next" id="next" onClick="]]><process>nextUri</process><![CDATA["></td>
+                                <td width="20">
+                                    <iframe src="]]><process>iframeActionUri</process><process>actionParameter</process><![CDATA[" width="20" height="20" id="loadframe" marginwidth="0" marginheight="0" frameborder="0" framespacing="0">
+                                    </iframe>                                                                
+                                </td>                                 
+                                <td class="formular" align=""right><input type="button" class="button" disabled="true" width="100" value="]]><LABEL value="button.ok" /><![CDATA[" name="ok" id="ok" onClick="]]><process>okUri</process><![CDATA["></td>                               
                             </tr>
                         </table>
                     </td></tr>
-                    <!-- Ende Buttonleiste-->
                 </table>
             </td></tr>
         </table>
@@ -262,58 +254,65 @@ location.href="administration_content_publish_project.html?action=working&time=]
 </table>
 </td></tr>
 </table>
-                        <iframe  src="administration_content_publish_project.html?action=]]><process>actionParameter</process><![CDATA[" width="0" height="0" id="loadframe">
-                        </iframe>
 </BODY>
 </html>
 ]]>
 </TEMPLATE>
-<actionParameter><![CDATA[showResult]]></actionParameter>
+
 
 <TEMPLATE name="updateReport">
 <![CDATA[
 <HTML>
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 
 <script language=JavaScript>
 <!--
- function update(){
+function update(){
     var value="]]><process>data</process><![CDATA[";
     var headline="]]><process>text</process><![CDATA[";
     parent.refreshResult(value);
     parent.fillHead(headline);
- }
-
- function finish(){
+}
+function finish(){
     parent.finish();
- }
- function finish2(){
+}
+function finish2(){
     parent.finish2();
- }
- function finish3(){
+}
+function finish3(){
     parent.finish3();
- }
+}
 
 //-->
 </script>
 <SCRIPT LANGUAGE="Javascript">
 function reload()
 {
-location.href="administration_content_publish_project.html?action="+parent.getActionParameter();
+location.href=]]><process>jsActionUri1</process><![CDATA[;
 }
 </SCRIPT>
 <title>OpenCms</title>
 
 </HEAD>
-<BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="]]><process>autoUpdate</process><![CDATA[update();]]><process>endMethod</process><![CDATA[">
+<BODY bgcolor="#c0c0c0" marginwidth="0" marginheight="0" topmargin="0" leftmargin="0" onLoad="]]><process>autoUpdate</process><![CDATA[update();]]><process>endMethod</process><![CDATA[">
 </BODY>
 </html>
 ]]>
 </TEMPLATE>
+
 <endMethod><![CDATA[finish();]]></endMethod>
 <endMethod2><![CDATA[finish2();]]></endMethod2>
 <endMethod3><![CDATA[finish3();]]></endMethod3>
 <autoUpdate><![CDATA[setTimeout('reload()', 2000);]]></autoUpdate>
+<actionParameter><![CDATA[showResult]]></actionParameter>
+
+<headLabel><LABEL value="project.publish.title" /></headLabel>
+<okUri><![CDATA[window.top.head.location.href='../../../action/head.html';]]></okUri>
+<nextUri><![CDATA[location='administration_content_publish_project.html?action=doThePublish';]]></nextUri>
+<cancelUri><![CDATA[window.top.head.location.href='../../../action/head.html';]]></cancelUri>
+<iframeActionUri>administration_content_publish_project.html?action=</iframeActionUri>
+<jsActionUri1>"administration_content_publish_project.html?action="+parent.getActionParameter()</jsActionUri1>
+<jsActionUri2>"administration_content_publish_project.html?action=doThePublish"</jsActionUri2>
 
 </WORKPLACE>
