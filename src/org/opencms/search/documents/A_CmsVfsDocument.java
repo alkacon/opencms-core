@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/A_CmsVfsDocument.java,v $
- * Date   : $Date: 2005/03/25 18:35:09 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/03/26 11:36:35 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,10 +45,10 @@ import org.opencms.search.extractors.I_CmsExtractionResult;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.lucene.document.DateField;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 
@@ -148,33 +148,85 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
         Document document = new Document();
         CmsResource res = (CmsResource)resource.getData();
         String path = cms.getRequestContext().removeSiteRoot(resource.getRootPath());
-        String value;
 
-        // extract the content
+        // extract the content from the resource
         I_CmsExtractionResult content = extractContent(cms, resource, language);
         if (content != null) {
             document.add(Field.Text(I_CmsDocumentFactory.DOC_CONTENT, content.getContent()));
         }
 
         StringBuffer meta = new StringBuffer(512);
+        String value;
+        Field field;
 
-        if ((value = cms.readPropertyObject(path, I_CmsConstants.C_PROPERTY_TITLE, false).getValue()) != null) {
-            document.add(Field.Keyword(I_CmsDocumentFactory.DOC_TITLE, value));
-            meta.append(value);
-            meta.append(" ");
+        // add the title from the property
+        value = cms.readPropertyObject(path, I_CmsConstants.C_PROPERTY_TITLE, false).getValue();
+        if (CmsStringUtil.isNotEmpty(value)) {
+            value = value.trim();
+            if (value.length() > 0) {
+                // add title as keyword, required for sorting
+                field = Field.Keyword(I_CmsDocumentFactory.DOC_TITLE_KEY, value);
+                // title keyword field should not affect the boost factor
+                field.setBoost(0);
+                document.add(field);
+                // add title again as indexed field for searching
+                document.add(Field.UnStored(I_CmsDocumentFactory.DOC_TITLE_INDEXED, value));
+                meta.append(value);
+                meta.append(" ");
+            }
         }
-        if ((value = cms.readPropertyObject(path, I_CmsConstants.C_PROPERTY_KEYWORDS, false).getValue()) != null) {
+        // add the keywords from the property
+        value = cms.readPropertyObject(path, I_CmsConstants.C_PROPERTY_KEYWORDS, false).getValue();
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)) {
             document.add(Field.Text(I_CmsDocumentFactory.DOC_KEYWORDS, value));
             meta.append(value);
             meta.append(" ");
         }
-        if ((value = cms.readPropertyObject(path, I_CmsConstants.C_PROPERTY_DESCRIPTION, false).getValue()) != null) {
+        // add the description from the property
+        value = cms.readPropertyObject(path, I_CmsConstants.C_PROPERTY_DESCRIPTION, false).getValue();
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)) {
             document.add(Field.Text(I_CmsDocumentFactory.DOC_DESCRIPTION, value));
             meta.append(value);
             meta.append(" ");
         }
+        // add the collected meta information
+        String metaInf = meta.toString();
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(metaInf)) {
+            document.add(Field.UnStored(I_CmsDocumentFactory.DOC_META, metaInf));
+        }
+
+        // add the category of the file (this is searched so the value can also be attached on a folder)
+        value = cms.readPropertyObject(path, I_CmsConstants.C_PROPERTY_SEARCH_CATEGORY, true).getValue();
+        if (CmsStringUtil.isNotEmpty(value)) {
+            // all categorys are internally stored lower case
+            value = value.trim().toLowerCase();
+            if (value.length() > 0) {
+                document.add(Field.Keyword(I_CmsDocumentFactory.DOC_CATEGORY, value));
+            }
+        }
+
+        // add the document root path, optimized for use with a phrase query
+        String rootPath = CmsSearchIndex.rewriteResourcePath(resource.getRootPath(), false);
+        field = Field.UnStored(I_CmsDocumentFactory.DOC_ROOT, rootPath);
+        // set boost of 0 to root path field, since root path should have no effect on search result score 
+        field.setBoost(0);
+        document.add(field);
+        // root path is stored again in "plain" format, but not for indexing since I_CmsDocumentFactory.DOC_ROOT is used for that
+        document.add(Field.UnIndexed(I_CmsDocumentFactory.DOC_PATH, resource.getRootPath()));
+
+        // add date of creation and last modification as keywords (for sorting)
+        field = Field.Keyword(I_CmsDocumentFactory.DOC_DATE_CREATED, new Date(res.getDateCreated()));
+        field.setBoost(0);
+        document.add(field);
+        field = Field.Keyword(I_CmsDocumentFactory.DOC_DATE_LASTMODIFIED, new Date(res.getDateLastModified()));
+        field.setBoost(0);
+        document.add(field);
+
+        // special field for VFS documents - add a marker so that the document can be identified as VFS resource
+        document.add(Field.UnIndexed(I_CmsDocumentFactory.DOC_TYPE, C_VFS_DOCUMENT_KEY_PREFIX));
 
         float boost = 1.0f;
+        // note that the priority property IS searched, so you can easily flag whole folders as "high" or "low"
         if ((value = cms.readPropertyObject(path, I_CmsConstants.C_PROPERTY_SEARCH_PRIORITY, true).getValue()) != null) {
             value = value.trim().toLowerCase();
             if (value.equals(I_CmsDocumentFactory.SEARCH_PRIORITY_MAX_VALUE)) {
@@ -187,25 +239,6 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
         }
         // set document boost factor
         document.setBoost(boost);
-
-        String rootPath = CmsSearchIndex.rewriteResourcePath(resource.getRootPath(), false);
-        Field rootPathField = Field.UnStored(I_CmsDocumentFactory.DOC_ROOT, rootPath);
-        // set boost of 0 to root path field, since root path should have no effect on search result score 
-        rootPathField.setBoost(0);
-        document.add(rootPathField);
-        // root path is stored again in "plain" format, but not for indexing since I_CmsDocumentFactory.DOC_ROOT is used for that
-        document.add(Field.UnIndexed(I_CmsDocumentFactory.DOC_PATH, resource.getRootPath()));
-
-        String metaInf = meta.toString();
-        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(metaInf)) {
-            document.add(Field.UnStored(I_CmsDocumentFactory.DOC_META, metaInf));
-        }
-
-        document
-            .add(Field.Keyword(I_CmsDocumentFactory.DOC_DATE_CREATED, DateField.timeToString(res.getDateCreated())));
-        document.add(Field.Keyword(I_CmsDocumentFactory.DOC_DATE_LASTMODIFIED, DateField.timeToString(res
-            .getDateLastModified())));
-        document.add(Field.UnIndexed(I_CmsDocumentFactory.DOC_TYPE, C_VFS_DOCUMENT_KEY_PREFIX));
 
         return document;
     }

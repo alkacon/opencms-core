@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsDocumentPlainText.java,v $
- * Date   : $Date: 2005/03/25 18:35:09 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/03/26 11:36:35 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.opencms.search.extractors.I_CmsExtractionResult;
  * Lucene document factory class to extract index data from a cms resource 
  * containing plain text data.<p>
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsDocumentPlainText extends A_CmsVfsDocument {
@@ -76,8 +76,9 @@ public class CmsDocumentPlainText extends A_CmsVfsDocument {
         try {
             String path = cms.getRequestContext().removeSiteRoot(resource.getRootPath());
             CmsProperty encoding = cms.readPropertyObject(path, I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, true);
-            String result = new String(file.getContents(), encoding.getValue(OpenCms.getSystemInfo()
-                .getDefaultEncoding()));
+            String result = new String(
+                file.getContents(), 
+                encoding.getValue(OpenCms.getSystemInfo().getDefaultEncoding()));
             return new CmsExtractionResult(result);
         } catch (Exception e) {
             throw new CmsIndexException("Extracting text from resource "

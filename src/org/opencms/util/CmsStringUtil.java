@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2005/03/24 17:38:21 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/03/26 11:36:35 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * @since 5.0
  */
 public final class CmsStringUtil {
@@ -444,6 +444,18 @@ public final class CmsStringUtil {
     public static boolean isNotEmpty(String value) {
 
         return (value != null) && (value.length() != 0);
+    }
+    
+    /**
+     * Returns <code>true</code> if the provided String is neither <code>null</code>
+     * nor contains only white spaces.<p> 
+     * 
+     * @param value the value to check
+     * @return true, if the provided value is null or contains only white spaces, false otherwise
+     */
+    public static boolean isNotEmptyOrWhitespaceOnly(String value) {
+
+        return (value != null) && (value.trim().length() > 0);
     }
 
     /**

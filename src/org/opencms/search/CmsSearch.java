@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearch.java,v $
- * Date   : $Date: 2005/03/24 17:38:20 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/03/26 11:36:35 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.lucene.search.SortField;
  * <li>contentdefinition - the name of the content definition class of a resource</li>
  * </ul>
  * 
- * @version $Revision: 1.23 $ $Date: 2005/03/24 17:38:20 $
+ * @version $Revision: 1.24 $ $Date: 2005/03/26 11:36:35 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -71,17 +71,25 @@ import org.apache.lucene.search.SortField;
 public class CmsSearch implements Serializable, Cloneable {
 
     /** Sort result documents by date of last modification, then score. */
+    public static final Sort SORT_DATE_CREATED = new Sort(new SortField[] {
+        new SortField(I_CmsDocumentFactory.DOC_DATE_CREATED, true),
+        SortField.FIELD_SCORE});
+
+    /** Sort result documents by date of last modification, then score. */
     public static final Sort SORT_DATE_LASTMODIFIED = new Sort(new SortField[] {
         new SortField(I_CmsDocumentFactory.DOC_DATE_LASTMODIFIED, true),
         SortField.FIELD_SCORE});
 
-    /** Default sort order (by document score). */
-    public static final Sort SORT_DEFAULT = Sort.RELEVANCE;
+    /** Default sort order (by document score - for this <code>null</code> gived best performance). */
+    public static final Sort SORT_DEFAULT = null;
 
     /** Sort result documents by title, then score. */
     public static final Sort SORT_TITLE = new Sort(new SortField[] {
-        new SortField(I_CmsDocumentFactory.DOC_TITLE),
+        new SortField(I_CmsDocumentFactory.DOC_TITLE_KEY),
         SortField.FIELD_SCORE});
+
+    /** Indicates if a category count should be calculated for the result list. */
+    protected boolean m_calculateCategories;
 
     /** The cms object. */
     protected transient CmsObject m_cms;
@@ -137,6 +145,9 @@ public class CmsSearch implements Serializable, Cloneable {
     /** The search sort order. */
     protected Sort m_sortOrder;
 
+    /** The result categories of a search. */
+    private Map m_categories;
+
     /**
      * Default constructor, used to instanciate the search facility as a bean.<p>
      */
@@ -151,6 +162,21 @@ public class CmsSearch implements Serializable, Cloneable {
         m_displayPages = 10;
         m_queryLength = -1;
         m_sortOrder = CmsSearch.SORT_DEFAULT;
+    }
+
+    /**
+     * Returns <code>true</code> if a category overview should be shown as part of the result.<p>
+     *
+     * <b>Please note:</b> The calculation of the category count slows down the search time by an order
+     * of magnitude. Make sure that you only use this feature if it's really required! 
+     * Be especially careful if your search result list can become large (> 1000 documents), since in this case
+     * overall system performance will certainly be impacted considerably when calculating the categories.<p> 
+     *
+     * @return <code>true</code> if a category overview should be shown as part of the result
+     */
+    public boolean getCalculateCategories() {
+
+        return m_calculateCategories;
     }
 
     /**
@@ -362,7 +388,7 @@ public class CmsSearch implements Serializable, Cloneable {
             }
 
             try {
-                List result;
+                CmsSearchResultList result;
 
                 String[] searchRoots = null;
                 if (m_searchRoot != null) {
@@ -374,15 +400,21 @@ public class CmsSearch implements Serializable, Cloneable {
                     fields = CmsSearchIndex.C_DOC_META_FIELDS;
                 }
 
-                result = m_index.search(m_cms, searchRoots, m_query, m_sortOrder, fields, m_page, m_matchesPerPage);
+                result = m_index.search(
+                    m_cms,
+                    searchRoots,
+                    m_query,
+                    m_sortOrder,
+                    fields,
+                    m_calculateCategories,
+                    m_page,
+                    m_matchesPerPage);
 
-                if (result.size() > 1) {
-                    // the total number of search results matching the query is saved at the last index in the result 
-                    // list. the search result list contains just m_matchesPerPage search results instead of all search 
-                    // results due to performance reasons.
-                    Integer searchResultCount = (Integer)result.get(result.size() - 1);
-                    m_searchResultCount = searchResultCount.intValue();
-                    m_result = result.subList(0, result.size() - 1);
+                if (result.size() > 0) {
+
+                    m_result = result;
+                    m_searchResultCount = result.getHitCount();
+                    m_categories = result.getCategories();
 
                     // re-caluclate the number of pages for this search result
                     m_pageCount = m_searchResultCount / m_matchesPerPage;
@@ -401,6 +433,7 @@ public class CmsSearch implements Serializable, Cloneable {
                 } else {
                     m_result = Collections.EMPTY_LIST;
                     m_searchResultCount = 0;
+                    m_categories = null;
                     m_pageCount = 0;
                     m_prevUrl = null;
                     m_nextUrl = null;
@@ -420,6 +453,20 @@ public class CmsSearch implements Serializable, Cloneable {
         }
 
         return m_result;
+    }
+
+    /**
+     * Returns a map of categories (Strings) for the last search result, mapped to the hit count (Integer) of 
+     * the documents in this category, or <code>null</code> if the categories have not been calculated.<p> 
+     *
+     * @return a map of categories for the last search result
+     * 
+     * @see CmsSearch#getCalculateCategories()
+     * @see CmsSearch#setCalculateCategories(boolean)
+     */
+    public Map getSearchResultCategories() {
+
+        return m_categories;
     }
 
     /**
@@ -475,6 +522,22 @@ public class CmsSearch implements Serializable, Cloneable {
         if (m_indexName != null) {
             setIndex(m_indexName);
         }
+    }
+
+    /**
+     * Sets the flag that controls calculation of result categories for the next search, 
+     * use this only if it's really required since the search can become very slow using this option.<p>
+     *
+     * <b>Please note:</b> The calculation of the category count slows down the search time by an order
+     * of magnitude. Make sure that you only use this feature if it's really required! 
+     * Be especially careful if your search result list can become large (> 1000 documents), since in this case
+     * overall system performance will certainly be impacted considerably when calculating the categories.<p> 
+     *
+     * @param calculateCategories if <code>true</code>, the category count will be calculated for the next search
+     */
+    public void setCalculateCategories(boolean calculateCategories) {
+
+        m_calculateCategories = calculateCategories;
     }
 
     /**
@@ -619,6 +682,7 @@ public class CmsSearch implements Serializable, Cloneable {
 
         m_result = null;
         m_lastException = null;
+        m_categories = null;
     }
 
 }

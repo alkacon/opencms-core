@@ -1,3 +1,0 @@
-Some text!
-
-This text contains the words "Alkacon" and "OpenCms".

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsCosDocument.java,v $
- * Date   : $Date: 2005/03/25 18:35:09 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/03/26 11:36:35 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package com.opencms.legacy;
 
 import org.opencms.file.CmsObject;
@@ -39,15 +40,16 @@ import org.opencms.search.documents.I_CmsDocumentFactory;
 import org.opencms.search.extractors.CmsExtractionResult;
 import org.opencms.search.extractors.I_CmsExtractionResult;
 import org.opencms.util.CmsHtmlExtractor;
+import org.opencms.util.CmsStringUtil;
 
 import com.opencms.defaults.master.*;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.apache.lucene.document.DateField;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 
@@ -55,7 +57,7 @@ import org.apache.lucene.document.Field;
  * Lucene document factory class to extract index data from a cos resource 
  * of any type derived from <code>CmsMasterDataSet</code>.<p>
  * 
- * @version $Revision: 1.14 $ $Date: 2005/03/25 18:35:09 $
+ * @version $Revision: 1.15 $ $Date: 2005/03/26 11:36:35 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
@@ -65,16 +67,16 @@ public class CmsCosDocument implements I_CmsCosDocumentFactory {
 
     /** The cos prefix for document keys. */
     public static final String C_DOCUMENT_KEY_PREFIX = "COS";
-    
+
     /* Matches anything that is not a number, hex-number, uuid or whitespace */
     private static final Pattern C_NON_NUM_UUID_WS = Pattern.compile("[^a-fA-F0-9\\-_\\s]");
-    
+
     /** The cms object. */
     protected CmsObject m_cms;
-    
+
     /** Name of the document type. */
     protected String m_name;
-    
+
     /**
      * Creates a new instance of this lucene document factory.<p>
      * 
@@ -82,6 +84,7 @@ public class CmsCosDocument implements I_CmsCosDocumentFactory {
      * @param name name of the documenttype
      */
     public CmsCosDocument(CmsObject cms, String name) {
+
         m_cms = cms;
         m_name = name;
     }
@@ -98,13 +101,14 @@ public class CmsCosDocument implements I_CmsCosDocumentFactory {
      * @return the raw text content
      * @throws CmsException if something goes wrong
      */
-    public I_CmsExtractionResult extractContent(CmsObject cms, A_CmsIndexResource indexResource, String language) throws CmsException {        
-        
+    public I_CmsExtractionResult extractContent(CmsObject cms, A_CmsIndexResource indexResource, String language)
+    throws CmsException {
+
         CmsMasterDataSet resource = (CmsMasterDataSet)indexResource.getData();
         String result = null;
-        
+
         try {
-            
+
             StringBuffer buf = new StringBuffer();
 
             for (int i = 0; i < resource.m_dataMedium.length; i++) {
@@ -113,13 +117,13 @@ public class CmsCosDocument implements I_CmsCosDocumentFactory {
                     buf.append(resource.m_dataMedium[i]);
                 }
             }
-            
+
             for (int i = 0; i < resource.m_dataBig.length; i++) {
                 if (resource.m_dataBig[i] != null && !"".equals(resource.m_dataBig[i])) {
                     buf.append((i > 0) ? " " : "");
                     buf.append(resource.m_dataBig[i]);
                 }
-            }            
+            }
 
             for (int i = 0; i < resource.m_dataSmall.length; i++) {
                 if (resource.m_dataSmall[i] != null && !"".equals(resource.m_dataSmall[i])) {
@@ -129,90 +133,92 @@ public class CmsCosDocument implements I_CmsCosDocumentFactory {
                     }
                 }
             }
-            
+
             CmsHtmlExtractor extractor = new CmsHtmlExtractor();
             result = extractor.extractText(buf.toString(), OpenCms.getSystemInfo().getDefaultEncoding());
-            
+
         } catch (Exception exc) {
             throw new CmsIndexException("Reading resource " + indexResource.getRootPath() + " failed", exc);
         }
 
         return new CmsExtractionResult(result);
     }
-    
-    /**
-     * Generates a new lucene document instance from contents of the given resource.<p>
-     * 
-     * @see org.opencms.search.documents.I_CmsDocumentFactory#newInstance(org.opencms.file.CmsObject, org.opencms.search.A_CmsIndexResource, java.lang.String)
-     */
-    public Document newInstance (CmsObject cms, A_CmsIndexResource resource, String language) throws CmsException {
-        
-        Document document = new Document();
-        CmsMasterDataSet content = (CmsMasterDataSet)resource.getData();
-        String value;
-
-        if ((value = content.m_title) != null) {
-            document.add(Field.Text(I_CmsDocumentFactory.DOC_TITLE, value));
-            document.add(Field.Text(I_CmsDocumentFactory.DOC_META, value));
-        }                       
-
-        document.add(Field.Keyword(I_CmsDocumentFactory.DOC_DATE_CREATED, 
-            DateField.timeToString(content.m_dateCreated)));
-        document.add(Field.Keyword(I_CmsDocumentFactory.DOC_DATE_LASTMODIFIED, 
-            DateField.timeToString(content.m_dateLastModified)));
-
-        document.add(Field.Keyword(I_CmsCosDocumentFactory.DOC_CHANNEL, ((CmsCosIndexResource)resource).getChannel()));
-        document.add(Field.Keyword(I_CmsCosDocumentFactory.DOC_CONTENT_DEFINITION, ((CmsCosIndexResource)resource).getContentDefinition()));
-
-        String path = m_cms.getRequestContext().removeSiteRoot(resource.getRootPath());
-        document.add(Field.UnIndexed(I_CmsDocumentFactory.DOC_PATH, path));        
-
-        document.add(Field.UnIndexed(I_CmsCosDocumentFactory.DOC_CONTENT_ID, resource.getId().toString()));
-        
-        document.add(Field.Text(I_CmsDocumentFactory.DOC_CONTENT, extractContent(cms, resource, language).getContent()));
-
-        return document;
-    }
-        
-    /**
-     * @see org.opencms.search.documents.I_CmsDocumentFactory#getName()
-     */
-    public String getName() {
-        return m_name;
-    }
 
     /**
      * @see org.opencms.search.documents.I_CmsDocumentFactory#getDocumentKey(java.lang.String)
      */
     public String getDocumentKey(String resourceType) throws CmsException {
+
         try {
             return C_DOCUMENT_KEY_PREFIX + ((CmsMasterContent)Class.forName(resourceType).newInstance()).getSubId();
         } catch (Exception exc) {
-            throw new CmsException ("Instanciation of resource type class " + resourceType + " failed.", exc);
+            throw new CmsException("Instanciation of resource type class " + resourceType + " failed.", exc);
         }
     }
-    
+
     /**
      * @see org.opencms.search.documents.I_CmsDocumentFactory#getDocumentKeys(java.util.List, java.util.List)
      */
     public List getDocumentKeys(List resourceTypes, List mimeTypes) throws CmsException {
-           
+
         ArrayList keys = new ArrayList();
-        
+
         try {
             for (Iterator i = resourceTypes.iterator(); i.hasNext();) {
-                
-                int id = ((CmsMasterContent)Class.forName((String)i.next()).newInstance()).getSubId();                
+
+                int id = ((CmsMasterContent)Class.forName((String)i.next()).newInstance()).getSubId();
                 for (Iterator j = resourceTypes.iterator(); j.hasNext();) {
                     keys.add(C_DOCUMENT_KEY_PREFIX + id + ":" + (String)j.next());
                 }
-                
+
                 keys.add(C_DOCUMENT_KEY_PREFIX + id);
             }
         } catch (Exception exc) {
-            throw new CmsException ("Creation of document keys failed.", exc);
+            throw new CmsException("Creation of document keys failed.", exc);
         }
-        
+
         return keys;
+    }
+
+    /**
+     * @see org.opencms.search.documents.I_CmsDocumentFactory#getName()
+     */
+    public String getName() {
+
+        return m_name;
+    }
+
+    /**
+     * Generates a new lucene document instance from contents of the given resource.<p>
+     * 
+     * @see org.opencms.search.documents.I_CmsDocumentFactory#newInstance(org.opencms.file.CmsObject, org.opencms.search.A_CmsIndexResource, java.lang.String)
+     */
+    public Document newInstance(CmsObject cms, A_CmsIndexResource resource, String language) throws CmsException {
+
+        Document document = new Document();
+        CmsMasterDataSet content = (CmsMasterDataSet)resource.getData();
+        String value = content.m_title;
+
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)) {
+            document.add(Field.Keyword(I_CmsDocumentFactory.DOC_TITLE_KEY, value));
+            document.add(Field.UnStored(I_CmsDocumentFactory.DOC_TITLE_INDEXED, value));
+            document.add(Field.UnStored(I_CmsDocumentFactory.DOC_META, value));
+        }
+
+        document.add(Field.Keyword(I_CmsDocumentFactory.DOC_DATE_CREATED, new Date(content.m_dateCreated)));
+        document.add(Field.Keyword(I_CmsDocumentFactory.DOC_DATE_LASTMODIFIED, new Date(content.m_dateLastModified)));
+
+        document.add(Field.Keyword(I_CmsCosDocumentFactory.DOC_CHANNEL, ((CmsCosIndexResource)resource).getChannel()));
+        document.add(Field.Keyword(I_CmsCosDocumentFactory.DOC_CONTENT_DEFINITION, ((CmsCosIndexResource)resource)
+            .getContentDefinition()));
+
+        String path = m_cms.getRequestContext().removeSiteRoot(resource.getRootPath());
+        document.add(Field.UnIndexed(I_CmsDocumentFactory.DOC_PATH, path));
+        document.add(Field.UnIndexed(I_CmsCosDocumentFactory.DOC_CONTENT_ID, resource.getId().toString()));
+
+        document
+            .add(Field.Text(I_CmsDocumentFactory.DOC_CONTENT, extractContent(cms, resource, language).getContent()));
+
+        return document;
     }
 }

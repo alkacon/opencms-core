@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2005/03/25 18:35:09 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2005/03/26 11:36:35 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,22 +54,23 @@ import java.util.TreeMap;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.Searcher;
 import org.apache.lucene.search.Sort;
 
 /**
  * Implements the search within an index and the management of the index configuration.<p>
  *   
- * @version $Revision: 1.45 $ $Date: 2005/03/25 18:35:09 $
+ * @version $Revision: 1.46 $
+ * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * 
  * @since 5.3.1
  */
 public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
@@ -156,10 +157,14 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     /**
      * Rewrites the a resource path for use in the {@link I_CmsDocumentFactory#DOC_ROOT} field.<p>
      * 
-     * All "/" chars in the path are replaced with the  {@link #C_ROOT_PATH_REPLACEMENT} token.
+     * All "/" chars in the path are replaced with the {@link #C_ROOT_PATH_REPLACEMENT} token.
      * This is required in order to use a Lucene "phrase query" on the resource path.
      * Using a phrase query is much, much better for the search performance then using a straightforward 
-     * "prefix query" since Lucene will interally generate a huge list of boolean queries.<p>  
+     * "prefix query". With a "prefix query", Lucene would interally generate a huge list of boolean sub-queries,
+     * exactly one for every document in the VFS subtree of the query. So if you query on "/sites/default/*" on 
+     * a large OpenCms installation, this means thousands of sub-queries.
+     * Using the "phrase query", only one (or very few) queries are internally generated, and the result 
+     * is just the same.<p>  
      * 
      * This implementation replaces the "/" of a path with "@oc ". 
      * This is a trick so that the Lucene analyzer leaves the
@@ -406,50 +411,6 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     }
 
     /**
-     * Performs a search on the index within the fields "content" and "meta".<p>
-     * 
-     * The result is returned as List with entries of type I_CmsSearchResult.<p>
-     * 
-     * @param cms the current user's Cms object
-     * @param searchRoot only resource that are sub-resource of the search root are included in the search result
-     * @param searchQuery the search term to search the index
-     * @param page the page to calculate the search result list, or -1 to return all found documents in the search result
-     * @param matchesPerPage the number of search results per page, or -1 to return all found documents in the search result
-     * @return the List of results found or an empty list
-     * @throws CmsException if something goes wrong
-     */
-    public synchronized List search(CmsObject cms, String searchRoot, String searchQuery, int page, int matchesPerPage)
-    throws CmsException {
-
-        return search(cms, searchRoot, searchQuery, C_DOC_META_FIELDS, page, matchesPerPage);
-    }
-
-    /**
-     * Performs a search on the index within the given fields.<p>
-     * 
-     * The result is returned as List with entries of type I_CmsSearchResult.<p>
-     * 
-     * @param cms the current user's Cms object
-     * @param searchRoot only resource that are sub-resource of the search root are included in the search result
-     * @param searchQuery the search term to search the index
-     * @param fields the list of fields to search
-     * @param page the page to calculate the search result list, or -1 to return all found documents in the search result
-     * @param matchesPerPage the number of search results per page, or -1 to return all found documents in the search result
-     * @return the List of results found or an empty list
-     * @throws CmsException if something goes wrong
-     */
-    public synchronized List search(
-        CmsObject cms,
-        String searchRoot,
-        String searchQuery,
-        String[] fields,
-        int page,
-        int matchesPerPage) throws CmsException {
-
-        return search(cms, new String[] {searchRoot}, searchQuery, Sort.RELEVANCE, fields, page, matchesPerPage);
-    }
-
-    /**
      * Performs a search on the index within the given fields.<p>
      * 
      * The result is returned as List with entries of type I_CmsSearchResult.<p>
@@ -459,17 +420,20 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      * @param searchQuery the search term to search the index
      * @param sortOrder the sort order for the search
      * @param fields the list of fields to search
+     * @param countCategories if <code>true</code>, the category count is calculated for all search results
+     *      (use with caution, this option uses much performance)
      * @param page the page to calculate the search result list, or -1 to return all found documents in the search result
      * @param matchesPerPage the number of search results per page, or -1 to return all found documents in the search result
      * @return the List of results found or an empty list
      * @throws CmsException if something goes wrong
      */
-    public synchronized List search(
+    public synchronized CmsSearchResultList search(
         CmsObject cms,
         String[] searchRoots,
         String searchQuery,
         Sort sortOrder,
         String[] fields,
+        boolean countCategories,
         int page,
         int matchesPerPage) throws CmsException {
 
@@ -495,14 +459,13 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         CmsProject currentProject = context.currentProject();
 
         // the searcher to perform the operation in
-        Searcher searcher = null;
-        IndexReader reader = null;
+        IndexSearcher searcher = null;
 
         // the hits found during the search
         Hits hits;
 
         // storage for the results found
-        List searchResults = new ArrayList();
+        CmsSearchResultList searchResults = new CmsSearchResultList();
 
         int previousPriority = Thread.currentThread().getPriority();
 
@@ -574,28 +537,33 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             searcher = new IndexSearcher(m_path);
             Query finalQuery;
 
-            if (OpenCms.getLog(this).isDebugEnabled()) {
-                OpenCms.getLog(this).debug("Base query: " + query);
-            }
             if (m_createExcerpt || OpenCms.getLog(this).isDebugEnabled()) {
                 // we re-write the query because this enables highlighting of wildcard terms in excerpts 
-                reader = IndexReader.open(m_path);
-                finalQuery = query.rewrite(reader);
+                finalQuery = searcher.rewrite(query);
             } else {
                 finalQuery = query;
             }
             if (OpenCms.getLog(this).isDebugEnabled()) {
+                OpenCms.getLog(this).debug("Base query: " + query);
                 OpenCms.getLog(this).debug("Rewritten query: " + finalQuery);
-                reader.close();
             }
 
-            // perform the search operation
-            if ((sortOrder != null) && (sortOrder != Sort.RELEVANCE)) {
-                hits = searcher.search(finalQuery, sortOrder);
-            } else {
-                // according to Lucene JavaDoc, using the default sort order explicitly has a slight overhead 
-                hits = searcher.search(finalQuery);
+            // collect the categories
+            CmsSearchCategoryCollector categoryCollector;
+            if (countCategories) {
+                // USE THIS OPTION WITH CAUTION
+                // this may slow down searched by an order of magnitude
+                categoryCollector = new CmsSearchCategoryCollector(searcher);
+                // perform a first search to collect the categories
+                searcher.search(finalQuery, categoryCollector);
+                // store the result
+                searchResults.setCategories(categoryCollector.getCategoryCountResult());
             }
+
+            // perform the search operation          
+            hits = searcher.search(finalQuery, sortOrder);
+
+            int hitCount = hits.length();
 
             timeLucene += System.currentTimeMillis();
             timeResultProcessing = -System.currentTimeMillis();
@@ -607,20 +575,20 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             if (hits != null) {
 
                 int start = -1, end = -1;
-                if (matchesPerPage > 0 && page > 0 && hits.length() > 0) {
+                if (matchesPerPage > 0 && page > 0 && hitCount > 0) {
                     // calculate the final size of the search result
                     start = matchesPerPage * (page - 1);
                     end = start + matchesPerPage;
                     // ensure that both i and n are inside the range of foundDocuments.size()
-                    start = (start > hits.length()) ? hits.length() : start;
-                    end = (end > hits.length()) ? hits.length() : end;
+                    start = (start > hitCount) ? hitCount : start;
+                    end = (end > hitCount) ? hitCount : end;
                 } else {
                     // return all found documents in the search result
                     start = 0;
-                    end = hits.length();
+                    end = hitCount;
                 }
 
-                for (int i = 0, cnt = 0; i < hits.length() && cnt < end; i++) {
+                for (int i = 0, cnt = 0; i < hitCount && cnt < end; i++) {
                     try {
                         doc = hits.doc(i);
                         if (hasReadPermission(cms, doc)) {
@@ -645,15 +613,15 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 }
 
                 // save the total count of search results at the last index of the search result 
-                searchResults.add(new Integer(hits.length()));
+                searchResults.setHitCount(hitCount);
             } else {
-                searchResults.add(new Integer(0));
+                searchResults.setHitCount(0);
             }
 
             timeResultProcessing += System.currentTimeMillis();
 
         } catch (Exception exc) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + "Search on " + m_path + " failed. ", exc);
+            throw new CmsException("Searching for \"" + searchQuery + "\" failed", exc);
         } finally {
 
             // re-set thread to previous priority

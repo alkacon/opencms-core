@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearchAdvancedFeatures.java,v $
- * Date   : $Date: 2005/03/24 17:38:21 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/03/26 11:36:35 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,8 @@
 package org.opencms.search;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.test.OpenCmsTestCase;
@@ -41,6 +43,7 @@ import org.opencms.util.CmsStringUtil;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
@@ -50,7 +53,7 @@ import junit.framework.TestSuite;
  * Unit test for advanced search features.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
 
@@ -83,6 +86,7 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         suite.setName(TestCmsSearchAdvancedFeatures.class.getName());
         
         suite.addTest(new TestCmsSearchAdvancedFeatures("testSortSearchResults"));
+        suite.addTest(new TestCmsSearchAdvancedFeatures("testSearchCategories"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -98,6 +102,74 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         };
 
         return wrapper;
+    }
+    
+    /**
+     * Tests search category grouping.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testSearchCategories() throws Exception {
+        
+        CmsObject cms = getCmsObject();
+        echo("Testing searching for categories");        
+        
+        // perform a search on the newly generated index
+        CmsSearch searchBean = new CmsSearch();
+        List searchResult;               
+        String query = "OpenCms";
+        
+        // apply search categories to some folders
+        
+        CmsProperty cat1 = new CmsProperty(I_CmsConstants.C_PROPERTY_SEARCH_CATEGORY, "category_1", null, true);
+        CmsProperty cat2 = new CmsProperty(I_CmsConstants.C_PROPERTY_SEARCH_CATEGORY, "category_2", null, true);
+        CmsProperty cat3 = new CmsProperty(I_CmsConstants.C_PROPERTY_SEARCH_CATEGORY, "category_3", null, true);
+        
+        cms.lockResource("/folder1/");
+        cms.writePropertyObject("/folder1/", cat1);
+        cms.unlockResource("/folder1/");
+        cms.lockResource("/folder2/");
+        cms.writePropertyObject("/folder2/", cat2);
+        cms.unlockResource("/folder2/");      
+        cms.lockResource("/types/");
+        cms.writePropertyObject("/types/", cat3);
+        cms.unlockResource("/types/");             
+        
+        // update the search index used
+        OpenCms.getSearchManager().updateIndex(INDEX_OFFLINE, new CmsShellReport());       
+        
+        searchBean.init(cms);
+        searchBean.setIndex(INDEX_OFFLINE);                        
+        searchBean.setQuery(query);
+        searchBean.setCalculateCategories(true);
+        
+        // first run is default sort order
+        searchResult = searchBean.getSearchResult();        
+        Iterator i = searchResult.iterator();
+        System.out.println("Result sorted by relevance:");       
+        while (i.hasNext()) {
+            CmsSearchResult res = (CmsSearchResult)i.next();
+            System.out.print(CmsStringUtil.padRight(cms.getRequestContext().removeSiteRoot(res.getPath()), 50));            
+            System.out.print(CmsStringUtil.padRight(res.getTitle(), 40));              
+            System.out.println("  score: " + res.getScore());               
+        }
+        
+        Map categories = searchBean.getSearchResultCategories();
+        // make sure categories where found
+        assertNotNull(categories);
+        // print the categories 
+        System.out.println(CmsSearchCategoryCollector.formatCategoryMap(categories));
+        // make sure the results are as expected
+        assertTrue(categories.containsKey(cat1.getValue()));
+        assertTrue(categories.containsKey(cat2.getValue()));
+        assertTrue(categories.containsKey(cat3.getValue()));
+        assertTrue(categories.containsKey(CmsSearchCategoryCollector.UNKNOWN_CATEGORY));
+        // result must be all 3 categories plus 1 for "unknown"
+        assertEquals(4, categories.size());        
+        // for "category_3" (/types folder) there must be exactly 1 result
+        assertEquals(new Integer(1), categories.get(cat3.getValue()));
+        // for "unknown" there must be exactly 1 result
+        assertEquals(new Integer(1), categories.get(CmsSearchCategoryCollector.UNKNOWN_CATEGORY));
     }
  
     /**
@@ -128,7 +200,7 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         System.out.println("Result sorted by relevance:");       
         while (i.hasNext()) {
             CmsSearchResult res = (CmsSearchResult)i.next();
-            System.out.print(CmsStringUtil.padRight(res.getPath(), 50));            
+            System.out.print(CmsStringUtil.padRight(cms.getRequestContext().removeSiteRoot(res.getPath()), 50));                   
             System.out.print(CmsStringUtil.padRight(res.getTitle(), 40));               
             System.out.print(CmsDateUtil.getHeaderDate(res.getDateLastModified().getTime()));               
             System.out.println("  score: " + res.getScore());               
@@ -142,7 +214,7 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         System.out.println("Result sorted by title:");       
         while (i.hasNext()) {
             CmsSearchResult res = (CmsSearchResult)i.next();
-            System.out.print(CmsStringUtil.padRight(res.getPath(), 50));            
+            System.out.print(CmsStringUtil.padRight(cms.getRequestContext().removeSiteRoot(res.getPath()), 50));                      
             System.out.print(CmsStringUtil.padRight(res.getTitle(), 40));               
             System.out.print(CmsDateUtil.getHeaderDate(res.getDateLastModified().getTime()));               
             System.out.println("  score: " + res.getScore());
@@ -161,7 +233,7 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         System.out.println("Result sorted by date last modified:");       
         while (i.hasNext()) {
             CmsSearchResult res = (CmsSearchResult)i.next();
-            System.out.print(CmsStringUtil.padRight(res.getPath(), 50));            
+            System.out.print(CmsStringUtil.padRight(cms.getRequestContext().removeSiteRoot(res.getPath()), 50));         
             System.out.print(CmsStringUtil.padRight(res.getTitle(), 40));               
             System.out.print(CmsDateUtil.getHeaderDate(res.getDateLastModified().getTime()));               
             System.out.println("  score: " + res.getScore());
@@ -172,6 +244,8 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
             }
             lastTime = res.getDateLastModified().getTime();
         }
+        
+        assertNull(searchBean.getSearchResultCategories());
     }
     
 }

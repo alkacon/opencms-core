@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2005/03/23 22:09:06 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2005/03/26 11:36:35 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,17 +33,16 @@ package org.opencms.main;
 
 import org.opencms.security.CmsPermissionSet;
 
-
 /**
  * This interface is a pool for constants in OpenCms.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  *
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.39 $
  */
 public interface I_CmsConstants {
-    
+
     /**
      * Group may read this resource.
      */
@@ -67,7 +66,9 @@ public interface I_CmsConstants {
     /**
      * Owner has full access to this resource.
      */
-    int C_ACCESS_OWNER = CmsPermissionSet.PERMISSION_READ + CmsPermissionSet.PERMISSION_WRITE + CmsPermissionSet.PERMISSION_VIEW;
+    int C_ACCESS_OWNER = CmsPermissionSet.PERMISSION_READ
+        + CmsPermissionSet.PERMISSION_WRITE
+        + CmsPermissionSet.PERMISSION_VIEW;
 
     /**
      *  Public may read this resource.
@@ -88,7 +89,7 @@ public interface I_CmsConstants {
      *  has full access to this resource.
      */
     int C_ACCESS_PUBLIC = C_ACCESS_PUBLIC_READ + C_ACCESS_PUBLIC_WRITE + C_ACCESS_PUBLIC_VISIBLE;
-    
+
     /**
      * All may read this resource.
      */
@@ -98,16 +99,22 @@ public interface I_CmsConstants {
      * All may view this resource.
      */
     int C_ACCESS_VISIBLE = CmsPermissionSet.PERMISSION_VIEW + C_ACCESS_GROUP_VISIBLE + C_ACCESS_PUBLIC_VISIBLE;
-    
+
     /**
      * All may write this resource.
      */
     int C_ACCESS_WRITE = CmsPermissionSet.PERMISSION_WRITE + C_ACCESS_GROUP_WRITE + C_ACCESS_PUBLIC_WRITE;
-    
+
     /**
      * The default-flags for a new resource.
      */
-    int C_ACCESS_DEFAULT_FLAGS = CmsPermissionSet.PERMISSION_READ + CmsPermissionSet.PERMISSION_WRITE + CmsPermissionSet.PERMISSION_VIEW + C_ACCESS_GROUP_WRITE + C_ACCESS_GROUP_VISIBLE + C_ACCESS_PUBLIC_READ + C_ACCESS_PUBLIC_VISIBLE;
+    int C_ACCESS_DEFAULT_FLAGS = CmsPermissionSet.PERMISSION_READ
+        + CmsPermissionSet.PERMISSION_WRITE
+        + CmsPermissionSet.PERMISSION_VIEW
+        + C_ACCESS_GROUP_WRITE
+        + C_ACCESS_GROUP_VISIBLE
+        + C_ACCESS_PUBLIC_READ
+        + C_ACCESS_PUBLIC_VISIBLE;
 
     /**
      * Group has full access to this resource.
@@ -143,9 +150,9 @@ public interface I_CmsConstants {
      * Flag to signal the principal type user.
      */
     int C_ACCESSFLAGS_USER = 16;
-    
+
     /** Key for additional info start settings. */
-    String C_ADDITIONAL_INFO_DEFAULTGROUP = "USER_DEFAULTGROUP";    
+    String C_ADDITIONAL_INFO_DEFAULTGROUP = "USER_DEFAULTGROUP";
 
     /** Key for additional info explorer settings. */
     String C_ADDITIONAL_INFO_EXPLORERSETTINGS = "USER_EXPLORERSETTINGS";
@@ -165,7 +172,7 @@ public interface I_CmsConstants {
      * Key for additional info address.
      */
     String C_ADDITIONAL_INFO_TOWN = "USER_TOWN";
-    
+
     /**
      * Key for additional info address.
      */
@@ -175,12 +182,12 @@ public interface I_CmsConstants {
      * Was logged in: at least once.
      */
     int C_AT_LEAST_ONCE = 2;
-    
+
     /**
      * 
      */
     String C_CONFIGURATION_BACKUP = "driver.backup";
-    
+
     /**
      * A string in the configuration-file.
      */
@@ -195,33 +202,23 @@ public interface I_CmsConstants {
      * Prefix for history/backup config keys.
      */
     String C_CONFIGURATION_HISTORY = "history";
-    
-    /**
-     * 
-     */
+
+    /** "driver.project" string in the configuration-file. */
     String C_CONFIGURATION_PROJECT = "driver.project";
-    
+
     /** Path to the "opencms.properties" file relative to the "WEB-INF" directory of the application. */
     String C_CONFIGURATION_PROPERTIES_FILE = "config/opencms.properties";
 
-    /**
-     * A string in the configuration-file.
-     */
+    /** "registry" string in the configuration-file. */
     String C_CONFIGURATION_REGISTRY = "registry";
-    
-    /**
-     * 
-     */
+
+    /** "driver.user" string in the configuration-file. */
     String C_CONFIGURATION_USER = "driver.user";
 
-    /**
-     * 
-     */
+    /** "driver.vfs" string in the configuration-file. */    
     String C_CONFIGURATION_VFS = "driver.vfs";
-    
-    /**
-     * 
-     */
+
+    /** "driver.workflow" string in the configuration-file. */
     String C_CONFIGURATION_WORKFLOW = "driver.workflow";
 
     /** Copy mode for copy resources as new resource. */
@@ -237,46 +234,44 @@ public interface I_CmsConstants {
      * The copyright message for OpenCms.
      */
     String C_COPYRIGHT[] = {
-            "", 
-            "Copyright (c) 2002-2005 Alkacon Software", 
-            "OpenCms comes with ABSOLUTELY NO WARRANTY", 
-            "This is free software, and you are welcome to", 
-            "redistribute it under certain conditions.", 
-            "Please see the GNU Lesser General Public Licence for", 
-            "further details.", 
-            "" 
-    };
-    
+        "",
+        "Copyright (c) 2002-2005 Alkacon Software",
+        "OpenCms comes with ABSOLUTELY NO WARRANTY",
+        "This is free software, and you are welcome to",
+        "redistribute it under certain conditions.",
+        "Please see the GNU Lesser General Public Licence for",
+        "further details.",
+        ""};
+
     /** Flag for leaving a date unchanged during a touch operation. */
     long C_DATE_UNCHANGED = -1;
 
     /** Signals that siblings of this resource should be deleted. */
     int C_DELETE_OPTION_DELETE_SIBLINGS = 1;
-    
+
     /** Signals that siblings of this resource should not be deleted. */
     int C_DELETE_OPTION_PRESERVE_SIBLINGS = 0;
 
     /**
-    * The name of the error tag prefix in backoffice templates.
-    */
+     * The name of the error tag prefix in backoffice templates.
+     */
     String C_ERRPREFIX = "err";
 
     /**
      * The name of the error tag separator in backoffice templates.
      */
     String C_ERRSPERATOR = "_";
-    
+
     /** Prefix for ace principal group. */
-    String C_EXPORT_ACEPRINCIPAL_GROUP="GROUP.";
+    String C_EXPORT_ACEPRINCIPAL_GROUP = "GROUP.";
 
     /** Prefix for ace principal user. */
-    String C_EXPORT_ACEPRINCIPAL_USER="USER.";
+    String C_EXPORT_ACEPRINCIPAL_USER = "USER.";
 
     /**
      * A tag in the manifest-file.
      */
     String C_EXPORT_TAG_ACCESS = "access";
-
 
     /**
      * Tag to identify allowed permissions.
@@ -298,12 +293,10 @@ public interface I_CmsConstants {
      */
     String C_EXPORT_TAG_ACCESSCONTROL_ENTRY = "accessentry";
 
-
     /**
      * Tag to identify a permission set.
      */
     String C_EXPORT_TAG_ACCESSCONTROL_PERMISSIONSET = "permissionset";
-
 
     /**
      * Tag to identify a principal set.
@@ -324,7 +317,7 @@ public interface I_CmsConstants {
      * A tag in the export manifest-file, used as subtag of C_EXPORT_TAG_INFO.
      */
     String C_EXPORT_TAG_DATE = "createdate";
-    
+
     /**
      * The "datecreated" tag in the manifest-file.
      */
@@ -334,7 +327,7 @@ public interface I_CmsConstants {
      * The "expire" tag in the manifest-file.
      */
     String C_EXPORT_TAG_DATEEXPIRED = "dateexpired";
-    
+
     /**
      * The "datelastmodified" tag in the manifest-file.
      */
@@ -374,11 +367,11 @@ public interface I_CmsConstants {
      * A tag in the manifest-file.
      */
     String C_EXPORT_TAG_FILE = "file";
-    
+
     /**
      * A tag in the manifest-file.
      */
-    String C_EXPORT_TAG_FILES = "files";    
+    String C_EXPORT_TAG_FILES = "files";
 
     /**
      * A tag in the manifest-file.
@@ -405,7 +398,6 @@ public interface I_CmsConstants {
      */
     String C_EXPORT_TAG_GROUPNAME = "groupname";
 
-
     /**
      * Tag to identify a generic id.
      */
@@ -425,7 +417,7 @@ public interface I_CmsConstants {
      * A tag in the manifest-file.
      */
     String C_EXPORT_TAG_LASTNAME = "lastname";
-    
+
     /**
      * The "link" tag in the manifest-file.
      */
@@ -475,15 +467,15 @@ public interface I_CmsConstants {
      * A tag in the manifest-file.
      */
     String C_EXPORT_TAG_PROPERTY = "property";
-    
+
     /**
      * Key for the type attrib. of a property element.<p>
      */
     String C_EXPORT_TAG_PROPERTY_ATTRIB_TYPE = "type";
-    
+
     /**
      * Value for the "shared" type attrib. of a property element.<p>
-     */    
+     */
     String C_EXPORT_TAG_PROPERTY_ATTRIB_TYPE_SHARED = "shared";
 
     /**
@@ -540,12 +532,12 @@ public interface I_CmsConstants {
      * The "userlastmodified" tag in the manifest-file.
      */
     String C_EXPORT_TAG_USERLASTMODIFIED = "userlastmodified";
-    
+
     /**
      * The "uuidfile" tag in the manifest-file.
      */
     String C_EXPORT_TAG_UUIDCONTENT = "uuidcontent";
-    
+
     /**
      * The "uuidresource" tag in the manifest-file.
      */
@@ -569,7 +561,7 @@ public interface I_CmsConstants {
     /**
      * The version of the opencms export (appears in the export manifest-file).
      */
-    String C_EXPORT_VERSION = "4"; 
+    String C_EXPORT_VERSION = "4";
 
     // Constants for import/export
 
@@ -624,14 +616,14 @@ public interface I_CmsConstants {
     String C_FOLDER_SEPARATOR = "/";
 
     /** HTTP Accept-Charset Header for internal requests used during static export. */
-    String C_HEADER_ACCEPT_CHARSET =  "Accept-Charset";
+    String C_HEADER_ACCEPT_CHARSET = "Accept-Charset";
 
     /** HTTP Accept-Language Header for internal requests used during static export. */
-    String C_HEADER_ACCEPT_LANGUAGE =  "Accept-Language";
-    
-    /** HTTP Header "Cache-Control". */    
+    String C_HEADER_ACCEPT_LANGUAGE = "Accept-Language";
+
+    /** HTTP Header "Cache-Control". */
     String C_HEADER_CACHE_CONTROL = "Cache-Control";
-    
+
     /** HTTP Header "Expires". */
     String C_HEADER_EXPIRES = "Expires";
 
@@ -640,16 +632,16 @@ public interface I_CmsConstants {
 
     /** HTTP Header "Last-Modified". */
     String C_HEADER_LAST_MODIFIED = "Last-Modified";
-    
+
     /** HTTP Header for internal requests used during static export. */
-    String C_HEADER_OPENCMS_EXPORT =  "OpenCms-Export";
-    
+    String C_HEADER_OPENCMS_EXPORT = "OpenCms-Export";
+
     /** HTTP Header "Pragma". */
     String C_HEADER_PRAGMA = "Pragma";
 
     /** HTTP Header "Server". */
     String C_HEADER_SERVER = "Server";
-    
+
     /** HTTP Header value "max-age=" (for "Cache-Control"). */
     String C_HEADER_VALUE_MAX_AGE = "max-age=";
 
@@ -659,7 +651,7 @@ public interface I_CmsConstants {
     /** HTTP Header value "no-cache" (for "Cache-Control"). */
     String C_HEADER_VALUE_NO_CACHE = "no-cache";
 
-    /** HTTP Header "WWW-Authenticate". */    
+    /** HTTP Header "WWW-Authenticate". */
     String C_HEADER_WWW_AUTHENTICATE = "WWW-Authenticate";
 
     /** Identifier for x-forwarded-for (i.e. proxied) request headers. */
@@ -680,7 +672,6 @@ public interface I_CmsConstants {
 
     /** The name of the module folder in the package path. */
     String C_MODULE_PATH = "modules/";
-    
 
     /**
      * The module property key name to specifiy additional resources which are
@@ -749,13 +740,13 @@ public interface I_CmsConstants {
 
     /** Task order value by wakeup time. */
     String C_ORDER_WAKEUPTIME = "wakeuptime";
-    
+
     /** Path to the "packages" folder relative to the "WEB-INF" directory of the application. */
     String C_PACKAGES_FOLDER = "packages/";
 
     /** Request parameter to force element selection. */
     String C_PARAMETER_ELEMENT = "__element";
-    
+
     /** Request parameter to force encoding selection. */
     String C_PARAMETER_ENCODING = "__encoding";
 
@@ -813,10 +804,10 @@ public interface I_CmsConstants {
 
     /** Property for the active method in the administration view. */
     String C_PROPERTY_ACTIV = "activemethod";
-    
+
     /** Property for the allowed set of locales. */
     String C_PROPERTY_AVAILABLE_LOCALES = "locale-available";
-    
+
     /** Property to control the Java class for body. */
     String C_PROPERTY_BODY_CLASS = "templateclass";
 
@@ -840,34 +831,36 @@ public interface I_CmsConstants {
 
     /** Property for the resource export name, during export this name is used instead of the resource name. */
     String C_PROPERTY_EXPORTNAME = "exportname";
-    
+
     /** Property for JSP additional suffix during static export, default is "html". */
-    String C_PROPERTY_EXPORTSUFFIX = "exportsuffix";    
+    String C_PROPERTY_EXPORTSUFFIX = "exportsuffix";
 
     /** Property for internal use (e.g. delete). */
     String C_PROPERTY_INTERNAL = "internal";
 
     /** Property for the keywords. */
     String C_PROPERTY_KEYWORDS = "Keywords";
-    
+
     /** Property for the current locale. */
     String C_PROPERTY_LOCALE = "locale";
-    
-    
+
     /** Property for the login form. */
-    String C_PROPERTY_LOGIN_FORM = "login-form";    
+    String C_PROPERTY_LOGIN_FORM = "login-form";
 
     /** Property for the navigation position. */
     String C_PROPERTY_NAVPOS = "NavPos";
 
-    /** Property for the navigation title. */
+    /** Property for the navigation text. */
     String C_PROPERTY_NAVTEXT = "NavText";
 
     /** Property for the relative root link substitution. */
     String C_PROPERTY_RELATIVEROOT = "relativeroot";
 
     /** Property to boost certain search results. */
-    String C_PROPERTY_SEARCH_PRIORITY = "search.priority";    
+    String C_PROPERTY_SEARCH_PRIORITY = "search.priority";
+
+    /** Property to sort search results in categories. */
+    String C_PROPERTY_SEARCH_CATEGORY = "category";
 
     /** Property to control the template. */
     String C_PROPERTY_TEMPLATE = "template";
@@ -890,52 +883,52 @@ public interface I_CmsConstants {
      * (i.e. the search module)
      */
     String C_PUBLISH_METHOD_LINK = "linkpublish";
-    
+
     /** Indicates to ignore the resource path when matching resources. */
     String C_READ_IGNORE_PARENT = null;
-    
+
     /** Indicates to ignore the resource state when matching resources. */
     int C_READ_IGNORE_STATE = -1;
-    
+
     /** Indicates to ignore the time value. */
     long C_READ_IGNORE_TIME = 0L;
-    
+
     /** Indicates to ignore the resource type when matching resources. */
     int C_READ_IGNORE_TYPE = -1;
-    
+
     /** Indicates to match resources NOT having the given state. */
     int C_READMODE_EXCLUDE_STATE = 8;
-    
+
     /** Indicates to match immediate children only. */
     int C_READMODE_EXCLUDE_TREE = 1;
-    
+
     /** Indicates to match resources NOT having the given type. */
     int C_READMODE_EXCLUDE_TYPE = 4;
-    
+
     /** Mode for reading project resources from the db. */
     int C_READMODE_IGNORESTATE = 0;
-    
+
     /** Indicates to match resources in given project only. */
     int C_READMODE_INCLUDE_PROJECT = 2;
-    
+
     /** Indicates to match all successors. */
     int C_READMODE_INCLUDE_TREE = 0;
-    
+
     /** Mode for reading project resources from the db. */
     int C_READMODE_MATCHSTATE = 1;
 
     /** Indicates if only file resources should be read. */
     int C_READMODE_ONLY_FILES = 128;
-    
+
     /** Indicates if only folder resources should be read. */
     int C_READMODE_ONLY_FOLDERS = 64;
-    
+
     /** Indicates to order the result by the lastmodified date. */
     int C_READMODE_ORDER_BY_LASTMODIFIED = 32;
-    
+
     /** Indicates to order the result by the paths to the resources. */
     int C_READMODE_ORDER_BY_PATH = 16;
-    
+
     /** Mode for reading project resources from the db. */
     int C_READMODE_UNMATCHSTATE = 2;
 
@@ -958,7 +951,7 @@ public interface I_CmsConstants {
      * The name of the tag in registry if history is enabled.
      */
     String C_REGISTRY_HISTORY_ENABLE = "enabled";
-    
+
     /**
      * The name of the tag in registry storing the max number of versions.
      */
@@ -976,7 +969,7 @@ public interface I_CmsConstants {
 
     /** Identifier for request type console. */
     int C_REQUEST_CONSOLE = 1;
-    
+
     /** Identifier for request type http. */
     int C_REQUEST_HTTP = 0;
 
@@ -1058,7 +1051,7 @@ public interface I_CmsConstants {
 
     /** Start preferences project. */
     String C_START_PROJECT = "StartProject";
-    
+
     /** Start preferences lock dialog. */
     String C_START_UPLOADAPPLET = "StartUploadApplet";
 
@@ -1074,12 +1067,12 @@ public interface I_CmsConstants {
      * Indicates if a resource has been deleted in the offline version when compared to the online version.
      */
     int C_STATE_DELETED = 3;
-    
+
     /**
      * Special state value that indicates the current state must be kept on a resource.
      * This value must not be written to the database!
      */
-    int C_STATE_KEEP = 99;    
+    int C_STATE_KEEP = 99;
 
     /**
      * Indicates if a resource in new in the offline version when compared to the online version.
@@ -1205,22 +1198,22 @@ public interface I_CmsConstants {
      * This value will be returned for long's withaout a value.
      */
     int C_UNKNOWN_LONG = -1;
-    
+
     /**
      * The user digest encoding.
      */
     String C_USER_DIGEST_ENCODING = "db.user.digest.encoding";
-    
+
     /**
      * The user digest output coding.
      */
-    String C_USER_DIGEST_OUTPUT = "db.user.digest.output"; 
+    String C_USER_DIGEST_OUTPUT = "db.user.digest.output";
 
     /**
      * The user digest algorithm.
      */
     String C_USER_DIGEST_TYPE = "db.user.digest.type";
-    
+
     /**
      * A user-type system user.
      */
@@ -1247,22 +1240,22 @@ public interface I_CmsConstants {
 
     /** Suffix for caching of simple pages. */
     String C_XML_CONTROL_FILE_SUFFIX = ".xmlcontrol";
-    
+
     /**
      * The vfs path of the channel folders.
-     */    
+     */
     String VFS_FOLDER_CHANNELS = "/channels";
-    
+
     /**
      * The vfs path of the sites master folder.
      */
     String VFS_FOLDER_SITES = "/sites";
-    
+
     /**
      * The vfs path of the system folder.
      */
     String VFS_FOLDER_SYSTEM = "/system";
-    
+
     /**
      * The vfs path of the default site.
      */

@@ -1666,7 +1666,7 @@
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[This is a Textfile]]></value>
+					<value><![CDATA[Textfile with Alkacon in the Title]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchResult.java,v $
- * Date   : $Date: 2005/03/25 18:35:09 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/03/26 11:36:35 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.apache.lucene.document.Field;
 /**
  * Contains the data of a single item in a search result.<p>
  * 
- * @version $Revision: 1.13 $ $Date: 2005/03/25 18:35:09 $
+ * @version $Revision: 1.14 $ $Date: 2005/03/26 11:36:35 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
  */
@@ -100,7 +100,7 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable {
             m_keyWords = null;
         }
 
-        if ((f = luceneDocument.getField(I_CmsDocumentFactory.DOC_TITLE)) != null) {
+        if ((f = luceneDocument.getField(I_CmsDocumentFactory.DOC_TITLE_KEY)) != null) {
             m_title = f.stringValue();
         } else {
             m_title = null;

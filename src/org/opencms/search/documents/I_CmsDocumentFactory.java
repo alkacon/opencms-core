@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/I_CmsDocumentFactory.java,v $
- * Date   : $Date: 2005/03/25 18:35:09 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/03/26 11:36:35 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,11 +43,14 @@ import org.apache.lucene.document.Document;
 /**
  * Implementation interface for lucene document factories used in OpenCms.<p>
  * 
- * @version $Revision: 1.18 $ $Date: 2005/03/25 18:35:09 $
+ * @version $Revision: 1.19 $ $Date: 2005/03/26 11:36:35 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  */
 public interface I_CmsDocumentFactory {
+
+    /** Contains the (optional) category of the document. */
+    String DOC_CATEGORY = "category";
 
     /** Search field for document content. */
     String DOC_CONTENT = "content";
@@ -64,20 +67,23 @@ public interface I_CmsDocumentFactory {
     /** Search field for document keywords. */
     String DOC_KEYWORDS = "keywords";
 
-    /** Combined search field for all document "meta" information, that is title, keywords, description and root path. */
+    /** Combines all document "meta" information, that is "title", "keywords" and "description". */
     String DOC_META = "meta";
 
     /** Contains the document root path in the VFS. */
     String DOC_PATH = "path";
 
-    /** Search field for document priority. */
+    /** Contains the (optional) document priority, which can be used to boost the document in the result list. */
     String DOC_PRIORITY = "priority";
 
     /** Contains a special format of the document root path in the VFS for optimized searches. */
     String DOC_ROOT = "root";
 
-    /** Search field for document title. */
-    String DOC_TITLE = "title";
+    /** Contains the document title in an analyzed form used for searching in the title. */
+    String DOC_TITLE_INDEXED = "title";
+
+    /** Contains the document title as a keyword used for sorting and also for retrieving the title text. */
+    String DOC_TITLE_KEY = "title-key";
 
     /** Contains the type of the document. */
     String DOC_TYPE = "type";
