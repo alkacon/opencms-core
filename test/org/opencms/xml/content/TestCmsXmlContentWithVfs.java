@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentWithVfs.java,v $
- * Date   : $Date: 2004/11/28 21:57:58 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/11/29 01:38:15 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import junit.framework.TestSuite;
  * Tests the link resolver for XML contents.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
@@ -230,7 +230,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         System.out.println(content);
         xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.C_UTF8_ENCODING, resolver);
 
-        optionSequence = xmlcontent.getValueSequence("Option", Locale.ENGLISH);
+        optionSequence = xmlcontent.getValueSequence("Option", Locale.ENGLISH);        
         assertEquals("Option", optionSequence.getElementName());
         assertEquals(2, optionSequence.getElementCount());
         assertEquals(0, optionSequence.getMinOccurs());
@@ -242,6 +242,36 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertEquals("Optional value 1", ((CmsXmlStringValue)optionSequence.getValues().get(1)).getStringValue(
             cms,
             xmlcontent));
+        
+        optionSequence.removeValue(1);
+        assertEquals(1, optionSequence.getElementCount());
+        assertEquals("Optional value 0", ((CmsXmlStringValue)optionSequence.getValues().get(0)).getStringValue(
+            cms,
+            xmlcontent));
+        
+        optionSequence.removeValue(0);
+        assertEquals(0, optionSequence.getElementCount());
+
+        // now re-create the XML content from the XML document
+        content = xmlcontent.toString();
+        System.out.println(content);
+        xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.C_UTF8_ENCODING, resolver);
+
+        titleSequence = xmlcontent.getValueSequence("Title", Locale.ENGLISH);
+        assertEquals(4, titleSequence.getElementCount());
+        
+        titleSequence.removeValue(0);
+        titleSequence.removeValue(2);
+        assertEquals(2, titleSequence.getElementCount());
+        assertEquals("This is the 2nd value.", ((CmsXmlStringValue)titleSequence.getValues().get(0)).getStringValue(
+            cms,
+            xmlcontent));
+        assertEquals("This is just a modification test", ((CmsXmlStringValue)titleSequence.getValues().get(1))
+            .getStringValue(cms, xmlcontent));
+
+        // now re-create the XML content from the XML document
+        content = xmlcontent.toString();
+        System.out.println(content);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2004/11/28 21:57:59 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/11/29 01:38:15 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,6 +50,7 @@ import org.opencms.xml.types.I_CmsXmlSchemaType;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -68,7 +69,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.5.0
  */
 public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument {
@@ -146,7 +147,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
      * 
      * @param name the name of the XML content value element
      * @param locale the locale where to add the new value 
-     * @param index the index where to add the value (relatice to all other values of this type)
+     * @param index the index where to add the value (relative to all other values of this type)
      * 
      * @return the created XML content value
      */
@@ -156,15 +157,17 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
         // TODO: handle cascaded value types, also handle index based names like "Title[0]"
         Element parentElement = getLocaleNode(locale);
 
-        int insertIndex;
-        I_CmsXmlSchemaType type;
-
+        // get the scheme type of the requested name           
+        I_CmsXmlSchemaType type = m_contentDefinition.getSchemaType(name);
         List values = getValues(name, locale);
 
+        int insertIndex;
         if (values.size() > 0) {
 
-            // there is at last one value already available of this type 
-            type = (I_CmsXmlContentValue)values.get(index == values.size() ? index - 1 : index);
+            if (values.size() >= type.getMaxOccurs()) {
+                // must not allow adding an element if max occurs would be violated
+                throw new RuntimeException("Element '" + name + "' can occur at maximum " + type.getMaxOccurs() + " times");
+            }
 
             // iterate all elements of the parent node            
             Iterator i = parentElement.content().iterator();
@@ -191,9 +194,6 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
             insertIndex = pos;
 
         } else {
-
-            // no value of this type is currently available            
-            type = m_contentDefinition.getSchemaType(name);
 
             // check where in the type sequence the type should appear
             int typeIndex = m_contentDefinition.getTypeSequence().indexOf(type);
@@ -272,7 +272,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
         // initialize link processor
         return new CmsLinkProcessor(cms, linkTable, getEncoding(), null);
     }
-    
+
     /**
      * Returns the value sequence for the selected element name in this XML content.<p>
      * 
@@ -285,6 +285,34 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
 
         I_CmsXmlSchemaType type = m_contentDefinition.getSchemaType(name);
         return new CmsXmlContentValueSequence(type, locale, this);
+    }
+
+    /**
+     * Removes an existing XML content value of the given element name and locale at the given index position
+     * from this XML content document.<p> 
+     * 
+     * @param name the name of the XML content value element
+     * @param locale the locale where to remove the value 
+     * @param index the index where to remove the value (relative to all other values of this type)
+     */
+    public void removeValue(String name, Locale locale, int index) {
+
+        // first get the value from the selected locale and index
+        I_CmsXmlContentValue value = getValue(name, locale, index);
+
+        // chech for the min / max occurs constrains
+        List values = getValues(name, locale);
+        if (values.size() <= value.getMinOccurs()) {
+            // must not allow removing an element if min occurs would be violated
+            throw new RuntimeException("Element '" + name + "' must occur at last " + value.getMinOccurs() + " times");
+        }
+
+        // detach the value node from the XML document
+        value.getElement().detach();
+
+        // re-initialize this XML content 
+        initDocument(m_document, m_encoding, m_contentDefinition);
+        
     }
 
     /**
@@ -337,7 +365,9 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
         m_encoding = CmsEncoder.lookupEncoding(encoding, encoding);
         m_elementLocales = new HashMap();
         m_elementNames = new HashMap();
-
+        m_locales = new HashSet();
+        clearBookmarks();
+        
         // initialize the bookmarks
         for (Iterator i = m_document.getRootElement().elementIterator(); i.hasNext();) {
             Element node = (Element)i.next();
@@ -406,8 +436,21 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
         int count = 0;
         String previousName = null;
 
-        for (Iterator j = root.elementIterator(); j.hasNext();) {
-            Element element = (Element)j.next();
+        // first remove all non-element node (i.e. white space text nodes)
+        List content = root.content();
+        for (int i = content.size() - 1; i >= 0; i--) {
+            Node node = (Node)content.get(i);
+            if (!(node instanceof Element)) {
+                // this node is not an element, so it must be a white space text node, remove it
+                content.remove(i);
+            }
+        }
+
+        // iterate all elements again
+        for (Iterator i = root.content().iterator(); i.hasNext();) {
+
+            // node must be an element since all non-elements where removed
+            Element element = (Element)i.next();
 
             // check if this is a new node, if so reset the node counter
             String name = element.getName();

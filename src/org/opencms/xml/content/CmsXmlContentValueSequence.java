@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentValueSequence.java,v $
- * Date   : $Date: 2004/11/28 21:57:59 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/11/29 01:38:15 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.5.0
  */
 public class CmsXmlContentValueSequence {
@@ -73,12 +73,15 @@ public class CmsXmlContentValueSequence {
         m_content = content;
         m_values = m_content.getValues(getElementName(), m_locale);
     }
-    
+
     /**
      * Adds a value element of the sequence type at the seleted index to the XML content document.<p> 
      * 
      * @param index the index where to add the new value element
+     * 
      * @return the added XML content value element
+     * 
+     * @see CmsXmlContent#addValue(String, Locale, int)
      */
     public I_CmsXmlContentValue addValue(int index) {
 
@@ -86,18 +89,8 @@ public class CmsXmlContentValueSequence {
 
         // re-initialize the value list
         m_values = m_content.getValues(getElementName(), getLocale());
-                
+
         return newValue;
-    }
-    
-    /**
-     * Removes the value element of the sequence type at the seleted index from XML content document.<p> 
-     * 
-     * @param index the index where to remove the value element
-     */    
-    public void removeValue(int index) {
-        
-        // TODO: NYI
     }
 
     /**
@@ -212,5 +205,20 @@ public class CmsXmlContentValueSequence {
     public boolean isSimpleType() {
 
         return m_schemaType.isSimpleType();
+    }
+
+    /**
+     * Removes the value element of the sequence type at the seleted index from XML content document.<p> 
+     * 
+     * @param index the index where to remove the value element
+     * 
+     * @see CmsXmlContent#removeValue(String, Locale, int)
+     */
+    public void removeValue(int index) {
+
+        m_content.removeValue(getElementName(), getLocale(), index);
+        
+        // re-initialize the value list
+        m_values = m_content.getValues(getElementName(), getLocale());
     }
 }

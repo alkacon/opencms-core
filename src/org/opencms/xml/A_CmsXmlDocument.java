@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/A_CmsXmlDocument.java,v $
- * Date   : $Date: 2004/11/28 21:57:58 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/11/29 01:38:15 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * @since 5.3.5
  */
 public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
@@ -570,6 +570,14 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
             set.add(name);
             m_elementNames.put(locale, set);
         }
+    }
+
+    /**
+     * Clears the XML document bookmarks.<p>
+     */
+    protected void clearBookmarks() {
+
+        m_bookmarks.clear();
     }
 
     /**
