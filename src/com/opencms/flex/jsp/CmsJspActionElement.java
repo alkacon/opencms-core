@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspActionElement.java,v $
- * Date   : $Date: 2003/04/04 08:39:01 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2003/04/04 08:40:29 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import javax.servlet.jsp.PageContext;
  * working at last in some elements.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 5.0 beta 2
  */
@@ -638,8 +638,8 @@ public class CmsJspActionElement {
      * <code>false</code> otherwise.<p>
      * 
      * Use this method in case you want to display different information for OpenCms
-     * Workplace users (i.e. Content Managers or Adinistrators) that have logged on 
-     * to the workplace. 
+     * Workplace users (i.e. members of the groups "Users", "Projectmanager" or 
+     * "Administrators") that have logged on to the workplace.<p>
      *  
      * @return <code>true</code> if the current page is called form the workplace, 
      * <code>false</code> otherwise
