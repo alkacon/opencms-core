@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.10 $ $Date: 2000/01/24 18:56:36 $
+ * @version $Revision: 1.11 $ $Date: 2000/01/28 11:09:43 $
  */
  class CmsAccessFileFilesystem implements I_CmsAccessFile, I_CmsConstants  {
    
@@ -451,7 +451,8 @@ import com.opencms.core.*;
          throws CmsException {
  	     
 	     CmsFolder folder = null;
-	   
+	     
+         
 	     File discFolder=new File(absoluteName(foldername));
          if (discFolder != null) {
 	   	   if (discFolder.exists() && discFolder.isDirectory()){
@@ -546,7 +547,7 @@ import com.opencms.core.*;
 			File diskSubFolder=new File(absoluteName(foldername+diskFolders[i]));
 				// check if it is a folder.  
                 if (diskSubFolder.isDirectory()) {
-                     folder = readFolder(project, foldername+diskFolders[i]);
+                     folder = readFolder(project, foldername+diskFolders[i]+"/");
                      v.addElement(folder);
                 }
 			}

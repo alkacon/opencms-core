@@ -14,7 +14,7 @@ import java.util.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.15 $ $Date: 2000/01/27 16:27:54 $
+ * @version $Revision: 1.16 $ $Date: 2000/01/28 11:09:44 $
  */
 public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLogChannels,
                                                                         I_CmsWpConstants {
@@ -237,7 +237,7 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
 	 * @return Processed datablock for the given key.
 	 * @exception CmsException
 	 */
-	public String getProcessedDataValue(String tag) throws CmsException {
+	public String getProcessedXmlDataValue(String tag) throws CmsException {
         return getProcessedDataValue(tag);
     }
 
@@ -250,7 +250,7 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
 	 * @return Processed datablock for the given key.
 	 * @exception CmsException
 	 */
-    public String getProcessedDataValue(String tag, Object callingObject) throws CmsException {
+    public String getProcessedXmlDataValue(String tag, Object callingObject) throws CmsException {
         return getProcessedDataValue(tag, callingObject);
     }    
 }

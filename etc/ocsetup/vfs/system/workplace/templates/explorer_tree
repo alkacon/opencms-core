@@ -10,51 +10,6 @@
 
 <body bgcolor="#ffffff">
 
-<table cellspacing=0 cellpadding=0 border=0 width=10>
-	<tr>
-		<td width=16><IMG border=0 src="../pics/empty.gif" width=16 height=1></td>
-		<td width=16><IMG border=0 src="../pics/empty.gif" width=16 height=1></td>
-		<td width=600><IMG border=0 src="../pics/empty.gif" width=16 height=1></td>
-	</tr>
-	<tr>
-		<td align=left><A href="#"><IMG border=0  src="../pics/ic_tree_start.gif" width=16 height=16></a></td>
-		<td colspan=2><p class=einzug><a href="#" class="treefolder">Hauptverzeichnis</a></p></td>
-	</tr>
-	<tr>
-		<td align=left><IMG border=0  src="../pics/ic_tree_kreuz.gif" width=16 height=16></td>
-		<td align=left><A href="#"><IMG border=0  src="../pics/ic_tree_folder.gif" width=16 height=16></a></td>
-		<td align=left><p class=einzug><a href="#" class="treefolder">bildung</a></p></td>
-	</tr>
-	<tr>
-		<td align=left><IMG border=0  src="../pics/ic_tree_kreuz.gif" width=16 height=16></td>
-		<td align=left><A href="#"><IMG border=0  src="../pics/ic_tree_folder.gif" width=16 height=16></a></td>
-		<td align=left><p class=einzug><a href="#" class="treefolder">download</a></p></td>
-	</tr>
-	
-	<tr>
-		<td align=left><IMG border=0  src="../pics/ic_tree_kreuz.gif" width=16 height=16></td>
-		<td align=left><A href="#"><IMG border=0  src="../pics/ic_tree_folder.gif" width=16 height=16></a></td>
-		<td align=left><p class=einzug><a href="#" class="treefolder">erzbistum</a></p></td>
-	</tr>
-	<tr>
-		<td align=left><A href="explorer_tree_medien.html"><IMG border=0  src="../pics/ic_tree_pkreuz.gif" width=16 height=16></a></td>
-		<td align=left><A href="explorer_files_medien.html" onclick="location.href='explorer_tree_medien_open.html';" target=explorer_files><IMG border=0  src="../pics/ic_tree_folder.gif" width=16 height=16></a></td>
-		<td align=left><p class=einzug><a href="explorer_files_medien.html" class="treefolder" onclick="location.href='explorer_tree_medien_open.html';" target=explorer_files>medien</a></p></td>
-	</tr>
-	<tr>
-		<td align=left><IMG border=0  src="../pics/ic_tree_kreuz.gif" width=16 height=16></td>
-		<td align=left><A href="#"><IMG border=0  src="../pics/ic_tree_folder.gif" width=16 height=16></a></td>
-		<td align=left><p class=einzug><a href="#" class="treefolder">seelsorge</a></p></td>
-	</tr>
-	<tr>
-		<td align=left><IMG border=0  src="../pics/ic_tree_end.gif" width=16 height=16></td>
-		<td align=left><A href="#"><IMG border=0  src="../pics/ic_tree_folder.gif" width=16 height=16></a></td>
-		<td align=left><p class=einzug><a href="#" class="treefolder">sozial</a></p></td>
-	</tr>
-</table>
-<br>
-<br>
-
 <!-- begin of folder tree -->
 <table cellspacing=0 cellpadding=0 border=0>
 	 <tr>
@@ -72,13 +27,23 @@
 <TREELINE>
 <![CDATA[
 <tr>
-	<td>
-	    ]]><PROCESS>TREEENTRY</PROCESS><![CDATA[
-		
+	<td valign=bottom>
+	   <p class=tree> ]]><PROCESS>TREETAB</PROCESS><![CDATA[  ]]><PROCESS>TREESWITCH</PROCESS><![CDATA[  ]]><PROCESS>TREEFOLDER</PROCESS><![CDATA[&nbsp;]]><PROCESS>TREEENTRY</PROCESS><![CDATA[		
 	</td>
 </tr>
 ]]>
 </TREELINE>
 
+<TREEIMG_EMPTY0><![CDATA[<img src="../pics/empty.gif" border=0 vspace=0 hspace=0 width=0 height=16 align=left>]]></TREEIMG_EMPTY0>
+<TREEIMG_EMPTY><![CDATA[<img src="../pics/empty.gif" border=0 vspace=0 hspace=0 width=16 height=16 align=left>]]></TREEIMG_EMPTY>
+<TREEIMG_VERT><![CDATA[<img src="../pics/ic_tree_vert.gif" border=0 vspace=0 hspace=0 width=16 height=16 align=left>]]></TREEIMG_VERT>
+<TREEIMG_FOLDEROPEN><![CDATA[<img src="../pics/ic_tree_folderopen.gif" border=0 vspace=0 hspace=0 width=16 height=16 align=left>]]></TREEIMG_FOLDEROPEN>
+<TREEIMG_FOLDERCLOSE><![CDATA[<img src="../pics/ic_tree_folder.gif" border=0 vspace=0 hspace=0 width=16 height=16 align=left>]]></TREEIMG_FOLDERCLOSE>
+<TREEIMG_CROSS><![CDATA[<img src="../pics/ic_tree_kreuz.gif" border=0 vspace=0 hspace=0 width=16 height=16 align=left>]]></TREEIMG_CROSS>
+<TREEIMG_PCROSS><![CDATA[<img src="../pics/ic_tree_pkreuz.gif" border=0 vspace=0 hspace=0 width=16 height=16 align=left>]]></TREEIMG_PCROSS>
+<TREEIMG_MCROSS><![CDATA[<img src="../pics/ic_tree_mkreuz.gif" border=0 vspace=0 hspace=0 width=16 height=16 align=left>]]></TREEIMG_MCROSS>
+<TREEIMG_END><![CDATA[<img src="../pics/ic_tree_end.gif" border=0 vspace=0 hspace=0 width=16 height=16 align=left>]]></TREEIMG_END>
+<TREEIMG_PEND><![CDATA[<img src="../pics/ic_tree_pend.gif" border=0 vspace=0 hspace=0 width=16 height=16 align=left>]]></TREEIMG_PEND>
+<TREEIMG_MEND><![CDATA[<img src="../pics/ic_tree_mend.gif" border=0 vspace=0 hspace=0 width=16 height=16 align=left>]]></TREEIMG_MEND>
 
 </WORKPLACE>

@@ -27,7 +27,7 @@ import com.opencms.launcher.*;
 *  
 * @author Michael Emmerich
 * @author Alexander Lucas
-* @version $Revision: 1.15 $ $Date: 2000/01/24 19:13:04 $  
+* @version $Revision: 1.16 $ $Date: 2000/01/28 11:09:43 $  
 * 
 */
 
@@ -110,6 +110,15 @@ class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels
         throws CmsException, IOException {
           
         CmsFile file=null;
+        
+        //check if the requested resource is a folder
+        // if this is the case, redirect to the according index.html
+        String resourceName=cms.getRequestContext().getUri();
+        if (resourceName.endsWith("/")) {
+             resourceName+=C_INDEX;
+             cms.getRequestContext().getResponse().sendCmsRedirect(resourceName);
+        }
+        
         try {
             //read the requested file
             file =cms.readFile(cms.getRequestContext().getUri());
@@ -119,7 +128,7 @@ class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels
                 // there was no file found with this name. 
                 // it is possible that the requested resource was a folder, so try to access an
                 // index.html there
-                String resourceName=cms.getRequestContext().getUri();
+                resourceName=cms.getRequestContext().getUri();
                 // test if the requested file is already the index.html
                 if (!resourceName.endsWith(C_INDEX)) {
                     // check if the requested file ends with an "/"

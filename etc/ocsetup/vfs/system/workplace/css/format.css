@@ -190,6 +190,12 @@ P.einzug
     FONT-SIZE: 8pt;
     TEXT-INDENT: 5px
 }
+P.tree
+{
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+    TEXT-INDENT: 0px
+}
 P.tab
 {
     FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
