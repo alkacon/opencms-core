@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/09 07:49:32 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2000/06/09 08:31:25 $
+ * Version: $Revision: 1.33 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.32 $ $Date: 2000/06/09 07:49:32 $
+ * @version $Revision: 1.33 $ $Date: 2000/06/09 08:31:25 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2378,8 +2378,101 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 									  CmsProject currentProject,
                                       String resource)
         throws CmsException {
+        	// read the onlineproject
+		    CmsProject online = onlineProject(currentUser, currentProject);
+		
+		    // is the current project the onlineproject?
+		    // and is the current user the owner of the project?
+		    // and is the current project state UNLOCKED?
+		    if( (!currentProject.equals( online ) ) &&
+			    (currentProject.getOwnerId() == currentUser.getId()) &&
+			    (currentProject.getFlags() == C_PROJECT_STATE_UNLOCKED)) {
+			    // is offlineproject and is owner
+			
+                CmsResource onlineRes= readFileHeader(currentUser,online, resource);
+                CmsResource offlineRes=null;
+            
+                // walk recursively through all parents and copy them, too
+                String parent = onlineRes.getParent();
+                Stack resources=new Stack();
+	
+                // go through all partens and store them on a stack
+				while(parent != null) {
+            		// read the online-resource
+                   	onlineRes = readFileHeader(currentUser,online, parent);
+                    resources.push(onlineRes);
+                    // get the parent
+					parent = onlineRes.getParent();
+                }          
+                // now create all parent folders, starting at the root folder
+                while (resources.size()>0){                
+                    onlineRes=(CmsResource)resources.pop();
+                    parent=onlineRes.getAbsolutePath();                    
+					// copy it to the offlineproject
+                    try {
+					    m_dbAccess.copyResourceToProject(currentProject, online, onlineRes.getResourceId(),
+                                                         onlineRes.getParentId(),onlineRes.getFileId(),onlineRes.getAbsolutePath(),
+                                                         currentUser.getId());
+                                                        
+					    // read the offline-resource
+					    offlineRes = readFileHeader(currentUser,currentProject, parent);
+					    // copy the metainfos			
+					    writeProperties(currentUser,currentProject,offlineRes.getAbsolutePath(), readAllProperties(currentUser,currentProject,onlineRes.getAbsolutePath()));
+                   	} catch (CmsException exc) {
+         	    	// if the subfolder exists already - all is ok
+			        }
+				}
+                helperCopyResourceToProject(currentUser,online, currentProject, resource);
+		} else {
+			// no changes on the onlineproject!
+			throw new CmsException("[" + this.getClass().getName() + "] " + currentProject.getName(), 
+				CmsException.C_NO_ACCESS);
+		}
     }
-								
+	
+    
+    	
+     /**
+     * A helper to copy a resource from the online project to a new, specified project.<br>
+     * 
+	 * @param onlineProject The online project.
+	 * @param offlineProject The offline project.
+	 * @param resource The name of the resource.
+ 	 * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+     private void helperCopyResourceToProject(CmsUser currentUser,
+                                              CmsProject onlineProject,
+											  CmsProject offlineProject,
+											  String resource)
+        throws CmsException {
+		// read the online-resource
+		CmsResource onlineRes = readFileHeader(currentUser,onlineProject, resource);
+		// copy it to the offlineproject
+		m_dbAccess.copyResourceToProject(offlineProject, onlineProject, onlineRes.getResourceId(),
+                                         onlineRes.getParentId(),onlineRes.getFileId(),onlineRes.getAbsolutePath(),
+                                         currentUser.getId());
+                       
+		// read the offline-resource
+		CmsResource offlineRes = readFileHeader(currentUser,offlineProject, resource);
+		// copy the metainfos			
+		writeProperties(currentUser,offlineProject,offlineRes.getAbsolutePath(), readAllProperties(currentUser,onlineProject,onlineRes.getAbsolutePath()));
+                  
+		
+		// now walk recursive through all files and folders, and copy them too
+		if(onlineRes.isFolder()) {
+			Vector files = getFilesInFolder(currentUser,onlineProject, resource);
+			Vector folders = getSubFolders(currentUser,onlineProject, resource);
+			for(int i = 0; i < files.size(); i++) {
+				helperCopyResourceToProject(currentUser,onlineProject, offlineProject, 
+											((CmsResource)files.elementAt(i)).getAbsolutePath());
+			}
+			for(int i = 0; i < folders.size(); i++) {
+				helperCopyResourceToProject(currentUser,onlineProject, offlineProject, 
+											((CmsResource)folders.elementAt(i)).getAbsolutePath());
+			}
+		}
+	}
+    
 	/**
 	 * Reads a folder from the Cms.<BR/>
 	 * 

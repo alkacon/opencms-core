@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/09 07:50:59 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2000/06/09 08:31:25 $
+ * Version: $Revision: 1.40 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.39 $ $Date: 2000/06/09 07:50:59 $ * 
+ * @version $Revision: 1.40 $ $Date: 2000/06/09 08:31:25 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	
@@ -2327,7 +2327,29 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	}
 
 	// methods working with resources
+    
+     /**
+     * Copies a resource from the online project to a new, specified project.<br>
+     *
+     * @param project The project to be published.
+	 * @param onlineProject The online project of the OpenCms.
+	 * @param resourcename The name of the resource.
+ 	 * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+     public void copyResourceToProject(CmsProject project,
+                                       CmsProject onlineProject,
+                                       int resourceId, int parentId,
+                                       int fileId,String resourcename,
+                                       int resourceLastModifiedBy) 
+         throws CmsException {
+         CmsResource resource=readResource(onlineProject,resourcename);
+         resource.setState(C_STATE_UNCHANGED);
+         resource.setParentId(parentId);
+         createResource(project,onlineProject,resource);
+     }
 	
+     
+     
 	/**
 	 * Reads a resource from the Cms.<BR/>
 	 * A resource is either a file header or a folder.
