@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspNavElement.java,v $
- * Date   : $Date: 2002/08/30 14:07:03 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2002/10/31 11:39:28 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,17 +36,22 @@ import com.opencms.file.*;
 import com.opencms.core.*;
 
 /**
- * Description of the class CmsJspBeanNav here.
+ * Bean to extract navigation information from the OpenCms VFS folder
+ * structure.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsJspNavElement implements Comparable {
     
+    /** Property constant for <code>"locale"</code> */
     public final static String C_PROPERTY_LOCALE = "locale";    
+    /** Property constant for <code>"NavImage"</code> */
     public final static String C_PROPERTY_NAVIMAGE = "NavImage";    
+    /** Property constant for <code>"NavInfo"</code> */
     public final static String C_PROPERTY_NAVINFO = "NavInfo";    
     
+    // Member variables for get / set methods:
     private String m_resource;
     private String m_text;
     private String m_title;
@@ -58,24 +63,88 @@ public class CmsJspNavElement implements Comparable {
     private int m_navTreeLevel;
     private boolean m_hasNav;
 
+
+    /**
+     * Empty constructor required for every JavaBean, does nothing.<p>
+     * 
+     * Call one of the init methods afer you have created an instance 
+     * of the bean. Instead of using the constructor you should use 
+     * the static factory methods provided by this class to create
+     * navigation beans that are properly initialized with current 
+     * OpenCms context.
+     * 
+     * @see #getNavigationForResource(CmsObject, String)
+     * @see #getNavigationForFolder(CmsObject, String)
+     * @see #getNavigationForFolder(CmsObject, String, String)
+     * @see #getNavigationForFolder(CmsObject, String, int, String)
+     * @see #getNavigationTreeForFolder(CmsObject, String, int, int, String)
+     */
     public CmsJspNavElement() {
     }
     
+    /**
+     * Create a new instance of the bean and calls the init method 
+     * with the provided parametes.<p>
+     * 
+     * @param resource will be passed to <code>init</code>
+     * @param h will be passed to <code>init</code>
+     * 
+     * @see #init(String, Hashtable)
+     */
     public CmsJspNavElement(String resource, Hashtable h) {
         init(resource, h, -1);
     }
     
+    /**
+     * Create a new instance of the bean and calls the init method 
+     * with the provided parametes.<p>
+     * 
+     * @param resource will be passed to <code>init</code>
+     * @param h will be passed to <code>init</code>
+     * @param navTreeLevel will be passed to <code>init</code>
+     * 
+     * @see #init(String, Hashtable, int)
+     */    
     public CmsJspNavElement(String resource, Hashtable h, int navTreeLevel) {
         init(resource, h, navTreeLevel);
     }
     
+    /**
+     * Same as calling {@link #init(String, Hashtable, int) 
+     * init(String, Hashtable, -1)}.<p>
+     * 
+     * @param resource the name of the resource to extract the navigation 
+     *     information from
+     * @param h the properties of the resource read from the vfs
+     */
     public void init(String resource, Hashtable h) {
         init(resource, h, -1);
     }
-    
+
+    /**
+     * Initialized the member variables of this bean with the values 
+     * provided.<p>
+     * 
+     * A resource will be in the nav if at least one of the two properties 
+     * <code>I_CmsConstants.C_PROPERTY_NAVTEXT</code> or 
+     * <code>I_CmsConstants.C_PROPERTY_NAVPOS</code> is set. Otherwise
+     * it will be ignored.
+     * 
+     * This bean does provides static methods to create a new instance 
+     * from the context of a current CmsObject. Call these static methods
+     * in order to get a properly initialized bean.
+     * 
+     * @param resource the name of the resource to extract the navigation 
+     *     information from
+     * @param h the properties of the resource read from the vfs
+     * @param navTreeLevel tree level of this resource, for building 
+     *     navigation trees
+     * 
+     * @see #getNavigationForResource(CmsObject, String)
+     */    
     public void init(String resource, Hashtable h, int navTreeLevel) {
         m_resource = resource;
-        
+        // Get values from property hash, will be null if property is not set fot the resource
         m_title = (String)h.get(I_CmsConstants.C_PROPERTY_TITLE);
         m_description = (String)h.get(I_CmsConstants.C_PROPERTY_DESCRIPTION);
         m_text = (String)h.get(I_CmsConstants.C_PROPERTY_NAVTEXT);
@@ -87,8 +156,13 @@ public class CmsJspNavElement implements Comparable {
         m_navTreeLevel = navTreeLevel;
         try {
             m_position = Float.parseFloat(pos);
-        } catch (Exception ex) {}
+        } catch (Exception ex) {
+            // m_position will have Float.MAX_VALUE, so nevigation element will 
+            // appear last in navigation
+        }
+        // The element will be in the nav if at least one of the two properties are set
         m_hasNav = ((m_text != null) || (m_position != Float.MAX_VALUE));
+        // If element is in nav but no text was provided: add some default text
         if (m_text == null) m_text = "[missing " + I_CmsConstants.C_PROPERTY_NAVTEXT + " property for resource " + m_resource + "]";    
     }
 

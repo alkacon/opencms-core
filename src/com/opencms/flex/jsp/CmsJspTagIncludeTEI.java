@@ -33,10 +33,10 @@ import javax.servlet.jsp.tagext.TagExtraInfo;
 
 /**
  * This is a TagExtraInfo evaluation class that checks the attibutes of 
- * the <code>cms:include</code> tag.
+ * the <code>&lt;cms:include /&gt;</code> tag.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsJspTagIncludeTEI extends TagExtraInfo {
 
@@ -55,7 +55,22 @@ public class CmsJspTagIncludeTEI extends TagExtraInfo {
     }
     
     /**
-     * Checks the validity of the <code>cms:include</code> attributs.
+     * Checks the validity of the <code>&lt;cms:include /&gt;</code> attributs.<p>
+     *
+     * The logic used is:
+     * <pre>
+     * if (hasBody) {
+     *       String type = (String)data.getAttribute(C_ATTR_BODY);
+     *       if (! ("eval".equals(type) || "params".equals(type))) return false;
+     * }
+     * if (hasFile && (hasSuffix || hasProperty || hasAttribute)) return false;
+     * if (hasProperty && hasAttribute) return false;
+     * if (hasSuffix && !(hasProperty || hasAttribute)) return false;
+     * if (! (hasProperty || hasFile || hasBody || hasAttribute)) return false;
+     * </pre>
+     * 
+     * @param data the tag data
+     * @return true if attributes are valid, false otherwise
      */
     public boolean isValid(TagData data) {
         

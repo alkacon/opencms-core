@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsJspLoader.java,v $
-* Date   : $Date: 2002/09/12 15:20:35 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2002/10/31 11:40:39 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,29 +31,39 @@ package com.opencms.flex;
 
 import java.util.*;
 import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
 
+import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.launcher.*;
+import com.opencms.util.Encoder;
 import com.opencms.util.Utils;
 import com.opencms.flex.cache.*;
 import com.opencms.flex.jsp.*;
 import com.opencms.flex.util.CmsPropertyLookup;
 
 /**
- * This implements the JSP launcher. 
- * The JSP launcher enables the execution of JSP in OpenCms.
+ * The JSP loader which enables the execution of JSP in OpenCms.<p>
  *
- * It does NOT inherit from A_CmsLauncher, since JSP are not related
- * to the OpenCms Template mechanism.
+ * It does NOT extend {@link com.opencms.launcher.A_CmsLauncher}, since JSP are not related
+ * to the OpenCms Template mechanism. However, it implements the
+ * launcher interface so that JSP can be sub-elements in XMLTemplace pages.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.8 $
+ *
+ * @version $Revision: 1.9 $
+ * @since FLEX alpha 1
+ * 
+ * @see I_CmsResourceLoader
+ * @see com.opencms.launcher.I_CmsLauncher
  */
-public class CmsJspLoader implements I_CmsLauncher, I_CmsLogChannels, I_CmsConstants, I_CmsJspConstants, I_CmsResourceLoader {
+public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
 
     /** The directory to store the generated JSP pages in (absolute path) */
     private static String m_jspRepository = null;
@@ -63,19 +73,39 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsLogChannels, I_CmsConst
     
     /** The CmsFlexCache used to store generated cache entries in */
     private static CmsFlexCache m_cache;
+    
+    /** Export URL for JSP pages */
+    private String m_exportUrl;
 
-    /** Special JSP directive tag start */
+    /** Special JSP directive tag start (<code>&lt;%@</code>)*/
     public static final String C_DIRECTIVE_START = "<%@";
 
-    /** Special JSP directive tag start */
+    /** Special JSP directive tag start (<code>%&gt;</code>)*/
     public static final String C_DIRECTIVE_END ="%>";
     
-    /** Encoding to write JSP files to disk */
+    /** Encoding to write JSP files to disk (<code>ISO-8859-1</code>) */
     public static final String C_DEFAULT_JSP_ENCODING = "ISO-8859-1";
     
+    /** Extension for JSP managed by OpenCms (<code>.jsp</code>) */
+    public static final String C_JSP_EXTENSION = ".jsp";      
+    
     /** Flag for debugging output. Set to 9 for maximum verbosity. */ 
-    private static int DEBUG = 0;
+    private static final int DEBUG = 0;
         
+    /**
+     * The constructor of the class is empty, the initial instance will be 
+     * created by the launcher manager upon startup of OpenCms.<p>
+     * 
+     * To initilize the fields in this class, the <code>setOpenCms()</code>
+     * method will be called by the launcher.
+     * 
+     * @see com.opencms.launcher.CmsLauncherManager
+     * @see #setOpenCms(A_OpenCms openCms)
+     */
+    public CmsJspLoader() {
+        // NOOP
+    }
+    
     // ---------------------------- Implementation of interface com.opencms.launcher.I_CmsLauncher          
     
     /**
@@ -88,7 +118,9 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsLogChannels, I_CmsConst
     
     /**
      * This is part of the I_CmsLauncher interface, 
-     * used here to call the init() method
+     * used here to call the init() method.
+     * 
+     * @see #init(A_OpenCms openCms)
      */
     public void setOpenCms(A_OpenCms openCms) {
         init(openCms);
@@ -96,62 +128,145 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsLogChannels, I_CmsConst
     
     /** 
      * Returns the ID that indicates the type of the launcher.
-     * The IDs are usually constants in the I_CmsLauncher interface.
+     * 
+     * The IDs for all launchers of the core distributions are constants 
+     * in the I_CmsLauncher interface.
+     * The value returned is <code>com.opencms.launcher.I_CmsLauncher.C_TYPE_JSP</code>.
      *
      * @return launcher ID
+     * 
+     * @see com.opencms.launcher.I_CmsLauncher
      */
     public int getLauncherId() {
         return com.opencms.launcher.I_CmsLauncher.C_TYPE_JSP;
     }
     
     /** 
-     * Start launch method called by the OpenCms system to show a resource
-     * This basically processes the resource and returns the output.
+     * Start launch method called by the OpenCms system to show a resource,
+     * this basically processes the resource and returns the output.<p>
+     * 
+     * This is part of the Launcher interface.
+     * All requests will be forwarded to the <code>load()</code> method of this 
+     * class. That forms the link between the Launcher and Loader interfaces.<p>
+     * 
+     * Exceptions thrown in the <code>load()</code> method of this loader
+     * will be handled here, usually by wrapping them in a CmsException
+     * that will then be shown in the OpenCms error dialog.
      *
      * @param cms CmsObject Object for accessing system resources.
      * @param file CmsFile Object with the selected resource to be shown.
      * @param startTemplateClass Name of the template class to start with.
      * @param openCms a instance of A_OpenCms for redirect-needs
-     * @exception CmsException
+     * @throws CmsException all exeptions in the load process of a JSP will be caught here and wrapped to a CmsException
+     * 
+     * @see com.opencms.launcher.I_CmsLauncher
+     * @see #load(CmsObject cms, CmsFile file, HttpServletRequest req, HttpServletResponse res) 
      */
     public void initlaunch(CmsObject cms, CmsFile file, String startTemplateClass, A_OpenCms openCms) throws CmsException {
-        if (cms.getRequestContext().getRequest() instanceof com.opencms.core.CmsExportRequest) {
+        HttpServletRequest req;
+        HttpServletResponse res;
+
+        CmsRequestContext context = cms.getRequestContext();
+        if (context.getRequest() instanceof com.opencms.core.CmsExportRequest) {
             if (DEBUG > 1) System.err.println("FlexJspLoader: Export requested for " + file.getAbsolutePath());
-            com.opencms.launcher.I_CmsLauncher dumpLauncher = cms.getLauncherManager().getLauncher(com.opencms.launcher.I_CmsLauncher.C_TYPE_DUMP);
-            dumpLauncher.initlaunch(cms, file, startTemplateClass, openCms);
-            // TODO: Add dumping of processed JSP in case suffix is not "*.jsp", must check with I_CmsRequest and I_CmsResponse from com.opencms.core package
-        } else {
-            HttpServletRequest req = (HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();
-            HttpServletResponse res = (HttpServletResponse)cms.getRequestContext().getResponse().getOriginalResponse();
+                com.opencms.launcher.I_CmsLauncher dumpLauncher = cms.getLauncherManager().getLauncher(com.opencms.launcher.I_CmsLauncher.C_TYPE_DUMP);
+                dumpLauncher.initlaunch(cms, file, startTemplateClass, openCms);
+            /*            
+            // This works :-)
             try {
-                // Load the resource
-                load(cms, file, req, res);
+                // TODO: Build the exportUrl automatically from the server settings
+                // [ok]  Maybe have some setting in opencms.properties
+                //       Default settings could be used in servlet to calculate server / webapp / context
+                // TODO: Check possibility to not make http request in case element is
+                // [ok]  already cached in FlexCache
+                //       However, FlexCache shoule be empty anyway since publish 
+                //       had occured, so element will never be found in cache.
+                // TODO: Add parameters to the exportUrl (don't forget to encode)
+                // [ok]
+
+                // TODO: Must make a check / setting so that the http request is
+                //       recognized as export request, prop. "_flex=export" 
+                //       Set "mode" of CmsObject to "export" using cms.setMode(int)
+                //       Put the collected links from the vector 
+                //       cms.getRequestContext().getLinkVector() back through the request,
+                //       probably as a header in the http response (?)
+                
+                // TODO: Add handling of included JSP sub-elements 
+                //       Maybe have some new parameter _flex=export
+                //       It is important to ensure the URI/pathInfo is in sync for exported/not exported elements
+                //       In export with request like below, URI will be URI of sub-element
+                //       In normal request URI would be of top-level page
+
+                
+                String exportUrl = m_exportUrl + file.getAbsolutePath();
+
+                // Add parameters to export call
+                Enumeration params = context.getRequest().getParameterNames();
+                if (params.hasMoreElements()) exportUrl+="?";
+                while (params.hasMoreElements()) {
+                    String key = (String)params.nextElement();
+                    String values[] = (String[])context.getRequest().getParameterValues(key);
+                    for (int i=0; i<values.length; i++) {
+                        exportUrl += key + "=";
+                        exportUrl += Encoder.encode(values[i], "'UTF-8", true);
+                        if ((i+1)<values.length) exportUrl+="&";
+                    }
+                    if (params.hasMoreElements()) exportUrl+="&";                       
+                }
+                if (DEBUG > 2) System.err.println("[CmsJspLoader] JSP export URL: " + exportUrl);
+                
+                URL export = new URL(exportUrl); 
+                HttpURLConnection urlcon = (HttpURLConnection) export.openConnection(); 
+                // Set request type to GET
+                urlcon.setRequestMethod("GET");
+                urlcon.setFollowRedirects(false);
+                // Input and output stream            
+                DataInputStream input = new DataInputStream(urlcon.getInputStream());            
+                OutputStream output = context.getResponse().getOutputStream();
+                int b;
+                while ((b = input.read()) > 0) {
+                    output.write(b);
+                }
             } catch (Exception e) {
-                // All Exceptions are caught here and get translated to a CmsException for display in the OpenCms error dialog
-                throw new CmsException("Error in Flex loader", CmsException.C_FLEX_LOADER, e, true);
-            }            
+                System.err.println("" + e + "\n" + Utils.getStackTrace(e));
+            }                                     
+            */
+            return;               
+        } else {
+            req = (HttpServletRequest)context.getRequest().getOriginalRequest();
+            res = (HttpServletResponse)context.getResponse().getOriginalResponse();
         }
+        
+        try {
+            // Load the resource
+            load(cms, file, req, res);
+        } catch (Exception e) {
+            // All Exceptions are caught here and get translated to a CmsException for display in the OpenCms error dialog
+            if (DEBUG > 1) System.err.println("Error in Flex loader: " + e + Utils.getStackTrace(e));
+            throw new CmsException("Error in Flex loader", CmsException.C_FLEX_LOADER, e, true);
+        }            
     } 
 
     // ---------------------------- Implementation of interface com.opencms.flex.I_CmsResourceLoader    
     
-    /** Destroy this ResourceLoder  */
+    /** Destroy this ResourceLoder, this is a NOOP so far.  */
     public void destroy() {
         // NOOP
     }
     
     /**
-     * Return a String describing the ResourceLoader.
+     * Return a String describing the ResourceLoader,
+     * which is <code>"The OpenCms default resource loader for JSP"</code>
      * 
-     * @return A describing String for the ResourceLoader
+     * @return a describing String for the ResourceLoader 
      */
     public String getResourceLoaderInfo() {
         return "The OpenCms default resource loader for JSP";
     }
     
     /** 
-     * Initialize the ResourceLoader.
-     * Here the cache is created in case it does not exist already. 
+     * Initialize the ResourceLoader,
+     * here the configuration for the JSP repository (directories used) is set.
      *
      * @param openCms An OpenCms object to use for initalizing.
      */
@@ -166,24 +281,32 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsLogChannels, I_CmsConst
         m_jspRepository += m_jspWebAppRepository.replace('/', File.separatorChar);
         if (! m_jspRepository.endsWith(File.separator)) m_jspRepository += File.separator;
         if (DEBUG > 0) System.err.println("JspLoader: Setting jsp repository to " + m_jspRepository);
-        m_context = (javax.servlet.ServletContext)openCms.getRuntimeProperty("context");
+        // Get the cache from the runtime properties
         m_cache = (CmsFlexCache)openCms.getRuntimeProperty(this.C_LOADER_CACHENAME);
-
-        log("Initialized!");        
-        log("JSP repository (absolute path): " + m_jspRepository);        
-        log("JSP repository (web application path): " + m_jspWebAppRepository);              
+        // Get the export URL from the runtime properties
+        m_exportUrl = (String)openCms.getRuntimeProperty("flex.jsp.exporturl");
+        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_FLEX_LOADER)) {
+            A_OpenCms.log(I_CmsLogChannels.C_FLEX_LOADER, "Initialized!");        
+            A_OpenCms.log(I_CmsLogChannels.C_FLEX_LOADER, "JSP repository (absolute path): " + m_jspRepository);        
+            A_OpenCms.log(I_CmsLogChannels.C_FLEX_LOADER, "JSP repository (web application path): " + m_jspWebAppRepository);              
+        }
     }
     
-    private static javax.servlet.ServletContext m_context = null;
-    
     /**
-     * Basic top-page processing method for the Loader.
-     * This method is directly called by OpenCms.
+     * Basic top-page processing method for this I_CmsResourceLoader,
+     * this method is called by <code>initlaunch()</code> if a JSP is requested if
+     * the original request was from the launcher manager.
      *
      * @param cms The initialized CmsObject which provides user permissions
      * @param file The requested OpenCms VFS resource
      * @param req The original servlet request
      * @param res The original servlet response
+     * 
+     * @throws ServletException might be thrown in the process of including the JSP 
+     * @throws IOException might be thrown in the process of including the JSP 
+     * 
+     * @see I_CmsResourceLoader
+     * @see #initlaunch(CmsObject cms, CmsFile file, String startTemplateClass, A_OpenCms openCms)
      */
     public void load(CmsObject cms, CmsFile file, HttpServletRequest req, HttpServletResponse res) 
     throws ServletException, IOException {       
@@ -283,11 +406,13 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsLogChannels, I_CmsConst
     
     /**
      * Method to enable JSPs to be used as sub-elements in XMLTemplates.
-     * This method is called from the XMLTemplate mechanism.
      *
      * @param cms The initialized CmsObject which provides user permissions
      * @param file The requested OpenCms VFS resource
+     * 
      * @throws CmsException In case the Loader can not process the requested resource
+     * 
+     * @see CmsJspTemplate
      */
     public byte[] loadTemplate(CmsObject cms, CmsFile file) 
     throws CmsException {
@@ -352,8 +477,10 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsLogChannels, I_CmsConst
     }
     
     /**
-     * Returns the JSP file name for a OpenCms VFS resource.
-     * The name give must be a absolute URI in the OpenCms VFS,
+     * Translates the JSP file name for a OpenCms VFS resourcn 
+     * to the name used in the "real" file system.<p>
+     * 
+     * The name given must be a absolute URI in the OpenCms VFS,
      * e.g. CmsFile.getAbsolutePath()
      *
      * @param name The file to calculate the JSP name for
@@ -364,7 +491,8 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsLogChannels, I_CmsConst
     }
     
     /**
-     * Returns the uri for a given JSP, i.e. the path in the file
+     * Returns the uri for a given JSP in the "real" file system, 
+     * i.e. the path in the file
      * system relative to the web application directory.
      *
      * @param name The name of the JSP file 
@@ -376,7 +504,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsLogChannels, I_CmsConst
     }
     
     /**
-     * Returns the absolute path in the file system for a given JSP.
+     * Returns the absolute path in the "real" file system for a given JSP.
      *
      * @param name The name of the JSP file 
      * @param online Flag to check if this is request is online or not
@@ -387,7 +515,8 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsLogChannels, I_CmsConst
     }
 
     /**
-     * Returns the absolute path in the file system for the JSP repository.
+     * Returns the absolute path in the "real" file system for the JSP repository
+     * toplevel directory.
      *
      * @return The full path to the JSP repository
      */
@@ -396,17 +525,25 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsLogChannels, I_CmsConst
     }    
     
     /**
-     * Updates a JSP page in the real file system in case the VFS resource has changed.
-     * Also processes the &lt;%@ cms %&gt; tags before the JSP is written to the real FS.
-     * Also recursivly updates all files that are referenced by a &lt;%@ cms %&gt; tag 
-     * on this page to make sure the file actually exists in the real FS.
+     * Updates a JSP page in the "real" file system in case the VFS resource has changed.<p>
+     * 
+     * Also processes the <code>&lt;%@ cms %&gt;</code> tags before the JSP is written to the real FS.
+     * Also recursivly updates all files that are referenced by a <code>&lt;%@ cms %&gt;</code> tag 
+     * on this page to make sure the file actually exists in the real FS. 
+     * All <code>&lt;%@ include %&gt;</code> tags are parsed and the name in the tag is translated
+     * from the OpenCms VFS path to the path in the real FS. 
+     * The same is done for filenames in <code>&lt;%@ page errorPage=... %&gt;</code> tags.
      * 
      * @param cms Used to access the OpenCms VFS
      * @param file The reqested JSP file resource in the VFS
      * @param req The current request
      * @param res The current response
      * @param updates A Set containing all JSP pages that have been already updated
+     * 
      * @return The file name of the updated JSP in the "real" FS
+     * 
+     * @throws ServletException might be thrown in the process of including the JSP 
+     * @throws IOException might be thrown in the process of including the JSP 
      */
     private synchronized String updateJsp(CmsObject cms, CmsResource file, CmsFlexRequest req, Set updates) 
     throws IOException, ServletException {
@@ -416,7 +553,8 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsLogChannels, I_CmsConst
         
         File d = new File(jspPath).getParentFile();
         if (! (d != null) && (d.exists() && d.isDirectory() && d.canRead())) {
-            log("Could not access directory for " + jspPath);
+            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) 
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "Could not access directory for " + jspPath);
             throw new ServletException("JspLoader: Could not access directory for " + jspPath);
         }    
         
@@ -447,7 +585,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsLogChannels, I_CmsConst
                 contents = req.getCmsObject().readFile(file.getAbsolutePath()).getContents();
                 // Encoding project:
                 // Check the JSP "content-encoding" property
-                jspEncoding = CmsPropertyLookup.lookupProperty(cms, file.getAbsolutePath(), C_PROPERTY_CONTENT_ENCODING, false);
+                jspEncoding = CmsPropertyLookup.lookupProperty(cms, file.getAbsolutePath(), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, false);
                 if (jspEncoding == null) jspEncoding = C_DEFAULT_JSP_ENCODING;
                 jspEncoding = jspEncoding.trim().toLowerCase();
             } catch (CmsException e) {
@@ -552,7 +690,8 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsLogChannels, I_CmsConst
                 fs.write(contents);                
                 fs.close();
                 
-                log("Updated JSP file \"" + jspfilename + "\" for resource \"" + file.getAbsolutePath() + "\"") ;
+                if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) 
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "Updated JSP file \"" + jspfilename + "\" for resource \"" + file.getAbsolutePath() + "\"") ;
             } catch (FileNotFoundException e) {
                 throw new ServletException("JspLauncher: Could not write to file '" + f.getName() + "'\n" + e, e);
             }
@@ -561,9 +700,12 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsLogChannels, I_CmsConst
     }    
         
     /**
-	 * Does the job of including the JSP.
-	 * This method should be called from a CmsFlexRequestDispatcher only.
-	 * <p>
+	 * Does the job of including the JSP, 
+	 * this method should usually be called from a <code>CmsFlexRequestDispatcher</code> only.<p>
+     * 
+     * This method is called directly if the element is 
+     * called as a sub-element from another I_CmsResourceLoader.<p>
+	 * 
 	 * One of the tricky issues is the correct cascading of the Exceptions, 
 	 * so that you are able to identify the true origin of the problem.
 	 * This ia achived by imprinting a String C_EXCEPTION_PREFIX to the 
@@ -573,6 +715,11 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsLogChannels, I_CmsConst
 	 * @param file The reqested JSP file resource in the VFS
 	 * @param req The current request
 	 * @param res The current response
+     * 
+     * @throws ServletException might be thrown in the process of including the JSP 
+     * @throws IOException might be thrown in the process of including the JSP 
+     * 
+     * @see com.opencms.flex.cache.CmsFlexRequestDispatcher
 	 */
 	public void service(CmsObject cms, CmsResource file, CmsFlexRequest req, CmsFlexResponse res)
 	throws ServletException, IOException {              
@@ -594,16 +741,5 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsLogChannels, I_CmsConst
 	        // Imprint current JSP file and stack trace
 	        throw new ServletException(C_LOADER_EXCEPTION_PREFIX + " '" + file.getAbsolutePath() + "'\n\nRoot cause:\n" + Utils.getStackTrace(e) + "\n--------------- End of root cause.\n", e);          
 	    }
-	}
-            
-    /**     
-     * Logs a message to the OpenCms log in the channel "flex_loader".
-     *
-     * @param message The string to write in the log file
-     */        
-    private void log(String message) {
-        if (com.opencms.boot.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING) {
-            com.opencms.boot.CmsBase.log(com.opencms.boot.CmsBase.C_FLEX_LOADER, "[CmsJspLoader] " + message);
-        }
-    }    
+	} 
 }

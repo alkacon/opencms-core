@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/I_CmsJspParamParent.java,v $
- * Date   : $Date: 2002/09/16 12:38:07 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2002/10/31 11:40:15 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -87,8 +87,8 @@
 package com.opencms.flex.jsp;
 
 /**
- * <p>Interface for tag handlers implementing valid parent tags for
- * &lt;c:param&gt;.</p>
+ * Interface for tag handlers implementing valid parent tags for
+ * &lt;c:param&gt;.<p>
  *
  * @author Shawn Bayern
  */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsJspTemplate.java,v $
- * Date   : $Date: 2002/08/21 11:29:32 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2002/10/31 11:40:46 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,52 +39,63 @@ import com.opencms.template.*;
 import com.opencms.template.cache.*;
 
 /**
- * A simple dump class for JSPs.
- * This class enables using JSP as elements in the XMLTemplate 
+ * A simple dump class for JSPs which enables
+ * the use of JSP as sub-elements in the XMLTemplate 
  * mechanism.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * 
+ * @version $Revision: 1.3 $
+ * @since 5.0 beta 1
+ * 
  */
 public class CmsJspTemplate extends com.opencms.template.CmsDumpTemplate {
     
     /** 
-     * Constructor for class CmsJspTemplate.
-     * Not used.
+     * Constructor for class CmsJspTemplate,
+     * not used.
      */
     public CmsJspTemplate() {       
     }
 
     /**
-     * Gets the content of a given template file.
+     * Gets the content of the given JSP file to include them
+     * in the XMLTemplate.
      *
-     * @param cms CmsObject Object for accessing system resources
-     * @param templateFile Filename of the template file
-     * @param elementName <em>not used here</em>.
-     * @param parameters <em>not used here</em>.
-     * @return Unprocessed content of the given template file.
-     * @exception CmsException
+     * @param cms for accessing system resources
+     * @param jspFile filename of the JSP in the VFS
+     * @param elementName <em>not used</em>
+     * @param parameters <em>not used</em>
+     * 
+     * @return Content of the requested JSP page.
+     * 
+     * @throws CmsException
      */
-    public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters) throws CmsException {
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(C_FLEX_LOADER, "[CmsJspTemplate] Now loading contents of file " + templateFile);
+    public byte[] getContent(CmsObject cms, String jspFile, String elementName, Hashtable parameters) throws CmsException {
+        if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(C_FLEX_LOADER)) {
+            A_OpenCms.log(C_FLEX_LOADER, "[CmsJspTemplate] Now loading contents of file " + jspFile);
         }
+
+        if (cms.getRequestContext().getRequest() instanceof com.opencms.core.CmsExportRequest) {
+            return ("+++ CmsJspTemplate.getContent(" + jspFile + "): Static export of JSP not supported! +++").getBytes();
+        }
+        
         byte[] s = null;
         try {
-            CmsFile file = cms.readFile(templateFile);
+            CmsFile file = cms.readFile(jspFile);
             int type = file.getLauncherType();
             com.opencms.flex.CmsJspLoader loader = (com.opencms.flex.CmsJspLoader)cms.getLauncherManager().getLauncher(type);
             s = loader.loadTemplate(cms, file);
         } catch (java.lang.ClassCastException e) {
-            throw new CmsException("JspTemplate: " + templateFile + " is not a JSP");
+            throw new CmsException("JspTemplate: " + jspFile + " is not a JSP");
         } catch (com.opencms.core.CmsException e) {
             // File might not exist or no read permissions
-            throw new CmsException("JspTemplate: Error while reading JSP " + templateFile + "\n" + e, e);
+            throw new CmsException("JspTemplate: Error while reading JSP " + jspFile + "\n" + e, e);
         }        
 
         catch(Exception e) {
-            String errorMessage = "Error while loading jsp file " + templateFile + ": " + e;
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+            String errorMessage = "Error while loading jsp file " + jspFile + ": " + e;
+            if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_CRITICAL) ) {
                 A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsJspTemplate] " + errorMessage);
             }
             if(e instanceof CmsException) {
@@ -98,29 +109,38 @@ public class CmsJspTemplate extends com.opencms.template.CmsDumpTemplate {
     }
     
     /**
-     * Don't cache JSPs in the ElementCache. 
-     * So we can always return <code>false</code> here.
+     * Cache method required by the ElementCache to indicate if the
+     * results of the page should be cached in the ElementCache.<p>
+     * 
+     * JSPs will be cached in the FlexCache and so 
+     * we always return <code>false</code> here.
+     * 
      * @return <code>false</code>
      */
     public boolean isTemplateCacheSet() {
-        // return true;
         return false;
     }    
     
     /**
-     * JSPs are usually very dynamic.
-     * So we always return <code>true</code> here.
+     * Method used by the ElementCache to check if the page 
+     * should reload or not.<p>
+     * 
+     * JSPs will be cached in the FlexCache and so 
+     * we always return <code>true</code> here.
+     * 
      * @return <code>true</code>
      */
     public boolean shouldReload(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
-        // return false;
         return true;
     } 
     
     /**
-     * Returns the caching information from the current template class.
-     * JSPs are never cached in the ElementCache.
-     * Use the FlexCache to cache results of a JSP.
+     * Returns the caching information from the current template class for the
+     * ElementCache.<p>
+     * 
+     * JSPs will be cached in the FlexCache and so 
+     * we always return directives that prevent caching here,
+     * i.e. <code>new CmsCacheDirectives(false)</code>
      *
      * @param cms CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file
@@ -130,11 +150,7 @@ public class CmsJspTemplate extends com.opencms.template.CmsDumpTemplate {
      * @return <EM>true</EM> if this class may stream it's results, <EM>false</EM> otherwise.
      */
     public CmsCacheDirectives getCacheDirectives(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
-        // Just set caching to false.
-        // Set cacheing for export requests
-        CmsCacheDirectives result = new CmsCacheDirectives(false);
-        // CmsCacheDirectives result = new CmsCacheDirectives(true);
-        // result.setCacheUri(true);
-        return result;
+        // Just set caching to false
+        return new CmsCacheDirectives(false);
     }    
 }

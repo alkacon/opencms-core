@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspParamSupport.java,v $
- * Date   : $Date: 2002/09/16 12:38:07 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2002/10/31 11:39:36 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -95,10 +95,9 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 import javax.servlet.jsp.tagext.Tag;
 
 /**
- * <p>A handler for &lt;param&gt; that accepts attributes as Strings
- * and evaluates them as expressions at runtime.</p>
+ * A handler for &lt;param&gt; that accepts attributes as Strings
+ * and evaluates them as expressions at runtime.<p>
  *
- * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Shawn Bayern
  */
 
