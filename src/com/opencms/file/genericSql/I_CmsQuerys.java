@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/08/24 09:25:39 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2000/08/29 09:25:41 $
+ * Version: $Revision: 1.61 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.60 $ $Date: 2000/08/24 09:25:39 $
+ * @version $Revision: 1.61 $ $Date: 2000/08/29 09:25:41 $
  */
 public interface I_CmsQuerys {
 	
@@ -162,7 +162,7 @@ public interface I_CmsQuerys {
 													+"WHERE PROJECT_ID = ?";	
 
 	public static final Integer C_RESOURCES_COUNTLOCKED_KEY = new Integer(121);
-	public static final String C_RESOURCES_COUNTLOCKED = "SELECT MAX(RESOURCE_ID) FROM " + C_DATABASE_PREFIX + "RESOURCES where LOCKED_BY <> " + 
+	public static final String C_RESOURCES_COUNTLOCKED = "SELECT COUNT(RESOURCE_ID) FROM " + C_DATABASE_PREFIX + "RESOURCES where LOCKED_BY <> " + 
 														 I_CmsConstants.C_UNKNOWN_ID + " and PROJECT_ID = ?";
 	
 	public static final Integer C_RESOURCES_READBYPROJECT_KEY = new Integer(122);

@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/08/22 13:22:51 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/08/29 09:28:13 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 200C_RESOURCES_GET_FILESINFOLDER_KEY0  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.8 $ $Date: 2000/08/22 13:22:51 $
+ * @version $Revision: 1.9 $ $Date: 2000/08/29 09:28:13 $
  */
 public interface I_CmsQuerys {
 	
@@ -161,7 +161,7 @@ public interface I_CmsQuerys {
 													+"WHERE PROJECT_ID = ?";	
 
 	public static final Integer C_RESOURCES_COUNTLOCKED_KEY = new Integer(121);
-	public static final String C_RESOURCES_COUNTLOCKED = "SELECT MAX(RESOURCE_ID) FROM " + C_DATABASE_PREFIX + "RESOURCES where LOCKED_BY <> " + 
+	public static final String C_RESOURCES_COUNTLOCKED = "SELECT COUNT(RESOURCE_ID) FROM " + C_DATABASE_PREFIX + "RESOURCES where LOCKED_BY <> " + 
 														 I_CmsConstants.C_UNKNOWN_ID + " and PROJECT_ID = ?";
 	
 	public static final Integer C_RESOURCES_READBYPROJECT_KEY = new Integer(122);
