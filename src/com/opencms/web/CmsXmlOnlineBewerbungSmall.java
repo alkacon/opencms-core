@@ -1,8 +1,8 @@
 /**
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/web/Attic/CmsXmlOnlineBewerbung.java,v $ 
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/web/Attic/CmsXmlOnlineBewerbungSmall.java,v $ 
  * Author : $Author: w.babachan $
- * Date   : $Date: 2000/02/21 13:47:00 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/02/21 13:47:25 $
+ * Version: $Revision: 1.1 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Mindfact interaktive medien ag.   All Rights Reserved.
@@ -42,10 +42,10 @@ import java.io.*;
  * possible to send the application form as a mail.
  * 
  * @author $Author: w.babachan $
- * @version $Name:  $ $Revision: 1.15 $ $Date: 2000/02/21 13:47:00 $
+ * @version $Name:  $ $Revision: 1.1 $ $Date: 2000/02/21 13:47:25 $
  * @see com.opencms.template.CmsXmlTemplate
  */
-public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
+public class CmsXmlOnlineBewerbungSmall extends CmsXmlTemplate {
 	
 	// static constants
 	private static final String C_PATH="/var/opencms/mail/";
@@ -80,30 +80,9 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 	private static final String C_ACTION="action";
 	// Error message
 	private static final String C_ERR_TEXT="Bewerbungstext";
-	private static final String C_ERR_CERTIFICATES="Bewerbung uploaden";
-	private static final String C_ERR_OLDPOSITION="Derzeitige Tätigkeit";
-	private static final String C_ERR_NEWPOSITION="Angestrebte Position";
-	private static final String C_ERR_BASE="bevorzugter Standort";
-	private static final String C_ERR_ENTRY="Frühester Eintrittstermin";
-	private static final String C_ERR_SALARY="Gehaltswunsch";
-	private static final String C_ERR_HOW="Aufmerksam geworden";
-	private static final String C_ERR_ANREDE="Anrede";
-	private static final String C_ERR_TITEL="Titel";
-	private static final String C_ERR_FIRSTNAME="Vorname";
 	private static final String C_ERR_SURNAME="Nachname";
-	private static final String C_ERR_BIRTHDATE="Geburtsdatum";
-	private static final String C_ERR_CITIZEN="Staatsangehörigkeit";
-	private static final String C_ERR_FAMILY="Familienstand";
 	private static final String C_ERR_CO="C/o";
-	private static final String C_ERR_STREET="Straße";
-	private static final String C_ERR_PLZ="PLZ";
-	private static final String C_ERR_CITY="Ort";
-	private static final String C_ERR_COMPANYFON="Fon gesch.";
-	private static final String C_ERR_PRIVATEFON="Fon privat";
-	private static final String C_ERR_MOBILEFON="Fon mobil";
-	private static final String C_ERR_FAX="Fax";
 	private static final String C_ERR_EMAIL="Email";
-	private static final String C_ERR_URL="Url";
 	// Datablocks
 	private static final String C_DATA_NEWPOSITION="newPosition";
 	private static final String C_DATA_BASE="base";	
@@ -440,8 +419,7 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 	 * @return it returns an error message if all fields are'nt correct and null if the fields are correct.
 	 */
 	private String formIsCorrect(Hashtable parameters) throws CmsException {
-		
-		
+				
 		String errorMessage="";
 		
 		String[] parameter=new String[25];
@@ -453,108 +431,20 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 		value[0]=(value[0]==null?"":value[0]);
 		parameter[0]=C_ERR_TEXT;
 		
-		value[1]=destroyCmsXmlTag((String)parameters.get(C_FILE1));
+		value[1]=destroyCmsXmlTag((String)parameters.get(C_SURNAME));
 		value[1]=(value[1]==null?"":value[1]);
-		if (!value[1].toLowerCase().trim().equals("unknown")) {
-			value[1]="";
-		}
-		parameter[1]=C_ERR_CERTIFICATES;
+		parameter[1]=C_ERR_SURNAME;
 		
-		
-		value[2]=destroyCmsXmlTag((String)parameters.get(C_OLDPOSITION));
+		value[2]=destroyCmsXmlTag((String)parameters.get(C_CO));
 		value[2]=(value[2]==null?"":value[2]);
-		parameter[2]=C_ERR_OLDPOSITION;
+		parameter[2]=C_ERR_CO;
 		
-		value[3]=destroyCmsXmlTag((String)parameters.get(C_NEWPOSITION));
+		value[3]=destroyCmsXmlTag((String)parameters.get(C_EMAIL));
 		value[3]=(value[3]==null?"":value[3]);
-		parameter[3]=C_ERR_NEWPOSITION;
-		
-		value[4]=destroyCmsXmlTag((String)parameters.get(C_BASE));
-		value[4]=(value[4]==null?"":value[4]);
-		parameter[4]=C_ERR_BASE;
-		
-		value[5]=destroyCmsXmlTag((String)parameters.get(C_ENTRY));
-		value[5]=(value[5]==null?"":value[5]);
-		parameter[5]=C_ERR_ENTRY;
-		
-		value[6]=destroyCmsXmlTag((String)parameters.get(C_SALARY));
-		value[6]=(value[6]==null?"":value[6]);
-		parameter[6]=C_ERR_SALARY;
-		
-		value[7]=destroyCmsXmlTag((String)parameters.get(C_HOW));
-		value[7]=(value[7]==null?"":value[7]);
-		parameter[7]=C_ERR_HOW;
-		
-		value[8]=destroyCmsXmlTag((String)parameters.get(C_ANREDE));
-		value[8]=(value[8]==null?"":value[8]);
-		parameter[8]=C_ERR_ANREDE;
-		
-		value[9]=destroyCmsXmlTag((String)parameters.get(C_TITEL));
-		value[9]=(value[9]==null?"":value[9]);
-		parameter[9]=C_ERR_TITEL;
-		
-		value[10]=destroyCmsXmlTag((String)parameters.get(C_FIRSTNAME));
-		value[10]=(value[10]==null?"":value[10]);
-		parameter[10]=C_ERR_FIRSTNAME;
-		
-		value[11]=destroyCmsXmlTag((String)parameters.get(C_SURNAME));
-		value[11]=(value[11]==null?"":value[11]);
-		parameter[11]=C_ERR_SURNAME;
-		
-		value[12]=destroyCmsXmlTag((String)parameters.get(C_BIRTHDATE));
-		value[12]=(value[12]==null?"":value[12]);
-		parameter[12]=C_ERR_BIRTHDATE;
-		
-		value[13]=destroyCmsXmlTag((String)parameters.get(C_CITIZEN));
-		value[13]=(value[13]==null?"":value[13]);
-		parameter[13]=C_ERR_CITIZEN;
-		
-		value[14]=destroyCmsXmlTag((String)parameters.get(C_FAMILY));
-		value[14]=(value[14]==null?"":value[14]);
-		parameter[14]=C_ERR_FAMILY;
-		
-		value[15]=destroyCmsXmlTag((String)parameters.get(C_CO));
-		value[15]=(value[15]==null?"":value[15]);
-		parameter[15]=C_ERR_CO;
-		
-		value[16]=destroyCmsXmlTag((String)parameters.get(C_STREET));
-		value[16]=(value[16]==null?"":value[16]);
-		parameter[16]=C_ERR_STREET;
-		
-		value[17]=destroyCmsXmlTag((String)parameters.get(C_PLZ));
-		value[17]=(value[17]==null?"":value[17]);
-		parameter[17]=C_ERR_PLZ;
-		
-		value[18]=destroyCmsXmlTag((String)parameters.get(C_CITY));
-		value[18]=(value[18]==null?"":value[18]);
-		parameter[18]=C_ERR_CITY;
-		
-		value[19]=destroyCmsXmlTag((String)parameters.get(C_COMPANYFON));
-		value[19]=(value[19]==null?"":value[19]);
-		parameter[19]=C_ERR_COMPANYFON;
-		
-		value[20]=destroyCmsXmlTag((String)parameters.get(C_PRIVATEFON));
-		value[20]=(value[20]==null?"":value[20]);
-		parameter[20]=C_ERR_PRIVATEFON;
-		
-		value[21]=destroyCmsXmlTag((String)parameters.get(C_MOBILEFON));
-		value[21]=(value[21]==null?"":value[21]);
-		parameter[21]=C_ERR_MOBILEFON;
-		
-		value[22]=destroyCmsXmlTag((String)parameters.get(C_FAX));
-		value[22]=(value[22]==null?"":value[22]);
-		parameter[22]=C_ERR_FAX;
-		
-		value[23]=destroyCmsXmlTag((String)parameters.get(C_EMAIL));
-		value[23]=(value[23]==null?"":value[23]);
-		parameter[23]=C_ERR_EMAIL;
-		
-		value[24]=destroyCmsXmlTag((String)parameters.get(C_URL));
-		value[24]=(value[24]==null?"":value[24]);
-		parameter[24]=C_ERR_URL;
+		parameter[3]=C_ERR_EMAIL;
 		
 		// check the parameters, if there is an error then build an error message
-		for (int i=0;i<25;i++) {
+		for (int i=0;i<4;i++) {
 			try {				
 				check(value[i],parameter[i]);
 			} catch (Exception e) {
@@ -569,201 +459,31 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 			}
 		}
 		
-		// Current Job
-		if (value[2].trim().equals("") || value[2].length()>50) {
+		// Surname
+		if (value[1].trim().equals("") || value[1].length()>30) {
+			if (errorMessage.indexOf(parameter[1])==-1) {
+				errorMessage=errorMessage+parameter[1]+", ";
+			}
+		}
+		
+		// c/o
+		if (value[2].length()>30) {
 			if (errorMessage.indexOf(parameter[2])==-1) {
 				errorMessage=errorMessage+parameter[2]+", ";
 			}
 		}
 		
-		// Desired Job
-		if (value[3].trim().equals("") || value[3].trim().equals("Bitte auswählen") || value[3].length()>50) {
+		// Email
+		if (!value[3].trim().equals("")) {
+			if (value[3].indexOf('@')==-1 || value[3].indexOf('.')==-1) {
+				if (errorMessage.indexOf(parameter[3])==-1) {
+					errorMessage=errorMessage+parameter[3]+", ";
+				}
+			}
+		}
+		if (value[3].length()>30) {
 			if (errorMessage.indexOf(parameter[3])==-1) {
 				errorMessage=errorMessage+parameter[3]+", ";
-			}
-		}
-		
-		// Desired location
-		if (value[4].trim().equals("") || value[4].trim().equals("Bitte auswählen") || value[4].length()>30) {
-			if (errorMessage.indexOf(parameter[4])==-1) {
-				errorMessage=errorMessage+parameter[4]+", ";
-			}
-		}
-		
-		// Desired entry date
-		if (value[5].trim().equals("") || (!dateIsCorrect(value[5])) || value[5].length()>10) {
-			if (errorMessage.indexOf(parameter[5])==-1) {
-				errorMessage=errorMessage+parameter[5]+", ";
-			}
-		}
-		
-		// Salary
-		if (!value[6].trim().equals("")) {
-			try {
-				int salary=new Integer(value[6]).parseInt(value[6]);
-			} catch (Exception e) {				
-				if (errorMessage.indexOf(parameter[6])==-1) {
-					errorMessage=errorMessage+parameter[6]+", ";
-				}
-			}
-		}
-		if (value[6].length()>10) {
-			if (errorMessage.indexOf(parameter[6])==-1) {
-				errorMessage=errorMessage+parameter[6]+", ";
-			}
-		}
-		
-		// how have you found us (Aufmerksam geworden durch...)
-		if (value[7].trim().equals("") || value[7].trim().equals("Bitte auswählen") || value[7].length()>30) {
-			if (errorMessage.indexOf(parameter[7])==-1) {				
-				errorMessage=errorMessage+parameter[7]+", ";
-			}
-		}
-		
-		// Salutation (anrede)
-		if (value[8].trim().equals("") || value[8].trim().equals("Bitte auswählen") || value[8].length()>15) {
-			if (errorMessage.indexOf(parameter[8])==-1) {
-				errorMessage=errorMessage+parameter[8]+", ";
-			}
-		}
-		
-		// Title
-		if (value[9].length()>30) {
-			if (errorMessage.indexOf(parameter[9])==-1) {
-				errorMessage=errorMessage+parameter[9]+", ";
-			}
-		}
-		
-		// Firstname
-		if (value[10].trim().equals("") || value[10].length()>30) {
-			if (errorMessage.indexOf(parameter[10])==-1) {
-				errorMessage=errorMessage+parameter[10]+", ";
-			}
-		}
-		
-		// Surname
-		if (value[11].trim().equals("") || value[11].length()>30) {
-			if (errorMessage.indexOf(parameter[11])==-1) {
-				errorMessage=errorMessage+parameter[11]+", ";
-			}
-		}
-		
-		// Birthdate		
-		if (value[12].trim().equals("") || (!dateIsCorrect(value[12])) || value[12].length()>10) {
-			if (errorMessage.indexOf(parameter[12])==-1) {
-				errorMessage=errorMessage+parameter[12]+", ";
-			}
-		}
-		
-		// Citizenship		
-		if (value[13].trim().equals("") || value[13].length()>30) {
-			if (errorMessage.indexOf(parameter[13])==-1) {
-				errorMessage=errorMessage+parameter[13]+", ";
-			}
-		}
-		
-		// Family
-		if (value[14].length()>15) {
-			if (errorMessage.indexOf(parameter[14])==-1) {
-				errorMessage=errorMessage+parameter[14]+", ";
-			}
-		}
-		
-		// c/o
-		if (value[15].length()>30) {
-			if (errorMessage.indexOf(parameter[15])==-1) {
-				errorMessage=errorMessage+parameter[15]+", ";
-			}
-		}
-		
-		// Street
-		if (value[16].trim().equals("") || value[16].length()>30) {
-			if (errorMessage.indexOf(parameter[16])==-1) {
-				errorMessage=errorMessage+parameter[16]+", ";
-			}
-		}
-		
-		// PLZ
-		if (value[17].trim().equals("") || value[17].length()!=5) {
-			if (errorMessage.indexOf(parameter[17])==-1) {
-				errorMessage=errorMessage+parameter[17]+", ";
-			}
-		} else {
-			int plz=0;
-			try {
-				plz=new Integer(value[17]).parseInt(value[17]);
-			} catch (Exception e) {
-				plz=0;
-			}
-			if (plz<1000 || plz>99999) {
-				if (errorMessage.indexOf(parameter[17])==-1) {
-					errorMessage=errorMessage+parameter[17]+", ";
-				}
-			}
-		}
-		
-		// City
-		if (value[18].trim().equals("") || value[18].length()>30) {
-			if (errorMessage.indexOf(parameter[18])==-1) {
-				errorMessage=errorMessage+parameter[18]+", ";
-			}
-		}
-		
-		// Company fon
-		if (value[19].length()>20) {
-			if (errorMessage.indexOf(parameter[19])==-1) {
-				errorMessage=errorMessage+parameter[19]+", ";
-			}
-		}
-		
-		// Private fon
-		if (value[20].trim().equals("") || value[20].length()>30) {
-			if (errorMessage.indexOf(parameter[20])==-1) {
-				errorMessage=errorMessage+parameter[20]+", ";
-			}
-		}
-		
-		// Mobile fon
-		if (value[21].length()>20) {
-			if (errorMessage.indexOf(parameter[21])==-1) {
-				errorMessage=errorMessage+parameter[21]+", ";
-			}
-		}
-		
-		// Fax
-		if (value[22].length()>20) {
-			if (errorMessage.indexOf(parameter[22])==-1) {
-				errorMessage=errorMessage+parameter[22]+", ";
-			}
-		}
-		
-		// Email
-		if (!value[23].trim().equals("")) {
-			if (value[23].indexOf('@')==-1 || value[23].indexOf('.')==-1) {
-				if (errorMessage.indexOf(parameter[23])==-1) {
-					errorMessage=errorMessage+parameter[23]+", ";
-				}
-			}
-		}
-		if (value[23].length()>30) {
-			if (errorMessage.indexOf(parameter[23])==-1) {
-				errorMessage=errorMessage+parameter[23]+", ";
-			}
-		}
-	
-		// URL
-		if (!value[24].trim().equals("")) {
-			int first=value[24].indexOf('.');
-			int second=value[24].indexOf('.',first+1);
-			if (first==-1 || second==-1) {
-				if (errorMessage.indexOf(parameter[24])==-1) {
-					errorMessage=errorMessage+parameter[24]+", ";
-				}
-			}
-		}
-		if (value[24].length()>30) {
-			if (errorMessage.indexOf(parameter[24])==-1) {
-				errorMessage=errorMessage+parameter[24]+", ";
 			}
 		}
 		
@@ -795,45 +515,7 @@ public class CmsXmlOnlineBewerbung extends CmsXmlTemplate {
 			}
 		}
 		
-	}
-	
-	
-	/**
-	 * This method checks the date format, if there is an illegal chareckter then
-	 * it returns an error.
-	 * 	 
-	 * @param date The date that must be checked.
-	 * 
-	 * @return It returns true if the date is correct.
-	*/
-	private boolean dateIsCorrect(String date) {
-		
-		int day,month,year;
-		try {
-			day=new Integer(date.substring(0,2)).parseInt(date.substring(0,2));
-			month=new Integer(date.substring(3,5)).parseInt(date.substring(3,5));
-			year=new Integer(date.substring(6)).parseInt(date.substring(6));
-		} catch (Exception e) {
-			return false;
-		}
-		if (date.length()!=10) {
-			return false;
-		}
-		if (day<1 || day>31) {
-			return false;
-		}
-		if (month<1 || month>12) {
-			return false;
-		}
-		if (year<1900 || year>2900) {
-			return false;
-		}
-		if (date.charAt(2)!='.' || date.charAt(5)!='.') {
-			return false;
-		}
-		return true;
-	}
-	
+	}	
 	
 	/**
 	 * This method saves the attachment at the server

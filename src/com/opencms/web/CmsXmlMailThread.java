@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/web/Attic/CmsXmlMailThread.java,v $ 
  * Author : $Author: w.babachan $
- * Date   : $Date: 2000/02/20 20:43:11 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/02/21 13:47:00 $
+ * Version: $Revision: 1.3 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Mindfact interaktive medien ag.   All Rights Reserved.
@@ -40,7 +40,7 @@ import java.io.*;
  * This class is used to send a mail, it used the Threads to send it.
  * 
  * @author $Author: w.babachan $
- * @version $Name:  $ $Revision: 1.2 $ $Date: 2000/02/20 20:43:11 $
+ * @version $Name:  $ $Revision: 1.3 $ $Date: 2000/02/21 13:47:00 $
  * @see java.lang.Thread
  */
 public class CmsXmlMailThread extends Thread {
@@ -56,7 +56,7 @@ public class CmsXmlMailThread extends Thread {
 	private static final String C_HASH_CONTENT="content";
 	
 	// static constants
-	private static final String C_PATH="/tmp/";
+	private static final String C_PATH="/var/opencms/mail/";
 	
 	// constants
 	private final String c_CERTIFICATES;
@@ -66,8 +66,7 @@ public class CmsXmlMailThread extends Thread {
 	private final String c_BCC;
 	private final String c_HOST;
 	private final String c_SUBJECT;
-	private final String c_CONTENT;
-	
+	private final String c_CONTENT;	
 	
 	public CmsXmlMailThread(Hashtable mail) {
 		c_CERTIFICATES=(String)mail.get(C_HASH_CERTIFICATES);
@@ -77,7 +76,7 @@ public class CmsXmlMailThread extends Thread {
 		c_BCC=(String)mail.get(C_HASH_BCC);
 		c_HOST=(String)mail.get(C_HASH_HOST);
 		c_SUBJECT=(String)mail.get(C_HASH_SUBJECT);
-		c_CONTENT=(String)mail.get(C_HASH_CONTENT);		
+		c_CONTENT=(String)mail.get(C_HASH_CONTENT);
 	}
 	
 	public void run() {
@@ -88,7 +87,7 @@ public class CmsXmlMailThread extends Thread {
 		Session session=Session.getDefaultInstance(props,null);	
 		try {
 			MimeMessage msg=new MimeMessage(session);
-			InternetAddress[] to ={new InternetAddress(c_AN)};
+			InternetAddress[] to={new InternetAddress(c_AN)};
 			msg.setFrom(new InternetAddress(c_FROM));
 			msg.setRecipients(Message.RecipientType.TO,to);
 			if (c_CC != null) {
