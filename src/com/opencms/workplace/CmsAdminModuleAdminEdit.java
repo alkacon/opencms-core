@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $File$
- * Date   : $Date: 2000/11/03 15:27:41 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/11/07 14:33:54 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,6 +45,47 @@ import javax.servlet.http.*;
 public class CmsAdminModuleAdminEdit extends CmsWorkplaceDefault implements I_CmsConstants {
 
 	/**
+	 *  Checks if the type of the value is correct.
+	 *  @param type the type that the value should have..
+	 *  @param value the value to check.
+	 */
+	private boolean checkType(String type, String value) {
+		type = type.toLowerCase();
+		try {
+			if("string".equals(type) ) {
+				if( value != null) {
+					return true;
+				} else {
+					return false;
+				}				
+			} else if("int".equals(type) || "integer".equals(type)) {
+				Integer.parseInt(value);
+				return true;
+			} else if("float".equals(type)) {
+				Float.valueOf(value);
+				return true;
+			} else if("boolean".equals(type)) {
+				Boolean.valueOf(value);
+				return true;
+			} else if("long".equals(type)) {
+				Long.valueOf(value);
+				return true;
+			} else if("double".equals(type)) {
+				Double.valueOf(value);
+				return true;
+			} else if("byte".equals(type)) {
+				Byte.valueOf(value);
+				return true;
+			} else {
+				// the type dosen't exist
+				return false;
+			}
+		} catch(Exception exc) {
+			// the type of the value was wrong
+			return false;
+		}
+	}
+	/**
 	 * Gets the content of a defined section in a given template file and its subtemplates
 	 * with the given parameters. 
 	 * 
@@ -77,39 +118,76 @@ public class CmsAdminModuleAdminEdit extends CmsWorkplaceDefault implements I_Cm
 		String prop 	= (String)parameters.get("prop");
 		String delete 	= (String)parameters.get("delete");
 		String ok		= (String)parameters.get("ok");
+		String step		= (String)parameters.get("step");
 		
 		if ((prop == null)|| ("".equals(prop))){
 			// new property
 			if ((ok != null) && (! "".equals(ok))){
 				// read new prop
+				String name = getStringValue((String)parameters.get("NAME"));
+				String description = getStringValue((String)parameters.get("BESCHREIBUNG"));
+				String type = (String)parameters.get("TYP");
+				String value = (String)parameters.get("WERT");
 				// TODO: errror handling: check if all fields are filled out and if the value is correct
-				paraNames.addElement((String)parameters.get("NAME"));
-				paraDescr.addElement(getStringValue((String)parameters.get("BESCHREIBUNG")));
-				paraTyp.addElement(getStringValue((String)parameters.get("TYP")));
-				paraVal.addElement(getStringValue((String)parameters.get("WERT")));
-				templateSelector = "done";
+				if ((! "".equals(name)) && (checkType(type, value))){
+					paraNames.addElement(name);
+					paraDescr.addElement(description);
+					paraTyp.addElement(type);
+					paraVal.addElement(value);
+					templateSelector = "done";
+				}else{
+					session.putValue("parametername", name);
+					session.putValue("description", description);
+					session.putValue("parametertype", type);
+					session.putValue("parametervalue", value);
+					templateSelector = "errornew";
+				}
 				
 			}else{
-				xmlTemplateDocument.setData("paraname", "");
-				xmlTemplateDocument.setData("value", "");
-				xmlTemplateDocument.setData("description", "");
-				xmlTemplateDocument.setData("delybutton"," ");
+				if ((step == null) || ("".equals(step))){
+					xmlTemplateDocument.setData("paraname", "");
+					xmlTemplateDocument.setData("paranameok", "");
+					xmlTemplateDocument.setData("value", "");
+					xmlTemplateDocument.setData("description", "");
+					xmlTemplateDocument.setData("delybutton"," ");
+				}else{
+					// from Errorpage
+					xmlTemplateDocument.setData("paraname", "");
+					xmlTemplateDocument.setData("paranameok", (String)session.getValue("parametername"));
+					xmlTemplateDocument.setData("value", (String)session.getValue("parametervalue"));
+					xmlTemplateDocument.setData((String)session.getValue("parametertype"), "selected");
+					xmlTemplateDocument.setData("description", (String)session.getValue("description"));
+					xmlTemplateDocument.setData("delybutton"," ");
+					session.removeValue("packagename");
+					session.removeValue("parametervalue");
+					session.removeValue("parametertype");
+					session.removeValue("description");
+				}	
 			}
 			
 		}else{
 			if ((ok != null) && (! "".equals(ok))){
-				// set property 
-				int i = paraNames.indexOf(prop);
-				paraNames.removeElementAt(i);
-				paraDescr.removeElementAt(i);
-				paraTyp.removeElementAt(i);
-				paraVal.removeElementAt(i);
-				// TODO: errror handling: check if all fields are filled out and if the value is correct
-				paraNames.addElement(prop);
-				paraDescr.addElement(getStringValue((String)parameters.get("BESCHREIBUNG")));
-				paraTyp.addElement(getStringValue((String)parameters.get("TYP")));
-				paraVal.addElement(getStringValue((String)parameters.get("WERT")));
-				templateSelector = "done";
+				// set property
+				String type = getStringValue((String)parameters.get("TYP"));
+				String value = getStringValue((String)parameters.get("WERT"));
+				if (checkType(type, value)){
+					int i = paraNames.indexOf(prop);
+					paraNames.removeElementAt(i);
+					paraDescr.removeElementAt(i);
+					paraTyp.removeElementAt(i);
+					paraVal.removeElementAt(i);
+					paraNames.addElement(prop);
+					paraDescr.addElement(getStringValue((String)parameters.get("BESCHREIBUNG")));
+					paraTyp.addElement(type);
+					paraVal.addElement(value);
+					templateSelector = "done";
+				}else{
+					session.putValue("parametername", prop);
+					session.putValue("description", getStringValue((String)parameters.get("BESCHREIBUNG")));
+					session.putValue("parametertype", type);
+					session.putValue("parametervalue", value);
+					templateSelector = "errorold";					
+				}
 				
 			}else if ((delete != null) && (! "".equals(delete))){
 				// delete property
@@ -121,14 +199,29 @@ public class CmsAdminModuleAdminEdit extends CmsWorkplaceDefault implements I_Cm
 				templateSelector = "done";
 				
 			}else{
-				// change property
-				int i = paraNames.indexOf(prop);
-				xmlTemplateDocument.setData("paraname", prop);
-				xmlTemplateDocument.setData("nameentry", prop);
-				xmlTemplateDocument.setData("value", (String)paraVal.elementAt(i));
-				xmlTemplateDocument.setData("description", (String)paraDescr.elementAt(i));
-				xmlTemplateDocument.setData((String)paraTyp.elementAt(i), "selected");
-				xmlTemplateDocument.setData("delybutton",xmlTemplateDocument.getProcessedDataValue("deletebutton"));
+				// prepare for change property
+				if ((step == null)|| ("".equals(step))){
+					int i = paraNames.indexOf(prop);
+					xmlTemplateDocument.setData("paraname", prop);
+					xmlTemplateDocument.setData("nameentry", prop);
+					xmlTemplateDocument.setData("value", (String)paraVal.elementAt(i));
+					xmlTemplateDocument.setData("description", (String)paraDescr.elementAt(i));
+					xmlTemplateDocument.setData((String)paraTyp.elementAt(i), "selected");
+					xmlTemplateDocument.setData("delybutton",xmlTemplateDocument.getProcessedDataValue("deletebutton"));
+				}else{
+					// from errorpage errorold
+					prop = (String) session.getValue("parametername");
+					xmlTemplateDocument.setData("paraname", prop);
+					xmlTemplateDocument.setData("nameentry", prop);
+					xmlTemplateDocument.setData("value", (String)session.getValue("parametervalue"));
+					xmlTemplateDocument.setData("description", (String)session.getValue("description"));
+					xmlTemplateDocument.setData((String)session.getValue("parametertype"), "selected");
+					xmlTemplateDocument.setData("delybutton",xmlTemplateDocument.getProcessedDataValue("deletebutton"));
+					session.removeValue("packagename");
+					session.removeValue("parametervalue");
+					session.removeValue("parametertype");
+					session.removeValue("description");
+				}
 			}
 		}
 		
