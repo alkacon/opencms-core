@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
- * Date   : $Date: 2000/05/03 14:41:24 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2000/05/08 10:13:10 $
+ * Version: $Revision: 1.33 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.32 $ $Date: 2000/05/03 14:41:24 $
+ * @version $Revision: 1.33 $ $Date: 2000/05/08 10:13:10 $
  */
 public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLogChannels {
     
@@ -695,6 +695,9 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
     public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+        if(templateSelector==null || "".equals(templateSelector)) {
+            templateSelector = (String)parameters.get(C_FRAME_SELECTOR);
+        }
         boolean cacheable = ((m_cache != null) && subtemplatesCacheable(cms, templateFile, elementName, parameters, templateSelector));
         if(C_DEBUG && A_OpenCms.isLogging()) {
             String errorMessage = getClassName() + "Template class " + getClass().getName() + " with file " + templateFile + " is ";
@@ -741,7 +744,7 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
         try {
             doc = this.getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
             doc.init(cms, templateFile);               
-            subtemplates = doc.getAllSubElements();
+            subtemplates = doc.getAllSubElements(templateSelector);
         } catch(Exception e) {
             System.err.println(e);
             return false;
