@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsCoreSession.java,v $
- * Date   : $Date: 2000/08/25 13:40:05 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2001/01/11 15:49:31 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * ToDo: Removal of unused sessions!
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 2000/08/25 13:40:05 $  
+ * @version $Revision: 1.4 $ $Date: 2001/01/11 15:49:31 $  
  */
 
 public class CmsCoreSession implements I_CmsConstants    
@@ -186,6 +186,16 @@ public class CmsCoreSession implements I_CmsConstants
 		m_sessions.put(sessionId,userinfo);
 		
 	}
+	
+	/**
+	 * Counts the amount of currentUsers in the system.
+	 * 
+	 * @return the size of the hashtable with current users.
+	 */
+	public int size() {
+		return m_sessions.size();
+	}
+	
 	/**
 	 * Returns a string-representation for this object.
 	 * This can be used for debugging.

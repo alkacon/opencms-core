@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
- * Date   : $Date: 2001/01/09 14:27:51 $
- * Version: $Revision: 1.67 $
+ * Date   : $Date: 2001/01/11 15:49:32 $
+ * Version: $Revision: 1.68 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -66,7 +66,7 @@ import com.opencms.util.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.67 $ $Date: 2001/01/09 14:27:51 $  
+* @version $Revision: 1.68 $ $Date: 2001/01/11 15:49:32 $  
 * 
 * */
 
@@ -113,6 +113,10 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
 	  */
 	 private String m_clusterurl=null;
 	 
+	 /**
+	  * The total amount of concurrent requests.
+	  */
+	 private int m_currentRequestAmount = 0;	 
  
 	/**
 	 * Checks if the requested resource must be redirected to the server docroot and
@@ -433,9 +437,12 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
 	 */
 	public void doGet(HttpServletRequest req, HttpServletResponse res) 
 		throws ServletException, IOException {	
+		// start time of this request
+		long reqStartTime = System.currentTimeMillis();
+		// amount of total requests in the system
+		m_currentRequestAmount ++;
 
-		if (req.getRequestURI().indexOf("system/workplace/action/login.html")>0)
-		{
+		if (req.getRequestURI().indexOf("system/workplace/action/login.html")>0) {
 			HttpSession session = req.getSession(false);
 			if (session!=null) session.invalidate();
 		}
@@ -460,7 +467,12 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
            }
 		} catch (CmsException e) {
 			errorHandling(cms,cmsReq,cmsRes,e);
-		} 
+		}
+		
+		// create debug informations
+		m_currentRequestAmount --;
+		long delta = System.currentTimeMillis() - reqStartTime;
+		System.err.println("doGet()  reqAm:" + m_currentRequestAmount + " users:" + m_sessionStorage.size() + " " + delta + " " + cmsReq.getRequestedResource());
 	}
 	/**
 	* Method invoked on each HTML POST request. 
@@ -475,6 +487,10 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
 	*/
 	public void doPost(HttpServletRequest req, HttpServletResponse res) 
 		throws ServletException, IOException {
+		// start time of this request
+		long reqStartTime = System.currentTimeMillis();
+		// amount of total requests in the system
+		m_currentRequestAmount ++;
 	
 		 //Check for content type "form/multipart" and decode it
 		 String type = req.getHeader("content-type");
@@ -501,6 +517,11 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
 		} catch (CmsException e) {
 		   errorHandling(cms,cmsReq,cmsRes,e);
 		} 
+		
+		// create debug informations
+		m_currentRequestAmount --;
+		long delta = System.currentTimeMillis() - reqStartTime;
+		System.err.println("doPost() reqAm:" + m_currentRequestAmount + " users:" + m_sessionStorage.size() + " " + delta + " " + cmsReq.getRequestedResource());
 	}
 	/**
 	 * This method performs the error handling for the OpenCms.
