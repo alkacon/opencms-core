@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlEntityResolver.java,v $
- * Date   : $Date: 2005/02/17 12:45:12 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/03/10 16:23:06 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.xml.sax.InputSource;
  * Also provides a cache for XML content schema definitions.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  */
 public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener {
 
@@ -128,7 +128,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
     private CmsXmlEntityResolver() {
 
         // required for unit tests where no OpenCms is available
-        if (OpenCms.getRunLevel() > 1) {
+        if (OpenCms.getRunLevel() >= OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
 
             try {
                 m_cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
@@ -176,7 +176,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
             LRUMap cacheContentDefinitions = new LRUMap(64);
             m_cacheContentDefinitions = Collections.synchronizedMap(cacheContentDefinitions);
 
-            if (OpenCms.getRunLevel() > 1) {
+            if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT) {
                 if ((OpenCms.getMemoryMonitor() != null) && OpenCms.getMemoryMonitor().enabled()) {
                     // map must be of type "LRUMap" so that memory monitor can acecss all information
                     OpenCms.getMemoryMonitor().register(

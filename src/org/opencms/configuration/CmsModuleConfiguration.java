@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsModuleConfiguration.java,v $
- * Date   : $Date: 2005/02/17 12:43:50 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/03/10 16:23:06 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -101,7 +101,7 @@ public class CmsModuleConfiguration extends A_CmsXmlConfiguration implements I_C
     public Element generateXml(Element parent) {
         
         List modules; 
-        if (OpenCms.getRunLevel() > 1) {
+        if (OpenCms.getRunLevel() >= OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
             modules = new ArrayList();
             Iterator names = OpenCms.getModuleManager().getModuleNames().iterator();
             while (names.hasNext()) {

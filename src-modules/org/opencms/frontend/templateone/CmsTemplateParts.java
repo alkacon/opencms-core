@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateParts.java,v $
- * Date   : $Date: 2005/02/18 16:15:19 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/03/10 16:23:06 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.apache.commons.collections.map.LRUMap;
  * An instance of this class is stored in the OpenCms runtime properties.<p> 
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public final class CmsTemplateParts implements I_CmsEventListener {
     
@@ -72,7 +72,7 @@ public final class CmsTemplateParts implements I_CmsEventListener {
         // create new Map
         LRUMap cacheParts = new LRUMap(256);
         m_parts = Collections.synchronizedMap(cacheParts);
-        if (OpenCms.getRunLevel() > 1) {
+        if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT) {
             if ((OpenCms.getMemoryMonitor() != null) && OpenCms.getMemoryMonitor().enabled()) {
                 // map must be of type "LRUMap" so that memory monitor can access all information
                 OpenCms.getMemoryMonitor().register(

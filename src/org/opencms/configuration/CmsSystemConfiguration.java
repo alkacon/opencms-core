@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2005/02/17 12:43:50 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/03/10 16:23:06 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -562,7 +562,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         // generate vfs node and subnodes
         Element systemElement = parent.addElement(N_SYSTEM);        
         
-        if (OpenCms.getRunLevel() > 1) {
+        if (OpenCms.getRunLevel() >= OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
             // initialized OpenCms instance is available, use latest values
             m_localeManager = OpenCms.getLocaleManager();
             m_mailSettings = OpenCms.getSystemInfo().getMailSettings();

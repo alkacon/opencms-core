@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2005/03/10 16:23:07 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,10 +50,10 @@ import java.net.URL;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.41 $
  */
 public class CmsLinkManager {
-    
+
     /** Base URL to calculate absolute links. */
     private static URL m_baseUrl;
 
@@ -61,6 +61,7 @@ public class CmsLinkManager {
      * Public constructor.<p>
      */
     public CmsLinkManager() {
+
         // empty
     }
 
@@ -75,7 +76,7 @@ public class CmsLinkManager {
             // this won't happen
         }
     }
-    
+
     /**
      * Calculates an absolute uri from a relative "uri" and the given absolute "baseUri".<p> 
      * 
@@ -87,6 +88,7 @@ public class CmsLinkManager {
      * @return an absolute uri calculated from "uri" and "baseUri"
      */
     public static String getAbsoluteUri(String relativeUri, String baseUri) {
+
         if ((relativeUri == null) || (relativeUri.length() >= 1 && relativeUri.charAt(0) == '/')) {
             // uri is null or already absolute
             return relativeUri;
@@ -106,7 +108,7 @@ public class CmsLinkManager {
             return relativeUri;
         }
     }
-    
+
     /**
      * Calculates a realtive uri from "fromUri" to "toUri",
      * both uri's must be absolute.<p>
@@ -116,20 +118,21 @@ public class CmsLinkManager {
      * @return a realtive uri from "fromUri" to "toUri"
      */
     public static String getRelativeUri(String fromUri, String toUri) {
+
         StringBuffer result = new StringBuffer();
         int pos = 0;
 
         while (true) {
-            int i = fromUri.indexOf ('/', pos);
-            int j = toUri.indexOf ('/', pos);
-            if ((i == -1) || (i != j) || !fromUri.regionMatches(pos, toUri, pos, i-pos)) {
+            int i = fromUri.indexOf('/', pos);
+            int j = toUri.indexOf('/', pos);
+            if ((i == -1) || (i != j) || !fromUri.regionMatches(pos, toUri, pos, i - pos)) {
                 break;
             }
-            pos = i+1;
+            pos = i + 1;
         }
 
         // count hops up from here to the common ancestor
-        for (int i = fromUri.indexOf('/', pos); i > 0; i = fromUri.indexOf('/', i+1)) {
+        for (int i = fromUri.indexOf('/', pos); i > 0; i = fromUri.indexOf('/', i + 1)) {
             result.append("../");
         }
 
@@ -181,50 +184,50 @@ public class CmsLinkManager {
      * @return the root path for the target uri or null
      */
     public static String getSitePath(CmsObject cms, String relativePath, String targetUri) {
-        
+
         if (cms == null) {
             // required by unit test cases
             return targetUri;
         }
-        
+
         URI uri;
         String path;
         String fragment;
         String query;
         String suffix;
-        
+
         // malformed uri
         try {
             uri = new URI(targetUri);
             path = uri.getPath();
-            
+
             fragment = uri.getFragment();
             if (fragment != null) {
-                fragment ="#" + fragment;
+                fragment = "#" + fragment;
             } else {
                 fragment = "";
             }
-            
+
             query = uri.getQuery();
             if (query != null) {
                 query = "?" + query;
             } else {
                 query = "";
             }
-            
+
         } catch (Exception e) {
             OpenCms.getLog(CmsLinkManager.class).warn(e);
             return null;
         }
-        
+
         // concat fragment and query 
         suffix = fragment.concat(query);
 
         // opaque URI
-        if (uri.isOpaque()) { 
+        if (uri.isOpaque()) {
             return null;
         }
-        
+
         // absolute URI (i.e. uri has a scheme component like http:// ...)
         if (uri.isAbsolute()) {
             CmsSiteMatcher matcher = new CmsSiteMatcher(targetUri);
@@ -232,13 +235,15 @@ public class CmsLinkManager {
                 if (path.startsWith(OpenCms.getSystemInfo().getOpenCmsContext())) {
                     path = path.substring(OpenCms.getSystemInfo().getOpenCmsContext().length());
                 }
-                
-                return cms.getRequestContext().addSiteRoot(OpenCms.getSiteManager().matchSite(matcher).getSiteRoot(), path + suffix);                 
+
+                return cms.getRequestContext().addSiteRoot(
+                    OpenCms.getSiteManager().matchSite(matcher).getSiteRoot(),
+                    path + suffix);
             } else {
                 return null;
             }
-        } 
-        
+        }
+
         // relative URI (i.e. no scheme component, but filename can still start with "/") 
         String context = OpenCms.getSystemInfo().getOpenCmsContext();
         if ((context != null) && path.startsWith(context)) {
@@ -248,25 +253,25 @@ public class CmsLinkManager {
             if (relativePath != null) {
                 siteRoot = CmsSiteManager.getSiteRoot(relativePath);
             }
-            
+
             // cut context from path
             path = path.substring(context.length());
-            
+
             if (siteRoot != null) {
                 // special case: relative path contains a site root, i.e. we are in the root site                
-                if (! path.startsWith(siteRoot)) {
+                if (!path.startsWith(siteRoot)) {
                     // path does not already start with the site root, we have to add this path as site prefix
-                    return cms.getRequestContext().addSiteRoot(siteRoot, path + suffix);                    
+                    return cms.getRequestContext().addSiteRoot(siteRoot, path + suffix);
                 } else {
                     // since path already contains the site root, we just leave it unchanged
                     return path + suffix;
-                }                
+                }
             } else {
                 // site root is added with standard mechanism
                 return cms.getRequestContext().addSiteRoot(path + suffix);
             }
         }
-        
+
         // URI with relative path is relative to the given relativePath if available and in a site, 
         // otherwise invalid
         if (!"".equals(path) && !path.startsWith("/")) {
@@ -274,21 +279,150 @@ public class CmsLinkManager {
                 String absolutePath = getAbsoluteUri(path, cms.getRequestContext().addSiteRoot(relativePath));
                 if (CmsSiteManager.getSiteRoot(absolutePath) != null) {
                     return absolutePath + suffix;
-                } 
+                }
             }
 
             return null;
         }
-        
+
         // relative uri (= vfs path relative to currently selected site root)
         if (!"".equals(path)) {
             return cms.getRequestContext().addSiteRoot(path) + suffix;
         }
-        
+
         // uri without path (typically local link)
         return suffix;
     }
-    
+
+    /**
+     * Returns a positive hash code value for the given string.<p>
+     * 
+     * @param s the string to calculate the hashcode from
+     * @return a positive hash code value for this string
+     */
+    public int hashCode(String s) {
+
+        int h = s.hashCode();
+        if (h < 0) {
+            h = -h;
+        }
+        return h;
+    }
+
+    /**
+     * Substitutes the contents of a link by adding the context path and 
+     * servlet name, and in the case of the "online" project also according
+     * to the configured static export settings.<p>
+     * 
+     * @param cms the cms context
+     * @param link the link to process (must be a valid link to a VFS resource with optional parameters)
+     * @return the substituted link
+     */
+    public String substituteLink(CmsObject cms, String link) {
+
+        if (CmsStringUtil.isEmpty(link)) {
+            // not a valid link parameter, return an empty String
+            return "";
+        }
+
+        // make sure we have an absolute link        
+        String absoluteLink = CmsLinkManager.getAbsoluteUri(link, cms.getRequestContext().getUri());
+
+        String vfsName;
+        String parameters;
+        int pos = absoluteLink.indexOf('?');
+        // check if the link has parameters, if so cut them
+        if (pos >= 0) {
+            vfsName = absoluteLink.substring(0, pos);
+            parameters = absoluteLink.substring(pos);
+        } else {
+            vfsName = absoluteLink;
+            parameters = null;
+        }
+
+        String resultLink = null;
+        String uriBaseName = null;
+        boolean useRelativeLinks = false;
+
+        if (cms.getRequestContext().currentProject().isOnlineProject()) {
+
+            // check if we need relative links in the exported pages
+            if (OpenCms.getStaticExportManager().relativLinksInExport()) {
+                // try to get base uri from cache  
+                uriBaseName = OpenCms.getStaticExportManager().getCachedOnlineLink(
+                    cms.getRequestContext().getSiteRoot() + ":" + cms.getRequestContext().getUri());
+                if (uriBaseName == null) {
+                    // base not cached, check if we must export it
+                    if (exportRequired(cms, cms.getRequestContext().getUri())) {
+                        // base uri must also be exported
+                        uriBaseName = OpenCms.getStaticExportManager()
+                            .getRfsName(cms, cms.getRequestContext().getUri());
+                    } else {
+                        // base uri dosn't need to be exported
+                        uriBaseName = OpenCms.getStaticExportManager().getVfsPrefix()
+                            + cms.getRequestContext().getUri();
+                    }
+                    // cache export base uri
+                    OpenCms.getStaticExportManager().cacheOnlineLink(
+                        cms.getRequestContext().getSiteRoot() + ":" + cms.getRequestContext().getUri(),
+                        uriBaseName);
+                }
+                // use relative links only on pages that get exported 
+                useRelativeLinks = uriBaseName.startsWith(OpenCms.getStaticExportManager().getRfsPrefix());
+            }
+
+            // check if we have the absolute vfs name for the link target cached
+            resultLink = OpenCms.getStaticExportManager().getCachedOnlineLink(
+                cms.getRequestContext().getSiteRoot() + ":" + absoluteLink);
+            if (resultLink == null) {
+                // didn't find the link in the cache
+                if (exportRequired(cms, vfsName)) {
+                    // export required, get export name for target link
+                    if (parameters != null) {
+                        // external link with parameters, so get translated rfsName
+                        resultLink = OpenCms.getStaticExportManager().getTranslatedRfsName(cms, vfsName, parameters);
+                        // now set the parameters to null, we do not need them anymore
+                        parameters = null;
+                    } else {
+                        resultLink = OpenCms.getStaticExportManager().getRfsName(cms, vfsName);
+                    }
+                } else {
+                    // no export required for the target link
+                    resultLink = OpenCms.getStaticExportManager().getVfsPrefix().concat(vfsName);
+                    // add cut off parameters if required
+                    if (parameters != null) {
+                        resultLink = resultLink.concat(parameters);
+                    }
+                }
+                // cache the result
+                OpenCms.getStaticExportManager().cacheOnlineLink(
+                    cms.getRequestContext().getSiteRoot() + ":" + absoluteLink,
+                    resultLink);
+            }
+
+            if (useRelativeLinks) {
+                // we want relative links in export, so make the absolute link relative
+                resultLink = getRelativeUri(uriBaseName, resultLink);
+            }
+
+            return resultLink;
+        } else {
+
+            // offline project, no export required
+            if (OpenCms.getRunLevel() >= OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
+                // in unit test this code would fail otherwise
+                resultLink = OpenCms.getStaticExportManager().getVfsPrefix().concat(vfsName);
+            }
+
+            // add cut off parameters and return the result
+            if (parameters != null) {
+                return resultLink.concat(parameters);
+            } else {
+                return resultLink;
+            }
+        }
+    }
+
     /**
      * Checks if the export is required for a given vfs resource.<p>
      * 
@@ -297,8 +431,9 @@ public class CmsLinkManager {
      * @return true if export is required for the given vfsName
      */
     protected boolean exportRequired(CmsObject cmsParam, String vfsName) {
+
         boolean result = false;
-        if (OpenCms.getStaticExportManager().isStaticExportEnabled()) { 
+        if (OpenCms.getStaticExportManager().isStaticExportEnabled()) {
             try {
                 // static export must always be checked with the export users permissions,
                 // not the current users permissions
@@ -314,7 +449,7 @@ public class CmsLinkManager {
                     } else {
                         // check if the resource is exportable by suffix
                         result = OpenCms.getStaticExportManager().isSuffixExportable(vfsName);
-                    }                        
+                    }
                 } else {
                     // "export" value found, if it was "true" we export
                     result = Boolean.valueOf(exportValue).booleanValue();
@@ -326,140 +461,4 @@ public class CmsLinkManager {
         return result;
     }
 
-    /**
-     * Substitutes the contents of a link by adding the context path and 
-     * servlet name, and in the case of the "online" project also according
-     * to the configured static export settings.<p>
-     * 
-     * @param cms the cms context
-     * @param link the link to process (must be a valid link to a VFS resource with optional parameters)
-     * @return the substituted link
-     */
-    public String substituteLink(CmsObject cms, String link) {     
-        
-        if (CmsStringUtil.isEmpty(link)) {
-            // not a valid link parameter, return an empty String
-            return "";
-        }      
-        
-        // make sure we have an absolute link        
-        String absoluteLink = CmsLinkManager.getAbsoluteUri(link, cms.getRequestContext().getUri());
-        
-        String vfsName;
-        String parameters;
-        int pos = absoluteLink.indexOf('?');
-        // check if the link has parameters, if so cut them
-        if (pos >= 0) {
-            vfsName = absoluteLink.substring(0, pos);
-            parameters = absoluteLink.substring(pos);
-        } else {
-            vfsName = absoluteLink;
-            parameters = null;
-        }
-
-        String resultLink = null;
-        String uriBaseName = null;
-        boolean useRelativeLinks = false;   
-        
-        if (cms.getRequestContext().currentProject().isOnlineProject()) {
-            
-            // check if we need relative links in the exported pages
-            if (OpenCms.getStaticExportManager().relativLinksInExport()) {
-                // try to get base uri from cache  
-                uriBaseName = OpenCms.getStaticExportManager().getCachedOnlineLink(cms.getRequestContext().getSiteRoot() + ":" + cms.getRequestContext().getUri());                
-                if (uriBaseName == null) {
-                    // base not cached, check if we must export it
-                    if (exportRequired(cms, cms.getRequestContext().getUri())) {
-                        // base uri must also be exported
-                        uriBaseName = OpenCms.getStaticExportManager().getRfsName(cms, cms.getRequestContext().getUri());
-                    } else {
-                        // base uri dosn't need to be exported
-                        uriBaseName = OpenCms.getStaticExportManager().getVfsPrefix() + cms.getRequestContext().getUri();
-                    }
-                    // cache export base uri
-                    OpenCms.getStaticExportManager().cacheOnlineLink(cms.getRequestContext().getSiteRoot() + ":" + cms.getRequestContext().getUri(), uriBaseName);
-                }
-                // use relative links only on pages that get exported 
-                useRelativeLinks = uriBaseName.startsWith(OpenCms.getStaticExportManager().getRfsPrefix());
-            }
-
-            // check if we have the absolute vfs name for the link target cached
-            resultLink = OpenCms.getStaticExportManager().getCachedOnlineLink(cms.getRequestContext().getSiteRoot() + ":" + absoluteLink);
-            if (resultLink == null) {              
-                // didn't find the link in the cache
-                if (exportRequired(cms, vfsName)) {
-                    // export required, get export name for target link
-                    if (parameters != null) {
-                        // external link with parameters, so get translated rfsName
-                        resultLink = OpenCms.getStaticExportManager().getTranslatedRfsName(cms, vfsName, parameters);
-                        // now set the parameters to null, we do not need them anymore
-                        parameters = null;
-                    } else {
-                        resultLink = OpenCms.getStaticExportManager().getRfsName(cms, vfsName);
-                    }                        
-                } else {
-                    // no export required for the target link
-                    resultLink = OpenCms.getStaticExportManager().getVfsPrefix().concat(vfsName);
-                    // add cut off parameters if required
-                    if (parameters != null) {      
-                        resultLink = resultLink.concat(parameters);
-                    }                     
-                }
-                // cache the result
-                OpenCms.getStaticExportManager().cacheOnlineLink(cms.getRequestContext().getSiteRoot() + ":" + absoluteLink, resultLink);                            
-            } 
-            
-            if (useRelativeLinks) {
-                // we want relative links in export, so make the absolute link relative
-                resultLink = getRelativeUri(uriBaseName, resultLink);
-            }
-            
-            return resultLink;
-        } else {
-            
-            // offline project, no export required
-            if (OpenCms.getRunLevel() > 1) {
-                // in unit test this code would fail otherwise
-                resultLink = OpenCms.getStaticExportManager().getVfsPrefix().concat(vfsName);
-            }
-
-            // add cut off parameters and return the result
-            if (parameters != null) {      
-                return resultLink.concat(parameters);
-            } else {
-                return resultLink;
-            }            
-        }      
-    }
-    
-    /**
-     * Returns a hash code for this string. The hash code for a
-     * <code>String</code> object is computed as
-     * <blockquote><pre>
-     * s[0]*31^(n-1) + s[1]*31^(n-2) + ... + s[n-1]
-     * </pre></blockquote>
-     * using <code>int</code> arithmetic, where <code>s[i]</code> is the
-     * <i>i</i>th character of the string, <code>n</code> is the length of
-     * the string, and <code>^</code> indicates exponentiation.
-     * (The hash value of the empty string is zero.)
-     * @param s the strgin to calculate the hashcode from
-     * @return  a hash code value for this object.
-     */
-    public int hashCode(String s) {
-        
-        int off = 0;
-        int h=0;
-        char val[] = s.toCharArray();
-        int len = s.length();
-
-        for (int i = 0; i < len; i++) {
-            h = 31*h + val[off++];
-        }
-        
-        if (h < 0) {
-            h = -h;
-        }
-        return h;
-    }
-    
 }

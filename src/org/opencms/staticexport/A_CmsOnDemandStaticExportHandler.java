@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/A_CmsOnDemandStaticExportHandler.java,v $
- * Date   : $Date: 2005/02/28 16:35:34 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/03/10 16:23:07 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import java.util.Set;
  * as optimization for non-dynamic content.<p>
  * 
  * @author <a href="mailto:m.moossen@alkacon.com">Michael Moossen</a> 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 6.0
  * @see I_CmsStaticExportHandler
  */
@@ -116,7 +116,7 @@ public abstract class A_CmsOnDemandStaticExportHandler implements I_CmsStaticExp
         
         final CmsUUID id = publishHistoryId;
         
-        if (OpenCms.getRunLevel() > 0) {
+        if (OpenCms.getRunLevel() >= OpenCms.RUNLEVEL_1_CORE_OBJECT) {
             // only perform scrubbing if OpenCms is still running
             m_busy = true;
             Thread t = new Thread(new Runnable() {

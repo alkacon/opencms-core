@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.88 $
+ * Date   : $Date: 2005/03/10 16:23:06 $
+ * Version: $Revision: 1.89 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -177,7 +177,7 @@ public class CmsImportVersion2 extends A_CmsImport {
         m_linkStorage = new HashMap();
         m_linkPropertyStorage = new HashMap();
         
-        if (OpenCms.getRunLevel() > 1) {
+        if (OpenCms.getRunLevel() >= OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
             if ((OpenCms.getMemoryMonitor() != null) && OpenCms.getMemoryMonitor().enabled()) {
                 OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_folderStorage", m_folderStorage);
                 OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_pageStorage", m_pageStorage);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2005/03/06 09:26:10 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2005/03/10 16:23:06 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,9 +62,24 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.46 $
+ * @version $Revision: 1.47 $
  */
 public final class OpenCms {
+
+    /** Runlevel 0: System is offline. */
+    public static final int RUNLEVEL_0_OFFLINE = 0;
+
+    /** Runlevel 1: Core object created, no database (some test cases run in this level). */
+    public static final int RUNLEVEL_1_CORE_OBJECT = 1;
+
+    /** Runlevel 2: Initializing the system, required since this may take some seconds because of database connections. */
+    public static final int RUNLEVEL_2_INITIALIZING = 2;
+
+    /** Runlevel 3: Shell access to the database possible, but no servlet context available. */
+    public static final int RUNLEVEL_3_SHELL_ACCESS = 3;
+
+    /** Runlevel 4: Final runlevel where database and servlet are initialized. */
+    public static final int RUNLEVEL_4_SERVLET_ACCESS = 4;
 
     /**
      * The public contructor is hidden to prevent generation of instances of this class.<p> 
@@ -252,14 +267,24 @@ public final class OpenCms {
      * 
      * The following runlevels are defined:
      * <dl>
-     * <dt>Runlevel 1:</dt><dd>
+     * <dt>Runlevel {@link OpenCms#RUNLEVEL_0_OFFLINE}:</dt><dd>
+     * OpenCms is in the process of being shut down, the system is offline.</dd>
+     * 
+     * <dt>Runlevel {@link OpenCms#RUNLEVEL_1_CORE_OBJECT}:</dt><dd>
      * OpenCms instance available, but configuration has not been processed. 
      * No database or VFS available.</dd>
-     * <dt>Runlevel 2:</dt><dd>
+     * 
+     * <dt>Runlevel {@link OpenCms#RUNLEVEL_2_INITIALIZING}:</dt><dd>
+     * OpenCms is initializing, but the process is not finished.
+     * The database with the VFS is currently being connected but can't be accessed.</dd>
+     * 
+     * <dt>Runlevel {@link OpenCms#RUNLEVEL_3_SHELL_ACCESS}:</dt><dd>
      * OpenCms database and VFS available, but http processing (i.e. servlet) not initialized.
      * This is the runlevel the OpenCms shell operates in.</dd>
-     * <dt>Runlevel 3:</dt><dd>
-     * OpenCms fully initialized. This is the "default" when OpenCms is in normal operation.</dd>
+     * 
+     * <dt>Runlevel {@link OpenCms#RUNLEVEL_4_SERVLET_ACCESS}:</dt><dd>
+     * OpenCms fully initialized, servlet and database available.
+     * This is the "default" when OpenCms is in normal operation.</dd>
      * </dl>
      * 
      * @return the OpenCms run level

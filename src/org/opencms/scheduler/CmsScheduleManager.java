@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsScheduleManager.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/03/10 16:23:07 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.quartz.impl.StdSchedulerFactory;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  *  
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.3.6
  * 
  * @see org.opencms.scheduler.CmsScheduledJobInfo
@@ -194,8 +194,8 @@ public class CmsScheduleManager implements Job {
      */
     public void initialize(CmsObject adminCms) throws CmsException {
 
-        if ((OpenCms.getRunLevel() > 1) || (adminCms != null)) {
-            // simple unit tests will have runlevel 1 and no CmsObject
+        if ((OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT) || (adminCms != null)) {
+            // simple unit tests will have runlevel 2 and no CmsObject
             if ((adminCms == null) || !adminCms.isAdmin()) {
                 throw new CmsSecurityException(CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
             }
@@ -267,7 +267,7 @@ public class CmsScheduleManager implements Job {
      */
     public void scheduleJob(CmsObject cms, CmsScheduledJobInfo jobInfo) throws CmsException {
 
-        if (OpenCms.getRunLevel() > 1) {
+        if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT) {
             // simple unit tests will have runlevel 1 and no CmsObject
             if ((cms == null) || !cms.isAdmin()) {
                 throw new CmsSecurityException(CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);

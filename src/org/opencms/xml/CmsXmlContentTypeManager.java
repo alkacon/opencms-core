@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentTypeManager.java,v $
- * Date   : $Date: 2005/02/17 12:45:12 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/03/10 16:23:06 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * @since 5.5.0
  */
 public class CmsXmlContentTypeManager {
@@ -446,7 +446,8 @@ public class CmsXmlContentTypeManager {
      */
     public synchronized void initialize(CmsObject adminCms) {
 
-        if (((adminCms == null) && (OpenCms.getRunLevel() > 1)) || ((adminCms != null) && !adminCms.isAdmin())) {
+        if (((adminCms == null) && (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT))
+            || ((adminCms != null) && !adminCms.isAdmin())) {
             // null admin cms only allowed during test cases
             throw new RuntimeException("Admin permissions are required to initialize the XML content type manager");
         }

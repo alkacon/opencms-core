@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.61 $
+ * Date   : $Date: 2005/03/10 16:23:06 $
+ * Version: $Revision: 1.62 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -152,7 +152,7 @@ public abstract class A_CmsImport implements I_CmsImport {
         m_groupsToCreate = new Stack();
         m_importedPages = new ArrayList();
         
-        if (OpenCms.getRunLevel() > 1) {
+        if (OpenCms.getRunLevel() >= OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
             if ((OpenCms.getMemoryMonitor() != null) && OpenCms.getMemoryMonitor().enabled()) {
                 OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_importedPages", m_importedPages);
     }

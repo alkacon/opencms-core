@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/03/07 07:10:50 $
- * Version: $Revision: 1.166 $
+ * Date   : $Date: 2005/03/10 16:23:06 $
+ * Version: $Revision: 1.167 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -111,7 +111,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.166 $
+ * @version $Revision: 1.167 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -222,18 +222,20 @@ public final class OpenCmsCore {
     private CmsXmlContentTypeManager m_xmlContentTypeManager;
         
     /**
-     * Protected constructor that will initialize the singleton OpenCms instance with runlevel 1.<p>
+     * Protected constructor that will initialize the singleton OpenCms instance 
+     * with runlevel {@link OpenCms#RUNLEVEL_1_CORE_OBJECT}.<p>
+     * 
      * @throws CmsInitException in case of errors during the initialization
      */
     private OpenCmsCore() throws CmsInitException {
         
         synchronized (m_lock) {
-            if (m_instance != null && (m_instance.getRunLevel() > 0)) {
+            if (m_instance != null && (m_instance.getRunLevel() > OpenCms.RUNLEVEL_0_OFFLINE)) {
                 throw new CmsInitException("OpenCms already initialized!");
             }
             initMembers();
-            setRunLevel(1);
             m_instance = this;
+            setRunLevel(OpenCms.RUNLEVEL_1_CORE_OBJECT);
         }
     }
 
@@ -418,8 +420,8 @@ public final class OpenCmsCore {
     protected void destroy() {
 
         synchronized (m_lock) {
-            if (m_runLevel > 1) {
-                // runlevel 0 or 1 does not require any shutdown handling
+            if (getRunLevel() > OpenCms.RUNLEVEL_0_OFFLINE) {                
+                
                 System.err.println("\n\nShutting down OpenCms, version " + getSystemInfo().getVersionName() + " in web application '" + getSystemInfo().getWebApplicationName() + "'");
                 if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
                     getLog(CmsLog.CHANNEL_INIT).info(".");
@@ -428,8 +430,10 @@ public final class OpenCmsCore {
                     getLog(CmsLog.CHANNEL_INIT).info(". Performing shutdown  : OpenCms version " + getSystemInfo().getVersionName());
                     getLog(CmsLog.CHANNEL_INIT).info(". Shutdown time        : " + (new Date(System.currentTimeMillis())));
                 }
-                // reset the runlevel
-                m_runLevel = 0;
+                
+                // take the system offline
+                setRunLevel(OpenCms.RUNLEVEL_0_OFFLINE);
+                
                 try {
                     if (m_staticExportManager != null) {
                         m_staticExportManager.shutDown();
@@ -473,6 +477,7 @@ public final class OpenCmsCore {
                     getLog(CmsLog.CHANNEL_INIT).info(".");
                 }
                 System.err.println("Shutdown completed, total uptime was " + runtime + ".\n");
+                
             }
             m_instance = null;
         }
@@ -647,7 +652,12 @@ public final class OpenCmsCore {
     /** 
      * Returns the runlevel of this OpenCmsCore object instance.<p>
      * 
+     * For a detailed description about the possible run levels, 
+     * please see {@link OpenCms#getRunLevel()}.<p>
+     * 
      * @return the runlevel of this OpenCmsCore object instance
+     * 
+     * @see OpenCms#getRunLevel()
      */
     protected int getRunLevel() {
 
@@ -791,7 +801,7 @@ public final class OpenCmsCore {
         if (m_xmlContentTypeManager != null) {
             return m_xmlContentTypeManager;
         }
-        if (m_runLevel < 2) {
+        if (getRunLevel() == OpenCms.RUNLEVEL_1_CORE_OBJECT) {
             // this is only to enable test cases to run 
             m_xmlContentTypeManager = CmsXmlContentTypeManager.createTypeManagerForTestCases();
         }
@@ -877,7 +887,7 @@ public final class OpenCmsCore {
      * @throws Exception in case of problems initializing OpenCms, this is usually fatal 
      */
     protected synchronized void initConfiguration(ExtendedProperties configuration) throws Exception {
-                
+        
         String systemEncoding = null;
         try {
             systemEncoding = System.getProperty("file.encoding");
@@ -1092,7 +1102,7 @@ public final class OpenCmsCore {
         m_resourceManager.initialize(adminCms);
         
         // initialize the search manager
-        m_searchManager.initialize(adminCms);
+        m_searchManager.initialize(adminCms);        
     }
 
     /**
@@ -1106,8 +1116,8 @@ public final class OpenCmsCore {
      * @param context configuration of OpenCms from <code>web.xml</code>
      * @throws CmsInitException if initalization fails
      */
-    protected synchronized void initContext(ServletContext context) throws CmsInitException {
-
+    protected synchronized void initContext(ServletContext context) throws CmsInitException {        
+                
         // read the the OpenCms servlet mapping from the servlet context parameters
         String servletMapping = context.getInitParameter("OpenCmsServlet");
         if (servletMapping == null) {
@@ -1201,7 +1211,7 @@ public final class OpenCmsCore {
             }
         } catch (Exception exc) {
             throwInitException(new CmsInitException(C_ERRORMSG + "Trouble creating the com.opencms.core.CmsObject. Please check the root cause for more information.\n\n", exc));
-        }       
+        }
 
         // check if basic or form based authentication should be used      
         m_useBasicAuthentication = configuration.getBoolean("auth.basic", true);
@@ -1214,7 +1224,7 @@ public final class OpenCmsCore {
             }
         } else {
             getLog(CmsLog.CHANNEL_INIT).error(". Session manager      : NOT initialized");
-        }
+        }        
     }
     
     /**
@@ -1359,8 +1369,11 @@ public final class OpenCmsCore {
     }
 
     /**
-     * Upgrades to runlevel 2,
-     * this is shell access but no Servlet context.<p>
+     * Upgrades to runlevel {@link OpenCms#RUNLEVEL_3_SHELL_ACCESS},
+     * this is shell access to the database but no Servlet context.<p>
+     * 
+     * To upgrade the runlevel, the system must be in runlevel {@link OpenCms#RUNLEVEL_1_CORE_OBJECT},
+     * otherwise an exception is thrown.<p>
      * 
      * @param configuration the configuration
      * @return the initialized OpenCmsCore
@@ -1368,13 +1381,23 @@ public final class OpenCmsCore {
     protected OpenCmsCore upgradeRunlevel(ExtendedProperties configuration) {
         
         synchronized (m_lock) {
-            if ((m_instance != null) && (getRunLevel() == 2)) {
-                // instance already in runlevel 2
+            if ((m_instance != null) && (getRunLevel() >= OpenCms.RUNLEVEL_2_INITIALIZING)) {
+                // instance already in runlevel 3 or 4
                 return m_instance;
             }
-            setRunLevel(2);
+            if (getRunLevel() != OpenCms.RUNLEVEL_1_CORE_OBJECT) {
+                if (getLog(CmsLog.CHANNEL_INIT).isErrorEnabled()) {
+                    getLog(CmsLog.CHANNEL_INIT).error("Wrong init sequence, can not upgrade to runlevel 3 from runlevel " + getRunLevel());
+                }
+                return m_instance;
+            }
             try {
+                // set the runlevel to "initializing OpenCms"
+                setRunLevel(OpenCms.RUNLEVEL_2_INITIALIZING);
+                // initialize the configuration
                 m_instance.initConfiguration(configuration);
+                // upgrade the runlevel - OpenCms shell is available
+                setRunLevel(OpenCms.RUNLEVEL_3_SHELL_ACCESS);
             } catch (Throwable t) {
                 if (getLog(CmsLog.CHANNEL_INIT).isErrorEnabled()) {
                     getLog(CmsLog.CHANNEL_INIT).error("Critical error during OpenCms initialization", t);
@@ -1386,8 +1409,11 @@ public final class OpenCmsCore {
     }
 
     /**
-     * Upgrades to runlevel 3,
-     * this is the final runlevel with an initialized Servlet context.<p>
+     * Upgrades to runlevel {@link OpenCms#RUNLEVEL_4_SERVLET_ACCESS},
+     * this is the final runlevel with an initialized database and Servlet context.<p>
+     * 
+     * To upgrade the runlevel, the system must be in runlevel {@link OpenCms#RUNLEVEL_1_CORE_OBJECT},
+     * otherwise an exception is thrown.<p>
      * 
      * @param context the context
      * @return the initialized OpenCmsCore
@@ -1395,13 +1421,24 @@ public final class OpenCmsCore {
     protected OpenCmsCore upgradeRunlevel(ServletContext context) {
         
         synchronized (m_lock) {
-            if ((m_instance != null) && (getRunLevel() == 3)) {
-                // instance already in runlevel 3
+            if ((m_instance != null) && (getRunLevel() >= OpenCms.RUNLEVEL_4_SERVLET_ACCESS)) {
+                // instance already in runlevel 5 or 6
+                return m_instance;
+            }
+            if (getRunLevel() != OpenCms.RUNLEVEL_1_CORE_OBJECT) {
+                if (getLog(CmsLog.CHANNEL_INIT).isErrorEnabled()) {
+                    getLog(CmsLog.CHANNEL_INIT).error("Wrong init sequence, can not upgrade to runlevel 4 from runlevel " + getRunLevel());
+                }
                 return m_instance;
             }
             try {
-                setRunLevel(3);
+                // set the runlevel to "initializing OpenCms"
+                setRunLevel(OpenCms.RUNLEVEL_2_INITIALIZING);
+                // initialize the servlet context
                 m_instance.initContext(context);
+                // initialization successfully finished - OpenCms servlet is online
+                // the runlevel will change from 2 directly to 4, this is on purpose
+                setRunLevel(OpenCms.RUNLEVEL_4_SERVLET_ACCESS);
             } catch (CmsInitException e) {
                 if (e.getType() != CmsInitException.C_INIT_WIZARD_ENABLED) {
                     // do not output the "wizard enabled" message on the log
@@ -2021,14 +2058,23 @@ public final class OpenCmsCore {
     /**       
      * Sets the init level of this OpenCmsCore object instance.<p>
      * 
+     * For a detailed description about the possible run levels, 
+     * please see {@link OpenCms#getRunLevel()}.<p>
+     * 
      * @param level the level to set
      */
     private void setRunLevel(int level) {
 
-        if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            getLog(CmsLog.CHANNEL_INIT).info("OpenCms: Changing runlevel from " + m_runLevel + " to " + level);
+        if (m_instance != null) {
+            if (m_instance.m_runLevel >= OpenCms.RUNLEVEL_1_CORE_OBJECT) {
+                // otherwise the log is not available
+                if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                    getLog(CmsLog.CHANNEL_INIT).info(
+                        ". Runlevel change      : Switching from " + m_instance.m_runLevel + " to " + level);
+                }
+            }
+            m_instance.m_runLevel = level;
         }
-        m_runLevel = level;
     }
 
     /**

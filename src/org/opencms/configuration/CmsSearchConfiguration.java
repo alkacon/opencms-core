@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSearchConfiguration.java,v $
- * Date   : $Date: 2005/03/07 15:30:50 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/03/10 16:23:06 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.dom4j.Element;
  * Lucene search configuration class.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.3.5
  */
 public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
@@ -192,7 +192,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
 
         // add <search> node
         Element searchElement = parent.addElement(N_SEARCH);
-        if (OpenCms.getRunLevel() > 1) {
+        if (OpenCms.getRunLevel() >= OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
             // initialized OpenCms instance is available, use latest values
             m_searchManager = OpenCms.getSearchManager();            
         }
