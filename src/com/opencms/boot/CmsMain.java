@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsMain.java,v $
-* Date   : $Date: 2001/04/04 12:17:54 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2001/07/11 11:48:38 $
+* Version: $Revision: 1.2 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -40,19 +40,17 @@ import source.org.apache.java.util.*;
  *
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.1 $ $Date: 2001/04/04 12:17:54 $
+ * @version $Revision: 1.2 $ $Date: 2001/07/11 11:48:38 $
  */
 public class CmsMain {
 
-    /**
-     * Main entry point when started as application.
-     * Used to launch the OpenCms command line interface (CmsShell)
+/**
+     * Main entry point when started via the command line.
      *
      * @param args Array of parameters passed to the application
      * via the command line.
      */
     public static void main(String[] args) {
-        String classname = "com.opencms.core.CmsShell";
         if(args.length > 1) {
 
             // print out usage-information.
@@ -63,37 +61,63 @@ public class CmsMain {
             if(args.length == 1) {
                 base = args[0];
             }
+        begin(new FileInputStream(FileDescriptor.in),base);
+        }
+    }
 
+    /**
+     * Main entry point when started via the OpenCms setup wizard.
+     *
+     * @param file file containing the setup commands (cmssetup.txt)
+     * @param base OpenCms base folder
+     */
+    public static void startSetup(String file, String base)  {
+        try {
+            begin(new FileInputStream(new File(file)),base);
+        }
+        catch (FileNotFoundException  e)  {
+          e.printStackTrace();
+        }
+    }
+
+    /**
+     * Used to launch the OpenCms command line interface (CmsShell)
+     */
+    private static void begin(FileInputStream fis, String base)  {
+        String classname = "com.opencms.core.CmsShell";
+        if(base == null || "".equals(base)) {
+            System.out.println("No OpenCms home folder given. Trying to guess...");
+            base = searchBaseFolder(System.getProperty("user.dir"));
             if(base == null || "".equals(base)) {
-                System.out.println("No OpenCms home folder given. Trying to guess...");
-                base = searchBaseFolder(System.getProperty("user.dir"));
-                if(base == null || "".equals(base)) {
-                    System.err.println("-----------------------------------------------------------------------");
-                    System.err.println("OpenCms base folder could not be guessed.");
-                    System.err.println("");
-                    System.err.println("Please start the OpenCms command line interface from the directory");
-                    System.err.println("containing the \"opencms.properties\" and the \"oclib\" folder or pass the");
-                    System.err.println("OpenCms home folder as argument.");
-                    System.err.println("-----------------------------------------------------------------------");
-                    return;
-                }
+                System.err.println("-----------------------------------------------------------------------");
+                System.err.println("OpenCms base folder could not be guessed.");
+                System.err.println("");
+                System.err.println("Please start the OpenCms command line interface from the directory");
+                System.err.println("containing the \"opencms.properties\" and the \"oclib\" folder or pass the");
+                System.err.println("OpenCms home folder as argument.");
+                System.err.println("-----------------------------------------------------------------------");
+                return;
             }
-            base = CmsBase.setBasePath(base);
-            try {
-                CmsClassLoader loader = new CmsClassLoader();
-                // Search for jar files in the oclib folder.
-                collectRepositories(base, loader);
-                Class c = loader.loadClass(classname);
-                // Now we have to look for the constructor
-                Object o = c.newInstance();
-                Method m = c.getMethod("commands", null);
-                m.invoke(o, null);
-            } catch(InvocationTargetException e) {
-                Throwable t = e.getTargetException();
-                t.printStackTrace();
-            } catch(Throwable t) {
-                t.printStackTrace();
-            }
+        }
+        base = CmsBase.setBasePath(base);
+        try {
+            CmsClassLoader loader = new CmsClassLoader();
+            // Search for jar files in the oclib folder.
+            collectRepositories(base, loader);
+            Class c = loader.loadClass(classname);
+            // Now we have to look for the constructor
+            Object o = c.newInstance();
+
+            Class classArgs[] = {fis.getClass()};
+            Method m = c.getMethod("commands", classArgs);
+
+            Object objArgs[] = {fis};
+            m.invoke(o, objArgs);
+        } catch(InvocationTargetException e) {
+            Throwable t = e.getTargetException();
+            t.printStackTrace();
+        } catch(Throwable t) {
+            t.printStackTrace();
         }
     }
 

@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
-* Date   : $Date: 2001/04/04 12:19:14 $
-* Version: $Revision: 1.65 $
+* Date   : $Date: 2001/07/11 11:48:52 $
+* Version: $Revision: 1.66 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -42,7 +42,7 @@ import source.org.apache.java.util.*;
  *
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.65 $ $Date: 2001/04/04 12:19:14 $
+ * @version $Revision: 1.66 $ $Date: 2001/07/11 11:48:52 $
  */
 public class CmsShell implements I_CmsConstants {
 
@@ -74,6 +74,11 @@ public class CmsShell implements I_CmsConstants {
      * if m_shortException is true then print only the short version of the Exception in the commandshell
      */
     static boolean m_shortException = false;
+
+    /**
+     * m_exitCalled indicates if the 'exit' command has been called
+     */
+    static boolean m_exitCalled = false;
 
     /**
      * Insert the method's description here.
@@ -163,11 +168,10 @@ public class CmsShell implements I_CmsConstants {
     /**
      * The commandlineinterface.
      */
-    public void commands() {
+    public void commands(FileInputStream fis) {
         try {
-            FileReader fr = new FileReader(FileDescriptor.in);
-            LineNumberReader lnr = new LineNumberReader(fr);
-            for(;;) { // ever
+            LineNumberReader lnr = new LineNumberReader(new InputStreamReader(fis));
+            while(!m_exitCalled) { // ever
                 printPrompt();
                 StringReader reader = new StringReader(lnr.readLine());
                 StreamTokenizer st = new StreamTokenizer(reader);

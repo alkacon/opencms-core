@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2001/07/09 08:08:52 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2001/07/11 11:48:52 $
+* Version: $Revision: 1.34 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -41,7 +41,7 @@ import source.org.apache.java.util.*;
  *
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.33 $ $Date: 2001/07/09 08:08:52 $
+ * @version $Revision: 1.34 $ $Date: 2001/07/11 11:48:52 $
  */
 public class CmsShellCommands implements I_CmsConstants {
 
@@ -861,7 +861,7 @@ public class CmsShellCommands implements I_CmsConstants {
         catch(CmsException e) {
             e.printStackTrace();
         }
-        System.exit(0);
+        CmsShell.m_exitCalled = true;
     }
 
     /**
