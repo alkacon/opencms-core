@@ -2,11 +2,11 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsQueries.java,v $
- * Date   : $Date: 2001/01/29 15:13:28 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2001/02/09 12:30:26 $
+ * Version: $Revision: 1.39 $
  *
- * Copyright (C) 2000  The OpenCms Group 
- * 
+ * Copyright (C) 2000  The OpenCms Group
+ *
  * This File is part of OpenCms -
  * the Open Source Content Mananagement System
  *
@@ -14,15 +14,15 @@ package com.opencms.file.genericSql;
  * modify it under the terms of the GNU General public  License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General public  License for more details.
- * 
+ *
  * For further information about OpenCms, please see the
  * OpenCms Website: http://www.opencms.com
- * 
+ *
  * You should have received a copy of the GNU General public  License
  * long with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
@@ -31,15 +31,15 @@ package com.opencms.file.genericSql;
 import com.opencms.core.*;
 
 /**
- * This interface is defines all queries used in the DB-Access class.  
+ * This interface is defines all queries used in the DB-Access class.
  * @author Michael Emmerich
- * 
- * @version $Revision: 1.38 $ $Date: 2001/01/29 15:13:28 $
+ *
+ * @version $Revision: 1.39 $ $Date: 2001/02/09 12:30:26 $
  */
 public class CmsQueries
 {
 
-	// Common constants   
+	// Common constants
 	protected String C_DATABASE_PREFIX = "CMS_";
 
 	// Constants for resources tables
@@ -71,7 +71,7 @@ public class CmsQueries
 	public String C_RESOURCES_READ = "SELECT * FROM " + C_DATABASE_PREFIX + "RESOURCES WHERE RESOURCE_NAME = ? AND PROJECT_ID = ?";
 	public String C_RESOURCES_WRITE = "INSERT INTO " + C_DATABASE_PREFIX + "RESOURCES VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
-	// generic SQL	
+	// generic SQL
 	public String C_RESOURCES_GET_LOST_ID = "SELECT FILE_ID FROM " + C_DATABASE_PREFIX + "FILES WHERE FILE_ID NOT IN ( SELECT FILE_ID FROM " + C_DATABASE_PREFIX + "RESOURCES)";
 	public String C_RESOURCES_DELETE_LOST_ID = "DELETE FROM " + C_DATABASE_PREFIX + "FILES WHERE FILE_ID NOT IN ( SELECT FILE_ID FROM " + C_DATABASE_PREFIX + "RESOURCES)";
 
@@ -83,7 +83,7 @@ public class CmsQueries
 	public String C_RESOURCES_PUBLISH_PROJECT_READFILE = "SELECT " + C_DATABASE_PREFIX + "RESOURCES.RESOURCE_NAME, " + "RESOURCE_ID,PARENT_ID,FILE_ID," + "RESOURCE_TYPE," + "RESOURCE_FLAGS,USER_ID," + "GROUP_ID,ACCESS_FLAGS,STATE," + "LOCKED_BY,LAUNCHER_TYPE,LAUNCHER_CLASSNAME," + "DATE_CREATED,DATE_LASTMODIFIED,RESOURCE_LASTMODIFIED_BY,RESOURCE_SIZE " + " FROM " + C_DATABASE_PREFIX + "RESOURCES " + "WHERE " + C_DATABASE_PREFIX + "RESOURCES.PROJECT_ID = ? " + "AND " + C_DATABASE_PREFIX + "RESOURCES.RESOURCE_TYPE <> " + I_CmsConstants.C_TYPE_FOLDER;
 	public String C_RESOURCES_PUBLISH_PROJECT_READFOLDER = "SELECT " + C_DATABASE_PREFIX + "RESOURCES.RESOURCE_NAME, " + "RESOURCE_ID,PARENT_ID,FILE_ID," + "RESOURCE_TYPE," + "RESOURCE_FLAGS,USER_ID," + "GROUP_ID,ACCESS_FLAGS,STATE," + "LOCKED_BY,LAUNCHER_TYPE,LAUNCHER_CLASSNAME," + "DATE_CREATED,DATE_LASTMODIFIED,RESOURCE_LASTMODIFIED_BY,RESOURCE_SIZE " + " FROM " + C_DATABASE_PREFIX + "RESOURCES " + "WHERE " + C_DATABASE_PREFIX + "RESOURCES.PROJECT_ID = ? " + "AND " + C_DATABASE_PREFIX + "RESOURCES.RESOURCE_TYPE <> " + I_CmsConstants.C_TYPE_FOLDER;
 	public String C_RESOURCES_UPDATE_FILE = "UPDATE " + C_DATABASE_PREFIX + "RESOURCES SET " + "RESOURCE_TYPE = ? , " + "RESOURCE_FLAGS = ? , " + "USER_ID = ? , " + "GROUP_ID = ? , " + "PROJECT_ID = ? ," + "ACCESS_FLAGS = ? ," + "STATE = ? , " + "LOCKED_BY = ? , " + "LAUNCHER_TYPE = ? , " + "LAUNCHER_CLASSNAME = ? ," + "DATE_LASTMODIFIED = ? ," + "RESOURCE_LASTMODIFIED_BY = ? ," + "RESOURCE_SIZE = ? , " + "FILE_ID = ? " + "WHERE RESOURCE_ID = ?";
-	public String C_RESOURCES_UNLOCK = "UPDATE " + C_DATABASE_PREFIX + "RESOURCES SET " + "LOCKED_BY = " + I_CmsConstants.C_UNKNOWN_ID + "WHERE PROJECT_ID = ?";
+	public String C_RESOURCES_UNLOCK = "UPDATE " + C_DATABASE_PREFIX + "RESOURCES SET " + "LOCKED_BY = " + I_CmsConstants.C_UNKNOWN_ID + " WHERE PROJECT_ID = ?";
 	public String C_RESOURCES_COUNTLOCKED = "SELECT COUNT(RESOURCE_ID) FROM " + C_DATABASE_PREFIX + "RESOURCES where LOCKED_BY <> " + I_CmsConstants.C_UNKNOWN_ID + " and PROJECT_ID = ?";
 	public String C_RESOURCES_READBYPROJECT = "SELECT * FROM " + C_DATABASE_PREFIX + "RESOURCES where PROJECT_ID = ?";
 	public String C_RESOURCES_PUBLISH_MARKED = "select OL.*, OFF.* from " + C_DATABASE_PREFIX + "RESOURCES  OL, " + C_DATABASE_PREFIX + "RESOURCES  OFF " + "where OFF.PROJECT_ID = ? and OL.PROJECT_ID = ? and OFF.RESOURCE_NAME = OL.RESOURCE_NAME and OFF.STATE = ? " + "order by OFF.RESOURCE_NAME";
@@ -91,7 +91,7 @@ public class CmsQueries
 	public String C_RESOURCES_READFOLDERSBYPROJECT = "SELECT * FROM " + C_DATABASE_PREFIX + "RESOURCES where PROJECT_ID = ? AND RESOURCE_TYPE = " + I_CmsConstants.C_TYPE_FOLDER + " order by RESOURCE_NAME";
 	public String C_RESOURCES_READFILESBYPROJECT = "SELECT * FROM " + C_DATABASE_PREFIX + "RESOURCES where PROJECT_ID = ? AND RESOURCE_TYPE <> " + I_CmsConstants.C_TYPE_FOLDER;
 	public String C_RESOURCES_GET_FILESINFOLDER = "SELECT * FROM " + C_DATABASE_PREFIX + "RESOURCES WHERE PARENT_ID = ? AND RESOURCE_TYPE <> " + I_CmsConstants.C_TYPE_FOLDER + " ORDER BY RESOURCE_NAME";
-	public String C_RESOURCES_REMOVE = "UPDATE " + C_DATABASE_PREFIX + "RESOURCES SET " + "STATE = ?, LOCKED_BY = ?" + "WHERE RESOURCE_NAME = ? AND PROJECT_ID = ?";
+	public String C_RESOURCES_REMOVE = "UPDATE " + C_DATABASE_PREFIX + "RESOURCES SET " + "STATE = ?, LOCKED_BY = ?" + " WHERE RESOURCE_NAME = ? AND PROJECT_ID = ?";
 	public String C_RESOURCES_READ_ALL = "SELECT * FROM " + C_DATABASE_PREFIX + "RESOURCES WHERE RESOURCE_NAME = ?";
 	public String C_RESOURCES_READBYID = "SELECT * FROM " + C_DATABASE_PREFIX + "RESOURCES WHERE RESOURCE_ID = ?";
 	public String C_RESOURCES_RENAMERESOURCE = "UPDATE " + C_DATABASE_PREFIX + "RESOURCES SET " + "RESOURCE_NAME = ? , " + "RESOURCE_LASTMODIFIED_BY = ? " + "WHERE RESOURCE_ID = ?";
@@ -177,7 +177,7 @@ public class CmsQueries
 	public String C_PROPERTIES_DELETEALL = "DELETE FROM " + C_DATABASE_PREFIX + "PROPERTIES " + "WHERE RESOURCE_ID = ?";
 	public String C_PROPERTIES_DELETE = "DELETE FROM " + C_DATABASE_PREFIX + "PROPERTIES " + "WHERE " + C_PROPERTYDEF_ID + " = ? and " + C_PROPERTY_RESOURCE_ID + " = ? ";
 	public String C_PROPERTIES_DELETEALLPROP = "DELETE FROM " + C_DATABASE_PREFIX + "PROPERTIES " + "WHERE RESOURCE_ID IN (SELECT RESOURCE_ID FROM " + C_DATABASE_PREFIX + "RESOURCES WHERE PROJECT_ID = ?)";
-	
+
 
 	// Constants for Projects table
 	public String C_PROJECTS_PROJECT_ID = "PROJECT_ID";
@@ -195,8 +195,8 @@ public class CmsQueries
 
 
 	// Constants for Projects
-	public String C_PROJECTS_RECORD = C_PROJECTS_PROJECT_ID+","+C_PROJECTS_USER_ID+","+C_PROJECTS_GROUP_ID+","+C_PROJECTS_MANAGERGROUP_ID+","+C_PROJECTS_TASK_ID+","+C_PROJECTS_PROJECT_NAME+","+C_PROJECTS_PROJECT_DESCRIPTION+","+C_PROJECTS_PROJECT_FLAGS+","+C_PROJECTS_PROJECT_CREATEDATE+","+C_PROJECTS_PROJECT_PUBLISHDATE+","+C_PROJECTS_PROJECT_PUBLISHED_BY+","+C_PROJECTS_PROJECT_TYPE;	
- 
+	public String C_PROJECTS_RECORD = C_PROJECTS_PROJECT_ID+","+C_PROJECTS_USER_ID+","+C_PROJECTS_GROUP_ID+","+C_PROJECTS_MANAGERGROUP_ID+","+C_PROJECTS_TASK_ID+","+C_PROJECTS_PROJECT_NAME+","+C_PROJECTS_PROJECT_DESCRIPTION+","+C_PROJECTS_PROJECT_FLAGS+","+C_PROJECTS_PROJECT_CREATEDATE+","+C_PROJECTS_PROJECT_PUBLISHDATE+","+C_PROJECTS_PROJECT_PUBLISHED_BY+","+C_PROJECTS_PROJECT_TYPE;
+
 	public String C_PROJECTS_MAXID = "SELECT MAX(PROJECT_ID) FROM " + C_DATABASE_PREFIX + "PROJECTS";
 	public String C_PROJECTS_CREATE = "INSERT INTO " + C_DATABASE_PREFIX + "PROJECTS ("+C_PROJECTS_RECORD+") VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
 	public String C_PROJECTS_READ = "SELECT "+C_PROJECTS_RECORD+" FROM " + C_DATABASE_PREFIX + "PROJECTS where PROJECT_ID = ? ORDER BY PROJECT_NAME";
@@ -207,7 +207,7 @@ public class CmsQueries
 	public String C_PROJECTS_READ_BYMANAGER = "SELECT "+C_PROJECTS_RECORD+" FROM " + C_DATABASE_PREFIX + "PROJECTS where MANAGERGROUP_ID = ? and PROJECT_FLAGS = " + I_CmsConstants.C_PROJECT_STATE_UNLOCKED + " ORDER BY PROJECT_NAME";
 	public String C_PROJECTS_DELETE = "DELETE FROM " + C_DATABASE_PREFIX + "PROJECTS where PROJECT_ID = ?";
 	public String C_PROJECTS_WRITE = "UPDATE " + C_DATABASE_PREFIX + "PROJECTS " + "SET USER_ID = ?, " + "GROUP_ID = ?, " + "MANAGERGROUP_ID = ?, " + "PROJECT_FLAGS = ?, " + "PROJECT_PUBLISHDATE = ?, " + "PROJECT_PUBLISHED_BY = ? " + "where PROJECT_ID = ?";
-	
+
 	// Constants for Users table
 	public String C_USERS_USER_ID = "USER_ID";
 	public String C_USERS_USER_NAME = "USER_NAME";
@@ -226,7 +226,7 @@ public class CmsQueries
 	public String C_USERS_USER_TYPE = "USER_TYPE";
 	public String C_USERS_USER_EMAIL = "USER_EMAIL";
 
-	// Constants for Users	
+	// Constants for Users
 	public String C_USERS_MAXID = "SELECT MAX(USER_ID) FROM " + C_DATABASE_PREFIX + "USERS";
 	public String C_USERS_ADD = "INSERT INTO " + C_DATABASE_PREFIX + "USERS VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 	public String C_USERS_READ = "SELECT * FROM " + C_DATABASE_PREFIX + "USERS, " + C_DATABASE_PREFIX + "GROUPS WHERE USER_NAME = ? and USER_TYPE = ? and USER_DEFAULT_GROUP_ID = GROUP_ID";
@@ -239,7 +239,7 @@ public class CmsQueries
 	public String C_USERS_SETRECPW = "UPDATE " + C_DATABASE_PREFIX + "USERS SET USER_RECOVERY_PASSWORD = ? WHERE USER_NAME = ? ";
 	public String C_USERS_RECOVERPW = "UPDATE " + C_DATABASE_PREFIX + "USERS SET USER_PASSWORD = ? WHERE USER_NAME = ? and USER_RECOVERY_PASSWORD = ?";
 	public String C_USERS_DELETEBYID = "DELETE FROM " + C_DATABASE_PREFIX + "USERS WHERE USER_ID = ?";
-	
+
 	public String C_USERS_GETUSERS_FILTER1 = "SELECT * FROM " + C_DATABASE_PREFIX + "USERS, " + C_DATABASE_PREFIX + "GROUPS where USER_TYPE = ";
 	public String C_USERS_GETUSERS_FILTER2 = " and USER_DEFAULT_GROUP_ID = GROUP_ID and USER_NAME like '";
 	public String C_USERS_GETUSERS_FILTER3 = "%' ORDER BY USER_NAME";
@@ -288,7 +288,7 @@ public class CmsQueries
 	public String C_TASKLOG_TASK = "taskref";
 	public String C_TASKLOG_USER = "userref";
 	public String C_TASKLOG_TYPE = "type";
-	
+
 	// Constants for TaskPar table
 	public String C_PAR_ID = "id";
 	public String C_PAR_NAME = "parname";
@@ -318,7 +318,7 @@ public class CmsQueries
 	// Constants for systemid table
 	public String C_SYSTEMID_ID = "ID";
 
-	// Constants for systemid	
+	// Constants for systemid
 
 	public String C_SYSTEMID_INIT = "INSERT INTO " + C_DATABASE_PREFIX + "SYSTEMID VALUES(?,1)";
 	public String C_SYSTEMID_LOCK = "LOCK TABLE " + C_DATABASE_PREFIX + "SYSTEMID In Exclusive Mode";
