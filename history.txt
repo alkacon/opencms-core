@@ -8,17 +8,38 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.0a25 Giedi Prime: Rabban - 07 April 2000
+
+! Modified Projectmanagement. The project name is not unique anymore. To access a project, now
+  the project id is used.
+! Only folders that are writeable can be selected for new projects.
+! Modified System-errorbox and errorpages. They now display the complete stack-trace as
+  detailed error description.
+! Updated version of the picture browser.
+! Updated "News": News article can include multiple paragraphs.
+! Sessions are kept alive beyond the session timeout.
+! New XML printer, use of the xerces serializer instead of the openxml printer.
+! Workplace buttons can now be set to inactive.
+! User and group management on the workplace implemented.
+* Bugfix in news management, corrected wrong links.
+* Bugfix in user and group management.
+* Corrected an error in setPassword.
+* The satelite-window for selecting a folder in the folder-tree will be closed automaticaly when the
+  parent dialog is closed.
+- Renamed metainfo to property and metadefinition to propertydefinition.
+- Removed some unnescessary debug information in the opencms.log.
+
 OpenCms 4.0a24 Giedi Prime: Rabban - 31 March 2000
 ! File upload implemented on the workplace.
 ! A basic file history is added to the workplace.
 ! DB-export and import implemented on the workplace.
-! Added a method is added to the request-context for extracting the current filename from the URI.
+! Added a method to the request-context for extracting the current filename from the URI.
 ! New workplace view "News" added.
 ! News editing and deleting implemented on the workplace.
 * Error-box compatibility for Netscape.
 * IE5 DHTMLcontrol-bug corrected. Umlauts are possible now.
 * Corrected some errors in tasks.
-* Changed the security of chmod, chown, chgrp: The owner is now allways allowed.
+* Changed the security of chmod, chown, chgrp: The owner is now always allowed.
 * Export and import modified, it now filters hex-chars.
 * Changed NavTitle into NavText.
 
@@ -26,7 +47,7 @@ OpenCms 4.0a23 Giedi Prime: Rabban - 24 March 2000
 ! Folders can now be created, modified and deleted via the workplace.
 ! File and folder properties can now be viewed and edited in the workplace.
 ! Unpublished projects can now be deleted.
-* Bugfix in navigation, new folders and pages can now sorted between existing ones.
+* Bugfix in navigation, new folders and pages can now be sorted in between existing ones.
 * Bugfix in project management (selecting a project name).
 * Saving metainfos now results in a state-change of the resource.
 * Netscape compatibility in several workplace dialogs.
@@ -38,9 +59,9 @@ OpenCms 4.0a22 Giedi Prime: Rabban - 17 March 2000
 ! Folder tree added to several dialogs in the workplace.
 ! System preferences ("hammer icon") added to the workplace.
 ! Workflow functions are completed.
-! Enhanced content defintion for pages, additional funktions (e.g. save pages) added.
+! Enhanced content definition for pages, additional functions (e.g. save pages) added.
 * Bugfix in filelist, lock and unlock should now update the file state correctly.
-* Malformed HTML code in some workplace elements correctd.
+* Malformed HTML code in some workplace elements corrected.
 * Bugfix in login screen, multiple login and re-login is now possible.
 
 
@@ -48,9 +69,9 @@ OpenCms 4.0a21 Giedi Prime: Rabban - 10 March 2000
 
 ! Added new workplace functions: change owner, change group, change type, change access flags.
 ! Plain text files now can get a title during creation.
-! Updated file informations in multiple dialogs.
-! Page editor now is working in Netscape, too. Texteditor-Applet is exchanged with a HTML-textarea.
-* Bugfix in import module: Empty Metainformations can be imported now.
+! Updated file information in multiple dialogs.
+! Page editor is now working in Netscape, too. Texteditor-Applet is exchanged with a HTML-textarea.
+* Bugfix in import module: Empty Metainformation can be imported now.
 * CmsMultipartRequest is downgraded to JSDK 2.0 for compatibility reasons.
 * Compiling problems with JDK now fixed.
  
