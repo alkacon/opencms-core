@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2003/09/29 17:27:22 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2003/10/02 09:57:35 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.18 $ $Date: 2003/09/29 17:27:22 $
+ * @version $Revision: 1.19 $ $Date: 2003/10/02 09:57:35 $
  */
 public class CmsExport implements Serializable {
 
@@ -736,7 +736,7 @@ public class CmsExport implements Serializable {
     private void exportUser(Element parent, CmsUser user) throws CmsException, SAXException {
         // add user node to the manifest.xml
         Element e = parent.addElement(I_CmsConstants.C_EXPORT_TAG_USERDATA);
-        e.addElement(I_CmsConstants.C_EXPORT_TAG_NAME, user.getName());
+        e.addElement(I_CmsConstants.C_EXPORT_TAG_NAME).addText(user.getName());
         // encode the password, using a base 64 decoder
         sun.misc.BASE64Encoder enc = new sun.misc.BASE64Encoder();
         String passwd = new String(enc.encodeBuffer(user.getPassword().getBytes()));
