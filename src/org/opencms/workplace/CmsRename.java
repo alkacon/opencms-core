@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsRename.java,v $
- * Date   : $Date: 2003/08/04 08:24:11 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/08/06 15:58:39 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.1
  */
@@ -120,6 +120,21 @@ public class CmsRename extends CmsDialog {
             setParamTitle(key("title.rename") + ": " + CmsResource.getName(getParamResource()));
         }      
     } 
+    
+    /**
+     * Returns the old name of the resource which should be renamed.<p>
+     * 
+     * This is used to predefine the input text field with the old resource name.
+     * 
+     * @return the old name of the resource which should be renamed
+     */
+    public String getOldResourceName() {
+        String resourceName = CmsResource.getName(getParamResource());
+        if (resourceName.endsWith("/")) {
+            resourceName = resourceName.substring(0, resourceName.length() - 1);
+        }
+        return resourceName;
+    }
 
     /**
      * Performs the rename action, will be called by the JSP page.<p>
