@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/02/29 16:44:46 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2000/03/09 09:36:21 $
+ * Version: $Revision: 1.52 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,8 +44,9 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michaela Schleich
+ * @author Michael Emmerich
  *  
- * @version $Revision: 1.51 $ $Date: 2000/02/29 16:44:46 $ 
+ * @version $Revision: 1.52 $ $Date: 2000/03/09 09:36:21 $ 
  * 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
@@ -738,6 +739,24 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 				   filename, newGroup );
 	}
 
+     /**
+	 * Changes the resourcetype for this resource<BR/>
+	 * 
+	 * The user may change this, if he is admin of the resource.
+	 * 
+	 * @param filename The complete path to the resource.
+	 * @param newType The name of the new resourcetype for this resource.
+	 * 
+	 * @exception CmsException will be thrown, if the user has not the rights 
+	 * for this resource. It will also be thrown, if the newType doesn't exists.
+	 */
+	public void chtype(String filename, String newType)
+		throws CmsException { 
+		c_rb.chtype(m_context.currentUser(), m_context.currentProject(), 
+				   filename, newType );
+	}
+    
+    
 	/**
 	 * Locks a resource<BR/>
 	 * 

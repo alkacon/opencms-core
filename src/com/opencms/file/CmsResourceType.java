@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceType.java,v $
- * Date   : $Date: 2000/02/15 17:44:00 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/03/09 09:36:22 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ import com.opencms.core.*;
  * for a resource this resource-type is needed.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 2000/02/15 17:44:00 $
+ * @version $Revision: 1.4 $ $Date: 2000/03/09 09:36:22 $
  */
  class CmsResourceType extends A_CmsResourceType implements I_CmsConstants {	
 	
@@ -84,7 +84,7 @@ import com.opencms.core.*;
 	 * 
 	 * @return the type of this resource-type.
 	 */
-     int getResourceType() {
+    int getResourceType() {
          return m_resourceType;
      }
     

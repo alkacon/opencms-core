@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/02/20 15:24:36 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2000/03/09 09:36:22 $
+ * Version: $Revision: 1.46 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,8 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michaela Schleich
- * @version $Revision: 1.45 $ $Date: 2000/02/20 15:24:36 $
+ * @author Michael Emmerich
+ * @version $Revision: 1.46 $ $Date: 2000/03/09 09:36:22 $
  * 
  */
 interface I_CmsResourceBroker {
@@ -1668,6 +1669,35 @@ interface I_CmsResourceBroker {
                       String filename, String newGroup)
 		throws CmsException;
 	
+     /**
+	 * Changes the resourcetype for this resource<br>
+	 * 
+	 * Only the resourcetype of a resource in an offline project can be changed. The state
+	 * of the resource is set to CHANGED (1).
+	 * If the content of this resource is not exisiting in the offline project already,
+	 * it is read from the online project and written into the offline project.
+	 * The user may change this, if he is admin of the resource. <br>
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user is owner of the resource or is admin</li>
+	 * <li>the resource is locked by the callingUser</li>
+	 * </ul>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param filename The complete path to the resource.
+	 * @param newType The name of the new resourcetype for this resource.
+	 * 
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	public void chtype(A_CmsUser currentUser, A_CmsProject currentProject,
+                      String filename, String newType)
+		throws CmsException;
+    
+    
 	 /**
 	 * Returns a Vector with all files of a folder.<br>
 	 * 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/02/29 16:44:46 $
- * Version: $Revision: 1.74 $
+ * Date   : $Date: 2000/03/09 09:36:22 $
+ * Version: $Revision: 1.75 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.74 $ $Date: 2000/02/29 16:44:46 $
+ * @version $Revision: 1.75 $ $Date: 2000/03/09 09:36:22 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -3154,8 +3154,7 @@ System.err.println(">>> readFile(2) error for\n" +
 		}
 	}
 	
-     /**
-	 * Changes the group for this resource<br>
+     /** Changes the group for this resource<br>
 	 * 
 	 * Only the group of a resource in an offline project can be changed. The state
 	 * of the resource is set to CHANGED (1).
@@ -3203,7 +3202,60 @@ System.err.println(">>> readFile(2) error for\n" +
 				CmsException.C_ACCESS_DENIED);
 		}
 	}
-	
+    
+     /**
+	 * Changes the resourcetype for this resource<br>
+	 * 
+	 * Only the resourcetype of a resource in an offline project can be changed. The state
+	 * of the resource is set to CHANGED (1).
+	 * If the content of this resource is not exisiting in the offline project already,
+	 * it is read from the online project and written into the offline project.
+	 * The user may change this, if he is admin of the resource. <br>
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user is owner of the resource or is admin</li>
+	 * <li>the resource is locked by the callingUser</li>
+	 * </ul>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param filename The complete path to the resource.
+	 * @param newType The name of the new resourcetype for this resource.
+	 * 
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	public void chtype(A_CmsUser currentUser, A_CmsProject currentProject,
+                      String filename, String newType)
+		throws CmsException{
+		// read the new group
+		
+		A_CmsResourceType type = getResourceType(currentUser, currentProject, newType);
+		
+		// read the resource to check the access
+		A_CmsResource resource = m_fileRb.readFileHeader(currentProject, filename);
+		
+		// has the user write-access? and is he owner or admin?
+		if( accessWrite(currentUser, currentProject, resource) &&
+			( (resource.getOwnerId() == currentUser.getId()) || 
+			  isAdmin(currentUser, currentProject))) {
+				
+			// write-acces  was granted - write the file.
+            resource.setType(type.getResourceType());
+            m_fileRb.writeFileHeader(currentProject, onlineProject(currentUser, currentProject),(CmsFile)resource,true);    
+		//	m_fileRb.chgrp(currentProject, onlineProject(currentUser, currentProject), 
+		//				   filename, group );
+			// inform about the file-system-change
+			fileSystemChanged(currentProject.getName(), filename);
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + filename, 
+				CmsException.C_ACCESS_DENIED);
+		}
+	}
+    
+    
 	 /**
 	 * Returns a Vector with all files of a folder.<br>
 	 * 

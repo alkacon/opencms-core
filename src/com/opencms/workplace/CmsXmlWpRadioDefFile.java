@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpRadioDefFile.java,v $
- * Date   : $Date: 2000/02/15 17:51:20 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/03/09 09:36:23 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import java.util.*;
  * Content definition for the workplace radiobutton element definition file.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2000/02/15 17:51:20 $
+ * @version $Revision: 1.5 $ $Date: 2000/03/09 09:36:23 $
  */
 public class CmsXmlWpRadioDefFile extends A_CmsXmlContent implements I_CmsLogChannels ,
                                                                      I_CmsWpConstants {
@@ -107,7 +107,7 @@ public class CmsXmlWpRadioDefFile extends A_CmsXmlContent implements I_CmsLogCha
         setData(C_RADIO_RADIONAME, radioname);
         setData(C_RADIO_NAME,name);
         setData(C_RADIO_LINK,link);
-        setData(C_RADIO_IMAGE,"ic_file_"+icon+".gif");
+        setData(C_RADIO_IMAGE,"ic_file_"+icon.toLowerCase()+".gif");
         return getProcessedDataValue("radiobuttons.entry",callingObject);  
      }  
 
