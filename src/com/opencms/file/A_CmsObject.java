@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.12 $ $Date: 2000/01/04 12:23:27 $ 
+ * @version $Revision: 1.13 $ $Date: 2000/01/04 12:38:45 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -800,6 +800,17 @@ public abstract class A_CmsObject {
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
 	abstract public String loginUser(String username, String password) 
+		throws CmsException;
+	
+	/** 
+	 * Sets the password for a user.
+	 * 
+	 * @param username The name of the user.
+	 * @param newPassword The new password.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesfull.
+	 */
+	abstract public void setPassword(String username, String newPassword)
 		throws CmsException;
 	
 	/** 
