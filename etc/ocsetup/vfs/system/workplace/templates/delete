@@ -280,6 +280,6 @@ function update_frames()
 </TEMPLATE>
 
 <TEMPLATE name="error">
-<ERRORPAGE title="error.title.delete" message="error.message.delete" reason="error.reason.delete" suggestion="error.suggestion.delete" ref="explorer_files.html" ><process>details</process></ERRORPAGE>
+<ERRORPAGE title="error.title.delete" message="error.message.delete" reason="error.reason.delete" suggestion="error.suggestion.delete" ref="explorer_files.html" ><process>details</process><process>lasturl</process></ERRORPAGE>
 </TEMPLATE>
 </WORKPLACE>

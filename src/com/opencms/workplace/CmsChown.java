@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChown.java,v $
-* Date   : $Date: 2001/07/31 15:50:18 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2001/12/06 10:02:00 $
+* Version: $Revision: 1.27 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -41,7 +41,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.26 $ $Date: 2001/07/31 15:50:18 $
+ * @version $Revision: 1.27 $ $Date: 2001/12/06 10:02:00 $
  */
 
 public class CmsChown extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -183,6 +183,7 @@ public class CmsChown extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
 
                 // the current user is not allowed to change the file owner
                 xmlTemplateDocument.setData("details", "the current user is not allowed to change the file owner");
+                xmlTemplateDocument.setData("lasturl", lasturl);
                 template = "error";
                 session.removeValue(C_PARA_FILE);
             }

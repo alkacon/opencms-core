@@ -232,11 +232,11 @@ function checkSelected()
 
 
 <TEMPLATE name="error">
-<ERRORPAGE title="error.title.chgrp" message="error.message.chgrp" reason="error.reason.chgrp" suggestion="error.suggestion.chgrp" ref="explorer_files.html" ><process>details</process></ERRORPAGE>
+<ERRORPAGE title="error.title.chgrp" message="error.message.chgrp" reason="error.reason.chgrp" suggestion="error.suggestion.chgrp" ref="explorer_files.html" ><process>details</process><process>lasturl</process></ERRORPAGE>
 </TEMPLATE>
 
 <TEMPLATE name="erroraccessdenied">
-<ERRORPAGE title="error.title.accessdenied" message="error.message.accessdenied" reason="error.reason.accessdenied" suggestion="error.suggestion.accessdenied" ref="explorer_files.html" ><process>details</process></ERRORPAGE>
+<ERRORPAGE title="error.title.accessdenied" message="error.message.accessdenied" reason="error.reason.accessdenied" suggestion="error.suggestion.accessdenied" ref="explorer_files.html" ><process>details</process><process>lasturl</process></ERRORPAGE>
 </TEMPLATE>
 
 </WORKPLACE>

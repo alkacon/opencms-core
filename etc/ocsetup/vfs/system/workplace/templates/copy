@@ -275,8 +275,7 @@ function update_frames()
 ]]>
 </TEMPLATE>
 
-
 <TEMPLATE name="error">
-<ERRORPAGE title="error.title.copy" message="error.message.copy" reason="error.reason.copy" suggestion="error.suggestion.copy" ref="explorer_files.html" ><process>details</process></ERRORPAGE>
+<ERRORPAGE title="error.title.copy" message="error.message.copy" reason="error.reason.copy" suggestion="error.suggestion.copy" ref="explorer_files.html" ><process>details</process><process>lasturl</process></ERRORPAGE>
 </TEMPLATE>
 </WORKPLACE>

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDelete.java,v $
-* Date   : $Date: 2001/07/31 15:50:18 $
-* Version: $Revision: 1.38 $
+* Date   : $Date: 2001/12/06 10:02:00 $
+* Version: $Revision: 1.39 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -42,7 +42,7 @@ import java.util.*;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.38 $ $Date: 2001/07/31 15:50:18 $
+ * @version $Revision: 1.39 $ $Date: 2001/12/06 10:02:00 $
  */
 
 public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -118,6 +118,7 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,I
                         session.removeValue(C_PARA_DELETE);
                         session.removeValue(C_PARA_FILE);
                         xmlTemplateDocument.setData("details", Utils.getStackTrace(e));
+                        xmlTemplateDocument.setData("lasturl", lasturl);
                         return startProcessing(cms, xmlTemplateDocument, "", parameters, "error");
                     }
                     try {
@@ -137,8 +138,15 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,I
                 }
                 else {
                     // its a folder
-                    cms.deleteResource(file.getAbsolutePath());
-
+                    try{
+                        cms.deleteResource(file.getAbsolutePath());
+                    }catch(CmsException e){
+                        session.removeValue(C_PARA_DELETE);
+                        session.removeValue(C_PARA_FILE);
+                        xmlTemplateDocument.setData("details", Utils.getStackTrace(e));
+                        xmlTemplateDocument.setData("lasturl", lasturl);
+                        return startProcessing(cms, xmlTemplateDocument, "", parameters, "error");
+                    }
                     session.removeValue(C_PARA_DELETE);
                     session.removeValue(C_PARA_FILE);
                     xmlTemplateDocument.setData("lasturl", lasturl);

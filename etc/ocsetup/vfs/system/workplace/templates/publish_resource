@@ -197,11 +197,11 @@ top.help_url='ExplorerAnsicht/header.html';
 
 <TEMPLATE name="errorlock">
 <![CDATA[
-]]><ERRORPAGE title="error.title.projectlockchange" message="error.message.projectlockchange" reason="error.reason.projectlockchange" suggestion="error.suggestion.projectlockchange" ref="head.html" ><process>details</process></ERRORPAGE><![CDATA[
+]]><ERRORPAGE title="error.title.projectlockchange" message="error.message.projectlockchange" reason="error.reason.projectlockchange" suggestion="error.suggestion.projectlockchange" ref="head.html" ><process>details</process><process>lasturl</process></ERRORPAGE><![CDATA[
 ]]>
 </TEMPLATE>
 
 <TEMPLATE name="error">
-<ERRORPAGE title="error.title.publishresource" message="error.message.publishresource" reason="error.reason.publishresource" suggestion="error.suggestion.publishresource" ref="head.html" ><process>details</process></ERRORPAGE>
+<ERRORPAGE title="error.title.publishresource" message="error.message.publishresource" reason="error.reason.publishresource" suggestion="error.suggestion.publishresource" ref="head.html" ><process>details</process><process>lasturl</process></ERRORPAGE>
 </TEMPLATE>
 </WORKPLACE>

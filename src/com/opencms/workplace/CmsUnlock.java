@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsUnlock.java,v $
-* Date   : $Date: 2001/07/31 15:50:20 $
-* Version: $Revision: 1.36 $
+* Date   : $Date: 2001/12/06 10:02:00 $
+* Version: $Revision: 1.37 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -44,7 +44,7 @@ import java.util.*;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * @author Alexander Lucas
- * @version $Revision: 1.36 $ $Date: 2001/07/31 15:50:20 $
+ * @version $Revision: 1.37 $ $Date: 2001/12/06 10:02:00 $
  */
 
 public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -112,15 +112,17 @@ public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,I
                     session.removeValue(C_PARA_FILE);
                 }
                 catch(CmsException e) {
+                    CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
                     if(e.getType() == CmsException.C_NO_ACCESS) {
                         template = "erroraccessdenied";
-                        CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
                         xmlTemplateDocument.setData("details", file.getName());
-                        return startProcessing(cms, xmlTemplateDocument, "", parameters, template);
                     }
                     else {
-                        throw e;
+                        template = "error";
+                        xmlTemplateDocument.setData("details", e.toString());
                     }
+                    xmlTemplateDocument.setData("lasturl", lasturl);
+                    return startProcessing(cms, xmlTemplateDocument, "", parameters, template);
                 }
             }
 

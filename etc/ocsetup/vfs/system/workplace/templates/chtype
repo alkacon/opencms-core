@@ -74,7 +74,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 </TEMPLATE>
 
 <TEMPLATE name="error">
-<ERRORPAGE title="error.title.chtype" message="error.message.chtype" reason="error.reason.chtype" suggestion="error.suggestion.chtype" ref="explorer_files.html" ><process>details</process></ERRORPAGE>
+<ERRORPAGE title="error.title.chtype" message="error.message.chtype" reason="error.reason.chtype" suggestion="error.suggestion.chtype" ref="explorer_files.html" ><process>details</process><process>lasturl</process></ERRORPAGE>
 </TEMPLATE>
 
 </WORKPLACE>

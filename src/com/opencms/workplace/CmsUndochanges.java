@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsUndochanges.java,v $
-* Date   : $Date: 2001/07/31 15:50:20 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2001/12/06 10:02:00 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -41,7 +41,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.2 $ $Date: 2001/07/31 15:50:20 $
+ * @version $Revision: 1.3 $ $Date: 2001/12/06 10:02:00 $
  */
 
 public class CmsUndochanges extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -106,6 +106,7 @@ public class CmsUndochanges extends CmsWorkplaceDefault implements I_CmsWpConsta
                 } catch(CmsException e){
                     session.removeValue(C_PARA_FILE);
                     xmlTemplateDocument.setData("details", Utils.getStackTrace(e));
+                    xmlTemplateDocument.setData("lasturl", lasturl);
                     return startProcessing(cms, xmlTemplateDocument, "", parameters, "error");
                 }
             } else {

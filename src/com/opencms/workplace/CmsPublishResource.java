@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPublishResource.java,v $
-* Date   : $Date: 2001/08/08 06:54:27 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2001/12/06 10:02:00 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.6 $ $Date: 2001/08/08 06:54:27 $
+ * @version $Revision: 1.7 $ $Date: 2001/12/06 10:02:00 $
  */
 
 public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -108,6 +108,7 @@ public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpCo
                     action = "wait";
                 } catch (CmsException exc){
                     xmlTemplateDocument.setData("details", Utils.getStackTrace(exc));
+                    xmlTemplateDocument.setData("lasturl", lasturl);
                     return startProcessing(cms, xmlTemplateDocument, elementName, parameters,"errorlock");
                 }
 
@@ -126,6 +127,7 @@ public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpCo
                 } catch(CmsException e){
                     session.removeValue(C_PARA_FILE);
                     xmlTemplateDocument.setData("details", Utils.getStackTrace(e));
+                    xmlTemplateDocument.setData("lasturl", lasturl);
                     return startProcessing(cms, xmlTemplateDocument, "", parameters, "error");
                 }
             }

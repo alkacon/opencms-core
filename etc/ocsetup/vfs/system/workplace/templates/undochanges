@@ -126,6 +126,6 @@ top.help_url='ExplorerAnsicht/Kontextmenue/allgemeineAktionen/undochanges.html';
 </TEMPLATE>
 
 <TEMPLATE name="error">
-<ERRORPAGE title="error.title.undochanges" message="error.message.undochanges" reason="error.reason.undochanges" suggestion="error.suggestion.undochanges" ref="explorer_files.html" ><process>details</process></ERRORPAGE>
+<ERRORPAGE title="error.title.undochanges" message="error.message.undochanges" reason="error.reason.undochanges" suggestion="error.suggestion.undochanges" ref="explorer_files.html" ><process>details</process><process>lasturl</process></ERRORPAGE>
 </TEMPLATE>
 </WORKPLACE>

@@ -69,11 +69,11 @@
 </TEMPLATE>
 
 <TEMPLATE name="error">
-<ERRORPAGE title="error.title.unlock" message="error.message.unlock" reason="error.reason.unlock" suggestion="error.suggestion.unlock" ref="explorer_files.html" ><process>details</process></ERRORPAGE>
+<ERRORPAGE title="error.title.unlock" message="error.message.unlock" reason="error.reason.unlock" suggestion="error.suggestion.unlock" ref="explorer_files.html" ><process>details</process><process>lasturl</process></ERRORPAGE>
 </TEMPLATE>
 
 <TEMPLATE name="erroraccessdenied">
-<ERRORPAGE title="error.title.accessdenied" message="error.message.accessdenied" reason="error.reason.accessdenied" suggestion="error.suggestion.accessdenied" ref="explorer_files.html" ><process>details</process></ERRORPAGE>
+<ERRORPAGE title="error.title.accessdenied" message="error.message.accessdenied" reason="error.reason.accessdenied" suggestion="error.suggestion.accessdenied" ref="explorer_files.html" ><process>details</process><process>lasturl</process></ERRORPAGE>
 </TEMPLATE>
 
 

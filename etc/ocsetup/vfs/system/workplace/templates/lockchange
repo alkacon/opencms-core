@@ -67,6 +67,11 @@
 </TEMPLATE>
 
 <TEMPLATE name="error">
-<ERRORPAGE title="error.title.lockchange" message="error.message.lockchange" reason="error.reason.lockchange" suggestion="error.suggestion.lockchange" ref="explorer_files.html" ><process>details</process></ERRORPAGE>
+<ERRORPAGE title="error.title.lockchange" message="error.message.lockchange" reason="error.reason.lockchange" suggestion="error.suggestion.lockchange" ref="explorer_files.html" ><process>details</process><process>lasturl</process></ERRORPAGE>
 </TEMPLATE>
+
+<TEMPLATE name="erroraccessdenied">
+<ERRORPAGE title="error.title.lockchange" message="error.message.lockchange" reason="error.reason.lockchange" suggestion="error.suggestion.lockchange" ref="explorer_files.html" ><process>details</process><process>lasturl</process></ERRORPAGE>
+</TEMPLATE>
+
 </WORKPLACE>

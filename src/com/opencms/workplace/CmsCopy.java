@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCopy.java,v $
-* Date   : $Date: 2001/09/24 14:00:17 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2001/12/06 10:02:00 $
+* Version: $Revision: 1.43 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.*;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.42 $ $Date: 2001/09/24 14:00:17 $
+ * @version $Revision: 1.43 $ $Date: 2001/12/06 10:02:00 $
  */
 
 public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -254,6 +254,7 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
 
                     template = "error";
                     xmlTemplateDocument.setData("details", ex.getStackTrace());
+                    xmlTemplateDocument.setData("lasturl", lasturl);
                     return startProcessing(cms, xmlTemplateDocument, "", parameters,
                             template);
                 }

@@ -240,6 +240,6 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 </TEMPLATE>
 
 <TEMPLATE name="error">
-<ERRORPAGE title="error.title.chmod" message="error.message.chmod" reason="error.reason.chmod" suggestion="error.suggestion.chmod" ref="explorer_files.html"><process>details</process></ERRORPAGE>
+<ERRORPAGE title="error.title.chmod" message="error.message.chmod" reason="error.reason.chmod" suggestion="error.suggestion.chmod" ref="explorer_files.html"><process>details</process><process>lasturl</process></ERRORPAGE>
 </TEMPLATE>
 </WORKPLACE>

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMove.java,v $
-* Date   : $Date: 2001/09/24 14:00:18 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2001/12/06 10:02:00 $
+* Version: $Revision: 1.43 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.42 $ $Date: 2001/09/24 14:00:18 $
+ * @version $Revision: 1.43 $ $Date: 2001/12/06 10:02:00 $
  */
 
 public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -147,8 +147,15 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
 
             // ednfal: check if the user try to move the resource into itself
             if(newFolder.equals(file.getAbsolutePath())) {
-                throw new CmsException("Can't move folder into itself",
-                        CmsException.C_BAD_NAME);
+                 // something went wrong, so remove all session parameters
+                session.removeValue(C_PARA_FILE);
+                session.removeValue(C_PARA_NEWFOLDER);
+                session.removeValue(C_PARA_FLAGS);
+                template = "error";
+                xmlTemplateDocument.setData("details", "Can't move folder into itself");
+                xmlTemplateDocument.setData("lasturl", lasturl);
+                return startProcessing(cms, xmlTemplateDocument, "", parameters,
+                            template);
             }
 
             // ednfal: try to read the destination folder
@@ -156,10 +163,20 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
                 CmsFolder toFolder = cms.readFolder(newFolder);
             }
             catch(CmsException ex) {
+                // something went wrong, so remove all session parameters
+                session.removeValue(C_PARA_FILE);
+                session.removeValue(C_PARA_NEWFOLDER);
+                session.removeValue(C_PARA_FLAGS);
+
+                template = "error";
                 if(ex.getType() == CmsException.C_NOT_FOUND) {
-                    throw new CmsException("Destination folder not exists",
-                            CmsException.C_BAD_NAME);
+                    xmlTemplateDocument.setData("details", "Destination folder not exists"+ex.getStackTrace());
+                } else {
+                    xmlTemplateDocument.setData("details", ex.getStackTrace());
                 }
+                xmlTemplateDocument.setData("lasturl", lasturl);
+                return startProcessing(cms, xmlTemplateDocument, "", parameters,
+                                template);
             }
         }
 
@@ -194,6 +211,7 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
                         //throw ex;
                         template = "error";
                         xmlTemplateDocument.setData("details", ex.getStackTrace());
+                        xmlTemplateDocument.setData("lasturl", lasturl);
                         return startProcessing(cms, xmlTemplateDocument, "", parameters,
                                 template);
                     }
@@ -235,6 +253,7 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
                         //throw e;
                         template = "error";
                         xmlTemplateDocument.setData("details", e.getStackTrace());
+                        xmlTemplateDocument.setData("lasturl", lasturl);
                         return startProcessing(cms, xmlTemplateDocument, "", parameters, template);
                     }
 

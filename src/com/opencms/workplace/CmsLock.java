@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLock.java,v $
-* Date   : $Date: 2001/07/31 15:50:19 $
-* Version: $Revision: 1.37 $
+* Date   : $Date: 2001/12/06 10:02:00 $
+* Version: $Revision: 1.38 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -44,7 +44,7 @@ import java.util.*;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * @author Alexander Lucas
- * @version $Revision: 1.37 $ $Date: 2001/07/31 15:50:19 $
+ * @version $Revision: 1.38 $ $Date: 2001/12/06 10:02:00 $
  */
 
 public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants{
@@ -127,11 +127,13 @@ public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
                     cms.lockResource(filename);
                 }catch(CmsException e){
                     if(e.getType() == CmsException.C_ACCESS_DENIED) {
-                        template = "accessdenied";
+                        template = "erroraccessdenied";
+                        xmlTemplateDocument.setData("details", file.getName());
                     }else {
-                        xmlTemplateDocument.setData("details", "unknown error:"+e.toString());
+                        xmlTemplateDocument.setData("details", e.toString());
                         template = "error";
                     }
+                    xmlTemplateDocument.setData("lasturl", lasturl);
                     xmlTemplateDocument.setData("FILENAME", file.getName());
                     // process the selected template
                     return startProcessing(cms, xmlTemplateDocument, "", parameters, template);

@@ -69,7 +69,12 @@
 </TEMPLATE>
 
 
-<TEMPLATE name="error">
-<ERRORPAGE title="error.title.lock" message="error.message.lock" reason="error.reason.lock" suggestion="error.suggestion.lock" ref="explorer_files.html" ><process>details</process></ERRORPAGE>
+<TEMPLATE name="erroraccessdenied">
+<ERRORPAGE title="error.title.lock" message="error.message.lock" reason="error.reason.lock" suggestion="error.suggestion.lock" ref="explorer_files.html" ><process>details</process><process>lasturl</process></ERRORPAGE>
 </TEMPLATE>
+
+<TEMPLATE name="error">
+<ERRORPAGE title="error.title.lock" message="error.message.lock" reason="error.reason.lock" suggestion="error.suggestion.lock" ref="explorer_files.html" ><process>details</process><process>lasturl</process></ERRORPAGE>
+</TEMPLATE>
+
 </WORKPLACE>
