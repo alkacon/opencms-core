@@ -33,13 +33,13 @@
  * When using this script to open the image gallery dialog, be sure to
  * initialize the context path (e.g. "/opencms/opencms") and gallery path in the opener properly:
  *
- * - imgGalleryPath = "<%= CmsGallery.C_PATH_GALLERIES + CmsGallery.C_OPEN_URI_SUFFIX + "?" + CmsGallery.PARAM_GALLERY_TYPENAME + "=imagegallery" %>";
+ * - imgGalleryPath = "<%= A_CmsGallery.C_PATH_GALLERIES + A_CmsGallery.C_OPEN_URI_SUFFIX + "?" + A_CmsGallery.PARAM_GALLERY_TYPENAME + "=imagegallery" %>";
  */
 
 var imgGalleryPath;
 
-// opens the image gallery popup window, dialog mode has to be "widget" (as defined in CmsGallery.MODE_WIDGET)
-function openImageSelector(dialogMode, fieldId) {
+// opens the image gallery popup window, dialog mode has to be "widget" (as defined in A_CmsGallery.MODE_WIDGET)
+function openImageGallery(dialogMode, fieldId) {
 	var paramString = "&dialogmode=" + dialogMode;
 	paramString += "&fieldid=" + fieldId;
 	treewin = window.open(contextPath + imgGalleryPath + paramString, "opencms", 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=20,left=150,width=650,height=700');

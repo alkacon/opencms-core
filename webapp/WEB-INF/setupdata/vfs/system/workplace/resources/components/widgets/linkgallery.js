@@ -33,13 +33,13 @@
  * When using this script to open the link gallery dialog, be sure to
  * initialize the context path (e.g. "/opencms/opencms") and gallery path in the opener properly:
  *
- * - linkGalleryPath = "<%= CmsGallery.C_PATH_GALLERIES + CmsGallery.C_OPEN_URI_SUFFIX + "?" + CmsGallery.PARAM_GALLERY_TYPENAME + "=linkgallery" %>";
+ * - linkGalleryPath = "<%= A_CmsGallery.C_PATH_GALLERIES + A_CmsGallery.C_OPEN_URI_SUFFIX + "?" + A_CmsGallery.PARAM_GALLERY_TYPENAME + "=linkgallery" %>";
  */
 
 var linkGalleryPath;
 
-// opens the link gallery popup window, dialog mode has to be "widget" (as defined in CmsGallery.MODE_WIDGET)
-function openLinkSelector(dialogMode, fieldId) {
+// opens the link gallery popup window, dialog mode has to be "widget" (as defined in A_CmsGallery.MODE_WIDGET)
+function openLinkGallery(dialogMode, fieldId) {
 	var paramString = "&dialogmode=" + dialogMode;
 	paramString += "&fieldid=" + fieldId;
 	treewin = window.open(contextPath + linkGalleryPath + paramString, "opencms", 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=20,left=150,width=650,height=700');
