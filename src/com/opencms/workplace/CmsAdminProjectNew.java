@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
-* Date   : $Date: 2002/05/17 11:29:50 $
-* Version: $Revision: 1.65 $
+* Date   : $Date: 2002/06/10 15:52:10 $
+* Version: $Revision: 1.66 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.65 $ $Date: 2002/05/17 11:29:50 $
+ * @version $Revision: 1.66 $ $Date: 2002/06/10 15:52:10 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -341,8 +341,9 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
                 String picspath = getConfigFile(cms).getPicGalleryPath();
                 String downloadpath = getConfigFile(cms).getDownGalleryPath();
                 String linkpath = getConfigFile(cms).getLinkGalleryPath();
+                String htmlPath = getConfigFile(cms).getHtmlGalleryPath();
                 allResources = allResources + ";" + picspath + ";"
-                        + downloadpath + ";" + linkpath;
+                        + downloadpath + ";" + linkpath + ";" + htmlPath;
                 if(extendedNavigation){
                     allResources = allResources + ";/content/elements/";
                 }

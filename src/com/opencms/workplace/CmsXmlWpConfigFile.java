@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpConfigFile.java,v $
-* Date   : $Date: 2002/06/10 15:30:07 $
-* Version: $Revision: 1.41 $
+* Date   : $Date: 2002/06/10 15:50:00 $
+* Version: $Revision: 1.42 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * @author Alexander Lucas
  * @author Michael Emmerich
  * @author Andreas Schouten
- * @version $Revision: 1.41 $ $Date: 2002/06/10 15:30:07 $
+ * @version $Revision: 1.42 $ $Date: 2002/06/10 15:50:00 $
  */
 
 public class CmsXmlWpConfigFile {
@@ -72,30 +72,26 @@ public class CmsXmlWpConfigFile {
     /**
      * Gets the path at which the folders with the download galleries are
      * @return Path for download galleries.
-     * @exception CmsException if the corresponding XML tag doesn't exist in the workplace definition file.
      */
-    public String getDownGalleryPath() throws CmsException {
+    public String getDownGalleryPath(){
         return "/download/";
-    }
-
-    /**
-     * Gets the path at which the folders with the picture galleries are
-     * @return Path for picture galleries.
-     * @exception CmsException if the corresponding XML tag doesn't exist in the workplace definition file.
-     */
-    public String getPicGalleryPath() throws CmsException {
-        return "/pics/";
     }
 
     /**
      * Gets the path at which the folders with the html galleries are
      * @return Path for html galleries.
-     * @exception CmsException if the corresponding XML tag doesn't exist in the workplace definition file.
      */
-    public String getHtmlGalleryPath() throws CmsException {
+    public String getHtmlGalleryPath(){
         return "/htmlgalleries/";
     }
 
+    /**
+     * Gets the path at which the folders with the picture galleries are
+     * @return Path for picture galleries.
+     */
+    public String getPicGalleryPath(){
+        return "/pics/";
+    }
 
     /**
      * Gets the path for OpenCms language files.
