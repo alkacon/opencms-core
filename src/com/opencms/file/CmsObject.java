@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/08 15:55:28 $
-* Version: $Revision: 1.301 $
+* Date   : $Date: 2003/07/09 08:56:32 $
+* Version: $Revision: 1.302 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.301 $
+ * @version $Revision: 1.302 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -3694,7 +3694,7 @@ public void setTimeout(int taskId, long timeout) throws CmsException {
  * @throws CmsException if operation was not successful.
  */
 public void syncFolder(String resourceName) throws CmsException {
-    // synchronize the resources
+    // synchronize the resources  
     new CmsSynchronize(this, resourceName);
 }
 /**
