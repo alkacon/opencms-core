@@ -40,6 +40,8 @@
 					<editsite>The entered data is invalid. The site name or domain name may already exist or the category, language and domain combination may already exist</editsite>				
 					<datamissing>The fields need to be filled out</datamissing>				
 					<deletesite></deletesite>
+					<deletecurrentsite>Cannot delete current site</deletecurrentsite>
+					<cannotdeleteroot>Cannot delete the root site</cannotdeleteroot>
 				</reason>
 				
 				<suggestion>

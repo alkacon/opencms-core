@@ -154,4 +154,16 @@
 ]]>
 </TEMPLATE>
 
+<TEMPLATE name="cannotdeletecurrent">
+<![CDATA[
+]]><ERRORPAGE title="sitemanagement.title.deletesite" message="sitemanagement.error.message.deletesite" reason="sitemanagement.error.reason.deletecurrentsite" suggestion="sitemanagement.error.suggestion.deletesite" ref="sitematrix.html"><process>details</process></ERRORPAGE><![CDATA[
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="cannotdeleteroot">
+<![CDATA[
+]]><ERRORPAGE title="sitemanagement.title.deletesite" message="sitemanagement.error.message.deletesite" reason="sitemanagement.error.reason.cannotdeleteroot" suggestion="sitemanagement.error.suggestion.deletesite" ref="sitematrix.html"><process>details</process></ERRORPAGE><![CDATA[
+]]>
+</TEMPLATE>
+
 </WORKPLACE>
