@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsMail.java,v $
- * Date   : $Date: 2004/03/12 16:00:48 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/06/13 23:40:50 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -92,7 +92,7 @@ import javax.mail.internet.MimeMessage;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsMail extends Thread {
 
@@ -668,7 +668,8 @@ public class CmsMail extends Thread {
     }
 
     /**
-     * Helper method for printing nice classnames in error messages
+     * Helper method for printing nice classnames in error messages.<p>
+     * 
      * @return class name in [ClassName] format
      */
     protected String getClassName() {

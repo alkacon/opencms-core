@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2004/06/04 10:48:53 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/06/13 23:41:52 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.apache.commons.fileupload.FileItem;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.3.3
  */
@@ -156,7 +156,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
     }
     
     /**
-     * Updates the file type and renames the file if desired
+     * Updates the file type and renames the file if desired.<p>
      * 
      * @throws JspException if inclusion of error dialog fails
      */

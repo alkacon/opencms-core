@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsReInitWorkplace.java,v $
- * Date   : $Date: 2004/05/24 17:02:16 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/06/13 23:41:52 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,10 +44,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Provides an output window for reinitializind of the CmsWorkplace<p> 
+ * Provides an output window for re-initialization of the OpenCms Workplace.<p> 
  *
  * @author  Michael Emmerich(m.emmerich@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.1.10
  */

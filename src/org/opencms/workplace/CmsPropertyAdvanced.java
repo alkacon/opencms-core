@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2004/06/09 15:53:29 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/06/13 23:41:52 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 5.1
  */
@@ -140,7 +140,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
     private String m_paramDialogMode;
     
     /** Helper object storing the current editable state of the resource */
-    private Boolean m_isEditable = null;
+    private Boolean m_isEditable;
     
     /** Helper to determine if the user switched the tab views of the dialog */
     private boolean m_tabSwitched;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/I_CmsWpConstants.java,v $
- * Date   : $Date: 2004/06/08 13:24:46 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/06/13 23:41:52 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import java.util.Locale;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2004/06/08 13:24:46 $
+ * @version $Revision: 1.5 $ $Date: 2004/06/13 23:41:52 $
  */
 
 public interface I_CmsWpConstants {
@@ -1341,12 +1341,12 @@ public interface I_CmsWpConstants {
     // Contants for explorer filelist
     
     /** Layoutstyle for resources after release date and before expire date */
-    int C_LAYOUTSTYLE_INRANGE = 0;
+    int C_LAYOUTSTYLE_INRANGE = 1;
     
     /** Layoutstyle for resources before release date  */
-    int C_LAYOUTSTYLE_BEFORERELEASE = 1;
+    int C_LAYOUTSTYLE_BEFORERELEASE = 2;
     
     /** Layoutstyle for resources after expire date  */
-    int C_LAYOUTSTYLE_AFTEREXPIRE = 2;
+    int C_LAYOUTSTYLE_AFTEREXPIRE = 3;
 
 }

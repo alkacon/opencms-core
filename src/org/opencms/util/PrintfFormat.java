@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/PrintfFormat.java,v $
- * Date   : $Date: 2003/11/10 08:12:59 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/06/13 23:40:50 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -248,7 +248,7 @@ import java.text.DecimalFormatSymbols;
  *      character is used.
  * <dt>-<dd> result of the conversion is left-justified
  *      within the field.  (It will be right-justified
- *      if this flag is not specified).</td></tr>
+ *      if this flag is not specified).
  * <dt>+<dd> result of a signed conversion always
  *      begins with a sign (+ or -).  (It will begin
  *      with a sign only when a negative value is
@@ -505,7 +505,7 @@ public class PrintfFormat {
      * optional L does not imply conversion to a long
      * long double.
      */
-    private class ConversionSpecification {
+    private final class ConversionSpecification {
 
         /** Default precision. */
         private static final int m_defaultDigits = 6;
@@ -521,32 +521,32 @@ public class PrintfFormat {
          * conversions, trailing zeros will not be removed
          * from the result.
          */
-        private boolean m_alternateForm = false;
+        private boolean m_alternateForm;
 
         /** Internal variable */
-        private int m_argumentPosition = 0;
+        private int m_argumentPosition;
 
         /** Internal variable */
-        private int m_argumentPositionForFieldWidth = 0;
+        private int m_argumentPositionForFieldWidth;
 
         /** Internal variable */
-        private int m_argumentPositionForPrecision = 0;
+        private int m_argumentPositionForPrecision;
 
         /** Control string type. */
-        private char m_conversionCharacter = '\0';
+        private char m_conversionCharacter;
 
         /**
          * If the converted value has fewer bytes than the
          * field width, it will be padded with spaces or
          * zeroes.
          */
-        private int m_fieldWidth = 0;
+        private int m_fieldWidth;
 
         /**
          * Flag indicating whether or not the field width
          * has been set.
          */
-        private boolean m_fieldWidthSet = false;
+        private boolean m_fieldWidthSet;
 
         /** Literal or control format string. */
         private String m_fmt;
@@ -555,61 +555,61 @@ public class PrintfFormat {
          * The result of a signed conversion will always
          * begin with a sign (+ or -).
          */
-        private boolean m_leadingSign = false;
+        private boolean m_leadingSign;
 
         /**
          * Flag indicating that left padding with spaces is
          * specified.
          */
-        private boolean m_leadingSpace = false;
+        private boolean m_leadingSpace;
 
         /**
          * Flag indicating that left padding with zeroes is
          * specified.
          */
-        private boolean m_leadingZeros = false;
+        private boolean m_leadingZeros;
 
         /**
          * The result of the conversion will be
          * left-justified within the field.
          */
-        private boolean m_leftJustify = false;
+        private boolean m_leftJustify;
 
         /**
          * Flag specifying that a following d, i, o, u, x,
          * or X conversion character applies to a type
          * short int.
          */
-        private boolean m_optionalh = false;
+        private boolean m_optionalh;
 
         /**
          * Flag specifying that a following d, i, o, u, x,
          * or X conversion character applies to a type lont
          * int argument.
          */
-        private boolean m_optionall = false;
+        private boolean m_optionall;
 
         /**
          * Flag specifying that a following e, E, f, g, or
          * G conversion character applies to a type double
          * argument.  This is a noop in Java.
          */
-        private boolean m_optionalL = false;
+        private boolean m_optionalL;
 
         /**
          * Position within the control string.  Used by
          * the constructor.
          */
-        private int m_pos = 0;
+        private int m_pos;
 
         /** Internal variable */
-        private boolean m_positionalFieldWidth = false;
+        private boolean m_positionalFieldWidth;
 
         /** Internal variable */
-        private boolean m_positionalPrecision = false;
+        private boolean m_positionalPrecision;
 
         /** Internal variable */
-        private boolean m_positionalSpecification = false;
+        private boolean m_positionalSpecification;
 
         /**
          * The minimum number of digits to appear for the
@@ -620,13 +620,13 @@ public class PrintfFormat {
          * conversions.  The maximum number of bytes to be
          * printed from a string in s and S conversions.
          */
-        private int m_precision = 0;
+        private int m_precision;
 
         /**
          * Flag indicating whether or not the precision has
          * been set.
          */
-        private boolean m_precisionSet = false;
+        private boolean m_precisionSet;
 
         /**
          * The integer portion of the result of a decimal
@@ -634,23 +634,23 @@ public class PrintfFormat {
          * formatted with thousands' grouping characters.
          * For other conversions the flag is ignored.
          */
-        private boolean m_thousands = false;
+        private boolean m_thousands;
 
         /**
          * Flag indicating that the field width is *.
          */
-        private boolean m_variableFieldWidth = false;
+        private boolean m_variableFieldWidth;
 
         /**
          * Flag indicating that the precision is *.
          */
-        private boolean m_variablePrecision = false;
+        private boolean m_variablePrecision;
 
         /**
          * Constructor.  Used to prepare an instance
          * to hold a literal, not a control string.
          */
-        ConversionSpecification() {
+        private ConversionSpecification() {
             // empty
         }
 
@@ -665,7 +665,7 @@ public class PrintfFormat {
          *     input string is null, zero length, or
          *     otherwise malformed.
          */
-        ConversionSpecification(String fmtArg) throws IllegalArgumentException {
+        private ConversionSpecification(String fmtArg) throws IllegalArgumentException {
             if (fmtArg == null) {
                 throw new NullPointerException();
             }
@@ -1500,7 +1500,7 @@ public class PrintfFormat {
         }
 
         /**
-         * Internal helper 
+         * Internal helper.<p>
          * 
          * @return the result
          */
@@ -1509,7 +1509,7 @@ public class PrintfFormat {
         }
 
         /**
-         * Internal helper 
+         * Internal helper.<p> 
          * 
          * @return the result
          */
@@ -1518,7 +1518,7 @@ public class PrintfFormat {
         }
 
         /**
-         * Internal helper 
+         * Internal helper.<p>
          * 
          * @return the result
          */
@@ -1755,7 +1755,7 @@ public class PrintfFormat {
         }
 
         /**
-         * Internal helper 
+         * Internal helper.<p>
          * 
          * @return the result
          */
@@ -1764,7 +1764,7 @@ public class PrintfFormat {
         }
 
         /**
-         * Internal helper 
+         * Internal helper.<p>
          * 
          * @return the result
          */
@@ -1773,7 +1773,7 @@ public class PrintfFormat {
         }
 
         /**
-         * Internal helper 
+         * Internal helper.<p> 
          * 
          * @return the result
          */
@@ -3226,10 +3226,10 @@ public class PrintfFormat {
     }
 
     /** Character position. Used by the constructor. */
-    private int m_cPos = 0;
+    private int m_cPos;
 
     /** Character position. Used by the constructor. */
-    DecimalFormatSymbols m_dfs = null;
+    DecimalFormatSymbols m_dfs;
 
     /** Vector of control strings and format literals. */
     private Vector m_vFmt = new Vector();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChacc.java,v $
- * Date   : $Date: 2004/06/07 15:50:13 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2004/06/13 23:41:52 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  * 
  * @since 5.1
  */
@@ -459,7 +459,7 @@ public class CmsChacc extends CmsDialog {
     }
     
     /**
-     * @see #buildPermissionEntryForm(CmsAccessControlEntry, boolean, boolean, String).<p>
+     * @see #buildPermissionEntryForm(CmsAccessControlEntry, boolean, boolean, String)
      *
      * @param id the UUID of the principal of the permission set
      * @param curSet the current permission set 

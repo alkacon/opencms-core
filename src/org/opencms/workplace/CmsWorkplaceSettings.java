@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2004/03/12 17:03:42 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2004/06/13 23:41:52 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Map;
  * will be stored in the session of a user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  * @since 5.1
  */
 public class CmsWorkplaceSettings {
@@ -230,7 +230,7 @@ public class CmsWorkplaceSettings {
     }
 
     /**
-     * Returns the tree resource uri for the specified tree type
+     * Returns the tree resource uri for the specified tree type.<p>
      * 
      * @param type the type of the tree
      * @return the tree resource uri for the specified tree type
@@ -244,10 +244,10 @@ public class CmsWorkplaceSettings {
     }
 
     /**
-     * Returns the tree resource uri for the specified tree type
+     * Returns the tree site uri for the specified tree type.<p>
      * 
      * @param type the type of the tree
-     * @return the tree resource uri for the specified tree type
+     * @return the tree site uri for the specified tree type
      */
     public String getTreeSite(String type) {
         String result = (String) m_treeSite.get(type);

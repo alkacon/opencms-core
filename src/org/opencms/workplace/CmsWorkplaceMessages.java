@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceMessages.java,v $
- * Date   : $Date: 2004/03/29 10:39:54 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2004/06/13 23:41:52 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Set;
  * Provides access to the localized lables for the workplace.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 5.1
  */
@@ -74,13 +74,13 @@ public class CmsWorkplaceMessages {
     private static String m_workplaceDefaultEncoding;
     
     /** Map of locales from the installed modules */
-    private static Map m_allModuleMessages = null;     
+    private static Map m_allModuleMessages;     
     
     /** Set of locales from the installed modules */
-    private static Set m_moduleMessages = null;  
+    private static Set m_moduleMessages;  
     
     /** Map of encodings from the installed languages */
-    private static Map m_allEncodings = null;
+    private static Map m_allEncodings;
 
     /** DEBUG flag */
     private static final int DEBUG = 0; 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsPropertyUtils.java,v $
- * Date   : $Date: 2004/02/23 23:27:03 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/06/13 23:40:50 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,13 +45,13 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.3
  */
 public final class CmsPropertyUtils {
     
     /**
-     * Hides the public constructor
+     * Hides the public constructor.<p>
      */
     private CmsPropertyUtils() {
         // noop

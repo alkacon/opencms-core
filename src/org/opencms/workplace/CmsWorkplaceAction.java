@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceAction.java,v $
- * Date   : $Date: 2004/02/21 17:11:42 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2004/06/13 23:41:52 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import javax.servlet.http.HttpSession;
  * functionality from the old XML based workplace to the new JSP workplace.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 5.1
  */
@@ -130,7 +130,7 @@ public final class CmsWorkplaceAction {
     }
     
     /**
-     * Sets the folder currently selected in the explorer
+     * Sets the folder currently selected in the explorer.<p>
      * 
      * @param req the current http request
      * @param currentFolder the folder to set

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsStringSubstitution.java,v $
- * Date   : $Date: 2004/06/04 10:48:53 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/06/13 23:40:50 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since 5.0
  */
 public final class CmsStringSubstitution {
@@ -178,7 +178,7 @@ public final class CmsStringSubstitution {
      * @param content the content to extract the body from
      * @return the extracted body tag content
      */
-    public static final String extractHtmlBody(String content) {
+    public static String extractHtmlBody(String content) {
         
         Matcher startMatcher = C_BODY_START_REGEX.matcher(content);
         Matcher endMatcher = C_BODY_END_REGEX.matcher(content);        
@@ -240,7 +240,7 @@ public final class CmsStringSubstitution {
      * @param runtime the time to format
      * @return the formatted runtime
      */
-    public static final String formatRuntime(long runtime) {
+    public static String formatRuntime(long runtime) {
         long seconds = (runtime / C_SECONDS) % 60;
         long minutes = (runtime / C_MINUTES) % 60;
         long hours   = (runtime / C_HOURS) % 24;

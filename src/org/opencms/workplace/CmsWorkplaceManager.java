@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2004/06/08 16:05:36 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2004/06/13 23:41:52 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import javax.servlet.http.HttpSession;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 5.3.1
  */
@@ -698,8 +698,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
      * Initilizes the workplace locale set.<p>
      * 
      * Currently, this is defined by the existence of a special folder 
-     * <code>/system/workplace/locales/{locale-name}/".
-     * This is likley to change in future implementations.
+     * <code>/system/workplace/locales/{locale-name}/</code>.
+     * This is likley to change in future implementations.<p>
      * 
      * @param cms an OpenCms context object that must have been initialized with "Admin" permissions
      * @return the workplace locale set
