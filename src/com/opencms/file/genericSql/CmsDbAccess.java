@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/07/18 14:05:55 $
- * Version: $Revision: 1.97 $
+ * Date   : $Date: 2000/07/18 15:02:26 $
+ * Version: $Revision: 1.98 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.util.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.97 $ $Date: 2000/07/18 14:05:55 $ * 
+ * @version $Revision: 1.98 $ $Date: 2000/07/18 15:02:26 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -1350,7 +1350,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 			statement.executeUpdate();
 		}
         catch (SQLException e){
-            throw new CmsException("Wrong recovery-password");			
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		} finally {
 			if( statement != null) {
 				m_pool.putPreparedStatement(C_USERS_RECOVERPW_KEY, statement);
