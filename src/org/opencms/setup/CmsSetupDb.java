@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupDb.java,v $
- * Date   : $Date: 2004/08/08 08:30:56 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/08/10 15:45:55 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.9 $ $Date: 2004/08/08 08:30:56 $
+ * @version $Revision: 1.10 $ $Date: 2004/08/10 15:45:55 $
  */
 public class CmsSetupDb extends Object {
     
@@ -190,7 +190,6 @@ public class CmsSetupDb extends Object {
         InputStreamReader reader = null;
         try {
             filename = m_basePath + "setup" + File.separator + "database" + File.separator + databaseKey + File.separator + sqlScript;
-            // 
             executeSql(new FileReader(filename), replacers);
         } catch (FileNotFoundException e) {
             if (m_errorLogging) {
@@ -361,7 +360,11 @@ public class CmsSetupDb extends Object {
      * @see java.lang.Object#finalize()
      */
     protected void finalize() throws Throwable {
-        closeConnection();
+        try {
+            closeConnection();
+        } catch (Throwable t) {
+            // ignore
+        }
         super.finalize();
     }
 }
