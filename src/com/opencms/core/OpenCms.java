@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2003/01/23 10:44:10 $
-* Version: $Revision: 1.104 $
+* Date   : $Date: 2003/01/24 20:39:27 $
+* Version: $Revision: 1.105 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Lucas
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.104 $ $Date: 2003/01/23 10:44:10 $
+ * @version $Revision: 1.105 $ $Date: 2003/01/24 20:39:27 $
  */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
 
@@ -271,7 +271,12 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
             if(C_LOGGING && isLogging(C_OPENCMS_INIT))
                 log(C_OPENCMS_INIT, "[OpenCms] setting JSP export URL to value from opencms.properties: " + flexExportUrl);
         }
-
+        
+        // read flex jsp error page commit property and save in runtime configuration
+        Boolean flexErrorPageCommit = (Boolean)conf.getBoolean(CmsJspLoader.C_LOADER_ERRORPAGECOMMIT, new Boolean(true));
+        setRuntimeProperty(CmsJspLoader.C_LOADER_ERRORPAGECOMMIT, flexErrorPageCommit);
+        if(C_LOGGING && isLogging(C_OPENCMS_INIT))
+            log(C_OPENCMS_INIT, "[OpenCms] setting JSP error page commit value to: " + flexErrorPageCommit);      
         
         // try to initialize directory translations
         try {
