@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2004/06/08 16:05:36 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2004/06/10 12:22:22 $
+ * Version: $Revision: 1.59 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -97,7 +97,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.58 $
+ * @version $Revision: 1.59 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -461,10 +461,11 @@ public class CmsJspLoader implements I_CmsResourceLoader {
                     } else if (controller.isTop()) {
                         // process headers and write output if this is the "top" request/response                                  
                         res.setContentLength(result.length);
-                        // set date last modified header
+                        // set date last modified header                        
                         CmsFlexController.setDateLastModifiedHeader(res, controller.getDateLastModified());
-                        if (f_req.getParameterMap().size() == 0) {
-                            // only use "expires" header on pages that have no parameters,
+                        if ((f_req.getParameterMap().size() == 0) && (controller.getDateLastModified() > -1)) {
+                            // only use "expires" header on pages that have no parameters
+                            // and that are cachable (i.e. 'date last modified' is set)
                             // otherwise some browsers (e.g. IE 6) will not even try to request 
                             // updated versions of the page
                             CmsFlexController.setDateExpiresHeader(res, controller.getDateExpires());
