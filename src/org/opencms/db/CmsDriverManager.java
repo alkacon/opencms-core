@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/03 13:29:45 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2003/07/03 14:36:38 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * This is the driver manager.
  * 
- * @version $Revision: 1.17 $ $Date: 2003/07/03 13:29:45 $
+ * @version $Revision: 1.18 $ $Date: 2003/07/03 14:36:38 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -108,7 +108,7 @@ public class CmsDriverManager implements I_CmsConstants {
     /**
      * Inner class to define the access policy when checking permissions on vfs operations.
      * 
-	 * @version $Revision: 1.17 $ $Date: 2003/07/03 13:29:45 $
+	 * @version $Revision: 1.18 $ $Date: 2003/07/03 14:36:38 $
 	 * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
 	 */
     class VfsAccessGuard extends CmsAccessGuard {
@@ -206,7 +206,7 @@ public class CmsDriverManager implements I_CmsConstants {
 	/**
 	 * Inner class to define the access policy when checking permissions on user operations.
 	 * 
-	 * @version $Revision: 1.17 $ $Date: 2003/07/03 13:29:45 $
+	 * @version $Revision: 1.18 $ $Date: 2003/07/03 14:36:38 $
 	 * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
 	 */
 	class UserAccessGuard extends CmsAccessGuard {
@@ -281,6 +281,11 @@ public class CmsDriverManager implements I_CmsConstants {
      * The portnumber the workplace access is limited to.
      */
     protected int m_limitedWorkplacePort = -1;
+    
+    /**
+     * The driver pools available
+     */
+    protected HashMap m_driverPools = null;
 
     // Define caches for often read resources
     protected Map m_userCache = null;
@@ -303,6 +308,60 @@ public class CmsDriverManager implements I_CmsConstants {
     protected int m_cachelimit = 0;
     protected String m_refresh = null;
 
+	/**
+	 * Creates a new instance of a driver.<p>
+	 * 
+	 * @param configurations the configurations from the propertyfile
+	 * @param driverName the class name of the driver
+	 * @param driverPoolName the pool name of the driver
+	 * @param driverManager back link to the driver manager
+	 * @return an initialized instance of the driver
+	 * @throws CmsException if something goes wrong
+	 */
+	public static final Object newDriverInstance(Configurations configurations, String driverName, String driverPoolName, CmsDriverManager driverManager)
+		//throws CmsException 
+		{
+		
+		String driverPoolUrl = (String) driverManager.m_driverPools.get(driverPoolName);
+		
+		Class initParamClasses[] = {Configurations.class, String.class, CmsDriverManager.class};
+		Object initParams[] = {configurations, driverPoolUrl, driverManager};
+		 
+		Class driverClass = null;
+		Object driver = null;
+		
+		try {
+			// try to get the class
+			driverClass = Class.forName(driverName);                          
+			if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver init          : starting " + driverName);
+			}
+            
+			// try to create a instance
+			driver = driverClass.newInstance();
+			if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver init          : initializing " + driverName);
+			}
+            
+			// invoke the init-method of this access class
+			driver.getClass().getMethod("init", initParamClasses).invoke(driver, initParams);
+			if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver init          : finished, assigned pool " + driverPoolUrl);
+			}
+
+		} catch(Exception exc) {
+			String message = "Critical error while initializing " + driverName;
+			if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsDriverManager] " + message);
+			}
+            
+			exc.printStackTrace(System.err);
+			// throw new CmsException(message, CmsException.C_RB_INIT_ERROR, exc);
+		}
+		
+		return driver;
+	}
+	
     /**
      * Reads the required configurations from the opencms.properties file and creates
      * the various drivers to access the cms resources.<p>
@@ -322,8 +381,7 @@ public class CmsDriverManager implements I_CmsConstants {
      * @throws CmsException if the driver manager couldn't be instanciated.
      */
     public static final CmsDriverManager newInstance(Configurations configurations) throws CmsException {
-        String driverPools[] = null;
-        Hashtable driverPool;
+        String driverPoolNames[] = null;
     
         String driverName = null;
         String driverPoolName = null;
@@ -336,25 +394,40 @@ public class CmsDriverManager implements I_CmsConstants {
         I_CmsBackupDriver backupDriver = null;
         
         CmsDriverManager driverManager = null;     
-        
+		try {   
+			// create a driver manager instance
+			driverManager = new CmsDriverManager();
+			if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver manager init  : phase 1 ok - initializing database");
+			}          
+		} catch(Exception exc) {
+			String message = "Critical error while loading driver manager";
+			if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsDriverManager] " + message);
+			}
+            
+			exc.printStackTrace(System.err);
+			throw new CmsException(message, CmsException.C_RB_INIT_ERROR, exc);
+		}
+		        
         // read the pools to initialize from the properties
-        driverPools = configurations.getStringArray(C_CONFIGURATION_DB + ".pools");
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+        driverPoolNames = configurations.getStringArray(C_CONFIGURATION_DB + ".pools");
+        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Resource pools       : ");
         }
         
         // for each pool, read its properties and initialize it
-        driverPool = new Hashtable();
-        for (int p=0; p<driverPools.length; p++) {
+        driverManager.m_driverPools = new HashMap();
+        for (int p=0; p<driverPoolNames.length; p++) {
             try {
-                String poolUrl = CmsDbPool.createDriverConnectionPool(configurations,driverPools[p]); 
-                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                String poolUrl = CmsDbPool.createDriverConnectionPool(configurations,driverPoolNames[p]); 
+                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                     A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Initializing pool    : " + poolUrl);
                 }
-                driverPool.put(driverPools[p],poolUrl);
+				driverManager.m_driverPools.put (driverPoolNames[p],poolUrl);
             } catch (Exception exc) {
-                String message = "Critical error while initializing resource pool " + driverPools[p];
-                if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL) ) {
+                String message = "Critical error while initializing resource pool " + driverPoolNames[p];
+                if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
                     A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsDriverManager] " + message);
                 }
     
@@ -362,197 +435,41 @@ public class CmsDriverManager implements I_CmsConstants {
                 throw new CmsException(message, CmsException.C_RB_INIT_ERROR, exc);         
             }
         }        
-        
-        try {   
-            // create a driver manager instance
-            driverManager = new CmsDriverManager();
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver manager init  : phase 1 ok - initializing database" );
-            }          
-        } catch(Exception exc) {
-            String message = "Critical error while loading driver manager";
-            if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL) ) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsDriverManager] " + message);
-            }
-            
-            exc.printStackTrace(System.err);
-            throw new CmsException(message, CmsException.C_RB_INIT_ERROR, exc);
-        }        
-        
+                
         // read the vfs driver class properties and initialize a new instance 
-        driverName = configurations.getString(C_CONFIGURATION_DB + ".vfs.driver" );
-        driverPoolName = configurations.getString(C_CONFIGURATION_DB + ".vfs.pool" );
-        try {
-            // try to get the class
-            driverClass = Class.forName(driverName);                          
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver init          : starting " + driverName );
-            }
-            
-            // try to create a instance
-            vfsDriver = (I_CmsVfsDriver)driverClass.newInstance();
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver init          : initializing " + driverName );
-            }
-            
-            // invoke the init-method of this access class
-            driverPoolName = (String)driverPool.get(driverPoolName);
-            vfsDriver.init(configurations, driverPoolName, driverManager);
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver init          : finished, assigned pool " + driverPoolName );
-            }
-
-        } catch(Exception exc) {
-            String message = "Critical error while initializing vfs driver ";
-            if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL) ) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsDriverManager] " + message);
-            }
-            
-            exc.printStackTrace(System.err);
-            throw new CmsException(message, CmsException.C_RB_INIT_ERROR, exc);
-        }
-        
+        driverName = configurations.getString(C_CONFIGURATION_DB + ".vfs.driver");
+        driverPoolName = configurations.getString(C_CONFIGURATION_DB + ".vfs.pool");
+        vfsDriver = (I_CmsVfsDriver) newDriverInstance(configurations, driverName, driverPoolName, driverManager);
+                
         // read the user driver class properties and initialize a new instance 
-        driverName = configurations.getString(C_CONFIGURATION_DB + ".user.driver" );
-        driverPoolName = configurations.getString(C_CONFIGURATION_DB + ".user.pool" );
-        try {
-            // try to get the class
-            driverClass = Class.forName(driverName);                          
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver init          : starting " + driverName );
-            }
-            
-            // try to create a instance
-            userDriver = (I_CmsUserDriver)driverClass.newInstance();
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver init          : initializing " + driverName );
-            }
-            
-            // invoke the init-method of this access class
-            driverPoolName = (String)driverPool.get(driverPoolName);
-            userDriver.init(configurations, driverPoolName, driverManager);
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver init          : finished, assigned pool " + driverPoolName );
-            }
-
-        } catch(Exception exc) {
-            String message = "Critical error while initializing user driver ";
-            if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL) ) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsDriverManager] " + message);
-            }
-            
-            exc.printStackTrace(System.err);
-            throw new CmsException(message, CmsException.C_RB_INIT_ERROR, exc);
-        }               
-
+        driverName = configurations.getString(C_CONFIGURATION_DB + ".user.driver");
+        driverPoolName = configurations.getString(C_CONFIGURATION_DB + ".user.pool");
+        userDriver = (I_CmsUserDriver) newDriverInstance(configurations, driverName, driverPoolName, driverManager);
+		
         // read the project driver class properties and initialize a new instance 
-        driverName = configurations.getString(C_CONFIGURATION_DB + ".project.driver" );
-        driverPoolName = configurations.getString(C_CONFIGURATION_DB + ".project.pool" );
-        try {
-            // try to get the class
-            driverClass = Class.forName(driverName);                          
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver init          : starting " + driverName );
-            }
-            
-            // try to create a instance
-            projectDriver = (I_CmsProjectDriver)driverClass.newInstance();
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver init          : initializing " + driverName );
-            }
-            
-            // invoke the init-method of this access class
-            driverPoolName = (String)driverPool.get(driverPoolName);
-            projectDriver.init(configurations, driverPoolName, driverManager);
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver init          : finished, assigned pool " + driverPoolName );
-            }
-
-        } catch(Exception exc) {
-            String message = "Critical error while initializing project driver ";
-            if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL) ) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsDriverManager] " + message);
-            }
-            
-            exc.printStackTrace(System.err);
-            throw new CmsException(message, CmsException.C_RB_INIT_ERROR, exc);
-        } 
+        driverName = configurations.getString(C_CONFIGURATION_DB + ".project.driver");
+        driverPoolName = configurations.getString(C_CONFIGURATION_DB + ".project.pool");
+		projectDriver = (I_CmsProjectDriver) newDriverInstance(configurations, driverName, driverPoolName, driverManager);
         
         // read the workflow driver class properties and initialize a new instance 
-        driverName = configurations.getString(C_CONFIGURATION_DB + ".workflow.driver" );
-        driverPoolName = configurations.getString(C_CONFIGURATION_DB + ".workflow.pool" );
-        try {
-            // try to get the class
-            driverClass = Class.forName(driverName);                          
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver init          : starting " + driverName );
-            }
-            
-            // try to create a instance
-            workflowDriver = (I_CmsWorkflowDriver)driverClass.newInstance();
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver init          : initializing " + driverName );
-            }
-            
-            // invoke the init-method of this access class
-            driverPoolName = (String)driverPool.get(driverPoolName);
-            workflowDriver.init(configurations, driverPoolName, driverManager);
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver init          : finished, assigned pool " + driverPoolName );
-            }
+        driverName = configurations.getString(C_CONFIGURATION_DB + ".workflow.driver");
+        driverPoolName = configurations.getString(C_CONFIGURATION_DB + ".workflow.pool");
+		workflowDriver = (I_CmsWorkflowDriver) newDriverInstance(configurations, driverName, driverPoolName, driverManager);
 
-        } catch(Exception exc) {
-            String message = "Critical error while initializing workflow driver ";
-            if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL) ) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsDriverManager] " + message);
-            }
-            
-            exc.printStackTrace(System.err);
-            throw new CmsException(message, CmsException.C_RB_INIT_ERROR, exc);
-        }
-        
         // read the backup driver class properties and initialize a new instance 
-        driverName = configurations.getString(C_CONFIGURATION_DB + ".backup.driver" );
-        driverPoolName = configurations.getString(C_CONFIGURATION_DB + ".backup.pool" );
-        try {
-            // try to get the class
-            driverClass = Class.forName(driverName);                          
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver init          : starting " + driverName );
-            }
-            
-            // try to create a instance
-            backupDriver = (I_CmsBackupDriver)driverClass.newInstance();
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver init          : initializing " + driverName );
-            }
-            
-            // invoke the init-method of this access class
-            driverPoolName = (String)driverPool.get(driverPoolName);
-            backupDriver.init(configurations, driverPoolName, driverManager);
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver init          : finished, assigned pool " + driverPoolName );
-            }
+        driverName = configurations.getString(C_CONFIGURATION_DB + ".backup.driver");
+        driverPoolName = configurations.getString(C_CONFIGURATION_DB + ".backup.pool");
+		backupDriver = (I_CmsBackupDriver) newDriverInstance(configurations, driverName, driverPoolName, driverManager);
 
-        } catch(Exception exc) {
-            String message = "Critical error while initializing workflow driver ";
-            if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL) ) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsDriverManager] " + message);
-            }
-            
-            exc.printStackTrace(System.err);
-            throw new CmsException(message, CmsException.C_RB_INIT_ERROR, exc);
-        }        
-        
         try {                        
             // invoke the init method of the driver manager
             driverManager.init(configurations, vfsDriver, userDriver, projectDriver, workflowDriver, backupDriver);
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver manager init  : phase 3 ok - finished" );
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Driver manager init  : phase 3 ok - finished");
             }            
         } catch(Exception exc) {
             String message = "Critical error while loading driver manager";
-            if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL) ) {
+            if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsDriverManager] " + message);
             }
             
@@ -563,8 +480,8 @@ public class CmsDriverManager implements I_CmsConstants {
         
         // set the pool for the COS
         // TODO: check if there is a better place for this
-        driverPoolName = configurations.getString(C_CONFIGURATION_DB + ".cos.pool" );
-        driverPoolName = (String)driverPool.get(driverPoolName);
+        driverPoolName = configurations.getString(C_CONFIGURATION_DB + ".cos.pool");
+        driverPoolName = (String)driverManager.m_driverPools.get(driverPoolName);
         A_OpenCms.setRuntimeProperty("cosPoolUrl", driverPoolName);
         CmsIdGenerator.setDefaultPool(driverPoolName);            
         
@@ -4257,30 +4174,31 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
     //  Methods working with user and groups
 
     /**
-     * Logs a user into the Cms, if the password is correct.
+     * Logs a user into the Cms, if the password is correct.<p>
      *
      * <B>Security</B>
      * All users are granted.
      *
-     * @param currentUser The user who requested this method.
-     * @param currentProject The current project of the user.
-     * @param username The name of the user to be returned.
-     * @param password The password of the user to be returned.
-     * @return the logged in user.
+     * @param currentUser the user who requested this method
+     * @param currentProject the current project of the user
+     * @param username the name of the user to be returned
+     * @param password the password of the user to be returned
+     * @param remoteAddress the ip address of the request
+     * @return the logged in user
      *
      * @throws CmsException Throws CmsException if operation was not succesful
      */
     public CmsUser loginUser(CmsUser currentUser, CmsProject currentProject,
-                               String username, String password)
+                               String username, String password, String remoteAddress)
         throws CmsException {
 
         // we must read the user from the dbAccess to avoid the cache
-        CmsUser newUser = m_userDriver.readUser(username, password, C_USER_TYPE_SYSTEMUSER);
+        CmsUser newUser = m_userDriver.readUser(username, password, remoteAddress, C_USER_TYPE_SYSTEMUSER);
 
         // is the user enabled?
         if (newUser.getFlags() == C_FLAG_ENABLED) {
             // Yes - log him in!
-            // first write the lastlogin-time.
+            // set the lastlogin-time
             newUser.setLastlogin(new Date().getTime());
             // write the user back to the cms.
             m_userDriver.writeUser(newUser);
@@ -4294,29 +4212,29 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
             return (newUser);
         } else {
             // No Access!
-            throw new CmsException("[" + this.getClass().getName() + "] " + username,
-                CmsException.C_NO_ACCESS );
+            throw new CmsException("[" + this.getClass().getName() + "] " + username, CmsException.C_NO_ACCESS);
         }
     }
 
     /**
-     * Logs a web user into the Cms, if the password is correct.
+     * Logs a web user into the Cms, if the password is correct.<p>
      *
      * <B>Security</B>
      * All users are granted.
      *
-     * @param currentUser The user who requested this method.
-     * @param currentProject The current project of the user.
-     * @param username The name of the user to be returned.
-     * @param password The password of the user to be returned.
-     * @return the logged in user.
+     * @param currentUser The user who requested this method
+     * @param currentProject The current project of the user
+     * @param username The name of the user to be returned
+     * @param password The password of the user to be returned
+     * @param remoteAddress the ip address of the request
+     * @return the logged in user
      *
      * @throws CmsException Throws CmsException if operation was not succesful
      */
-    public CmsUser loginWebUser(CmsUser currentUser, CmsProject currentProject, String username, String password) throws CmsException {
+    public CmsUser loginWebUser(CmsUser currentUser, CmsProject currentProject, String username, String password, String remoteAddress) throws CmsException {
 
         // we must read the user from the dbAccess to avoid the cache
-        CmsUser newUser = m_userDriver.readUser(username, password, C_USER_TYPE_WEBUSER);
+        CmsUser newUser = m_userDriver.readUser(username, password, remoteAddress, C_USER_TYPE_WEBUSER);
 
         // is the user enabled?
         if (newUser.getFlags() == C_FLAG_ENABLED) {
@@ -4333,6 +4251,7 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
             throw new CmsException("[" + this.getClass().getName() + "] " + username, CmsException.C_NO_ACCESS);
         }
     }
+    
     /**
      * Merges two resource-vectors into one vector.
      * All offline-resources will be putted to the return-vector. All additional
@@ -6578,17 +6497,16 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
         // check the password
         Utils.validateNewPassword(cms, newPassword, oldPassword);
 
-        // read the user
+        // read the user in order to ensure that the old password is correct
+		CmsUser user = null;
         try {
-            m_userDriver.readUser(username, oldPassword, C_USER_TYPE_SYSTEMUSER);
-        } catch (CmsException exc) {
-            // this is no system-user - maybe a webuser?
-            try {
-                m_userDriver.readUser(username, oldPassword, C_USER_TYPE_WEBUSER);
-            } catch (CmsException e) {
-                throw exc;
-            }
-        }
+            user = m_userDriver.readUser(username, oldPassword, C_USER_TYPE_SYSTEMUSER);
+        } catch (CmsException exc) { }
+        
+        if (user == null) try {
+            user = m_userDriver.readUser(username, oldPassword, C_USER_TYPE_WEBUSER);
+        } catch (CmsException e) { }
+        
         m_userDriver.setPassword(username, newPassword);
     }
 
@@ -6633,13 +6551,16 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
         // check the password
         Utils.validateNewPassword(cms, newPassword, password);
 
-        // read the user
-        try {
-            readUser(currentUser, currentProject, username, password);
-        } catch (CmsException exc) {
-            // this is no system-user - maybe a webuser?
-            readWebUser(currentUser, currentProject, username, password);
-        }
+		// read the user in order to ensure that the password is correct
+		CmsUser user = null;
+		try {
+			user = m_userDriver.readUser(username, password, C_USER_TYPE_SYSTEMUSER);
+		} catch (CmsException exc) { }
+        
+		if (user == null) try {
+			user = m_userDriver.readUser(username, password, C_USER_TYPE_WEBUSER);
+		} catch (CmsException e) { }
+
         m_userDriver.setRecoveryPassword(username, newPassword);
     }
     /**
