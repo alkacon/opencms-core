@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskAction.java,v $
- * Date   : $Date: 2000/05/30 14:38:21 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/05/31 12:55:32 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.15 $ $Date: 2000/05/30 14:38:21 $
+ * @version $Revision: 1.16 $ $Date: 2000/05/31 12:55:32 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants, I_CmsLogChannels {
@@ -182,8 +182,13 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants, I_CmsLog
 	public static void forward(A_CmsObject cms, int taskid,
 							   String newEditorName, String newRoleName)
 		throws CmsException {
-		CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
+		CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);		
 		A_CmsUser newEditor = cms.readUser(newEditorName);
+		
+		if( newRoleName.equals(C_ALL_ROLES) ) {
+			newRoleName = cms.readUser(newEditorName).getDefaultGroup().getName();
+		}
+		
 		A_CmsGroup oldRole = cms.readGroup(newRoleName);
 
 		cms.forwardTask(taskid, oldRole.getName(), newEditor.getName());
