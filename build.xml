@@ -232,7 +232,7 @@ ${build.inputlib.fesi}
     </target>
 
 
-    <target name="setup" depends="tomcat.dist" description="?">
+    <target name="setup" depends="tomcat.dist" description="Creates a new OC version and imports all workplace files">
         <sql
             classpath="${build.inputlib.mysql}"
             driver="${db.driver}"
