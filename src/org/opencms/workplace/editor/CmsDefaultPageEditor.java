@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2003/12/17 17:46:37 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/12/19 15:34:04 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.1.12
  */
@@ -310,7 +310,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
         // get the content from the temporary file     
         try {
             CmsXmlPage page = CmsXmlPage.read(getCms(), getCms().readFile(this.getParamTempfile()));
-            String elementData = page.getElementData(getCms(), getParamBodyname(), getParamBodylanguage());
+            String elementData = page.getContent(getCms(), getParamBodyname(), getParamBodylanguage(), true);
             if (elementData != null) {
                 setParamContent(elementData);
             } else {
@@ -581,7 +581,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
             m_page.addElement(body, language);
         }
         // set the element data
-        m_page.setElementData(getCms(), body, language, content);
+        m_page.setContent(getCms(), body, language, content);
         
         // write the file
         getCms().writeFile(m_page.write(m_file));

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsXmlPage.java,v $
- * Date   : $Date: 2003/12/17 17:46:37 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2003/12/19 15:34:04 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLink;
 import org.opencms.staticexport.CmsLinkProcessor;
 import org.opencms.staticexport.CmsLinkTable;
-import org.opencms.util.CmsStringSubstitution;
 
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
@@ -74,7 +73,7 @@ import org.dom4j.io.XMLWriter;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class CmsXmlPage {
     
@@ -134,8 +133,7 @@ public class CmsXmlPage {
               .addAttribute("language", language);
        
         element.addElement("links");
-        element.addElement("editdata");
-        element.addElement("displaydata");
+        element.addElement("content");
 
         setBookmark (language+"_"+name, element);
     }
@@ -203,8 +201,8 @@ public class CmsXmlPage {
 
         if (element != null) {
 
-            Element displaydata = element.element("displaydata");      
-            content = displaydata.getText();
+            Element data = element.element("content");      
+            content = data.getText();
             
             CmsLinkTable linkTable = getLinkTable(name, language);
             if (!linkTable.isEmpty()) {
@@ -221,37 +219,6 @@ public class CmsXmlPage {
         }
         
         return content;
-    }    
-    
-    /**
-     * Returns the data of an element.<p>
-     * 
-     * @param cms the cms object
-     * @param name name of the element
-     * @param language language of the element
-     * @return the character data of the element or null if the element does not exists
-     * 
-     * @throws CmsPageException if something goes wrong
-     */
-    public String getElementData(CmsObject cms, String name, String language) 
-        throws CmsPageException {
-
-        return getContent(cms, name, language, true);
-        
-        /*
-        Element element = getBookmark(language+"_"+name);
-        String content = null;
-        
-        if (element != null) {
-            
-            Element editdata = element.element("editdata");
-            
-            // set the context & servlet path in editor content
-            content = CmsStringSubstitution.substitute(editdata.getText(), I_CmsWpConstants.C_MACRO_OPENCMS_CONTEXT + "/", OpenCms.getOpenCmsContext() + "/");
-        } 
-        
-        return content;
-        */
     }
     
     /**
@@ -484,30 +451,24 @@ public class CmsXmlPage {
      * 
      * @throws CmsPageException if something goes wrong
      */
-    public void setElementData(CmsObject cms, String name, String language, String content) 
+    public void setContent(CmsObject cms, String name, String language, String content) 
         throws CmsPageException {
         
         Element element = getBookmark(language+"_"+name);
-        Element editdata = element.element("editdata");
-        Element displaydata = element.element("displaydata");
+        Element data = element.element("content");
         Element links = element.element("links");
-        
-        String cdata = CmsStringSubstitution.substituteContextPath(content, OpenCms.getOpenCmsContext()  + "/");
-        editdata.setContent(null);
-        editdata.addCDATA(cdata);
-
-        // TODO: convert editdata to displaydata
         CmsLinkTable linkTable = new CmsLinkTable();
+        
         try {
 
             CmsLinkProcessor linkReplacer = new CmsLinkProcessor(linkTable);
         
-            displaydata.setContent(null);
+            data.setContent(null);
             if (!m_allowRelativeLinks && m_file != null) {
                 String relativeRoot = CmsResource.getParentFolder(cms.readAbsolutePath(m_file));
-                displaydata.addCDATA(linkReplacer.replaceLinks(cms, content, relativeRoot));
+                data.addCDATA(linkReplacer.replaceLinks(cms, content, relativeRoot));
             } else {
-                displaydata.addCDATA(linkReplacer.replaceLinks(cms, content, null));
+                data.addCDATA(linkReplacer.replaceLinks(cms, content, null));
             }
             
             
