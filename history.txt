@@ -9,7 +9,8 @@ Legend:
 - General comment
 
 OpenCms 4.5.33 Chusuk       - xx January 2001
-
+- Addind mechanism of redirect to the correct ressource based on the current project
+  for showing preview of ressources from explorer-view.
 
 OpenCms 4.5.32 Chusuk       - 18 January 2001
 ! The digest-method for encrypting passwords is now available in the CmsObject.

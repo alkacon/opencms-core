@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsExplorerShowResource.java,v $
-* Date   : $Date: 2002/01/15 15:02:12 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2002/01/18 10:24:56 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,9 +56,35 @@ public class  CmsExplorerShowResource extends CmsWorkplaceDefault {
      */
 
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+/*        String url = (String)parameters.get("url");
+        I_CmsRequest cmsRequest = cms.getRequestContext().getRequest();
+        HttpServletRequest httpRequest = (HttpServletRequest) cmsRequest.getOriginalRequest();
+
+        if(cms.getRequestContext().currentProject().getId() == cms.onlineProject().getId()) {
+            // this is the online project, we have to take care about the sheme
+            // lets check if ssl is active
+            boolean httpsReq = "https".equalsIgnoreCase(httpRequest.getScheme());
+            if(Utils.isHttpsResource(cms, cms.readFileHeader(url.substring(cms.getRequestContext().getRequest().getServletUrl().length()))) != httpsReq){
+                if(httpsReq){
+                    // needs a http request
+                    url = "http://" + httpRequest.getServerName() + ":" + httpRequest.getServerPort() + url;
+                }else{
+                    // needs a https request
+                    url = "https://" + httpRequest.getServerName() + url;
+                }
+            }
+        }
         try {
-            // TODO: send https-redirect if it is needed!
-            cms.getRequestContext().getResponse().sendRedirect((String)parameters.get("url"));
+            cms.getRequestContext().getResponse().sendRedirect(url);
+        } catch(IOException exc) {
+            throw new CmsException(exc.getMessage(), exc);
+        }
+        return "".getBytes(); */
+
+        String url = (String)parameters.get("url");
+        url = cms.getLinkSubstitution(url.substring(cms.getRequestContext().getRequest().getServletUrl().length()));
+        try {
+            cms.getRequestContext().getResponse().sendRedirect(url);
         } catch(IOException exc) {
             throw new CmsException(exc.getMessage(), exc);
         }
