@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsQueries.java,v $
- * Date   : $Date: 2000/10/02 14:55:11 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2000/10/03 13:12:29 $
+ * Version: $Revision: 1.19 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.18 $ $Date: 2000/10/02 14:55:11 $
+ * @version $Revision: 1.19 $ $Date: 2000/10/03 13:12:29 $
  */
 public class CmsQueries
 {
@@ -317,6 +317,8 @@ public class CmsQueries
 	public String C_LANGUAGE_SELECTLANGUAGE = "SELECT NAME, SHORTNAME, PRIORITY FROM " + C_DATABASE_PREFIX + "LANGUAGE WHERE LANGUAGE_ID = ?";
 	public Integer C_COUNTRY_SELECTCOUNTRY_KEY = new Integer(471);
 	public String C_COUNTRY_SELECTCOUNTRY = "SELECT NAME, SHORTNAME, PRIORITY FROM " + C_DATABASE_PREFIX + "COUNTRY WHERE COUNTRY_ID = ?";
+	public Integer C_SITES_GETSITEFROMSITEID_KEY = new Integer(472);
+	public String C_SITES_GETSITEFROMSITEID = "SELECT SITE_ID, NAME, DESCRIPTION,CATEGORY_ID,LANGUAGE_ID, COUNTRY_ID, ONLINEPROJECT_ID FROM " + C_DATABASE_PREFIX + "SITES WHERE SITE_ID = ? ";
 	
 	//statements needen for newSite
 	public Integer C_SITES_MAXID_KEY = new Integer(452);

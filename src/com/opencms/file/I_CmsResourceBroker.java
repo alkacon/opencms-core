@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/10/02 15:19:18 $
- * Version: $Revision: 1.120 $
+ * Date   : $Date: 2000/10/03 13:12:26 $
+ * Version: $Revision: 1.121 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.120 $ $Date: 2000/10/02 15:19:18 $
+ * @version $Revision: 1.121 $ $Date: 2000/10/03 13:12:26 $
  * 
  */
 
@@ -1050,18 +1050,6 @@ Vector getAllLanguages(CmsUser currentUser, CmsProject currentProject) throws co
 	public Hashtable getAllResourceTypes(CmsUser currentUser, 
 										 CmsProject currentProject) 
 		throws CmsException;
-/**
- * Returns all sites.
- * 
- * <B>Security:</B>
- * All users are granted.
- * 
- * @param currentUser The user who requested this method.
- * @param currentProject The current project of the user.
- * @return all sites.
- * @exception CmsException Throws CmsException if something goes wrong.
- */
-public Vector getAllSites(CmsUser currentUser, CmsProject currentProject) throws CmsException;
 /*
  * Returns all site urls.
  *
@@ -1074,6 +1062,18 @@ public Vector getAllSites(CmsUser currentUser, CmsProject currentProject) throws
  * @exception CmsException Throws CmsException if something goes wrong.
  */
 Vector getAllSiteUrls(CmsUser currentUser, CmsProject currentProject) throws com.opencms.core.CmsException;
+/**
+ * Returns all sites.
+ * 
+ * <B>Security:</B>
+ * All users are granted.
+ * 
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @return all sites.
+ * @exception CmsException Throws CmsException if something goes wrong.
+ */
+public Vector getAllSites(CmsUser currentUser, CmsProject currentProject) throws CmsException;
 		public Hashtable getCacheInfo();
 /**
  * Returns a CmsCategory object
@@ -1160,6 +1160,20 @@ public CmsCountry getCountry(CmsUser currentUser, CmsProject currentProject, int
 	public Vector getDirectGroupsOfUser(CmsUser currentUser, CmsProject currentProject, 
 										String username)
 		throws CmsException;
+	/**
+	 * This method can be called, to determine if the file-system was changed 
+	 * in the past. A module can compare its previosly stored number with this
+	 * returned number. If they differ, a change was made.
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * 
+	 * @return the number of file-system-changes.
+	 */
+	public long getFileSystemChanges(CmsUser currentUser, CmsProject currentProject);
 	 /**
 	 * Returns a Vector with all files of a folder.<br>
 	 * 
@@ -1200,20 +1214,6 @@ public CmsCountry getCountry(CmsUser currentUser, CmsProject currentProject, int
  * @exception CmsException Throws CmsException if operation was not succesful.
  */
 public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProject, String propertyDefinition, String propertyValue) throws CmsException;
-	/**
-	 * This method can be called, to determine if the file-system was changed 
-	 * in the past. A module can compare its previosly stored number with this
-	 * returned number. If they differ, a change was made.
-	 * 
-	 * <B>Security:</B>
-	 * All users are granted.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * 
-	 * @return the number of file-system-changes.
-	 */
-	public long getFileSystemChanges(CmsUser currentUser, CmsProject currentProject);
 	/**
 	 * Returns all groups<P/>
 	 * 
@@ -1371,6 +1371,19 @@ CmsSite getSite(CmsUser user, CmsProject project, int projectId)
  * @param siteName java.lang.String
  */
 CmsSite getSite(CmsUser user, CmsProject project, String siteName)
+		throws CmsException;
+/**
+ * Find the site of a project.
+ *
+ * <B>Security:</B>
+ * All users are granted.
+ *
+ * @return com.opencms.file.CmsSite
+ * @param user com.opencms.file.CmsUser
+ * @param project com.opencms.file.CmsProject
+ * @param projectId int the project for witch to find the site. 
+ */
+CmsSite getSiteBySiteId(CmsUser user, CmsProject project, int siteId)
 		throws CmsException;
 /**
  * Get the site corresponding to a specifik url.
@@ -1587,6 +1600,36 @@ public Vector getSiteUrls(CmsUser currentUser, CmsProject currentProject, int si
 	public boolean isProjectManager(CmsUser currentUser, CmsProject currentProject) 
 		throws CmsException;
 	/**
+	 * Locks a resource.<br>
+	 * 
+	 * Only a resource in an offline project can be locked. The state of the resource
+	 * is set to CHANGED (1).
+	 * If the content of this resource is not exisiting in the offline project already,
+	 * it is read from the online project and written into the offline project.
+	 * A user can lock a resource, so he is the only one who can write this 
+	 * resource. <br>
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can write the resource</li>
+	 * <li>the resource is not locked by another user</li>
+	 * </ul>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param resource The complete path to the resource to lock.
+	 * @param force If force is true, a existing locking will be oberwritten.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 * It will also be thrown, if there is a existing lock
+	 * and force was set to false.
+	 */
+	public void lockResource(CmsUser currentUser, CmsProject currentProject,
+							 String resourcename, boolean force)
+		throws CmsException;
+	/**
 	 * Returns the user, who had locked the resource.<BR/>
 	 * 
 	 * A user can lock a resource, so he is the only one who can write this 
@@ -1621,36 +1664,6 @@ public Vector getSiteUrls(CmsUser currentUser, CmsProject currentProject, int si
 	 */
 	public CmsUser lockedBy(CmsUser currentUser, CmsProject currentProject,
 							  String resource)
-		throws CmsException;
-	/**
-	 * Locks a resource.<br>
-	 * 
-	 * Only a resource in an offline project can be locked. The state of the resource
-	 * is set to CHANGED (1).
-	 * If the content of this resource is not exisiting in the offline project already,
-	 * it is read from the online project and written into the offline project.
-	 * A user can lock a resource, so he is the only one who can write this 
-	 * resource. <br>
-	 * 
-	 * <B>Security:</B>
-	 * Access is granted, if:
-	 * <ul>
-	 * <li>the user has access to the project</li>
-	 * <li>the user can write the resource</li>
-	 * <li>the resource is not locked by another user</li>
-	 * </ul>
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param resource The complete path to the resource to lock.
-	 * @param force If force is true, a existing locking will be oberwritten.
-	 * 
-	 * @exception CmsException  Throws CmsException if operation was not succesful.
-	 * It will also be thrown, if there is a existing lock
-	 * and force was set to false.
-	 */
-	public void lockResource(CmsUser currentUser, CmsProject currentProject,
-							 String resourcename, boolean force)
 		throws CmsException;
 	//  Methods working with user and groups
 	

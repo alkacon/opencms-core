@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/10/02 15:19:18 $
- * Version: $Revision: 1.125 $
+ * Date   : $Date: 2000/10/03 13:12:25 $
+ * Version: $Revision: 1.126 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.125 $ $Date: 2000/10/02 15:19:18 $ 
+ * @version $Revision: 1.126 $ $Date: 2000/10/03 13:12:25 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -917,15 +917,6 @@ public Hashtable getAllResourceTypes() throws CmsException {
 	return (m_rb.getAllResourceTypes(m_context.currentUser(), m_context.currentProject()));
 }
 /**
- * Returns a vector containing all sites of the current project.
- * 
- * @return vector containing all sites of the current project.
- * @exception CmsException if operation was not successful.
- */
-public Vector getAllSites() throws CmsException {
-	return m_rb.getAllSites(m_context.currentUser(), m_context.currentProject());
-}
-/**
  * Returns all site urls
  * @return java.util.Vector site urls
  * @exception com.opencms.core.CmsException The exception description.
@@ -933,6 +924,15 @@ public Vector getAllSites() throws CmsException {
 public Vector getAllSiteUrls() throws com.opencms.core.CmsException
 {
 	return m_rb.getAllSiteUrls(m_context.currentUser(), m_context.currentProject());
+}
+/**
+ * Returns a vector containing all sites of the current project.
+ * 
+ * @return vector containing all sites of the current project.
+ * @exception CmsException if operation was not successful.
+ */
+public Vector getAllSites() throws CmsException {
+	return m_rb.getAllSites(m_context.currentUser(), m_context.currentProject());
 }
 /**
 * Gets information about the cache size.
@@ -1026,6 +1026,17 @@ public Vector getDirectGroupsOfUser(String username) throws CmsException {
 	return (m_rb.getDirectGroupsOfUser(m_context.currentUser(), m_context.currentProject(), username));
 }
 /**
+ * This method can be called, to determine if the file-system was changed in the past.
+ * <br>
+ * A module can compare its previously stored number with the returned number. 
+ * If they differ, the file system has been changed.
+ * 
+ * @return the number of file-system-changes.
+ */
+public long getFileSystemChanges() {
+	return (m_rb.getFileSystemChanges(m_context.currentUser(), m_context.currentProject()));
+}
+/**
  * Returns a Vector with all files of a given folder.
  * <br>
  * Files of a folder can be read from an offline Project and the online Project.
@@ -1051,17 +1062,6 @@ public Vector getFilesInFolder(String foldername) throws CmsException {
  */
 public Vector getFilesWithProperty(String propertyDefinition, String propertyValue) throws CmsException {
 	return m_rb.getFilesWithProperty(m_context.currentUser(), m_context.currentProject(), propertyDefinition, propertyValue);
-}
-/**
- * This method can be called, to determine if the file-system was changed in the past.
- * <br>
- * A module can compare its previously stored number with the returned number. 
- * If they differ, the file system has been changed.
- * 
- * @return the number of file-system-changes.
- */
-public long getFileSystemChanges() {
-	return (m_rb.getFileSystemChanges(m_context.currentUser(), m_context.currentProject()));
 }
 /**
  * Returns all groups in the Cms.
@@ -1198,6 +1198,17 @@ public CmsSite getSite(StringBuffer url) throws com.opencms.core.CmsException
 		host = "Unknown";
 	}
 	return getSite(host);
+}
+/**
+ * Return the online site of the project (the base project)
+ * @return com.opencms.file.CmsSite the site for the project.
+ * @param projectId int the project to be used in the lookup.
+ * @throws CmsException If any error occured when looking up the site.
+ */
+
+
+public CmsSite getSiteBySiteId(int siteId) throws CmsException {
+	return m_rb.getSiteBySiteId(m_context.currentUser(), m_context.currentProject(), siteId);
 }
 /**
  * Get the site based on the url
@@ -1365,36 +1376,6 @@ public boolean isAdmin() throws CmsException {
 	return m_rb.isAdmin(getRequestContext().currentUser(), getRequestContext().currentProject());
 }
 /**
- * Returns the user, who has locked a given resource.
- * <br>
- * A user can lock a resource, so he is the only one who can write this 
- * resource. This methods checks, who has locked a resource.
- * 
- * @param resource the resource to check.
- * 
- * @return the user who has locked the resource.
- * 
- * @exception CmsException if operation was not successful.
- */
-public CmsUser lockedBy(CmsResource resource) throws CmsException {
-	return (m_rb.lockedBy(m_context.currentUser(), m_context.currentProject(), resource));
-}
-/**
- 	* Returns the user, who has locked a given resource.
- 	* <br>
- 	* A user can lock a resource, so he is the only one who can write this 
- 	* resource. This methods checks, who has locked a resource.
- 	* 
- 	* @param resource The complete path to the resource.
- 	* 
- 	* @return the user who has locked a resource.
- 	* 
- 	* @exception CmsException if operation was not successful.
- 	*/
-public CmsUser lockedBy(String resource) throws CmsException {
-	return (m_rb.lockedBy(m_context.currentUser(), m_context.currentProject(), resource));
-}
-/**
  * Locks the given resource.
  * <br>
  * A user can lock a resource, so he is the only one who can write this 
@@ -1424,6 +1405,36 @@ public void lockResource(String resource) throws CmsException {
  */
 public void lockResource(String resource, boolean force) throws CmsException {
 	m_rb.lockResource(m_context.currentUser(), m_context.currentProject(), resource, force);
+}
+/**
+ * Returns the user, who has locked a given resource.
+ * <br>
+ * A user can lock a resource, so he is the only one who can write this 
+ * resource. This methods checks, who has locked a resource.
+ * 
+ * @param resource the resource to check.
+ * 
+ * @return the user who has locked the resource.
+ * 
+ * @exception CmsException if operation was not successful.
+ */
+public CmsUser lockedBy(CmsResource resource) throws CmsException {
+	return (m_rb.lockedBy(m_context.currentUser(), m_context.currentProject(), resource));
+}
+/**
+ 	* Returns the user, who has locked a given resource.
+ 	* <br>
+ 	* A user can lock a resource, so he is the only one who can write this 
+ 	* resource. This methods checks, who has locked a resource.
+ 	* 
+ 	* @param resource The complete path to the resource.
+ 	* 
+ 	* @return the user who has locked a resource.
+ 	* 
+ 	* @exception CmsException if operation was not successful.
+ 	*/
+public CmsUser lockedBy(String resource) throws CmsException {
+	return (m_rb.lockedBy(m_context.currentUser(), m_context.currentProject(), resource));
 }
 /**
  * Logs a user into the Cms, if the password is correct.

@@ -2,7 +2,7 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsSiteMatrix.java,v $
- * Date   : $Date: 2000/10/02 14:09:00 $
+ * Date   : $Date: 2000/10/03 13:12:30 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -130,12 +130,15 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 		lines.append(xmlTemplateDocument.getProcessedDataValue("domain"));
 
 		//
-		xmlTemplateDocument.setData("id", ""+((Integer) siteinfo.get("siteid")).intValue());
+		xmlTemplateDocument.setData("id", "" + ((Integer) siteinfo.get("siteid")).intValue());
 		xmlTemplateDocument.setData("name", (String) siteinfo.get("sitename"));
 		nodes.append(xmlTemplateDocument.getProcessedDataValue("sitenode"));
 	}
 	xmlTemplateDocument.setData("domains", lines.toString());
 	xmlTemplateDocument.setData("sites", nodes.toString());
+
+	//
+	xmlTemplateDocument.setData("isadmin", cms.isAdmin() ? "true" : "false");
 
 	//
 	return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);

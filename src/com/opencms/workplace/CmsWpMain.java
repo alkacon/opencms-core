@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWpMain.java,v $
- * Date   : $Date: 2000/09/28 10:34:25 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2000/10/03 13:12:30 $
+ * Version: $Revision: 1.25 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.24 $ $Date: 2000/09/28 10:34:25 $
+ * @version $Revision: 1.25 $ $Date: 2000/10/03 13:12:30 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsWpMain extends CmsWorkplaceDefault {
@@ -87,18 +87,17 @@ public class CmsWpMain extends CmsWorkplaceDefault {
 			}
 		}                            
 
-		// Check if the user requested a site change
-		if(newSite != null && !("".equals(newSite))) {
-			if(!(newSite.equals(cms.getSite(reqCont.currentProject().getId()).getName()))) {
-				reqCont.setCurrentProject(cms.getSite(newSite).getOnlineProjectId());
-			}
-		}
-		
 		// Check if the user requested a project change
 		if(newProject != null && !("".equals(newProject))) {
 			if(!(newProject.equals(reqCont.currentProject().getName()))) {
 				reqCont.setCurrentProject(Integer.parseInt(newProject));
 			}
+		}
+		
+		// Check if the user requested a site change
+		int currentSite = cms.getSite(cms.onlineProject().getId()).getId();
+		if(newSite != null && !("".equals(newSite)) && !newSite.equals(""+currentSite)) {
+			reqCont.setCurrentProject(cms.getSiteBySiteId(Integer.parseInt(newSite)).getOnlineProjectId());
 		}
 		
 		// Check if the user requested a new view
