@@ -10,8 +10,10 @@
     <module>
         <name>com.opencms.modules.homepage.news</name>
         <nicename>Modul zur Administration von News</nicename>
-        <version>4</version>
-        <description>Das Modul ermöglich die einfache Verwaltung von
+        <version>5</version>
+        <description>
+        	Version 5: Anpassung an OpenCms 5.0
+        	Das Modul ermöglich die einfache Verwaltung von
             News-Artikeln. Die News können verschiedenen Channels zugeordnet
             werden.  Im Template besteht die Möglichkeit sich die
             aktuellesten n Einträge eines bestimmten Channel anzeigen zu
@@ -242,7 +244,7 @@
             </properties>
         </file>
         <file>
-            <destination>moduledemos</destination>
+            <destination>system/moduledemos</destination>
             <type>folder</type>
             <user>Admin</user>
             <group>Users</group>
@@ -256,7 +258,7 @@
             </properties>
         </file>
         <file>
-            <destination>moduledemos/com.opencms.modules.homepage.news</destination>
+            <destination>system/moduledemos/com.opencms.modules.homepage.news</destination>
             <type>folder</type>
             <user>Admin</user>
             <group>Administrators</group>
@@ -270,8 +272,8 @@
             </properties>
         </file>
         <file>
-            <source>moduledemos/com.opencms.modules.homepage.news/index.html</source>
-            <destination>moduledemos/com.opencms.modules.homepage.news/index.html</destination>
+            <source>system/moduledemos/com.opencms.modules.homepage.news/index.html</source>
+            <destination>system/moduledemos/com.opencms.modules.homepage.news/index.html</destination>
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Administrators</group>
@@ -290,8 +292,8 @@
             </properties>
         </file>
         <file>
-            <source>moduledemos/com.opencms.modules.homepage.news/index.wml</source>
-            <destination>moduledemos/com.opencms.modules.homepage.news/index.wml</destination>
+            <source>system/moduledemos/com.opencms.modules.homepage.news/index.wml</source>
+            <destination>system/moduledemos/com.opencms.modules.homepage.news/index.wml</destination>
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Administrators</group>
@@ -310,8 +312,8 @@
             </properties>
         </file>
         <file>
-            <source>moduledemos/com.opencms.modules.homepage.news/NewsElement.html</source>
-            <destination>moduledemos/com.opencms.modules.homepage.news/NewsElement.html</destination>
+            <source>system/moduledemos/com.opencms.modules.homepage.news/NewsElement.html</source>
+            <destination>system/moduledemos/com.opencms.modules.homepage.news/NewsElement.html</destination>
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Administrators</group>
@@ -330,8 +332,8 @@
             </properties>
         </file>
         <file>
-            <source>moduledemos/com.opencms.modules.homepage.news/NewsOverview.html</source>
-            <destination>moduledemos/com.opencms.modules.homepage.news/NewsOverview.html</destination>
+            <source>system/moduledemos/com.opencms.modules.homepage.news/NewsOverview.html</source>
+            <destination>system/moduledemos/com.opencms.modules.homepage.news/NewsOverview.html</destination>
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Administrators</group>
@@ -350,8 +352,8 @@
             </properties>
         </file>
         <file>
-            <source>moduledemos/com.opencms.modules.homepage.news/singleNews.html</source>
-            <destination>moduledemos/com.opencms.modules.homepage.news/singleNews.html</destination>
+            <source>system/moduledemos/com.opencms.modules.homepage.news/singleNews.html</source>
+            <destination>system/moduledemos/com.opencms.modules.homepage.news/singleNews.html</destination>
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Administrators</group>
@@ -370,8 +372,8 @@
             </properties>
         </file>
         <file>
-            <source>moduledemos/com.opencms.modules.homepage.news/singleNews.wml</source>
-            <destination>moduledemos/com.opencms.modules.homepage.news/singleNews.wml</destination>
+            <source>system/moduledemos/com.opencms.modules.homepage.news/singleNews.wml</source>
+            <destination>system/moduledemos/com.opencms.modules.homepage.news/singleNews.wml</destination>
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Administrators</group>
@@ -390,7 +392,7 @@
             </properties>
         </file>
         <file>
-            <destination>moduledemos/com.opencms.modules.homepage.news/content</destination>
+            <destination>system/moduledemos/com.opencms.modules.homepage.news/content</destination>
             <type>folder</type>
             <user>Admin</user>
             <group>Administrators</group>
@@ -404,8 +406,8 @@
             </properties>
         </file>
         <file>
-            <source>moduledemos/com.opencms.modules.homepage.news/content/empty.html</source>
-            <destination>moduledemos/com.opencms.modules.homepage.news/content/empty.html</destination>
+            <source>system/moduledemos/com.opencms.modules.homepage.news/content/empty.html</source>
+            <destination>system/moduledemos/com.opencms.modules.homepage.news/content/empty.html</destination>
             <type>plain</type>
             <user>Admin</user>
             <group>Administrators</group>
@@ -424,8 +426,8 @@
             </properties>
         </file>
         <file>
-            <source>moduledemos/com.opencms.modules.homepage.news/content/index.html</source>
-            <destination>moduledemos/com.opencms.modules.homepage.news/content/index.html</destination>
+            <source>system/moduledemos/com.opencms.modules.homepage.news/content/index.html</source>
+            <destination>system/moduledemos/com.opencms.modules.homepage.news/content/index.html</destination>
             <type>plain</type>
             <user>Admin</user>
             <group>Administrators</group>
@@ -439,8 +441,8 @@
             </properties>
         </file>
         <file>
-            <source>moduledemos/com.opencms.modules.homepage.news/content/index.wml</source>
-            <destination>moduledemos/com.opencms.modules.homepage.news/content/index.wml</destination>
+            <source>system/moduledemos/com.opencms.modules.homepage.news/content/index.wml</source>
+            <destination>system/moduledemos/com.opencms.modules.homepage.news/content/index.wml</destination>
             <type>plain</type>
             <user>Admin</user>
             <group>Administrators</group>
@@ -454,8 +456,8 @@
             </properties>
         </file>
         <file>
-            <source>moduledemos/com.opencms.modules.homepage.news/content/NewsElement.html</source>
-            <destination>moduledemos/com.opencms.modules.homepage.news/content/NewsElement.html</destination>
+            <source>system/moduledemos/com.opencms.modules.homepage.news/content/NewsElement.html</source>
+            <destination>system/moduledemos/com.opencms.modules.homepage.news/content/NewsElement.html</destination>
             <type>plain</type>
             <user>Admin</user>
             <group>Administrators</group>
@@ -469,8 +471,8 @@
             </properties>
         </file>
         <file>
-            <source>moduledemos/com.opencms.modules.homepage.news/content/NewsOverview.html</source>
-            <destination>moduledemos/com.opencms.modules.homepage.news/content/NewsOverview.html</destination>
+            <source>system/moduledemos/com.opencms.modules.homepage.news/content/NewsOverview.html</source>
+            <destination>system/moduledemos/com.opencms.modules.homepage.news/content/NewsOverview.html</destination>
             <type>plain</type>
             <user>Admin</user>
             <group>Administrators</group>
@@ -484,8 +486,8 @@
             </properties>
         </file>
         <file>
-            <source>moduledemos/com.opencms.modules.homepage.news/content/news_index.html</source>
-            <destination>moduledemos/com.opencms.modules.homepage.news/content/news_index.html</destination>
+            <source>system/moduledemos/com.opencms.modules.homepage.news/content/news_index.html</source>
+            <destination>system/moduledemos/com.opencms.modules.homepage.news/content/news_index.html</destination>
             <type>plain</type>
             <user>Admin</user>
             <group>Administrators</group>
@@ -499,8 +501,8 @@
             </properties>
         </file>
         <file>
-            <source>moduledemos/com.opencms.modules.homepage.news/content/pdfEntry.pdf</source>
-            <destination>moduledemos/com.opencms.modules.homepage.news/content/pdfEntry.pdf</destination>
+            <source>system/moduledemos/com.opencms.modules.homepage.news/content/singleNews.html</source>
+            <destination>system/moduledemos/com.opencms.modules.homepage.news/content/singleNews.html</destination>
             <type>plain</type>
             <user>Admin</user>
             <group>Administrators</group>
@@ -514,38 +516,8 @@
             </properties>
         </file>
         <file>
-            <source>moduledemos/com.opencms.modules.homepage.news/content/pdfEntrybackup.pdf</source>
-            <destination>moduledemos/com.opencms.modules.homepage.news/content/pdfEntrybackup.pdf</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>895</access>
-            <properties>
-                <property>
-                    <name>module</name>
-                    <type>3</type>
-                    <value><![CDATA[com.opencms.modules.homepage.news_1]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
-            <source>moduledemos/com.opencms.modules.homepage.news/content/singleNews.html</source>
-            <destination>moduledemos/com.opencms.modules.homepage.news/content/singleNews.html</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>895</access>
-            <properties>
-                <property>
-                    <name>module</name>
-                    <type>3</type>
-                    <value><![CDATA[com.opencms.modules.homepage.news_1]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
-            <source>moduledemos/com.opencms.modules.homepage.news/content/singleNews.wml</source>
-            <destination>moduledemos/com.opencms.modules.homepage.news/content/singleNews.wml</destination>
+            <source>system/moduledemos/com.opencms.modules.homepage.news/content/singleNews.wml</source>
+            <destination>system/moduledemos/com.opencms.modules.homepage.news/content/singleNews.wml</destination>
             <type>plain</type>
             <user>Admin</user>
             <group>Administrators</group>
@@ -873,31 +845,6 @@
             </properties>
         </file>
         <file>
-            <source>system/modules/com.opencms.modules.homepage.news/contenttemplates/pdfNewsMasterTemplate</source>
-            <destination>system/modules/com.opencms.modules.homepage.news/contenttemplates/pdfNewsMasterTemplate</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>383</access>
-            <properties>
-                <property>
-                    <name>TemplateType</name>
-                    <type>3</type>
-                    <value><![CDATA[pdfpage]]></value>
-                </property>
-                <property>
-                    <name>module</name>
-                    <type>3</type>
-                    <value><![CDATA[com.opencms.modules.homepage.news_1]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>3</type>
-                    <value><![CDATA[Template für News-PDF-Dokumente]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
             <source>system/modules/com.opencms.modules.homepage.news/contenttemplates/wmlMaster</source>
             <destination>system/modules/com.opencms.modules.homepage.news/contenttemplates/wmlMaster</destination>
             <type>plain</type>
@@ -966,7 +913,7 @@
             </properties>
         </file>
         <file>
-            <destination>system/modules/com.opencms.modules.homepage.news/language</destination>
+            <destination>system/modules/com.opencms.modules.homepage.news/locales</destination>
             <type>folder</type>
             <user>Admin</user>
             <group>Administrators</group>
@@ -980,7 +927,7 @@
             </properties>
         </file>
         <file>
-            <destination>system/modules/com.opencms.modules.homepage.news/language/de</destination>
+            <destination>system/modules/com.opencms.modules.homepage.news/locales/de</destination>
             <type>folder</type>
             <user>Admin</user>
             <group>Administrators</group>
@@ -994,8 +941,8 @@
             </properties>
         </file>
         <file>
-            <source>system/modules/com.opencms.modules.homepage.news/language/de/com.opencms.modules.homepage.news_de.txt</source>
-            <destination>system/modules/com.opencms.modules.homepage.news/language/de/com.opencms.modules.homepage.news_de.txt</destination>
+            <source>system/modules/com.opencms.modules.homepage.news/locales/de/com.opencms.modules.homepage.news_de.txt</source>
+            <destination>system/modules/com.opencms.modules.homepage.news/locales/de/com.opencms.modules.homepage.news_de.txt</destination>
             <type>plain</type>
             <user>Admin</user>
             <group>Administrators</group>
@@ -1009,7 +956,7 @@
             </properties>
         </file>
         <file>
-            <destination>system/modules/com.opencms.modules.homepage.news/language/uk</destination>
+            <destination>system/modules/com.opencms.modules.homepage.news/locales/en</destination>
             <type>folder</type>
             <user>Admin</user>
             <group>Administrators</group>
@@ -1023,8 +970,8 @@
             </properties>
         </file>
         <file>
-            <source>system/modules/com.opencms.modules.homepage.news/language/uk/com.opencms.modules.homepage.news_uk.txt</source>
-            <destination>system/modules/com.opencms.modules.homepage.news/language/uk/com.opencms.modules.homepage.news_uk.txt</destination>
+            <source>system/modules/com.opencms.modules.homepage.news/locales/en/com.opencms.modules.homepage.news_uk.txt</source>
+            <destination>system/modules/com.opencms.modules.homepage.news/locales/en/com.opencms.modules.homepage.news_uk.txt</destination>
             <type>plain</type>
             <user>Admin</user>
             <group>Administrators</group>
@@ -1167,31 +1114,6 @@
                     <name>Title</name>
                     <type>3</type>
                     <value><![CDATA[Standardtemplate News]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
-            <source>system/modules/com.opencms.modules.homepage.news/templates/pdfNewsMasterTemplate</source>
-            <destination>system/modules/com.opencms.modules.homepage.news/templates/pdfNewsMasterTemplate</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>383</access>
-            <properties>
-                <property>
-                    <name>TemplateType</name>
-                    <type>3</type>
-                    <value><![CDATA[pdfpage]]></value>
-                </property>
-                <property>
-                    <name>module</name>
-                    <type>3</type>
-                    <value><![CDATA[com.opencms.modules.homepage.news_1]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>3</type>
-                    <value><![CDATA[Template für News-PDF-Dokumente]]></value>
                 </property>
             </properties>
         </file>
