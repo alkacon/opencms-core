@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/06/05 13:37:54 $
- * Version: $Revision: 1.74 $
+ * Date   : $Date: 2000/06/05 13:43:15 $
+ * Version: $Revision: 1.75 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.74 $ $Date: 2000/06/05 13:37:54 $ 
+ * @version $Revision: 1.75 $ $Date: 2000/06/05 13:43:15 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -1997,42 +1997,6 @@ public class CmsObject implements I_CmsConstants {
 	 }
 	 
 	 // database import, export stuff
-	
-	/**
-	 * exports database (files, groups, users) into a specified file
-	 * 
-	 * @param exportFile the name (absolute Path) for the XML file
-	 * @param exportPath the name (absolute Path) for the folder to export
-	 * @param exportType what to export:
-	 *			C_EXPORTUSERSFILES exports all
-	 *			C_EXPORTONLYUSERS  exports only users and groups
-	 *			C_EXPORTONLYFILES  exports only files
-	 * 
-	 */
-	public void exportDb(String exportFile, String exportPath, int exportType) 
-		throws CmsException {
-		try {
-			c_rb.exportDb(m_context.currentUser(), m_context.currentProject(), exportFile, exportPath, exportType);
-		} catch(Exception exc) {
-			throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
-		}
-	}
-	
-	/**
-	 * imports a (files, groups, users) XML file into database
-	 * 
-	 * @param importPath the name (absolute Path) of folder in which should be imported
-	 * @param importFile the name (absolute Path) of the XML import file
-	 * 
-	 */
-	public void importDb(String importFile, String importPath)
-		throws CmsException {
-		try {
-			c_rb.importDb(m_context.currentUser(), m_context.currentProject(), importFile, importPath);
-		} catch(Exception exc) {
-			throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
-		}			
-	}
 
 	/**
 	 * Imports a import-resource (folder or zipfile) to the cms.
