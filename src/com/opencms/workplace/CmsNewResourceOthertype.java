@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceOthertype.java,v $
- * Date   : $Date: 2000/03/28 13:51:58 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/04/03 10:48:32 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 2000/03/28 13:51:58 $
+ * @version $Revision: 1.9 $ $Date: 2000/04/03 10:48:32 $
  */
 public class CmsNewResourceOthertype extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -120,7 +120,7 @@ public class CmsNewResourceOthertype extends CmsWorkplaceDefault implements I_Cm
                 cms.createFile(foldername,filename,new byte[0],type);
                 // lock the new file
                 cms.lockResource(foldername+filename);
-                cms.writeMetainformation(foldername+filename,C_METAINFO_TITLE,title);
+                cms.writeProperty(foldername+filename,C_PROPERTY_TITLE,title);
                 // remove values from session
                 session.removeValue(C_PARA_FILE);
                 session.removeValue(C_PARA_TITLE);     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/Attic/CmsExampleNav.java,v $
- * Date   : $Date: 2000/03/31 09:34:18 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/04/03 10:48:28 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -66,7 +66,7 @@ import javax.servlet.http.*;
  * the same technique, too.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.4 $ $Date: 2000/03/31 09:34:18 $
+ * @version $Revision: 1.5 $ $Date: 2000/04/03 10:48:28 $
  */
 public class CmsExampleNav extends CmsXmlTemplate implements I_CmsConstants {
         
@@ -104,7 +104,7 @@ public class CmsExampleNav extends CmsXmlTemplate implements I_CmsConstants {
      * <P>
      * The cms object will be asked for all subfolders of the root
      * folder. Subfolders will be scanned for their files. 
-     * Subfolders and files having all metainformations required
+     * Subfolders and files having all properties required
      * for the navigation (navigation text and position) will be used to generate the output.
      * Any other folders/files will be ignored.
      * <p>
@@ -140,13 +140,13 @@ public class CmsExampleNav extends CmsXmlTemplate implements I_CmsConstants {
         String folderPos[] = new String[numFolders];
                     
         // First scan all subfolders of the root folder
-        // for any navigation metainformations and store
+        // for any navigation properties and store
         // the maximum position found
         for(int i=0; i<numFolders; i++) {
             A_CmsResource currFolder = (A_CmsResource)allFolders.elementAt(i);
             String filename = currFolder.getAbsolutePath();
-            String navpos = cms.readMetainformation(filename, C_METAINFO_NAVPOS);
-            String navtext = cms.readMetainformation(filename, C_METAINFO_NAVTEXT);     
+            String navpos = cms.readProperty(filename, C_PROPERTY_NAVPOS);
+            String navtext = cms.readProperty(filename, C_PROPERTY_NAVTEXT);     
             if(currFolder.getState() != C_STATE_DELETED) { 
                 // Only list folders in the nav bar if they are not deleted!
                 if(navpos != null && navtext != null && (!"".equals(navpos)) && (!"".equals(navtext))
@@ -208,13 +208,13 @@ public class CmsExampleNav extends CmsXmlTemplate implements I_CmsConstants {
         int maxindex = 0;
                
         // First scan all files in the given folder
-        // for any navigation metainformations and store
+        // for any navigation properties and store
         // the maximum position found
         for(int j=0; j<numFiles; j++) {
             A_CmsResource currFile = (A_CmsResource)allFiles.elementAt(j);
             String filename = currFile.getAbsolutePath();
-            String navpos = cms.readMetainformation(filename, C_METAINFO_NAVPOS);
-            String navtext = cms.readMetainformation(filename, C_METAINFO_NAVTEXT);     
+            String navpos = cms.readProperty(filename, C_PROPERTY_NAVPOS);
+            String navtext = cms.readProperty(filename, C_PROPERTY_NAVTEXT);     
             if(currFile.getState() != C_STATE_DELETED) { 
                 // Only list files in the nav bar if they are not deleted!
                 if(navpos != null && navtext != null && (!"".equals(navpos)) && (!"".equals(navtext))

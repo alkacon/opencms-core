@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChmod.java,v $
- * Date   : $Date: 2000/03/09 13:40:50 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/04/03 10:48:31 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2000/03/09 13:40:50 $
+ * @version $Revision: 1.3 $ $Date: 2000/04/03 10:48:31 $
  */
 public class CmsChmod extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -198,7 +198,7 @@ public class CmsChmod extends CmsWorkplaceDefault implements I_CmsWpConstants,
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);
 	    // set all required datablocks
         // set the required datablocks
-        String title=cms.readMetainformation(file.getAbsolutePath(),C_METAINFO_TITLE);
+        String title=cms.readProperty(file.getAbsolutePath(),C_PROPERTY_TITLE);
         if (title==null) {
             title="";
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsSchedulerDbConnector.java,v $
- * Date   : $Date: 2000/02/19 10:13:56 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/04/03 10:48:28 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -37,7 +37,7 @@ import com.opencms.file.*;
  * sending a query all <code>sleep</code> seconds.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2000/02/19 10:13:56 $
+ * @version $Revision: 1.3 $ $Date: 2000/04/03 10:48:28 $
  */
 public class CmsSchedulerDbConnector extends Thread implements I_CmsLogChannels {
     /** Time to sleep */
@@ -98,10 +98,10 @@ public class CmsSchedulerDbConnector extends Thread implements I_CmsLogChannels 
                 }
             } 
             try {
-                m_cms.readAllMetainformations("/");
+                m_cms.readAllProperties("/");
             } catch(Exception e) {
                 if(A_OpenCms.isLogging()){
-                    A_OpenCms.log(C_OPENCMS_INFO, "[CmsSchedulerDbConnector] Could not read metainfos. " + e);                                                                                                    
+                    A_OpenCms.log(C_OPENCMS_INFO, "[CmsSchedulerDbConnector] Could not read file properties. " + e);                                                                                                    
                 }
             } 
             try {

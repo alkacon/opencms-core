@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsDbExportFile.java,v $
- * Date   : $Date: 2000/03/31 09:13:41 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/04/03 10:48:29 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.template.*;
  * Exports Files from database into XML file
  * 
  * @author Michaela Schleich
- * @version $Revision: 1.7 $ $Date: 2000/03/31 09:13:41 $
+ * @version $Revision: 1.8 $ $Date: 2000/04/03 10:48:29 $
  */
 
 class CmsDbExportFile implements I_CmsConstants {
@@ -228,10 +228,10 @@ class CmsDbExportFile implements I_CmsConstants {
 			m_newElement.appendChild(m_newNode);
 
 	
-			/** read and write metainfo */
-			m_newElement=m_docXml.createElement(C_TFMETAINFO);
+			/** read and write properties */
+			m_newElement=m_docXml.createElement(C_TFPROPERTYINFO);
 			parent.appendChild(m_newElement);
-			generateMetaInfo(folder.getAbsolutePath(), m_newElement, typeHelp.getResourceName());
+			generateProperty(folder.getAbsolutePath(), m_newElement, typeHelp.getResourceName());
 			
 	}
 	// end generateFolderEntry()
@@ -284,10 +284,10 @@ class CmsDbExportFile implements I_CmsConstants {
 			m_newNode = m_docXml.createTextNode(String.valueOf(fif.getAccessFlags()));
 			m_newElement.appendChild(m_newNode);
 			
-			// read and write metainfo
-			m_newElement=m_docXml.createElement(C_TFMETAINFO);
+			// read and write properties
+			m_newElement=m_docXml.createElement(C_TFPROPERTYINFO);
 			parent.appendChild(m_newElement);
-			generateMetaInfo(fif.getAbsolutePath(), m_newElement, typeHelp.getResourceName());
+			generateProperty(fif.getAbsolutePath(), m_newElement, typeHelp.getResourceName());
 			
 			// reads and writes the file content
 			CmsFile file= m_RB.readFile(m_user, m_project, fif.getAbsolutePath());
@@ -430,39 +430,39 @@ class CmsDbExportFile implements I_CmsConstants {
 	// end LongtoDateString
 
 	/**
-	 * method to read and write metainfo to XML object
+	 * method to read and write propertyinfo to XML object
 	 * 
 	 * @param m_user id DB id for the group
 	 *
 	 * @returns string with formated date "fullyear-month-day hour:minutes:seconds"
 	 * 
 	 */
-	private void generateMetaInfo(String path, Element metaparent, String rtype)
+	private void generateProperty(String path, Element propertyparent, String rtype)
 		throws CmsException {
 		
-		Hashtable metadef=m_RB.readAllMetainformations(m_user, m_project, path);
-		Enumeration metadefenum= metadef.elements();
-		Enumeration metadefkey= metadef.keys();
-		while (metadefenum.hasMoreElements()) {
+		Hashtable propertydef=m_RB.readAllProperties(m_user, m_project, path);
+		Enumeration propertydefenum= propertydef.elements();
+		Enumeration propertydefkey= propertydef.keys();
+		while (propertydefenum.hasMoreElements()) {
 			
-			String metainfo= (String)metadefenum.nextElement();
-			String metakey= (String)metadefkey.nextElement();
+			String propertyinfo= (String)propertydefenum.nextElement();
+			String propertykey= (String)propertydefkey.nextElement();
 			
-			m_newElement= m_docXml.createElement(C_TFMETANAME);
-			metaparent.appendChild(m_newElement);
-			m_newNode = m_docXml.createTextNode(metakey);
+			m_newElement= m_docXml.createElement(C_TFPROPERTYNAME);
+			propertyparent.appendChild(m_newElement);
+			m_newNode = m_docXml.createTextNode(propertykey);
 			m_newElement.appendChild(m_newNode);
 			
-			A_CmsMetadefinition mtype= m_RB.readMetadefinition(m_user, m_project, metakey, rtype);
+			A_CmsPropertydefinition mtype= m_RB.readPropertydefinition(m_user, m_project, propertykey, rtype);
 			
-			m_newElement= m_docXml.createElement(C_TFMETATYPE);
-			metaparent.appendChild(m_newElement);
+			m_newElement= m_docXml.createElement(C_TFPROPERTYTYPE);
+			propertyparent.appendChild(m_newElement);
 			m_newNode = m_docXml.createTextNode(String.valueOf(mtype.getType()));
 			m_newElement.appendChild(m_newNode);
 			
-			m_newElement= m_docXml.createElement(C_TFMETAVALUE);
-			metaparent.appendChild(m_newElement);
-			m_newNode = m_docXml.createTextNode(metainfo);
+			m_newElement= m_docXml.createElement(C_TFPROPERTYVALUE);
+			propertyparent.appendChild(m_newElement);
+			m_newNode = m_docXml.createTextNode(propertyinfo);
 			m_newElement.appendChild(m_newNode);
 		}
 		

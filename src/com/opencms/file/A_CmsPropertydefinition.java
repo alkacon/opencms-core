@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsMetadefinition.java,v $
- * Date   : $Date: 2000/02/15 17:43:59 $
- * Version: $Revision: 1.3 $
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsPropertydefinition.java,v $
+ * Date   : $Date: 2000/04/03 10:48:29 $
+ * Version: $Revision: 1.1 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -29,50 +29,50 @@
 package com.opencms.file;
 
 /**
- * This abstract class describes a metadefinition in the Cms.
+ * This abstract class describes a Propertydefinition in the Cms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ $Date: 2000/02/15 17:43:59 $
+ * @version $Revision: 1.1 $ $Date: 2000/04/03 10:48:29 $
  */
-abstract public class A_CmsMetadefinition {
+abstract public class A_CmsPropertydefinition {
 	/**
-	 * Returns the name of this metadefinition.
+	 * Returns the name of this Propertydefinition.
 	 * 
-	 * @return name The name of the metadefinition.
+	 * @return name The name of the Propertydefinition.
 	 */
 	abstract public String getName();
 	
 	/**
-	 * Returns the id of a metadefinition. This method has the package-visibility.
+	 * Returns the id of a Propertydefinition. This method has the package-visibility.
 	 * 
-	 * @return id The id of this metadefinition.
+	 * @return id The id of this Propertydefinition.
 	 */
 	abstract int getId();
 	
 	/**
-	 * Gets the resourcetype for this metadefinition.
+	 * Gets the resourcetype for this Propertydefinition.
 	 * 
-	 * @return the resourcetype of this metadefinition.
+	 * @return the resourcetype of this Propertydefinition.
 	 */
 	abstract public int getType();
 
 	/**
-	 * Gets the type for this metadefinition.
-	 * The type may be C_METADEF_TYPE_NORMAL, C_METADEF_TYPE_OPTIONAL or
-	 * C_METADEF_TYPE_MANDATORY.
+	 * Gets the type for this Propertydefinition.
+	 * The type may be C_PROPERTYDEF_TYPE_NORMAL, C_PROPERTYDEF_TYPE_OPTIONAL or
+	 * C_PROPERTYDEF_TYPE_MANDATORY.
 	 * 
-	 * @return the type of this metadefinition.
+	 * @return the type of this Propertydefinition.
 	 */
-	abstract public int getMetadefType();
+	abstract public int getPropertydefType();
 	
 	/**
-	 * Sets the type for this metadefinition.
-	 * The type may be C_METADEF_TYPE_NORMAL, C_METADEF_TYPE_OPTIONAL or
-	 * C_METADEF_TYPE_MANDATORY.
+	 * Sets the type for this Propertydefinition.
+	 * The type may be C_PROPERTYDEF_TYPE_NORMAL, C_PROPERTYDEF_TYPE_OPTIONAL or
+	 * C_PROPERTYDEF_TYPE_MANDATORY.
 	 * 
-	 * @param type The new type fot this metadefinition.
+	 * @param type The new type fot this Propertydefinition.
 	 */
-	abstract public void setMetadefType(int type);
+	abstract public void setPropertydefType(int type);
 	
 	/**
 	 * Returns a string-representation for this object.

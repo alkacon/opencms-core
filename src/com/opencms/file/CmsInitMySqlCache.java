@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsInitMySqlCache.java,v $
- * Date   : $Date: 2000/02/29 16:44:46 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/04/03 10:48:29 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 2000/02/29 16:44:46 $
+ * @version $Revision: 1.4 $ $Date: 2000/04/03 10:48:29 $
  */
 public class CmsInitMySqlCache extends A_CmsInit implements I_CmsConstants {
 	
@@ -76,12 +76,12 @@ public class CmsInitMySqlCache extends A_CmsInit implements I_CmsConstants {
 				new CmsAccessMetadefinitionMySql(propertyDriver, propertyConnectString));
 		
 		if(A_OpenCms.isLogging()) {
-			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsInitMySqlCache] initialized rb for metadefinitions and metainformations");
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsInitMySqlCache] initialized rb for propertydefinitions and properties");
 		}
 		
-		I_CmsRbProperty propertyRb =
-			new CmsRbProperty(
-				new CmsAccessPropertyMySql(propertyDriver, propertyConnectString));
+		I_CmsRbSystemProperty propertyRb =
+			new CmsRbSystemProperty(
+				new CmsAccessSystemPropertyMySql(propertyDriver, propertyConnectString));
 		
 		if(A_OpenCms.isLogging()) {
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsInitMySqlCache] initialized rb for properties");
@@ -104,7 +104,7 @@ public class CmsInitMySqlCache extends A_CmsInit implements I_CmsConstants {
 		}
 		
 		// read all mountpoints from the properties.
-		Hashtable mountPoints = (Hashtable) propertyRb.readProperty(C_PROPERTY_MOUNTPOINT);
+		Hashtable mountPoints = (Hashtable) propertyRb.readProperty(C_SYSTEMPROPERTY_MOUNTPOINT);
 		A_CmsMountPoint mountPoint;
 		Hashtable mountedAccessModules = new Hashtable();
 		Enumeration keys = mountPoints.keys();

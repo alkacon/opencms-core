@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/03/28 16:06:19 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2000/04/03 10:48:29 $
+ * Version: $Revision: 1.59 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.58 $ $Date: 2000/03/28 16:06:19 $ 
+ * @version $Revision: 1.59 $ $Date: 2000/04/03 10:48:29 $ 
  * 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
@@ -311,9 +311,9 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 		 
 	/**
 	 * Creates a new file with the overgiven content and resourcetype.
-	 * If there are some mandatory Metadefinitions for the resourcetype, a 
+	 * If there are some mandatory Propertydefinitions for the resourcetype, a 
 	 * CmsException will be thrown, because the file cannot be created without
-	 * the mandatory Metainformations.<BR/>
+	 * the mandatory Properties.<BR/>
 	 * If the resourcetype is set to folder, a CmsException will be thrown.<BR/>
 	 * 
 	 * @param folder The complete path to the folder in which the file will be created.
@@ -323,7 +323,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * 
 	 * @return file The created file.
 	 * 
-	 * @exception CmsException will be thrown for missing metainfos or if 
+	 * @exception CmsException will be thrown for missing Properties or if 
 	 * resourcetype is set to folder. The CmsException is also thrown, if the 
 	 * filename is not valid. The CmsException will also be thrown, if the user
 	 * has not the rights for this resource.
@@ -341,22 +341,22 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	
 	/**
 	 * Creates a new file with the overgiven content and resourcetype.
-	 * If some mandatory Metadefinitions for the resourcetype are missing, a 
+	 * If some mandatory Propertydefinitions for the resourcetype are missing, a 
 	 * CmsException will be thrown, because the file cannot be created without
-	 * the mandatory Metainformations.<BR/>
+	 * the mandatory Properties.<BR/>
 	 * If the resourcetype is set to folder, a CmsException will be thrown.<BR/>
 	 * 
 	 * @param folder The complete path to the folder in which the file will be created.
 	 * @param filename The name of the new file (No pathinformation allowed).
 	 * @param contents The contents of the new file.
 	 * @param type The resourcetype of the new file.
-	 * @param metainfos A Hashtable of metainfos, that should be set for this file.
-	 * The keys for this Hashtable are the names for Metadefinitions, the values are
-	 * the values for the metainfos.
+	 * @param properties A Hashtable of Properties, that should be set for this file.
+	 * The keys for this Hashtable are the names for Propertydefinitions, the values are
+	 * the values for the Properties.
 	 * 
 	 * @return file The created file.
 	 * 
-	 * @exception CmsException will be thrown for missing metainfos, for worng metadefs
+	 * @exception CmsException will be thrown for missing Properties, for worng Propertydefs
 	 * or if resourcetype is set to folder. The CmsException is also thrown, if the 
 	 * filename is not valid. The CmsException will also be thrown, if the user
 	 * has not the rights for this resource.
@@ -364,12 +364,12 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * this name.
 	 */
 	public CmsFile createFile(String folder, String filename, byte[] contents, String type, 
-							  Hashtable metainfos)
+							  Hashtable properties)
 		throws CmsException { 
 		return( c_rb.createFile(m_context.currentUser(), 
 								m_context.currentProject(), 
 								folder, filename, contents, type, 
-								metainfos ) );
+								properties ) );
 	}
 	
 	/**
@@ -450,13 +450,13 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	
 	/**
 	 * Writes a file to the Cms.<BR/>
-	 * If some mandatory Metadefinitions for the resourcetype are missing, a 
+	 * If some mandatory Propertydefinitions for the resourcetype are missing, a 
 	 * CmsException will be thrown, because the file cannot be written without
-	 * the mandatory Metainformations.<BR/>
+	 * the mandatory Properties.<BR/>
 	 * 
 	 * @param file The file to write.
 	 * 
-	 * @exception CmsException will be thrown for missing metainfos, for worng metadefs
+	 * @exception CmsException will be thrown for missing properties, for worng Propertydefs
 	 * or if resourcetype is set to folder. The CmsException will also be thrown, 
 	 * if the user has not the rights for this resource.
 	 */	
@@ -470,7 +470,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * 
 	 * @param file The file to write.
 	 * 
-	 * @exception CmsException will be thrown for missing metainfos, for worng metadefs
+	 * @exception CmsException will be thrown for missing properties, for worng Propertydefs
 	 * or if resourcetype is set to folder. The CmsException will also be thrown, 
 	 * if the user has not the rights for this resource.
 	 */	
@@ -560,9 +560,9 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	
 	/**
 	 * Creates a new folder.
-	 * If there are some mandatory Metadefinitions for the folder-resourcetype, a 
+	 * If there are some mandatory Propertydefinitions for the folder-resourcetype, a 
 	 * CmsException will be thrown, because the folder cannot be created without
-	 * the mandatory Metainformations.<BR/>
+	 * the mandatory Properties.<BR/>
 	 * 
 	 * @param folder The complete path to the folder in which the new folder 
 	 * will be created.
@@ -570,7 +570,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * 
 	 * @return folder The created folder.
 	 * 
-	 * @exception CmsException will be thrown for missing metainfos.
+	 * @exception CmsException will be thrown for missing properties.
 	 * The CmsException is also thrown, if the foldername is not valid. 
 	 * The CmsException will also be thrown, if the user has not the rights for 
 	 * this resource.
@@ -586,29 +586,29 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	
 	/**
 	 * Creates a new folder.
-	 * If some mandatory Metadefinitions for the resourcetype are missing, a 
+	 * If some mandatory Propertydefinitions for the resourcetype are missing, a 
 	 * CmsException will be thrown, because the file cannot be created without
-	 * the mandatory Metainformations.<BR/>
+	 * the mandatory Properties.<BR/>
 	 * 
 	 * @param folder The complete path to the folder in which the new folder will 
 	 * be created.
 	 * @param newFolderName The name of the new folder (No pathinformation allowed).
-	 * @param metainfos A Hashtable of metainfos, that should be set for this folder.
-	 * The keys for this Hashtable are the names for Metadefinitions, the values are
-	 * the values for the metainfos.
+	 * @param properties A Hashtable of properties, that should be set for this folder.
+	 * The keys for this Hashtable are the names for Propertydefinitions, the values are
+	 * the values for the properties.
 	 * 
 	 * @return file The created file.
 	 * 
-	 * @exception CmsException will be thrown for missing metainfos, for worng metadefs
+	 * @exception CmsException will be thrown for missing properties, for worng Propertydefs
 	 * or if the filename is not valid. The CmsException will also be thrown, if the 
 	 * user has not the rights for this resource.
 	 */
 	public CmsFolder createFolder(String folder, String newFolderName, 
-								  Hashtable metainfos)
+								  Hashtable properties)
 		throws CmsException { 
 		return( c_rb.createFolder(m_context.currentUser(), 
 								  m_context.currentProject(), folder, 
-								  newFolderName, metainfos ) );
+								  newFolderName, properties ) );
 	}
 
 	/**
@@ -878,94 +878,94 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	}
 	
 	/**
-	 * Returns a Metainformation of a file or folder.
+	 * Returns a Property of a file or folder.
 	 * 
-	 * @param name The resource-name of which the Metainformation has to be read.
-	 * @param meta The Metadefinition-name of which the Metainformation has to be read.
+	 * @param name The resource-name of which the Property has to be read.
+	 * @param property The Propertydefinition-name of which the Property has to be read.
 	 * 
-	 * @return metainfo The metainfo as string.
+	 * @return property The Property as string.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public String readMetainformation(String name, String meta)
+	public String readProperty(String name, String property)
 		throws CmsException { 
-		return( c_rb.readMetainformation(m_context.currentUser(), 
+		return( c_rb.readProperty(m_context.currentUser(), 
 										 m_context.currentProject(), 
-										 name, meta) );
+										 name, property) );
 	}
 
 	/**
-	 * Writes a Metainformation for a file or folder.
+	 * Writes a Property for a file or folder.
 	 * 
-	 * @param name The resource-name of which the Metainformation has to be set.
-	 * @param meta The Metadefinition-name of which the Metainformation has to be set.
-	 * @param value The value for the metainfo to be set.
+	 * @param name The resource-name of which the Property has to be set.
+	 * @param property The Propertydefinition-name of which the Property has to be set.
+	 * @param value The value for the Property to be set.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public void writeMetainformation(String name, String meta, String value)
+	public void writeProperty(String name, String property, String value)
 		throws CmsException { 
-		c_rb.writeMetainformation(m_context.currentUser(),m_context.currentProject(), 
-								  name, meta, value);
+		c_rb.writeProperty(m_context.currentUser(),m_context.currentProject(), 
+								  name, property, value);
 	}
 
 	/**
-	 * Writes a couple of Metainformation for a file or folder.
+	 * Writes a couple of Properties for a file or folder.
 	 * 
-	 * @param name The resource-name of which the Metainformation has to be set.
-	 * @param metainfos A Hashtable with Metadefinition- metainfo-pairs as strings.
+	 * @param name The resource-name of which the Property has to be set.
+	 * @param properties A Hashtable with Propertydefinition- Property-pairs as strings.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public void writeMetainformations(String name, Hashtable metainfos)
+	public void writeProperties(String name, Hashtable properties)
 		throws CmsException { 
-		c_rb.writeMetainformations(m_context.currentUser(),m_context.currentProject(), 
-								  name, metainfos);
+		c_rb.writeProperties(m_context.currentUser(),m_context.currentProject(), 
+								  name, properties);
 	}
 
 	/**
-	 * Returns a list of all Metainformations of a file or folder.
+	 * Returns a list of all Properties of a file or folder.
 	 * 
-	 * @param name The resource-name of which the Metainformation has to be read
+	 * @param name The resource-name of which the Property has to be read
 	 * 
-	 * @return Vector of Metainformation as Strings.
+	 * @return Vector of Property as Strings.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public Hashtable readAllMetainformations(String name)
+	public Hashtable readAllProperties(String name)
 		throws CmsException { 
-		return( c_rb.readAllMetainformations(m_context.currentUser(), 
+		return( c_rb.readAllProperties(m_context.currentUser(), 
 											 m_context.currentProject(), 
 											 name) );
 	}
 	
 	/**
-	 * Deletes all Metainformation for a file or folder.
+	 * Deletes all Property for a file or folder.
 	 * 
-	 * @param resourcename The resource-name of which the Metainformation has to be delteted.
+	 * @param resourcename The resource-name of which the Property has to be delteted.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public void deleteAllMetainformations(String resourcename)
+	public void deleteAllProperties(String resourcename)
 		throws CmsException { 
-		c_rb.deleteAllMetainformations(m_context.currentUser(), 
+		c_rb.deleteAllProperties(m_context.currentUser(), 
 									   m_context.currentProject(), 
 									   resourcename);
 	}
 
 	/**
-	 * Deletes a Metainformation for a file or folder.
+	 * Deletes a Property for a file or folder.
 	 * 
-	 * @param resourcename The resource-name of which the Metainformation has to be delteted.
-	 * @param meta The Metadefinition-name of which the Metainformation has to be set.
+	 * @param resourcename The resource-name of which the Property has to be delteted.
+	 * @param property The Propertydefinition-name of which the Property has to be set.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public void deleteMetainformation(String resourcename, String meta)
+	public void deleteProperty(String resourcename, String property)
 		throws CmsException { 
-		c_rb.deleteMetainformation(m_context.currentUser(), 
+		c_rb.deleteProperty(m_context.currentUser(), 
 								   m_context.currentProject(), 
-								   resourcename, meta);
+								   resourcename, property);
 	}
 
 	/**
@@ -1425,55 +1425,55 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	}
 	
 	/**
-	 * Reads all metadefinitions for the given resource type.
+	 * Reads all Propertydefinitions for the given resource type.
 	 * 
 	 * @param resourcetype The name of the resource type to read the 
-	 * metadefinitions for.
+	 * Propertydefinitions for.
 	 * 
-	 * @return metadefinitions A Vector with metadefefinitions for the resource type.
+	 * @return propertydefinitions A Vector with Propertydefefinitions for the resource type.
 	 * The Vector is maybe empty.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */	
-	public Vector readAllMetadefinitions(String resourcetype)
+	public Vector readAllPropertydefinitions(String resourcetype)
 		throws CmsException {
-		return( c_rb.readAllMetadefinitions(m_context.currentUser(), 
+		return( c_rb.readAllPropertydefinitions(m_context.currentUser(), 
 											m_context.currentProject(), 
 											resourcetype ) );
 	}
 	
 	/**
-	 * Reads all metadefinitions for the given resource type.
+	 * Reads all Propertydefinitions for the given resource type.
 	 * 
 	 * @param resourcetype The name of the resource type to read the 
-	 * metadefinitions for.
-	 * @param type The type of the metadefinition (normal|mandatory|optional).
+	 * Propertydefinitions for.
+	 * @param type The type of the Propertydefinition (normal|mandatory|optional).
 	 * 
-	 * @return metadefinitions A Vector with metadefefinitions for the resource type.
+	 * @return propertydefinitions A Vector with Propertydefefinitions for the resource type.
 	 * The Vector is maybe empty.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */	
-	public Vector readAllMetadefinitions(String resourcetype, int type)
+	public Vector readAllPropertydefinitions(String resourcetype, int type)
 		throws CmsException {
-		return( c_rb.readAllMetadefinitions(m_context.currentUser(), 
+		return( c_rb.readAllPropertydefinitions(m_context.currentUser(), 
 											m_context.currentProject(), 
 											resourcetype, type ) );
 	}
 	
 	/**
-	 * Creates the metadefinition for the resource type.<BR/>
+	 * Creates the Propertydefinition for the resource type.<BR/>
 	 * 
-	 * @param name The name of the metadefinition to overwrite.
-	 * @param resourcetype The name of the resource-type for the metadefinition.
-	 * @param type The type of the metadefinition (normal|mandatory|optional)
+	 * @param name The name of the Propertydefinition to overwrite.
+	 * @param resourcetype The name of the resource-type for the Propertydefinition.
+	 * @param type The type of the Propertydefinition (normal|mandatory|optional)
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsMetadefinition createMetadefinition(String name, String resourcetype, 
+	public A_CmsPropertydefinition createPropertydefinition(String name, String resourcetype, 
 													int type)
 		throws CmsException {
-		return( c_rb.createMetadefinition(m_context.currentUser(), 
+		return( c_rb.createPropertydefinition(m_context.currentUser(), 
 										  m_context.currentProject(), 
 										  name,
 										  resourcetype,
@@ -1481,48 +1481,48 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	}
 	
 	/**
-	 * Reads the Metadefinition for the resource type.<BR/>
+	 * Reads the Propertydefinition for the resource type.<BR/>
 	 * 
-	 * @param name The name of the Metadefinition to read.
-	 * @param resourcetype The name of the resource type for the Metadefinition.
-	 * @return the Metadefinition.
+	 * @param name The name of the Propertydefinition to read.
+	 * @param resourcetype The name of the resource type for the Propertydefinition.
+	 * @return the Propertydefinition.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsMetadefinition readMetadefinition(String name, 
+	public A_CmsPropertydefinition readPropertydefinition(String name, 
 												  String resourcetype)
 		throws CmsException { 
-		return( c_rb.readMetadefinition(m_context.currentUser(), 
+		return( c_rb.readPropertydefinition(m_context.currentUser(), 
 										m_context.currentProject(), 
 										name,
 										resourcetype) );
 	}
 
 	/**
-	 * Writes the Metadefinition for the resource type.<BR/>
+	 * Writes the Propertydefinition for the resource type.<BR/>
 	 * 
-	 * @param metadef The metadef to be written.
+	 * @param propertydef The Propertydef to be written.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsMetadefinition writeMetadefinition(A_CmsMetadefinition definition)
+	public A_CmsPropertydefinition writePropertydefinition(A_CmsPropertydefinition definition)
 		throws  CmsException { 
-		return( c_rb.writeMetadefinition(m_context.currentUser(), 
+		return( c_rb.writePropertydefinition(m_context.currentUser(), 
 										 m_context.currentProject(), 
 										 definition) );
 	}
 	
 	/**
-	 * Delete the Metadefinition for the resource type.<BR/>
+	 * Delete the Propertydefinition for the resource type.<BR/>
 	 * 
-	 * @param name The name of the Metadefinition to overwrite.
-	 * @param resourcetype The name of the resource-type for the Metadefinition.
+	 * @param name The name of the Propertydefinition to overwrite.
+	 * @param resourcetype The name of the resource-type for the Propertydefinition.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public void deleteMetadefinition(String name, String resourcetype)
+	public void deletePropertydefinition(String name, String resourcetype)
 		throws CmsException { 
-		c_rb.deleteMetadefinition(m_context.currentUser(), 
+		c_rb.deletePropertydefinition(m_context.currentUser(), 
 								  m_context.currentProject(), 
 								  name, resourcetype);
 	}

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
- * Date   : $Date: 2000/03/27 13:50:01 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2000/04/03 10:48:30 $
+ * Version: $Revision: 1.25 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.24 $ $Date: 2000/03/27 13:50:01 $
+ * @version $Revision: 1.25 $ $Date: 2000/04/03 10:48:30 $
  */
 public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLogChannels {
     
@@ -445,7 +445,7 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
             throws CmsException {
 
         String requestedUri = cms.getRequestContext().getUri();
-        String title = cms.readMetainformation(requestedUri, C_METAINFO_TITLE);
+        String title = cms.readProperty(requestedUri, C_PROPERTY_TITLE);
         if(title == null) {
             title = "";
         }

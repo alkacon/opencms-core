@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbProperty.java,v $
- * Date   : $Date: 2000/02/15 17:43:59 $
- * Version: $Revision: 1.7 $
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbSystemProperty.java,v $
+ * Date   : $Date: 2000/04/03 10:48:30 $
+ * Version: $Revision: 1.1 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -33,7 +33,7 @@ import java.io.*;
 import com.opencms.core.*;
 
 /**
- * Implementatrion of the I_CmsRbProperty interface, 
+ * Implementatrion of the I_cmsRbSystemProperty interface, 
  * implementing a resource broker for propertys in the Cms.<BR/>
  * Only the system can access propertys. Propertys are for internal use
  * only. A property is a serializable object.
@@ -41,22 +41,22 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.7 $ $Date: 2000/02/15 17:43:59 $
+ * @version $Revision: 1.1 $ $Date: 2000/04/03 10:48:30 $
  */
-public class CmsRbProperty implements I_CmsRbProperty  {
+public class CmsRbSystemProperty implements I_CmsRbSystemProperty  {
 	
     /**
      * The property access object which is required to access the
      * property database.
      */
-    private I_CmsAccessProperty m_accessProperty;
+    private I_CmsAccessSystemProperty m_accessProperty;
     
     /**
      * Constructor, creates a new Cms Property Resource Broker.
      * 
      * @param AccessProperty The property access object.
      */
-    public CmsRbProperty(I_CmsAccessProperty accessProperty)
+    public CmsRbSystemProperty(I_CmsAccessSystemProperty accessProperty)
     {
         m_accessProperty=accessProperty;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2000/03/31 10:34:13 $
- * Version: $Revision: 1.65 $
+ * Date   : $Date: 2000/04/03 10:48:28 $
+ * Version: $Revision: 1.66 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.65 $ $Date: 2000/03/31 10:34:13 $
+ * @version $Revision: 1.66 $ $Date: 2000/04/03 10:48:28 $
  */
 public interface I_CmsConstants
 {
@@ -147,38 +147,38 @@ public interface I_CmsConstants
     final static String C_TYPE_NEWSPAGE_NAME = "newspage";
      								
 	/**
-	 * This constant signs a normal "classic" metadefinition.
+	 * This constant signs a normal "classic" propertydefinition.
 	 */
-	static final int C_METADEF_TYPE_NORMAL		= 0;
+	static final int C_PROPERTYDEF_TYPE_NORMAL		= 0;
 
 	/**
-	 * This constant signs a optional metadefinition.
-	 * These metadefinitions will be shown at creation-time for a resource.
+	 * This constant signs a optional propertydefinition.
+	 * These propertydefinitions will be shown at creation-time for a resource.
 	 * They may be filled out by the user.
 	 */
-	static final int C_METADEF_TYPE_OPTIONAL	= 1;
+	static final int C_PROPERTYDEF_TYPE_OPTIONAL	= 1;
 
 	/**
-	 * This constant signs a mandatory metadefinition.
-	 * These metadefinitions will be shown at creation-time for a resource.
+	 * This constant signs a mandatory propertydefinition.
+	 * These propertydefinitions will be shown at creation-time for a resource.
 	 * They must be filled out by the user, else the resource will not be created.
 	 */
-	static final int C_METADEF_TYPE_MANDATORY	= 2;
+	static final int C_PROPERTYDEF_TYPE_MANDATORY	= 2;
 
     /**
-     * Metainformation for resource title
+     * Property for resource title
      */
-    static final String C_METAINFO_TITLE="Title";
+    static final String C_PROPERTY_TITLE="Title";
 
      /**
-     * Metainformation for resource navigation title
+     * Property for resource navigation title
      */
-    static final String C_METAINFO_NAVTEXT="NavText";
+    static final String C_PROPERTY_NAVTEXT="NavText";
    
     /**
-     * Metainformation for resource navigation position
+     * Property for resource navigation position
      */
-    static final String C_METAINFO_NAVPOS="NavPos";
+    static final String C_PROPERTY_NAVPOS="NavPos";
     
 	/**
 	 * This is the group for guests.
@@ -462,24 +462,24 @@ public interface I_CmsConstants
      static final String C_ROOT = C_FOLDER_SEPERATOR;
 	 
 	 /**
-	  * The name of the exportpath-property.
+	  * The name of the exportpath-systemproperty.
 	  */
-	 static final String C_PROPERTY_EXPORTPATH = "EXPORTPATH";
+	 static final String C_SYSTEMPROPERTY_EXPORTPATH = "EXPORTPATH";
 
 	 /**
-	  * The name of the mountpoint-property.
+	  * The name of the mountpoint-systemproperty.
 	  */
-	 static final String C_PROPERTY_MOUNTPOINT = "MOUNTPOINT";
+	 static final String C_SYSTEMPROPERTY_MOUNTPOINT = "MOUNTPOINT";
     
       /**
-	  * The name of the mimetypes-property.
+	  * The name of the mimetypes-systemproperty.
 	  */
-	 static final String C_PROPERTY_MIMETYPES = "MIMETYPES";
+	 static final String C_SYSTEMPROPERTY_MIMETYPES = "MIMETYPES";
      
 	 /**
-	  * The name of the resourcetype-property.
+	  * The name of the resourcetype-systemproperty.
 	  */
-	 static final String C_PROPERTY_RESOURCE_TYPE = "RESOURCE_TYPE";
+	 static final String C_SYSTEMPROPERTY_RESOURCE_TYPE = "RESOURCE_TYPE";
 	 
     /**
      * The key for the username in the user information hashtable.
@@ -670,14 +670,14 @@ public interface I_CmsConstants
     /** XML tag to defines file acces */
 	final static String C_TFACCESS = "ACCESFLAG";
 	
-	/** XML tag to defines the resource metainfo */
-	final static String C_TFMETAINFO = "METAINFO";
-	/** XML tag to defines the resource metaname */
-	final static String C_TFMETANAME = "METANAME";
-	/** XML tag to defines the resource metatype */
-	final static String C_TFMETATYPE = "METATYP";
-	/** XML tag to defines the resource metavalue */
-	final static String C_TFMETAVALUE = "METAVALUE";
+	/** XML tag to defines the resource property */
+	final static String C_TFPROPERTYINFO = "PROPERTYINFO";
+	/** XML tag to defines the resource property */
+	final static String C_TFPROPERTYNAME = "PROPERTYNAME";
+	/** XML tag to defines the resource propertytype */
+	final static String C_TFPROPERTYTYPE = "PROPERTYTYP";
+	/** XML tag to defines the resource propertyvalue */
+	final static String C_TFPROPERTYVALUE = "PROPERTYVALUE";
 	/** XML tag to defines the resource content if resource is a file */
 	final static String C_FCONTENT = "CONTENT";	
 	

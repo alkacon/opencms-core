@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsInitMySqlFillDefaults.java,v $
- * Date   : $Date: 2000/02/29 16:44:46 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2000/04/03 10:48:29 $
+ * Version: $Revision: 1.18 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -38,7 +38,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.17 $ $Date: 2000/02/29 16:44:46 $
+ * @version $Revision: 1.18 $ $Date: 2000/04/03 10:48:29 $
  */
 public class CmsInitMySqlFillDefaults extends A_CmsInit implements I_CmsConstants {
 	
@@ -96,8 +96,8 @@ public class CmsInitMySqlFillDefaults extends A_CmsInit implements I_CmsConstant
 													   C_FLAG_ENABLED);
 			
 			
-		I_CmsRbProperty propertyRb = new CmsRbProperty(
-			new CmsAccessPropertyMySql(propertyDriver, propertyConnectString));
+		I_CmsRbSystemProperty propertyRb = new CmsRbSystemProperty(
+			new CmsAccessSystemPropertyMySql(propertyDriver, propertyConnectString));
 
 		// the resourceType "folder" is needed always - so adding it
 		Hashtable resourceTypes = new Hashtable(1);
@@ -108,11 +108,11 @@ public class CmsInitMySqlFillDefaults extends A_CmsInit implements I_CmsConstant
 		resourceTypes.put(C_TYPE_LAST_INDEX, new Integer(C_TYPE_FOLDER));
 			
         // add the mime-types to the database
-		propertyRb.addProperty( C_PROPERTY_RESOURCE_TYPE, resourceTypes );
+		propertyRb.addProperty( C_SYSTEMPROPERTY_RESOURCE_TYPE, resourceTypes );
             
             
         // set the mimetypes
-        propertyRb.addProperty(C_PROPERTY_MIMETYPES,initMimetypes());
+        propertyRb.addProperty(C_SYSTEMPROPERTY_MIMETYPES,initMimetypes());
 			
 		// create the root-mountpoint
 		Hashtable mount = new Hashtable(1);
@@ -120,7 +120,7 @@ public class CmsInitMySqlFillDefaults extends A_CmsInit implements I_CmsConstant
 										 propertyConnectString,
 										 "The root-mountpoint"));
 			
-		propertyRb.addProperty( C_PROPERTY_MOUNTPOINT, mount );
+		propertyRb.addProperty( C_SYSTEMPROPERTY_MOUNTPOINT, mount );
 
 		// read all mountpoints from the properties.
 		A_CmsMountPoint mountPoint;

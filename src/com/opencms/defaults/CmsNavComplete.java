@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsNavComplete.java,v $
- * Date   : $Date: 2000/03/31 09:34:18 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/04/03 10:48:28 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * 
  * @author Alexander Kandzior
  * @author Waruschan Babachan
- * @version $Revision: 1.2 $ $Date: 2000/03/31 09:34:18 $
+ * @version $Revision: 1.3 $ $Date: 2000/04/03 10:48:28 $
  */
 public class CmsNavComplete extends A_CmsNavBase {
 	
@@ -142,13 +142,13 @@ public class CmsNavComplete extends A_CmsNavBase {
         float navPos[] = new float[size];
         
         // First scan all subfolders of the root folder
-        // for any navigation metainformations and store
+        // for any navigation properties and store
         // the maximum position found
         for(int i=0; i<size; i++) {
             A_CmsResource currentResource = (A_CmsResource)resources.elementAt(i);
             String path = currentResource.getAbsolutePath();
-            String pos = cms.readMetainformation(path, C_METAINFO_NAVPOS);
-            String text = cms.readMetainformation(path, C_METAINFO_NAVTEXT);     
+            String pos = cms.readProperty(path, C_PROPERTY_NAVPOS);
+            String text = cms.readProperty(path, C_PROPERTY_NAVTEXT);     
 			// Only list folders in the nav bar if they are not deleted!
             if (currentResource.getState() != C_STATE_DELETED) { 
                 // don't list the temporary folders in the nav bar!

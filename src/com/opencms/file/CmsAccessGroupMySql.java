@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessGroupMySql.java,v $
- * Date   : $Date: 2000/03/29 15:13:12 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2000/04/03 10:48:29 $
+ * Version: $Revision: 1.20 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.19 $ $Date: 2000/03/29 15:13:12 $
+ * @version $Revision: 1.20 $ $Date: 2000/04/03 10:48:29 $
  */
  class CmsAccessGroupMySql implements I_CmsAccessGroup, I_CmsConstants  {
      
@@ -644,7 +644,7 @@ import com.opencms.core.*;
     }
     
      /**
-     * Connects to the property database.
+     * Connects to the group database.
      * 
      * @param conUrl The connection string to the database.
      * 

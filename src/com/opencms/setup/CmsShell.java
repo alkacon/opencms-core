@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/setup/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/03/27 16:22:10 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2000/04/03 10:48:30 $
+ * Version: $Revision: 1.35 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import java.lang.reflect.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.34 $ $Date: 2000/03/27 16:22:10 $
+ * @version $Revision: 1.35 $ $Date: 2000/04/03 10:48:30 $
  */
 public class CmsShell implements I_CmsConstants {
 	
@@ -849,16 +849,16 @@ public class CmsShell implements I_CmsConstants {
 	}
 
 	/**
-	 * Reads all metadefinitions for the given resource type.
+	 * Reads all propertydefinitions for the given resource type.
 	 * 
 	 * @param resourcetype The name of the resource type to read the 
-	 * metadefinitions for.
+	 * propertydefinitions for.
 	 */	
-	public void readAllMetadefinitions(String resourcetype) {
+	public void readAllPropertydefinitions(String resourcetype) {
 		try {
-			Vector metadefs = m_cms.readAllMetadefinitions(resourcetype);
-			for( int i = 0; i < metadefs.size(); i++ ) {
-				System.out.println( (A_CmsMetadefinition)metadefs.elementAt(i) );
+			Vector propertydefs = m_cms.readAllPropertydefinitions(resourcetype);
+			for( int i = 0; i < propertydefs.size(); i++ ) {
+				System.out.println( (A_CmsPropertydefinition)propertydefs.elementAt(i) );
 			}
 		} catch( Exception exc ) {
 			printException(exc);
@@ -866,18 +866,18 @@ public class CmsShell implements I_CmsConstants {
 	}
 
 	/**
-	 * Creates the metadefinition for the resource type.<BR/>
+	 * Creates the propertydefinition for the resource type.<BR/>
 	 * 
-	 * @param name The name of the metadefinition to overwrite.
-	 * @param resourcetype The name of the resource-type for the metadefinition.
-	 * @param type The type of the metadefinition (normal|mandatory|optional)
+	 * @param name The name of the propertydefinition to overwrite.
+	 * @param resourcetype The name of the resource-type for the propertydefinition.
+	 * @param type The type of the propertydefinition (normal|mandatory|optional)
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public void createMetadefinition(String name, String resourcetype, String type)
+	public void createPropertydefinition(String name, String resourcetype, String type)
 		throws CmsException {
 		try {
-			System.out.println( m_cms.createMetadefinition(name, resourcetype, 
+			System.out.println( m_cms.createPropertydefinition(name, resourcetype, 
 														   Integer.parseInt(type)) );
 		} catch( Exception exc ) {
 			printException(exc);
@@ -885,18 +885,18 @@ public class CmsShell implements I_CmsConstants {
 	}
 
 	/**
-	 * Reads all metadefinitions for the given resource type.
+	 * Reads all propertydefinitions for the given resource type.
 	 * 
 	 * @param resourcetype The name of the resource type to read the 
-	 * metadefinitions for.
-	 * @param type The type of the metadefinition (normal|mandatory|optional).
+	 * propertydefinitions for.
+	 * @param type The type of the propertydefinition (normal|mandatory|optional).
 	 */	
-	public void readAllMetadefinitions(String resourcetype, String type) {
+	public void readAllPropertydefinitions(String resourcetype, String type) {
 		try {
-			Vector metadefs = m_cms.readAllMetadefinitions(resourcetype, 
+			Vector propertydefs = m_cms.readAllPropertydefinitions(resourcetype, 
 														   Integer.parseInt(type));
-			for( int i = 0; i < metadefs.size(); i++ ) {
-				System.out.println( (A_CmsMetadefinition)metadefs.elementAt(i) );
+			for( int i = 0; i < propertydefs.size(); i++ ) {
+				System.out.println( (A_CmsPropertydefinition)propertydefs.elementAt(i) );
 			}
 		} catch( Exception exc ) {
 			printException(exc);
@@ -904,100 +904,100 @@ public class CmsShell implements I_CmsConstants {
 	}
 
 	/**
-	 * Reads the Metadefinition for the resource type.<BR/>
+	 * Reads the propertydefinition for the resource type.<BR/>
 	 * 
-	 * @param name The name of the Metadefinition to read.
-	 * @param resourcetype The name of the resource type for the Metadefinition.
+	 * @param name The name of the propertydefinition to read.
+	 * @param resourcetype The name of the resource type for the propertydefinition.
 	 */
-	public void readMetadefinition(String name, String resourcetype) {
+	public void readpropertydefinition(String name, String resourcetype) {
 		try {
-			System.out.println( m_cms.readMetadefinition(name, resourcetype) );
+			System.out.println( m_cms.readPropertydefinition(name, resourcetype) );
 		} catch( Exception exc ) {
 			printException(exc);
 		}
 	}
 
 	/**
-	 * Writes the Metadefinition for the resource type.<BR/>
+	 * Writes the propertydefinition for the resource type.<BR/>
 	 * 
-	 * @param name The name of the Metadefinition to overwrite.
+	 * @param name The name of the propertydefinition to overwrite.
 	 * @param resourcetype The name of the resource type to read the 
-	 * metadefinitions for.
-	 * @param type The new type of the metadefinition (normal|mandatory|optional).
+	 * propertydefinitions for.
+	 * @param type The new type of the propertydefinition (normal|mandatory|optional).
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public void writeMetadefinition(String name, 
+	public void writepropertydefinition(String name, 
 									String resourcetype, 
 									String type) {
 		try {
-			A_CmsMetadefinition metadef = m_cms.readMetadefinition(name, resourcetype);
-			metadef.setMetadefType(Integer.parseInt(type));			
-			System.out.println( m_cms.writeMetadefinition(metadef) );
+			A_CmsPropertydefinition propertydef = m_cms.readPropertydefinition(name, resourcetype);
+			propertydef.setPropertydefType(Integer.parseInt(type));			
+			System.out.println( m_cms.writePropertydefinition(propertydef) );
 		} catch( Exception exc ) {
 			printException(exc);
 		}
 	}
 
 	/**
-	 * Delete the Metadefinition for the resource type.<BR/>
+	 * Delete the propertydefinition for the resource type.<BR/>
 	 * 
-	 * @param name The name of the Metadefinition to overwrite.
-	 * @param resourcetype The name of the resource-type for the Metadefinition.
+	 * @param name The name of the propertydefinition to overwrite.
+	 * @param resourcetype The name of the resource-type for the propertydefinition.
 	 */
-	public void deleteMetadefinition(String name, String resourcetype) {
+	public void deletepropertydefinition(String name, String resourcetype) {
 		try {
-			m_cms.deleteMetadefinition(name, resourcetype);
+			m_cms.deletePropertydefinition(name, resourcetype);
 		} catch( Exception exc ) {
 			printException(exc);
 		}
 	}
 
 	/**
-	 * Returns a Metainformation of a file or folder.
+	 * Returns a propertyinformation of a file or folder.
 	 * 
-	 * @param name The resource-name of which the Metainformation has to be read.
-	 * @param meta The Metadefinition-name of which the Metainformation has to be read.
+	 * @param name The resource-name of which the propertyinformation has to be read.
+	 * @param property The propertydefinition-name of which the propertyinformation has to be read.
 	 */
-	public void readMetainformation(String name, String meta) {
+	public void readProperty(String name, String property) {
 		try {
-			System.out.println( m_cms.readMetainformation(name, meta) );
+			System.out.println( m_cms.readProperty(name, property) );
 		} catch( Exception exc ) {
 			printException(exc);
 		}
 	}
 		
 	/**
-	 * Writes a Metainformation for a file or folder.
+	 * Writes a propertyinformation for a file or folder.
 	 * 
-	 * @param name The resource-name of which the Metainformation has to be set.
-	 * @param meta The Metadefinition-name of which the Metainformation has to be set.
-	 * @param value The value for the metainfo to be set.
+	 * @param name The resource-name of which the propertyinformation has to be set.
+	 * @param property The propertydefinition-name of which the propertyinformation has to be set.
+	 * @param value The value for the propertyinfo to be set.
 	 */
-	public void writeMetainformation(String name, String meta, String value) {
+	public void writeProperty(String name, String property, String value) {
 		try {
-			m_cms.writeMetainformation(name, meta, value);
+			m_cms.writeProperty(name, property, value);
 		} catch( Exception exc ) {
 			printException(exc);
 		}
 	}
 
 	/**
-	 * Returns a list of all Metainformations of a file or folder.
+	 * Returns a list of all propertyinformations of a file or folder.
 	 * 
-	 * @param resource The name of the resource of which the Metainformation has to be 
+	 * @param resource The name of the resource of which the propertyinformation has to be 
 	 * read.
 	 */
-	public void readAllMetainformations(String resource) {
+	public void readAllProperties(String resource) {
 		try {
-			Hashtable metainfos = m_cms.readAllMetainformations(resource);
-			Enumeration keys = metainfos.keys();
+			Hashtable propertyinfos = m_cms.readAllProperties(resource);
+			Enumeration keys = propertyinfos.keys();
 			Object key;
 			
 			while(keys.hasMoreElements()) {
 				key = keys.nextElement();
 				System.out.print(key + "=");
-				System.out.println(metainfos.get(key));
+				System.out.println(propertyinfos.get(key));
 			}
 		} catch( Exception exc ) {
 			printException(exc);
@@ -1005,28 +1005,28 @@ public class CmsShell implements I_CmsConstants {
 	}
 
 	/**
-	 * Deletes all Metainformation for a file or folder.
+	 * Deletes all propertyinformation for a file or folder.
 	 * 
-	 * @param resource The name of the resource of which the Metainformations 
+	 * @param resource The name of the resource of which the propertyinformations 
 	 * have to be deleted.
 	 */
-	public void deleteAllMetainformations(String resource) {
+	public void deleteAllProperties(String resource) {
 		try {
-			m_cms.deleteAllMetainformations(resource);
+			m_cms.deleteAllProperties(resource);
 		} catch( Exception exc ) {
 			printException(exc);
 		}
 	}
 
 	/**
-	 * Deletes a Metainformation for a file or folder.
+	 * Deletes a propertyinformation for a file or folder.
 	 * 
-	 * @param resourcename The resource-name of which the Metainformation has to be delteted.
-	 * @param meta The Metadefinition-name of which the Metainformation has to be set.
+	 * @param resourcename The resource-name of which the propertyinformation has to be delteted.
+	 * @param property The propertydefinition-name of which the propertyinformation has to be set.
 	 */
-	public void deleteMetainformation(String resourcename, String meta) {
+	public void deleteProperty(String resourcename, String property) {
 		try {
-			m_cms.deleteMetainformation(resourcename, meta);
+			m_cms.deleteProperty(resourcename, property);
 		} catch( Exception exc ) {
 			printException(exc);
 		}

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/03/30 08:01:27 $
- * Version: $Revision: 1.91 $
+ * Date   : $Date: 2000/04/03 10:48:30 $
+ * Version: $Revision: 1.92 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.91 $ $Date: 2000/03/30 08:01:27 $
+ * @version $Revision: 1.92 $ $Date: 2000/04/03 10:48:30 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -58,14 +58,14 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	private I_CmsRbFile m_fileRb;
 
 	/**
-	 * The resource broker for metadef
+	 * The resource broker for properties
 	 */
 	private I_CmsRbMetadefinition m_metadefRb;
 
 	/**
-	 * The resource broker for property
+	 * The resource broker for systemproperty
 	 */
-	private I_CmsRbProperty m_propertyRb;
+	private I_CmsRbSystemProperty m_systempropertyRb;
 
 	/**
 	 * The resource broker for project
@@ -97,12 +97,12 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * resource-brokers.
 	 */
 	public CmsResourceBroker(I_CmsRbUserGroup userRb, I_CmsRbFile fileRb , 
-							 I_CmsRbMetadefinition metadefRb, I_CmsRbProperty propertyRb,
+							 I_CmsRbMetadefinition metadefRb, I_CmsRbSystemProperty propertyRb,
 							 I_CmsRbProject projectRb, I_CmsRbTask taskRb) {
 		m_userRb = userRb;
 		m_fileRb = fileRb;
 		m_metadefRb = metadefRb;
-		m_propertyRb = propertyRb;
+		m_systempropertyRb = propertyRb;
 		m_projectRb = projectRb;
 		m_taskRb = taskRb;
     
@@ -110,7 +110,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsResourceBroker] using " + m_userRb.getClass().getName());
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsResourceBroker] using " + m_fileRb.getClass().getName());
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsResourceBroker] using " + m_metadefRb.getClass().getName());
-			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsResourceBroker] using " + m_propertyRb.getClass().getName());
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsResourceBroker] using " + m_systempropertyRb.getClass().getName());
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsResourceBroker] using " + m_projectRb.getClass().getName());
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsResourceBroker] using " + m_taskRb.getClass().getName());
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsResourceBroker] all rb's stored");
@@ -514,7 +514,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsMetadefinition readMetadefinition(A_CmsUser currentUser, 
+	public A_CmsPropertydefinition readPropertydefinition(A_CmsUser currentUser, 
 												  A_CmsProject currentProject, 
 												  String name, String resourcetype)
 		throws CmsException {
@@ -540,7 +540,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */	
-	public Vector readAllMetadefinitions(A_CmsUser currentUser, A_CmsProject currentProject, 
+	public Vector readAllPropertydefinitions(A_CmsUser currentUser, A_CmsProject currentProject, 
 										 String resourcetype)
 		throws CmsException {
 		
@@ -566,7 +566,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */	
-	public Vector readAllMetadefinitions(A_CmsUser currentUser, A_CmsProject currentProject, 
+	public Vector readAllPropertydefinitions(A_CmsUser currentUser, A_CmsProject currentProject, 
 										 String resourcetype, int type)
 		throws CmsException {
 		
@@ -590,7 +590,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsMetadefinition createMetadefinition(A_CmsUser currentUser, 
+	public A_CmsPropertydefinition createPropertydefinition(A_CmsUser currentUser, 
 													A_CmsProject currentProject, 
 													String name, 
 													String resourcetype, 
@@ -623,7 +623,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public void deleteMetadefinition(A_CmsUser currentUser, A_CmsProject currentProject, 
+	public void deletePropertydefinition(A_CmsUser currentUser, A_CmsProject currentProject, 
 									 String name, String resourcetype)
 		throws CmsException {
 		// check the security
@@ -654,9 +654,9 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsMetadefinition writeMetadefinition(A_CmsUser currentUser, 
+	public A_CmsPropertydefinition writePropertydefinition(A_CmsUser currentUser, 
 												   A_CmsProject currentProject, 
-												   A_CmsMetadefinition metadef)
+												   A_CmsPropertydefinition metadef)
 		throws CmsException {
 		// check the security
 		if( isAdmin(currentUser, currentProject) ) {
@@ -683,7 +683,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public String readMetainformation(A_CmsUser currentUser, A_CmsProject currentProject, 
+	public String readProperty(A_CmsUser currentUser, A_CmsProject currentProject, 
 									  String resource, String meta)
 		throws CmsException {
 		A_CmsResource res;
@@ -726,7 +726,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public void writeMetainformation(A_CmsUser currentUser, A_CmsProject currentProject, 
+	public void writeProperty(A_CmsUser currentUser, A_CmsProject currentProject, 
 									 String resource, String meta, String value)
 		throws CmsException {
 
@@ -767,7 +767,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public void writeMetainformations(A_CmsUser currentUser, A_CmsProject currentProject, 
+	public void writeProperties(A_CmsUser currentUser, A_CmsProject currentProject, 
 									  String resource, Hashtable metainfos)
 		throws CmsException {
 		// read the resource
@@ -806,7 +806,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public Hashtable readAllMetainformations(A_CmsUser currentUser, A_CmsProject currentProject, 
+	public Hashtable readAllProperties(A_CmsUser currentUser, A_CmsProject currentProject, 
 											 String resource)
 		throws CmsException {
 		
@@ -848,7 +848,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public void deleteAllMetainformations(A_CmsUser currentUser, 
+	public void deleteAllProperties(A_CmsUser currentUser, 
 										  A_CmsProject currentProject, 
 										  String resource)
 		throws CmsException {
@@ -864,7 +864,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		
 		// are there some mandatory metadefs?
 		if( m_metadefRb.readAllMetadefinitions(res.getType(), 
-											   C_METADEF_TYPE_MANDATORY).size() == 0  ) {
+											   C_PROPERTYDEF_TYPE_MANDATORY).size() == 0  ) {
 			// no - delete them all
 			m_metadefRb.deleteAllMetainformations(res);
 			// inform about the file-system-change
@@ -872,7 +872,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		} else {
 			// yes - throw exception
 			 throw new CmsException("[" + this.getClass().getName() + "] " + resource, 
-				CmsException.C_MANDATORY_METAINFO);
+				CmsException.C_MANDATORY_PROPERTY);
 		}
 	}
 
@@ -890,7 +890,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public void deleteMetainformation(A_CmsUser currentUser, A_CmsProject currentProject, 
+	public void deleteProperty(A_CmsUser currentUser, A_CmsProject currentProject, 
 									  String resource, String meta)
 		throws CmsException {
 		
@@ -904,11 +904,11 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		}
 
 		// read the metadefinition
-		A_CmsMetadefinition metadef = m_metadefRb.readMetadefinition(meta, res.getType());
+		A_CmsPropertydefinition metadef = m_metadefRb.readMetadefinition(meta, res.getType());
 		
 		// is this a mandatory metadefinition?
 		if(  (metadef != null) && 
-			 (metadef.getMetadefType() != C_METADEF_TYPE_MANDATORY )  ) {
+			 (metadef.getPropertydefType() != C_PROPERTYDEF_TYPE_MANDATORY )  ) {
 			// no - delete the information
 			m_metadefRb.deleteMetainformation(res, meta);
 			// inform about the file-system-change
@@ -916,7 +916,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		} else {
 			// yes - throw exception
 			 throw new CmsException("[" + this.getClass().getName() + "] " + resource, 
-				CmsException.C_MANDATORY_METAINFO);
+				CmsException.C_MANDATORY_PROPERTY);
 		}
 	}
 
@@ -1795,19 +1795,19 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			
 			// read all mountpoints from propertys
 			Hashtable mountpoints = (Hashtable) 
-									 m_propertyRb.readProperty(C_PROPERTY_MOUNTPOINT);
+									 m_systempropertyRb.readProperty(C_SYSTEMPROPERTY_MOUNTPOINT);
 			
 			// if mountpoints dosen't exists - create them.
 			if(mountpoints == null) {
 				mountpoints = new Hashtable();
-				m_propertyRb.addProperty(C_PROPERTY_MOUNTPOINT, mountpoints);
+				m_systempropertyRb.addProperty(C_SYSTEMPROPERTY_MOUNTPOINT, mountpoints);
 			}
 			
 			// add the new mountpoint
 			mountpoints.put(newMountPoint.getMountpoint(), newMountPoint);
 			
 			// write the mountpoints back to the properties
-			m_propertyRb.writeProperty(C_PROPERTY_MOUNTPOINT, mountpoints);			
+			m_systempropertyRb.writeProperty(C_SYSTEMPROPERTY_MOUNTPOINT, mountpoints);			
 			
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + mountpoint, 
@@ -1861,19 +1861,19 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			
 			// read all mountpoints from propertys
 			Hashtable mountpoints = (Hashtable) 
-									 m_propertyRb.readProperty(C_PROPERTY_MOUNTPOINT);
+									 m_systempropertyRb.readProperty(C_SYSTEMPROPERTY_MOUNTPOINT);
 			
 			// if mountpoints dosen't exists - create them.
 			if(mountpoints == null) {
 				mountpoints = new Hashtable();
-				m_propertyRb.addProperty(C_PROPERTY_MOUNTPOINT, mountpoints);
+				m_systempropertyRb.addProperty(C_SYSTEMPROPERTY_MOUNTPOINT, mountpoints);
 			}
 			
 			// add the new mountpoint
 			mountpoints.put(newMountPoint.getMountpoint(), newMountPoint);
 			
 			// write the mountpoints back to the properties
-			m_propertyRb.writeProperty(C_PROPERTY_MOUNTPOINT, mountpoints);			
+			m_systempropertyRb.writeProperty(C_SYSTEMPROPERTY_MOUNTPOINT, mountpoints);			
 			
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + mountpoint, 
@@ -1903,7 +1903,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			
 			// read all mountpoints from propertys
 			Hashtable mountpoints = (Hashtable) 
-									 m_propertyRb.readProperty(C_PROPERTY_MOUNTPOINT);
+									 m_systempropertyRb.readProperty(C_SYSTEMPROPERTY_MOUNTPOINT);
 			
 			// no mountpoints available?
 			if(mountpoint == null) {
@@ -1932,7 +1932,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 */
 	public Hashtable readMimeTypes(A_CmsUser currentUser, A_CmsProject currentProject)
 		throws CmsException {
-		return((Hashtable) m_propertyRb.readProperty(C_PROPERTY_MIMETYPES) );			
+		return((Hashtable) m_systempropertyRb.readProperty(C_SYSTEMPROPERTY_MIMETYPES) );			
 	}
 	
 	/**
@@ -1952,12 +1952,12 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		if( isAdmin(currentUser, currentProject) ) {
 			
 			// security is ok - write the exportpath.
-			if(m_propertyRb.readProperty(C_PROPERTY_EXPORTPATH) == null) {
+			if(m_systempropertyRb.readProperty(C_SYSTEMPROPERTY_EXPORTPATH) == null) {
 				// the property wasn't set before.
-				m_propertyRb.addProperty(C_PROPERTY_EXPORTPATH, path);
+				m_systempropertyRb.addProperty(C_SYSTEMPROPERTY_EXPORTPATH, path);
 			} else {
 				// overwrite the property.
-				m_propertyRb.writeProperty(C_PROPERTY_EXPORTPATH, path);
+				m_systempropertyRb.writeProperty(C_SYSTEMPROPERTY_EXPORTPATH, path);
 			}	
 			
 		} else {
@@ -1981,7 +1981,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		throws CmsException {
 		
 		// return the exportpath.
-		return (String) m_propertyRb.readProperty(C_PROPERTY_EXPORTPATH);
+		return (String) m_systempropertyRb.readProperty(C_SYSTEMPROPERTY_EXPORTPATH);
 	}
 	
     /**
@@ -2004,13 +2004,13 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			
 			// read all mountpoints from propertys
 			Hashtable mountpoints = (Hashtable) 
-									 m_propertyRb.readProperty(C_PROPERTY_MOUNTPOINT);
+									 m_systempropertyRb.readProperty(C_SYSTEMPROPERTY_MOUNTPOINT);
 			
 			if(mountpoint != null) {
 				// remove the mountpoint
 				mountpoints.remove(mountpoint);
 				// write the mountpoints back to the properties
-				m_propertyRb.writeProperty(C_PROPERTY_MOUNTPOINT, mountpoints);			
+				m_systempropertyRb.writeProperty(C_SYSTEMPROPERTY_MOUNTPOINT, mountpoints);			
 			}
 			
 		} else {
@@ -2037,7 +2037,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		if( isAdmin(currentUser, currentProject) ) {
 			
 			// read all mountpoints from propertys
-			return( (Hashtable) m_propertyRb.readProperty(C_PROPERTY_MOUNTPOINT));
+			return( (Hashtable) m_systempropertyRb.readProperty(C_SYSTEMPROPERTY_MOUNTPOINT));
 			
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + currentUser.getName(), 
@@ -2065,7 +2065,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		if(m_resourceTypes == null) {
 			// read the resourceTypes from the propertys
 			m_resourceTypes = (Hashtable) 
-							   m_propertyRb.readProperty(C_PROPERTY_RESOURCE_TYPE);
+							   m_systempropertyRb.readProperty(C_SYSTEMPROPERTY_RESOURCE_TYPE);
 
 			// remove the last index.
 			m_resourceTypes.remove(C_TYPE_LAST_INDEX);
@@ -2167,7 +2167,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 
 			// read the resourceTypes from the propertys
 			m_resourceTypes = (Hashtable) 
-							   m_propertyRb.readProperty(C_PROPERTY_RESOURCE_TYPE);
+							   m_systempropertyRb.readProperty(C_SYSTEMPROPERTY_RESOURCE_TYPE);
 
 			synchronized(m_resourceTypes) {
 
@@ -2186,7 +2186,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 																	  launcherClass));
 						
 				// store the resource types in the properties
-				m_propertyRb.writeProperty(C_PROPERTY_RESOURCE_TYPE, m_resourceTypes);
+				m_systempropertyRb.writeProperty(C_SYSTEMPROPERTY_RESOURCE_TYPE, m_resourceTypes);
 						
 			}
 
@@ -2499,7 +2499,7 @@ System.err.println(">>> readFile(2) error for\n" +
 		throws CmsException {
 	
 		// check for mandatory metainfos
-		 checkMandatoryMetainfos(currentUser, currentProject, C_TYPE_FOLDER_NAME, 
+		 checkMandatoryProperties(currentUser, currentProject, C_TYPE_FOLDER_NAME, 
 								 metainfos);
 	
 		// checks, if the filename is valid, if not it throws a exception
@@ -2889,7 +2889,7 @@ System.err.println(">>> readFile(2) error for\n" +
 		 throws CmsException {
 
 		// check for mandatory metainfos
-		 checkMandatoryMetainfos(currentUser, currentProject, type, metainfos);
+		checkMandatoryProperties(currentUser, currentProject, type, metainfos);
 		
 		// checks, if the filename is valid, if not it throws a exception
 		validFilename(filename);
@@ -3994,21 +3994,21 @@ System.err.println(">>> readFile(2) error for\n" +
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	private void checkMandatoryMetainfos(A_CmsUser currentUser, 
+	private void checkMandatoryProperties(A_CmsUser currentUser, 
 										 A_CmsProject currentProject, 
 										 String resourceType, 
 										 Hashtable metainfos) 
 		throws CmsException {
 		// read the mandatory metadefs
-		Vector metadefs = readAllMetadefinitions(currentUser, currentProject, 
-												 resourceType, C_METADEF_TYPE_MANDATORY);
+		Vector metadefs = readAllPropertydefinitions(currentUser, currentProject, 
+												 resourceType, C_PROPERTYDEF_TYPE_MANDATORY);
 		
 		// check, if the mandatory metainfo is given
 		for(int i = 0; i < metadefs.size(); i++) {
 			if( metainfos.containsKey(metadefs.elementAt(i) ) ) {
 				// mandatory metainfo is missing - throw exception
 				throw new CmsException("[" + this.getClass().getName() + "] " + (String)metadefs.elementAt(i),
-					CmsException.C_MANDATORY_METAINFO);
+					CmsException.C_MANDATORY_PROPERTY);
 			}
 		}
 	}

@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsMetadefinition.java,v $
- * Date   : $Date: 2000/02/15 17:43:59 $
- * Version: $Revision: 1.3 $
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsPropertydefinition.java,v $
+ * Date   : $Date: 2000/04/03 10:48:29 $
+ * Version: $Revision: 1.1 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -29,69 +29,69 @@
 package com.opencms.file;
 
 /**
- * This class describes a metadefinition in the Cms.
+ * This class describes a Propertydefinition in the Cms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ $Date: 2000/02/15 17:43:59 $
+ * @version $Revision: 1.1 $ $Date: 2000/04/03 10:48:29 $
  */
-public class CmsMetadefinition extends A_CmsMetadefinition {
+public class CmsPropertydefinition extends A_CmsPropertydefinition {
 	/**
-	 * The name of this metadefinition.
+	 * The name of this Propertydefinition.
 	 */
 	private String m_name = null;
 	
 	/**
-	 * The resource-type for this metadefinition.
+	 * The resource-type for this Propertydefinition.
 	 */
 	private int m_resourceType;
 	
 	/**
-	 * The type of this metadefinition.
+	 * The type of this Propertydefinition.
 	 */
-	private int m_metadefinitionType;
+	private int m_propertydefinitionType;
 		
 	/**
-	 * The id of this metadefinition.
+	 * The id of this Propertydefinition.
 	 */
 	private int m_id;
 	
 	/**
-	 * Creates a new CmsMetadefinition.
+	 * Creates a new CmsPropertydefinition.
 	 * 
-	 * @param id The id of the metadefinition.
-	 * @param name The name of the metadefinition.
-	 * @param resourcetype The type of the resource for this metadefinition.
-	 * @param type The type of the metadefinition (e.g. mandatory)
+	 * @param id The id of the Propertydefinition.
+	 * @param name The name of the Propertydefinition.
+	 * @param resourcetype The type of the resource for this Propertydefinition.
+	 * @param type The type of the Propertydefinition (e.g. mandatory)
 	 */
-	CmsMetadefinition(int id, String name, int resourcetype, int type) {
+	CmsPropertydefinition(int id, String name, int resourcetype, int type) {
 		m_id = id;
 		m_name = name;
 		m_resourceType = resourcetype;
-		m_metadefinitionType = type;
+		m_propertydefinitionType = type;
 	}
 
 	/**
-	 * Returns the name of this metadefinition.
+	 * Returns the name of this Propertydefinition.
 	 * 
-	 * @return name The name of the metadefinition.
+	 * @return name The name of the Propertydefinition.
 	 */
 	public String getName() {
 		return m_name;
 	}
 	
 	/**
-	 * Returns the id of a metadefinition. This method has the package-visibility.
+	 * Returns the id of a Propertydefinition. This method has the package-visibility.
 	 * 
-	 * @return id The id of this metadefinition.
+	 * @return id The id of this Propertydefinition.
 	 */
 	int getId() {
 		return m_id;
 	}
 	
 	/**
-	 * Gets the resourcetype for this metadefinition.
+	 * Gets the resourcetype for this Propertydefinition.
 	 * 
-	 * @return the resourcetype of this metadefinition.
+	 * @return the resourcetype of this Propertydefinition.
 	 */
 	public int getType() {
 		return m_resourceType;
@@ -99,25 +99,25 @@ public class CmsMetadefinition extends A_CmsMetadefinition {
 
 
 	/**
-	 * Gets the type for this metadefinition.
-	 * The type may be C_METADEF_TYPE_NORMAL, C_METADEF_TYPE_OPTIONAL or
-	 * C_METADEF_TYPE_MANDATORY.
+	 * Gets the type for this Propertydefinition.
+	 * The type may be C_PROPERTYDEF_TYPE_NORMAL, C_PROPERTYDEF_TYPE_OPTIONAL or
+	 * C_PROPERTYDEF_TYPE_MANDATORY.
 	 * 
-	 * @return the type of this metadefinition.
+	 * @return the type of this Propertydefinition.
 	 */
-	public int getMetadefType() {
-		return m_metadefinitionType;
+	public int getPropertydefType() {
+		return m_propertydefinitionType;
 	}
 	
 	/**
-	 * Sets the type for this metadefinition.
-	 * The type may be C_METADEF_TYPE_NORMAL, C_METADEF_TYPE_OPTIONAL or
-	 * C_METADEF_TYPE_MANDATORY.
+	 * Sets the type for this Propertydefinition.
+	 * The type may be C_PROPERTYDEF_TYPE_NORMAL, C_PROPERTYDEF_TYPE_OPTIONAL or
+	 * C_PROPERTYDEF_TYPE_MANDATORY.
 	 * 
-	 * @param type The new type fot this metadefinition.
+	 * @param type The new type fot this Propertydefinition.
 	 */
-	public void setMetadefType(int type) {
-		m_metadefinitionType = type;
+	public void setPropertydefType(int type) {
+		m_propertydefinitionType = type;
 	}
 	
 	/**
@@ -128,14 +128,14 @@ public class CmsMetadefinition extends A_CmsMetadefinition {
 	 */
 	public String toString() {
         StringBuffer output=new StringBuffer();
-        output.append("[Metadefinition]:");
+        output.append("[Propertydefinition]:");
         output.append(m_name);
         output.append(" , Id=");
         output.append(m_id);
         output.append(" , ResourceType=");
         output.append(getType());
-        output.append(" , MetadefType=");
-        output.append(getMetadefType());
+        output.append(" , PropertydefType=");
+        output.append(getPropertydefType());
         return output.toString();
 	}
 	
@@ -146,10 +146,10 @@ public class CmsMetadefinition extends A_CmsMetadefinition {
 	 */
 	public boolean equals(Object obj) {
         boolean equal=false;
-        // check if the object is a CmsMetadefinition object
-        if (obj instanceof CmsMetadefinition) {
+        // check if the object is a CmsPropertydefinition object
+        if (obj instanceof CmsPropertydefinition) {
             // same ID than the current project?
-            if (((CmsMetadefinition)obj).getId() == m_id){
+            if (((CmsPropertydefinition)obj).getId() == m_id){
                 equal = true;
             }
         }

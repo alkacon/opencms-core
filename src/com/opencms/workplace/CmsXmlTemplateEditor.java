@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
- * Date   : $Date: 2000/03/27 09:55:01 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2000/04/03 10:48:32 $
+ * Version: $Revision: 1.18 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.17 $ $Date: 2000/03/27 09:55:01 $
+ * @version $Revision: 1.18 $ $Date: 2000/04/03 10:48:32 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -181,7 +181,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             }
             
             // And finally the document title
-            title = cms.readMetainformation(file, C_METAINFO_TITLE);
+            title = cms.readProperty(file, C_PROPERTY_TITLE);
             if(title == null) {
                 title = "";
             }
@@ -250,10 +250,10 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             if(titlechangeRequested) {
                 // The user entered a new document title
                 try {
-                    cms.writeMetainformation(tempPageFilename, C_METAINFO_TITLE, title);
+                    cms.writeProperty(tempPageFilename, C_PROPERTY_TITLE, title);
                 } catch(CmsException e) {
                     if(A_OpenCms.isLogging()) {
-                        A_OpenCms.log(C_OPENCMS_INFO, getClassName() + "Could not write metainformation " + C_METAINFO_TITLE + " for file " + file + ".");                    
+                        A_OpenCms.log(C_OPENCMS_INFO, getClassName() + "Could not write property " + C_PROPERTY_TITLE + " for file " + file + ".");                    
                         A_OpenCms.log(C_OPENCMS_INFO, getClassName() + e);
                     }
                 }
@@ -332,9 +332,9 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         // files to the original files.
         if(saveRequested) {
             commitTemporaryFile(cms, bodyElementFilename, tempBodyFilename);
-            title = cms.readMetainformation(tempPageFilename, C_METAINFO_TITLE);
+            title = cms.readProperty(tempPageFilename, C_PROPERTY_TITLE);
             if(title != null && !"".equals(title)) {
-                cms.writeMetainformation(file, C_METAINFO_TITLE, title);
+                cms.writeProperty(file, C_PROPERTY_TITLE, title);
             }
             CmsXmlControlFile originalControlFile = new CmsXmlControlFile(cms, file);
 
@@ -468,7 +468,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             A_CmsResource file = (A_CmsResource)allTemplateFiles.elementAt(i);
             if(file.getState() != C_STATE_DELETED) {
                 // TODO: check, if this is needed: String filename = file.getName();
-                String title = cms.readMetainformation(file.getAbsolutePath(), C_METAINFO_TITLE);
+                String title = cms.readProperty(file.getAbsolutePath(), C_PROPERTY_TITLE);
                 if(title == null || "".equals(title)) {
                     title = file.getName();
                 }            
@@ -670,11 +670,11 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         orgFile.setContents(tempFile.getContents());
         cms.writeFile(orgFile);
         
-        Hashtable minfos = cms.readAllMetainformations(temporaryFilename);
+        Hashtable minfos = cms.readAllProperties(temporaryFilename);
         Enumeration keys = minfos.keys();
         while(keys.hasMoreElements()) {
             String keyName = (String)keys.nextElement();
-            cms.writeMetainformation(originalFilename, keyName, (String)minfos.get(keyName));
+            cms.writeProperty(originalFilename, keyName, (String)minfos.get(keyName));
         }
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsHistory.java,v $
- * Date   : $Date: 2000/03/28 16:06:20 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/04/03 10:48:32 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 2000/03/28 16:06:20 $
+ * @version $Revision: 1.2 $ $Date: 2000/04/03 10:48:32 $
  */
 public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -110,7 +110,7 @@ public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,
             template="detail";
             A_CmsProject project=cms.readProject(projectname);
             xmlTemplateDocument.setXmlData("PROJECT",project.getName());
-            String title=cms.readMetainformation(filename,C_METAINFO_TITLE);
+            String title=cms.readProperty(filename,C_PROPERTY_TITLE);
             if (title== null) {
                     title="";
             }            

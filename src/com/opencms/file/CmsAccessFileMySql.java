@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFileMySql.java,v $
- * Date   : $Date: 2000/03/31 08:28:30 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2000/04/03 10:48:29 $
+ * Version: $Revision: 1.46 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.util.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.45 $ $Date: 2000/03/31 08:28:30 $
+ * @version $Revision: 1.46 $ $Date: 2000/04/03 10:48:29 $
  */
  class CmsAccessFileMySql implements I_CmsAccessFile, I_CmsConstants, I_CmsLogChannels  {
 
@@ -1590,7 +1590,7 @@ import com.opencms.util.*;
      }
      
      /**
-     * Connects to the property database.
+     * Connects to the file database.
      * 
      * @param conUrl The connection string to the database.
      * 

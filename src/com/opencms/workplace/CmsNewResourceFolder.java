@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceFolder.java,v $
- * Date   : $Date: 2000/03/31 09:34:18 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/04/03 10:48:32 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 2000/03/31 09:34:18 $
+ * @version $Revision: 1.6 $ $Date: 2000/04/03 10:48:32 $
  */
 public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -105,11 +105,11 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
                    // create the folder
                    CmsFolder folder=cms.createFolder(currentFilelist,newFolder);
                    cms.lockResource(folder.getAbsolutePath());
-                   cms.writeMetainformation(folder.getAbsolutePath(),C_METAINFO_TITLE,title);
+                   cms.writeProperty(folder.getAbsolutePath(),C_PROPERTY_TITLE,title);
          
                    // now check if navigation informations have to be added to the new page.
                    if (navtitle != null) {
-                       cms.writeMetainformation(folder.getAbsolutePath(),C_METAINFO_NAVTEXT,navtitle);                       
+                       cms.writeProperty(folder.getAbsolutePath(),C_PROPERTY_NAVTEXT,navtitle);                       
                         
                         // update the navposition.
                         if (navpos != null) {
@@ -160,7 +160,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
             while (enum.hasMoreElements()) {
                 CmsFile file =(CmsFile)enum.nextElement();
                 if (file.getState() != C_STATE_DELETED) {
-                    String nicename=cms.readMetainformation(file.getAbsolutePath(),C_METAINFO_TITLE);
+                    String nicename=cms.readProperty(file.getAbsolutePath(),C_PROPERTY_TITLE);
                     if (nicename == null) {
                            nicename=file.getName();
                     }
@@ -241,7 +241,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
             } else {
                 newPos=1;
             }
-            cms.writeMetainformation(newfolder.getAbsolutePath(),C_METAINFO_NAVPOS,new Float(newPos).toString());             
+            cms.writeProperty(newfolder.getAbsolutePath(),C_PROPERTY_NAVPOS,new Float(newPos).toString());             
       }
     
       /**
@@ -281,7 +281,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
       /** 
        * Gets all required navigation information from the files and subfolders of a folder.
        * A file list of all files and folder is created, for all those resources, the navigation
-       * metainformation is read. The list is sorted by their navigation position.
+       * property is read. The list is sorted by their navigation position.
        * @param cms The CmsObject.
        * @return Hashtable including three arrays of strings containing the filenames, 
        * nicenames and navigation positions.
@@ -346,11 +346,11 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
                 
                     // check if the resource is not marked as deleted
                     if (res.getState() != C_STATE_DELETED) {
-                        String navpos= cms.readMetainformation(res.getAbsolutePath(),C_METAINFO_NAVPOS);                    
+                        String navpos= cms.readProperty(res.getAbsolutePath(),C_PROPERTY_NAVPOS);                    
 
                         // check if there is a navpos for this file/folder
                         if (navpos!= null) {
-                                nicename=cms.readMetainformation(res.getAbsolutePath(),C_METAINFO_NAVTEXT);
+                            nicename=cms.readProperty(res.getAbsolutePath(),C_PROPERTY_NAVTEXT);
                             if (nicename == null) {
                                 nicename=res.getName();
                             }

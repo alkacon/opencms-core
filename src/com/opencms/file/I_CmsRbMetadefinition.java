@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRbMetadefinition.java,v $
- * Date   : $Date: 2000/02/15 17:44:00 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/04/03 10:48:30 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.8 $ $Date: 2000/02/15 17:44:00 $
+ * @version $Revision: 1.9 $ $Date: 2000/04/03 10:48:30 $
  */
 interface I_CmsRbMetadefinition {
 	
@@ -57,7 +57,7 @@ interface I_CmsRbMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsMetadefinition readMetadefinition(String name, A_CmsResourceType type)
+	public A_CmsPropertydefinition readMetadefinition(String name, A_CmsResourceType type)
 		throws CmsException;
 	
 	/**
@@ -71,7 +71,7 @@ interface I_CmsRbMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsMetadefinition readMetadefinition(String name, int type)
+	public A_CmsPropertydefinition readMetadefinition(String name, int type)
 		throws CmsException;
 							
 	/**
@@ -139,7 +139,7 @@ interface I_CmsRbMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsMetadefinition createMetadefinition(String name, 
+	public A_CmsPropertydefinition createMetadefinition(String name, 
 													A_CmsResourceType resourcetype, 
 													int type)
 		throws CmsException;
@@ -153,7 +153,7 @@ interface I_CmsRbMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public void deleteMetadefinition(A_CmsMetadefinition metadef)
+	public void deleteMetadefinition(A_CmsPropertydefinition metadef)
 		throws CmsException;
 	
 	/**
@@ -167,7 +167,7 @@ interface I_CmsRbMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsMetadefinition writeMetadefinition(A_CmsMetadefinition metadef)
+	public A_CmsPropertydefinition writeMetadefinition(A_CmsPropertydefinition metadef)
 		throws CmsException;
 	
 	// now the stuff for metainformations

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsRename.java,v $
- * Date   : $Date: 2000/03/27 09:54:36 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/04/03 10:48:32 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.10 $ $Date: 2000/03/27 09:54:36 $
+ * @version $Revision: 1.11 $ $Date: 2000/04/03 10:48:32 $
  */
 public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -121,7 +121,7 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
   
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);          
         // set the required datablocks
-        String title=cms.readMetainformation(file.getAbsolutePath(),C_METAINFO_TITLE);
+        String title=cms.readProperty(file.getAbsolutePath(),C_PROPERTY_TITLE);
         if (title==null) {
             title="";
         }

@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsAccessProperty.java,v $
- * Date   : $Date: 2000/02/15 17:44:00 $
- * Version: $Revision: 1.4 $
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRbSystemProperty.java,v $
+ * Date   : $Date: 2000/04/03 10:48:30 $
+ * Version: $Revision: 1.1 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -33,7 +33,7 @@ import java.io.*;
 import com.opencms.core.*;
 
 /**
- * This interface describes the access to propertys in the Cms.<BR/>
+ * This public class describes a resource broker for propertys in the Cms.<BR/>
  * Only the system can access propertys. Propertys are for internal use
  * only. A property is a serializable object.
  * 
@@ -41,22 +41,22 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2000/02/15 17:44:00 $
+ * @version $Revision: 1.1 $ $Date: 2000/04/03 10:48:30 $
  */
-interface I_CmsAccessProperty {
-
+interface I_CmsRbSystemProperty {
+	
      /**
-	 * Creates a serializable object in the propertys.
+	 * Creates a new a serializable object to the propertys.
 	 * 
 	 * @param name The name of the property.
 	 * @param object The property-object.
 	 * 
-	 * @return object The property-object.
-	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	public Serializable addProperty(String name, Serializable object)
-		throws CmsException;
+		throws  CmsException;
+    
+    
     
 	/**
 	 * Reads a serializable object from the propertys.
@@ -71,7 +71,7 @@ interface I_CmsAccessProperty {
 		throws CmsException;
 
 	/**
-	 * Writes or updates a serializable object to the propertys.
+	 * Writes a serializable object to the propertys.
 	 * 
 	 * @param name The name of the property.
 	 * @param object The property-object.

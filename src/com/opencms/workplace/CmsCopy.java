@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCopy.java,v $
- * Date   : $Date: 2000/03/27 13:00:26 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/04/03 10:48:31 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.13 $ $Date: 2000/03/27 13:00:26 $
+ * @version $Revision: 1.14 $ $Date: 2000/04/03 10:48:31 $
  */
 public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -174,7 +174,7 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
          
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);          
         // set the required datablocks
-        String title=cms.readMetainformation(file.getAbsolutePath(),C_METAINFO_TITLE);
+        String title=cms.readProperty(file.getAbsolutePath(),C_PROPERTY_TITLE);
         if (title==null) {
             title="";
         }

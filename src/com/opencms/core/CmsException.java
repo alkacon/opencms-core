@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsException.java,v $
- * Date   : $Date: 2000/03/01 13:22:30 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2000/04/03 10:48:28 $
+ * Version: $Revision: 1.23 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -32,7 +32,7 @@ package com.opencms.core;
  * This exception is thrown for security reasons in the Cms.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.22 $ $Date: 2000/03/01 13:22:30 $
+ * @version $Revision: 1.23 $ $Date: 2000/04/03 10:48:28 $
  */
 public class CmsException extends Exception {
 	
@@ -129,9 +129,9 @@ public class CmsException extends Exception {
     public final static int C_INTERNAL_FILE= 15;
     
     /**
-    * Definition of error code mandatory-metainfo.
+    * Definition of error code mandatory-property.
     */
-    public final static int C_MANDATORY_METAINFO= 16;
+    public final static int C_MANDATORY_PROPERTY= 16;
 
     /**
     * Definition of error code service unavailable.
@@ -225,7 +225,7 @@ public class CmsException extends Exception {
                             "Locked Resource ",
                             "Filesystem exception ",
                             "Internal use only ",
-                            "Metainformation is mandatory ",
+                            "File-property is mandatory ",
                             "Service unavailable ",
                             "Unknown XML datablock ",
                             "Corrupt internal structure ",

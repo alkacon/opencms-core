@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessPropertyMySql.java,v $
- * Date   : $Date: 2000/02/29 16:44:46 $
- * Version: $Revision: 1.9 $
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessSystemPropertyMySql.java,v $
+ * Date   : $Date: 2000/04/03 10:48:29 $
+ * Version: $Revision: 1.1 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,9 +42,9 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.9 $ $Date: 2000/02/29 16:44:46 $
+ * @version $Revision: 1.1 $ $Date: 2000/04/03 10:48:29 $
  */
-public class CmsAccessPropertyMySql implements I_CmsAccessProperty, I_CmsConstants {
+public class CmsAccessSystemPropertyMySql implements I_CmsAccessSystemProperty, I_CmsConstants {
 
     /**
      * SQL Command for reading properties.
@@ -86,7 +86,7 @@ public class CmsAccessPropertyMySql implements I_CmsAccessProperty, I_CmsConstan
      * @exception CmsException Throws CmsException if connection fails.
      * 
      */
-    public CmsAccessPropertyMySql(String driver,String conUrl)	
+    public CmsAccessSystemPropertyMySql(String driver,String conUrl)	
         throws CmsException, ClassNotFoundException {
         Class.forName(driver);
         initConnections(conUrl);

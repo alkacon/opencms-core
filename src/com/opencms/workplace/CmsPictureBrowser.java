@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPictureBrowser.java,v $
- * Date   : $Date: 2000/02/29 16:44:48 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/04/03 10:48:32 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.11 $ $Date: 2000/02/29 16:44:48 $
+ * @version $Revision: 1.12 $ $Date: 2000/04/03 10:48:32 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsPictureBrowser extends CmsWorkplaceDefault {
@@ -167,7 +167,7 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
             CmsFile file = (CmsFile)filteredPics.elementAt(i);
             String filename = file.getName();
             if(inFilter(filename, filter) && isImage(filename)) {
-                String title = cms.readMetainformation(file.getAbsolutePath(), "Title");
+                String title = cms.readProperty(file.getAbsolutePath(), "Title");
                 int dotIndex = filename.lastIndexOf(".");
                 if(title == null) {                
                     if(dotIndex > 0) {

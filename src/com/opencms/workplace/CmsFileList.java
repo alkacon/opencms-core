@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
- * Date   : $Date: 2000/03/29 16:14:54 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2000/04/03 10:48:31 $
+ * Version: $Revision: 1.30 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -50,7 +50,7 @@ import javax.servlet.http.*;
  * 
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.29 $ $Date: 2000/03/29 16:14:54 $
+ * @version $Revision: 1.30 $ $Date: 2000/04/03 10:48:31 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants,
@@ -253,7 +253,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                     // set the folder title
                     title="";
                     try {
-                        title=cms.readMetainformation(folder.getAbsolutePath(),C_METAINFO_TITLE);
+                        title=cms.readProperty(folder.getAbsolutePath(),C_PROPERTY_TITLE);
                     } catch (CmsException e) {
                     }
                     if (title==null) {
@@ -324,7 +324,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                       // set the file title
                     title="";
                     try {
-                        title=cms.readMetainformation(file.getAbsolutePath(),C_METAINFO_TITLE);
+                        title=cms.readProperty(file.getAbsolutePath(),C_PROPERTY_TITLE);
                     } catch (CmsException e) {
                     }
                     if (title==null) {

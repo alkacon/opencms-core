@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsDbImportFiles.java,v $
- * Date   : $Date: 2000/03/31 09:13:41 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/04/03 10:48:29 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.template.*;
  * imports an generated (with db export) XML file
  * 
  * @author Michaela Schleich
- * @version $Revision: 1.14 $ $Date: 2000/03/31 09:13:41 $
+ * @version $Revision: 1.15 $ $Date: 2000/04/03 10:48:29 $
  */
 class CmsDbImportFiles implements I_CmsConstants {
 	
@@ -143,7 +143,7 @@ class CmsDbImportFiles implements I_CmsConstants {
 	 */
 	private void readResource() {
 	
-		Hashtable h_fMeta=new Hashtable();
+		Hashtable h_fProperty=new Hashtable();
 		byte[] fContent=new byte[1];
 	
 		int nll=m_resourceElements.getLength();
@@ -167,10 +167,10 @@ class CmsDbImportFiles implements I_CmsConstants {
 					m_fAccess=m_resourceElements.item(i).getFirstChild().getNodeValue();
 				}
 				
-				// Metadefinitions
+				// Propertydefinitions
 				
-				if( (help.equals(C_TFMETAINFO)) && (m_resourceElements.item(i).hasChildNodes()) ){
-					h_fMeta=writeMetaDef(m_resourceElements.item(i).getChildNodes(), m_fTypename);
+				if( (help.equals(C_TFPROPERTYINFO)) && (m_resourceElements.item(i).hasChildNodes()) ){
+					h_fProperty=writePropertyDef(m_resourceElements.item(i).getChildNodes(), m_fTypename);
 				}
 				
 				// if resource is a file
@@ -195,7 +195,7 @@ class CmsDbImportFiles implements I_CmsConstants {
 				if( !(m_fName.equals("")) ) {
                     System.out.print("Importing: " + m_fName);
 				    System.out.flush();
-					CmsFolder newFolder = m_RB.createFolder(m_user,m_project,m_importPath, m_fName, h_fMeta);
+					CmsFolder newFolder = m_RB.createFolder(m_user,m_project,m_importPath, m_fName, h_fProperty);
 					m_RB.lockResource(m_user, m_project,newFolder.getAbsolutePath(),true);
 					m_RB.chown(m_user, m_project, newFolder.getAbsolutePath(), m_fUser);
 					m_RB.chgrp(m_user, m_project, newFolder.getAbsolutePath(), m_fGroup);
@@ -220,7 +220,7 @@ class CmsDbImportFiles implements I_CmsConstants {
 			try {
 				System.out.print("Importing: " + m_fName);
 				System.out.flush();
-				CmsFile newFile = m_RB.createFile(m_user, m_project, picimportPath ,m_fName, fContent, m_fTypename, h_fMeta);
+				CmsFile newFile = m_RB.createFile(m_user, m_project, picimportPath ,m_fName, fContent, m_fTypename, h_fProperty);
 				m_RB.lockResource(m_user,m_project,newFile.getAbsolutePath(), true);
 				m_RB.chown(m_user, m_project, newFile.getAbsolutePath(), m_fUser);
 				m_RB.chgrp(m_user, m_project, newFile.getAbsolutePath(), m_fGroup);
@@ -237,41 +237,41 @@ class CmsDbImportFiles implements I_CmsConstants {
 	
 	
 	/**
-	 * writeMetaDef
-	 * get metadef and metainfo
-	 * the metadef must first be updated, before the resource can be written
+	 * writePropertyDef
+	 * get Propertydef and Propertyinfo
+	 * the Propertydef must first be updated, before the resource can be written
 	 *	
-	 * @param meta list with all Metainformation
+	 * @param property list with all Properties
 	 * 
-	 * @return a hashtable with metadefinition for given resource
+	 * @return a hashtable with Propertydefinition for given resource
 	 */
-	private Hashtable writeMetaDef(NodeList meta, String s_rtype) {
+	private Hashtable writePropertyDef(NodeList property, String s_rtype) {
 	
-		Hashtable h_meta= new Hashtable();
+		Hashtable h_property= new Hashtable();
 		String s_key=new String();
 		String s_type=new String();
 		String s_value=new String();
 		String help =null;
 		
         
-		int nll=meta.getLength();
+		int nll=property.getLength();
 		int i;
 		for(i=0; i<nll; i++) {
-			help=meta.item(i).getNodeName();
+			help=property.item(i).getNodeName();
 			
-			if(help.equals(C_TFMETANAME)) {
-				s_key=meta.item(i).getFirstChild().getNodeValue();
+			if(help.equals(C_TFPROPERTYNAME)) {
+				s_key=property.item(i).getFirstChild().getNodeValue();
 			}
-			if(help.equals(C_TFMETATYPE)) {
-				s_type=meta.item(i).getFirstChild().getNodeValue();
+			if(help.equals(C_TFPROPERTYTYPE)) {
+				s_type=property.item(i).getFirstChild().getNodeValue();
 			}
-			if(help.equals(C_TFMETAVALUE)) {
-				Node firstChild = meta.item(i).getFirstChild();
+			if(help.equals(C_TFPROPERTYVALUE)) {
+				Node firstChild = property.item(i).getFirstChild();
                 if(firstChild != null) {
                     s_value=firstChild.getNodeValue();
-				    h_meta.put(s_key,s_value);
+				    h_property.put(s_key,s_value);
 				    try {
-    					m_RB.createMetadefinition(m_user,m_project, s_key, s_rtype, 0);
+    					m_RB.createPropertydefinition(m_user,m_project, s_key, s_rtype, 0);
 				    } catch (CmsException e) {
     					m_errMsg.addElement(e.getMessage());
                     }
@@ -279,9 +279,9 @@ class CmsDbImportFiles implements I_CmsConstants {
 			}
 			
 		}
-		return h_meta;
+		return h_property;
 	}
-	//end writeMetaDef()
+	//end writePropertyDef()
 	
 	
 	/**

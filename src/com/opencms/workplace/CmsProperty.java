@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProperty.java,v $
- * Date   : $Date: 2000/03/29 15:23:01 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/04/03 10:48:32 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 2000/03/29 15:23:01 $
+ * @version $Revision: 1.4 $ $Date: 2000/04/03 10:48:32 $
  */
 public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -138,7 +138,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
                 String newValue=(String)parameters.get("EDITEDPROPERTY");
                 if (newValue != null) {
                     // update the property
-                    cms.writeMetainformation(filename,propertydef,newValue);
+                    cms.writeProperty(filename,propertydef,newValue);
                     template="ownlocked";    
                     session.removeValue(C_PARA_PROPERTYDEF);   
                 }
@@ -153,7 +153,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
             if (delete.equals("true")) {
                 // delete the propertydefinition
                 if (propertydef != null) {
-                    cms.deleteMetainformation(filename,propertydef);
+                    cms.deleteProperty(filename,propertydef);
                     template="ownlocked";    
                     session.removeValue(C_PARA_PROPERTYDEF);   
                 }
@@ -167,10 +167,10 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
                 String newValue=(String)parameters.get("NEWPROPERTYVALUE");
                 if ((newValue != null) && (propertydef !=null)) {
                     // test if this property is already existing
-                    String testValue=cms.readMetainformation(filename,propertydef);
+                    String testValue=cms.readProperty(filename,propertydef);
                     if (testValue == null) {
                         // add the property                    
-                        cms.writeMetainformation(filename,propertydef,newValue);
+                        cms.writeProperty(filename,propertydef,newValue);
                         template="ownlocked";    
                         session.removeValue(C_PARA_PROPERTYDEF);   
                     } else {
@@ -191,14 +191,14 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
                  String newValue=(String)parameters.get("NEWPROPERTYDEF");
                  if (newValue != null) {
                     // test if this property is already existing
-                    String testValue=cms.readMetainformation(filename,propertydef);
+                    String testValue=cms.readProperty(filename,propertydef);
                     if (testValue == null) {
                         // add the property   
                         A_CmsResourceType type=cms.getResourceType(file.getType());
-                        A_CmsMetadefinition def=cms.createMetadefinition(newValue,
+                        A_CmsPropertydefinition def=cms.createPropertydefinition(newValue,
                                                                           type.getResourceName(),
-                                                                          C_METADEF_TYPE_NORMAL);
-                        cms.writeMetadefinition(def);
+                                                                          C_PROPERTYDEF_TYPE_NORMAL);
+                        cms.writePropertydefinition(def);
                         template="ownlocked";    
                         session.removeValue(C_PARA_PROPERTYDEF);   
                     } else {
@@ -214,7 +214,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
         }
         
          // set the required datablocks
-        String title=cms.readMetainformation(file.getAbsolutePath(),C_METAINFO_TITLE);
+        String title=cms.readProperty(file.getAbsolutePath(),C_PROPERTY_TITLE);
         if (title==null) {
             title="";
         }
@@ -272,7 +272,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
        
         String filename=(String)session.getValue(C_PARA_FILE);       
         if (filename != null) {
-             Hashtable property = cms.readAllMetainformations(filename);
+             Hashtable property = cms.readAllProperties(filename);
     
              Enumeration enu=property.keys();
              while (enu.hasMoreElements()) {
@@ -312,7 +312,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
             String propertydef=(String)session.getValue(C_PARA_PROPERTYDEF);  
             if (propertydef != null) {
                 // everything is there, so try to read the meteainfo
-                propertyValue=cms.readMetainformation(filename,propertydef);
+                propertyValue=cms.readProperty(filename,propertydef);
                 if (propertyValue == null) {
                     propertyValue="";
                 }   
@@ -346,13 +346,13 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
              CmsFile file=(CmsFile)cms.readFileHeader(filename);
              A_CmsResourceType type=cms.getResourceType(file.getType());
              // get all propertydefinitions for this type
-             Vector propertydef =cms.readAllMetadefinitions(type.getResourceName());
+             Vector propertydef =cms.readAllPropertydefinitions(type.getResourceName());
              // get all existing properties of this file
-             Hashtable property = cms.readAllMetainformations(filename);   
+             Hashtable property = cms.readAllProperties(filename);   
     
              Enumeration enu=propertydef.elements();
              while (enu.hasMoreElements()) {
-                CmsMetadefinition prop=(CmsMetadefinition)enu.nextElement();
+                CmsPropertydefinition prop=(CmsPropertydefinition)enu.nextElement();
                  
                 String propertyvalue=(String)property.get(prop.getName());
                 if (propertyvalue == null ) {                  
@@ -391,11 +391,11 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
              CmsFile file=(CmsFile)cms.readFileHeader(filename);
              A_CmsResourceType type=cms.getResourceType(file.getType());
              // get all propertydefinitions for this type
-             Vector propertydef =cms.readAllMetadefinitions(type.getResourceName());
+             Vector propertydef =cms.readAllPropertydefinitions(type.getResourceName());
         
              Enumeration enu=propertydef.elements();
              while (enu.hasMoreElements()) {
-                CmsMetadefinition prop=(CmsMetadefinition)enu.nextElement();                         
+                CmsPropertydefinition prop=(CmsPropertydefinition)enu.nextElement();                         
                 names.addElement(prop.getName());
 		    	values.addElement(prop.getName());
              }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessMetadefinitionMySql.java,v $
- * Date   : $Date: 2000/02/15 17:43:59 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/04/03 10:48:29 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -199,7 +199,7 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition, I_CmsCo
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsMetadefinition readMetadefinition(String name, A_CmsResourceType type)
+	public A_CmsPropertydefinition readMetadefinition(String name, A_CmsResourceType type)
 		throws CmsException {
 		return( readMetadefinition(name, type.getResourceType() ) );
 	}
@@ -215,7 +215,7 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition, I_CmsCo
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsMetadefinition readMetadefinition(String name, int type)
+	public A_CmsPropertydefinition readMetadefinition(String name, int type)
 		throws CmsException {
 		 try {
 			 ResultSet result;
@@ -229,7 +229,7 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition, I_CmsCo
 			 
 			// if resultset exists - return it
 			if(result.next()) {
-			    return( new CmsMetadefinition( result.getInt(C_METADEF_ID),
+			    return( new CmsPropertydefinition( result.getInt(C_METADEF_ID),
 			   								result.getString(C_METADEF_NAME),
 			   								result.getInt(C_RESOURCE_TYPE),
 			   								result.getInt(C_METADEF_TYPE) ) );
@@ -283,7 +283,7 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition, I_CmsCo
 			 result = statementReadAllMetadefA.executeQuery();
 			 
 			 while(result.next()) {
-				 metadefs.addElement( new CmsMetadefinition( result.getInt(C_METADEF_ID),
+				 metadefs.addElement( new CmsPropertydefinition( result.getInt(C_METADEF_ID),
 															 result.getString(C_METADEF_NAME),
 															 result.getInt(C_RESOURCE_TYPE),
 															 result.getInt(C_METADEF_TYPE) ) );
@@ -337,7 +337,7 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition, I_CmsCo
 			 result = statementReadAllMetadefB.executeQuery();
 			 
 			 while(result.next()) {
-				 metadefs.addElement( new CmsMetadefinition( result.getInt(C_METADEF_ID),
+				 metadefs.addElement( new CmsPropertydefinition( result.getInt(C_METADEF_ID),
 															 result.getString(C_METADEF_NAME),
 															 result.getInt(C_RESOURCE_TYPE),
 															 result.getInt(C_METADEF_TYPE) ) );
@@ -360,7 +360,7 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition, I_CmsCo
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsMetadefinition createMetadefinition(String name, A_CmsResourceType resourcetype, 
+	public A_CmsPropertydefinition createMetadefinition(String name, A_CmsResourceType resourcetype, 
 											 int type)
 		throws CmsException {
 		try {
@@ -388,7 +388,7 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition, I_CmsCo
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public void deleteMetadefinition(A_CmsMetadefinition metadef)
+	public void deleteMetadefinition(A_CmsPropertydefinition metadef)
 		throws CmsException {
 		try {
 			if(countMetainfos(metadef) != 0) {
@@ -418,7 +418,7 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition, I_CmsCo
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	private int countMetainfos(A_CmsMetadefinition metadef)
+	private int countMetainfos(A_CmsPropertydefinition metadef)
 		throws CmsException {
 	
 		try {
@@ -454,7 +454,7 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition, I_CmsCo
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsMetadefinition writeMetadefinition(A_CmsMetadefinition metadef)
+	public A_CmsPropertydefinition writeMetadefinition(A_CmsPropertydefinition metadef)
 		throws CmsException {
 		
 		try {
@@ -462,7 +462,7 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition, I_CmsCo
 			PreparedStatement statementUpdateMetadef = 
 				m_con.prepareStatement(C_METADEF_UPDATE);
 			
-			statementUpdateMetadef.setInt(1, metadef.getMetadefType() );
+			statementUpdateMetadef.setInt(1, metadef.getPropertydefType() );
 			statementUpdateMetadef.setInt(2, metadef.getId() );
 			statementUpdateMetadef.executeUpdate();
 			
@@ -560,7 +560,7 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition, I_CmsCo
 	public void writeMetainformation(String meta, String value, int projectId, 
 									 String path, int resourceType)
 		throws CmsException {
-		A_CmsMetadefinition metadef = readMetadefinition(meta, resourceType);
+		A_CmsPropertydefinition metadef = readMetadefinition(meta, resourceType);
 		
 		if( metadef == null) {
 			// there is no metadefinition for with the overgiven name for the resource
@@ -763,7 +763,7 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition, I_CmsCo
 	public void deleteMetainformation(String meta, int projectId, String path, 
 									  int resourceType)
 		throws CmsException {
-		A_CmsMetadefinition metadef = readMetadefinition(meta, resourceType);
+		A_CmsPropertydefinition metadef = readMetadefinition(meta, resourceType);
 		
 		if( metadef == null) {
 			// there is no metadefinition with the overgiven name for the resource
