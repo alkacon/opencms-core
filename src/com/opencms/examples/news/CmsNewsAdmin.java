@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/news/Attic/CmsNewsAdmin.java,v $
- * Date   : $Date: 2000/03/30 08:01:00 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/03/30 08:10:43 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -37,14 +37,16 @@ import java.util.*;
 import javax.servlet.http.*;
 
 /**
- * Template class for displaying OpenCms workplace admin project screens.
- * <P>
+ * News administration template class
+ * <p>
+ * Used both for displaying news administration overviews and
+ * editing news.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.1 $ $Date: 2000/03/30 08:01:00 $
+ * @version $Revision: 1.2 $ $Date: 2000/03/30 08:10:43 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
-public class CmsAdminArticleNew extends CmsAdminNews implements I_CmsConstants {
+public class CmsNewsAdmin extends CmsAdminNews implements I_CmsConstants {
 
     /** Name of the file parameter in the URL */
     public static final String C_NEWS_PARAM_FILE = "file";
