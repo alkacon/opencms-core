@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsConfigurationManager.java,v $
- * Date   : $Date: 2004/06/14 12:02:26 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/06/21 09:54:32 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -139,6 +139,15 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
     /** The default prefix for the OpenCms configuration DTD. */
     public static final String C_DEFAULT_DTD_PREFIX = "http://www.opencms.org/dtd/6.0/";
     
+    /** The config node. */
+    protected static final String N_CONFIG = "config";
+    
+    /** The configurations node. */
+    protected static final String N_CONFIGURATION = "configuration";
+    
+    /** The "opencms" root node of the XML configuration. */
+    protected static final String N_ROOT = "opencms";
+    
     /** The name of the default XML file for this configuration. */
     private static final String C_DEFAULT_XML_FILE_NAME = "opencms.xml";    
     
@@ -151,14 +160,8 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
     /** Date format for the backup file time prefix. */
     private static final SimpleDateFormat m_backupDateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss_");
     
-    /** The config node. */
-    protected static final String N_CONFIG = "config";
-    
-    /** The configurations node. */
-    protected static final String N_CONFIGURATION = "configuration";
-    
-    /** The "opencms" root node of the XML configuration. */
-    protected static final String N_ROOT = "opencms";
+    /** A map of DTD prefix values for lookup. */
+    protected Map m_dtdPrefixes;
     
     /** The folder where to store the backup files of the configuration. */
     private File m_backupFolder;
@@ -171,9 +174,6 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
 
     /** The digester for reading the XML configuration. */
     private Digester m_digester;
-    
-    /** A map of DTD prefix values for lookup. */
-    protected Map m_dtdPrefixes;
     
     /**
      * Creates a new OpenCms configuration manager.<p>
@@ -366,6 +366,17 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
      */
     public String getXmlFileName() {
         return C_DEFAULT_XML_FILE_NAME;
+    }
+
+    /**
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#initConfiguration()
+     */
+    public void initConfiguration() {
+
+        // does not need to be initialized
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("initConfiguration() called on " + this);
+        } 
     }
     
     /**

@@ -10,9 +10,12 @@
 -->
 
 <!ELEMENT vfs (
-	resourceloaders, 
-	resourcetypes,
+	resources,
 	translations? )>
+
+<!ELEMENT resources (
+	resourceloaders, 
+	resourcetypes )>
 
 <!ELEMENT resourceloaders (loader+)>
 <!ELEMENT loader (param*)>

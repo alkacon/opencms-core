@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsConfigurationException.java,v $
- * Date   : $Date: 2004/06/14 12:02:26 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/06/21 09:54:32 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,16 +59,6 @@ public class CmsConfigurationException extends CmsException {
     public CmsConfigurationException(int type) {
         super(type);
     }
-        
-    /**
-     * Constructs a CmsConfigurationException with the specified description message and type.<p>
-     * 
-     * @param message the description message
-     * @param type the type of the exception
-     */
-    public CmsConfigurationException(String message, int type) {
-        super(message, type);
-    }
     
     /**
      * Constructs a CmsConfigurationException with the specified description message and root exception.<p>
@@ -79,6 +69,26 @@ public class CmsConfigurationException extends CmsException {
     public CmsConfigurationException(int type, Throwable rootCause) {
         super(type, rootCause);
     }        
+    
+    /**
+     * Constructs a CmsConfigurationException with the specified description 
+     * and a default type.<p>
+     * 
+     * @param message the description message
+     */
+    public CmsConfigurationException(String message) {
+        super(message, C_CONFIGURATION_ERROR);
+    }    
+        
+    /**
+     * Constructs a CmsConfigurationException with the specified description message and type.<p>
+     * 
+     * @param message the description message
+     * @param type the type of the exception
+     */
+    public CmsConfigurationException(String message, int type) {
+        super(message, type);
+    }
     
     /**
      * Returns the exception description message.<p>

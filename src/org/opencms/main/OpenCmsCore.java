@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/06/18 10:50:42 $
- * Version: $Revision: 1.122 $
+ * Date   : $Date: 2004/06/21 09:57:23 $
+ * Version: $Revision: 1.123 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -104,7 +104,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.122 $
+ * @version $Revision: 1.123 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1065,8 +1065,7 @@ public final class OpenCmsCore {
         // get the VFS configuration
         CmsVfsConfiguration vfsConfiguation = (CmsVfsConfiguration)m_configurationManager.getConfiguration(CmsVfsConfiguration.class);
         m_loaderManager = vfsConfiguation.getLoaderManager();        
-        List resourceTypes = vfsConfiguation.getResourceTypes();
-        
+
         // get the import/export configuration
         CmsImportExportConfiguration importExportConfiguration = (CmsImportExportConfiguration)m_configurationManager.getConfiguration(CmsImportExportConfiguration.class);
         m_importExportManager = importExportConfiguration.getImportExportManager();
@@ -1080,7 +1079,7 @@ public final class OpenCmsCore {
         try {
             // init the rb via the manager with the configuration
             // and init the cms-object with the rb.
-            m_driverManager = CmsDriverManager.newInstance(configuration, resourceTypes);
+            m_driverManager = CmsDriverManager.newInstance(configuration);
         } catch (Exception e) {
             if (getLog(this).isErrorEnabled()) {
                 getLog(this).error(OpenCmsCore.C_MSG_CRITICAL_ERROR + "3", e);

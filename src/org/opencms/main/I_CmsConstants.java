@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2004/06/18 10:45:11 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/06/21 09:57:23 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  *
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  */
 public interface I_CmsConstants {
 
@@ -158,7 +158,7 @@ public interface I_CmsConstants {
     /** Path to the "opencms.properties" file relative to the "WEB-INF" directory of the application. */
     String C_CONFIGURATION_PROPERTIES_FILE = "config/opencms.properties";
     
-    /** Property for the login form */
+    /** Property for the login form. */
     String C_PROPERTY_LOGIN_FORM = "login-form";    
     
     /**

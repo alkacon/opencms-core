@@ -3,35 +3,37 @@
 
 <opencms>    
     <vfs>
-        <resourceloaders>
-            <loader class="com.opencms.legacy.CmsXmlTemplateLoader">            
-                <param name="elementcache.enabled">true</param>
-            	<param name="elementcache.uri">10000</param>
-            	<param name="elementcache.elements">50000</param>
-            	<param name="elementcache.variants">100</param>
-            </loader>
-            <loader class="org.opencms.loader.CmsDumpLoader" />
-            <loader class="org.opencms.loader.CmsPointerLoader" />
-            <loader class="org.opencms.loader.CmsJspLoader">
-            	<param name="jsp.repository">C:\TEMP\</param>
-            	<param name="jsp.folder">/WEB-INF/jsp/</param>
-            	<param name="jsp.errorpage.committed">true</param>
-            </loader>
-            <loader class="org.opencms.loader.CmsXmlPageLoader" />
-        </resourceloaders>    
-        <resourcetypes>
-            <type class="org.opencms.file.CmsResourceTypeXMLTemplate" />
-            <type class="org.opencms.file.CmsResourceTypeFolder" />
-            <type class="org.opencms.file.CmsResourceTypePlain">
-                <param name="test1">One</param>
-            	<param name="test2">Two</param>
-            </type>
-            <type class="org.opencms.file.CmsResourceTypePointer" />
-            <type class="org.opencms.file.CmsResourceTypeBinary" />
-            <type class="org.opencms.file.CmsResourceTypeImage" />
-            <type class="org.opencms.file.CmsResourceTypeJsp" />
-            <type class="org.opencms.file.CmsResourceTypeXmlPage" />
-        </resourcetypes>     
+    	<resources>
+			<resourceloaders>
+				<loader class="com.opencms.legacy.CmsXmlTemplateLoader">            
+					<param name="elementcache.enabled">true</param>
+					<param name="elementcache.uri">10000</param>
+					<param name="elementcache.elements">50000</param>
+					<param name="elementcache.variants">100</param>
+				</loader>
+				<loader class="org.opencms.loader.CmsDumpLoader" />
+				<loader class="org.opencms.loader.CmsPointerLoader" />
+				<loader class="org.opencms.loader.CmsJspLoader">
+					<param name="jsp.repository">C:\TEMP\</param>
+					<param name="jsp.folder">/WEB-INF/jsp/</param>
+					<param name="jsp.errorpage.committed">true</param>
+				</loader>
+				<loader class="org.opencms.loader.CmsXmlPageLoader" />
+			</resourceloaders>    
+			<resourcetypes>
+				<type class="com.opencms.legacy.CmsResourceTypeXMLTemplate" />
+				<type class="org.opencms.file.types.CmsResourceTypeFolder" />
+				<type class="org.opencms.file.types.CmsResourceTypePlain">
+					<param name="test1">One</param>
+					<param name="test2">Two</param>
+				</type>
+				<type class="org.opencms.file.types.CmsResourceTypePointer" />
+				<type class="org.opencms.file.types.CmsResourceTypeBinary" />
+				<type class="org.opencms.file.types.CmsResourceTypeImage" />
+				<type class="org.opencms.file.types.CmsResourceTypeJsp" />
+				<type class="org.opencms.file.types.CmsResourceTypeXmlPage" />
+			</resourcetypes>  
+        </resources>   
         <translations>
         	<filetranslations enabled="true">
         		<translation>s#[\s]+#_#g</translation>

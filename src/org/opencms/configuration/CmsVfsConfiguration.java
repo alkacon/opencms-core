@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsVfsConfiguration.java,v $
- * Date   : $Date: 2004/06/14 12:02:26 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/06/21 09:54:32 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,10 +31,9 @@
 
 package org.opencms.configuration;
 
-import org.opencms.file.I_CmsResourceType;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.loader.CmsLoaderManager;
 import org.opencms.loader.I_CmsResourceLoader;
-import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsResourceTranslator;
@@ -70,6 +69,9 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
     
     /** The node name of an individual resource loader. */
     protected static final String N_LOADER = "loader";
+    
+    /** The main resource node name. */
+    protected static final String N_RESOURCES = "resources";
     
     /** The resource loaders node name. */
     protected static final String N_RESOURCELOADERS = "resourceloaders";
@@ -107,15 +109,11 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
     /** The configured loader manager. */
     private CmsLoaderManager m_loaderManager;
     
-    /** The configured resource types. */
-    private List m_resourceTypes; 
-    
     /**
      * Public constructor, will be called by configuration manager.<p> 
      */
     public CmsVfsConfiguration() {
         setXmlFileName(C_DEFAULT_XML_FILE_NAME);
-        m_resourceTypes = new ArrayList();
         m_fileTranslations = new ArrayList();
         m_folderTranslations = new ArrayList();
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
@@ -145,20 +143,6 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Folder translation   : adding rule [" + translation + "]");
         }                
-    }    
-    
-    /**
-     * Adds a resource type to the list of configured resource types.<p>
-     * 
-     * @param resourceType the resource type to add
-     */
-    public void addResourceType(I_CmsResourceType resourceType) {
-        try {
-            resourceType.initConfiguration();
-            m_resourceTypes.add(resourceType);
-        } catch (CmsException e) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).error("Unable to configure resource type " + resourceType.getClass().getName(), e);
-        }
     }
 
     /**
@@ -169,23 +153,24 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         digester.addCallMethod("*/" + N_VFS, "initializeFinished");    
         
         // creation of the loader manager
-        digester.addObjectCreate("*/" + N_VFS + "/" + N_RESOURCELOADERS, CmsLoaderManager.class);
-        digester.addSetNext("*/" + N_VFS + "/" + N_RESOURCELOADERS, "setLoaderManager");
+        digester.addObjectCreate("*/" + N_VFS + "/" + N_RESOURCES, CmsLoaderManager.class);
+        digester.addSetNext("*/" + N_VFS + "/" + N_RESOURCES, "setLoaderManager");
 
         // add rules for resource loaders
-        digester.addObjectCreate("*/" + N_VFS + "/" + N_RESOURCELOADERS + "/" + N_LOADER, A_CLASS, CmsConfigurationException.class);
-        digester.addCallMethod("*/" + N_VFS + "/" + N_RESOURCELOADERS + "/" + N_LOADER, "initialize");
-        digester.addSetNext("*/" + N_VFS + "/" + N_RESOURCELOADERS + "/" + N_LOADER, "addLoader");  
+        digester.addObjectCreate("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_RESOURCELOADERS + "/" + N_LOADER, A_CLASS, CmsConfigurationException.class);
+        digester.addCallMethod("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_RESOURCELOADERS + "/" + N_LOADER, I_CmsConfigurationParameterHandler.C_INIT_CONFIGURATION_METHOD);
+        digester.addSetNext("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_RESOURCELOADERS + "/" + N_LOADER, "addLoader");  
+
+        // add rules for resource types
+        digester.addObjectCreate("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_RESOURCETYPES + "/" + N_TYPE, A_CLASS, CmsConfigurationException.class);
+        digester.addCallMethod("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_RESOURCETYPES + "/" + N_TYPE, I_CmsConfigurationParameterHandler.C_INIT_CONFIGURATION_METHOD);
+        digester.addSetNext("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_RESOURCETYPES + "/" + N_TYPE, "addResourceType");   
         
         // generic <param> parameter rules
         digester.addCallMethod("*/" + I_CmsXmlConfiguration.N_PARAM, I_CmsConfigurationParameterHandler.C_ADD_PARAMETER_METHOD, 2);
         digester.addCallParam ("*/" +  I_CmsXmlConfiguration.N_PARAM, 0, I_CmsXmlConfiguration.A_NAME);
-        digester.addCallParam ("*/" +  I_CmsXmlConfiguration.N_PARAM, 1);                
-        
-        // add rules for resource types
-        digester.addObjectCreate("*/" + N_VFS + "/" + N_RESOURCETYPES + "/" + N_TYPE, null, A_CLASS);
-        digester.addSetNext("*/" + N_VFS + "/" + N_RESOURCETYPES + "/" + N_TYPE, "addResourceType");
-        
+        digester.addCallParam ("*/" +  I_CmsXmlConfiguration.N_PARAM, 1); 
+                
         // add rules for file translations
         digester.addCallMethod("*/" + N_VFS + "/" + N_TRANSLATIONS + "/" + N_FILETRANSLATIONS + "/" + N_TRANSLATION, "addFileTranslation", 0);
         digester.addCallMethod("*/" + N_VFS + "/" + N_TRANSLATIONS + "/" + N_FILETRANSLATIONS, "setFileTranslationEnabled", 1);
@@ -201,11 +186,15 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
      * @see org.opencms.configuration.I_CmsXmlConfiguration#generateXml(org.dom4j.Element)
      */
     public Element generateXml(Element parent) {
+        
         // generate vfs node and subnodes
         Element vfs = parent.addElement(N_VFS);
         
+        // add resources main element
+        Element resources = vfs.addElement(N_RESOURCES);
+        
         // add resource loader
-        Element resourceloadersElement = vfs.addElement(N_RESOURCELOADERS);
+        Element resourceloadersElement = resources.addElement(N_RESOURCELOADERS);
         Object[] loaders = m_loaderManager.getLoaders();
         for (int i=0; i<loaders.length; i++) {
             if (loaders[i] == null) {
@@ -230,11 +219,12 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         }
         
         // add resource types
-        Element resourcetypesElement = vfs.addElement(N_RESOURCETYPES);
-        Iterator it = m_resourceTypes.iterator();
-        while (it.hasNext()) {
-            I_CmsResourceType resourceType = (I_CmsResourceType)it.next();
-            resourcetypesElement.addElement(N_TYPE).addAttribute(A_CLASS, resourceType.getClass().getName());
+        Element resourcetypesElement = resources.addElement(N_RESOURCETYPES);
+        I_CmsResourceType[] resourceTypes = m_loaderManager.getAllResourceTypes();
+        for (int i=0; i<resourceTypes.length; i++) {
+            if (resourceTypes[i] != null) {
+                resourcetypesElement.addElement(N_TYPE).addAttribute(A_CLASS, resourceTypes[i].getClass().getName());
+            }
         }
         
         // add translation rules
@@ -244,7 +234,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         Element fileTransElement = 
             translationsElement.addElement(N_FILETRANSLATIONS)
                 .addAttribute(A_ENABLED, new Boolean(m_fileTranslationEnabled).toString());        
-        it = m_fileTranslations.iterator();
+        Iterator it = m_fileTranslations.iterator();
         while (it.hasNext()) {
             fileTransElement.addElement(N_TRANSLATION).setText(it.next().toString());
         }
@@ -304,15 +294,6 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
      */
     public CmsLoaderManager getLoaderManager() {
         return m_loaderManager;
-    }
-    
-    /**
-     * Returns the list of initialized resource types.<p>
-     * 
-     * @return the list of initialized resource types
-     */ 
-    public List getResourceTypes() {
-        return m_resourceTypes;
     }
     
     /**

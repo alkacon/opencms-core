@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2004/06/14 14:25:56 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2004/06/21 09:57:23 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import org.opencms.file.CmsRegistry;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
+import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.importexport.CmsVfsImportExportHandler;
 import org.opencms.report.CmsShellReport;
 import org.opencms.security.CmsAccessControlEntry;
@@ -68,7 +69,7 @@ import java.util.Vector;
  * require complex data type parameters are provided.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.50 $
+ * @version $Revision: 1.51 $
  */
 class CmsShellCommands implements I_CmsShellCommands {
 
@@ -222,6 +223,19 @@ class CmsShellCommands implements I_CmsShellCommands {
         } finally {
             m_cms.getRequestContext().restoreSiteRoot();
         }
+    }
+    
+    /**
+     * Creates a new folder in the given target folder.<p>
+     * 
+     * @param targetFolder the target folder
+     * @param folderName the new folder to create in the target folder
+     * @return the created folder
+     * @throws Exception if somthing goes wrong
+     */
+    public CmsResource createFolder(String targetFolder, String folderName) throws Exception {
+        
+        return m_cms.createResource(targetFolder + folderName, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
     }
 
     /**
@@ -851,15 +865,16 @@ class CmsShellCommands implements I_CmsShellCommands {
     /**
      * Loads a file from the "real" file system to the VFS.<p>
      *
-     * @param lokalfile the file upload
+     * @param localfile the file upload
      * @param folder the folder in the VFS to place the file into
      * @param filename the name of the uploaded file in the VFS
      * @param type the type of the new file in the VFS
      * @return the createed file
      * @throws Exception if something goes wrong
      */
-    public CmsResource uploadFile(String lokalfile, String folder, String filename, String type) throws Exception {
-        return m_cms.createResource(folder, filename, m_cms.getResourceTypeId(type), null, importFile(lokalfile));
+    public CmsResource uploadFile(String localfile, String folder, String filename, String type) throws Exception {
+        int t = OpenCms.getLoaderManager().getResourceType(type).getTypeId();
+        return m_cms.createResource(folder + filename, t, importFile(localfile), null);
     }
     
     /**

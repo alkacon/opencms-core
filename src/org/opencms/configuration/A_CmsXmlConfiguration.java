@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/A_CmsXmlConfiguration.java,v $
- * Date   : $Date: 2004/06/14 12:02:26 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/06/21 09:54:32 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,27 +45,29 @@ public abstract class A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
         
     /** The name of the XML file used for this configuration. */
     private String m_xmlFileName; 
-    
-    /**
-     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
-     */
-    public ExtendedProperties getConfiguration() {
-        // this configuration does not support parameters
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("getConfiguration() called on " + this);
-        }          
-        return null;
-    }
 
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
      */
     public void addConfigurationParameter(String paramName, String paramValue) {
-        // this configuration does not support parameters 
+        
+        // simple default configuration does not support parameters 
         if (OpenCms.getLog(this).isDebugEnabled()) {
             OpenCms.getLog(this).debug("addConfigurationParameter(" + paramName + ", " + paramValue + ") called on " + this);
         }            
     }    
+    
+    /**
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
+     */
+    public ExtendedProperties getConfiguration() {
+        
+        // simple default configuration does not support parameters
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("getConfiguration() called on " + this);
+        }          
+        return null;
+    }
     
     /**
      * @see org.opencms.configuration.I_CmsXmlConfiguration#getDtdSystemLocation()
@@ -87,6 +89,17 @@ public abstract class A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
     public String getXmlFileName() {
         return m_xmlFileName;
     }
+    
+    /**
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#initConfiguration()
+     */
+    public void initConfiguration() {
+        
+        // simple default configuration does not need to be initialized
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("initConfiguration() called on " + this);
+        }            
+    }       
 
     /**
      * Sets the file name of this XML configuration.<p>

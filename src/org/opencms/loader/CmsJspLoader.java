@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2004/06/14 14:25:57 $
- * Version: $Revision: 1.62 $
+ * Date   : $Date: 2004/06/21 09:56:59 $
+ * Version: $Revision: 1.63 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -98,7 +98,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.62 $
+ * @version $Revision: 1.63 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -273,11 +273,10 @@ public class CmsJspLoader implements I_CmsResourceLoader {
         return "The OpenCms default resource loader for JSP";
     }
 
-    /** 
-     * Initialize the ResourceLoader,
-     * here the configuration for the JSP repository and the FlexCache is initialized.<p>
+    /**
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#initConfiguration()
      */
-    public void initialize() {
+    public void initConfiguration() {
 
         m_jspRepository = m_configuration.getString("jsp.repository");
         if (m_jspRepository == null) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/I_CmsConfigurationParameterHandler.java,v $
- * Date   : $Date: 2004/06/14 12:02:26 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/06/21 09:54:32 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,6 +49,17 @@ public interface I_CmsConfigurationParameterHandler {
     /** The name of the addConfigurationParameter() method. */
     String C_ADD_PARAMETER_METHOD = "addConfigurationParameter";
     
+    /** The name of the initConfiguration() method. */
+    String C_INIT_CONFIGURATION_METHOD = "initConfiguration";    
+    
+    /**
+     * Adds a configuration parameter to this parameter configurable class instance.<p>
+     * 
+     * @param paramName the name of the parameter 
+     * @param paramValue the value for the parameter
+     */
+    void addConfigurationParameter(String paramName, String paramValue);
+    
     /**
      * Returns the configuration of this parameter configurable class instance,
      * or <code>null</code> if the class does not need to be configured.<p>
@@ -66,10 +77,9 @@ public interface I_CmsConfigurationParameterHandler {
     ExtendedProperties getConfiguration();
     
     /**
-     * Adds a configuration parameter to this parameter configurable class instance.<p>
+     * Initializes a configuration after all parameters have been added.<p>
      * 
-     * @param paramName the name of the parameter 
-     * @param paramValue the value for the parameter
+     * @throws CmsConfigurationException if something goes wrong
      */
-    void addConfigurationParameter(String paramName, String paramValue);    
+    void initConfiguration() throws CmsConfigurationException;
 }
