@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/04/16 08:30:16 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2004/04/28 22:20:30 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  */
 public class CmsObject {
 
@@ -770,15 +770,14 @@ public class CmsObject {
     /**
      * Creates a new sibling of the target resource.<p>
      * 
-     * @param linkName name of the new link
+     * @param siblingName name of the new link
      * @param targetName name of the target
-     * @param linkProperties additional properties of the link resource
+     * @param siblingProperties additional properties of the link resource
      * @return the new link resource
      * @throws CmsException if something goes wrong
      */
-    public CmsResource createSibling(String linkName, String targetName, Map linkProperties) throws CmsException {
-        // TODO new property model: creating siblings does not support the new property model yet
-        return m_driverManager.createSibling(m_context, addSiteRoot(linkName), addSiteRoot(targetName), CmsProperty.toList(linkProperties), true);
+    public CmsResource createSibling(String siblingName, String targetName, List siblingProperties) throws CmsException {
+        return m_driverManager.createSibling(m_context, addSiteRoot(siblingName), addSiteRoot(targetName), siblingProperties, true);
     }
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspNavBuilder.java,v $
- * Date   : $Date: 2004/04/10 12:58:55 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/04/28 22:21:34 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.jsp;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.main.I_CmsConstants;
 
@@ -39,14 +40,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Bean to provide a convenient way to build navigation structures based on 
  * {@link org.opencms.jsp.CmsJspNavElement}.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @see org.opencms.jsp.CmsJspNavElement
  * 
@@ -117,9 +117,9 @@ public class CmsJspNavBuilder {
      * @return a CmsJspNavElement for the given resource
      */
     public static CmsJspNavElement getNavigationForResource(CmsObject cms, String resource) {
-        Map properties;
+        List properties;
         try {
-            properties = cms.readProperties(resource);
+            properties = cms.readPropertyObjects(resource, false);
         } catch (Exception e) {
             return null;
         }
@@ -127,7 +127,7 @@ public class CmsJspNavBuilder {
         if (resource.endsWith("/")) {
             level--;
         }
-        return new CmsJspNavElement(resource, properties, level);
+        return new CmsJspNavElement(resource, CmsProperty.toMap(properties), level);
     }    
  
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProperty.java,v $
- * Date   : $Date: 2004/04/05 12:31:53 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/04/28 22:20:30 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import java.util.RandomAccess;
  * control about which resource types support which property definitions.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.9 $ $Date: 2004/04/05 12:31:53 $
+ * @version $Revision: 1.10 $ $Date: 2004/04/28 22:20:30 $
  * @since build_5_1_14
  */
 public class CmsProperty extends Object implements Serializable, Cloneable, Comparable {
@@ -137,11 +137,8 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
      * resource IDs are initialized to {@link org.opencms.util.CmsUUID#getNullUUID()}.<p>
      */
     public CmsProperty() {
-
-        m_key = null;
-        m_structureValue = null;
-        m_resourceValue = null;
-        m_autoCreatePropertyDefinition = false;
+        
+        // noting to do, all values will be initialized with "null" or "false" by default
     }
 
     /**
