@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $File$
- * Date   : $Date: 2001/01/16 11:25:01 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2001/01/16 15:37:33 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -75,7 +75,7 @@ public class CmsAdminModuleAdminEdit extends CmsWorkplaceDefault implements I_Cm
 		type = type.toLowerCase();
 		try {
 			if("string".equals(type) ) {
-				if( value != null) {
+				if( (value != null) && (value.indexOf("\"") <0)) {
 					return true;
 				} else {
 					return false;
