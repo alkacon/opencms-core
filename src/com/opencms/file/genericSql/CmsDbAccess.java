@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/06 14:52:15 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/06/06 15:01:32 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.9 $ $Date: 2000/06/06 14:52:15 $ * 
+ * @version $Revision: 1.10 $ $Date: 2000/06/06 15:01:32 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	
@@ -285,10 +285,45 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	
 	/**
 	 * Private method to init the max-id values.
+	 * 
+	 * @exception throws CmsException if something goes wrong.
 	 */
-	private void initMaxIdValues() {
+	private void initMaxIdValues() 
+		throws CmsException	{
 		m_maxIds = new int[C_MAX_TABLES];
-		// TODO: add correct values here
+		
+		m_maxIds[C_TABLE_PROJECTS] = initMaxId(C_PROJECTS_MAXID_KEY);
+	}
+	
+	/**
+	 * Private method to init the max-id of the projects-table.
+	 * 
+	 * @param key the key for the prepared statement to use.
+	 * @return the max-id
+	 * @exception throws CmsException if something goes wrong.
+	 */
+	private int initMaxId(Integer key) 
+		throws CmsException {
+		
+		int id;
+		PreparedStatement statement = null;
+			
+        try {
+			statement = m_pool.getPreparedStatement(key);
+			ResultSet res = statement.executeQuery();
+        	if (res.next()){
+        		id = res.getInt(1);
+        	}else {
+				// no values in Database
+				id = 1;
+			}    	
+			m_pool.putPreparedStatement(key, statement);
+        
+        } catch (SQLException e){
+			m_pool.putPreparedStatement(key, statement);
+            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+		}
+		return id;
 	}
 	
 	/**
