@@ -39,6 +39,7 @@ function default_dateiangaben() //to set defaults in user sets for filelist
 	document.EINST_EXPL.DANGABEN[8].checked=false;
 }
 
+
 //------------------------------------------------------------------------------------
 // mouseover- and clicked-effects
 // m.schleich 20.12.1999
@@ -72,6 +73,15 @@ function ChImg(imgID,src)
 document.images[imgID].src = src;
 }
 
+//------------------------------------------------------------------------------------
+// updates a frame
+// m.schleich 01.02.2000
+//------------------------------------------------------------------------------------
+function updateFrame(which, frameurl)
+{
+	eval('window.top.'+which+'.location.href="'+frameurl+'"');
+
+}
 
 //------------------------------------------------------------------------------------
 // open new window
