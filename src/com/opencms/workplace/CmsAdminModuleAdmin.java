@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $File$
- * Date   : $Date: 2000/11/03 15:27:41 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/11/07 11:04:32 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -88,7 +88,7 @@ private void fillHashtable(CmsObject cms, I_CmsRegistry reg, Hashtable table, St
 		check = "";
 	}
 	table.put(C_ADMINPOINT, check);
-	table.put(C_MAINTENANCE, reg.getModuleMaintenanceEventName(module));
+	table.put(C_MAINTENANCE, getStringValue(reg.getModuleMaintenanceEventName(module)));
 	table.put(C_AUTHOR, getStringValue(reg.getModuleAuthor(module)));
 	table.put(C_EMAIL, getStringValue(reg.getModuleAuthorEmail(module)));
 	table.put(C_DATE, getStringValue(Utils.getNiceDate(reg.getModuleCreateDate(module))));
@@ -156,7 +156,6 @@ private void fillHashtable(CmsObject cms, I_CmsRegistry reg, Hashtable table, St
 		String from = (String)parameters.get(C_FROM);
 		String packetName = (String)parameters.get(C_NAME_PARAMETER);
 		Hashtable sessionData = new Hashtable();
-   
 		if ((from == null) || "".equals(from)){
 			// first call; clear session
 			session.removeValue(C_SESSION_MODULE_ADMIN_DATA);
