@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/module/Attic/TestModuleLegacy.java,v $
- * Date   : $Date: 2004/11/24 15:57:25 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/11/25 13:04:33 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,7 @@ package org.opencms.module;
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
-import org.opencms.test.OpenCmsTestPropertiesSingleton;
+import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestCase;
 
 import com.opencms.defaults.master.CmsMasterContent;
@@ -50,7 +50,7 @@ import junit.framework.TestSuite;
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class TestModuleLegacy extends OpenCmsTestCase {
     
@@ -72,7 +72,7 @@ public class TestModuleLegacy extends OpenCmsTestCase {
      * @return the test suite
      */
     public static Test suite() {
-        OpenCmsTestPropertiesSingleton.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
+        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
         
         TestSuite suite = new TestSuite();
         suite.setName(TestModuleLegacy.class.getName());

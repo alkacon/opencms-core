@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2004/11/25 09:29:58 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2004/11/25 13:04:33 $
+ * Version: $Revision: 1.53 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import org.dom4j.util.NodeComparator;
  * values in the provided <code>${test.data.path}/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.52 $
+ * @version $Revision: 1.53 $
  * 
  * @since 5.3.5
  */
@@ -462,7 +462,7 @@ public class OpenCmsTestCase extends TestCase {
 
         if (m_setupDataPath == null) {
             // check if the db setup files are available
-            File setupDataFolder = new File(OpenCmsTestPropertiesSingleton.getInstance().getTestWebappPath());
+            File setupDataFolder = new File(OpenCmsTestProperties.getInstance().getTestWebappPath());
             if (!setupDataFolder.exists()) {
                 fail("DB setup data not available at " + setupDataFolder.getAbsolutePath());
             }
@@ -552,7 +552,7 @@ public class OpenCmsTestCase extends TestCase {
             m_testDataPath = new ArrayList(4);
 
             // set data path 
-            addTestDataPath(OpenCmsTestPropertiesSingleton.getInstance().getTestDataPath());
+            addTestDataPath(OpenCmsTestProperties.getInstance().getTestDataPath());
         }
     }
 
@@ -2513,7 +2513,7 @@ public class OpenCmsTestCase extends TestCase {
      * by reading the appropriate values from opencms.properties.<p>
      */
     private void initConfiguration() {
-        String basePath = OpenCmsTestPropertiesSingleton.getInstance().getBasePath();
+        String basePath = OpenCmsTestProperties.getInstance().getBasePath();
         if (m_configuration == null) {
             try {
                 initTestDataPath();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestChacc.java,v $
- * Date   : $Date: 2004/11/24 15:57:25 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/11/25 13:04:33 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.opencms.main.I_CmsConstants;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.I_CmsPrincipal;
-import org.opencms.test.OpenCmsTestPropertiesSingleton;
+import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestResourceFilter;
 
@@ -51,7 +51,7 @@ import org.opencms.test.OpenCmsTestResourceFilter;
  * Unit test for the "chacc" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class TestChacc extends OpenCmsTestCase {
   
@@ -70,7 +70,7 @@ public class TestChacc extends OpenCmsTestCase {
      * @return the test suite
      */
     public static Test suite() {
-        OpenCmsTestPropertiesSingleton.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
+        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
         
         TestSuite suite = new TestSuite();
         suite.setName(TestChacc.class.getName());

@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/Attic/OpenCmsTestPropertiesSingleton.java,v $
- * Date   : $Date: 2004/11/25 09:29:58 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestProperties.java,v $
+ * Date   : $Date: 2004/11/25 13:04:33 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,16 +40,16 @@ import org.opencms.util.CmsPropertyUtils;
  * Reads and manages the test.properties file.<p>
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  * 
  * @since 6.0.0
  */
-public final class OpenCmsTestPropertiesSingleton {
+public final class OpenCmsTestProperties {
 
     /**
      * the singleton instance.
      */
-    private static OpenCmsTestPropertiesSingleton m_testSingleton;
+    private static OpenCmsTestProperties m_testSingleton;
 
     /**
      * the path to the test.properties file.
@@ -69,14 +69,14 @@ public final class OpenCmsTestPropertiesSingleton {
     /**
      * private default constructor.
      */
-    private OpenCmsTestPropertiesSingleton() {
+    private OpenCmsTestProperties() {
         // noop
     }
 
     /**
      * @return the singleton instance
      */
-    public static OpenCmsTestPropertiesSingleton getInstance() {
+    public static OpenCmsTestProperties getInstance() {
 
         if (m_testSingleton == null) {
             throw new RuntimeException("You have to initialize the test properties.");
@@ -107,22 +107,31 @@ public final class OpenCmsTestPropertiesSingleton {
      */
     public static void initialize(String basePath) {
 
+    	if (m_testSingleton!=null) {
+    		return;
+    	}
+    	
         ExtendedProperties props = null;
 
+        m_testSingleton = new OpenCmsTestProperties();
+
+        m_testSingleton.m_basePath = basePath;
+        if (!m_testSingleton.m_basePath.endsWith("/")) {
+        	m_testSingleton.m_basePath+="/";
+        }
+
         try {
-            props = CmsPropertyUtils.loadProperties(basePath + "test.properties");
+            props = CmsPropertyUtils.loadProperties(m_testSingleton.m_basePath + "test.properties");
         } catch (IOException e) {
+        	e.printStackTrace(System.out);
             throw new RuntimeException(e);
         }
 
-        m_testSingleton = new OpenCmsTestPropertiesSingleton();
-
-        m_testSingleton.m_basePath = basePath;
         m_testSingleton.m_testDataPath = props.getString("test.data.path");
         m_testSingleton.m_testWebappPath = props.getString("test.webapp.path");
     }
 
-    /**
+	/**
      * @return Returns the path to the test.properties file
      */
     public String getBasePath() {

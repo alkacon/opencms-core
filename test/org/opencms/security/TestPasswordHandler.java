@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/Attic/TestPasswordHandler.java,v $
- * Date   : $Date: 2004/11/24 15:57:25 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/11/25 13:04:33 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,7 @@
 package org.opencms.security;
 
 import org.opencms.main.OpenCms;
-import org.opencms.test.OpenCmsTestPropertiesSingleton;
+import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestCase;
 
 import junit.extensions.TestSetup;
@@ -60,7 +60,7 @@ public class TestPasswordHandler extends OpenCmsTestCase {
      * @return the test suite
      */
     public static Test suite() {
-        OpenCmsTestPropertiesSingleton.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
+        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
         
         TestSuite suite = new TestSuite();
         suite.setName(TestPasswordHandler.class.getName());

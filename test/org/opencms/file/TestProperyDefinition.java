@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/Attic/TestProperyDefinition.java,v $
- * Date   : $Date: 2004/11/24 15:57:25 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/11/25 13:04:33 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,7 @@ package org.opencms.file;
 
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
-import org.opencms.test.OpenCmsTestPropertiesSingleton;
+import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.util.CmsUUID;
 
@@ -48,7 +48,7 @@ import junit.framework.TestSuite;
  * "readAllPropertyDefintions" methods of the CmsObject.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class TestProperyDefinition extends OpenCmsTestCase {
 
@@ -68,7 +68,7 @@ public class TestProperyDefinition extends OpenCmsTestCase {
      * @return the test suite
      */
     public static Test suite() {
-        OpenCmsTestPropertiesSingleton.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
+        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
 
         TestSuite suite = new TestSuite();
         suite.setName(TestProperyDefinition.class.getName());
