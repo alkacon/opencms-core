@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/com/opencms/boot/Attic/CmsSetupUtilsTest.java,v $
- * Date   : $Date: 2003/11/13 11:42:28 $
- * Version: $Revision: 1.6 $
+ * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/setup/Attic/CmsSetupUtilsTest.java,v $
+ * Date   : $Date: 2004/02/03 10:59:17 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
  
-package com.opencms.boot;
+package org.opencms.setup;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -41,7 +41,7 @@ import org.apache.commons.collections.ExtendedProperties;
 
 /** 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.1 $
  * 
  * @since 5.0
  */
@@ -93,13 +93,15 @@ public class CmsSetupUtilsTest extends TestCase {
                 StringBuffer buf;
                 
                 buf = new StringBuffer();
-                for (Iterator j = ((Vector)obj).iterator(); j.hasNext();)
+                for (Iterator j = ((Vector)obj).iterator(); j.hasNext();) {
                     buf.append("[" + (String)j.next() + "]");
+                }
                 oldValue = buf.toString();
                 
                 buf = new StringBuffer();
-                for (Iterator j = ((Vector)newProperties.get(key)).iterator(); j.hasNext();)
+                for (Iterator j = ((Vector)newProperties.get(key)).iterator(); j.hasNext();) {
                     buf.append("[" + (String)j.next() + "]");
+                }
                 newValue = buf.toString();
 
             } else {

@@ -1,12 +1,12 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetup.java,v $
- * Date   : $Date: 2004/01/25 12:39:34 $
- * Version: $Revision: 1.43 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetup.java,v $
+ * Date   : $Date: 2004/02/03 10:59:16 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2004 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -28,8 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-
-package com.opencms.boot;
+package org.opencms.setup;
 
 import org.opencms.util.CmsUUID;
 
@@ -43,15 +42,22 @@ import java.util.Vector;
 import org.apache.commons.collections.ExtendedProperties;
 
 /**
- * Bean with get / set methods for all properties stored in the
- * 'opencms.properties' file. The path to the opencms home folder and
+ * Bean with get / set methods for all properties stored in the 'opencms.properties' file.<p> 
+ * The path to the opencms home folder and
  * its config folder can also be stored an retrieved as well as a vector
  * containing possible error messages thrown by the setup.
  *
  * @author Thomas Weckert (t.weckert@alkacon.com)
+ * @author Carsten Weinholz (c.weinholz@alkacon.com)
+ * @version $Revision: 1.1 $ 
  */
 public class CmsSetup {
 
+    /**
+     * The database properties
+     */
+    private static final String C_DB_PROPERTIES = "org/opencms/setup/dbsetup.properties";
+    
     /** 
      * Contains error messages, displayed by the setup wizard 
      */
@@ -63,7 +69,7 @@ public class CmsSetup {
     private ExtendedProperties m_extProperties;
 
     /** 
-     * properties from dbsetup.properties 
+     * Properties from dbsetup.properties 
      */
     private Properties m_dbProperties;
 
@@ -71,12 +77,12 @@ public class CmsSetup {
     private String m_basePath;
 
     /**
-     * name of the database system
+     * Name of the database system
      */
     private String m_database;
 
     /**
-     * database password used to drop and create database
+     * Database password used to drop and create database
      */
     private String m_dbCreatePwd;
 
@@ -93,7 +99,7 @@ public class CmsSetup {
         try {
             m_extProperties = CmsSetupUtils.loadProperties(path);
             m_dbProperties = new Properties();
-            m_dbProperties.load(getClass().getClassLoader().getResourceAsStream("com/opencms/boot/dbsetup.properties"));
+            m_dbProperties.load(getClass().getClassLoader().getResourceAsStream(C_DB_PROPERTIES));
         } catch (Exception e) {
             e.printStackTrace();
             errors.add(e.toString());

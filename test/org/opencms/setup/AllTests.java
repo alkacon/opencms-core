@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/com/opencms/boot/Attic/AllTests.java,v $
- * Date   : $Date: 2003/11/03 09:05:53 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/setup/AllTests.java,v $
+ * Date   : $Date: 2004/02/03 10:59:17 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,14 +29,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package com.opencms.boot;
+package org.opencms.setup;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  * 
  * @since 5.0
  */
@@ -55,7 +55,7 @@ public final class AllTests {
      * @return the JUnit test suite for this package
      */        
     public static Test suite() {
-        TestSuite suite = new TestSuite("Tests for package com.opencms.boot");
+        TestSuite suite = new TestSuite("Tests for package org.opencms.setup");
         //$JUnit-BEGIN$
         suite.addTest(new TestSuite(CmsSetupUtilsTest.class));
         //$JUnit-END$

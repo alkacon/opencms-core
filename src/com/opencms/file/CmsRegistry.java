@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2004/01/22 10:39:36 $
- * Version: $Revision: 1.112 $
+ * Date   : $Date: 2004/02/03 10:59:16 $
+ * Version: $Revision: 1.113 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.112 $
+ * @version $Revision: 1.113 $
  */
 public class CmsRegistry extends A_CmsXmlContent {
 
@@ -836,7 +836,7 @@ public class CmsRegistry extends A_CmsXmlContent {
                     try {
                         String curExportpoint = ((Element)exportpointsList.item(x)).getElementsByTagName("source").item(0).getFirstChild().getNodeValue();
                         String curPath = ((Element)exportpointsList.item(x)).getElementsByTagName("destination").item(0).getFirstChild().getNodeValue();
-                        m_exportpoints.put(curExportpoint, com.opencms.boot.CmsBase.getAbsoluteWebPath(curPath));
+                        m_exportpoints.put(curExportpoint, org.opencms.setup.CmsBase.getAbsoluteWebPath(curPath));
                     } catch (Exception exc) {
                         exc.printStackTrace();
                         // ignore the exception and try the next view-pair.

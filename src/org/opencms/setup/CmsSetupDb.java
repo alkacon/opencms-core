@@ -1,12 +1,12 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetupDb.java,v $
- * Date   : $Date: 2004/01/25 12:39:34 $
- * Version: $Revision: 1.12 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupDb.java,v $
+ * Date   : $Date: 2004/02/03 10:59:16 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2004 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -28,8 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
-package com.opencms.boot;
+package org.opencms.setup;
 
 import java.io.FileReader;
 import java.io.LineNumberReader;
@@ -43,11 +42,17 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 /**
+ * Helper class to call database setup scripts.<p>
+ * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.12 $ $Date: 2004/01/25 12:39:34 $
+ * @author Carsten Weinholz (c.weinholz@alkacon.com)
+ * @version $Revision: 1.1 $ $Date: 2004/02/03 10:59:16 $
  */
 public class CmsSetupDb extends Object {
 
+    /** The database properties */
+    private static final String C_DB_PROPERTIES = "org/opencms/setup/dbsetup.properties";
+    
     /** The folder where to read the setup data from */
     public static String C_SETUP_DATA_FOLDER = "WEB-INF/setupdata/";
     
@@ -285,7 +290,7 @@ public class CmsSetupDb extends Object {
         /* open properties, get the value */
         try {
             Properties properties = new Properties();
-            properties.load(getClass().getClassLoader().getResourceAsStream("com/opencms/boot/dbsetup.properties"));
+            properties.load(getClass().getClassLoader().getResourceAsStream(C_DB_PROPERTIES));
             String value = properties.getProperty(key);
             return value;
         } catch (Exception e) {

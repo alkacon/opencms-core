@@ -1,9 +1,9 @@
 <!-- ------------------------------------------------- JSP DECLARATIONS ------------------------------------------------ -->
 
-<jsp:useBean id="Bean" class="com.opencms.boot.CmsSetup" scope="session" />
+<jsp:useBean id="Bean" class="org.opencms.setup.CmsSetup" scope="session" />
 
 <% /* Import packages */ %>
-<%@ page import="com.opencms.boot.*" %>
+<%@ page import="org.opencms.setup.*" %>
 
 <%
 	/* true if properties are initialized */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2004/01/25 12:42:45 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2004/02/03 10:59:17 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsUUID;
 import org.opencms.workflow.CmsTask;
 
-import com.opencms.boot.CmsBase;
+import org.opencms.setup.CmsBase;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsGroup;
@@ -75,7 +75,7 @@ import java.util.Vector;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.27 $ $Date: 2004/01/25 12:42:45 $ 
+ * @version $Revision: 1.28 $ $Date: 2004/02/03 10:59:17 $ 
  * @see com.opencms.file.CmsObject
  */
 class CmsShellCommands {
@@ -98,14 +98,16 @@ class CmsShellCommands {
     /**
      * Generate a new instance of CmsShellCommands.<p>
      * 
-     * @param openCms an initialized OpenCms object (i.e. "operating system")
+     * @param openCms the operatin environment 
+     * @param cms an initialized OpenCms object (i.e. "operating system")
      * @param driverManager the driver manager
      * @throws Exception if something goes wrong
      */
-    public CmsShellCommands(OpenCmsCore openCms, CmsDriverManager driverManager) throws Exception {
+    public CmsShellCommands(OpenCmsCore openCms, CmsObject cms, CmsDriverManager driverManager) throws Exception {
         m_openCms = openCms;
         m_driverManager = driverManager;
-        m_cms = m_openCms.initCmsObject(null, null, OpenCms.getDefaultUsers().getUserGuest(), OpenCms.getSiteManager().getDefaultSite().getSiteRoot(), I_CmsConstants.C_PROJECT_ONLINE_ID, null);
+        m_cms = cms;
+        // m_cms = m_openCms.initCmsObject(null, null, OpenCms.getDefaultUsers().getUserGuest(), OpenCms.getSiteManager().getDefaultSite().getSiteRoot(), I_CmsConstants.C_PROJECT_ONLINE_ID, null);
 
         // print the version-string
         version();

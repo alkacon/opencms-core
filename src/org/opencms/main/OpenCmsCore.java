@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/01/25 19:22:02 $
- * Version: $Revision: 1.64 $
+ * Date   : $Date: 2004/02/03 10:59:17 $
+ * Version: $Revision: 1.65 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,9 +31,9 @@
 
 package org.opencms.main;
 
-import com.opencms.boot.CmsBase;
-import com.opencms.boot.CmsMain;
-import com.opencms.boot.CmsSetupUtils;
+import org.opencms.setup.CmsBase;
+import org.opencms.setup.CmsMain;
+import org.opencms.setup.CmsSetupUtils;
 import com.opencms.core.CmsException;
 import com.opencms.core.CmsRequestHttpServlet;
 import com.opencms.core.CmsResponseHttpServlet;
@@ -103,7 +103,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.64 $
+ * @version $Revision: 1.65 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1858,7 +1858,7 @@ public final class OpenCmsCore {
         m_exportProperties.setExportSuffixes(exportSuffixes);
                 
         // set the path for the export
-        m_exportProperties.setExportPath(com.opencms.boot.CmsBase.getAbsoluteWebPath(CmsBase.getAbsoluteWebPath(configuration.getString("staticexport.export_path"))));
+        m_exportProperties.setExportPath(org.opencms.setup.CmsBase.getAbsoluteWebPath(CmsBase.getAbsoluteWebPath(configuration.getString("staticexport.export_path"))));
 
         // replace the "magic" names                 
         String servletName = configuration.getString("servlet.mapping"); 

@@ -1,7 +1,7 @@
 <%@page import="java.util.*" %><%--
 
 --%><% /* Initialize the setup bean */ %><%--
---%><jsp:useBean id="Bean" class="com.opencms.boot.CmsSetup" scope="session" /><%--
+--%><jsp:useBean id="Bean" class="org.opencms.setup.CmsSetup" scope="session" /><%--
 --%><jsp:setProperty name="Bean" property="*" /><%--
 
 --%><%

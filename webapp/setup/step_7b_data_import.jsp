@@ -1,13 +1,13 @@
 <!-- ------------------------------------------------- JSP DECLARATIONS ------------------------------------------------ -->
 <% /* Initialize the Bean */ %>
-<jsp:useBean id="Bean" class="com.opencms.boot.CmsSetup" scope="session" />
+<jsp:useBean id="Bean" class="org.opencms.setup.CmsSetup" scope="session" />
 
 <% /* Initialize Thread */ %>
-<jsp:useBean id="Thread" class="com.opencms.boot.CmsSetupThread" scope="session"/>
+<jsp:useBean id="Thread" class="org.opencms.setup.CmsSetupThread" scope="session"/>
 <% Thread.setBasePath(config.getServletContext().getRealPath("/")); %>
 
 <% /* Import packages */ %>
-<%@ page import="java.util.*,com.opencms.boot.*" %>
+<%@ page import="java.util.*,org.opencms.setup.*" %>
 
 <%
 	Vector messages = new Vector();
@@ -18,7 +18,7 @@
 		if(!Thread.isAlive())	{	
 			Thread.start();
 		}
-		messages = com.opencms.boot.CmsSetupLoggingThread.getMessages();
+		messages = org.opencms.setup.CmsSetupLoggingThread.getMessages();
 	}
 
 	int size = messages.size();

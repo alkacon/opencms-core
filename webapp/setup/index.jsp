@@ -7,7 +7,7 @@ boolean wizardEnabled = false;
 String nextPage = "step_1_content_encoding.jsp";
 	
 /* Initialize the Bean */ %>
-<jsp:useBean id="Bean" class="com.opencms.boot.CmsSetup" scope="session" />
+<jsp:useBean id="Bean" class="org.opencms.setup.CmsSetup" scope="session" />
 <%
 try { 	
 	/* set the base path to the opencms home folder */

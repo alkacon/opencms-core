@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/01/28 13:13:15 $
- * Version: $Revision: 1.314 $
+ * Date   : $Date: 2004/02/03 10:59:16 $
+ * Version: $Revision: 1.315 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workflow.CmsTask;
 import org.opencms.workflow.CmsTaskLog;
 
-import com.opencms.boot.CmsBase;
+import org.opencms.setup.CmsBase;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.*;
@@ -86,7 +86,7 @@ import org.w3c.dom.Document;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.314 $ $Date: 2004/01/28 13:13:15 $
+ * @version $Revision: 1.315 $ $Date: 2004/02/03 10:59:16 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {

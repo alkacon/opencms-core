@@ -1,6 +1,6 @@
 <!-- ------------------------------------------------- JSP DECLARATIONS ------------------------------------------------ -->
 <% /* Initialize the Bean */ %>
-<jsp:useBean id="Bean" class="com.opencms.boot.CmsSetup" scope="session" />
+<jsp:useBean id="Bean" class="org.opencms.setup.CmsSetup" scope="session" />
 
         
 <%  

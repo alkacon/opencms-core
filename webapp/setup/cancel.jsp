@@ -1,7 +1,7 @@
 <!-- ------------------------------------------------- JSP DECLARATIONS ------------------------------------------------ -->
 
-<jsp:useBean id="Bean" class="com.opencms.boot.CmsSetup" scope="session" />
-<jsp:useBean id="Thread" class="com.opencms.boot.CmsSetupThread" scope="session"/>
+<jsp:useBean id="Bean" class="org.opencms.setup.CmsSetup" scope="session" />
+<jsp:useBean id="Thread" class="org.opencms.setup.CmsSetupThread" scope="session"/>
 
 <%
 	/* stop possible running threads */

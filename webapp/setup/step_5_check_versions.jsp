@@ -1,12 +1,12 @@
 <!-- ------------------------------------------------- JSP DECLARATIONS ------------------------------------------------ -->
 <% /* Initialize the Bean */ %>
-<jsp:useBean id="Bean" class="com.opencms.boot.CmsSetup" scope="session" />
+<jsp:useBean id="Bean" class="org.opencms.setup.CmsSetup" scope="session" />
 
 <% /* Set all given Properties */%>
 <jsp:setProperty name="Bean" property="*" />
 
 <% /* Import packages */ %>
-<%@ page import="com.opencms.boot.*,java.util.*" %>
+<%@ page import="org.opencms.setup.*,java.util.*" %>
 
 <%
     
