@@ -242,12 +242,11 @@ ${build.inputlib.uuid}
     	
         <zip zipfile="${build.home}/${app.name}.war">
             <zipfileset dir="${build.web}/META-INF" prefix="META-INF"/>
-            <zipfileset dir="${build.web}/WEB-INF" prefix="WEB-INF"/>
+            <zipfileset dir="${build.web}/WEB-INF" prefix="WEB-INF" excludes="**/cmssetup_fat.txt"/>
             <zipfileset dir="${build.web}/ocsetup" prefix="ocsetup"/>
             <zipfileset dir="${build.web}/export" prefix="export"/>
         </zip>
-    </target>
-    
+    </target>       
 
     <target name="zip" depends="war" 
     	description="Creates a binary distribution ZIP">
@@ -294,6 +293,24 @@ ${build.inputlib.uuid}
     <target name="bindist" depends="clean,zip" 
     	description="Builds from scratch and creates a binary distribution ZIP including the required libaries"/>        
     
+    <target name="bindist-fat" depends="clean,copy" 
+    	description="Builds from scratch and creates a fat-binary distribution ZIP with additional modules and imports">
+    	
+    	<move file="${build.web}/WEB-INF/ocsetup/cmssetup_fat.txt" tofile="${build.web}/WEB-INF/ocsetup/cmssetup.txt"/>    	
+    	
+        <zip zipfile="${build.home}/${app.name}.war">
+            <zipfileset dir="${build.web}/META-INF" prefix="META-INF"/>
+            <zipfileset dir="${build.web}/WEB-INF" prefix="WEB-INF"/>
+            <zipfileset dir="${build.web}/ocsetup" prefix="ocsetup"/>
+            <zipfileset dir="${build.web}/export" prefix="export"/>
+            <zipfileset dir="${additional.modules}" prefix="WEB-INF/export/modules"/>         
+        </zip>
+        
+        <zip
+            zipfile="${zip.home}/opencms_fat_${version.number}.zip"
+            basedir="${build.home}"
+            excludes="**/classes/,**/opencms/,${excludes}" />        
+    </target>    
     
     <target name="srcdist" depends="clean" 
     	description="Clean the output folder and creates a source distribution ZIP including the required libaries">
