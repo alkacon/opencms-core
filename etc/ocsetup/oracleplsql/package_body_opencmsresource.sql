@@ -491,7 +491,7 @@ PACKAGE BODY opencmsresource IS
       vState := pResource.state;
     END IF;
     -- if the folder in destination-project exists and is marked as deleted then delete the folder
-    curResources := readFileHeader(pUserId, pProjectId, pFileName);
+    curResources := readFileHeader(pUserId, pProjectId, pOnlineProjectId, pFileName);
     FETCH curResources INTO recResource;
     CLOSE curResources;
     IF recResource.state = opencmsConstants.C_STATE_DELETED THEN
