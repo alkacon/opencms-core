@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2004/06/01 15:46:54 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/06/04 09:06:42 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,23 +30,6 @@
  */
  
 package org.opencms.test;
-import org.opencms.db.CmsDbPool;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProject;
-import org.opencms.file.CmsProperty;
-import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.CmsUser;
-import org.opencms.lock.CmsLock;
-import org.opencms.main.CmsException;
-import org.opencms.main.CmsShell;
-import org.opencms.main.I_CmsConstants;
-import org.opencms.main.OpenCms;
-import org.opencms.report.CmsShellReport;
-import org.opencms.setup.CmsSetupDb;
-import org.opencms.staticexport.CmsStaticExportManager;
-import org.opencms.util.CmsPropertyUtils;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -61,6 +44,26 @@ import java.util.Vector;
 import junit.framework.TestCase;
 
 import org.apache.commons.collections.ExtendedProperties;
+import org.opencms.db.CmsDbPool;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsUser;
+import org.opencms.lock.CmsLock;
+import org.opencms.main.CmsException;
+import org.opencms.main.CmsShell;
+import org.opencms.main.I_CmsConstants;
+import org.opencms.main.OpenCms;
+import org.opencms.report.CmsShellReport;
+import org.opencms.security.CmsAccessControlEntry;
+import org.opencms.security.CmsAccessControlList;
+import org.opencms.security.CmsPermissionSet;
+import org.opencms.setup.CmsSetupDb;
+import org.opencms.staticexport.CmsStaticExportManager;
+import org.opencms.util.CmsPropertyUtils;
+import org.opencms.util.CmsUUID;
 
 /** 
  * Extends the JUnit standard with methods to handle an OpenCms database
@@ -73,7 +76,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * values in the provided <code>./test/data/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 5.3.5
  */
@@ -445,7 +448,7 @@ public class OpenCmsTestCase extends TestCase {
      * @param resourceName the name of the resource the properties belong to
      * @param storedResource the stored resource corresponding to the resourcename
      * @param excludeList the list of properies to exclude in the test or null
-     * @return list of CmsProperty objects 
+     * @return string of non matching properties
      * @throws CmsException if something goes wrong
      */
     private static String compareProperties(CmsObject cms, String resourceName, OpenCmsTestResourceStorageEntry storedResource, List excludeList) 
@@ -464,6 +467,315 @@ public class OpenCmsTestCase extends TestCase {
             } 
             return noMatches;
     }    
+    
+    
+    /**
+     * Compares two access lists and creates a list of permission sets which are
+     * not matching and are not included in a seperate exclude list.
+     * @param cms the CmsObject
+     * @param resourceName the name of the resource the properties belong to
+     * @param storedResource the stored resource corresponding to the resourcename
+     * @param excludeList the list of permission sets to exclude in the test or null
+     * @return string of non matching access list entries
+     * @throws CmsException if something goes wrong
+     */
+    private  String compareAccessLists(CmsObject cms, String resourceName, OpenCmsTestResourceStorageEntry storedResource, List excludeList) 
+        throws CmsException {
+            String noMatches = "";
+            CmsAccessControlList resList = cms.getAccessControlList(resourceName);
+            CmsAccessControlList storedList = storedResource.getAccessControlList();
+            List unmatchedList;
+            unmatchedList = compareList(resList, storedList, excludeList);
+            if (unmatchedList.size() > 0) {
+                noMatches += "[ACL differences "+unmatchedList.toString()+"]";   
+            }    
+            unmatchedList = compareList(storedList, resList, excludeList);
+            if (unmatchedList.size() > 0) {
+                noMatches += "[ACL differences "+unmatchedList.toString()+"]";   
+            }  
+            return noMatches;
+    } 
+    
+    /**
+     * Compares two vectors of access entries and creates a list of all access control entries which are
+     * not matching and are not included in a seperate exclude list.
+     * @param cms the CmsObject
+     * @param resourceName the name of the resource the properties belong to
+     * @param storedResource the stored resource corresponding to the resourcename
+     * @param excludeList the list of ccess entries to exclude in the test or null   
+     * @return string of non matching access entries
+     * @throws CmsException if something goes wrong
+     */
+    private String compareAccessEntries(CmsObject cms, String resourceName, OpenCmsTestResourceStorageEntry storedResource, List excludeList) 
+        throws CmsException {
+            String noMatches = "";
+            Vector resAce = cms.getAccessControlEntries(resourceName);
+            Vector storedAce = storedResource.getAccessControlEntries();
+            List unmatchedAce;
+            unmatchedAce = compareAce(resAce, storedAce, excludeList);
+            if (unmatchedAce.size() > 0) {
+                noMatches += "[ACE missing "+unmatchedAce.toString()+"]";   
+            }    
+            unmatchedAce = compareAce(storedAce, resAce, excludeList);
+            if (unmatchedAce.size() > 0) {
+                noMatches += "[ACE missing "+unmatchedAce.toString()+"]";   
+            }  
+            return noMatches;
+    } 
+    
+    /**
+     * Compares two lists of permission sets.<p>
+     * @param source the source list to compare
+     * @param target  the destination list to compare
+     * @param exclude the exclude list
+     * @return list of non matching permission sets
+     */
+    private List compareList(CmsAccessControlList source, CmsAccessControlList target, List exclude) {
+        HashMap result = new HashMap();
+        
+        HashMap destinationMap = target.getPermissionMap(); 
+        HashMap sourceMap = source.getPermissionMap(); 
+        
+        Iterator i = sourceMap.keySet().iterator();
+        while (i.hasNext()) {
+            CmsUUID key = (CmsUUID)i.next();
+            CmsPermissionSet value = (CmsPermissionSet)sourceMap.get(key);
+            if (destinationMap.containsKey(key)) {
+                CmsPermissionSet destValue =   (CmsPermissionSet)destinationMap.get(key);  
+                if (!destValue.equals(value)) {
+                    result.put(key, key+" " + value + " <-> " + destValue);   
+                }
+            } else {
+                result.put(key, "missing "+key);
+            }
+        }
+        
+        // finally match the result list with the exclude list
+        if (exclude != null) {
+            Iterator l = exclude.iterator();
+            while (l.hasNext()) {
+                CmsUUID excludeUUID = (CmsUUID) l.next();   
+                if (result.containsKey(excludeUUID)) {
+                    result.remove(excludeUUID);
+                }
+            }
+        }         
+        return new ArrayList(result.values()); 
+    }
+    
+    
+    /**
+     * Compares two vectors of access control entires.<p>
+     * @param source the source vector to compare
+     * @param target  the destination vector to compare
+     * @param exclude the exclude list
+     * @return list of non matching access control entires 
+     */
+    private List compareAce(Vector source, Vector target, List exclude) {
+        List result = new ArrayList();
+        Iterator i = source.iterator();
+        while (i.hasNext()) {
+            CmsAccessControlEntry ace = (CmsAccessControlEntry)i.next();            
+            if (!target.contains(ace)) {
+                result.add(ace);
+            }
+        }
+        // finally match the result list with the exclude list
+        if (exclude != null) {
+            Iterator l = exclude.iterator();
+            while (l.hasNext()) {
+                CmsAccessControlEntry excludeAce = (CmsAccessControlEntry) l.next();   
+                if (result.contains(excludeAce)) {
+                    result.remove(excludeAce);
+                }
+            }
+        }      
+        return result;
+    }   
+    
+    /**
+     * Compares an access control entry of a resource with a given access control entry.<p>
+     * 
+     * @param cms the CmsObject
+     * @param resourceName the name of the resource to compare
+     * @param ace the access control entry to compare or null if to compare with the stored values
+     */
+    public void assertAce(CmsObject cms, String resourceName, CmsAccessControlEntry ace) {
+        try {
+            // get the stored resource
+            OpenCmsTestResourceStorageEntry storedResource = m_currentResourceStrorage.get(resourceName);
+                      
+                                           
+            // create the exclude list
+            List excludeList = new ArrayList();
+            if (ace != null) {
+                excludeList.add(ace);
+            }    
+            
+            String noMatches = compareAccessEntries(cms, resourceName, storedResource, excludeList);
+     
+            // now see if we have collected any no-matches
+            if (noMatches.length() > 0) {
+                fail("error comparing ace of resource " + resourceName + " with stored values: " + noMatches);
+            }  
+            
+            if (ace != null) {
+                Vector resAces = cms.getAccessControlEntries(resourceName);
+                boolean notFound= true;
+                Iterator i = resAces.iterator();
+                while (i.hasNext()) {
+                    CmsAccessControlEntry resAce = (CmsAccessControlEntry)i.next();
+                    if (resAce.getPrincipal().equals(ace.getPrincipal()) 
+                            && (resAce.getResource().equals(ace.getResource()))) {
+                        notFound = false;
+                        if (!resAce.equals(ace)) {
+                            fail("[ACE " + ace + " <-> " + resAce + "]");
+                        }
+                    }                    
+                }            
+                if (notFound) {
+                    fail("[ACE not found" + ace + "]");   
+                }   
+            }
+        } catch (CmsException e) {
+            fail("cannot read resource " + resourceName + " "+CmsException.getStackTraceAsString(e));     
+        }
+    }
+        
+    /**
+     * Compares an access control list of a resource with a given access control permission.<p>
+     * 
+     * @param cms the CmsObject
+     * @param resourceName the name of the resource to compare
+     * @param principal the principal of the permission set or null if to compare with the stored values
+     * @param permission the permission set to compare
+     */
+    public void assertAcl(CmsObject cms, String resourceName, CmsUUID principal, CmsPermissionSet permission) {
+        try {
+            // get the stored resource
+            OpenCmsTestResourceStorageEntry storedResource = m_currentResourceStrorage.get(resourceName);
+                                          
+            // create the exclude list
+            List excludeList = new ArrayList();
+            if (permission != null) {
+                excludeList.add(principal);
+            }    
+
+            String noMatches = compareAccessLists(cms, resourceName, storedResource, excludeList);
+     
+            // now see if we have collected any no-matches
+            if (noMatches.length() > 0) {
+                fail("error comparing permission sets of resource " + resourceName + " with stored values: " + noMatches);
+            }  
+            
+            if (permission != null) {
+                CmsAccessControlList resAcls = cms.getAccessControlList(resourceName);
+                
+                Map permissionMap = resAcls.getPermissionMap();
+                CmsPermissionSet resPermission = (CmsPermissionSet)permissionMap.get(principal);
+                if (resPermission != null) {
+                    if (!resPermission.equals(permission)) {
+                        fail("[Permission set not equal " + principal + ":"+ permission + " <-> " + resPermission + "]");   
+                    }
+                } else {
+                    fail("[Permission set not found " + principal + ":"+ permission +"]");   
+                }   
+            }
+        } catch (CmsException e) {
+            fail("cannot read resource " + resourceName + " "+CmsException.getStackTraceAsString(e));     
+        }
+    }
+
+    /**
+     * Compares an access control list of a resource with a given access control permission.<p>
+     * 
+     * @param cms the CmsObject
+     * @param modifiedResource the name of the which had its permissions changed
+     * @param resourceName the name of the resource to compare
+     * @param principal the principal of the permission set or null if to compare with the stored values
+     * @param permission the permission set to compare
+     */
+    public void assertAcl(CmsObject cms, String modifiedResource, String resourceName, CmsUUID principal, CmsPermissionSet permission) {
+       //TODO: This method does not work correctly so far, it must be completed!
+        
+        try {
+            // get the stored resource
+            OpenCmsTestResourceStorageEntry storedResource = m_currentResourceStrorage.get(resourceName);
+                                          
+            // create the exclude list
+            List excludeList = new ArrayList();
+            if (permission != null) {
+                excludeList.add(principal);
+            }    
+                 
+            //TODO: This is the code to recalculate the pemrission set if nescessary. Its not completed yet!
+            
+            Map parents = getParents(cms, resourceName);
+            Vector aceList = cms.getAccessControlEntries(resourceName);
+            Iterator i = aceList.iterator();
+            while (i.hasNext()) {
+                CmsAccessControlEntry ace = (CmsAccessControlEntry)i.next();
+                if (ace.getPrincipal().equals(principal)) {
+                    String parent = (String) parents.get(ace.getResource());
+                    if ((!parent.equals(modifiedResource)) && (parent.length() > modifiedResource.length())) {
+                        permission.setPermissions(ace.getAllowedPermissions(), ace.getDeniedPermissions());
+                    }
+                }
+            }
+
+            String noMatches = compareAccessLists(cms, resourceName, storedResource, excludeList);
+     
+            // now see if we have collected any no-matches
+            if (noMatches.length() > 0) {
+                fail("error comparing permission sets of resource " + resourceName + " with stored values: " + noMatches);
+            }  
+            
+            if (permission != null) {
+                CmsAccessControlList resAcls = cms.getAccessControlList(resourceName);
+                
+                Map permissionMap = resAcls.getPermissionMap();
+                CmsPermissionSet resPermission = (CmsPermissionSet)permissionMap.get(principal);
+                if (resPermission != null) {
+                    if (!resPermission.equals(permission)) {
+                        fail("[Permission set not equal " + principal + ":"+ permission + " <-> " + resPermission + "]");   
+                    }
+                } else {
+                    fail("[Permission set not found " + principal + ":"+ permission +"]");   
+                }   
+            }
+        } catch (CmsException e) {
+            fail("cannot read resource " + resourceName + " "+CmsException.getStackTraceAsString(e));     
+        }
+    }
+    
+    
+    /**
+     * Creates a map of all parent resources of a OpenCms resource.<p>
+     * The resource UUID is used as key, the full resource path is used as the value.
+     * 
+     * @param cms the CmsObject
+     * @param resourceName the name of the resource to get the parent map from
+     * @return HashMap of parent resources
+     */
+    private Map getParents(CmsObject cms, String resourceName) {
+        HashMap parents = new HashMap();
+        List parentResources = new ArrayList();
+        try {
+            // get all parent folders of the current file
+            parentResources = cms.readPath(resourceName, CmsResourceFilter.DEFAULT);
+        } catch (CmsException e) {
+            // ignore
+        }
+        Iterator k = parentResources.iterator();
+        while (k.hasNext()) {
+            // add the current folder to the map
+            CmsResource curRes = (CmsResource)k.next();
+            parents.put(curRes.getResourceId(), curRes.getRootPath());
+        }  
+        return parents;
+    }
+    
+    
     
     /**
      * Compares the current date last modified of a resource with a given date.<p>
@@ -658,6 +970,13 @@ public class OpenCmsTestCase extends TestCase {
             // compare the properties if nescessary
             if (filter.testProperties()) {
                 noMatches += compareProperties(cms, resourceName, storedResource, null);
+            }
+            // compare the access lists if nescessary
+            if (filter.testAccess()) {
+                // first compare the ACEs
+                noMatches += compareAccessEntries(cms, resourceName, storedResource, null);
+                // second compare the ACLs
+                noMatches += compareAccessLists(cms, resourceName, storedResource, null);
             }
             // compare the resource id if nescessary
             if (filter.testResourceId()) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsAccessControlEntry.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/06/04 09:06:42 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,20 +52,10 @@ import java.util.StringTokenizer;
  * <code>C_ACCESSFLAGS_GROUP</code> indicates that the principal is a group
  * </p>
  * 
- * @version $Revision: 1.8 $ $Date: 2004/02/13 13:41:45 $
+ * @version $Revision: 1.9 $ $Date: 2004/06/04 09:06:42 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsAccessControlEntry {
-
-    /**
-     * Id of the resource
-     */
-    private CmsUUID m_resource;
-
-    /**
-     * Id of the principal
-     */
-    private CmsUUID m_principal;
 
     /**
      * Flags of this access control entry
@@ -77,6 +67,34 @@ public class CmsAccessControlEntry {
      */
     private CmsPermissionSet m_permissions;
 
+    /**
+     * Id of the principal
+     */
+    private CmsUUID m_principal;
+
+    /**
+     * Id of the resource
+     */
+    private CmsUUID m_resource;
+
+    /**
+     * Constructor to create a new access control entry on a given resource and a given principal.<p>
+     * Permissions are specified as permission set, flags as bitset.
+     * 
+     * @param resource the resource
+     * @param principal the id of a principal (user or group)
+     * @param permissions the set of allowed and denied permissions as permission set
+     * @param flags additional flags of the access control entry
+     */
+    public CmsAccessControlEntry(CmsUUID resource, CmsUUID principal, CmsPermissionSet permissions, int flags) {
+
+        m_resource = resource;
+        m_principal = principal;
+        m_permissions = permissions;
+        m_flags = flags;
+    }
+    
+    
     /**
      * Constructor to create a new access control entry on a given resource and a given principal.<p>
      * Permissions and flags are specified as bitsets.
@@ -94,23 +112,6 @@ public class CmsAccessControlEntry {
         m_resource = resource;
         m_principal = principal;
         m_permissions = new CmsPermissionSet(allowed, denied);
-        m_flags = flags;
-    }
-
-    /**
-     * Constructor to create a new access control entry on a given resource and a given principal.<p>
-     * Permissions are specified as permission set, flags as bitset.
-     * 
-     * @param resource the resource
-     * @param principal the id of a principal (user or group)
-     * @param permissions the set of allowed and denied permissions as permission set
-     * @param flags additional flags of the access control entry
-     */
-    public CmsAccessControlEntry(CmsUUID resource, CmsUUID principal, CmsPermissionSet permissions, int flags) {
-
-        m_resource = resource;
-        m_principal = principal;
-        m_permissions = permissions;
         m_flags = flags;
     }
 
@@ -164,26 +165,6 @@ public class CmsAccessControlEntry {
     }
 
     /**
-     * Sets the allowed and denied permissions of the access control entry.<p>
-     * 
-     * @param permissions the set of permissions
-     */
-    public void setPermissions(CmsPermissionSet permissions) {
-
-        m_permissions.setPermissions(permissions);
-    }
-
-    /**
-     * Sets the allowed permissions in the access control entry.<p>
-     * 
-     * @param allowed the allowed permissions as bitset
-     */
-    public void grantPermissions(int allowed) {
-
-        m_permissions.grantPermissions(allowed);
-    }
-
-    /**
      * Sets the explicitly denied permissions in the access control entry.<p>
      * 
      * @param denied the denied permissions as bitset
@@ -192,16 +173,35 @@ public class CmsAccessControlEntry {
 
         m_permissions.denyPermissions(denied);
     }
+    
     /**
-     * Returns the current permission set (both allowed and denied permissions).<p>
-     * 
-     * @return the set of permissions
+     * @see java.lang.Object#equals(java.lang.Object)
      */
-    public CmsPermissionSet getPermissions() {
+    public boolean equals(Object obj) {
+        boolean equal = true;
 
-        return m_permissions;
+        CmsAccessControlEntry ace = (CmsAccessControlEntry)obj;
+        
+        if (!ace.getResource().equals(m_resource)) {
+            equal = false;
+        }
+        if (!ace.getPrincipal().equals(m_principal)) {
+            equal = false;
+        }   
+        if (ace.getFlags() != m_flags) {
+            equal = false;
+        }
+        if (ace.getPermissions().getAllowedPermissions() != getPermissions().getAllowedPermissions()) {
+            equal = false;
+        }
+        if (ace.getPermissions().getDeniedPermissions() != getPermissions().getDeniedPermissions()) {
+            equal = false;
+        }
+        return equal;        
     }
-
+    
+    
+    
     /**
      * Returns the currently allowed permissions as bitset.<p>
      * 
@@ -223,13 +223,22 @@ public class CmsAccessControlEntry {
     }
 
     /**
-     * Returns the resource assigned with this access control entry.<p>
+     * Returns the current flags of the access control entry.<p>
      * 
-     * @return the resource 
+     * @return bitset with flag values
      */
-    public CmsUUID getResource() {
+    public int getFlags() {
 
-        return m_resource;
+        return m_flags;
+    }
+    /**
+     * Returns the current permission set (both allowed and denied permissions).<p>
+     * 
+     * @return the set of permissions
+     */
+    public CmsPermissionSet getPermissions() {
+
+        return m_permissions;
     }
 
     /**
@@ -243,13 +252,44 @@ public class CmsAccessControlEntry {
     }
 
     /**
-     * Sets the given flags in the access control entry.<p>
+     * Returns the resource assigned with this access control entry.<p>
      * 
-     * @param flags bitset with flag values to set
+     * @return the resource 
      */
-    public void setFlags(int flags) {
+    public CmsUUID getResource() {
 
-        m_flags |= flags;
+        return m_resource;
+    }
+
+    /**
+     * Sets the allowed permissions in the access control entry.<p>
+     * 
+     * @param allowed the allowed permissions as bitset
+     */
+    public void grantPermissions(int allowed) {
+
+        m_permissions.grantPermissions(allowed);
+    }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+        if (m_permissions != null) {
+            return m_permissions.hashCode() * m_flags;
+        } 
+        return CmsUUID.getNullUUID().hashCode();
+    }
+
+    /**
+     * Returns if this access control entry has the inherited flag set.<p>
+     * Note: to check if an access control entry is inherited, also the
+     * resource id and the id of the current resource must be different.
+     * 
+     * @return true, if the inherited flag is set
+     */
+    public boolean isInherited() {
+        return ((m_flags & I_CmsConstants.C_ACCESSFLAGS_INHERITED) > 0);
     }
 
     /**
@@ -263,24 +303,23 @@ public class CmsAccessControlEntry {
     }
 
     /**
-     * Returns the current flags of the access control entry.<p>
+     * Sets the given flags in the access control entry.<p>
      * 
-     * @return bitset with flag values
+     * @param flags bitset with flag values to set
      */
-    public int getFlags() {
+    public void setFlags(int flags) {
 
-        return m_flags;
+        m_flags |= flags;
     }
 
     /**
-     * Returns if this access control entry has the inherited flag set.<p>
-     * Note: to check if an access control entry is inherited, also the
-     * resource id and the id of the current resource must be different.
+     * Sets the allowed and denied permissions of the access control entry.<p>
      * 
-     * @return true, if the inherited flag is set
+     * @param permissions the set of permissions
      */
-    public boolean isInherited() {
-        return ((m_flags & I_CmsConstants.C_ACCESSFLAGS_INHERITED) > 0);
+    public void setPermissions(CmsPermissionSet permissions) {
+
+        m_permissions.setPermissions(permissions);
     }
 
     /**

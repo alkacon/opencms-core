@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestResourceFilter.java,v $
- * Date   : $Date: 2004/05/28 16:01:13 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/06/04 09:06:42 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,13 +45,22 @@ import java.util.List;
  * be tested to a new, specified value, the equal test must be disabled in the filter.<p>
  * 
  *  @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class OpenCmsTestResourceFilter {
 
 
+    /** Defintition of a filter used for the chacc method */
+    public static OpenCmsTestResourceFilter FILTER_CHACC = getFilterChacc();
+    
     /** Defintition of a equal filter */
     public static OpenCmsTestResourceFilter FILTER_EQUAL = new OpenCmsTestResourceFilter();
+    
+    /** Defintition of a filter used to validate the existing and the new sibling after a copy opreation */
+    public static OpenCmsTestResourceFilter FILTER_EXISTING_AND_NEW_SIBLING = getFilterExistingAndNewSibling();     
+    
+    /** Defintition of a filter used to validate an existing sibling after a copy operation */
+    public static OpenCmsTestResourceFilter FILTER_EXISTING_SIBLING = getFilterExistingSibling();
     
     /** Defintition of a filter used for the touch method */
     public static OpenCmsTestResourceFilter FILTER_TOUCH = getFilterTouch();
@@ -60,65 +69,8 @@ public class OpenCmsTestResourceFilter {
     public static OpenCmsTestResourceFilter FILTER_UNDOCHANGES = getFilterUndoChanges();
     
     /** Defintition of a filter used for the writeProperty method */
+   
     public static OpenCmsTestResourceFilter FILTER_WRITEPROPERTY = getFilterWriteProperty();
-    
-    /** Defintition of a filter used to validate an existing sibling after a copy operation */
-    public static OpenCmsTestResourceFilter FILTER_EXISTING_SIBLING = getFilterExistingSibling();
-    
-    /** Defintition of a filter used to validate the existing and the new sibling after a copy opreation */
-    public static OpenCmsTestResourceFilter FILTER_EXISTING_AND_NEW_SIBLING = getFilterExistingAndNewSibling();     
-    
-    /** Flags for validating the attributes of two CmsResources */
-    private boolean m_contentId;
-    private boolean m_contents;
-    private boolean m_dateCreated;
-    private boolean m_dateExpired;    
-    private boolean m_dateLastModified;
-    private boolean m_dateReleased;
-    private boolean m_flags;
-    private boolean m_isTouched;
-    private boolean m_length;
-    private boolean m_siblingCount;
-    private boolean m_loaderId;
-    private boolean m_lockstate; 
-    private boolean m_name;
-    private boolean m_parentId;
-    private boolean m_projectLastModified;
-    private boolean m_properties;
-    private boolean m_resourceId;
-    private boolean m_state;
-    private boolean m_structureId;
-    private boolean m_type;
-    private boolean m_userCreated;
-    private boolean m_userLastModified;
-    
-    /**
-     * Creates a new OpenCmsTestResourceFilter.<p>
-     */
-    public OpenCmsTestResourceFilter() {
-        m_contentId = true;
-        m_dateCreated = true;
-        m_dateLastModified = true;
-        m_dateReleased = true;
-        m_dateExpired = true;   
-        m_flags = true;
-        m_isTouched = true;
-        m_length = true;
-        m_siblingCount = true;
-        m_loaderId = true;
-        m_name = true;
-        m_parentId = true;
-        m_projectLastModified = true;
-        m_resourceId = true;
-        m_state = true;
-        m_structureId = true;
-        m_type = true;
-        m_userCreated = true;
-        m_userLastModified = true;
-        m_lockstate = true;
-        m_contents = true;
-        m_properties = true;
-    }
     
     /**
      * Compares two lists of properties and returns those 
@@ -169,6 +121,56 @@ public class OpenCmsTestResourceFilter {
     }            
     
     /**
+     * Creates a new filter used to validate the fields of a new sibling
+     * different from the existing sibling(s) from which it was created.<p>
+     * 
+     * @return OpenCmsTestResourceFilter filter
+     */
+    private static final OpenCmsTestResourceFilter getFilterExistingAndNewSibling() {
+        OpenCmsTestResourceFilter filter = new OpenCmsTestResourceFilter();
+
+        filter.disableStateTest();
+        filter.disableStructureIdTest();
+        filter.disableNameTest();
+        filter.disableLockTest();
+
+        return filter;        
+    }
+    
+    
+    /**
+     * Creates a new filter used for the "chacc" method.
+     * different from the existing sibling(s) from which it was created.<p>
+     * 
+     * @return OpenCmsTestResourceFilter filter
+     */
+    private static final OpenCmsTestResourceFilter getFilterChacc() {
+        OpenCmsTestResourceFilter filter = new OpenCmsTestResourceFilter();
+
+        filter.disableStateTest();
+        filter.disableProjectLastModifiedTest();
+        filter.disableAccessTest();
+
+        return filter;        
+    }
+    
+    /**
+     * Creates a new filter used to validate the modified fields of an
+     * existing resource from which a new sibling was created.<p>
+     * 
+     * @return OpenCmsTestResourceFilter filter
+     */
+    private static final OpenCmsTestResourceFilter getFilterExistingSibling() {
+        OpenCmsTestResourceFilter filter = new OpenCmsTestResourceFilter();
+
+        filter.disableProjectLastModifiedTest();
+        filter.disableSiblingCountTest();
+        filter.disableLockTest();
+
+        return filter;        
+    }
+    
+    /**
      * Creates a new filter used for the "touch" method.<p>
      * @return OpenCmsTestResourceFilter object
      */
@@ -207,38 +209,68 @@ public class OpenCmsTestResourceFilter {
         filter.disablePropertiesTest();
         return filter;
     }
+
+    
+    /** Flags for validating the attributes of two CmsResources */
+    private boolean m_access;
+    private boolean m_contentId;
+    private boolean m_contents;
+    private boolean m_dateCreated;
+    private boolean m_dateExpired;    
+    private boolean m_dateLastModified;
+    private boolean m_dateReleased;
+    private boolean m_flags;
+    private boolean m_isTouched;
+    private boolean m_length;
+    private boolean m_loaderId;
+    private boolean m_lockstate; 
+    private boolean m_name;
+    private boolean m_parentId;
+    private boolean m_projectLastModified;
+    private boolean m_properties;
+    private boolean m_resourceId;
+    private boolean m_siblingCount;
+    private boolean m_state;
+    private boolean m_structureId;
+    private boolean m_type;
+    private boolean m_userCreated;
+    private boolean m_userLastModified;
     
     /**
-     * Creates a new filter used to validate the fields of a new sibling
-     * different from the existing sibling(s) from which it was created.<p>
-     * 
-     * @return OpenCmsTestResourceFilter filter
+     * Creates a new OpenCmsTestResourceFilter.<p>
      */
-    private static final OpenCmsTestResourceFilter getFilterExistingAndNewSibling() {
-        OpenCmsTestResourceFilter filter = new OpenCmsTestResourceFilter();
-
-        filter.disableStateTest();
-        filter.disableStructureIdTest();
-        filter.disableNameTest();
-        filter.disableLockTest();
-
-        return filter;        
+    public OpenCmsTestResourceFilter() {
+        m_contentId = true;
+        m_dateCreated = true;
+        m_dateLastModified = true;
+        m_dateReleased = true;
+        m_dateExpired = true;   
+        m_flags = true;
+        m_isTouched = true;
+        m_length = true;
+        m_siblingCount = true;
+        m_loaderId = true;
+        m_name = true;
+        m_parentId = true;
+        m_projectLastModified = true;
+        m_resourceId = true;
+        m_state = true;
+        m_structureId = true;
+        m_type = true;
+        m_userCreated = true;
+        m_userLastModified = true;
+        m_lockstate = true;
+        m_contents = true;
+        m_properties = true;
+        m_access = true;
     }
     
+    
     /**
-     * Creates a new filter used to validate the modified fields of an
-     * existing resource from which a new sibling was created.<p>
-     * 
-     * @return OpenCmsTestResourceFilter filter
+     * Disables the access list test.<p>
      */
-    private static final OpenCmsTestResourceFilter getFilterExistingSibling() {
-        OpenCmsTestResourceFilter filter = new OpenCmsTestResourceFilter();
-
-        filter.disableProjectLastModifiedTest();
-        filter.disableSiblingCountTest();
-        filter.disableLockTest();
-
-        return filter;        
+    public void disableAccessTest() {
+        m_access = false;
     }
     
     
@@ -299,13 +331,6 @@ public class OpenCmsTestResourceFilter {
     }
     
     /**
-     * Disables the sibling count test.<p>
-     */
-    public void disableSiblingCountTest() {
-        m_siblingCount = false;
-    }
-    
-    /**
      * Disables the loader Id test.<p>
      */
     public void disableLoaderIdTest() {
@@ -355,6 +380,13 @@ public class OpenCmsTestResourceFilter {
     }
     
     /**
+     * Disables the sibling count test.<p>
+     */
+    public void disableSiblingCountTest() {
+        m_siblingCount = false;
+    }
+    
+    /**
      * Disables the state test.<p>
      */
     public void disableStateTest() {
@@ -395,6 +427,15 @@ public class OpenCmsTestResourceFilter {
     public void disableUserLastModifiedTest() {
         m_userLastModified = false;
     }
+    
+    /**
+     * Returns true if the access list test is enabled.<p>
+     *
+     * @return true or false
+     */
+    public boolean testAccess() {
+        return m_access;
+    }
         
     /**
      * Returns true if the Content Id test is enabled.<p>
@@ -404,6 +445,7 @@ public class OpenCmsTestResourceFilter {
     public boolean testContentId() {
         return m_contentId;
     }
+    
     
     /**
      * Returns true if the Contents test is enabled.<p>
@@ -469,15 +511,6 @@ public class OpenCmsTestResourceFilter {
     }
     
     /**
-     * Returns true if the sibling count test is enabled..<p>
-     *
-     * @return true or false
-     */
-    public boolean testSiblingCount() {
-        return m_siblingCount;
-    }
-    
-    /**
      * Returns true if the loader Id test is enabled.<p>
      *
      * @return true or false
@@ -538,6 +571,15 @@ public class OpenCmsTestResourceFilter {
      */
     public boolean testResourceId() {
         return m_resourceId;
+    }
+    
+    /**
+     * Returns true if the sibling count test is enabled..<p>
+     *
+     * @return true or false
+     */
+    public boolean testSiblingCount() {
+        return m_siblingCount;
     }
     
     /**

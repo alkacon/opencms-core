@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestResourceStorageEntry.java,v $
- * Date   : $Date: 2004/05/28 16:01:13 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/06/04 09:06:42 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,22 +31,29 @@
  
 package org.opencms.test;
 
+import java.util.List;
+import java.util.Vector;
+
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
+import org.opencms.security.CmsAccessControlList;
 import org.opencms.util.CmsUUID;
-
-import java.util.List;
 
 /**
  * A single entry of the OpenCmsTestResourceStorage.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class OpenCmsTestResourceStorageEntry {
+    
+    private Vector m_accessControlEntries;
+    
+    /** The access control list */
+    private CmsAccessControlList m_accessControlList;
     
        /** The ID of the content database record */
     private CmsUUID m_contentId;
@@ -75,9 +82,6 @@ public class OpenCmsTestResourceStorageEntry {
     /** The size of the content */
     protected int m_length;
 
-    /** The number of links that point to this resource */
-    private int m_siblingCount;
-
     /** The id of the loader which is used to process this resource */
     private int m_loaderId;
     
@@ -98,6 +102,9 @@ public class OpenCmsTestResourceStorageEntry {
 
     /** The ID of the resource database record */
     private CmsUUID m_resourceId;
+
+    /** The number of links that point to this resource */
+    private int m_siblingCount;
 
     /** The state of this resource */
     private int m_state;
@@ -157,6 +164,29 @@ public class OpenCmsTestResourceStorageEntry {
             m_contents = null;
         }
         m_properties = cms.readPropertyObjects(resourceName, false);
+        m_accessControlList = cms.getAccessControlList(resourceName);
+        m_accessControlEntries = cms.getAccessControlEntries(resourceName);
+    }
+    
+
+    /**
+     * Returns the access control entries of the resource.<p>
+     *
+     * @return  the access control entries of the resource
+     */
+    public Vector getAccessControlEntries() {
+        return m_accessControlEntries;
+    }
+    
+    
+
+    /**
+     * Returns the access control list of the resource.<p>
+     *
+     * @return  the access control list of the resource
+     */
+    public CmsAccessControlList getAccessControlList() {
+        return m_accessControlList;
     }
     
     /**
@@ -231,15 +261,6 @@ public class OpenCmsTestResourceStorageEntry {
     public int getLength() {
         return m_length;
     }
-
-    /**
-     * Gets the number of references to the resource.<p>
-     * 
-     * @return the number of links
-     */
-    public int getSiblingCount() {
-        return m_siblingCount;
-    }
     
     /**
      * Gets the loader id of this resource.<p>
@@ -308,7 +329,6 @@ public class OpenCmsTestResourceStorageEntry {
         return m_properties;
     }
     
-    
 
     /**
      * Returns the id of the resource database entry of this resource.<p>
@@ -317,6 +337,15 @@ public class OpenCmsTestResourceStorageEntry {
      */
     public CmsUUID getResourceId() {
         return m_resourceId;
+    }
+
+    /**
+     * Gets the number of references to the resource.<p>
+     * 
+     * @return the number of links
+     */
+    public int getSiblingCount() {
+        return m_siblingCount;
     }
 
     

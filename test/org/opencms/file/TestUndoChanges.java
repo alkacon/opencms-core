@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestUndoChanges.java,v $
- * Date   : $Date: 2004/06/01 15:46:53 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/06/04 09:06:42 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import junit.framework.TestSuite;
  * Unit test for the "undoChanges" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TestUndoChanges extends OpenCmsTestCase {
   
@@ -179,15 +179,14 @@ public class TestUndoChanges extends OpenCmsTestCase {
     }
     
     /**
-     *  Test undoChanges method to a single folder and all resources within the folder.<p>
+     * Test undoChanges method to a single folder and all resources within the folder.<p>
      * @param tc the OpenCmsTestCase
      * @param cms the CmsObject
      * @param resource1 the resource to touch
      * @throws Throwable if something goes wrong
      */
     public static void undoChangesFolderRecursive(OpenCmsTestCase tc, CmsObject cms, String resource1) throws Throwable {                        
-        
-        
+         
         // create a global storage and store the resource
         tc.createStorage("undoChanges");
         tc.switchStorage("undoChanges");
@@ -227,8 +226,6 @@ public class TestUndoChanges extends OpenCmsTestCase {
             tc.assertFilter(cms, resName, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES);
             // project must be current project
             tc.assertProject(cms, resName, cms.getRequestContext().currentProject());
-
-
         }       
     }    
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsPermissionSet.java,v $
- * Date   : $Date: 2004/04/01 06:24:01 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/06/04 09:06:42 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,13 +47,53 @@ import java.util.StringTokenizer;
  * <code>C_PERMISSION_CONTROL</code> (c) the right to set permissions of a resource<br>
  * <code>C_PERMISSION_DIRECT_PUBLISH</code> (d) the right direct publish a resource even without publish project permissions<br>
  * 
- * @version $Revision: 1.12 $ $Date: 2004/04/01 06:24:01 $
+ * @version $Revision: 1.13 $ $Date: 2004/06/04 09:06:42 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsPermissionSet {
 
     /**  Hashtable of all available permissions */
     static HashMap m_permissions = null;
+
+    /**
+     * Returns the message keys of each permission known in the system.<p>
+     * 
+     * @return Enumeration of message keys
+     */
+    public static Set getPermissionKeys() {
+
+        return permissions().keySet();
+    }
+
+    /**
+     * Returns the value of a single permission.<p>
+     * 
+     * @param key the key of the permission
+     * @return the value of the given permission
+     */
+    public static int getPermissionValue(String key) {
+
+        return ((Integer)permissions().get(key)).intValue();
+    }
+
+    /**
+     * Initializes and returns the hashtable of all permissions known in the system.<p>
+     * 
+     * @return hastable with permission keys and values
+     */
+    private static HashMap permissions() {
+
+        if (m_permissions == null) {
+            m_permissions = new HashMap();
+            m_permissions.put("security.permission.read", new Integer(I_CmsConstants.C_PERMISSION_READ));
+            m_permissions.put("security.permission.write", new Integer(I_CmsConstants.C_PERMISSION_WRITE));
+            m_permissions.put("security.permission.view", new Integer(I_CmsConstants.C_PERMISSION_VIEW));
+            m_permissions.put("security.permission.control", new Integer(I_CmsConstants.C_PERMISSION_CONTROL));
+            m_permissions.put("security.permission.direct_publish", new Integer(
+                I_CmsConstants.C_PERMISSION_DIRECT_PUBLISH));
+        }
+        return m_permissions;
+    }
 
     /** The set of allowed permissions */
     int m_allowed;
@@ -69,6 +109,7 @@ public class CmsPermissionSet {
         m_allowed = 0;
         m_denied = 0;
     }
+    
 
     /**
      * Constructor to create a permission set with some preset allowed permissions.<p>
@@ -163,46 +204,6 @@ public class CmsPermissionSet {
     }
 
     /**
-     * Returns the message keys of each permission known in the system.<p>
-     * 
-     * @return Enumeration of message keys
-     */
-    public static Set getPermissionKeys() {
-
-        return permissions().keySet();
-    }
-
-    /**
-     * Returns the value of a single permission.<p>
-     * 
-     * @param key the key of the permission
-     * @return the value of the given permission
-     */
-    public static int getPermissionValue(String key) {
-
-        return ((Integer)permissions().get(key)).intValue();
-    }
-
-    /**
-     * Initializes and returns the hashtable of all permissions known in the system.<p>
-     * 
-     * @return hastable with permission keys and values
-     */
-    private static HashMap permissions() {
-
-        if (m_permissions == null) {
-            m_permissions = new HashMap();
-            m_permissions.put("security.permission.read", new Integer(I_CmsConstants.C_PERMISSION_READ));
-            m_permissions.put("security.permission.write", new Integer(I_CmsConstants.C_PERMISSION_WRITE));
-            m_permissions.put("security.permission.view", new Integer(I_CmsConstants.C_PERMISSION_VIEW));
-            m_permissions.put("security.permission.control", new Integer(I_CmsConstants.C_PERMISSION_CONTROL));
-            m_permissions.put("security.permission.direct_publish", new Integer(
-                I_CmsConstants.C_PERMISSION_DIRECT_PUBLISH));
-        }
-        return m_permissions;
-    }
-
-    /**
      * Sets permissions from another permission set additionally both as allowed and denied permissions.<p>
      * 
      * @param permissionSet the set of permissions to set additionally.
@@ -244,7 +245,23 @@ public class CmsPermissionSet {
 
         m_denied |= permissions;
     }
-
+    
+    
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    public boolean equals(Object obj) {
+        boolean equal = true;
+        CmsPermissionSet perm = (CmsPermissionSet) obj;
+        if ((perm.getAllowedPermissions() != m_allowed) || (perm.getDeniedPermissions() != m_denied)) {
+            equal = false;
+        }       
+        return equal;
+    }
+    
+    
+    
+    
     /**
      * Returns the currently allowed permissions of ths permission set.<p>
      * 
@@ -326,6 +343,13 @@ public class CmsPermissionSet {
     public void grantPermissions(int permissions) {
 
         m_allowed |= permissions;
+    }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+        return m_allowed * m_denied;
     }
 
     /**
