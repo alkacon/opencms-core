@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRegistry.java,v $
-* Date   : $Date: 2002/02/04 16:42:08 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2002/02/14 14:26:42 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import com.opencms.core.*;
  * This interface describes the registry for OpenCms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.25 $ $Date: 2002/02/04 16:42:08 $
+ * @version $Revision: 1.26 $ $Date: 2002/02/14 14:26:42 $
  *
  */
 public interface I_CmsRegistry extends Cloneable {
@@ -459,6 +459,14 @@ public String getModuleViewUrl(String modulename);
  * @return int the amount of classess.
  */
 public int getModulePublishables(Vector classes, String requiredMethod);
+
+/**
+ * Returns all exportable classes for all modules.
+ *
+ * @parameter Hashtable classes in this parameter the classes will be returned.
+ * @return int the amount of classes.
+ */
+public int getModuleExportables(Hashtable classes);
 
 /**
  * Returns all repositories for all modules.

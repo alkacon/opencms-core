@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
-* Date   : $Date: 2002/02/04 16:42:08 $
-* Version: $Revision: 1.41 $
+* Date   : $Date: 2002/02/14 14:26:42 $
+* Version: $Revision: 1.42 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * This class implements the registry for OpenCms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.41 $ $Date: 2002/02/04 16:42:08 $
+ * @version $Revision: 1.42 $ $Date: 2002/02/14 14:26:42 $
  *
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
@@ -1190,6 +1190,36 @@ public int getModulePublishables(Vector classes, String requiredMethod) {
                 }
             } catch(Exception exc) {
                 // ignore the exception and try the next view-pair.
+            }
+        }
+        return classes.size();
+    } catch (Exception exc) {
+        // no return-values
+        return 0;
+    }
+}
+
+/**
+ * Returns all exportable classes for all modules.
+ *
+ * @parameter Hashtable classes in this parameter the classes will be returned.
+ * @return int the amount of classes.
+ */
+public int getModuleExportables(Hashtable classes) {
+    try {
+        Enumeration allModules = m_modules.keys();
+        while(allModules.hasMoreElements()){
+            String nicename = (String)allModules.nextElement();
+            NodeList classList = ((Element) m_modules.get(nicename)).getElementsByTagName("publishclass");
+            if(classList.getLength() > 0) {
+                try {
+                    String classname = ((Element) classList.item(0)).getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
+                    if(classname != null && !"".equalsIgnoreCase(classname)){
+                        classes.put(nicename, classname);
+                    }
+                } catch(Exception exc) {
+                    // ignore the exception and try the next view-pair.
+                }
             }
         }
         return classes.size();
