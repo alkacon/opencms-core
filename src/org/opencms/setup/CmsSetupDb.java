@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupDb.java,v $
- * Date   : $Date: 2004/08/11 16:56:22 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/08/19 12:26:57 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 package org.opencms.setup;
 
 import org.opencms.main.CmsException;
+import org.opencms.util.CmsStringUtil;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -43,6 +44,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -52,7 +54,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.12 $ $Date: 2004/08/11 16:56:22 $
+ * @version $Revision: 1.13 $ $Date: 2004/08/19 12:26:57 $
  */
 public class CmsSetupDb extends Object {
     
@@ -254,7 +256,7 @@ public class CmsSetupDb extends Object {
                         // normal statement, execute it
                         try {
                             if (replacers != null) {
-                                statement = replaceValues(statement, replacers);
+                                statement = replaceTokens(statement, replacers);
                                 executeStatement(statement);
                             } else {
                                 executeStatement(statement);
@@ -299,33 +301,24 @@ public class CmsSetupDb extends Object {
     }
 
     /**
-     * Internal method to perform replacements within a single line of script code.<p>
+     * Replaces tokens "${xxx}" in a specified SQL query.<p>
      * 
-     * @param source the line of script code
-     * @param replacers the replacements to perform in the line
-     * @return the script line with replaced values
+     * @param sql a SQL query
+     * @param replacers a Map with values keyed by "${xxx}" tokens
+     * @return the SQl query with all "${xxx}" tokens replaced
      */
-    private String replaceValues(String source, Map replacers) {
-        StringTokenizer tokenizer = new StringTokenizer(source);
-        String temp = "";
-
-        while (tokenizer.hasMoreTokens()) {
-            String token = tokenizer.nextToken();
-
-            // replace identifier found
-            if (token.startsWith("${") && token.endsWith("}")) {
-
-                // look in the hashtable
-                Object value = replacers.get(token);
-
-                //found value
-                if (value != null) {
-                    token = value.toString();
-                }
-            }
-            temp += token + " ";
+    private String replaceTokens(String sql, Map replacers) {
+        
+        Iterator keys = replacers.keySet().iterator();
+        while (keys.hasNext()) {
+            
+            String key = (String)keys.next();
+            String value = (String)replacers.get(key);
+            
+            sql = CmsStringUtil.substitute(sql, key, value);
         }
-        return temp;
+        
+        return sql;
     }
 
     /**
