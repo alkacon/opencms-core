@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsXmlPageLoader.java,v $
- * Date   : $Date: 2004/01/20 15:59:40 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/01/20 17:09:43 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since 5.3
  */
 public class CmsXmlPageLoader implements I_CmsResourceLoader {   
@@ -83,6 +83,11 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
      * @see org.opencms.loader.I_CmsResourceLoader#export(CmsObject, CmsFile, OutputStream, HttpServletRequest, HttpServletResponse)
      */
     public void export(CmsObject cms, CmsFile file, OutputStream exportStream, HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException, CmsException {        
+
+        // init the page object and attach it as attribute of the request
+        CmsXmlPage page = CmsXmlPage.read(cms, file);
+        req.setAttribute(C_XMLPAGE_OBJECT, page);
+        
         CmsResourceLoaderFacade loaderFacade = OpenCms.getLoaderManager().getLoaderFacade(cms, file);        
         loaderFacade.getLoader().export(cms, loaderFacade.getFile(), exportStream, req, res);
     }    

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsXmlPage.java,v $
- * Date   : $Date: 2004/01/20 11:06:00 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/01/20 17:09:43 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.dom4j.io.XMLWriter;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  */
 public class CmsXmlPage {
     
@@ -234,6 +234,15 @@ public class CmsXmlPage {
         }
         
         return content;
+    }
+
+    /**
+     * Returns the file with the xml page content or <code>null</code> if not set.<p>
+     * 
+     * @return the file with the xml page content
+     */
+    public CmsFile getFile() {
+        return m_file;
     }
     
     /**
