@@ -2,8 +2,8 @@ package com.opencms.template;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
- * Date   : $Date: 2000/10/11 19:25:05 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2000/10/12 11:58:14 $
+ * Version: $Revision: 1.27 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import java.io.*;
  * Content definition for XML template files.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.26 $ $Date: 2000/10/11 19:25:05 $
+ * @version $Revision: 1.27 $ $Date: 2000/10/12 11:58:14 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
@@ -500,9 +500,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
 		return callUserMethod("templateElement", tagcontent, callingObject, userObj); 
 	}
 	/**
-	 * Handling of the <CODE>&lt;ELEMENT&gt;</CODE> tags.
-	 * Calls the user method <code>elementTag</code> that has to be
-	 * defined in the XML template class. 
+	 * Handling of the <CODE>&lt;LABEL&gt;</CODE> tags.
 	 * 
 	 * @param n XML element containing the <code>&lt;PROCESS&gt;</code> tag.
 	 * @param callingObject Reference to the object requesting the node processing.
