@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2004/09/08 10:23:29 $
-* Version: $Revision: 1.90 $
+* Date   : $Date: 2004/09/08 14:55:12 $
+* Version: $Revision: 1.91 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import java.util.Vector;
  * 
  * @author Michael Knoll
  * @author Michael Emmerich
- * @version $Revision: 1.90 $
+ * @version $Revision: 1.91 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -1738,10 +1738,14 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
                 if (fieldEntry != null) {
                     try {
                         Vector v = new Vector();
-                        v.addElement(new Integer(id));
+                        v.addElement(new CmsUUID(id));
                         v.addElement(template);
                         url = getUrl(cms, null, null, v);
                     } catch (Exception e) {
+                        if (OpenCms.getLog(this).isErrorEnabled()) {
+                            OpenCms.getLog(this).error("Error getting URL for ID " + id, e);
+                        }                      
+                        
                         url = "";
                     }
                     if (!url.equals("")) {
