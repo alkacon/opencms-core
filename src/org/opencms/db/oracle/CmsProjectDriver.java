@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/05/21 15:13:14 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2004/06/13 23:32:50 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
 /** 
  * Oracle/OCI implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.22 $ $Date: 2004/05/21 15:13:14 $
+ * @version $Revision: 1.23 $ $Date: 2004/06/13 23:32:50 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -69,7 +69,7 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
     /*
      * Indicates that server side copying should be used
      */
-    private boolean m_enableServerCopy = false;
+    private boolean m_enableServerCopy;
     
     /**
      * @see org.opencms.db.I_CmsProjectDriver#createSystemProperty(java.lang.String, java.io.Serializable)

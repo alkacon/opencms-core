@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsBackupDriver.java,v $
- * Date   : $Date: 2004/04/16 08:30:16 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2004/06/13 23:32:50 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.29 $ $Date: 2004/04/16 08:30:16 $
+ * @version $Revision: 1.30 $ $Date: 2004/06/13 23:32:50 $
  * @since 5.1
  */
 public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
@@ -67,7 +67,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
     /*
      * Indicates that server side copying should be used
      */
-    private boolean m_enableServerCopy = false;
+    private boolean m_enableServerCopy;
     
     /**
      * @see org.opencms.db.I_CmsBackupDriver#deleteBackups(java.util.List, int)

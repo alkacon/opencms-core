@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsSqlManager.java,v $
- * Date   : $Date: 2004/01/06 16:40:29 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/06/13 23:32:50 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,12 +40,12 @@ import java.util.Properties;
  * Handles SQL queries from query.properties of the Oracle/OCI package.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.14 $ $Date: 2004/01/06 16:40:29 $ 
+ * @version $Revision: 1.15 $ $Date: 2004/06/13 23:32:50 $ 
  * @since 5.1
  */
 public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
 
-    private static Properties c_queries = null;
+    private static Properties c_queries;
     private static final String C_PROPERTY_FILENAME = "org/opencms/db/oracle/query.properties";
 
     /**
