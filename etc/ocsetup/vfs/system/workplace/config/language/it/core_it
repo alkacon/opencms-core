@@ -1116,6 +1116,11 @@ Un nuovo compito è stato riattivato per te o per il tuo ruolo.</content>
                     <head>Scadenza il</head>
                     <logmessage1>Data di scadenza cambiata da</logmessage1>
                     <logmessage2>a</logmessage2>
+                    <checkdate>Please check the inserted date.</checkdate>
+                    <format>The date must have the format dd.mm.yyyy.</format>
+                    <past>The date must not be in the past.</past>
+                    <day>The day is not correct.</day>
+                    <month>The month is not correct.</month>
                 </due>
                 <priority>
                     <title>Cambia Priorità</title>

@@ -1116,6 +1116,11 @@ Für Sie oder Ihre Rolle wurde eine Aufgabe reaktiviert.</content>
                     <head>Fällig am</head>
                     <logmessage1>Fälligkeit geändert von</logmessage1>
                     <logmessage2>auf</logmessage2>
+                    <checkdate>Bitte überprüfen Sie das eingegebene Datum.</checkdate>
+                    <format>Das Datum muss das Format tt.mm.jjjj haben.</format>
+                    <past>Das Datum darf nicht in der Vergangenheit liegen.</past>
+                    <day>Der Tag ist nicht korrekt.</day>
+                    <month>Der Monat ist nicht korrekt.</month>
                 </due>
                 <priority>
                     <title>Priorität ändern</title>                 
