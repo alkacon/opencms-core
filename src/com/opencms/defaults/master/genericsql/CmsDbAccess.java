@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/03/02 18:43:55 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2003/03/28 14:42:00 $
+* Version: $Revision: 1.29 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -846,6 +846,7 @@ public class CmsDbAccess {
         String moduleMaster;
         String channelRel;
         String media;
+        
         if(isOnlineProject(cms)) {
             moduleMaster = "CMS_MODULE_ONLINE_MASTER";
             channelRel = "CMS_MODULE_ONLINE_CHANNEL_REL";
@@ -855,9 +856,11 @@ public class CmsDbAccess {
             channelRel = "CMS_MODULE_CHANNEL_REL";
             media = "CMS_MODULE_MEDIA";
         }
+        
         statement = Utils.replace(statement, "$CMS_MODULE_MASTER", moduleMaster);
         statement = Utils.replace(statement, "$CMS_MODULE_CHANNEL_REL", channelRel);
         statement = Utils.replace(statement, "$CMS_MODULE_MEDIA", media);
+        
         return con.prepareStatement(statement);
     }
 
@@ -870,21 +873,26 @@ public class CmsDbAccess {
     protected void sqlClose(Connection con, Statement stmnt, ResultSet res) {
         try {
             res.close();
-        } catch(Exception exc) {
+        } catch (Exception e) {
             // ignore the exception
-            // this was null or already closed
+        } finally {
+            res = null;
         }
+
         try {
             stmnt.close();
-        } catch(Exception exc) {
+        } catch (Exception e) {
             // ignore the exception
-            // this was null or already closed
+        } finally {
+            stmnt = null;
         }
+
         try {
-        con.close();
-        } catch(Exception exc) {
+            con.close();
+        } catch (Exception e) {
             // ignore the exception
-            // this was null or already closed
+        } finally {
+            con = null;
         }
     }
 
