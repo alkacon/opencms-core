@@ -1,8 +1,8 @@
 package com.opencms.template.cache;
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsLruCache.java,v $
- * Date   : $Date: 2001/05/15 08:26:25 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2001/05/15 10:31:01 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -189,6 +189,7 @@ public class CmsLruCache {
             }
             item = item.chain;
         }
+//System.err.println("    mgm-- not found in Cache!!!!");
         return null;
     }
 
@@ -198,7 +199,7 @@ public class CmsLruCache {
      */
     private void remove(CacheItem oldItem){
 //System.err.println("mgm--removing from cache: "+(String)oldItem.key);
-        int hashIndex = (oldItem.hashCode() & 0x7FFFFFFF) % m_maxSize;
+        int hashIndex = ((oldItem.key).hashCode() & 0x7FFFFFFF) % m_maxSize;
         CacheItem item = m_cache[hashIndex];
         if(item == oldItem){
             m_cache[hashIndex] = item.chain;
@@ -214,10 +215,12 @@ public class CmsLruCache {
             }
         }
     }
+
     /**
      * used for debuging only. Checks if the Cache is in a valid condition.
      */
     private void checkCondition(){
+        System.err.println("");
         System.err.println("mgm-- Verify condition of Cache");
         System.err.println("mgm--size: "+m_size);
         CacheItem item = head;
@@ -232,13 +235,29 @@ public class CmsLruCache {
         System.err.println("mgm--");
         System.err.println("mgm--now from tail to head:");
         item = tail;
-        count = 1;
+        count--;
         while(item!=null){
             System.err.println("mgm--"+count+". "+(String)item.key);
-            count++;
+            count--;
             item=item.previous;
         }
+        System.err.println("mgm--now what is realy in cache:");
+        count = 1;
+        for (int i=0; i<m_maxSize; i++){
+            item = m_cache[i];
+            System.err.print("    element "+i+" ");
+            if(item == null){
+                System.err.println(" null");
+            }else{
+                System.err.println(" count="+count++ +" "+(String)item.key);
+                while(item.chain != null){
+                    item = item.chain;
+                    System.err.println("        chainelement "+" count="+count++ +" "+(String)item.key);
+                }
+            }
+        }
         System.err.println("mgm--test ready!!");
+        System.err.println("");
 
     }
 }
