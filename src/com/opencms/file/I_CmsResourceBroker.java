@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.17 $ $Date: 2000/01/12 12:33:33 $
+ * @version $Revision: 1.18 $ $Date: 2000/01/12 16:35:08 $
  */
 interface I_CmsResourceBroker {
 
@@ -1016,6 +1016,42 @@ interface I_CmsResourceBroker {
 										 A_CmsProject currentProject) 
 		throws CmsException;
 
+	/**
+	 * Creates a new file with the given content and resourcetype. <br>
+	 * 
+	 * Files can only be created in an offline project, the state of the new file
+	 * is set to NEW (2). <br>
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can write the resource</li>
+	 * <li>the folder-resource is not locked by another user</li>
+	 * <li>the file dosn't exists</li>
+	 * </ul>
+	 * 
+	 * @param user The user who own this file.
+	 * @param project The project in which the resource will be used.
+	 * @param folder The complete path to the folder in which the new folder will 
+	 * be created.
+	 * @param file The name of the new file (No pathinformation allowed).
+	 * @param contents The contents of the new file.
+	 * @param type The name of the resourcetype of the new file.
+	 * @param metainfos A Hashtable of metainfos, that should be set for this folder.
+	 * The keys for this Hashtable are the names for Metadefinitions, the values are
+	 * the values for the metainfos.
+	 * @return file The created file.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	 public CmsFile createFile(A_CmsUser currentUser,
+                               A_CmsProject currentProject, String folder,
+                               String filename, byte[] contents, String type,
+							   Hashtable metainfos) 
+						
+         throws CmsException;
+	 
 	/**
 	 * Returns a CmsResourceTypes.
 	 * 

@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.22 $ $Date: 2000/01/12 15:27:58 $ 
+ * @version $Revision: 1.23 $ $Date: 2000/01/12 16:35:08 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -215,7 +215,7 @@ public abstract class A_CmsObject {
 	 * this name.
 	 */
 	abstract public CmsFile createFile(String folder, String filename, 
-								byte[] contents, A_CmsResourceType type)
+									   byte[] contents, String type)
 		throws CmsException;
 	
 	/**
@@ -244,9 +244,8 @@ public abstract class A_CmsObject {
 	 * @exception CmsDuplikateKeyException if there is already a resource with 
 	 * this name.
 	 */
-	abstract public CmsFile createFile(String folder, String filename, 
-								byte[] contents, A_CmsResourceType type, 
-								Hashtable metainfos)
+	abstract public CmsFile createFile(String folder, String filename, byte[] contents, 
+									   String type, Hashtable metainfos)
 		throws CmsException;
 	
 	/**

@@ -11,7 +11,7 @@ import java.lang.reflect.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.9 $ $Date: 2000/01/12 12:33:33 $
+ * @version $Revision: 1.10 $ $Date: 2000/01/12 16:35:08 $
  */
 public class CmsShell implements I_CmsConstants {
 	
@@ -129,6 +129,47 @@ public class CmsShell implements I_CmsConstants {
 		}
 	}
 
+
+	/**
+	 * Reads a given file from the local harddisk and uploads
+	 * it to the OpenCms system.
+	 * Used in the OpenCms console only.
+	 * 
+	 * @author Alexander Lucas
+	 * @param filename Local file to be uploaded.
+	 * @return Byte array containing the file content.
+	 * @throws CmsException
+	 */
+    private byte[] importFile(String filename) throws CmsException {     
+        File file = null;
+        long len = 0;
+        FileInputStream importInput = null;
+        byte[] result;        
+                
+        // First try to load the file
+        try {
+            file = new File(filename);
+        } catch(Exception e) {
+            file = null;
+        }
+        if(file == null) {
+            throw new CmsException("Could not load local file " + filename, CmsException.C_NOT_FOUND); 
+        } 
+        
+        // File was loaded successfully.
+        // Now try to read the content.
+        try {
+            len = file.length();
+            result = new byte[(int)len];
+            importInput = new FileInputStream(file);
+            importInput.read(result);
+            importInput.close();
+        } catch(Exception e) {
+            throw new CmsException(e.toString() , CmsException.C_UNKNOWN_EXCEPTION); 
+        }
+        return result;
+    }
+	
 	// All methods, that may be called by the user:
 	
 	/**
@@ -1040,6 +1081,36 @@ public class CmsShell implements I_CmsConstants {
 	public void unlockResource(String resource) {
 		try {
 			m_cms.unlockResource(resource);
+		} catch( Exception exc ) {
+			System.err.println(exc);
+		}
+	}
+
+	/**
+	 * Loads a File up to the cms from the lokal disc.
+	 * 
+	 * @param lokalfile The lokal file to load up.
+	 * @param folder The folder in the cms to put the new file
+	 * @param filename The name of the new file.
+	 * @param type the filetype of the new file in the cms.
+	 */
+	public void uploadFile(String lokalfile, String folder, String filename, String type) {
+		try {
+			System.out.println(m_cms.createFile(folder, filename, 
+												importFile(lokalfile), type));
+		} catch( Exception exc ) {
+			System.err.println(exc);
+		}
+	}
+
+	/**
+	 * Reads a file from the Cms.<BR/>
+	 * 
+	 * @param filename The complete path to the file
+	 */
+	public void readFile(String filename) {
+		try {
+			System.out.println(m_cms.readFile(filename));
 		} catch( Exception exc ) {
 			System.err.println(exc);
 		}

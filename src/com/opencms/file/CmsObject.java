@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.18 $ $Date: 2000/01/12 15:27:58 $ 
+ * @version $Revision: 1.19 $ $Date: 2000/01/12 16:35:08 $ 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	
@@ -268,9 +268,12 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * this name.
 	 */
 	public CmsFile createFile(String folder, String filename, 
-								byte[] contents, A_CmsResourceType type)
+							  byte[] contents, String type)
 		throws CmsException { 
-		return null; // TODO: implement this! 
+		return( c_rb.createFile(m_context.currentUser(), 
+								m_context.getCurrentProject(), 
+								folder, filename, contents, type, 
+								new Hashtable() ) );
 	}
 	
 	/**
@@ -299,11 +302,13 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * @exception CmsDuplikateKeyException if there is already a resource with 
 	 * this name.
 	 */
-	public CmsFile createFile(String folder, String filename, 
-								byte[] contents, A_CmsResourceType type, 
-								Hashtable metainfos)
+	public CmsFile createFile(String folder, String filename, byte[] contents, String type, 
+							  Hashtable metainfos)
 		throws CmsException { 
-		return null; // TODO: implement this! 
+		return( c_rb.createFile(m_context.currentUser(), 
+								m_context.getCurrentProject(), 
+								folder, filename, contents, type, 
+								metainfos ) );
 	}
 	
 	/**
@@ -320,7 +325,9 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */
 	public CmsFile readFile(String folder, String filename)
 		throws CmsException { 
-		return null; // TODO: implement this! 
+		return( c_rb.readFile(m_context.currentUser(), 
+							  m_context.getCurrentProject(), 
+							  folder + filename ) );
 	}
 	
 	/**
@@ -336,7 +343,9 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */
 	public CmsFile readFile(String filename)
 		throws CmsException { 
-		return null; // TODO: implement this! 
+		return( c_rb.readFile(m_context.currentUser(), 
+							  m_context.getCurrentProject(), 
+							  filename ) );
 	}
 	
 	/**

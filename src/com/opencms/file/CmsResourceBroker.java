@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.18 $ $Date: 2000/01/12 12:33:33 $
+ * @version $Revision: 1.19 $ $Date: 2000/01/12 16:35:08 $
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -1525,11 +1525,16 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 public CmsFile readFile(A_CmsUser currentUser, A_CmsProject currentProject,
 							 String filename)
 		 throws CmsException {
-		 // HACK: !!!
-		 // TODO: THIS is NOT correct, because there is no security-check!
-		 // HACK: !!!
-		 //return( m_fileRb.readFile(currentProject, filename) );
-         return null;
+		 CmsFile cmsFile = m_fileRb.readFile(currentProject, 
+											 onlineProject(currentUser, currentProject),
+											 filename);
+		 if( accessRead(currentUser, currentProject, (A_CmsResource)cmsFile) ) {
+				
+			// acces to all subfolders was granted - return the file.
+			return(cmsFile);
+		} else {
+			throw new CmsException(filename, CmsException.C_NO_ACCESS);
+		}
 	 }
 
 	/**
@@ -1695,6 +1700,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		if( accessRead(currentUser, currentProject, (A_CmsResource)cmsFolder) ) {
 				
 			// acces to all subfolders was granted - return the sub-folders.
+			// TODO: check the viewability for the resources!
 			return(m_fileRb.getSubFolders(currentProject, foldername) );
 		} else {
 			throw new CmsException(foldername, CmsException.C_NO_ACCESS);
@@ -1781,6 +1787,62 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 								resourcename);		
 	}
 		
+	/**
+	 * Creates a new file with the given content and resourcetype. <br>
+	 * 
+	 * Files can only be created in an offline project, the state of the new file
+	 * is set to NEW (2). <br>
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can write the resource</li>
+	 * <li>the folder-resource is not locked by another user</li>
+	 * <li>the file dosn't exists</li>
+	 * </ul>
+	 * 
+	 * @param user The user who own this file.
+	 * @param project The project in which the resource will be used.
+	 * @param folder The complete path to the folder in which the new folder will 
+	 * be created.
+	 * @param file The name of the new file (No pathinformation allowed).
+	 * @param contents The contents of the new file.
+	 * @param type The name of the resourcetype of the new file.
+	 * @param metainfos A Hashtable of metainfos, that should be set for this folder.
+	 * The keys for this Hashtable are the names for Metadefinitions, the values are
+	 * the values for the metainfos.
+	 * @return file The created file.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	 public CmsFile createFile(A_CmsUser currentUser,
+                               A_CmsProject currentProject, String folder,
+                               String filename, byte[] contents, String type,
+							   Hashtable metainfos) 
+						
+         throws CmsException {
+		// TODO: write the metainfos!
+		
+		// checks, if the filename is valid, if not it throws a exception
+		validFilename(filename);
+		
+		CmsFolder cmsFolder = m_fileRb.readFolder(currentProject, 
+												  folder);
+		if( accessCreate(currentUser, currentProject, (A_CmsResource)cmsFolder) ) {
+				
+			// write-acces  was granted - create and return the file.
+			return(m_fileRb.createFile(currentUser, currentProject, 
+									   onlineProject(currentUser, currentProject), 
+									   folder + filename, 0, contents, 
+									   getResourceType(currentUser, currentProject, 
+													   type)) );
+		} else {
+			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
+				CmsException.C_NO_ACCESS);
+		}
+	 }
+
 	/**
 	 * Checks, if the user may read this resource.
 	 * 
