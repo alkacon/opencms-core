@@ -62,6 +62,7 @@ createPropertydefinition stream jsp
 createPropertydefinition content-encoding jsp
 createPropertydefinition NavText jsp
 createPropertydefinition NavPos jsp
+createPropertydefinition template page
 addFileExtension doc binary
 addFileExtension pdf binary
 addFileExtension zip binary
