@@ -12,13 +12,13 @@ input, select, option, textarea {
 
 /* Button - Normal style (inactive) */
 span.norm {
-	display: block; 
+	display: block;
 	border: 1px solid #c0c0c0;
 }
 
 /* Button - Hover style */
 span.over {
-	display: block; 
+	display: block;
 	border-top: 1px solid #ffffff;
 	border-left: 1px solid #ffffff;
 	border-bottom: 1px solid #777777;
@@ -43,7 +43,7 @@ span.disabled {
 
 /* Button - Tart tab */
 span.starttab {
-	display: block; 
+	display: block;
 	height: 16px;
 	width: 1px;
 	border-top: 1px solid #ffffff;
@@ -54,7 +54,7 @@ span.starttab {
 
 /* Button - Separator */
 span.separator {
-	display: block; 
+	display: block;
 	height: 18px;
 	width: 0px;
 	border-top: 0px;
@@ -74,15 +74,15 @@ span.separator {
 span.txtbutton {
 	display: block;
 	height: 17px;
-	white-space: nowrap;    
+	white-space: nowrap;
 	padding-top: 3px;
-	padding-left: 5px; 
+	padding-left: 5px;
 	padding-right: 5px;
 }
 
 /* Button - Image button wrapper */
 span.imgbutton {
-	padding-left: 1px; 
+	padding-left: 1px;
 	padding-right: 5px;
 }
 
@@ -91,8 +91,8 @@ span.combobutton {
 	display: block;
 	height: 17px;
 	white-space: nowrap;
-	padding-top: 3px; 
-	padding-left: 21px; 
+	padding-top: 3px;
+	padding-left: 21px;
 	padding-right: 5px;
 	background-repeat: no-repeat;
 }
@@ -109,7 +109,7 @@ img.button {
 a.button {
 	color: #000000;
 	text-decoration: none;
-	cursor: hand; 
+	cursor: pointer;
 }
 
 /* ########## Dialog styles ########## */
@@ -121,8 +121,8 @@ body.report {
 body.dialog {
 	font-family: verdana, sans-serif;
 	font-size: 11px;
-	padding: 0; 
-	margin: 0; 
+	padding: 0;
+	margin: 0;
 	background-color: #c0c0c0;
 }
 
@@ -159,7 +159,7 @@ table.dialogbox {
 	border-left: 1px solid #F0F0F0;
 	border-top: 1px solid #F0F0F0;
 	border-right: 2px solid #555;
-	border-bottom: 2px solid #555;	
+	border-bottom: 2px solid #555;
 	padding: 15px;
 	margin: 8px;
 }
@@ -173,35 +173,35 @@ table.dialogbox {
 
 /* 3D block outer border definition */
 div.dialogblockborderheadline {
-	margin-top: 10px; 
+	margin-top: 10px;
 }
 
 /* 3D block outer border definition without headline */
 div.dialogblockborder {
-	border-left: 1px solid #555; 
-	border-top: 1px solid #555; 
-	border-right: 1px solid #F0F0F0; 
+	border-left: 1px solid #555;
+	border-top: 1px solid #555;
+	border-right: 1px solid #F0F0F0;
 	border-bottom: 1px solid #F0F0F0;
 }
 
 /* 3D block main style */
 div.dialogblock {
-	position: relative; 
+	position: relative;
 	padding: 8px;
-	border-left: 1px solid #F0F0F0; 
-	border-top: 1px solid #F0F0F0; 
-	border-right: 1px solid #555; 
+	border-left: 1px solid #F0F0F0;
+	border-top: 1px solid #F0F0F0;
+	border-right: 1px solid #555;
 	border-bottom: 1px solid #555;
 }
 
 /* 3D block headline, positioned "inside" border */
 span.dialogblockhead {
 	font-weight: bold;
-	position:absolute; 
-	top: -7px; 
-	left: 5px; 
-	background: #c0c0c0; 
-	padding: 0 3px; 
+	position:absolute;
+	top: -7px;
+	left: 5px;
+	background: #c0c0c0;
+	padding: 0 3px;
 	white-space: nowrap;
 }
 
@@ -253,6 +253,7 @@ input.dialogbutton {
 	font-size: 11px;
 	background-color: #C0C0C0;
 	width: 100px;
+	height: 20px;
 	padding: 0 5px;
 	margin-left: 12px;
 	overflow: visible;
@@ -263,7 +264,7 @@ input.dialogbutton {
 	background-color: #008;
 	color: #fff;
 	display: block;
-	cursor: hand;
+	cursor: pointer;
 	white-space: nowrap;
 }
 
@@ -272,14 +273,14 @@ input.dialogbutton {
 	background-color: #603;
 	color: #fff;
 	display: block;
-	cursor: hand;
+	cursor: pointer;
 	white-space: nowrap;
 }
 
 /* an unmarked row */
 .dialogunmarked {
 	display: block;
-	cursor: hand;
+	cursor: pointer;
 	white-space: nowrap;
 }
 
@@ -350,7 +351,7 @@ div.dialogpermissioninherit {
 	background: #c0c0c0;
 	text-align: center;
 	color: #000;
-	white-space: nowrap; 
+	white-space: nowrap;
 }
 
 .dialogtabactive {
@@ -377,23 +378,23 @@ div.dialogpermissioninherit {
 .dialogtabcontent {
 	border-left: 1px solid #F0F0F0;
 	border-right: 2px solid #555;
-	border-bottom: 2px solid #555;	
+	border-bottom: 2px solid #555;
 	padding: 15px;
 	margin-top: -1px;
 }
 
-a.tab { 
+a.tab {
 	color: #000;
 	text-decoration: none;
 	display: block;
 	padding: 4px;
 }
 
-a.tab:hover { 
+a.tab:hover {
 	color: #fff;
 }
 
-span.tabactive { 
+span.tabactive {
 	color: #000;
 	text-decoration: none;
 	display: block;

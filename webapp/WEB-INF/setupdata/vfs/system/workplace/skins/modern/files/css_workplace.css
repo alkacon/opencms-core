@@ -1,141 +1,141 @@
 /* Default font settings for all standard p, td elements */
 p, td, div, span {
-    font-family: verdana, sans-serif;
-    font-size: 11px;
+	font-family: verdana, sans-serif;
+	font-size: 11px;
 }
 
 /* Default font settings for all form elements */
 input, select, option, textarea {
-    font-family: verdana, sans-serif;
-    font-size: 11px;
+	font-family: verdana, sans-serif;
+	font-size: 11px;
 }
 
 /* Body used for workplace head (top_head.html) */
 body.buttons-head {
-    font-family: verdana, sans-serif;
-    font-size: 11px;
-    padding: 0px; 
-    margin: 0px; 
-    background-color: #c0c0c0; 
-    border-top: 1px solid #ffffff;  
-    border-left: 1px solid #ffffff;
-    border-bottom: 1px solid #888888; 
-    border-right: 1px solid #888888;
+	font-family: verdana, sans-serif;
+	font-size: 11px;
+	padding: 0px;
+	margin: 0px;
+	background-color: #c0c0c0;
+	border-top: 1px solid #ffffff;
+	border-left: 1px solid #ffffff;
+	border-bottom: 1px solid #888888;
+	border-right: 1px solid #888888;
 }
 
 /* Body used for workplace foot (top_foot.html) */
 body.buttons-foot {
-    font-family: verdana, sans-serif;
-    font-size: 11px;
-    padding: 0px; 
-    margin: 0px; 
-    background-color: #c0c0c0; 
-    border-top: 1px solid #c0c0c0;  
-    border-left: 1px solid #ffffff;
-    border-bottom: 1px solid #888888; 
-    border-right: 1px solid #888888; 
+	font-family: verdana, sans-serif;
+	font-size: 11px;
+	padding: 0px;
+	margin: 0px;
+	background-color: #c0c0c0;
+	border-top: 1px solid #c0c0c0;
+	border-left: 1px solid #ffffff;
+	border-bottom: 1px solid #888888;
+	border-right: 1px solid #888888;
 }
 
 /* Button - Normal style (inactive) */
 span.norm {
-    display: block; 
-    border: 1px solid #c0c0c0;
+	display: block;
+	border: 1px solid #c0c0c0;
 }
 
 /* Button - Hover style */
 span.over {
-    display: block; 
-    border-top: 1px solid #ffffff;
-    border-left: 1px solid #ffffff;
-    border-bottom: 1px solid #777777;
-    border-right: 1px solid #777777;
+	display: block;
+	border-top: 1px solid #ffffff;
+	border-left: 1px solid #ffffff;
+	border-bottom: 1px solid #777777;
+	border-right: 1px solid #777777;
 }
 
 /* Button - Push style */
 span.push {
-    display: block;
-    border-top: 1px solid #777777;
-    border-left: 1px solid #777777;
-    border-bottom: 1px solid #ffffff;
-    border-right: 1px solid #ffffff;    
+	display: block;
+	border-top: 1px solid #777777;
+	border-left: 1px solid #777777;
+	border-bottom: 1px solid #ffffff;
+	border-right: 1px solid #ffffff;
 }
 
 /* Button - Disabled style */
 span.disabled {
-    display: block;
-    border: 1px solid #c0c0c0;
-    color: #888888;
+	display: block;
+	border: 1px solid #c0c0c0;
+	color: #888888;
 }
 
 /* Button - Tart tab */
 span.starttab {
-    display: block; 
-    height: 16px;
-    width: 1px;
-    border-top: 1px solid #ffffff;
-    border-left: 1px solid #ffffff;
-    border-bottom: 1px solid #777777;
-    border-right: 1px solid #777777;
+	display: block;
+	height: 16px;
+	width: 1px;
+	border-top: 1px solid #ffffff;
+	border-left: 1px solid #ffffff;
+	border-bottom: 1px solid #777777;
+	border-right: 1px solid #777777;
 }
 
 /* Button - Separator */
 span.separator {
-    display: block; 
-    height: 18px;
-    width: 0px;
-    border-top: 0px;
-    border-left: 1px solid #777777;
-    border-bottom: 0px;
-    border-right: 1px solid #ffffff;
+	display: block;
+	height: 18px;
+	width: 0px;
+	border-top: 0px;
+	border-left: 1px solid #777777;
+	border-bottom: 0px;
+	border-right: 1px solid #ffffff;
 }
 
 /* Button - Horizontal Separator line */
 .horseparator {
-    width: 100%;
-    background-color: #ffffff;
-    border-top: 1px solid #777777;
+	width: 100%;
+	background-color: #ffffff;
+	border-top: 1px solid #777777;
 }
 
 /* Button - Text button wrapper  */
 span.txtbutton {
-    display: block;
-    height: 17px;
-    white-space: nowrap;    
-    padding-top: 3px;
-    padding-left: 5px; 
-    padding-right: 5px;
+	display: block;
+	height: 17px;
+	white-space: nowrap;
+	padding-top: 3px;
+	padding-left: 5px;
+	padding-right: 5px;
 }
 
 /* Button - Image button wrapper */
 span.imgbutton {
-    padding-left: 1px; 
-    padding-right: 5px;
+	padding-left: 1px;
+	padding-right: 5px;
 }
 
 /* Button - Combined image and text button wrapper */
 span.combobutton {
-    display: block;
-    height: 17px;
-    white-space: nowrap;
-    padding-top: 3px; 
-    padding-left: 21px; 
-    padding-right: 5px;
-    background-repeat: no-repeat;
+	display: block;
+	height: 17px;
+	white-space: nowrap;
+	padding-top: 3px;
+	padding-left: 21px;
+	padding-right: 5px;
+	background-repeat: no-repeat;
 }
 
 /* Button - Image buttnin image style */
 img.button {
-    height: 20px;
-    width: 20px;
-    border: 0px none;
-    vertical-align: middle;
+	height: 20px;
+	width: 20px;
+	border: 0px none;
+	vertical-align: middle;
 }
 
 /* Button - Link (href) style */
 a.button {
-    color: #000000;
-    text-decoration: none;
-    cursor: hand; 
+	color: #000000;
+	text-decoration: none;
+	cursor: pointer;
 }
 
 /* ########## Dialog styles ########## */
@@ -146,17 +146,17 @@ body.report {
 
 body.dialogadmin {
 	margin-top: 0;
-	margin-left: auto; 
-	margin-right: auto; 
+	margin-left: auto;
+	margin-right: auto;
 	background-color: #fff;
 	border-top: 1px solid #000;
 }
 
 body.dialog {
-    font-family: verdana, sans-serif;
+	font-family: verdana, sans-serif;
 	font-size: 11px;
-	padding: 0; 
-	margin: 0; 
+	padding: 0;
+	margin: 0;
 	background-color: #fff;
 }
 
@@ -171,7 +171,7 @@ table.dialog {
 	width: 85%;
 	border-left: 1px solid #C0C0C0;
 	border-top: 1px solid #C0C0C0;
-	border-right: 1px solid #333;	
+	border-right: 1px solid #333;
 	border-bottom: 1px solid #333;
 }
 
@@ -179,7 +179,7 @@ table.dialog {
 table.dialogbox {
 	width: 100%;
 	background-color: #C0C0C0;
-	border-left: 1px solid #F0F0F0; 
+	border-left: 1px solid #F0F0F0;
 	border-top: 1px solid #F0F0F0;
 	border-right: 1px solid #777;
 	border-bottom: 1px solid #777;
@@ -219,7 +219,7 @@ table.dialogbox {
 	border-left: 1px solid #F0F0F0;
 	border-top: 1px solid #F0F0F0;
 	border-right: 2px solid #555;
-	border-bottom: 2px solid #555;	
+	border-bottom: 2px solid #555;
 	padding: 15px;
 	margin: 8px;
 }
@@ -233,35 +233,35 @@ table.dialogbox {
 
 /* 3D block outer border definition */
 div.dialogblockborderheadline {
-	margin-top: 10px; 
+	margin-top: 10px;
 }
 
 /* 3D block outer border definition without headline */
 div.dialogblockborder {
-	border-left: 1px solid #555; 
-	border-top: 1px solid #555; 
-	border-right: 1px solid #F0F0F0; 
+	border-left: 1px solid #555;
+	border-top: 1px solid #555;
+	border-right: 1px solid #F0F0F0;
 	border-bottom: 1px solid #F0F0F0;
 }
 
 /* 3D block main style */
 div.dialogblock {
-	position: relative; 
+	position: relative;
 	padding: 8px;
-	border-left: 1px solid #F0F0F0; 
-	border-top: 1px solid #F0F0F0; 
-	border-right: 1px solid #555; 
+	border-left: 1px solid #F0F0F0;
+	border-top: 1px solid #F0F0F0;
+	border-right: 1px solid #555;
 	border-bottom: 1px solid #555;
 }
 
 /* 3D block headline, positioned "inside" border */
 span.dialogblockhead {
 	font-weight: bold;
-	position:absolute; 
-	top: -7px; 
-	left: 5px; 
-	background: #c0c0c0; 
-	padding: 0 3px; 
+	position:absolute;
+	top: -7px;
+	left: 5px;
+	background: #c0c0c0;
+	padding: 0 3px;
 	white-space: nowrap;
 }
 
@@ -309,10 +309,11 @@ span.dialogblockhead {
 
 /* Submit and other buttons */
 input.dialogbutton {
-    font-family: verdana, sans-serif;
+	font-family: verdana, sans-serif;
 	font-size: 11px;
 	background-color: #C0C0C0;
-	width: 100px;
+	width: 100px:
+	height: 20px;
 	padding: 0 5px;
 	margin-left: 12px;
 	overflow: visible;
@@ -323,7 +324,7 @@ input.dialogbutton {
 	background-color: #008;
 	color: #fff;
 	display: block;
-	cursor: hand;
+	cursor: pointer;
 	white-space: nowrap;
 }
 
@@ -332,14 +333,14 @@ input.dialogbutton {
 	background-color: #603;
 	color: #fff;
 	display: block;
-	cursor: hand;
+	cursor: pointer;
 	white-space: nowrap;
 }
 
 /* an unmarked row */
 .dialogunmarked {
 	display: block;
-	cursor: hand;
+	cursor: pointer;
 	white-space: nowrap;
 }
 
@@ -410,7 +411,7 @@ div.dialogpermissioninherit {
 	background: #c0c0c0;
 	text-align: center;
 	color: #000;
-	white-space: nowrap; 
+	white-space: nowrap;
 }
 
 .dialogtabactive {
@@ -437,23 +438,23 @@ div.dialogpermissioninherit {
 .dialogtabcontent {
 	border-left: 1px solid #F0F0F0;
 	border-right: 2px solid #555;
-	border-bottom: 2px solid #555;	
+	border-bottom: 2px solid #555;
 	padding: 15px;
 	margin-top: -1px;
 }
 
-a.tab { 
+a.tab {
 	color: #000;
 	text-decoration: none;
 	display: block;
 	padding: 4px;
 }
 
-a.tab:hover { 
+a.tab:hover {
 	color: #fff;
 }
 
-span.tabactive { 
+span.tabactive {
 	color: #000;
 	text-decoration: none;
 	display: block;

@@ -245,16 +245,15 @@ var pageStartSimple =
     "<link rel='stylesheet' type='text/css' href='<%= wp.getSkinUri() %>files/css_workplace.css'>\n" +
     cssStyle +
     "</head>\n" +
-    "<body style='border: 0px solid #c0c0c0; background-color:#c0c0c0;'>\n" +   
-    "<center><table border='0' width='100%' height='100%'><tr><td valign='middle'>\n"+
-    "<table border='0' width='100%'>\n" + 
+    "<body style='background-color:#c0c0c0;'>\n" +   
+    "<div style='vertical-align:middle; height: 100%;'>\n"+
+    "<table border='0' style='vertical-align:middle; height: 100%;'>\n" + 
     "<tr><td width='40' align='center' valign='middle'><img name='report_img' src='<%= wp.getSkinUri() %>explorer/report_running.gif' width='32' height='32' alt=''></td>\n" + 
     "<td valign='middle'>";
     
 var pageEndSimple = 
 	"</td></tr>\n" +
-	"</td></tr>\n" +
-	"</table></center>\n" +
+	"</table></div>\n" +
 	"</body>\n</html>";    
 
 var pageStartExtended =
@@ -498,7 +497,7 @@ function initButtons() {
 <%= wp.paramsAsHidden() %>
 
 <table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td>
-<iframe name="report" id="report" src="about:blank" style="width:100%; height:400px"></iframe>
+<iframe name="report" id="report" src="about:blank" style="width:100%; height:400px;" frameborder="0"></iframe>
 </td></tr></Table>
 
 <%= wp.dialogContentEnd() %>
@@ -510,8 +509,8 @@ function initButtons() {
 <td><iframe src="<%= wp.getDialogUri() %>?<%= wp.PARAM_ACTION %>=<%= wp.REPORT_UPDATE %>&<%= wp.PARAM_THREAD %>=<%= wp.getParamThread() %>&<%= wp.PARAM_REPORT_TYPE %>=<%= wp.getParamReportType() %>&<%= wp.PARAM_THREAD_HASNEXT %>=<%= wp.getParamThreadHasNext() %>&resource=<%= wp.getParamResource() %>" name="update" style="width:20px; height:20px; margin: 0px;" marginwidth="0" marginheight="0" frameborder="0" framespacing="0" scrolling="no"></iframe></td>
 </tr></table>
 
-<table width="100%" border="0" cellpadding="0" cellspacing="0"><tr>
-<td class="hide" style="width: 100%; text-align: center;" id="checkcontinue"><input type="checkbox" name="continuereport" value="true">&nbsp;<%= wp.key(wp.getParamReportContinueKey()) %></td>
+<table border="0" cellpadding="0" cellspacing="0" align="center"><tr>
+<td class="hide" style="width: 100%; text-align: center;" id="checkcontinue"><input type="checkbox" name="continuereport" id="continuereport" value="true">&nbsp;<%= wp.key(wp.getParamReportContinueKey()) %></td>
 </tr></table>
 
 </form>
