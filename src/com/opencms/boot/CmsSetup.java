@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetup.java,v $
-* Date   : $Date: 2001/08/22 14:33:16 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2001/08/23 09:38:27 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -1040,6 +1040,10 @@ public class CmsSetup {
       else  {
           return "";
       }
+  }
+
+  public void setDb(String db)  {
+      m_dbSetupProps.put("database",db);
   }
 
   public Hashtable getReplacer() {
