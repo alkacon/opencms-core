@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestCreateWriteResource.java,v $
- * Date   : $Date: 2004/08/10 15:42:43 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/08/11 10:50:02 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import junit.framework.TestSuite;
  * Unit tests for the create and import methods.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TestCreateWriteResource extends OpenCmsTestCase {
   
@@ -73,7 +73,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         
         TestSuite suite = new TestSuite();
         suite.setName(TestCreateWriteResource.class.getName());
-                
+        
         suite.addTest(new TestCreateWriteResource("testImportResource"));
         suite.addTest(new TestCreateWriteResource("testImportResourceAgain"));
         suite.addTest(new TestCreateWriteResource("testImportSibling"));        
@@ -192,10 +192,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
        CmsResource created = cms.readResource(resourcename);
        if (! created.getResourceId().equals(original.getResourceId())) {
            fail("A created folder that replaced a deleted folder must have the same resource id!");
-       }
-       if (! created.getContentId().equals(original.getContentId())) {
-           fail("A created folder that replaced a deleted folder must have the same content id!");
-       }        
+       }      
        
        // publish the project
        cms.unlockProject(cms.getRequestContext().currentProject().getId());
@@ -299,10 +296,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
        CmsResource created = cms.readResource(resourcename);
        if (created.getResourceId().equals(original.getResourceId())) {
            fail("A created resource that replaced a deleted resource must not have the same resource id!");
-       }
-       if (created.getContentId().equals(original.getContentId())) {
-           fail("A created resource that replaced a deleted resource must not have the same content id!");
-       }       
+       }     
        
        // publish the project
        cms.unlockProject(cms.getRequestContext().currentProject().getId());
@@ -327,7 +321,6 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         
         // create a new resource
         CmsResource resource = new CmsResource (
-            CmsUUID.getNullUUID(),
             CmsUUID.getNullUUID(),
             CmsUUID.getNullUUID(),
             CmsUUID.getNullUUID(),            
@@ -388,7 +381,6 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         CmsResource resource = new CmsResource (
             CmsUUID.getNullUUID(),
             CmsUUID.getNullUUID(),
-            CmsUUID.getNullUUID(),
             CmsUUID.getNullUUID(),            
             "test1",
             CmsResourceTypeFolder.C_RESOURCE_TYPE_ID,
@@ -446,7 +438,6 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         
         // create a new resource
         CmsResource resource = new CmsResource (
-            CmsUUID.getNullUUID(),
             CmsUUID.getNullUUID(),
             CmsUUID.getNullUUID(),
             CmsUUID.getNullUUID(),            
@@ -512,8 +503,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         CmsResource resource = new CmsResource (
             CmsUUID.getNullUUID(),
             CmsUUID.getNullUUID(),
-            CmsUUID.getNullUUID(),
-            CmsUUID.getNullUUID(),
+            CmsUUID.getNullUUID(), 
             "test1.html",
             CmsResourceTypePlain.C_RESOURCE_TYPE_ID,
             0,
@@ -593,11 +583,11 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         // create a new resource
         CmsResource resource;
 
+        // cw: Test changed: must now provide correct content size in resource
         resource= new CmsResource (
             file.getStructureId(),
             file.getResourceId(),
             CmsUUID.getNullUUID(),
-            file.getContentId(),
             CmsResource.getName(resourcename2),
             CmsResourceTypePlain.C_RESOURCE_TYPE_ID,
             0,
@@ -611,7 +601,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             CmsResource.DATE_RELEASED_DEFAULT,
             CmsResource.DATE_EXPIRED_DEFAULT,
             1,
-            0
+            content.length
         );
         
         properties.add(prop2);         
@@ -652,7 +642,6 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             file.getStructureId(),
             file.getResourceId(),
             CmsUUID.getNullUUID(),
-            file.getContentId(),
             CmsResource.getName(resourcename1),
             CmsResourceTypePlain.C_RESOURCE_TYPE_ID,
             0,
