@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2003/02/02 10:22:39 $
-* Version: $Revision: 1.353 $
+* Date   : $Date: 2003/02/09 16:51:19 $
+* Version: $Revision: 1.354 $
 
 *
 * This library is part of OpenCms -
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.353 $ $Date: 2003/02/02 10:22:39 $
+ * @version $Revision: 1.354 $ $Date: 2003/02/09 16:51:19 $
 
  *
  */
@@ -3117,25 +3117,27 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
         throws CmsException {
         // check, if the resourceTypes were read bevore
         if(m_resourceTypes == null) {
-            // get the resourceTypes from the registry
-            m_resourceTypes = new Hashtable();
-            Vector resTypeNames = new Vector();
-            Vector launcherTypes = new Vector();
-            Vector launcherClass = new Vector();
-            Vector resourceClass = new Vector();
-            int resTypeCount = m_registry.getResourceTypes(resTypeNames, launcherTypes, launcherClass, resourceClass);
-            for (int i = 0; i < resTypeCount; i++){
-                // add the resource-type
-                try{
-                    Class c = Class.forName((String)resourceClass.elementAt(i));
-                    I_CmsResourceType resTypeClass = (I_CmsResourceType) c.newInstance();
-                    resTypeClass.init(i, Integer.parseInt((String)launcherTypes.elementAt(i)),
-                                         (String)resTypeNames.elementAt(i),
-                                         (String)launcherClass.elementAt(i));
-                    m_resourceTypes.put((String)resTypeNames.elementAt(i), resTypeClass);
-                }catch(Exception e){
-                    e.printStackTrace();
-                    throw new CmsException("[" + this.getClass().getName() + "] Error while getting ResourceType: " + (String)resTypeNames.elementAt(i) + " from registry ", CmsException.C_UNKNOWN_EXCEPTION );
+            synchronized(this) {
+                // get the resourceTypes from the registry
+                m_resourceTypes = new Hashtable();
+                Vector resTypeNames = new Vector();
+                Vector launcherTypes = new Vector();
+                Vector launcherClass = new Vector();
+                Vector resourceClass = new Vector();
+                int resTypeCount = m_registry.getResourceTypes(resTypeNames, launcherTypes, launcherClass, resourceClass);
+                for (int i = 0; i < resTypeCount; i++){
+                    // add the resource-type
+                    try{
+                        Class c = Class.forName((String)resourceClass.elementAt(i));
+                        I_CmsResourceType resTypeClass = (I_CmsResourceType) c.newInstance();
+                        resTypeClass.init(i, Integer.parseInt((String)launcherTypes.elementAt(i)),
+                                             (String)resTypeNames.elementAt(i),
+                                             (String)launcherClass.elementAt(i));
+                        m_resourceTypes.put((String)resTypeNames.elementAt(i), resTypeClass);
+                    }catch(Exception e){
+                        e.printStackTrace();
+                        throw new CmsException("[" + this.getClass().getName() + "] Error while getting ResourceType: " + (String)resTypeNames.elementAt(i) + " from registry ", CmsException.C_UNKNOWN_EXCEPTION );
+                    }
                 }
             }
         }
