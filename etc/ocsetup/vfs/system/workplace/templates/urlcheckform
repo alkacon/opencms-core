@@ -3,7 +3,7 @@
 
 <!-- enable this for debugging -->
 <debug><![CDATA[false]]></debug>
-<debug_receiver><![CDATA[edna.falkenhan@framfab.de]]></debug_receiver>
+<debug_receiver><![CDATA[nobody@nowhere.de]]></debug_receiver>
 
 
 <!-- the data for the email -->
@@ -33,6 +33,12 @@ Last check of external links on ]]><process>actdate</process><![CDATA[<br><br>
 ]]><process>linkname</process><![CDATA[<br> 
 ]]>
 </single_link>
+
+<ownermail_link>
+<![CDATA[
+]]><process>ownerlinkname</process><![CDATA[ (<a href="]]><process>ownerlinkurl</process><![CDATA[">]]><process>ownerlinkurl</process><![CDATA[</a>)<br> 
+]]>
+</ownermail_link>
 
 <TEMPLATE>
 </TEMPLATE>
