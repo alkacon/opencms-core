@@ -14,7 +14,7 @@ import java.util.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.14 $ $Date: 2000/01/27 15:32:19 $
+ * @version $Revision: 1.15 $ $Date: 2000/01/27 16:27:54 $
  */
 public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLogChannels,
                                                                         I_CmsWpConstants {
@@ -210,4 +210,47 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
     public String getXmlDataValue(String tag) throws CmsException {
         return getDataValue(tag);
     }               
+    
+  	/**
+	 * Gets the text and CDATA content of a processed datablock from the 
+	 * datablock hashtable.
+	 * <P>
+	 * The userObj Object is passed to all called user methods.
+	 * By using this, the initiating class can pass customized data to its methods.
+	 * 
+	 * @param tag Key for the datablocks hashtable.
+	 * @param callingObject Object that should be used to look up user methods.
+	 * @param userObj any object that should be passed to user methods
+	 * @return Processed datablock for the given key.
+	 * @exception CmsException
+	 */
+	public String getProcessedXmlDataValue(String tag, Object callingObject, Object userObj) 
+            throws CmsException {
+        return getProcessedDataValue(tag, callingObject, userObj);
+	}
+
+  	/**
+	 * Gets the text and CDATA content of a processed datablock from the 
+	 * datablock hashtable.
+	 * 
+	 * @param tag Key for the datablocks hashtable.
+	 * @return Processed datablock for the given key.
+	 * @exception CmsException
+	 */
+	public String getProcessedDataValue(String tag) throws CmsException {
+        return getProcessedDataValue(tag);
+    }
+
+  	/**
+	 * Gets the text and CDATA content of a processed datablock from the 
+	 * datablock hashtable.
+	 * 
+	 * @param tag Key for the datablocks hashtable.
+	 * @param callingObject Object that should be used to look up user methods.
+	 * @return Processed datablock for the given key.
+	 * @exception CmsException
+	 */
+    public String getProcessedDataValue(String tag, Object callingObject) throws CmsException {
+        return getProcessedDataValue(tag, callingObject);
+    }    
 }
