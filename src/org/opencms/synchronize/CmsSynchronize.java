@@ -1,9 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2003/08/14 15:37:27 $
- * Version: $Revision: 1.5 $
- * Date   : $Date: 2003/08/14 15:37:27 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/08/28 12:40:37 $
+ * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/08/28 12:40:37 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import java.util.Vector;
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.5 $ $Date: 2003/08/14 15:37:27 $
+ * @version $Revision: 1.6 $ $Date: 2003/08/28 12:40:37 $
  */
 public class CmsSynchronize {
 
@@ -193,8 +193,9 @@ public class CmsSynchronize {
         //get all resources in the given folder
         Vector resources = m_cms.getResourcesInFolder(folder);
         // now look through all resources in the folder
-        for (int i = 0; i < resources.size(); i++) {
+        for (int i = 0; i < resources.size(); i++) {            
             CmsResource res = (CmsResource)resources.elementAt(i);
+            log("[SyncVfstoFs]+"+res.getFullResourceName());
             // test if the resource is marked as deleted. if so,
             // do nothing, the corrsponding file in the FS will be removed later
             if (res.getState() != I_CmsConstants.C_STATE_DELETED) {
@@ -261,6 +262,7 @@ public class CmsSynchronize {
         for (int i = 0; i < res.length; i++) {
             // get the corrsponding name in the VFS
             String vfsFile = getFilenameInVfs(res[i]);
+            log("[removeFromFs]+"+vfsFile);
             // recurse if it is an directory, we must go depth first to delete 
             // files
             if (res[i].isDirectory()) {
@@ -325,9 +327,10 @@ public class CmsSynchronize {
             res = fsFile.listFiles();
 
             // now loop through all resources
-            for (int i = 0; i < res.length; i++) {
+            for (int i = 0; i < res.length; i++) {                
                 // get the relative filename
                 String resname = res[i].getAbsolutePath();
+                log("[copyFromFS]+"+resname);
                 resname = resname.substring(m_synchronizePath.length(), resname.length());
                 // translate the folder seperator if nescessary
                 resname = resname.replace(File.separatorChar, '/');
@@ -925,5 +928,12 @@ public class CmsSynchronize {
             } catch (IOException e) { }
         }
     }
+    
+    
+    private void log(String logdata) {
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_STREAMING))
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_STREAMING, logdata);
+    }
+    
 
 }
