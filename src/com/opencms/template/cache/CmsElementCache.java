@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementCache.java,v $
-* Date   : $Date: 2001/06/01 08:22:46 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2001/06/01 13:13:45 $
+* Version: $Revision: 1.7 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -61,6 +61,9 @@ public class CmsElementCache {
     public CmsElementCache(int uriCachesize, int elementCachesize, int variantCachesize) {
         m_uriLocator = new CmsUriLocator(uriCachesize);
         m_elementLocator = new CmsElementLocator(elementCachesize);
+        if (variantCachesize < 1){
+            variantCachesize = 100;
+        }
         m_variantCachesize = variantCachesize;
     }
 
