@@ -153,7 +153,7 @@
                 <lock>Leider konnte die Datei nicht auf Sie gesperrt werden.</lock>
                 <lockchange>Leider konnte die Dateisperrung nicht übernommen werden.</lockchange>
                 <login>Der Benutzer konnte nicht im System angemeldet werden.</login> 
-                <projectlockchange>Leider konnte das Projekt nicht wieder frei gegeben werden.</projectlockchange>
+                <projectlockchange>Leider konnte das Projekt nicht wieder freigegeben werden.</projectlockchange>
                 <newproject>Leider konnte das Projekt nicht angelegt werden.</newproject>
                 <newprop>Die neue Eigenschaft konnte leider nicht angelegt werden.</newprop>
                 <newextension>Die neue Dateiendung konnte leider nicht zugeordnet werden.</newextension>
@@ -168,7 +168,7 @@
                 <staticexport>Leider konnte der statische Export nicht vollständig ausgführt werden.</staticexport>
                 <syncfolder>Leider konnten die Ordner nicht synchronisiert werden.</syncfolder>
                 <syncproperties>Die Daten für die Synchronisierung konnten nicht gespeichert werden.</syncproperties>
-                <unlock>Leider konnte die Datei nicht wieder frei gegeben werden.</unlock>
+                <unlock>Leider konnte die Datei nicht wieder freigegeben werden.</unlock>
                 <upload>Die Datei konnte nicht hochgeladen werden.</upload>
             </message>
             <reason>
@@ -618,8 +618,8 @@
                 <lockchange>Wollen Sie die Sperrung wirklich übernehmen?</lockchange>
                 <lockchangefolder>Wollen Sie die Sperrung wirklich übernehmen?</lockchangefolder>
                 <syncfolder>Wollen Sie wirklich synchronisieren?</syncfolder>
-                <unlock> Soll die Datei wirklich frei gegeben werden?</unlock>
-                <unlockfolder>Soll der Ordner wirklich frei gegeben werden?</unlockfolder>
+                <unlock> Soll die Datei wirklich freigegeben werden?</unlock>
+                <unlockfolder>Soll der Ordner wirklich freigegeben werden?</unlockfolder>
             </message1>
             <message2>
                 <ok><![CDATA[&nbsp;]]></ok>
