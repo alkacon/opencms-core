@@ -2,13 +2,14 @@
 <XMLTEMPLATE>
     <ELEMENTDEF name="contenttemplate">
         <CLASS>com.opencms.template.CmsXmlTemplate</CLASS>
-        <TEMPLATE>/content/contenttemplates/empty</TEMPLATE>
+        <TEMPLATE>../contenttemplates/empty</TEMPLATE>
     </ELEMENTDEF>
     <ELEMENTDEF name="frametemplate">
         <CLASS>com.opencms.template.CmsXmlTemplate</CLASS>
-        <TEMPLATE>/content/frametemplates/empty</TEMPLATE>
+        <TEMPLATE>../frametemplates/empty</TEMPLATE>
     </ELEMENTDEF>   
 <TEMPLATE>
 <ELEMENT name="frametemplate"/>
 </TEMPLATE>
 </XMLTEMPLATE>
+
