@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/03/05 18:44:55 $
-* Version: $Revision: 1.277 $
+* Date   : $Date: 2003/03/18 01:52:03 $
+* Version: $Revision: 1.278 $
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -75,7 +75,7 @@ import source.org.apache.java.util.Configurations;
  * @author Anders Fugmann
  * @author Finn Nielsen
  * @author Mark Foley
- * @version $Revision: 1.277 $ $Date: 2003/03/05 18:44:55 $ *
+ * @version $Revision: 1.278 $ $Date: 2003/03/18 01:52:03 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     
@@ -5881,7 +5881,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @throws CmsException Throws CmsException if operation was not succesful
      */
-    public Map readProperties(int projectId, CmsResource resource, int resourceType)
+    public HashMap readProperties(int projectId, CmsResource resource, int resourceType)
         throws CmsException {
 
         HashMap returnValue = new HashMap();

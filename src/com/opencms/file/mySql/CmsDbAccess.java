@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/03/05 18:44:56 $
-* Version: $Revision: 1.84 $
+* Date   : $Date: 2003/03/18 01:51:54 $
+* Version: $Revision: 1.85 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,6 @@ import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Vector;
 
 import source.org.apache.java.util.Configurations;
@@ -64,7 +63,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.84 $ $Date: 2003/03/05 18:44:56 $ *
+ * @version $Revision: 1.85 $ $Date: 2003/03/18 01:51:54 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -985,8 +984,8 @@ public CmsFile readFile(int projectId, int onlineProjectId, String filename, boo
      * 
      * @see com.opencms.file.genericSql.CmsDbAccess#readAllProperties(int, CmsResource, int)
      */
-    public Map readProperties(int projectId, CmsResource resource, int resourceType) throws CmsException {
-        Map original = super.readProperties(projectId, resource, resourceType);
+    public HashMap readProperties(int projectId, CmsResource resource, int resourceType) throws CmsException {
+        HashMap original = super.readProperties(projectId, resource, resourceType);
         if (singleByteEncoding()) return original; 
         HashMap result = new HashMap(original.size());
         Iterator keys = original.keySet().iterator();        
