@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2003/05/20 11:31:16 $
-* Version: $Revision: 1.61 $
+* Date   : $Date: 2003/07/14 16:22:21 $
+* Version: $Revision: 1.62 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -75,9 +75,9 @@ import java.util.Vector;
  * 
  * @author Michael Knoll
  * @author Michael Emmerich
- * @version $Revision: 1.61 $
+ * @version $Revision: 1.62 $
  */
-public abstract class A_CmsBackoffice extends CmsWorkplaceDefault implements I_CmsConstants{
+public abstract class A_CmsBackoffice extends CmsWorkplaceDefault implements I_CmsConstants {
 
   public static int C_NOT_LOCKED = -1;
   public static int C_NO_ACCESS = -2;
@@ -86,92 +86,141 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault implements I_C
   private static String C_DONE_SELECTOR="done";
 
     /** The style for unchanged files or folders */
-    private final static String C_STYLE_UNCHANGED = "dateingeandert";
+    private static final  String C_STYLE_UNCHANGED = "dateingeandert";
 
 
     /** The style for files or folders not in project*/
-    private final static String C_STYLE_NOTINPROJECT = "dateintprojekt";
+    private static final String C_STYLE_NOTINPROJECT = "dateintprojekt";
 
 
     /** The style for new files or folders */
-    private final static String C_STYLE_NEW = "dateineu";
+    private static final String C_STYLE_NEW = "dateineu";
 
 
     /** The style for deleted files or folders */
-    private final static String C_STYLE_DELETED = "dateigeloescht";
+    private static final String C_STYLE_DELETED = "dateigeloescht";
 
 
     /** The style for changed files or folders */
-    private final static String C_STYLE_CHANGED = "dateigeaendert";
+    private static final String C_STYLE_CHANGED = "dateigeaendert";
 
     /** Default value of permission*/
-    protected final static int C_DEFAULT_PERMISSIONS=383;
+    protected static final int C_DEFAULT_PERMISSIONS=383;
+     
     // possible accessflags
-    protected final static String[] C_ACCESS_FLAGS = {"1","2","4","8","16","32","64","128","256"};
+    protected static final String[] C_ACCESS_FLAGS = {"1", "2", "4", "8", "16", "32", "64", "128", "256"};
 
   /**
   * Gets the backoffice url of the module.
+  * 
+  * @param cms the cms object
+  * @param tagcontent the tag body content
+  * @param doc the xml document
+  * @param userObject additional parameter values
   * @return A string with the backoffice url
+  * @throws Exception if something goes wrong
   */
-  abstract public String getBackofficeUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
-                                 Object userObject) throws Exception ;
+  public abstract String getBackofficeUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
+                                 Object userObject) throws Exception;
   /**
   * Gets the create url of the module.
+  * 
+  * @param cms the cms object
+  * @param tagcontent the tag body content
+  * @param doc the xml document
+  * @param userObject additional parameter values
   * @return a string with the create url
+  * @throws Exception if something goes wrong
   */
-  abstract public String getCreateUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
-                             Object userObject) throws Exception ;
+  public abstract String getCreateUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
+                             Object userObject) throws Exception;
 
   /**
   * Gets the edit url of the module.
+  * 
+  * @param cms the cms object
+  * @param tagcontent the tag body content
+  * @param doc the xml document
+  * @param userObject additional parameter values
   * @return A string with the edit url
+  * @throws Exception if something goes wrong
   */
-  abstract public String getEditUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
+  public abstract String getEditUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
                            Object userObject) throws Exception ;
 
   /**
   * Gets the edit url of the module.
+  * 
+  * @param cms the cms object
+  * @param tagcontent the tag body content
+  * @param doc the xml document
+  * @param userObject additional parameter values
   * @return A string with the edit url
+  * @throws Exception if something goes wrong
   */
   public String getDeleteUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
                              Object userObject) throws Exception {
 
-    return getBackofficeUrl(cms, tagcontent,doc,userObject);
+    return getBackofficeUrl(cms, tagcontent, doc, userObject);
   }
 
   /**
   * Gets the undelete url of the module.
+  * 
+  * @param cms the cms object
+  * @param tagcontent the tag body content
+  * @param doc the xml document
+  * @param userObject additional parameter values
   * @return A string with the undelete url
+  * @throws Exception if something goes wrong
   */
   public String getUndeleteUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
                              Object userObject) throws Exception {
 
-    return getBackofficeUrl(cms, tagcontent,doc,userObject);
+    return getBackofficeUrl(cms, tagcontent, doc, userObject);
   }
 
   /**
   * Gets the publish url of the module.
+  * 
+  * @param cms the cms object
+  * @param tagcontent the tag body content
+  * @param doc the xml document
+  * @param userObject additional parameter values
   * @return A string with the publish url
+  * @throws Exception if something goes wrong
   */
   public String getPublishUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
                              Object userObject) throws Exception {
 
-    return getBackofficeUrl(cms, tagcontent,doc,userObject);
+    return getBackofficeUrl(cms, tagcontent, doc, userObject);
   }
 
   /**
   * Gets the history url of the module.
+  * 
+  * @param cms the cms object
+  * @param tagcontent the tag body content
+  * @param doc the xml document
+  * @param userObject additional parameter values
   * @return A string with the history url
+  * @throws Exception if something goes wrong
   */
   public String getHistoryUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
                              Object userObject) throws Exception {
 
-    return getBackofficeUrl(cms, tagcontent,doc,userObject);
+    return getBackofficeUrl(cms, tagcontent, doc, userObject);
   }
 
   /**
-  * Gets the redirect url of the module. This URL is called, when an entry of the file list is selected
-  * @return A string with the  url.
+  * Gets the redirect url of the module. This URL is called, when an entry of the file list is selected.
+  * 
+  * @param cms the cms object
+  * @param tagcontent the tag body content
+  * @param doc the xml document
+  * @param userObject additional parameter values
+  * @return a string with the  url
+  * @throws Exception if something goes wrong
   */
   public String getUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws Exception {
     return "";
@@ -179,7 +228,13 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault implements I_C
 
   /**
   * Gets the setup url of the module. This is the url of the setup page for this module.
-  * @return A string with the  setup url.
+  * 
+  * @param cms the cms object
+  * @param tagcontent the tag body content
+  * @param doc the xml document
+  * @param userObject additional parameter values
+  * @return a string with the  setup url
+  * @throws Exception if something goes wrong
   */
   public String getSetupUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws Exception {
     return "";
@@ -187,7 +242,13 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault implements I_C
 
   /**
   * Gets the preview url of the module. This is the url of the preview page for this module.
-  * @return A string with the  setup url.
+  * 
+  * @param cms the cms object
+  * @param tagcontent the tag body content
+  * @param doc the xml document
+  * @param userObject additional parameter values
+  * @return a string with the  setup url
+  * @throws Exception if something goes wrong
   */
   public String getPreviewUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws Exception {
     return "";
@@ -200,13 +261,14 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault implements I_C
  * special getContent method. It just has to extend the methods of this class!
  * Using reflection, this method creates the table headline and table content
  * with the layout provided by the template automatically!
+ * 
  * @param cms A_CmsObject Object for accessing system resources
  * @param templateFile Filename of the template file
  * @param elementName <em>not used here</em>.
  * @param parameters <em>not used here</em>.
  * @param templateSelector template section that should be processed.
  * @return Processed content of the given template file.
- * @throws CmsException
+ * @throws CmsException if something goes wrong
  */
 
 public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
@@ -264,13 +326,13 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 */
 
     String hasFilterParam = (String) session.getValue("filterparameter");
-    template.setData("filternumber","0");
+    template.setData("filternumber", "0");
 
     //change filter
     if ((hasFilterParam == null) && (filterParam == null) && (setaction == null)) {
       if (selectBox != null) {
         session.putValue("filter", selectBox);
-        template.setData("filternumber",selectBox);
+        template.setData("filternumber", selectBox);
       }
     } else {
       template.setData("filternumber", (String)session.getValue("filter"));
@@ -395,7 +457,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
           idsave = null;
         }
 
-        if(parentId != null) {
+        if (parentId != null) {
           session.putValue("parentId", parentId);
         }
 
@@ -411,7 +473,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
         parameters.put("id", id);
             session.putValue("idsave", id);
           }
-          return getContentNewInternal(cms,id,cd,session,template,elementName,parameters,templateSelector);
+          return getContentNewInternal(cms, id, cd, session, template, elementName, parameters, templateSelector);
 
         // --- This was the part when getContentNew is called ---
     }
@@ -424,14 +486,14 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
       return returnProcess;
     } else {
       //process the body frame containing the table
-          if(action == null) {
+          if (action == null) {
             action = "";
           }
-          if (action.equalsIgnoreCase("list")){
+          if (action.equalsIgnoreCase("list")) {
             //process the list output
             // clear "idsave" here in case user verification of data failed and input has to be shown again ...
             session.removeValue("idsave");
-            if(isExtendedList()){
+            if (isExtendedList()) {
                 returnProcess = getContentExtendedList(cms, template, elementName, parameters, templateSelector);
             } else {
                 returnProcess = getContentList(cms, template, elementName, parameters, templateSelector);
@@ -452,7 +514,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
         parameters.put("id", id);
                 session.putValue("idsave", id);
               }
-              return getContentEditInternal(cms,id,cd,session,template,elementName,parameters,templateSelector);
+              return getContentEditInternal(cms, id, cd, session, template, elementName, parameters, templateSelector);
 
            // --- This was the part where getContentEdit is called ---
 
@@ -466,21 +528,21 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
               session.putValue("idsave", id);
         }
         //check if the cd should be undeleted
-        if(idundelete != null){
+        if (idundelete != null) {
             returnProcess = getContentUndelete(cms, template, elementName, parameters, templateSelector);
             return returnProcess;
         }
         //get marker for accessing the publish dialog
         //check if the cd should be published
         String idpublishsave = (String) session.getValue("idpublish");
-        if(idpublish != null || idpublishsave != null){
+        if (idpublish != null || idpublishsave != null) {
             returnProcess = getContentDirectPublish(cms, template, elementName, parameters, templateSelector);
             return returnProcess;
         }
         //get marker for accessing the history dialog
         //check if the history of cd should be dispayed
         String idhistorysave = (String) session.getValue("idhistory");
-        if(idhistory != null || idhistorysave != null){
+        if (idhistory != null || idhistorysave != null) {
             returnProcess = getContentHistory(cms, template, elementName, parameters, templateSelector);
             return returnProcess;
         }
@@ -488,7 +550,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
         //get marker for accessing the change permissions dialog
         //check if the permissions of cd should be dispayed
         String idpermissionssave = (String) session.getValue("idpermissions");
-        if(idpermissions != null || idpermissionssave != null){
+        if (idpermissions != null || idpermissionssave != null) {
             returnProcess = getContentPermissions(cms, template, elementName, parameters, templateSelector);
             return returnProcess;
         }
@@ -496,7 +558,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
         //get marker for accessing the copy dialog
         //check if the permissions of cd should be dispayed
         String idcopysave = (String) session.getValue("idcopy");
-        if(idcopy != null || idcopysave != null){
+        if (idcopy != null || idcopysave != null) {
             returnProcess = getContentCopy(cms, template, elementName, parameters, templateSelector);
             return returnProcess;
         }
@@ -507,7 +569,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
         if (((iddelete != null) || (iddeletesave != null)) && (idlock == null)) {
           returnProcess = getContentDelete(cms, template, elementName, parameters, templateSelector);
               return returnProcess;
-            }else {
+            } else {
           //access lock dialog
           returnProcess = getContentLock(cms, template, elementName, parameters, templateSelector);
           //finally return processed data
@@ -527,6 +589,10 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 
   /**
   * Gets the content definition class method constructor
+  * 
+  * @param cms the cms object
+  * @param contentClass the content class
+  * @param contentId the id of the content
   * @return content definition object
   */
   protected Object getContentDefinition(CmsObject cms, Class contentClass, CmsUUID contentId) {
@@ -535,30 +601,33 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
         Constructor c = contentClass.getConstructor(new Class[] {CmsObject.class, CmsUUID.class});
         o = c.newInstance(new Object[] {cms, contentId});
       } catch (InvocationTargetException ite) {
-        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
       A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: Invocation target exception!");
         }
       } catch (NoSuchMethodException nsm) {
-        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
           A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: Requested method was not found!");
     }
       } catch (InstantiationException ie) {
-    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
       A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: the reflected class is abstract!");
         }
       } catch (Exception e) {
-        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
       A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: Other exception! "+e);
     }
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-         A_OpenCms.log(C_OPENCMS_INFO, e.getMessage() );
+        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+         A_OpenCms.log(C_OPENCMS_INFO, e.getMessage());
         }
       }
     return o;
   }
 
   /**
-  * Gets the content definition class method constructor
+  * Gets the content definition class method constructor.<p>
+  * 
+  * @param cms the cms object
+  * @param cdClass the content definition class
   * @return content definition object
   */
   protected Object getContentDefinition(CmsObject cms, Class cdClass) {
@@ -567,30 +636,34 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
         Constructor c = cdClass.getConstructor(new Class[] {CmsObject.class});
     o = c.newInstance(new Object[] {cms});
       } catch (InvocationTargetException ite) {
-    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
       A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: Invocation target exception!");
     }
       } catch (NoSuchMethodException nsm) {
-    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
       A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: Requested method was not found!");
     }
       } catch (InstantiationException ie) {
-    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
       A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: the reflected class is abstract!");
     }
       } catch (Exception e) {
-    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
       A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: Other exception! "+e);
     }
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-            A_OpenCms.log(C_OPENCMS_INFO, e.getMessage() );
+        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+            A_OpenCms.log(C_OPENCMS_INFO, e.getMessage());
         }
       }
     return o;
   }
 
   /**
-  * Gets the content definition class method constructor
+  * Gets the content definition class method constructor.<p>
+  * 
+  * @param cms the cms object
+  * @param cdClass the content definition class
+  * @param id the id of the content
   * @return content definition object
   */
   protected Object getContentDefinition(CmsObject cms, Class cdClass, String id) {
@@ -599,23 +672,23 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
       Constructor c = cdClass.getConstructor(new Class[] {CmsObject.class, String.class});
       o = c.newInstance(new Object[] {cms, id});
     } catch (InvocationTargetException ite) {
-      if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+      if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
         A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: Invocation target exception!");
       }
     } catch (NoSuchMethodException nsm) {
-      if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+      if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
     A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: Requested method was not found!");
       }
     } catch (InstantiationException ie) {
-      if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+      if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
     A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: the reflected class is abstract!");
       }
     } catch (Exception e) {
-      if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+      if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
         A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: Other exception! "+e);
       }
-    if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-      A_OpenCms.log(C_OPENCMS_INFO, e.getMessage() );
+    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+      A_OpenCms.log(C_OPENCMS_INFO, e.getMessage());
     }
   }
   return o;
@@ -623,14 +696,14 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
   
   /**
    * @param cms A CmsObject to read the user with
-   * @param id The id of the user to read
+   * @param userId The id of the user to read
    * @return The name of the user, or the id (as a String) in case the user has been deleted
    */
   public String readSaveUserName(CmsObject cms, CmsUUID userId) {
       String userName = null;
-      try{
+      try {
           userName = cms.readUser(userId).getName();
-      } catch(Exception e) {
+      } catch (Exception e) {
           userName = "" + userId;
       }
       return userName;
@@ -638,14 +711,14 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 
     /**
    * @param cms A CmsObject to read the group with
-   * @param id The id of the group to read
+   * @param groupId The id of the group to read
    * @return The name of the group, or the id (as a String) in case the group has been deleted
    */
   public String readSaveGroupName(CmsObject cms, CmsUUID groupId) {
       String groupName = null;
-      try{
+      try {
           groupName = cms.readGroup(groupId).getName();
-      } catch(Exception e) {
+      } catch (Exception e) {
           groupName = "" + groupId;
       }
       return groupName;
@@ -658,13 +731,13 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
   * <code>entryTitle<code> will be displayed in the delete dialog
   *
   * @param cms A_CmsObject Object for accessing system resources
-  * @param templateFile Filename of the template file
+  * @param template the template file
   * @param elementName not used here
   * @param parameters get the parameters action for the button activity
   * and id for the used content definition instance object
   * @param templateSelector template section that should be processed.
   * @return Processed content of the given template file.
-  * @throws CmsException
+  * @throws CmsException if something goes wrong
   */
 
 public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
@@ -754,13 +827,13 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
      * <code>entryTitle<code> will be displayed in the delete dialog
      *
      * @param cms A_CmsObject Object for accessing system resources
-     * @param templateFile Filename of the template file
+     * @param template the template
      * @param elementName not used here
      * @param parameters get the parameters action for the button activity
      * and id for the used content definition instance object
      * @param templateSelector template section that should be processed.
      * @return Processed content of the given template file.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     public byte[] getContentUndelete(CmsObject cms, CmsXmlWpTemplateFile template, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
         //return var
@@ -810,7 +883,7 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
         //get undelete method and undelete content definition instance
         try {
             ((I_CmsExtendedContentDefinition) o).undelete(cms);
-        }catch (Exception e) {
+        } catch (Exception e) {
             templateSelector = "undeleteerror";
             template.setData("undeleteerror", e.getMessage());
         }
@@ -827,13 +900,13 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
      * <code>entryTitle<code> will be displayed in the delete dialog
      *
      * @param cms A_CmsObject Object for accessing system resources
-     * @param templateFile Filename of the template file
+     * @param template the template file
      * @param elementName not used here
      * @param parameters get the parameters action for the button activity
      * and id for the used content definition instance object
      * @param templateSelector template section that should be processed.
      * @return Processed content of the given template file.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     public byte[] getContentCopy(CmsObject cms, CmsXmlWpTemplateFile template, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
         //return var
@@ -895,7 +968,7 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
             //get copy method and copy content definition instance
             try {
                 ((I_CmsExtendedContentDefinition) o).copy(cms);
-            }catch (Exception e) {
+            } catch (Exception e) {
                 templateSelector = "copyerror";
                 template.setData("copyerror", e.getMessage());
             }
@@ -912,13 +985,13 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
      * <code>entryTitle<code> will be displayed in the direct publish dialog
      *
      * @param cms A_CmsObject Object for accessing system resources
-     * @param templateFile Filename of the template file
+     * @param template the template
      * @param elementName not used here
      * @param parameters get the parameters action for the button activity
      * and id for the used content definition instance object
      * @param templateSelector template section that should be processed.
      * @return Processed content of the given template file.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     public byte[] getContentDirectPublish(CmsObject cms, CmsXmlWpTemplateFile template, String elementName,
                                           Hashtable parameters, String templateSelector) throws CmsException {
@@ -928,7 +1001,7 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
         //create new language file object
         CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
                     
-        if(cms.isAdmin() || cms.isManagerOfProject()){
+        if (cms.isAdmin() || cms.isManagerOfProject()) {
             // session will be created or fetched
             I_CmsSession session = (CmsSession) cms.getRequestContext().getSession(true);
             //get the class of the content definition
@@ -993,15 +1066,15 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
                 //get publish method and publish content definition instance
                 try {
                     ((I_CmsExtendedContentDefinition) o).publishResource(cms);
-                }catch (Exception e) {
+                } catch (Exception e) {
                     templateSelector = "publisherror";
                     template.setData("publisherror", e.getMessage());
                 }
             }
         } else {
             templateSelector = "publisherror";
-            template.setData("publisherror", lang.getLanguageValue("error.message.publishresource")+
-                             "<br>"+lang.getLanguageValue("error.reason.publishresource"));
+            template.setData("publisherror", lang.getLanguageValue("error.message.publishresource")
+                             +"<br>"+lang.getLanguageValue("error.reason.publishresource"));
         }
 
         //finally start the processing
@@ -1016,13 +1089,13 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
      * <code>entryTitle<code> will be displayed in the history dialog
      *
      * @param cms A_CmsObject Object for accessing system resources
-     * @param templateFile Filename of the template file
+     * @param template the template
      * @param elementName not used here
      * @param parameters get the parameters action for the button activity
      * and id for the used content definition instance object
      * @param templateSelector template section that should be processed.
      * @return Processed content of the given template file.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     public byte[] getContentHistory(CmsObject cms, CmsXmlWpTemplateFile template, String elementName,
                                           Hashtable parameters, String templateSelector) throws CmsException {
@@ -1062,9 +1135,9 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
                 session.removeValue("idhistory");
             }
             // confirmation button pressed, process data!
-        } else if (action.equalsIgnoreCase("detail")){
+        } else if (action.equalsIgnoreCase("detail")) {
             String versionId = (String)parameters.get("version");
-            if(versionId != null && !"".equals(versionId)){
+            if (versionId != null && !"".equals(versionId)) {
                 templateSelector = "historydetail";
                 //access content definition constructor by reflection
                 Object o = null;
@@ -1075,17 +1148,17 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
                     String projectName = "";
                     String projectDescription = "";
                     String userName = "";
-                    try{
+                    try {
                         CmsProject theProject = cms.readBackupProject(curVersion.getLockedInProject());
                         projectName = theProject.getName();
                         projectDescription = theProject.getDescription();
-                    } catch (CmsException ex){
+                    } catch (CmsException ex) {
                         projectName = "";
                     }
-                    try{
+                    try {
                         CmsUser theUser= cms.readUser(curVersion.getLastModifiedBy());
                         userName = theUser.getName()+" "+theUser.getFirstname()+" "+theUser.getLastname();
-                    } catch (CmsException ex){
+                    } catch (CmsException ex) {
                         userName = curVersion.getLastModifiedByName();
                     }
                     template.setData("histproject", projectName);
@@ -1099,17 +1172,17 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
                     template.setData("histdescription", projectDescription);
                     CmsUUID curUser = cms.getRequestContext().currentUser().getId();
                     int curProject = cms.getRequestContext().currentProject().getId();
-                    if(((A_CmsContentDefinition) o).getLockstate() == curUser &&
-                        ((I_CmsExtendedContentDefinition) o).getLockedInProject() == curProject){
+                    if (((A_CmsContentDefinition) o).getLockstate() == curUser
+                        && ((I_CmsExtendedContentDefinition) o).getLockedInProject() == curProject) {
                         // enable restore button
-                        template.setData("BUTTONRESTORE",template.getProcessedDataValue("ENABLERESTORE", this));
+                        template.setData("BUTTONRESTORE", template.getProcessedDataValue("ENABLERESTORE", this));
                         template.setData("setaction", "restore");
                     } else {
-                        template.setData("BUTTONRESTORE",template.getProcessedDataValue("DISABLERESTORE", this));
+                        template.setData("BUTTONRESTORE", template.getProcessedDataValue("DISABLERESTORE", this));
                         template.setData("setaction", "");
                     }
-                }catch (Exception e) {
-                    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                } catch (Exception e) {
+                    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                         A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: history method throwed an exception! "+e.getMessage());
                     }
                     templateSelector = "historyerror";
@@ -1129,7 +1202,7 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
                 template.setData("id", id);
                 template.setData("setaction", "detail");
             }
-        } else if (action.equalsIgnoreCase("restore")){
+        } else if (action.equalsIgnoreCase("restore")) {
             String versionId = (String)parameters.get("version");
             //set template section
             templateSelector = "history";
@@ -1140,15 +1213,15 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
             // build the history list
             template.setData("id", id);
             template.setData("setaction", "detail");
-            if(versionId != null && !"".equals(versionId)){
+            if (versionId != null && !"".equals(versionId)) {
                 //access content definition constructor by reflection
                 Object o = null;
                 o = getContentDefinition(cms, cdClass, new CmsUUID(id));
                 //get restore method and restore content definition instance
                 try {
                     ((I_CmsExtendedContentDefinition)o).restore(cms, Integer.parseInt(versionId));
-                }catch (Exception e) {
-                    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                } catch (Exception e) {
+                    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                         A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: restore method throwed an exception! "+e.getMessage());
                     }
                     templateSelector = "historyerror";
@@ -1171,18 +1244,19 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
      * a select box.
      *
      * @param cms CmsObject Object for accessing system resources.
+     * @param lang the language file
      * @param names Vector to be filled with the appropriate values in this method.
      * @param values Vector to be filled with the appropriate values in this method.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the current value in the vectors.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
 
     public Integer getHistory(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
             Vector values, Hashtable parameters) throws CmsException {
         cms.getRequestContext().getSession(true);
         String id = (String) parameters.get("id");
-        if(id != null && !"".equals(id)) {
+        if (id != null && !"".equals(id)) {
             Vector cdHistory = new Vector();
             //get the class of the content definition
             Class cdClass = getContentDefinitionClass();
@@ -1192,14 +1266,14 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
             //get history method and return the vector of the versions
             try {
                 cdHistory = ((I_CmsExtendedContentDefinition) o).getHistory(cms);
-            }catch (Exception e) {
-                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+            } catch (Exception e) {
+                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                     A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: history method throwed an exception!");
                 }
             }
             // fill the names and values
-            for(int i = 0;i < cdHistory.size();i++) {
-                try{
+            for (int i = 0; i < cdHistory.size(); i++) {
+                try {
                     I_CmsExtendedContentDefinition curCd = ((I_CmsExtendedContentDefinition)cdHistory.elementAt(i));
                     long updated = curCd.getDateCreated();
                     String userName = readSaveUserName(cms, curCd.getLastModifiedBy());
@@ -1209,8 +1283,8 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
                                     + userName;
                     names.addElement(output);
                     values.addElement(curCd.getVersionId()+"");
-                } catch (Exception e){
-                    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                } catch (Exception e) {
+                    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                         A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: history method throwed an exception!");
                     }
                 }
@@ -1226,13 +1300,13 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
      * <code>entryTitle<code> will be displayed in the delete dialog
      *
      * @param cms A_CmsObject Object for accessing system resources
-     * @param templateFile Filename of the template file
+     * @param template the template
      * @param elementName not used here
      * @param parameters get the parameters action for the button activity
      * and id for the used content definition instance object
      * @param templateSelector template section that should be processed.
      * @return Processed content of the given template file.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     public byte[] getContentPermissions(CmsObject cms, CmsXmlWpTemplateFile template, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
         //return var
@@ -1245,7 +1319,7 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
 
         // get mode of permission changing
         String mode = (String) parameters.get("chmode");
-        if(mode == null || "".equals(mode)){
+        if (mode == null || "".equals(mode)) {
             mode = "";
         }
         //get (stored) id parameter
@@ -1259,11 +1333,11 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
         CmsUUID newOwner = CmsUUID.getNullUUID();
         CmsUUID newGroup = CmsUUID.getNullUUID();
         String newOwnerString = (String) parameters.get("owner");
-        if (newOwnerString != null && !"".equals(newOwnerString)){
+        if (newOwnerString != null && !"".equals(newOwnerString)) {
             newOwner = new CmsUUID(newOwnerString);
         }
         String newGroupString = (String) parameters.get("groupId");
-        if (newGroupString != null && !"".equals(newGroupString)){
+        if (newGroupString != null && !"".equals(newGroupString)) {
             newGroup = new CmsUUID(newGroupString);
         }
         int newAccessFlags = getAccessValue(parameters);
@@ -1305,15 +1379,15 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
 
             //get change method and change content definition instance
             try {
-                if ("chown".equalsIgnoreCase(action) && !newOwner.isNullUUID()){
+                if ("chown".equalsIgnoreCase(action) && !newOwner.isNullUUID()) {
                     ((I_CmsExtendedContentDefinition) o).chown(cms, newOwner);
-                } else if ("chgrp".equalsIgnoreCase(action) && !newGroup.isNullUUID()){
+                } else if ("chgrp".equalsIgnoreCase(action) && !newGroup.isNullUUID()) {
                     ((I_CmsExtendedContentDefinition) o).chgrp(cms, newGroup);
-                } else if ("chmod".equalsIgnoreCase(action)){
+                } else if ("chmod".equalsIgnoreCase(action)) {
                     ((I_CmsExtendedContentDefinition) o).chmod(cms, newAccessFlags);
                 }
             } catch (Exception e) {
-                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                     A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: changing permissions method throwed an exception!");
                 }
                 templateSelector = "permissionserror";
@@ -1330,14 +1404,14 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
   * <P>
   *
   * @param cms A_CmsObject Object for accessing system resources
-  * @param templateFile Filename of the template file
+  * @param template the template
   * @param elementName not used here
   * @param parameters get the parameters action for the button activity
   * and id for the used content definition instance object
   * and the author, title, text content for setting the new/changed data
   * @param templateSelector template section that should be processed.
   * @return Processed content of the given template file.
-  * @throws CmsException
+  * @throws CmsException if something goes wrong
   */
 
   private byte[] getContentHead(CmsObject cms, CmsXmlWpTemplateFile template, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
@@ -1354,9 +1428,9 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
     String sessionSelectBoxValue = uri+"selectBoxValue";
     //get filter method from session
     String selectBoxValue = (String) parameters.get("selectbox");
-    if(selectBoxValue == null) {
+    if (selectBoxValue == null) {
       // set default value
-      if((String)session.getValue(sessionSelectBoxValue) != null) {
+      if ((String)session.getValue(sessionSelectBoxValue) != null) {
         // came back from edit or something ... redisplay last filter
           selectBoxValue = (String)session.getValue(sessionSelectBoxValue);
       } else {
@@ -1365,22 +1439,22 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
       }
     }
     boolean filterChanged = true;
-    if( selectBoxValue.equals((String)session.getValue(sessionSelectBoxValue)) ) {
+    if (selectBoxValue.equals((String)session.getValue(sessionSelectBoxValue))) {
         filterChanged = false;
-    }else {
+    } else {
         filterChanged = true;
     }
 
     //get vector of filter names from the content definition
     Vector filterMethods = getFilterMethods(cms);
 
-    if( Integer.parseInt(selectBoxValue) >=  filterMethods.size() ) {
+    if (Integer.parseInt(selectBoxValue) >=  filterMethods.size()) {
         // the stored seclectBoxValue is does not exist any more, ...
         selectBoxValue = "0";
     }
 
     session.putValue(sessionSelectBoxValue, selectBoxValue); // store in session for Selectbox!
-    session.putValue("filter",selectBoxValue);  // store filter in session for getContentList!
+    session.putValue("filter", selectBoxValue);  // store filter in session for getContentList!
 
     String filterParam = (String) parameters.get("filterparameter");
     // create the key for the filterparameter in the session ... should be unique to avoid problems...
@@ -1411,12 +1485,12 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
 
     // show param box ?
     CmsFilterMethod currentFilter = (CmsFilterMethod) filterMethods.elementAt(Integer.parseInt(selectBoxValue));
-    if(currentFilter.hasUserParameter()) {
-        if(filterChanged) {
+    if (currentFilter.hasUserParameter()) {
+        if (filterChanged) {
             template.setData("filterparameter", currentFilter.getDefaultFilterParam());
             // access default in getContentList() ....
             session.putValue(sessionFilterParam, currentFilter.getDefaultFilterParam());
-        } else if(filterParam!= null) {
+        } else if (filterParam!= null) {
             template.setData("filterparameter", filterParam);
         } else {
             // redisplay after edit or something like this ...
@@ -1426,18 +1500,18 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
         if (filterMethods.size()<2) {
           // replace the selectbox with a simple text output
           CmsFilterMethod defaultFilter = (CmsFilterMethod) filterMethods.firstElement();
-          template.setData("filtername",defaultFilter.getFilterName());
+          template.setData("filtername", defaultFilter.getFilterName());
           template.setData("insertFilter", template.getProcessedDataValue("noSelectboxWithParam", this, parameters));
         } else {
           template.setData("insertFilter", template.getProcessedDataValue("selectboxWithParam", this, parameters));
           }
         template.setData("setfocus", template.getDataValue("focus"));
-    }else{
+    } else {
         // check if there is only one filtermethod, do not show the selectbox then
         if (filterMethods.size()<2) {
           // replace the selectbox with a simple text output
           CmsFilterMethod defaultFilter = (CmsFilterMethod) filterMethods.firstElement();
-          template.setData("filtername",defaultFilter.getFilterName());
+          template.setData("filtername", defaultFilter.getFilterName());
           template.setData("insertFilter", template.getProcessedDataValue("noSelectbox", this, parameters));
         } else {
           template.setData("insertFilter", template.getProcessedDataValue("singleSelectbox", this, parameters));
@@ -1456,13 +1530,13 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
       template.setData("createbutton", cb);
     } else {
         boolean buttonActiv = true;
-        if(isExtendedList() && (cms.getRequestContext().currentProject().isOnlineProject())){
+        if (isExtendedList() && (cms.getRequestContext().currentProject().isOnlineProject())) {
             buttonActiv = false;
         }
-        if(buttonActiv){
+        if (buttonActiv) {
             String cb = template.getProcessedDataValue("wand", this, parameters);
             template.setData("createbutton", cb);
-        }else{
+        } else {
             String cb = template.getProcessedDataValue("deactivwand", this, parameters);
             template.setData("createbutton", cb);
         }
@@ -1474,12 +1548,12 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
       setupButton = (String) getSetupUrl(cms, null, null, null);
     } catch (Exception e) {
     }
-    if ((setupButton == null) || (setupButton.equals(""))){
+    if ((setupButton == null) || (setupButton.equals(""))) {
       String sb = template.getDataValue("nosetup");
       template.setData("setupbutton", sb);
     } else {
       String sb= template.getProcessedDataValue("setup", this, parameters);
-      template.setData("setupbutton",sb);
+      template.setData("setupbutton", sb);
     }
 
     //finally start the processing
@@ -1494,12 +1568,12 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
    * Using reflection, this method creates the table headline and table content
    * with the layout provided by the template automatically!
    * @param cms CmsObjectfor accessing system resources
-   * @param templateFile Filename of the template file
+   * @param template the template
    * @param elementName <em>not used here</em>.
    * @param parameters <em>not used here</em>.
    * @param templateSelector template section that should be processed.
    * @return Processed content of the given template file.
-   * @throws CmsException
+   * @throws CmsException if something goes wrong
    */
   private byte[] getContentList(CmsObject cms, CmsXmlWpTemplateFile template, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
     //return var
@@ -1586,19 +1660,19 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
       tableContent = (Vector) cdClass.getMethod("applyFilter", new Class[] {CmsObject.class, CmsFilterMethod.class, String.class}).invoke(null, new Object[] {cms, filterMethod, filterParam});
     } catch (InvocationTargetException ite) {
       //error occured while applying the filter
-      if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+      if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
         A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: apply filter throwed an InvocationTargetException!");
       }
       templateSelector = "error";
       template.setData("filtername", filterMethodName);
-      while(ite.getTargetException() instanceof InvocationTargetException) {
+      while (ite.getTargetException() instanceof InvocationTargetException) {
         ite = ((InvocationTargetException) ite.getTargetException());
       }
       template.setData("filtererror", ite.getTargetException().getMessage());
       session.removeValue(sessionFilterParam);
       //session.removeValue("filter");
     } catch (NoSuchMethodException nsm) {
-      if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+      if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
         A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: apply filter method was not found!");
       }
       templateSelector = "error";
@@ -1607,7 +1681,7 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
       session.removeValue(sessionFilterParam);
       //session.removeValue("filterparameter");
     } catch (Exception e) {
-      if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+      if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
         A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: apply filter: Other Exception! "+e);
       }
       templateSelector = "error";
@@ -1625,7 +1699,7 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
     try {
       fieldMethods = (Vector) cdClass.getMethod("getFieldMethods", new Class[] {CmsObject.class}).invoke(null, new Object[] {cms});
     } catch (Exception exc) {
-      if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+      if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
         A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice getContentList: getFieldMethods throwed an exception");
       }
       templateSelector = "error";
@@ -1652,7 +1726,7 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
       getMethod = (Method) fieldMethods.elementAt(j);
 
     } catch (Exception e) {
-      if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+      if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
         A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Could not get field method for "+(String)columnsVector.elementAt(j)+" - check for correct spelling!");
       }
     }
@@ -1668,11 +1742,11 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
               fieldEntry = null;
             }
         } catch (InvocationTargetException ite) {
-      if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+      if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
         A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice content definition object throwed an InvocationTargetException!");
       }
     } catch (Exception e) {
-      if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+      if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
         A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice content definition object: Other exception! "+e);
       }
     }
@@ -1680,7 +1754,7 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
     try {
           id = ((A_CmsContentDefinition)entryObject).getUniqueId(cms);
     } catch (Exception e) {
-      if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+      if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
         A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: getUniqueId throwed an Exception!");
           }
     }
@@ -1691,18 +1765,18 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
         }
         //insert table entry
     if (fieldEntry != null) {
-          try{
+          try {
             Vector v = new Vector();
             v.addElement(new Integer(id));
             v.addElement(template);
-            url = getUrl(cms, null, null,v);
-          }catch (Exception e) {
+            url = getUrl(cms, null, null, v);
+          } catch (Exception e) {
             url = "";
           }
-          if(!url.equals("")) {
+          if (!url.equals("")) {
             // enable url
             entry += (template.getDataValue("tabledatabegin")) + (template.getProcessedDataValue("url", this, parameters)) + fieldEntry + (template.getDataValue("tabledataend"));
-          }else {
+          } else {
             // disable url
             entry += (template.getDataValue("tabledatabegin")) + fieldEntry + (template.getDataValue("tabledataend"));
           }
@@ -1714,7 +1788,7 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
       try {
         id = ((A_CmsContentDefinition)entryObject).getUniqueId(cms);
       } catch (Exception e) {
-        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
       A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: getUniqueId throwed an Exception!");
     }
       }
@@ -1754,12 +1828,12 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
      * Using reflection, this method creates the table headline and table content
      * with the layout provided by the template automatically!
      * @param cms CmsObjectfor accessing system resources
-     * @param templateFile Filename of the template file
+     * @param template the template
      * @param elementName <em>not used here</em>.
      * @param parameters <em>not used here</em>.
      * @param templateSelector template section that should be processed.
      * @return Processed content of the given template file.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong
      */
     private byte[] getContentExtendedList(CmsObject cms, CmsXmlWpTemplateFile template, String elementName,
                                 Hashtable parameters, String templateSelector) throws CmsException {
@@ -1850,19 +1924,19 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
             tableContent = (Vector) cdClass.getMethod("applyFilter", new Class[] {CmsObject.class, CmsFilterMethod.class, String.class}).invoke(null, new Object[] {cms, filterMethod, filterParam});
         } catch (InvocationTargetException ite) {
             //error occured while applying the filter
-            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                 A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: apply filter throwed an InvocationTargetException!");
             }
             templateSelector = "error";
             template.setData("filtername", filterMethodName);
-            while(ite.getTargetException() instanceof InvocationTargetException) {
+            while (ite.getTargetException() instanceof InvocationTargetException) {
                 ite = ((InvocationTargetException) ite.getTargetException());
             }
             template.setData("filtererror", ite.getTargetException().getMessage());
             session.removeValue(sessionFilterParam);
             //session.removeValue("filter");
         } catch (NoSuchMethodException nsm) {
-            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                 A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: apply filter method was not found!");
             }
             templateSelector = "error";
@@ -1871,7 +1945,7 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
             session.removeValue(sessionFilterParam);
             //session.removeValue("filterparameter");
         } catch (Exception e) {
-            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                 A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: apply filter: Other Exception! "+e);
             }
             templateSelector = "error";
@@ -1888,7 +1962,7 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
         try {
             fieldMethods = (Vector) cdClass.getMethod("getFieldMethods", new Class[] {CmsObject.class}).invoke(null, new Object[] {cms});
         } catch (Exception exc) {
-            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                 A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice getContentList: getFieldMethods throwed an exception");
             }
             templateSelector = "error";
@@ -1921,7 +1995,7 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
                 try {
                     getMethod = (Method) fieldMethods.elementAt(j);
                 } catch (Exception e) {
-                    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                         A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Could not get field method for "+(String)columnsVector.elementAt(j)+" - check for correct spelling!");
                     }
                 }
@@ -1935,18 +2009,18 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
                         fieldEntry = null;
                     }
                 } catch (InvocationTargetException ite) {
-                    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                         A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice content definition object throwed an InvocationTargetException!");
                     }
                 } catch (Exception e) {
-                    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                         A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice content definition object: Other exception! "+e);
                     }
                 }
                 try {
                     id = ((A_CmsContentDefinition)entryObject).getUniqueId(cms);
                 } catch (Exception e) {
-                    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                         A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: getUniqueId throwed an Exception!");
                     }
                 }
@@ -1957,17 +2031,17 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
                 }
                 //insert table entry
                 if (fieldEntry != null) {
-                    try{
+                    try {
                         Vector v = new Vector();
                         v.addElement(new Integer(id));
                         v.addElement(template);
-                        url = getUrl(cms, null, null,v);
-                    }catch (Exception e) {
+                        url = getUrl(cms, null, null, v);
+                    } catch (Exception e) {
                         url = "";
                     }
-                    if(!url.equals("")) {
+                    if (!url.equals("")) {
                         // enable url
-                        template.setData("url_style",url_style);
+                        template.setData("url_style", url_style);
                         entry.append(tabledatabegin);
                         entry.append(style);
                         entry.append(template.getProcessedDataValue("url", this, parameters));
@@ -1990,7 +2064,7 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
             try {
                 id = ((A_CmsContentDefinition)entryObject).getUniqueId(cms);
             } catch (Exception e) {
-                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                     A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: getUniqueId throwed an Exception!");
                 }
             }
@@ -2034,13 +2108,13 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
   * <code>entryTitle<code> will be displayed in the delete dialog
   *
   * @param cms A_CmsObject Object for accessing system resources
-  * @param templateFile Filename of the template file
+  * @param template the template
   * @param elementName not used here
   * @param parameters get the parameters action for the button activity
   * and id for the used content definition instance object
   * @param templateSelector template section that should be processed.
   * @return Processed content of the given template file.
-  * @throws CmsException
+  * @throws CmsException if something goes wrong
   */
 
   private byte[] getContentLock(CmsObject cms, CmsXmlWpTemplateFile template, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
@@ -2081,11 +2155,11 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
     // now check if the "do you really want to lock" dialog should be shown.
     Hashtable startSettings = (Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);
     String showLockDialog = "off";
-    if(startSettings!=null){
+    if (startSettings!=null) {
       showLockDialog = (String)startSettings.get(C_START_LOCKDIALOG);
     }
     if (!showLockDialog.equalsIgnoreCase("on")) {
-      parameters.put("action","go");
+      parameters.put("action", "go");
     }
 
     // session will be created or fetched
@@ -2143,8 +2217,8 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
         try {
           lockedByUserId = ((A_CmsContentDefinition) o).getLockstate();
         } catch (Exception e) {
-          if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-            A_OpenCms.log(C_OPENCMS_INFO, e.getMessage() );
+          if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+            A_OpenCms.log(C_OPENCMS_INFO, e.getMessage());
           }
         }
       } else {
@@ -2152,8 +2226,8 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
         try {
           lockedByUserId = ((A_CmsContentDefinition) o).getLockstate();
         } catch (Exception e) {
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(C_OPENCMS_INFO, e.getMessage() );
+            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                A_OpenCms.log(C_OPENCMS_INFO, e.getMessage());
             }
         }
       }
@@ -2220,8 +2294,8 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
       try {
         lockedByUserId = ((A_CmsContentDefinition) o).getLockstate();
       } catch (Exception e) {
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-         A_OpenCms.log(C_OPENCMS_INFO, e.getMessage() );
+        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+         A_OpenCms.log(C_OPENCMS_INFO, e.getMessage());
         }
       }    
       
@@ -2248,7 +2322,7 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
     try {
       lockedByUserId = ((A_CmsContentDefinition) o).getLockstate();
     } catch (Exception e) {
-      if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+      if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
         A_OpenCms.log(C_OPENCMS_INFO, getClassName() + " Backoffice getContentLock: Method getLockstate throwed an exception!");
       }
     }
@@ -2256,7 +2330,7 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
     //show the possible cases of a lockstate in the template
     //and change lockstate in content definition (and in DB or VFS)
     if (lockedByUserId.equals(actUserId)) {
-        if(isExtendedList()){
+        if (isExtendedList()) {
             // if its an extended list check if the current project is the same as the
             // project, in which the resource is locked
             int curProjectId = cms.getRequestContext().currentProject().getId();
@@ -2264,16 +2338,16 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
             try {
                 lockedInProject = ((I_CmsExtendedContentDefinition) o).getLockedInProject();
             } catch (Exception e) {
-                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                     A_OpenCms.log(C_OPENCMS_INFO, getClassName() + " Backoffice getContentLock: Method getLockstate throwed an exception!");
                 }
             }
-            if(curProjectId == lockedInProject){
+            if (curProjectId == lockedInProject) {
                 //unlock project
                 try {
                     ((A_CmsContentDefinition) o).setLockstate(CmsUUID.getNullUUID());
                 } catch (Exception e) {
-                    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                         A_OpenCms.log(C_OPENCMS_INFO, getClassName() + " Backoffice getContentLock: Method setLockstate throwed an exception!");
                     }
                 }
@@ -2282,7 +2356,7 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
                 try {
                     ((A_CmsContentDefinition) o).setLockstate(actUserId);
                 } catch (Exception e) {
-                    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                         A_OpenCms.log(C_OPENCMS_INFO, getClassName() + " Backoffice getContentLock: Method setLockstate throwed an exception!");
                     }
                 }
@@ -2293,7 +2367,7 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
             try {
                 ((A_CmsContentDefinition) o).setLockstate(CmsUUID.getNullUUID());
             } catch (Exception e) {
-                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                     A_OpenCms.log(C_OPENCMS_INFO, getClassName() + " Backoffice getContentLock: Method setLockstate throwed an exception!");
                 }
             }
@@ -2302,7 +2376,7 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
       try {
         ((A_CmsContentDefinition) o).write(cms);   // reflection is not neccessary!
       } catch (Exception e) {
-        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
       A_OpenCms.log(C_OPENCMS_INFO, getClassName() + " Backoffice getContentLock: Method write throwed an exception!");
     }
       }
@@ -2313,7 +2387,7 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
         try {
           ((A_CmsContentDefinition) o).setLockstate(actUserId);
         } catch (Exception e) {
-      if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+      if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
         A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice getContentLock: Could not set lockstate!");
       }
     }
@@ -2321,7 +2395,7 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
     try {
           ((A_CmsContentDefinition) o).write(cms);
     } catch (Exception e) {
-      if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+      if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
         A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice getContentLock: Could not set lockstate!");
       }
     }
@@ -2331,7 +2405,7 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
       try {
         ((A_CmsContentDefinition) o).setLockstate(actUserId);
       } catch (Exception e) {
-    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
       A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice getContentLock: Could not set lockstate!");
     }
       }
@@ -2339,7 +2413,7 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
       try {
         ((A_CmsContentDefinition) o).write(cms);
       } catch (Exception e) {
-    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
       A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice getContentLock: Could not write to content definition!");
         }
       }
@@ -2351,7 +2425,13 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
   return processResult;
   }
 /**
- * gets the content definition class method object
+ * gets the content definition class method object.<p>
+ * 
+ * @param cms the cms object
+ * @param cdClass the content definition class
+ * @param method a method name of the class
+ * @param paramClasses the parameter classes
+ * @param params the parameter values
  * @return object content definition class method object
  */
 
@@ -2363,16 +2443,16 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
         try {
             retObject = cdClass.getMethod(method, paramClasses).invoke(null, params);
         } catch (InvocationTargetException ite) {
-            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                 A_OpenCms.log(C_OPENCMS_INFO, getClassName() + method + " throwed an InvocationTargetException!");
             }
             ite.getTargetException().printStackTrace();
         } catch (NoSuchMethodException nsm) {
-            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                 A_OpenCms.log(C_OPENCMS_INFO, getClassName() + method + ": Requested method was not found!");
             }
         } catch (Exception e) {
-            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                 A_OpenCms.log(C_OPENCMS_INFO, getClassName() + method + ": Other Exception!");
             }
         }
@@ -2384,7 +2464,15 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
   /**
   * The old version of the getContentNew methos. Only available for compatilibility resons.
   * Per default, it uses the edit dialog. If you want to use a seperate input form, you have to create
-  * a new one and write your own getContentNew method in your backoffice class.
+  * a new one and write your own getContentNew method in your backoffice class.<p>
+  * 
+  * @param cms ths cms object
+  * @param templateFile the template
+  * @param elementName the element name
+  * @param parameters the parameters
+  * @param templateSelector the template selector
+  * @return the content as byte array
+  * @throws CmsException if something goes wrong
   */
   public byte[] getContentNew(CmsObject cms, CmsXmlWpTemplateFile templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
     parameters.put("id", "new");
@@ -2394,29 +2482,57 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
   /**
   * The new version of the getContentNew methos. Only this one should be used from now on.
   * Per default, it uses the edit dialog. If you want to use a seperate input form, you have to create
-  * a new one and write your own getContentNew method in your backoffice class.
+  * a new one and write your own getContentNew method in your backoffice class.<p>
+  * 
+  * @param cms ths cms object
+  * @param template the template
+  * @param cd the content definition
+  * @param elementName name of an element
+  * @param keys the parameter keys
+  * @param parameters the parameters
+  * @param templateSelector the template selector
+  * @return the content
+  * @throws CmsException if something goes wrong
   */
-  public String getContentNew(CmsObject cms,CmsXmlWpTemplateFile template,  A_CmsContentDefinition cd, String elementName,Enumeration keys, Hashtable parameters, String templateSelector) throws CmsException {
+  public String getContentNew(CmsObject cms, CmsXmlWpTemplateFile template, A_CmsContentDefinition cd, String elementName, Enumeration keys, Hashtable parameters, String templateSelector) throws CmsException {
     parameters.put("id", "new");
-    return getContentEdit(cms, template, cd,elementName, keys ,parameters, templateSelector);
+    return getContentEdit(cms, template, cd, elementName, keys , parameters, templateSelector);
   }
 
 
   /**
   * Gets the content of a edited entry form.
   * Has to be overwritten in your backoffice class if the old way of writeing BackOffices is used.
-  * Only available for compatibility reasons.
+  * Only available for compatibility reasons.<p>
+  * 
+  * @param cms ths cms object
+  * @param templateFile the template
+  * @param elementName name of an element
+  * @param parameters the parameters
+  * @param templateSelector the template selector
+  * @return the content
+  * @throws CmsException if something goes wrong
   */
-  public byte[] getContentEdit(CmsObject cms,CmsXmlWpTemplateFile templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+  public byte[] getContentEdit(CmsObject cms, CmsXmlWpTemplateFile templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
     return null;
   }
 
 
   /**
   * Gets the content of a edited entry form.
-  * Has to be overwritten in your backoffice class if the new way of writeing BackOffices is used.
+  * Has to be overwritten in your backoffice class if the new way of writeing BackOffices is used.<p>
+  * 
+  * @param cms ths cms object
+  * @param templateFile the template
+  * @param cd the content definition
+  * @param elementName name of an element
+  * @param keys the parameter keys
+  * @param parameters the parameters
+  * @param templateSelector the template selector
+  * @return the content
+  * @throws CmsException if something goes wrong
   */
-  public String getContentEdit(CmsObject cms,CmsXmlWpTemplateFile templateFile,  A_CmsContentDefinition cd, String elementName,Enumeration keys, Hashtable parameters, String templateSelector) throws CmsException {
+  public String getContentEdit(CmsObject cms, CmsXmlWpTemplateFile templateFile, A_CmsContentDefinition cd, String elementName, Enumeration keys, Hashtable parameters, String templateSelector) throws CmsException {
    return null;
   }
   
@@ -2426,8 +2542,8 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
   * @param cms The current CmsObject.
   * @param template The actual template file.
   * @param cdClass The content defintion.
-  * @param entryObject
-  * @param paramters All template ands URL parameters.
+  * @param entryObject a content definition instance
+  * @param parameters All template ands URL parameters.
   */
 private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class cdClass, Object entryObject, Hashtable parameters) {
 
@@ -2529,8 +2645,8 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
   * @param cms The current CmsObject.
   * @param template The actual template file.
   * @param cdClass The content defintion.
-  * @param entryObject
-  * @param paramters All template ands URL parameters.
+  * @param entryObject a content definition instance
+  * @param parameters All template ands URL parameters.
   */
   private void setExtendedLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class cdClass,
                                     Object entryObject, Hashtable parameters) {
@@ -2553,15 +2669,15 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
         //get the returned object
         laObject = laMethod.invoke(null, null);
     } catch (InvocationTargetException ite) {
-        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
             A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setLockstates: Method isLockable throwed an Invocation target exception!");
         }
     } catch (NoSuchMethodException nsm) {
-        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
             A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setLockstates: Requested method isLockable was not found!");
         }
     } catch (Exception e) {
-        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
             A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setLockstates: Method isLockable throwed an exception: "+e.toString());
         }
     }
@@ -2569,12 +2685,12 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
     //cast the returned object to a string
     la = (String) laObject.toString();
     if (la.equals("false")) {
-        try{
+        try {
             //the entry is not lockable: use standard contextmenue
             template.setData("backofficecontextmenue", "backofficeedit");
             template.setData("lockedby", template.getDataValue("nolock"));
         } catch  (Exception e) {
-            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                 A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setLockstates:'not lockable' section hrowed an exception!");
             }
         }
@@ -2585,7 +2701,7 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
             lockedByUserId = ((A_CmsContentDefinition) entryObject).getLockstate();
             hasWriteAccess = ((A_CmsContentDefinition) entryObject).hasWriteAccess(cms);
         } catch (Exception e) {
-            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                 A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setLockstates: Method getLockstate throwed an exception: "+e.toString());
             }
         }
@@ -2600,11 +2716,11 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
                     //get the method lockstate
                     lockedInProject = ((I_CmsExtendedContentDefinition) entryObject).getLockedInProject();
                 } catch (Exception e) {
-                    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                         A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setLockstates: Method getLockedInProject throwed an exception: "+e.toString());
                     }
                 }
-                if (lockedInProject == curProjectId){
+                if (lockedInProject == curProjectId) {
                     lockString = template.getProcessedDataValue("lockuser", this, parameters);
                 } else {
                     lockString = template.getProcessedDataValue("lock", this, parameters);
@@ -2630,7 +2746,7 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
                 }
             }
         } catch (Exception e) {
-            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                 A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setLockstates throwed an exception: "+e.toString());
             }
         }
@@ -2642,8 +2758,8 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
      * @param cms The current CmsObject.
      * @param template The actual template file.
      * @param cdClass The content defintion.
-     * @param entryObject
-     * @param paramters All template ands URL parameters.
+     * @param entryObject a content definition instance
+     * @param parameters All template ands URL parameters.
      */
     private void setProjectFlag(CmsObject cms, CmsXmlWpTemplateFile template, Class cdClass,
                              Object entryObject, Hashtable parameters) {
@@ -2658,7 +2774,7 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
         try {
             template.setData("projectflag", template.getDataValue("noproject"));
         } catch  (Exception e) {
-            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                 A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setProjectFlag:'no project' section throwed an exception!");
             }
         }
@@ -2667,7 +2783,7 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
         try {
             state = ((I_CmsExtendedContentDefinition)entryObject).getState();
         } catch (Exception e) {
-            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                 A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setProjectFlag: Method getState throwed an exception: "+e.toString());
             }
         }
@@ -2677,7 +2793,7 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
                 //the entry is not changed, so do not set the project flag
                 template.setData("projectflag", template.getDataValue("noproject"));
             } catch  (Exception e) {
-                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                     A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setProjectFlag:'no project' section throwed an exception!");
                 }
             }
@@ -2687,15 +2803,15 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
             try {
                 projectId = ((I_CmsExtendedContentDefinition)entryObject).getLockedInProject();
             } catch (Exception e) {
-                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                     A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setProjectFlag: Method getLockedInProject throwed an exception: "+e.toString());
                 }
             }
             try {
                 //show the possible cases of a lockstate in the template
-                try{
+                try {
                     isInProject = cms.readProject(projectId).getName();
-                } catch (CmsException e){
+                } catch (CmsException e) {
                     isInProject = "";
                 }
                 // set project name in the template
@@ -2710,7 +2826,7 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
                     template.setData("projectflag", projectFlag);
                 }
             } catch (Exception e) {
-                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                     A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setLockstates throwed an exception: "+e.toString());
                 }
             }
@@ -2721,8 +2837,9 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
      * Return the format for the list output.
      * States can be "not in project", "unchanged", "changed", "new" or "deleted"
      *
-     * @param cms The current CmsObject.
-     * @param entryObject
+     * @param cms The current CmsObject
+     * @param template the template
+     * @param entryObject a content definition instance
      * @return String The format tag for the entry
      */
     private String getStyle(CmsObject cms, CmsXmlWpTemplateFile template, Object entryObject) {
@@ -2734,15 +2851,15 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
         String style = new String();
 
         // get the projectid of the entry
-        try{
+        try {
             projectId = ((I_CmsExtendedContentDefinition)entryObject).getProjectId();
         } catch (Exception e) {
-            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                 A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setFontFormat: Method getProjectId throwed an exception: "+e.toString());
             }
         }
 
-        if (actProjectId == C_PROJECT_ONLINE_ID){
+        if (actProjectId == C_PROJECT_ONLINE_ID) {
             style = C_STYLE_UNCHANGED;
         } else if (projectId != actProjectId) {
             // not is in this project
@@ -2752,7 +2869,7 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
             try {
                 ((A_CmsContentDefinition)entryObject).getLockstate();
             } catch (Exception e) {
-                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                     A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setFontFormat: Method getLockstate throwed an exception: "+e.toString());
                 }
             }
@@ -2760,12 +2877,12 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
             try {
                 state = ((I_CmsExtendedContentDefinition)entryObject).getState();
             } catch (Exception e) {
-                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                     A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setFontFormat: Method getState throwed an exception: "+e.toString());
                 }
             }
 
-            switch (state){
+            switch (state) {
                 case C_STATE_NEW:
                     style = C_STYLE_NEW;
                     break;
@@ -2785,11 +2902,11 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
     }
 
     /**
-     * Set the context menu for the current list entry.
+     * Set the context menu for the current list entry.<p>
      *
-     * @param cms The current CmsObject.
-     * @param template The current template.
-     * @param entryObject
+     * @param cms The current CmsObject
+     * @param template The current template
+     * @param entryObject a content definition instance
      */
     private void setContextMenu(CmsObject cms, CmsXmlWpTemplateFile template, Object entryObject) {
 
@@ -2801,15 +2918,15 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
         int actProjectId = cms.getRequestContext().currentProject().getId();
 
         // get the projectid of the entry
-        try{
+        try {
             projectId = ((I_CmsExtendedContentDefinition)entryObject).getProjectId();
         } catch (Exception e) {
-            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                 A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setContextMenu: Method getProjectId throwed an exception: "+e.toString());
             }
         }
 
-        if (actProjectId == C_PROJECT_ONLINE_ID){
+        if (actProjectId == C_PROJECT_ONLINE_ID) {
             template.setData("backofficecontextmenue", "backofficeonline");
         } else if (projectId != actProjectId) {
             // not is in this project
@@ -2819,7 +2936,7 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
             try {
                 lockedByUserId = ((A_CmsContentDefinition)entryObject).getLockstate();
             } catch (Exception e) {
-                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                     A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setContextMenu: Method getLockstate throwed an exception: "+e.toString());
                 }
             }
@@ -2827,28 +2944,28 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
             try {
                 state = ((I_CmsExtendedContentDefinition)entryObject).getState();
             } catch (Exception e) {
-                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                     A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setContextMenu: Method getState throwed an exception: "+e.toString());
                 }
             }
-            if(lockedByUserId.isNullUUID()){
-                if(state == C_STATE_UNCHANGED){
+            if (lockedByUserId.isNullUUID()) {
+                if (state == C_STATE_UNCHANGED) {
                     template.setData("backofficecontextmenue", "backofficenolock");
-                } else if (state == C_STATE_DELETED){
+                } else if (state == C_STATE_DELETED) {
                     template.setData("backofficecontextmenue", "backofficedeleted");
                 } else {
                     template.setData("backofficecontextmenue", "backofficenolockchanged");
                 }
-            } else if (lockedByUserId.equals(cms.getRequestContext().currentUser().getId())){
+            } else if (lockedByUserId.equals(cms.getRequestContext().currentUser().getId())) {
                 // check if the resource is locked in another project
-                try{
+                try {
                     lockedInProject = ((I_CmsExtendedContentDefinition)entryObject).getLockedInProject();
                 } catch (Exception e) {
-                    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                         A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setContextMenu: Method getLockedInProject throwed an exception: "+e.toString());
                     }
                 }
-                if(lockedInProject == actProjectId){
+                if (lockedInProject == actProjectId) {
                     template.setData("backofficecontextmenue", "backofficelockuser");
                 } else {
                     template.setData("backofficecontextmenue", "backofficelock");
@@ -2870,6 +2987,14 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
 
   /**
    * This method creates the selectbox in the head-frame
+   * 
+   * @param cms the cms object
+   * @param lang the language file
+   * @param names the names in the select box
+   * @param values the values
+   * @param parameters additional paramters
+   * @return the current entry
+   * @throws CmsException if something goes wrong
    */
   public Integer getFilter(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values,
                            Hashtable parameters) throws CmsException {
@@ -2879,7 +3004,7 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
     String sessionSelectBoxValue = uri+"selectBoxValue";
     Vector filterMethods = getFilterMethods(cms);
     String tmp = (String) session.getValue(sessionSelectBoxValue);
-    if(tmp != null) {
+    if (tmp != null) {
       returnValue = Integer.parseInt(tmp);
     }
     for (int i = 0; i < filterMethods.size(); i++) {
@@ -2891,9 +3016,15 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
     return new Integer(returnValue);
   }
 
-
   /**
-   * User method that handles a checkbox in the input form of the backoffice.
+   * User method that handles a checkbox in the input form of the backoffice.<p>
+   * 
+   * @param cms the cms object
+   * @param tagcontent the body content of the tag
+   * @param doc the xml document
+   * @param userObject additional data
+   * @return the checkbox definition
+   * @throws CmsException if something goes wrong
    */
   public Object handleCheckbox(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
                                Object userObject) throws CmsException {
@@ -2919,15 +3050,15 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
       filterMethods = (Vector) cdClass.getMethod("getFilterMethods", new Class[] {CmsObject.class}).invoke(null, new Object[] {cms});
     } catch (InvocationTargetException ite) {
       //error occured while applying the filter
-      if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+      if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
         A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice getContentHead: InvocationTargetException!");
       }
     } catch (NoSuchMethodException nsm) {
-      if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+      if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
     A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice getContentHead: Requested method was not found!");
       }
     } catch (Exception e) {
-      if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+      if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
     A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice getContentHead: Problem occured with your filter methods: "+e.toString());
       }
     }
@@ -2935,8 +3066,16 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
   }
 
  /**
- * This method creates the selectbox with all avaiable Pages to select from.
- */
+  * This method creates the selectbox with all avaiable Pages to select from.
+  * 
+  * @param cms the cms object
+  * @param lang the language file
+  * @param names the names of the options
+  * @param values the values ogf the options
+  * @param parameters additional parameters
+  * @return the selected entry
+  * @throws CmsException if something goes wrong
+  */
   public Integer getSelectedPage(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values,
                            Hashtable parameters) throws CmsException {
 
@@ -2951,7 +3090,7 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
   }
 
   // now build the names and values for the selectbox
-  if(templateSelectors != null){
+  if (templateSelectors != null) {
       for (int i = 0; i < templateSelectors.size(); i++) {
         String selector = (String) templateSelectors.elementAt(i);
         names.addElement(selector);
@@ -2962,8 +3101,8 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
         }
       }
   }
-  session.putValue("backofficeselectortransfer",values);
-  session.putValue("backofficeselectedtransfer",new Integer(returnValue));
+  session.putValue("backofficeselectortransfer", values);
+  session.putValue("backofficeselectedtransfer", new Integer(returnValue));
   return new Integer(returnValue);
 }
 
@@ -2971,7 +3110,8 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
   /**
   * This method contains the code used by the getContent method when the new form of the backoffice is processed.
   * It automatically gets all the data from the "getXYZ" methods and sets it in the correct datablock of the
-  * template.
+  * template.<p>
+  * 
   * @param cms The actual CmsObject.
   * @param id The id of the content definition object to be edited.
   * @param cd the content definition.
@@ -2981,11 +3121,12 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
   * @param parameters All parameters of this request.
   * @param templateSelector The template selector.
   * @return Content of the template, as an array of bytes.
+  * @throws CmsException if something goes wrong
   */
-  private byte[] getContentNewInternal(CmsObject cms,String id,A_CmsContentDefinition cd,
-                                       I_CmsSession session,CmsXmlWpTemplateFile template,
-                                       String elementName,Hashtable parameters,
-                                       String templateSelector) throws CmsException{
+  private byte[] getContentNewInternal(CmsObject cms, String id, A_CmsContentDefinition cd,
+                                       I_CmsSession session, CmsXmlWpTemplateFile template,
+                                       String elementName, Hashtable parameters,
+                                       String templateSelector) throws CmsException {
 
 
 
@@ -2997,7 +3138,7 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
     String action = (String)parameters.get("action");
 
      // get the correct template selector
-    templateSelector=getTemplateSelector(cms,template,parameters,templateSelector);
+    templateSelector=getTemplateSelector(cms, template, parameters, templateSelector);
 
     //process the template for entering the data
     // first try to do it in the old way to be compatible to the existing modules.
@@ -3010,38 +3151,38 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
       cd = (A_CmsContentDefinition) session.getValue(this.getContentDefinitionClass().getName());
         if (cd == null) {
           //get a new, empty content definition
-          cd = (A_CmsContentDefinition) this.getContentDefinition(cms,this.getContentDefinitionClass());
+          cd = (A_CmsContentDefinition) this.getContentDefinition(cms, this.getContentDefinitionClass());
        }
       //get all existing parameters
       Enumeration keys=parameters.keys();
 
       //call the new getContentEdit method
-      error = getContentNew(cms, template, cd,elementName, keys ,parameters, templateSelector);
+      error = getContentNew(cms, template, cd, elementName, keys, parameters, templateSelector);
 
       // get all getXVY methods to automatically get the data from the CD
       Vector methods=this.getGetMethods(cd);
        // get all setXVY methods to automatically set the data into the CD
       Hashtable setMethods=this.getSetMethods(cd);
       //set all data from the parameters into the CD
-      this.fillContentDefinition(cms,cd,parameters,setMethods);
+      this.fillContentDefinition(cms, cd, parameters, setMethods);
 
       // store the modified CD in the session
-      session.putValue(this.getContentDefinitionClass().getName(),cd);
+      session.putValue(this.getContentDefinitionClass().getName(), cd);
 
        // check if there was an error found in the input form
       if (!error.equals("")) {
-       template.setData("error",template.getProcessedDataValue("errormsg")+error);
+       template.setData("error", template.getProcessedDataValue("errormsg")+error);
       } else {
-       template.setData("error","");
+       template.setData("error", "");
       }
 
       // now check if one of the exit buttons is used
-      templateSelector = getContentButtonsInternal(cms,cd,session,template,parameters,templateSelector, action,error);
+      templateSelector = getContentButtonsInternal(cms, cd, session, template, parameters, templateSelector, action, error);
 
       //now set all the data from the CD into the template
-      this.setDatablocks(cms, template,cd,methods);
+      this.setDatablocks(cms, template, cd, methods);
 
-      returnProcess = startProcessing(cms,template,"",parameters,templateSelector);
+      returnProcess = startProcessing(cms, template, "", parameters, templateSelector);
     }
 
     //finally retrun processed data
@@ -3063,11 +3204,12 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
   * @param parameters All parameters of this request.
   * @param templateSelector The template selector.
   * @return Content of the template, as an array of bytes.
+  * @throws CmsException if something goes wrong
   */
-  private byte[] getContentEditInternal(CmsObject cms,String id,A_CmsContentDefinition cd,
-                                        I_CmsSession session,CmsXmlWpTemplateFile template,
-                                        String elementName,Hashtable parameters,
-                                        String templateSelector) throws CmsException{
+  private byte[] getContentEditInternal(CmsObject cms, String id, A_CmsContentDefinition cd,
+                                        I_CmsSession session, CmsXmlWpTemplateFile template,
+                                        String elementName, Hashtable parameters,
+                                        String templateSelector) throws CmsException {
 
     //return varlue
     byte[] returnProcess = null;
@@ -3077,7 +3219,7 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
     String action = (String)parameters.get("action");
 
     // get the correct template selector
-    templateSelector=getTemplateSelector(cms,template,parameters,templateSelector);
+    templateSelector=getTemplateSelector(cms, template, parameters, templateSelector);
 
     //process the template for editing the data
     // first try to do it in the old way to be compatible to the existing modules.
@@ -3090,13 +3232,13 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
       if (cd == null) {
         // not successful, so read new content definition with given id
         CmsUUID contentId=new CmsUUID (id);
-        cd = (A_CmsContentDefinition) this.getContentDefinition(cms,this.getContentDefinitionClass(),contentId);
+        cd = (A_CmsContentDefinition) this.getContentDefinition(cms, this.getContentDefinitionClass(), contentId);
       }
 
       //get all existing parameters
       Enumeration keys=parameters.keys();
       //call the new getContentEdit method
-      error = getContentEdit(cms, template, cd,elementName, keys ,parameters, templateSelector);
+      error = getContentEdit(cms, template, cd, elementName, keys, parameters, templateSelector);
 
       // get all getXVY methods to automatically get the data from the CD
       Vector getMethods=this.getGetMethods(cd);
@@ -3105,35 +3247,35 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
       Hashtable setMethods=this.getSetMethods(cd);
 
       //set all data from the parameters into the CD
-      this.fillContentDefinition(cms,cd,parameters,setMethods);
+      this.fillContentDefinition(cms, cd, parameters, setMethods);
 
       // store the modified CD in the session
-      session.putValue(this.getContentDefinitionClass().getName(),cd);
+      session.putValue(this.getContentDefinitionClass().getName(), cd);
 
         //care about the previewbutten, if getPreviewUrl is empty, the preview button will not be displayed in the template
         String previewButton = null;
-        try{
+        try {
             previewButton = (String)getPreviewUrl(cms, null, null, null);
-        }catch(Exception e){
+        } catch (Exception e) {
         }
-        if(!((previewButton == null) || (previewButton.equals("")))){
+        if (!((previewButton == null) || (previewButton.equals("")))) {
             session.putValue("weShallDisplayThePreviewButton", previewButton +"?id="+cd.getUniqueId(cms));
         }
 
       // check if there was an error found in the input form
       if (!error.equals("")) {
-       template.setData("error",template.getProcessedDataValue("errormsg")+error);
+       template.setData("error", template.getProcessedDataValue("errormsg")+error);
       } else {
-       template.setData("error","");
+       template.setData("error", "");
       }
 
       // now check if one of the exit buttons is used
-      templateSelector = getContentButtonsInternal(cms,cd,session,template,parameters,templateSelector, action,error);
+      templateSelector = getContentButtonsInternal(cms, cd, session, template, parameters, templateSelector, action, error);
 
       //now set all the data from the CD into the template
-      this.setDatablocks(cms, template,cd,getMethods);
+      this.setDatablocks(cms, template, cd, getMethods);
 
-      returnProcess = startProcessing(cms,template,"",parameters,templateSelector);
+      returnProcess = startProcessing(cms, template, "", parameters, templateSelector);
     }
 
 
@@ -3149,18 +3291,22 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
    *  <li>Save & Exit: Save the CD to the database if plausi shows no error, return to the list view. </li>
    *  <li>Exit: Return to the list view without saving. </li>
    *  </ul>
-   *  @param cms The actual CmsObject.
-   *  @param cd The acutal content definition.
-   *  @param session The current user session.
-   *  @param template The template file.
-   *  @param parameters All parameters of this request.
-   *  @param templateSelector The template selector.
-   *  @return The template selector.
+   * 
+   * @param cms The actual CmsObject.
+   * @param cd The acutal content definition.
+   * @param session The current user session.
+   * @param template The template file.
+   * @param parameters All parameters of this request.
+   * @param templateSelector The template selector.
+   * @param action the selected action
+   * @param error an error message
+   * @return The template selector.
+   * @throws CmsException if something goes wrong
    */
- private String getContentButtonsInternal(CmsObject cms,A_CmsContentDefinition cd,
+ private String getContentButtonsInternal(CmsObject cms, A_CmsContentDefinition cd,
                                           I_CmsSession session, CmsXmlWpTemplateFile template,
                                           Hashtable parameters, String templateSelector,
-                                          String action, String error) throws CmsException{
+                                          String action, String error) throws CmsException {
 
 
 
@@ -3178,33 +3324,33 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
 
   if (action!=null) {
     // there was no button selected, so the selectbox was used. Do a check of the input fileds.
-    if ((!action.equals("save")) && (!action.equals("saveexit")) && (!action.equals("exit"))){
+    if ((!action.equals("save")) && (!action.equals("saveexit")) && (!action.equals("exit"))) {
       try {
         cd.check(false);
         // put value of last used templateselector in session
-        session.putValue("backofficepagetemplateselector",templateSelector);
+        session.putValue("backofficepagetemplateselector", templateSelector);
       } catch (CmsPlausibilizationException plex) {
         // there was an error during plausibilization, so create an error text
         errorCodes=plex.getErrorCodes();
         //loop through all errors
-        for (int i=0;i<errorCodes.size();i++) {
+        for (int i=0; i<errorCodes.size(); i++) {
           errorCode=(String)errorCodes.elementAt(i);
           // try to get an error message that fits thos this error code exactly
           if (template.hasData(C_ERRPREFIX+errorCode)) {
-            error+=template.getProcessedDataValue(C_ERRPREFIX+errorCode);
+            error += template.getProcessedDataValue(C_ERRPREFIX+errorCode);
           } else {
             // now check if there is a general error message for this field
-            errorField=errorCode.substring(0,errorCode.indexOf(A_CmsContentDefinition.C_ERRSPERATOR));
+            errorField=errorCode.substring(0, errorCode.indexOf(A_CmsContentDefinition.C_ERRSPERATOR));
             if (template.hasData(C_ERRPREFIX+errorField)) {
-              error+=template.getProcessedDataValue(C_ERRPREFIX+errorField);
+              error += template.getProcessedDataValue(C_ERRPREFIX+errorField);
             } else {
               // now check if there is at least a general error messace for the error type
-              errorType=errorCode.substring(errorCode.indexOf(C_ERRSPERATOR)+1,errorCode.length());
+              errorType=errorCode.substring(errorCode.indexOf(C_ERRSPERATOR)+1, errorCode.length());
               if (template.hasData(C_ERRPREFIX+errorType)) {
-                error+=template.getProcessedDataValue(C_ERRPREFIX+errorType);
+                error += template.getProcessedDataValue(C_ERRPREFIX+errorType);
               } else {
                 // no error dmessage was found, so generate a default one
-                error+="["+errorCode+"]";
+                error += "["+errorCode+"]";
               }
             }
           }
@@ -3213,11 +3359,11 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
         if (template.hasData("errormsg")) {
           error=template.getProcessedDataValue("errormsg")+error;
         }
-        template.setData("error",error);
+        template.setData("error", error);
         if (session.getValue("backofficepagetemplateselector")!=null) {
 
           templateSelector=(String)session.getValue("backofficepagetemplateselector");
-          parameters.put("backofficepage",templateSelector);
+          parameters.put("backofficepage", templateSelector);
 
         } else {
           templateSelector=null;
@@ -3227,11 +3373,7 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
     }
     // the same or save&exit button were pressed, so save the content definition to the
     // database
-    if (((action.equals("save")) || (action.equals("saveexit"))) && (error.equals(""))){
-
-
-
-
+    if (((action.equals("save")) || (action.equals("saveexit"))) && (error.equals(""))) {
       try {
         // first check if all plausibilization was ok
 
@@ -3248,11 +3390,11 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
 
          //care about the previewbutten, if getPreviewUrl is empty, the preview button will not be displayed in the template
         String previewButton = null;
-        try{
+        try {
             previewButton = (String)getPreviewUrl(cms, null, null, null);
-        }catch(Exception e){
+        } catch (Exception e) {
         }
-        if(!((previewButton == null) || (previewButton.equals("")))){
+        if (!((previewButton == null) || (previewButton.equals("")))) {
             session.putValue("weShallDisplayThePreviewButton", previewButton +"?id="+cd.getUniqueId(cms));
         }
 
@@ -3264,25 +3406,25 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
         errorCodes=plex.getErrorCodes();
 
         //loop through all errors
-        for (int i=0;i<errorCodes.size();i++) {
+        for (int i=0; i<errorCodes.size(); i++) {
           errorCode=(String)errorCodes.elementAt(i);
 
           // try to get an error message that fits thos this error code exactly
           if (template.hasData(C_ERRPREFIX+errorCode)) {
-            error+=template.getProcessedDataValue(C_ERRPREFIX+errorCode);
+            error += template.getProcessedDataValue(C_ERRPREFIX+errorCode);
           } else {
             // now check if there is a general error message for this field
-            errorField=errorCode.substring(0,errorCode.indexOf(A_CmsContentDefinition.C_ERRSPERATOR));
+            errorField=errorCode.substring(0, errorCode.indexOf(A_CmsContentDefinition.C_ERRSPERATOR));
             if (template.hasData(C_ERRPREFIX+errorField)) {
-              error+=template.getProcessedDataValue(C_ERRPREFIX+errorField);
+              error += template.getProcessedDataValue(C_ERRPREFIX+errorField);
             } else {
               // now check if there is at least a general error messace for the error type
-              errorType=errorCode.substring(errorCode.indexOf(C_ERRSPERATOR)+1,errorCode.length());
+              errorType=errorCode.substring(errorCode.indexOf(C_ERRSPERATOR)+1, errorCode.length());
               if (template.hasData(C_ERRPREFIX+errorType)) {
-                error+=template.getProcessedDataValue(C_ERRPREFIX+errorType);
+                error += template.getProcessedDataValue(C_ERRPREFIX+errorType);
               } else {
                 // no error dmessage was found, so generate a default one
-                error+="["+errorCode+"]";
+                error += "["+errorCode+"]";
               }
             }
           }
@@ -3293,7 +3435,7 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
         if (template.hasData("errormsg")) {
           error=template.getProcessedDataValue("errormsg")+error;
         }
-        template.setData("error",error);
+        template.setData("error", error);
 
       } catch (Exception ex) {
         // there was an error saving the content definition so remove all nescessary values from the
@@ -3305,7 +3447,7 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
         session.removeValue("selectedmediaCD");
         session.removeValue("media_position");
         session.removeValue("weShallDisplayThePreviewButton");
-        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
           A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "Error while saving data to Content Definition "+ex.toString());
         }
         throw new CmsException(ex.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, ex);
@@ -3336,7 +3478,7 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
           // there the backoffice url of the module will be called
           return "done";
         } catch (Exception e) {
-           if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+           if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
              A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "Error while doing redirect "+e.toString());
           }
           throw new CmsException(e.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, e);
@@ -3360,7 +3502,7 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
     Vector getMethods=new Vector();
     //get all methods of the CD
     Method[] methods = this.getContentDefinitionClass().getMethods();
-    for (int i=0;i<methods.length;i++) {
+    for (int i=0; i<methods.length; i++) {
       Method m=methods[i];
       String name=m.getName().toLowerCase();
 
@@ -3391,7 +3533,7 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
     Hashtable setMethods=new Hashtable();
     //get all methods of the CD
     Method[] methods = this.getContentDefinitionClass().getMethods();
-    for (int i=0;i<methods.length;i++) {
+    for (int i=0; i<methods.length; i++) {
       Method m=methods[i];
       String name=m.getName().toLowerCase();
       //now extract all methods whose name starts with a "set"
@@ -3405,7 +3547,7 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
             Class retType=m.getReturnType();
             // the return value must be void
             if (retType.toString().equals("void")) {
-             setMethods.put(m.getName().toLowerCase(),m);
+             setMethods.put(m.getName().toLowerCase(), m);
            }
           }
         }
@@ -3418,10 +3560,12 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
   /**
    * This method austomatically fills all datablocks in the template that fit to a special name scheme.
    * A datablock named "xyz" is filled with the value of a "getXYZ" method form the content defintion.
+   * 
+   * @param cms the cms object
    * @param template The template to set the datablocks in.
    * @param contentDefinition The actual content defintion.
-   * @methods A vector with all "getXYZ" methods to be used.
-   * @throws Throws CmsException if something goes wrong.
+   * @param methods A vector with all "getXYZ" methods to be used.
+   * @throws CmsException if something goes wrong.
    */
   private void setDatablocks(CmsObject cms, CmsXmlWpTemplateFile template,
                              A_CmsContentDefinition contentDefinition,
@@ -3431,19 +3575,19 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
     String value="";
     Method method;
 
-    for (int i=0;i<methods.size();i++){
+    for (int i=0; i<methods.size(); i++) {
       // get the method name
       method=(Method)methods.elementAt(i);
       methodName=method.getName();
       //get the datablock name - the methodname without the leading "get"
-      datablockName=(methodName.substring(3,methodName.length())).toLowerCase();
+      datablockName=(methodName.substring(3, methodName.length())).toLowerCase();
       //check if the datablock name ends with a "string" if so, remove it from the datablockname
       if (datablockName.endsWith("string")) {
-        datablockName=datablockName.substring(0,datablockName.indexOf("string"));
+        datablockName=datablockName.substring(0, datablockName.indexOf("string"));
       }
       //now call the method to get the value
       try {
-        Object result=(Object)method.invoke(contentDefinition,new Object[] {});
+        Object result=(Object)method.invoke(contentDefinition, new Object[] {});
         // check if the get method returns null (default value of the CD), set the datablock to
         // to "" then.
         if (result==null) {
@@ -3452,17 +3596,17 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
           // cast the result to a string, only strings can be set into datablocks.
           value=result+"";
         }
-        template.setData(datablockName,value);
+        template.setData(datablockName, value);
 
         // set the escaped value into datablock for unescaping
         String escapedValue = value;
-        if(!"".equals(escapedValue.trim())){
+        if (!"".equals(escapedValue.trim())) {
             escapedValue = Encoder.escape(escapedValue,
                 cms.getRequestContext().getEncoding());
         }
-        template.setData(datablockName+"escaped",escapedValue);
+        template.setData(datablockName+"escaped", escapedValue);
       } catch (Exception e) {
-        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
             A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "Error during automatic call method '"+methodName+"':"+e.toString());
         }
       } // try
@@ -3475,18 +3619,18 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
    * A method "setXYZ(value)" of the content defintion is automatically called and filled with the
    * value of a template input field named "xyz".
    * @param cms The current CmsObject.
-   * @param contentDefintion The actual content defintion.
+   * @param contentDefinition The actual content defintion.
    * @param parameters A hashtable with all template and url parameters.
    * @param setMethods A hashtable with all "setXYZ" methods
-   * @throws Throws CmsException if something goes wrong.
+   * @throws CmsException if something goes wrong
    */
-  private void fillContentDefinition(CmsObject cms,A_CmsContentDefinition contentDefinition,
+  private void fillContentDefinition(CmsObject cms, A_CmsContentDefinition contentDefinition,
                                      Hashtable parameters,
-                                     Hashtable setMethods)throws CmsException {
+                                     Hashtable setMethods) throws CmsException {
 
     Enumeration keys = parameters.keys();
     // loop through all values that were returned
-    while(keys.hasMoreElements()) {
+    while (keys.hasMoreElements()) {
           String key=(String) keys.nextElement();
           String value=parameters.get(key).toString();
 
@@ -3496,7 +3640,7 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
           // the tested parameter.
           Enumeration uploadedFiles=cms.getRequestContext().getRequest().getFileNames();
           byte[] content=cms.getRequestContext().getRequest().getFile(value);
-          while (uploadedFiles.hasMoreElements()){
+          while (uploadedFiles.hasMoreElements()) {
             String filename=(String) uploadedFiles.nextElement();
             // there is a match, so this parameter represents a fileupload.
             if (filename.equals(value)) {
@@ -3515,7 +3659,7 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
             //now call the method to set the value
             try {
 
-              m.invoke(contentDefinition,new Object[] {value});
+              m.invoke(contentDefinition, new Object[] {value});
 
               // this parameter was the name of an uploaded file. Now try to set the file content
               // too.
@@ -3528,7 +3672,7 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
                 contentMethod.invoke(contentDefinition, new Object[] {content});
               }
             } catch (Exception e) {
-              if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+              if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                 A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "Error during automatic call method '"+m.getName()+"':"+e.toString());
               }
             } // try
@@ -3545,14 +3689,14 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
    * @param parameters All template and URL parameters.
    * @param templateSelector The current template selector.
    * @return The new template selector.
-   * @throws Throws CmsException if something goes wrong.
+   * @throws CmsException if something goes wrong.
    */
   private String getTemplateSelector(CmsObject cms, CmsXmlWpTemplateFile template,
-                                     Hashtable parameters,String templateSelector) throws CmsException {
+                                     Hashtable parameters, String templateSelector) throws CmsException {
    CmsSession session = (CmsSession) cms.getRequestContext().getSession(true);
     //store the old templateSelector in the session
     if (templateSelector!=null) {
-      session.putValue("backofficepagetemplateselector",templateSelector);
+      session.putValue("backofficepagetemplateselector", templateSelector);
     }
     // Vector to store all template selectors in the template
     Vector selectors=new Vector();
@@ -3560,7 +3704,7 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
     Vector filteredSelectors=new Vector();
     selectors=template.getAllSections();
     // loop through all templateseletors and find the useful ones
-    for (int i=0;i<selectors.size();i++) {
+    for (int i=0; i<selectors.size(); i++) {
       String selector=(String)selectors.elementAt(i);
       if ((!selector.equals(C_DEFAULT_SELECTOR)) && (!selector.equals(C_DONE_SELECTOR))) {
         filteredSelectors.addElement(selector);
@@ -3571,7 +3715,7 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
 
     // check if there is more than one useful template selector. If not, do not display the selectbox.
     if (selectors.size()<4) {
-      template.setData("BOSELECTOR","");
+      template.setData("BOSELECTOR", "");
     }
 
     if (selectedPage!=null && selectedPage.length()>0) {
@@ -3579,49 +3723,63 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
       templateSelector=selectedPage;
     } else if (filteredSelectors.size()>0) {
       templateSelector=(String)filteredSelectors.elementAt(0);
-      session.putValue("backofficepagetemplateselector",templateSelector);
+      session.putValue("backofficepagetemplateselector", templateSelector);
     }
-      session.putValue("backofficepageselectorvector",filteredSelectors);
+      session.putValue("backofficepageselectorvector", filteredSelectors);
 
     return templateSelector;
   }
 
+
     /**
      * get the accessFlags from the template
+     *
+     * @param parameters ??
+     * @return the access value
      */
-    private int getAccessValue(Hashtable parameters){
+    private int getAccessValue(Hashtable parameters) {
         int accessFlag = 0;
-        for(int i=0; i<=8; i++){
+        for (int i=0; i<=8; i++) {
             String permissionsAtI=(String)parameters.get("permission_"+i);
-            if(permissionsAtI != null) {
-                if(permissionsAtI.equals("on")) {
+            if (permissionsAtI != null) {
+                if (permissionsAtI.equals("on")) {
                     accessFlag += new Integer(C_ACCESS_FLAGS[i]).intValue();
                 }
             }
         }
-        if(accessFlag == 0){
+        if (accessFlag == 0) {
             accessFlag = C_DEFAULT_PERMISSIONS;
         }
         return accessFlag;
     }
 
+
     /**
      * Set the accessFlags in the template
+     *
+     * @param template the template
+     * @param accessFlags the access flags
      */
-     private void setAccessValue(CmsXmlWpTemplateFile template, int accessFlags){
+    private void setAccessValue(CmsXmlWpTemplateFile template, int accessFlags) {
         // permissions check boxes
-        for(int i=0; i<=8; i++) {
+        for (int i=0; i<=8; i++) {
             int accessValueAtI = new Integer(C_ACCESS_FLAGS[i]).intValue();
             if ((accessFlags & accessValueAtI) > 0) {
-                template.setData("permission_"+i,"checked");
+                template.setData("permission_"+i, "checked");
             } else {
-                template.setData("permission_"+i,"");
+                template.setData("permission_"+i, "");
             }
         }
      }
 
+
     /**
      * Set the groups in the template
+     *
+     * @param cms the cms object
+     * @param template the template
+     * @param groupId id of the group
+     * @throws CmsException if something goes wrong
      */
     private void setGroupSelectbox(CmsObject cms, CmsXmlWpTemplateFile template, CmsUUID groupId) throws CmsException {
         //get all groups
@@ -3646,8 +3804,14 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
         template.setData("groupname", groupName);
     }
 
+
     /**
      * Set the owner in the template
+     *
+     * @param cms the cms object
+     * @param template the template
+     * @param ownerId the id of the owner
+     * @throws CmsException if something goes wrong
      */
     private void setOwnerSelectbox(CmsObject cms, CmsXmlWpTemplateFile template, CmsUUID ownerId) throws CmsException {
         // select box of owner
@@ -3675,9 +3839,10 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
   * user-method to create a checkbox with the according hidden field
   * @param cms the CmsObject
   * @param tagcontent params of the user-method
-  * @param doc
-  * @param userObject
-  * @return Object
+  * @param doc the xml document
+  * @param userObject additional data
+  * @return Object the checkbox definition
+  * @throws CmsException if something goes wrong
   */
   public Object checkbox(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
                          Object userObject) throws CmsException {
@@ -3689,9 +3854,9 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
         CmsXmlTemplateFile temp=(CmsXmlTemplateFile)doc;
         // separate name from other parameter (if given) ...
         int index = tagcontent.indexOf(",");
-        if( index > -1 && index <= tagcontent.length()) {
+        if (index > -1 && index <= tagcontent.length()) {
             name = tagcontent.substring(0, index);
-            param = tagcontent.substring(index+1, tagcontent.length() );
+            param = tagcontent.substring(index+1, tagcontent.length());
         } else {
             name = tagcontent;
         }
@@ -3703,9 +3868,8 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
           checked="";
         }
 
-        String buf =
-        "<input type=hidden name=\""+name+"\" value=\"off\">"+
-        "<input type=checkbox name=\""+name+"\" "+checked+" "+param+">\n";
+        String buf = "<input type=hidden name=\""+name+"\" value=\"off\">"
+        + "<input type=checkbox name=\""+name+"\" "+checked+" "+param+">\n";
 
         return buf.toString();
     }
