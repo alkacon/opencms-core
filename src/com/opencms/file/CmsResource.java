@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResource.java,v $
- * Date   : $Date: 2000/06/05 13:37:55 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/06/06 12:58:52 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -37,11 +37,25 @@ import com.opencms.core.*;
  * This resource can be a A_CmsFile or a A_CmsFolder.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.16 $ $Date: 2000/06/05 13:37:55 $
+ * @version $Revision: 1.17 $ $Date: 2000/06/06 12:58:52 $
  */
  public class CmsResource implements I_CmsConstants,
                                                            Cloneable,
                                                            Serializable {
+     /**
+      * The database ID
+      */
+     private int m_resourceId;
+     
+	 /**
+      * The database Parent ID
+      */
+     private int m_parentId;
+     
+     /**
+      * The database Parent ID
+      */
+     private int m_fileId;
      
      /**
       * The name of this resource.
@@ -64,14 +78,14 @@ import com.opencms.core.*;
      private int m_projectId;
 
       /**
-      * The owner id of this resource.
+      * The owner  of this resource.
       */
-     private int m_userId;
+     private CmsUser m_user;
      
      /**
-      * The group id of this resource.
+      * The group  of this resource.
       */
-     private int m_groupId;
+     private CmsGroup m_group;
       
      /**
       * The access flags of this resource.
@@ -120,11 +134,18 @@ import com.opencms.core.*;
       */
      private String m_launcherClassname;
      
+     /**
+      * The UserId of the user who modified this resource last.
+      */
+     private int m_resourceLastModifiedBy;
      
      
      /**
       * Constructor, creates a new CmsRecource object.
       * 
+      * @param resourceId The database Id.
+      * @param parentId The database Id of the parent folder.
+      * @param fileId The id of the content.
       * @param resourceName The name (including complete path) of the resouce.
       * @param resourceType The type of this resource.
       * @param rescourceFlags The flags of thei resource.
@@ -138,19 +159,25 @@ import com.opencms.core.*;
       * @param launcherClassname The name of the Java class invoked by the launcher.
       * @param dateCreated The creation date of this resource.
       * @param dateLastModified The date of the last modification of the resource.
+      * @param resourceLastModifiedBy The user who changed the file.
       */
-     public CmsResource(String resourceName, int resourceType, int resourceFlags,
-                        int userId, int groupId, int projectId,
+     public CmsResource(int resourceId, int parentId,
+						int fileId,String resourceName,
+						int resourceType, int resourceFlags,
+                        CmsUser user, CmsGroup group, int projectId,
                         int accessFlags, int state, int lockedBy,
                         int launcherType, String launcherClassname,
                         long dateCreated, long dateLastModified,
-                        int size){
+                        int resourceLastModifiedBy,int size){
          
+        m_resourceId = resourceId;
+		m_parentId = parentId;
+		m_fileId = fileId;
         m_resourceName=resourceName;
         m_resourceType=resourceType;
         m_resourceFlags=resourceFlags;
-        m_userId=userId;
-        m_groupId=groupId;
+        m_user=user;
+        m_group=group;
         m_projectId=projectId;
         m_accessFlags=accessFlags;
         m_launcherType=launcherType;
@@ -159,10 +186,73 @@ import com.opencms.core.*;
         m_lockedBy=lockedBy;
         m_dateCreated=dateCreated;
         m_dateLastModified=dateLastModified;
+        m_resourceLastModifiedBy = resourceLastModifiedBy;
         m_size=size;    
      }
 
          
+	/**
+	 * Gets the database id for this resource.
+	 * 
+	 * @return the database id of this resource.
+	 */
+	 public int getResourceId(){
+		return m_resourceId;
+	 }
+	 
+	 /**
+	 * Gets the Parent database id for this resource.
+	 * 
+	 * @return the Parent database id of this resource.
+	 */
+	public int getParentId(){
+		return m_parentId;
+	}
+	
+     /**
+	 * Sets the parent database id for this resource.
+	 * 
+	 * @param The new database id of this resource.
+	 */
+	void setParentId(int parentId){
+		m_parentId = parentId;
+	}
+	
+    /**
+	 * Gets the File id for this resource.
+	 * 
+	 * @return the File id of this resource.
+	 */
+	 public int getFileId(){
+		return m_fileId;
+	 }
+	 
+    /**
+	 * Sets the File id for this resource.
+	 * 
+	 * @param The File id of this resource.
+	 */
+	void setFileId(int fileId){
+		m_fileId = fileId;
+	}
+	
+	/**
+	 * Gets the userId from the user who made the last change.
+	 * 
+	 * @return the userId from the user who made the last change.
+	 */
+	 public int getResourceLastModifiedBy(){
+		return m_resourceLastModifiedBy;
+	 }
+	/**
+	 * Sets the user id from the user who changes the resource.
+	 * 
+	 * @param The userId from the user who changes the resource.
+	 */
+	void setResourceLastModifiedBy(int resourceLastModifiedBy){
+		m_resourceLastModifiedBy = resourceLastModifiedBy;
+	}
+	
 	/**
 	 * Returns the absolute path for this resource.<BR/>
 	 * Example: retuns /system/def/language.cms
@@ -305,12 +395,16 @@ import com.opencms.core.*;
         StringBuffer output=new StringBuffer();
         output.append("[Resource]:");
         output.append(m_resourceName);
+        output.append("Database ID:");
+        output.append(m_resourceId);
+        output.append("Database ParentID:");
+        output.append(m_parentId);
         output.append(" , Project=");
         output.append(m_projectId);
         output.append(" , User=");
-        output.append(m_userId);
+        output.append(m_user);
         output.append(" , Group=");
-        output.append(m_groupId);
+        output.append(m_group);
         output.append(" : Access=");
         output.append(getFlagString());
         output.append(" : Resource-type=");
@@ -344,16 +438,25 @@ import com.opencms.core.*;
 	 * @return the userid of the resource owner.
 	 */
       int getOwnerId() {
-         return m_userId;
+         return m_user.getId();
+      }
+	
+	/**
+	 * Returns the user of the resource owner.
+	 * 
+	 * @return the user of the resource owner.
+	 */
+      CmsUser getOwner() {
+         return (CmsUser)m_user.clone();
       }
 	
      /**
-	 * Sets the userid of the resource owner.
+	 * Sets the user of the resource owner.
 	 * 
-	 * @param The userid of the new resource owner.
+	 * @param The user of the new resource owner.
 	 */
-      void setOwnerId(int id){
-          m_userId=id;          
+      void setOwner(CmsUser user){
+          m_user=user;          
       }
     
 	/**
@@ -362,16 +465,25 @@ import com.opencms.core.*;
 	 * @return the groupid of this resource.
 	 */
       int getGroupId() {
-         return  m_groupId;
+         return  m_group.getId();
+      }
+    
+    /**
+	 * Returns the group of this resource.
+	 * 
+	 * @return the group of this resource.
+	 */
+      CmsGroup getGroup() {
+         return  (CmsGroup)m_group.clone();
       }
       
       /**
-	 * Sets the groupid of this resource.
+	 * Sets the group of this resource.
 	 * 
-	 * @param The new groupid of this resource.
+	 * @param The new group of this resource.
 	 */
-      void setGroupId(int id) {
-          m_groupId=id;
+      void setGroupId(CmsGroup group) {
+          m_group= group;
       }
                                
 	
@@ -551,11 +663,12 @@ import com.opencms.core.*;
      * @return Cloned CmsObject.
      */
     public Object clone() {
-        return new CmsResource(m_resourceName, m_resourceType, m_resourceFlags,
-                               m_userId, m_groupId, m_projectId,
+        return new CmsResource(m_resourceId, m_parentId,m_fileId, 
+							   m_resourceName, m_resourceType, m_resourceFlags,
+                               (CmsUser)m_user.clone(), (CmsGroup)m_group.clone(), m_projectId,
                                m_accessFlags, m_state, m_lockedBy,
                                m_launcherType, m_launcherClassname,
                                m_dateCreated, m_dateLastModified,
-                               m_size);                                   
+                               m_resourceLastModifiedBy,m_size);                                   
     }
 }

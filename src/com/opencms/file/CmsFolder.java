@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsFolder.java,v $
- * Date   : $Date: 2000/04/07 15:22:17 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/06/06 12:58:52 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import java.io.*;
  * This class describes a folder in the Cms.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 2000/04/07 15:22:17 $
+ * @version $Revision: 1.9 $ $Date: 2000/06/06 12:58:52 $
  */
 public class CmsFolder extends CmsResource implements I_CmsConstants,
                                                       Cloneable,
@@ -43,6 +43,9 @@ public class CmsFolder extends CmsResource implements I_CmsConstants,
      /**
       * Constructor, creates a new CmsFolder object.
       * 
+      * @param resourceId The database Id.
+      * @param parentId The database Id of the parent folder.
+      * @param fileId The id of the content.
       * @param resourceName The name (including complete path) of the resouce.
       * @param resourceType The type of this resource.
       * @param rescourceFlags The flags of thei resource.
@@ -54,18 +57,23 @@ public class CmsFolder extends CmsResource implements I_CmsConstants,
       * @param lockedBy The user id of the user who has locked this resource.
       * @param dateCreated The creation date of this resource.
       * @param dateLastModified The date of the last modification of the resource.
+      * @param resourceLastModifiedBy The user who changed the file.
       */
-     public CmsFolder(String resourceName, int resourceType, int resourceFlags,
-                        int userId, int groupId, int projectId,
+     public CmsFolder(int resourceId, int parentId,int fileId,
+						String resourceName, int resourceType, int resourceFlags,
+                        CmsUser user, CmsGroup group, int projectId,
                         int accessFlags, int state, int lockedBy,
-                        long dateCreated, long dateLastModified){
+                        long dateCreated, long dateLastModified
+                        ,int resourceLastModifiedBy){
         
         // create the CmsResource.
-        super(resourceName,resourceType,resourceFlags,
-              userId,groupId,projectId,
+        super(resourceId, parentId,fileId,resourceName,
+			  resourceType,resourceFlags,
+              user,group,projectId,
               accessFlags,state,lockedBy,
               C_UNKNOWN_LAUNCHER_ID,C_UNKNOWN_LAUNCHER,
-              dateCreated,dateLastModified,-1);         
+              dateCreated,dateLastModified,
+              resourceLastModifiedBy,-1);         
    }
     
     /** 
@@ -73,10 +81,11 @@ public class CmsFolder extends CmsResource implements I_CmsConstants,
     * @return Cloned CmsFolder.
     */
     public Object clone() {
-        return new CmsFolder(new String(this.getAbsolutePath()),this.getType(),
-                             this.getFlags(), this.getOwnerId(), this.getGroupId(),
+        return new CmsFolder(this.getResourceId(), this.getParentId(), this.getFileId(), 
+							 new String(this.getAbsolutePath()),this.getType(),
+                             this.getFlags(), this.getOwner(), this.getGroup(),
                              this.getProjectId(),this.getAccessFlags(), 
                              this.getState(),this.isLockedBy(),this.getDateCreated(),
-                             this.getDateLastModified());                             
+                             this.getDateLastModified(), this.getResourceLastModifiedBy());                             
     }
 }
