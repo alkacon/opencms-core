@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsResourceTypeXmlPage.java,v $
- * Date   : $Date: 2004/04/29 09:41:19 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/04/29 10:21:05 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.1
  */
 public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHtmlLinkValidatable {
@@ -197,7 +197,7 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHt
      * @see org.opencms.file.I_CmsResourceType#writeFile(org.opencms.file.CmsObject, org.opencms.file.CmsFile)
      */
     public void writeFile(CmsObject cms, CmsFile file) throws CmsException {     
-        validateDtd(cms, file);
+        validateXmlStructure(cms, file);
         cms.doWriteFile(file);
     }
     
@@ -208,11 +208,11 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHt
      * @param file the file to validate the xmlcontent of
      * @throws CmsException if validation has failed
      */
-    private void validateDtd(CmsObject cms, CmsFile file) throws CmsException {
+    private void validateXmlStructure(CmsObject cms, CmsFile file) throws CmsException {
         try {
             CmsXmlPage xmlpage= CmsXmlPage.read(cms, file);
             // validate the xml structure           
-            xmlpage.validate();
+            xmlpage.validateXmlStructure();
         } catch (CmsXmlPageException e) {   
             // there was an error during validation, so throw an CmsException that it can
             // be displayed in an error dialog box

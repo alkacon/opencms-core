@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsXmlPage.java,v $
- * Date   : $Date: 2004/04/29 09:41:19 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2004/04/29 10:21:05 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import org.xml.sax.SAXException;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.39 $
+ * @version $Revision: 1.40 $
  */
 public class CmsXmlPage {
     
@@ -735,7 +735,7 @@ public class CmsXmlPage {
      * 
      * @throws CmsXmlPageException if the validation fails
      */
-    public void validate() throws CmsXmlPageException  {
+    public void validateXmlStructure() throws CmsXmlPageException  {
 
         // Modifiy the path to the dtd. The xmlpage only contains the relative path to the
         // dtd inside of opencms. To validate the xmlstructure, the complete path is required.
