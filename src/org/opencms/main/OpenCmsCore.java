@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2003/08/18 15:49:53 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/08/19 12:06:23 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.1
  */
 public class OpenCmsCore {
@@ -1260,7 +1260,20 @@ public class OpenCmsCore {
             if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
                 OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Resource init class  : non-critical error " + e2.toString());
             }
-        }        
+        }   
+        
+        // initialize the class for the default property dialog
+        String propertyDialogHandler = OpenCms.getRegistry().getPropertyDialogHandler();
+        try { 
+            setRuntimeProperty("propertydialoghandler", Class.forName(propertyDialogHandler).newInstance());
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Property dialog class: " + propertyDialogHandler);
+            }    
+        } catch (Exception e) {
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Property dialog class: non-critical error " + e.toString());
+            }   
+        }
         
         // initialize the site manager
         m_siteManager = CmsSiteManager.initialize(conf);        

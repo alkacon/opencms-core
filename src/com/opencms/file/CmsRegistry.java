@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
-* Date   : $Date: 2003/08/14 15:37:26 $
-* Version: $Revision: 1.86 $
+* Date   : $Date: 2003/08/19 12:04:41 $
+* Version: $Revision: 1.87 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.86 $ $Date: 2003/08/14 15:37:26 $
+ * @version $Revision: 1.87 $ $Date: 2003/08/19 12:04:41 $
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
 
@@ -1597,6 +1597,15 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
      */
     public List getResourceInit() {
         return getSystemSubNodes("resourceinit");
+    }
+    
+    /**
+     * @see com.opencms.file.I_CmsRegistry#getPropertyDialogHandler()
+     */
+    public String getPropertyDialogHandler() {
+        Element systemElement = getSystemElement();
+        String className = systemElement.getElementsByTagName("propertydialoghandler").item(0).getFirstChild().getFirstChild().getNodeValue();
+        return className;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2003/07/30 13:34:50 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2003/08/19 12:04:41 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for building the dialog windows of OpenCms.<p> 
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 5.1
  */
@@ -57,6 +57,7 @@ public class CmsDialog extends CmsWorkplace {
     public static final int BUTTON_OK = 0;
     public static final int BUTTON_CANCEL = 1;
     public static final int BUTTON_CLOSE = 2;
+    public static final int BUTTON_ADVANCED = 3;
     
     public static final String DIALOG_CONFIRMED = "confirmed";
     public static final String DIALOG_WAIT = "wait";
@@ -76,7 +77,9 @@ public class CmsDialog extends CmsWorkplace {
     private String m_paramMessage;
     private String m_paramTitle;
 
-    private int m_action;    
+    private int m_action;  
+    
+    private String m_paramReasonSuggestion = null;  
    
     /**
      * Public constructor with JSP action element.<p>
@@ -268,16 +271,29 @@ public class CmsDialog extends CmsWorkplace {
         m_paramMessage = value;
     }
     
-    private String m_paramReasonSuggestion = null;
-    
+    /**
+     * Returns the value of the reasonSuggestion parameter.<p>
+     *  
+     * @return the value of the reasonSuggestion parameter
+     */
     public String getParamReasonSuggestion() {
         return m_paramReasonSuggestion;
     }
     
+    /**
+     * Sets the value of the reasonSuggestion parameter.<p>
+     * 
+     * @param value the value of the reasonSuggestion parameter
+     */
     public void setParamReasonSuggestion(String value) {
         m_paramReasonSuggestion = value;
     }
     
+    /**
+     * Returns the default error suggestion String for error messages.<p>
+     * 
+     * @return the default error suggestion String
+     */
     public String getErrorSuggestionDefault() {
         return key("error.reason." + getParamDialogtype()) + "<br>\n" + key("error.suggestion." + getParamDialogtype()) + "\n";        
     }
@@ -590,6 +606,13 @@ public class CmsDialog extends CmsWorkplace {
                     result.append(curAttributes);
                     result.append(">\n");
                     break;
+                case BUTTON_ADVANCED:
+                    result.append("<input name=\"advanced\" type=\"button\" value=\"");
+                    result.append(key("button.advanced")+"\"");
+                    result.append(" class=\"dialogbutton\"");
+                    result.append(curAttributes);
+                    result.append(">\n");
+                    break;
                 default:
                     // not a valid button code, just insert a warning in the HTML
                     result.append("<!-- invalid button code: ");
@@ -620,6 +643,18 @@ public class CmsDialog extends CmsWorkplace {
      */
     public String dialogButtonRowOkCancel(String okAttributes, String cancelAttributes) {
         return dialogButtonRow(new int[] {BUTTON_OK, BUTTON_CANCEL}, new String[] {okAttributes, cancelAttributes});
+    }
+    
+    /**
+     * Builds a button row with an "ok", a "cancel" and an "advanced" button.<p>
+     * 
+     * @param okAttributes additional attributes for the "ok" button
+     * @param cancelAttributes additional attributes for the "cancel" button
+     * @param advancedAttributes additional attributes for the "advanced" button
+     * @return the button row 
+     */
+    public String dialogButtonRowOkCancelAdvanced(String okAttributes, String cancelAttributes, String advancedAttributes) {
+        return dialogButtonRow(new int[] {BUTTON_OK, BUTTON_CANCEL, BUTTON_ADVANCED}, new String[] {okAttributes, cancelAttributes, advancedAttributes});
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsProperty.java,v $
- * Date   : $Date: 2003/08/14 15:37:24 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2003/08/19 12:04:41 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,11 +56,11 @@ import org.opencms.main.OpenCms;
  * 
  * The following files use this class:
  * <ul>
- * <li>/jsp/dialogs/property_html
+ * <li>/jsp/dialogs/property_standard_html
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 5.1
  */
@@ -85,7 +85,9 @@ public class CmsProperty extends CmsDialog {
     public static final String PREFIX_HIDDEN = "hidden-";
     public static final String PREFIX_USEPROPERTY = "use-";
     
-    public static final String PARAM_NEWPROPERTY = "newproperty";    
+    public static final String PARAM_NEWPROPERTY = "newproperty";   
+    
+    public static final String URI_PROPERTY_DIALOG = C_PATH_DIALOGS + "property_standard.html"; 
 
     private String m_paramNewproperty;
     

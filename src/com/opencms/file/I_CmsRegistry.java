@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRegistry.java,v $
- * Date   : $Date: 2003/08/07 09:04:32 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2003/08/19 12:04:41 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import com.opencms.report.I_CmsReport;
  * @author Andreas Schouten
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.44 $ $Date: 2003/08/07 09:04:32 $
+ * @version $Revision: 1.45 $ $Date: 2003/08/19 12:04:41 $
  */
 public interface I_CmsRegistry extends Cloneable {
 
@@ -592,6 +592,13 @@ public interface I_CmsRegistry extends Cloneable {
      * @return a list of all configured resource init classes
      */
     public List getResourceInit();
+    
+    /**
+     * Returns the class name of the property dialog handler as String.<p>
+     * 
+     * @return the class name of the property dialog handler
+     */
+    public String getPropertyDialogHandler();
 
     /**
      * Returns a value for a system-key.
