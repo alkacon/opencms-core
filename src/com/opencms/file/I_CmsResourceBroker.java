@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
-* Date   : $Date: 2003/03/03 10:43:32 $
-* Version: $Revision: 1.195 $
+* Date   : $Date: 2003/03/04 00:34:38 $
+* Version: $Revision: 1.196 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import source.org.apache.java.util.Configurations;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.195 $ $Date: 2003/03/03 10:43:32 $
+ * @version $Revision: 1.196 $ $Date: 2003/03/04 00:34:38 $
  *
  */
 
@@ -2815,22 +2815,6 @@ public void updateOnlineProjectLinks(Vector deleted, Vector changed, Vector newR
      public Vector readProjectLogs(CmsUser currentUser, CmsProject currentProject,
                                    int projectId)
          throws CmsException;
-
-    /**
-     * Looks up a specified property from a resource.<p>
-     *
-     * <B>Security</B>
-     * Only a user is granted who has the right to read the resource
-     *
-     * @param currentUser the current user
-     * @param currentProject the current project of the user
-     * @param resource the resource to look up the property for
-     * @param property the name of the property to look up
-     * @return the value of the property found, null if nothing was found
-     * @throws CmsException in case there where problems reading the property
-     */
-    public String readProperty(CmsUser currentUser, CmsProject currentProject, String resource, String property)
-    throws CmsException;
 
     /**
      * Looks up a specified property with optional direcory upward cascading.<p>

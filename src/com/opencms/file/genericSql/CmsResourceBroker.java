@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2003/03/03 10:43:33 $
-* Version: $Revision: 1.359 $
+* Date   : $Date: 2003/03/04 00:38:17 $
+* Version: $Revision: 1.360 $
 
 *
 * This library is part of OpenCms -
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.359 $ $Date: 2003/03/03 10:43:33 $
+ * @version $Revision: 1.360 $ $Date: 2003/03/04 00:38:17 $
 
  *
  */
@@ -6184,53 +6184,6 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
     }
     
     /**
-     * Looks up a specified property from a resource.<p>
-     *
-     * <B>Security</B>
-     * Only a user is granted who has the right to read the resource
-     *
-     * @param currentUser the current user
-     * @param currentProject the current project of the user
-     * @param resource the resource to look up the property for
-     * @param property the name of the property to look up
-     * @return the value of the property found, null if nothing was found
-     * @throws CmsException in case there where problems reading the property
-     */  
-    public String readProperty(CmsUser currentUser, CmsProject currentProject, String resource, String property)
-        throws CmsException {
-        CmsResource res;
-        // read the resource from the currentProject
-        try {
-            res = readFileHeader(currentUser,currentProject, resource, true);
-        } catch(CmsException exc) {
-            // the resource was not readable
-            throw exc;
-        }
-
-        // check the security
-        if( ! accessRead(currentUser, currentProject, res) ) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + resource,
-                CmsException.C_NO_ACCESS);
-        }
-        String returnValue = null;
-        String cacheKey = getCacheKey("property_false_" + property , null, currentProject, res.getResourceName());
-
-        returnValue = (String)m_propertyCache.get(cacheKey);
-
-        if (returnValue == null){
-            returnValue = m_dbAccess.readProperty(property,currentProject.getId(),res,res.getType());
-
-            if (returnValue == null) {
-                returnValue="";
-            }
-            m_propertyCache.put(cacheKey, returnValue);
-
-        }
-        if (returnValue.equals("")){returnValue=null;}
-        return returnValue;
-    }
-    
-    /**
      * Looks up a specified property with optional direcory upward cascading.<p>
      * 
      * <B>Security</B> see {@link #readProperty(CmsUser, CmsProject, String, String)}
@@ -6248,23 +6201,41 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
      */
     public String readProperty(CmsUser currentUser, CmsProject currentProject, String resource, String siteRoot, String property, boolean search)
     throws CmsException {
-        if (search) {
-            String cacheKey = getCacheKey("property_true_" + property , null, currentProject, siteRoot + resource);
-            String value = (String)m_propertyCache.get(cacheKey);
-            if (value == null) {
-                boolean cont;
-                siteRoot += "/";
-                do {
-                    value = readProperty(currentUser, currentProject, resource, property);
-                    cont = !((value != null) || siteRoot.equals(resource));
-                    if (cont) resource = CmsResource.getParent(resource);
-                } while (cont);
-                m_propertyCache.put(cacheKey, value);
-            }
-            return value;
-        } else {
-            return readProperty(currentUser, currentProject, resource, property);
-        }         
+        // read the resource
+        CmsResource res = readFileHeader(currentUser, currentProject, resource);
+
+        // check the security
+        if( ! accessRead(currentUser, currentProject, res) ) {
+             throw new CmsException("[" + this.getClass().getName() + "] " + resource,
+                CmsException.C_NO_ACCESS);
+        }
+        
+        search = search && (siteRoot != null);
+        // check if we have the result already cached
+        String cacheKey = getCacheKey(property + search, null, new CmsProject(currentProject.getId(), -1), res.getResourceName());
+        String value = (String)m_propertyCache.get(cacheKey);
+        
+        if (value == null) {
+            // result not cached, let's look it up in the DB
+            if (search) {
+                String cacheKey2 = getCacheKey(property + false, null, new CmsProject(currentProject.getId(), -1), res.getResourceName());
+                value = (String)m_propertyCache.get(cacheKey2);
+                if (value == null) {                    
+                    boolean cont;
+                    siteRoot += "/";
+                    do {
+                        value = readProperty(currentUser, currentProject, resource, siteRoot, property, false);
+                        cont = !((value != null) || siteRoot.equals(resource));
+                        resource = CmsResource.getParent(resource);
+                    } while (cont);
+                }
+            } else {
+                value = m_dbAccess.readProperty(property, currentProject.getId(), res, res.getType());
+            }  
+            // store the result in the cache
+            m_propertyCache.put(cacheKey, value);
+        }
+        return value;
     }
 
     /**
@@ -6313,21 +6284,9 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
      */
     public Map readProperties(CmsUser currentUser, CmsProject currentProject, String resource, String siteRoot, boolean search) 
     throws CmsException {
-        CmsResource res;
-        // read the resource from the currentProject, or the online-project
-        try {
-            res = readFileHeader(currentUser,currentProject, resource);
-        } catch(CmsException exc) {
-            // the resource was not readable
-            if(currentProject.equals(onlineProject(currentUser, currentProject))) {
-                // this IS the onlineproject - throw the exception
-                throw exc;
-            } else {
-                // try to read the resource in the onlineproject
-                res = readFileHeader(currentUser,onlineProject(currentUser, currentProject),
-                                              resource);
-            }
-        }
+        // read the resource
+        CmsResource res = readFileHeader(currentUser, currentProject, resource);
+
         // check the security
         if( ! accessRead(currentUser, currentProject, res) ) {
              throw new CmsException("[" + this.getClass().getName() + "] " + resource,
@@ -6336,66 +6295,36 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
         
         search = search && (siteRoot != null);
         // check if we have the result already cached
-        Map returnValue = null;
-        String cacheKey = getCacheKey("properties_" + search, null, currentProject, res.getResourceName());
-        returnValue = (Map)m_propertyCache.get(cacheKey);
+        Map value = null;
+        String cacheKey = getCacheKey("properties_" + search, null, new CmsProject(currentProject.getId(), -1), res.getResourceName());
+        value = (Map)m_propertyCache.get(cacheKey);
         
-        if (returnValue == null) {
+        if (value == null) {
             // result not cached, let's look it up in the DB
             if (search) {
-                boolean cont;
-                siteRoot += "/";
-                returnValue = new HashMap();
-                do {
-                    Map parentValue = readProperties(currentUser, currentProject, resource, siteRoot, false);
-                    parentValue.putAll(returnValue);
-                    returnValue.clear();
-                    returnValue = parentValue;                 
-                    cont = (! siteRoot.equals(resource));
-                    if (cont) resource = CmsResource.getParent(resource);
-                } while (cont);
+                String cacheKey2 = getCacheKey("properties_" + false, null, new CmsProject(currentProject.getId(), -1), res.getResourceName());
+                value = (Map)m_propertyCache.get(cacheKey2);
+                if (value == null) {                    
+                    boolean cont;
+                    siteRoot += "/";
+                    value = new HashMap();
+                    Map parentValue;
+                    do {
+                        parentValue = readProperties(currentUser, currentProject, resource, siteRoot, false);
+                        parentValue.putAll(value);
+                        value.clear();
+                        value = parentValue;
+                        resource = CmsResource.getParent(resource);
+                        cont = (! siteRoot.equals(resource));
+                    } while (cont);
+                }
             } else {
-                returnValue = m_dbAccess.readProperties(currentProject.getId(), res, res.getType());
+                value = m_dbAccess.readProperties(currentProject.getId(), res, res.getType());
             }  
             // store the result in the cache
-            m_propertyCache.put(cacheKey, returnValue);
+            m_propertyCache.put(cacheKey, value);
         }
-        return returnValue;
-    }
-    
-    /**
-     * Return a cache key build from the provided information.<p>
-     * 
-     * @param prefix a prefix for the key
-     * @param user the user for which to genertate the key
-     * @param project the project for which to genertate the key
-     * @param resource the resource for which to genertate the key
-     * @return String a cache key build from the provided information
-     */
-    private String getCacheKey(String prefix, CmsUser user, CmsProject project, String resource) {
-        StringBuffer buffer = new StringBuffer(32);
-        if (prefix != null) {
-            buffer.append(prefix);
-            buffer.append("_");
-        }
-        if (user != null) {
-            buffer.append(user.getId());
-            buffer.append("_");            
-        }
-        if (project != null) {
-            if (project.getFlags() >= 0) {
-                buffer.append(project.getId());
-            } else {
-                if (project.isOnlineProject()) {
-                    buffer.append("on");
-                } else {
-                    buffer.append("of");
-                }
-            }
-            buffer.append("_");
-        } 
-        buffer.append(resource);
-        return buffer.toString();
+        return value;
     }
              
     /**
@@ -8514,6 +8443,41 @@ protected void validName(String name, boolean blank) throws CmsException {
         return visibleResources;
     }
     
+    /**
+     * Return a cache key build from the provided information.<p>
+     * 
+     * @param prefix a prefix for the key
+     * @param user the user for which to genertate the key
+     * @param project the project for which to genertate the key
+     * @param resource the resource for which to genertate the key
+     * @return String a cache key build from the provided information
+     */
+    private String getCacheKey(String prefix, CmsUser user, CmsProject project, String resource) {
+        StringBuffer buffer = new StringBuffer(32);
+        if (prefix != null) {
+            buffer.append(prefix);
+            buffer.append("_");
+        }
+        if (user != null) {
+            buffer.append(user.getId());
+            buffer.append("_");            
+        }
+        if (project != null) {
+            if (project.getFlags() >= 0) {
+                buffer.append(project.getId());
+            } else {
+                if (project.isOnlineProject()) {
+                    buffer.append("on");
+                } else {
+                    buffer.append("of");
+                }
+            }
+            buffer.append("_");
+        } 
+        buffer.append(resource);
+        return buffer.toString();
+    }
+        
     /**
      * Provides a method to build cache keys for groups and users that depend either on 
      * a name string or an id.<p>
