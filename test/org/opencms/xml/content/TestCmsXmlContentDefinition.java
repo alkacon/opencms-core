@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentDefinition.java,v $
- * Date   : $Date: 2004/11/08 15:06:43 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/11/30 14:23:51 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.dom4j.io.XMLWriter;
  * Tests for generating an XML content definition.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class TestCmsXmlContentDefinition extends TestCase {
 
@@ -71,10 +71,10 @@ public class TestCmsXmlContentDefinition extends TestCase {
     public void testCmsXmlContentDefiniton() throws Exception {
         CmsXmlContentDefinition cd1 = new CmsXmlContentDefinition("Article", null);         
         
-        cd1.addType(new CmsXmlStringValue("Author"));
-        cd1.addType(new CmsXmlStringValue("Teaser", 0, 1));
-        cd1.addType(new CmsXmlStringValue("Toaster", 0, Integer.MAX_VALUE));
-        cd1.addType(new CmsXmlStringValue("Rollercoaster", 3, 10));
+        cd1.addType(new CmsXmlStringValue("Author", "1", "1"));
+        cd1.addType(new CmsXmlStringValue("Teaser", "0", "1"));
+        cd1.addType(new CmsXmlStringValue("Toaster", "1", String.valueOf(Integer.MAX_VALUE)));
+        cd1.addType(new CmsXmlStringValue("Rollercoaster", "3", "10"));
         
         Document schema;
         StringWriter out;
@@ -105,7 +105,7 @@ public class TestCmsXmlContentDefinition extends TestCase {
         
         assertEquals(cd1, cd2);
         
-        cd1.addType(new CmsXmlStringValue("AddedLater"));
+        cd1.addType(new CmsXmlStringValue("AddedLater", "1", "1"));
         assertFalse(cd1.equals(cd2));
     }
     
@@ -119,11 +119,11 @@ public class TestCmsXmlContentDefinition extends TestCase {
         String schemaUri = "http://www.opencms.org/test.xsd";
         CmsXmlContentDefinition cd1 = new CmsXmlContentDefinition("Article", schemaUri);         
         
-        cd1.addType(new CmsXmlStringValue("Author"));
-        cd1.addType(new CmsXmlStringValue("Teaser"));        
-        cd1.addType(new CmsXmlStringValue("Text"));
-        cd1.addType(new CmsXmlDateTimeValue("Date"));
-        cd1.addType(new CmsXmlStringValue("Option", 0, 1)); 
+        cd1.addType(new CmsXmlStringValue("Author", "1", "1"));
+        cd1.addType(new CmsXmlStringValue("Teaser", "1", "1"));        
+        cd1.addType(new CmsXmlStringValue("Text", "1", "1"));
+        cd1.addType(new CmsXmlDateTimeValue("Date", "1", "1"));
+        cd1.addType(new CmsXmlStringValue("Option", "0", "1")); 
         
         CmsXmlEntityResolver.cacheSystemId(schemaUri, cd1.getSchema().asXML().getBytes("UTF-8"));
         CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);
@@ -134,7 +134,7 @@ public class TestCmsXmlContentDefinition extends TestCase {
         content.validateXmlStructure(resolver);
 
         // change cd to break validation
-        cd1.addType(new CmsXmlStringValue("Kaputt"));
+        cd1.addType(new CmsXmlStringValue("Kaputt", "1", "1"));
         CmsXmlEntityResolver.cacheSystemId(schemaUri, cd1.getSchema().asXML().getBytes("UTF-8"));
 
         try {

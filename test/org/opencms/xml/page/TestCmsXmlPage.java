@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/page/TestCmsXmlPage.java,v $
- * Date   : $Date: 2004/11/22 15:35:06 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/11/30 14:23:51 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.5.0
  */
@@ -365,7 +365,7 @@ public class TestCmsXmlPage extends TestCase {
         
         // create new content definition form objects
         CmsXmlContentDefinition cd2 = new CmsXmlContentDefinition("page", C_XMLPAGE_SCHEMA_SYSTEM_ID);
-        cd2.addType(new CmsXmlHtmlValue("element", 0, Integer.MAX_VALUE));    
+        cd2.addType(new CmsXmlHtmlValue("element", "0", String.valueOf(Integer.MAX_VALUE)));    
         
         // ensure content definitions are equal
         assertEquals(cd1, cd2);

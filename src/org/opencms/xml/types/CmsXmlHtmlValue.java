@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlHtmlValue.java,v $
- * Date   : $Date: 2004/11/28 21:57:59 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/11/30 14:23:51 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,12 +40,12 @@ import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.util.CmsHtmlConverter;
 import org.opencms.util.CmsHtmlExtractor;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.page.CmsXmlPage;
 
 import java.util.Iterator;
+import java.util.Locale;
 
 import org.dom4j.Attribute;
 import org.dom4j.Element;
@@ -56,7 +56,7 @@ import org.htmlparser.util.ParserException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * @since 5.5.0
  */
 public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlContentValue {
@@ -71,7 +71,7 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
     private String m_stringValue;
 
     /**
-     * Creates a new Locale type definition.<p>
+     * Creates a new, empty schema type descriptor of type "OpenCmsHtml".<p>
      */
     public CmsXmlHtmlValue() {
 
@@ -79,90 +79,43 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
     }
 
     /**
-     * Creates a new XML content value.<p>
+     * Creates a new XML content value of type "OpenCmsHtml".<p>
      * 
-     * @param element the XML element that contains the value
+     * @param element the XML element that contains this value
      * @param name the node name of this value in the source XML document
-     * @param index the index of the XML element in the source document
+     * @param locale the locale this value is created for
      */
-    public CmsXmlHtmlValue(Element element, String name, int index) {
+    public CmsXmlHtmlValue(Element element, String name, Locale locale) {
 
-        m_element = element;
-        m_name = name;
-        m_index = index;
+        super(element, name, locale);
     }
 
     /**
-     * Creates a new Locale type which must occur exaclty once.<p>
+     * Creates a new schema type descriptor for the type "OpenCmsHtml".<p>
      * 
-     * @param name the name of the element
-     */
-    public CmsXmlHtmlValue(String name) {
-
-        m_name = name;
-        m_minOccurs = 1;
-        m_maxOccurs = 1;
-    }
-
-    /**
-     * Creates a new Locale type.<p>
-     * 
-     * @param name the name of the element
-     * @param minOccurs minimum number of occurences
-     * @param maxOccurs maximum number of occurences
-     */
-    public CmsXmlHtmlValue(String name, int minOccurs, int maxOccurs) {
-
-        m_name = name;
-        m_minOccurs = minOccurs;
-        m_maxOccurs = maxOccurs;
-    }
-
-    /**
-     * Creates a new Locale type.<p>
-     * 
-     * @param name the name of the element
-     * @param minOccurs minimum number of occurences
-     * @param maxOccurs maximum number of occurences
+     * @param name the name of the XML node containing the value according to the XML schema
+     * @param minOccurs minimum number of occurences of this type according to the XML schema
+     * @param maxOccurs maximum number of occurences of this type according to the XML schema
      */
     public CmsXmlHtmlValue(String name, String minOccurs, String maxOccurs) {
 
-        m_name = name;
-        m_minOccurs = 1;
-        if (CmsStringUtil.isNotEmpty(minOccurs)) {
-            try {
-                m_minOccurs = Integer.valueOf(minOccurs).intValue();
-            } catch (NumberFormatException e) {
-                // ignore
-            }
-        }
-        m_maxOccurs = 1;
-        if (CmsStringUtil.isNotEmpty(maxOccurs)) {
-            if (CmsXmlContentDefinition.XSD_ATTRIBUTE_VALUE_UNBOUNDED.equals(maxOccurs)) {
-                m_maxOccurs = Integer.MAX_VALUE;
-            } else {
-                try {
-                    m_maxOccurs = Integer.valueOf(maxOccurs).intValue();
-                } catch (NumberFormatException e) {
-                    // ignore
-                }
-            }
-        }
+        super(name, minOccurs, maxOccurs);
     }
 
     /**
-     * @see org.opencms.xml.types.I_CmsXmlSchemaType#appendDefaultXml(org.dom4j.Element, int)
+     * @see org.opencms.xml.types.I_CmsXmlSchemaType#appendDefaultXml(org.dom4j.Element, Locale)
      */
-    public void appendDefaultXml(Element root, int index) {
+    public void appendDefaultXml(Element root, Locale locale) {
 
         Element element = root.addElement(getElementName());
+        int index = element.getParent().elements(element.getQName()).indexOf(element);
         element.addAttribute(CmsXmlPage.ATTRIBUTE_NAME, getElementName() + index);
         element.addElement(CmsXmlPage.NODE_LINKS);
         element.addElement(CmsXmlPage.NODE_CONTENT);
 
         if (m_defaultValue != null) {
             try {
-                I_CmsXmlContentValue value = createValue(element, getElementName(), index);
+                I_CmsXmlContentValue value = createValue(element, getElementName(), locale);
                 value.setStringValue(m_defaultValue);
             } catch (CmsXmlException e) {
                 // should not happen if default value is correct
@@ -173,11 +126,11 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
     }
 
     /**
-     * @see org.opencms.xml.types.A_CmsXmlContentValue#createValue(org.dom4j.Element, java.lang.String, int)
+     * @see org.opencms.xml.types.A_CmsXmlContentValue#createValue(org.dom4j.Element, java.lang.String, Locale)
      */
-    public I_CmsXmlContentValue createValue(Element element, String name, int index) {
+    public I_CmsXmlContentValue createValue(Element element, String name, Locale locale) {
 
-        return new CmsXmlHtmlValue(element, name, index);
+        return new CmsXmlHtmlValue(element, name, locale);
     }
 
     /**

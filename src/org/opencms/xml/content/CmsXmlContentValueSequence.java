@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentValueSequence.java,v $
- * Date   : $Date: 2004/11/29 01:38:15 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/11/30 14:23:51 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.xml.content;
 
+import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
@@ -42,7 +43,7 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.5.0
  */
 public class CmsXmlContentValueSequence {
@@ -163,6 +164,18 @@ public class CmsXmlContentValueSequence {
 
         return m_values;
     }
+    
+    /**
+     * Returns the XML content values from the index position of this seqnence.<p>
+     * 
+     * @param index the index position to get the value from
+     * 
+     * @return the XML content values from the index position of this seqnence
+     */    
+    public I_CmsXmlContentValue getValue(int index) {
+        
+        return (I_CmsXmlContentValue)m_values.get(index);
+    }
 
     /**
      * Return the XML schema type of this sequence element.<p>
@@ -195,12 +208,14 @@ public class CmsXmlContentValueSequence {
     }
 
     /**
-     * Returns <code>true</code> if this sequence element is of a simple type, or <code>false</code>
-     * if it is a cascaded schema type.<p>
+     * Returns <code>true</code> if this is a simple type, or <code>false</code>
+     * if this type is a nested schema.<p>
      * 
-     * @return true if this sequence element is of a simple type, or false if it is a cascaded schema
+     * If a value is a nested schema, it must be an instance of {@link CmsXmlNestedContentDefinition}.<p> 
      * 
-     * @see I_CmsXmlSchemaType#isSimpleType() 
+     * @return true if this is  a simple type, or false if this type is a nested schema
+     * 
+     * @see CmsXmlNestedContentDefinition
      */
     public boolean isSimpleType() {
 

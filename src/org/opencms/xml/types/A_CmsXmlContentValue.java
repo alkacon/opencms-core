@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/A_CmsXmlContentValue.java,v $
- * Date   : $Date: 2004/11/28 21:57:59 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/11/30 14:23:51 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,9 +35,12 @@ import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsFileUtil;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.I_CmsXmlDocument;
+
+import java.util.Locale;
 
 import org.dom4j.Element;
 
@@ -46,27 +49,27 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.5.0
  */
 public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
 
-    /** The default value for nodes of this element. */
+    /** The default value for nodes of this value. */
     protected String m_defaultValue;
 
     /** The XML element node that contains this value. */
     protected Element m_element;
 
-    /** The index of this value in the source XML document. */
-    protected int m_index;
+    /** The locale this value was generated for. */
+    protected Locale m_locale;
 
-    /** The maximum occurences of this type. */
+    /** The maximum occurences of this value according to the parent schema. */
     protected int m_maxOccurs;
 
-    /** The minimum occurences of this type. */
+    /** The minimum occurences of this value according to the parent schema. */
     protected int m_minOccurs;
 
-    /** The configured name of this element. */
+    /** The configured XML node name of this value. */
     protected String m_name;
 
     /**
@@ -80,23 +83,69 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
     }
 
     /**
-     * @see org.opencms.xml.types.I_CmsXmlSchemaType#appendDefaultXml(org.dom4j.Element, int)
+     * Initializes the required members for this XML content value.<p>
+     * 
+     * @param element the XML element that contains this value
+     * @param name the node name of this value in the source XML document
+     * @param locale the locale this value is created for
      */
-    public void appendDefaultXml(Element root, int index) {
+    protected A_CmsXmlContentValue(Element element, String name, Locale locale) {
+
+        m_element = element;
+        m_name = name;
+        m_locale = locale;
+    }
+
+    /**
+     * Initializes the schema type descriptor values for this type descriptor.<p>
+     * 
+     * @param name the name of the XML node containing the value according to the XML schema
+     * @param minOccurs minimum number of occurences of this type according to the XML schema
+     * @param maxOccurs maximum number of occurences of this type according to the XML schema
+     */
+    protected A_CmsXmlContentValue(String name, String minOccurs, String maxOccurs) {
+
+        m_name = name;
+        m_minOccurs = 1;
+        if (CmsStringUtil.isNotEmpty(minOccurs)) {
+            try {
+                m_minOccurs = Integer.valueOf(minOccurs).intValue();
+            } catch (NumberFormatException e) {
+                // ignore
+            }
+        }
+        m_maxOccurs = 1;
+        if (CmsStringUtil.isNotEmpty(maxOccurs)) {
+            if (CmsXmlContentDefinition.XSD_ATTRIBUTE_VALUE_UNBOUNDED.equals(maxOccurs)) {
+                m_maxOccurs = Integer.MAX_VALUE;
+            } else {
+                try {
+                    m_maxOccurs = Integer.valueOf(maxOccurs).intValue();
+                } catch (NumberFormatException e) {
+                    // ignore
+                }
+            }
+        }
+    }
+
+    /**
+     * @see org.opencms.xml.types.I_CmsXmlSchemaType#appendDefaultXml(org.dom4j.Element, Locale)
+     */
+    public void appendDefaultXml(Element root, Locale locale) {
 
         Element element = root.addElement(getElementName());
-        if (getDefault() != null) {
+        if (getDefault(locale) != null) {
             try {
-                I_CmsXmlContentValue value = createValue(element, getElementName(), index);
-                value.setStringValue(getDefault());
+                I_CmsXmlContentValue value = createValue(element, getElementName(), locale);
+                value.setStringValue(getDefault(locale));
             } catch (CmsXmlException e) {
                 // should not happen if default value is correct
-                OpenCms.getLog(this).error("Invalid default value '" + getDefault() + "' for XML content", e);
+                OpenCms.getLog(this).error("Invalid default value '" + getDefault(locale) + "' for XML content", e);
                 element.clearContent();
             }
         }
     }
-    
+
     /**
      * Appends an element XML representation of this type to the given root node.<p>
      * 
@@ -150,11 +199,9 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
     }
 
     /**
-     * Returns the default value for a node of this type.<p>
-     * 
-     * @return the default value for a node of this type
+     * @see org.opencms.xml.types.I_CmsXmlSchemaType#getDefault(java.util.Locale)
      */
-    public String getDefault() {
+    public String getDefault(Locale locale) {
 
         return m_defaultValue;
     }
@@ -168,11 +215,29 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
     }
 
     /**
+     * Returns the name.<p>
+     *
+     * @return the name
+     */
+    public String getElementName() {
+
+        return m_name;
+    }
+
+    /**
      * @see org.opencms.xml.types.I_CmsXmlContentValue#getIndex()
      */
     public int getIndex() {
 
-        return m_index;
+        return m_element.getParent().elements(m_element.getQName()).indexOf(m_element);
+    }
+
+    /**
+     * @see org.opencms.xml.types.I_CmsXmlContentValue#getLocale()
+     */
+    public Locale getLocale() {
+
+        return m_locale;
     }
 
     /**
@@ -196,29 +261,28 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
     }
 
     /**
-     * Returns the name.<p>
-     *
-     * @return the name
-     */
-    public String getElementName() {
-
-        return m_name;
-    }
-
-    /**
      * @see org.opencms.xml.types.I_CmsXmlContentValue#getPlainText(org.opencms.file.CmsObject, org.opencms.xml.I_CmsXmlDocument)
      */
     public String getPlainText(CmsObject cms, I_CmsXmlDocument document) {
-        
+
         return null;
     }
-    
+
     /**
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
 
         return getTypeName().hashCode();
+    }
+
+    /**
+     * @see org.opencms.xml.types.I_CmsXmlSchemaType#isSimpleType()
+     */
+    public boolean isSimpleType() {
+
+        // the abstract base type should be used for simple types only
+        return true;
     }
 
     /**
@@ -239,7 +303,7 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
         // for most values, no special processing on the users OpenCms context is required
         setStringValue(value);
     }
-    
+
     /**
      * Convenience method to loads the XML schema definition for this value type from an external file.<p>
      * 
@@ -257,14 +321,5 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
             throw new RuntimeException("Unable to load external schema: " + schemaUri, e);
         }
         return schemaDefinition;
-    }    
-
-    /**
-     * @see org.opencms.xml.types.I_CmsXmlSchemaType#isSimpleType()
-     */
-    public boolean isSimpleType() {
-
-        // the abstract base type should be used for simple types only
-        return true;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlBooleanValue.java,v $
- * Date   : $Date: 2004/11/28 21:57:59 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/11/30 14:23:51 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,9 +33,10 @@ package org.opencms.xml.types;
 
 import org.opencms.file.CmsObject;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.I_CmsXmlDocument;
+
+import java.util.Locale;
 
 import org.dom4j.Element;
 
@@ -44,7 +45,7 @@ import org.dom4j.Element;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.5.2
  */
 public class CmsXmlBooleanValue extends A_CmsXmlContentValue {
@@ -59,7 +60,7 @@ public class CmsXmlBooleanValue extends A_CmsXmlContentValue {
     private String m_stringValue;
 
     /**
-     * Creates a new Boolean type definition.<p>
+     * Creates a new, empty schema type descriptor of type "OpenCmsBoolean".<p>
      */
     public CmsXmlBooleanValue() {
 
@@ -67,77 +68,29 @@ public class CmsXmlBooleanValue extends A_CmsXmlContentValue {
     }
 
     /**
-     * Creates a new XML content value.<p>
+     * Creates a new XML content value of type "OpenCmsBoolean".<p>
      * 
-     * @param element the XML element that contains the value
+     * @param element the XML element that contains this value
      * @param name the node name of this value in the source XML document
-     * @param index the index of the XML element in the source document
+     * @param locale the locale this value is created for
      */
-    public CmsXmlBooleanValue(Element element, String name, int index) {
+    public CmsXmlBooleanValue(Element element, String name, Locale locale) {
 
-        m_element = element;
-        m_name = name;
-        m_index = index;
+        super(element, name, locale);
         m_stringValue = element.getText();
         m_boolean = Boolean.valueOf(m_stringValue).booleanValue();
     }
 
     /**
-     * Creates a new Boolean type which must occur exactly once.<p>
+     * Creates a new schema type descriptor for the type "OpenCmsBoolean".<p>
      * 
-     * @param name the name of the element
-     */
-    public CmsXmlBooleanValue(String name) {
-
-        m_name = name;
-        m_minOccurs = 1;
-        m_maxOccurs = 1;
-    }
-
-    /**
-     * Creates a new Boolean type.<p>
-     * 
-     * @param name the name of the element
-     * @param minOccurs minimum number of occurences
-     * @param maxOccurs maximum number of occurences
-     */
-    public CmsXmlBooleanValue(String name, int minOccurs, int maxOccurs) {
-
-        m_name = name;
-        m_minOccurs = minOccurs;
-        m_maxOccurs = maxOccurs;
-    }
-
-    /**
-     * Creates a new Boolean type.<p>
-     * 
-     * @param name the name of the element
-     * @param minOccurs minimum number of occurences
-     * @param maxOccurs maximum number of occurences
+     * @param name the name of the XML node containing the value according to the XML schema
+     * @param minOccurs minimum number of occurences of this type according to the XML schema
+     * @param maxOccurs maximum number of occurences of this type according to the XML schema
      */
     public CmsXmlBooleanValue(String name, String minOccurs, String maxOccurs) {
 
-        m_name = name;
-        m_minOccurs = 1;
-        if (CmsStringUtil.isNotEmpty(minOccurs)) {
-            try {
-                m_minOccurs = Integer.valueOf(minOccurs).intValue();
-            } catch (NumberFormatException e) {
-                // ignore
-            }
-        }
-        m_maxOccurs = 1;
-        if (CmsStringUtil.isNotEmpty(maxOccurs)) {
-            if (CmsXmlContentDefinition.XSD_ATTRIBUTE_VALUE_UNBOUNDED.equals(maxOccurs)) {
-                m_maxOccurs = Integer.MAX_VALUE;
-            } else {
-                try {
-                    m_maxOccurs = Integer.valueOf(maxOccurs).intValue();
-                } catch (NumberFormatException e) {
-                    // ignore
-                }
-            }
-        }
+        super(name, minOccurs, maxOccurs);
     }
 
     /**
@@ -165,11 +118,11 @@ public class CmsXmlBooleanValue extends A_CmsXmlContentValue {
     }
 
     /**
-     * @see org.opencms.xml.types.A_CmsXmlContentValue#createValue(org.dom4j.Element, java.lang.String, int)
+     * @see org.opencms.xml.types.A_CmsXmlContentValue#createValue(org.dom4j.Element, java.lang.String, Locale)
      */
-    public I_CmsXmlContentValue createValue(Element element, String name, int index) {
+    public I_CmsXmlContentValue createValue(Element element, String name, Locale locale) {
 
-        return new CmsXmlBooleanValue(element, name, index);
+        return new CmsXmlBooleanValue(element, name, locale);
     }
 
     /**
@@ -183,9 +136,9 @@ public class CmsXmlBooleanValue extends A_CmsXmlContentValue {
     }
 
     /**
-     * @see org.opencms.xml.types.A_CmsXmlContentValue#getDefault()
+     * @see org.opencms.xml.types.A_CmsXmlContentValue#getDefault(Locale)
      */
-    public String getDefault() {
+    public String getDefault(Locale locale) {
 
         if (m_defaultValue != null) {
             return m_defaultValue;

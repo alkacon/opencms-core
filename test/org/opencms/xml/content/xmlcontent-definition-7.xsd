@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>	
+	<xsd:include schemaLocation="http://www.opencms.org/test4.xsd"/>	
+	<xsd:include schemaLocation="http://www.opencms.org/test6.xsd"/>
+
+	<xsd:element name="Modcastests" type="OpenCmsModcastests"/>
+	
+	<xsd:complexType name="OpenCmsModcastests">
+		<xsd:sequence>
+			<xsd:element name="Modcastest" type="OpenCmsModcastest" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsModcastest">
+		<xsd:sequence>
+			<xsd:element name="Test" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="Cascade" type="OpenCmsModtest" maxOccurs="5" />
+			<xsd:element name="Option" type="OpenCmsString" minOccurs="0" maxOccurs="2" />
+			<xsd:element name="DeepCascade" type="OpenCmsCascadetest" minOccurs="0" maxOccurs="2" />
+			<xsd:element name="Toast" type="OpenCmsString"  maxOccurs="3" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<handler class="org.opencms.xml.content.TestXmlContentHandler" />
+		</xsd:appinfo>
+	</xsd:annotation>  
+</xsd:schema>

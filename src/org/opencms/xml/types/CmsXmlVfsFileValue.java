@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlVfsFileValue.java,v $
- * Date   : $Date: 2004/11/08 15:06:43 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/11/30 14:23:51 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,8 +36,9 @@ import org.opencms.staticexport.CmsLink;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.I_CmsXmlDocument;
+
+import java.util.Locale;
 
 import org.dom4j.Element;
 
@@ -46,7 +47,7 @@ import org.dom4j.Element;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.5.2
  */
 public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
@@ -54,14 +55,14 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
     /** The name of this type as used in the XML schema. */
     public static final String C_TYPE_NAME = "OpenCmsVfsFile";
 
-    /** The String value of the element node. */
-    private String m_stringValue;
-    
     /** The schema definition String is located in a text for easier editing. */
     private static String m_schemaDefinition;
 
+    /** The String value of the element node. */
+    private String m_stringValue;
+
     /**
-     * Creates a new VFS file type definition.<p>
+     * Creates a new, empty schema type descriptor of type "OpenCmsVfsFile".<p>
      */
     public CmsXmlVfsFileValue() {
 
@@ -69,86 +70,51 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
     }
 
     /**
-     * Creates a new XML content value.<p>
+     * Creates a new XML content value of type "OpenCmsVfsFile".<p>
      * 
-     * @param element the XML element that contains the value
+     * @param element the XML element that contains this value
      * @param name the node name of this value in the source XML document
-     * @param index the index of the XML element in the source document
+     * @param locale the locale this value is created for
      */
-    public CmsXmlVfsFileValue(Element element, String name, int index) {
+    public CmsXmlVfsFileValue(Element element, String name, Locale locale) {
 
-        m_element = element;
-        m_name = name;
-        m_index = index;
+        super(element, name, locale);
         m_stringValue = element.getText();
     }
 
     /**
-     * Creates a new VFS file type which must occur exaclty once.<p>
+     * Creates a new schema type descriptor for the type "OpenCmsVfsFile".<p>
      * 
-     * @param name the name of the element
-     */
-    public CmsXmlVfsFileValue(String name) {
-
-        m_name = name;
-        m_minOccurs = 1;
-        m_maxOccurs = 1;
-    }
-
-    /**
-     * Creates a new VFS file type.<p>
-     * 
-     * @param name the name of the element
-     * @param minOccurs minimum number of occurences
-     * @param maxOccurs maximum number of occurences
-     */
-    public CmsXmlVfsFileValue(String name, int minOccurs, int maxOccurs) {
-
-        m_name = name;
-        m_minOccurs = minOccurs;
-        m_maxOccurs = maxOccurs;
-    }
-
-    /**
-     * Creates a new VFS file type.<p>
-     * 
-     * @param name the name of the element
-     * @param minOccurs minimum number of occurences
-     * @param maxOccurs maximum number of occurences
+     * @param name the name of the XML node containing the value according to the XML schema
+     * @param minOccurs minimum number of occurences of this type according to the XML schema
+     * @param maxOccurs maximum number of occurences of this type according to the XML schema
      */
     public CmsXmlVfsFileValue(String name, String minOccurs, String maxOccurs) {
 
-        m_name = name;
-        m_minOccurs = 1;
-        if (CmsStringUtil.isNotEmpty(minOccurs)) {
-            try {
-                m_minOccurs = Integer.valueOf(minOccurs).intValue();
-            } catch (NumberFormatException e) {
-                // ignore
-            }
-        }
-        m_maxOccurs = 1;
-        if (CmsStringUtil.isNotEmpty(maxOccurs)) {
-            if (CmsXmlContentDefinition.XSD_ATTRIBUTE_VALUE_UNBOUNDED.equals(maxOccurs)) {
-                m_maxOccurs = Integer.MAX_VALUE;
-            } else {
-                try {
-                    m_maxOccurs = Integer.valueOf(maxOccurs).intValue();
-                } catch (NumberFormatException e) {
-                    // ignore
-                }
-            }
-        }
+        super(name, minOccurs, maxOccurs);
     }
 
     /**
-     * @see org.opencms.xml.types.A_CmsXmlContentValue#createValue(org.dom4j.Element, java.lang.String, int)
+     * @see org.opencms.xml.types.A_CmsXmlContentValue#createValue(org.dom4j.Element, java.lang.String, Locale)
      */
-    public I_CmsXmlContentValue createValue(Element element, String name, int index) {
+    public I_CmsXmlContentValue createValue(Element element, String name, Locale locale) {
 
-        return new CmsXmlVfsFileValue(element, name, index);
+        return new CmsXmlVfsFileValue(element, name, locale);
     }
-    
+
+    /**
+     * Returns the link table of this XML page element.<p>
+     * 
+     * @return the link table of this XML page element
+     */
+    public CmsLinkTable getLinkTable() {
+
+        CmsLinkTable linkTable = new CmsLinkTable();
+        CmsLink link = new CmsLink("link0", "vfs", m_element.getText(), true);
+        linkTable.addLink(link);
+        return linkTable;
+    }
+
     /**
      * @see org.opencms.xml.types.I_CmsXmlSchemaType#getSchemaDefinition()
      */
@@ -160,12 +126,12 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
         }
         return m_schemaDefinition;
     }
-    
+
     /**
      * @see org.opencms.xml.types.I_CmsXmlContentValue#getStringValue(CmsObject, I_CmsXmlDocument)
      */
-    public String getStringValue(CmsObject cms, I_CmsXmlDocument document) {       
-        
+    public String getStringValue(CmsObject cms, I_CmsXmlDocument document) {
+
         if (cms != null) {
             return cms.getRequestContext().removeSiteRoot(m_stringValue);
         } else {
@@ -190,51 +156,31 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
     }
 
     /**
-     * @see org.opencms.xml.types.I_CmsXmlContentValue#setStringValue(java.lang.String)
-     */
-    public void setStringValue(String value) {
-
-        // we don't have any information available for link processing
-        setStringValue(null, null, value);        
-    }    
-    
-    /**
      * @see org.opencms.xml.types.A_CmsXmlContentValue#setStringValue(org.opencms.file.CmsObject, org.opencms.xml.I_CmsXmlDocument, java.lang.String)
      */
     public void setStringValue(CmsObject cms, I_CmsXmlDocument document, String value) {
 
-        if ((cms != null) && (document != null)) {            
+        if ((cms != null) && (document != null)) {
             // add site path if required
             value = CmsLinkManager.getSitePath(cms, null, value);
         }
-        
+
         // now update the XML node
         m_element.clearContent();
-        if (CmsStringUtil.isNotEmpty(value)) { 
+        if (CmsStringUtil.isNotEmpty(value)) {
             m_element.addText(value);
             m_stringValue = value;
         } else {
             m_stringValue = null;
         }
     }
-    
+
     /**
-     * Returns the link table of this XML page element.<p>
-     * 
-     * @return the link table of this XML page element
+     * @see org.opencms.xml.types.I_CmsXmlContentValue#setStringValue(java.lang.String)
      */
-    public CmsLinkTable getLinkTable() {
+    public void setStringValue(String value) {
 
-        CmsLinkTable linkTable = new CmsLinkTable();
-
-        CmsLink link = new CmsLink(
-            "link0",
-            "vfs",
-            m_element.getText(),
-            true);
-
-        linkTable.addLink(link);
-        
-        return linkTable;
-    }    
+        // we don't have any information available for link processing
+        setStringValue(null, null, value);
+    }
 }

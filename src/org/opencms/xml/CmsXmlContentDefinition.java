@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentDefinition.java,v $
- * Date   : $Date: 2004/11/28 21:57:58 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/11/30 14:23:51 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.5.0
  */
 public class CmsXmlContentDefinition implements Cloneable {
@@ -369,7 +369,7 @@ public class CmsXmlContentDefinition implements Cloneable {
         CmsXmlContentDefinition result = new CmsXmlContentDefinition(name, schemaLocation);
 
         if (includes.size() > 1) {
-            // resolve additional, cascaded include calls
+            // resolve additional, nested include calls
             for (int i = 1; i < includes.size(); i++) {
 
                 Element inc = (Element)includes.get(i);
@@ -509,13 +509,13 @@ public class CmsXmlContentDefinition implements Cloneable {
     }
 
     /**
-     * Adds an included (cascaded) XML content sub-definition.<p>
+     * Adds a nested (included) XML content definition.<p>
      * 
-     * @param include the included (cascaded) XML content definition to add
+     * @param nestedSchema the nested (included) XML content definition to add
      */
-    public void addInclude(CmsXmlContentDefinition include) {
+    public void addInclude(CmsXmlContentDefinition nestedSchema) {
 
-        m_includes.add(include);
+        m_includes.add(nestedSchema);
     }
 
     /**
@@ -555,6 +555,26 @@ public class CmsXmlContentDefinition implements Cloneable {
     }
 
     /**
+     * Creates the default XML element for a node of the given name according to the rules of 
+     * this XML content definition.<p> 
+     * 
+     * @param name the name of the node to generate the XML for
+     * @param locale the localet to generate the XML for
+     * 
+     * @return the default XML element for a node of the given name
+     */
+    public Element createDefaultXml(String name, Locale locale) {
+
+        Document doc = DocumentHelper.createDocument();
+        I_CmsXmlSchemaType type = getSchemaType(name);
+        Element root = doc.addElement("root");
+        type.appendDefaultXml(root, locale);
+        Element result = (Element)root.elements().get(0);
+        result.detach();
+        return result;
+    }
+
+    /**
      * Generates a valid XML document according to the XML schema of this content definition.<p>
      * 
      * @param locale the locale to create the default element in the document with
@@ -568,14 +588,14 @@ public class CmsXmlContentDefinition implements Cloneable {
         root.add(I_CmsXmlSchemaType.XSI_NAMESPACE);
         root.addAttribute(I_CmsXmlSchemaType.XSI_NAMESPACE_ATTRIBUTE_NO_SCHEMA_LOCATION, getSchemaLocation());
 
-        Element node = root.addElement(getName());
-        node.addAttribute(XSD_ATTRIBUTE_VALUE_LANGUAGE, locale.toString());
+        Element element = root.addElement(getName());
+        element.addAttribute(XSD_ATTRIBUTE_VALUE_LANGUAGE, locale.toString());
 
         Iterator i = m_typeSequence.iterator();
         while (i.hasNext()) {
             I_CmsXmlSchemaType type = (I_CmsXmlSchemaType)i.next();
             for (int j = 0; j < type.getMinOccurs(); j++) {
-                type.appendDefaultXml(node, j);
+                type.appendDefaultXml(element, locale);
             }
         }
 
@@ -627,9 +647,9 @@ public class CmsXmlContentDefinition implements Cloneable {
     }
 
     /**
-     * Returns the set of included (cascaded) XML content sub-schemata.<p>
+     * Returns the set of nested (included) XML content definitions.<p>
      * 
-     * @return the set of included (cascaded) XML content sub-schemata
+     * @return the set of nested (included) XML content definitions
      */
     public Set getIncludes() {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/I_CmsXmlSchemaType.java,v $
- * Date   : $Date: 2004/11/28 21:57:59 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/11/30 14:23:51 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
 
 package org.opencms.xml.types;
 
+import java.util.Locale;
+
 import org.dom4j.Element;
 import org.dom4j.Namespace;
 import org.dom4j.QName;
@@ -53,7 +55,7 @@ import org.dom4j.QName;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.5.0
  * 
  * @see org.opencms.xml.types.I_CmsXmlContentValue
@@ -77,9 +79,9 @@ public interface I_CmsXmlSchemaType extends Comparable {
      * use {@link org.opencms.xml.content.CmsXmlContent#addValue(String, java.util.Locale, int)}.<p>
      * 
      * @param root the element to append the XML to
-     * @param index the index of the XML element in the source document
+     * @param locale the locale to generate the element default content for
      */
-    void appendDefaultXml(Element root, int index);
+    void appendDefaultXml(Element root, Locale locale);
 
     /**
      * Appends an XML representation of this schema type to the given XML element.<p>
@@ -96,17 +98,20 @@ public interface I_CmsXmlSchemaType extends Comparable {
      * 
      * @param element the XML element to create the value from
      * @param name the node name of the XML element in the source document
-     * @param index the index of the XML element in the source document
+     * @param locale the locale to create the value for
+     * 
      * @return the created XML content value object
      */
-    I_CmsXmlContentValue createValue(Element element, String name, int index);
+    I_CmsXmlContentValue createValue(Element element, String name, Locale locale);
 
     /**
      * Returns the default value for a node of this type in the current schema.<p>
      * 
+     * @param locale the locale to generate the default value for
+     * 
      * @return the default value for a node of this type in the current schema
      */
-    String getDefault();
+    String getDefault(Locale locale);
 
     /**
      * Returns the XML element node name of this type in the current schema.<p>
@@ -155,10 +160,14 @@ public interface I_CmsXmlSchemaType extends Comparable {
     String getTypeName();
 
     /**
-     * Returns <code>true</code> if this is  a simple type, or <code>false</code>
-     * if this type is a cascaded schema.<p>
+     * Returns <code>true</code> if this is a simple type, or <code>false</code>
+     * if this type is a nested schema.<p>
      * 
-     * @return true if this is  a simple type, or false if this type is a cascaded schema
+     * If a value is a nested schema, it must be an instance of {@link CmsXmlNestedContentDefinition}.<p> 
+     * 
+     * @return true if this is  a simple type, or false if this type is a nested schema
+     * 
+     * @see CmsXmlNestedContentDefinition
      */
     boolean isSimpleType();
 

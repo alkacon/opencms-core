@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/Attic/CmsXmlSimpleHtmlValue.java,v $
- * Date   : $Date: 2004/11/19 15:07:44 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/11/30 14:23:51 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,8 +34,9 @@ package org.opencms.xml.types;
 import org.opencms.file.CmsObject;
 import org.opencms.util.CmsHtmlExtractor;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.I_CmsXmlDocument;
+
+import java.util.Locale;
 
 import org.dom4j.Element;
 
@@ -44,7 +45,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.5.0
  */
 public class CmsXmlSimpleHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlContentValue {
@@ -56,7 +57,7 @@ public class CmsXmlSimpleHtmlValue extends A_CmsXmlContentValue implements I_Cms
     private String m_stringValue;
 
     /**
-     * Creates a new String type definition.<p>
+     * Creates a new, empty schema type descriptor of type "OpenCmsSimpleHtml".<p>
      */
     public CmsXmlSimpleHtmlValue() {
 
@@ -64,84 +65,49 @@ public class CmsXmlSimpleHtmlValue extends A_CmsXmlContentValue implements I_Cms
     }
 
     /**
-     * Creates a new XML content value.<p>
+     * Creates a new XML content value of type "OpenCmsSimpleHtml".<p>
      * 
-     * @param element the XML element that contains the value
+     * @param element the XML element that contains this value
      * @param name the node name of this value in the source XML document
-     * @param index the index of the XML element in the source document
+     * @param locale the locale this value is created for
      */
-    public CmsXmlSimpleHtmlValue(Element element, String name, int index) {
+    public CmsXmlSimpleHtmlValue(Element element, String name, Locale locale) {
 
-        m_element = element;
-        m_name = name;
-        m_index = index;
+        super(element, name, locale);
         m_stringValue = element.getText();
     }
 
     /**
-     * Creates a new HTML type which must occur exaclty once.<p>
+     * Creates a new schema type descriptor for the type "OpenCmsSimpleHtml".<p>
      * 
-     * @param name the name of the element
-     */
-    public CmsXmlSimpleHtmlValue(String name) {
-
-        m_name = name;
-        m_minOccurs = 1;
-        m_maxOccurs = 1;
-    }
-
-    /**
-     * Creates a new HTML type.<p>
-     * 
-     * @param name the name of the element
-     * @param minOccurs minimum number of occurences
-     * @param maxOccurs maximum number of occurences
-     */
-    public CmsXmlSimpleHtmlValue(String name, int minOccurs, int maxOccurs) {
-
-        m_name = name;
-        m_minOccurs = minOccurs;
-        m_maxOccurs = maxOccurs;
-    }
-
-    /**
-     * Creates a new HTML type.<p>
-     * 
-     * @param name the name of the element
-     * @param minOccurs minimum number of occurences
-     * @param maxOccurs maximum number of occurences
+     * @param name the name of the XML node containing the value according to the XML schema
+     * @param minOccurs minimum number of occurences of this type according to the XML schema
+     * @param maxOccurs maximum number of occurences of this type according to the XML schema
      */
     public CmsXmlSimpleHtmlValue(String name, String minOccurs, String maxOccurs) {
 
-        m_name = name;
-        m_minOccurs = 1;
-        if (CmsStringUtil.isNotEmpty(minOccurs)) {
-            try {
-                m_minOccurs = Integer.valueOf(minOccurs).intValue();
-            } catch (NumberFormatException e) {
-                // ignore
-            }
-        }
-        m_maxOccurs = 1;
-        if (CmsStringUtil.isNotEmpty(maxOccurs)) {
-            if (CmsXmlContentDefinition.XSD_ATTRIBUTE_VALUE_UNBOUNDED.equals(maxOccurs)) {
-                m_maxOccurs = Integer.MAX_VALUE;
-            } else {
-                try {
-                    m_maxOccurs = Integer.valueOf(maxOccurs).intValue();
-                } catch (NumberFormatException e) {
-                    // ignore
-                }
-            }
-        }
+        super(name, minOccurs, maxOccurs);
     }
 
     /**
-     * @see org.opencms.xml.types.A_CmsXmlContentValue#createValue(org.dom4j.Element, java.lang.String, int)
+     * @see org.opencms.xml.types.A_CmsXmlContentValue#createValue(org.dom4j.Element, java.lang.String, Locale)
      */
-    public I_CmsXmlContentValue createValue(Element element, String name, int index) {
+    public I_CmsXmlContentValue createValue(Element element, String name, Locale locale) {
 
-        return new CmsXmlSimpleHtmlValue(element, name, index);
+        return new CmsXmlSimpleHtmlValue(element, name, locale);
+    }
+
+    /**
+     * @see org.opencms.xml.types.I_CmsXmlContentValue#getPlainText(org.opencms.file.CmsObject, org.opencms.xml.I_CmsXmlDocument)
+     */
+    public String getPlainText(CmsObject cms, I_CmsXmlDocument document) {
+
+        try {
+            CmsHtmlExtractor extractor = new CmsHtmlExtractor();
+            return extractor.extractText(this.getStringValue(cms, document), document.getEncoding());
+        } catch (Exception exc) {
+            return null;
+        }
     }
 
     /**
@@ -169,19 +135,6 @@ public class CmsXmlSimpleHtmlValue extends A_CmsXmlContentValue implements I_Cms
     }
 
     /**
-     * @see org.opencms.xml.types.I_CmsXmlContentValue#getPlainText(org.opencms.file.CmsObject, org.opencms.xml.I_CmsXmlDocument)
-     */
-    public String getPlainText(CmsObject cms, I_CmsXmlDocument document) {
-        
-        try {
-            CmsHtmlExtractor extractor = new CmsHtmlExtractor();
-            return extractor.extractText(this.getStringValue(cms, document), document.getEncoding());
-        } catch (Exception exc) {
-            return null;   
-        }
-    }
-    
-    /**
      * @see org.opencms.xml.types.A_CmsXmlContentValue#newInstance(java.lang.String, java.lang.String, java.lang.String)
      */
     public I_CmsXmlSchemaType newInstance(String name, String minOccurs, String maxOccurs) {
@@ -195,7 +148,7 @@ public class CmsXmlSimpleHtmlValue extends A_CmsXmlContentValue implements I_Cms
     public void setStringValue(String value) {
 
         m_element.clearContent();
-        if (CmsStringUtil.isNotEmpty(value)) { 
+        if (CmsStringUtil.isNotEmpty(value)) {
             m_element.addCDATA(value);
         }
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentTypeManager.java,v $
- * Date   : $Date: 2004/11/28 21:57:58 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/11/30 14:23:51 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.xmlwidgets.I_CmsXmlWidget;
 import org.opencms.xml.content.I_CmsXmlContentHandler;
-import org.opencms.xml.types.CmsXmlCascadedContentDefinition;
+import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.io.UnsupportedEncodingException;
@@ -60,7 +60,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.5.0
  */
 public class CmsXmlContentTypeManager {
@@ -292,12 +292,12 @@ public class CmsXmlContentTypeManager {
      * from the given XML schema element.<p>
      * 
      * @param typeElement the element to generate the XML content type definition from
-     * @param cascadedDefinitions the included (cascaded) XML content sub-definitions
+     * @param nestedDefinitions the nested (included) XML content sub-definitions
      * 
      * @return an initialized instance of a XML content type definition
      * @throws CmsXmlException in case the element does not describe a valid XML content type definition
      */
-    public I_CmsXmlSchemaType getContentType(Element typeElement, Set cascadedDefinitions) throws CmsXmlException {
+    public I_CmsXmlSchemaType getContentType(Element typeElement, Set nestedDefinitions) throws CmsXmlException {
 
         if (!CmsXmlContentDefinition.XSD_NODE_ELEMENT.equals(typeElement.getQName())) {
             throw new CmsXmlException("Invalid OpenCms content definition XML schema structure");
@@ -320,15 +320,15 @@ public class CmsXmlContentTypeManager {
         I_CmsXmlSchemaType schemaType = (I_CmsXmlSchemaType)m_registeredTypes.get(type);
         if (schemaType == null) {
 
-            // the name is not a simple type, try to resolve from cascaded schemas
-            Iterator i = cascadedDefinitions.iterator();
+            // the name is not a simple type, try to resolve from the nested schemas
+            Iterator i = nestedDefinitions.iterator();
             while (i.hasNext()) {
 
                 CmsXmlContentDefinition cd = (CmsXmlContentDefinition)i.next();
                 if (type.equals(cd.getTypeName())) {
 
                     simpleType = false;
-                    return new CmsXmlCascadedContentDefinition(cd, name, minOccrs, maxOccrs);
+                    return new CmsXmlNestedContentDefinition(cd, name, minOccrs, maxOccrs);
                 }
             }
 

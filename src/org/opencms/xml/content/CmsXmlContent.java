@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2004/11/29 01:38:15 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/11/30 14:23:51 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.I_CmsXmlDocument;
-import org.opencms.xml.types.CmsXmlCascadedContentDefinition;
+import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
@@ -69,7 +69,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.5.0
  */
 public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument {
@@ -153,8 +153,6 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
      */
     public I_CmsXmlContentValue addValue(String name, Locale locale, int index) {
 
-        int todo = 0;
-        // TODO: handle cascaded value types, also handle index based names like "Title[0]"
         Element parentElement = getLocaleNode(locale);
 
         // get the scheme type of the requested name           
@@ -228,7 +226,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
         }
 
         // append the new element at the calculated position
-        I_CmsXmlContentValue newValue = addValue(parentElement, type, insertIndex, index);
+        I_CmsXmlContentValue newValue = addValue(parentElement, type, locale, insertIndex);
 
         // re-initialize this XML content 
         initDocument(m_document, m_encoding, m_contentDefinition);
@@ -392,30 +390,31 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
 
         m_file = file;
     }
-
+    
     /**
      * Adds a new XML schema type with the default value to the given parent node.<p>
      * 
      * @param parent the XML parent element to add the new value to
      * @param type the type of the value to add
+     * @param locale the locale to add the new value for
      * @param insertIndex the index in the XML document where to add the XML node
-     * @param index the index of the schema type relative to all other values of this type
      * 
      * @return the created XML content value
      */
-    private I_CmsXmlContentValue addValue(Element parent, I_CmsXmlSchemaType type, int insertIndex, int index) {
+    private I_CmsXmlContentValue addValue(Element parent, I_CmsXmlSchemaType type, Locale locale, int insertIndex) {
 
-        Element element = (Element)parent.addElement(type.getElementName()).detach();
+        Element element = m_contentDefinition.createDefaultXml(type.getElementName(), locale);       
+        
         List parentContent = parent.content();
         parentContent.add(insertIndex, element);
 
-        I_CmsXmlContentValue value = type.createValue(element, type.getElementName(), index);
-        if (type.getDefault() != null) {
+        I_CmsXmlContentValue value = type.createValue(element, type.getElementName(), locale);
+        if (type.getDefault(locale) != null) {
             try {
-                value.setStringValue(type.getDefault());
+                value.setStringValue(type.getDefault(locale));
             } catch (CmsXmlException e) {
                 // should not happen if default value is correct
-                OpenCms.getLog(this).error("Invalid default value '" + type.getDefault() + "' for XML content", e);
+                OpenCms.getLog(this).error("Invalid default value '" + type.getDefault(locale) + "' for XML content", e);
                 element.clearContent();
             }
         }
@@ -473,16 +472,17 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
 
             // create a XML content value element
             I_CmsXmlSchemaType schemaType = definition.getSchemaType(name);
-
-            if (schemaType.isSimpleType()) {
-                // directly add simple type to schema
-                I_CmsXmlContentValue value = schemaType.createValue(element, name, count);
-                addBookmark(path, locale, true, value);
-            } else {
-                // recurse for cascaded schema
-                CmsXmlCascadedContentDefinition cascadedSchema = (CmsXmlCascadedContentDefinition)schemaType;
-                processSchemaNode(element, path, locale, cascadedSchema.getContentDefinition());
+                       
+            // directly add simple type to schema
+            I_CmsXmlContentValue value = schemaType.createValue(element, name, locale);
+            addBookmark(path, locale, true, value);
+            
+            if (! schemaType.isSimpleType()) {
+                // recurse for nested schema
+                CmsXmlNestedContentDefinition nestedSchema = (CmsXmlNestedContentDefinition)schemaType;
+                processSchemaNode(element, path, locale, nestedSchema.getContentDefinition());
             }
+
             // increase the node counter
             count++;
         }

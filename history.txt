@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/11/28 21:58:53 $
- * Version: $Revision: 1.592 $
+ * Date   : $Date: 2004/11/30 14:23:51 $
+ * Version: $Revision: 1.593 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ OpenCms 5.x.x Caladan - xxx, 2004
  (causing NPE errors in the Workplace permission dialog)
 * Fixed issue with upload applet not working in root site "/"
 * Fixed issue with HTML comments in editor causing invalid HTML documents
-! First draft version of cascaded (nested) XML content definitions
 ! Added GUI to modify property values and delete definitions in Administration view
 * Fixed issue with shutDown() method of modules not being called
 - Improved DB performance on MySQL after heavy testing
@@ -50,6 +49,8 @@ OpenCms 5.x.x Caladan - xxx, 2004
 ! Added new "External link gallery" dialog for WYSIWYG editor (also available as XML content widget) 
 ! Added new "HTML gallery" dialog for WYSIWYG editor (also available as XML content widget) 
 ! XML content now allows variable mapping of XML content widgets to XML content value types
+! Added support for language - country based locales in the Workplace
+! Added support for nesting XML content definitions
 
 OpenCms 5.5.3 Caladan (aka 6.0 alpha 2) - October 26, 2004
 ! Added 'templateone' default module as an extended template demo

@@ -14,7 +14,7 @@
 
 	<xsd:complexType name="OpenCmsModtest">
 		<xsd:sequence>
-			<xsd:element name="Test" type="OpenCmsString" />
+			<xsd:element name="Test" type="OpenCmsString" default="Some default test value" />
 			<xsd:element name="Title" type="OpenCmsString" maxOccurs="5" />
 			<xsd:element name="Option" type="OpenCmsString" minOccurs="0" maxOccurs="2" />
 			<xsd:element name="Toast" type="OpenCmsString" />
