@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
- * Date   : $Date: 2000/03/24 14:55:30 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2000/03/27 13:04:49 $
+ * Version: $Revision: 1.23 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,9 +44,11 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.22 $ $Date: 2000/03/24 14:55:30 $
+ * @version $Revision: 1.23 $ $Date: 2000/03/27 13:04:49 $
  */
 public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLogChannels {
+    
+    public static final String C_FRAME_SELECTOR = "cmsframe";
     
     /** Boolean for additional debug output control */
     protected final static boolean C_DEBUG = true;
@@ -162,7 +164,10 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
         }
 
         CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
-        return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
+        if(templateSelector==null || "".equals(templateSelector)) {
+            templateSelector = (String)parameters.get(C_FRAME_SELECTOR);
+        }
+	    return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
     }            
     
     /**
