@@ -20,6 +20,7 @@ OpenCms 4.7.6 Ecaz - XX Xpril 2002
   entry for the navigation position is set to "no change".
 * Fixed bug in link launcher for static export: exporting linkfiles with link to an external url contain
   html-code that opens the external url.
+* The templateselector in the parameters is now updated if the workplace class changes it.
 - Added some resource types that should be exported when the default is set to dynamic. 
 - Added pic and download folder to the static export if default is set to dynamic.
 - The length of the fields for the users address and email were changed in the database table CMS_USERS 
