@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeImage.java,v $
-* Date   : $Date: 2002/10/18 16:54:59 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2002/10/31 11:38:40 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,22 +42,7 @@ public class CmsResourceTypeImage extends CmsResourceTypePlain{
 
     public static final String C_TYPE_RESOURCE_NAME = "image";
 
-    /**
-     * Constructor, creates a new CmsResourceType object.
-     *
-     * @param resourceType The id of the resource type.
-     * @param launcherType The id of the required launcher.
-     * @param resourceTypeName The printable name of the resource type.
-     * @param launcherClass The Java class that should be invoked by the launcher.
-     * This value is <b> null </b> if the default invokation class should be used.
-     * /
-    public CmsResourceTypeImage(int resourceType, int launcherType,
-                           String resourceTypeName, String launcherClass){
-
-        super(resourceType, launcherType, resourceTypeName, launcherClass);
-    }
-*/
-    public CmsResource createResource(CmsObject cms, String newResourceName, Hashtable properties, byte[] contents) throws CmsException{
+    public CmsResource createResource(CmsObject cms, String newResourceName, Hashtable properties, byte[] contents, Object parameter) throws CmsException{
         CmsResource res = cms.doCreateFile(newResourceName, contents, C_TYPE_RESOURCE_NAME, properties);
         // lock the new file
         cms.lockResource(newResourceName);
