@@ -13,7 +13,7 @@ function show_help()
 }
 
 function simpleEscape(text) {
-	return text.replace(/\//g, "%2F");
+	if(text)return text.replace(/\//g, "%2F");
 }
 
 //-->
