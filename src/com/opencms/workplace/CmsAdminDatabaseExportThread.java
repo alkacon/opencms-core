@@ -1,11 +1,11 @@
 
 /*
 * File   : $File$
-* Date   : $Date: 2001/01/24 09:43:25 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2001/02/19 13:09:48 $
+* Version: $Revision: 1.5 $
 *
-* Copyright (C) 2000  The OpenCms Group 
-* 
+* Copyright (C) 2000  The OpenCms Group
+*
 * This File is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -13,15 +13,15 @@
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
 * of the License, or (at your option) any later version.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-* 
+*
 * For further information about OpenCms, please see the
 * OpenCms Website: http://www.opencms.com
-* 
+*
 * You should have received a copy of the GNU General Public License
 * long with this program; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
@@ -43,37 +43,41 @@ import java.io.*;
  */
 
 public class CmsAdminDatabaseExportThread extends Thread implements I_CmsConstants {
-    
+
     private CmsObject m_cms;
-    
+
     private String m_fileName;
-    
+
     private String[] m_exportPaths;
-    
+
     private boolean m_excludeSystem;
-    
+
     private boolean m_excludeUnchanged;
-    
+
+    private boolean m_exportUserdata;
+
     /**
      * Insert the method's description here.
      * Creation date: (13.09.00 09:52:24)
      */
-    
-    public CmsAdminDatabaseExportThread(CmsObject cms, String fileName, 
-            String[] exportPaths, boolean excludeSystem, boolean excludeUnchanged) {
+
+    public CmsAdminDatabaseExportThread(CmsObject cms, String fileName,
+            String[] exportPaths, boolean excludeSystem, boolean excludeUnchanged,
+            boolean exportUserdata) {
         m_cms = cms;
         m_exportPaths = exportPaths;
         m_fileName = fileName;
         m_excludeSystem = excludeSystem;
         m_excludeUnchanged = excludeUnchanged;
+        m_exportUserdata = exportUserdata;
     }
-    
+
     public void run() {
         I_CmsSession session = m_cms.getRequestContext().getSession(true);
         try {
-            
-            // do the export   
-            m_cms.exportResources(m_fileName, m_exportPaths, m_excludeSystem, m_excludeUnchanged);
+
+            // do the export
+            m_cms.exportResources(m_fileName, m_exportPaths, m_excludeSystem, m_excludeUnchanged, m_exportUserdata);
         }
         catch(CmsException e) {
             session.putValue(C_SESSION_THREAD_ERROR, Utils.getStackTrace(e));
