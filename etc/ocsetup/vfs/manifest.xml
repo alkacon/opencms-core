@@ -2322,6 +2322,15 @@
             <properties/>
         </file>
         <file>
+            <source>pics/system/ic_logfileviewer.gif</source>
+            <destination>pics/system/ic_logfileviewer.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
             <source>pics/system/ic_clock_in.gif</source>
             <destination>pics/system/ic_clock_in.gif</destination>
             <type>image</type>
@@ -4331,6 +4340,53 @@
         <file>
             <source>system/workplace/administration/cronmanagement/index.html</source>
             <destination>system/workplace/administration/cronmanagement/index.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>
+        <file>
+            <destination>system/workplace/administration/logfileviewer</destination>
+            <type>folder</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>visiblemethod</name>
+                    <type>0</type>
+                    <value><![CDATA[com.opencms.workplace.CmsWorkplaceDefault.isAdmin]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>0</type>
+                    <value><![CDATA[icon.logfileviewer]]></value>
+                </property>
+                <property>
+                    <name>Title</name>
+                    <type>0</type>
+                    <value><![CDATA[ic_logfileviewer]]></value>
+                </property>
+                <property>
+                    <name>NavPos</name>
+                    <type>0</type>
+                    <value><![CDATA[15]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>system/workplace/administration/logfileviewer/index</source>
+            <destination>system/workplace/administration/logfileviewer/index</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
+            <source>system/workplace/administration/logfileviewer/index.html</source>
+            <destination>system/workplace/administration/logfileviewer/index.html</destination>
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>

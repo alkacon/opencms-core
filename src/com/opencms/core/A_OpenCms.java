@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/A_OpenCms.java,v $
-* Date   : $Date: 2001/11/15 16:41:21 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2001/12/21 11:23:11 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,10 +49,12 @@ import source.org.apache.java.util.*;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.20 $ $Date: 2001/11/15 16:41:21 $
+ * @version $Revision: 1.21 $ $Date: 2001/12/21 11:23:11 $
  *
  */
 public abstract class A_OpenCms implements I_CmsLogChannels {
+
+    private static String m_logfile;
 
     /**
      * Destructor, called when the the servlet is shut down.
@@ -64,7 +66,15 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
      * @param configurations the configurations needed at initialization.
      */
     public static void initializeServletLogging(Configurations config) {
+        m_logfile = config.getString("log.file");
         CmsBase.initializeServletLogging(config);
+    }
+
+    /**
+     * Returns the name of the logfile.
+     */
+    public static String getLogFileName() {
+        return m_logfile;
     }
 
     /**

@@ -364,6 +364,7 @@
             <groups>Edit Groups</groups> 
             <imagelist>image list</imagelist>
             <import>Import</import>
+            <logfileviewer>Logfileviewer</logfileviewer>
             <module>Module- management</module>
             <mountpoint>Mountpoints</mountpoint> 
             <newgallery>new gallery</newgallery>
@@ -1093,7 +1094,7 @@ A new task was reactivated for you or your role.</content>
                 <ownername>Channelowner</ownername>
                 <group>Channelgroup</group>
                 <accessflagsasstring>Channelrights</accessflagsasstring>
-				<title>Title</title>
+                <title>Title</title>
             </label>
             <messagebox>
                 <title>

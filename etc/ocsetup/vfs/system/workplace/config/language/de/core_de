@@ -363,6 +363,7 @@
             <groups>Gruppe</groups>
             <imagelist>Bilderliste</imagelist>
             <import>Import</import>
+            <logfileviewer>Logfileviewer</logfileviewer>
             <module>Modul- verwaltung</module>
             <mountpoint>Mountpoint- </mountpoint>
             <newgallery>Neue Galerie</newgallery>
@@ -1094,7 +1095,7 @@ Für Sie oder Ihre Rolle wurde eine Aufgabe reaktiviert.</content>
                 <ownername>Channelbesitzer</ownername>
                 <group>Channelgruppe</group>
                 <accessflagsasstring>Channelrechte</accessflagsasstring>
-				<title>Titel</title>
+                <title>Titel</title>
             </label>
             <messagebox>
                 <title>

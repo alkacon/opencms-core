@@ -15,6 +15,7 @@ OpenCms 4.5.31 Chusuk       - xx December 2001
 ! New property dynamic used for the static export. Resources with the propertyvalue true or https are
   not exported and the exported resources link to them to the OpenCms system. For the https the Protocol
   is changed to https and back.
+! Added administration item to view the actual tail of the opencms logfile.
 * Bugfix in form "create new page". Now the selected default body will be copied by switching navigation 
   from on to off.
 * In emails for taskaction the port of the webserver was added to the generated URL.
