@@ -67,9 +67,11 @@
             <send>Send</send>
             <submit>Set</submit>
             <showdetails>Show details</showdetails>
+            <specialchars>Special characters</specialchars>            
             <syncfolder>Synchronize folder</syncfolder>
             <table>Table</table>
             <test>Test</test>
+            <toggledetails>Toggle Details</toggledetails>            
             <ul>Bullet List</ul>
             <underline>Underline</underline>
             <undo>Undo</undo>
@@ -506,7 +508,15 @@
             <lastelement>at the last position</lastelement>
             <lastname>Name</lastname>
             <left>Left</left>
+            <linkname>Name</linkname>
             <linkto>Link</linkto>
+            <linktarget>Target</linktarget>
+            <linktargetself>Same window</linktargetself>
+            <linktargetblank>New window</linktargetblank>
+            <linktargettop>Top window</linktargettop>            
+            <linkanchor>Anchor</linkanchor>
+            <linkstyle>Styledefinitions</linkstyle>
+            <linkstyleclass>Stylesheet class</linkstyleclass>                        
             <nolinkvalue>Please insert the link!</nolinkvalue>
             <lockedby>Locked by</lockedby>
             <lockuser>Disable User</lockuser>
@@ -641,6 +651,7 @@
             <readrights>permission to read for others</readrights>
             <selectfolder>Select folder...</selectfolder>
             <size>Size</size>
+            <specialchar>Insert special character</specialchar>
             <state>State</state>
             <suredeletingproject1>Are you sure that you want to delete the project</suredeletingproject1>
             <suredeletingproject2>and delete all changes that are made in this project?</suredeletingproject2>
@@ -1050,8 +1061,8 @@ A new task was reactivated for you or your role.</content>
             <admindatatypes>Resource type management</admindatatypes>
             <adminproperties>Property management</adminproperties>
             <changelink>Change Link</changelink>
+            <changetable>Modify table</changetable>            
             <changed>Date Changed</changed>
-            <changetable>Modify table</changetable>
             <chgrp>Change Group of</chgrp>
             <chmod>Change Permissions of</chmod>
             <chown>Change Owner of</chown>

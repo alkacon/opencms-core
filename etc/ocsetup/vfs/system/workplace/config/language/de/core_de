@@ -67,9 +67,11 @@
             <send>Senden</send>
             <submit>Übernehmen</submit>
             <showdetails>Details anzeigen</showdetails>
+            <specialchars>Sonderzeichen</specialchars>
             <syncfolder>Ordner synchronisieren</syncfolder>
             <table>Tabelle</table>
             <test>Testen</test>
+            <toggledetails>Details ein- / ausschalten</toggledetails>            
             <ul>Aufzählung</ul>
             <underline>Unterstrichen</underline>
             <undo>Rückgängig</undo>
@@ -505,7 +507,15 @@
             <lastelement>an letzter Position</lastelement>
             <lastname>Name</lastname>
             <left>Links</left>
+            <linkname>Linkname</linkname>
             <linkto>Verknüpfung</linkto>
+            <linktarget>Linkziel</linktarget>
+            <linktargetself>Gleiches Fenster</linktargetself>
+            <linktargetblank>Neues Fenster</linktargetblank>
+            <linktargettop>Oberstes Fenster</linktargettop>
+            <linkanchor>Ankerlink</linkanchor>
+            <linkstyle>Styleangaben</linkstyle>
+            <linkstyleclass>Stylesheet Klasse</linkstyleclass>            
             <nolinkvalue>Bitte geben Sie die Verknüpfung an!</nolinkvalue>
             <lockedby>Gesperrt durch</lockedby>
             <lockuser>Benutzer sperren</lockuser>
@@ -640,6 +650,7 @@
             <readrights>Leseberechtigung für andere</readrights>
             <selectfolder>Ordner auswählen...</selectfolder>
             <size>Größe</size>
+            <specialchar>Sonderzeichen einfügen</specialchar>
             <state>Status</state>
             <suredeletingproject1>Sind Sie sicher, dass sie das Projekt</suredeletingproject1>
             <suredeletingproject2>löschen und damit alle nicht veröffentlichten Änderungen in diesem Projekt verwerfen wollen?</suredeletingproject2>
@@ -1049,8 +1060,8 @@ Für Sie oder Ihre Rolle wurde eine Aufgabe reaktiviert.</content>
             <access>Rechte</access>
             <admindatatypes>Verwaltung von Dateitypen</admindatatypes>
             <adminproperties>Verwaltung von Eigenschaften</adminproperties>
-            <changetable>Tabelle bearbeiten</changetable>
             <changelink>Verknüpfung ändern</changelink>
+            <changetable>Tabelle bearbeiten</changetable>
             <changed>Geändert am</changed>
             <chgrp>Gruppe ändern von</chgrp>
             <chmod>Zugriff ändern von</chmod>
