@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2003/02/21 23:33:00 $
-* Version: $Revision: 1.112 $
+* Date   : $Date: 2003/02/25 13:06:37 $
+* Version: $Revision: 1.113 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Lucas
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.112 $ $Date: 2003/02/21 23:33:00 $
+ * @version $Revision: 1.113 $ $Date: 2003/02/25 13:06:37 $
  */
 public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels {
 
@@ -298,9 +298,11 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
         if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Old locale support   : " + (supportOldLocales.booleanValue()?"enabled":"disabled"));      
 
         // convert import files from 4.x versions flag
-        Boolean convertImport4x = (Boolean)conf.getBoolean("compatibility.support.import.4.x.contents", new Boolean(false));
-        setRuntimeProperty("compatibility.support.import.4.x.contents", convertImport4x);
-        if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". 4.x import conversion: " + (convertImport4x.booleanValue()?"enabled":"disabled"));      
+        String webappUrl = (String)conf.getString("compatibility.support.import.old.webappurl", null);
+        if (webappUrl != null) {
+            setRuntimeProperty("compatibility.support.import.old.webappurl", webappUrl);
+        }
+        if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Old webapp URL       : " + ((webappUrl == null)?"not set!":webappUrl));      
 
         // old web application names (for editor macro replacement) 
         String[] appNames = conf.getStringArray("compatibility.support.webAppNames");
