@@ -18,36 +18,53 @@ function simpleEscape(text) {
 
 
 function checkforchars(whichform){
-
+allesklar=true;
 	for(i=0;i<whichform.value.length;i++){
-	    if(whichform.value.charAt(i)=="%")alert(']]><LABEL value="error.message.badcharacter" /><![CDATA['+whichform.value.charAt(i));
-	    if(whichform.value.charAt(i)=="#")alert(']]><LABEL value="error.message.badcharacter" /><![CDATA['+whichform.value.charAt(i));
-	    if(whichform.value.charAt(i)=="&")alert(']]><LABEL value="error.message.badcharacter" /><![CDATA['+whichform.value.charAt(i));
+	    if(whichform.value.charAt(i)=="%"){
+	    	allesklar=false;
+		    alert(']]><LABEL value="error.message.badcharacter" /><![CDATA['+whichform.value.charAt(i));
+	    }
+	    if(whichform.value.charAt(i)=="#"){
+	    	allesklar=false;
+		    alert(']]><LABEL value="error.message.badcharacter" /><![CDATA['+whichform.value.charAt(i));
+		    }
+	    if(whichform.value.charAt(i)=="&"){
+   	    	allesklar=false;
+	    	alert(']]><LABEL value="error.message.badcharacter" /><![CDATA['+whichform.value.charAt(i));
+	    	}
 	}
 	
-	
+	return allesklar;
 }
 
 
 function checkIt(wasdenn){
 	
+	allesok=true;
+	
 	if(wasdenn==1){
-		checkforchars(document.LINK.NEUNAME);
+		allesok=checkforchars(document.LINK.NEUNAME);
 
 		if(document.LINK.NEUNAME.value=="" || document.LINK.LINKNAME.value=="")
 		{
 			alert(']]><LABEL value="error.message.datamissing" /><![CDATA[');
-		} else location='explorer_files_new_page.html?step=1&newfile='+document.LINK.NEUNAME.value+'&title='+document.LINK.NEUTITEL.value+'&template='+simpleEscape(document.LINK.TEMPLATE.value)+'&navtitle='+simpleEscape(document.LINK.LINKNAME.value)+'&navpos='+ document.LINK.LINKPOS.value;
+			allesok=false;
+		} 
+		if(allesok)location='explorer_files_new_page.html?step=1&newfile='+document.LINK.NEUNAME.value+'&title='+document.LINK.NEUTITEL.value+'&template='+simpleEscape(document.LINK.TEMPLATE.value)+'&navtitle='+simpleEscape(document.LINK.LINKNAME.value)+'&navpos='+ document.LINK.LINKPOS.value;
 	}
+	
+	
 	
 	if(wasdenn==2){
 	
-		checkforchars(document.NEU.NEUNAME);
+		allesok=checkforchars(document.NEU.NEUNAME);
 	
 		if(document.NEU.NEUNAME.value=="" )
 		{
 				alert(']]><LABEL value="error.message.datamissing" /><![CDATA[');
-		} else location='explorer_files_new_page.html?step=1&newfile='+document.NEU.NEUNAME.value+'&title='+document.NEU.NEUTITEL.value+'&template='+simpleEscape(document.NEU.TEMPLATE.value);
+				allesok=false;
+		} 
+		if(allesok)location='explorer_files_new_page.html?step=1&newfile='+document.NEU.NEUNAME.value+'&title='+document.NEU.NEUTITEL.value+'&template='+simpleEscape(document.NEU.TEMPLATE.value);
 	}
 }
 
