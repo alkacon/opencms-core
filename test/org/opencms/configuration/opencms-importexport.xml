@@ -71,6 +71,11 @@
 			<header>testheader:testvalue</header>
 			<header>testheader2:testvalue2</header>
 		</exportheaders>
+		<requestheaders>
+			<acceptlanguage>en-us,en;q=0.5</acceptlanguage>
+			<acceptcharset>ISO-8859-1,utf-8;q=0.7,*;q=0.7</acceptcharset>
+			<remoteaddr>127.0.0.1</remoteaddr>
+		</requestheaders>
 		<rendersettings>
 			<rfs-prefix>${CONTEXT_NAME}/export</rfs-prefix>
 			<vfs-prefix>${CONTEXT_NAME}${SERVLET_NAME}</vfs-prefix>

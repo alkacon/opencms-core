@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2004/07/06 09:33:03 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2004/07/09 13:44:34 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  *
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  */
 public interface I_CmsConstants {
 
@@ -1249,6 +1249,12 @@ public interface I_CmsConstants {
     /** HTTP Header for internal requests used during static export. */
     String C_HEADER_OPENCMS_EXPORT =  "OpenCms-Export";
 
+    /** HTTP Accept-Language Header for internal requests used during static export. */
+    String C_HEADER_ACCEPT_LANGUAGE =  "Accept-Language";
+
+    /** HTTP Accept-Charset Header for internal requests used during static export. */
+    String C_HEADER_ACCEPT_CHARSET =  "Accept-Charset";
+    
     /** HTTP Header "Cache-Control". */    
     String C_HEADER_CACHE_CONTROL = "Cache-Control";
 

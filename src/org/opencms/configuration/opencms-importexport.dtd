@@ -117,6 +117,7 @@
 	defaultpropertyvalue,
 	defaultsuffixes?,
 	exportheaders?,
+	requestheaders?,
 	rendersettings)>
 <!ATTLIST staticexport enabled (TRUE|true|FALSE|false) #REQUIRED>
 
@@ -165,6 +166,17 @@
 <!ELEMENT exportheaders (header+)>
 
 <!ELEMENT header (#PCDATA)>
+
+<!--
+# A list of http headers are used while sending the internal requests during the static export. 
+# If none of those headers are defined, the default settings (language and encoding) of OpenCms are used.
+-->
+<!ELEMENT requestheaders (acceptlanguage?, acceptcharset?, remoteaddr?)>
+
+<!ELEMENT acceptlanguage (#PCDATA)>
+<!ELEMENT acceptcharset (#PCDATA)>
+<!ELEMENT remoteaddr (#PCDATA)>
+
 
 <!--
 # The render settings control how template based resources are written to 

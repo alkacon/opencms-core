@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsImportExportConfiguration.java,v $
- * Date   : $Date: 2004/07/08 13:52:47 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/07/09 13:44:34 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,12 +52,6 @@ import org.dom4j.Element;
  * @since 5.3
  */
 public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
-    
-    /** The name of the DTD for this configuration. */
-    private static final String C_CONFIGURATION_DTD_NAME = "opencms-importexport.dtd";
-    
-    /** The name of the default XML file for this configuration. */
-    private static final String C_DEFAULT_XML_FILE_NAME = "opencms-importexport.xml";       
 
     /** Node that indicates page conversion. */
     protected static final String N_CONVERT = "convert";
@@ -101,6 +95,12 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
     /**  The main configuration node for static export name. */
     protected static final String N_STATICEXPORT = "staticexport";
 
+    /**  The node name of the static export acceptcharset node. */
+    protected static final String N_STATICEXPORT_ACCEPTCHARSET = "acceptcharset";
+
+    /**  The node name of the static export acceptlanguage node. */
+    protected static final String N_STATICEXPORT_ACCEPTLANGUAGE = "acceptlanguage";
+    
     /**  The node name of the static export default node. */
     protected static final String N_STATICEXPORT_DEFAULT = "defaultpropertyvalue";
     
@@ -124,21 +124,27 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
     
     /**  The node name of the static export plainoptimization node. */    
     protected static final String N_STATICEXPORT_PLAINOPTIMIZATION = "plainoptimization";
-    
-    /**  The node name of the static export rfx-prefix node. */    
-    protected static final String N_STATICEXPORT_RFS_PREFIX = "rfs-prefix";
-    
-    /**  The node name of the static export rendersettings node. */    
-    protected static final String N_STATICEXPORT_RENDERSETTINGS = "rendersettings";
 
     /**  The node name of the static export regex node. */    
     protected static final String N_STATICEXPORT_REGEX = "regex";
     
     /**  The node name of the static export relativelinks node. */    
     protected static final String N_STATICEXPORT_RELATIVELINKS = "userelativelinks";
+
+    /**  The node name of the static export remoteaddr node. */    
+    protected static final String N_STATICEXPORT_REMOTEADDR = "remoteaddr";
+    
+    /**  The node name of the static export rendersettings node. */    
+    protected static final String N_STATICEXPORT_RENDERSETTINGS = "rendersettings";
+    
+    /**  The node name of the static export requestheaders node. */    
+    protected static final String N_STATICEXPORT_REQUESTHEADERS = "requestheaders";
     
     /**  The node name of the static export resourcestorender node. */    
     protected static final String N_STATICEXPORT_RESOURCESTORENDER = "resourcestorender";
+    
+    /**  The node name of the static export rfx-prefix node. */    
+    protected static final String N_STATICEXPORT_RFS_PREFIX = "rfs-prefix";
    
     /**  The node name of the static export suffix node. */    
     protected static final String N_STATICEXPORT_SUFFIX = "suffix";
@@ -148,6 +154,12 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
     
     /**  The node name of the static export vfx-prefix node. */    
     protected static final String N_STATICEXPORT_VFS_PREFIX = "vfs-prefix";
+    
+    /** The name of the DTD for this configuration. */
+    private static final String C_CONFIGURATION_DTD_NAME = "opencms-importexport.dtd";
+    
+    /** The name of the default XML file for this configuration. */
+    private static final String C_DEFAULT_XML_FILE_NAME = "opencms-importexport.xml";       
 
     
     /** The configured import/export manager. */
@@ -227,6 +239,12 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
         digester.addCallParam("*/" + N_STATICEXPORT + "/" + N_STATICEXPORT_DEFAULTSUFFIXES + "/" + N_STATICEXPORT_SUFFIX, 0, A_KEY); 
         // header rule
         digester.addCallMethod("*/" + N_STATICEXPORT + "/" + N_STATICEXPORT_EXPORTHEADERS + "/" + N_STATICEXPORT_HEADER , "setExportHeader", 0);       
+        // accept-language rule
+        digester.addCallMethod("*/" + N_STATICEXPORT + "/" + N_STATICEXPORT_REQUESTHEADERS + "/" + N_STATICEXPORT_ACCEPTLANGUAGE , "setAcceptLanguageHeader", 0);       
+        // accept-charset rule
+        digester.addCallMethod("*/" + N_STATICEXPORT + "/" + N_STATICEXPORT_REQUESTHEADERS + "/" + N_STATICEXPORT_ACCEPTCHARSET, "setAcceptCharsetHeader", 0);             
+        // accept-charset rule
+        digester.addCallMethod("*/" + N_STATICEXPORT + "/" + N_STATICEXPORT_REQUESTHEADERS + "/" + N_STATICEXPORT_REMOTEADDR, "setRemoteAddr", 0);                    
         // rfs-prefix rule
         digester.addCallMethod("*/" + N_STATICEXPORT + "/" + N_STATICEXPORT_RENDERSETTINGS + "/" + N_STATICEXPORT_RFS_PREFIX , "setRfsPrefix", 0); 
         // vfs-prefix rule
@@ -347,7 +365,23 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
                 String header = (String)i.next();
                 exportheadersElement.addElement(N_STATICEXPORT_HEADER).addText(header);            }
         }
-        
+        // <requestheaders> node and the <acceptlanguage> and <acceptcharset> node
+        String acceptlanguage = m_staticExportManager.getAcceptLanguageHeader();
+        String acceptcharset = m_staticExportManager.getAcceptCharsetHeader();
+        String remoteaddr = m_staticExportManager.getRemoteAddr();
+        if ((acceptlanguage != null) || (acceptcharset != null) || (remoteaddr != null)) {
+            Element requestheadersElement = staticexportElement.addElement(N_STATICEXPORT_REQUESTHEADERS);
+            if (acceptlanguage != null) {
+                requestheadersElement.addElement(N_STATICEXPORT_ACCEPTLANGUAGE).addText(acceptlanguage);                
+            }
+            if (acceptcharset != null) {
+                requestheadersElement.addElement(N_STATICEXPORT_ACCEPTCHARSET).addText(acceptcharset);                
+            }
+            if (remoteaddr != null) {
+                requestheadersElement.addElement(N_STATICEXPORT_REMOTEADDR).addText(remoteaddr);                
+            }
+        }
+       
         // <rendersettings> node
         Element rendersettingsElement = staticexportElement.addElement(N_STATICEXPORT_RENDERSETTINGS);
         

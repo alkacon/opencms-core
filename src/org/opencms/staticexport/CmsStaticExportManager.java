@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2004/07/08 13:52:47 $
- * Version: $Revision: 1.69 $
+ * Date   : $Date: 2004/07/09 13:44:34 $
+ * Version: $Revision: 1.70 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,10 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.i18n.CmsAcceptLanguageHeaderParser;
+import org.opencms.i18n.CmsI18nInfo;
 import org.opencms.loader.I_CmsResourceLoader;
+import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -76,7 +79,7 @@ import org.apache.commons.collections.map.LRUMap;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.69 $
+ * @version $Revision: 1.70 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
 
@@ -116,11 +119,23 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     /** Matcher for  selecting those resources which should be part of the staic export. */
     private static CmsExportFolderMatcher m_exportFolderMatcher;
 
+    /** HTTP header Accept-Charset. */
+    private String m_acceptCharsetHeader;
+    
+    /** HTTP header Accept-Language. */
+    private String m_acceptLanguageHeader; 
+    
     /** Cache for the export uris. */
     private Map m_cacheExportUris;
 
     /** Cache for the online links. */
     private Map m_cacheOnlineLinks;
+
+    /** OpenCms default charset header. */
+    private String m_defaultAcceptCharsetHeader;
+    
+    /** OpenCms default locale header. */
+    private String m_defaultAcceptLanguageHeader; 
 
     /** List of export resources which should be part of the static export. */
     private List m_exportFolders;
@@ -148,6 +163,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     
     /** Indicates if the quick static export for plain resources is enabled. */
     private boolean m_quickPlainExport;
+
+    /** Remote addr. */
+    private String m_remoteAddr; 
 
     /** Prefix to use for exported files. */
     private String m_rfsPrefix;
@@ -183,7 +201,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     public CmsStaticExportManager() {     
         m_exportSuffixes = new ArrayList();
         m_exportFolders = new ArrayList();
-        m_exportHeaders = new ArrayList();    
+        m_exportHeaders = new ArrayList();                  
     }
 
     /**
@@ -304,6 +322,29 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         // cut the site root from the vfsName and switch to the correct site
         String siteRoot = CmsSiteManager.getSiteRoot(vfsName);
 
+        CmsI18nInfo i18nInfo = OpenCms.getLocaleManager().getLocaleHandler().getI18nInfo(
+            req, 
+            cms.getRequestContext().currentUser(), 
+            cms.getRequestContext().currentProject(), 
+            vfsName);
+
+        String remoteAddr = m_remoteAddr;
+        if (remoteAddr == null) {
+            remoteAddr = I_CmsConstants.C_IP_LOCALHOST;
+        }
+        CmsContextInfo contextInfo = 
+            new CmsContextInfo(
+                cms.getRequestContext().currentUser(),
+                cms.getRequestContext().currentProject(),
+                vfsName,
+                "/",
+                i18nInfo.getLocale(),
+                i18nInfo.getEncoding(),
+                remoteAddr);
+        
+        cms = OpenCms.initCmsObject(null, contextInfo);
+        
+        
         if (siteRoot != null) {
             vfsName = vfsName.substring(siteRoot.length());
         } else {
@@ -507,6 +548,26 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         // do the export
         doExportAfterPublish(publishedResources, report);
     }
+    
+    /**
+     * Returns the accept-charset header used for internal requests.<p>
+     * 
+     * @return the accept-charset header
+     */
+    public String getAcceptCharsetHeader() {
+
+        return m_acceptCharsetHeader;
+    }
+    
+    /**
+     * Returns the accept-language header used for internal requests.<p>
+     * 
+     * @return the accept-language header
+     */
+    public String getAcceptLanguageHeader() {
+
+        return m_acceptLanguageHeader;
+    }   
 
     /**
      * Returns a cached vfs resource name for the given rfs name.<p>
@@ -752,6 +813,16 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             return "false";
         }
     }
+        
+    /**
+     * Returns the remote addr used for internal requests.<p>
+     * 
+     * @return the remote addr
+     */
+    public String getRemoteAddr() {
+
+        return m_remoteAddr;
+    } 
 
     /**
      * Returns the static export rfs name for a give vfs resoure.<p>
@@ -931,7 +1002,13 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
         // initialize "exportname" folders
         setExportnames();
+        
+        // get the default accept-language header value
+        m_defaultAcceptLanguageHeader = CmsAcceptLanguageHeaderParser.createLanguageHeader();
 
+        // get the default accept-charset header value
+        m_defaultAcceptCharsetHeader = OpenCms.getSystemInfo().getDefaultEncoding();
+                
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Static export        : " + (isStaticExportEnabled() ? "enabled" : "disabled"));
             if (isStaticExportEnabled()) {
@@ -998,6 +1075,24 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     public boolean relativLinksInExport() {
 
         return m_exportRelativeLinks;
+    }
+    
+    /**
+     * Sets the accept-charset header value.<p>
+     * 
+     * @param value accept-language header value
+     */
+    public void setAcceptCharsetHeader(String value) {
+        m_acceptCharsetHeader = value;
+    }
+    
+    /**
+     * Sets the accept-language header value.<p>
+     * 
+     * @param value accept-language header value
+     */
+    public void setAcceptLanguageHeader(String value) {
+        m_acceptLanguageHeader = value;
     }
     
     /**
@@ -1073,7 +1168,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     public void setExportSuffix(String suffix) {
         m_exportSuffixes.add(suffix.toLowerCase());
     }
-     
+  
     /**
      * Sets the export url.<p>
      * 
@@ -1116,6 +1211,15 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      */
     public void setRelativeLinks(String value) {
         m_exportRelativeLinks = Boolean.valueOf(value).booleanValue();
+    }
+     
+    /**
+     * Sets the remote addr. wirch will be used for internal requests during the static export.<p>
+     * 
+     * @param addr the remote addr. to be used
+     */
+    public void setRemoteAddr(String addr) {
+        m_remoteAddr = addr;
     }
 
     /**
@@ -1384,7 +1488,18 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 urlcon.setRequestMethod("GET");
                 // add special export header
                 urlcon.setRequestProperty(I_CmsConstants.C_HEADER_OPENCMS_EXPORT, "true");
-
+                // add additional headers if available
+                if (getAcceptLanguageHeader() != null) {
+                    urlcon.setRequestProperty(I_CmsConstants.C_HEADER_ACCEPT_LANGUAGE, getAcceptLanguageHeader());
+                } else {
+                    urlcon.setRequestProperty(I_CmsConstants.C_HEADER_ACCEPT_LANGUAGE, m_defaultAcceptLanguageHeader);                   
+                }
+                if (getAcceptCharsetHeader() != null) {
+                    urlcon.setRequestProperty(I_CmsConstants.C_HEADER_ACCEPT_CHARSET, getAcceptCharsetHeader());
+                } else {
+                    urlcon.setRequestProperty(I_CmsConstants.C_HEADER_ACCEPT_CHARSET, m_defaultAcceptCharsetHeader);
+                }
+                
                 // get the last modified date and add it to the request
                 String exportFileName = CmsLinkManager.normalizeRfsPath(getExportPath() + rfsName.substring(1));
                 File exportFile = new File(exportFileName);

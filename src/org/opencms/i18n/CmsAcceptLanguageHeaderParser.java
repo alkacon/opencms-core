@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsAcceptLanguageHeaderParser.java,v $
- * Date   : $Date: 2004/06/14 14:25:57 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/07/09 13:44:34 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,6 +86,8 @@
  */
 package org.opencms.i18n;
 
+import org.opencms.main.OpenCms;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -102,21 +104,40 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Daniel Rall (dlr@collab.net)
  * @author Alexander Kandzior (a.kandzior@alkacon.com) 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsAcceptLanguageHeaderParser implements Iterator {
 
+    /**
+     * Struct representing an element of the HTTP <code>Accept-Language</code> header.
+     */
+    private class AcceptLanguage implements Comparable {
+
+        /** The language and country. */
+        Locale m_locale;
+
+        /**  The m_quality of our m_locale (as values approach <code>1.0</code>, they indicate increased user preference). */
+        Float m_quality = DEFAULT_QUALITY;
+
+        /**
+         * @see java.lang.Comparable#compareTo(java.lang.Object)
+         */
+        public final int compareTo(Object acceptLang) {
+            return m_quality.compareTo(((AcceptLanguage)acceptLang).m_quality);
+        }
+    }
+
     /** A constant for the HTTP <code>Accept-Language</code> header. */
     public static final String ACCEPT_LANGUAGE = "Accept-Language";
+
+    /** The default m_quality value for an <code>AcceptLanguage</code> object. */
+    protected static final Float DEFAULT_QUALITY = new Float(1.0f);
     
     /** Separates elements of the <code>Accept-Language</code> HTTP header. */
     private static final String LOCALE_SEPARATOR = ",";
 
     /** Separates m_locale from m_quality within elements. */
     private static final char QUALITY_SEPARATOR = ';';
-
-    /** The default m_quality value for an <code>AcceptLanguage</code> object. */
-    protected static final Float DEFAULT_QUALITY = new Float(1.0f);
 
     /** The parsed <code>Accept-Language</code> headers. */
     private List m_acceptLanguage = new ArrayList(3);
@@ -194,6 +215,26 @@ public class CmsAcceptLanguageHeaderParser implements Iterator {
     }
     
     /**
+     * Creates a value string for the HTTP Accept-Language header based on the default localed.<p>
+     * 
+     * @return value string for the HTTP Accept-Language
+     */
+    public static String createLanguageHeader() {
+        String header;
+        
+        // get the default accept-language header value
+        List defaultLocales = OpenCms.getLocaleManager().getDefaultLocales(); 
+        Iterator i = defaultLocales.iterator();
+        header = "";
+        while (i.hasNext()) {
+            Locale loc = (Locale)i.next();
+            header += loc.getLanguage()+", ";
+        }
+        header = header.substring(0, header.length()-2);
+        return header;
+    }
+    
+    /**
      * Returns the sorted list of accepted Locales.<p>
      * 
      * @return the sorted list of accepted Locales
@@ -226,24 +267,5 @@ public class CmsAcceptLanguageHeaderParser implements Iterator {
      */
     public final void remove() {
         throw new UnsupportedOperationException(getClass().getName() + " does not support remove()");
-    }
-
-    /**
-     * Struct representing an element of the HTTP <code>Accept-Language</code> header.
-     */
-    private class AcceptLanguage implements Comparable {
-
-        /** The language and country. */
-        Locale m_locale;
-
-        /**  The m_quality of our m_locale (as values approach <code>1.0</code>, they indicate increased user preference). */
-        Float m_quality = DEFAULT_QUALITY;
-
-        /**
-         * @see java.lang.Comparable#compareTo(java.lang.Object)
-         */
-        public final int compareTo(Object acceptLang) {
-            return m_quality.compareTo(((AcceptLanguage)acceptLang).m_quality);
-        }
     }
 }
