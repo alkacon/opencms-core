@@ -1083,6 +1083,7 @@ Für Sie oder Ihre Rolle wurde eine Aufgabe reaktiviert.</content>
                 <ownername>Channelbesitzer</ownername>
                 <group>Channelgruppe</group>
                 <accessflagsasstring>Channelrechte</accessflagsasstring>
+				<title>Titel</title>
             </label>
             <messagebox>
                 <title>

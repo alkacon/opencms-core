@@ -1082,6 +1082,7 @@ A new task was reactivated for you or your role.</content>
                 <ownername>Channelowner</ownername>
                 <group>Channelgroup</group>
                 <accessflagsasstring>Channelrights</accessflagsasstring>
+				<title>Title</title>
             </label>
             <messagebox>
                 <title>
