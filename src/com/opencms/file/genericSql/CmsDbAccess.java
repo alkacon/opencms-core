@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/09 12:21:25 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2000/06/09 12:35:50 $
+ * Version: $Revision: 1.46 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.45 $ $Date: 2000/06/09 12:21:25 $ * 
+ * @version $Revision: 1.46 $ $Date: 2000/06/09 12:35:50 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	
@@ -1603,11 +1603,12 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	  */
 	 public void deleteProject(CmsProject project)
 		 throws CmsException {
-		 // TODO: delete the files
-		 // TODO: delete the reosureces
+		 // delete the properties
+		 deleteProjectProperties(project);
+		 
+		 // delete the files and resources
+		 deleteProjectResources(project);
 
-		 // TODO: delete the properties
-		 deleteAllProjectProperties(project);
 		 
 		 // finally delete the project
 		 PreparedStatement statement = null;
@@ -2357,10 +2358,16 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public void deleteAllProjectProperties(CmsProject project)
+	public void deleteProjectProperties(CmsProject project)
 		throws CmsException {
 		
-		//TODO implement this. 		
+		// get all resources of the project
+		Vector resources = readResources(project);
+		
+		for( int i = 0; i < resources.size(); i++) {
+			// delete the properties for each resource in project
+			deleteAllProperties( ((CmsResource) resources.elementAt(i)).getResourceId());
+		}
 	}
 
 	// methods working with resources
@@ -2591,6 +2598,63 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
         return file;
        }
     
+	/**
+	 * Reads all resource from the Cms, that are in one project.<BR/>
+	 * A resource is either a file header or a folder.
+	 * 
+	 * @param project The project in which the resource will be used.
+	 * 
+	 * @return A Vecot of resources.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	 public Vector readResources(CmsProject project)
+         throws CmsException {
+                 
+         Vector resources = new Vector();
+		 CmsResource file;
+         ResultSet res = null;
+         PreparedStatement statement = null;
+         try {  
+               // read resource data from database
+               statement = m_pool.getPreparedStatement(C_RESOURCES_READBYPROJECT_KEY);
+               statement.setInt(1,project.getId());
+               res = statement.executeQuery();
+               
+               // create new resource
+               while(res.next()) {
+				    file = new CmsResource(res.getInt(C_RESOURCES_RESOURCE_ID),
+										   res.getInt(C_RESOURCES_PARENT_ID),
+										   res.getInt(C_RESOURCES_FILE_ID),
+										   res.getString(C_RESOURCES_RESOURCE_NAME),
+                                           res.getInt(C_RESOURCES_RESOURCE_TYPE),
+                                           res.getInt(C_RESOURCES_RESOURCE_FLAGS),
+                                           res.getInt(C_RESOURCES_USER_ID),
+                                           res.getInt(C_RESOURCES_GROUP_ID),
+                                           res.getInt(C_PROJECT_ID_RESOURCES),
+                                           res.getInt(C_RESOURCES_ACCESS_FLAGS),
+                                           res.getInt(C_RESOURCES_STATE),
+                                           res.getInt(C_RESOURCES_LOCKED_BY),
+                                           res.getInt(C_RESOURCES_LAUNCHER_TYPE),
+                                           res.getString(C_RESOURCES_LAUNCHER_CLASSNAME),
+                                           res.getTimestamp(C_RESOURCES_DATE_CREATED).getTime(),
+                                           res.getTimestamp(C_RESOURCES_DATE_LASTMODIFIED).getTime(),
+                                           res.getInt(C_RESOURCES_LASTMODIFIED_BY),
+                                           res.getInt(C_RESOURCES_SIZE)
+                                           );
+					resources.addElement(file);
+			   }
+			res.close();
+         } catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		}finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(C_RESOURCES_READBYPROJECT_KEY, statement);
+			}
+		}
+        return resources;
+	 }
+	 
     /**
 	 * Creates a new resource from an given CmsResource object.
      *
@@ -3224,8 +3288,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
         m_pool.initPreparedStatement(C_FILES_WRITE_KEY,C_FILES_WRITE);
         m_pool.initPreparedStatement(C_RESOURCES_UNLOCK_KEY,C_RESOURCES_UNLOCK);
         m_pool.initPreparedStatement(C_RESOURCES_COUNTLOCKED_KEY,C_RESOURCES_COUNTLOCKED);
-
-        	
+        m_pool.initPreparedStatement(C_RESOURCES_READBYPROJECT_KEY,C_RESOURCES_READBYPROJECT);
 
 		// init statements for groups
 		m_pool.initPreparedStatement(C_GROUPS_MAXID_KEY,C_GROUPS_MAXID);
