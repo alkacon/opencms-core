@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/02/27 14:18:56 $
-* Version: $Revision: 1.78 $
+* Date   : $Date: 2003/02/28 11:36:33 $
+* Version: $Revision: 1.79 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.w3c.dom.NodeList;
  * @author Andreas Schouten
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.78 $ $Date: 2003/02/27 14:18:56 $
+ * @version $Revision: 1.79 $ $Date: 2003/02/28 11:36:33 $
  */
 public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
     
@@ -611,33 +611,20 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                     // walk through all properties
                     for (int j = 0; j < propertyNodes.getLength(); j++) {
                         currentProperty = (Element) propertyNodes.item(j);
-                        // get all information for this property
+                        // get name information for this property
                         String name = getTextNodeValue(currentProperty, C_EXPORT_TAG_NAME);
-                        String value = getTextNodeValue(currentProperty, C_EXPORT_TAG_VALUE);
-                        if(value == null) {
-                            // create an empty property
-                            value = "";
-                        }
-                        // store these informations
-                        if (name != null) {
-                            // filter unwanted properties, e.g. "module" 
-                            boolean found = false;
-                            // scan for unwanted properties
-                            for (int k=0; k<deleteProperties.size(); k++) {
-                                if (name.equals((String) deleteProperties.get(k))) {
-                                    found = true;
-                                    if (C_DEBUG > 0){
-                                        System.err.println("["+this.getClass().getName()+".importResources()]: found unwanted property "+name+", deleting it!");
-                                    }
-                                    k = deleteProperties.size();                        
-                                }
-                            }
-                            // add property
-                            if (!found) {
-                                properties.put(name, value);
-                            }
-                            createPropertydefinition(name, type);
-                        }
+						// check if this is an unwanted property
+						if ((name != null) && (!deleteProperties.contains(name))) {
+                            // get value information for this property
+							String value = getTextNodeValue(currentProperty, C_EXPORT_TAG_VALUE);
+							if (value == null) {
+								// create an empty property
+								value = "";
+							}
+							// add property
+							properties.put(name, value);
+							createPropertydefinition(name, type);
+						}
                     }
     
                     // import the specified file and write maybe put it on the lists writtenFilenames, fileCodes

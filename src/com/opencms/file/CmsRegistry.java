@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
-* Date   : $Date: 2003/02/21 15:18:23 $
-* Version: $Revision: 1.66 $
+* Date   : $Date: 2003/02/28 11:36:33 $
+* Version: $Revision: 1.67 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,10 +46,12 @@ import java.lang.reflect.Method;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -72,7 +74,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.66 $ $Date: 2003/02/21 15:18:23 $
+ * @version $Revision: 1.67 $ $Date: 2003/02/28 11:36:33 $
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_CmsConstants, I_CmsWpConstants {
 
@@ -580,7 +582,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
             Vector resources = new Vector();
                                 
             if (additionalResources!=null && !additionalResources.equals("")) {                            
-                // add each additonal folder plus its content folder under "content/bodys"
+                // add each additonal folder plus its content folder under "/system/bodies/"
                 StringTokenizer additionalResourceTokens = null;
                 additionalResourceTokens = new StringTokenizer( additionalResources, I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES_SEPARATOR ); 
                                        
@@ -625,35 +627,35 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
             Vector wrongChecksum = new Vector();
             Vector filesInUse = new Vector();
             Vector resourceCodes = new Vector();
-        
             // get files by property
-            deleteGetConflictingFileNames(module, resourceNames, missingFiles, wrongChecksum, filesInUse, new Vector());
-        
-            // get files by registry
-            getModuleFiles(module, resourceNames, resourceCodes);
-        
-            // move through all resource-names and try to delete them
-            for (int i = resourceNames.size() - 1; i >= 0; i--) {
-                try {
-                    String currentResource = (String) resourceNames.elementAt(i);
-                    if ((!exclusion.contains(currentResource)) && (!filesInUse.contains(currentResource))) {
-                        m_cms.lockResource(currentResource, true);
-                        if(currentResource.endsWith("/") ) {
-                            // this is a folder
-                            m_cms.deleteEmptyFolder(currentResource);
-                        } else {
-                            // this is a file
-                            m_cms.deleteResource(currentResource);
-                        }
-                        // update the report
-                        report.print(report.key("report.deleting"), I_CmsReport.C_FORMAT_NOTE);                    
-                        report.println(currentResource);
-                    }
-                } catch (CmsException exc) {
-                    // ignore the exception and delete the next resource.
-                    report.println(exc);                
-                }
-            }
+
+			deleteGetConflictingFileNames(module, resourceNames, missingFiles, wrongChecksum, filesInUse, new Vector());
+
+			// get files by registry
+			getModuleFiles(module, resourceNames, resourceCodes);
+
+			// move through all resource-names and try to delete them
+			for (int i = resourceNames.size() - 1; i >= 0; i--) {
+				try {
+					String currentResource = (String) resourceNames.elementAt(i);
+					if ((!exclusion.contains(currentResource)) && (!filesInUse.contains(currentResource))) {
+						m_cms.lockResource(currentResource, true);
+						if (currentResource.endsWith("/")) {
+							// this is a folder
+							m_cms.deleteEmptyFolder(currentResource);
+						} else {
+							// this is a file
+							m_cms.deleteResource(currentResource);
+						}
+						// update the report
+						report.print(report.key("report.deleting"), I_CmsReport.C_FORMAT_NOTE);
+						report.println(currentResource);
+					}
+				} catch (CmsException exc) {
+					// ignore the exception and delete the next resource.
+					report.println(exc);
+				}
+			}
         }
     
         // delete all entries for the module in the registry
@@ -1850,10 +1852,17 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
         } catch (Exception e) {
             // value of "isSimpleModule" will be false, so traditional module is the default         
         }
-        if (!isSimpleModule) {
-            propertyName = "module";
-            propertyValue = newModuleName + "_" + newModuleVersion;
-        }
+        
+		if (!isSimpleModule) {
+			// get list of unwanted properties
+			List deleteProperties = (List) A_OpenCms.getRuntimeProperty("compatibility.support.import.remove.propertytags");
+			if ((deleteProperties != null) && (deleteProperties.contains("module")))  {
+				propertyName = propertyValue = null;
+			} else {
+				propertyName = "module";
+				propertyValue = newModuleName + "_" + newModuleVersion;
+			}
+		}
     
         CmsImport cmsImport = new CmsImport(moduleZip, "/", m_cms, report);
         cmsImport.importResources(exclusion, resourceNames, resourceCodes, propertyName, propertyValue);

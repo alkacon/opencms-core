@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2003/02/26 10:30:36 $
-* Version: $Revision: 1.115 $
+* Date   : $Date: 2003/02/28 11:36:32 $
+* Version: $Revision: 1.116 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,6 +47,7 @@ import com.opencms.workplace.I_CmsWpConstants;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -80,7 +81,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Lucas
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.115 $ $Date: 2003/02/26 10:30:36 $
+ * @version $Revision: 1.116 $ $Date: 2003/02/28 11:36:32 $
  */
 public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels {
 
@@ -308,13 +309,14 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
         // Unwanted resource properties which are deleted during import
         String[] propNames = conf.getStringArray("compatibility.support.import.remove.propertytags");
         if (propNames == null) propNames = new String[0];  
-        ArrayList propertyNames = new ArrayList(java.util.Arrays.asList(propNames));
-        for (int i=0; i<propertyNames.size(); i++) {
+        List propertyNamesOri = java.util.Arrays.asList(propNames);
+        ArrayList propertyNames = new ArrayList();
+        for (int i=0; i<propertyNamesOri.size(); i++) {
             // remove possible white space
-            String name = ((String)propertyNames.get(i)).trim();
+            String name = ((String)propertyNamesOri.get(i)).trim();
             if (name != null && ! "".equals(name)) {
-                propertyNames.set(i, name);
-                if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Clear import property: " + (i+1) + " - " + propertyNames.get(i) );
+                propertyNames.add(name);
+                if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Clear import property: " + (i+1) + " - " + name );
             }               
         }        
         if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Remove properties    : " + ((propertyNames.size() > 0)?"enabled":"disabled"));     
@@ -323,13 +325,14 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
         // old web application names (for editor macro replacement) 
         String[] appNames = conf.getStringArray("compatibility.support.webAppNames");
         if (appNames == null) appNames = new String[0];  
-        ArrayList webAppNames = new ArrayList(java.util.Arrays.asList(appNames));
-        for (int i=0; i<webAppNames.size(); i++) {
+        List webAppNamesOri = java.util.Arrays.asList(appNames);
+        ArrayList webAppNames = new ArrayList();
+        for (int i=0; i<webAppNamesOri.size(); i++) {
             // remove possible white space
-            String name = ((String)webAppNames.get(i)).trim();
+            String name = ((String)webAppNamesOri.get(i)).trim();
             if (name != null && ! "".equals(name)) {
-                webAppNames.set(i, name);
-                if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Old context path     : " + (i+1) + " - " + webAppNames.get(i) );
+                webAppNames.add(name);
+                if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Old context path     : " + (i+1) + " - " + name );
             }               
         }        
         if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Old context support  : " + ((webAppNames.size() > 0)?"enabled":"disabled"));     
