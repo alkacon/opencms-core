@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/page/CmsXmlPageFactory.java,v $
- * Date   : $Date: 2004/10/14 15:05:54 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/10/16 08:24:38 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,12 +37,15 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.loader.CmsXmlContentLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
+import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
+import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.io.UnsupportedEncodingException;
@@ -60,7 +63,7 @@ import org.xml.sax.EntityResolver;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.5.0
  */
 public final class CmsXmlPageFactory {
@@ -111,7 +114,7 @@ public final class CmsXmlPageFactory {
             return CmsXmlUtils.marshal(createDocument(locale), encoding);
         } catch (CmsXmlException e) {
             // this should never happen
-            OpenCms.getLog(CmsXmlPage.class).error("Could not create XML document", e);
+            OpenCms.getLog(CmsXmlPageFactory.class).error("Could not create XML document", e);
             return null;
         }
     }
@@ -230,67 +233,74 @@ public final class CmsXmlPageFactory {
      * @param resource the resource to unmarshal
      * @param req the current request
      * 
-     * @return the unmarshaled xmlpage, or null if the given resource was not of type {@link CmsResourceTypeXmlPage}.<p>
+     * @return the unmarshaled xmlpage, or null if the given resource was not of type {@link CmsResourceTypeXmlPage}
      * 
-     * @throws CmsException in something goes wring
+     * @throws CmsException in something goes wrong
      */
     public static CmsXmlPage unmarshal(CmsObject cms, CmsResource resource, ServletRequest req) throws CmsException {
 
-        String sitePath = cms.getSitePath(resource);
+        String rootPath = resource.getRootPath();
         
         if (resource.getTypeId() != CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID) {
             // sanity check: resource must be of type XML page
-            throw new CmsXmlException("Resource '" + sitePath + "' is not of required type XML page");
+            throw new CmsXmlException("Resource '" + cms.getSitePath(resource) + "' is not of required type XML page");
         }
 
         // try to get the requested page form the current request attributes 
-        CmsXmlPage page = (CmsXmlPage)req.getAttribute(sitePath);
+        CmsXmlPage page = (CmsXmlPage)req.getAttribute(rootPath);
 
         if (page == null) {
-            // read the page from VFS
+            // unmarshal XML structure from the file content
             page = unmarshal(cms, CmsFile.upgrade(resource, cms));
             // store the page that was read as request attribute for future read requests
-            req.setAttribute(sitePath, page);
+            req.setAttribute(rootPath, page);
         }
 
         return page;
     }
 
     /**
-     * Factory method to unmarshal (read) a XML page instance from
+     * Factory method to unmarshal (read) a XML document instance from
      * a filename in the VFS, using the request attributes as cache.<p>
      * 
      * @param cms the current OpenCms context object
      * @param filename the filename of the resource to unmarshal
      * @param req the current request
      * 
-     * @return the unmarshaled xmlpage, or null if the given resource was not of type {@link CmsResourceTypeXmlPage}.<p>
+     * @return the unmarshaled xml document, or null if the given resource was not of type {@link A_CmsXmlDocument}
      * 
-     * @throws CmsException in something goes wring
+     * @throws CmsException in something goes wrong
      */
-    public static CmsXmlPage unmarshal(CmsObject cms, String filename, ServletRequest req) throws CmsException {
+    public static A_CmsXmlDocument unmarshal(CmsObject cms, String filename, ServletRequest req) throws CmsException {
+        
+        // add site root to filename
+        String rootPath = cms.getRequestContext().addSiteRoot(filename);
         
         // try to get the requested page form the current request attributes
-        CmsXmlPage page = (CmsXmlPage)req.getAttribute(filename);
+        A_CmsXmlDocument doc = (CmsXmlPage)req.getAttribute(rootPath);
 
-        if (page != null) {
-            return page;
+        if (doc != null) {
+            return doc;
         }
         
         // always use "ignore expiration" filter, date validity must be checked before calling this if required
         CmsFile file = cms.readFile(filename, CmsResourceFilter.IGNORE_EXPIRATION);
         
-        if (file.getTypeId() != CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID) {
-            // sanity check: file must be of type XML page
-            throw new CmsXmlException("Resource '" + filename + "' is not of required type XML page");
+        if (file.getTypeId() == CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID) {
+            // file is of type XML page
+            doc = CmsXmlPageFactory.unmarshal(cms, file);
+        } else  if ((OpenCms.getResourceManager().getLoader(file) instanceof CmsXmlContentLoader)) {
+            // file is of type XML content
+            doc = CmsXmlContentFactory.unmarshal(cms, file); 
+        } else {
+            // sanity check: file type not an A_CmsXmlDocument
+            throw new CmsXmlException("Resource '" + filename + "' is not a vaild A_CmsXmlDocument resource");
         }
         
-        // read the page from VFS
-        page = unmarshal(cms, file);
         // store the page that was read as request attribute for future read requests
-        req.setAttribute(filename, page);
+        req.setAttribute(rootPath, doc);
         
-        return page;
+        return doc;
     }
 
     /**

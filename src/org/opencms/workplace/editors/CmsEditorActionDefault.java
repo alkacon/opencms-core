@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorActionDefault.java,v $
- * Date   : $Date: 2004/10/02 10:57:52 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/10/16 08:24:38 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.I_CmsWpConstants;
-import org.opencms.xml.page.CmsXmlPage;
+import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.page.CmsXmlPageFactory;
 
 import java.io.IOException;
@@ -60,7 +60,7 @@ import javax.servlet.jsp.JspException;
  * Provides a method to perform a user defined action when editing a page.<p> 
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.3.0
  */
@@ -195,7 +195,7 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
               
             if ((element != null) && (resource.getTypeId() == CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID)) {
                 // check if the desired element is available (in case of xml page)
-                CmsXmlPage page = CmsXmlPageFactory.unmarshal(cmsObject, filename, req);
+                A_CmsXmlDocument page = CmsXmlPageFactory.unmarshal(cmsObject, filename, req);
                 List locales = page.getLocales();
                 Locale locale;
                 if ((locales == null) || (locales.size() == 0)) {

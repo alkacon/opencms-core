@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagTemplate.java,v $
- * Date   : $Date: 2004/10/02 10:57:22 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2004/10/16 08:24:38 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.xml.page.CmsXmlPage;
+import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.page.CmsXmlPageFactory;
 
 import java.util.List;
@@ -50,7 +50,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * is included in another file.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  */
 public class CmsJspTagTemplate extends BodyTagSupport { 
     
@@ -211,26 +211,26 @@ public class CmsJspTagTemplate extends BodyTagSupport {
             CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
             String filename = controller.getCmsObject().getRequestContext().getUri();
             
-            CmsXmlPage page = null;
+            A_CmsXmlDocument content = null;
             try {
-                page = CmsXmlPageFactory.unmarshal(controller.getCmsObject(), filename, req);               
+                content = CmsXmlPageFactory.unmarshal(controller.getCmsObject(), filename, req);               
             } catch (CmsException e) {
-                OpenCms.getLog(CmsJspTagTemplate.class).error("Error checking for XML page '" + filename + "'", e);
+                OpenCms.getLog(CmsJspTagTemplate.class).error("Error checking for XML document '" + filename + "'", e);
             }
             
-            if (page != null) {
-                String absolutePath = controller.getCmsObject().getSitePath(page.getFile());
-                // check the elements in the elementlist, if the check fails don't render the body
+            if (content != null) {
+                String absolutePath = controller.getCmsObject().getSitePath(content.getFile());
+                // check the elements in the elementlist, if the check fails don't render the element
                 String elements[] = CmsStringUtil.split(elementlist, ",");
                 boolean found = false;
                 for (int i = 0; i < elements.length; i++) {                    
                     String el = elements[i].trim();
-                    List locales = page.getLocales(el);
+                    List locales = content.getLocales(el);
                     Locale locale = null;
                     if ((locales != null) && (locales.size() != 0)) {
                         locale = OpenCms.getLocaleManager().getBestMatchingLocale(controller.getCmsObject().getRequestContext().getLocale(), OpenCms.getLocaleManager().getDefaultLocales(controller.getCmsObject(), absolutePath), locales);
                     }                     
-                    if ((locale != null) && page.hasValue(el, locale) && page.isEnabled(el, locale)) {
+                    if ((locale != null) && content.hasValue(el, locale) && content.isEnabled(el, locale)) {
                         
                         found = true;
                         if (!checkall) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentCheck.java,v $
- * Date   : $Date: 2004/10/15 12:22:00 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/10/16 08:24:38 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.jsp;
 
-import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.A_CmsXmlDocument;
 
@@ -47,7 +46,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.5.0
  */
 public class CmsJspTagContentCheck extends TagSupport {
@@ -79,41 +78,29 @@ public class CmsJspTagContentCheck extends TagSupport {
         A_CmsXmlDocument content,
         Locale locale) {
 
-        boolean result = false;
+        boolean found = false;
         String elements[] = CmsStringUtil.split(elementList, ",");
         for (int i = (elements.length - 1); i >= 0; i--) {
-            String element = elements[i].trim();
-            int index = 0;
-            if (element.charAt(element.length() - 1) == ']') {
-                // parse element names in the form: Teaser[1]
-                int pos = element.lastIndexOf('[');
-                if (pos > 0) {
-                    String num = element.substring(pos + 1, element.length() - 1);
-                    try {
-                        index = Integer.valueOf(num).intValue();
-                        element = element.substring(0, pos);
-                    } catch (Exception e) {
-                        // ignore, index will be 0, element name will stay
-                        if (OpenCms.getLog(CmsJspTagContentCheck.class).isDebugEnabled()) {
-                            OpenCms.getLog(CmsJspTagContentCheck.class).debug(
-                                "Invalid content check element expression in list: " + elements[i], e);
-                        }
-                    }
-                }
-
-                result = content.hasValue(element, locale, index);
-                if (result && checknone) {
-                    // found an item that must not exist
-                    return false;
-                }
-                if (result && !checkall && !checknone) {
-                    // we need to find only one item
-                    return true;
-                }
+            
+            String element = elements[i].trim();            
+            found = found || content.hasValue(element, locale);
+            
+            if (found && checknone) {
+                // found an item that must not exist
+                return false;
+            }
+            if (found && !checkall && !checknone) {
+                // we need to find only one item
+                return true;
             }
         }
+        
+        if (!found && checknone) {
+            // no item found as expected
+            return true;
+        }
 
-        return result;
+        return found;
     }
 
     /**

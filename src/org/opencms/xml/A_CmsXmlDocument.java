@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/A_CmsXmlDocument.java,v $
- * Date   : $Date: 2004/10/15 12:22:00 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/10/16 08:24:38 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,10 +58,82 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.3.5
  */
 public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
+
+    /**
+     * Data structure for name / index pairs, used to access elements in the form "Title[0]".<p>
+     */
+    private class CmsNameIndexPair {
+
+        /** The index of the element. */
+        private int m_index;
+
+        /** The name of the element. */
+        private String m_name;
+
+        /**
+         * Create a new name / index pair by parsing the input 
+         * for names like "Title[0]".<p>
+         * 
+         * If the name does not end with a valid number in square brackets,
+         * then the index is 0 and the name is used "as is" from the input.<p>
+         * 
+         * @param name the input to parse
+         */
+        public CmsNameIndexPair(String name) {
+
+            int end = name.length() - 1;
+            if (name.charAt(end) == ']') {
+                // parse names in the form: "Title[1]"
+                int pos = name.lastIndexOf('[');
+                if (pos > 0) {
+                    String number = name.substring(pos + 1, end);
+                    try {
+                        m_index = Integer.parseInt(number, 10);
+                        if (m_index < 0) {
+                            // no negative index numbers are allowed
+                            m_index = 0;
+                        }
+                        // only truncate the name if the number was successfully parsed 
+                        m_name = name.substring(0, pos);
+                    } catch (Exception e) {
+                        // ignore, index will be 0, name will be unchanged
+                        m_index = 0;
+                        m_name = name;
+                    }
+                }
+            } else {
+                m_index = 0;
+                m_name = name;
+            }
+        }
+
+        /**
+         * Returns the index.<p>
+         *
+         * @return the index
+         */
+        public int getIndex() {
+
+            return m_index;
+        }
+
+        /**
+         * Returns the name.<p>
+         *
+         * @return the name
+         */
+        public String getName() {
+
+            return m_name;
+        }
+    }
+
+    /** The content conversion to use for this xml document. */
+    protected String m_conversion;
 
     /** The document object of the document. */
     protected Document m_document;
@@ -75,9 +147,6 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
     /** The encoding to use for this xml document. */
     protected String m_encoding;
 
-    /** The content conversion to use for this xml document. */
-    protected String m_conversion;    
-    
     /** The file that contains the document data (note: is not set when creating an empty or document based document). */
     protected CmsFile m_file;
 
@@ -114,6 +183,43 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
     }
 
     /**
+     * Corrects the structure of this XML content.<p>
+     * 
+     * @param cms the current cms object
+     * @return the file that contains the corrected XML structure
+     * 
+     * @throws CmsXmlException if something goes wrong
+     */
+    public CmsFile correctXmlStructure(CmsObject cms) throws CmsXmlException {
+
+        // iterate over all locales
+        Iterator i = m_locales.iterator();
+        while (i.hasNext()) {
+            Locale locale = (Locale)i.next();
+            List names = getNames(locale);
+
+            // iterate over all nodes per language
+            Iterator j = names.iterator();
+            while (j.hasNext()) {
+                String name = (String)j.next();
+                List elements = getBookmark(name, locale);
+
+                // iterate over all elements of this name
+                for (int pos = 0; pos < elements.size(); pos++) {
+
+                    I_CmsXmlContentValue value = getValue(name, locale, pos);
+                    String content = value.getStringValue(cms, this);
+                    value.setStringValue(cms, this, content);
+                }
+            }
+        }
+
+        // write the modifed xml back to the VFS file 
+        m_file.setContents(marshal());
+        return m_file;
+    }
+
+    /**
      * Returns the content converison used for the page content.<p>
      * 
      * @return the content converison used for the page content
@@ -122,7 +228,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
 
         return m_conversion;
     }
-    
+
     /**
      * Returns the encoding used for the page content.<p>
      * 
@@ -215,7 +321,8 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
      */
     public String getStringValue(CmsObject cms, String name, Locale locale) throws CmsXmlException {
 
-        return getStringValue(cms, name, locale, 0);
+        CmsNameIndexPair input = new CmsNameIndexPair(name);
+        return getStringValue(cms, input.getName(), locale, input.getIndex());
     }
 
     /**
@@ -238,7 +345,8 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
      */
     public I_CmsXmlContentValue getValue(String name, Locale locale) {
 
-        return getValue(name, locale, 0);
+        CmsNameIndexPair input = new CmsNameIndexPair(name);
+        return getValue(input.getName(), locale, input.getIndex());
     }
 
     /**
@@ -270,7 +378,8 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
      */
     public boolean hasValue(String name, Locale locale) {
 
-        return hasValue(name, locale, 0);
+        CmsNameIndexPair input = new CmsNameIndexPair(name);
+        return hasValue(input.getName(), locale, input.getIndex());
     }
 
     /**
@@ -280,6 +389,22 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
 
         List elements = getBookmark(name, locale);
         return ((elements != null) && (elements.size() > index));
+    }
+        
+    /**
+     * @see org.opencms.xml.I_CmsXmlDocument#isEnabled(java.lang.String, java.util.Locale)
+     */
+    public boolean isEnabled(String name, Locale locale) {
+
+        return hasValue(name, locale);
+    }    
+    
+    /**
+     * @see org.opencms.xml.I_CmsXmlDocument#isEnabled(java.lang.String, java.util.Locale, int)
+     */
+    public boolean isEnabled(String name, Locale locale, int index) {
+
+        return hasValue(name, locale, index);
     }
 
     /**
@@ -300,10 +425,10 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
      * @param conversion the conversion mode to set for this document
      */
     public void setConversion(String conversion) {
+
         m_conversion = conversion;
     }
-    
-    
+
     /**
      * @see java.lang.Object#toString()
      */
@@ -336,43 +461,6 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
             CmsXmlUtils.validateXmlStructure(m_document, m_encoding, resolver);
         }
     }
-    
-    /**
-     * Corrects the structure of this XML content.<p>
-     * 
-     * @param cms the current cms object
-     * @return the file that contains the corrected XML structure
-     * 
-     * @throws CmsXmlException if something goes wrong
-     */
-    public CmsFile correctXmlStructure(CmsObject cms) throws CmsXmlException {
-
-        // iterate over all locales
-        Iterator i = m_locales.iterator();
-        while (i.hasNext()) {
-            Locale locale = (Locale)i.next();
-            List names = getNames(locale);
-
-            // iterate over all nodes per language
-            Iterator j = names.iterator();
-            while (j.hasNext()) {
-                String name = (String)j.next();
-                List elements = getBookmark(name, locale);
-                
-                // iterate over all elements of this name
-                for (int pos=0; pos<elements.size(); pos++) {
-                 
-                    I_CmsXmlContentValue value = getValue(name, locale, pos);
-                    String content = value.getStringValue(cms, this);
-                    value.setStringValue(cms, this, content);
-                }
-            }
-        }
-        
-        // write the modifed xml back to the VFS file 
-        m_file.setContents(marshal());
-        return m_file;
-    }    
 
     /**
      * Adds a bookmark for the given value.<p>
@@ -385,10 +473,10 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
     protected void addBookmark(String name, Locale locale, boolean enabled, Object value) {
 
         m_locales.add(locale);
-        
+
         List list;
         Object o;
-        
+
         // all bookmarks are stored in lists
         o = getBookmark(name, locale);
         if (o == null) {
@@ -398,9 +486,9 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
             // expand existing list
             list = (List)o;
         }
-        list.add(value);                
+        list.add(value);
         m_bookmarks.put(getBookmarkName(name, locale), list);
-        
+
         // update mapping of element name to locale
         if (enabled) {
             // only include enabled elements
@@ -491,5 +579,5 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
         }
         // remove the bookmark and return the removed element
         return (List)m_bookmarks.remove(getBookmarkName(name, locale));
-    }  
+    }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentFactory.java,v $
- * Date   : $Date: 2004/08/03 07:19:04 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/10/16 08:24:38 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,18 +33,23 @@ package org.opencms.xml.content;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.loader.CmsXmlContentLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
+import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
-import org.opencms.xml.page.CmsXmlPage;
+import org.opencms.xml.page.CmsXmlPageFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Locale;
+
+import javax.servlet.ServletRequest;
 
 import org.dom4j.Document;
 import org.xml.sax.EntityResolver;
@@ -54,7 +59,7 @@ import org.xml.sax.EntityResolver;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.5.0
  */
 public final class CmsXmlContentFactory {
@@ -66,7 +71,7 @@ public final class CmsXmlContentFactory {
 
         // noop
     }
-    
+
     /**
      * Creates a valid XML content document for the given content definition, 
      * containing one empty element in the given locale.<p>
@@ -97,7 +102,7 @@ public final class CmsXmlContentFactory {
             return CmsXmlUtils.marshal(createDocument(locale, contentDefinition), encoding);
         } catch (CmsXmlException e) {
             // this should never happen
-            OpenCms.getLog(CmsXmlPage.class).error("Could not create XML document", e);
+            OpenCms.getLog(CmsXmlContentFactory.class).error("Could not create XML document", e);
             return null;
         }
     }
@@ -198,6 +203,60 @@ public final class CmsXmlContentFactory {
         newContent.setFile(file);
         return newContent;
     }
+
+    /**
+     * Factory method to unmarshal (read) a XML content instance from
+     * a resource, using the request attributes as cache.<p>
+     * 
+     * @param cms the current OpenCms context object
+     * @param resource the resource to unmarshal
+     * @param req the current request
+     * 
+     * @return the unmarshaled xml content, or null if the given resource was not of type {@link org.opencms.file.types.CmsResourceTypeXmlContent}
+     * 
+     * @throws CmsException in something goes wrong
+     */
+    public static CmsXmlContent unmarshal(CmsObject cms, CmsResource resource, ServletRequest req) throws CmsException {
+
+        String rootPath = resource.getRootPath();
+
+        if (!(OpenCms.getResourceManager().getLoader(resource) instanceof CmsXmlContentLoader)) {
+            // sanity check: resource must be of type XML content
+            throw new CmsXmlException("Resource '"
+                + cms.getSitePath(resource)
+                + "' is not of required type XML content");
+        }
+
+        // try to get the requested content form the current request attributes 
+        CmsXmlContent content = (CmsXmlContent)req.getAttribute(rootPath);
+
+        if (content == null) {
+            // unmarshal XML structure from the file content
+            content = unmarshal(cms, CmsFile.upgrade(resource, cms));
+            // store the content as request attribute for future read requests
+            req.setAttribute(rootPath, content);
+        }
+
+        return content;
+    }
+    
+    /**
+     * Factory method to unmarshal (read) a XML document instance from
+     * a filename in the VFS, using the request attributes as cache.<p>
+     * 
+     * @param cms the current OpenCms context object
+     * @param filename the filename of the resource to unmarshal
+     * @param req the current request
+     * 
+     * @return the unmarshaled xml document, or null if the given resource was not of type {@link A_CmsXmlDocument}
+     * 
+     * @throws CmsException in something goes wrong
+     */
+    public static A_CmsXmlDocument unmarshal(CmsObject cms, String filename, ServletRequest req) throws CmsException {
+        
+        // use code from XML page factory implementation
+        return CmsXmlPageFactory.unmarshal(cms, filename, req);        
+    }    
 
     /**
      * Factory method to unmarshal (read) a XML content instance from a String

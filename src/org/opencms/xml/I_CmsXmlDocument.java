@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/I_CmsXmlDocument.java,v $
- * Date   : $Date: 2004/08/03 07:19:03 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/10/16 08:24:38 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.xml;
 
 import org.opencms.file.CmsObject;
@@ -39,15 +40,15 @@ import java.util.Locale;
 import org.xml.sax.EntityResolver;
 
 /**
- * Describes the API to access the values of an xml content object.<p>
+ * Describes the API to access the values of a XML content document.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.5.0
  */
 public interface I_CmsXmlDocument {
-    
+
     /**
      * Returns the content definition object for this xml content object.<p>
      * 
@@ -58,7 +59,7 @@ public interface I_CmsXmlDocument {
      * @throws CmsXmlException if something goes wrong
      */
     CmsXmlContentDefinition getContentDefinition(EntityResolver resolver) throws CmsXmlException;
-    
+
     /**
      * Returns the index count of existing values for the given key name,
      * or <code>-1</code> if no such value exists.<p>
@@ -69,7 +70,7 @@ public interface I_CmsXmlDocument {
      * @return the index count for the given key name
      */
     int getIndexCount(String name, Locale locale);
-    
+
     /**
      * Returns the first content value for the given key name as a String,
      * or <code>null</code> if no such value exists.<p>.<p>
@@ -81,9 +82,9 @@ public interface I_CmsXmlDocument {
      * @return the content value for the given key name
      * 
      * @throws CmsXmlException if something goes wrong
-     */    
+     */
     String getStringValue(CmsObject cms, String name, Locale locale) throws CmsXmlException;
-    
+
     /**
      * Returns the content value for the given key name from the selected index as a String,
      * or <code>null</code> if no such value exists.<p>
@@ -96,12 +97,16 @@ public interface I_CmsXmlDocument {
      * @return the content value for the given key name
      * 
      * @throws CmsXmlException if something goes wrong
-     */    
+     */
     String getStringValue(CmsObject cms, String name, Locale locale, int index) throws CmsXmlException;
-    
+
     /**
      * Returns the content value Object for the given key name,
      * or <code>null</code> if no such value exists.<p>.<p>
+     * 
+     * You can provide an index for the value by appending a numer in aquare brackets 
+     * to the name parameter like this "Title[1]". 
+     * If no index is provided, 0 is used for the index position.<p>
      * 
      * @param name the key to get the content value for
      * @param locale the locale to get the content value for
@@ -109,7 +114,7 @@ public interface I_CmsXmlDocument {
      * @return the content value for the given key name
      */
     I_CmsXmlContentValue getValue(String name, Locale locale);
-    
+
     /**
      * Returns the content value Object for the given key name from 
      * the selected index, or <code>null</code> if no such value exists.<p>
@@ -121,7 +126,7 @@ public interface I_CmsXmlDocument {
      * @return the content value for the given key name
      */
     I_CmsXmlContentValue getValue(String name, Locale locale, int index);
-    
+
     /**
      * Returns all content value Objects for the given key name in a List,
      * or <code>null</code> if no such value exists.<p>
@@ -131,11 +136,15 @@ public interface I_CmsXmlDocument {
      * 
      * @return the content value for the given key name
      */
-    List getValues(String name, Locale locale);        
+    List getValues(String name, Locale locale);
 
     /**
      * Returns <code>true</code> if a value exists with the given key name, 
      * <code>false</code> otherwise.<p> 
+     * 
+     * You can provide an index for the value by appending a numer in aquare brackets 
+     * to the name parameter like this "Title[1]". 
+     * If no index is provided, 0 is used for the index position.<p>
      * 
      * @param name the key to check
      * @param locale the locale to check
@@ -143,7 +152,7 @@ public interface I_CmsXmlDocument {
      * @return true if a value exists with the given key name, false otherwise
      */
     boolean hasValue(String name, Locale locale);
-    
+
     /**
      * Returns <code>true</code> if a value exists with the given key name at the selected index, 
      * <code>false</code> otherwise.<p> 
@@ -154,6 +163,38 @@ public interface I_CmsXmlDocument {
      * 
      * @return true if a value exists with the given key name at the selected index, 
      *      false otherwise
-     */    
+     */
     boolean hasValue(String name, Locale locale, int index);
+
+    /**
+     * Returns <code>true</code> if a value exists with the given key name,
+     * and that value is enabled, 
+     * <code>false</code> otherwise.<p> 
+     * 
+     * You can provide an index for the value by appending a numer in aquare brackets 
+     * to the name parameter like this "Title[1]". 
+     * If no index is provided, 0 is used for the index position.<p>
+     * 
+     * @param name the key to check
+     * @param locale the locale to check
+     * 
+     * @return true if a value exists with the given key name, and that value is enabled, 
+     *      false otherwise
+     */
+    boolean isEnabled(String name, Locale locale);
+
+    /**
+     * Returns <code>true</code> if a value exists with the given key name at the selected index,
+     * and that value is enabled, 
+     * <code>false</code> otherwise.<p> 
+     * 
+     * @param name the key to check
+     * @param locale the locale to check
+     * @param index the index position to check
+     * 
+     * @return true if a value exists with the given key name at the selected index, 
+     *      and that value is enabled, false otherwise
+     */
+    boolean isEnabled(String name, Locale locale, int index);
+
 }
