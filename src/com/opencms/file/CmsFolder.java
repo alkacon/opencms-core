@@ -5,7 +5,7 @@ import com.opencms.core.*;
  * This class describes a folder in the Cms.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 1999/12/21 18:40:56 $
+ * @version $Revision: 1.4 $ $Date: 2000/01/10 18:15:04 $
  */
 public class CmsFolder extends CmsResource implements I_CmsConstants
 {
@@ -35,7 +35,7 @@ public class CmsFolder extends CmsResource implements I_CmsConstants
               userId,groupId,projectId,
               accessFlags,state,lockedBy,
               C_UNKNOWN_LAUNCHER_ID,C_UNKNOWN_LAUNCHER,
-              dateCreated,dateLastModified);         
+              dateCreated,dateLastModified,-1);         
    }
     
 }

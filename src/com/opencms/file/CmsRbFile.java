@@ -11,7 +11,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2000/01/05 18:15:22 $
+ * @version $Revision: 1.5 $ $Date: 2000/01/10 18:15:04 $
  */
  class CmsRbFile implements I_CmsRbFile, I_CmsConstants {
 	
@@ -32,7 +32,10 @@ import com.opencms.core.*;
     
 	
 	/**
-	 * Creates a new file with thegiven content and resourcetype.
+	 * Creates a new file with the given content and resourcetype. <br>
+	 * 
+	 * Files can only be created in an offline project, the state of the new file
+	 * is set to NEW (2). <br>
 	 * 
 	 * <B>Security:</B>
 	 * Access is granted, if:
@@ -45,6 +48,7 @@ import com.opencms.core.*;
 	 * 
 	 * @param user The user who own this file.
 	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
 	 * @param filename The name of the new file (including pathinformation).
 	 * @param flags The flags of this resource.
 	 * @param contents The contents of the new file.
@@ -53,17 +57,31 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	 public CmsFile createFile(A_CmsUser user, A_CmsProject project,
+	 public CmsFile createFile(A_CmsUser user,
+                               A_CmsProject project,
+                               A_CmsProject onlineProject,
                                String filename, int flags,
 							   byte[] contents, A_CmsResourceType type) 
 						
          throws CmsException {
-               return m_accessFile.createFile(user,project,filename,flags,contents,type);
+               return m_accessFile.createFile(user,project,onlineProject,filename,flags,contents,type);
      }
 	
 	
-	/**
-	 * Reads a file from the Cms.<BR/>
+     /**
+	 * Reads a file from the Cms.<BR>
+	 * 
+	 * A file can be read form an offline project and the online project, the state 
+	 * of the file is unchanged.<BR>
+	 * If the file is read from the online project, file header and file content are
+	 * read  from the online project.<BR>
+	 * If the file is read from an offline project and its state is CHANGED or NEW 
+	 * (i.e. the file content is already present in the offline project), file and
+	 * file content are read from the offline project.
+	 * If the file is read from an offline project and its state is UNCHANGED, its 
+	 * file content is not available in the offline project yet. Therefore, the file
+	 * header is read from the offline project and the file content is read form the
+	 * online project! <br>
 	 * 
 	 * <B>Security:</B>
 	 * Access is granted, if:
@@ -73,23 +91,26 @@ import com.opencms.core.*;
 	 * </ul>
 	 * 
 	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
 	 * @param filename The name of the file to be read.
 	 * 
 	 * @return The file read from the Cms.
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 * */
-	 public CmsFile readFile(A_CmsProject project, String filename)
+	 public CmsFile readFile(A_CmsProject project,
+                             A_CmsProject onlineProject,
+                             String filename)
 		throws CmsException{
-         System.err.println("[CmsRbFile]"+filename);
-         System.err.println("[CmsRbFile]"+project.toString());
-        return m_accessFile.readFile(project,filename);
+        return m_accessFile.readFile(project,onlineProject,filename);
      }
 	
 	 /**
 	 * Reads a file header from the Cms.<BR/>
-	 * The reading excludes the filecontent.
+	 * The reading excludes the filecontent. <br>
 	 * 
+	 * A file header can be read from an offline project or the online project.
+	 *  
 	 * <B>Security:</B>
 	 * Access is granted, if:
 	 * <ul>
@@ -109,8 +130,37 @@ import com.opencms.core.*;
          return m_accessFile.readFileHeader(project,filename);
      }
 	
+     /**
+	 * Reads all file headers of a file in the OpenCms.<BR>
+	 * This method returns a vector with the histroy of all file headers, i.e. 
+	 * the file headers of a file, independent of the project they were attached to.<br>
+	 * 
+	 * The reading excludes the filecontent.
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user can read the resource</li>
+	 * </ul>
+	 * 
+	 * @param filename The name of the file to be read.
+	 * 
+	 * @return Vector of file headers read from the Cms.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	 public Vector readAllFileHeaders(String filename)
+         throws CmsException {
+         return m_accessFile.readAllFileHeaders(filename);
+     }
+     
 	 /**
-	 * Writes a file to the Cms.<BR/>
+	 * Writes a file to the Cms.<br>
+	 * 
+	 * A file can only be written to an offline project.<br>
+	 * The state of the resource is set to  CHANGED (1). The file content of the file
+	 * is either updated (if it is already existing in the offline project), or created
+	 * in the offline project (if it is not available there).<br>
 	 * 
 	 * <B>Security:</B>
 	 * Access is granted, if:
@@ -121,17 +171,27 @@ import com.opencms.core.*;
 	 * </ul>
 	 * 
 	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
 	 * @param file The file to write.
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */	
-	public void writeFile(A_CmsProject project, CmsFile file)
+	public void writeFile(A_CmsProject project,
+                          A_CmsProject onlineProject,
+                          CmsFile file)
 		throws CmsException{
-        m_accessFile.writeFile(project,file);
+        m_accessFile.writeFile(project,onlineProject,file);
      }
 	
 	 /**
-	 * Writes the fileheader to the Cms.
+	 * Writes the fileheader to the Cms.<br>
+	 * 
+	 * A file header can only be written to an offline project.<br>
+	 * The state of the resource is set to  CHANGED (1). If the file content is not
+	 * exisiting in the offline project, it is read from the online project and written
+	 * to the offline project as well. This is nescessary because all files in an 
+	 * offline project with the state CHANGED (1) must have an existing file content in 
+	 * the offline project as well. <br>
 	 * 
 	 * <B>Security:</B>
 	 * Access is granted, if:
@@ -142,17 +202,35 @@ import com.opencms.core.*;
 	 * </ul>
 	 * 
 	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
 	 * @param file The file to write the header of.
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */	
-	public void writeFileHeader(A_CmsProject project, CmsFile file)
+	public void writeFileHeader(A_CmsProject project, 
+                                A_CmsProject onlineProject,
+                                CmsFile file)
 		throws CmsException{
-        m_accessFile.writeFileHeader(project,file);
+        m_accessFile.writeFileHeader(project,onlineProject,file);
      }
 
-	 /**
-	 * Renames the file to a new name.
+	/**
+	 * Renames the file to a new name. <br>
+	 * 
+	 * Rename can only be done in an offline project. To rename a file, the following
+	 * steps have to be done:
+	 * <ul>
+	 * <li> Copy the file with the oldname to a file with the new name, the state 
+	 * of the new file is set to NEW (2). 
+	 * <ul>
+	 * <li> If the state of the original file is UNCHANGED (0), the file content of the 
+	 * file is read from the online project. </li>
+	 * <li> If the state of the original file is CHANGED (1) or NEW (2) the file content
+	 * of the file is read from the offline project. </li>
+	 * </ul>
+	 * </li>
+	 * <li> Set the state of the old file to DELETED (3). </li> 
+	 * </ul>
 	 * 
 	 * <B>Security:</B>
 	 * Access is granted, if:
@@ -163,19 +241,25 @@ import com.opencms.core.*;
 	 * </ul>
 	 * 
 	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
 	 * @param oldname The complete path to the resource which will be renamed.
 	 * @param newname The new name of the resource (A_CmsUser callingUser, No path information allowed).
 	 * 
      * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */		
 	public void renameFile(A_CmsProject project, 
+                           A_CmsProject onlineProject,
 					       String oldname, String newname)
 		throws CmsException {
-        m_accessFile.renameFile(project,oldname,newname);
+        m_accessFile.renameFile(project,onlineProject,oldname,newname);
      }
 	
 	/**
-	 * Deletes a file in the Cms.
+	 * Deletes a file in the Cms.<br>
+	 *
+     * A file can only be deleteed in an offline project. 
+     * A file is deleted by setting its state to DELETED (3). <br> 
+     * 
 	 * 
 	 * <B>Security:</B>
 	 * Access is granted, if:
@@ -197,30 +281,21 @@ import com.opencms.core.*;
 	
 
 	/**
-	 * Copies a file in the Cms
+	 * Copies a file in the Cms. <br>
 	 * 
-	 * <B>Security:</B>
-	 * Access is granted, if:
+     * A file can only be copied in an offline project. To copy a file, the following
+	 * steps have to be done:
 	 * <ul>
-	 * <li>the user has access to the project</li>
-	 * <li>the user can read the sourceresource</li>
-	 * <li>the user can write the destinationresource</li>
-	 * <li>the destinationresource doesn't exists</li>
+	 * <li> Copy the file with the sourcename to a file with the destinationname, the state 
+	 * of the new file is set to NEW (2). 
+	 * <ul>
+	 * <li> If the state of the original file is UNCHANGED (0), the file content of the 
+	 * file is read from the online project. </li>
+	 * <li> If the state of the original file is CHANGED (1) or NEW (2) the file content
+	 * of the file is read from the offline project. </li>
 	 * </ul>
-	 * 
-	 * @param project The project in which the resource will be used.
-	 * @param source The complete path of the sourcefile.
-	 * @param destination The complete path of the destinationfile.
-	 * 
-     * @exception CmsException  Throws CmsException if operation was not succesful.
-	 */	
-	public void copyFile(A_CmsProject project, String source, String destination)
-		throws CmsException {
-        m_accessFile.copyFile(project,source,destination);
-     }
-	
-	 /**
-	 * Moves a file in the Cms
+	 * </li>
+	 * </ul>
 	 * 
 	 * <B>Security:</B>
 	 * Access is cranted, if:
@@ -233,19 +308,25 @@ import com.opencms.core.*;
 	 * </ul>
 	 * 
 	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
 	 * @param source The complete path of the sourcefile.
 	 * @param destination The complete path of the destinationfile.
 	 * 
      * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */	
-	public void moveFile(A_CmsProject project, String source,String destination)
+	public void copyFile(A_CmsProject project,
+                         A_CmsProject onlineProject,
+                         String source,String destination)
 		throws CmsException {
-        m_accessFile.moveFile(project,source,destination);
+        m_accessFile.copyFile(project,onlineProject,source,destination);
      }
-
 	
-	 /**
-	 * Creates a new folder in the Cms.
+	
+	/**
+	 * Creates a new folder in the Cms.<br>
+	 * 
+	 * A new folder can only be created in an offline project. The state of the new
+	 * folder is set to NEW (2). <br>
 	 * 
 	 * <B>Security:</B>
 	 * Access is granted, if:
@@ -258,20 +339,24 @@ import com.opencms.core.*;
 	 * @param user The user who owns the new folder.
 	 * @param project The project in which the resource will be used.
 	 * @param folder The name of the new folder (including pathinformation).
-	 * @param flags The flags of this resource.
-	 * 
+     * @param flags The flags of this resource.
 	 * @return The created folder.
 	 * 
      * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	public CmsFolder createFolder(A_CmsUser user, A_CmsProject project, String folder,
-                                  int flags)						
+	public CmsFolder createFolder(A_CmsUser user, 
+                                  A_CmsProject project,
+                                  String folder,
+                                  int flags)					
 		throws CmsException{
          return m_accessFile.createFolder(user,project,folder,flags);
      }
 
 	/**
-	 * Reads a folder from the Cms.<BR/>
+	 * Reads a folder from the Cms.<br>
+	 * 
+	 * A folder can be either read from an offline Project or the online project.
+	 * By reading a folder, its state is not changed. <br>
 	 * 
 	 * <B>Security:</B>
 	 * Access is granted, if:
@@ -293,7 +378,10 @@ import com.opencms.core.*;
      }
 	
      /**
-	 * Writes a folder to the Cms.<BR/>
+	 * Writes a folder to the Cms.<br>
+	 * 
+	 * A folder can only be written to an offline project, the folder state is set to
+	 * CHANGED (1).
 	 * 
 	 * <B>Security:</B>
 	 * Access is granted, if:
@@ -313,39 +401,15 @@ import com.opencms.core.*;
         m_accessFile.writeFolder(project, folder);
     }
     
-	/**
-	 * Renames the folder to the new name.
-	 * 
-	 * This is a very complex operation, because all sub-resources may be
-	 * renamed, too.
-	 * 
-	 * <B>Security:</B>
-	 * Access is granted, if:
-	 * <ul>
-	 * <li>the user has access to the project</li>
-	 * <li>the user can read and write this resource and all subresources</li>
-	 * <li>the resource is locked by the callingUser</li>
-	 * </ul>
-	 * 
-	 * @param project The project in which the resource will be used.
-	 * @param oldname The complete path to the resource which will be renamed.
-	 * @param newname The new name of the resource 
-	 * @param force If force is set to true, all sub-resources will be renamed.
-	 * If force is set to false, the folder will be renamed only if it is empty.
-	 * 
-	 * @exception CmsException  Throws CmsException if operation was not succesful.
-	 */		
-	public void renameFolder(A_CmsProject project, String oldname, 
-							 String newname, boolean force)
-		throws CmsException {
-        m_accessFile.renameFolder(project,oldname,newname,force);
-     }
+	
 	
      /**
-	 * Deletes a folder in the Cms.
+	 * Deletes a folder in the Cms.<br>
 	 * 
-	 * This is a very complex operation, because all sub-resources may be
-	 * delted, too.
+	 * Only folders in an offline Project can be deleted. A folder is deleted by 
+	 * setting its state to DELETED (3). <br>
+	 *  
+	 * In its current implmentation, this method can ONLY delete empty folders.
 	 * 
 	 * <B>Security:</B>
 	 * Access is granted, if:
@@ -359,6 +423,7 @@ import com.opencms.core.*;
 	 * @param foldername The complete path of the folder.
 	 * @param force If force is set to true, all sub-resources will be deleted.
 	 * If force is set to false, the folder will be deleted only if it is empty.
+	 * This parameter is not used yet as only empty folders can be deleted!
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */	
@@ -367,71 +432,14 @@ import com.opencms.core.*;
         m_accessFile.deleteFolder(project,foldername,force);
      }
 	
-	 /**
-	 * Copies a folder in the Cms.
-	 * 
-	 * This is a very complex operation, because all sub-resources may be
-	 * copied, too.
-	 * 
-	 * <B>Security:</B>
-	 * Access is granted, if:
-	 * <ul>
-	 * <li>the user has access to the project</li>
-	 * <li>the user can read this sourceresource and all subresources</li>
-	 * <li>the user can write the targetresource</li>
-	 * <li>the sourceresource is locked by the callingUser</li>
-	 * <li>the targetresource dosn't exist</li>
-	 * </ul>
-	 * 
-	 * @param project The project in which the resource will be used.
-	 * @param source The complete path of the sourcefolder.
-	 * @param destination The complete path of the destinationfolder.
-	 * @param force If force is set to true, all sub-resources will be copied.
-	 * If force is set to false, the folder will be copied only if it is empty.
-	 * 
-	 * @exception CmsException  Throws CmsException if operation was not succesful.
-	 */	
-	public void copyFolder(A_CmsProject project, String source, String destination, 
-						   boolean force)
-		throws CmsException {
-        m_accessFile.copyFolder(project,source,destination,force);
-     }
-	
-	 /**
-	 * Moves a folder in the Cms.
-	 * 
-	 * This is a very complex operation, because all sub-resources may be
-	 * moved, too.
-	 * 
-	 * <B>Security:</B>
-	 * Access is granted, if:
-	 * <ul>
-	 * <li>the user has access to the project</li>
-	 * <li>the user can read and write this sourceresource and all subresources</li>
-	 * <li>the user can write the targetresource</li>
-	 * <li>the sourceresource is locked by the callingUser</li>
-	 * <li>the targetresource dosn't exist</li>
-	 * </ul>
-	 * 
-	 * @param project The project in which the resource will be used.
-	 * @param source The complete path of the sourcefolder.
-	 * @param destination The complete path of the destinationfolder.
-	 * @param force If force is set to true, all sub-resources will be moved.
-	 * If force is set to false, the folder will be moved only if it is empty.
-	 * 
-     * @exception CmsException  Throws CmsException if operation was not succesful.
-	 */	
-	public void moveFolder(A_CmsProject project, String source, 
-						   String destination, boolean force)
-		throws CmsException {
-        m_accessFile.moveFolder(project,source,destination,force);
-     }
 
-     /**
-	 * Returns a Vector with all subfolders.<BR/>
+   	/**
+	 * Returns a Vector with all subfolders.<br>
+	 * 
+	 * Subfolders can be read from an offline project and the online project. <br>
 	 * 
 	 * <B>Security:</B>
-	 * Access is cranted, if:
+	 * Access is granted, if:
 	 * <ul>
 	 * <li>the user has access to the project</li>
 	 * <li>the user can read this resource</li>
@@ -450,7 +458,9 @@ import com.opencms.core.*;
      }
 	
 	 /**
-	 * Returns a Vector with all files of a folder.<BR/>
+	 * Returns a Vector with all files of a folder.<br>
+	 * 
+	 * Files of a folder can be read from an offline Project and the online Project.<br>
 	 * 
 	 * <B>Security:</B>
 	 * Access is granted, if:
@@ -471,73 +481,15 @@ import com.opencms.core.*;
          return m_accessFile.getFilesInFolder(project, foldername);
      }
 	
-	/**
-	 * Tests if the user may write the resource.
+		
+    /**
+	 * Changes the flags for this resource.<br>
 	 * 
-	 * <B>Security:</B>
-	 * All users are granted.<BR/>
-	 * <B>returns true, if</B>
-	 * <ul>
-	 * <li>the user has access to the project</li>
-	 * <li>the user can write this resource</li>
-	 * <li>this resource is not locked, or it is locked by the calling user</li>
-	 * </ul>
-	 * 
-	 * @param callingUser The user who wants to use this method.
-	 * @param project The project in which the resource will be used.
-	 * @param filename the complete path to the resource.
-	 * 
-	 * @return true, if the user may write, else returns false.
-	 */
-    public boolean isWriteable(A_CmsProject project, String filename)
-        throws CmsException{
-        boolean isWritable=false;
-        CmsFile file=null;
-        
-        // read the file header
-        file=(CmsFile)readFileHeader(project,filename);
-        // check if the write flags are set
-        if ((file.getAccessFlags() & C_ACCESS_WRITE) >0) {
-            isWritable=true;
-        }
-        return isWritable;
-    }
-    
-	/**
-	 * Tests if the resource exists.
-	 * 
-	 * <B>Security:</B>
-	 * All users are granted.<BR/>
-	 * <B>returns true, if</B>
-	 * <ul>
-	 * <li>the user has access to the project</li>
-	 * <li>the user can view this resource</li>
-	 * </ul>
-	 * 
-	 * @param project The project in which the resource will be used.
-	 * @param filename the complete path to the resource.
-	 * 
-	 * @return true, if the resource exists, else returns false.
-	 * @exception CmsException  Throws CmsException if operation was not succesful.
-	 */
-	public boolean fileExists(A_CmsProject project, String filename)
-          throws CmsException {
-          boolean fileExists=false;
-          CmsFile file=null;
-          // read the file header
-          file=(CmsFile)readFileHeader(project,filename);
-          // check if the file exsits
-          if (file != null) {
-              fileExists=true;
-          }
-          return fileExists;
-     }
-
-	
-     /**
-	 * Changes the flags for this resource<BR/>
-	 * 
-	 * The user may change the flags, if he is admin of the resource.
+	 * Only the flags of a resource in an offline project can be changed. The state
+	 * of the resource is set to CHANGED (1).
+	 * If the content of this resource is not exisiting in the offline project already,
+	 * it is read from the online project and written into the offline project.
+	 * The user may change the flags, if he is admin of the resource <br>.
 	 * 
 	 * <B>Security:</B>
 	 * Access is granted, if:
@@ -548,12 +500,15 @@ import com.opencms.core.*;
 	 * </ul>
 	 * 
 	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
 	 * @param filename The complete path to the resource.
 	 * @param flags The new accessflags for the resource.
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	public void chmod(A_CmsProject project, String filename, int flags)
+	public void chmod(A_CmsProject project,
+                      A_CmsProject OnlineProject,
+                      String filename, int flags)
 		throws CmsException {
         CmsResource resource = null;
         
@@ -568,17 +523,20 @@ import com.opencms.core.*;
         resource.setAccessFlags(flags);
         //update file
         if (filename.endsWith("/")) {   
-            writeFolder(project,(CmsFolder)resource);
+            //writeFolder(project,(CmsFolder)resource);
         } else {
-            writeFileHeader(project,(CmsFile)resource);
+            //writeFileHeader(project,(CmsFile)resource);
         }
      }
 	
-	
 	/**
-	 * Changes the owner for this resource<BR/>
+	 * Changes the owner for this resource.<br>
 	 * 
-	 * The user may change this, if he is admin of the resource.
+	 * Only the owner of a resource in an offline project can be changed. The state
+	 * of the resource is set to CHANGED (1).
+	 * If the content of this resource is not exisiting in the offline project already,
+	 * it is read from the online project and written into the offline project.
+	 * The user may change this, if he is admin of the resource. <br>
 	 * 
 	 * <B>Security:</B>
 	 * Access is cranted, if:
@@ -589,12 +547,15 @@ import com.opencms.core.*;
 	 * </ul>
 	 * 
 	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
 	 * @param filename The complete path to the resource.
 	 * @param newOwner The new owner for this resource.
 	 * 
      * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	public void chown(A_CmsProject project, String filename, A_CmsUser newOwner)
+	public void chown(A_CmsProject project, 
+                      A_CmsProject onlineProject,
+                      String filename, A_CmsUser newOwner)
 		throws CmsException {
          CmsResource resource = null;
         
@@ -611,14 +572,18 @@ import com.opencms.core.*;
         if (filename.endsWith("/")) {   
             writeFolder(project,(CmsFolder)resource);
         } else {
-            writeFileHeader(project,(CmsFile)resource);
+            //writeFileHeader(project,(CmsFile)resource);
         }
      }
 
      /**
-	 * Changes the group for this resource<BR/>
+	 * Changes the group for this resource<br>
 	 * 
-	 * The user may change this, if he is admin of the resource.
+	 * Only the group of a resource in an offline project can be changed. The state
+	 * of the resource is set to CHANGED (1).
+	 * If the content of this resource is not exisiting in the offline project already,
+	 * it is read from the online project and written into the offline project.
+	 * The user may change this, if he is admin of the resource. <br>
 	 * 
 	 * <B>Security:</B>
 	 * Access is granted, if:
@@ -629,12 +594,15 @@ import com.opencms.core.*;
 	 * </ul>
 	 * 
 	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
 	 * @param filename The complete path to the resource.
 	 * @param newGroup The new group for this resource.
 	 * 
      * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	public void chgrp(A_CmsProject project, String filename, A_CmsGroup newGroup)
+	public void chgrp(A_CmsProject project,
+                      A_CmsProject onlineProject,
+                      String filename, A_CmsGroup newGroup)
 		throws CmsException{
         CmsResource resource = null;
         
@@ -651,18 +619,23 @@ import com.opencms.core.*;
         if (filename.endsWith("/")) {   
             writeFolder(project,(CmsFolder)resource);
         } else {
-            writeFileHeader(project,(CmsFile)resource);
+            //writeFileHeader(project,(CmsFile)resource);
         }
      }
 
+	
 	/**
-	 * Locks a resource<BR/>
+	 * Locks a resource.<br>
 	 * 
+	 * Only a resource in an offline project can be locked. The state of the resource
+	 * is set to CHANGED (1).
+	 * If the content of this resource is not exisiting in the offline project already,
+	 * it is read from the online project and written into the offline project.
 	 * A user can lock a resource, so he is the only one who can write this 
-	 * resource.
+	 * resource. <br>
 	 * 
 	 * <B>Security:</B>
-	 * Access is cranted, if:
+	 * Access is granted, if:
 	 * <ul>
 	 * <li>the user has access to the project</li>
 	 * <li>the user can write the resource</li>
@@ -671,14 +644,14 @@ import com.opencms.core.*;
 	 * 
 	 * @param user The user who wants to lock the file.
 	 * @param project The project in which the resource will be used.
-	 * @param resourcename The complete path to the resource to lock.
+	 * @param resource The complete path to the resource to lock.
 	 * @param force If force is true, a existing locking will be oberwritten.
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 * It will also be thrown, if there is a existing lock
 	 * and force was set to false.
 	 */
-	public void lockFile(A_CmsUser user,A_CmsProject project, String resourcename, boolean force)
+	public void lockResource(A_CmsUser user,A_CmsProject project, String resourcename, boolean force)
 		throws CmsException{
         CmsResource resource = null;
         
@@ -702,45 +675,83 @@ import com.opencms.core.*;
         if (resourcename.endsWith("/")) {   
             writeFolder(project,(CmsFolder)resource);
         } else {
-            writeFileHeader(project,(CmsFile)resource);
+            //writeFileHeader(project,(CmsFile)resource);
         }
      }
 	
 	
 	/**
-	 * Returns the user id, who had locked the resource.<BR/>
+	 * Unlocks a resource.<br>
 	 * 
-	 * A user can lock a resource, so he is the only one who can write this 
-	 * resource. This methods checks, if a resource was locked.
+	 * Only a resource in an offline project can be unlock. The state of the resource
+	 * is set to CHANGED (1).
+	 * If the content of this resource is not exisiting in the offline project already,
+	 * it is read from the online project and written into the offline project.
+	 * Only the user who locked a resource can unlock it.
 	 * 
 	 * <B>Security:</B>
-	 * Access is cranted, if:
+	 * Access is granted, if:
 	 * <ul>
 	 * <li>the user has access to the project</li>
-	 * <li>the user can read the resource</li>
+	 * <li>the user can write the resource</li>
+	 * <li>the resource is not locked by another user</li>
 	 * </ul>
 	 * 
 	 * @param project The project in which the resource will be used.
-	 * @param resourcename The complete path to the resource.
+	 * @param resource The complete path to the resource to lock.
 	 * 
-	 * @return The user id of the user who has locked the resource.
-	 * 
-	 * @exception CmsException will be thrown, if the user has not the rights 
-	 * for this resource. 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	public int lockedBy(A_CmsProject project, String resourcename)
-		throws CmsException {
-        CmsResource resource = null;
-                
-        // check if its a file or a folder
-        if (resourcename.endsWith("/")) {          
-            //read the folder
-            resource = readFolder(project,resourcename);
-        } else {
-            resource = (CmsFile)readFileHeader(project,resourcename);
-        }
-        // get the locking user
-        return resource.isLockedBy();
-     }
+	public void unlockResource(A_CmsProject project, String resource)
+        throws CmsException {
+        // to be implemented
+    }
+    
+      /**
+     * Copies a resource from the online project to a new, specified project.<br>
+     * Copying a resource will copy the file header or folder into the specified 
+     * offline project and set its state to UNCHANGED.
+     * 
+     * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can write the resource</li>
+	 * <li>the resource is not locked by another user</li>
+	 * </ul>
+     *	 
+     * @param project The project to be published.
+	 * @param onlineProject The online project of the OpenCms.
+	 * @param resource The name of the resource.* 
+ 	 * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+    public void copyResourceToProject(A_CmsProject project,
+                                      A_CmsProject onlineProject,
+                                      String resource)
+        throws CmsException {
+        m_accessFile.copyResourceToProject(project, onlineProject, resource);
+    }
+    
+    /**
+     * Publishes a specified project to the online project. <br>
+     * This is done by copying all resources of the specified project to the online
+     * project. The action proformed on the resources depends on the actual resource
+     * state of each resource:
+     * 
+     * <ul>
+     * <li> State UNCHANGED (0): Nothing is done with this resource. </li>
+     * <li> State CHANGED (1): Copy resource to online project </li>
+     * <li> State NEW (2): Copy resource to online project </li>
+     * <li> State DELETED (3): Delete the resource in the online project </li>
+     * </ul>
+     *
+     * @param project The project to be published.
+	 * @param onlineProject The online project of the OpenCms.
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+    public void publishProject(A_CmsProject project, A_CmsProject onlineProject)
+        throws CmsException {
+        // to be implmented
+    }
 
 }

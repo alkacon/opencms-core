@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.9 $ $Date: 2000/01/05 18:15:22 $
+ * @version $Revision: 1.10 $ $Date: 2000/01/10 18:15:04 $
  */
  class CmsAccessFileMySql implements I_CmsAccessFile, I_CmsConstants  {
 
@@ -33,21 +33,45 @@ import com.opencms.core.*;
     private static final String C_RESOURCE_WRITE = "INSERT INTO RESOURCES VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
     
      /**
-     * SQL Command for writing a new file.
-     */   
-    private static final String C_FILE_WRITE = "INSERT INTO FILES VALUES(?,?,?)";
-     
-     /**
      * SQL Command for reading a resource. 
      * A resource includes all data of the fileheader.
      */   
     private static final String C_RESOURCE_READ = "SELECT * FROM RESOURCES WHERE RESOURCE_NAME = ? AND PROJECT_ID = ?";
   
      /**
-     * SQL Command for reading a new file.
+     * SQL Command for reading a file and its content from the online project. 
      */   
-    private static final String C_FILE_READ = "SELECT * FROM FILES WHERE RESOURCE_NAME = ? AND PROJECT_ID = ?";
-      
+    private static final String C_FILE_READ_ONLINE = "SELECT RESOURCE_TYPE,"
+                                                     +"RESOURCE_FLAGS,USER_ID,"
+                                                     +"GROUP_ID,ACCESS_FLAGS,STATE,"
+                                                     +"LOCKED_BY,LAUNCHER_TYPE,LAUNCHER_CLASSNAME,"
+                                                     +"DATE_CREATED,DATE_LASTMODIFIED,SIZE"
+                                                     +"FILES.FILE_CONTENT FROM RESOURCES,FILES "
+                                                     +"WHERE RESOURCES.RESOURCE_NAME = FILES.RESOURCE_NAME "
+                                                     +"AND RESOURCES.PROJECT_ID = FILES.PROJECT_ID "
+                                                     +"AND RESOURCES.RESOURCE_NAME = ? "
+                                                     +"AND RESOURCES.PROJECT_ID = ?";
+    
+    /**
+     * SQL Command for reading a file content. 
+     */   
+    private static final String C_FILE_READ = "SELECT FILE_CONTENT FROM FILES "
+                                              +"WHERE RESOURCE_NAME = ? "                                           
+                                              +"AND PROJECT_ID = ?";
+                                              
+     /**
+     * SQL Command for reading all headers of a resource. 
+     * A resource includes all data of the fileheader.
+     */   
+    private static final String C_RESOURCE_READ_ALL = "SELECT * FROM RESOURCES WHERE RESOURCE_NAME = ?";
+
+    
+     /**
+     * SQL Command for writing a new file.
+     */   
+    private static final String C_FILE_WRITE = "INSERT INTO FILES VALUES(?,?,?)";
+     
+
     /**
      * SQL Command for updating a resource. 
      * A resource includes all data of the fileheader.
@@ -70,8 +94,18 @@ import com.opencms.core.*;
      * SQL Command for updating a file. 
      */   
     private static final String C_FILE_UPDATE ="UPDATE FILES SET "
-                                               +"FILE_CONTENT = ? "
+                                               +"FILE_CONTENT = ? "                                     
                                                +"WHERE RESOURCE_NAME = ? AND PROJECT_ID = ?";
+    
+     /**
+     * SQL Command for removing a resource.
+     * This resource is NOT delete from the database, it is only flaged as
+     * deleted!
+     */   
+    private static final String C_RESOURCE_REMOVE = "UPDATE RESOURCES SET "
+                                                   +"STATE = ? "
+                                                   +"WHERE RESOURCE_NAME = ? AND PROJECT_ID = ?";
+
     /**
      * SQL Command for renaming a resource. 
      */   
@@ -168,9 +202,14 @@ import com.opencms.core.*;
     private static final String C_GROUP_ID="GROUP_ID";
     
       /**
-     * Name of the column PROJECT_ID in the SQL tables RESOURCE and FILES.
+     * Name of the column PROJECT_ID in the SQL tables RESOURCE
      */
-    private static final String C_PROJECT_ID="PROJECT_ID";
+    private static final String C_PROJECT_ID_RESOURCES="RESOURCES.PROJECT_ID";
+ 
+     /**
+     * Name of the column PROJECT_ID in the SQL tables FILES.
+     */
+    private static final String C_PROJECT_ID_FILES="FILES.PROJECT_ID";
     
     /**
      * Name of the column ACCESS_FLAGS in the SQL table RESOURCE.
@@ -223,20 +262,30 @@ import com.opencms.core.*;
     private PreparedStatement m_statementResourceWrite;
 
     /**
-    * Prepared SQL Statement for writing a resource.
-    */
-    private PreparedStatement m_statementFileWrite;
-    
-    /**
     * Prepared SQL Statement for reading a resource.
     */
     private PreparedStatement m_statementResourceRead;
+    
+    /**
+    * Prepared SQL Statement for reading all headers of a resource.
+    */
+    private PreparedStatement m_statementResourceReadAll;
 
+    /**
+    * Prepared SQL Statement for reading a file from the online project.
+    */
+    private PreparedStatement m_statementFileReadOnline;
+      
     /**
     * Prepared SQL Statement for reading a file.
     */
     private PreparedStatement m_statementFileRead;
     
+    /**
+    * Prepared SQL Statement for writing a resource.
+    */
+    private PreparedStatement m_statementFileWrite;
+        
     /**
     * Prepared SQL Statement for updating a resource.
     */
@@ -251,6 +300,12 @@ import com.opencms.core.*;
     * Prepared SQL Statement for deleting a resource.
     */
     private PreparedStatement m_statementResourceDelete;
+ 
+    /**
+    * Prepared SQL Statement for removing a resource.
+    */
+    private PreparedStatement m_statementResourceRemove;
+    
     
     /**
     * Prepared SQL Statement for deleting a file.
@@ -287,26 +342,27 @@ import com.opencms.core.*;
         initStatements();
         
     }
-	/**
-	 * Creates a new file with the overgiven content and resourcetype.
+    
+	 /**
+	 * Creates a new file with the given content and resourcetype.
      *
-	 * If the resourcetype is set to folder, a CmsException will be thrown.<BR/>
-	 * 
 	 * @param user The user who wants to create the file.
 	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
 	 * @param filename The complete name of the new file (including pathinformation).
+	 * @param flags The flags of this resource.
 	 * @param contents The contents of the new file.
-	 * @param type The resourcetype of the new file.
-	 * The keys for this Hashtable are the names for metadefinitions, the values are
-	 * the values for the metainfos.
+	 * @param resourceType The resourceType of the new file.
 	 * 
 	 * @return file The created file.
 	 * 
-	 * @exception CmsException Throws CmsException if operation was not succesful
-	 */
-	 public CmsFile createFile(A_CmsUser user, A_CmsProject project, 
-                        String filename,int flags,
-                        byte[] contents, A_CmsResourceType resourceType) 
+     * @exception CmsException Throws CmsException if operation was not succesful
+     */    
+	 public CmsFile createFile(A_CmsUser user,
+                               A_CmsProject project,
+                               A_CmsProject onlineProject,
+                               String filename, int flags,
+							   byte[] contents, A_CmsResourceType resourceType)
 							
          throws CmsException {
                
@@ -356,22 +412,24 @@ import com.opencms.core.*;
          } catch (SQLException e){
             throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
          }
-         return readFile(project,filename);
+         return readFile(project,onlineProject,filename);
      }
 	
-      /**
+     /**
 	 * Creates a new file from an given CmsFile object and a new filename.
      *
 	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
 	 * @param file The file to be written to the Cms.
-	 * @param filename The complete nee name of the file (including pathinformation).
+	 * @param filename The complete new name of the file (including pathinformation).
 	 * 
 	 * @return file The created file.
 	 * 
      * @exception CmsException Throws CmsException if operation was not succesful
-     */
-      public CmsFile createFile(A_CmsProject project, CmsFile file,
-                                String filename)
+     */    
+	 public CmsFile createFile(A_CmsProject project,
+                               A_CmsProject onlineProject,
+                               CmsFile file,String filename)
          throws CmsException {
             try {   
                synchronized ( m_statementResourceWrite) {
@@ -391,7 +449,7 @@ import com.opencms.core.*;
                 //ACCESS_FLAGS
                 m_statementResourceWrite.setInt(7,file.getAccessFlags());
                 //STATE
-                m_statementResourceWrite.setInt(8,C_STATE_CHANGED);
+                m_statementResourceWrite.setInt(8,C_STATE_NEW);
                 //LOCKED_BY
                 m_statementResourceWrite.setInt(9,file.isLockedBy());
                 //LAUNCHER_TYPE
@@ -419,44 +477,150 @@ import com.opencms.core.*;
          } catch (SQLException e){
             throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
          }
-         return readFile(project,filename);
+         return readFile(project,onlineProject,filename);
       }
      
+    
+     /**
+	 * Creates a new resource from an given CmsResource object.
+     *
+	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
+	 * @param resource The resource to be written to the Cms.
+	 * 
+	 * @return The created resource.
+	 * 
+     * @exception CmsException Throws CmsException if operation was not succesful
+     */    
+	 public A_CmsResource createResource(A_CmsProject project,
+                                         A_CmsProject onlineProject,
+                                         A_CmsResource resource)
+         throws CmsException {
+            try {   
+               synchronized ( m_statementResourceWrite) {
+                // write new resource to the database
+                //RESOURCE_NAME
+                m_statementResourceWrite.setString(1,absoluteName(resource.getAbsolutePath()));
+                //RESOURCE_TYPE
+                m_statementResourceWrite.setInt(2,resource.getType());
+                //RESOURCE_FLAGS
+                m_statementResourceWrite.setInt(3,resource.getFlags());
+                //USER_ID
+                m_statementResourceWrite.setInt(4,resource.getOwnerId());
+                //GROUP_ID
+                m_statementResourceWrite.setInt(5,resource.getGroupId());
+                //PROJECT_ID
+                m_statementResourceWrite.setInt(6,project.getId());
+                //ACCESS_FLAGS
+                m_statementResourceWrite.setInt(7,resource.getAccessFlags());
+                //STATE
+                m_statementResourceWrite.setInt(8,resource.getState());
+                //LOCKED_BY
+                m_statementResourceWrite.setInt(9,resource.isLockedBy());
+                //LAUNCHER_TYPE
+                m_statementResourceWrite.setInt(10,resource.getLauncherType());
+                //LAUNCHER_CLASSNAME
+                m_statementResourceWrite.setString(11,resource.getLauncherClassname());
+                //DATE_CREATED
+                m_statementResourceWrite.setLong(12,resource.getDateCreated());
+                //DATE_LASTMODIFIED
+                m_statementResourceWrite.setLong(13,System.currentTimeMillis());
+                //SIZE
+                m_statementResourceWrite.setInt(14,resource.getLength());
+                m_statementResourceWrite.executeUpdate();
+               }
+         } catch (SQLException e){
+            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+         }
+         return readResource(project,resource.getAbsolutePath());
+      } 
      
 	/**
 	 * Reads a file from the Cms.<BR/>
 	 * 
-	 *  
-	 * @param callingUser The user who wants to use this method.
 	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
 	 * @param filename The complete name of the new file (including pathinformation).
 	 * 
 	 * @return file The read file.
 	 * 
-	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	 public CmsFile readFile(A_CmsProject project, String filename)
+	 public CmsFile readFile(A_CmsProject project,
+                             A_CmsProject onlineProject,
+                             String filename)
          throws CmsException {
           
-         System.err.println("[CmsAccessFileMySql]"+filename);
-         System.err.println("[CmsAccessFileMySql]"+project.toString());
          CmsFile file=null;
+         int projectId;
+         
          ResultSet res =null;
-              
-         try { 
-              // read the file header
-             file=(CmsFile)readFileHeader(project,filename);
-            // file was loaded, so get the content
-              if(file != null) {
-                   // read the file content form the database
-                   synchronized (m_statementFileRead) {
-                     m_statementFileRead.setString(1,absoluteName(filename));
-                     m_statementFileRead.setInt(2,project.getId());
-                     res = m_statementFileRead.executeQuery();  
+           
+         try {
+             // if the actual prject is the online project read file header and content
+             // from the online project
+             if (project.equals(onlineProject)) {
+                 synchronized(m_statementFileReadOnline) {
+                    m_statementFileReadOnline.setString(1,absoluteName(filename));
+                    m_statementFileReadOnline.setInt(2,onlineProject.getId());
+                    res = m_statementFileReadOnline.executeQuery();  
+                    if(res.next()) {
+                         file = new CmsFile(filename,
+                                            res.getInt(C_RESOURCE_TYPE),
+                                            res.getInt(C_RESOURCE_FLAGS),
+                                            res.getInt(C_USER_ID),
+                                            res.getInt(C_GROUP_ID),
+                                            onlineProject.getId(),
+                                            res.getInt(C_ACCESS_FLAGS),
+                                            res.getInt(C_STATE),
+                                            res.getInt(C_LOCKED_BY),
+                                            res.getInt(C_LAUNCHER_TYPE),
+                                            res.getString(C_LAUNCHER_CLASSNAME),
+                                            res.getLong(C_DATE_CREATED),
+                                            res.getLong(C_DATE_LASTMODIFIED),
+                                            res.getBytes(C_FILE_CONTENT),
+                                            res.getInt(C_SIZE)
+                                           );
+                     } else {
+                       throw new CmsException(CmsException.C_NOT_FOUND);  
+                    }
+                 }                 
+             } else {
+               // reading a file from an offline project must be done in two steps:
+               // first read the file header from the offline project, then get either
+               // the file content of the offline project (if it is already existing)
+               // or form the online project.
+               
+               // get the file header
+               file=readFileHeader(project,filename);
+               // check if the file is marked as deleted
+               if (file.getState() == C_STATE_DELETED) {
+                   throw new CmsException(CmsException.C_NOT_FOUND); 
+               }
+               
+               
+               
+               // test if the file content of this file is already existing in the
+               // offline project. This is done by checking if the file state is
+               // set to UNCHANGED. If it is, the file content must be read from the 
+               // online project.
+               if (file.getState()==C_STATE_UNCHANGED) {
+                   projectId=onlineProject.getId();
+               } else {
+                   projectId=project.getId();
+               }
+               // read the file content
+               synchronized (m_statementFileRead) {
+                   m_statementFileRead.setString(1,absoluteName(filename));
+                   m_statementFileRead.setInt(2,projectId);
+                   res = m_statementFileRead.executeQuery();
+                   if (res.next()) {
+                       file.setContents(res.getBytes(C_FILE_CONTENT));
+                   } else {
+                         throw new CmsException(CmsException.C_NOT_FOUND);  
                    }
-                   //put content into file object
-                   file.setContents(res.getBytes(C_FILE_CONTENT));
-               } 
+               }               
+             }                
          } catch (SQLException e){
             throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
          }
@@ -464,10 +628,11 @@ import com.opencms.core.*;
          return file;
      }
 	
-	/**
+	 /**
 	 * Reads a file header from the Cms.<BR/>
 	 * The reading excludes the filecontent.
 	 * 
+	 * @param callingUser The user who wants to use this method.
 	 * @param project The project in which the resource will be used.
 	 * @param filename The complete name of the new file (including pathinformation).
 	 * 
@@ -475,27 +640,27 @@ import com.opencms.core.*;
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	 public A_CmsResource readFileHeader(A_CmsProject project, String filename)
+	 public CmsFile readFileHeader(A_CmsProject project, String filename)
          throws CmsException {
                  
-         CmsResource file=null;
+         CmsFile file=null;
          ResultSet res =null;
            
          try {  
               synchronized ( m_statementResourceRead) {
-                   // read resource data from database
+                   // read file data from database
                    m_statementResourceRead.setString(1,absoluteName(filename));
                    m_statementResourceRead.setInt(2,project.getId());
                    res = m_statementResourceRead.executeQuery();
                }
-               // create new resource
+               // create new file
                if(res.next()) {
                         file = new CmsFile(res.getString(C_RESOURCE_NAME),
                                            res.getInt(C_RESOURCE_TYPE),
                                            res.getInt(C_RESOURCE_FLAGS),
                                            res.getInt(C_USER_ID),
                                            res.getInt(C_GROUP_ID),
-                                           res.getInt(C_PROJECT_ID),
+                                           res.getInt(C_PROJECT_ID_RESOURCES),
                                            res.getInt(C_ACCESS_FLAGS),
                                            res.getInt(C_STATE),
                                            res.getInt(C_LOCKED_BY),
@@ -503,8 +668,13 @@ import com.opencms.core.*;
                                            res.getString(C_LAUNCHER_CLASSNAME),
                                            res.getLong(C_DATE_CREATED),
                                            res.getLong(C_DATE_LASTMODIFIED),
-                                           new byte[0]
+                                           new byte[0],
+                                           res.getInt(C_SIZE)
                                            );
+                        // check if this resource is marked as deleted
+                        if (file.getState() == C_STATE_DELETED) {
+                            throw new CmsException(CmsException.C_NOT_FOUND);  
+                        }
                } else {
                  throw new CmsException(CmsException.C_NOT_FOUND);  
                }
@@ -514,24 +684,77 @@ import com.opencms.core.*;
          }
         return file;
        }
-	
+	 
+     /**
+	 * Reads all file headers of a file in the OpenCms.<BR>
+	 * The reading excludes the filecontent.
+	 * 
+     * @param filename The name of the file to be read.
+	 * 
+	 * @return Vector of file headers read from the Cms.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	 public Vector readAllFileHeaders(String filename)
+         throws CmsException {
+          
+         CmsFile file=null;
+         ResultSet res =null;
+         Vector allHeaders = new Vector();
+         
+         try {  
+              synchronized ( m_statementResourceReadAll) {
+                   // read file header data from database
+                   m_statementResourceReadAll.setString(1,absoluteName(filename));
+                   res = m_statementResourceReadAll.executeQuery();
+               }
+               // create new file headers
+               while(res.next()) {
+                        file = new CmsFile(res.getString(C_RESOURCE_NAME),
+                                           res.getInt(C_RESOURCE_TYPE),
+                                           res.getInt(C_RESOURCE_FLAGS),
+                                           res.getInt(C_USER_ID),
+                                           res.getInt(C_GROUP_ID),
+                                           res.getInt(C_PROJECT_ID_RESOURCES),
+                                           res.getInt(C_ACCESS_FLAGS),
+                                           res.getInt(C_STATE),
+                                           res.getInt(C_LOCKED_BY),
+                                           res.getInt(C_LAUNCHER_TYPE),
+                                           res.getString(C_LAUNCHER_CLASSNAME),
+                                           res.getLong(C_DATE_CREATED),
+                                           res.getLong(C_DATE_LASTMODIFIED),
+                                           new byte[0],
+                                           res.getInt(C_SIZE)
+                                           );
+                       
+                        allHeaders.addElement(file);
+               }
+         } catch (SQLException e){
+            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+         }
+         return allHeaders;
+     }
+     
 	/**
 	 * Writes a file to the Cms.<BR/>
 	 * 
 	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
 	 * @param filename The complete name of the new file (including pathinformation).
 	 * 
      * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-     public void writeFile(A_CmsProject project, CmsFile file)
+	 public void writeFile(A_CmsProject project,
+                           A_CmsProject onlineProject,
+                           CmsFile file)
        throws CmsException {
      
            try {   
-                //write the file header
-                writeFileHeader(project,file);
-                //write the file content
-                synchronized ( m_statementFileUpdate) {
-                //FILE_CONTENT
+             // update the file header in the RESOURCE database.
+             writeFileHeader(project,onlineProject,file);
+             // update the file content in the FILES database.
+             synchronized ( m_statementFileUpdate) {
+               //FILE_CONTENT
                 m_statementFileUpdate.setBytes(1,file.getContents());
                 // set query parameters
                 m_statementFileUpdate.setString(2,absoluteName(file.getAbsolutePath()));
@@ -548,45 +771,75 @@ import com.opencms.core.*;
 	 * Writes the fileheader to the Cms.
      * 
 	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
 	 * @param filename The complete name of the new file (including pathinformation).
 	 * 
      * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-	 public void writeFileHeader(A_CmsProject project, CmsFile file)
+	 public void writeFileHeader(A_CmsProject project,
+                                 A_CmsProject onlineProject,
+                                 CmsFile file)
          throws CmsException {
          
-           try {   
-               synchronized ( m_statementResourceUpdate) {
-                // update resource in the database
-          
-                //RESOURCE_TYPE
-                m_statementResourceUpdate.setInt(1,file.getType());
-                //RESOURCE_FLAGS
-                m_statementResourceUpdate.setInt(2,file.getFlags());
-                //USER_ID
-                m_statementResourceUpdate.setInt(3,file.getOwnerId());
-                //GROUP_ID
-                m_statementResourceUpdate.setInt(4,file.getGroupId());
-                //ACCESS_FLAGS
-                m_statementResourceUpdate.setInt(5,file.getAccessFlags());
-                //STATE
-                m_statementResourceUpdate.setInt(6,file.getState());
-                //LOCKED_BY
-                m_statementResourceUpdate.setInt(7,file.isLockedBy());
-                //LAUNCHER_TYPE
-                m_statementResourceUpdate.setInt(8,file.getLauncherType());
-                //LAUNCHER_CLASSNAME
-                m_statementResourceUpdate.setString(9,file.getLauncherClassname());
-                //DATE_LASTMODIFIED
-                m_statementResourceUpdate.setLong(10,System.currentTimeMillis());
-                //SIZE
-                m_statementResourceUpdate.setInt(11,file.getContents().length);
+           ResultSet res;
+           byte[] content;
+           
+           try {  
+                // check if the file content for this file is already existing in the
+                // offline project. If not, load it from the online project and add it
+                // to the offline project.
+                if (file.getState() != C_STATE_CHANGED) {
+                    // read file content form the online project
+                   synchronized (m_statementFileRead) {
+                        m_statementFileRead.setString(1,absoluteName(file.getAbsolutePath()));
+                        m_statementFileRead.setInt(2,onlineProject.getId());     
+                        res = m_statementFileRead.executeQuery();
+                        if (res.next()) {
+                          content=res.getBytes(C_FILE_CONTENT);
+                        } else {
+                          throw new CmsException(CmsException.C_NOT_FOUND);  
+                        }
+                   }
+                   // add the file content to the offline project.
+                   synchronized (m_statementFileWrite) {
+                        m_statementFileWrite.setString(1,absoluteName(file.getAbsolutePath()));
+                        m_statementFileWrite.setInt(2,project.getId());     
+                        m_statementFileWrite.setBytes(3,content);
+                        m_statementFileWrite.executeUpdate();
+                   }             
+                  }             
                 
-                // set query parameters
-                m_statementResourceUpdate.setString(12,absoluteName(file.getAbsolutePath()));
-                m_statementResourceUpdate.setInt(13,file.getProjectId());
-                m_statementResourceUpdate.executeUpdate();
-                }
+               synchronized ( m_statementResourceUpdate) {
+                    // update resource in the database
+          
+                    //RESOURCE_TYPE
+                    m_statementResourceUpdate.setInt(1,file.getType());
+                    //RESOURCE_FLAGS
+                    m_statementResourceUpdate.setInt(2,file.getFlags());
+                    //USER_ID
+                    m_statementResourceUpdate.setInt(3,file.getOwnerId());
+                    //GROUP_ID
+                    m_statementResourceUpdate.setInt(4,file.getGroupId());
+                    //ACCESS_FLAGS
+                    m_statementResourceUpdate.setInt(5,file.getAccessFlags());
+                    //STATE
+                    m_statementResourceUpdate.setInt(6,C_STATE_CHANGED);
+                    //LOCKED_BY
+                    m_statementResourceUpdate.setInt(7,file.isLockedBy());
+                    //LAUNCHER_TYPE
+                    m_statementResourceUpdate.setInt(8,file.getLauncherType());
+                    //LAUNCHER_CLASSNAME
+                    m_statementResourceUpdate.setString(9,file.getLauncherClassname());
+                    //DATE_LASTMODIFIED
+                    m_statementResourceUpdate.setLong(10,System.currentTimeMillis());
+                    //SIZE
+                    m_statementResourceUpdate.setInt(11,file.getContents().length);
+                
+                    // set query parameters
+                    m_statementResourceUpdate.setString(12,absoluteName(file.getAbsolutePath()));
+                    m_statementResourceUpdate.setInt(13,file.getProjectId());
+                    m_statementResourceUpdate.executeUpdate();               
+                  }
                } catch (SQLException e){
             throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
          }
@@ -596,32 +849,21 @@ import com.opencms.core.*;
 	 * Renames the file to the new name.
 	 * 
 	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
 	 * @param oldname The complete path to the resource which will be renamed.
 	 * @param newname The new name of the resource.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */		
-	 public void renameFile(A_CmsProject project, String oldname, String newname)
+	 public void renameFile(A_CmsProject project,
+                            A_CmsProject onlineProject,
+                            String oldname, String newname)
          throws CmsException {
-          try { 
-             // rename the resource
-              synchronized (m_statementResourceRename) {
-                m_statementResourceRename.setString(1,absoluteName(newname));
-                m_statementResourceRename.setLong(2,System.currentTimeMillis());
-                m_statementResourceRename.setString(3,absoluteName(oldname));
-                m_statementResourceRename.setInt(4,project.getId());
-                m_statementResourceRename.executeQuery();  
-              }
-             // rename the file content
-             synchronized (m_statementFileRename) {
-                m_statementFileRename.setString(1,absoluteName(newname));
-                m_statementFileRename.setString(2,absoluteName(oldname));
-                m_statementFileRename.setInt(3,project.getId());
-                m_statementFileRename.executeQuery();  
-              }
-         } catch (SQLException e){
-            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
-         }
+         
+         // copy the file to the new name
+         copyFile(project,onlineProject,oldname,newname);
+         // delete the file with the old name
+         deleteFile(project,oldname);
      }
 	
 	/**
@@ -635,104 +877,42 @@ import com.opencms.core.*;
 	 public void deleteFile(A_CmsProject project, String filename)
          throws CmsException {
          try { 
-             // delete the resource
-              synchronized (m_statementResourceDelete) {
-                m_statementResourceDelete.setString(1,absoluteName(filename));
-                m_statementResourceDelete.setInt(2,project.getId());
-                m_statementResourceDelete.executeQuery();  
-              }
-             // delete the file content
-             synchronized (m_statementFileDelete) {
-                m_statementFileDelete.setString(1,absoluteName(filename));
-                m_statementFileDelete.setInt(2,project.getId());
-                m_statementFileDelete.executeQuery();  
-              }
-         } catch (SQLException e){
+            synchronized ( m_statementResourceRemove) {
+                   // mark the file as deleted       
+                    m_statementResourceRemove.setInt(1,C_STATE_DELETED);
+                    m_statementResourceRemove.setString(2,absoluteName(filename));
+                    m_statementResourceRemove.setInt(3,project.getId());
+                    m_statementResourceRemove.executeUpdate();               
+                  }
+               } catch (SQLException e){
             throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
-         }
+         }        
      }
 	
 		
-	/**
+	 /**
 	 * Copies the file.
 	 * 
 	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
 	 * @param source The complete path of the sourcefile.
 	 * @param destination The complete path of the destinationfile.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-	 public void copyFile(A_CmsProject project, String source, String destination)
+	 public void copyFile(A_CmsProject project,
+                          A_CmsProject onlineProject,
+                          String source, String destination)
          throws CmsException {
          CmsFile file;
          
          // read sourcefile
-         file=readFile(project,source);
-         // create the new file
-           try {   
-               synchronized (m_statementResourceWrite) {
-                // write new resource to the database
-                //RESOURCE_NAME
-                m_statementResourceWrite.setString(1,absoluteName(destination));
-                //RESOURCE_TYPE
-                m_statementResourceWrite.setInt(2,file.getType());
-                //RESOURCE_FLAGS
-                m_statementResourceWrite.setInt(3,file.getFlags());
-                //USER_ID
-                m_statementResourceWrite.setInt(4,file.getOwnerId());
-                //GROUP_ID
-                m_statementResourceWrite.setInt(5,file.getGroupId());
-                //PROJECT_ID
-                m_statementResourceWrite.setInt(6,project.getId());
-                //ACCESS_FLAGS
-                m_statementResourceWrite.setInt(7,file.getAccessFlags());
-                //STATE
-                m_statementResourceWrite.setInt(8,C_STATE_NEW);
-                //LOCKED_BY
-                m_statementResourceWrite.setInt(9,C_UNKNOWN_ID);
-                //LAUNCHER_TYPE
-                m_statementResourceWrite.setInt(10,file.getLauncherType());
-                //LAUNCHER_CLASSNAME
-                m_statementResourceWrite.setString(11,file.getLauncherClassname());
-                //DATE_CREATED
-                m_statementResourceWrite.setLong(12,System.currentTimeMillis());
-                //DATE_LASTMODIFIED
-                m_statementResourceWrite.setLong(13,System.currentTimeMillis());
-                //SIZE
-                m_statementResourceWrite.setInt(14,file.getContents().length);
-                m_statementResourceWrite.executeUpdate();
-               }
-               synchronized (m_statementFileWrite) {
-                //RESOURCE_NAME
-                m_statementFileWrite.setString(1,absoluteName(destination));
-                //PROJECT_ID
-                m_statementFileWrite.setInt(2,project.getId());
-                //FILE_CONTENT
-                m_statementFileWrite.setBytes(3,file.getContents());
-                m_statementFileWrite.executeUpdate();
-               }
-               
-             } catch (SQLException e){
-            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
-         }
+         file=readFile(project,onlineProject,source);
+         // create destination file
+         createFile(project,onlineProject,file,destination);
      }
 	
-	/**
-	 * Moves the file.
-	 * 
-	 * @param project The project in which the resource will be used.
-	 * @param source The complete path of the sourcefile.
-	 * @param destination The complete path of the destinationfile.
-	 * 
-     * @exception CmsException Throws CmsException if operation was not succesful.
-	 */	
-	 public void moveFile(A_CmsProject project, String source,  String destination)
-         throws CmsException {
-         
-         renameFile(project,source,destination);
-     }
-	
-	/**
+     /**
 	 * Creates a new folder 
 	 * 
 	 * @param user The user who wants to create the folder.
@@ -745,8 +925,9 @@ import com.opencms.core.*;
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
 	 public CmsFolder createFolder(A_CmsUser user,
-                            A_CmsProject project, String foldername,
-                            int flags)
+                                   A_CmsProject project, 
+                                   String foldername,
+                                   int flags)
          throws CmsException {
            try {   
                synchronized ( m_statementResourceWrite) {
@@ -786,14 +967,32 @@ import com.opencms.core.*;
          }
              return readFolder(project,foldername);
      }
+     
+     /**
+	 * Creates a new folder from an existing folder object.
+	 * 
+	 * @param project The project in which the resource will be used.
+	 * @param folder The folder to be written to the Cms.
+	 * @param foldername The complete path of the new name of this folder.
+	 * 
+	 * @return The created folder.
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	 public CmsFolder createFolder(A_CmsProject project,
+                                   CmsFolder folder,
+                                   String foldername)
+         throws CmsException {
+         // to be implemeneted
+         return null;
+     }
 
-	/**
+	 /**
 	 * Reads a folder from the Cms.<BR/>
 	 * 
 	 * @param project The project in which the resource will be used.
 	 * @param foldername The name of the folder to be read.
 	 * 
-	 * @return folder The read folder.
+	 * @return The read folder.
 	 * 
      * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
@@ -817,7 +1016,7 @@ import com.opencms.core.*;
                                                res.getInt(C_RESOURCE_FLAGS),
                                                res.getInt(C_USER_ID),
                                                res.getInt(C_GROUP_ID),
-                                               res.getInt(C_PROJECT_ID),
+                                               res.getInt(C_PROJECT_ID_RESOURCES),
                                                res.getInt(C_ACCESS_FLAGS),
                                                res.getInt(C_STATE),
                                                res.getInt(C_LOCKED_BY),
@@ -884,36 +1083,16 @@ import com.opencms.core.*;
          }
      }
 
-	
-	/**
-	 * Renames the folder to the new name.
-	 * 
-	 * This is a very complex operation, because all sub-resources may be
-	 * renamed, too.
-	 * 
-	 * @param project The project in which the resource will be used.
-	 * @param oldname The complete path to the resource which will be renamed.
-	 * @param newname The new name of the resource 
-	 * @param force If force is set to true, all sub-resources will be renamed.
-	 * If force is set to false, the folder will be renamed only if it is empty.
-	 * 
-     * @exception CmsException Throws CmsException if operation was not succesful.
-	 */			
-	 public void renameFolder(A_CmsProject project, String oldname, 
-					   String newname, boolean force)
-         throws CmsException {
-     }
-	
-	/**
+	 /**
 	 * Deletes the folder.
 	 * 
-	 * This is a very complex operation, because all sub-resources may be
-	 * delted, too.
+	 * Only empty folders can be deleted yet.
 	 * 
 	 * @param project The project in which the resource will be used.
 	 * @param foldername The complete path of the folder.
 	 * @param force If force is set to true, all sub-resources will be deleted.
 	 * If force is set to false, the folder will be deleted only if it is empty.
+	 * This parameter is not used yet as only empty folders can be deleted!
 	 * 
      * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
@@ -921,47 +1100,8 @@ import com.opencms.core.*;
          throws CmsException {
      }
 	
-     /**
-	 * Copies a folder.
-	 * 
-	 * This is a very complex operation, because all sub-resources may be
-	 * copied, too.
-	 * 
-	 * @param project The project in which the resource will be used.
-	 * @param source The complete path of the sourcefolder.
-	 * @param destination The complete path of the destinationfolder.
-	 * @param force If force is set to true, all sub-resources will be copied.
-	 * If force is set to false, the folder will be copied only if it is empty.
-	 * 
-	 * @exception CmsException Throws CmsException if operation was not succesful.
-	 */	
-	 public void copyFolder(A_CmsProject project, String source, String destination, 
-						    boolean force)
-		throws CmsException
-     {
-     }
-	
 	/**
-	 * Moves a folder.
-	 * 
-	 * This is a very complex operation, because all sub-resources may be
-	 * moved, too.
-	 * 
-	 * @param project The project in which the resource will be used.
-	 * @param source The complete path of the sourcefile.
-	 * @param destination The complete path of the destinationfile.
-	 * @param force If force is set to true, all sub-resources will be moved.
-	 * If force is set to false, the folder will be moved only if it is empty.
-	 * 
-	 * @exception CmsException Throws CmsException if operation was not succesful.
-	 */	
-	 public void moveFolder(A_CmsProject project, String source, 
-						   String destination, boolean force)
-         throws CmsException {
-     }
-
-	/**
-	 * Returns a abstract Vector with all subfolders.<BR/>
+	 * Returns a Vector with all subfolders.<BR/>
 	 * 
 	 * @param project The project in which the resource will be used.
 	 * @param foldername the complete path to the folder.
@@ -990,7 +1130,7 @@ import com.opencms.core.*;
                                                res.getInt(C_RESOURCE_FLAGS),
                                                res.getInt(C_USER_ID),
                                                res.getInt(C_GROUP_ID),
-                                               res.getInt(C_PROJECT_ID),
+                                               res.getInt(C_PROJECT_ID_RESOURCES),
                                                res.getInt(C_ACCESS_FLAGS),
                                                res.getInt(C_STATE),
                                                res.getInt(C_LOCKED_BY),
@@ -1036,7 +1176,7 @@ import com.opencms.core.*;
                                            res.getInt(C_RESOURCE_FLAGS),
                                            res.getInt(C_USER_ID),
                                            res.getInt(C_GROUP_ID),
-                                           res.getInt(C_PROJECT_ID),
+                                           res.getInt(C_PROJECT_ID_RESOURCES),
                                            res.getInt(C_ACCESS_FLAGS),
                                            res.getInt(C_STATE),
                                            res.getInt(C_LOCKED_BY),
@@ -1044,7 +1184,8 @@ import com.opencms.core.*;
                                            res.getString(C_LAUNCHER_CLASSNAME),
                                            res.getLong(C_DATE_CREATED),
                                            res.getLong(C_DATE_LASTMODIFIED),
-                                           new byte[0]
+                                           new byte[0],
+                                           res.getInt(C_SIZE)
                                            );
                      files.addElement(file);
              }
@@ -1054,7 +1195,89 @@ import com.opencms.core.*;
          }
            return files;
      }
-	     
+
+      /**
+     * Copies a resource from the online project to a new, specified project.<br>
+     *
+     * @param project The project to be published.
+	 * @param onlineProject The online project of the OpenCms.
+	 * @param resourcename The name of the resource.
+ 	 * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+     public void copyResourceToProject(A_CmsProject project,
+                                       A_CmsProject onlineProject,
+                                       String resourcename) 
+         throws CmsException {
+         A_CmsResource resource=readResource(onlineProject,resourcename);
+         resource.setState(C_STATE_UNCHANGED);
+         createResource(project,onlineProject,resource);
+     }
+     
+     /**
+     * Publishes a specified project to the online project. <br>
+     *
+     * @param project The project to be published.
+	 * @param onlineProject The online project of the OpenCms.
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+    public void publishProject(A_CmsProject project, A_CmsProject onlineProject)
+        throws CmsException {
+        // to be implemented
+    }
+     
+     /**
+	 * Reads a resource from the Cms.<BR/>
+	 * A resource is either a file header or a folder.
+	 * 
+	 * @param callingUser The user who wants to use this method.
+	 * @param project The project in which the resource will be used.
+	 * @param filename The complete name of the new file (including pathinformation).
+	 * 
+	 * @return The resource read.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	 private A_CmsResource readResource(A_CmsProject project, String filename)
+         throws CmsException {
+                 
+         CmsResource file=null;
+         ResultSet res =null;
+           
+         try {  
+              synchronized ( m_statementResourceRead) {
+                   // read resource data from database
+                   m_statementResourceRead.setString(1,absoluteName(filename));
+                   m_statementResourceRead.setInt(2,project.getId());
+                   res = m_statementResourceRead.executeQuery();
+               }
+               // create new resource
+               if(res.next()) {
+                        file = new CmsResource(res.getString(C_RESOURCE_NAME),
+                                           res.getInt(C_RESOURCE_TYPE),
+                                           res.getInt(C_RESOURCE_FLAGS),
+                                           res.getInt(C_USER_ID),
+                                           res.getInt(C_GROUP_ID),
+                                           res.getInt(C_PROJECT_ID_RESOURCES),
+                                           res.getInt(C_ACCESS_FLAGS),
+                                           res.getInt(C_STATE),
+                                           res.getInt(C_LOCKED_BY),
+                                           res.getInt(C_LAUNCHER_TYPE),
+                                           res.getString(C_LAUNCHER_CLASSNAME),
+                                           res.getLong(C_DATE_CREATED),
+                                           res.getLong(C_DATE_LASTMODIFIED),
+                                           res.getInt(C_SIZE)
+                                           );
+               } else {
+                 throw new CmsException(CmsException.C_NOT_FOUND);  
+               }
+ 
+         } catch (SQLException e){
+            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+         }
+        return file;
+       }
+    
+    
      /**
      * This method creates all preparted SQL statements required in this class.
      * 
@@ -1064,9 +1287,13 @@ import com.opencms.core.*;
        throws CmsException{
          try{
             m_statementResourceWrite=m_Con.prepareStatement(C_RESOURCE_WRITE);
-            m_statementFileWrite=m_Con.prepareStatement(C_FILE_WRITE);
             m_statementResourceRead=m_Con.prepareStatement(C_RESOURCE_READ);
+            m_statementResourceReadAll=m_Con.prepareStatement(C_RESOURCE_READ_ALL);
+            m_statementFileReadOnline=m_Con.prepareStatement(C_FILE_READ_ONLINE);
             m_statementFileRead=m_Con.prepareStatement(C_FILE_READ);
+            m_statementFileWrite=m_Con.prepareStatement(C_FILE_WRITE);
+            m_statementResourceRemove=m_Con.prepareStatement(C_RESOURCE_REMOVE);
+            
             m_statementResourceUpdate=m_Con.prepareStatement(C_RESOURCE_UPDATE);
             m_statementFileUpdate=m_Con.prepareStatement(C_FILE_UPDATE);
             m_statementResourceDelete=m_Con.prepareStatement(C_RESOURCE_DELETE);

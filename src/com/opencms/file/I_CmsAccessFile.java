@@ -11,68 +11,81 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.7 $ $Date: 1999/12/23 16:47:39 $
+ * @version $Revision: 1.8 $ $Date: 2000/01/10 18:15:04 $
  */
 interface I_CmsAccessFile {
 
 
 	/**
-	 * Creates a new file with the overgiven content and resourcetype.
+	 * Creates a new file with the given content and resourcetype.
      *
-	 * If the resourcetype is set to folder, a CmsException will be thrown.<BR/>
-	 * 
 	 * @param user The user who wants to create the file.
 	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
 	 * @param filename The complete name of the new file (including pathinformation).
 	 * @param flags The flags of this resource.
 	 * @param contents The contents of the new file.
 	 * @param resourceType The resourceType of the new file.
-	 * The keys for this Hashtable are the names for metadefinitions, the values are
-	 * the values for the metainfos.
 	 * 
 	 * @return file The created file.
 	 * 
      * @exception CmsException Throws CmsException if operation was not succesful
      */
     
-	 public CmsFile createFile(A_CmsUser user, A_CmsProject project,
-                                String filename, int flags,
-								byte[] contents, A_CmsResourceType resourceType)
+	 public CmsFile createFile(A_CmsUser user,
+                               A_CmsProject project,
+                               A_CmsProject onlineProject,
+                               String filename, int flags,
+							   byte[] contents, A_CmsResourceType resourceType)
         throws CmsException;
 	
-     
 	/**
 	 * Creates a new file from an given CmsFile object and a new filename.
      *
-	 * If the resourcetype is set to folder, a CmsException will be thrown.<BR/>
-	 * 
 	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
 	 * @param file The file to be written to the Cms.
-	 * @param filename The complete nee name of the file (including pathinformation).
+	 * @param filename The complete new name of the file (including pathinformation).
 	 * 
 	 * @return file The created file.
 	 * 
      * @exception CmsException Throws CmsException if operation was not succesful
-     */
-    
-	 public CmsFile createFile(A_CmsProject project, CmsFile file,
-                                String filename)
+     */    
+	 public CmsFile createFile(A_CmsProject project, 
+                               A_CmsProject onlineProject,
+                               CmsFile file,String filename)
         throws CmsException;
 	
-     
-     
-     
+     /**
+	 * Creates a new resource from an given CmsResource object.
+     *
+	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
+	 * @param resource The resource to be written to the Cms.
+	 * 
+	 * @return The created resource.
+	 * 
+     * @exception CmsException Throws CmsException if operation was not succesful
+     */    
+	 public A_CmsResource createResource(A_CmsProject project,
+                                         A_CmsProject onlineProject,
+                                         A_CmsResource resource)
+         throws CmsException ;
+       
 	/**
 	 * Reads a file from the Cms.<BR/>
 	 * 
 	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
 	 * @param filename The complete name of the new file (including pathinformation).
 	 * 
 	 * @return file The read file.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	 public CmsFile readFile(A_CmsProject project, String filename)
+	 public CmsFile readFile(A_CmsProject project,
+                             A_CmsProject onlineProject,
+                             String filename)
 		throws CmsException;
 	
 	/**
@@ -87,42 +100,65 @@ interface I_CmsAccessFile {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	 public A_CmsResource readFileHeader(A_CmsProject project, String filename)
+	 public CmsFile readFileHeader(A_CmsProject project, String filename)
 		throws CmsException;
 	
+     /**
+	 * Reads all file headers of a file in the OpenCms.<BR>
+	 * The reading excludes the filecontent.
+	 * 
+     * @param filename The name of the file to be read.
+	 * 
+	 * @return Vector of file headers read from the Cms.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	 public Vector readAllFileHeaders(String filename)
+		throws CmsException;
+     
+     
 	/**
 	 * Writes a file to the Cms.<BR/>
 	 * 
 	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
 	 * @param filename The complete name of the new file (including pathinformation).
 	 * 
      * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-	 public void writeFile(A_CmsProject project, CmsFile file)
+	 public void writeFile(A_CmsProject project,
+                           A_CmsProject onlineProject,
+                           CmsFile file)
 		throws CmsException;
 	
 	/**
 	 * Writes the fileheader to the Cms.
      * 
 	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
 	 * @param filename The complete name of the new file (including pathinformation).
 	 * 
      * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
 
-	 public void writeFileHeader(A_CmsProject project, CmsFile file)
+	 public void writeFileHeader(A_CmsProject project,
+                                 A_CmsProject onlineProject,
+                                 CmsFile file)
 		throws CmsException;
 
 	/**
 	 * Renames the file to the new name.
 	 * 
 	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
 	 * @param oldname The complete path to the resource which will be renamed.
 	 * @param newname The new name of the resource.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */		
-	 public void renameFile(A_CmsProject project, String oldname, String newname)
+	 public void renameFile(A_CmsProject project,
+                            A_CmsProject onlineProject,
+                            String oldname, String newname)
 		throws CmsException;
 	
 	/**
@@ -140,28 +176,17 @@ interface I_CmsAccessFile {
 	 * Copies the file.
 	 * 
 	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
 	 * @param source The complete path of the sourcefile.
 	 * @param destination The complete path of the destinationfile.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-	 public void copyFile(A_CmsProject project, String source, String destination)
+	 public void copyFile(A_CmsProject project,
+                          A_CmsProject onlineProject,
+                          String source, String destination)
 		throws CmsException;
-	
-	/**
-	 * Moves the file.
-	 * 
-	 * @param project The project in which the resource will be used.
-	 * @param source The complete path of the sourcefile.
-	 * @param destination The complete path of the destinationfile.
-	 * 
-     * @exception CmsException Throws CmsException if operation was not succesful.
-	 */	
-	 public void moveFile(A_CmsProject project, String source, 
-				  String destination)
-		throws CmsException;
-	 
-		
+			
 	/**
 	 * Creates a new folder 
 	 * 
@@ -175,10 +200,26 @@ interface I_CmsAccessFile {
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
 	 public CmsFolder createFolder(A_CmsUser user,
-                                    A_CmsProject project, String foldername,
-                                    int flags)
+                                   A_CmsProject project,
+                                   String foldername,
+                                   int flags)
         throws CmsException;
 
+     /**
+	 * Creates a new folder from an existing folder object.
+	 * 
+	 * @param project The project in which the resource will be used.
+	 * @param folder The folder to be written to the Cms.
+	 * @param foldername The complete path of the new name of this folder.
+	 * 
+	 * @return The created folder.
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	 public CmsFolder createFolder(A_CmsProject project,
+                                   CmsFolder folder,
+                                   String foldername)
+        throws CmsException;
+     
 	/**
 	 * Reads a folder from the Cms.<BR/>
 	 * 
@@ -203,75 +244,20 @@ interface I_CmsAccessFile {
 	 public void writeFolder(A_CmsProject project, CmsFolder folder)
 		throws CmsException;
      
-     
-	/**
-	 * Renames the folder to the new name.
-	 * 
-	 * This is a very complex operation, because all sub-resources may be
-	 * renamed, too.
-	 * 
-	 * @param project The project in which the resource will be used.
-	 * @param oldname The complete path to the resource which will be renamed.
-	 * @param newname The new name of the resource 
-	 * @param force If force is set to true, all sub-resources will be renamed.
-	 * If force is set to false, the folder will be renamed only if it is empty.
-	 * 
-     * @exception CmsException Throws CmsException if operation was not succesful.
-	 */		
-	public void renameFolder(A_CmsProject project, String oldname, 
-							   String newname, boolean force)
-		throws CmsException;
-	
 	/**
 	 * Deletes the folder.
 	 * 
-	 * This is a very complex operation, because all sub-resources may be
-	 * delted, too.
+	 * Only empty folders can be deleted yet.
 	 * 
 	 * @param project The project in which the resource will be used.
 	 * @param foldername The complete path of the folder.
 	 * @param force If force is set to true, all sub-resources will be deleted.
 	 * If force is set to false, the folder will be deleted only if it is empty.
+	 * This parameter is not used yet as only empty folders can be deleted!
 	 * 
      * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
 	 public void deleteFolder(A_CmsProject project, String foldername, boolean force)
-		throws CmsException;
-	
-	/**
-	 * Copies a folder.
-	 * 
-	 * This is a very complex operation, because all sub-resources may be
-	 * copied, too.
-	 * 
-	 * @param project The project in which the resource will be used.
-	 * @param source The complete path of the sourcefolder.
-	 * @param destination The complete path of the destinationfolder.
-	 * @param force If force is set to true, all sub-resources will be copied.
-	 * If force is set to false, the folder will be copied only if it is empty.
-	 * 
-	 * @exception CmsException Throws CmsException if operation was not succesful.
-	 */	
-	 public void copyFolder(A_CmsProject project, String source, String destination, 
-						    boolean force)
-		throws CmsException;
-	
-	/**
-	 * Moves a folder.
-	 * 
-	 * This is a very complex operation, because all sub-resources may be
-	 * moved, too.
-	 * 
-	 * @param project The project in which the resource will be used.
-	 * @param source The complete path of the sourcefile.
-	 * @param destination The complete path of the destinationfile.
-	 * @param force If force is set to true, all sub-resources will be moved.
-	 * If force is set to false, the folder will be moved only if it is empty.
-	 * 
-	 * @exception CmsException Throws CmsException if operation was not succesful.
-	 */	
-	 public void moveFolder(A_CmsProject project, String source, 
-						   String destination, boolean force)
 		throws CmsException;
 
 	/**
@@ -299,4 +285,29 @@ interface I_CmsAccessFile {
 	 */
 	 public Vector getFilesInFolder(A_CmsProject project, String foldername)
 		throws CmsException;
+     
+     
+     /**
+     * Copies a resource from the online project to a new, specified project.<br>
+     *
+     * @param project The project to be published.
+	 * @param onlineProject The online project of the OpenCms.
+	 * @param resourcename The name of the resource.
+ 	 * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+     public void copyResourceToProject(A_CmsProject project,
+                                       A_CmsProject onlineProject,
+                                       String resourcename) 
+         throws CmsException;
+     
+     /**
+     * Publishes a specified project to the online project. <br>
+     *
+     * @param project The project to be published.
+	 * @param onlineProject The online project of the OpenCms.
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+    public void publishProject(A_CmsProject project, A_CmsProject onlineProject)
+        throws CmsException;
+     
 }

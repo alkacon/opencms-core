@@ -6,7 +6,7 @@ import java.io.*;
  * This class describes a file in the Cms.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 1999/12/20 17:19:47 $
+ * @version $Revision: 1.3 $ $Date: 2000/01/10 18:15:04 $
  */
 public class CmsFile extends CmsResource { 	
 
@@ -33,24 +33,24 @@ public class CmsFile extends CmsResource {
       * @param dateCreated The creation date of this resource.
       * @param dateLastModified The date of the last modification of the resource.
       * @param fileContent Then content of the file.
+      * @param size The size of the file content
       */
      public CmsFile(String resourceName, int resourceType, int resourceFlags,
                         int userId, int groupId, int projectId,
                         int accessFlags, int state, int lockedBy,
                         int launcherType, String launcherClassname,
                         long dateCreated, long dateLastModified,
-                        byte[] fileContent){
+                        byte[] fileContent,int size){
         
         // create the CmsResource.
         super(resourceName,resourceType,resourceFlags,
               userId,groupId,projectId,
               accessFlags,state,lockedBy,
               launcherType,launcherClassname,
-              dateCreated,dateLastModified);
+              dateCreated,dateLastModified,size);
         
         // set content and size.
         m_fileContent=fileContent;
-        m_size=m_fileContent.length;
             
    }
     
@@ -92,7 +92,8 @@ public class CmsFile extends CmsResource {
         }
         return extension;          
     }
-        
+     
+ 
     
 
 }

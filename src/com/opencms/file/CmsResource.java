@@ -8,7 +8,7 @@ import com.opencms.core.*;
  * This resource can be a A_CmsFile or a A_CmsFolder.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 2000/01/06 19:57:32 $
+ * @version $Revision: 1.9 $ $Date: 2000/01/10 18:15:04 $
  */
  public class CmsResource extends A_CmsResource implements I_CmsConstants {
      
@@ -112,7 +112,8 @@ import com.opencms.core.*;
                         int userId, int groupId, int projectId,
                         int accessFlags, int state, int lockedBy,
                         int launcherType, String launcherClassname,
-                        long dateCreated, long dateLastModified){
+                        long dateCreated, long dateLastModified,
+                        int size){
          
         m_resourceName=resourceName;
         m_resourceType=resourceType;
@@ -127,7 +128,7 @@ import com.opencms.core.*;
         m_lockedBy=lockedBy;
         m_dateCreated=dateCreated;
         m_dateLastModified=dateLastModified;
-        m_size=0;
+        m_size=size;
             
      }
 
@@ -274,6 +275,8 @@ import com.opencms.core.*;
         StringBuffer output=new StringBuffer();
         output.append("[Resource]:");
         output.append(m_resourceName);
+        output.append(" , Project=");
+        output.append(m_projectId);
         output.append(" , User=");
         output.append(m_userId);
         output.append(" , Group=");

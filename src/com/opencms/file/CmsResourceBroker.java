@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.13 $ $Date: 2000/01/07 18:46:09 $
+ * @version $Revision: 1.14 $ $Date: 2000/01/10 18:15:04 $
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -1375,7 +1375,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		 // HACK: !!!
 		 // TODO: THIS is NOT correct, because there is no security-check!
 		 // HACK: !!!
-		 return( m_fileRb.readFile(currentProject, filename) );
+		 //return( m_fileRb.readFile(currentProject, filename) );
+         return null;
 	 }
 
 	/**
