@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePage.java,v $
- * Date   : $Date: 2000/02/17 11:03:20 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/02/17 12:13:23 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,20 +47,15 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 2000/02/17 11:03:20 $
+ * @version $Revision: 1.4 $ $Date: 2000/02/17 12:13:23 $
  */
 public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
     
-     /** Definition of the Datablock RADIOSIZE */ 
-     private final static String C_RADIOSIZE="RADIOSIZE";
+     /** Definition of the class */ 
+     private final static String C_CLASSNAME="com.opencms.template.CmsXmlTemplate";
      
-     /** Vector containing all names of the radiobuttons */
-     private Vector m_names = null;
      
-     /** Vector containing all links attached to the radiobuttons */
-     private Vector m_values = null;
-    
     /**
      * Overwrites the getContent method of the CmsWorkplaceDefault.<br>
      * Gets the content of the new resource page template and processed the data input.
@@ -103,9 +98,8 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
                 try {
                    // create the content for the page file
                    System.err.println("create content");
-                   content=createPagefile("com.opencms.workplace.CmsXmlTemplate",
-                                          templatefile,
-                                          C_CONTENTTEMPLATEPATH+currentFilelist.substring(1,currentFilelist.length())+newFile);              
+                   content=createPagefile(C_CLASSNAME,                                          templatefile,
+                                          C_CONTENTBODYPATH+currentFilelist.substring(1,currentFilelist.length())+newFile);              
                    // check if the nescessary folders for the content files are existing.
                    // if not, create the missing folders.
                    System.err.println("check folders");
