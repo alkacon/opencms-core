@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpConfigFile.java,v $
-* Date   : $Date: 2003/01/20 23:59:18 $
-* Version: $Revision: 1.47 $
+* Date   : $Date: 2003/01/21 23:20:38 $
+* Version: $Revision: 1.48 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.Vector;
  * @author Alexander Lucas
  * @author Michael Emmerich
  * @author Andreas Schouten
- * @version $Revision: 1.47 $ $Date: 2003/01/20 23:59:18 $
+ * @version $Revision: 1.48 $ $Date: 2003/01/21 23:20:38 $
  */
 
 public class CmsXmlWpConfigFile {
@@ -103,8 +103,8 @@ public class CmsXmlWpConfigFile {
      * Gets the path for OpenCms language files.
      * @return Path for language files.
      * @throws CmsException if the corresponding XML tag doesn't exist in the workplace definition file.
+     * @deprecated Use the constant value I_CmsWpConstants.C_VFS_PATH_LOCALES instead
      */
-
     public String getLanguagePath() throws CmsException {
         return I_CmsWpConstants.C_VFS_PATH_LOCALES;
     }

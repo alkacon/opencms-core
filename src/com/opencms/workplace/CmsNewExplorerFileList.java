@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
-* Date   : $Date: 2003/01/20 23:59:18 $
-* Version: $Revision: 1.54 $
+* Date   : $Date: 2003/01/21 23:20:38 $
+* Version: $Revision: 1.55 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
 import com.opencms.file.CmsResource;
 import com.opencms.file.I_CmsRegistry;
+import com.opencms.flex.util.CmsMessages;
 import com.opencms.launcher.I_CmsTemplateCache;
 import com.opencms.template.CmsCacheDirectives;
 import com.opencms.template.I_CmsDumpTemplate;
@@ -48,6 +49,7 @@ import com.opencms.util.Utils;
 
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Vector;
 
 /**
@@ -56,9 +58,8 @@ import java.util.Vector;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.54 $ $Date: 2003/01/20 23:59:18 $
+ * @version $Revision: 1.55 $ $Date: 2003/01/21 23:20:38 $
  */
-
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannels,I_CmsConstants,I_CmsWpConstants {
 
 
@@ -84,7 +85,6 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
     public static final int DEBUG = 0;
 
     public CmsNewExplorerFileList() {
-
     }
 
     /**
@@ -141,8 +141,8 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
                     + templateFile);
         }
         I_CmsSession session = cms.getRequestContext().getSession(true);
-        CmsXmlWpTemplateFile templateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
-        CmsXmlLanguageFile lang = templateDocument.getLanguageFile();
+        String lang = CmsXmlLanguageFile.getCurrentUserLanguage(cms);
+        CmsMessages messages = new CmsMessages("com.opencms.workplace.workplace", new Locale(lang, "", ""));        
 
         // get the right folder
         String currentFolder = (String)parameters.get("folder");
@@ -420,7 +420,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
                 content.append(rootFolder.getResourceId());
                 content.append(", ");
                 content.append("\"");
-                content.append(lang.getDataValue("title.rootfolder"));
+                content.append(messages.key("title.rootfolder"));
                 content.append("\", ");
                 content.append(rootFolder.getParentId());
                 content.append(", false);\n");
@@ -455,7 +455,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
                 content.append(rootFolder.getResourceId());
                 content.append(", ");
                 content.append("\"");
-                content.append(lang.getDataValue("title.rootfolder"));
+                content.append(messages.key("title.rootfolder"));
                 content.append("\", ");
                 content.append(rootFolder.getParentId());
                 content.append(", ");
@@ -585,7 +585,6 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
      * any subtemplates. So we can always return <code>true</code> here.
      * @return <code>true</code>
      */
-
     public boolean isCacheable(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) {
         return false;
@@ -612,7 +611,6 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
      * any subtemplates. So we can always return <code>true</code> here.
      * @return <code>true</code>
      */
-
     public boolean isTemplateCacheSet() {
         return true;
     }
@@ -623,9 +621,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
      */
 
     public void setTemplateCache(I_CmsTemplateCache c) {
-
-
-    // do nothing.
+        // do nothing.
     }
 
     /**

@@ -33,6 +33,7 @@ import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
+import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsObject;
@@ -49,33 +50,26 @@ import java.util.Vector;
  */
 public class CmsXmlLanguageFileContent extends A_CmsXmlContent implements I_CmsLogChannels,I_CmsWpConstants,I_CmsConstants {
 
-
     /** Name of the class specific language section. */
     private String m_localSection = null;
-
-
-    /** Name of the class specific language section. */
-    private static String m_languagePath = null;
 
     /**
      * Default constructor.
      */
-
     public CmsXmlLanguageFileContent() throws CmsException {
         super();
     }
 
     /**
      * Constructor for creating a new language file object containing the content
-     * of the corresponding system language file for the actual user.
-     * <P>
+     * of the corresponding system language file for the actual user.<p<
+     * 
      * The position of the language file will be looked up in workplace.ini.
      * The selected language of the current user can be searched in the user object.
      *
      * @param cms CmsObject object for accessing system resources.
      * @param filename Name of the body file that shoul be read.
      */
-
     public CmsXmlLanguageFileContent(CmsObject cms) throws CmsException {
         super();
         String currentLanguage = getCurrentUserLanguage(cms);
@@ -88,7 +82,7 @@ public class CmsXmlLanguageFileContent extends A_CmsXmlContent implements I_CmsL
             }
         }
         catch(Exception e) {
-            throwException("Error while merging language files in folder " + m_languagePath + currentLanguage + "/.");
+            throwException("Error while merging language files in folder " + I_CmsWpConstants.C_VFS_PATH_LOCALES + currentLanguage + "/.");
         }
     }
 
@@ -99,7 +93,6 @@ public class CmsXmlLanguageFileContent extends A_CmsXmlContent implements I_CmsL
      * @param cms CmsObject object for accessing system resources.
      * @param filename Name of the body file that shoul be read.
      */
-
     public CmsXmlLanguageFileContent(CmsObject cms, CmsFile file) throws CmsException {
         super();
         init(cms, file);
@@ -112,7 +105,6 @@ public class CmsXmlLanguageFileContent extends A_CmsXmlContent implements I_CmsL
      * @param cms CmsObject object for accessing system resources.
      * @param filename Name of the body file that shoul be read.
      */
-
     public CmsXmlLanguageFileContent(CmsObject cms, String filename) throws CmsException {
         super();
         init(cms, filename);
@@ -122,7 +114,6 @@ public class CmsXmlLanguageFileContent extends A_CmsXmlContent implements I_CmsL
      * Gets a description of this content type.
      * @return Content type description.
      */
-
     public String getContentDescription() {
         return "Language definition file";
     }
@@ -139,49 +130,47 @@ public class CmsXmlLanguageFileContent extends A_CmsXmlContent implements I_CmsL
      * @return Code of the preferred language (e.g. "en" or "de")
      */
     public static String getCurrentUserLanguage(CmsObject cms) throws CmsException {
-        if(m_languagePath == null) {
-            CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
-            m_languagePath = configFile.getLanguagePath();
-        }
-        // In case you want only english language (the default), uncomment the following line
-        // if (0 < 1) return C_DEFAULT_LANGUAGE;
-        
-        // select the right language to use
-        String currentLanguage = null;
-        Hashtable startSettings = null;
-        startSettings = (Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);
-
-        // try to read it form the user additional info
-        if(startSettings != null) {
-            currentLanguage = (String)startSettings.get(C_START_LANGUAGE);
-        }
-
-        // no startup language found. Check the browser's preferred languages
-        if(currentLanguage == null) {
-            Vector langs = cms.getRequestContext().getAcceptedLanguages();
-            int numlangs = langs.size();
-            for(int i=0; i<numlangs; i++) {
-                String loop = (String)langs.elementAt(i);
-                boolean supported;
-                if("en".equalsIgnoreCase(loop) || "uk".equalsIgnoreCase(loop)) {
-                    supported = languageSupported(cms, "en") || languageSupported(cms, "uk");
-                    currentLanguage = "en";
-                } else {
-                    supported = languageSupported(cms, (String)langs.elementAt(i));
-                }
-                if(supported) {
-                    currentLanguage = (String)langs.elementAt(i);
-                    break;
+        // check out the which language is to be used as default
+        String currentLanguage = null;                                   
+        I_CmsSession session = cms.getRequestContext().getSession(false);
+        // check if there is a session        
+        if (session != null) {
+            currentLanguage = (String)session.getValue(I_CmsConstants.C_START_LANGUAGE); 
+        }                 
+        if (currentLanguage == null) {
+            Hashtable startSettings =
+                (Hashtable) cms.getRequestContext().currentUser().getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_STARTSETTINGS);
+    
+            // try to read it form the user additional info
+            if (startSettings != null) {
+                currentLanguage = (String) startSettings.get(I_CmsConstants.C_START_LANGUAGE);
+            }
+    
+            // no startup language found. Check the browser's preferred languages
+            if (currentLanguage == null) {
+                Vector language = (Vector)cms.getRequestContext().getAcceptedLanguages();
+                int numlangs = language.size();
+                for (int i = 0; i < numlangs; i++) {
+                    String lang = (String) language.elementAt(i);
+                    try {
+                        cms.readFolder(I_CmsWpConstants.C_VFS_PATH_LOCALES + lang);
+                        currentLanguage = lang;
+                        break;
+                    } catch (CmsException e) {
+                        // language is not supported, continue looking
+                    }
                 }
             }
+            // if no language was found so far, set it to default
+            if (currentLanguage == null) {
+                currentLanguage = I_CmsWpConstants.C_DEFAULT_LANGUAGE;
+            }
+            // store language in session
+            if (session != null) {
+                session.putValue(I_CmsConstants.C_START_LANGUAGE, currentLanguage);
+            }
         }
-
-        // if no language was found so far, set it to default
-        if(currentLanguage == null) {
-            currentLanguage = C_DEFAULT_LANGUAGE;
-        }
-
-        return currentLanguage;
+        return currentLanguage;     
     }
 
     /**
@@ -253,7 +242,6 @@ public class CmsXmlLanguageFileContent extends A_CmsXmlContent implements I_CmsL
      * Gets the expected tagname for the XML documents of this content type
      * @return Expected XML tagname.
      */
-
     public String getXmlDocumentTagName() {
         return "LANGUAGE";
     }
@@ -263,7 +251,6 @@ public class CmsXmlLanguageFileContent extends A_CmsXmlContent implements I_CmsL
      * @param tag requested tag.
      * @return Language value.
      */
-
     public boolean hasLanguageValue(String tag) {
         if(m_localSection != null) {
             return (hasData(tag) || hasData(m_localSection + "." + tag));
@@ -282,14 +269,13 @@ public class CmsXmlLanguageFileContent extends A_CmsXmlContent implements I_CmsL
      * @param cms CmsObject object for accessing system resources.
      * @param language Current language
      */
-
     private void mergeLanguageFiles(CmsObject cms, String language) throws CmsException {
         Vector langFiles = new Vector();
 
         // Make sure old "uk" stuff still works        
         if ("uk".equals(language)) language = "en";
         
-        langFiles = cms.getFilesInFolder(m_languagePath + language + "/");
+        langFiles = cms.getFilesInFolder(I_CmsWpConstants.C_VFS_PATH_LOCALES + language + "/");
 
         // get all modules-language Files
         Vector modules = new Vector();
@@ -335,12 +321,12 @@ public class CmsXmlLanguageFileContent extends A_CmsXmlContent implements I_CmsL
     /**
      * Check, if the language with the given code is supported by the OpenCms
      * workplace. Will be performed by checking the existance of the folder
-     * <code>m_languagePath + lang + "/"</code>
+     * <code>I_CmsWpConstants.C_VFS_PATH_LOCALES + lang + "/"</code>
      * @return <code>true</code> if language is supported, <code>false</code> otherwise.
      */
     private static boolean languageSupported(CmsObject cms, String lang) {
         try {
-            cms.readFolder(m_languagePath + lang);
+            cms.readFolder(I_CmsWpConstants.C_VFS_PATH_LOCALES + lang);
         } catch(CmsException e) {
             // doesn't seem to exist
             return false;
@@ -354,7 +340,6 @@ public class CmsXmlLanguageFileContent extends A_CmsXmlContent implements I_CmsL
      * checked first, before looking up the global value.
      * @param section class specific language section.
      */
-
     public void setClassSpecificLangSection(String section) {
         m_localSection = section;
     }

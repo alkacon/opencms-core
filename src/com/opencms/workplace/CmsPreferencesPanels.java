@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPreferencesPanels.java,v $
-* Date   : $Date: 2003/01/20 23:59:19 $
-* Version: $Revision: 1.40 $
+* Date   : $Date: 2003/01/21 23:20:38 $
+* Version: $Revision: 1.41 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.40 $ $Date: 2003/01/20 23:59:19 $
+ * @version $Revision: 1.41 $ $Date: 2003/01/21 23:20:38 $
  */
 
 public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -211,18 +211,11 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
                     Hashtable startSettings = getStartSettings(cms, parameters);
                     if(startSettings != null) {
                         session.putValue(C_PARA_STARTSETTINGS, startSettings);
+                        String lang = (String)startSettings.get(C_START_LANGUAGE);
+                        if (lang != null) {
+                            session.putValue(C_START_LANGUAGE, lang);
+                        }
                     }
-                }
-
-                // the active panel is the user settings, save its data
-                if(panel.equals(C_PANEL_USER)) {
-
-
-                /*
-                String userSettings=getUserSettings(parameters);
-                if (userSettings != null) {
-                    session.putValue(C_PARA_USERSETTINGS,userSettings);
-                }*/
                 }
             }
             // update the actual user data with those values taken from the preferences
@@ -246,14 +239,6 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
                 cms.getRequestContext().currentUser().setAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS, startSettings);
                 String defaultGroup = (String)startSettings.get(C_START_DEFAULTGROUP);
                 reqCont.currentUser().setDefaultGroup(cms.readGroup(defaultGroup));
-            }
-
-            // now update the user settings
-            String userSettings = (String)session.getValue(C_PARA_USERSETTINGS);
-            if(userSettings != null) {
-
-
-            // reqCont.setCurrentGroup(userSettings);
             }
 
             // finally store the updated user object in the database
@@ -632,11 +617,10 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
 
     public Integer getLanguageFiles(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
             Vector values, Hashtable parameters) throws CmsException {
-        CmsXmlWpConfigFile conf = new CmsXmlWpConfigFile(cms);
         Vector allLangFiles = null;
 
         // get all folders with language files
-        Vector allLangFolders = cms.getSubFolders(conf.getLanguagePath());
+        Vector allLangFolders = cms.getSubFolders(I_CmsWpConstants.C_VFS_PATH_LOCALES);
         String langName = null;
         Hashtable startSettings = null;
         I_CmsSession session = cms.getRequestContext().getSession(true);
