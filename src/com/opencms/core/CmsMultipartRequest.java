@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsMultipartRequest.java,v $
- * Date   : $Date: 2000/03/09 10:11:16 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/03/28 09:10:40 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -54,7 +54,7 @@ import com.opencms.file.*;
 * 
 * @author Alexander Kandzior
 * @author Michael Emmerich
-* @version $Revision: 1.6 $ $Date: 2000/03/09 10:11:16 $  
+* @version $Revision: 1.7 $ $Date: 2000/03/28 09:10:40 $  
 * 
 */
 public class CmsMultipartRequest implements HttpServletRequest {
@@ -662,15 +662,14 @@ public class CmsMultipartRequest implements HttpServletRequest {
     } else {
       // This is a file
       String value = readAndSaveFile(in, boundary);
-	  filecounter ++;
+      filecounter ++;
 	  m_parameters.put("file" + filecounter, filename);
       m_parameters.put("file" + filecounter + ".content", value);
-
     }
     // there's more to read
     return false;  
   }
-
+  
   int filecounter = 0;
   
   /**
@@ -760,7 +759,7 @@ public class CmsMultipartRequest implements HttpServletRequest {
       }
      }	
     out.flush();
-	return new String(out.toString());	
+   	return new String(out.toString());	
   }
 
   /**
@@ -793,6 +792,7 @@ public class CmsMultipartRequest implements HttpServletRequest {
   
   private String[] extractDispositionInfo(String line)
       throws IOException {
+
     // Return the line's data as an array: disposition, name, filename
     String[] retval = new String[3];
     // Convert the line to a lowercase string without the ending \r\n

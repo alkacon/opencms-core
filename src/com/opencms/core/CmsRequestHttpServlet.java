@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsRequestHttpServlet.java,v $
- * Date   : $Date: 2000/02/15 17:53:48 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/03/28 09:10:40 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -29,6 +29,8 @@
 package com.opencms.core;
 
 import java.util.*; 
+import java.io.*;
+
 import javax.servlet.*;
 import javax.servlet.http.*;
 
@@ -37,14 +39,61 @@ import javax.servlet.http.*;
  * 
  * This implementation uses a HttpServletRequest as original request to create a
  * CmsRequestHttpServlet. This either can be a normal HttpServletRequest or a
- * CmsMultipartRequest which is used to upload file into the OpenCms.
+ * CmsMultipartRequest which is used to upload file into the OpenCms. <br>
+ * 
+ * This class contains a modification of the MultipartRequest published in the O'Reilly 
+ * book <it>Java Servlet Programming </it> by J. Junte, <a href=http://www.servlets.com/ > www.servlets.com </a>
+ * <p>
+ * It Constructs a new MultipartRequest to handle the specified request, 
+ * saving any uploaded files to the given directory, and limiting the upload size to
+ * a maxumum size of 8 MB.
+ * <p>
+ * The idea is to modify the given MultiPartRequest to make it transparent to normal 
+ * requests and store file into CmsFile objects so that they can be transferred into
+ * the OpenCms document database.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2000/02/15 17:53:48 $  
+ * @version $Revision: 1.5 $ $Date: 2000/03/28 09:10:40 $  
  */
 public class CmsRequestHttpServlet implements I_CmsConstants,     
                                               I_CmsRequest { 
     
+     /**
+    * Define the maximum size for an uploaded file (8 MB)
+    */
+    private static final int DEFAULT_MAX_POST_SIZE = 8192 * 1024;// 8 Meg
+ 
+    /**
+    * Definition of the error message for an empty request.
+    */
+    static final String C_REQUEST_NOTNULL="The Request cannot be null.";
+  
+    /**
+    * Definition of the error message for being not a multipart request.
+    */
+    static final String C_REQUEST_NOMULTIPART="Posted content type isn't multipart/form-data";
+  
+    /**
+    * Definition of the error message for a negative maximum post size.
+    */
+    static final String C_REQUEST_SIZENOTNEGATIVE="The maxPostSize must be positive.";
+
+    /**
+    * Definition of the error message for a premature end.
+    */
+    static final String C_REQUEST_PROMATUREEND="Corrupt form data: premature ending";
+   
+    /**
+    * Definition of the error message for missing boundary.
+    */
+    static final String C_REQUEST_NOBOUNDARY="Separation boundary was not specified";
+    
+    
+    /**
+    * The maximum size of the uploaded data.
+    */
+    private int m_maxSize=DEFAULT_MAX_POST_SIZE;
+  
     /**
      * The original request.
      */
@@ -60,14 +109,31 @@ public class CmsRequestHttpServlet implements I_CmsConstants,
      */
     private int m_type=C_REQUEST_HTTP;
     
+    /**
+    * Storage for all uploaded files.
+    */
+    private Hashtable m_files = new Hashtable();      
+    
+    /**
+    * Storage for all uploaded name values
+    */
+    private Hashtable m_parameters = new Hashtable(); 
     
     /** 
      * Constructor, creates a new CmsRequestHttpServlet object.
      * 
      * @param req The original HttpServletRequest used to create this CmsRequest.
      */
-     CmsRequestHttpServlet(HttpServletRequest req){
+     CmsRequestHttpServlet(HttpServletRequest req)
+     throws IOException {
         m_req=req;
+        
+        // Test if this is a multipart-request.
+        // If it is, extract all files from it.
+        String type = req.getHeader("content-type");
+        if ((type != null) && type.startsWith("multipart/form-data")){
+            readRequest();
+        }
     }
     
     
@@ -96,7 +162,12 @@ public class CmsRequestHttpServlet implements I_CmsConstants,
      * @returns The value of the parameter.
      */
     public String getParameter(String name) {
-        return m_req.getParameter(name);
+        String parameter=null;
+        parameter = (String)m_parameters.get(name);
+        if (parameter == null){
+            parameter=m_req.getParameter(name);           
+        }                    
+        return parameter;
     }
                                 
     /**
@@ -106,7 +177,20 @@ public class CmsRequestHttpServlet implements I_CmsConstants,
      * @return Enumeration of parameter names.
      */
     public Enumeration getParameterNames() {
-        return m_req.getParameterNames();
+        Vector parameters=new Vector();
+        
+        // add all parameters from the original request
+        Enumeration reqPara=m_req.getParameterNames();
+        while (reqPara.hasMoreElements()) {
+            parameters.addElement((String)reqPara.nextElement());
+        }
+        // add all parameters extreacted in the multipart handling
+        Enumeration multPara=m_parameters.keys();
+        while (multPara.hasMoreElements()) {
+            parameters.addElement((String)multPara.nextElement());
+        }
+        
+        return parameters.elements();
     }
 
     /**
@@ -119,10 +203,7 @@ public class CmsRequestHttpServlet implements I_CmsConstants,
      */
     public byte[] getFile(String name) {
         byte[] content=null;
-        // check if the HttpServletRequest was a CmsMultipartRequest
-        if (m_req instanceof CmsMultipartRequest){
-            content = getParameter(name).getBytes();
-        }
+        content=(byte[])m_files.get(name);
         return content;
     }
     
@@ -133,11 +214,7 @@ public class CmsRequestHttpServlet implements I_CmsConstants,
      * @return An Enumeration of file names.
      */
     public Enumeration getFileNames() {
-        Enumeration names=null;
-        // check if the HttpServletRequest was a CmsMultipartRequest
-        if (m_req instanceof CmsMultipartRequest){
-            ((CmsMultipartRequest)m_req).getFileNames();
-        }
+        Enumeration names=m_files.keys();
         return names;
     }
 
@@ -159,4 +236,337 @@ public class CmsRequestHttpServlet implements I_CmsConstants,
     public Object getOriginalRequest() {
         return m_req;
     }
+    
+    
+     /**
+   * This method actually parses the request.  A subclass 
+   * can override this method for a better optimized or differently
+   * behaved implementation.
+   *
+   * @exception IOException If the uploaded content is larger than 
+   * <tt>maxSize</tt> or there's a problem parsing the request.
+   */
+  private void readRequest() throws IOException {
+    // Check the content type to make sure it's "multipart/form-data"
+    String type = m_req.getContentType();
+   
+    if (type == null || 
+        !type.toLowerCase().startsWith("multipart/form-data")) {
+      throw new IOException(C_REQUEST_NOMULTIPART);
+    }
+
+    // Check the content length to prevent denial of service attacks
+    int length = m_req.getContentLength();
+    if (length > m_maxSize) {
+      throw new IOException("Posted content length of " + length + 
+                            " exceeds limit of " + m_maxSize);
+    }
+
+    // Get the boundary string; it's included in the content type.
+    // Should look something like "------------------------12012133613061"
+    String boundary = extractBoundary(type);
+    if (boundary == null) {
+      throw new IOException(C_REQUEST_NOBOUNDARY);
+    }
+
+    // Construct the special input stream we'll read from
+    CmsMultipartInputStreamHandler in =
+      new CmsMultipartInputStreamHandler(m_req.getInputStream(), boundary, length);
+
+    // Read the first line, should be the first boundary
+    String line = in.readLine();
+    if (line == null) {
+      throw new IOException(C_REQUEST_PROMATUREEND);
+    }
+
+    // Verify that the line is the boundary
+    if (!line.startsWith(boundary)) {
+      throw new IOException(C_REQUEST_NOBOUNDARY);
+    }
+
+    // Now that we're just beyond the first boundary, loop over each part
+    boolean done = false;
+    while (!done) {
+      done = readNextPart(in, boundary);
+    }
+  }
+
+  /**
+   * A utility method that reads an individual part.  Dispatches to 
+   * readParameter() and readAndSaveFile() to do the actual work.  
+   * <p>
+   * The single files are stored in a hashtable (seperated in filename and contents)
+   * for later addition to a CmsFile Object
+   * <p> A subclass can override this method for a better optimized or 
+   * differently behaved implementation.
+   * 
+   * @param in The stream from which to read the part
+   * @param boundary The boundary separating parts
+   * @return A flag indicating whether this is the last part
+   * @exception IOException If there's a problem reading or parsing the
+   * request
+   *
+   * @see readParameter
+   * @see readAndSaveFile
+   */
+
+  private boolean readNextPart(CmsMultipartInputStreamHandler in,
+                                 String boundary) throws IOException {
+    // Read the first line, should look like this:
+    // content-disposition: form-data; name="field1"; filename="file1.txt"
+    String line = in.readLine();
+    
+    if (line == null) {
+      // No parts left, we're done
+      return true;
+    }
+
+    // Parse the content-disposition line
+    String[] dispInfo = extractDispositionInfo(line);
+    // String disposition = dispInfo[0];
+    String name = dispInfo[1];
+    String filename = dispInfo[2];
+
+    // Now onto the next line.  This will either be empty 
+    // or contain a Content-Type and then an empty line.
+    line = in.readLine();
+    if (line == null) {
+      // No parts left, we're done
+      return true;
+	}
+
+    // Get the content type, or null if none specified
+    String contentType = extractContentType(line);
+	
+    if (contentType != null) {
+      // Eat the empty line
+      line = in.readLine();
+      if (line == null || line.length() > 0) {  // line should be empty
+        throw new 
+          IOException("Malformed line after content type: " + line);
+      }
+    } else {
+      // Assume a default content type
+      contentType = "application/octet-stream";
+    }
+
+    // Now, finally, we read the content (end after reading the boundary)
+    if (filename == null) {
+      // This is a parameter
+      String value = readParameter(in, boundary);
+      m_parameters.put(name, value);
+    } else {
+      // This is a file
+      byte[] value = readAndSaveFile(in, boundary);
+      filecounter ++;
+	  m_files.put(filename, value);
+    }
+    // there's more to read
+    return false;  
+  }
+  
+  int filecounter = 0;
+  
+  /**
+   * A utility method that reads a single part of the multipart request 
+   * that represents a parameter.  A subclass can override this method 
+   * for a better optimized or differently behaved implementation.
+   *
+   * @param in The stream from which to read the parameter information
+   * @param boundary The boundary signifying the end of this part
+   * @return The parameter value
+   * @exception IOException If there's a problem reading or parsing the 
+   * request
+   */
+  private String readParameter(CmsMultipartInputStreamHandler in,
+                                 String boundary) throws IOException {
+	
+    StringBuffer sbuf = new StringBuffer();
+    String line;
+
+    while ((line = in.readLine()) != null) {
+      if (line.startsWith(boundary)) break;
+      // add the \r\n in case there are many lines
+      sbuf.append(line + "\r\n"); 
+    }
+
+    if (sbuf.length() == 0) {
+      // nothing read
+      return null; 
+    }
+    
+    // cut off the last line's \r\n
+    sbuf.setLength(sbuf.length() - 2);  
+    // no URL decoding needed
+    return sbuf.toString(); 
+  }
+
+  /**
+   * A utility method that reads a single part of the multipart request 
+   * that represents a file. Unlike the method name it does NOT saves the file to disk.
+   * The name is from the original O'Reilly implmentaton.
+   * <p>
+   * A subclass can override this method for a better optimized or 
+   * differently behaved implementation.
+   *
+   * @param in The stream from which to read the file.
+   * @param boundary The boundary signifying the end of this part.
+   * @exception IOException If there's a problem reading or parsing the request.
+   */
+  private byte[] readAndSaveFile(CmsMultipartInputStreamHandler in,
+                                 String boundary) throws IOException {
+	 	  
+	ByteArrayOutputStream out = new ByteArrayOutputStream(8 * 1024);
+	byte[] bbuf = new byte[100 * 1024]; 
+    int result;
+    String line;
+    long counter=0;
+	
+    // ServletInputStream.readLine() has the annoying habit of 
+    // adding a \r\n to the end of the last line.  
+    // Since we want a byte-for-byte transfer, we have to cut those chars.
+    boolean rnflag = false;
+	int l=0;
+	
+    while ((result = in.readLine(bbuf, 0, bbuf.length)) != -1) {
+      // Check for boundary
+	  l=l+result;
+	  counter++;
+      // quick pre-check
+      if (result > 2 && bbuf[0] == '-' && bbuf[1] == '-'){ 
+	    line = new String(bbuf, 0, result, "ISO-8859-1");
+        if (line.startsWith(boundary)) break;
+      }
+      // Are we supposed to write \r\n for the last iteration?
+      if (rnflag) {
+        out.write('\r'); out.write('\n');
+        rnflag = false;
+      }
+      // Write the buffer, postpone any ending \r\n
+      if (result >= 2 && bbuf[result - 2] == '\r' && 
+          bbuf[result - 1] == '\n') {
+            // skip the last 2 chars
+            out.write(bbuf, 0, result - 2); 
+            // make a note to write them on the next iteration
+            rnflag = true; 
+      } else {
+	     out.write(bbuf, 0, result);
+      }
+     }	
+    out.flush();
+   	//return new String(out.toString());	
+      return out.toByteArray();
+  }
+
+  /**
+  * Extracts and returns the boundary token from a line.
+  * 
+  * @param Line with boundary from input stream.
+  * @return The boundary token.
+  */
+   private String extractBoundary(String line) {
+     int index = line.indexOf("boundary=");
+     if (index == -1) {
+       return null;
+     }
+     // 9 for "boundary="
+     String boundary = line.substring(index + 9); 
+     // The real boundary is always preceeded by an extra "--"
+     boundary = "--" + boundary;
+     return boundary;
+  }
+
+  /**
+  * Extracts and returns disposition info from a line, as a String array
+  * with elements: disposition, name, filename.  Throws an IOException 
+  * if the line is malformatted.
+  *
+  * @param line Line from input stream.
+  * @return Array of string containing disposition information.
+  * @exception IOException Throws an IOException if the line is malformatted.
+  */
+  
+  private String[] extractDispositionInfo(String line)
+      throws IOException {
+          
+    // Return the line's data as an array: disposition, name, filename
+    String[] retval = new String[3];
+    // Convert the line to a lowercase string without the ending \r\n
+    // Keep the original line for error messages and for variable names.
+    String origline = line;
+    line = origline.toLowerCase();
+    // Get the content disposition, should be "form-data"
+    int start = line.indexOf("content-disposition: ");
+    int end = line.indexOf(";");
+    if (start == -1 || end == -1) {
+      throw new IOException("Content disposition corrupt: " + origline);
+    }
+    String disposition = line.substring(start + 21, end);
+    if (!disposition.equals("form-data")) {
+      throw new IOException("Invalid content disposition: " + disposition);
+    }
+    // Get the field name
+    // start at last semicolon
+    start = line.indexOf("name=\"", end); 
+    // skip name=\"
+    end = line.indexOf("\"", start + 7);  
+    if (start == -1 || end == -1) {
+      throw new IOException("Content disposition corrupt: " + origline);
+    }
+    String name = origline.substring(start + 6, end);
+
+    // Get the filename, if given
+    String filename = null;
+    // start after name
+    start = line.indexOf("filename=\"", end + 2);  
+    // skip filename=\"
+    end = line.indexOf("\"", start + 10);         
+    // note the !=
+    if (start != -1 && end != -1) {               
+      filename = origline.substring(start + 10, end);
+      // The filename may contain a full path.  Cut to just the filename.
+      int slash =
+        Math.max(filename.lastIndexOf('/'), filename.lastIndexOf('\\'));
+      if (slash > -1) {
+        filename = filename.substring(slash + 1);  // past last slash
+      }
+      if (filename.equals("")) filename = "unknown"; // sanity check
+    }
+
+    // Return a String array: disposition, name, filename
+    retval[0] = disposition;
+    retval[1] = name;
+    retval[2] = filename;
+    return retval;
+  }
+
+  /**
+   * Extracts and returns the content type from a line, or null if the
+   * line was empty.  
+   * @param line Line from input stream.
+   * @return Content type of the line.
+   * @exception IOException Throws an IOException if the line is malformatted.
+   */
+  private String extractContentType(String line) throws IOException {
+    String contentType = null;
+
+    // Convert the line to a lowercase string
+    String origline = line;
+    line = origline.toLowerCase();
+
+    // Get the content type, if any
+    if (line.startsWith("content-type")) {
+      int start = line.indexOf(" ");
+      if (start == -1) {
+        throw new IOException("Content type corrupt: " + origline);
+      }
+      contentType = line.substring(start + 1);
+    } else if (line.length() != 0) { 
+      // no content type, so should be empty
+      throw new IOException("Malformed line after disposition: " + origline);
+    }
+    return contentType;
+  }
+    
+    
 }

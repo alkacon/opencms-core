@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
- * Date   : $Date: 2000/03/27 09:55:12 $
- * Version: $Revision: 1.71 $
+ * Date   : $Date: 2000/03/28 09:10:41 $
+ * Version: $Revision: 1.72 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.71 $ $Date: 2000/03/27 09:55:12 $
+ * @version $Revision: 1.72 $ $Date: 2000/03/28 09:10:41 $
  */
 public interface I_CmsWpConstants {
 
@@ -91,6 +91,9 @@ public interface I_CmsWpConstants {
     /** Parameter for a filename */
     public static final String C_PARA_FILE = "file";  
 
+    /** Parameter for a filecontent */
+    public static final String C_PARA_FILECONTENT = "filecontent";  
+    
     /** Parameter for a deleting a file */
     public static final String C_PARA_DELETE = "delete";
     
@@ -297,6 +300,9 @@ public interface I_CmsWpConstants {
    /** Name of the select start tag in the input definiton template */
    public static final String C_TAG_SELECTBOX_START="selectbox.start";
 
+   /** Name of the select div start tag in the input definiton template */
+   public static final String C_TAG_SELECTBOX_START_DIV="selectbox.startdiv";
+   
    /** Name of the select end tag in the input definiton template */
    public static final String C_TAG_SELECTBOX_END="selectbox.end";
    
@@ -523,7 +529,10 @@ public interface I_CmsWpConstants {
     
     /** Size of the select box */
     public static final String C_SELECTBOX_SIZE = "size";
-	
+
+    /** Div flag of the select box */
+    public static final String C_SELECTBOX_DIV = "div";
+   
     /** Stylesheet class string of the select box */
     public static final String C_SELECTBOX_CLASS = "class";
 

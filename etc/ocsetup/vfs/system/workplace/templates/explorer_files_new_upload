@@ -1,0 +1,188 @@
+<?xml version="1.0"?>
+<WORKPLACE>
+<TEMPLATE>
+<![CDATA[
+<HTML>
+
+<script language=JavaScript>
+<!--
+function show_help()
+{
+	return '2_2_2_2_3_4.html';
+}
+//-->
+</script>
+
+<head>
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<title>OpenCms</title>
+<link rel=stylesheet type="text/css" href="../css/format.css">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
+
+
+</HEAD>
+
+<body bgcolor="#ffffff" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0>
+
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=center valign=middle>
+
+<form name=UPLOAD action="explorer_files_new_upload.html" method=POST ENCTYPE="multipart/form-data"	>
+<table border=2 cellspacing=0 cellpadding=0 width=500px>
+<tr><td>
+	<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+	<tr><td colspan=2 class=head>]]><LABEL value="title.upload" /><![CDATA[</td></tr>
+	<tr><td colspan=2 class=leerzeile>&nbsp;</td></tr>
+	<tr>
+		<td class=formular width=10%>]]><LABEL value="input.name" /><![CDATA[:</td>
+		<td class=dialogtxt align=left><INPUT size="30" maxlength="30" class="textfeld3" type="file" id=DATEINAME name=DATEINAME onfocus="UPLOAD.WEITER.disabled=false"></td>
+	</tr>
+	<tr>
+		<td colspan=2 class=leerzeile>&nbsp;</td>
+	<tr>
+		<td colspan=2 class=formular>
+			<table cellspacing=0 cellpadding=5 width=100%>
+			<tr>
+				<INPUT type="hidden" name="STEP" id="STEP" value="1">
+				<td class=formular align=right width=60%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.previousscreen" /><![CDATA[" id=ZURUECK name=ZURUECK onClick="location='explorer_files_new';"></td>
+				<td class=formular align=middle width=20%><INPUT disabled class=button width=100 type="submit" value="]]><LABEL value="button.nextscreen" /><![CDATA[" id=WEITER name=WEITER></td>
+				<td class=formular align=middle width=20%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="location='explorer_files.html';"></td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+	</table>
+</td>
+</tr>
+</table>
+</form>
+
+</td></tr>
+</table>
+
+</body>
+</HTML>
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="step1">
+<![CDATA[
+<HTML>
+
+<script language=JavaScript>
+<!--
+function show_help()
+{
+	return '2_2_2_2_3_4_1.html';
+}
+//-->
+</script>
+
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<title>OpenCms</title>
+
+<link rel=stylesheet type="text/css" href="../css/format.css">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
+
+</HEAD>
+
+<body bgcolor="#ffffff" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA[" marginwidth=0 marginheight=0 leftmargin=0 topmargin=0>
+
+<!-- Beginn upload Datei Folgeseite 1 -->
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=center valign=middle>
+
+<form id="UPLOAD" name="UPLOAD">
+<table border=2 cellspacing=0 cellpadding=0 width=500>
+<tr><td><table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+	<tr><td colspan=3 class=head>]]><LABEL value="title.upload" /><![CDATA[</td></tr>
+	<tr><td colspan=3 class=leerzeile>&nbsp;</td></tr>
+	<tr><td colspan=3 class=leerzeile>]]><LABEL value="label.upload" /><![CDATA[ : ]]><PROCESS>FILENAME</PROCESS><![CDATA[</td></tr>
+	<tr><td colspan=3 class=leerzeile>&nbsp;</td></tr>
+	
+	<tr>
+		<td class=leerzeile width=5%>&nbsp;</td>
+		<td class=leerzeile>]]><LABEL value="input.suggestfiletype" /><![CDATA[ :</td>
+		<td class=leerzeile width=5%>&nbsp;</td>
+	</tr>
+	<tr>
+		<td class=leerzeile width=5%>&nbsp;</td>
+		<td class=leerzeile width=90%>
+			<table border=1 width=100%>
+			<tr><td class=wizard>
+				<table border=0 width=100%>
+					]]><RADIOBUTTON name="R_NEU" method="getResources" /><![CDATA[
+				</table>
+			</td></tr>
+			</table>
+		</td>
+		<td class=leerzeile width=5%>&nbsp;</td>
+	</tr>
+
+	<tr><td colspan=3 class=formular>
+			<table cellspacing=0 cellpadding=5 width=100%>
+			<tr>
+			    <INPUT type="hidden" NAME="STEP" ID="STEP" value="2">
+				<td class=formular align=right width=60%><INPUT  class=button width=100 type="button" value="]]><LABEL value="button.previousscreen" /><![CDATA[" id=ZURUECK name=ZURUECK onClick="location='explorer_files_new_upload.html';"></td>
+				<td class=formular align=middle width=20%><INPUT class=button width=100 type="submit" value="]]><LABEL value="button.endwizard" /><![CDATA[" id=FERTIG name=FERTIG onClick="if(UPLOAD.R_UPLOAD[2].checked){location='explorer_files_new_upload.html'}else{location='explorer_files_new_upload.html';}"></td>
+				<td class=formular align=middle width=20%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="location='explorer_files.html';"></td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+	</table>
+</td>
+</tr>
+</table>
+</form>
+
+</td></tr>
+</table>
+<!-- Ende upload Datei Folgeseite 1 -->
+
+</body>
+</HTML>
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="overwrite">
+<![CDATA[
+<HTML>
+	
+	<script language=JavaScript>
+	<!--
+	function show_help()
+	{
+		return '2_2_2_2_6_1.html';
+	}
+	//-->
+	</script>
+	
+	<head>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+	
+	<title>OpenCms</title>
+	<link rel=stylesheet type="text/css" href="../css/format.css">
+	
+	</HEAD>
+	<BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
+	
+	<!-- table to center the page-->
+	<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+	<tr><td align=middle valign=center>
+	
+	<!-- table to set up the dialog box-->
+	<form id=OVERWRITE name=OVERWRITE>
+    ]]><MESSAGEBOX title="messagebox.title.overwrite" message1="messagebox.message1.overwrite" message2="messagebox.message2.overwrite" button1="button.ok" button2="button.cancel" link1="explorer_files_new_upload.html" link2="explorer_files_new_upload.html"><PROCESS>FILENAME</PROCESS></MESSAGEBOX><![CDATA[
+	</td></tr>
+	</form>
+	</table>
+		
+	</BODY>
+	</html>
+	]]>
+</TEMPLATE>
+
+</WORKPLACE>

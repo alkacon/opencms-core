@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
- * Date   : $Date: 2000/03/27 10:02:52 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2000/03/28 09:10:40 $
+ * Version: $Revision: 1.30 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -65,7 +65,7 @@ import com.opencms.file.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.29 $ $Date: 2000/03/27 10:02:52 $  
+* @version $Revision: 1.30 $ $Date: 2000/03/28 09:10:40 $  
 * 
 */
 
@@ -218,8 +218,8 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
 
          CmsObject cms=null;
 	     if ((type != null) && type.startsWith("multipart/form-data")){
-		    req = new CmsMultipartRequest(req);
-		 } 
+		  //  req = new CmsMultipartRequest(req);
+		 }
          
          CmsRequestHttpServlet cmsReq= new CmsRequestHttpServlet(req);
          CmsResponseHttpServlet cmsRes= new CmsResponseHttpServlet(req,res);

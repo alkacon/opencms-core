@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpInputDefFile.java,v $
- * Date   : $Date: 2000/02/15 17:51:19 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/03/28 09:10:41 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,8 @@ import java.util.*;
  * Content definition for the workplace input element definition file.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.9 $ $Date: 2000/02/15 17:51:19 $
+ * @author Alexander Lucas
+ * @version $Revision: 1.10 $ $Date: 2000/03/28 09:10:41 $
  */
 public class CmsXmlWpInputDefFile extends A_CmsXmlContent implements I_CmsLogChannels ,
                                                                      I_CmsWpConstants {
@@ -149,6 +150,21 @@ public class CmsXmlWpInputDefFile extends A_CmsXmlContent implements I_CmsLogCha
         return getProcessedDataValue(C_TAG_SELECTBOX_START);
     }
 
+     public String getSelectBoxStartDiv(String classname, String name, String width, String onchange, String size) throws CmsException {
+        if(classname == null || "".equals(classname)) {
+            setData(C_SELECTBOX_CLASS, "");
+        } else {
+            setData(C_SELECTBOX_CLASSNAME, classname);
+            setData(C_SELECTBOX_CLASS, getProcessedData(C_TAG_SELECTBOX_CLASS));
+        }
+        setData(C_SELECTBOX_NAME, name);
+        setData(C_SELECTBOX_WIDTH, width);
+        setData(C_SELECTBOX_ONCHANGE, onchange);
+        setData(C_SELECTBOX_SIZE, size);
+        return getProcessedDataValue(C_TAG_SELECTBOX_START_DIV);
+    }
+    
+    
     public String getSelectBoxEnd() throws CmsException {
         return getProcessedDataValue(C_TAG_SELECTBOX_END);
     }

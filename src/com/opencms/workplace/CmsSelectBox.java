@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsSelectBox.java,v $
- * Date   : $Date: 2000/02/29 16:44:48 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/03/28 09:10:41 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,8 @@ import java.util.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;BUTTON&gt;</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.9 $ $Date: 2000/02/29 16:44:48 $
+ * @author Michael Emmerich
+ * @version $Revision: 1.10 $ $Date: 2000/03/28 09:10:41 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsSelectBox extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants {    
@@ -83,17 +84,23 @@ public class CmsSelectBox extends A_CmsWpElement implements I_CmsWpElement, I_Cm
         String selectWidth = n.getAttribute(C_SELECTBOX_WIDTH);
         String selectOnchange = n.getAttribute(C_SELECTBOX_ONCHANGE);
         String selectSize = n.getAttribute(C_SELECTBOX_SIZE);
+        String selectDiv = n.getAttribute(C_SELECTBOX_DIV);
 
 		if( (selectSize == null) || (selectSize.length() == 0) ) {
 			selectSize = "1";
 		}
+
         
         // Get input definition file
         CmsXmlWpInputDefFile inputdef = getInputDefinitions(cms); 
         
-        // get the processed selectbox start.
-        result.append(inputdef.getSelectBoxStart(selectClass, selectName, selectWidth, selectOnchange, selectSize));
-        
+        if( (selectDiv == null) || (selectDiv.length() == 0) ) {
+		   // get the processed selectbox start.
+           result.append(inputdef.getSelectBoxStart(selectClass, selectName, selectWidth, selectOnchange, selectSize));
+        } else {
+            result.append(inputdef.getSelectBoxStartDiv(selectClass, selectName, selectWidth, selectOnchange, selectSize));
+        }
+      
         // call the method for generating listbox elements
         Method groupsMethod = null;
         int selectedOption = 0;
