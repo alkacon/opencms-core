@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementDump.java,v $
-* Date   : $Date: 2001/05/07 08:57:24 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2001/05/07 16:22:56 $
+* Version: $Revision: 1.3 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -72,12 +72,10 @@ public class CmsElementDump extends A_CmsElement {
 
         // Get template class.
         // In classic mode, this is donw by the launcher.
-        // TODO: Do we really have to load this here?
-        I_CmsTemplate templateClass = this.getTemplateClass(cms, m_className);
+        I_CmsTemplate templateClass = getTemplateClass(cms, m_className);
 
         // Collect cache directives from subtemplates
-        // TODO: Replace root template name here
-        CmsCacheDirectives cd = templateClass.collectCacheDirectives(cms, m_templateName, m_elementName, parameters, null);
+        CmsCacheDirectives cd = getCacheDirectives();
 
         // We really don't want to stream here
         /*boolean streamable = cms.getRequestContext().isStreaming() && cd.isStreamable();
@@ -87,26 +85,28 @@ public class CmsElementDump extends A_CmsElement {
         CmsElementVariant variant = null;
 
         Object cacheKey = templateClass.getKey(cms, m_templateName, parameters, null);
-        boolean cacheable = cd.isInternalCacheable();
 
         // In classic mode, now the cache-control headers of the response
         // are setted. What shall we do here???
-
         // Now check, if there is a variant of this element in the cache.
 
-        if(cacheable && !templateClass.shouldReload(cms, m_templateName, m_elementName, parameters, null)) {
+        if(cd.isInternalCacheable()) {
             variant = getVariant(cacheKey);
         }
 
-        if(variant == null) {
+        if(variant != null) {
+            result = resolveVariant(cms, variant, staging, parameters);
+        } else {
             // This element was not found in the variant cache.
             // We have to generate it.
             try {
                 System.err.println(toString() + " : Variante muss generiert werden.");
                 result = templateClass.getContent(cms, m_templateName, m_elementName, parameters);
-                variant = new CmsElementVariant();
-                variant.add(result);
-                addVariant(cacheKey, variant);
+                if(cd.isInternalCacheable()) {
+                    variant = new CmsElementVariant();
+                    variant.add(result);
+                    addVariant(cacheKey, variant);
+                }
                 System.err.println(toString() + " : New variant is: " + variant);
 
             }
@@ -114,54 +114,10 @@ public class CmsElementDump extends A_CmsElement {
                 // Clear cache and do logging here
                 throw e;
             }
-            if(cacheable) {
-                //cache.put(cacheKey, result);
-                // We do not care about storing this variant in the cache here.
-                // This has been done bye startProcessing() of the template engine.
-            }
             if(streamable) {
                 result = null;
             }
         }
-
-        // Now the variant really should exist. Try to resolve it.
-        try {
-            int len = variant.size();
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            for(int i=0; i<len; i++) {
-                Object o = variant.get(i);
-                if(o instanceof String) {
-                    baos.write(((String)o).getBytes());
-                } else if(o instanceof byte[]) {
-                    baos.write((byte[])o);
-                } else if(o instanceof CmsElementLink) {
-                    // we have to resolve the element link right NOW!
-                    String lookupName = ((CmsElementLink)o).getElementName();
-                    System.err.println("= Trying to resolve link \"" + lookupName +"\".");
-                    CmsElementDefinition elDef = getElementDefinition(lookupName);
-                    if(elDef != null) {
-                        A_CmsElement subEl = staging.getElementLocator().get(cms, elDef.getDescriptor(), parameters);
-                        System.err.println("= Element defintion for \"" + lookupName +"\" says: ");
-                        System.err.println("= -> Class    : " + elDef.getClassName());
-                        System.err.println("= -> Template : " + elDef.getTemplateName());
-                        if(subEl != null) {
-                            System.err.println("= Element object found for \"" + lookupName +"\". Calling getContent on this object. ");
-                            baos.write(subEl.getContent(staging, cms, parameters));
-                        } else {
-                            System.err.println("= Cannot find Element object for \"" + lookupName +"\". Ignoring this link. ");
-                        }
-                    } else {
-                        System.err.println("= No element definition found for \"" + lookupName +"\". Ignoring this link. ");
-                    }
-                }
-            }
-            result = baos.toByteArray();
-        } catch(Exception e) {
-            System.err.println("Error while resolving element variant");
-            e.printStackTrace();
-        }
-
-
         return result;
     }
 }

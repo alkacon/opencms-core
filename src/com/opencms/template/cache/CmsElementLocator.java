@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementLocator.java,v $
-* Date   : $Date: 2001/05/07 08:57:24 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2001/05/07 16:22:56 $
+* Version: $Revision: 1.3 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -29,6 +29,7 @@ package com.opencms.template.cache;
 
 import java.util.*;
 import java.io.*;
+import com.opencms.boot.*;
 import com.opencms.core.*;
 import com.opencms.file.*;
 import com.opencms.template.*;
@@ -41,7 +42,7 @@ import com.opencms.template.*;
  *
  * @author: Andreas Schouten
  */
-public class CmsElementLocator {
+public class CmsElementLocator implements com.opencms.boot.I_CmsLogChannels {
 
     /**
      * A hashtable to store the elements.
@@ -75,16 +76,19 @@ public class CmsElementLocator {
         if(result == null) {
             // the element was not found in the element cache
             // we have to generate it
+            I_CmsTemplate cmsTemplate = null;
             try {
-                Object o = com.opencms.template.CmsTemplateClassManager.getClassInstance(cms, desc.getClassName());
-                I_CmsTemplate cmsTemplate = (I_CmsTemplate)o;
+                cmsTemplate = (I_CmsTemplate)com.opencms.template.CmsTemplateClassManager.getClassInstance(cms, desc.getClassName());
                 result = cmsTemplate.createElement(cms, desc.getTemplateName(), parameters);
-            } catch(CmsException e) {
-                System.err.println(e);
+                put(desc, result);
+            } catch(Throwable e) {
+                if(CmsBase.isLogging()) {
+                    CmsBase.log(C_OPENCMS_CRITICAL, toString() + " Could not initialize (sub-)element for class \"" + desc.getClassName() + "\". ");
+                    CmsBase.log(C_OPENCMS_CRITICAL, e.toString());
+                    return null;
+                }
             }
-            put(desc, result);
         }
         return result;
-
     }
 }

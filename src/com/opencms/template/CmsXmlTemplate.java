@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2001/05/07 14:46:58 $
-* Version: $Revision: 1.53 $
+* Date   : $Date: 2001/05/07 16:22:29 $
+* Version: $Revision: 1.54 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.53 $ $Date: 2001/05/07 14:46:58 $
+ * @version $Revision: 1.54 $ $Date: 2001/05/07 16:22:29 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -861,121 +861,53 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @exception CmsException
      */
     protected byte[] startProcessing(CmsObject cms, CmsXmlTemplateFile xmlTemplateDocument, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
-
-        System.err.println("*** startProcessing called for " + getClass().getName() + "/" + xmlTemplateDocument.getAbsoluteFilename());
         byte[] result = null;
 
         if(cms.getRequestContext().isStaging()) {
-            System.err.println("*** staging mode");
             // We are in staging mode. Create a new variant instead of a completely processed subtemplate
             CmsElementVariant variant = new CmsElementVariant();
             xmlTemplateDocument.generateStagingVariant(this, parameters, elementName, templateSelector, variant);
-            System.err.println("*** variantXXX " + variant);
             // Get current element.
             CmsStaging staging = OpenCms.getStaticStaging();
             CmsElementDescriptor elKey = new CmsElementDescriptor(getClass().getName(), xmlTemplateDocument.getAbsoluteFilename());
             A_CmsElement currElem = staging.getElementLocator().get(cms, elKey, parameters);
 
-            // Store the new variant
-            if(currElem.collectCacheDirectives().isInternalCacheable()) {
-                currElem.addVariant(getKey(cms, xmlTemplateDocument.getAbsoluteFilename(), parameters, templateSelector), variant);
-            } //else {
-                result = ((CmsElementXml)currElem).resolveVariant(cms, variant, staging, parameters);
-            //}
-            return result;
+            // If this elemement is cacheable, store the new variant
+            if(currElem.getCacheDirectives().isInternalCacheable()) {
+                //currElem.addVariant(getKey(cms, xmlTemplateDocument.getAbsoluteFilename(), parameters, templateSelector), variant);
+                currElem.addVariant(currElem.getCacheDirectives().getCacheKey(cms, parameters), variant);
+            }
+            return ((CmsElementXml)currElem).resolveVariant(cms, variant, staging, parameters);
         } else {
-        // Try to process the template file
-        try {
-            result = xmlTemplateDocument.getProcessedTemplateContent(this, parameters, templateSelector).getBytes();
-        }
-        catch(Throwable e) {
-
-            // There were errors while generating output for this template.
-
-            // Clear HTML cache and then throw exception again
-            xmlTemplateDocument.removeFromFileCache();
-            if(isCacheable(cms, xmlTemplateDocument.getAbsoluteFilename(), elementName, parameters, templateSelector)) {
-                m_cache.clearCache(getKey(cms, xmlTemplateDocument.getAbsoluteFilename(), parameters, templateSelector));
+            // Classic way. Staging is not activated, so let's genereate the template as usual
+            // Try to process the template file
+            try {
+                result = xmlTemplateDocument.getProcessedTemplateContent(this, parameters, templateSelector).getBytes();
             }
-            if(e instanceof CmsException) {
-                throw (CmsException)e;
-            }
-            else {
-
-                // under normal cirumstances, this should not happen.
-
-                // any exception should be caught earlier and replaced by
-
-                // corresponding CmsExceptions.
-                String errorMessage = "Exception while getting content for (sub)template " + elementName + ". " + e;
-                if(A_OpenCms.isLogging()) {
-                    A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorMessage);
+            catch(Throwable e) {
+                // There were errors while generating output for this template.
+                // Clear HTML cache and then throw exception again
+                xmlTemplateDocument.removeFromFileCache();
+                if(isCacheable(cms, xmlTemplateDocument.getAbsoluteFilename(), elementName, parameters, templateSelector)) {
+                    m_cache.clearCache(getKey(cms, xmlTemplateDocument.getAbsoluteFilename(), parameters, templateSelector));
                 }
-                throw new CmsException(errorMessage);
+                if(e instanceof CmsException) {
+                    throw (CmsException)e;
+                }
+                else {
+                    // under normal cirumstances, this should not happen.
+                    // any exception should be caught earlier and replaced by
+                    // corresponding CmsExceptions.
+                    String errorMessage = "Exception while getting content for (sub)template " + elementName + ". " + e;
+                    if(A_OpenCms.isLogging()) {
+                        A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorMessage);
+                    }
+                    throw new CmsException(errorMessage);
+                }
             }
-        }
         }
         return result;
     }
-//---------------------------------------------------------------------
-
-/*
-
-
-        byte[] result = null;
-
-
-
-        // Try to process the template file
-        try {
-
-            // Since we are staging we don't want to start the template engine
-            //result = xmlTemplateDocument.getProcessedTemplateContent(this, parameters, elementName, templateSelector, variant);
-
-            int len = variant.size();
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            for(int i=0; i<len; i++) {
-                Object o = variant.get(i);
-                if(o instanceof String) {
-                    baos.write(((String)o).getBytes());
-                } else if(o instanceof byte[]) {
-                    baos.write((byte[])o);
-                } else if(o instanceof CmsElementLink) {
-                    // we have to resolve the element link right NOW!
-                }
-            }
-            result = baos.toByteArray();
-        }
-        catch(Throwable e) {
-
-            // There were errors while generating output for this template.
-
-            // Clear HTML cache and then throw exception again
-            xmlTemplateDocument.removeFromFileCache();
-            if(isCacheable(cms, xmlTemplateDocument.getAbsoluteFilename(), elementName, parameters, templateSelector)) {
-                m_cache.clearCache(getKey(cms, xmlTemplateDocument.getAbsoluteFilename(), parameters, templateSelector));
-            }
-            if(e instanceof CmsException) {
-                throw (CmsException)e;
-            }
-            else {
-
-                // under normal cirumstances, this should not happen.
-
-                // any exception should be caught earlier and replaced by
-
-                // corresponding CmsExceptions.
-                String errorMessage = "Exception while getting content for (sub)template " + elementName + ". " + e;
-                if(A_OpenCms.isLogging()) {
-                    A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorMessage);
-                }
-                throw new CmsException(errorMessage);
-            }
-        }
-
-        //return result.getBytes();
-        return result;
-    }*/
 
     /**
      * Handles any occurence of an <code>&lt;ELEMENT&gt;</code> tag.
@@ -1225,7 +1157,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
         }
         CmsElementXml result = new CmsElementXml(getClass().getName(),
                                                  templateFile,
-                                                 collectCacheDirectives(cms, templateFile, null, parameters, null),
+                                                 getCacheDirectives(cms, templateFile, null, parameters, null),
                                                  subtemplateDefinitions);
         return result;
     }

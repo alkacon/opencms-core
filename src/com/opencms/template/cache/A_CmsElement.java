@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/A_CmsElement.java,v $
-* Date   : $Date: 2001/05/07 08:57:24 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2001/05/07 16:22:56 $
+* Version: $Revision: 1.3 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -124,8 +124,13 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
      * @return Cached CmsElementVariant object
      */
     public CmsElementVariant getVariant(Object key) {
+        CmsElementVariant result = (CmsElementVariant)m_variants.get(key);
         if(C_DEBUG && CmsBase.isLogging()) {
-            CmsBase.log(C_OPENCMS_STAGING, toString() + " getting variant \"" + key + "\" from cache. ");
+            if(result != null) {
+                CmsBase.log(C_OPENCMS_STAGING, toString() + " getting variant \"" + key + "\" from cache. ");
+            } else {
+                CmsBase.log(C_OPENCMS_STAGING, toString() + " Variant \"" + key + "\" is not in element cache. ");
+            }
         }
         return (CmsElementVariant)m_variants.get(key);
     }
@@ -156,7 +161,7 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
         return result;
     }
 
-    public CmsCacheDirectives collectCacheDirectives() {
+    public CmsCacheDirectives getCacheDirectives() {
         return m_cacheDirectives;
     }
     public abstract byte[] getContent(CmsStaging staging, CmsObject cms, Hashtable parameters) throws CmsException;
@@ -167,6 +172,54 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
         // Check, if the loaded class really is a OpenCms template class.
         I_CmsTemplate cmsTemplate = (I_CmsTemplate)o;
         return cmsTemplate;
+    }
+
+
+    public byte[] resolveVariant(CmsObject cms, CmsElementVariant variant, CmsStaging staging, Hashtable parameters) {
+        if(C_DEBUG) System.err.println("= Start resolving variant " + variant);
+        int len = variant.size();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            for(int i=0; i<len; i++) {
+                if(C_DEBUG) System.err.print("= Part " + i + " is a ");
+                Object o = variant.get(i);
+                if(o instanceof String) {
+                    if(C_DEBUG) System.err.println("String");
+                    baos.write(((String)o).getBytes());
+                } else if(o instanceof byte[]) {
+                    if(C_DEBUG) System.err.println("byte array");
+                    baos.write((byte[])o);
+                } else if(o instanceof CmsElementLink) {
+                    if(C_DEBUG) System.err.println("Link");
+                    // we have to resolve the element link right NOW!
+                    String lookupName = ((CmsElementLink)o).getElementName();
+                    if(C_DEBUG) System.err.println("= Trying to resolve link \"" + lookupName +"\".");
+                    CmsElementDefinition elDef = getElementDefinition(lookupName);
+                    if(elDef != null) {
+                        A_CmsElement subEl = staging.getElementLocator().get(cms, elDef.getDescriptor(), parameters);
+                        if(C_DEBUG) System.err.println("= Element defintion for \"" + lookupName +"\" says: ");
+                        if(C_DEBUG) System.err.println("= -> Class    : " + elDef.getClassName());
+                        if(C_DEBUG) System.err.println("= -> Template : " + elDef.getTemplateName());
+                        if(subEl != null) {
+                            if(C_DEBUG) System.err.println("= Element object found for \"" + lookupName +"\". Calling getContent on this object. ");
+                            byte[] buffer = subEl.getContent(staging, cms, parameters);
+                            if(buffer != null) {
+                                baos.write(buffer);
+                            }
+                        } else {
+                            baos.write(("[" + lookupName + "] ???").getBytes());
+                            if(C_DEBUG) System.err.println("= Cannot find Element object for \"" + lookupName +"\". Ignoring this link. ");
+                        }
+                    } else {
+                        if(C_DEBUG) System.err.println("= No element definition found for \"" + lookupName +"\". Ignoring this link. ");
+                    }
+                }
+            }
+        } catch(Exception e) {
+            System.err.println("Error while resolving element variant");
+            e.printStackTrace();
+        }
+        return baos.toByteArray();
     }
 
     public String toString() {

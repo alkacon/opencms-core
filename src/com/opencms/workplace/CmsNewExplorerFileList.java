@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
-* Date   : $Date: 2001/05/07 08:57:13 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2001/05/07 16:23:07 $
+* Version: $Revision: 1.22 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -46,7 +46,7 @@ import org.xml.sax.*;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.21 $ $Date: 2001/05/07 08:57:13 $
+ * @version $Revision: 1.22 $ $Date: 2001/05/07 16:23:07 $
  */
 
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannels,I_CmsConstants,I_CmsWpConstants {
@@ -64,6 +64,21 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
 
     public CmsNewExplorerFileList() {
 
+    }
+
+    /**
+     * gets the caching information from the current template class.
+     *
+     * @param cms CmsObject Object for accessing system resources
+     * @param templateFile Filename of the template file
+     * @param elementName Element name of this template in our parent template.
+     * @param parameters Hashtable with all template class parameters.
+     * @param templateSelector template section that should be processed.
+     * @return <EM>true</EM> if this class may stream it's results, <EM>false</EM> otherwise.
+     */
+    public CmsCacheDirectives getCacheDirectives(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+        // First build our own cache directives.
+        return new CmsCacheDirectives(false);
     }
 
     /**
@@ -449,6 +464,6 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
     }
 
     public A_CmsElement createElement(CmsObject cms, String templateFile, Hashtable parameters) {
-        return new CmsElementDump(getClass().getName(), templateFile, collectCacheDirectives(cms, templateFile, null, parameters, null));
+        return new CmsElementDump(getClass().getName(), templateFile, getCacheDirectives(cms, templateFile, null, parameters, null));
     }
 }

@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
- * Date   : $Date: 2001/04/27 16:59:35 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2001/05/07 16:21:57 $
+ * Version: $Revision: 1.36 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -45,7 +45,7 @@ import com.opencms.core.*;
  * @author Anders Fugmann
  * @author Alexander Lucas
  *
- * @version $Revision: 1.35 $ $Date: 2001/04/27 16:59:35 $
+ * @version $Revision: 1.36 $ $Date: 2001/05/07 16:21:57 $
  *
  */
 public class CmsRequestContext implements I_CmsConstants {
@@ -346,7 +346,7 @@ public class CmsRequestContext implements I_CmsConstants {
      * @return <code>true</code> if staging is active, <code>false</code> otherwise.
      */
     public boolean isStaging() {
-        return m_staging;
+        return m_staging && currentProject().getId() == C_PROJECT_ONLINE_ID;
     }
 
     /**
