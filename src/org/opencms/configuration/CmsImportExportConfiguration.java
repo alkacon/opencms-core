@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsImportExportConfiguration.java,v $
- * Date   : $Date: 2004/03/12 16:00:48 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/06/06 08:59:59 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.importexport.CmsImportExportManager;
 import org.opencms.importexport.I_CmsImportExportHandler;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.I_CmsPrincipal;
 
 import java.util.Iterator;
 import java.util.List;
@@ -57,12 +58,6 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
     /** The name of the default XML file for this configuration */
     private static final String C_DEFAULT_XML_FILE_NAME = "opencms-importexport.xml";       
 
-    /** Identifier for group principals */
-    public static final String C_PRINCIPAL_GROUP = "GROUP";
-    
-    /** Identifier for user principals */
-    public static final String C_PRINCIPAL_USER = "USER";
-    
     /** Node that indicates page conversion */
     protected static final String N_CONVERT = "convert";
     
@@ -210,7 +205,7 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
         while (i.hasNext()) {
             String from = (String)i.next();
             principalsElement.addElement(N_PRINCIPALTRANSLATION)
-                .addAttribute(A_TYPE, C_PRINCIPAL_GROUP)
+                .addAttribute(A_TYPE, I_CmsPrincipal.C_PRINCIPAL_GROUP)
                 .addAttribute(A_FROM, from)
                 .addAttribute(A_TO, (String)m_importExportManager.getImportGroupTranslations().get(from));                
         }        
@@ -218,7 +213,7 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
         while (i.hasNext()) {
             String from = (String)i.next();
             principalsElement.addElement(N_PRINCIPALTRANSLATION)
-                .addAttribute(A_TYPE, C_PRINCIPAL_USER)
+                .addAttribute(A_TYPE, I_CmsPrincipal.C_PRINCIPAL_USER)
                 .addAttribute(A_FROM, from)
                 .addAttribute(A_TO, (String)m_importExportManager.getImportUserTranslations().get(from));                
         }  
