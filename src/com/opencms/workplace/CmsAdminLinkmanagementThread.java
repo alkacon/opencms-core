@@ -37,7 +37,7 @@ public class CmsAdminLinkmanagementThread extends Thread {
         }
         catch(CmsException e) {
             m_report.addSeperator(0);
-            m_report.addString(Utils.getStackTrace(e));
+            m_report.addString(e.getMessage());
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                 A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL, e.getMessage());
             }
@@ -49,5 +49,12 @@ public class CmsAdminLinkmanagementThread extends Thread {
      */
     public String getReportUpdate(){
         return m_report.getReportUpdate();
+    }
+
+    /**
+     * shows if there are broken links in this project so far.
+     */
+    public boolean brokenLinksFound(){
+        return m_report.containsPageLinks();
     }
 }

@@ -118,10 +118,8 @@
                 <upload>Importa Database da</upload>
                 <uploadlocal>Importa Database dal computer locale</uploadlocal>
                 <import>Importa Database</import>
-
-                <importend>Import Database ready</importend>
-                <exportend>Export Database ready.</exportend>
-
+<importend>Import Database ready</importend>
+<exportend>Export Database ready.</exportend>
             </label>
         </database>
 
@@ -134,20 +132,16 @@
                 <testlink>Link:</testlink>
                 <testregexp>Espressione:</testregexp>
                 <testresult>Risultato:</testresult>
-
-                <exportend>Static Export ready.</exportend>
-
+<exportend>Static Export ready.</exportend>
             </label>
         </staticexport>
 
         <linkmanagement>
             <label>
-
-                <title>Link Check</title>
-                <text1>Aktual project (</text1>
-                <text2>) is checked for broken Links.</text2>
-                <textende>Check ready.</textende>
-
+<title>Link Check</title>
+<text1>Aktual project (</text1>
+<text2>) is checked for broken Links.</text2>
+<textende>Check ready.</textende>
             </label>
         </linkmanagement>
         
@@ -819,6 +813,11 @@
                 <message1>Sei certo di voler pubblicare il progetto '</message1>
                 <message2>' ora?</message2>
                 <title>Pubblica Progetto</title>
+<message_linkcheck>The Project is checked for broken Links.</message_linkcheck>
+<message_brokenlinks>On this pages broken links were found.</message_brokenlinks>
+<message_brokenlinks2>Will you publish the project anyway?</message_brokenlinks2>
+<message_publish>publishing...</message_publish>
+<message_publish2>publishing... The Project is published.</message_publish2>
             </publish>
             <lockchange>
                 <message1>Sei certo di voler rilasciare tutti i blocchi nel progetto</message1>

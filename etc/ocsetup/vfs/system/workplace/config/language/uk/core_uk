@@ -824,6 +824,11 @@
                 <message1>Are you sure you want to publish project '</message1>
                 <message2>' now?</message2>
                 <title>Publish Project</title>
+                <message_linkcheck>The Project is checked for broken Links.</message_linkcheck>
+                <message_brokenlinks>On this pages broken links were found.</message_brokenlinks>
+                <message_brokenlinks2>Will you publish the project anyway?</message_brokenlinks2>
+                <message_publish>publishing...</message_publish>
+                <message_publish2>publishing... The Project is published.</message_publish2>
             </publish>
             <lockchange>
                 <message1>Are you sure you want to release all locks in project</message1>

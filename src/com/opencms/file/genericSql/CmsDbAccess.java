@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2002/05/24 12:51:08 $
-* Version: $Revision: 1.244 $
+* Date   : $Date: 2002/05/31 13:20:57 $
+* Version: $Revision: 1.245 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import com.opencms.launcher.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.244 $ $Date: 2002/05/24 12:51:08 $ *
+ * @version $Revision: 1.245 $ $Date: 2002/05/31 13:20:57 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -4680,11 +4680,12 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @param project The project to be published.
      * @param onlineProject The online project of the OpenCms.
+     * @param report A report object to provide the loggin messages.
      * @return a vector of changed or deleted resources.
      * @exception CmsException  Throws CmsException if operation was not succesful.
      */
-    public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProject, boolean enableHistory) throws CmsException
-    {
+    public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProject,
+                         boolean enableHistory, I_CmsReport report) throws CmsException{
         CmsAccessFilesystem discAccess = new CmsAccessFilesystem(m_exportpointStorage);
         CmsFolder currentFolder = null;
         CmsFile currentFile = null;
@@ -4696,6 +4697,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         // folderIdIndex:    offlinefolderId   |   onlinefolderId
         Hashtable folderIdIndex = new Hashtable();
         Vector changedResources = new Vector();
+        report.addSeperator(0);
 
         CmsProject currentProject = readProject(projectId);
         int versionId = 1;
@@ -4710,6 +4712,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         offlineFolders = readFolders(projectId, false, true);
         for (int i = 0; i < offlineFolders.size(); i++){
             currentFolder = ((CmsFolder) offlineFolders.elementAt(i));
+            report.addString(currentFolder.getAbsolutePath());
+            report.addSeperator(0);
             // do not publish the folder if it is locked in another project
             if (currentFolder.isLocked()){
               // in this case do nothing
@@ -4901,9 +4905,12 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         } // end of for(...
 
         // now read all FILES in offlineProject
+        report.addSeperator(0);
         offlineFiles = readFiles(projectId, false, true);
         for (int i = 0; i < offlineFiles.size(); i++){
             currentFile = ((CmsFile) offlineFiles.elementAt(i));
+            report.addString(currentFile.getAbsolutePath());
+            report.addSeperator(0);
             if(!currentFile.isLocked()){
                 // remove the temporary files for this resource
                 removeTemporaryFile(currentFile);
@@ -5134,8 +5141,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             }
         } // end of for(...
         // now delete the "deleted" folders
+        report.addSeperator(0);
         for (int i = deletedFolders.size() - 1; i > -1; i--){
             currentFolder = ((CmsFolder) deletedFolders.elementAt(i));
+            report.addString(currentFolder.getAbsolutePath());
+            report.addSeperator(0);
             String exportKey = checkExport(currentFolder.getAbsolutePath());
             if (exportKey != null){
                 discAccess.removeResource(currentFolder.getAbsolutePath(), exportKey);

@@ -824,6 +824,11 @@
                 <message1>Sind Sie sicher, dass sie das Projekt</message1>
                 <message2>nun veröffentlichen wollen?</message2>
                 <title>Projekt veröffentlichen</title>
+                <message_linkcheck>Das Projekt wird auf wird auf Links ohne Ziel überprüft.</message_linkcheck>
+                <message_brokenlinks>Auf folgenden Seiten wurden Links ohne Ziel gefunden.</message_brokenlinks>
+                <message_brokenlinks2>Wollen Sie das Projekt trotzdem veröffentlichen?</message_brokenlinks2>
+                <message_publish>Das Projekt wird veröffentlicht.</message_publish>
+                <message_publish2>Das Projekt wurde erfolgreich veröffentlicht.</message_publish2>
             </publish>
             <lockchange>
                 <message1>Sind Sie sicher, dass sie alle Dateisperrungen für Projekt</message1>

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2002/05/24 14:08:28 $
-* Version: $Revision: 1.233 $
+* Date   : $Date: 2002/05/31 13:20:57 $
+* Version: $Revision: 1.234 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import com.opencms.report.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.233 $ $Date: 2002/05/24 14:08:28 $
+ * @version $Revision: 1.234 $ $Date: 2002/05/31 13:20:57 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -2311,11 +2311,25 @@ public CmsProject onlineProject() throws CmsException {
  * Publishes a project.
  *
  * @param id the id of the project to be published.
+ *
  * @return a Vector of resources, that have been changed.
  *
  * @exception CmsException if operation was not successful.
  */
 public void publishProject(int id) throws CmsException {
+    publishProject(id, new CmsShellReport());
+}
+/**
+ * Publishes a project.
+ *
+ * @param id the id of the project to be published.
+ * @param report A report object to provide the loggin messages.
+ *
+ * @return a Vector of resources, that have been changed.
+ *
+ * @exception CmsException if operation was not successful.
+ */
+public void publishProject(int id, I_CmsReport report) throws CmsException {
     clearcache();
     CmsPublishedResources allChanged = new CmsPublishedResources();
     Vector changedResources = null;
@@ -2327,7 +2341,7 @@ public void publishProject(int id) throws CmsException {
         Vector newRes  = readProjectView(id, "new");
         updateOnlineProjectLinks(readProjectView(id, "deleted"), readProjectView(id, "changed"), null, this.getResourceType(C_TYPE_PAGE_NAME).getResourceType());
         Vector projectResources = readProjectView(id, "all");
-        allChanged = m_rb.publishProject(this, m_context.currentUser(), m_context.currentProject(), id);
+        allChanged = m_rb.publishProject(this, m_context.currentUser(), m_context.currentProject(), id, report);
         // update the online links table for the new resources (now they are there)
         updateOnlineProjectLinks(null, null, newRes, this.getResourceType(C_TYPE_PAGE_NAME).getResourceType());
         newRes = null;
@@ -2342,8 +2356,7 @@ public void publishProject(int id) throws CmsException {
                 m_context.setCurrentProject(C_PROJECT_ONLINE_ID);
                 Vector linkChanges = new Vector();
                 this.exportStaticResources(this.getStaticExportProperties().getStartPoints(),
-                                 linkChanges, allChanged, new CmsShellReport());
-//mgm todo: got the right report here                         ^^^^^^^^^^^^^^^^^^^
+                                 linkChanges, allChanged, report);
                 m_context.setCurrentProject(oldId);
                 Utils.getModulPublishMethods(this, linkChanges);
             } catch (Exception ex){
@@ -2394,13 +2407,27 @@ public void publishProject(int id) throws CmsException {
 /**
  * Publishes a single resource.
  *
- * @param id the id of the project to be published.
- * @return a Vector of resources, that have been changed.
+ * @param resoucename the name (getAbsolutePath()) of the resource to be published.
  *
  * @exception CmsException if operation was not successful.
  */
 public void publishResource(String resourcename) throws CmsException {
+    publishResource(resourcename, false);
+}
+/**
+ * Publishes a single resource.
+ *
+ * @param id the id of the project to be published.
+ * @param justPrepear, if true this method dont publish the temp project that is created.
+ *          This is used for the workplace view were the temp-projcet is checkt for broken
+ *          links before publish.
+ * @return the project id of the created project.
+ *
+ * @exception CmsException if operation was not successful.
+ */
+public int publishResource(String resourcename, boolean justPrepare) throws CmsException {
     int oldProjectId = m_context.currentProject().getId();
+    int retValue = -1;
     CmsResource res = null;
     if(resourcename.endsWith("/")){
         res = readFolder(resourcename, true);
@@ -2424,14 +2451,17 @@ public void publishResource(String resourcename) throws CmsException {
             int newProjectId = m_rb.createProject(m_context.currentUser(), m_context.currentProject(),
                                               "Direct Publish","","Users",
                                               "Projectmanager", I_CmsConstants.C_PROJECT_TYPE_TEMPORARY).getId();
+            retValue = newProjectId;
             getRequestContext().setCurrentProject(newProjectId);
             I_CmsResourceType rt = getResourceType(res.getType());
             // copy the resource to the
             rt.copyResourceToProject(this, resourcename);
             // set the project_id of the resource to the current project
             rt.changeLockedInProject(this, newProjectId, resourcename);
-            // publish the temporary project
-            publishProject(newProjectId);
+            if(!justPrepare){
+                // publish the temporary project
+                publishProject(newProjectId);
+            }
             getRequestContext().setCurrentProject(oldProjectId);
         } else {
             throw new CmsException("[CmsObject] cannot publish resource in current project", CmsException.C_NO_ACCESS);
@@ -2439,6 +2469,7 @@ public void publishResource(String resourcename) throws CmsException {
     } else {
         throw new CmsException("[CmsObject] cannot publish resource in online project", CmsException.C_NO_ACCESS);
     }
+    return retValue;
 }
 
 /**

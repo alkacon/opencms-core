@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/report/Attic/CmsReport.java,v $
-* Date   : $Date: 2002/05/24 12:51:09 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2002/05/31 13:20:58 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -131,6 +131,14 @@ public class CmsReport implements I_CmsReport{
     public void addPageLinks(CmsPageLinks value){
         m_type.add(C_TYPE_PAGELINKS);
         m_content.add(value);
+    }
+
+    /**
+     * says if this report contains any page link objects. Used for the linkcheck:
+     * if any broken links in the project then the report contains pagelinks.
+     */
+    public boolean containsPageLinks(){
+        return m_type.contains(C_TYPE_PAGELINKS);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminPublishProjectThread.java,v $
-* Date   : $Date: 2001/09/06 06:53:33 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2002/05/31 13:20:58 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.util.*;
 import com.opencms.template.*;
+import com.opencms.report.*;
 import java.util.*;
 import java.io.*;
 
@@ -49,6 +50,9 @@ public class CmsAdminPublishProjectThread extends Thread implements I_CmsConstan
     private CmsObject m_cms;
     private I_CmsSession m_session;
 
+    // the object to send the information to the workplace.
+    private CmsReport m_report;
+
     /**
      * Insert the method's description here.
      * Creation date: (13.09.00 09:52:24)
@@ -58,6 +62,7 @@ public class CmsAdminPublishProjectThread extends Thread implements I_CmsConstan
         m_cms = cms;
         m_session = session;
         m_projectId = projectId;
+        m_report = new CmsReport(new String[]{"<br>", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;", "<b>", "</b>", "<br><b>Static Export</b><br>&nbsp; links to start:","<span style='color:#009900'>","</span><br><br>"});
     }
 
     public void run() {
@@ -65,13 +70,21 @@ public class CmsAdminPublishProjectThread extends Thread implements I_CmsConstan
          // It will result in a NullPointerException sometimes.
          // !I_CmsSession session = m_cms.getRequestContext().getSession(true);
         try {
-            m_cms.publishProject(m_projectId);
+            m_cms.publishProject(m_projectId, m_report);
         }
         catch(CmsException e) {
-            m_session.putValue(C_SESSION_THREAD_ERROR, Utils.getStackTrace(e));
+            m_report.addSeperator(0);
+            m_report.addSeperator(0);
+            m_report.addString(e.getMessage());
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                 A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL, e.getMessage());
             }
         }
+    }
+    /**
+     * returns the part of the report that is ready.
+     */
+    public String getReportUpdate(){
+        return m_report.getReportUpdate();
     }
 }

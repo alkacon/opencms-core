@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2002/04/30 09:29:57 $
-* Version: $Revision: 1.48 $
+* Date   : $Date: 2002/05/31 13:20:58 $
+* Version: $Revision: 1.49 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import com.opencms.core.*;
 import com.opencms.file.*;
 import com.opencms.file.utils.*;
 import com.opencms.util.*;
-
+import com.opencms.report.*;
 
 
 /**
@@ -52,7 +52,7 @@ import com.opencms.util.*;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.48 $ $Date: 2002/04/30 09:29:57 $ *
+ * @version $Revision: 1.49 $ $Date: 2002/05/31 13:20:58 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -1759,12 +1759,17 @@ public Vector lockResource(CmsUser currentUser, CmsProject currentProject, Strin
  * @param currentUser The user who requested this method.
  * @param currentProject The current project of the user.
  * @param projectId The id of the project to be published.
+ * @param report A report object to provide the loggin messages.
  * @return a vector of changed resources.
  *
  * @exception CmsException Throws CmsException if something goes wrong.
  */
-public Vector publishProject(CmsUser currentUser, int projectId, CmsProject onlineProject, boolean enableHistory) throws CmsException {
+public Vector publishProject(CmsUser currentUser, int projectId, CmsProject onlineProject,
+                        boolean enableHistory, I_CmsReport report) throws CmsException {
     //System.out.println("PL/SQL: publishProject");
+    report.addSeperator(0);
+    report.addString("PL/SQL: publishProject");
+    report.addSeperator(0);
     com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
     CmsAccessFilesystem discAccess = new CmsAccessFilesystem(m_exportpointStorage);
     CallableStatement statement = null;

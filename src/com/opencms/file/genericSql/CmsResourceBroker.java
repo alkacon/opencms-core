@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2002/05/24 12:51:09 $
-* Version: $Revision: 1.322 $
+* Date   : $Date: 2002/05/31 13:20:58 $
+* Version: $Revision: 1.323 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.w3c.dom.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.322 $ $Date: 2002/05/24 12:51:09 $
+ * @version $Revision: 1.323 $ $Date: 2002/05/31 13:20:58 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -4453,11 +4453,13 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
      * @param currentUser The user who requested this method.
      * @param currentProject The current project of the user.
      * @param id The id of the project to be published.
+     * @param report A report object to provide the loggin messages.
      * @return CmsPublishedResources The object includes the vectors of changed resources.
      *
      * @exception CmsException Throws CmsException if something goes wrong.
      */
-    public synchronized CmsPublishedResources publishProject(CmsObject cms, CmsUser currentUser, CmsProject currentProject, int id) throws CmsException {
+    public synchronized CmsPublishedResources publishProject(CmsObject cms, CmsUser currentUser,
+                    CmsProject currentProject, int id, I_CmsReport report) throws CmsException {
 
         CmsProject publishProject = readProject(currentUser, currentProject, id);
         CmsPublishedResources allChanged = new CmsPublishedResources();
@@ -4478,7 +4480,8 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
                 shouldReload = shouldReloadClasses(id, classFiles);
             }
             try{
-                changedResources = m_dbAccess.publishProject(currentUser, id, onlineProject(currentUser, currentProject), m_enableHistory);
+                changedResources = m_dbAccess.publishProject(currentUser, id,
+                                    onlineProject(currentUser, currentProject), m_enableHistory, report);
                 // now publish the module masters
                 Vector publishModules = new Vector();
                 cms.getRegistry().getModulePublishables(publishModules, null);

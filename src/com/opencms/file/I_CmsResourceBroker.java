@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
-* Date   : $Date: 2002/05/24 12:51:08 $
-* Version: $Revision: 1.177 $
+* Date   : $Date: 2002/05/31 13:20:57 $
+* Version: $Revision: 1.178 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import com.opencms.report.*;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.177 $ $Date: 2002/05/24 12:51:08 $
+ * @version $Revision: 1.178 $ $Date: 2002/05/31 13:20:57 $
  *
  */
 
@@ -1864,12 +1864,13 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
      * @param currentUser The user who requested this method.
      * @param currentProject The current project of the user.
      * @param id The id of the project to be published.
+     * @param report A report object to provide the loggin messages.
      * @return CmsPublishedResources The object includes the vectors with changed resources.
      *
      * @exception CmsException Throws CmsException if something goes wrong.
      */
     public CmsPublishedResources publishProject(CmsObject cms, CmsUser currentUser, CmsProject currentProject,
-                                 int id)
+                                 int id, I_CmsReport report)
         throws CmsException;
     /**
      * Reads the agent of a task from the OpenCms.

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectPublish.java,v $
-* Date   : $Date: 2002/01/18 13:42:08 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2002/05/31 13:20:58 $
+* Version: $Revision: 1.22 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,13 +42,15 @@ import javax.servlet.http.*;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.21 $ $Date: 2002/01/18 13:42:08 $
+ * @version $Revision: 1.22 $ $Date: 2002/05/31 13:20:58 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
 public class CmsAdminProjectPublish extends CmsWorkplaceDefault implements I_CmsConstants,I_CmsLogChannels {
 
     private final String C_PUBLISH_THREAD = "publishprojectthread";
+    private final String C_PUBLISH_LINKCHECK_THREAD = "publishlinkcheckthread";
+    private final String C_PROJECT_ID_FOR_PUBLISH="theProjectIdForPublish";
 
     /**
      * Gets the content of a defined section in a given template file and its subtemplates
@@ -69,9 +71,65 @@ public class CmsAdminProjectPublish extends CmsWorkplaceDefault implements I_Cms
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: " + templateFile);
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector == null) ? "<default>" : templateSelector));
         }
-         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms,
+        CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms,
                 templateFile, elementName, parameters, templateSelector);
         I_CmsSession session = cms.getRequestContext().getSession(true);
+        CmsXmlLanguageFile lang = xmlTemplateDocument.getLanguageFile();
+        String action = (String)parameters.get("action");
+
+        // here we show the report updates when the threads are allready running.
+        if("showResult".equals(action)){
+            // ok. Thread is started and we shoud show the report information.
+            CmsAdminLinkmanagementThread doTheWork = (CmsAdminLinkmanagementThread)session.getValue(C_PUBLISH_LINKCHECK_THREAD);
+            //still working?
+            if(doTheWork.isAlive()){
+                xmlTemplateDocument.setData("endMethod", "");
+                xmlTemplateDocument.setData("text", lang.getDataValue("project.publish.message_linkcheck"));
+            }else{
+                if(doTheWork.brokenLinksFound()){
+                    xmlTemplateDocument.setData("endMethod", xmlTemplateDocument.getDataValue("endMethod2"));
+                    xmlTemplateDocument.setData("autoUpdate","");
+                    xmlTemplateDocument.setData("text", lang.getDataValue("project.publish.message_brokenlinks")
+                                                +"<br>"+lang.getDataValue("project.publish.message_brokenlinks2"));
+                }else{
+                    xmlTemplateDocument.setData("endMethod", xmlTemplateDocument.getDataValue("endMethod3"));
+                    xmlTemplateDocument.setData("autoUpdate","");
+                    xmlTemplateDocument.setData("text", "");
+                }
+                session.removeValue(C_PUBLISH_LINKCHECK_THREAD);
+            }
+            xmlTemplateDocument.setData("data", doTheWork.getReportUpdate());
+            return startProcessing(cms, xmlTemplateDocument, elementName, parameters, "updateReport");
+        }
+
+        if("doThePublish".equals(action)){
+            // linkcheck is ready. Now we can start the publishing
+            int projectId = ((Integer)session.getValue(C_PROJECT_ID_FOR_PUBLISH)).intValue();
+            session.removeValue(C_PROJECT_ID_FOR_PUBLISH);
+            Thread doPublish = new CmsAdminPublishProjectThread(cms, projectId, session);
+            doPublish.start();
+            session.putValue(C_PUBLISH_THREAD, doPublish);
+            xmlTemplateDocument.setData("actionParameter", "showPublishResult");
+            return startProcessing(cms, xmlTemplateDocument, elementName, parameters, "showresult");
+        }
+
+        if("showPublishResult".equals(action)){
+            // ok. Thread is started and we shoud show the report information.
+            CmsAdminPublishProjectThread doTheWork = (CmsAdminPublishProjectThread)session.getValue(C_PUBLISH_THREAD);
+            //still working?
+            if(doTheWork.isAlive()){
+                xmlTemplateDocument.setData("endMethod", "");
+                xmlTemplateDocument.setData("text", lang.getDataValue("project.publish.message_publish"));
+            }else{
+                xmlTemplateDocument.setData("endMethod", xmlTemplateDocument.getDataValue("endMethod"));
+                xmlTemplateDocument.setData("autoUpdate","");
+                xmlTemplateDocument.setData("text", lang.getDataValue("project.publish.message_publish2"));
+                session.removeValue(C_PUBLISH_THREAD);
+            }
+            xmlTemplateDocument.setData("data", doTheWork.getReportUpdate());
+            return startProcessing(cms, xmlTemplateDocument, elementName, parameters, "updateReport");
+        }
+
         String paraId = (String)parameters.get("projectid");
         int projectId = -1;
         int projectType = C_PROJECT_TYPE_TEMPORARY;
@@ -82,7 +140,6 @@ public class CmsAdminProjectPublish extends CmsWorkplaceDefault implements I_Cms
             xmlTemplateDocument.setData("projectid", projectId + "");
             xmlTemplateDocument.setData("projectname", project.getName());
         }
-        String action = (String)parameters.get("action");
         // look if user called from Explorer
         String fromExplorer = (String)parameters.get("fromExplorer");
         if (fromExplorer != null){
@@ -121,11 +178,12 @@ public class CmsAdminProjectPublish extends CmsWorkplaceDefault implements I_Cms
             if(projectType == C_PROJECT_TYPE_TEMPORARY){
                 cms.getRequestContext().setCurrentProject(cms.onlineProject().getId());
             }
-            Thread doPublish = new CmsAdminPublishProjectThread(cms, projectId, session);
-            doPublish.start();
-            session.putValue(C_PUBLISH_THREAD, doPublish);
-            xmlTemplateDocument.setData("time", "10");
-            templateSelector = "wait";
+            // first part of the publish: check for broken links
+            CmsAdminLinkmanagementThread doCheck = new CmsAdminLinkmanagementThread(cms, projectId);
+            doCheck.start();
+            session.putValue(C_PUBLISH_LINKCHECK_THREAD, doCheck);
+            session.putValue(C_PROJECT_ID_FOR_PUBLISH, new Integer(projectId));
+            templateSelector = "showresult";
         } else {
             if((action != null) && ("working".equals(action))) {
 
@@ -155,8 +213,7 @@ public class CmsAdminProjectPublish extends CmsWorkplaceDefault implements I_Cms
             }
         }
         // Now load the template file and start the processing
-        return startProcessing(cms, xmlTemplateDocument, elementName, parameters,
-                templateSelector);
+        return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
     }
 
     /**
