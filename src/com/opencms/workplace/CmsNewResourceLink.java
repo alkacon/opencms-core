@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceLink.java,v $
-* Date   : $Date: 2003/08/28 08:24:44 $
-* Version: $Revision: 1.47 $
+* Date   : $Date: 2003/08/28 12:43:07 $
+* Version: $Revision: 1.48 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.47 $ $Date: 2003/08/28 08:24:44 $
+ * @version $Revision: 1.48 $ $Date: 2003/08/28 12:43:07 $
  */
 
 public class CmsNewResourceLink extends CmsWorkplaceDefault {
@@ -237,7 +237,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault {
                             // copy the folder
                             cms.copyResource(targetName, foldername + filename, keepTargetProperties, true, C_COPY_AS_LINK);
                             
-                            // set the variables that navigation properties can be updates
+                            // set the variables that navigation properties can be updated
                             linkResource = cms.readFileHeader(foldername + filename);
                             checkurl = true;
                         } else {
