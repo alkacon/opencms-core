@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsRequestHttpServlet.java,v $
-* Date   : $Date: 2001/11/02 08:13:26 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2002/01/29 13:03:44 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.http.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.25 $ $Date: 2001/11/02 08:13:26 $
+ * @version $Revision: 1.26 $ $Date: 2002/01/29 13:03:44 $
  */
 public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_CmsRequest {
 
@@ -120,6 +120,12 @@ public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_
     int filecounter = 0;
 
     /**
+     * The webAppUrl from the original request.
+     */
+    private String m_webAppUrl="";
+    private String m_servletUrl="";
+
+    /**
      * Constructor, creates a new CmsRequestHttpServlet object.
      *
      * @param req The original HttpServletRequest used to create this CmsRequest.
@@ -127,6 +133,14 @@ public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_
     CmsRequestHttpServlet(HttpServletRequest req) throws IOException {
         m_req = req;
 
+        // get the webAppUrl and the servletUrl
+        try {
+            m_webAppUrl = m_req.getContextPath();
+        } catch(NoSuchMethodError err) {
+            // this is the old servlet-api without this method
+            // ignore this missing method and the context-path
+        }
+        m_servletUrl = m_webAppUrl + m_req.getServletPath();
         // Test if this is a multipart-request.
         // If it is, extract all files from it.
         String type = req.getHeader("content-type");
@@ -682,14 +696,7 @@ public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_
      * http://www.myserver.com/opencms
      */
     public String getWebAppUrl() {
-        String retValue = "";
-        try {
-            retValue += m_req.getContextPath();
-        } catch(NoSuchMethodError err) {
-            // this is the old servlet-api without this method
-            // ignore this missing method and the context-path
-        }
-        return retValue;
+        return m_webAppUrl;
     }
 
     /**
@@ -697,6 +704,6 @@ public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_
      * Web-Application.
      */
     public String getServletUrl(){
-        return getWebAppUrl() + m_req.getServletPath();
+        return m_servletUrl;
     }
 }
