@@ -207,7 +207,6 @@ location.href="publish_project.html?action=working&time=]]><PROCESS>time</PROCES
 <![CDATA[
 <HTML>
 <BODY onload="window.top.location.reload();">
-hallo
 </BODY>
 </html>
 ]]>
