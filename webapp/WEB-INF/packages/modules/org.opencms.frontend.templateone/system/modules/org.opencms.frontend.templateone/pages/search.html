@@ -14,7 +14,6 @@ cms.includeWithPageUri("head");
 --%><jsp:useBean id="search" scope="request" class="org.opencms.search.CmsSearch"><%--
 --%><jsp:setProperty name="search" property="*"/><% 
     	search.init(cms.getCmsObject()); 
-    	search.setIndex("Online project (VFS)");
     	search.setField(new String[] {"title", "keywords", "description", "content"});
     	search.setMatchesPerPage(10);
     	search.setQueryLength(3);
@@ -27,6 +26,8 @@ cms.includeWithPageUri("head");
 <form style="margin: 0;" name="searchform" method="post" action="<%= cms.link("/system/modules/org.opencms.frontend.templateone/pages/search.html") %>" onsubmit="return parseSearchQuery(document.forms['searchform'], '<%= cms.key("search.error.wordlength") %>');">
 <input type="hidden" name="action" value="search" />
 <input type="hidden" name="query" value="" />
+<input type="hidden" name="index" value="<%= cms.getRequestContext().currentProject().getName() %> project (VFS)" />
+<input type="hidden" name="page" value="1" />
 <input type="hidden" name="<%= CmsTemplateBean.C_PARAM_URI %>" value="<%= cms.getRequestContext().getUri() %>" />
 <input type="hidden" name="__locale" value="<%= cms.getRequestContext().getLocale() %>" />
 
@@ -67,5 +68,4 @@ if (result != null && result.size() > 0) {
 <%
 // include the template head
 cms.includeWithPageUri("foot");
-%>    
- 
+%>
