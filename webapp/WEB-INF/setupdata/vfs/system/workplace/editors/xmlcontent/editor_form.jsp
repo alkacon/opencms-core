@@ -83,6 +83,7 @@ default:
 <!--
 
 // action parameters of the form
+var actionChangeElement = "<%= wp.EDITOR_CHANGE_ELEMENT %>";
 var actionExit = "<%= wp.EDITOR_EXIT %>";
 var actionSaveExit = "<%= wp.EDITOR_SAVEEXIT %>";
 var actionSave = "<%= wp.EDITOR_SAVE %>";
@@ -118,6 +119,8 @@ function exitEditor() {
 <input type="hidden" name="<%= wp.PARAM_RESOURCE %>" value="<%= wp.getParamResource() %>">
 <input type="hidden" name="<%= wp.PARAM_LOADDEFAULT %>" value="<%= wp.getParamLoaddefault() %>">
 <input type="hidden" name="<%= wp.PARAM_EDITASTEXT %>" value="<%= wp.getParamEditastext() %>">
+<input type="hidden" name="<%= wp.PARAM_ELEMENTLANGUAGE %>" value="<%= wp.getParamElementlanguage() %>">
+<input type="hidden" name="<%= wp.PARAM_OLDELEMENTLANGUAGE %>" value="<%= wp.getParamElementlanguage() %>">
 <input type="hidden" name="<%= wp.PARAM_DIRECTEDIT %>" value="<%= wp.getParamDirectedit() %>">
 <input type="hidden" name="<%= wp.PARAM_BACKLINK %>" value="<%= wp.getParamBacklink() %>">
  

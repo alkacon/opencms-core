@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2004/10/14 15:05:54 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/10/22 11:05:22 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.1.12
  */
@@ -82,21 +82,13 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     /** Page object used from the action and init methods, be sure to initialize this e.g. in the initWorkplaceRequestValues method. */
     protected CmsXmlPage m_page;
     
-    /** Parameter name for the request parameter "element language". */
-    public static final String PARAM_ELEMENTLANGUAGE = "elementlanguage";
-    
     /** Parameter name for the request parameter "element name". */
     public static final String PARAM_ELEMENTNAME = "elementname";
-    
-    /** Parameter name for the request parameter "old element language". */
-    public static final String PARAM_OLDELEMENTLANGUAGE = "oldelementlanguage";
     
     /** Parameter name for the request parameter "old element name". */
     public static final String PARAM_OLDELEMENTNAME = "oldelementname";
     
-    private String m_paramElementlanguage;
     private String m_paramElementname;
-    private String m_paramOldelementlanguage;
     private String m_paramOldelementname; 
       
     /**
@@ -290,31 +282,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      * @return the html for the element language selectbox
      */
     public String buildSelectElementLanguage(String attributes) {
-        // get locale names based on properties and global settings
-        List locales = OpenCms.getLocaleManager().getAvailableLocales(getCms(), getParamTempfile());
-        List options = new ArrayList(locales.size());
-        List selectList = new ArrayList(locales.size());        
-        int currentIndex = -1;
-        for (int counter = 0; counter < locales.size(); counter++) {
-            // create the list of options and values
-            Locale curLocale = (Locale)locales.get(counter);
-            selectList.add(curLocale.toString());
-            options.add(curLocale.getDisplayName(getLocale()));
-            if (curLocale.equals(getElementLocale())) {
-                // set the selected index of the selector
-                currentIndex = counter;
-            }
-        }
-       
-        if (currentIndex == -1) {
-            // no matching element language found, use first element language in list
-            if (selectList != null && selectList.size() > 0) {
-                currentIndex = 0;
-                setParamElementlanguage((String)selectList.get(0));
-            }
-        }
-    
-        return buildSelect(attributes, options, selectList, currentIndex, false);      
+        return buildSelectElementLanguage(attributes, getParamTempfile(), getElementLocale());      
     }
     
     /**
@@ -428,15 +396,6 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
         } 
         return m_elementLocale;
     }    
-    
-    /**
-     * Returns the current element language.<p>
-     * 
-     * @return the current element language
-     */
-    public String getParamElementlanguage() {
-        return m_paramElementlanguage;
-    }
 
     /**
      * Returns the current element name.<p>
@@ -446,15 +405,6 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     public String getParamElementname() {
         return m_paramElementname;
     }
-
-    /**
-    * Returns the old element language.<p>
-    * 
-    * @return the old element language
-    */
-   public String getParamOldelementlanguage() {
-       return m_paramOldelementlanguage;
-   }
 
    /**
     * Returns the old element name.<p>
@@ -629,15 +579,6 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     protected abstract String prepareContent(boolean save);
 
     /**
-     * Sets the current element language.<p>
-     * 
-     * @param elementLanguage the current element language
-     */
-    public void setParamElementlanguage(String elementLanguage) {
-        m_paramElementlanguage = elementLanguage;
-    }
-
-    /**
      * Sets the current element name.<p>
      * 
      * @param elementName the current element name
@@ -647,15 +588,6 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     }
 
    /**
-    * Sets the old element language.<p>
-    * 
-    * @param oldElementLanguage the old element language
-    */
-   public void setParamOldelementlanguage(String oldElementLanguage) {
-       m_paramOldelementlanguage = oldElementLanguage;
-   }
-
-   /**
     * Sets the old element name.<p>
     * 
     * @param oldElementName the old element name
@@ -663,8 +595,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
    public void setParamOldelementname(String oldElementName) {
        m_paramOldelementname = oldElementName;
    } 
-   
-   
+     
    /**
     * Returns the OpenCms VFS uri of the template of the current page.<p>
     * 

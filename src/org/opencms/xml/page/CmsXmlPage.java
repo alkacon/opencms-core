@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/page/CmsXmlPage.java,v $
- * Date   : $Date: 2004/10/14 15:05:54 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/10/22 11:05:22 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.xml.sax.SAXException;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class CmsXmlPage extends A_CmsXmlDocument {
 
@@ -158,6 +158,25 @@ public class CmsXmlPage extends A_CmsXmlDocument {
     public CmsXmlPage(Locale locale, String encoding) {
 
         initDocument(CmsXmlPageFactory.createDocument(locale), encoding, null);
+    }
+    
+    /**
+     * @see org.opencms.xml.I_CmsXmlDocument#addLocale(java.util.Locale)
+     */
+    public void addLocale(Locale locale) throws CmsXmlException {
+
+        if (hasLocale(locale)) {
+            throw new CmsXmlException("Locale '" + locale + "' already exists in XML document");
+        }
+        
+        // append new "page" element
+        Element pages = m_document.getRootElement();
+        Element newPage = pages.addElement(NODE_PAGE);
+        // add "language" attribute
+        newPage.addAttribute(ATTRIBUTE_LANGUAGE, locale.toString());
+        
+        // re-initialize the bookmarks
+        initDocument(m_document, m_encoding, null);
     }
 
     /**
@@ -360,16 +379,16 @@ public class CmsXmlPage extends A_CmsXmlDocument {
     }
 
     /**
-     * @see org.opencms.xml.A_CmsXmlDocument#initDocument(org.dom4j.Document, java.lang.String, org.xml.sax.EntityResolver)
+     * @see org.opencms.xml.A_CmsXmlDocument#initDocument(org.dom4j.Document, java.lang.String, org.opencms.xml.CmsXmlContentDefinition)
      */
-    protected void initDocument(Document document, String encoding, EntityResolver resolver) {
+    protected void initDocument(Document document, String encoding, CmsXmlContentDefinition definition) {
 
         m_encoding = CmsEncoder.lookupEncoding(encoding, encoding);
         m_document = document;
         m_elementLocales = new HashMap();
         m_elementNames = new HashMap();
 
-        // convert pre 5.5.6 XML page documents
+        // convert pre 5.3.6 XML page documents
         if (!NODE_PAGES.equals(m_document.getRootElement().getName())) {
             convertOldDocument();
         }

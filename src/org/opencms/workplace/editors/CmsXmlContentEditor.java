@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2004/10/21 11:21:46 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/10/22 11:05:22 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.I_CmsResourceCollector;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
@@ -66,7 +67,7 @@ import javax.servlet.jsp.JspException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.5.0
  */
 public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog {
@@ -82,6 +83,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     
     /** The structure of the content object to edit. */
     private CmsXmlContentDefinition m_contentDefinition;
+    
+    /** The element locale. */
+    private Locale m_elementLocale;
     
     /** File object used to read and write contents. */
     private CmsFile m_file;
@@ -146,12 +150,19 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             setAction(ACTION_SHOW);
         } else if (EDITOR_SHOW_ERRORMESSAGE.equals(getParamAction())) {
             setAction(ACTION_SHOW_ERRORMESSAGE);
+        } else if (EDITOR_CHANGE_ELEMENT.equals(getParamAction())) {
+            setAction(ACTION_SHOW);
+            actionChangeElementLanguage();
         } else if (EDITOR_ACTION_NEW.equals(getParamAction())) {
             setAction(ACTION_NEW);
             return;
         } else {
             // initial call of editor
             setAction(ACTION_DEFAULT);
+            // set the initial element language if not given in request parameters
+            if (getParamElementlanguage() == null) {
+                initElementLanguage();
+            }
         }      
     }   
     
@@ -192,6 +203,33 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     }
     
     /**
+     * Performs the change element language action of the editor.<p>
+     */
+    public void actionChangeElementLanguage() {
+        
+        if (! m_content.hasLocale(getElementLocale())) {
+            // create new element if selected language element is not present
+            try {
+                m_content.addLocale(getElementLocale());
+            } catch (CmsXmlException e) {
+                if (OpenCms.getLog(this).isErrorEnabled()) {
+                    OpenCms.getLog(this).error(e);
+                }
+            }
+        }
+        // save eventually changed content of the editor
+        Locale oldLocale = CmsLocaleManager.getLocale(getParamOldelementlanguage());
+        try {
+            actionSave(oldLocale);
+        } catch (JspException e) {
+            // should usually never happen
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(e);
+            }
+        }
+    }
+    
+    /**
      * Unlocks the edited resource when in direct edit mode.<p>
      * 
      * @param forceUnlock if true, the resource will be unlocked anyway
@@ -218,33 +256,13 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
      */
     public void actionExit() throws IOException, JspException {    
         if (getAction() == ACTION_CANCEL) {
-            // save and exit was canceled
+            // save and exit was cancelled
             return;
         }
-        // unlock resource, if in directedit mode
+        // unlock resource if we are in direct edit mode
         actionClear(false);
         // close the editor
         actionClose();
-    }
-
-    /**
-     * Creates a parameter String for passing it to the editor in a "new" operation.<p>
-     * 
-     * @param templateResource the path of the resource to use as template
-     * @param collectorName the name of the collector to use for creating a new resource 
-     * @param param the collector parameters
-     * 
-     * @return a parameter String for passing it to the editor in a "new" operation
-     */
-    public static String actionNewParamters(String templateResource, String collectorName, String param) {
-        
-        StringBuffer result = new StringBuffer(128);
-        result.append(templateResource);
-        result.append('|');
-        result.append(collectorName);
-        result.append('|');
-        result.append(param);
-        return result.toString();        
     }
 
     /**
@@ -300,15 +318,30 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     }
     
     /**
-     * Performs the save content ation.<p>
+     * Performs the save content action.<p>
      * 
      * @see org.opencms.workplace.editors.CmsEditor#actionSave()
      */
     public void actionSave() throws JspException {
-        try {            
-             
-            Locale locale = getElementLocale();             
-            
+    
+        actionSave(getElementLocale());
+        if (getAction() != ACTION_CANCEL) {
+            // save successful, set save action         
+           setAction(ACTION_SAVE);
+        }
+    }
+    
+    /**
+     * Performs the save content action.<p>
+     * 
+     * This is also used when changing the element language.<p>
+     * 
+     * @param locale the locale to save the content
+     * @throws JspException if including the error page fails
+     */
+    public void actionSave(Locale locale) throws JspException {
+        
+        try {                        
             List typeSequence = m_contentDefinition.getTypeSequence();            
             Iterator i = typeSequence.iterator();
             while (i.hasNext()) {
@@ -346,10 +379,6 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             showErrorPage(e, "save");
         }
     
-        if (getAction() != ACTION_CANCEL) {
-            // save successful, set save action         
-           setAction(ACTION_SAVE);
-        }
     }
     
     /**
@@ -379,15 +408,26 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     }
     
     /**
+     * Builds the html String for the element language selector.<p>
+     *  
+     * @param attributes optional attributes for the &lt;select&gt; tag
+     * @return the html for the element language selectbox
+     */
+    public String buildSelectElementLanguage(String attributes) {
+        return buildSelectElementLanguage(attributes, getParamResource(), getElementLocale());      
+    }
+    
+    /**
      * Returns the current element locale.<p>
      * 
      * @return the current element locale
      */
     public Locale getElementLocale() {
-        
-        int todo = 0;
-        // TODO: figure out the locale selected by the user
-        return (Locale)m_content.getLocales().get(0);
+               
+        if (m_elementLocale == null) {
+            m_elementLocale = CmsLocaleManager.getLocale(getParamElementlanguage());
+        } 
+        return m_elementLocale;
     }    
     
     /**
@@ -525,6 +565,25 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             showErrorPage(e, "xml");
         }
         return result.toString();
+    }
+    
+    /**
+     * Initializes the element language for the first call of the editor.<p>
+     */
+    protected void initElementLanguage() {
+        List locales = m_content.getLocales();
+        Locale defaultLocale = (Locale)OpenCms.getLocaleManager().getDefaultLocales(getCms(), getCms().getSitePath(m_file)).get(0);
+        
+        if (locales.size() > 0) {
+            // element present, get the language
+            if (locales.contains(defaultLocale)) {
+                // get the element for the default language
+                setParamElementlanguage(defaultLocale.toString());
+            } else {
+                // get the first element that can be found
+                setParamElementlanguage(locales.get(0).toString());
+            }
+        }
     }
     
     /**

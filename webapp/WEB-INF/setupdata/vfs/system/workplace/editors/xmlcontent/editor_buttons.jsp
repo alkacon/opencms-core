@@ -10,7 +10,7 @@
 %><%
 	
 CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
-CmsEditorFrameset wp = new CmsEditorFrameset(cms);
+CmsXmlContentEditor wp = new CmsXmlContentEditor(cms);
 CmsEditorDisplayOptions options = wp.getEditorDisplayOptions();
 Properties displayOptions = options.getDisplayOptions(cms);
 
@@ -24,18 +24,28 @@ int buttonStyle = wp.getSettings().getUserSettings().getEditorButtonStyle();
 
 <script type="text/javascript">
 <!--
+
+var formFrame = top.edit.editform;
+
 function buttonAction(actionValue) {
-	top.edit.editform.buttonAction(actionValue);
+	formFrame.buttonAction(actionValue);
+}
+
+function changeElementLanguage() {
+	formFrame.document.forms["EDITOR"].elements["<%= wp.PARAM_ELEMENTLANGUAGE %>"].value = document.forms["buttons"].elements["<%= wp.PARAM_ELEMENTLANGUAGE %>"].value;
+	buttonAction(4);
+	formFrame.focus();
 }
 
 function confirmExit() {
-	top.edit.editform.confirmExit();
+	formFrame.confirmExit();
 }
 //-->
 </script>
 
 </head>
 <body class="buttons-head" unselectable="on">
+<form name="buttons" action="" method="post">
 <table cellspacing="0" cellpadding="0" border="0" style="width: 100%;">	
 <tr>
 	<td>
@@ -44,7 +54,14 @@ function confirmExit() {
 <%= wp.buttonBarStartTab(0, 5) %>
 <%= wp.button("javascript:buttonAction(2);", null, "save_exit", "button.saveclose", buttonStyle) %>
 <%= wp.button("javascript:buttonAction(3);", null, "save", "button.save", buttonStyle) %>
+<%= wp.buttonBarSeparator(5, 5) %>
 
+<%
+if (options.showElement("option.element.language", displayOptions)) {
+	out.println(wp.buttonBarLabel("input.lang"));
+	out.println("<td>" + wp.buildSelectElementLanguage("name=\"" + wp.PARAM_ELEMENTLANGUAGE + "\" width=\"150\" onchange=\"changeElementLanguage();\"") + "</td>");
+}
+%>
 	<td class="maxwidth">&nbsp;</td>
 		
 <%= wp.button("javascript:confirmExit();", null, "exit", "button.close", buttonStyle) %>
@@ -54,5 +71,6 @@ function confirmExit() {
 	</td>
 </tr>
 </table>
+</form>
 </body>
 </html>

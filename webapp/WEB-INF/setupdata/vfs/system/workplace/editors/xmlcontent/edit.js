@@ -55,6 +55,12 @@ function buttonAction(para) {
 		submit(_form);
 		_form.submit();
 		break;
+	case 4:
+		_form.action.value = actionChangeElement;
+		_form.target = "_self";
+		submit(_form);
+		_form.submit();
+		break;
 	default:
 		alert("No action defined for this button!");
 		break;

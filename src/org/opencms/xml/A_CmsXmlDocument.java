@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/A_CmsXmlDocument.java,v $
- * Date   : $Date: 2004/10/16 08:24:38 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/10/22 11:05:22 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,6 +50,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.dom4j.Document;
+import org.dom4j.Element;
 import org.xml.sax.EntityResolver;
 
 /**
@@ -58,7 +59,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.3.5
  */
 public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
@@ -131,6 +132,9 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
             return m_name;
         }
     }
+    
+    /** The XML content definition object (i.e. XML schema) used by this content. */
+    protected CmsXmlContentDefinition m_contentDefinition;    
 
     /** The content conversion to use for this xml document. */
     protected String m_conversion;
@@ -207,6 +211,8 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
                 // iterate over all elements of this name
                 for (int pos = 0; pos < elements.size(); pos++) {
 
+                    // this step is required for values that need a processing of their content
+                    // an example for this is the HTML value that does link replacement
                     I_CmsXmlContentValue value = getValue(name, locale, pos);
                     String content = value.getStringValue(cms, this);
                     value.setStringValue(cms, this, content);
@@ -230,9 +236,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
     }
 
     /**
-     * Returns the encoding used for the page content.<p>
-     * 
-     * @return the encoding used for the page content
+     * @see org.opencms.xml.I_CmsXmlDocument#getEncoding()
      */
     public String getEncoding() {
 
@@ -273,9 +277,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
     public abstract CmsLinkProcessor getLinkProcessor(CmsObject cms, CmsLinkTable linkTable);
 
     /**
-     * Returns a List of all locales that have at last one element in this page.<p>
-     * 
-     * @return a List of all locales that have at last one element in this page
+     * @see org.opencms.xml.I_CmsXmlDocument#getLocales()
      */
     public List getLocales() {
 
@@ -372,6 +374,19 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
 
         return getBookmark(name, locale);
     }
+    
+    
+    /**
+     * @see org.opencms.xml.I_CmsXmlDocument#hasLocale(java.util.Locale)
+     */
+    public boolean hasLocale(Locale locale) {
+
+        if (locale == null) {
+            throw new IllegalArgumentException("Locale must not be null");
+        }
+        
+        return m_locales.contains(locale);
+    }
 
     /**
      * @see org.opencms.xml.I_CmsXmlDocument#hasValue(java.lang.String, java.util.Locale)
@@ -417,6 +432,33 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
     public byte[] marshal() throws CmsXmlException {
 
         return ((ByteArrayOutputStream)marshal(new ByteArrayOutputStream(), m_encoding)).toByteArray();
+    }
+    
+    /**
+     * @see org.opencms.xml.I_CmsXmlDocument#removeLocale(java.util.Locale)
+     */
+    public void removeLocale(Locale locale) throws CmsXmlException {
+        
+        if (! hasLocale(locale)) {
+            throw new CmsXmlException("Locale '" + locale + "' not available in XML document");
+        }
+        
+        Element rootNode = m_document.getRootElement();
+        Iterator i = rootNode.elementIterator();
+        String localeStr = locale.toString();
+        while (i.hasNext()) {
+            Element element = (Element)i.next();
+            String language = element.attributeValue(CmsXmlContentDefinition.XSD_ATTRIBUTE_VALUE_LANGUAGE, null);
+            if ((language != null) && (localeStr.equals(language))) {
+                // detach node with the locale
+                element.detach();
+                // there can be only one node for the locale
+                break;
+            }
+        }        
+
+        // re-initialize the document bookmarks
+        initDocument(m_document, m_encoding, m_contentDefinition);
     }
 
     /**
@@ -535,13 +577,13 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
     }
 
     /**
-     * Initializes an A_CmsXmlDocument based on the provided document and encoding.<p>
+     * Initializes an XML document based on the provided document, encoding and content definition.<p>
      * 
      * @param document the base XML document to use for initializing
      * @param encoding the encoding to use when marshalling the document later
-     * @param resolver the XML entitiy resolver to use
+     * @param contentDefinition the content definition to use
      */
-    protected abstract void initDocument(Document document, String encoding, EntityResolver resolver);
+    protected abstract void initDocument(Document document, String encoding, CmsXmlContentDefinition contentDefinition);
 
     /**
      * Marshals (writes) the content of the current XML document 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/I_CmsXmlDocument.java,v $
- * Date   : $Date: 2004/10/16 08:24:38 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/10/22 11:05:22 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,10 +44,19 @@ import org.xml.sax.EntityResolver;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.5.0
  */
 public interface I_CmsXmlDocument {
+
+    /**
+     * Adds the given locale to this XML document.
+     * 
+     * @param locale the locale to add
+     * 
+     * @throws CmsXmlException in case the locale already existed, or if something else goes wrong
+     */
+    void addLocale(Locale locale) throws CmsXmlException;
 
     /**
      * Returns the content definition object for this xml content object.<p>
@@ -61,6 +70,13 @@ public interface I_CmsXmlDocument {
     CmsXmlContentDefinition getContentDefinition(EntityResolver resolver) throws CmsXmlException;
 
     /**
+     * Returns the encoding used for this XML document.<p>
+     * 
+     * @return the encoding used for this XML document
+     */
+    String getEncoding();
+
+    /**
      * Returns the index count of existing values for the given key name,
      * or <code>-1</code> if no such value exists.<p>
      * 
@@ -70,6 +86,24 @@ public interface I_CmsXmlDocument {
      * @return the index count for the given key name
      */
     int getIndexCount(String name, Locale locale);
+
+    /**
+     * Returns a List of all locales that have at last one element in 
+     * this XML document.<p>
+     * 
+     * @return a List of all locales that have at last one element in this XML document
+     */
+    List getLocales();
+
+    /**
+     * Returns a List of all locales that have the given element set in this XML document.<p>
+     * 
+     * If no locale for the given element name is available, an empty list is returned.<p>
+     * 
+     * @param element the element to look up the locale List for
+     * @return a List of all Locales that have the given element set in this XML document
+     */
+    List getLocales(String element);
 
     /**
      * Returns the first content value for the given key name as a String,
@@ -139,6 +173,15 @@ public interface I_CmsXmlDocument {
     List getValues(String name, Locale locale);
 
     /**
+     * Checks if the given locale exists in this XML document.<p>
+     * 
+     * @param locale the locale to check
+     * 
+     * @return true if the given locale exists in this XML document, false otherwise
+     */
+    boolean hasLocale(Locale locale);
+
+    /**
      * Returns <code>true</code> if a value exists with the given key name, 
      * <code>false</code> otherwise.<p> 
      * 
@@ -197,4 +240,12 @@ public interface I_CmsXmlDocument {
      */
     boolean isEnabled(String name, Locale locale, int index);
 
+    /**
+     * Removes the given locale from this XML document.
+     * 
+     * @param locale the locale to remove
+     * 
+     * @throws CmsXmlException in case the locale did not exist in the document, or if something else goes wrong
+     */
+    void removeLocale(Locale locale) throws CmsXmlException;    
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2004/08/18 11:53:19 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/10/22 11:05:22 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.5.0
  */
 public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument {
@@ -82,9 +82,6 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
     /** The property to set to enable xerces schema validation. */
     public static final String C_XERCES_SCHEMA_PROPERTY = "http://apache.org/xml/properties/schema/external-noNamespaceSchemaLocation";
 
-    /** The xml content definition object (i.e. XML shema) used by this content. */
-    private CmsXmlContentDefinition m_contentDefinition;
-
     /**
      * Creates a new xml content based on the provided content definition and encoding.<p>
      * 
@@ -95,9 +92,8 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
      * @param encoding the encoding of the xml content
      */
     public CmsXmlContent(CmsXmlContentDefinition contentDefinition, Locale locale, String encoding) {
-
-        m_contentDefinition = contentDefinition;
-        initDocument(m_contentDefinition.createDocument(locale), encoding, null);
+        
+        initDocument(contentDefinition.createDocument(locale), encoding, contentDefinition);
     }
 
     /**
@@ -110,8 +106,9 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
      * @param resolver the XML entitiy resolver to use
      */
     public CmsXmlContent(Document document, String encoding, EntityResolver resolver) {
-
-        initDocument(document, encoding, resolver);
+        
+        m_document = document;
+        initDocument(m_document, encoding, getContentDefinition(resolver));
     }
 
     /**
@@ -124,10 +121,31 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
      * @param resolver the XML entitiy resolver to use
      */
     public CmsXmlContent(String encoding, EntityResolver resolver) {
-
-        initDocument(DocumentHelper.createDocument(), encoding, resolver);
+        
+        m_document = DocumentHelper.createDocument();
+        initDocument(m_document, encoding, getContentDefinition(resolver));
     }
 
+    /**
+     * @see org.opencms.xml.I_CmsXmlDocument#addLocale(java.util.Locale)
+     */
+    public void addLocale(Locale locale) throws CmsXmlException {
+
+        if (hasLocale(locale)) {
+            throw new CmsXmlException("Locale '" + locale + "' already exists in XML document");
+        }
+        
+        // create empty document with new Locale
+        Document newDocument = m_contentDefinition.createDocument(locale);
+        Element newElement = (Element)newDocument.getRootElement().elements().get(0);
+        
+        // detach new element from parent folder before adding it 
+        m_document.getRootElement().add(newElement.detach());
+        
+        // re-initialize the bookmarks
+        initDocument(m_document, m_encoding, m_contentDefinition);        
+    }
+    
     /**
      * @see org.opencms.xml.I_CmsXmlDocument#getContentDefinition(org.xml.sax.EntityResolver)
      */
@@ -221,20 +239,17 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
             }
         }
     }
-    
+
     /**
-     * @see org.opencms.xml.A_CmsXmlDocument#initDocument(org.dom4j.Document, java.lang.String, org.xml.sax.EntityResolver)
+     * @see org.opencms.xml.A_CmsXmlDocument#initDocument(org.dom4j.Document, java.lang.String, org.opencms.xml.CmsXmlContentDefinition)
      */
-    protected void initDocument(Document document, String encoding, EntityResolver resolver) {
+    protected void initDocument(Document document, String encoding, CmsXmlContentDefinition definition) {
 
         m_document = document;
+        m_contentDefinition = definition;
         m_encoding = CmsEncoder.lookupEncoding(encoding, encoding);
         m_elementLocales = new HashMap();
-        m_elementNames = new HashMap();
-        
-        if (resolver != null) {
-            m_contentDefinition = getContentDefinition(resolver);
-        }
+        m_elementNames = new HashMap();              
 
         // initialize the bookmarks
         for (Iterator i = m_document.getRootElement().elementIterator(); i.hasNext();) {

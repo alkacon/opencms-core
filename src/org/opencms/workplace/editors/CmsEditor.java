@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2004/10/14 15:05:54 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/10/22 11:05:22 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,9 @@ import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.I_CmsWpConstants;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.jsp.JspException;
 
@@ -56,7 +58,7 @@ import javax.servlet.jsp.JspException;
  * The editor classes have to extend this class and implement action methods for common editor actions.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.1.12
  */
@@ -128,8 +130,14 @@ public abstract class CmsEditor extends CmsDialog {
     /** Parameter name for the request parameter "editormode". */
     public static final String PARAM_EDITORMODE = "editormode";
     
+    /** Parameter name for the request parameter "element language". */
+    public static final String PARAM_ELEMENTLANGUAGE = "elementlanguage";
+    
     /** Parameter name for the request parameter "loaddefault". */
     public static final String PARAM_LOADDEFAULT = "loaddefault";
+    
+    /** Parameter name for the request parameter "old element language". */
+    public static final String PARAM_OLDELEMENTLANGUAGE = "oldelementlanguage";
     
     /** Parameter name for the request parameter "tempfile". */
     public static final String PARAM_TEMPFILE = "tempfile";
@@ -143,7 +151,9 @@ public abstract class CmsEditor extends CmsDialog {
     private String m_paramDirectedit;
     private String m_paramEditAsText;
     private String m_paramEditormode;
+    private String m_paramElementlanguage;
     private String m_paramLoadDefault;
+    private String m_paramOldelementlanguage;
     private String m_paramTempFile;
     
     /** Helper variable to store the uri to the editors pictures. */
@@ -175,6 +185,42 @@ public abstract class CmsEditor extends CmsDialog {
      * @throws JspException if including an element fails
      */
     public abstract void actionSave() throws CmsException, IOException, JspException;
+    
+    /**
+     * Builds the html String for the element language selector.<p>
+     *  
+     * @param attributes optional attributes for the &lt;select&gt; tag
+     * @param resource the name of the resource to edit
+     * @param selectedLocale the currently selected Locale
+     * @return the html for the element language selectbox
+     */
+    public String buildSelectElementLanguage(String attributes, String resource, Locale selectedLocale) {
+        // get locale names based on properties and global settings
+        List locales = OpenCms.getLocaleManager().getAvailableLocales(getCms(), resource);
+        List options = new ArrayList(locales.size());
+        List selectList = new ArrayList(locales.size());        
+        int currentIndex = -1;
+        for (int counter = 0; counter < locales.size(); counter++) {
+            // create the list of options and values
+            Locale curLocale = (Locale)locales.get(counter);
+            selectList.add(curLocale.toString());
+            options.add(curLocale.getDisplayName(getLocale()));
+            if (curLocale.equals(selectedLocale)) {
+                // set the selected index of the selector
+                currentIndex = counter;
+            }
+        }
+       
+        if (currentIndex == -1) {
+            // no matching element language found, use first element language in list
+            if (selectList != null && selectList.size() > 0) {
+                currentIndex = 0;
+                setParamElementlanguage((String)selectList.get(0));
+            }
+        }
+    
+        return buildSelect(attributes, options, selectList, currentIndex, false);      
+    }
     
     /**
      * Generates a button for the OpenCms editor.<p>
@@ -294,12 +340,30 @@ public abstract class CmsEditor extends CmsDialog {
     }
     
     /**
+     * Returns the current element language.<p>
+     * 
+     * @return the current element language
+     */
+    public String getParamElementlanguage() {
+        return m_paramElementlanguage;
+    }
+    
+    /**
      * Returns the "loaddefault" parameter to determine if the default editor should be loaded.<p>
      * 
      * @return the "loaddefault" parameter
      */
     public String getParamLoaddefault() {
         return m_paramLoadDefault;
+    }
+    
+    /**
+     * Returns the old element language.<p>
+     * 
+     * @return the old element language
+     */
+    public String getParamOldelementlanguage() {
+        return m_paramOldelementlanguage;
     }
     
     /**
@@ -387,12 +451,30 @@ public abstract class CmsEditor extends CmsDialog {
     }
     
     /**
+     * Sets the current element language.<p>
+     * 
+     * @param elementLanguage the current element language
+     */
+    public void setParamElementlanguage(String elementLanguage) {
+        m_paramElementlanguage = elementLanguage;
+    }
+    
+    /**
      * Sets the "loaddefault" parameter to determine if the default editor should be loaded.<p>
      * 
      * @param loadDefault the "loaddefault" parameter
      */
     public void setParamLoaddefault(String loadDefault) {
         m_paramLoadDefault = loadDefault;
+    }
+    
+    /**
+     * Sets the old element language.<p>
+     * 
+     * @param oldElementLanguage the old element language
+     */
+    public void setParamOldelementlanguage(String oldElementLanguage) {
+        m_paramOldelementlanguage = oldElementLanguage;
     }
     
     /**
