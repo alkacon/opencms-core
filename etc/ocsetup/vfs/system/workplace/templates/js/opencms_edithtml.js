@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/opencms_edithtml.js,v $
-* Date   : $Date: 2003/01/08 10:42:25 $
-* Version: $Revision: 1.25.2.1 $
+* Date   : $Date: 2003/01/09 08:17:06 $
+* Version: $Revision: 1.25.2.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -235,35 +235,20 @@ function DisplayChanged()
   if (s == DECMDF_DISABLED || s == DECMDF_NOTSUPPORTED) {
     document.all.FONTFACE.disabled = true;
   } else {
-    var value = document.all.EDIT_HTML.ExecCommand(DECMD_GETFONTNAME, OLECMDEXECOPT_DODEFAULT);
-    if ((value != null) && (USE_FONTFACE == true)) {
-	    document.all.FONTFACE.disabled = false;  
-    	document.all.FONTFACE.value = value;
-     } else {
-	    document.all.FONTFACE.disabled = true;  
-     }    
+    document.all.FONTFACE.disabled = false;
+    document.all.FONTFACE.value =  document.all.EDIT_HTML.ExecCommand(DECMD_GETFONTNAME, OLECMDEXECOPT_DODEFAULT);
   }
   if (s == DECMDF_DISABLED || s == DECMDF_NOTSUPPORTED) {
     document.all.FONTSIZE.disabled = true;
   } else {
-    var value = document.all.EDIT_HTML.ExecCommand(DECMD_GETFONTSIZE, OLECMDEXECOPT_DODEFAULT);
-    if ((value != null) && (USE_FONTSIZE == true)) {
-	    document.all.FONTSIZE.disabled = false;  
-    	document.all.FONTSIZE.value = value;
-     } else {
-	    document.all.FONTSIZE.disabled = true;  
-     }
+    document.all.FONTSIZE.disabled = false;
+    document.all.FONTSIZE.value = document.all.EDIT_HTML.ExecCommand(DECMD_GETFONTSIZE, OLECMDEXECOPT_DODEFAULT);
   }
   
   if(document.activeElement != EDITOR.EDIT_HTML) {
     EDITOR.EDIT_HTML.focus();
   }
 }
-
-var linkEditor = null;
-var linkEditorRange = null;
-var linkEditorSelection = null;
-var linkEditorStyleInputs = null;
 
 // which button is clicked
 function doEditHTML(para)
@@ -371,6 +356,7 @@ function doEditHTML(para)
         CheckFGCol= window.setInterval("setFGColor(SelColor)",500);
         var SelColorWindow= window.open('edit_html_selcolor.html',"SelColor","width=500,height=400,resizable=no,top=200,left=450");
         SelColorWindow.opener = self;
+        //DECMD_SETFORECOLOR_onclick();
         break;
     case 39:
         ColorSelected=-1;
@@ -378,11 +364,14 @@ function doEditHTML(para)
         CheckBGCol= window.setInterval("setBGColor(SelColor)",500);
         var SelColorWindow= window.open('edit_html_selcolor.html',"SelColor","width=500,height=400,resizable=no,top=200,left=450");
         SelColorWindow.opener = self;
+        //DECMD_SETBACKCOLOR_onclick();
         break;
     case 40:
-        checkTableSelection();
+//        InsertTable();
+          checkTableSelection();
         break;          
     case 41:
+//        DECMD_HYPERLINK_onclick();
         link = window.open('edit_html_link.html','SetLink', "width=450, height=300, resizable=no,status=no, top=300, left=250");
         break;      
     case 42:
@@ -407,23 +396,12 @@ function doEditHTML(para)
     case 48:
         specchar = window.open('edit_html_chars.html','characters', "width=450, height=300, resizable=no, status=yes, top=300, left=250");
         specchar.focus();
-        break;     
-    case 49:    
-        DECMD_HYPERLINK_onclick();
-        break;                
-    case 50:
-        var winheight = (USE_LINKSTYLEINPUTS?240:175);
-        linkEditor = EDITOR.EDIT_HTML;
-        linkEditorAll = EDITOR.EDIT_HTML.DOM.all.tags("A"); 
-        linkEditorRange = EDITOR.EDIT_HTML.DOM.body.createTextRange();
-        linkEditorSelection = EDITOR.EDIT_HTML.DOM.selection;
-        linkEditorStyleInputs = USE_LINKSTYLEINPUTS;
-        linkwin = window.open('edit_html_linkall.html','SetLink', "width=450, height=" + winheight + ", resizable=no, top=300, left=250");        
-        break;      	         
+        break;                    
     default:
-        alert("Sorry, the requested function code " + para + " is not implemented.");          
+        alert("Sorry, leider kann die Funktion nicht ausgeführt werden.");          
     }   
 }
+
     
 <!-- Includes the Document Source-Code into the HTML-Editor and sets up the contect menue-->
 function setText()
@@ -452,9 +430,9 @@ function doSubmit()
     if(document.EDITOR.EDIT_HTML.DOM.documentElement) {
         // IE5
         //Gridnine AB Aug 12, 2002
-        //document.EDITOR.content.value = encodeURIComponent(getChars(document.EDITOR.EDIT_HTML.filterSourceCode(document.EDITOR.EDIT_HTML.DOM.documentElement.outerHTML)));
-        document.EDITOR.content.value = encodeURIComponent(document.EDITOR.EDIT_HTML.filterSourceCode(document.EDITOR.EDIT_HTML.DOM.documentElement.outerHTML));
-    } else {
+ 	    //document.EDITOR.content.value = encodeURIComponent(getChars(document.EDITOR.EDIT_HTML.filterSourceCode(document.EDITOR.EDIT_HTML.DOM.documentElement.outerHTML)));
+ 	    document.EDITOR.content.value = encodeURIComponent(document.EDITOR.EDIT_HTML.filterSourceCode(document.EDITOR.EDIT_HTML.DOM.documentElement.outerHTML));
+     } else {
         // IE4
         document.EDITOR.content.value = encodeURIComponent(document.EDITOR.EDIT_HTML.DocumentHTML);
     }
@@ -828,7 +806,6 @@ function DECMD_HYPERLINK_NODIALOG_onclick()
   EDITOR.EDIT_HTML.ExecCommand(DECMD_HYPERLINK,OLECMDEXECOPT_DONTPROMPTUSER, EDITOR.URL.value);
   EDITOR.EDIT_HTML.focus();
 }
-
 //Gridnine AB Aug 12, 2002
 /* we don't need this function any more as Cms now supports Unicode
 function getChars(value) {
@@ -845,6 +822,7 @@ function getChars(value) {
     return ret + "";
 }
 */
+
 // sends URL string from seperate browser window to a hidden field within the opener document
 function sendURLString(destFormName,destFieldName,strURL){  
     var obj1='top.window.opener.self.document.'+ destFormName;
@@ -853,24 +831,4 @@ function sendURLString(destFormName,destFieldName,strURL){
         eval(obj2 +'.value="'+strURL+'"'); 
         top.window.opener.doEditHTML(45); 
     }
-}
-
-
-var foundstyles = new Array();
-
-function setStyles(i, name) {
-    foundstyles[i] = name;
-}
-
-function resetStyles() {
-    var sel = document.all.BLOCK;
-    var fops = new Array(); 
-    for (i=0; i<foundstyles.length; i++) {
-       sel.options[i] = new Option(foundstyles[i], foundstyles[i]);
-    }
-}
-
-function initStyles() {
-    getStyles();
-    resetStyles();
 }
