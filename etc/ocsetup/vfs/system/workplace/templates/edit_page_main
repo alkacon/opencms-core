@@ -125,6 +125,34 @@
 //-->
 </script>
 
+<SCRIPT LANGUAGE="javascript" FOR="EDIT_HTML" EVENT="onkeyup">
+<!--
+/** (by comundus GmbH)
+* if the user selected a text or a image, that has a link and delete
+* then the link will be clean.
+* this function is for pasted text from word to mshtml editor,too.
+*/
+	
+    function checkContentByKeyUp()
+    {
+	var cBackSpace  = 8;
+	var cDelete		= 46;
+	var cReturn		= 13;
+	    if (IE==true) 
+		{
+			
+			var keyPressed;	
+			keyPressed = document.EDITOR.EDIT_HTML.DOM.parentWindow.event.keyCode;		
+			if (keyPressed == cBackSpace || keyPressed == cDelete || keyPressed == cReturn)
+			{
+				deleteEmptyATags();
+			}
+		}
+    }
+    checkContentByKeyUp();
+    //-->
+</script>
+
 <script LANGUAGE="vbscript">
 Sub getStyles()
     ' Create the block fmt names holder
