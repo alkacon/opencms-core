@@ -16,7 +16,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.37 $ $Date: 2000/02/08 09:51:35 $ 
+ * @version $Revision: 1.38 $ $Date: 2000/02/11 09:38:29 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -634,6 +634,22 @@ public abstract class A_CmsObject {
 	abstract public A_CmsUser lockedBy(String resource)
 		throws CmsException;
 
+	/**
+	 * Returns the user, who had locked the resource.<BR/>
+	 * 
+	 * A user can lock a resource, so he is the only one who can write this 
+	 * resource. This methods checks, if a resource was locked.
+	 * 
+	 * @param resource The resource.
+	 * 
+	 * @return true, if the resource is locked else it returns false.
+	 * 
+	 * @exception CmsException will be thrown, if the user has not the rights 
+	 * for this resource. 
+	 */
+	abstract public A_CmsUser lockedBy(A_CmsResource resource)
+		throws CmsException;
+		
 	/**
 	 * Reads all metadefinitions for the given resource type.
 	 * 

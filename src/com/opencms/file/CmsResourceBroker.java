@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.50 $ $Date: 2000/02/11 09:06:14 $
+ * @version $Revision: 1.51 $ $Date: 2000/02/11 09:38:29 $
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -2507,6 +2507,27 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		throws CmsException {
 		return( m_userRb.readUser(
 			readFileHeader(currentUser, currentProject, resource).isLockedBy()) );
+	}
+	
+	/**
+	 * Returns the user, who had locked the resource.<BR/>
+	 * 
+	 * A user can lock a resource, so he is the only one who can write this 
+	 * resource. This methods checks, if a resource was locked.
+	 * 
+	 * @param user The user who wants to lock the file.
+	 * @param project The project in which the resource will be used.
+	 * @param resource The resource.
+	 * 
+	 * @return the user, who had locked the resource.
+	 * 
+	 * @exception CmsException will be thrown, if the user has not the rights 
+	 * for this resource. 
+	 */
+	public A_CmsUser lockedBy(A_CmsUser currentUser, A_CmsProject currentProject,
+							  A_CmsResource resource)
+		throws CmsException {
+		return( m_userRb.readUser(resource.isLockedBy()) );
 	}
 	
 	/**

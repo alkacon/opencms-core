@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.33 $ $Date: 2000/02/08 09:51:35 $
+ * @version $Revision: 1.34 $ $Date: 2000/02/11 09:36:02 $
  */
 interface I_CmsResourceBroker {
 
@@ -1241,6 +1241,25 @@ interface I_CmsResourceBroker {
 	 */
 	public A_CmsUser lockedBy(A_CmsUser currentUser, A_CmsProject currentProject,
 							  String resource)
+		throws CmsException;
+	
+	/**
+	 * Returns the user, who had locked the resource.<BR/>
+	 * 
+	 * A user can lock a resource, so he is the only one who can write this 
+	 * resource. This methods checks, if a resource was locked.
+	 * 
+	 * @param user The user who wants to lock the file.
+	 * @param project The project in which the resource will be used.
+	 * @param resource The resource.
+	 * 
+	 * @return the user, who had locked the resource.
+	 * 
+	 * @exception CmsException will be thrown, if the user has not the rights 
+	 * for this resource. 
+	 */
+	public A_CmsUser lockedBy(A_CmsUser currentUser, A_CmsProject currentProject,
+							  A_CmsResource resource)
 		throws CmsException;
 	
 	/**

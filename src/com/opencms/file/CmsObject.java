@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.37 $ $Date: 2000/02/08 09:51:35 $ 
+ * @version $Revision: 1.38 $ $Date: 2000/02/11 09:36:02 $ 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	
@@ -772,6 +772,25 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 							  resource) );
 	}
 
+	/**
+	 * Returns the user, who had locked the resource.<BR/>
+	 * 
+	 * A user can lock a resource, so he is the only one who can write this 
+	 * resource. This methods checks, if a resource was locked.
+	 * 
+	 * @param resource The resource.
+	 * 
+	 * @return true, if the resource is locked else it returns false.
+	 * 
+	 * @exception CmsException will be thrown, if the user has not the rights 
+	 * for this resource. 
+	 */
+	public A_CmsUser lockedBy(A_CmsResource resource)
+		throws CmsException {
+		return( c_rb.lockedBy(m_context.currentUser(), m_context.currentProject(), 
+							  resource) );
+	}
+	
 	/**
 	 * Returns a Metainformation of a file or folder.
 	 * 
