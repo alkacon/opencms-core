@@ -208,41 +208,69 @@ OpenCms {\name Virtual File System:} {Table~\ref {VFS}}
 \hline
 {\bf Directory}&
 {\bf Files located in the directory}\\ [0.5ex] \hline
-{\dir /content}&
-Parent directory of  the directories that store the template files.\\ \hline
-{\dir /content/bodys}&
-Body templates are stored in this directory or a subdirectory thereof. They are stored in a directory with the same name
-as the directory in which the web site is located.\\ \hline
-{\dir /content/internal}&
-Templates (subtemplates) that are not body  or master templates.\\ \hline
-{\dir /content/templates}&
-The master templates that define the general layout of a web site.\\ \hline
-{\dir /download}&
-Subdirectories for files that can be downloaded (galleries).\\ \hline
-{\dir /pics}&
-Subdirectories for pictures that are used in web sites (galleries).\\ \hline
+
 {\dir /system}&
 Parent directory of the directories that contain workplace templates and configuration files for the system.\\ \hline
+
+{\dir /system/bodies}&
+Body templates are stored in this directory or a subdirectory thereof. They are stored in a directory with the same name
+as the directory in which the web site is located.\\ \hline
+
+{\dir /system/modules}&
+OpenCms modules are automatically placed below this directory.\\ \hline
+
+{\dir /system/modules/default}&
+Location of the default module which contains a basic empty template and some resource files.\\ \hline
+
+{\dir /system/modules/default/templates}&
+The default master templates that define the general layout of a web site.\\ \hline
+
+{\dir /system/galleries}&
+Basis location of all galleries that are available in the editor.\\ \hline
+
+{\dir /system/galleries/download}&
+Gallery for files that can be downloaded.\\ \hline
+
+{\dir /system/galleries/pics}&
+Gallery for pictures that are used in web sites.\\ \hline
+
+{\dir /system/login}&
+The OpenCms workplace login screen in located here.\\ \hline
+
+{\dir /system/workplace}&
+The OpenCms workplace application files are located in this subdirectory.\\ \hline
+
 {\dir /system/workplace/action}&
 Executable files like login, copy etc.\\ \hline
-{\dir /system/workplace/administration}&
-Subdirectories for every Item in the Administration view.\\ \hline
-{\dir /system/workplace/config}&
-The language files, that are stored in a separate subdirectory for every language, and  the different
-configuration files.\\ \hline
-{\dir /system/workplace/css}&
-Used style sheets.\\ \hline
-{\dir /system/workplace/help}&
-The help system.\\ \hline
-{\dir /system/workplace/pics}&
-The pictures that are used to create the workplace.\\ \hline
+
 {\dir /system/workplace/templates}&
 The templates that are used to create the workplace.\\ \hline
+
+{\dir /system/workplace/scripts}&
+Javascript files used in the workplace are placed here.\\ \hline
+
+{\dir /system/workplace/administration}&
+Subdirectories for every Item in the Administration view.\\ \hline
+
+{\dir /system/workplace/locales}&
+The workplace locales, i.e. language files reside here. 
+They are stored in a separate subdirectory for every language.\\ \hline
+
+{\dir /system/workplace/resources}&
+Workplace static resources are placed in this directory.
+These are the style sheets used and the images for system elements like buttons etc.\\ \hline
+
+{\dir /system/workplace/help}&
+The help system.\\ \hline
+
 \end{tabular}
 \caption [VFS of OpenCms]{VFS of OpenCms}
 \label{VFS}
 \end{center}
 \end{table}
+
+Please note that the VFS structure was modified in the 5.0 release of OpenCms.
+Previous versions had a layout different from the one described above.
 
 \section{Class structure}
 %============================================================================

@@ -1932,13 +1932,13 @@ can display the radio buttons in a row or in a column layout.
 The layout of the radio buttons and select boxes is defined in a special
 file. Without this file, the new radio and select tags will not work.
 You need to extend your workplace by the HTMLFormDefs file in the
-/content/internal directory because this file is used by the methods
+{\dir /system/workplace/templates} directory because this file is used by the methods
 {\tag handleRadiobuttonTag()} and {\tag handleSelectTag()} of the {\class CmsXmlFormTemplate}
 class.
 
 If you want to use additional statements in these tags (e.g. to change
 the size) have a look at the HTMLFormDef file that can be found in your
-{\dir content/internal/} directory.
+{\dir /system/workplace/templates} directory.
 
 Below is an example with the values "elite" for the radio button and
 "other" for the select box set by the Java method (figure~\ref{RadioButtons}).
