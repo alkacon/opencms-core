@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2002/10/22 12:45:04 $
- * Version: $Revision: 1.412 $
+ * Date   : $Date: 2002/10/30 10:45:01 $
+ * Version: $Revision: 1.413 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,6 +20,7 @@ Legend:
 - General comment
 
 OpenCms 5.0 (next version)
+! New "touch" feature in Workplace Explorer and CmsObject
 ! New "file name translation" feature automatically replaces illegal chars (e.g. space, ? or &) in 
   uploaded file names (also in extracted ZIP files). Replacement rules can be set in opencms.properties.
 ! The default file name for a directroy can now be defined in opencms.properties and in the folder property "default-file"
@@ -43,10 +44,12 @@ OpenCms 5.0 (next version)
 * Problems with XML export or registry with special characters (like umlauts) have been resolved
 * Fixed ElementCache for DumpLauncher. For DUMP-Elements no file.encoding translation is allowed.
 * Fixed ElementCache for MethodElements. Switched handling from byte[] to String.
+* Fixed a bug in cache settings that prevented PDFs from offline projects to be displayed in Acrobat Reader
 - Changed the workplace stylesheet to fix problems displaying german umlauts. Thanks to www.gridnine.com
   for this contribution.
 - Handling of default file names (e.g. "index,html") has changed: If a  default file was found it is now returned directly
   by OpenCms. In previous versions a redirect to "index.html" was send. This redirect is NOT longer send. 
+- Some cleanup of code and JavaDoc documentation in packages *.core and *.flex
 
 OpenCms 5.0 beta 1 Kaitain - 23 August 2002
 - This is the first public beta of the new 5.0 OpenCms version
