@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsCosIndexResource.java,v $
- * Date   : $Date: 2004/07/08 15:21:13 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/11/19 09:04:18 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import com.opencms.defaults.master.*;
  * The type is either <code>CmsResource</code> while indexing vfs data,
  * or <code>CmsMasterDataSet</code> while indexing cos data.
  * 
- * @version $Revision: 1.4 $ $Date: 2004/07/08 15:21:13 $
+ * @version $Revision: 1.5 $ $Date: 2004/11/19 09:04:18 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -69,9 +69,9 @@ public class CmsCosIndexResource extends A_CmsIndexResource {
     }
 
     /**
-     * @see com.opencms.legacy.CmsCosIndexResource#getDocumentKey()
+     * @see org.opencms.search.A_CmsIndexResource#getDocumentKey(boolean)
      */
-    public String getDocumentKey() {
+    public String getDocumentKey(boolean withMimeType) {
         return "COS" + getType();
     }
 
