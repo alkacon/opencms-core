@@ -12,11 +12,11 @@ PACKAGE BODY opencmsProperty IS
     curResource := opencmsResource.readFileHeader(pUserId, pProjectID, pResourceName);
     FETCH curResource INTO recResource;
     CLOSE curResource;
-    IF opencmsAccess.accessRead(pUserId, pProjectId, recResource.resource_id) = 0 THEN
+    IF opencmsAccess.accessRead(pUserId, pProjectId, recResource.resource_name) = 0 THEN
       OPEN curProperties FOR select 'error', '' from dual;
     ELSE
       onlineProject := opencmsProject.onlineProject(pProjectId).project_id;
-      IF pProjectId = onlineProject THEN 
+      IF pProjectId = onlineProject THEN
         OPEN curProperties FOR select p.property_value, pd.propertydef_name
                                   from cms_online_properties p, cms_online_propertydef pd
                                   where p.propertydef_id = pd.propertydef_id
@@ -102,7 +102,7 @@ PACKAGE BODY opencmsProperty IS
     END;
     IF vPropdefID IS NOT NULL THEN
       IF pProjectId = vOnlineProject THEN
-      	select count(*) into vCount 
+      	select count(*) into vCount
       	       from cms_online_properties p, cms_online_propertydef pd
                where p.propertydef_id = pd.propertydef_id
                and p.resource_id = pResourceID
@@ -125,7 +125,7 @@ PACKAGE BODY opencmsProperty IS
                           ' and propertydef_id = '||vPropdefId;
       ELSE
         -- insert
-        vNewPropId := getNextId(vPropertiesTable); 
+        vNewPropId := getNextId(vPropertiesTable);
         EXECUTE IMMEDIATE 'insert into '||vPropertiesTable||
                           ' (property_id, propertydef_id, resource_id, property_value)'||
                           ' values ('||vNewPropId||', '||vPropdefId||', '||pResourceId||', '''||pValue||''')';

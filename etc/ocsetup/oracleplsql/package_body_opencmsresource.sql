@@ -243,14 +243,9 @@ PACKAGE BODY opencmsresource IS
 --------------------------------------------------------------------------------------------------------------
   FUNCTION readFolderAcc(pUserId NUMBER, pProjectID NUMBER, pFolderName VARCHAR2) RETURN userTypes.anyCursor IS
     curFolder userTypes.anyCursor;
-    recFolder cms_resources%ROWTYPE;
   BEGIN
-    curFolder := readFolder(pUserId, pProjectID, pFolderName);
-    FETCH curFolder INTO recFolder;
-    CLOSE curFolder;
-    -- check the access for the existing file
-    IF recFolder.resource_id IS NOT NULL THEN
-      IF opencmsAccess.accessRead(pUserId, pProjectId, recFolder.resource_id) = 0 THEN
+    IF pFolderName IS NOT NULL THEN
+      IF opencmsAccess.accessRead(pUserId, pProjectId, pFolderName) = 0 THEN
           -- error: no access for this file
         userErrors.raiseUserError(userErrors.C_ACCESS_DENIED);
       END IF;
@@ -308,12 +303,8 @@ PACKAGE BODY opencmsresource IS
       curResource := readFolder(pUserId, pProjectId, pFileName);
       RETURN curResource;
     END IF;
-    curResource := readFileHeader(pUserId, pProjectId, vOnlineProject, pFileName);
-    FETCH curResource INTO recFile;
-    CLOSE curResource;
-    -- check the access for the existing file
-    IF recFile.resource_id IS NOT NULL THEN
-      IF opencmsAccess.accessRead(pUserId, pProjectId, recFile.resource_id) = 0 THEN
+    IF pFileName IS NOT NULL THEN
+      IF opencmsAccess.accessRead(pUserId, pProjectId, pFileName) = 0 THEN
           -- error: no access for this file
         userErrors.raiseUserError(userErrors.C_ACCESS_DENIED);
       END IF;
@@ -395,7 +386,8 @@ PACKAGE BODY opencmsresource IS
       IF recFile.state = opencmsConstants.C_STATE_DELETED THEN
 	    userErrors.raiseUserError(userErrors.C_RESOURCE_DELETED);
       END IF;
-      IF opencmsAccess.accessRead(pUserId, pProjectId, recFile.resource_id) = 0 THEN
+      --IF opencmsAccess.accessRead(pUserId, pProjectId, recFile.resource_id) = 0 THEN
+      IF opencmsAccess.accessRead(pUserId, pProjectId, pFileName) = 0 THEN
           -- error: no access for this file
         userErrors.raiseUserError(userErrors.C_ACCESS_DENIED);
       END IF;
@@ -424,7 +416,8 @@ PACKAGE BODY opencmsresource IS
       IF recFile.state = opencmsConstants.C_STATE_DELETED THEN
 	    userErrors.raiseUserError(userErrors.C_RESOURCE_DELETED);
       END IF;
-      IF opencmsAccess.accessRead(pUserId, pProjectId, recFile.resource_id) = 0 THEN
+      --IF opencmsAccess.accessRead(pUserId, pProjectId, recFile.resource_id) = 0 THEN
+      IF opencmsAccess.accessRead(pUserId, pProjectId, pFileName) = 0 THEN
           -- error: no access for this file
         userErrors.raiseUserError(userErrors.C_ACCESS_DENIED);
       END IF;
@@ -750,12 +743,6 @@ PACKAGE BODY opencmsresource IS
     ELSE
       vTableName := 'CMS_RESOURCES';
     END IF;
---    IF pResource.state = opencmsConstants.C_STATE_UNCHANGED AND pChange = 'TRUE' THEN
-      -- copy the file from the online-project to the project
---      vNewFileId := getNextId(opencmsConstants.C_TABLE_FILES);
---      insert into cms_files (file_id, file_content)
---      select vNewFileId, file_content from cms_files where file_id = pResource.file_id;
---    END IF;
     IF pResource.state NOT IN (opencmsConstants.C_STATE_NEW, opencmsConstants.C_STATE_CHANGED)
        AND pChange = 'TRUE' THEN
       vState := opencmsConstants.C_STATE_CHANGED;
@@ -907,7 +894,7 @@ PACKAGE BODY opencmsresource IS
 ----------------------------------------------------------------------------------------------
   FUNCTION getFilesInFolder(pUserId NUMBER, pProjectId NUMBER, pResourceName VARCHAR2) RETURN userTypes.resourceTable IS
 
-    CURSOR curFilesOffline(cParentId NUMBER) IS
+    CURSOR curFilesOffline(cParentId NUMBER, cOnlinePRoject NUMBER) IS
            select cms_resources.resource_id, cms_resources.parent_id,
                   cms_resources.resource_name, cms_resources.resource_type,
                   cms_resources.resource_flags, cms_resources.user_id,
@@ -921,8 +908,8 @@ PACKAGE BODY opencmsresource IS
                   where cms_resources.parent_id=cParentId
                   and cms_resources.resource_name like concat(cms_projectresources.resource_name,'%')
                   and cms_resources.resource_type != opencmsConstants.C_TYPE_FOLDER
-                  and cms_projectresources.project_id = pProjectId
-                  order by cms_resources.resource_name;
+                  and cms_projectresources.project_id IN (pProjectId, cOnlineProject)
+                  order by cms_resources.resource_name, cms_projectresources.project_id;
 
      CURSOR curFilesOnline(cParentId NUMBER) IS
             select * from cms_online_resources
@@ -949,11 +936,11 @@ PACKAGE BODY opencmsresource IS
     END IF;
     CLOSE curResource;
     -- has the user access for the folder
-    IF opencmsAccess.accessRead(pUserId, pProjectId, recResource.resource_id) = 1 THEN
+    IF opencmsAccess.accessRead(pUserId, pProjectId, recResource.resource_name) = 1 THEN
       IF pProjectId = vOnlineProject THEN
         OPEN curFilesOnline(recResource.resource_id);
       ELSE
-        OPEN curFilesOffline(recResource.resource_id);
+        OPEN curFilesOffline(recResource.resource_id, vOnlineProject);
       END IF;
       LOOP
         IF pProjectId = vOnlineProject THEN
@@ -964,9 +951,9 @@ PACKAGE BODY opencmsresource IS
           EXIT WHEN curFilesOffline%NOTFOUND;
         END IF;
         -- has the user access for this resource
-        IF (opencmsAccess.accessOwner(pUserId, pProjectId, recFiles.resource_id, opencmsConstants.C_ACCESS_OWNER_READ) = 1
-            OR opencmsAccess.accessOther(pUserId, pProjectId, recFiles.resource_id, opencmsConstants.C_ACCESS_PUBLIC_READ) = 1
-            OR opencmsAccess.accessGroup(pUserId, pProjectId, recFiles.resource_id, opencmsConstants.C_ACCESS_GROUP_READ) = 1) THEN
+        IF (opencmsAccess.accessOwner(pUserId, pProjectId, recFiles.resource_name, opencmsConstants.C_ACCESS_OWNER_READ) = 1
+            OR opencmsAccess.accessOther(pUserId, pProjectId, recFiles.resource_name, opencmsConstants.C_ACCESS_PUBLIC_READ) = 1
+            OR opencmsAccess.accessGroup(pUserId, pProjectId, recFiles.resource_name, opencmsConstants.C_ACCESS_GROUP_READ) = 1) THEN
           IF addPathInList(recFiles.resource_name) THEN
           	newIndex := retResources.COUNT + 1;
             retResources(newIndex) := recFiles;
@@ -978,45 +965,6 @@ PACKAGE BODY opencmsresource IS
       ELSE
         CLOSE curFilesOffline;
       END IF;
-      -- project != online-project then compare if there are more files in online-project
-      IF pProjectId != opencmsConstants.C_PROJECT_ONLINE_ID THEN
-        curResource := readFolder(pUserId, opencmsConstants.C_PROJECT_ONLINE_ID, pResourceName);
-        FETCH curResource INTO recResource;
-        CLOSE curResource;
-        IF recResource.resource_id IS NOT NULL THEN
-          -- has the user access for this file?
-          IF opencmsAccess.accessRead(pUserId, opencmsConstants.C_PROJECT_ONLINE_ID, recResource.resource_id) = 1 THEN
-            IF pProjectId = vOnlineProject THEN
-              OPEN curFilesOnline(recResource.resource_id);
-            ELSE
-              OPEN curFilesOffline(recResource.resource_id);
-            END IF;
-            LOOP
-              IF pProjectId = vOnlineProject THEN
-                FETCH curFilesOnline INTO recFiles;
-                EXIT WHEN curFilesOnline%NOTFOUND;
-              ELSE
-                FETCH curFilesOffline INTO recFiles;
-                EXIT WHEN curFilesOffline%NOTFOUND;
-              END IF;
-              -- has the user access for this resource?
-              IF (opencmsAccess.accessOwner(pUserId, opencmsConstants.C_PROJECT_ONLINE_ID, recFiles.resource_id, opencmsConstants.C_ACCESS_OWNER_READ) = 1
-                 OR opencmsAccess.accessOther(pUserId, opencmsConstants.C_PROJECT_ONLINE_ID, recFiles.resource_id, opencmsConstants.C_ACCESS_PUBLIC_READ) = 1
-                 OR opencmsAccess.accessGroup(pUserId, opencmsConstants.C_PROJECT_ONLINE_ID, recFiles.resource_id, opencmsConstants.C_ACCESS_GROUP_READ) = 1) THEN
-                IF addPathInList(recFiles.resource_name) THEN
-                  newIndex := retResources.COUNT + 1;
-                  retResources(newIndex) := recFiles;
-                END IF;
-              END IF;
-            END LOOP;
-            IF pProjectId = vOnlineProject THEN
-              CLOSE curFilesOnline;
-            ELSE
-              CLOSE curFilesOffline;
-            END IF;
-          END IF;
-        END IF;
-      END IF;
     END IF;
     bAnyList := '';
     RETURN retResources;
@@ -1027,7 +975,7 @@ PACKAGE BODY opencmsresource IS
 ---------------------------------------------------------------------------------------------
   FUNCTION getFoldersInFolder(pUserId NUMBER, pProjectId NUMBER, pResourceName VARCHAR2) RETURN userTypes.anyCursor IS
 
-    CURSOR curFoldersOffline(cParentId NUMBER) IS
+    CURSOR curFoldersOffline(cParentId NUMBER, cOnlineProject NUMBER) IS
            select cms_resources.resource_id, cms_resources.parent_id,
                   cms_resources.resource_name, cms_resources.resource_type,
                   cms_resources.resource_flags, cms_resources.user_id,
@@ -1041,7 +989,7 @@ PACKAGE BODY opencmsresource IS
                   where cms_resources.parent_id= cParentId
                   and cms_resources.resource_name like concat(cms_projectresources.resource_name,'%')
                   and cms_resources.resource_type = opencmsConstants.C_TYPE_FOLDER
-                  and cms_projectresources.project_id = pProjectId
+                  and cms_projectresources.project_id IN (pProjectId, cOnlineProject)
                   order by cms_resources.resource_name;
 
     CURSOR curFoldersOnline(cParentId NUMBER) IS
@@ -1069,13 +1017,13 @@ PACKAGE BODY opencmsresource IS
     END IF;
     CLOSE curResource;
     -- has the user access for the folder
-    IF opencmsAccess.accessRead(pUserId, pProjectId, recResource.resource_id) = 1 THEN
+    IF opencmsAccess.accessRead(pUserId, pProjectId, recResource.resource_name) = 1 THEN
       IF pProjectId = vOnlineProject THEN
         vTableName := 'CMS_ONLINE_RESOURCES';
         OPEN curFoldersOnline(recResource.resource_id);
       ELSE
         vTableName := 'CMS_RESOURCES';
-        OPEN curFoldersOffline(recResource.resource_id);
+        OPEN curFoldersOffline(recResource.resource_id, vOnlineProject);
       END IF;
       LOOP
         IF pProjectId = vOnlineProject THEN
@@ -1086,9 +1034,9 @@ PACKAGE BODY opencmsresource IS
           EXIT WHEN curFoldersOffline%NOTFOUND;
         END IF;
         -- has the user access for this resource
-        IF (opencmsAccess.accessOwner(pUserId, pProjectId, recFiles.resource_id, opencmsConstants.C_ACCESS_OWNER_READ) = 1
-            OR opencmsAccess.accessOther(pUserId, pProjectId, recFiles.resource_id, opencmsConstants.C_ACCESS_PUBLIC_READ) = 1
-            OR opencmsAccess.accessGroup(pUserId, pProjectId, recFiles.resource_id, opencmsConstants.C_ACCESS_GROUP_READ) = 1) THEN
+        IF (opencmsAccess.accessOwner(pUserId, pProjectId, recFiles.resource_name, opencmsConstants.C_ACCESS_OWNER_READ) = 1
+            OR opencmsAccess.accessOther(pUserId, pProjectId, recFiles.resource_name, opencmsConstants.C_ACCESS_PUBLIC_READ) = 1
+            OR opencmsAccess.accessGroup(pUserId, pProjectId, recFiles.resource_name, opencmsConstants.C_ACCESS_GROUP_READ) = 1) THEN
           IF addPathInList(recFiles.resource_name) THEN
             vQueryString := vQueryString||' union select * from '||vTableName||' where resource_id = '||to_char(recFiles.resource_id);
           END IF;
@@ -1098,45 +1046,6 @@ PACKAGE BODY opencmsresource IS
         CLOSE curFoldersOnline;
       ELSE
         CLOSE curFoldersOffline;
-      END IF;
-      -- project != online-project then compare if there are more folders in online-project
-      IF pProjectId != opencmsConstants.C_PROJECT_ONLINE_ID THEN
-        curResource := readFolder(pUserId, opencmsConstants.C_PROJECT_ONLINE_ID, pResourceName);
-        FETCH curResource INTO recResource;
-        CLOSE curResource;
-        IF recResource.resource_id IS NOT NULL THEN
-          -- has the user access for this folder?
-          IF opencmsAccess.accessRead(pUserId, opencmsConstants.C_PROJECT_ONLINE_ID, recResource.resource_id) = 1 THEN
-            IF pProjectId = vOnlineProject THEN
-              OPEN curFoldersOnline(recResource.resource_id);
-            ELSE
-              OPEN curFoldersOffline(recResource.resource_id);
-            END IF;
-            LOOP
-              IF pProjectId = vOnlineProject THEN
-                FETCH curFoldersOnline INTO recFiles;
-                EXIT WHEN curFoldersOnline%NOTFOUND;
-              ELSE
-                FETCH curFoldersOffline INTO recFiles;
-                EXIT WHEN curFoldersOffline%NOTFOUND;
-              END IF;
-
-              -- has the user access for this resource?
-              IF (opencmsAccess.accessOwner(pUserId, opencmsConstants.C_PROJECT_ONLINE_ID, recFiles.resource_id, opencmsConstants.C_ACCESS_OWNER_READ) = 1
-                 OR opencmsAccess.accessOther(pUserId, opencmsConstants.C_PROJECT_ONLINE_ID, recFiles.resource_id, opencmsConstants.C_ACCESS_PUBLIC_READ) = 1
-                 OR opencmsAccess.accessGroup(pUserId, opencmsConstants.C_PROJECT_ONLINE_ID, recFiles.resource_id, opencmsConstants.C_ACCESS_GROUP_READ) = 1) THEN
-                IF addPathInList(recFiles.resource_name) THEN
-                  vQueryString := vQueryString||' union select * from '||vTableName||' where resource_id = '||to_char(recFiles.resource_id);
-                END IF;
-              END IF;
-            END LOOP;
-            IF pProjectId = vOnlineProject THEN
-              CLOSE curFoldersOnline;
-            ELSE
-              CLOSE curFoldersOffline;
-            END IF;
-          END IF;
-        END IF;
       END IF;
       -- open cursor with the string vQueryString without the first "union"
       vQueryString := substr(vQueryString, 8);
@@ -1298,23 +1207,6 @@ PACKAGE BODY opencmsresource IS
       WHEN OTHERS THEN
          RETURN NULL;
     END getParentId;
----------------------------------------------------------------------------------------
--- private function checks if this path is already in the list, if not => edit the list
--- and returns boolean
----------------------------------------------------------------------------------------
-/*
-  FUNCTION addInList(pName VARCHAR2) RETURN BOOLEAN IS
-    vCount NUMBER;
-  BEGIN
-    vCount := nvl(Instr(bAnyList, ''''||pName||''''),0);
-    IF vCount = 0 THEN
-      bAnyList := bAnyList||','''||pName||'''';
-      RETURN TRUE;
-    ELSE
-      RETURN FALSE;
-	END IF;
-  END addInList;
-*/
 ---------------------------------------------------------------------------------------
 -- private function checks if this path is already in the list, if not => edit the list
 -- and returns boolean

@@ -7,11 +7,10 @@ PACKAGE BODY opencmsAccess IS
     vResProjectID NUMBER;
     curNextResource userTypes.anyCursor;
     recResource cms_resources%ROWTYPE;
-    vNextResource NUMBER;
     vNextPath cms_resources.resource_name%TYPE;
     vOnlineProject NUMBER;
   BEGIN
-    -- project = online-project => false 
+    -- project = online-project => false
     vOnlineProject := opencmsProject.onlineProject(pProjectID).project_id;
     IF pProjectID = vOnlineProject THEN
       RETURN 0;
@@ -35,14 +34,21 @@ PACKAGE BODY opencmsAccess IS
     IF vResProjectID != pProjectId THEN
       RETURN 0;
     END IF;
+    -- for current resource no write access Other/Owner/Group => false
+    IF (accessOwner(pUserID, pProjectID, vNextPath, opencmsConstants.C_ACCESS_OWNER_WRITE) = 0
+        AND accessGroup(pUserID, pProjectID, vNextPath, opencmsConstants.C_ACCESS_GROUP_WRITE) = 0
+        AND accessOther(pUserID, pProjectID, vNextPath, opencmsConstants.C_ACCESS_PUBLIC_WRITE) = 0) THEN
+      RETURN 0;
+    END IF;
+    -- select super resources
+    vNextPath := opencmsResource.getParent(vNextPath);
     -- access for resource and super resources
-    vNextResource := pResourceID;
     --WHILE vNextPath IS NOT NULL
     LOOP
-    -- for resource and all super resources
-      IF (accessOwner(pUserID, pProjectID, vNextResource, opencmsConstants.C_ACCESS_OWNER_WRITE) = 1
-          OR accessGroup(pUserID, pProjectID, vNextResource, opencmsConstants.C_ACCESS_GROUP_WRITE) = 1
-          OR accessOther(pUserID, pProjectID, vNextResource, opencmsConstants.C_ACCESS_PUBLIC_WRITE) = 1) THEN
+    -- for all super resources read access Other/Owner/Group
+      IF (accessOwner(pUserID, pProjectID, vNextPath, opencmsConstants.C_ACCESS_OWNER_READ) = 1
+          OR accessGroup(pUserID, pProjectID, vNextPath, opencmsConstants.C_ACCESS_OWNER_READ) = 1
+          OR accessOther(pUserID, pProjectID, vNextPath, opencmsConstants.C_ACCESS_OWNER_READ) = 1) THEN
         curNextResource := opencmsResource.readFolder(pUserId, pProjectID, vNextPath);
         FETCH curNextResource INTO recResource;
         IF curNextResource%NOTFOUND THEN
@@ -54,7 +60,6 @@ PACKAGE BODY opencmsAccess IS
           RETURN 0;
         END IF;
         -- search next folder
-        vNextResource := recResource.parent_id;
         vNextPath := opencmsResource.getParent(recResource.resource_name);
       ELSE
         RETURN 0;
@@ -240,15 +245,14 @@ PACKAGE BODY opencmsAccess IS
 ---------------------------------------------------------------------------------------------------
 -- function checks if user has access to read the resource, return binary number: 1=true, 0=false
 ---------------------------------------------------------------------------------------------------
-  FUNCTION accessRead(pUserID NUMBER, pProjectID NUMBER, pResourceID NUMBER) RETURN NUMBER IS
+  FUNCTION accessRead(pUserID NUMBER, pProjectID NUMBER, pResourceName VARCHAR2) RETURN NUMBER IS
     curNextResource userTypes.anyCursor;
     recResource cms_resources%ROWTYPE;
-    vNextResource NUMBER;
     vNextPath cms_resources.resource_name%TYPE;
     vProjectId cms_resources.project_id%TYPE;
     vOnlineProject NUMBER;
   BEGIN
-    IF pResourceId IS NULL THEN
+    IF pResourceName IS NULL THEN
       RETURN 0;
     END IF;
     BEGIN
@@ -256,11 +260,11 @@ PACKAGE BODY opencmsAccess IS
       IF pProjectID = vOnlineProject THEN
         select resource_name, project_id into vNextPath, vProjectId
                from cms_online_resources
-               where resource_id = pResourceID;
+               where resource_name = pResourceName;
       ELSE
         select max(p.project_id), max(r.resource_name) into vProjectId, vNextPath
              from cms_resources r, cms_projectresources p
-             where resource_id = pResourceID
+             where r.resource_name = pResourceName
              and r.resource_name like concat(p.resource_name, '%')
              and p.project_id in (pProjectID, vOnlineProject);
       END IF;
@@ -272,22 +276,13 @@ PACKAGE BODY opencmsAccess IS
     IF accessProject(pUserID, vProjectID) = 0 THEN
       RETURN 0;
     END IF;
-    vNextResource := pResourceID;
     -- for resource and all super resources
     WHILE vNextPath IS NOT NULL LOOP
       -- NOT (accessOther or accessOwner or accessGroup (read)) => false
-      IF (accessOwner(pUserID, pProjectID, vNextResource, opencmsConstants.C_ACCESS_OWNER_READ) = 1
-          OR accessGroup(pUserID, pProjectID, vNextResource, opencmsConstants.C_ACCESS_GROUP_READ) = 1
-          OR accessOther(pUserID, pProjectID, vNextResource, opencmsConstants.C_ACCESS_PUBLIC_READ) = 1) THEN
-        curNextResource := opencmsResource.readFolder(pUserId, pProjectID, vNextPath);
-        FETCH curNextResource INTO recResource;
-        IF curNextResource%NOTFOUND THEN
-          recResource := NULL;
-        END IF;
-        CLOSE curNextResource;
-        -- search next folder
-        vNextResource := recResource.parent_id;
-        vNextPath := opencmsResource.getParent(recResource.resource_name);
+      IF (accessOwner(pUserID, pProjectID, vNextPath, opencmsConstants.C_ACCESS_OWNER_READ) = 1
+          OR accessGroup(pUserID, pProjectID, vNextPath, opencmsConstants.C_ACCESS_GROUP_READ) = 1
+          OR accessOther(pUserID, pProjectID, vNextPath, opencmsConstants.C_ACCESS_PUBLIC_READ) = 1) THEN
+        vNextPath := opencmsResource.getParent(vNextPath);
       ELSE
         RETURN 0;
       END IF;
@@ -301,7 +296,6 @@ PACKAGE BODY opencmsAccess IS
     vResProjectID NUMBER;
     curNextResource userTypes.anyCursor;
     recResource cms_resources%ROWTYPE;
-    vNextResource NUMBER;
     vNextPath cms_resources.resource_name%TYPE;
     vLockedBy NUMBER;
     vOnlineProject NUMBER;
@@ -316,20 +310,19 @@ PACKAGE BODY opencmsAccess IS
       RETURN 0;
     END IF;
     BEGIN
-      select a.project_id, b.resource_name, b.parent_id, b.locked_by
-             into vResProjectID, vNextPath, vNextResource, vLockedBy
+      select a.project_id, b.resource_name, b.locked_by
+             into vResProjectID, vNextPath, vLockedBy
              from (select max(p.project_id) project_id
                    from cms_resources r, cms_projectresources p
                    where resource_id = pResourceID
                    and r.resource_name like concat(p.resource_name, '%')
-                   and p.project_id in (pProjectID, vOnlineProject)) a, 
+                   and p.project_id in (pProjectID, vOnlineProject)) a,
                    cms_resources b
              where b.resource_id = pResourceID;
     EXCEPTION
       WHEN NO_DATA_FOUND THEN
         vResProjectId := null;
         vNextPath := null;
-        vNextResource := null;
         vLockedBy := null;
     END;
 -- the following check is disabled because there are problems
@@ -342,9 +335,9 @@ PACKAGE BODY opencmsAccess IS
       RETURN 0;
     END IF;
     -- for current resource no accessOther/Owner/Group => false
-    IF (accessOwner(pUserID, pProjectID, pResourceId, opencmsConstants.C_ACCESS_OWNER_WRITE) = 0
-        AND accessGroup(pUserID, pProjectID, pResourceId, opencmsConstants.C_ACCESS_GROUP_WRITE) = 0
-        AND accessOther(pUserID, pProjectID, pResourceId, opencmsConstants.C_ACCESS_PUBLIC_WRITE) = 0) THEN
+    IF (accessOwner(pUserID, pProjectID, vNextPath, opencmsConstants.C_ACCESS_OWNER_WRITE) = 0
+        AND accessGroup(pUserID, pProjectID, vNextPath, opencmsConstants.C_ACCESS_GROUP_WRITE) = 0
+        AND accessOther(pUserID, pProjectID, vNextPath, opencmsConstants.C_ACCESS_PUBLIC_WRITE) = 0) THEN
       RETURN 0;
     END IF;
     -- select super resources
@@ -353,9 +346,9 @@ PACKAGE BODY opencmsAccess IS
     --WHILE vNextPath IS NOT NULL
     LOOP
        -- no accessOther/Owner/Group => false
-      IF (accessOwner(pUserID, pProjectID, vNextResource, opencmsConstants.C_ACCESS_OWNER_WRITE) = 1
-          OR accessGroup(pUserID, pProjectID, vNextResource, opencmsConstants.C_ACCESS_GROUP_WRITE) = 1
-          OR accessOther(pUserID, pProjectID, vNextResource, opencmsConstants.C_ACCESS_PUBLIC_WRITE) = 1) THEN
+      IF (accessOwner(pUserID, pProjectID, vNextPath, opencmsConstants.C_ACCESS_OWNER_READ) = 1
+          OR accessGroup(pUserID, pProjectID, vNextPath, opencmsConstants.C_ACCESS_GROUP_READ) = 1
+          OR accessOther(pUserID, pProjectID, vNextPath, opencmsConstants.C_ACCESS_PUBLIC_READ) = 1) THEN
         curNextResource := opencmsResource.readFolder(pUserId, pProjectID, vNextPath);
         FETCH curNextResource INTO recResource;
         IF curNextResource%NOTFOUND THEN
@@ -367,7 +360,6 @@ PACKAGE BODY opencmsAccess IS
           RETURN 0;
         END IF;
         -- search next folder
-        vNextResource := recResource.parent_id;
         vNextPath := opencmsResource.getParent(recResource.resource_name);
       ELSE
         RETURN 0;
@@ -382,15 +374,15 @@ PACKAGE BODY opencmsAccess IS
 ---------------------------------------------------------------------------------------------------
 -- access defined by pAccess (read/write) for others return boolean
 ---------------------------------------------------------------------------------------------------
-  FUNCTION accessOther(pUserID NUMBER, pProjectID NUMBER, pResourceID NUMBER, pAccess NUMBER) RETURN NUMBER IS
+  FUNCTION accessOther(pUserID NUMBER, pProjectID NUMBER, pResourceName VARCHAR2, pAccess NUMBER) RETURN NUMBER IS
     vAccessFlag NUMBER;
     vOnlineProject NUMBER;
   BEGIN
     vOnlineProject := opencmsProject.onlineProject(pProjectId).project_id;
     IF pProjectID = vOnlineProject THEN
-      select access_flags into vAccessFlag from cms_online_resources where resource_id = pResourceID;
+      select access_flags into vAccessFlag from cms_online_resources where resource_name = pResourceName;
     ELSE
-      select access_flags into vAccessFlag from cms_resources where resource_id = pResourceID;
+      select access_flags into vAccessFlag from cms_resources where resource_name = pResourceName;
     END IF;
     IF bitand(vAccessFlag, pAccess) = pAccess THEN
       RETURN 1;
@@ -403,7 +395,7 @@ PACKAGE BODY opencmsAccess IS
 ---------------------------------------------------------------------------------------------------
 -- access defined by pAccess (read/write) for owner return boolean
 ---------------------------------------------------------------------------------------------------
-  FUNCTION accessOwner(pUserID NUMBER, pProjectID NUMBER, pResourceID NUMBER, pAccess NUMBER) RETURN NUMBER IS
+  FUNCTION accessOwner(pUserID NUMBER, pProjectID NUMBER, pResourceName VARCHAR2, pAccess NUMBER) RETURN NUMBER IS
     vAccessFlag NUMBER;
     vOwnerID NUMBER;
     vAdminId NUMBER;
@@ -416,10 +408,10 @@ PACKAGE BODY opencmsAccess IS
     vOnlineProject := opencmsProject.onlineProject(pProjectId).project_id;
     IF pProjectID = vOnlineProject THEN
       select user_id, access_flags into vOwnerId, vAccessFlag
-             from cms_online_resources where resource_id = pResourceId;
+             from cms_online_resources where resource_name = pResourceName;
     ELSE
       select user_id, access_flags into vOwnerId, vAccessFlag
-             from cms_resources where resource_id = pResourceId;
+             from cms_resources where resource_name = pResourceName;
     END IF;
     IF vOwnerId = pUserId THEN
       IF bitand(vAccessFlag, pAccess) = pAccess THEN
@@ -434,7 +426,7 @@ PACKAGE BODY opencmsAccess IS
 ---------------------------------------------------------------------------------------------------
 -- access defined by pAccess (read/write) for group return boolean
 ---------------------------------------------------------------------------------------------------
-  FUNCTION accessGroup(pUserID NUMBER, pProjectID NUMBER, pResourceID NUMBER, pAccess NUMBER) RETURN NUMBER IS
+  FUNCTION accessGroup(pUserID NUMBER, pProjectID NUMBER, pResourceName VARCHAR2, pAccess NUMBER) RETURN NUMBER IS
     vGroupId NUMBER;
     vAccessFlag NUMBER;
     vOnlineProject NUMBER;
@@ -443,10 +435,10 @@ PACKAGE BODY opencmsAccess IS
     IF pProjectID = vOnlineProject THEN
       select group_id, access_flags into vGroupId, vAccessFlag
              from cms_online_resources
-             where resource_id = pResourceID;
+             where resource_name = pResourceName;
     ELSE
       select group_id, access_flags into vGroupId, vAccessFlag
-             from cms_resources where resource_id = pResourceID;
+             from cms_resources where resource_name = pResourceName;
     END IF;
     IF opencmsGroup.userInGroup(pUserID, vGroupId) = 1 THEN
       IF bitand(vAccessFlag, pAccess) = pAccess THEN

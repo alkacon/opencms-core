@@ -4,11 +4,11 @@ PACKAGE opencmsAccess IS
   FUNCTION accessLock(pUserID NUMBER, pProjectID NUMBER, pResourceID NUMBER) RETURN NUMBER;
   FUNCTION accessUnlock(pUserID NUMBER, pProjectID NUMBER, pResourceID NUMBER) RETURN NUMBER;
   FUNCTION accessProject(pUserID NUMBER, pProjectID NUMBER) RETURN NUMBER;
-  FUNCTION accessRead(pUserID NUMBER, pProjectID NUMBER, pResourceID NUMBER) RETURN NUMBER;
+  FUNCTION accessRead(pUserID NUMBER, pProjectID NUMBER, pResourceName VARCHAR2) RETURN NUMBER;
   FUNCTION accessWrite(pUserID NUMBER, pProjectID NUMBER, pResourceID NUMBER) RETURN NUMBER;
 
-  FUNCTION accessOwner(pUserID NUMBER, pProjectID NUMBER, pResourceID NUMBER, pAccess NUMBER) RETURN NUMBER;
-  FUNCTION accessOther(pUserID NUMBER, pProjectID NUMBER, pResourceID NUMBER, pAccess NUMBER) RETURN NUMBER;
-  FUNCTION accessGroup(pUserID NUMBER, pProjectID NUMBER, pResourceID NUMBER, pAccess NUMBER) RETURN NUMBER;
+  FUNCTION accessOwner(pUserID NUMBER, pProjectID NUMBER, pResourceName VARCHAR2, pAccess NUMBER) RETURN NUMBER;
+  FUNCTION accessOther(pUserID NUMBER, pProjectID NUMBER, pResourceName VARCHAR2, pAccess NUMBER) RETURN NUMBER;
+  FUNCTION accessGroup(pUserID NUMBER, pProjectID NUMBER, pResourceName VARCHAR2, pAccess NUMBER) RETURN NUMBER;
 END;
 /
