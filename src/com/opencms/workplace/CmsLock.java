@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLock.java,v $
- * Date   : $Date: 2000/03/27 13:04:30 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/04/05 13:04:48 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.util.*;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * @author Alexander Lucas
- * @version $Revision: 1.14 $ $Date: 2000/03/27 13:04:30 $
+ * @version $Revision: 1.15 $ $Date: 2000/04/05 13:04:48 $
  */
 public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants, I_CmsNewsConstants {
@@ -105,6 +105,10 @@ public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,
             template="file";
         } else {
             template="folder";
+        }
+        
+        if(lock == null && checkJavaProperty("opencms.dialog", "hide")) {
+            lock = "true";
         }
         
 		boolean hlock=true;

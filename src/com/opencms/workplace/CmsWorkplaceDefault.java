@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWorkplaceDefault.java,v $
- * Date   : $Date: 2000/03/27 10:02:17 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2000/04/05 13:04:48 $
+ * Version: $Revision: 1.20 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * Most special workplace classes may extend this class.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.19 $ $Date: 2000/03/27 10:02:17 $
+ * @version $Revision: 1.20 $ $Date: 2000/04/05 13:04:48 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConstants {
@@ -418,4 +418,24 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
             }
         }
     }            
+    
+    /**
+     * Checks a Java System property for containing the given value
+     * @param propertyName Name of the property
+     * @param value Value that should be checked
+     * @return <code>true</code> if the property contains the value, <code>false</code> otherwise
+     */
+    protected boolean checkJavaProperty(String propertyName, String value) {
+        boolean result = false;
+        String prop = null;
+        try {
+            prop = System.getProperty(propertyName);
+            if(prop != null && prop.equals(value)) {
+                result = true;
+            }     
+            return result;
+        } catch(Exception e) {
+            return false;
+        }
+    }
 }
