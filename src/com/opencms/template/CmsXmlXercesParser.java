@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlXercesParser.java,v $
- * Date   : $Date: 2000/02/17 18:39:58 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/04/03 15:56:49 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -35,8 +35,7 @@ import org.xml.sax.*;
 
 import org.apache.xerces.parsers.*;
 import org.apache.xerces.dom.*;
-
-import source.org.openxml.printer.*;
+import org.apache.xml.serialize.*;
 
 import com.opencms.core.*;
 
@@ -46,9 +45,12 @@ import com.opencms.core.*;
  * 
  * @author Alexander Kandzior
  * @author Alexander Lucas
- * @version $Revision: 1.5 $ $Date: 2000/02/17 18:39:58 $
+ * @version $Revision: 1.6 $ $Date: 2000/04/03 15:56:49 $
  */
 public class CmsXmlXercesParser implements I_CmsXmlParser, I_CmsLogChannels {
+    
+    /** Prevents the parser from printing multiple error messages.*/
+    private static boolean c_xercesWarning = false;
     
     /**
      * Parses the given text with the Xerces parser.
@@ -59,6 +61,15 @@ public class CmsXmlXercesParser implements I_CmsXmlParser, I_CmsLogChannels {
     public Document parse(Reader in) throws Exception { 
         //return DOMFactory.createParser(in, null).parseDocument();
         DOMParser parser = new DOMParser();
+        try {
+            parser.setFeature("http://apache.org/xml/features/dom/include-ignorable-whitespace", false);
+        } catch(SAXException e) {
+            if(A_OpenCms.isLogging() && ! c_xercesWarning) {
+                A_OpenCms.log(C_OPENCMS_INFO, "[CmsXmlXercesParser] Cannot set parser feature for apache xerces XML parser.");
+                A_OpenCms.log(C_OPENCMS_INFO, "[CmsXmlXercesParser] This is NOT critical, but you should better use xerces 1.0.3 or higher.");
+                c_xercesWarning = true;
+            }
+        }
         InputSource input = new InputSource(in);
         parser.parse(input);
         return parser.getDocument();
@@ -98,15 +109,12 @@ public class CmsXmlXercesParser implements I_CmsXmlParser, I_CmsLogChannels {
      * @param out Writer to print to.
      */
     public void getXmlText(Document doc, Writer out) {
-        OutputFormat of = new OutputFormat(doc, OutputFormat.DEFAULT_ENCODING, true);
+        OutputFormat outf = new OutputFormat(doc, null, true);
+        outf.setPreserveSpace(false);
         
-        Printer printer = Printer.makePrinter(out, of);
+        XMLSerializer serializer = new XMLSerializer(out, outf);
         try {
-            System.out.println(doc);
-			System.out.println(printer);
-			System.out.println(out);
-			printer.print(doc);   
-			
+            serializer.serialize(doc);
         } catch(Exception e) {
             if(A_OpenCms.isLogging()) {
                 A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsXmlXerxesParser] " + e);
@@ -121,16 +129,8 @@ public class CmsXmlXercesParser implements I_CmsXmlParser, I_CmsLogChannels {
      * @param out OutputStream to print to.
      */
     public void getXmlText(Document doc, OutputStream out) {
-        OutputFormat of = new OutputFormat(doc, OutputFormat.DEFAULT_ENCODING, true);
-        
-        try {
-            Printer printer = Printer.makePrinter(out, of);
-            printer.print(doc);      
-        } catch(Exception e) {
-            if(A_OpenCms.isLogging()) {
-                A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsXmlXerxesParser] " + e);
-            }
-        }
+        OutputStreamWriter osw = new OutputStreamWriter(out);
+        getXmlText(doc, osw);
     }
     
     /**
