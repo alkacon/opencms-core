@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2004/12/22 10:36:19 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2004/12/22 10:59:06 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import javax.servlet.jsp.JspException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  * @since 5.5.0
  */
 public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog {
@@ -1099,6 +1099,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                     }                    
                     result.append("\">");
                     result.append(A_CmsXmlWidget.getMessage(this, nestedContentDefinition, value.getElementName()));
+                    if (elementCount > 1) {
+                        result.append(" [").append(value.getIndex() + 1).append("]"); 
+                    }
                     result.append(": </td>");                    
                     if (showHelpBubble && type.isSimpleType() && value.getIndex() == 0) {                       
                         // show help bubble only on first element of each content definition 
