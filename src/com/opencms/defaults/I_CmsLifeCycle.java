@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/I_CmsLifeCycle.java,v $
-* Date   : $Date: 2004/02/13 13:41:46 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2004/07/08 15:21:14 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,6 +34,8 @@ import org.opencms.file.CmsObject;
  * 
  * @author Hanjo Riege
  * @version 1.0
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 
 public interface I_CmsLifeCycle {

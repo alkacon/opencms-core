@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2004/06/28 07:44:02 $
-* Version: $Revision: 1.106 $
+* Date   : $Date: 2004/07/08 15:21:13 $
+* Version: $Revision: 1.107 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -88,7 +88,9 @@ import org.w3c.dom.Text;
  * getXmlDocumentTagName() and getContentDescription().
  *
  * @author Alexander Lucas
- * @version $Revision: 1.106 $ $Date: 2004/06/28 07:44:02 $
+ * @version $Revision: 1.107 $ $Date: 2004/07/08 15:21:13 $
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent {
 

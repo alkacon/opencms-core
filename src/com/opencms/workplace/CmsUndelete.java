@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsUndelete.java,v $
-* Date   : $Date: 2004/06/28 07:44:02 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2004/07/08 15:21:06 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,9 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.19 $ $Date: 2004/06/28 07:44:02 $
+ * @version $Revision: 1.20 $ $Date: 2004/07/08 15:21:06 $
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 
 public class CmsUndelete extends CmsWorkplaceDefault {

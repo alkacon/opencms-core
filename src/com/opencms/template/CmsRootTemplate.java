@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsRootTemplate.java,v $
-* Date   : $Date: 2004/06/28 07:44:02 $
-* Version: $Revision: 1.52 $
+* Date   : $Date: 2004/07/08 15:21:13 $
+* Version: $Revision: 1.53 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,9 @@ import java.util.Hashtable;
  * the content of a master template.<p>
  *
  * @author Alexander Lucas
- * @version $Revision: 1.52 $ $Date: 2004/06/28 07:44:02 $
+ * @version $Revision: 1.53 $ $Date: 2004/07/08 15:21:13 $
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public class CmsRootTemplate {
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectPublish.java,v $
-* Date   : $Date: 2004/02/22 13:52:26 $
-* Version: $Revision: 1.46 $
+* Date   : $Date: 2004/07/08 15:21:05 $
+* Version: $Revision: 1.47 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,8 +48,10 @@ import java.util.Hashtable;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.46 $ $Date: 2004/02/22 13:52:26 $
+ * @version $Revision: 1.47 $ $Date: 2004/07/08 15:21:05 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 
 public class CmsAdminProjectPublish extends CmsWorkplaceDefault {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/I_CmsCosDocumentFactory.java,v $
- * Date   : $Date: 2004/07/05 14:32:44 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/07/08 15:21:13 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,8 +37,10 @@ import org.opencms.search.documents.I_CmsDocumentFactory;
  * Interface for lucene document factories used for OpenCms COS documents.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.3.6
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public interface I_CmsCosDocumentFactory extends I_CmsDocumentFactory {
 

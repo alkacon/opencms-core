@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleExport.java,v $
-* Date   : $Date: 2004/07/05 10:07:22 $
-* Version: $Revision: 1.51 $
+* Date   : $Date: 2004/07/08 15:21:06 $
+* Version: $Revision: 1.52 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,6 +52,8 @@ import java.util.StringTokenizer;
  * Creation date: (27.10.00 10:28:08)
  * @author Hanjo Riege
  * @author Thomas Weckert
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public class CmsAdminModuleExport extends CmsWorkplaceDefault {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsLinkCheck.java,v $
- * Date   : $Date: 2004/07/07 17:59:31 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/07/08 15:21:14 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,6 +66,8 @@ import org.apache.commons.collections.ExtendedProperties;
 
 /**
  * This class contains the functionaility for checking the validity of external links.<p>
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public class CmsLinkCheck extends CmsXmlTemplate implements I_CmsScheduledJob {
 

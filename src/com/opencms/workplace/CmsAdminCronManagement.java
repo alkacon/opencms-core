@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminCronManagement.java,v $
-* Date   : $Date: 2004/07/05 16:32:42 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2004/07/08 15:21:06 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,6 +41,8 @@ import java.util.Hashtable;
  *
  * Creation date: ()
  * @author Edna Falkenhan
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public class CmsAdminCronManagement extends CmsWorkplaceDefault {
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsHtmlBrowser.java,v $
-* Date   : $Date: 2004/06/28 07:44:02 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2004/07/08 15:21:06 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,8 +51,10 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author magnus meurer
- * @version $Revision: 1.25 $ $Date: 2004/06/28 07:44:02 $
+ * @version $Revision: 1.26 $ $Date: 2004/07/08 15:21:06 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 
 public class CmsHtmlBrowser extends A_CmsGalleryBrowser {

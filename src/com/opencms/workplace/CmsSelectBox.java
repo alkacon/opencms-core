@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsSelectBox.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2004/07/08 15:21:06 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,8 +46,10 @@ import org.w3c.dom.Element;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.20 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.21 $ $Date: 2004/07/08 15:21:06 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 
 public class CmsSelectBox extends A_CmsWpElement {

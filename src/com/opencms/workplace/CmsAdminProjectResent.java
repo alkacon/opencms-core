@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectResent.java,v $
-* Date   : $Date: 2004/06/18 14:17:54 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2004/07/08 15:21:05 $
+* Version: $Revision: 1.28 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,8 +46,10 @@ import java.util.Vector;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.27 $ $Date: 2004/06/18 14:17:54 $
+ * @version $Revision: 1.28 $ $Date: 2004/07/08 15:21:05 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 
 public class CmsAdminProjectResent extends CmsWorkplaceDefault {

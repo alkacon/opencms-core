@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsEditor.java,v $
-* Date   : $Date: 2004/06/28 07:44:02 $
-* Version: $Revision: 1.68 $
+* Date   : $Date: 2004/07/08 15:21:06 $
+* Version: $Revision: 1.69 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -57,8 +57,10 @@ import javax.servlet.http.HttpServletRequest;
  * <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.68 $ $Date: 2004/06/28 07:44:02 $
+ * @version $Revision: 1.69 $ $Date: 2004/07/08 15:21:06 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 
 public class CmsEditor extends CmsWorkplaceDefault {

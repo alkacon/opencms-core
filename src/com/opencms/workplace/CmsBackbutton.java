@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsBackbutton.java,v $
-* Date   : $Date: 2004/02/22 13:52:27 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2004/07/08 15:21:13 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,8 +47,10 @@ import org.w3c.dom.Element;
  *
  * Creation date: (09.08.00 15:21:44)
  * @author Hanjo Riege
- * @version $Name:  $ $Revision: 1.11 $ $Date: 2004/02/22 13:52:27 $
+ * @version $Name:  $ $Revision: 1.12 $ $Date: 2004/07/08 15:21:13 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 
 public class CmsBackbutton extends A_CmsWpElement implements I_CmsWpElement {

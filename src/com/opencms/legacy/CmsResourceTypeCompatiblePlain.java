@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsResourceTypeCompatiblePlain.java,v $
- * Date   : $Date: 2004/06/21 09:53:08 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/07/08 15:21:13 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package com.opencms.legacy;
 
-
 import org.opencms.db.CmsDriverManager;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -40,15 +39,14 @@ import org.opencms.loader.CmsDumpLoader;
 
 import java.util.List;
 
-
-
-
 /**
  * Describes the resource type "compatiblePlain" (that only exists for backward compatibility for 
  * some very old OpenCms version).<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public class CmsResourceTypeCompatiblePlain extends A_CmsResourceType {
 

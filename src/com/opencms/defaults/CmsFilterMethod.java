@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsFilterMethod.java,v $
-* Date   : $Date: 2004/02/13 13:41:45 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2004/07/08 15:21:14 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,6 +35,8 @@ import org.opencms.file.*;
  * Insert the type's description here.
  * Creation date: (08.11.00 12:02:57)
  * @author Michael Knoll
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public class CmsFilterMethod {
     private String m_filterName;

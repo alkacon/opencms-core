@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelBackoffice.java,v $
-* Date   : $Date: 2004/02/22 13:52:27 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2004/07/08 15:21:14 $
+* Version: $Revision: 1.28 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,9 @@ import com.opencms.workplace.CmsXmlWpTemplateFile;
 import java.util.Hashtable;
 import java.util.Vector;
 
-
+/**
+ * @deprecated Will not be supported past the OpenCms 6 release.
+ */
 public class CmsChannelBackoffice extends A_CmsBackoffice{
     
     /**

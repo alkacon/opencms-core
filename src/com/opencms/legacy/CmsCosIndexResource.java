@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsCosIndexResource.java,v $
- * Date   : $Date: 2004/07/05 14:32:44 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/07/08 15:21:13 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,7 @@ package com.opencms.legacy;
 
 import org.opencms.search.A_CmsIndexResource;
 
-import com.opencms.defaults.master.CmsMasterDataSet;
+import com.opencms.defaults.master.*;
 
 
 /**
@@ -40,10 +40,12 @@ import com.opencms.defaults.master.CmsMasterDataSet;
  * The type is either <code>CmsResource</code> while indexing vfs data,
  * or <code>CmsMasterDataSet</code> while indexing cos data.
  * 
- * @version $Revision: 1.3 $ $Date: 2004/07/05 14:32:44 $
+ * @version $Revision: 1.4 $ $Date: 2004/07/08 15:21:13 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public class CmsCosIndexResource extends A_CmsIndexResource {
     

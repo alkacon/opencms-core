@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsLruCache.java,v $
-* Date   : $Date: 2003/02/15 11:14:53 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2004/07/08 15:21:13 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,6 +39,8 @@ import java.util.Vector;
  *
  * @author Hanjo Riege
  * @version 1.0
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 
 public class CmsLruCache {

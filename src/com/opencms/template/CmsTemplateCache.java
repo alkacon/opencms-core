@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsTemplateCache.java,v $
-* Date   : $Date: 2004/06/15 10:59:44 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2004/07/08 15:21:13 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,7 +38,9 @@ import org.apache.commons.collections.map.LRUMap;
  * Implements the OpenCms template cache.<p>
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.20 $ $Date: 2004/06/15 10:59:44 $
+ * @version $Revision: 1.21 $ $Date: 2004/07/08 15:21:13 $
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public class CmsTemplateCache implements I_CmsTemplateCache {
     

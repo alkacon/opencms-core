@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2004/06/28 11:18:10 $
-* Version: $Revision: 1.75 $
+* Date   : $Date: 2004/07/08 15:21:14 $
+* Version: $Revision: 1.76 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -57,8 +57,10 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.75 $
- * $Date: 2004/06/28 11:18:10 $
+ * $Revision: 1.76 $
+ * $Date: 2004/07/08 15:21:14 $
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsExtendedContentDefinition{
 

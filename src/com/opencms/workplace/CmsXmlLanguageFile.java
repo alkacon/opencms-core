@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlLanguageFile.java,v $
-* Date   : $Date: 2004/03/29 10:39:54 $
-* Version: $Revision: 1.59 $
+* Date   : $Date: 2004/07/08 15:21:06 $
+* Version: $Revision: 1.60 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,9 @@ package com.opencms.workplace;
  * been changed to use the standard <code>java.util.ResouceBundle</code> technology.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.59 $ $Date: 2004/03/29 10:39:54 $
+ * @version $Revision: 1.60 $ $Date: 2004/07/08 15:21:06 $
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;

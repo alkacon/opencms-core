@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlFormTemplate.java,v $
-* Date   : $Date: 2004/02/13 13:41:46 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2004/07/08 15:21:14 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,8 +44,10 @@ import java.util.Hashtable;
  * Most special workplace classes may extend this class.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.8 $ $Date: 2004/02/13 13:41:46 $
+ * @version $Revision: 1.9 $ $Date: 2004/07/08 15:21:14 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public class CmsXmlFormTemplate extends CmsXmlTemplate {
     

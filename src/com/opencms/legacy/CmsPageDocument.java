@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsPageDocument.java,v $
- * Date   : $Date: 2004/07/05 11:58:21 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/07/08 15:21:13 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.opencms.search.documents.I_CmsDocumentFactory;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import com.opencms.template.CmsXmlTemplateFile;
+import com.opencms.template.*;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -48,8 +48,10 @@ import org.htmlparser.parserapplications.StringExtractor;
  * Lucene document factory class to extract index data from a cms resource 
  * of type <code>CmsResourceTypePage</code>.<p>
  * 
- * @version $Revision: 1.2 $ $Date: 2004/07/05 11:58:21 $
+ * @version $Revision: 1.3 $ $Date: 2004/07/08 15:21:13 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public class CmsPageDocument extends CmsVfsDocument {
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsContentDefinition.java,v $
-* Date   : $Date: 2004/02/13 13:41:45 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2004/07/08 15:21:14 $
+* Version: $Revision: 1.23 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,9 @@ import java.util.Vector;
  * Creation date: (27.10.00 10:04:42)
  * 
  * @author Michael Knoll
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public abstract class A_CmsContentDefinition implements I_CmsContent {
 

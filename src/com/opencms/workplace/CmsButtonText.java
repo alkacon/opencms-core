@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsButtonText.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2004/07/08 15:21:13 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,8 +43,10 @@ import org.w3c.dom.Element;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;TEXTBUTTON&gt;</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.12 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.13 $ $Date: 2004/07/08 15:21:13 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 
 public class CmsButtonText extends A_CmsWpElement {

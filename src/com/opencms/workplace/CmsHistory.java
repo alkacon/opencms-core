@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsHistory.java,v $
-* Date   : $Date: 2004/06/28 07:44:02 $
-* Version: $Revision: 1.46 $
+* Date   : $Date: 2004/07/08 15:21:05 $
+* Version: $Revision: 1.47 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,9 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.46 $ $Date: 2004/06/28 07:44:02 $
+ * @version $Revision: 1.47 $ $Date: 2004/07/08 15:21:05 $
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 
 public class CmsHistory extends CmsWorkplaceDefault {

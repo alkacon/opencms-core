@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsSqlManager.java,v $
- * Date   : $Date: 2004/02/13 13:41:46 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/07/08 15:21:14 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,9 @@ import java.util.Properties;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.19 $ $Date: 2004/02/13 13:41:46 $
+ * @version $Revision: 1.20 $ $Date: 2004/07/08 15:21:14 $
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
     

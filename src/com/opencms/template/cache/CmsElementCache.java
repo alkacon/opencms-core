@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementCache.java,v $
-* Date   : $Date: 2004/03/08 07:30:22 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2004/07/08 15:21:14 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,6 +50,8 @@ import java.util.Vector;
  * structure. For createing the content no XML-parsing and DOM-accessing is
  * neccessairy.
  * @author Andreas Schouten
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public class CmsElementCache extends Object implements I_CmsEventListener {
 

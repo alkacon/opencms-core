@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsExplorerResources.java,v $
-* Date   : $Date: 2004/06/28 07:44:02 $
-* Version: $Revision: 1.38 $
+* Date   : $Date: 2004/07/08 15:21:06 $
+* Version: $Revision: 1.39 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,6 +45,8 @@ import javax.servlet.http.HttpServletRequest;
  * Template class for generating the java script.
  * Creation date: (06.09.00 09:30:25)
  * @author Hanjo Riege
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 
 public class CmsExplorerResources extends CmsWorkplaceDefault {

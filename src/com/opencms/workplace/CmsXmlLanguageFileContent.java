@@ -53,6 +53,8 @@ import java.util.List;
  *
  * @author Alexander Lucas
  * @version $Revision: 1.36 $ $Date: 2002/12/06 23:16:46 $
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public class CmsXmlLanguageFileContent extends A_CmsXmlContent {
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsResponseHttpServlet.java,v $
-* Date   : $Date: 2004/06/15 10:59:44 $
-* Version: $Revision: 1.43 $
+* Date   : $Date: 2004/07/08 15:21:14 $
+* Version: $Revision: 1.44 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,9 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.43 $ $Date: 2004/06/15 10:59:44 $
+ * @version $Revision: 1.44 $ $Date: 2004/07/08 15:21:14 $
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public class CmsResponseHttpServlet implements I_CmsResponse {
 

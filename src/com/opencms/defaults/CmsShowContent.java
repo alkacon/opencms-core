@@ -73,6 +73,8 @@ import java.util.Vector;
  *
  * changed: the tagcontent parameter for getList may only use filterparameter0 to
  *          filterparameter9.
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public class CmsShowContent extends CmsXmlTemplate {
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleDelete.java,v $
-* Date   : $Date: 2004/02/22 13:52:27 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2004/07/08 15:21:13 $
+* Version: $Revision: 1.28 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,6 +49,8 @@ import java.util.Vector;
  *
  * Creation date: (12.09.00 10:28:08)
  * @author Hanjo Riege
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public class CmsAdminModuleDelete extends CmsWorkplaceDefault {
     

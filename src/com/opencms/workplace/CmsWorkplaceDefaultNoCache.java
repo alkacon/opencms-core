@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWorkplaceDefaultNoCache.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2004/07/08 15:21:06 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,6 +36,8 @@ import java.util.Hashtable;
  * Insert the type's description here.
  * Creation date: (09.08.00 16:11:21)
  * @author Hanjo Riege
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 
 public class CmsWorkplaceDefaultNoCache extends CmsWorkplaceDefault {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/I_CmsTemplateCache.java,v $
-* Date   : $Date: 2003/07/12 11:29:22 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2004/07/08 15:21:13 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,7 +34,9 @@ package com.opencms.template;
  * Classes and for a customized template cache have to be implemtented.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.1 $ $Date: 2003/07/12 11:29:22 $
+ * @version $Revision: 1.2 $ $Date: 2004/07/08 15:21:13 $
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public interface I_CmsTemplateCache {
     

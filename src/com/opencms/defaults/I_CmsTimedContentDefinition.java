@@ -1,7 +1,7 @@
 /*
 * File   : $Source $
-* Date   : $Date: 2003/07/14 12:50:19 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2004/07/08 15:21:14 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,6 +33,8 @@ package com.opencms.defaults;
  * that means the cd can define a timeinterval in which the content is valid.
  * The publicationDate is the begin of the timeinterval and the purgeDate is the end.
  * If this interface is used the method isTimedContent() should return true.
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public interface I_CmsTimedContentDefinition {
 

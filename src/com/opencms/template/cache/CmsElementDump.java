@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementDump.java,v $
-* Date   : $Date: 2004/02/13 13:41:46 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2004/07/08 15:21:14 $
+* Version: $Revision: 1.22 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,6 +47,8 @@ import java.util.Hashtable;
  * It may only be used for dumping plain text or binary data.
  *
  * @author Alexander Lucas
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public class CmsElementDump extends A_CmsElement {
 

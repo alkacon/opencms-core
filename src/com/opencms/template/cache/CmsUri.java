@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsUri.java,v $
-* Date   : $Date: 2004/02/27 11:35:10 $
-* Version: $Revision: 1.30 $
+* Date   : $Date: 2004/07/08 15:21:14 $
+* Version: $Revision: 1.31 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,6 +48,8 @@ import java.util.Hashtable;
  * process the content of this ressource.
  *
  * @author Andreas Schouten
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public class CmsUri {
 

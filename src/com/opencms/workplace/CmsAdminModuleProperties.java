@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleProperties.java,v $
-* Date   : $Date: 2004/06/07 12:44:05 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2004/07/08 15:21:09 $
+* Version: $Revision: 1.22 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,6 +46,8 @@ import java.util.Vector;
  * Template class for displaying the properties of a module.
  * Creation date: (07.09.00 11:30:26)
  * @author Hanjo Riege
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public class CmsAdminModuleProperties extends CmsWorkplaceDefault {
     

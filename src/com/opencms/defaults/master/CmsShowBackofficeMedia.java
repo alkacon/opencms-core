@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsShowBackofficeMedia.java,v $
-* Date   : $Date: 2004/02/22 13:52:27 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2004/07/08 15:21:14 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,6 +42,8 @@ import java.util.Hashtable;
 
 /**
  * Displays binary files attached to module data.
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public class CmsShowBackofficeMedia extends CmsXmlTemplate {
 

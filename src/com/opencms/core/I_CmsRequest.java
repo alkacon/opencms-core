@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsRequest.java,v $
-* Date   : $Date: 2004/06/15 07:22:30 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2004/07/08 15:21:14 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,9 @@ import javax.servlet.http.HttpServletRequest;
  * @author Michael Emmerich
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.16 $ $Date: 2004/06/15 07:22:30 $
+ * @version $Revision: 1.17 $ $Date: 2004/07/08 15:21:14 $
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public interface I_CmsRequest {
 

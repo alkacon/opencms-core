@@ -38,6 +38,8 @@ import java.util.*;
 /**
  * Backoffice class with channel functionality
  * @author Michael Dernen
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public abstract class A_CmsChannelBackoffice extends A_CmsBackoffice {
 

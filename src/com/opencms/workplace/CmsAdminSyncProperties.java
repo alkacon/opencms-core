@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminSyncProperties.java,v $
-* Date   : $Date: 2004/06/28 07:44:02 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2004/07/08 15:21:12 $
+* Version: $Revision: 1.34 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,6 +49,8 @@ import java.util.Vector;
  *
  * Creation date: ()
  * @author Edna Falkenhan
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public class CmsAdminSyncProperties extends CmsWorkplaceDefault {
 

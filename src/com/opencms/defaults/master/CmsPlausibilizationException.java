@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsPlausibilizationException.java,v $
-* Date   : $Date: 2004/02/13 13:41:45 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2004/07/08 15:21:14 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,9 @@ import java.util.Vector;
  * This exception is thrown to signalize plausibilization errors in backoffice modules.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2004/02/13 13:41:45 $
+ * @version $Revision: 1.3 $ $Date: 2004/07/08 15:21:14 $
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public class CmsPlausibilizationException extends CmsException {
 

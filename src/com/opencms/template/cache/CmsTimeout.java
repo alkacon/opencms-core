@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsTimeout.java,v $
-* Date   : $Date: 2003/06/25 13:51:59 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2004/07/08 15:21:14 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,6 +37,8 @@ package com.opencms.template.cache;
  *
  * @author Hanjo Riege
  * @version 1.0
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 
 public class CmsTimeout {

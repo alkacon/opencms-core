@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/I_CmsContent.java,v $
-* Date   : $Date: 2001/07/31 15:50:16 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2004/07/08 15:21:13 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,7 +34,9 @@ package com.opencms.template;
  * Classes for each customized content type have to be implemetented.
  * 
  * @author Mario Stanke
- * @version $Revision: 1.6 $ $Date: 2001/07/31 15:50:16 $
+ * @version $Revision: 1.7 $ $Date: 2004/07/08 15:21:13 $
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public interface I_CmsContent extends Cloneable {
     

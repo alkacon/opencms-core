@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleNew.java,v $
-* Date   : $Date: 2004/07/05 10:07:22 $
-* Version: $Revision: 1.41 $
+* Date   : $Date: 2004/07/08 15:21:12 $
+* Version: $Revision: 1.42 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,6 +53,8 @@ import java.util.Vector;
  *
  * Creation date: (01.09.00 12:55:58)
  * @author Hanjo Riege
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public class CmsAdminModuleNew extends CmsWorkplaceDefault {
 

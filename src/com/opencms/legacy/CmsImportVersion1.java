@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsImportVersion1.java,v $
- * Date   : $Date: 2004/06/15 10:21:33 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/07/08 15:21:13 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,9 +38,7 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsStringSubstitution;
 import org.opencms.workplace.I_CmsWpConstants;
 
-import com.opencms.template.A_CmsXmlContent;
-import com.opencms.template.CmsXmlTemplateLinkConverter;
-import com.opencms.template.CmsXmlXercesParser;
+import com.opencms.template.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -70,6 +68,8 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
  * @see org.opencms.importexport.A_CmsImport
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public class CmsImportVersion1 extends CmsImportVersion2 {
     

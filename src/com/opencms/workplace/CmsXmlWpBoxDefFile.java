@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpBoxDefFile.java,v $
-* Date   : $Date: 2004/02/13 13:45:33 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2004/07/08 15:21:13 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,9 @@ import com.opencms.template.A_CmsXmlContent;
  *  Content definition for the workplace messagebox element definition file.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.16 $ $Date: 2004/02/13 13:45:33 $
+ * @version $Revision: 1.17 $ $Date: 2004/07/08 15:21:13 $
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  **/
 
 public class CmsXmlWpBoxDefFile extends A_CmsXmlContent implements I_CmsWpConstants {

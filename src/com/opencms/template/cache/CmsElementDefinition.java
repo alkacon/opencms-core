@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementDefinition.java,v $
-* Date   : $Date: 2003/01/20 23:59:22 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2004/07/08 15:21:14 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,6 +39,8 @@ import java.util.Hashtable;
  *
  * @author Andreas Schouten
  * @author Alexander Lucas
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public class CmsElementDefinition implements Cloneable {
 

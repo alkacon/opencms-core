@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/I_CmsExtendedContentDefinition.java,v $
-* Date   : $Date: 2004/02/13 13:41:45 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2004/07/08 15:21:14 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,6 +37,8 @@ import java.util.Vector;
  * Content Definitions that uses the projectmanagement,
  * that means the cd can be published and the history
  * can be enabled, should implement this interface
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public interface I_CmsExtendedContentDefinition {
 

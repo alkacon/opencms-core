@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleAdmin.java,v $
-* Date   : $Date: 2004/06/28 11:18:10 $
-* Version: $Revision: 1.45 $
+* Date   : $Date: 2004/07/08 15:21:06 $
+* Version: $Revision: 1.46 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,6 +54,8 @@ import java.util.Vector;
  * Creation date: (29.10.00 10:28:08)
  * @author Hanjo Riege
  * @author Thomas Weckert
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public class CmsAdminModuleAdmin extends CmsWorkplaceDefault {
     private final String C_FROM = "from";

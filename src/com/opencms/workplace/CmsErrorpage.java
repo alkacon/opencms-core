@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsErrorpage.java,v $
-* Date   : $Date: 2004/02/22 13:52:26 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2004/07/08 15:21:06 $
+* Version: $Revision: 1.29 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,9 @@ import org.w3c.dom.NodeList;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ERRORPAGE&gt;</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.28 $ $Date: 2004/02/22 13:52:26 $
+ * @version $Revision: 1.29 $ $Date: 2004/07/08 15:21:06 $
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 
 public class CmsErrorpage extends A_CmsWpElement {

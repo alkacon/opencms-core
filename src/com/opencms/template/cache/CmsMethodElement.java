@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsMethodElement.java,v $
-* Date   : $Date: 2004/02/18 15:26:17 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2004/07/08 15:21:14 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,6 +52,8 @@ import java.util.Hashtable;
  *
  * @author Hanjo Riege
  * @version 1.0
+ *
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 
 public class CmsMethodElement extends A_CmsElement {

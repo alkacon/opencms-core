@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMessagebox.java,v $
-* Date   : $Date: 2004/02/22 13:52:26 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2004/07/08 15:21:06 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,9 @@ import org.w3c.dom.Node;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.18 $ $Date: 2004/02/22 13:52:26 $
+ * @version $Revision: 1.19 $ $Date: 2004/07/08 15:21:06 $
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 
 public class CmsMessagebox extends A_CmsWpElement {

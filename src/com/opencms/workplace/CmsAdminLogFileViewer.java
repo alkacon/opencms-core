@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminLogFileViewer.java,v $
-* Date   : $Date: 2004/02/21 13:33:21 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2004/07/08 15:21:06 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,6 +45,8 @@ import java.util.Hashtable;
  *
  * Creation date: ()
  * @author Edna Falkenhan
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public class CmsAdminLogFileViewer extends CmsWorkplaceDefault {
 

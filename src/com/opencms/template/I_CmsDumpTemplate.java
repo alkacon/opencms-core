@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/I_CmsDumpTemplate.java,v $
-* Date   : $Date: 2003/08/10 11:49:48 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2004/07/08 15:21:13 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,9 @@ package com.opencms.template;
  * implement the I_CmsDumpTemplate interface. 
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.6 $ $Date: 2003/08/10 11:49:48 $
+ * @version $Revision: 1.7 $ $Date: 2004/07/08 15:21:13 $
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public interface I_CmsDumpTemplate extends I_CmsTemplate {
     

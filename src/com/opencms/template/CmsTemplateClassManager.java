@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsTemplateClassManager.java,v $
- * Date   : $Date: 2004/06/15 10:59:44 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2004/07/08 15:21:13 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,8 @@ import org.opencms.main.CmsException;
 
 /**
  * Class for loading class instances, required by the legagy XmlTemplate mechanism.<p>
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public final class CmsTemplateClassManager {
 

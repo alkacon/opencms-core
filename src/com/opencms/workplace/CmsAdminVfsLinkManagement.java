@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminVfsLinkManagement.java,v $
- * Date   : $Date: 2004/02/22 13:52:26 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/07/08 15:21:06 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,9 @@ import java.util.Hashtable;
  * Workplace class for the Check Project / Check Filesystem Links backoffice item.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public final class CmsAdminVfsLinkManagement extends CmsWorkplaceDefault {
     

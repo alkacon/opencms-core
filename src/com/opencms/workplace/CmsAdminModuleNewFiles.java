@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleNewFiles.java,v $
-* Date   : $Date: 2004/02/22 13:52:26 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2004/07/08 15:21:12 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,6 +43,8 @@ import java.util.Vector;
  * Template class for displaying the conflicting Files for a new Module.
  * Creation date: (06.09.00 09:30:25)
  * @author Hanjo Riege
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public class CmsAdminModuleNewFiles extends CmsWorkplaceDefault {
     

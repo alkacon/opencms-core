@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/I_CmsXmlParser.java,v $
-* Date   : $Date: 2003/01/31 17:03:10 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2004/07/08 15:21:13 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,7 +39,9 @@ import org.w3c.dom.*;
  * 
  * @author Alexander Kandzior
  * @author Alexander Lucas
- * @version $Revision: 1.13 $ $Date: 2003/01/31 17:03:10 $
+ * @version $Revision: 1.14 $ $Date: 2004/07/08 15:21:13 $
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public interface I_CmsXmlParser {
     

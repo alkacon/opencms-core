@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsFileListUsers.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2004/07/08 15:21:06 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,9 +42,11 @@ import java.util.List;
  * <code>&lt;FILELIST&gt;</code> has to implement this interface.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.9 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.10 $ $Date: 2004/07/08 15:21:06 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * @see com.opencms.workplace.CmsFileList
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 
 public interface I_CmsFileListUsers {

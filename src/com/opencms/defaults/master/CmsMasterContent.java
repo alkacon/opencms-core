@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2004/06/28 07:44:02 $
-* Version: $Revision: 1.58 $
+* Date   : $Date: 2004/07/08 15:21:14 $
+* Version: $Revision: 1.59 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,8 +55,10 @@ import com.opencms.legacy.CmsXmlTemplateLoader;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.58 $
- * $Date: 2004/06/28 07:44:02 $
+ * $Revision: 1.59 $
+ * $Date: 2004/07/08 15:21:14 $
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public abstract class CmsMasterContent
     extends A_CmsContentDefinition

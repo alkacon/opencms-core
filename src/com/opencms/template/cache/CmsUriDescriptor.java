@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsUriDescriptor.java,v $
-* Date   : $Date: 2003/01/20 23:59:22 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2004/07/08 15:21:14 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,6 +34,8 @@ package com.opencms.template.cache;
  * is the key for a CmsUri.
  *
  * @author Andreas Schouten
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public class CmsUriDescriptor {
 

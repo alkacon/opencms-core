@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsBackofficeHead.java,v $
-* Date   : $Date: 2004/02/22 13:52:26 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2004/07/08 15:21:06 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,6 +44,8 @@ import java.util.Vector;
  *
  * Creation date: (17.10.2001)
  * @author Michael Emmerich
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 
 public class CmsBackofficeHead extends CmsWorkplaceDefault {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/htmlconverter/Attic/CmsHtmlConverterObjectReplaceContent.java,v $
-* Date   : $Date: 2004/06/15 10:59:44 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2004/07/08 15:21:13 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,6 +33,8 @@ package com.opencms.htmlconverter;
  * parsing it with JTidy.
  * @author Andreas Zahner
  * @version 1.0
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 class CmsHtmlConverterObjectReplaceContent {
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsMultipartInputStreamHandler.java,v $
-* Date   : $Date: 2004/06/15 10:59:44 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2004/07/08 15:21:14 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,7 +32,8 @@ import java.io.IOException;
 
 import javax.servlet.ServletInputStream;
 
-/**A class to aid in reading multipart/form-data from a ServletInputStream.
+/**
+ * A class to aid in reading multipart/form-data from a ServletInputStream.
  * <p>
  * It keeps track of how many bytes have been read and detects when the
  * Content-Length limit has been reached.  This is necessary since some
@@ -40,7 +41,9 @@ import javax.servlet.ServletInputStream;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * */
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
+ */
 class CmsMultipartInputStreamHandler {
     
     private ServletInputStream m_in;

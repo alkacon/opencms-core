@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementXml.java,v $
-* Date   : $Date: 2004/02/19 11:46:11 $
-* Version: $Revision: 1.38 $
+* Date   : $Date: 2004/07/08 15:21:14 $
+* Version: $Revision: 1.39 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,6 +51,8 @@ import java.util.Hashtable;
  * their content on generation-time.
  *
  * @author Alexander Lucas
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public class CmsElementXml extends A_CmsElement {
 

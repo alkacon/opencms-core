@@ -40,6 +40,8 @@ import java.util.Vector;
 
 /**
  * XmlTemplate class to show media objects
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public class CmsShowMedia extends CmsXmlTemplate {
 

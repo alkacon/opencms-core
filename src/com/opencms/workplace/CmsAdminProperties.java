@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProperties.java,v $
-* Date   : $Date: 2004/06/21 11:43:01 $
-* Version: $Revision: 1.36 $
+* Date   : $Date: 2004/07/08 15:21:05 $
+* Version: $Revision: 1.37 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,8 +50,10 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.36 $ $Date: 2004/06/21 11:43:01 $
+ * @version $Revision: 1.37 $ $Date: 2004/07/08 15:21:05 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 
 public class CmsAdminProperties extends CmsWorkplaceDefault {

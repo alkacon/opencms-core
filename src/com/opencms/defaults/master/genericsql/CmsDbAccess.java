@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2004/07/07 17:59:45 $
-* Version: $Revision: 1.73 $
+* Date   : $Date: 2004/07/08 15:21:14 $
+* Version: $Revision: 1.74 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -57,6 +57,8 @@ import org.opencms.util.CmsUUID;
 
 /**
  * This class provides methods to access the database in a generic way.
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public class CmsDbAccess {
 
@@ -491,7 +493,7 @@ public class CmsDbAccess {
      * 
      * @param cms the CmsObject to get access to cms resources.
      * @param channelId the id of the channel.
-     * @param suId the sub ID of the contentdefinition.
+     * @param subId the sub ID of the contentdefinition.
      * @return Vector the datasets of the contentdefinitions in the channel.
      */
     public Vector readAllByChannel(CmsObject cms, String channelId, int subId) throws CmsException {
@@ -1289,7 +1291,7 @@ public class CmsDbAccess {
      * Returns a vector with all version of a master in the backup table.<p>
      *
      * @param cms the CmsObject.
-     * @param contentDefinitinClass the Class of the current master.
+     * @param contentDefinitionClass the Class of the current master.
      * @param masterId the id of the master.
      * @param subId the sub id of the master.
      * @return Vector a vector with all versions of the master.

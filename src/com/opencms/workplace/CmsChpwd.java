@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChpwd.java,v $
- * Date   : $Date: 2004/02/22 13:52:26 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/07/08 15:21:05 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,9 @@ import java.util.Hashtable;
  * Template class for displaying the chpwd screen of the OpenCms workplace.<p>
  *
  * @author Michael Emmerich
- * @version $Revision: 1.16 $ $Date: 2004/02/22 13:52:26 $
+ * @version $Revision: 1.17 $ $Date: 2004/07/08 15:21:05 $
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 
 public class CmsChpwd extends CmsWorkplaceDefault {

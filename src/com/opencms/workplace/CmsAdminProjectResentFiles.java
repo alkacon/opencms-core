@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectResentFiles.java,v $
-* Date   : $Date: 2004/05/06 11:55:21 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2004/07/08 15:21:11 $
+* Version: $Revision: 1.27 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,8 +45,10 @@ import java.util.Hashtable;
  * editing news.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.26 $ $Date: 2004/05/06 11:55:21 $
+ * @version $Revision: 1.27 $ $Date: 2004/07/08 15:21:11 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
+ * 
+ * @deprecated Will not be supported past the OpenCms 6 release.
  */
 
 public class CmsAdminProjectResentFiles extends CmsWorkplaceDefault {
