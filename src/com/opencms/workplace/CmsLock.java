@@ -1,8 +1,7 @@
-
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLock.java,v $
-* Date   : $Date: 2001/02/22 10:21:10 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2001/02/22 13:56:11 $
+* Version: $Revision: 1.34 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -45,10 +44,10 @@ import java.util.*;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * @author Alexander Lucas
- * @version $Revision: 1.33 $ $Date: 2001/02/22 10:21:10 $
+ * @version $Revision: 1.34 $ $Date: 2001/02/22 13:56:11 $
  */
 
-public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
+public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants{
 
     /**
      * method to check get the real body path from the content file
@@ -140,6 +139,39 @@ public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
                     }
                 }
                 else {
+                        if((cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_FOLDER_NAME)) {
+                            try {
+                                cms.lockResource(C_CONTENTBODYPATH + filename.substring(1));
+                            }
+                            catch(CmsException e) {
+
+                            }
+                        }
+                }
+                session.removeValue(C_PARA_FILE);
+                if(hlock) {
+                    cms.lockResource(filename);
+
+                    // TODO: ErrorHandling
+
+                    // return to filelist
+                    try {
+                        if(lasturl == null || "".equals(lasturl)) {
+                            cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath()
+                                    + C_WP_EXPLORER_FILELIST);
+                        }
+                        else {
+                            cms.getRequestContext().getResponse().sendRedirect(lasturl);
+                        }
+                    }
+                    catch(Exception e) {
+                        throw new CmsException("Redirect fails :"
+                                + getConfigFile(cms).getWorkplaceActionPath()
+                                + C_WP_EXPLORER_FILELIST, CmsException.C_UNKNOWN_EXCEPTION, e);
+                    }
+                    return null;
+                }
+                else {
                     xmlTemplateDocument.setData("details", "unknown error");
                     template = "error";
                     session.removeValue(C_PARA_FILE);
@@ -151,6 +183,14 @@ public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
         // process the selected template
         return startProcessing(cms, xmlTemplateDocument, "", parameters, template);
     }
+
+    /**
+     * Get the real path of the news content file.
+     *
+     * @param cms The CmsObject, to access the XML read file.
+     * @param file File in which the body path is stored.
+     */
+
 
     /**
      * Indicates if the results of this class are cacheable.
@@ -168,3 +208,4 @@ public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
         return false;
     }
 }
+
