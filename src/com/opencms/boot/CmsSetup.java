@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetup.java,v $
-* Date   : $Date: 2002/11/07 11:00:16 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2002/11/07 18:09:30 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,23 +39,30 @@ import java.util.*;
  * containing possible error messages thrown by the setup.
  *
  * @author Magnus Meurer
+ * @author Thomas Weckert (t.weckert@alkacon.com)
  */
 public class CmsSetup {
 
-	/** Contains error messages, displayed by the setup wizard */
+	/** 
+	 * Contains error messages, displayed by the setup wizard 
+	 */
 	private static Vector errors = new Vector();
 
-	/** Contains the properties from the opencms.properties file */
-	private ExtendedProperties m_extProp;
+	/** 
+	 * Contains the properties from the opencms.properties file 
+	 */
+	private ExtendedProperties m_ExtProperties;
 
-	/** properties from dbsetup.properties */
-	private Properties m_dbSetupProps;
+	/** 
+	 * properties from dbsetup.properties 
+	 */
+	private Properties m_DbProperties;
 
 	/** Contains the absolute path to the opencms home directory */
 	private String m_basePath;
 
-	/** Indicates if the user has chosen standard (false)
-	 *  or advanced (true) setup
+	/** 
+	 * Indicates if the user has chosen standard (false) or advanced (true) setup
 	 */
 	private boolean m_setupType;
 
@@ -74,20 +81,21 @@ public class CmsSetup {
 	 */
 	private Hashtable m_replacer;
 
-	/** This method reads the properties from the opencms.propertie file
-	 *  and sets the CmsSetup properties with the matching values.
-	 *  This method should be called when the first page of the OpenCms
-	 *  Setup Wizard is called, so the input fields of the wizard are pre-defined
+	/** 
+	 * This method reads the properties from the opencms.property file
+	 * and sets the CmsSetup properties with the matching values.
+	 * This method should be called when the first page of the OpenCms
+	 * Setup Wizard is called, so the input fields of the wizard are pre-defined
 	 */
 	public void initProperties(String props) {
 		String path = getConfigFolder() + props;
 		try {
 			FileInputStream fis = new FileInputStream(new File(path));
-			m_extProp = new ExtendedProperties();
-			m_extProp.load(fis);
+			m_ExtProperties = new ExtendedProperties();
+			m_ExtProperties.load(fis);
 			fis.close();
-			m_dbSetupProps = new Properties();
-			m_dbSetupProps.load(getClass().getClassLoader().getResourceAsStream("com/opencms/boot/dbsetup.properties"));
+			m_DbProperties = new Properties();
+			m_DbProperties.load(getClass().getClassLoader().getResourceAsStream("com/opencms/boot/dbsetup.properties"));
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -95,27 +103,66 @@ public class CmsSetup {
 		}
 	}
 
-	/** This method sets the extended Properties by the given key with
-	 *  the given value. A backslash ('\') is added before each comma (',')
-	 *  in the value string, so the properties can be read correctly afterwards.
-	 *  @param key The key of the property
-	 *  @param value The value of the property
+	/** 
+	 * This method sets the value for a given key in the extended properties.
+	 * @param key The key of the property
+	 * @param value The value of the property
 	 */
-	public void setProperties(String key, String value) {
+	public void setExtProperty(String key, String value) {
+		m_ExtProperties.put(key, value);
+	}
+
+	/**
+	 * Returns the value for a given key from the extended properties.
+	 * @return the string value for a given key
+	 */
+	public String getExtProperty(String key) {
+		Object value = null;            
+		return ((value = m_ExtProperties.get(key)) != null) ? value.toString() : "";
+	}
+
+	/** 
+	 * This method sets the value for a given key in the database properties.
+	 * @param key The key of the property
+	 * @param value The value of the property
+	 */
+	public void setDbProperty(String key, String value) {
+		m_DbProperties.put(key, value);
+	}
+
+	/**
+	 * Returns the value for a given key from the database properties.
+	 * @return the string value for a given key
+	 */
+	public String getDbProperty(String key) {
+        Object value = null;            
+        return ((value = m_DbProperties.get(key)) != null) ? value.toString() : "";        
+	}
+
+	/**
+	 * Safely inserts a backslash before each comma in a given string.
+	 */
+    /*
+	private String escapeComma(String str) {
+		StringBuffer dummy = new StringBuffer("");
+		char[] chars = str.toCharArray();
+		int len = chars.length;
+
 		try {
-			char[] chars = value.toCharArray();
-			String modifiedValue = "";
-			for (int i = 0; i < chars.length; i++) {
+			for (int i = 0; i < len; i++) {
 				if (chars[i] == ',') {
-					modifiedValue += '\\';
+					dummy.append('\\');
 				}
-				modifiedValue += chars[i];
+				dummy.append(chars[i]);
 			}
-			m_extProp.put(key, modifiedValue);
 		}
 		catch (Exception e) {
+            System.out.println( e.toString() );
 		}
+
+		return dummy.toString();
 	}
+    */
 
 	/** Sets the path to the OpenCms home directory */
 	public void setBasePath(String basePath) {
@@ -144,25 +191,19 @@ public class CmsSetup {
 
 	/** Sets the resource broker to the given value */
 	public void setResourceBroker(String resourceBroker) {
-		setProperties("resourcebroker", resourceBroker);
+		setExtProperty("resourcebroker", resourceBroker);
 	}
 
 	/** Gets the resource broker */
 	public String getResourceBroker() {
-		Object temp = m_extProp.get("resourcebroker");
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return "";
-		}
+		return this.getExtProperty("resourcebroker");
 	}
 
 	/** Returns all resource Broker found in 'dbsetupscripts.properties' */
 	public Vector getResourceBrokers() {
 		Vector values = new Vector();
 
-		String value = m_dbSetupProps.getProperty("resourceBrokers");
+		String value = this.getDbProperty("resourceBrokers");
 		StringTokenizer tokenizer = new StringTokenizer(value, ",");
 		while (tokenizer.hasMoreTokens()) {
 			values.add(tokenizer.nextToken());
@@ -172,61 +213,43 @@ public class CmsSetup {
 
 	/** Sets the connection string to the database to the given value */
 	public void setDbWorkConStr(String dbWorkConStr) {
-		setProperties("pool." + getResourceBroker() + ".url", dbWorkConStr);
-		setProperties("pool." + getResourceBroker() + "backup.url", dbWorkConStr);
-		setProperties("pool." + getResourceBroker() + "online.url", dbWorkConStr);
+		setExtProperty("pool." + getResourceBroker() + ".url", dbWorkConStr);
+		setExtProperty("pool." + getResourceBroker() + "backup.url", dbWorkConStr);
+		setExtProperty("pool." + getResourceBroker() + "online.url", dbWorkConStr);
 	}
 
 	/** Sets the user of the database to the given value */
 	public void setDbWorkUser(String dbWorkUser) {
-		setProperties("pool." + getResourceBroker() + ".user", dbWorkUser);
-		setProperties("pool." + getResourceBroker() + "backup.user", dbWorkUser);
-		setProperties("pool." + getResourceBroker() + "online.user", dbWorkUser);
+		setExtProperty("pool." + getResourceBroker() + ".user", dbWorkUser);
+		setExtProperty("pool." + getResourceBroker() + "backup.user", dbWorkUser);
+		setExtProperty("pool." + getResourceBroker() + "online.user", dbWorkUser);
 	}
 
 	/** Returns the user of the database from the properties */
 	public String getDbWorkUser() {
-		Object ConStr = m_extProp.get("pool." + getResourceBroker() + ".user");
-		if (ConStr != null) {
-			return m_extProp.get("pool." + getResourceBroker() + ".user").toString();
-		}
-		else {
-			return "";
-		}
+		return this.getExtProperty("pool." + getResourceBroker() + ".user");
 	}
 
 	/** Sets the password of the database to the given value */
 	public void setDbWorkPwd(String dbWorkPwd) {
-		setProperties("pool." + getResourceBroker() + ".password", dbWorkPwd);
-		setProperties("pool." + getResourceBroker() + "backup.password", dbWorkPwd);
-		setProperties("pool." + getResourceBroker() + "online.password", dbWorkPwd);
+		setExtProperty("pool." + getResourceBroker() + ".password", dbWorkPwd);
+		setExtProperty("pool." + getResourceBroker() + "backup.password", dbWorkPwd);
+		setExtProperty("pool." + getResourceBroker() + "online.password", dbWorkPwd);
 	}
 
 	/** Returns a conenction string */
 	public String getDbWorkConStr() {
-		Object ConStr = m_extProp.get("pool." + getResourceBroker() + ".url");
-		if (ConStr != null) {
-			return ConStr.toString();
-		}
-		else {
-			return "";
-		}
+		return this.getExtProperty("pool." + getResourceBroker() + ".url");
 	}
 
 	/** Returns the password of the database from the properties */
 	public String getDbWorkPwd() {
-		Object ConStr = m_extProp.get("pool." + getResourceBroker() + ".password");
-		if (ConStr != null) {
-			return m_extProp.get("pool." + getResourceBroker() + ".password").toString();
-		}
-		else {
-			return "";
-		}
+		return this.getExtProperty("pool." + getResourceBroker() + ".password");
 	}
 
 	/** Returns the extended properties */
 	public ExtendedProperties getProperties() {
-		return m_extProp;
+		return m_ExtProperties;
 	}
 
 	/** Adds a new error message to the vector */
@@ -246,756 +269,485 @@ public class CmsSetup {
 
 	/** Returns the database driver belonging to the resource broker */
 	public String getDbDriver() {
-		return m_extProp.get("pool." + getResourceBroker() + ".driver").toString();
+		return m_ExtProperties.get("pool." + getResourceBroker() + ".driver").toString();
 	}
 
 	/** Sets the minimum connections to the given value */
 	public void setMinConn(String minConn) {
-		setProperties("pool." + getResourceBroker() + ".minConn", minConn);
+		setExtProperty("pool." + getResourceBroker() + ".minConn", minConn);
 	}
 
 	/** Returns the min. connections */
 	public String getMinConn() {
-		Object temp = m_extProp.get("pool." + getResourceBroker() + ".minConn");
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return "";
-		}
+		return this.getExtProperty("pool." + getResourceBroker() + ".minConn");
 	}
 
 	/** Sets the maximum connections to the given value */
 	public void setMaxConn(String maxConn) {
-		setProperties("pool." + getResourceBroker() + ".maxConn", maxConn);
+		setExtProperty("pool." + getResourceBroker() + ".maxConn", maxConn);
 	}
 
 	/** Returns the max. connections */
 	public String getMaxConn() {
-		Object temp = m_extProp.get("pool." + getResourceBroker() + ".maxConn");
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return "";
-		}
+		return this.getExtProperty("pool." + getResourceBroker() + ".maxConn");
 	}
 
 	/** Sets the increase rate to the given value */
 	public void setIncreaseRate(String increaseRate) {
-		setProperties("pool." + getResourceBroker() + ".increaseRate", increaseRate);
+		setExtProperty("pool." + getResourceBroker() + ".increaseRate", increaseRate);
 	}
 
 	/** Returns the increase rate */
 	public String getIncreaseRate() {
-		Object temp = m_extProp.get("pool." + getResourceBroker() + ".increaseRate");
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return "";
-		}
+		return this.getExtProperty("pool." + getResourceBroker() + ".increaseRate");
 	}
 
 	/** Sets the timeout to the given value */
 	public void setTimeout(String timeout) {
-		setProperties("pool." + getResourceBroker() + ".timeout", timeout);
+		setExtProperty("pool." + getResourceBroker() + ".timeout", timeout);
 	}
 
 	/** Returns the timeout value */
 	public String getTimeout() {
-		Object temp = m_extProp.get("pool." + getResourceBroker() + ".timeout");
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return "";
-		}
+		return this.getExtProperty("pool." + getResourceBroker() + ".timeout");
 	}
 
 	/** Sets the max. age to the given value */
 	public void setMaxAge(String maxAge) {
-		setProperties("pool." + getResourceBroker() + ".maxage", maxAge);
+		setExtProperty("pool." + getResourceBroker() + ".maxage", maxAge);
 	}
 
 	/** Returns the max. age */
 	public String getMaxAge() {
-		Object temp = m_extProp.get("pool." + getResourceBroker() + ".maxage");
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return "";
-		}
+		return this.getExtProperty("pool." + getResourceBroker() + ".maxage");
 	}
 
 	/** Sets the cache value for user to the given value */
 	public void setCacheUser(String cacheUser) {
-		setProperties("cache.user", cacheUser);
+		setExtProperty("cache.user", cacheUser);
 	}
 
 	/** Returns the cache value for user */
 	public String getCacheUser() {
-		Object temp = m_extProp.get("cache.user");
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return "";
-		}
+		return this.getExtProperty("cache.user");
 	}
 
 	/** Sets the cache value for group to the given value */
 	public void setCacheGroup(String cacheGroup) {
-		setProperties("cache.group", cacheGroup);
+		setExtProperty("cache.group", cacheGroup);
 	}
 
 	/** Returns the cache value for group */
 	public String getCacheGroup() {
-		Object temp = m_extProp.get("cache.group");
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return "";
-		}
+		return this.getExtProperty("cache.group");
 	}
 
 	/** Sets the cache value for usergroups to the given value */
 	public void setCacheUserGroups(String cacheUserGroups) {
-		setProperties("cache.usergroups", cacheUserGroups);
+		setExtProperty("cache.usergroups", cacheUserGroups);
 	}
 
 	/** Returns the cache value for usergroups */
 	public String getCacheUserGroups() {
-		Object temp = m_extProp.get("cache.usergroups");
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return "";
-		}
+		return this.getExtProperty("cache.usergroups");
 	}
 
 	/** Sets the cache value for project to the given value */
 	public void setCacheProject(String cacheProject) {
-		setProperties("cache.project", cacheProject);
+		setExtProperty("cache.project", cacheProject);
 	}
 
 	/** Returns the cache value for project */
 	public String getCacheProject() {
-		Object temp = m_extProp.get("cache.project");
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return "";
-		}
+		return this.getExtProperty("cache.project");
 	}
 
 	/** Sets the cache value for online project to the given value */
 	public void setCacheOnlineProject(String cacheOnlineProject) {
-		setProperties("cache.onlineproject", cacheOnlineProject);
+		setExtProperty("cache.onlineproject", cacheOnlineProject);
 	}
 
 	/** Returns the cache value for online project */
 	public String getCacheOnlineProject() {
-		Object temp = m_extProp.get("cache.onlineproject");
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return "";
-		}
+		return this.getExtProperty("cache.onlineproject");
 	}
 
 	/** Sets the cache value for resource to the given value */
 	public void setCacheResource(String cacheResource) {
-		setProperties("cache.resource", cacheResource);
+		setExtProperty("cache.resource", cacheResource);
 	}
 
 	/** Returns the cache value for resource */
 	public String getCacheResource() {
-		Object temp = m_extProp.get("cache.resource");
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return "";
-		}
+		return this.getExtProperty("cache.resource");
 	}
 
 	/** Sets the cache value for subres to the given value */
 	public void setCacheSubres(String cacheSubres) {
-		setProperties("cache.subres", cacheSubres);
+		setExtProperty("cache.subres", cacheSubres);
 	}
 
 	/** Returns the cache value for subres */
 	public String getCacheSubres() {
-		Object temp = m_extProp.get("cache.subres");
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return "";
-		}
+		return this.getExtProperty("cache.subres");
 	}
 
 	/** Sets the cache value for property to the given value */
 	public void setCacheProperty(String cacheProperty) {
-		setProperties("cache.property", cacheProperty);
+		setExtProperty("cache.property", cacheProperty);
 	}
 
 	/** Returns the cache value for property */
 	public String getCacheProperty() {
-		Object temp = m_extProp.get("cache.property");
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return "";
-		}
+		return this.getExtProperty("cache.property");
 	}
 
 	/** Sets the cache value for property def. to the given value */
 	public void setCachePropertyDef(String cachePropertyDef) {
-		setProperties("cache.propertydef", cachePropertyDef);
+		setExtProperty("cache.propertydef", cachePropertyDef);
 	}
 
 	/** Returns the cache value for property def. */
 	public String getCachePropertyDef() {
-		Object temp = m_extProp.get("cache.propertydef");
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return "";
-		}
+		return this.getExtProperty("cache.propertydef");
 	}
 
 	/** Sets the cache value for property def. vector to the given value */
 	public void setCachePropertyDefVector(String cachePropertyDefVector) {
-		setProperties("cache.propertydefvector", cachePropertyDefVector);
+		setExtProperty("cache.propertydefvector", cachePropertyDefVector);
 	}
 
 	/** Returns the cache value for property def. vector */
 	public String getCachePropertyDefVector() {
-		Object temp = m_extProp.get("cache.propertydefvector");
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return "";
-		}
+		return this.getExtProperty("cache.propertydefvector");
 	}
 
 	/** Sets the value for session failover to the given value */
 	public void setSessionFailover(String sessionFailover) {
-		setProperties("sessionfailover.enabled", sessionFailover);
+		setExtProperty("sessionfailover.enabled", sessionFailover);
 	}
 
 	/** Returns the value for session failover */
 	public String getSessionFailover() {
-		Object temp = m_extProp.get("sessionfailover.enabled");
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return "";
-		}
+		return this.getExtProperty("sessionfailover.enabled");
 	}
 
 	/** Sets the value for deleting published project parameters to the given value */
 	public void setHistoryEnabled(String historyEnabled) {
-		setProperties("history.enabled", historyEnabled);
+		setExtProperty("history.enabled", historyEnabled);
 	}
 
 	/** Returns the value for deleting published project parameters */
 	public String getHistoryEnabled() {
-		Object temp = m_extProp.get("history.enabled");
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return "";
-		}
+		return this.getExtProperty("history.enabled");
 	}
 
 	/** Sets the value for http streaming to the given value */
 	public void setHttpStreaming(String httpStreaming) {
-		setProperties("httpstreaming.enabled", httpStreaming);
+		setExtProperty("httpstreaming.enabled", httpStreaming);
 	}
 
 	/** Returns the value for http streaming */
 	public String getHttpStreaming() {
-		Object temp = m_extProp.get("httpstreaming.enabled");
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return "";
-		}
+		return this.getExtProperty("httpstreaming.enabled");
 	}
 
 	/** Sets the value for exportpoint nr to the given value */
 	public void setExportPoint(String exportPoint, int nr) {
-		setProperties("exportpoint." + nr, exportPoint);
+		setExtProperty("exportpoint." + nr, exportPoint);
 	}
 
 	/** Returns the value for exportpoint nr */
 	public String getExportPoint(int nr) {
-		Object temp = m_extProp.get("exportpoint." + nr);
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return null;
-		}
+		return this.getExtProperty("exportpoint." + nr);
 	}
 
 	/** Sets the value for exportpoint path nr to the given value */
 	public void setExportPointPath(String exportPointPath, int nr) {
-		setProperties("exportpoint.path." + nr, exportPointPath);
+		setExtProperty("exportpoint.path." + nr, exportPointPath);
 	}
 
 	/** Returns the value for exportpoint path nr */
 	public String getExportPointPath(int nr) {
-		Object temp = m_extProp.get("exportpoint.path." + nr);
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return null;
-		}
+		return this.getExtProperty("exportpoint.path." + nr);
 	}
 
 	/** Sets the value for redirect nr to the given value */
 	public void setRedirect(String redirect, int nr) {
-		setProperties("redirect." + nr, redirect);
+		setExtProperty("redirect." + nr, redirect);
 	}
 
 	/** Returns the value for redirect nr */
 	public String getRedirect(int nr) {
-		Object temp = m_extProp.get("redirect." + nr);
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return null;
-		}
+		return this.getExtProperty("redirect." + nr);
 	}
 
 	/** Sets the value for redirect location nr to the given value */
 	public void setRedirectLocation(String redirectLocation, int nr) {
-		setProperties("redirectlocation." + nr, redirectLocation);
+		setExtProperty("redirectlocation." + nr, redirectLocation);
 	}
 
 	/** Returns the value for redirect location nr */
 	public String getRedirectLocation(int nr) {
-		Object temp = m_extProp.get("redirectlocation." + nr);
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return null;
-		}
+		return this.getExtProperty("redirectlocation." + nr);
 	}
 
 	/** Sets the value for opencms logging to the given value */
 	public void setLogging(String logging) {
-		setProperties("log", logging);
+		setExtProperty("log", logging);
 	}
 
 	/** Returns the value for opencms logging */
 	public String getLogging() {
-		Object temp = m_extProp.get("log");
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return "";
-		}
+		return this.getExtProperty("log");
 	}
 
 	/** Sets the value for the log file to the given value */
 	public void setLogFile(String logFile) {
-		setProperties("log.file", logFile);
+		setExtProperty("log.file", logFile);
 	}
 
 	/** Returns the value for the log file */
 	public String getLogFile() {
-		Object temp = m_extProp.get("log.file");
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return "";
-		}
+		return this.getExtProperty("log.file");
 	}
 
 	/** Enables/Disables timestamps in the opencms logfile */
 	public void setLogTimestamp(String logTimestamp) {
-		setProperties("log.timestamp", logTimestamp);
+		setExtProperty("log.timestamp", logTimestamp);
 	}
 
 	/** Indicates if timestamps are displayed in the opencms logfile */
 	public String getLogTimestamp() {
-		Object temp = m_extProp.get("log.timestamp");
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return "";
-		}
+		return this.getExtProperty("log.timestamp");
 	}
 
 	/** Enables/Disables memory state in the log messages */
 	public void setLogMemory(String logMemory) {
-		setProperties("log.memory", logMemory);
+		setExtProperty("log.memory", logMemory);
 	}
 
 	/** Indicates if memory state is displayed in the log messages */
 	public String getLogMemory() {
-		Object temp = m_extProp.get("log.memory");
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return "";
-		}
+		return this.getExtProperty("log.memory");
 	}
 
 	/** Sets the value for the log date format to the given value */
 	public void setLogDateFormat(String logDateFormat) {
-		setProperties("log.dateFormat", logDateFormat);
+		setExtProperty("log.dateFormat", logDateFormat);
 	}
 
 	/** Returns the value for the log date format */
 	public String getLogDateFormat() {
-		Object temp = m_extProp.get("log.dateFormat");
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return "";
-		}
+		return this.getExtProperty("log.dateFormat");
 	}
 
 	/** Sets the value for the log queue maxage to the given value */
 	public void setLogQueueMaxAge(String logQueueMaxAge) {
-		setProperties("log.queue.maxage", logQueueMaxAge);
+		setExtProperty("log.queue.maxage", logQueueMaxAge);
 	}
 
 	/** Returns the value for the log queue maxage */
 	public String getLogQueueMaxAge() {
-		Object temp = m_extProp.get("log.queue.maxage");
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return "";
-		}
+		return this.getExtProperty("log.queue.maxage");
 	}
 
 	/** Sets the value for the log queue maxsize to the given value */
 	public void setLogQueueMaxSize(String logQueueMaxSize) {
-		setProperties("log.queue.maxsize", logQueueMaxSize);
+		setExtProperty("log.queue.maxsize", logQueueMaxSize);
 	}
 
 	/** Returns the value for the log queue maxsize */
 	public String getLogQueueMaxSize() {
-		Object temp = m_extProp.get("log.queue.maxsize");
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return "";
-		}
+		return this.getExtProperty("log.queue.maxsize");
 	}
 
 	/** Enables/Disables channel names in the log messages */
 	public void setLoggingChannelName(String loggingChannelName) {
-		setProperties("log.channel", loggingChannelName);
+		setExtProperty("log.channel", loggingChannelName);
 	}
 
 	/** Indicates if channel names are displayed in the log messages */
 	public String getLoggingChannelName() {
-		Object temp = m_extProp.get("log.channel");
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return "";
-		}
+		return this.getExtProperty("log.channel");
 	}
 
 	/** Enables/Disables channel opencms_init in the log messages */
 	public void setLoggingChannelOpencms_init(String loggingChannelOpencms_init) {
-		setProperties("log.channel.opencms_init", loggingChannelOpencms_init);
+		setExtProperty("log.channel.opencms_init", loggingChannelOpencms_init);
 	}
 
 	/** Indicates if channel opencms_init is enabled in the log messages */
 	public String getLoggingChannelOpencms_init() {
-		Object temp = m_extProp.get("log.channel.opencms_init");
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return "";
-		}
+		return this.getExtProperty("log.channel.opencms_init");
 	}
 
 	/** Enables/Disables channel opencms_debug in the log messages */
 	public void setLoggingChannelOpencms_debug(String loggingChannelOpencms_debug) {
-		setProperties("log.channel.opencms_debug", loggingChannelOpencms_debug);
+		setExtProperty("log.channel.opencms_debug", loggingChannelOpencms_debug);
 	}
 
 	/** Indicates if channel opencms_debug is enabled in the log messages */
 	public String getLoggingChannelOpencms_debug() {
-		Object temp = m_extProp.get("log.channel.opencms_debug");
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return "";
-		}
+		return this.getExtProperty("log.channel.opencms_debug");
 	}
 
 	/** Enables/Disables channel opencms_cache in the log messages */
 	public void setLoggingChannelOpencms_cache(String loggingChannelOpencms_cache) {
-		setProperties("log.channel.opencms_cache", loggingChannelOpencms_cache);
+		setExtProperty("log.channel.opencms_cache", loggingChannelOpencms_cache);
 	}
 
 	/** Indicates if channel opencms_cache is enabled in the log messages */
 	public String getLoggingChannelOpencms_cache() {
-		Object temp = m_extProp.get("log.channel.opencms_cache");
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return "";
-		}
+		return this.getExtProperty("log.channel.opencms_cache");
 	}
 
 	/** Enables/Disables channel opencms_info in the log messages */
 	public void setLoggingChannelOpencms_info(String loggingChannelOpencms_info) {
-		setProperties("log.channel.opencms_info", loggingChannelOpencms_info);
+		setExtProperty("log.channel.opencms_info", loggingChannelOpencms_info);
 	}
 
 	/** Indicates if channel opencms_info is enabled in the log messages */
 	public String getLoggingChannelOpencms_info() {
-		Object temp = m_extProp.get("log.channel.opencms_info");
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return "";
-		}
+		return this.getExtProperty("log.channel.opencms_info");
 	}
 
 	/** Enables/Disables channel opencms_pool in the log messages */
 	public void setLoggingChannelOpencms_pool(String loggingChannelOpencms_pool) {
-		setProperties("log.channel.opencms_pool", loggingChannelOpencms_pool);
+		setExtProperty("log.channel.opencms_pool", loggingChannelOpencms_pool);
 	}
 
 	/** Indicates if channel opencms_pool is enabled in the log messages */
 	public String getLoggingChannelOpencms_pool() {
-		Object temp = m_extProp.get("log.channel.opencms_pool");
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return "";
-		}
+		return this.getExtProperty("log.channel.opencms_pool");
 	}
 
 	/** Enables/Disables channel opencms_streaming in the log messages */
 	public void setLoggingChannelOpencms_streaming(String loggingChannelOpencms_streaming) {
-		setProperties("log.channel.opencms_streaming", loggingChannelOpencms_streaming);
+		setExtProperty("log.channel.opencms_streaming", loggingChannelOpencms_streaming);
 	}
 
 	/** Indicates if channel opencms_streaming is enabled in the log messages */
 	public String getLoggingChannelOpencms_streaming() {
-		Object temp = m_extProp.get("log.channel.opencms_streaming");
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return "";
-		}
+		return this.getExtProperty("log.channel.opencms_streaming");
 	}
 
 	/** Enables/Disables channel opencms_critical in the log messages */
 	public void setLoggingChannelOpencms_critical(String loggingChannelOpencms_critical) {
-		setProperties("log.channel.opencms_critical", loggingChannelOpencms_critical);
+		setExtProperty("log.channel.opencms_critical", loggingChannelOpencms_critical);
 	}
 
 	/** Indicates if channel opencms_critical is enabled in the log messages */
 	public String getLoggingChannelOpencms_critical() {
-		Object temp = m_extProp.get("log.channel.opencms_critical");
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return "";
-		}
+		return this.getExtProperty("log.channel.opencms_critical");
 	}
 
 	/** Enables/Disables channel opencms_elementcache in the log messages */
 	public void setLoggingChannelOpencms_elementcache(String loggingChannelOpencms_elementcache) {
-		setProperties("log.channel.opencms_elementcache", loggingChannelOpencms_elementcache);
+		setExtProperty("log.channel.opencms_elementcache", loggingChannelOpencms_elementcache);
 	}
 
 	/** Indicates if channel opencms_elementcache is enabled in the log messages */
 	public String getLoggingChannelOpencms_elementcache() {
-		Object temp = m_extProp.get("log.channel.opencms_elementcache");
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return "";
-		}
+		return this.getExtProperty("log.channel.opencms_elementcache");
 	}
 
 	/** Enables/Disables channel modules_debug in the log messages */
 	public void setLoggingChannelModules_debug(String loggingChannelModules_debug) {
-		setProperties("log.channel.modules_debug", loggingChannelModules_debug);
+		setExtProperty("log.channel.modules_debug", loggingChannelModules_debug);
 	}
 
 	/** Indicates if channel modules_debug is enabled in the log messages */
 	public String getLoggingChannelModules_debug() {
-		Object temp = m_extProp.get("log.channel.modules_debug");
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return "";
-		}
+		return this.getExtProperty("log.channel.modules_debug");
 	}
 
 	/** Enables/Disables channel modules_info in the log messages */
 	public void setLoggingChannelModules_info(String loggingChannelModules_info) {
-		setProperties("log.channel.modules_info", loggingChannelModules_info);
+		setExtProperty("log.channel.modules_info", loggingChannelModules_info);
 	}
 
 	/** Indicates if channel modules_info is enabled in the log messages */
 	public String getLoggingChannelModules_info() {
-		Object temp = m_extProp.get("log.channel.modules_info");
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return "";
-		}
+		return this.getExtProperty("log.channel.modules_info");
 	}
 
 	/** Enables/Disables channel modules_critical in the log messages */
 	public void setLoggingChannelModules_critical(String loggingChannelModules_critical) {
-		setProperties("log.channel.modules_critical", loggingChannelModules_critical);
+		setExtProperty("log.channel.modules_critical", loggingChannelModules_critical);
 	}
 
 	/** Indicates if channel modules_critical is enabled in the log messages */
-	public String getLoggingChannelModules_critical() {
-		Object temp = m_extProp.get("log.channel.modules_critical");
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return "";
-		}
-	}
+    public String getLoggingChannelModules_critical() {
+        return this.getExtProperty("log.channel.modules_critical");
+    } 
+    
+    public String getLoggingFlexCache() {
+        return this.getExtProperty("log.channel.flex_cache");
+    }
+    
+    public void setLoggingFlexCache(String value) {
+        this.setExtProperty("log.channel.flex_cache", value);
+    }
+    
+    public String getLoggingFlexLoader() {
+        return this.getExtProperty("log.channel.flex_loader");
+    }
+    
+    public void setLoggingFlexLoader(String value) {
+        this.setExtProperty("log.channel.flex_loader", value);
+    }           
 
 	public void setElementCache(String elementCache) {
-		setProperties("elementcache.enabled", elementCache);
+		setExtProperty("elementcache.enabled", elementCache);
 	}
 
 	public String getElementCache() {
-		Object temp = m_extProp.get("elementcache.enabled");
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return "";
-		}
+		return this.getExtProperty("elementcache.enabled");
 	}
 
 	public void setElementCacheURI(String elementCacheURI) {
-		setProperties("elementcache.uri", elementCacheURI);
+		setExtProperty("elementcache.uri", elementCacheURI);
 	}
 
 	public String getElementCacheURI() {
-		Object temp = m_extProp.get("elementcache.uri");
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return "";
-		}
+		return this.getExtProperty("elementcache.uri");
 	}
 
 	public void setElementCacheElements(String elementCacheElements) {
-		setProperties("elementcache.elements", elementCacheElements);
+		setExtProperty("elementcache.elements", elementCacheElements);
 	}
 
 	public String getElementCacheElements() {
-		Object temp = m_extProp.get("elementcache.elements");
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return "";
-		}
+		return this.getExtProperty("elementcache.elements");
 	}
 
 	public void setElementCacheVariants(String elementCacheVariants) {
-		setProperties("elementcache.variants", elementCacheVariants);
+		setExtProperty("elementcache.variants", elementCacheVariants);
 	}
 
 	public String getElementCacheVariants() {
-		Object temp = m_extProp.get("elementcache.variants");
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return "";
-		}
+		return this.getExtProperty("elementcache.variants");
 	}
 
 	public String getDbCreateConStr() {
-		Object constr = m_dbSetupProps.get(getResourceBroker() + ".constr");
-		if (constr != null) {
-			return constr.toString();
-		}
-		else {
-			return "";
-		}
+		return this.getDbProperty(this.getResourceBroker() + ".constr");
 	}
 
 	public void setDbCreateConStr(String dbCreateConStr) {
-		m_dbSetupProps.put(getResourceBroker() + ".constr", dbCreateConStr);
+		this.setDbProperty(this.getResourceBroker() + ".constr", dbCreateConStr);
 	}
 
 	public String getDbCreateUser() {
-		Object constr = m_dbSetupProps.get(getResourceBroker() + ".user");
-		if (constr != null) {
-			return constr.toString();
-		}
-		else {
-			return "";
-		}
+		return this.getDbProperty(this.getResourceBroker() + ".user");
 	}
 
 	public void setDbCreateUser(String dbCreateUser) {
-		m_dbSetupProps.put(getResourceBroker() + ".user", dbCreateUser);
+		this.setDbProperty(this.getResourceBroker() + ".user", dbCreateUser);
 	}
 
 	public String getDbCreatePwd() {
-		if (m_dbCreatePwd != null) {
-			return m_dbCreatePwd;
-		}
-		else {
-			return "";
-		}
+		return (m_dbCreatePwd != null) ? m_dbCreatePwd : "";
 	}
 
 	public void setDbCreatePwd(String dbCreatePwd) {
@@ -1003,26 +755,16 @@ public class CmsSetup {
 	}
 
 	public boolean getWizardEnabled() {
-		Object temp = m_extProp.get("wizard.enabled");
-		if (temp != null) {
-			if (temp.toString().equals("true")) {
-				return true;
-			}
-			else {
-				return false;
-			}
-		}
-		else {
-			return true;
-		}
+		String dummy = this.getExtProperty("wizard.enabled");
+		return "true".equals(dummy);
 	}
 
 	public void lockWizard() {
-		setProperties("wizard.enabled", "false");
+		setExtProperty("wizard.enabled", "false");
 	}
 
 	public Properties getDbSetupProps() {
-		return m_dbSetupProps;
+		return m_DbProperties;
 	}
 
 	public String getDb() {
@@ -1042,95 +784,59 @@ public class CmsSetup {
 	}
 
 	public String getStaticExport() {
-		Object temp = m_extProp.get("staticexport.enabled");
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return "";
-		}
+		return this.getExtProperty("staticexport.enabled");
 	}
 
 	public void setStaticExport(String staticExport) {
-		setProperties("staticexport.enabled", staticExport);
+		setExtProperty("staticexport.enabled", staticExport);
 	}
 
 	public String getStaticExportPath() {
-		Object temp = m_extProp.get("staticexport.path");
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return "";
-		}
+		return this.getExtProperty("staticexport.path");
 	}
 
 	public void setStaticExportPath(String staticExportPath) {
-		setProperties("staticexport.path", staticExportPath);
+		setExtProperty("staticexport.path", staticExportPath);
 	}
 
 	public String getUrlPrefixExport() {
-		Object temp = m_extProp.get("url_prefix_export");
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return "";
-		}
+		return this.getExtProperty("url_prefix_export");
 	}
 
 	public void setUrlPrefixExport(String urlPrefixExport) {
-		setProperties("url_prefix_export", urlPrefixExport);
+		setExtProperty("url_prefix_export", urlPrefixExport);
 	}
 
 	public String getUrlPrefixHttp() {
-		Object temp = m_extProp.get("url_prefix_http");
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return "";
-		}
+		return this.getExtProperty("url_prefix_http");
 	}
 
 	public void setUrlPrefixHttp(String urlPrefixHttp) {
-		setProperties("url_prefix_http", urlPrefixHttp);
+		setExtProperty("url_prefix_http", urlPrefixHttp);
 	}
 
 	public String getUrlPrefixHttps() {
-		Object temp = m_extProp.get("url_prefix_https");
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return "";
-		}
+		return this.getExtProperty("url_prefix_https");
 	}
 
 	public void setUrlPrefixHttps(String urlPrefixHttps) {
-		setProperties("url_prefix_https", urlPrefixHttps);
+		setExtProperty("url_prefix_https", urlPrefixHttps);
 	}
 
 	public String getUrlPrefixServername() {
-		Object temp = m_extProp.get("url_prefix_servername");
-		if (temp != null) {
-			return temp.toString();
-		}
-		else {
-			return "";
-		}
+		return this.getExtProperty("url_prefix_servername");
 	}
 
 	public void setUrlPrefixServername(String urlPrefixServername) {
-		setProperties("url_prefix_servername", urlPrefixServername);
-	}
+		setExtProperty("url_prefix_servername", urlPrefixServername);
+	}  
 
 	/** 
 	 * Sets the value for the "directory.translation.enabled" option.
 	 * @param value a string which is either {"true"|"false"}
 	 */
 	public void setUseDirectoryTranslation(String value) {
-		setProperties("directory.translation.enabled", value);
+		setExtProperty("directory.translation.enabled", value);
 	}
 
 	/** 
@@ -1138,8 +844,7 @@ public class CmsSetup {
 	 * @param value a boolean which is either {true|false}
 	 */
 	public void setUseDirectoryTranslation(boolean value) {
-        // aren't we tough guys, huh?
-		this.setUseDirectoryTranslation( "" + value );
+		this.setUseDirectoryTranslation("" + value);
 	}
 
 	/**
@@ -1147,28 +852,135 @@ public class CmsSetup {
 	 * @return a string which is either {"true"|"false"}
 	 */
 	public String getUseDirectoryTranslation() {
-		String dummy = null;
+		return this.getExtProperty("directory.translation.enabled");
+	}
 
-		if ((dummy = (String) m_extProp.get("directory.translation.enabled")) != null) {
-			return dummy;
-		}
+	public void setFlexCacheEnabled(String value) {
+		this.setExtProperty("flex.cache.enabled", value);
+	}
 
-		return "";
+	public String getFlexCacheEnabled() {
+		return this.getExtProperty("flex.cache.enabled");
+	}
+
+	public void setCacheOfflineEnabled(String value) {
+		this.setExtProperty("flex.cache.offline", value);
+	}
+
+	public String getCacheOfflineEnabled() {
+		return this.getExtProperty("flex.cache.offline");
+	}
+
+	public void setForceGc(String value) {
+		this.setExtProperty("flex.cache.forceGC", value);
+	}
+
+	public String getForceGc() {
+		return this.getExtProperty("flex.cache.forceGC");
+	}
+
+	public void setFilenameTranslationEnabled(String value) {
+		this.setExtProperty("filename.translation.enabled", value);
+	}
+
+	public String getFilenameTranslationEnabled() {
+		return this.getExtProperty("filename.translation.enabled");
+	}
+
+	public void setDirectoryTranslationEnabled(String value) {
+		this.setExtProperty("directory.translation.enabled", value);
+	}
+
+	public String getDirectoryTranslationEnabled() {
+		return this.getExtProperty("directory.translation.enabled");
+	}
+
+	public void setMaxCacheBytes(String value) {
+		this.setExtProperty("flex.cache.maxCacheBytes", value);
+	}
+
+	public String getMaxCacheBytes() {
+		return this.getExtProperty("flex.cache.maxCacheBytes");
+	}
+
+	public void setAvgCacheBytes(String value) {
+		this.setExtProperty("flex.cache.avgCacheBytes", value);
+	}
+
+	public String getAvgCacheBytes() {
+		return this.getExtProperty("flex.cache.avgCacheBytes");
+	}
+
+	public void setMaxEntryBytes(String value) {
+		this.setExtProperty("flex.cache.maxEntryBytes", value);
+	}
+
+	public String getMaxEntryBytes() {
+		return this.getExtProperty("flex.cache.maxEntryBytes");
+	}
+
+	public void setMaxEntries(String value) {
+		this.setExtProperty("flex.cache.maxEntries", value);
+	}
+
+	public String getMaxEntries() {
+		return this.getExtProperty("flex.cache.maxEntries");
+	}
+
+	public void setMaxKeys(String value) {
+		this.setExtProperty("flex.cache.maxKeys", value);
+	}
+
+	public String getMaxKeys() {
+		return this.getExtProperty("flex.cache.maxKeys");
+	}
+
+	public void setDirectoryIndexFiles(String value) {
+		this.setExtProperty("directory.default.files", value);
+	}
+
+	public String getDirectoryIndexFiles() {        
+        Object value = null;            
+        value = m_ExtProperties.get("directory.default.files");
+        
+        if (value==null) {
+            // could be null...
+            return "";
+        }        
+        
+        if (value instanceof String) {
+            // ...a string...
+            return value.toString();
+        }
+        
+        // ...or a vector!
+        Enumeration allIndexFiles = ((Vector)value).elements();
+        String indexFiles = "";
+        
+        while (allIndexFiles.hasMoreElements()) {
+            indexFiles += (String)allIndexFiles.nextElement();
+            
+            if (allIndexFiles.hasMoreElements()) {
+                indexFiles += ",";
+            }
+        }
+        
+        return indexFiles;
 	}
     
     /**
      * Over simplistic helper to compare two strings to check radio buttons.
      */
-    public String isChecked( String value1, String value2 ) {
-        if (value1==null || value2==null) {
+    public String isChecked(String value1, String value2) {
+        if (value1 == null || value2 == null) {
             return "";
         }
-        
+
         if (value1.trim().equalsIgnoreCase(value2.trim())) {
             return "checked";
         }
-        
+
         return "";
-    }
+    }    
 
 }

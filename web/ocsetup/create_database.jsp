@@ -93,7 +93,7 @@
 								else {	
 									if(dbExists && !dropDb)	{
 										out.println("<p><strong><font color=\"#ff0000\">Warning:</font> An existing database has been detected. Drop it ?</strong></p>");
-										out.println("<p><nobr><input type=\"submit\" name=\"dropDb\" class=\"button\" value=\"Yes\" style=\"width:150px;\" width=\"150\">&nbsp;&nbsp;&nbsp;&nbsp;<input type=\"button\" value=\"No\" onClick=\"history.go(-2)\" style=\"width:150px;\" class=\"button\" width=\"150\"></nobr></p>");
+										out.println("<p><nobr><input type=\"submit\" name=\"dropDb\" class=\"button\" value=\"Yes\" style=\"width:150px;\" width=\"150\">&nbsp;&nbsp;&nbsp;&nbsp;<input type=\"button\" value=\"No\" onClick=\"history.go(-3)\" style=\"width:150px;\" class=\"button\" width=\"150\"></nobr></p>");
 									}
 									else	{
 										if(dropDb)	{
@@ -177,7 +177,7 @@
 					<table border="0">
 						<tr>
 							<td width="200" align="right">
-								<input type="button" class="button" style="width:150px;" width="150" value="&#060;&#060; Back" onclick="history.go(-2)" <% if(dbExists)out.println("disabled"); %>>
+								<input type="button" class="button" style="width:150px;" width="150" value="&#060;&#060; Back" onclick="history.go(-3)" <% if(dbExists)out.println("disabled"); %>>
 							</td>
 							<td width="200" align="left">
 								<input type="submit" name="submit" class="button" style="width:150px;" width="150" value="Continue &#062;&#062;" <% if(dbExists)out.println("disabled"); %>>

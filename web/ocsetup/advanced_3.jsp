@@ -18,7 +18,7 @@
 	boolean setupOk = (Bean.getProperties()!=null);
 	
 	/* next page to be accessed */
-	String nextPage = "save_properties.jsp";
+	String nextPage = "flex_properties.jsp";
 %>
 <!-- ------------------------------------------------------------------------------------------------------------------- -->
 
@@ -270,7 +270,31 @@
 																<td align="center">
 																	<input type="radio" name="loggingChannelModules_critical" value="false" <% if (Bean.getLoggingChannelModules_critical().equals("false")) {out.print("checked");} %>>
 																</td>
-															</tr>																					
+															</tr>	
+															
+															<tr>
+																<td align="left">
+																	flex_cache
+																</td>
+																<td align="center">
+																	<input type="radio" name="loggingFlexCache" value="true" <%=Bean.isChecked(Bean.getLoggingFlexCache(),"true")%>>
+																</td>
+																<td align="center">
+																	<input type="radio" name="loggingFlexCache" value="false" <%=Bean.isChecked(Bean.getLoggingFlexCache(),"false")%>>
+																</td>
+															</tr>
+															
+															<tr>
+																<td align="left">
+																	flex_loader
+																</td>
+																<td align="center">
+																	<input type="radio" name="loggingFlexLoader" value="true" <%=Bean.isChecked(Bean.getLoggingFlexLoader(),"true")%>>
+																</td>
+																<td align="center">
+																	<input type="radio" name="loggingFlexLoader" value="false" <%=Bean.isChecked(Bean.getLoggingFlexLoader(),"false")%>>
+																</td>
+															</tr>																																			
 														</table>
 													</tr>
 												</td>
@@ -288,7 +312,7 @@
 						<table border="0">
 							<tr>
 								<td width="200" align="right">
-									<input type="button" class="button" style="width:150px;" width="150" value="&#060;&#060; Back" onclick="history.back()">
+									<input type="button" class="button" style="width:150px;" width="150" value="&#060;&#060; Back" onclick="history.go(-1)">
 								</td>
 								<td width="200" align="left">
 									<input type="submit" name="submit" class="button" style="width:150px;" width="150" value="Continue &#062;&#062;">

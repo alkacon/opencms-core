@@ -55,7 +55,7 @@
 								<table border="0">
 								<%
 									int redirectNr = 0;
-									while (Bean.getRedirect(redirectNr)!=null)	{
+									while (!"".equals(Bean.getRedirect(redirectNr)))	{
 								%>
 									<tr>
 										<td width="150">
@@ -66,7 +66,7 @@
 										</td>
 									</tr>
 								<%
-									if(Bean.getRedirectLocation(redirectNr) != null)	{
+									if(!"".equals(Bean.getRedirectLocation(redirectNr)))	{
 								%>
 									<tr>
 										<td>

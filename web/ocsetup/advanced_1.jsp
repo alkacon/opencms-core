@@ -12,7 +12,7 @@
 %>
 
 <%	/* next page to be accessed */
-	String nextPage = "advanced_2.jsp";
+	String nextPage = "advanced_stexport.jsp";
 %>
 <!-- ------------------------------------------------------------------------------------------------------------------- -->
 

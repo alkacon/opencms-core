@@ -25,7 +25,7 @@
     int unsupportedServletEngine = -1;
     
     /* add supported engines here */
-    String[] supportedEngines = {"Apache Tomcat/4.0", "Tomcat Web Server/3.3", "Resin/2.0.b2"};
+    String[] supportedEngines = {"Apache Tomcat/4.1", "Apache Tomcat/4.0", "Tomcat Web Server/3.3", "Resin/2.0.b2"};
     
     /* add unsupported enginges here */
     String[] unsupportedEngines = {"Tomcat Web Server/3.2"};
@@ -150,7 +150,7 @@
                     <table border="0">
                         <tr>
                             <td width="200" align="right">
-                                <input type="button" class="button" style="width:150px;" width="150" value="&#060;&#060; Back" onclick="history.go(-1)">
+                                <input type="button" class="button" style="width:150px;" width="150" value="&#060;&#060; Back" onclick="history.go(-4)">
                             </td>
                             <td width="200" align="left">                                                                                       
                             <%  if(submited && info && !accepted)   { %>

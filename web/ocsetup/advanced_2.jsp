@@ -46,7 +46,7 @@
 								<table border="0">
 								<%
 									int expPointNr = 0;
-									while (Bean.getExportPoint(expPointNr)!=null)	{
+									while (!"".equals(Bean.getExportPoint(expPointNr)))	{
 								%>
 									<tr>
 										<td width="150">
@@ -57,7 +57,7 @@
 										</td>
 									</tr>
 								<%
-									if(Bean.getExportPointPath(expPointNr) != null)	{
+									if(!"".equals(Bean.getExportPointPath(expPointNr)))	{
 								%>
 									<tr>
 										<td>

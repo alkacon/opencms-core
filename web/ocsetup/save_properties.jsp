@@ -90,7 +90,7 @@
 								<input type="radio" name="importWorkplace" value="false" > No
 							</td>
 						</tr>
-						
+<% if (!Bean.getSetupType()) { %>
 						<tr>
 							<td align="center">
 								<b>Do you want to use directory translation?</b><br>
@@ -103,7 +103,7 @@
 								<input type="radio" name="useDirectoryTranslation" value="false" <%=Bean.isChecked(Bean.getUseDirectoryTranslation(),"false")%>> No
 							</td>
 						</tr>							
-						
+<% } %>						
 					</table>
 				</td>
 			</tr>
@@ -112,7 +112,11 @@
 					<table border="0">
 						<tr>
 							<td width="200" align="right">
+<% if (Bean.getSetupType()) { %>
+								<input type="button" class="button" style="width:150px;" width="150" value="&#060;&#060; Back" onclick="history.go(-1)">
+<% } else { %>
 								<input type="button" class="button" style="width:150px;" width="150" value="&#060;&#060; Back" onclick="history.go(-2)">
+<% } %>
 							</td>
 							<td width="200" align="left">
 								<input type="submit" name="submit" class="button" style="width:150px;" width="150" value="Continue &#062;&#062;">
