@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/news/Attic/CmsNewsContentFile.java,v $
- * Date   : $Date: 2000/05/18 12:23:08 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/05/18 13:53:39 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import org.xml.sax.*;
  * Sample content definition for news articles.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2000/05/18 12:23:08 $
+ * @version $Revision: 1.3 $ $Date: 2000/05/18 13:53:39 $
  */
  public class CmsNewsContentFile extends A_CmsXmlContent implements I_CmsNewsConstants {
 
@@ -260,7 +260,14 @@ import org.xml.sax.*;
      * @return external link..
      */
     public String getNewsExternalLink() throws CmsException {
-        return getDataValue(C_NEWS_XML_EXTLINK);
+		String parValue = getDataValue(C_NEWS_XML_EXTLINK);
+		//no URL is specified 
+		if (parValue != null && !"".equals(parValue)) {
+			if (parValue.equals(C_URL_PROTOCOL)) {
+				parValue = "";
+			}
+		}
+        return parValue;
     }
 
     /**

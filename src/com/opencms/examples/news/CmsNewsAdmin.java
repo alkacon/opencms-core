@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/news/Attic/CmsNewsAdmin.java,v $
- * Date   : $Date: 2000/05/18 12:23:08 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/05/18 13:53:39 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import org.apache.xml.serialize.*;
  * editing news.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.12 $ $Date: 2000/05/18 12:23:08 $
+ * @version $Revision: 1.13 $ $Date: 2000/05/18 13:53:39 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsNewsConstants, I_CmsFileListUsers {
@@ -68,9 +68,6 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
 
     /** Definition of the Datablock NEW_DISABLED */   
     private final static String C_NEW_DISABLED="NEW_DISABLED"; 
-	
-	/** Definition of the protocol to be used in the URL string */   
-	private final static String C_URL_PROTOCOL="http://"; 
     
     /**
      * Indicates if the results of this class are cacheable.
@@ -122,13 +119,6 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
         String newShorttext = (String)parameters.get(C_NEWS_PARAM_SHORTTEXT);
         String newText = (String)parameters.get(C_NEWS_PARAM_TEXT);
         String newExternalLink = (String)parameters.get(C_NEWS_PARAM_EXTLINK);
-		
-		//no URL is specified 
-		if (newExternalLink != null && !"".equals(newExternalLink)) {
-			if (newExternalLink.equals(C_URL_PROTOCOL)) {
-				newExternalLink = "";
-			}
-		}
         String newState = (String)parameters.get(C_NEWS_PARAM_STATE);
 		
         // load the template file of the news admin screen

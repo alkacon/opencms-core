@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/news/Attic/I_CmsNewsConstants.java,v $
- * Date   : $Date: 2000/05/09 08:31:34 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/05/18 13:53:39 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ package com.opencms.examples.news;
  * into a <code>news.ini</code> file.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.10 $ $Date: 2000/05/09 08:31:34 $
+ * @version $Revision: 1.11 $ $Date: 2000/05/18 13:53:39 $
  */
 public interface I_CmsNewsConstants {
     
@@ -87,6 +87,8 @@ public interface I_CmsNewsConstants {
     /** Name of the XML tag for "news inactive"*/
     public static final String C_NEWS_XML_INACTIVE = "inactive";
     
+	/** Default protocol to be used in the URL (external link) */   
+	public final static String C_URL_PROTOCOL="http://"; 
     
     // Names for news parameters used in session storage and
     // in HTTP requests.
