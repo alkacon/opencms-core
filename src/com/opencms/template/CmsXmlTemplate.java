@@ -14,7 +14,7 @@ import org.xml.sax.*;
  * that can include other subtemplates.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.7 $ $Date: 2000/02/02 10:38:38 $
+ * @version $Revision: 1.8 $ $Date: 2000/02/11 18:50:38 $
  */
 public class CmsXmlTemplate implements I_CmsXmlTemplate, I_CmsLogChannels {
     
@@ -29,7 +29,7 @@ public class CmsXmlTemplate implements I_CmsXmlTemplate, I_CmsLogChannels {
     /**
      * Template cache for storing cacheable results of the subtemplates.
      */
-    protected static I_CmsTemplateCache m_cache = null;
+    protected static com.opencms.launcher.I_CmsTemplateCache m_cache = null;
     
     /**
      * For debugging purposes only.
@@ -262,14 +262,21 @@ public class CmsXmlTemplate implements I_CmsXmlTemplate, I_CmsLogChannels {
         subTemplate = (I_CmsTemplate)loadedObject;        
 
         // Template class is now loaded. Next try to read the parameters        
-        Enumeration parameterTags = templateFile.getParameterNames(tagcontent);
-        while(parameterTags.hasMoreElements()) {
-            String paramName = (String)parameterTags.nextElement();
-            String paramValue = templateFile.getParameter(tagcontent, paramName);
-            if(! parameterHashtable.containsKey(paramName)) {
-                parameterHashtable.put(tagcontent + "." + paramName, paramValue);
-            }
-        }            
+        Enumeration parameterTags = null;
+        try {
+            parameterTags = templateFile.getParameterNames(tagcontent);
+        } catch(CmsException e) {
+            // ignore
+        }
+        if(parameterTags != null) {
+            while(parameterTags.hasMoreElements()) {
+                String paramName = (String)parameterTags.nextElement();
+                String paramValue = templateFile.getParameter(tagcontent, paramName);
+                if(! parameterHashtable.containsKey(paramName)) {
+                    parameterHashtable.put(tagcontent + "." + paramName, paramValue);
+                }
+            }      
+        }      
                         
         // all parameters are now parsed. let's call the subtemplate
         if(result == null) {
@@ -509,7 +516,7 @@ public class CmsXmlTemplate implements I_CmsXmlTemplate, I_CmsLogChannels {
      * @param parameters Hashtable with all template class parameters.
      * @return Name of the template file that should be included.
      */    
-    private String getTemplateFileName(String elementName, CmsXmlTemplateFile doc, Hashtable parameters) throws CmsException {
+    protected String getTemplateFileName(String elementName, CmsXmlTemplateFile doc, Hashtable parameters) throws CmsException {
         if(parameters.containsKey(elementName + "._TEMPLATE_")) {
             return (String)parameters.get(elementName + "._TEMPLATE_");
         } else {
@@ -527,7 +534,7 @@ public class CmsXmlTemplate implements I_CmsXmlTemplate, I_CmsLogChannels {
      * @param parameters Hashtable with all template class parameters.
      * @return Name of the class that should generate the output for the included template file.
      */    
-    private String getTemplateClassName(String elementName, CmsXmlTemplateFile doc, Hashtable parameters) throws CmsException {
+    protected String getTemplateClassName(String elementName, CmsXmlTemplateFile doc, Hashtable parameters) throws CmsException {
         if(parameters.containsKey(elementName + "._CLASS_")) {
             return (String)parameters.get(elementName + "._CLASS_");
         } else {
