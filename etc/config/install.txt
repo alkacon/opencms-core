@@ -96,7 +96,7 @@ Change the export path to an existing empty folder in the line beginning with
 cd to the parent opencms folder and initialize the database with all workplace 
 default files by calling:
 
-java -mx64M -classpath opencms:jar:xerces.jar:mysql_uncomp.jar 
+java -mx64M -classpath opencms.jar:xerces.jar:mysql_uncomp.jar 
    com.opencms.core.CmsShell config/opencms.properties < config/cmssetup.txt
 
 This must be written in one single command line. The Java binary java
@@ -116,7 +116,7 @@ The OpenCms database should now be set up completely. You are now
 able to check the basic OpenCms system. Call the OpenCms console by
 entering
 
-java -mx64M -classpath opencms:jar:xerces.jar:mysql_uncomp.jar 
+java -mx64M -classpath opencms.jar:xerces.jar:mysql_uncomp.jar 
    com.opencms.core.CmsShell config/opencms.properties
    
 (This command is similar to the one above. Note that CmsInitMySqlFillDefaults
