@@ -13,50 +13,51 @@ return DisplayChanged()
 
 </head>
 
-<body background="pics/bg_grau.gif"  bgproperties=fixed scroll=no onLoad="document.EDITHTML.EDIT_HTML.focus();" marginwidth=5 marginheight=5 leftmargin=5 topmargin=5>
+<body background="pics/bg_grau.gif"  bgproperties=fixed scroll=no onLoad="document.EDITHTML.EDIT_HTML.focus();" marginwidth="5" marginheight="5" leftmargin=5 topmargin=5>
 
 <form name=EDITHTML id=EDITHTML>
 
-<table cellspacing=0 cellpadding=0 border=0 width="100%" height=32px>
+<table cellspacing=0 cellpadding=0 border=0 width="100%" height=32>
 	<tr>
-		<td class=menu><a href="#" onMouseDown="ChPush('bt_saveclose');doEditHTML(2)" onMouseUp="ChOn('bt_saveclose')" onMouseOver="ChOn('bt_saveclose')" onMouseOut="ChOff('bt_saveclose')"><img src="pics/bt_saveclose_off.gif" alt="Speichern und Schließen" name="bt_saveclose" border=0 width=32 height=32></a></td>
-		<td class=menu><a href="#" onMouseDown="ChPush('bt_save');doEditHTML(3)" onMouseUp="ChOn('bt_save')" onMouseOver="ChOn('bt_save')" onMouseOut="ChOff('bt_save')"><IMG SRC="pics/bt_save_off.gif" alt="Speichern" name="bt_save" border=0 width=32 height=32></a></td>
+		<td class=menu><A href="#" onmousedown="ChPush('bt_saveclose');doEditHTML(2)" onmouseout="ChOff('bt_saveclose')" onmouseover="ChOn('bt_saveclose')" onmouseup="ChOn('bt_saveclose')"><IMG alt="Speichern und Schließen" border =0 height=32 name=bt_saveclose src="pics/bt_saveclose_off.gif" width=32 ></a></td>
+		<td class=menu><A href="#" onmousedown="ChPush('bt_save');doEditHTML(3)" onmouseout="ChOff('bt_save')" onmouseover="ChOn('bt_save')" onmouseup="ChOn('bt_save')"><IMG alt=Speichern border=0 height=32 name=bt_save src="pics/bt_save_off.gif" width=32></a></td>
 		
-		<td class=menu width=2><img src="pics/gr_line.gif" border=0 width=2 height=32></td>
-		<td class=menu><a href="#" onMouseDown="ChPush('bt_undo');doEditHTML(4)" onMouseUp="ChOn('bt_undo')" onMouseOver="ChOn('bt_undo')" onMouseOut="ChOff('bt_undo')"><IMG SRC="pics/bt_undo_off.gif" alt="Rückgängig" name="bt_undo" border=0 width=32 height=32></a></td>
-		<td class=menu><a href="#" onMouseDown="ChPush('bt_redo');doEditHTML(5)" onMouseUp="ChOn('bt_redo')" onMouseOver="ChOn('bt_redo')" onMouseOut="ChOff('bt_redo')"><IMG SRC="pics/bt_redo_off.gif" alt="Wiederherstellen" name="bt_redo" border=0 width=32 height=32></a></td>
+		<td class=menu width=2><IMG border=0 height=32 src="pics/gr_line.gif" width=2></td>
+		<td class=menu><A href="#" onmousedown="ChPush('bt_undo');doEditHTML(4)" onmouseout="ChOff('bt_undo')" onmouseover="ChOn('bt_undo')" onmouseup="ChOn('bt_undo')"><IMG alt=Rückgängig border=0 height=32 name=bt_undo src="pics/bt_undo_off.gif" width=32></a></td>
+		<td class=menu><A href="#" onmousedown="ChPush('bt_redo');doEditHTML(5)" onmouseout="ChOff('bt_redo')" onmouseover="ChOn('bt_redo')" onmouseup="ChOn('bt_redo')"><IMG alt=Wiederherstellen border=0 height=32 name=bt_redo src="pics/bt_redo_off.gif" width=32></a></td>
 
-		<td class=menu width=2><img src="pics/gr_line.gif" border=0 width=2 height=32></td>
-		<td class=menu><a href="#" onMouseDown="ChPush('bt_search');doEditHTML(6)" onMouseUp="ChOn('bt_search')" onMouseOver="ChOn('bt_search')" onMouseOut="ChOff('bt_search')"><IMG SRC="pics/bt_search_off.gif" alt="Suchen" name="bt_search" border=0 width=32 height=32></a></td>
+		<td class=menu width=2><IMG border=0 height=32 src="pics/gr_line.gif" width=2></td>
+		<td class=menu><A href="#" onmousedown="ChPush('bt_search');doEditHTML(6)" onmouseout="ChOff('bt_search')" onmouseover="ChOn('bt_search')" onmouseup="ChOn('bt_search')"><IMG alt=Suchen border=0 height=32 name=bt_search src="pics/bt_search_off.gif" width=32></a></td>
 		
-		<td class=menu width=2><img src="pics/gr_line.gif" border=0 width=2 height=32></td>
-		<td class=menu><a href="#" onMouseDown="ChPush('bt_cut');doEditHTML(9)" onMouseUp="ChOn('bt_cut')" onMouseOver="ChOn('bt_cut')" onMouseOut="ChOff('bt_cut')"><IMG SRC="pics/bt_cut_off.gif" alt="Ausschneiden" name="bt_cut" border=0 width=32 height=32></a></td>
-		<td class=menu><a href="#" onMouseDown="ChPush('bt_copy');doEditHTML(10)" onMouseUp="ChOn('bt_copy')" onMouseOver="ChOn('bt_copy')" onMouseOut="ChOff('bt_copy')"><IMG SRC="pics/bt_copy_off.gif" alt="Kopieren" name="bt_copy" border=0 width=32 height=32></a></td>
-		<td class=menu><a href="#" onMouseDown="ChPush('bt_paste');doEditHTML(11)" onMouseUp="ChOn('bt_paste')" onMouseOver="ChOn('bt_paste')" onMouseOut="ChOff('bt_paste')"><IMG SRC="pics/bt_paste_off.gif" alt="Einfügen" name="bt_paste" border=0 width=32 height=32></a></td>
+		<td class=menu width=2><IMG border=0 height=32 src="pics/gr_line.gif" width=2></td>
+		<td class=menu><A href="#" onmousedown="ChPush('bt_cut');doEditHTML(9)" onmouseout="ChOff('bt_cut')" onmouseover="ChOn('bt_cut')" onmouseup="ChOn('bt_cut')"><IMG alt=Ausschneiden border=0 height=32 name=bt_cut src="pics/bt_cut_off.gif" width=32></a></td>
+		<td class=menu><A href="#" onmousedown="ChPush('bt_copy');doEditHTML(10)" onmouseout="ChOff('bt_copy')" onmouseover="ChOn('bt_copy')" onmouseup="ChOn('bt_copy')"><IMG alt=Kopieren border=0 height=32 name=bt_copy src="pics/bt_copy_off.gif" width=32></a></td>
+		<td class=menu><A href="#" onmousedown="ChPush('bt_paste');doEditHTML(11)" onmouseout="ChOff('bt_paste')" onmouseover="ChOn('bt_paste')" onmouseup="ChOn('bt_paste')"><IMG alt=Einfügen border=0 height=32 name=bt_paste src="pics/bt_paste_off.gif" width=32></a></td>
 		
-		<td class=menu width=2><img src="pics/gr_line.gif" border=0 width=2 height=32></td>
-		<td class=menu><a href="#" onMouseDown="ChPush('bt_fileimport');doEditHTML(12)" onMouseUp="ChOn('bt_fileimport')" onMouseOver="ChOn('bt_fileimport')" onMouseOut="ChOff('bt_fileimport')"><IMG SRC="pics/bt_fileimport_off.gif" alt="Importieren" name="bt_fileimport" border=0 width=32 height=32></a></td>
-		<td class=menu><a href="#" onMouseDown="ChPush('bt_fileexport');doEditHTML(13)" onMouseUp="ChOn('bt_fileexport')" onMouseOver="ChOn('bt_fileexport')" onMouseOut="ChOff('bt_fileexport')"><IMG SRC="pics/bt_fileexport_off.gif" alt="Exportieren" name="bt_fileexport" border=0 width=32 height=32></a></td>
-		<td class=menu><a href="#" onMouseDown="ChPush('bt_fileexportas');doEditHTML(13)" onMouseUp="ChOn('bt_fileexportas')" onMouseOver="ChOn('bt_fileexportas')" onMouseOut="ChOff('bt_fileexportas')"><IMG SRC="pics/bt_fileexportas_off.gif" alt="Exportieren als" name="bt_fileexportas" border=0 width=32 height=32></a></td>
+		<td class=menu width=2><IMG border=0 height=32 src="pics/gr_line.gif" width=2></td>
+		<td class=menu><A href="#" onmousedown="ChPush('bt_fileimport');doEditHTML(12)" onmouseout="ChOff('bt_fileimport')" onmouseover="ChOn('bt_fileimport')" onmouseup="ChOn('bt_fileimport')"><IMG alt=Importieren border=0 height=32 name=bt_fileimport src="pics/bt_fileimport_off.gif" width=32></a></td>
+		<td class=menu><A href="#" onmousedown="ChPush('bt_fileexport');doEditHTML(13)" onmouseout="ChOff('bt_fileexport')" onmouseover="ChOn('bt_fileexport')" onmouseup="ChOn('bt_fileexport')"><IMG alt=Exportieren border=0 height=32 name=bt_fileexport src="pics/bt_fileexport_off.gif" width=32></a></td>
+		<td class=menu><A href="#" onmousedown="ChPush('bt_fileexportas');doEditHTML(13)" onmouseout="ChOff('bt_fileexportas')" onmouseover="ChOn('bt_fileexportas')" onmouseup="ChOn('bt_fileexportas')"><IMG alt="Exportieren als" border =0 height=32 name=bt_fileexportas src="pics/bt_fileexportas_off.gif" width=32 ></a></td>
 				
-		<td class=menu width=2><img src="pics/gr_line.gif" border=0 width=2 height=32></td>
-		<td class=menu><a href="#" onMouseDown="ChPush('bt_print');doEditHTML(15)" onMouseUp="ChOn('bt_print')" onMouseOver="ChOn('bt_print')" onMouseOut="ChOff('bt_print')"><IMG SRC="pics/bt_print_off.gif" alt="Drucken" name="bt_print" border=0 width=32 height=32></a></td>
+		<td class=menu width=2><IMG border=0 height=32 src="pics/gr_line.gif" width=2></td>
+		<td class=menu><A href="#" onmousedown="ChPush('bt_print');doEditHTML(15)" onmouseout="ChOff('bt_print')" onmouseover="ChOn('bt_print')" onmouseup="ChOn('bt_print')"><IMG alt=Drucken border=0 height=32 name=bt_print src="pics/bt_print_off.gif" width=32></a></td>
 		
-		<td class=menu width=2><IMG border=0 width=2 height=32 height=32 src="pics/gr_line.gif" width=2></td>
-		<td class=menu><a href="javascript:openwin('help/de/3_2.html', 'Hilfe', 300, 600);" onMouseDown="ChPush('bt_hilfe')" onMouseUp="ChOn('bt_hilfe')" onMouseOver="ChOn('bt_hilfe')" onMouseOut="ChOff('bt_hilfe')"><img src="pics/bt_hilfe_off.gif" alt="Hilfe" name="bt_hilfe" border=0></a></td>		
+		<td class=menu width=2><IMG border=0 height=32 src="pics/gr_line.gif" width=2 ></td>
+		<td class=menu><A href="javascript:openwin('help/de/3_2.html', 'Hilfe', 300, 600);" onmousedown="ChPush('bt_hilfe')" onmouseout="ChOff('bt_hilfe')" onmouseover="ChOn('bt_hilfe')" onmouseup="ChOn('bt_hilfe')"><IMG alt=Hilfe border=0 name=bt_hilfe src="pics/bt_hilfe_off.gif"></a></td>		
 
-		<td class=menu width="100%" align=right><a href="#" onMouseDown="ChPush('bt_close');doEditHTML(1)" onMouseUp="ChOn('bt_close')" onMouseOver="ChOn('bt_close')" onMouseOut="ChOff('bt_close')"><img src="pics/bt_close_off.gif" alt="Schließen" name="bt_close" border=0 width=32 height=32></a></td>
+		<td class=menu width="100%" align=right><A href="#" onmousedown="ChPush('bt_close');doEditHTML(1)" onmouseout="ChOff('bt_close')" onmouseover="ChOn('bt_close')" onmouseup="ChOn('bt_close')"><IMG alt=Schließen border=0 height=32 name=bt_close src="pics/bt_close_off.gif" width=32></a></td>
 	</tr>
 </table>
 		
 <hr>
 
 		<!-- Schriftformatierung -->
-<table cellspacing=0 cellpadding=0 border=0 width="100%" height=32px>
+<table cellspacing=0 cellpadding=0 border=0 width="100%" height=32>
 	<tr>
 		<td class=menu>
 			<select name=BLOCK ID=BLOCK onchange="return ParagraphStyle_onchange()" TITLE="Paragraph Format">
-				<option value="Normal">Normal
+				<option value="Normal" 
+        selected>Normal
 				<option value="Heading 1">Heading 1
 				<option value="Heading 2">Heading 2
 				<option value="Heading 3">Heading 3
@@ -64,7 +65,7 @@ return DisplayChanged()
 				<option value="Heading 5">Heading 5
 				<option value="Heading 6">Heading 6
 				<option value="Address">Address
-				<option value="Formatted">Formatted
+				<option value="Formatted">Formatted</option>
 			</select>
 		</td>
 		<td class=menu>
@@ -73,7 +74,7 @@ return DisplayChanged()
 				<option value="Arial Narrow">Arial Narrow
 				<option value="System">System
 				<option value="Times New Roman" selected>Times New Roman
-				<option value="Verdana">Verdana
+				<option value="Verdana">Verdana</option>
 			</select>
 		</td>
 		<td class=menu>
@@ -84,73 +85,66 @@ return DisplayChanged()
 				<option value="4">4
 				<option value="5">5
 				<option value="6">6
-				<option value="7">7
+				<option value="7">7</option>
 			</select>
 		</td>
 		
-		<td class=menu><a href="#" onMouseDown="ChPush('bt_bold');doEditHTML(24)" onMouseUp="ChOn('bt_bold')" onMouseOver="ChOn('bt_bold')" onMouseOut="ChOff('bt_bold')"><img src="pics/bt_bold_off.gif" alt="Fett" name="bt_bold" border=0 width=32 height=32></a></td>
-		<td class=menu><a href="#" onMouseDown="ChPush('bt_italic');doEditHTML(25)" onMouseUp="ChOn('bt_italic')" onMouseOver="ChOn('bt_italic')" onMouseOut="ChOff('bt_italic')"><img src="pics/bt_italic_off.gif" alt="Kurisiv" name="bt_italic" border=0 width=32 height=32></a></td>
-		<td class=menu><a href="#" onMouseDown="ChPush('bt_underline');doEditHTML(26)" onMouseUp="ChOn('bt_underline')" onMouseOver="ChOn('bt_underline')" onMouseOut="ChOff('bt_underline')"><IMG SRC="pics/bt_underline_off.gif" alt="Unterstrichen" name="bt_underline" border=0 width=32 height=32></a></td>
+		<td class=menu><A href="#" onmousedown="ChPush('bt_bold');doEditHTML(24)" onmouseout="ChOff('bt_bold')" onmouseover="ChOn('bt_bold')" onmouseup="ChOn('bt_bold')"><IMG alt=Fett border=0 height=32 name=bt_bold src="pics/bt_bold_off.gif" width=32></a></td>
+		<td class=menu><A href="#" onmousedown="ChPush('bt_italic');doEditHTML(25)" onmouseout="ChOff('bt_italic')" onmouseover="ChOn('bt_italic')" onmouseup="ChOn('bt_italic')"><IMG alt=Kurisiv border=0 height=32 name=bt_italic src="pics/bt_italic_off.gif" width=32></a></td>
+		<td class=menu><A href="#" onmousedown="ChPush('bt_underline');doEditHTML(26)" onmouseout="ChOff('bt_underline')" onmouseover="ChOn('bt_underline')" onmouseup="ChOn('bt_underline')"><IMG alt=Unterstrichen border=0 height=32 name=bt_underline src="pics/bt_underline_off.gif" width=32></a></td>
 		<td class=menu width="100%">&nbsp;</td>
 	</tr>
 </table>
 
 <hr>
 
-<table cellspacing=0 cellpadding=0 border=0 width="100%" height=80%>
-	<tr height=32px>
-		<td class=menu><a href="#"><IMG SRC="pics/bt_alignleft_push.gif" alt="Links ausrichten" name="bt_alignleft" border=0></a></td>
-		<td class=menu><a href="#" onMouseDown="ChPush('bt_aligncenter');doEditHTML(32);ChOff('bt_alignleft');ChOff('bt_alignright')" onMouseOver="ChOn('bt_aligncenter')" onMouseOut="ChOff('bt_aligncenter')"><IMG SRC="pics/bt_aligncenter_off.gif" alt="Zentrieren" name="bt_aligncenter" border=0 width=32 height=32></a></td>
-		<td class=menu><a href="#" onMouseDown="ChPush('bt_alignright');;doEditHTML(33)" onMouseUp="ChOn('bt_alignright')" onMouseOver="ChOn('bt_alignright')" onMouseOut="ChOff('bt_alignright')"><IMG SRC="pics/bt_alignright_off.gif" alt="Rechts ausrichten" name="bt_alignright" border=0 width=32 height=32></a></td>
+<table cellspacing=0 cellpadding=0 border=0 width="100%" height="80%">
+	<tr height=32>
+		<td class=menu><A href="#"><IMG alt="Links ausrichten" border =0 name=bt_alignleft src="pics/bt_alignleft_push.gif" ></a></td>
+		<td class=menu><A href="#" onmousedown="ChPush('bt_aligncenter');doEditHTML(32);ChOff('bt_alignleft');ChOff('bt_alignright')" onmouseout="ChOff('bt_aligncenter')" onmouseover="ChOn('bt_aligncenter')"><IMG alt=Zentrieren border=0 height=32 name=bt_aligncenter src="pics/bt_aligncenter_off.gif" width=32></a></td>
+		<td class=menu><A href="#" onmousedown="ChPush('bt_alignright');;doEditHTML(33)" onmouseout="ChOff('bt_alignright')" onmouseover="ChOn('bt_alignright')" onmouseup="ChOn('bt_alignright')"><IMG alt="Rechts ausrichten" border =0 height=32 name=bt_alignright src="pics/bt_alignright_off.gif" width=32 ></a></td>
 		
-		<td class=menu width=2><img src="pics/gr_line.gif" border=0 width=2 height=32></td>
-		<td class=menu><a href="#" onMouseDown="ChPush('bt_ul');doEditHTML(34)" onMouseUp="ChOn('bt_ul')" onMouseOver="ChOn('bt_ul')" onMouseOut="ChOff('bt_ul')"><img src="pics/bt_ul_off.gif" alt="Aufzählung" name="bt_ul" border=0 width=32 height=32></a></td>
-		<td class=menu><a href="#" onMouseDown="ChPush('bt_ol');doEditHTML(35)" onMouseUp="ChOn('bt_ol')" onMouseOver="ChOn('bt_ol')" onMouseOut="ChOff('bt_ol')"><img src="pics/bt_ol_off.gif" alt="Nummerierung" name="bt_ol" border=0 width=32 height=32></a></td>
+		<td class=menu width=2><IMG border=0 height=32 src="pics/gr_line.gif" width=2></td>
+		<td class=menu><A href="#" onmousedown="ChPush('bt_ul');doEditHTML(34)" onmouseout="ChOff('bt_ul')" onmouseover="ChOn('bt_ul')" onmouseup="ChOn('bt_ul')"><IMG alt=Aufzählung border=0 height=32 name=bt_ul src="pics/bt_ul_off.gif" width=32></a></td>
+		<td class=menu><A href="#" onmousedown="ChPush('bt_ol');doEditHTML(35)" onmouseout="ChOff('bt_ol')" onmouseover="ChOn('bt_ol')" onmouseup="ChOn('bt_ol')"><IMG alt=Nummerierung border=0 height=32 name=bt_ol src="pics/bt_ol_off.gif" width=32></a></td>
 
-		<td class=menu width=2><img src="pics/gr_line.gif" border=0 width=2 height=32></td>
-		<td class=menu><a href="#" onMouseDown="ChPush('bt_indentin');doEditHTML(36)" onMouseUp="ChOn('bt_indentin')" onMouseOver="ChOn('bt_indentin')" onMouseOut="ChOff('bt_indentin')"><img src="pics/bt_indentin_off.gif" alt="Einzug vergrößern" name="bt_indentin" border=0 width=32 height=32></a></td>
-		<td class=menu><a href="#" onMouseDown="ChPush('bt_indentout');doEditHTML(37)" onMouseUp="ChOn('bt_indentout')" onMouseOver="ChOn('bt_indentout')" onMouseOut="ChOff('bt_indentout')"><img src="pics/bt_indentout_off.gif" alt="Einzug verkleinern" name="bt_indentout" border=0 width=32 height=32></a></td>
+		<td class=menu width=2><IMG border=0 height=32 src="pics/gr_line.gif" width=2></td>
+		<td class=menu><A href="#" onmousedown="ChPush('bt_indentin');doEditHTML(36)" onmouseout="ChOff('bt_indentin')" onmouseover="ChOn('bt_indentin')" onmouseup="ChOn('bt_indentin')"><IMG alt="Einzug vergrößern" border =0 height=32 name=bt_indentin src="pics/bt_indentin_off.gif" width=32 ></a></td>
+		<td class=menu><A href="#" onmousedown="ChPush('bt_indentout');doEditHTML(37)" onmouseout="ChOff('bt_indentout')" onmouseover="ChOn('bt_indentout')" onmouseup="ChOn('bt_indentout')"><IMG alt="Einzug verkleinern" border =0 height=32 name=bt_indentout src="pics/bt_indentout_off.gif" width=32 ></a></td>
 				
-		<td class=menu width=2><img src="pics/gr_line.gif" border=0 width=2 height=32></td>
-		<td class=menu><a href="#" onMouseDown="ChPush('bt_fontcolor');doEditHTML(38)" onMouseUp="ChOn('bt_fontcolor')" onMouseOver="ChOn('bt_fontcolor')" onMouseOut="ChOff('bt_fontcolor')"><IMG SRC="pics/bt_fontcolor_off.gif" alt="Textfarbe" name="bt_fontcolor" border=0 width=32 height=32></a></td>
-		<td class=menu><a href="#" onMouseDown="ChPush('bt_color');doEditHTML(39)" onMouseUp="ChOn('bt_color')" onMouseOver="ChOn('bt_color')" onMouseOut="ChOff('bt_color')"><IMG SRC="pics/bt_color_off.gif" alt="Farbe" name="bt_color" border=0 width=32 height=32></a></td>
+		<td class=menu width=2><IMG border=0 height=32 src="pics/gr_line.gif" width=2></td>
+		<td class=menu><A href="#" onmousedown="ChPush('bt_fontcolor');doEditHTML(38)" onmouseout="ChOff('bt_fontcolor')" onmouseover="ChOn('bt_fontcolor')" onmouseup="ChOn('bt_fontcolor')"><IMG alt=Textfarbe border=0 height=32 name=bt_fontcolor src="pics/bt_fontcolor_off.gif" width=32></a></td>
+		<td class=menu><A href="#" onmousedown="ChPush('bt_color');doEditHTML(39)" onmouseout="ChOff('bt_color')" onmouseover="ChOn('bt_color')" onmouseup="ChOn('bt_color')"><IMG alt=Farbe border=0 height=32 name=bt_color src="pics/bt_color_off.gif" width=32></a></td>
 		
-		<td class=menu width=2><img src="pics/gr_line.gif" border=0 width=2 height=32></td>
-		<td class=menu><a href="#" onMouseDown="ChPush('bt_table');doEditHTML(40)" onMouseUp="ChOn('bt_table')" onMouseOver="ChOn('bt_table')" onMouseOut="ChOff('bt_table')"><IMG SRC="pics/bt_table_off.gif" alt="Tabelle" name="bt_table" border=0 width=32 height=32></a></td>
+		<td class=menu width=2><IMG border=0 height=32 src="pics/gr_line.gif" width=2></td>
+		<td class=menu><A href="#" onmousedown="ChPush('bt_table');doEditHTML(40)" onmouseout="ChOff('bt_table')" onmouseover="ChOn('bt_table')" onmouseup="ChOn('bt_table')"><IMG alt=Tabelle border=0 height=32 name=bt_table src="pics/bt_table_off.gif" width=32></a></td>
 		
-		<td class=menu width=2><img src="pics/gr_line.gif" border=0 width=2 height=32></td>
-		<td class=menu><a href="#" onMouseDown="ChPush('bt_link');doEditHTML(41)" onMouseUp="ChOn('bt_link')" onMouseOver="ChOn('bt_link')" onMouseOut="ChOff('bt_link')"><IMG SRC="pics/bt_link_off.gif" alt="Link" name="bt_link" border=0 width=32 height=32></a></td>
+		<td class=menu width=2><IMG border=0 height=32 src="pics/gr_line.gif" width=2></td>
+		<td class=menu><A href="#" onmousedown="ChPush('bt_link');doEditHTML(41)" onmouseout="ChOff('bt_link')" onmouseover="ChOn('bt_link')" onmouseup="ChOn('bt_link')"><IMG alt=Link border=0 height=32 name=bt_link src="pics/bt_link_off.gif" width=32></a></td>
 		
-		<td class=menu width=2><img src="pics/gr_line.gif" border=0 width=2 height=32></td>
-		<td class=menu><a href="#" onMouseDown="ChPush('bt_image');doEditHTML(42)" onMouseUp="ChOn('bt_image')" onMouseOver="ChOn('bt_image')" onMouseOut="ChOff('bt_image')"><IMG SRC="pics/bt_image_off.gif" alt="Bild einfügen" name="bt_image" border=0 width=32 height=32></a></td>
-		<td class=menu><a href="#" onMouseDown="ChPush('bt_imagelist');doEditHTML(43)" onMouseUp="ChOn('bt_imagelist')" onMouseOver="ChOn('bt_imagelist')" onMouseOut="ChOff('bt_imagelist')"><IMG SRC="pics/bt_imagelist_off.gif" alt="Bilderliste" name="bt_imagelist" border=0 width=32 height=32></a></td>
+		<td class=menu width=2><IMG border=0 height=32 src="pics/gr_line.gif" width=2></td>
+		<td class=menu><A href="#" onmousedown="ChPush('bt_image');doEditHTML(42)" onmouseout="ChOff('bt_image')" onmouseover="ChOn('bt_image')" onmouseup="ChOn('bt_image')"><IMG alt="Bild einfügen" border =0 height=32 name=bt_image src="pics/bt_image_off.gif" width=32 ></a></td>
+		<td class=menu><A href="#" onmousedown="ChPush('bt_imagelist');doEditHTML(43)" onmouseout="ChOff('bt_imagelist')" onmouseover="ChOn('bt_imagelist')" onmouseup="ChOn('bt_imagelist')"><IMG alt=Bilderliste border=0 height=32 name=bt_imagelist src="pics/bt_imagelist_off.gif" width=32></a></td>
 		
 		<td class=menu width="100%">&nbsp;</td>
 	</tr>
-	<tr><td colspan=20><img src="pics/empty.gif" border=0 width=2 height=3></td></tr>
+	<tr><td colspan=20><IMG border=0 height=3 src="pics/empty.gif" width=2></td></tr>
 	
 	<tr>
-		<td colspan=20 width=100% height=100%>
-
-			<OBJECT
-				CLASSID="clsid:2D360200-FFF5-11d1-8D03-00A0C959BC0A" 
-				ID="EDIT_HTML"
-				HEIGHT="100%"
-				WIDTH="100%"
-				VIEWASTEXT>
-				<param name=Scrollbars value=true>
-			</OBJECT>
+		<td colspan=20 width="100%" height="100%">
+      <OBJECT classid=clsid:2D360200-FFF5-11d1-8D03-00A0C959BC0A height="100%" 
+      id=EDIT_HTML width="100%" VIEWASTEXT><PARAM NAME="ActivateApplets" VALUE="0"><PARAM NAME="ActivateActiveXControls" VALUE="0"><PARAM NAME="ActivateDTCs" VALUE="-1"><PARAM NAME="ShowDetails" VALUE="0"><PARAM NAME="ShowBorders" VALUE="0"><PARAM NAME="Appearance" VALUE="1"><PARAM NAME="Scrollbars" VALUE="-1"><PARAM NAME="ScrollbarAppearance" VALUE="1"><PARAM NAME="SourceCodePreservation" VALUE="-1"><PARAM NAME="AbsoluteDropMode" VALUE="0"><PARAM NAME="SnapToGrid" VALUE="0"><PARAM NAME="SnapToGridX" VALUE="50"><PARAM NAME="SnapToGridY" VALUE="50"><PARAM NAME="BrowseMode" VALUE="0"><PARAM NAME="UseDivOnCarriageReturn" VALUE="0"></OBJECT>
 		</td>
 	</tr>
 </table>
 </form>
 
 			<!-- DEInsertTableParam Object -->
-			<object ID="ObjTableInfo" CLASSID="clsid:47B0DFC7-B7A3-11D1-ADC5-006008A5848C" VIEWASTEXT>
-			</object>
+<OBJECT classid=clsid:47B0DFC7-B7A3-11D1-ADC5-006008A5848C id=ObjTableInfo 
+VIEWASTEXT></OBJECT>
 			<!-- DEGetBlockFmtNamesParam Object -->
-			<object ID="ObjBlockFormatInfo" CLASSID="clsid:8D91090E-B955-11D1-ADC5-006008A5848C" VIEWASTEXT>
-			</object>
+<OBJECT classid=clsid:8D91090E-B955-11D1-ADC5-006008A5848C id=ObjBlockFormatInfo 
+VIEWASTEXT></OBJECT>
 
 </body>
 </html>
