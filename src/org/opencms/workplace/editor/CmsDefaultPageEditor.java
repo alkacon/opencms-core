@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2004/02/03 17:06:44 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2004/02/04 15:48:16 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  * 
  * @since 5.1.12
  */
@@ -397,7 +397,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      */
     public String buttonActionDirectEdit(String jsFunction, int type) {
         // get the action class from the OpenCms runtime property
-        I_CmsEditorActionHandler actionClass = (I_CmsEditorActionHandler)OpenCms.getRuntimeProperty(I_CmsEditorActionHandler.EDITOR_ACTION);
+        I_CmsEditorActionHandler actionClass = OpenCms.getWorkplaceManager().getEditorActionHandler();
         String url;
         String name;
         boolean active = false; 
@@ -503,7 +503,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      */
     public void actionDirectEdit() throws IOException, JspException {
         // get the action class from the OpenCms runtime property
-        I_CmsEditorActionHandler actionClass = (I_CmsEditorActionHandler)OpenCms.getRuntimeProperty(I_CmsEditorActionHandler.EDITOR_ACTION);
+        I_CmsEditorActionHandler actionClass = OpenCms.getWorkplaceManager().getEditorActionHandler();
         if (actionClass == null) {
             // error getting the action class, save content and exit the editor
             actionSave();

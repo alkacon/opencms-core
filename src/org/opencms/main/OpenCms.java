@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2004/01/20 11:04:50 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2004/02/04 15:48:16 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.staticexport.CmsStaticExportManager;
+import org.opencms.workplace.CmsWorkplaceManager;
 
 import java.util.List;
 
@@ -54,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  */
 public final class OpenCms {
     
@@ -380,6 +381,16 @@ public final class OpenCms {
      */
     public static String getVersionNumber() {
         return OpenCmsCore.getInstance().getVersionNumber();
+    }
+    
+    /**
+     * Returns the initialized workplace manager, 
+     * which contains information about the global workplace settings.<p> 
+     * 
+     * @return the initialized workplace manager
+     */
+    public static CmsWorkplaceManager getWorkplaceManager() {
+        return OpenCmsCore.getInstance().getWorkplaceManager();
     }
     
     /**

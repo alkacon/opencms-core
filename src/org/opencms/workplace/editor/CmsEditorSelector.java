@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorSelector.java,v $
- * Date   : $Date: 2004/01/06 17:06:05 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/02/04 15:48:16 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,14 +47,11 @@ import org.opencms.main.OpenCms;
  * @see org.opencms.workplace.editor.I_CmsEditorHandler
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.1.14
  */
 public class CmsEditorSelector {
-    
-    /** The runtime property name */
-    public static final String EDITOR_SELECT = "class_editor_select"; 
     
     // necessary member variables
     private CmsJspActionElement m_jsp;
@@ -85,7 +82,7 @@ public class CmsEditorSelector {
             System.err.println("[" + this.getClass().getName() + "].getSelectedEditorUri() - Resource: " + getParamResource());
         }
         // get the handler class from the OpenCms runtime property
-        I_CmsEditorHandler editorClass = (I_CmsEditorHandler)OpenCms.getRuntimeProperty(EDITOR_SELECT);
+        I_CmsEditorHandler editorClass = OpenCms.getWorkplaceManager().getEditorHandler();
         if (editorClass == null) {
             // error getting the dialog class, return to file list
             return I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "jsp/explorer_files.html";

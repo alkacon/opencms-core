@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInclude.java,v $
- * Date   : $Date: 2004/02/02 13:59:39 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/02/04 15:48:16 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * Used to include another OpenCms managed resource in a JSP.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParamParent { 
     
@@ -446,7 +446,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
         String editArea = null;
         
         if (editable) {
-            I_CmsEditorActionHandler actionClass = (I_CmsEditorActionHandler)OpenCms.getRuntimeProperty(I_CmsEditorActionHandler.EDITOR_ACTION);
+            I_CmsEditorActionHandler actionClass = OpenCms.getWorkplaceManager().getEditorActionHandler();
             editMode = actionClass.getEditMode(controller.getCmsObject(), target, (CmsXmlPage)req.getAttribute(CmsXmlPageLoader.C_XMLPAGE_OBJECT), element);
             editArea = (String)context.getRequest().getAttribute(I_CmsEditorActionHandler.C_EDIT_AREA);
         }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceUpload.java,v $
-* Date   : $Date: 2003/10/28 13:28:41 $
-* Version: $Revision: 1.53 $
+* Date   : $Date: 2004/02/04 15:48:16 $
+* Version: $Revision: 1.54 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.http.HttpSession;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.53 $ $Date: 2003/10/28 13:28:41 $
+ * @version $Revision: 1.54 $ $Date: 2004/02/04 15:48:16 $
  */
 public class CmsNewResourceUpload extends CmsWorkplaceDefault {
     
@@ -97,7 +97,7 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault {
        // I_CmsSession session = cms.getRequestContext().getSession(true);
         
         // get the file size upload limitation value (value is in kB)
-        int maxFileSize = ((Integer)OpenCms.getRuntimeProperty("workplace.file.maxuploadsize")).intValue();                          
+        int maxFileSize = OpenCms.getWorkplaceManager().getFileMaxUploadSize();                          
         // check if current user belongs to Admin group, if so no file upload limit
         if ((maxFileSize <= 0) || cms.userInGroup(cms.getRequestContext().currentUser().getName(), OpenCms.getDefaultUsers().getGroupAdministrators())) {
             maxFileSize = -1;
@@ -590,7 +590,7 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault {
         fileExtensions=fileExtensions.substring(0,fileExtensions.length()-1);
         
         //get the file size upload limitation value (value is in kB)
-        int maxFileSize = ((Integer)OpenCms.getRuntimeProperty("workplace.file.maxuploadsize")).intValue();                          
+        int maxFileSize = OpenCms.getWorkplaceManager().getFileMaxUploadSize();                          
           
         // define the required colors.
         // currently this is hard coded here

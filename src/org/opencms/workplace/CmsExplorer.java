@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2004/02/03 17:06:44 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2004/02/04 15:48:16 $
+ * Version: $Revision: 1.58 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.57 $
+ * @version $Revision: 1.58 $
  * 
  * @since 5.1
  */
@@ -265,7 +265,7 @@ public class CmsExplorer extends CmsWorkplace {
         
         // the autolock setting
         content.append("top.autolock=");        
-        content.append(getSettings().getAutoLockResources());
+        content.append(OpenCms.getWorkplaceManager().autoLockResources());
         content.append(";\n");
         
         // the button type setting

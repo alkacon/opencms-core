@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/I_CmsEditorActionHandler.java,v $
- * Date   : $Date: 2004/01/20 15:58:00 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/02/04 15:48:16 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,14 +47,11 @@ import javax.servlet.jsp.JspException;
  * The class you enter must implement this interface to perform the editor action.<p>  
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.3.0
  */
 public interface I_CmsEditorActionHandler {
-    
-    /** The runtime property name */
-    String EDITOR_ACTION = "class_editor_action"; 
     
     /** Constant for: edit mode enabled */
     String C_EDITMODE_ENABLED = "enabled";
@@ -66,12 +63,12 @@ public interface I_CmsEditorActionHandler {
     String C_EDITMODE_INACTIVE = "inactive";
     
     /**
-     * Prefix for edit area start elements.<p>
+     * Prefix for edit area start elements
      */
     String C_EDIT_STARTAREA = "start_editarea";
     
     /**
-     * prefix for edit area end elements
+     * Prefix for edit area end elements
      */
     String C_EDIT_ENDAREA = "end_editarea";
 

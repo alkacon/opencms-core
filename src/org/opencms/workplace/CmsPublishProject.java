@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPublishProject.java,v $
- * Date   : $Date: 2004/01/28 11:53:52 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/02/04 15:48:16 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 5.1.12
  */
@@ -477,8 +477,7 @@ public class CmsPublishProject extends CmsReport {
             retValue.append("<tr>\n\t<td>");
             retValue.append("<input type=\"checkbox\" name=\"publishsiblings\" value=\"true\"");
             // set the checkbox state to the default value defined in the opencms.properties
-            String directPublishSiblings = (String)OpenCms.getRuntimeProperty("workplace.directpublish.siblings");
-            if ("true".equals(directPublishSiblings)) {
+            if (OpenCms.getWorkplaceManager().directPublishSiblings()) {
                 retValue.append(" checked=\"checked\"");
             }
             retValue.append(">&nbsp;");

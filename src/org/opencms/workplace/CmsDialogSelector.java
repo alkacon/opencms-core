@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialogSelector.java,v $
- * Date   : $Date: 2004/01/14 10:00:04 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/02/04 15:48:16 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.opencms.main.OpenCms;
  * @see org.opencms.workplace.I_CmsDialogHandler
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.1
  */
@@ -100,7 +100,7 @@ public class CmsDialogSelector {
             System.err.println("[" + this.getClass().getName() + "].getSelectedDialogUri() - Resource: " + getParamResource());
         }
         // get the handler class from the OpenCms runtime property
-        I_CmsDialogHandler dialogClass = (I_CmsDialogHandler)OpenCms.getRuntimeProperty(getHandler());
+        I_CmsDialogHandler dialogClass = (I_CmsDialogHandler)OpenCms.getWorkplaceManager().getDialogHandler(getHandler());
         if (dialogClass == null) {
             // error getting the dialog class, return to file list
             return CmsWorkplace.C_FILE_EXPLORER_FILELIST;

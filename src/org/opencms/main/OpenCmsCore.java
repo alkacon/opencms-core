@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/02/03 10:59:17 $
- * Version: $Revision: 1.65 $
+ * Date   : $Date: 2004/02/04 15:48:16 $
+ * Version: $Revision: 1.66 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,9 +31,6 @@
 
 package org.opencms.main;
 
-import org.opencms.setup.CmsBase;
-import org.opencms.setup.CmsMain;
-import org.opencms.setup.CmsSetupUtils;
 import com.opencms.core.CmsException;
 import com.opencms.core.CmsRequestHttpServlet;
 import com.opencms.core.CmsResponseHttpServlet;
@@ -64,16 +61,16 @@ import org.opencms.locale.I_CmsLocaleHandler;
 import org.opencms.lock.CmsLockManager;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.security.CmsSecurityException;
+import org.opencms.setup.CmsBase;
+import org.opencms.setup.CmsMain;
+import org.opencms.setup.CmsSetupUtils;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.staticexport.CmsStaticExportManager;
 import org.opencms.util.CmsResourceTranslator;
 import org.opencms.util.CmsUUID;
-import org.opencms.workplace.I_CmsDialogHandler;
-import org.opencms.workplace.editor.CmsEditorSelector;
-import org.opencms.workplace.editor.I_CmsEditorActionHandler;
-import org.opencms.workplace.editor.I_CmsEditorHandler;
+import org.opencms.workplace.CmsWorkplaceManager;
 
 import java.io.IOException;
 import java.util.*;
@@ -103,7 +100,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.65 $
+ * @version $Revision: 1.66 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -249,6 +246,9 @@ public final class OpenCmsCore {
 
     /** The version number of this OpenCms installation */
     private String m_versionNumber;
+    
+    /** The workplace manager contains information about the global workplace settings */
+    private CmsWorkplaceManager m_workplaceManager;
 
     /**
      * Protected constructor that will initialize the singleton OpenCms instance with runlevel 1.<p>
@@ -1003,6 +1003,16 @@ public final class OpenCmsCore {
     }
     
     /**
+     * Returns the initialized workplace manager, 
+     * which contains information about the global workplace settings.<p> 
+     * 
+     * @return the initialized workplace manager
+     */
+    protected CmsWorkplaceManager getWorkplaceManager() {
+        return m_workplaceManager;
+    }
+    
+    /**
      * This method handled the user authentification for each request sent to the
      * OpenCms. <p>
      *
@@ -1322,63 +1332,6 @@ public final class OpenCmsCore {
             throw e;
         }
         
-        // initialize "dialoghandler" registry classes
-        try {
-            List dialogHandlerClasses = OpenCms.getRegistry().getDialogHandler();
-            Iterator i = dialogHandlerClasses.iterator();
-            while (i.hasNext()) {
-                String currentClass = (String)i.next();                
-                I_CmsDialogHandler handler = (I_CmsDialogHandler)Class.forName(currentClass).newInstance();            
-                setRuntimeProperty(handler.getDialogHandler(), handler);
-                if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                    getLog(CmsLog.CHANNEL_INIT).info(". Dialog handler class : " + currentClass + " instanciated");
-                }
-            }
-        } catch (Exception e) {
-            if (getLog(this).isErrorEnabled()) {
-                getLog(this).error(OpenCmsCore.C_MSG_CRITICAL_ERROR + "7", e);
-            }
-            // any exception here is fatal and will cause a stop in processing
-            throw e;
-        }
-        
-        // initialize "editorhandler" registry class
-        try {
-            List editorHandlerClasses = OpenCms.getRegistry().getEditorHandler();
-            String currentClass = (String)editorHandlerClasses.get(0);                
-                I_CmsEditorHandler handler = (I_CmsEditorHandler)Class.forName(currentClass).newInstance();            
-                setRuntimeProperty(CmsEditorSelector.EDITOR_SELECT, handler);
-                if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                    getLog(CmsLog.CHANNEL_INIT).info(". Editor handler class : " + currentClass + " instanciated");
-                }
-       
-        } catch (Exception e) {
-            if (getLog(this).isInfoEnabled()) {
-                //getLog(this).error(OpenCmsCore.C_MSG_CRITICAL_ERROR + "8", e);
-                getLog(CmsLog.CHANNEL_INIT).info(". Editor handler class : non-critical error initializing editor handler");
-            }
-            // any exception here is fatal and will cause a stop in processing
-            // TODO: activate throwing exception: throw e;
-        }
-        
-        // initialize "editoraction" registry class
-        try {
-            List editorActionClasses = OpenCms.getRegistry().getEditorAction();
-            String currentClass = (String)editorActionClasses.get(0);                
-                I_CmsEditorActionHandler handler = (I_CmsEditorActionHandler)Class.forName(currentClass).newInstance();            
-                setRuntimeProperty(I_CmsEditorActionHandler.EDITOR_ACTION, handler);
-                if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                    getLog(CmsLog.CHANNEL_INIT).info(". Editor action class  : " + currentClass + " instanciated");
-                }
-            } catch (Exception e) {
-            if (getLog(this).isInfoEnabled()) {
-                //getLog(this).error(OpenCmsCore.C_MSG_CRITICAL_ERROR + "8", e);
-                getLog(CmsLog.CHANNEL_INIT).info(". Editor action class  : non-critical error initializing editor action class");
-            }
-            // any exception here is fatal and will cause a stop in processing
-            // TODO: activate throwing exception: throw e;
-        }
-        
         // initialize the locale manager
         I_CmsLocaleHandler localeHandler = null;
         try {
@@ -1588,20 +1541,6 @@ public final class OpenCmsCore {
             getLog(CmsLog.CHANNEL_INIT).info(". Password validation  : " + m_passwordValidatingClass);
         }
         
-        // read the maximum file upload size limit
-        Integer fileMaxUploadSize = new Integer(configuration.getInteger("workplace.file.maxuploadsize", -1));
-        setRuntimeProperty("workplace.file.maxuploadsize", fileMaxUploadSize);
-        if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            getLog(CmsLog.CHANNEL_INIT).info(". File max. upload size: " + (fileMaxUploadSize.intValue() > 0 ? (fileMaxUploadSize + " KB") : "unlimited"));
-        }
-        
-        // read old (proprietary XML-style) locale backward compatibily support flag
-        Boolean showUserGroupIcon = configuration.getBoolean("workplace.administration.showusergroupicon", new Boolean(true));
-        setRuntimeProperty("workplace.administration.showusergroupicon", showUserGroupIcon);
-        if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            getLog(CmsLog.CHANNEL_INIT).info(". Show user/group icon : " + (showUserGroupIcon.booleanValue() ? "yes" : "no"));
-        }
-        
         // initialize "resourceinit" registry classes
         try {
             List resourceInitClasses = OpenCms.getRegistry().getResourceInit();
@@ -1688,38 +1627,13 @@ public final class OpenCmsCore {
         // get a Admin cms context object
         CmsObject adminCms = initCmsObject(null, null, getDefaultUsers().getUserAdmin(), null);
         // initialize the site manager
-        m_siteManager = CmsSiteManager.initialize(configuration, adminCms);  
-
-        // site folders for which links should be labeled specially in the explorer
-        String[] labelSiteFolderString = configuration.getStringArray("site.labeled.folders");
-        if (labelSiteFolderString == null) {
-            labelSiteFolderString = new String[0];
-        }
-        List labelSiteFoldersOri = java.util.Arrays.asList(labelSiteFolderString);
-        ArrayList labelSiteFolders = new ArrayList();
-        for (int i = 0; i < labelSiteFoldersOri.size(); i++) {
-            // remove possible white space
-            String name = ((String)labelSiteFoldersOri.get(i)).trim();
-            if (name != null && !"".equals(name)) {
-                labelSiteFolders.add(name);
-                if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                    getLog(CmsLog.CHANNEL_INIT).info(". Label links in folder: " + (i + 1) + " - " + name);
-                }
-            }
-        }
-        setRuntimeProperty("site.labeled.folders", labelSiteFolders);
+        m_siteManager = CmsSiteManager.initialize(configuration, adminCms);
+        // initialize the workplace manager
+        m_workplaceManager = CmsWorkplaceManager.initialize(configuration, adminCms);
         
         // initializes the cron manager
         // TODO enable the cron manager
         //m_cronManager = new CmsCronManager();
-        
-        // set the property whether siblings should get published if a file gets published directly
-        String directPublishSiblings = configuration.getString("workplace.directpublish.siblings", "false");
-        setRuntimeProperty("workplace.directpublish.siblings", directPublishSiblings);
-        
-        // set the property if the automatic locking of resources is enabled in explorer view
-        String autoLockResources = configuration.getString("workplace.autolock.resources", "false");
-        setRuntimeProperty("workplace.autolock.resources", autoLockResources);
 
         m_exportHeaders = null;
         // try to initialize default directory file names (e.g. index.html)
@@ -1743,7 +1657,7 @@ public final class OpenCmsCore {
                 getLog(CmsLog.CHANNEL_INIT).warn(". Export headers       : non-critical error " + e.toString());
             }
         }
-        // make sure we always have at last an emtpy array      
+        // make sure we always have at last an empty array      
         if (m_exportHeaders == null) {
             m_exportHeaders = new String[0];
         }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsRestoreResource.java,v $
-* Date   : $Date: 2003/12/05 16:22:27 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2004/02/04 15:48:16 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.17 $ $Date: 2003/12/05 16:22:27 $
+ * @version $Revision: 1.18 $ $Date: 2004/02/04 15:48:16 $
  */
 
 public class CmsRestoreResource extends CmsWorkplaceDefault {
@@ -107,7 +107,7 @@ public class CmsRestoreResource extends CmsWorkplaceDefault {
                 // restore the resource
                 try {
                     // check the autolock resource setting and lock the resource if necessary
-                    if ("true".equals(OpenCms.getRuntimeProperty("workplace.autolock.resources"))) {
+                    if (OpenCms.getWorkplaceManager().autoLockResources()) {
                         if (cms.getLock(filename).isNullLock()) {
                             // resource is not locked, lock it automatically
                             cms.lockResource(filename);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/02/03 10:59:16 $
- * Version: $Revision: 1.315 $
+ * Date   : $Date: 2004/02/04 15:48:16 $
+ * Version: $Revision: 1.316 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.w3c.dom.Document;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.315 $ $Date: 2004/02/03 10:59:16 $
+ * @version $Revision: 1.316 $ $Date: 2004/02/04 15:48:16 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -4795,7 +4795,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     */
     public boolean labelResource(CmsRequestContext context, CmsResource resource, String newResource, int action) throws CmsException {
         // get the list of labeled site folders from the runtime property
-        List labeledSites = (List)OpenCms.getRuntimeProperty("site.labeled.folders");
+        List labeledSites = OpenCms.getWorkplaceManager().getLabelSiteFolders();
         
         if (action == 1) {
             // CASE 1: a new resource is created, check the sites

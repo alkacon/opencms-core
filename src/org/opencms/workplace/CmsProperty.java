@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsProperty.java,v $
- * Date   : $Date: 2004/01/27 10:49:10 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2004/02/04 15:48:16 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  * 
  * @since 5.1
  */
@@ -434,7 +434,7 @@ public class CmsProperty extends CmsDialog implements I_CmsDialogHandler {
                             return m_isEditable.booleanValue();
                         }
                     }
-                } else if (getSettings().getAutoLockResources()) {
+                } else if (OpenCms.getWorkplaceManager().autoLockResources()) {
                     m_isEditable = new Boolean(true);
                     return m_isEditable.booleanValue();
                 }

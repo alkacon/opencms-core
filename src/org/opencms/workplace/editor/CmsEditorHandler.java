@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorHandler.java,v $
- * Date   : $Date: 2004/02/04 11:23:59 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/04 15:48:16 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import com.opencms.file.CmsResourceTypeXmlPage;
 import com.opencms.flex.jsp.CmsJspActionElement;
 
 /**
- * This editor handler class returns the editor URI depending various factors.<p>
+ * This editor handler class returns the editor URI depending on various factors.<p>
  * 
  * Editor selection criteria:
  * <ul>
@@ -51,7 +51,7 @@ import com.opencms.flex.jsp.CmsJspActionElement;
  * @see org.opencms.workplace.editor.I_CmsEditorHandler 
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.3.1
  */

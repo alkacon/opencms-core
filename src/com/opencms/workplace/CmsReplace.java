@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsReplace.java,v $
- * Date   : $Date: 2003/12/05 16:22:27 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/02/04 15:48:16 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Vector;
  * This class is invoked for the workplace "replace" function in the context menu.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public final class CmsReplace extends CmsWorkplaceDefault {
 
@@ -88,7 +88,7 @@ public final class CmsReplace extends CmsWorkplaceDefault {
             m_TemplateSection = "step1";
         } else if ("2".equals(m_NextStep)) {
             // check the autolock resource setting and lock the resource if necessary
-            if ("true".equals(OpenCms.getRuntimeProperty("workplace.autolock.resources"))) {
+            if (OpenCms.getWorkplaceManager().autoLockResources()) {
                 if (cms.getLock(m_OldResourceName).isNullLock()) {
                     // resource is not locked, lock it automatically
                     cms.lockResource(m_OldResourceName);

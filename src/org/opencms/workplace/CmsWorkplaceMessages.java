@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceMessages.java,v $
- * Date   : $Date: 2004/02/04 10:48:13 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/02/04 15:48:16 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,14 +51,14 @@ import java.util.Set;
  * Provides access to the localized lables for the workplace.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 5.1
  */
 public class CmsWorkplaceMessages { 
 
     /** The name of the property file */
-    public static final String C_BUNDLE_NAME = "com.opencms.workplace.workplace";
+    public static final String C_BUNDLE_NAME = "org.opencms.workplace.workplace";
     
     /** Localized message access object for the default workplace */
     private CmsMessages m_messages;
