@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/StringMapper.java,v $
- * Date   : $Date: 2004/12/09 15:59:46 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsLocalizedKeyMapper.java,v $
+ * Date   : $Date: 2004/12/11 13:20:06 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -28,19 +28,42 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
-package org.opencms.util;
 
-/**
- * Abstract class used to pass a string mapping function for string substitution.<p>
+package org.opencms.workplace;
+
+import org.opencms.util.I_CmsStringMapper;
+
+/** 
+ * The string mapper is used to resolve localized key macros for the Workplace.<p> 
  */
-public abstract class StringMapper implements I_CmsStringMapper {
-    
+class CmsLocalizedKeyMapper implements I_CmsStringMapper {
+
+    /** The workplace settings to use for the localization.<p> */
+    private CmsWorkplaceSettings m_settings;
+
     /**
-     * Method to map a key to a string value.<p>
+     * Creates a new localized key mapper.<p>
      * 
-     * @param key th e key to map
-     * @return the mapped value or <code>null</code>
+     * @param settings the current users OpenCms Workplace settings
      */
-    public abstract String getValue(String key);
+    CmsLocalizedKeyMapper(CmsWorkplaceSettings settings) {
+
+        m_settings = settings;
+    }
+
+    /**
+     * Maps a given key to a localized value.<p>
+     * 
+     * @param key the key starting with "key:"
+     * 
+     * @return the localized value
+     */
+    public String getValue(String key) {
+
+        if (key.startsWith(I_CmsStringMapper.KEY_LOCALIZED_PREFIX)) {
+            return m_settings.getMessages().key(key.substring(I_CmsStringMapper.KEY_LOCALIZED_PREFIX.length()));
+        } else {
+            return null;
+        }
+    }
 }

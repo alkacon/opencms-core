@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/12/09 15:59:46 $
- * Version: $Revision: 1.98 $
+ * Date   : $Date: 2004/12/11 13:20:06 $
+ * Version: $Revision: 1.99 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,6 @@ import org.opencms.security.CmsPermissionSet;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.util.I_CmsStringMapper;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.CmsTree;
 
@@ -83,7 +82,7 @@ import org.apache.commons.fileupload.FileUploadException;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.98 $
+ * @version $Revision: 1.99 $
  * 
  * @since 5.1
  */
@@ -141,24 +140,7 @@ public abstract class CmsWorkplace {
     /** The URI to the skin resources (cached for performance reasons). */
     private static String m_skinUri;
 
-    /** The string mapper used to resolve key macros. */
-    class LocalizedKeyMapper implements I_CmsStringMapper {
-      
-        /**
-         * Maps a given key to a localized value.<p>
-         * 
-         * @param key the key starting with "key:";
-         * @return the localized value
-         */
-        public String getValue(String key) {
-            if (key.startsWith("key:")) {
-                return key(key.substring(4));
-            } else {
-                return null;
-            }
-        }
-    }
-    
+    /** The current users OpenCms context. */
     private CmsObject m_cms;
 
     /** Helper variable to store the id of the current project. */
@@ -1447,7 +1429,7 @@ public abstract class CmsWorkplace {
      */
     public String resolveMacros(String input) {
 
-        return CmsStringUtil.substituteMacros(input, new LocalizedKeyMapper());
+        return CmsStringUtil.substituteMacros(input, new CmsLocalizedKeyMapper(m_settings));
     }
 
     /**

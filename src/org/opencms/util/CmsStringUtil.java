@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2004/12/09 15:59:46 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/12/11 13:20:06 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,25 +47,25 @@ import org.apache.oro.text.perl.Perl5Util;
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.0
  */
 public final class CmsStringUtil {
 
-    /** String to indicate the start of a macro */
-    public static final String C_MACRO_DELIMITER = "$";
-    
-    /** String to indicate the start of a macro */
-    public static final String C_MACRO_START = "{";
-    
-    /** String to indicate the end of a macro */
-    public static final String C_MACRO_END = "}";
-    
     /** Regular expression that matches the HTML body end tag. */
     public static final String C_BODY_END_REGEX = "<\\s*/\\s*body[^>]*>";
 
     /** Regular expression that matches the HTML body start tag. */
     public static final String C_BODY_START_REGEX = "<\\s*body[^>]*>";
+
+    /** String to indicate the start of a macro. */
+    public static final String C_MACRO_DELIMITER = "$";
+
+    /** String to indicate the end of a macro. */
+    public static final String C_MACRO_END = "}";
+
+    /** String to indicate the start of a macro. */
+    public static final String C_MACRO_START = "{";
 
     /** Regex pattern that matches an end body tag. */
     private static final Pattern C_BODY_END_PATTERN = Pattern.compile(C_BODY_END_REGEX, Pattern.CASE_INSENSITIVE);
@@ -511,59 +511,6 @@ public final class CmsStringUtil {
     }
 
     /**
-     * Substitutes macro keys the content.<p>
-     * A substring ${key} in the content is replaced with its assigned value
-     * returned by the getValue method of the given <code>StringMapper</code> class.
-     * 
-     * @param content the content which is scanned
-     * @param substitution string mapper to obtain the value for a key
-     * @return the value assigned to the given key
-     */
-    public static String substituteMacros(String content, I_CmsStringMapper substitution) {
-        
-        String segments[];
-        String replacements[];
-        
-        if (content == null) {
-            return null;
-        } else {
-            segments = (String[])splitAsList(content, C_MACRO_DELIMITER).toArray(new String[10]);
-            replacements = new String[segments.length];
-        }
-        
-        if (segments.length == 1) {
-            return content;
-        }
-        
-        int totalLength = 0;
-        for (int i = 0; i < segments.length && segments[i] != null; i++) {
-            int len = segments[i].length(), pos;
-            if (segments[i].startsWith(C_MACRO_START) && (pos = segments[i].indexOf(C_MACRO_END)) > 0) {
-                replacements[i] = substitution.getValue(segments[i].substring(1, pos)); 
-                segments[i] = segments[i].substring(pos+1);
-                len =  (replacements[i] != null) ? replacements[i].length() : 0;
-                len += (segments[i] != null) ? segments[i].length() : 0;
-            } else if (i > 0){
-                replacements[i] = C_MACRO_DELIMITER;
-                len += 1;
-            }    
-            totalLength += len;
-        }
-                
-        StringBuffer sb = new StringBuffer(totalLength);
-        for (int i = 0; i < segments.length && segments[i] != null; i++) {
-            if (replacements[i] != null) {
-                sb.append(replacements[i]);
-            }
-            if (segments[i] != null) {
-                sb.append(segments[i]);
-            }
-        }
-
-        return sb.toString();
-    }
-    
-    /**
      * Substitutes the OpenCms context path (e.g. /opencms/opencms/) in a HTML page with a 
      * special variable so that the content also runs if the context path of the server changes.<p>
      * 
@@ -578,6 +525,59 @@ public final class CmsStringUtil {
             m_contextReplace = "$1" + CmsStringUtil.escapePattern(I_CmsWpConstants.C_MACRO_OPENCMS_CONTEXT) + "/";
         }
         return substitutePerl(htmlContent, m_contextSearch, m_contextReplace, "g");
+    }
+
+    /**
+     * Substitutes macro keys the content.<p>
+     * A substring ${key} in the content is replaced with its assigned value
+     * returned by the getValue method of the given <code>StringMapper</code> class.
+     * 
+     * @param content the content which is scanned
+     * @param substitution string mapper to obtain the value for a key
+     * @return the value assigned to the given key
+     */
+    public static String substituteMacros(String content, I_CmsStringMapper substitution) {
+
+        String segments[];
+        String replacements[];
+
+        if (content == null) {
+            return null;
+        } else {
+            segments = (String[])splitAsList(content, C_MACRO_DELIMITER).toArray(new String[10]);
+            replacements = new String[segments.length];
+        }
+
+        if (segments.length == 1) {
+            return content;
+        }
+
+        int totalLength = 0;
+        for (int i = 0; i < segments.length && segments[i] != null; i++) {
+            int len = segments[i].length(), pos;
+            if (segments[i].startsWith(C_MACRO_START) && (pos = segments[i].indexOf(C_MACRO_END)) > 0) {
+                replacements[i] = substitution.getValue(segments[i].substring(1, pos));
+                segments[i] = segments[i].substring(pos + 1);
+                len = (replacements[i] != null) ? replacements[i].length() : 0;
+                len += (segments[i] != null) ? segments[i].length() : 0;
+            } else if (i > 0) {
+                replacements[i] = C_MACRO_DELIMITER;
+                len += 1;
+            }
+            totalLength += len;
+        }
+
+        StringBuffer sb = new StringBuffer(totalLength);
+        for (int i = 0; i < segments.length && segments[i] != null; i++) {
+            if (replacements[i] != null) {
+                sb.append(replacements[i]);
+            }
+            if (segments[i] != null) {
+                sb.append(segments[i]);
+            }
+        }
+
+        return sb.toString();
     }
 
     /**

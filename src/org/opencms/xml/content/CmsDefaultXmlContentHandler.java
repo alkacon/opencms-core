@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2004/12/09 16:45:54 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/12/11 13:20:06 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,6 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsHtmlConverter;
 import org.opencms.util.CmsStringUtil;
@@ -63,7 +62,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * @since 5.5.4
  */
 public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
@@ -128,68 +127,15 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** Constant for the "validationrules" appinfo element name. */
     public static final String APPINFO_VALIDATIONRULES = "validationrules";
 
-    /** Key prefix used to specify the value of a localized key as macro value. */ 
-    public static final String KEY_LOCALIZED_PREFIX = "key:";
-    
-    /** Key used to specify the validation path as macro value. */
-    public static final String KEY_VALIDATION_PATH = "validation:path";
-    
-    /** Key used to specify the validation regex as macro value. */
-    public static final String KEY_VALIDATION_REGEX = "validation:regex";
-    
-    /** Key used to specifiy the validation value as macro value. */
-    public static final String KEY_VALIDATION_VALUE = "validation:value";
-    
-    /** Key used to specify the current time as macro value. */
-    public static final String KEY_CURRENT_TIME = "currenttime";
-    
-    /** Key used to specify the username of the current user as macro value. */
-    public static final String KEY_CURRENT_USER_NAME = "currentuser:name";
-    
-    /** Key used to specify the first name of the current user as macro value. */
-    public static final String KEY_CURRENT_USER_FIRSTNAME = "currentuser:firstname";
-    
-    /** Key used to specify the last name of the current user as macro value. */
-    public static final String KEY_CURRENT_USER_LASTNAME = "currentuser:lastname";
-    
-    /** Key used to specify the full name of the current user as macro value. */
-    public static final String KEY_CURRENT_USER_FULLNAME = "currentuser:fullname";
-    
-    /** Key used to specify the street of the current user as macro value. */
-    public static final String KEY_CURRENT_USER_STREET = "currentuser:street";
-    
-    /** Key used to specify the zip code of the current user as macro value. */
-    public static final String KEY_CURRENT_USER_ZIP = "currentuser:zip";
-    
-    /** Key used to specify the city of the current user as macro value. */
-    public static final String KEY_CURRENT_USER_CITY = "currentuser:city";
-    
-    /** Key used to specify the email address of the current user as macro value. */
-    public static final String KEY_CURRENT_USER_EMAIL = "currentuser:email";
-    
-    /** Key used to specify the request uri as macro value. */
-    public static final String KEY_REQUEST_URI = "request:uri";
-    
-    /** Key used to specify the folder of the request uri as macro value. */
-    public static final String KEY_REQUEST_FOLDER = "request:folder";
-    
-    /** Key used to specify the request encoding as macro value. */
-    public static final String KEY_REQUEST_ENCODING = "request:encoding";
-    
-    /** Key user to specify the request locale as macro value. */
-    public static final String KEY_REQUEST_LOCALE = "request:locale";
-    
-    /** Default message for validation warnings. */
-    protected static final String MESSAGE_VALIDATION_DEFAULT_WARNING = 
-        "${validation:path}: " +
-        "${key:editor.xmlcontent.validation.warning.1}${validation:value}${key:editor.xmlcontent.validation.warning.2}" +
-        "[${validation:regex}]";
-    
     /** Default message for validation errors. */
-    protected static final String MESSAGE_VALIDATION_DEFAULT_ERROR = 
-        "${validation:path}: " +
-        "${key:editor.xmlcontent.validation.error.1}${validation:value}${key:editor.xmlcontent.validation.error.2}" +
-        "[${validation:regex}]";
+    protected static final String MESSAGE_VALIDATION_DEFAULT_ERROR = "${validation:path}: "
+        + "${key:editor.xmlcontent.validation.error.1}${validation:value}${key:editor.xmlcontent.validation.error.2}"
+        + "[${validation:regex}]";
+
+    /** Default message for validation warnings. */
+    protected static final String MESSAGE_VALIDATION_DEFAULT_WARNING = "${validation:path}: "
+        + "${key:editor.xmlcontent.validation.warning.1}${validation:value}${key:editor.xmlcontent.validation.warning.2}"
+        + "[${validation:regex}]";
 
     /** The default values for the elements (as defined in the annotations). */
     protected Map m_defaultValues;
@@ -218,102 +164,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** The validation rules that cause a warning (as defined in the annotations). */
     protected Map m_validationWarningRules;
 
-    /** The default macro string substitutions. */
-    class XmlStringMapper implements I_CmsStringMapper {
-        
-        private Map m_values;
-        
-        private CmsObject m_cms;
-        
-        private Locale m_locale;
-        
-        /**
-         * Create a new String mapper based on the given parameters.<p>
-         * 
-         * @param values map of additional values
-         * @param locale locale to use
-         * @param cms a cms object
-         */
-        public XmlStringMapper (Map values, Locale locale, CmsObject cms) {
-            m_values = values;
-            m_locale = locale;
-            m_cms = cms;
-        }
-        
-        /**
-         * @see org.opencms.util.I_CmsStringMapper#getValue(java.lang.String)
-         */
-        public String getValue(String key) {
-
-            if (KEY_CURRENT_TIME.equals(key)) { 
-                return String.valueOf(System.currentTimeMillis());
-            }
-            
-            if (KEY_CURRENT_USER_NAME.equals(key) && m_cms != null) {
-                return m_cms.getRequestContext().currentUser().getName();
-            }
-
-            if (KEY_CURRENT_USER_FIRSTNAME.equals(key) && m_cms != null) {
-                return m_cms.getRequestContext().currentUser().getFirstname();
-            }
-            
-            if (KEY_CURRENT_USER_LASTNAME.equals(key) && m_cms != null) {
-                return m_cms.getRequestContext().currentUser().getLastname();
-            }
-            
-            if (KEY_CURRENT_USER_FULLNAME.equals(key) && m_cms != null) {
-                return m_cms.getRequestContext().currentUser().getFullName();
-            }
-            
-            if (KEY_CURRENT_USER_EMAIL.equals(key) && m_cms != null) {
-                return m_cms.getRequestContext().currentUser().getEmail();
-            }
-            
-            if (KEY_CURRENT_USER_STREET.equals(key) && m_cms != null) {
-                return m_cms.getRequestContext().currentUser().getAddress();
-            }      
-
-            if (KEY_CURRENT_USER_ZIP.equals(key) && m_cms != null) {
-                return (String)m_cms.getRequestContext().currentUser().getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_ZIPCODE);
-            }  
-            
-            if (KEY_CURRENT_USER_CITY.equals(key) && m_cms != null) {
-                return (String)m_cms.getRequestContext().currentUser().getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_TOWN);
-            }  
-            
-            if (KEY_REQUEST_URI.equals(key) && m_cms != null) {
-                return m_cms.getRequestContext().getUri();
-            }
-            
-            if (KEY_REQUEST_FOLDER.equals(key) && m_cms != null) {
-                return CmsResource.getParentFolder(m_cms.getRequestContext().getUri());
-            }
-            
-            if (KEY_REQUEST_ENCODING.equals(key) && m_cms != null) {
-                return m_cms.getRequestContext().getEncoding();
-            }
-            
-            if (KEY_REQUEST_LOCALE.equals(key) && m_cms != null) {
-                return m_cms.getRequestContext().getLocale().toString();
-            }
-            
-            if (key.startsWith(KEY_LOCALIZED_PREFIX) && m_locale != null) {
-                return key(key.substring(KEY_LOCALIZED_PREFIX.length()), m_locale);
-            } 
-            
-            if (key.startsWith(KEY_LOCALIZED_PREFIX) && m_locale == null) {
-                // leave macros for localized keys unchanged if no locale available
-                return CmsStringUtil.C_MACRO_DELIMITER + CmsStringUtil.C_MACRO_START + key + CmsStringUtil.C_MACRO_END;
-            } 
-            
-            if (m_values != null){
-                return (String)m_values.get(key);
-            }
-            
-            return null;
-        }
-    }
-    
     /**
      * Creates a new instance of the default XML content handler.<p>  
      */
@@ -326,11 +176,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      * @see org.opencms.xml.content.I_CmsXmlContentHandler#getDefault(org.opencms.file.CmsObject, org.opencms.xml.types.I_CmsXmlSchemaType, java.util.Locale)
      */
     public String getDefault(CmsObject cms, I_CmsXmlSchemaType type, Locale locale) {
-      
+
         String defaultValue = (String)m_defaultValues.get(type.getElementName());
         if (defaultValue != null) {
             // return the string set in the appinfo with processed macros
-            return CmsStringUtil.substituteMacros(defaultValue, new XmlStringMapper(null, locale, cms));
+            return CmsStringUtil.substituteMacros(defaultValue, new CmsDefaultXmlStringMapper(this, null, locale, cms));
         }
 
         // default implementation currently just uses the "getDefault" mehod of the given value
@@ -670,18 +520,19 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
         if (message == null) {
             if (isWarning) {
-                message = MESSAGE_VALIDATION_DEFAULT_WARNING;    
+                message = MESSAGE_VALIDATION_DEFAULT_WARNING;
             } else {
                 message = MESSAGE_VALIDATION_DEFAULT_ERROR;
             }
-        }    
+        }
 
         Map additionalValues = new HashMap();
-        additionalValues.put(KEY_VALIDATION_VALUE, valueStr);
-        additionalValues.put(KEY_VALIDATION_REGEX, ((!matchResult)?"!":"") + regex);
-        additionalValues.put(KEY_VALIDATION_PATH, value.getPath());
-        
-        return CmsStringUtil.substituteMacros(message, new XmlStringMapper(additionalValues, null, cms));
+        additionalValues.put(I_CmsStringMapper.KEY_VALIDATION_VALUE, valueStr);
+        additionalValues.put(I_CmsStringMapper.KEY_VALIDATION_REGEX, ((!matchResult) ? "!" : "") + regex);
+        additionalValues.put(I_CmsStringMapper.KEY_VALIDATION_PATH, value.getPath());
+
+        return CmsStringUtil
+            .substituteMacros(message, new CmsDefaultXmlStringMapper(this, additionalValues, null, cms));
     }
 
     /**
