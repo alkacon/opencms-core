@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagTemplate.java,v $
- * Date   : $Date: 2004/01/22 10:39:35 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/01/22 11:52:35 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,8 +37,6 @@ import org.opencms.page.CmsXmlPage;
 
 import com.opencms.util.Utils;
 
-import java.util.Locale;
-
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
@@ -47,7 +45,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * is included in another file.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsJspTagTemplate extends BodyTagSupport { 
     
@@ -61,6 +59,9 @@ public class CmsJspTagTemplate extends BodyTagSupport {
     
     /** Condition for element check */
     private boolean m_checkall = false;
+    
+    /** Condition for negative element check */
+    private boolean m_checknone = false;
 
     /** Template part identifier */
     public static final String C_TEMPLATE_ELEMENT = "__element";
@@ -92,6 +93,7 @@ public class CmsJspTagTemplate extends BodyTagSupport {
         if (elements != null) {
             m_elementlist = elements;
             m_checkall = false;
+            m_checknone = false;
         }
     }
     
@@ -113,6 +115,7 @@ public class CmsJspTagTemplate extends BodyTagSupport {
         if (elements != null) {
             m_elementlist = elements;
             m_checkall = false;
+            m_checknone = false;
         }        
     }
 
@@ -134,6 +137,7 @@ public class CmsJspTagTemplate extends BodyTagSupport {
         if (elements != null) {
             m_elementlist = elements;
             m_checkall = true;
+            m_checknone = false;
         }           
     }
 
@@ -143,6 +147,28 @@ public class CmsJspTagTemplate extends BodyTagSupport {
      * @return the list of elements
      */
     public String getIfexistsall() {
+        return m_elementlist!=null?m_elementlist:"";
+    }
+
+    /**
+     * Sets the list of elements to check.<p>
+     * 
+     * @param elements the list of elements
+     */
+    public void setIfexistsnone(String elements) {
+        if (elements != null) {
+            m_elementlist = elements;
+            m_checkall = false;
+            m_checknone = true;
+        }           
+    }
+
+    /**
+     * Returns the list of elements to check.<p>
+     * 
+     * @return the list of elements
+     */
+    public String getIfexistsnone() {
         return m_elementlist!=null?m_elementlist:"";
     }
     
@@ -158,7 +184,7 @@ public class CmsJspTagTemplate extends BodyTagSupport {
      * @see javax.servlet.jsp.tagext.Tag#doStartTag()
      */
     public int doStartTag() {
-        if (templateTagAction(m_element, m_elementlist, m_checkall, pageContext.getRequest())) {
+        if (templateTagAction(m_element, m_elementlist, m_checkall, m_checknone, pageContext.getRequest())) {
             return EVAL_BODY_INCLUDE;
         } else {
             return SKIP_BODY;
@@ -171,11 +197,12 @@ public class CmsJspTagTemplate extends BodyTagSupport {
      * @param element the selected element
      * @param elementlist list the list of elements to check
      * @param checkall flag to indicate that all elements should be checked
+     * @param checknone flag to indicate that the check is done for nonexisting elements
      * @param req the current request 
      * @return boolean <code>true</code> if this element should be inclued, <code>false</code>
      * otherwise
      */    
-    public static boolean templateTagAction(String element, String elementlist, boolean checkall, ServletRequest req) {
+    public static boolean templateTagAction(String element, String elementlist, boolean checkall, boolean checknone, ServletRequest req) {
 
         CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
         CmsXmlPage page = (CmsXmlPage)req.getAttribute(org.opencms.loader.CmsXmlPageLoader.C_XMLPAGE_OBJECT);
@@ -203,8 +230,11 @@ public class CmsJspTagTemplate extends BodyTagSupport {
                 }
             }
             
-            // no element found
-            if (!found) {
+            if (!found && !checknone) {
+                // no element found while checking for existing elements
+                return false;
+            } else if (found && checknone) {
+                // element found while checking for nonexisting elements
                 return false;
             }
         } 

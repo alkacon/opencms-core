@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspActionElement.java,v $
- * Date   : $Date: 2004/01/20 15:58:41 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2004/01/22 11:52:35 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -90,7 +90,7 @@ import javax.servlet.jsp.PageContext;
  * working at last in some elements.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.49 $
+ * @version $Revision: 1.50 $
  * 
  * @since 5.0 beta 2
  */
@@ -773,7 +773,7 @@ public class CmsJspActionElement {
             return true;
         }
         try {
-            return CmsJspTagTemplate.templateTagAction(element, elementlist, checkall, m_request);
+            return CmsJspTagTemplate.templateTagAction(element, elementlist, checkall, false, m_request);
         } catch (Throwable t) {
             handleException(t);
         }
