@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/08/14 15:15:42 $
- * Version: $Revision: 1.491 $
+ * Date   : $Date: 2003/08/18 10:56:08 $
+ * Version: $Revision: 1.492 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -18,6 +18,12 @@ Legend:
 ! New Feature
 * Bug fixed
 - General comment
+
+OpenCms 5.1.8 Salusa Secundus - August xx, 2003
+! New version of static export implemented in package org.opencms.staticexport
+! New structure of the "main" classes in package org.opencms.main
+! The OpenCms "operating system" now implements a singleton pattern
+! Export/Import version 4 now fully implemented in package org.opencms.importexport
 
 OpenCms 5.1.7 Salusa Secundus - August 14, 2003
 * Fixed more issues regarding the new locking mechanism
