@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
- * Date   : $Date: 2001/02/21 10:06:56 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2001/02/22 15:40:10 $
+ * Version: $Revision: 1.40 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -43,7 +43,7 @@ import source.org.apache.java.util.*;
  * into the cms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.39 $ $Date: 2001/02/21 10:06:56 $
+ * @version $Revision: 1.40 $ $Date: 2001/02/22 15:40:10 $
  */
 public class CmsImport implements I_CmsConstants, Serializable {
 
@@ -296,9 +296,16 @@ public Vector getResourcesForProject() throws CmsException {
 			try {
 				String resource = destination.substring(0, destination.indexOf("/",1) + 1);
 				resource = m_importPath + resource;
+				// add the resource, if it dosen't already exist
 				if((!resources.contains(resource)) && (!resource.equals(m_importPath))) {
-					// add the resource, if it dosen't already exist
-					resources.addElement(resource);
+                    try {
+                        m_cms.readFolder(resource);
+                        // this resource exists in the current project -> add it
+    					resources.addElement(resource);
+                    } catch(CmsException exc) {
+                        // this resource is missing - we need the root-folder
+                        resources.addElement(C_ROOT);
+                    }
 				}
 			} catch(StringIndexOutOfBoundsException exc) {
 				// this is a resource in root-folder: ignore the excpetion
@@ -316,6 +323,11 @@ public Vector getResourcesForProject() throws CmsException {
 		  throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
 	  }
 	}
+    if(resources.contains(C_ROOT)) {
+        // we have to import root - forget the rest!
+        resources.removeAllElements();
+        resources.addElement(C_ROOT);
+    }
 	return resources;
 }
 	/**
