@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspActionElement.java,v $
- * Date   : $Date: 2003/04/08 07:15:31 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2003/04/09 16:17:32 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import javax.servlet.jsp.PageContext;
  * working at last in some elements.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 5.0 beta 2
  */
@@ -98,6 +98,9 @@ public class CmsJspActionElement {
     
     /** Flag to indicate that this bean was properly initialized */
     private boolean m_notInitialized;
+    
+    /** Flag to indicate if we want default or custom Exception handling */
+    private boolean m_handleExceptions = true;
 
     /** Will be set by the first call to {@link #isInWorkplaceMode()} */
     private Boolean m_isWorkplaceUser = null;
@@ -158,6 +161,35 @@ public class CmsJspActionElement {
             // probably request / response where not of the right type
             m_notInitialized = true;
         }
+    }    
+    
+    /**
+     * Returns <code>true</code> if Exceptions are handled by the class instace, or
+     * <code>false</code> if they will be thrown and have to be handled by the calling class.<p>
+     * 
+     * The default is <code>true</code>.
+     * If set to <code>false</code> all Exceptions that occur internally will be wrapped into
+     * a RuntimeException and thrown to the calling class instance.<p>
+     * 
+     * @return <code>true</code> if Exceptions are handled by the class instace, or
+     *      <code>false</code> if they will be thrown and have to be handled by the calling class
+     */
+    public boolean getHandleExceptions() {
+        return m_handleExceptions;
+    }
+
+    /**
+     * Controls if Exceptions that occur in methods of this class are supressed (true)
+     * or not (false).<p>
+     * 
+     * The default is <code>true</code>.
+     * If set to <code>false</code> all Exceptions that occur internally will be wrapped into
+     * a RuntimeException and thrown to the calling class instance.<p>
+     * 
+     * @param the value to set the Exception handing to
+     */
+    public void setHandleExceptions(boolean value) {
+        m_handleExceptions = value;
     }    
 
     /**
@@ -682,7 +714,11 @@ public class CmsJspActionElement {
      * @param e the exception that was catched
      */
     private void handleException(Throwable t) {
-        System.err.println("Exception in " + this.getClass().getName() + ":");
-        t.printStackTrace(System.err);
+        if (m_handleExceptions) {            
+            System.err.println("Exception in " + this.getClass().getName() + ":");
+            t.printStackTrace(System.err);
+        } else {
+            throw new RuntimeException(t);
+        }
     }
 }
