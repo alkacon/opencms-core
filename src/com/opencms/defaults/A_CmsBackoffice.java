@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2001/11/22 14:18:37 $
-* Version: $Revision: 1.34 $
+* Date   : $Date: 2001/11/27 13:22:42 $
+* Version: $Revision: 1.35 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -2954,6 +2954,18 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
         // write the data to the database
         cd.write(cms);
 
+         //care about the previewbutten, if getPreviewUrl is empty, the preview button will not be displayed in the template
+        String previewButton = null;
+        try{
+            previewButton = (String)getPreviewUrl(cms, null, null, null);
+        }catch(Exception e){
+        }
+        if(!((previewButton == null) || (previewButton.equals("")))){
+            session.putValue("weShallDisplayThePreviewButton", previewButton +"?id="+cd.getUniqueId(cms));
+        }
+
+
+
       } catch (CmsPlausibilizationException plex) {
         // there was an error during plausibilization, so create an error text
         errorCodes=plex.getErrorCodes();
@@ -3009,6 +3021,7 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
           session.removeValue("media");
           session.removeValue("selectedmediaCD");
           session.removeValue("media_position");
+          session.removeValue("weShallDisplayThePreviewButton");
 
           //do the redirect
           // to do: replace the getUri method with getPathInfo if aviable
