@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2005/01/07 08:48:50 $
- * Version: $Revision: 1.85 $
+ * Date   : $Date: 2005/01/10 10:16:38 $
+ * Version: $Revision: 1.86 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import org.apache.commons.collections.map.LRUMap;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Moossen (a.moossen@alkacon.com)
- * @version $Revision: 1.85 $
+ * @version $Revision: 1.86 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
 
@@ -1400,7 +1400,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         try {
             m_handler = (I_CmsStaticExportHandler)Class.forName(handlerClassName).newInstance();
         } catch (Exception e) {
-            throw new IllegalArgumentException("Invalid handler: "+handlerClassName);
+            // should never happen
+            OpenCms.getLog(this).error(e);
         }
     }
 
