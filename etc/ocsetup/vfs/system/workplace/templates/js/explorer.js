@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/explorer.js,v $
- * Date   : $Date: 2000/12/06 10:37:43 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/12/06 11:09:30 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -885,9 +885,9 @@ function printList(wo){
             "a:hover.filenew{ background:#000088 ; color:#FFFFFF; text-decoration: none; } "+
 
             "td.filedeleted{ color: #000000; background:#FFFFFF; text-decoration: line-through;} "+
-            "a.filedeleted{ color: #000000; font-family: arial, helvetica; font-size: 8pt; text  -decoration: line-through;} "+
+            "a.filedeleted{ color: #000000; font-family: arial, helvetica; font-size: 8pt; text-decoration: line-through;} "+
             "a:visited.filedeleted{ color: #000000; text-decoration: line-through;} "+
-            "a:hover.filedeleted{ background:#000088; color:#FFFFFF; text-decoration: underline; } "+
+            "a:hover.filedeleted{ background:#000088; color:#FFFFFF; text-decoration: line-through; } "+
 
             "td.filenotinproject{ background:#FFFFFF; color:#bbbbbb;} "+
             "a.filenotinproject{ color: #888888; } "+
