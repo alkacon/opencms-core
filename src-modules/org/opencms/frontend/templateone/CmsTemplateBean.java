@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateBean.java,v $
- * Date   : $Date: 2005/02/17 12:45:43 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/02/17 13:44:58 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods to create the HTML for the frontend output in the main JSP template one.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsTemplateBean extends CmsJspActionElement {
     
@@ -247,8 +247,12 @@ public class CmsTemplateBean extends CmsJspActionElement {
             boolean showMenus = Boolean.valueOf(getConfigurationValue("headnav.menus", "true")).booleanValue();
             if (showHeadNavigation() && showMenus) {
                 // create the head navigation dhtml menus
-                m_properties.put(CmsTemplateNavigation.C_PARAM_STARTFOLDER, getStartFolder());
-                m_properties.put(CmsTemplateNavigation.C_PARAM_HEADNAV_FOLDER, getNavigationStartFolder());
+                if (m_properties.get(CmsTemplateNavigation.C_PARAM_HEADNAV_MENUDEPTH) == null) {
+                    m_properties.put(CmsTemplateNavigation.C_PARAM_STARTFOLDER, getStartFolder());
+                    m_properties.put(CmsTemplateNavigation.C_PARAM_HEADNAV_FOLDER, getNavigationStartFolder());
+                    m_properties.put(CmsTemplateNavigation.C_PARAM_HEADNAV_MENUDEPTH, getConfigurationValue("headnav.menudepth", "1"));
+                    m_properties.put(CmsTemplateNavigation.C_PARAM_SHOWMENUS, getConfigurationValue("headnav.menus", "true"));
+                }
                 include(C_FOLDER_ELEMENTS + "nav_head.jsp", "menus", m_properties);
             }
         } else {

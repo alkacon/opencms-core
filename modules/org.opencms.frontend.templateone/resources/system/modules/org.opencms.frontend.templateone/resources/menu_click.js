@@ -171,7 +171,7 @@ function buttonClick(event, menuId) {
 	if (! isMouseOver) {
 %>
 		// AZ: open link when pressing top menu button again
-		document.location.href = activebutton.href;
+		document.location.href = activeButton.href;
 		// /AZ
 <% 
 	} 
