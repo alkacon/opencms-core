@@ -5037,7 +5037,7 @@
                 <property>
                     <name>NavPos</name>
                     <type>0</type>
-                    <value><![CDATA[8]]></value>
+                    <value><![CDATA[-90]]></value>
                 </property>
             </properties>
         </file>
