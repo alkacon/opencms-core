@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/xmlmodules/Attic/A_CmsModuleContent.java,v $
- * Date   : $Date: 2000/07/11 15:01:18 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/08/01 09:18:26 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -56,7 +56,7 @@ import javax.servlet.http.*;
  *
  * 
  * @author Matthias Schreiber
- * @version $Revision: 1.2 $ $Date: 2000/07/11 15:01:18 $
+ * @version $Revision: 1.3 $ $Date: 2000/08/01 09:18:26 $
  * @see com.opencms.xmlmodules.news.CmsNewsContent
  */
 public abstract class A_CmsModuleContent extends CmsXmlTemplate implements I_CmsModuleConstants, I_CmsLogChannels {
@@ -149,7 +149,7 @@ public abstract class A_CmsModuleContent extends CmsXmlTemplate implements I_Cms
         Vector v = getAllArticles(cms,folder);
 	
         // set the application specific data for default clients (HTML-browsers)      
-        return getListData(templateFile,v,servletPath);
+        return getListData(templateFile,v,servletPath,userObj);
     }
 	
 	/**
@@ -160,7 +160,7 @@ public abstract class A_CmsModuleContent extends CmsXmlTemplate implements I_Cms
      * @param v Vector that contains all articles
 	 * @return List of all articles.
      */
-	protected abstract String getListData(CmsXmlTemplateFile template, Vector v, String servletPath) 
+	protected abstract String getListData(CmsXmlTemplateFile template, Vector v, String servletPath, Object userObj) 
             throws CmsException;
 	
 	/**

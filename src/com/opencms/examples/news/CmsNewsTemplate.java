@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/news/Attic/CmsNewsTemplate.java,v $
- * Date   : $Date: 2000/07/11 08:49:56 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/08/01 09:18:10 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -60,7 +60,7 @@ import javax.servlet.http.*;
  *             with the newer classes.  
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.12 $ $Date: 2000/07/11 08:49:56 $
+ * @version $Revision: 1.13 $ $Date: 2000/08/01 09:18:10 $
  * @see com.opencms.examples.CmsXmlNewsTemplateFile
  */
 public class CmsNewsTemplate extends CmsXmlTemplate implements I_CmsNewsConstants, I_CmsLogChannels {
@@ -262,7 +262,7 @@ public class CmsNewsTemplate extends CmsXmlTemplate implements I_CmsNewsConstant
             newsTemplateFile.setData("link", servletPath + C_NEWS_FOLDER_PAGE + doc2.getFilename() + "/index.html");
 			newsTemplateFile.setData("path", servletPath);
 			newsTemplateFile.setData("index", "" + i );
-            result = result + newsTemplateFile.getProcessedDataValue(C_TAG_NEWSLISTENTRY);        
+            result = result + newsTemplateFile.getProcessedDataValue(C_TAG_NEWSLISTENTRY, this, userObj);        
         }                        
         return result;
     }    

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/xmlmodules/news/Attic/CmsNewsContent.java,v $
- * Date   : $Date: 2000/07/31 12:26:03 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/08/01 09:18:30 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -57,7 +57,7 @@ import javax.servlet.http.*;
  *
  * 
  * @author Matthias Schreiber
- * @version $Revision: 1.3 $ $Date: 2000/07/31 12:26:03 $
+ * @version $Revision: 1.4 $ $Date: 2000/08/01 09:18:30 $
  * @see com.opencms.xmlmodules.A_CmsModuleContent
  */
 public class CmsNewsContent extends A_CmsModuleContent implements I_CmsNewsConstants {
@@ -195,7 +195,7 @@ public class CmsNewsContent extends A_CmsModuleContent implements I_CmsNewsConst
      * @param servletPath Path to the OpenCms servlet zone
 	 * @return List of all articles.
      */
-	protected String getListData(CmsXmlTemplateFile template,  Vector v, String servletPath) 
+	protected String getListData(CmsXmlTemplateFile template,  Vector v, String servletPath, Object userObj) 
             throws CmsException {
 		String result = "";
 		
@@ -209,7 +209,7 @@ public class CmsNewsContent extends A_CmsModuleContent implements I_CmsNewsConst
             template.setData("link", servletPath + C_FOLDER_PAGE + doc2.getFilename() + "/index.html");
 			template.setData("servletPath", servletPath + "/");
 			template.setData("index", "" + i );
-            result = result + template.getProcessedDataValue(C_TAG_LISTENTRY);        
+            result = result + template.getProcessedDataValue(C_TAG_LISTENTRY, this, userObj);        
         }                        
         return result;
 	}
