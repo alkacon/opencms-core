@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/I_CmsWorkflowDriver.java,v $
- * Date   : $Date: 2003/09/15 10:51:13 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/09/15 15:06:16 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,18 +46,10 @@ import java.util.Vector;
  * Definitions of all required workflow driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.9 $ $Date: 2003/09/15 10:51:13 $
+ * @version $Revision: 1.10 $ $Date: 2003/09/15 15:06:16 $
  * @since 5.1
  */
 public interface I_CmsWorkflowDriver {
-
-    /**
-     * Destroys this driver.<p>
-     * 
-     * @throws Throwable if something goes wrong
-     * @throws CmsException if something else goes wrong
-     */  
-    void destroy() throws Throwable, CmsException;
 
     /**
      * Creates a new task.<p>
@@ -76,8 +68,24 @@ public interface I_CmsWorkflowDriver {
      * @return the Task object of the generated task
      *
      * @throws CmsException if something goes wrong.
-     */    
+     */
     CmsTask createTask(int rootId, int parentId, int tasktype, CmsUUID ownerId, CmsUUID agentId, CmsUUID roleId, String taskname, java.sql.Timestamp wakeuptime, java.sql.Timestamp timeout, int priority) throws CmsException;
+
+    /**
+     * Destroys this driver.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     * @throws CmsException if something else goes wrong
+     */
+    void destroy() throws Throwable, CmsException;
+
+    /**
+     * Ends a task from the Cms.<p>
+     *
+     * @param taskId Id of the task to end
+     * @throws CmsException if something goes wrong
+     */
+    void endTask(int taskId) throws CmsException;
 
     /**
      * Finds an agent for a given role (group).
@@ -88,6 +96,17 @@ public interface I_CmsWorkflowDriver {
      * @throws CmsException Throws CmsException if something goes wrong.
      */
     CmsUUID findAgent(CmsUUID roleId) throws CmsException;
+
+    /**
+     * Forwards a task to another user.
+     *
+     * @param taskId The id of the task that will be fowarded.
+     * @param newRoleId The new Group the task belongs to
+     * @param newUserId User who gets the task.
+     *
+     * @throws CmsException Throws CmsException if something goes wrong.
+     */
+    void forwardTask(int taskId, CmsUUID newRoleId, CmsUUID newUserId) throws CmsException;
 
     /**
      * Get a parameter value for a task.<p>
@@ -109,7 +128,7 @@ public interface I_CmsWorkflowDriver {
      * @throws CmsException Throws CmsException if something goes wrong.
      */
     int getTaskType(String taskName) throws CmsException;
-    
+
     /**
      * Initializes the SQL manager for this driver.<p>
      *  
@@ -121,37 +140,36 @@ public interface I_CmsWorkflowDriver {
      * @see org.opencms.db.generic.CmsSqlManager#setOfflinePoolUrl(String)
      * @see org.opencms.db.generic.CmsSqlManager#setOnlinePoolUrl(String)
      * @see org.opencms.db.generic.CmsSqlManager#setBackupPoolUrl(String)
-     */    
+     */
     org.opencms.db.generic.CmsSqlManager initQueries();
-    
-    
+
     /**
      * Reads a task.<p>
      *
      * @param id the id of the task to read
      * @return a task object or null if the task is not found
      * @throws CmsException if something goes wrong
-     */    
+     */
     CmsTask readTask(int id) throws CmsException;
-    
+
     /**
      * Reads a log for a task.<p>
      *
      * @param id The id for the tasklog .
      * @return a new TaskLog object
      * @throws CmsException Throws CmsException if something goes wrong.
-     */    
+     */
     CmsTaskLog readTaskLog(int id) throws CmsException;
-    
+
     /**
      * Reads log entries for a task.<p>
      *
      * @param taskId the ID of the task for the tasklog to read
      * @return A Vector of new TaskLog objects
      * @throws CmsException Throws CmsException if something goes wrong.
-     */    
+     */
     Vector readTaskLogs(int taskId) throws CmsException;
-    
+
     /**
      * Reads all tasks of a user in a project.<p>
      * 
@@ -164,7 +182,7 @@ public interface I_CmsWorkflowDriver {
      * @param sort select to sort ascending or descending ("ASC" or "DESC")
      * @return a vector with the tasks read
      * @throws CmsException if something goes wrong.
-     */    
+     */
     Vector readTasks(CmsProject project, CmsUser agent, CmsUser owner, CmsGroup role, int tasktype, String orderBy, String sort) throws CmsException;
 
     /**
@@ -188,14 +206,14 @@ public interface I_CmsWorkflowDriver {
      * @throws CmsException if something goes wrong
      */
     void writeSystemTaskLog(int taskid, String comment) throws CmsException;
-    
+
     /**
      * Writes a task.<p>
      *
      * @param task the task to write
      * @return written task object
      * @throws CmsException if something goes wrong
-     */    
+     */
     CmsTask writeTask(CmsTask task) throws CmsException;
 
     /**
@@ -208,7 +226,7 @@ public interface I_CmsWorkflowDriver {
      * @param type Type of the log. 0 = Sytem log, 1 = User Log
      *
      * @throws CmsException Throws CmsException if something goes wrong.
-     */    
+     */
     void writeTaskLog(int taskId, CmsUUID userId, java.sql.Timestamp starttime, String comment, int type) throws CmsException;
 
     /**
@@ -226,4 +244,5 @@ public interface I_CmsWorkflowDriver {
      * @throws CmsException Throws CmsException if something goes wrong.
      */
     int writeTaskType(int autofinish, int escalationtyperef, String htmllink, String name, String permission, int priorityref, int roleref) throws CmsException;
+
 }

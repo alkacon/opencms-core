@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2003/09/15 10:51:13 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2003/09/15 15:06:16 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,11 +52,11 @@ import java.util.Vector;
  * Definitions of all required project driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.20 $ $Date: 2003/09/15 10:51:13 $
+ * @version $Revision: 1.21 $ $Date: 2003/09/15 15:06:16 $
  * @since 5.1
  */
 public interface I_CmsProjectDriver {
-    
+
     /**
      * Creates a serializable object in the systempropertys.
      *
@@ -64,7 +64,7 @@ public interface I_CmsProjectDriver {
      * @param object The property-object.
      * @return object The property-object.
      * @throws CmsException Throws CmsException if something goes wrong.
-     */    
+     */
     Serializable addSystemProperty(String name, Serializable object) throws CmsException;
 
     /**
@@ -73,7 +73,7 @@ public interface I_CmsProjectDriver {
      * @param pageId The resourceId (offline) of the page whose liks should be traced
      * @param linkTargets A vector of strings (the linkdestinations)
      * @throws CmsException if something goes wrong  
-     */    
+     */
     void createLinkEntrys(CmsUUID pageId, Vector linkTargets) throws CmsException;
 
     /**
@@ -100,7 +100,17 @@ public interface I_CmsProjectDriver {
     * @throws CmsException Throws CmsException if something goes wrong
     */
     CmsProject createProject(CmsUser owner, CmsGroup group, CmsGroup managergroup, CmsTask task, String name, String description, int flags, int type) throws CmsException;
-    
+    /**
+     * Creates a new projectResource from a given CmsResource object.
+     *
+     * @param projectId The project in which the resource will be used.
+     * @param resourceName The resource to be written to the Cms.
+     *
+     *
+     * @throws CmsException Throws CmsException if operation was not succesful
+     */
+    void createProjectResource(int projectId, String resourceName) throws CmsException;
+
     /**
      * This method creates a new session in the database. It is used
      * for sessionfailover.
@@ -108,7 +118,7 @@ public interface I_CmsProjectDriver {
      * @param sessionId the id of the session
      * @param data the sessionData
      * @throws CmsException if something goes wrong
-     */    
+     */
     void createSession(String sessionId, Hashtable data) throws CmsException;
 
     /**
@@ -116,7 +126,7 @@ public interface I_CmsProjectDriver {
      *
      * @param projectId The project in which the resource is used
      * @throws CmsException Throws CmsException if operation was not succesful
-     */    
+     */
     void deleteAllProjectResources(int projectId) throws CmsException;
 
     /**
@@ -143,13 +153,13 @@ public interface I_CmsProjectDriver {
      * @throws CmsException Throws CmsException if something goes wrong.
      */
     void deleteProject(CmsProject project) throws CmsException;
-    
+
     /**
      * Deletes all properties for a project.<p>
      *
      * @param project the project where all properties should be deleted
      * @throws CmsException if operation was not successful
-     */    
+     */
     void deleteProjectProperties(CmsProject project) throws CmsException;
 
     /**
@@ -158,7 +168,7 @@ public interface I_CmsProjectDriver {
      * @param projectId id of the project in which the resource is used
      * @param resourceName name of the resource to be deleted from the Cms
      * @throws CmsException if something goes wrong
-     */    
+     */
     void deleteProjectResource(int projectId, String resourceName) throws CmsException;
 
     /**
@@ -182,21 +192,13 @@ public interface I_CmsProjectDriver {
      * @throws CmsException Throws CmsException if something goes wrong.
      */
     void deleteSystemProperty(String name) throws CmsException;
-    
+
     /**
      * Destroys this driver.<p>
      * 
      * @throws Throwable if something goes wrong.
-     */      
+     */
     void destroy() throws Throwable;
-
-    /**
-     * Ends a task from the Cms.<p>
-     *
-     * @param taskId Id of the task to end
-     * @throws CmsException if something goes wrong
-     */    
-    void endTask(int taskId) throws CmsException;
 
     /**
      * Method to init all default-resources.<p>
@@ -204,17 +206,6 @@ public interface I_CmsProjectDriver {
      * @throws CmsException if something goes wrong
      */
     void fillDefaults() throws CmsException;
-
-    /**
-     * Forwards a task to another user.
-     *
-     * @param taskId The id of the task that will be fowarded.
-     * @param newRoleId The new Group the task belongs to
-     * @param newUserId User who gets the task.
-     *
-     * @throws CmsException Throws CmsException if something goes wrong.
-     */
-    void forwardTask(int taskId, CmsUUID newRoleId, CmsUUID newUserId) throws CmsException;
 
     /**
      * Returns all projects, which are accessible by a group.<p>
@@ -285,7 +276,7 @@ public interface I_CmsProjectDriver {
      * @throws CmsException Throws CmsException if the resource is not found, or the database communication went wrong.
      */
     CmsProject getOnlineProject() throws CmsException;
-    
+
     /**
      * Initializes the SQL manager for this driver.<p>
      * 
@@ -296,8 +287,36 @@ public interface I_CmsProjectDriver {
      * @see org.opencms.db.generic.CmsSqlManager#setOfflinePoolUrl(String)
      * @see org.opencms.db.generic.CmsSqlManager#setOnlinePoolUrl(String)
      * @see org.opencms.db.generic.CmsSqlManager#setBackupPoolUrl(String)
-     */   
+     */
     org.opencms.db.generic.CmsSqlManager initQueries();
+
+    /**
+     * Returns the next version number of the publish history.<p>
+     * @return a new version number greater than the last used version number 
+     * @throws CmsException if something goes wrong
+     */
+    int nextPublishVersionId() throws CmsException;
+
+    /**
+     * Publishes a deleted folder.<p>
+     * 
+     * @throws CmsException
+     */
+    void publishDeletedFolder(CmsRequestContext context, I_CmsReport report, int m, int n, CmsProject onlineProject, CmsFolder offlineFolder, boolean backupEnabled, long publishDate, int publishHistoryId, int backupTagId, int maxVersions) throws Exception;
+
+    /**
+     * Publishes a new, changed or deleted file.<p>
+     * 
+     * @throws CmsException
+     */
+    public void publishFile(CmsRequestContext context, I_CmsReport report, int m, int n, CmsProject onlineProject, CmsResource offlineResource, boolean backupEnabled, long publishDate, int publishHistoryId, int backupTagId, int maxVersions) throws Exception;
+
+    /**
+     * Publishes a new or changed folder.<p>
+     * 
+     * @throws CmsException
+     */
+    void publishFolder(CmsRequestContext context, I_CmsReport report, int m, int n, CmsProject onlineProject, CmsFolder currentFolder, boolean backupEnabled, long publishDate, int publishHistoryId, int backupTagId, int maxVersions) throws Exception;
 
     /**
      * Publishes a specified project to the online project.<p>
@@ -312,7 +331,7 @@ public interface I_CmsProjectDriver {
      * @param maxVersions maximum number of backup versions
      * @return a vector of changed or deleted resources
      * @throws CmsException if something goes wrong
-     */    
+     */
     Vector publishProject(CmsRequestContext context, CmsProject onlineProject, boolean backupEnabled, int backupTagId, I_CmsReport report, Hashtable exportpoints, CmsResource directPublishResource, int maxVersions) throws Exception;
 
     /**
@@ -361,15 +380,33 @@ public interface I_CmsProjectDriver {
      * @throws CmsException if something goes wrong
      */
     CmsProject readProject(int id) throws CmsException;
-    
+
     /**
      * Reads log entries for a project.<p>
      *
      * @param projectid the ID of the current project
      * @return A Vector of new TaskLog objects
      * @throws CmsException if something goes wrong
-     */    
+     */
     Vector readProjectLogs(int projectid) throws CmsException;
+    /**
+     * Reads the project resource path for a given project and resource path,
+     * to validate if a resource path for a given project already exists.<p>
+     * 
+     * @param projectId the ID of the project for which the resource path is read
+     * @param resourcename the project's resource path
+     * @return String the project's resource path
+     * @throws CmsException if something goes wrong
+     */
+    String readProjectResource(int projectId, String resourcename) throws CmsException;
+    /**
+     * Reads the project resources for a specified project.<p>
+     * 
+     * @param project the project for which the resource path is read
+     * @return the project's resource path
+     * @throws CmsException if something goes wrong
+     */
+    List readProjectResources(CmsProject project) throws CmsException;
 
     /**
      * Reads all resource from the Cms, that are in one project.<BR/>
@@ -379,7 +416,7 @@ public interface I_CmsProjectDriver {
      * @param filter The filter for the resources to be read
      * @return A Vecor of resources.
      * @throws CmsException Throws CmsException if operation was not succesful
-     */    
+     */
     List readProjectView(int project, String filter) throws CmsException;
 
     /**
@@ -419,7 +456,7 @@ public interface I_CmsProjectDriver {
      * @throws CmsException if something goes wrong
      */
     void updateOnlineProjectLinks(Vector deleted, Vector changed, Vector newRes, int pageType) throws CmsException;
-    
+
     /**
      * This method updates a session in the database. It is used
      * for sessionfailover.
@@ -428,7 +465,7 @@ public interface I_CmsProjectDriver {
      * @param data the sessionData
      * @return the number of affected sessions (should be 1 for an existing session)
      * @throws CmsException if something goes wrong
-     */    
+     */
     int updateSession(String sessionId, Hashtable data) throws CmsException;
 
     /**
@@ -437,19 +474,9 @@ public interface I_CmsProjectDriver {
      *
      * @param project the project to delete.
      * @throws CmsException Throws CmsException if something goes wrong.
-     */   
+     */
     void writeProject(CmsProject project) throws CmsException;
-    
-    /**
-     * Writes a serializable object to the systemproperties.
-     *
-     * @param name The name of the property.
-     * @param object The property-object.
-     * @return object The property-object.
-     * @throws CmsException Throws CmsException if something goes wrong.
-     */    
-    Serializable writeSystemProperty(String name, Serializable object) throws CmsException;
-    
+
     /**
      * Inserts an entry in the publish history for a published resource.<p>
      * 
@@ -461,33 +488,15 @@ public interface I_CmsProjectDriver {
      * @throws CmsException if something goes wrong
      */
     void writePublishHistory(CmsProject currentProject, int publishId, int tagId, String resourcename, CmsResource resource) throws CmsException;
-    
-    /**
-     * Returns the next version number of the publish history.<p>
-     * @return a new version number greater than the last used version number 
-     * @throws CmsException if something goes wrong
-     */
-    int nextPublishVersionId() throws CmsException;
-    
-    /**
-     * Publishes a new or changed folder.<p>
-     * 
-     * @throws CmsException
-     */
-    void publishFolder(CmsRequestContext context, I_CmsReport report, int m, int n, CmsProject onlineProject, CmsFolder currentFolder, boolean backupEnabled, long publishDate, int publishHistoryId, int backupTagId, int maxVersions) throws Exception;
 
     /**
-     * Publishes a deleted folder.<p>
-     * 
-     * @throws CmsException
+     * Writes a serializable object to the systemproperties.
+     *
+     * @param name The name of the property.
+     * @param object The property-object.
+     * @return object The property-object.
+     * @throws CmsException Throws CmsException if something goes wrong.
      */
-    void publishDeletedFolder(CmsRequestContext context, I_CmsReport report, int m, int n, CmsProject onlineProject, CmsFolder offlineFolder, boolean backupEnabled, long publishDate, int publishHistoryId, int backupTagId, int maxVersions) throws Exception;
+    Serializable writeSystemProperty(String name, Serializable object) throws CmsException;
 
-    /**
-     * Publishes a new, changed or deleted file.<p>
-     * 
-     * @throws CmsException
-     */
-    public void publishFile(CmsRequestContext context, I_CmsReport report, int m, int n, CmsProject onlineProject, CmsResource offlineResource, boolean backupEnabled, long publishDate, int publishHistoryId, int backupTagId, int maxVersions) throws Exception;
-        
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/09/15 10:51:15 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/09/15 15:06:16 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Vector;
  * MySQL implementation of the backup driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.7 $ $Date: 2003/09/15 10:51:15 $
+ * @version $Revision: 1.8 $ $Date: 2003/09/15 15:06:16 $
  * @since 5.1
  */
 public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {       
@@ -68,7 +68,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
             stmt.setInt(1, 300);
             res = stmt.executeQuery();
             while (res.next()) {
-                Vector resources = m_driverManager.getVfsDriver().readBackupProjectResources(res.getInt("VERSION_ID"));
+                Vector resources = m_driverManager.getBackupDriver().readBackupProjectResources(res.getInt("VERSION_ID"));
                 projects.addElement(
                     new CmsBackupProject(
                         res.getInt("VERSION_ID"),

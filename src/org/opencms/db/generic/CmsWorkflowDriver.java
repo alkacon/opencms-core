@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Attic/CmsWorkflowDriver.java,v $
- * Date   : $Date: 2003/09/15 10:51:14 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2003/09/15 15:06:15 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the workflow driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.13 $ $Date: 2003/09/15 10:51:14 $
+ * @version $Revision: 1.14 $ $Date: 2003/09/15 15:06:15 $
  * @since 5.1
  */
 public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkflowDriver {
@@ -85,9 +85,9 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
      * Table-key for max-id
      */
     protected static String C_TABLE_TASKTYPE = "CMS_TASKTYPE";
+    protected CmsDriverManager m_driverManager;
 
     protected org.opencms.db.generic.CmsSqlManager m_sqlManager;
-    protected CmsDriverManager m_driverManager;
 
     /**
      * Creates a new task.<p>
@@ -167,6 +167,50 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
     }
 
     /**
+     * @see org.opencms.db.I_CmsWorkflowDriver#destroy()
+     */
+    public void destroy() throws Throwable {
+        finalize();
+
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[" + this.getClass().getName() + "] destroyed!");
+        }
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsWorkflowDriver#endTask(int)
+     */
+    public void endTask(int taskId) throws CmsException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_TASK_END");
+            stmt.setInt(1, 100);
+            stmt.setTimestamp(2, new java.sql.Timestamp(System.currentTimeMillis()));
+            stmt.setInt(3, taskId);
+            stmt.executeUpdate();
+
+        } catch (SQLException exc) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, null);
+        }
+    }
+
+    /**
+     * @see java.lang.Object#finalize()
+     */
+    protected void finalize() throws Throwable {
+        if (m_sqlManager != null) {
+            m_sqlManager.finalize();
+        }
+
+        m_sqlManager = null;
+        m_driverManager = null;
+    }
+
+    /**
      * Finds an agent for a given role (group).
      * @param roleId The Id for the role (group).
      *
@@ -197,6 +241,27 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
             m_sqlManager.closeAll(conn, stmt, res);
         }
         return result;
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsWorkflowDriver#forwardTask(int, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID)
+     */
+    public void forwardTask(int taskId, CmsUUID newRoleId, CmsUUID newUserId) throws CmsException {
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_TASK_FORWARD");
+            stmt.setString(1, newRoleId.toString());
+            stmt.setString(2, newUserId.toString());
+            stmt.setInt(3, taskId);
+            stmt.executeUpdate();
+        } catch (SQLException exc) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, null);
+        }
     }
     /**
      * Get a parameter value for a task.<p>
@@ -263,7 +328,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
         }
         return result;
     }
-    
+
     /**
      * Constructs a sql condition for the given task type.<p>
      * 
@@ -281,53 +346,30 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
 
         switch (tasktype) {
             case I_CmsConstants.C_TASKS_ALL :
-                    result = result + m_sqlManager.get("C_TASK_ROOT") + "<>0";
-                    break;
+                result = result + m_sqlManager.get("C_TASK_ROOT") + "<>0";
+                break;
 
             case I_CmsConstants.C_TASKS_OPEN :
-                    result = result + m_sqlManager.get("C_TASK_STATE") + "=" + I_CmsConstants.C_TASK_STATE_STARTED;
-                    break;
+                result = result + m_sqlManager.get("C_TASK_STATE") + "=" + I_CmsConstants.C_TASK_STATE_STARTED;
+                break;
 
             case I_CmsConstants.C_TASKS_ACTIVE :
-                    result = result + m_sqlManager.get("C_TASK_STATE") + "=" + I_CmsConstants.C_TASK_STATE_STARTED;
-                    break;
+                result = result + m_sqlManager.get("C_TASK_STATE") + "=" + I_CmsConstants.C_TASK_STATE_STARTED;
+                break;
 
             case I_CmsConstants.C_TASKS_DONE :
-                    result = result + m_sqlManager.get("C_TASK_STATE") + "=" + I_CmsConstants.C_TASK_STATE_ENDED;
-                    break;
+                result = result + m_sqlManager.get("C_TASK_STATE") + "=" + I_CmsConstants.C_TASK_STATE_ENDED;
+                break;
 
             case I_CmsConstants.C_TASKS_NEW :
-                    result = result + m_sqlManager.get("C_TASK_PERCENTAGE") + "='0' AND " + m_sqlManager.get("C_TASK_STATE") + "=" + I_CmsConstants.C_TASK_STATE_STARTED;
-                    break;
+                result = result + m_sqlManager.get("C_TASK_PERCENTAGE") + "='0' AND " + m_sqlManager.get("C_TASK_STATE") + "=" + I_CmsConstants.C_TASK_STATE_STARTED;
+                break;
 
             default :
-        }
+                }
 
         return result;
     }
-    
-    /**
-     * @see java.lang.Object#finalize()
-     */
-    protected void finalize() throws Throwable {
-        if (m_sqlManager!=null) {
-            m_sqlManager.finalize();
-        }
-        
-        m_sqlManager = null;      
-        m_driverManager = null;        
-    }
-    
-    /**
-     * @see org.opencms.db.I_CmsWorkflowDriver#destroy()
-     */
-    public void destroy() throws Throwable {
-        finalize();
-                
-        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
-            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[" + this.getClass().getName() + "] destroyed!");
-        }
-    }    
 
     /**
      * @see org.opencms.db.I_CmsDriver#init(source.org.apache.java.util.Configurations, java.util.List, org.opencms.db.CmsDriverManager)
@@ -338,21 +380,21 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
         m_sqlManager = this.initQueries();
         m_sqlManager.setOfflinePoolUrl(poolUrl);
         m_sqlManager.setOnlinePoolUrl(poolUrl);
-        m_sqlManager.setBackupPoolUrl(poolUrl);          
+        m_sqlManager.setBackupPoolUrl(poolUrl);
 
         m_driverManager = driverManager;
 
         if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
             OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Assigned pool        : " + poolUrl);
         }
-                
+
         if (successiveDrivers != null && !successiveDrivers.isEmpty()) {
             if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
                 OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, this.getClass().toString() + " does not support successive drivers.");
             }
         }
     }
-           
+
     /**
      * @see org.opencms.db.I_CmsWorkflowDriver#initQueries(java.lang.String)
      */
@@ -712,7 +754,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
             m_sqlManager.closeAll(conn, stmt, null);
         }
     }
-    
+
     /**
      * Updates a task.<p>
      * 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/09/15 10:51:13 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2003/09/15 15:06:16 $
+ * Version: $Revision: 1.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,22 +52,11 @@ import java.util.Vector;
  * Definitions of all required VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.54 $ $Date: 2003/09/15 10:51:13 $
+ * @version $Revision: 1.55 $ $Date: 2003/09/15 15:06:16 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
 
-    /**
-     * Semi-constructor to create a CmsResource instance from a JDBC result set.<p>
-     * 
-     * @param res the JDBC ResultSet
-     * @param projectId the ID of the current project to adjust the modification date in case the resource is a VFS link
-     * @return CmsResource the new CmsResource object
-     * @throws SQLException in case the result set does not include a requested table attribute
-     * @throws CmsException if the CmsFile object cannot be created by its constructor
-     */    
-    CmsResource createCmsResourceFromResultSet(ResultSet res, int projectId) throws SQLException, CmsException;
-    
     /**
      * Semi-constructor to create a CmsResource instance from a JDBC result set.<p>
      * 
@@ -77,7 +66,18 @@ public interface I_CmsVfsDriver {
      * @return CmsFolder the new CmsFolder
      * @throws SQLException in case the result set does not include a requested table attribute
      */
-    CmsFolder createCmsFolderFromResultSet(ResultSet res, int projectId, boolean hasProjectIdInResultSet) throws SQLException;    
+    CmsFolder createCmsFolderFromResultSet(ResultSet res, int projectId, boolean hasProjectIdInResultSet) throws SQLException;
+
+    /**
+     * Semi-constructor to create a CmsResource instance from a JDBC result set.<p>
+     * 
+     * @param res the JDBC ResultSet
+     * @param projectId the ID of the current project to adjust the modification date in case the resource is a VFS link
+     * @return CmsResource the new CmsResource object
+     * @throws SQLException in case the result set does not include a requested table attribute
+     * @throws CmsException if the CmsFile object cannot be created by its constructor
+     */
+    CmsResource createCmsResourceFromResultSet(ResultSet res, int projectId) throws SQLException, CmsException;
 
     /**
      * Creates a new file from an given CmsFile object and a new filename.
@@ -93,7 +93,7 @@ public interface I_CmsVfsDriver {
      * @throws CmsException Throws CmsException if operation was not succesful
      */
     CmsFile createFile(CmsProject project, CmsFile file, CmsUUID userId, CmsUUID parentId, String filename) throws CmsException;
-    
+
     /**
      * Creates a new file with the given content and resourcetype.<p>
      *
@@ -106,9 +106,9 @@ public interface I_CmsVfsDriver {
      * @param resourceType The resourceType of the new file
      * @return file The created file.
      * @throws CmsException if operation was not successful
-     */    
+     */
     CmsFile createFile(CmsUser user, CmsProject project, String filename, int flags, CmsFolder parentFolder, byte[] contents, I_CmsResourceType resourceType) throws CmsException;
-    
+
     /**
      * Writes the content of a file.
      * 
@@ -118,21 +118,8 @@ public interface I_CmsVfsDriver {
      * @param projectId the ID of the current project
      * @param writeBackup true if the content should be written to the backup table
      * @throws CmsException if somethong goes wrong
-     */    
-    void createFileContent(CmsUUID fileId, byte[] fileContent, int versionId, int projectId, boolean writeBackup) throws CmsException;
-
-    /**
-     * Creates a new link from an given CmsResource object and a new filename.<p>
-     * 
-     * @param project the project where to create the link
-     * @param resource the link prototype
-     * @param userId the id of the user creating the link
-     * @param parentId the id of the folder where the link is created
-     * @param filename the name of the link
-     * @return a valid link resource
-     * @throws CmsException if something goes wrong
      */
-    CmsResource createVfsLink(CmsProject project, CmsResource resource, CmsUUID userId, CmsUUID parentId, String filename) throws CmsException;
+    void createFileContent(CmsUUID fileId, byte[] fileContent, int versionId, int projectId, boolean writeBackup) throws CmsException;
 
     /**
      * Creates a new folder from an existing folder object.
@@ -146,7 +133,7 @@ public interface I_CmsVfsDriver {
      *
      * @return The created folder.
      * @throws CmsException Throws CmsException if operation was not succesful.
-     */    
+     */
     CmsFolder createFolder(CmsProject project, CmsFolder folder, CmsUUID parentId) throws CmsException;
 
     /**
@@ -169,17 +156,6 @@ public interface I_CmsVfsDriver {
     CmsFolder createFolder(CmsProject project, CmsUUID parentId, CmsUUID fileId, String folderName, int flags, long dateLastModified, CmsUUID userLastModified, long dateCreated, CmsUUID userCreated) throws CmsException;
 
     /**
-     * Creates a new projectResource from a given CmsResource object.
-     *
-     * @param projectId The project in which the resource will be used.
-     * @param resourceName The resource to be written to the Cms.
-     *
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-    void createProjectResource(int projectId, String resourceName) throws CmsException;
-
-    /**
      * Creates the propertydefinitions for the resource type.<BR/>
      *
      * Only the admin can do this.
@@ -194,20 +170,17 @@ public interface I_CmsVfsDriver {
     CmsPropertydefinition createPropertydefinition(String name, int projectId, int resourcetype) throws CmsException;
 
     /**
-     * Creates a new resource from an given CmsResource object.
-     *
-     * @param project The project in which the resource will be used.
-     * @param newResource The resource to be written to the Cms.
-     * @param filecontent The filecontent if the resource is a file
-     * @param userId The ID of the current user.
-     * @param parentId The parentId of the resource.
-     * @param isFolder true to create a new folder
-     *
-     * @return resource The created resource.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
+     * Creates a new link from an given CmsResource object and a new filename.<p>
+     * 
+     * @param project the project where to create the link
+     * @param resource the link prototype
+     * @param userId the id of the user creating the link
+     * @param parentId the id of the folder where the link is created
+     * @param filename the name of the link
+     * @return a valid link resource
+     * @throws CmsException if something goes wrong
      */
-    CmsResource importResource(CmsProject project, CmsUUID parentId, CmsResource newResource, byte[] filecontent, CmsUUID userId, boolean isFolder) throws CmsException;
+    CmsResource createVfsLink(CmsProject project, CmsResource resource, CmsUUID userId, CmsUUID parentId, String filename) throws CmsException;
 
     /**
      * Deletes all properties for a file or folder.
@@ -218,7 +191,7 @@ public interface I_CmsVfsDriver {
      * @throws CmsException Throws CmsException if operation was not succesful
      */
     void deleteAllProperties(int projectId, CmsResource resource) throws CmsException;
- 
+
     /**
      * Tags a resource as deleted without removing it physically in the database.<p>
      * 
@@ -237,7 +210,7 @@ public interface I_CmsVfsDriver {
      * @param orgFolder The folder that will be deleted.
      *
      * @throws CmsException Throws CmsException if operation was not succesful.
-     */    
+     */
     void deleteFolder(CmsProject currentProject, CmsFolder orgFolder) throws CmsException;
 
     /**
@@ -262,14 +235,24 @@ public interface I_CmsVfsDriver {
      * @throws CmsException Throws CmsException if something goes wrong.
      */
     void deletePropertydefinition(CmsPropertydefinition metadef) throws CmsException;
-    
+
     /**
      * Destroys this driver.<p>
      * 
      * @throws Throwable if something goes wrong
-     */      
-    void destroy() throws Throwable;   
-    
+     */
+    void destroy() throws Throwable;
+
+    /**
+     * Proves if the specified content ID in the tables of the specified project {offline|online} exists.<p>
+     * 
+     * @param projectId the ID of current project
+     * @param contentId
+     * @return true, if the specified content ID in the tables of the specified project {offline|online} exists
+     * @throws CmsException if something goes wrong
+     */
+    boolean existsContentId(int projectId, CmsUUID contentId) throws CmsException;
+
     /**
      * Tests if a resource with the given resourceId does already exist in the database.<p>
      * 
@@ -278,8 +261,8 @@ public interface I_CmsVfsDriver {
      * @return true if a resource with the given id was found, false otherweise
      * @throws CmsException if something goes wrong
      */
-    boolean existsResourceId(int projectId, CmsUUID resourceId) throws CmsException;  
-    
+    boolean existsResourceId(int projectId, CmsUUID resourceId) throws CmsException;
+
     /**
      * Proves if the specified structure ID in the tables of the specified project {offline|online} exists.<p>
      * 
@@ -287,9 +270,9 @@ public interface I_CmsVfsDriver {
      * @param structureId
      * @return true, if the specified structure ID in the tables of the specified project {offline|online} exists
      * @throws CmsException if something goes wrong
-     */   
-    boolean existsStructureId(int projectId, CmsUUID structureId) throws CmsException;      
-    
+     */
+    boolean existsStructureId(int projectId, CmsUUID structureId) throws CmsException;
+
     /**
      * Gets a list of all hard and soft links pointing to the content of a resource.<p>
      * 
@@ -299,7 +282,7 @@ public interface I_CmsVfsDriver {
      * @throws CmsException if something goes wrong
      */
     List getAllVfsLinks(CmsProject currentProject, CmsResource resource) throws CmsException;
-    
+
     /**
      * Gets a list of all soft links pointing to the content of a resource, excluding it's
      * hard link, and excluding the resource itself in case it is a soft link.<p>
@@ -308,7 +291,7 @@ public interface I_CmsVfsDriver {
      * @param resource the resource
      * @return the list of siblings
      * @throws CmsException if something goes wrong
-     */    
+     */
     List getAllVfsSoftLinks(CmsProject currentProject, CmsResource resource) throws CmsException;
 
     /**
@@ -322,7 +305,7 @@ public interface I_CmsVfsDriver {
      * @throws CmsException Throws CmsException if operation was not succesful.
      */
     Vector getFilesWithProperty(int projectId, String propertyDefinition, String propertyValue) throws CmsException;
-    
+
     /**
      * Builds a DFS list view of all folders in the VFS.
      * 
@@ -344,6 +327,17 @@ public interface I_CmsVfsDriver {
      * @throws CmsException if operation was not succesful
      */
     Vector getResourcesInFolder(int projectId, CmsFolder offlineResource) throws CmsException;
+
+    /**
+     * Gets all resources with a modification date within a given time frame.<p>
+     * 
+     * @param currentProject the current project
+     * @param starttime the begin of the time range
+     * @param endtime the end of the time range
+     * @return List with all resources
+     * @throws CmsException if operation was not succesful 
+     */
+    List getResourcesInTimeRange(int currentProject, long starttime, long endtime) throws CmsException;
 
     /**
      * Returns a Vector with all resources of the given type
@@ -375,12 +369,40 @@ public interface I_CmsVfsDriver {
     Vector getResourcesWithProperty(int projectId, String propertyDefinition, String propertyValue, int resourceType) throws CmsException;
 
     /**
+     * Gets all sub folders or sub files in a given parent folder.<p>
+     * 
+     * @param currentUser the current user
+     * @param currentProject the current project
+     * @param parentFolder the parent folder
+     * @param getSubFolders true if the sub folders of the parent folder are requested, false if the sub files are requested
+     * @return a list of all sub folders or sub files
+     * @throws CmsException if something goes wrong
+     */
+    List getSubResources(CmsProject currentProject, CmsFolder parentFolder, boolean getSubFolders) throws CmsException;
+
+    /**
      * Gets all resources that are marked as undeleted.
      * @param resources Vector of resources
      * @return Returns all resources that are markes as deleted
      */
     List getUndeletedResources(List resources);
-    
+
+    /**
+     * Creates a new resource from an given CmsResource object.
+     *
+     * @param project The project in which the resource will be used.
+     * @param newResource The resource to be written to the Cms.
+     * @param filecontent The filecontent if the resource is a file
+     * @param userId The ID of the current user.
+     * @param parentId The parentId of the resource.
+     * @param isFolder true to create a new folder
+     *
+     * @return resource The created resource.
+     *
+     * @throws CmsException Throws CmsException if operation was not succesful
+     */
+    CmsResource importResource(CmsProject project, CmsUUID parentId, CmsResource newResource, byte[] filecontent, CmsUUID userId, boolean isFolder) throws CmsException;
+
     /**
      * Initializes the SQL manager for this driver.<p>
      * 
@@ -395,6 +417,18 @@ public interface I_CmsVfsDriver {
     org.opencms.db.generic.CmsSqlManager initQueries();
 
     /**
+     * Moves a resource to a new destination folder.<p>
+     * 
+     * @param currentUser the current user
+     * @param currentProject the current project
+     * @param resource the resource that is moved
+     * @param destinationFolder the destination folder where the resource is moved
+     * @throws CmsException if something goes wrong
+     * @return the number of affected resources (should be 1 in a consistent database)
+     */
+    void moveResource(CmsUser currentUser, CmsProject currentProject, CmsResource resource, CmsResource destinationFolder, String resourceName) throws CmsException;
+
+    /**
      * Reads all propertydefinitions for the given resource type.
      *
      * @param projectId the id of the project
@@ -404,7 +438,7 @@ public interface I_CmsVfsDriver {
      * The Vector is maybe empty.
      *
      * @throws CmsException Throws CmsException if something goes wrong.
-     */    
+     */
     Vector readAllPropertydefinitions(int projectId, I_CmsResourceType resourcetype) throws CmsException;
 
     /**
@@ -421,16 +455,6 @@ public interface I_CmsVfsDriver {
     Vector readAllPropertydefinitions(int projectId, int resourcetype) throws CmsException;
 
     /**
-     * Reads resources with a given version id.<p>
-     *
-     * @param versionId the version id to lookup
-     * @return the list of resources with the given version id
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-    Vector readBackupProjectResources(int versionId) throws CmsException;
-    
-    /**
      * Reads a file.<p>
      * 
      * @param projectId the ID of the current project
@@ -438,9 +462,9 @@ public interface I_CmsVfsDriver {
      * @param resourceId the id of the file
      * @return CmsFile the file
      * @throws CmsException if something goes wrong
-     */        
+     */
     CmsFile readFile(int projectId, boolean includeDeleted, CmsUUID resourceId) throws CmsException;
-    
+
     /**
      * Reads a file header from the Cms.<BR/>
      * The reading excludes the filecontent.
@@ -481,8 +505,8 @@ public interface I_CmsVfsDriver {
      * @throws CmsException Throws CmsException if operation was not succesful
      */
     List readFiles(int projectId) throws CmsException;
-    
-    Vector readFilesByType(int projectId, int resourcetype) throws CmsException;    
+
+    Vector readFilesByType(int projectId, int resourcetype) throws CmsException;
 
     /**
      * Reads a folder from the Cms.<BR/>
@@ -495,7 +519,7 @@ public interface I_CmsVfsDriver {
      * @throws CmsException Throws CmsException if operation was not succesful.
      */
     CmsFolder readFolder(int projectId, CmsUUID folderId) throws CmsException;
-    
+
     /**
      * Reads a folder from the Cms.<BR/>
      *
@@ -506,38 +530,18 @@ public interface I_CmsVfsDriver {
      * @return The read folder.
      *
      * @throws CmsException Throws CmsException if operation was not succesful.
-     */    
+     */
     CmsFolder readFolder(int projectId, CmsUUID parentId, String filename) throws CmsException;
-    
+
     /**
      * Reads all folders from the Cms, that are in one project.<BR/>
      *
      * @param currentProject The project in which the folders are.
      * @return A Vecor of folders.
      * @throws CmsException Throws CmsException if operation was not succesful
-     */    
+     */
     List readFolders(int projectId) throws CmsException;
-    
-    /**
-     * Reads the project resource path for a given project and resource path,
-     * to validate if a resource path for a given project already exists.<p>
-     * 
-     * @param projectId the ID of the project for which the resource path is read
-     * @param resourcename the project's resource path
-     * @return String the project's resource path
-     * @throws CmsException if something goes wrong
-     */
-    String readProjectResource(int projectId, String resourcename) throws CmsException;
-    
-    /**
-     * Reads the project resources for a specified project.<p>
-     * 
-     * @param project the project for which the resource path is read
-     * @return the project's resource path
-     * @throws CmsException if something goes wrong
-     */
-    List readProjectResources(CmsProject project) throws CmsException;
-    
+
     /**
      * Reads all properties of a resource.<p>
      * 
@@ -548,7 +552,7 @@ public interface I_CmsVfsDriver {
      * @throws CmsException if something goes wrong
      */
     Map readProperties(int projectId, CmsResource resource, int resourceType) throws CmsException;
-    
+
     /**
      * Reads a property of a resource.<p>
      * 
@@ -558,9 +562,9 @@ public interface I_CmsVfsDriver {
      * @param resourceType the type of the resource
      * @return String the value of the property
      * @throws CmsException if something goes wrong
-     */    
+     */
     String readProperty(String meta, int projectId, CmsResource resource, int resourceType) throws CmsException;
-    
+
     /**
      * Reads a propertydefinition for the given resource type.
      *
@@ -577,7 +581,7 @@ public interface I_CmsVfsDriver {
     CmsResource readResource(CmsProject project, CmsUUID parentId, String filename) throws CmsException;
     Vector readResources(CmsProject project) throws CmsException;
     Vector readResourcesLikeName(CmsProject project, String resourcename) throws CmsException;
-    
+
     /**
      * Removes a resource physically in the database.<p>
      * 
@@ -586,7 +590,7 @@ public interface I_CmsVfsDriver {
      * @throws CmsException if something goes wrong
      */
     void removeFile(CmsProject currentProject, CmsResource resource) throws CmsException;
-    
+
     /**
      * Removes a resource physically in the database.<p>
      * 
@@ -597,16 +601,16 @@ public interface I_CmsVfsDriver {
      */
     void removeFile(CmsProject currentProject, CmsUUID parentId, String filename) throws CmsException;
 
-	/**
-	 * Removes a folder and its subfolders physically in the database.<p>
-	 * The contents of the folders must have been already deleted
-	 *
-	 * @param currentProject the current project
-	 * @param folder the folder
-	 * @throws CmsException if something goes wrong
-	 */    
+    /**
+     * Removes a folder and its subfolders physically in the database.<p>
+     * The contents of the folders must have been already deleted
+     *
+     * @param currentProject the current project
+     * @param folder the folder
+     * @throws CmsException if something goes wrong
+     */
     void removeFolder(CmsProject currentProject, CmsFolder folder) throws CmsException;
-    
+
     /**
      * Removes a single folder physically in the database.<p>
      * The folder is removed without deleting its subresources.
@@ -616,106 +620,10 @@ public interface I_CmsVfsDriver {
      * @throws CmsException if something goes wrong
      */
     void removeResource(CmsProject currentProject, CmsResource resource) throws CmsException;
-    
+
     void removeTemporaryFile(CmsResource file) throws CmsException;
     int renameResource(CmsUser currentUser, CmsProject currentProject, CmsResource resource, String newResourceName) throws CmsException;
-    void updateResourceState(CmsProject project, CmsResource resource, int changed) throws CmsException;
-    void writeFile(CmsProject project, CmsFile file, int changed, CmsUUID userId) throws CmsException;
-    
-    /**
-     * Writes the file content of an existing file
-     * 
-     * @param projectId the ID of the current project
-     * @param writeBackup true if the file content should be written to the backup table
-     * @param fileId The ID of the file to update
-     * @param fileContent The new content of the file
-     * @throws CmsException is something goes wrong
-     */    
-    void writeFileContent(CmsUUID fileId, byte[] fileContent, int projectId, boolean writeBackup) throws CmsException;
-    
-    void writeFileHeader(CmsProject project, CmsFile file, int changed, CmsUUID userId) throws CmsException;
-    void writeFolder(CmsProject project, CmsFolder folder, int changed, CmsUUID userId) throws CmsException;
-    void writeProperties(Map propertyinfos, int projectId, CmsResource resource, int resourceType, boolean addDefinition) throws CmsException;
-    
-    /**
-     * Writes a property for a file or folder with
-     * added escaping of property values as MySQL doesn't support Unicode strings
-     *
-     * @param meta The property-name of which the property has to be read
-     * @param projectId the ID of the current project
-     * @param value The value for the property to be set
-     * @param resource The resource
-     * @param resourceType The Type of the resource
-     * @param addDefinition true if a new property definition should be added automatically
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */    
-    void writeProperty(String meta, int projectId, String value, CmsResource resource, int resourceType, boolean addDefinition) throws CmsException;
-    
-    CmsPropertydefinition writePropertydefinition(CmsPropertydefinition metadef) throws CmsException;
-    void writeResource(CmsProject project, CmsResource resource, byte[] filecontent, int changed, CmsUUID userId) throws CmsException;
-    
-    /**
-     * Updates the structure and resource records of an existing offline resource for it's online counterpart.<p>
-     * 
-     * @param onlineResource the online resource
-     * @param offlineResource the offline resource
-     * @throws CmsException if somethong goes wrong
-     */
-    void updateResource(CmsResource onlineResource, CmsResource offlineResource) throws CmsException;
-        
-    /**
-     * Moves a resource to a new destination folder.<p>
-     * 
-     * @param currentUser the current user
-     * @param currentProject the current project
-     * @param resource the resource that is moved
-     * @param destinationFolder the destination folder where the resource is moved
-     * @throws CmsException if something goes wrong
-     * @return the number of affected resources (should be 1 in a consistent database)
-     */
-    void moveResource(CmsUser currentUser, CmsProject currentProject, CmsResource resource, CmsResource destinationFolder, String resourceName) throws CmsException;
-    
-    /**
-     * Gets all sub folders or sub files in a given parent folder.<p>
-     * 
-     * @param currentUser the current user
-     * @param currentProject the current project
-     * @param parentFolder the parent folder
-     * @param getSubFolders true if the sub folders of the parent folder are requested, false if the sub files are requested
-     * @return a list of all sub folders or sub files
-     * @throws CmsException if something goes wrong
-     */
-    List getSubResources(CmsProject currentProject, CmsFolder parentFolder, boolean getSubFolders) throws CmsException;
-    
-    /**
-     * Gets all resources with a modification date within a given time frame.<p>
-     * 
-     * @param currentProject the current project
-     * @param starttime the begin of the time range
-     * @param endtime the end of the time range
-     * @return List with all resources
-     * @throws CmsException if operation was not succesful 
-     */
-    List getResourcesInTimeRange(int currentProject, long starttime, long endtime) throws CmsException;
-    
-    /**
-     * Updates the project ID attrib. of a resource record.<p>
-     * 
-     * @param project the resource record is updated with the ID of this project
-     * @param resource the resource that gets updated
-     * @throws CmsException if something goes wrong
-     */
-    void updateProjectId(CmsProject project, CmsResource resource) throws CmsException;
-    
-    /**
-     * Sets the project ID for a list of resources back to 0 after a project was published.<p>
-     * 
-     * @param currentProject the current project
-     * @param resources the project ID of these resources get set back
-     * @throws CmsException if somethong goes wrong
-     */
-    void resetProjectId(CmsProject currentProject, CmsResource resource) throws CmsException;
-    
+
     /**
      * Replaces the content and properties of an existing resource.<p>
      * 
@@ -728,15 +636,66 @@ public interface I_CmsVfsDriver {
      * @throws CmsException if something goes wrong
      */
     void replaceResource(CmsUser currentUser, CmsProject currentProject, CmsResource res, byte[] newResContent, int newResType, int loaderId) throws CmsException;
-    
+
     /**
-     * Proves if the specified content ID in the tables of the specified project {offline|online} exists.<p>
+     * Sets the project ID for a list of resources back to 0 after a project was published.<p>
      * 
-     * @param projectId the ID of current project
-     * @param contentId
-     * @return true, if the specified content ID in the tables of the specified project {offline|online} exists
+     * @param currentProject the current project
+     * @param resources the project ID of these resources get set back
+     * @throws CmsException if somethong goes wrong
+     */
+    void resetProjectId(CmsProject currentProject, CmsResource resource) throws CmsException;
+
+    /**
+     * Updates the project ID attrib. of a resource record.<p>
+     * 
+     * @param project the resource record is updated with the ID of this project
+     * @param resource the resource that gets updated
      * @throws CmsException if something goes wrong
      */
-    boolean existsContentId(int projectId, CmsUUID contentId) throws CmsException;    
-     
+    void updateProjectId(CmsProject project, CmsResource resource) throws CmsException;
+
+    /**
+     * Updates the structure and resource records of an existing offline resource for it's online counterpart.<p>
+     * 
+     * @param onlineResource the online resource
+     * @param offlineResource the offline resource
+     * @throws CmsException if somethong goes wrong
+     */
+    void updateResource(CmsResource onlineResource, CmsResource offlineResource) throws CmsException;
+    void updateResourceState(CmsProject project, CmsResource resource, int changed) throws CmsException;
+    void writeFile(CmsProject project, CmsFile file, int changed, CmsUUID userId) throws CmsException;
+
+    /**
+     * Writes the file content of an existing file
+     * 
+     * @param projectId the ID of the current project
+     * @param writeBackup true if the file content should be written to the backup table
+     * @param fileId The ID of the file to update
+     * @param fileContent The new content of the file
+     * @throws CmsException is something goes wrong
+     */
+    void writeFileContent(CmsUUID fileId, byte[] fileContent, int projectId, boolean writeBackup) throws CmsException;
+
+    void writeFileHeader(CmsProject project, CmsFile file, int changed, CmsUUID userId) throws CmsException;
+    void writeFolder(CmsProject project, CmsFolder folder, int changed, CmsUUID userId) throws CmsException;
+    void writeProperties(Map propertyinfos, int projectId, CmsResource resource, int resourceType, boolean addDefinition) throws CmsException;
+
+    /**
+     * Writes a property for a file or folder with
+     * added escaping of property values as MySQL doesn't support Unicode strings
+     *
+     * @param meta The property-name of which the property has to be read
+     * @param projectId the ID of the current project
+     * @param value The value for the property to be set
+     * @param resource The resource
+     * @param resourceType The Type of the resource
+     * @param addDefinition true if a new property definition should be added automatically
+     * @throws CmsException Throws CmsException if operation was not succesful
+     */
+    void writeProperty(String meta, int projectId, String value, CmsResource resource, int resourceType, boolean addDefinition) throws CmsException;
+
+    CmsPropertydefinition writePropertydefinition(CmsPropertydefinition metadef) throws CmsException;
+    void writeResource(CmsProject project, CmsResource resource, byte[] filecontent, int changed, CmsUUID userId) throws CmsException;
+
 }

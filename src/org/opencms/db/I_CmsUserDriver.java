@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2003/09/15 10:51:13 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2003/09/15 15:06:16 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.db;
 
 import org.opencms.security.CmsAccessControlEntry;
@@ -46,19 +46,11 @@ import java.util.Vector;
  * Definitions of all required user driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.17 $ $Date: 2003/09/15 10:51:13 $
+ * @version $Revision: 1.18 $ $Date: 2003/09/15 15:06:16 $
  * @since 5.1
  */
 public interface I_CmsUserDriver extends I_CmsDriver {
-    
-    /**
-     * Destroys this driver.<p>
-     * 
-     * @throws Throwable if something goes wrong
-     * @throws CmsException if something else goes wrong
-     */      
-    void destroy() throws Throwable, CmsException;
-    
+
     /**
      * Adds a user to the database.
      *
@@ -81,9 +73,9 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      *
      * @return the created user.
      * @throws CmsException if something goes wrong.
-     */    
+     */
     CmsUser addImportUser(CmsUUID id, String name, String password, String recoveryPassword, String description, String firstname, String lastname, String email, long lastlogin, long lastused, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException;
-    
+
     /**
      * Adds a user to the database.
      *
@@ -104,9 +96,8 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      *
      * @return the created user.
      * @throws CmsException if something goes wrong.
-     */    
+     */
     CmsUser addUser(String name, String password, String description, String firstname, String lastname, String email, long lastlogin, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException;
-
 
     /**
      * Adds a user to a group.<BR/>
@@ -125,9 +116,22 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param userId The id of the user to change
      * @param userType The new usertype of the user
      * @throws CmsException if something goes wrong
-     */ 
+     */
     void changeUserType(CmsUUID userId, int userType) throws CmsException;
-    
+
+    /**
+     * Creates an access control entry.<p>
+     * 
+     * @param project the project to write the entry
+     * @param resource the id of the resource
+     * @param principal the id of the principal (user or group)
+     * @param allowed the bitset of allowed permissions
+     * @param denied the bitset of denied permissions
+     * @param flags flags
+     * @throws CmsException if something goes wrong
+     */
+    void createAccessControlEntry(CmsProject project, CmsUUID resource, CmsUUID principal, int allowed, int denied, int flags) throws CmsException;
+
     /*
     CmsUUID checkGroupDependence(CmsUUID groupId1, CmsUUID groupId2) throws CmsException;
     CmsUUID checkGroupDependence(Vector groups) throws CmsException;
@@ -142,8 +146,27 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param parentGroupName The name of the parent group (or null)
      * @return Group the new group
      * @throws CmsException if operation was not succesfull
-     */    
+     */
     CmsGroup createGroup(CmsUUID groupId, String groupName, String description, int flags, String parentGroupName) throws CmsException;
+
+    /**
+     * Removes an access control entry from the database.<p>
+     * 
+     * @param project the project to write the entry
+     * @param resource the id of the resource
+     * @param principal the id of the principal
+     * @throws CmsException if something goes wrong
+     */
+    //public void deleteAccessControlEntry(CmsProject project, CmsUUID resource, CmsUUID principal) throws CmsException;
+
+    /**
+     * Deletes all access control entries belonging to a resource.<p>
+     * 
+     * @param project the project to write the entry
+     * @param resource the id of the resource
+     * @throws CmsException if something goes wrong
+     */
+    void deleteAllAccessControlEntries(CmsProject project, CmsUUID resource) throws CmsException;
 
     /**
      * Delete a group from the Cms.<BR/>
@@ -153,9 +176,9 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      *
      * @param delgroup The name of the group that is to be deleted.
      * @throws CmsException  Throws CmsException if operation was not succesfull.
-     */    
+     */
     void deleteGroup(String delgroup) throws CmsException;
-    
+
     /**
      * Deletes a user from the database.
      *
@@ -163,23 +186,42 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @throws CmsException if something goes wrong.
      */
     void deleteUser(CmsUUID userId) throws CmsException;
-    
+
     /**
      * Deletes a user from the database.
      *
      * @param userName the user to delete
      * @throws CmsException if something goes wrong.
-     */    
+     */
     void deleteUser(String userName) throws CmsException;
-    
+
+    /**
+     * Destroys this driver.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     * @throws CmsException if something else goes wrong
+     */
+    void destroy() throws Throwable, CmsException;
+
     /**
      * Method to encrypt the passwords.
      *
      * @param value The value to encrypt.
      * @return The encrypted value.
-     */    
+     */
     String digest(String value);
-    
+
+    /**
+     * Reads all relevant access control entries for a given resource.<p>
+     * 
+     * @param project the project to write the entry
+     * @param resource the id of the resource
+     * @param inheritedOnly flag to indicate that only inherited entries should be returned
+     * @return a vector of access control entries defining all permissions for the given resource
+     * @throws CmsException if something goes wrong
+     */
+    Vector getAccessControlEntries(CmsProject project, CmsUUID resource, boolean inheritedOnly) throws CmsException;
+
     /**
      * Returns all child groups of a groups<P/>
      *
@@ -189,7 +231,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @throws CmsException Throws CmsException if operation was not succesful.
      */
     Vector getChild(String groupname) throws CmsException;
-    
+
     /**
      * Returns all groups<P/>
      *
@@ -197,7 +239,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @throws CmsException Throws CmsException if operation was not succesful.
      */
     Vector getGroups() throws CmsException;
-    
+
     /**
      * Returns a list of groups of a user.<P/>
      *
@@ -206,7 +248,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @throws CmsException Throws CmsException if operation was not succesful
      */
     Vector getGroupsOfUser(CmsUUID userId) throws CmsException;
-    
+
     /**
      * Gets all users of a type.
      *
@@ -215,7 +257,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @throws CmsException if something goes wrong
      */
     Vector getUsers(int type) throws CmsException;
-    
+
     /**
      * Gets all users of a type and namefilter.
      *
@@ -250,7 +292,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @throws CmsException if operation was not successful
      */
     Vector getUsersOfGroup(String name, int type) throws CmsException;
-    
+
     /**
      * Initializes the SQL manager for this driver.<p>
      * 
@@ -261,7 +303,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @see org.opencms.db.generic.CmsSqlManager#setOfflinePoolUrl(String)
      * @see org.opencms.db.generic.CmsSqlManager#setOnlinePoolUrl(String)
      * @see org.opencms.db.generic.CmsSqlManager#setBackupPoolUrl(String)
-     */    
+     */
     org.opencms.db.generic.CmsSqlManager initQueries();
 
     /**
@@ -272,8 +314,32 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @return true if user is member of group
      *
      * @throws CmsException Throws CmsException if operation was not succesful
-     */    
+     */
     boolean isUserInGroup(CmsUUID userId, CmsUUID groupId) throws CmsException;
+
+    /**
+     * Publish all access control entries of a resource from the given offline project to the online project.
+     * Within the given project, the resource is identified by its offlineId, in the online project,
+     * it is identified by the given onlineId.
+     * 
+     * @param offlineProject an offline project
+     * @param onlineProject the onlie project
+     * @param offlineId the offline resource id
+     * @param onlineId the online resource id
+     * @throws CmsException if something goes wrong
+     */
+    void publishAccessControlEntries(CmsProject offlineProject, CmsProject onlineProject, CmsUUID offlineId, CmsUUID onlineId) throws CmsException;
+
+    /**
+     * Reads an access control entry from the cms.<p>
+     * 
+     * @param project the project to write the entry
+     * @param resource the id of the resource
+     * @param principal the id of a group or a user any other entity
+     * @return an access control entry that defines the permissions of the entity for the given resource
+     * @throws CmsException if something goes wrong
+     */
+    CmsAccessControlEntry readAccessControlEntry(CmsProject project, CmsUUID resource, CmsUUID principal) throws CmsException;
 
     /**
      * Returns a group object.<P/>
@@ -283,7 +349,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @throws CmsException if operation was not successful
      */
     CmsGroup readGroup(CmsUUID groupId) throws CmsException;
-    
+
     /**
      * Returns a group object.<p>
      * 
@@ -292,7 +358,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @throws CmsException if something goes wrong
      */
     CmsGroup readGroup(String groupName) throws CmsException;
-    
+
     /**
      * Reads a user from the database.<p>
      *
@@ -301,7 +367,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @throws CmsException if something goes wrong.
      */
     CmsUser readUser(CmsUUID id) throws CmsException;
-    
+
     /**
      * Reads a user from the database.<p>
      *
@@ -309,7 +375,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param type the type of the user
      * @return the read user
      * @throws CmsException if something goes wrong.
-     */    
+     */
     CmsUser readUser(String name, int type) throws CmsException;
 
     /**
@@ -322,7 +388,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @throws CmsException if something goes wrong
      */
     CmsUser readUser(String name, String password, int type) throws CmsException;
- 
+
     /**
      * Reads a user from the database, only if the password is correct.<p>
      *
@@ -332,7 +398,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param type the type of the user
      * @return the read user
      * @throws CmsException if something goes wrong
-     */    
+     */
     CmsUser readUser(String name, String password, String remoteAddress, int type) throws CmsException;
 
     /**
@@ -342,8 +408,27 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param recoveryPassword the recoveryPassword the user has to know to set the password
      * @param password the password to set
      * @throws CmsException if something goes wrong
-     */    
+     */
     void recoverPassword(String userName, String recoveryPassword, String password) throws CmsException;
+
+    /**
+     * Removes an access control entry from the database.<p>
+     * 
+     * @param project the project to write the entry
+     * @param resource the id of the resource
+     * @param principal the id of the principal
+     * @throws CmsException if something goes wrong
+     */
+    void removeAccessControlEntry(CmsProject project, CmsUUID resource, CmsUUID principal) throws CmsException;
+
+    /**
+     * Removes all access control entries belonging to a resource from the database.<p>
+     * 
+     * @param project the project to write the entry
+     * @param resource the id of the resource
+     * @throws CmsException if something goes wrong
+     */
+    void removeAllAccessControlEntries(CmsProject project, CmsUUID resource) throws CmsException;
 
     /**
      * Removes a user from a group.
@@ -375,35 +460,13 @@ public interface I_CmsUserDriver extends I_CmsDriver {
     void setRecoveryPassword(String userName, String password) throws CmsException;
 
     /**
-     * Writes an already existing group in the Cms.<BR/>
-     *
-     * Only the admin can do this.<P/>
-     *
-     * @param group The group that should be written to the Cms.
-     * @throws CmsException  Throws CmsException if operation was not succesfull.
-     */
-    void writeGroup(CmsGroup group) throws CmsException;
-    
-    /**
-     * Writes a user to the database.
-     *
-     * @param user the user to write
-     * @throws CmsException if something goes wrong.
-     */    
-    void writeUser(CmsUser user) throws CmsException;
-    
-    /**
-     * Creates an access control entry.<p>
+     * Undeletes all access control entries belonging to a resource.<p>
      * 
      * @param project the project to write the entry
      * @param resource the id of the resource
-     * @param principal the id of the principal (user or group)
-     * @param allowed the bitset of allowed permissions
-     * @param denied the bitset of denied permissions
-     * @param flags flags
      * @throws CmsException if something goes wrong
      */
-    void createAccessControlEntry(CmsProject project, CmsUUID resource, CmsUUID principal, int allowed, int denied, int flags) throws CmsException;
+    void undeleteAllAccessControlEntries(CmsProject project, CmsUUID resource) throws CmsException;
 
     /**
      * Writes an access control entry to the cms.<p>
@@ -415,84 +478,20 @@ public interface I_CmsUserDriver extends I_CmsDriver {
     void writeAccessControlEntry(CmsProject project, CmsAccessControlEntry acEntry) throws CmsException;
 
     /**
-     * Removes an access control entry from the database.<p>
-     * 
-     * @param project the project to write the entry
-     * @param resource the id of the resource
-     * @param principal the id of the principal
-     * @throws CmsException if something goes wrong
+     * Writes an already existing group in the Cms.<BR/>
+     *
+     * Only the admin can do this.<P/>
+     *
+     * @param group The group that should be written to the Cms.
+     * @throws CmsException  Throws CmsException if operation was not succesfull.
      */
-    //public void deleteAccessControlEntry(CmsProject project, CmsUUID resource, CmsUUID principal) throws CmsException;
-    
-    /**
-     * Deletes all access control entries belonging to a resource.<p>
-     * 
-     * @param project the project to write the entry
-     * @param resource the id of the resource
-     * @throws CmsException if something goes wrong
-     */
-    void deleteAllAccessControlEntries(CmsProject project, CmsUUID resource) throws CmsException;
+    void writeGroup(CmsGroup group) throws CmsException;
 
     /**
-     * Undeletes all access control entries belonging to a resource.<p>
-     * 
-     * @param project the project to write the entry
-     * @param resource the id of the resource
-     * @throws CmsException if something goes wrong
+     * Writes a user to the database.
+     *
+     * @param user the user to write
+     * @throws CmsException if something goes wrong.
      */
-    void undeleteAllAccessControlEntries(CmsProject project, CmsUUID resource) throws CmsException;
-
-    /**
-     * Removes an access control entry from the database.<p>
-     * 
-     * @param project the project to write the entry
-     * @param resource the id of the resource
-     * @param principal the id of the principal
-     * @throws CmsException if something goes wrong
-     */
-    void removeAccessControlEntry(CmsProject project, CmsUUID resource, CmsUUID principal) throws CmsException;
-
-    /**
-     * Removes all access control entries belonging to a resource from the database.<p>
-     * 
-     * @param project the project to write the entry
-     * @param resource the id of the resource
-     * @throws CmsException if something goes wrong
-     */
-    void removeAllAccessControlEntries(CmsProject project, CmsUUID resource) throws CmsException;
-    
-    /**
-     * Reads an access control entry from the cms.<p>
-     * 
-     * @param project the project to write the entry
-     * @param resource the id of the resource
-     * @param principal the id of a group or a user any other entity
-     * @return an access control entry that defines the permissions of the entity for the given resource
-     * @throws CmsException if something goes wrong
-     */
-    CmsAccessControlEntry readAccessControlEntry(CmsProject project, CmsUUID resource, CmsUUID principal) throws CmsException;
-
-    /**
-     * Reads all relevant access control entries for a given resource.<p>
-     * 
-     * @param project the project to write the entry
-     * @param resource the id of the resource
-     * @param inheritedOnly flag to indicate that only inherited entries should be returned
-     * @return a vector of access control entries defining all permissions for the given resource
-     * @throws CmsException if something goes wrong
-     */
-    Vector getAccessControlEntries(CmsProject project, CmsUUID resource, boolean inheritedOnly) throws CmsException;
-
-    /**
-     * Publish all access control entries of a resource from the given offline project to the online project.
-     * Within the given project, the resource is identified by its offlineId, in the online project,
-     * it is identified by the given onlineId.
-     * 
-     * @param offlineProject an offline project
-     * @param onlineProject the onlie project
-     * @param offlineId the offline resource id
-     * @param onlineId the online resource id
-     * @throws CmsException if something goes wrong
-     */
-    void publishAccessControlEntries(CmsProject offlineProject, CmsProject onlineProject, CmsUUID offlineId, CmsUUID onlineId) throws CmsException;
+    void writeUser(CmsUser user) throws CmsException;
 }

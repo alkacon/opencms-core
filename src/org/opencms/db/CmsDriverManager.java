@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/15 13:30:42 $
- * Version: $Revision: 1.214 $
+ * Date   : $Date: 2003/09/15 15:06:16 $
+ * Version: $Revision: 1.215 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.214 $ $Date: 2003/09/15 13:30:42 $
+ * @version $Revision: 1.215 $ $Date: 2003/09/15 15:06:16 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1360,7 +1360,7 @@ public class CmsDriverManager extends Object {
                     }
                 }
                 try {
-                    m_vfsDriver.createProjectResource(context.currentProject().getId(), resource);
+                    m_projectDriver.createProjectResource(context.currentProject().getId(), resource);
                 } catch (CmsException exc) {
                     // if the subfolder exists already - all is ok
                 } finally {
@@ -1811,7 +1811,7 @@ public class CmsDriverManager extends Object {
             // create a new task for the project
             CmsTask task = createProject(context, name, 1, group.getName(), System.currentTimeMillis(), I_CmsConstants.C_TASK_PRIORITY_NORMAL);
             CmsProject tempProject = m_projectDriver.createProject(context.currentUser(), group, managergroup, task, name, description, I_CmsConstants.C_PROJECT_STATE_INVISIBLE, I_CmsConstants.C_PROJECT_STATE_INVISIBLE);
-            m_vfsDriver.createProjectResource(tempProject.getId(), "/");
+            m_projectDriver.createProjectResource(tempProject.getId(), "/");
             cms.getRegistry().setSystemValue("tempfileproject", "" + tempProject.getId());
             OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_PROJECT_MODIFIED, Collections.singletonMap("project", tempProject)));
             return tempProject;
@@ -2560,8 +2560,7 @@ public class CmsDriverManager extends Object {
      * @throws CmsException Throws CmsException if something goes wrong.
      */
     public void endTask(CmsRequestContext context, int taskid) throws CmsException {
-
-        m_projectDriver.endTask(taskid);
+        m_workflowDriver.endTask(taskid);
         if (context.currentUser() == null) {
             m_workflowDriver.writeSystemTaskLog(taskid, "Task finished.");
 
@@ -2811,7 +2810,6 @@ public class CmsDriverManager extends Object {
      * @throws CmsException Throws CmsException if something goes wrong.
      */
     public void forwardTask(CmsRequestContext context, int taskid, String newRoleName, String newUserName) throws CmsException {
-
         CmsGroup newRole = m_userDriver.readGroup(newRoleName);
         CmsUser newUser = null;
         if (newUserName.equals("")) {
@@ -2820,7 +2818,7 @@ public class CmsDriverManager extends Object {
             newUser = readUser(newUserName, I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
         }
 
-        m_projectDriver.forwardTask(taskid, newRole.getId(), newUser.getId());
+        m_workflowDriver.forwardTask(taskid, newRole.getId(), newUser.getId());
         m_workflowDriver.writeSystemTaskLog(taskid, "Task fowarded from " + context.currentUser().getFirstname() + " " + context.currentUser().getLastname() + " to " + newUser.getFirstname() + " " + newUser.getLastname() + ".");
     }
 
@@ -8605,7 +8603,7 @@ public class CmsDriverManager extends Object {
      * @throws CmsException if something goes wrong
      */
     public List readProjectResources(CmsRequestContext context, CmsProject project) throws CmsException {      
-        return m_vfsDriver.readProjectResources(project);
+        return m_projectDriver.readProjectResources(project);
     }
     
     /**

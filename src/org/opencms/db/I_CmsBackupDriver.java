@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsBackupDriver.java,v $
- * Date   : $Date: 2003/09/15 10:51:13 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2003/09/15 15:06:16 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Vector;
  * of resource that were saved during one backup process.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.21 $ $Date: 2003/09/15 10:51:13 $
+ * @version $Revision: 1.22 $ $Date: 2003/09/15 15:06:16 $
  * @since 5.1
  */
 public interface I_CmsBackupDriver {
@@ -71,6 +71,18 @@ public interface I_CmsBackupDriver {
      * @throws CmsException if something goes wrong
      */
     CmsBackupResource createCmsBackupResourceFromResultSet(ResultSet res, boolean hasContent) throws SQLException, CmsException;
+
+    /**
+     * Deletes backup versions of a resource.<p>
+     * 
+     * Deletes the m-n oldest backup versions, if m is the number of backup versions, and n
+     * the number of max. allowed backup versions.
+     * 
+     * @param existingBackups a list of backup resources ordered by their ascending creation date
+     * @param maxVersions maximum number of versions per resource
+     * @throws CmsException if something goes wrong
+     */
+    void deleteBackups(List existingBackups, int maxVersions) throws CmsException;
 
     /**
      * Deletes all backups that are older then the given date.<p>
@@ -127,6 +139,14 @@ public interface I_CmsBackupDriver {
     int nextBackupTagId();
 
     /**
+     * Reads all backup file headers  excluding the file content.<p>.
+     *
+     * @return List with all backup file headers
+     * @throws CmsException if something goes wrong
+     */
+    List readAllBackupFileHeaders() throws CmsException;
+
+    /**
      * Reads all backup file headers of a file excluding the file content.<p>.
      *
      * @param resourceId the id of the file to read
@@ -134,14 +154,6 @@ public interface I_CmsBackupDriver {
      * @throws CmsException if something goes wrong
      */
     List readAllBackupFileHeaders(CmsUUID resourceId) throws CmsException;
-
-    /**
-     * Reads all backup file headers  excluding the file content.<p>.
-     *
-     * @return List with all backup file headers
-     * @throws CmsException if something goes wrong
-     */
-    List readAllBackupFileHeaders() throws CmsException;
 
     /**
      * Reads a backup file including the file content.<p>
@@ -182,6 +194,38 @@ public interface I_CmsBackupDriver {
     Vector readBackupProjectResources(int tagId) throws CmsException;
 
     /**
+     * Returns a list of all properties of a backup file or folder.<p>
+     *
+     * @param resource the resource to read the properties from
+     * 
+     * @return a Map of Strings representing the properties of the resource
+     *
+     * @throws CmsException Throws CmsException if operation was not succesful
+     */
+    HashMap readBackupProperties(CmsBackupResource resource) throws CmsException;
+
+    /**
+     * Returns the max. current backup version of a resource.<p>
+     * 
+     * @param resourceId the resource ID of the resource
+     * @return Returns the max. current backup version of a resource.
+     * @throws CmsException if something goes wrong
+     */
+    int readMaxBackupVersion(CmsUUID resourceId) throws CmsException;
+
+    /**
+     * Internal method to write the backup content.<p>
+     *  
+     * @param backupId the backup id
+     * @param fileId the id of the file
+     * @param fileContent the content of the file
+     * @param tagId the tag revision
+     * @param versionId the version revision
+     * @throws CmsException if something goes wrong
+     */
+    void writeBackupFileContent(CmsUUID backupId, CmsUUID fileId, byte[] fileContent, int tagId, int versionId) throws CmsException;
+
+    /**
      * Writes a project to the backup.<p>
      * 
      * @param currentProject the current project
@@ -191,7 +235,6 @@ public interface I_CmsBackupDriver {
      * @throws CmsException if something goes wrong
      */
     void writeBackupProject(CmsProject currentProject, int tagId, long publishDate, CmsUser currentUser) throws CmsException;
-
 
     /**
      * Writes the properties of a resource to the backup.<p>
@@ -205,7 +248,6 @@ public interface I_CmsBackupDriver {
      * @throws CmsException if something goes wrong
      */
     void writeBackupProperties(CmsProject publishProject, CmsResource resource, Map properties, CmsUUID backupId, int tagId, int versionId) throws CmsException;
-    
 
     /**
      * Writes a resource to the backup.<p>
@@ -220,51 +262,5 @@ public interface I_CmsBackupDriver {
      * @throws CmsException if something goes wrong
      */
     void writeBackupResource(CmsUser currentUser, CmsProject publishProject, CmsResource resource, Map properties, int tagId, long publishDate, int maxVersions) throws CmsException;
-
-
-    /**
-     * Returns a list of all properties of a backup file or folder.<p>
-     *
-     * @param resource the resource to read the properties from
-     * 
-     * @return a Map of Strings representing the properties of the resource
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-    HashMap readBackupProperties(CmsBackupResource resource) throws CmsException;
-
-
-    /**
-     * Returns the max. current backup version of a resource.<p>
-     * 
-     * @param resourceId the resource ID of the resource
-     * @return Returns the max. current backup version of a resource.
-     * @throws CmsException if something goes wrong
-     */
-    int readMaxBackupVersion(CmsUUID resourceId) throws CmsException;
-
-    /**
-     * Deletes backup versions of a resource.<p>
-     * 
-     * Deletes the m-n oldest backup versions, if m is the number of backup versions, and n
-     * the number of max. allowed backup versions.
-     * 
-     * @param existingBackups a list of backup resources ordered by their ascending creation date
-     * @param maxVersions maximum number of versions per resource
-     * @throws CmsException if something goes wrong
-     */
-    void deleteBackups(List existingBackups, int maxVersions) throws CmsException;
-
-    /**
-     * Internal method to write the backup content.<p>
-     *  
-     * @param backupId the backup id
-     * @param fileId the id of the file
-     * @param fileContent the content of the file
-     * @param tagId the tag revision
-     * @param versionId the version revision
-     * @throws CmsException if something goes wrong
-     */
-    void writeBackupFileContent(CmsUUID backupId, CmsUUID fileId, byte[] fileContent, int tagId, int versionId) throws CmsException;
 
 }

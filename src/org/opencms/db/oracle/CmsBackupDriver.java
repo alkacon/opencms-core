@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/09/15 10:51:14 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2003/09/15 15:06:16 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * Oracle/OCI implementation of the backup driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.14 $ $Date: 2003/09/15 10:51:14 $
+ * @version $Revision: 1.15 $ $Date: 2003/09/15 15:06:16 $
  * @since 5.1
  */
 public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {   
@@ -77,7 +77,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
             stmt.setInt(1, 300);
             res = stmt.executeQuery();
             while (res.next()) {
-                Vector resources = m_driverManager.getVfsDriver().readBackupProjectResources(res.getInt("TAG_ID"));
+                Vector resources = m_driverManager.getBackupDriver().readBackupProjectResources(res.getInt("TAG_ID"));
                 projects.addElement(
                     new CmsBackupProject(
                         res.getInt("TAG_ID"),
