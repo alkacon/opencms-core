@@ -112,7 +112,7 @@ function continueReport() {
 // -->
 </script>
 
-<%= wp.bodyStart("empty", "style=\"background-color:#c0c0c0;\" onLoad=\"init();\"") %><%= wp.bodyEnd() %>
+<%= wp.bodyStart("empty", "style=\"background-color:Menu;\" onLoad=\"init();\"") %><%= wp.bodyEnd() %>
 <%= wp.htmlEnd() %><%
 
 break;
@@ -226,8 +226,10 @@ function switchOutputFormat() {
 
 var cssStyle =
     "<style type='text/css'>\n" +
-    "body       { color: #000000; background-color:#ffffff; font-family: sans-serif; font-size: 11px; }\n" +
+    "body       { padding: 0; margin: 0; color: #000000; background-color:#ffffff; font-family: sans-serif; font-size: 11px; }\n" +
     "div.main   { color: #000000; font-family: sans-serif; font-size: 11px; white-space: nowrap; }\n" +
+    ".dialoginnerboxborder { width: 100%; height: 100%; border-left: 1px solid ThreeDShadow; border-top: 1px solid ThreeDShadow; border-right: 1px solid ThreeDHighlight; border-bottom: 1px solid ThreeDHighlight; padding: 0; }\n" +
+	".dialoginnerbox { width: 100%; height: 100%; background-color: Window; border-left: 1px solid ThreedDarkShadow; border-top: 1px solid ThreedDarkShadow; border-right: 1px solid ThreeDLightShadow; border-bottom: 1px solid ThreeDLightShadow; padding: 2px; }\n" +
     "span.head  { color: #000099; font-weight: bold; }\n" +
     "span.note  { color: #666666; }\n" +
     "span.ok    { color: #009900; }\n" +
@@ -245,7 +247,7 @@ var pageStartSimple =
     "<link rel='stylesheet' type='text/css' href='<%= wp.getSkinUri() %>files/css_workplace.css'>\n" +
     cssStyle +
     "</head>\n" +
-    "<body style='background-color:#c0c0c0;'>\n" +   
+    "<body style='background-color:Menu;'>\n" +   
     "<div style='vertical-align:middle; height: 100%;'>\n"+
     "<table border='0' style='vertical-align:middle; height: 100%;'>\n" + 
     "<tr><td width='40' align='center' valign='middle'><img name='report_img' src='<%= wp.getSkinUri() %>explorer/report_running.gif' width='32' height='32' alt=''></td>\n" + 
@@ -261,11 +263,11 @@ var pageStartExtended =
     "<meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=<%= wp.getEncoding() %>'>\n"+ 
 	cssStyle +
     "</head>\n" +
-    "<body style='margin:0px 0px 0px 3px;'>\n" +  
-    "<div class='main'>\n";
+    "<body style='padding: 0; margin: 0; overflow: scroll;'>\n" +  
+    "<div class='dialoginnerboxborder'><div class='dialoginnerbox'><div class='main'>\n";
     
 var pageEndExtended = 
-	"</div>\n" +
+	"</div></div></div>\n" +
 	"</body>\n" +
 	"</html>\n";                                
 
@@ -497,8 +499,8 @@ function initButtons() {
 <%= wp.paramsAsHidden() %>
 
 <table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td>
-<iframe name="report" id="report" src="about:blank" style="width:100%; height:400px;" frameborder="0"></iframe>
-</td></tr></Table>
+<iframe name="report" id="report" src="about:blank" style="width:100%; height:400px; padding: 0; margin: 0;" frameborder="0"></iframe>
+</td></tr></table>
 
 <%= wp.dialogContentEnd() %>
 

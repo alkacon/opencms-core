@@ -13,32 +13,32 @@ input, select, option, textarea {
 /* Button - Normal style (inactive) */
 span.norm {
 	display: block;
-	border: 1px solid #c0c0c0;
+	border: 1px solid ThreeDLightShadow;
 }
 
 /* Button - Hover style */
 span.over {
 	display: block;
-	border-top: 1px solid #ffffff;
-	border-left: 1px solid #ffffff;
-	border-bottom: 1px solid #777777;
-	border-right: 1px solid #777777;
+	border-top: 1px solid ThreeDHighlight;
+	border-left: 1px solid ThreeDHighlight;
+	border-bottom: 1px solid ThreeDShadow;
+	border-right: 1px solid ThreeDShadow;
 }
 
 /* Button - Push style */
 span.push {
 	display: block;
-	border-top: 1px solid #777777;
-	border-left: 1px solid #777777;
-	border-bottom: 1px solid #ffffff;
-	border-right: 1px solid #ffffff;
+	border-top: 1px solid ThreeDShadow;
+	border-left: 1px solid ThreeDShadow;
+	border-bottom: 1px solid ThreeDHighlight;
+	border-right: 1px solid ThreeDHighlight;
 }
 
 /* Button - Disabled style */
 span.disabled {
 	display: block;
-	border: 1px solid #c0c0c0;
-	color: #888888;
+	border: 1px solid Menu;
+	color: GrayText;
 }
 
 /* Button - Tart tab */
@@ -46,10 +46,10 @@ span.starttab {
 	display: block;
 	height: 16px;
 	width: 1px;
-	border-top: 1px solid #ffffff;
-	border-left: 1px solid #ffffff;
-	border-bottom: 1px solid #777777;
-	border-right: 1px solid #777777;
+	border-top: 1px solid ThreeDHighlight;
+	border-left: 1px solid ThreeDHighlight;
+	border-bottom: 1px solid ThreeDShadow;
+	border-right: 1px solid ThreeDShadow;
 }
 
 /* Button - Separator */
@@ -58,16 +58,16 @@ span.separator {
 	height: 18px;
 	width: 0px;
 	border-top: 0px;
-	border-left: 1px solid #777777;
+	border-left: 1px solid ThreeDShadow;
 	border-bottom: 0px;
-	border-right: 1px solid #ffffff;
+	border-right: 1px solid ThreeDHighlight;
 }
 
 /* Button - Horizontal Separator line */
 .horseparator {
 	width: 100%;
-	background-color: #ffffff;
-	border-top: 1px solid #777777;
+	background-color: ThreeDHighlight;
+	border-top: 1px solid ThreeDShadow;
 }
 
 /* Button - Text button wrapper  */
@@ -107,7 +107,7 @@ img.button {
 
 /* Button - Link (href) style */
 a.button {
-	color: #000000;
+	color: ButtonText;
 	text-decoration: none;
 	cursor: pointer;
 }
@@ -115,7 +115,7 @@ a.button {
 /* ########## Dialog styles ########## */
 
 body.report {
-	background-color: #C0C0C0;
+	background-color: Menu;
 }
 
 body.dialog {
@@ -123,12 +123,12 @@ body.dialog {
 	font-size: 11px;
 	padding: 0;
 	margin: 0;
-	background-color: #c0c0c0;
+	background-color: Menu;
 }
 
 body.dialogpopup {
 	margin: 0 auto;
-	background-color: #C0C0C0;
+	background-color: Menu;
 }
 
 /* outer table of complete dialog window */
@@ -139,7 +139,7 @@ table.dialog {
 /* inner table of complete dialog window */
 table.dialogbox {
 	width: 100%;
-	background-color: #C0C0C0;
+	background-color: Menu;
 }
 
 /* headline of dialog window */
@@ -156,10 +156,10 @@ table.dialogbox {
 
 /* content area of dialog */
 .dialogcontent {
-	border-left: 1px solid #F0F0F0;
-	border-top: 1px solid #F0F0F0;
-	border-right: 2px solid #555;
-	border-bottom: 2px solid #555;
+	border-left: 1px solid ThreeDHighlight;
+	border-top: 1px solid ThreeDHighlight;
+	border-right: 2px solid ThreeDShadow;
+	border-bottom: 2px solid ThreeDShadow;
 	padding: 15px;
 	margin: 8px;
 }
@@ -178,20 +178,20 @@ div.dialogblockborderheadline {
 
 /* 3D block outer border definition without headline */
 div.dialogblockborder {
-	border-left: 1px solid #555;
-	border-top: 1px solid #555;
-	border-right: 1px solid #F0F0F0;
-	border-bottom: 1px solid #F0F0F0;
+	border-left: 1px solid ThreeDShadow;
+	border-top: 1px solid ThreeDShadow;
+	border-right: 1px solid ThreeDHighlight;
+	border-bottom: 1px solid ThreeDHighlight;
 }
 
 /* 3D block main style */
 div.dialogblock {
 	position: relative;
 	padding: 8px;
-	border-left: 1px solid #F0F0F0;
-	border-top: 1px solid #F0F0F0;
-	border-right: 1px solid #555;
-	border-bottom: 1px solid #555;
+	border-left: 1px solid ThreeDHighlight;
+	border-top: 1px solid ThreeDHighlight;
+	border-right: 1px solid ThreeDShadow;
+	border-bottom: 1px solid ThreeDShadow;
 }
 
 /* 3D block headline, positioned "inside" border */
@@ -200,34 +200,34 @@ span.dialogblockhead {
 	position:absolute;
 	top: -7px;
 	left: 5px;
-	background: #c0c0c0;
+	background: Menu;
 	padding: 0 3px;
 	white-space: nowrap;
 }
 
 /* outer border of white inner box */
 .dialoginnerboxborder {
-	border-left: 1px solid #777;
-	border-top: 1px solid #777;
-	border-right: 1px solid #F0F0F0;
-	border-bottom: 1px solid #F0F0F0;
+	border-left: 1px solid ThreeDShadow;
+	border-top: 1px solid ThreeDShadow;
+	border-right: 1px solid ThreeDHighlight;
+	border-bottom: 1px solid ThreeDHighlight;
 	padding: 0;
 }
 
 /* white inner box for dialogs */
 .dialoginnerbox {
-	background-color: #FFF;
-	border-left: 1px solid #333;
-	border-top: 1px solid #333;
-	border-right: 1px solid #C0C0C0;
-	border-bottom: 1px solid #C0C0C0;
+	background-color: Window;
+	border-left: 1px solid ThreedDarkShadow;
+	border-top: 1px solid ThreedDarkShadow;
+	border-right: 1px solid ThreeDLightShadow;
+	border-bottom: 1px solid ThreeDLightShadow;
 	padding: 2px;
 }
 
 /* separator line */
 .dialogseparator {
-	border-top: 1px solid #555;
-	border-bottom: 1px solid #F0F0F0;
+	border-top: 1px solid ThreeDShadow;
+	border-bottom: 1px solid ThreeDHighlight;
 	margin: 5px 0;
 }
 
@@ -249,9 +249,9 @@ span.dialogblockhead {
 
 /* Submit and other buttons */
 input.dialogbutton {
-    font-family: verdana, sans-serif;
+	font-family: verdana, sans-serif;
 	font-size: 11px;
-	background-color: #C0C0C0;
+	background-color: ButtonFace;
 	width: 100px;
 	height: 20px;
 	padding: 0 5px;
@@ -261,17 +261,8 @@ input.dialogbutton {
 
 /* row marked as selected */
 .dialogmarked {
-	background-color: #008;
-	color: #fff;
-	display: block;
-	cursor: pointer;
-	white-space: nowrap;
-}
-
-/* row marked as selected */
-.dialogmarkednew {
-	background-color: #603;
-	color: #fff;
+	background-color: ActiveCaption;
+	color: CaptionText;
 	display: block;
 	cursor: pointer;
 	white-space: nowrap;
@@ -344,23 +335,24 @@ div.dialogpermissioninherit {
 }
 
 /* definitions for "tab-style" dialogs */
+/* definitions for "tab-style" dialogs */
 .dialogtab {
-	border-top: 1px solid #fff;
-	border-left: 1px solid #fff;
-	border-right: 2px solid #555;
-	background: #c0c0c0;
+	border-top: 1px solid ThreeDHighlight;
+	border-left: 1px solid ThreeDHighlight;
+	border-right: 2px solid ThreeDShadow;
+	background: Menu;
 	text-align: center;
 	color: #000;
 	white-space: nowrap;
 }
 
 .dialogtabactive {
-	border-top: 2px solid #fff;
-	border-left: 2px solid #fff;
-	border-right: 2px solid #555;
-	background: #c0c0c0;
+	border-top: 2px solid ThreeDHighlight;
+	border-left: 2px solid ThreeDHighlight;
+	border-right: 2px solid ThreeDShadow;
+	background: Menu;
 	text-align: center;
-	color: #fff;
+	color: CaptionText;
 	font-weight: bold;
 	white-space: nowrap;
 }
@@ -372,30 +364,30 @@ div.dialogpermissioninherit {
 
 .dialogtabrow {
 	height: 1px;
-	background: #fff;
+	background: ThreeDHighlight;
 }
 
 .dialogtabcontent {
-	border-left: 1px solid #F0F0F0;
-	border-right: 2px solid #555;
-	border-bottom: 2px solid #555;
+	border-left: 1px solid ThreeDHighlight;
+	border-right: 2px solid ThreeDShadow;
+	border-bottom: 2px solid ThreeDShadow;
 	padding: 15px;
 	margin-top: -1px;
 }
 
 a.tab {
-	color: #000;
+	color: WindowText;
 	text-decoration: none;
 	display: block;
 	padding: 4px;
 }
 
 a.tab:hover {
-	color: #fff;
+	color: CaptionText;
 }
 
 span.tabactive {
-	color: #000;
+	color: WindowText;
 	text-decoration: none;
 	display: block;
 	padding: 4px;

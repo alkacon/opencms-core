@@ -13,7 +13,7 @@
 </script>
 </head>
 
-<body bgcolor="#c0c0c0" background="]]><METHOD name="resourcesUri">bg_grau.gif</METHOD><![CDATA[" bgproperties="fixed">
+<body style="background-color: Menu;">
 <table cellspacing=0 cellpadding=0 border=0><tr>
     <td valign=middle>]]><BACKBUTTON/><![CDATA[</td>
 </tr></table>
