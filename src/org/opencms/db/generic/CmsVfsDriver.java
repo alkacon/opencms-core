@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/10/22 14:37:39 $
- * Version: $Revision: 1.208 $
+ * Date   : $Date: 2004/10/25 14:18:21 $
+ * Version: $Revision: 1.209 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.208 $ $Date: 2004/10/22 14:37:39 $
+ * @version $Revision: 1.209 $ $Date: 2004/10/25 14:18:21 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -2231,8 +2231,6 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                 deletePropertyObjects(runtimeInfo, project.getId(), res, propertyDeleteOption);
                 removeFile(runtimeInfo, project, res, true);
 
-                int warning = 0;
-                // TODO: the deleted properties are not handled correct in the cache
                 OpenCms.fireCmsEvent(new CmsEvent(
                     I_CmsEventListener.EVENT_RESOURCES_MODIFIED,
                     Collections.singletonMap("resources", modifiedResources)));

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/CmsPublishThread.java,v $
- * Date   : $Date: 2004/08/10 15:45:31 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/10/25 14:18:21 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.opencms.report.I_CmsReport;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * @since 5.1.10
  */
 public class CmsPublishThread extends A_CmsReportThread {
@@ -56,8 +56,8 @@ public class CmsPublishThread extends A_CmsReportThread {
      * 
      * @param cms the current OpenCms context object
      * @param publishList a Cms publish list
-     * @see org.opencms.file.CmsObject#getPublishList(org.opencms.file.CmsResource, boolean, I_CmsReport)
-     * @see org.opencms.file.CmsObject#getPublishList(I_CmsReport)
+     * @see org.opencms.file.CmsObject#getPublishList(org.opencms.file.CmsResource, boolean)
+     * @see org.opencms.file.CmsObject#getPublishList()
      */
     public CmsPublishThread(CmsObject cms, CmsPublishList publishList) {
         super(cms, "OpenCms: Publishing of resources in publish list");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/10/22 14:37:40 $
- * Version: $Revision: 1.78 $
+ * Date   : $Date: 2004/10/25 14:18:21 $
+ * Version: $Revision: 1.79 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.78 $
+ * @version $Revision: 1.79 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -2850,26 +2850,6 @@ public class CmsObject {
     //-----------------------------------------------------------------------------------
     // Project methods:
     private int warning6; 
-   
-    
-    /**
-     * Completes all post-publishing tasks for a "directly" published COS resource.<p>
-     * 
-     * @param publishedBoResource the CmsPublishedResource onject representing the published COS resource
-     * @param publishId unique int ID to identify each publish task in the publish history
-     * @param tagId the backup tag revision
-     */
-    public void postPublishBoResource(CmsPublishedResource publishedBoResource, CmsUUID publishId, int tagId) {
-        int todo = 0;
-        // TODO: move COS stuff to legacy package                
-        try {
-            m_securityManager.postPublishBoResource(m_context, publishedBoResource, publishId, tagId);
-        } catch (CmsException e) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error writing publish history entry for COS resource " + publishedBoResource.toString(), e);
-            }
-        }
-    }
 
     /**
      * Publishes the current project, printing messages to a shell report.<p>
@@ -2898,8 +2878,8 @@ public class CmsObject {
      * 
      * @throws CmsException if something goes wrong
      * 
-     * @see #getPublishList(I_CmsReport)
-     * @see #getPublishList(CmsResource, boolean, I_CmsReport)
+     * @see #getPublishList()
+     * @see #getPublishList(CmsResource, boolean)
      */
     public void publishProject(I_CmsReport report, CmsPublishList publishList) throws CmsException {
 
@@ -2933,7 +2913,7 @@ public class CmsObject {
      * @see #publishResource(String, boolean, I_CmsReport)
      */
     public void publishProject(I_CmsReport report, CmsResource directPublishResource, boolean directPublishSiblings) throws CmsException {
-        CmsPublishList publishList = getPublishList(directPublishResource, directPublishSiblings, report);
+        CmsPublishList publishList = getPublishList(directPublishResource, directPublishSiblings);
         publishProject(report, publishList);
     }
 
@@ -3169,11 +3149,11 @@ public class CmsObject {
      * 
      * @param directPublishResource the resource which will be directly published
      * @param directPublishSiblings true, if all eventual siblings of the direct published resource should also get published
-     * @param report an instance of I_CmsReport to print messages
+     * 
      * @return a publish list
      * @throws CmsException if something goes wrong
      */
-    public CmsPublishList getPublishList(CmsResource directPublishResource, boolean directPublishSiblings, I_CmsReport report) throws CmsException {
+    public CmsPublishList getPublishList(CmsResource directPublishResource, boolean directPublishSiblings) throws CmsException {
         return m_securityManager.getPublishList(m_context, directPublishResource, directPublishSiblings);
     }
     
@@ -3181,12 +3161,11 @@ public class CmsObject {
      * Returns a publish list with all new/changed/deleted Cms resources of the current (offline)
      * project that actually get published.<p>
      * 
-     * @param report an instance of I_CmsReport to print messages
      * @return a publish list
      * @throws Exception if something goes wrong
      */
-    public CmsPublishList getPublishList(I_CmsReport report) throws Exception {
-        return getPublishList(null, false, report);
+    public CmsPublishList getPublishList() throws Exception {
+        return getPublishList(null, false);
     }        
 
     //-----------------------------------------------------------------------------------
