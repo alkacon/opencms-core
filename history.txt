@@ -14,6 +14,7 @@ OpenCms 4.5.30 Chusuk       - xx December 2001
   Http://localhost:8080/opencms/export/index.html.
   The configuration is more handy, you can configure with ${WEB_APP_NAME} instead of opencms, so
   you can rename your webapplication without changing the opencms.properties.
+- Now projectmanagers are allowed to export static resources, too.
 
 OpenCms 4.5.29 Chusuk       - 10 December 2001
 - Changed the xmttemplate editor. If a templatefile is not found at a default location, it is usewd anyway.
