@@ -14,7 +14,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ $Date: 2000/02/20 19:22:52 $
+ * @version $Revision: 1.4 $ $Date: 2000/02/21 14:21:02 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsWpConstants {
@@ -56,22 +56,41 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsCo
 			(CmsXmlWpTemplateFile) getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
 		A_CmsTask task;
 		int taskid = -1;
+        HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
+		
 		
 		try {
-			taskid = Integer.parseInt((String)parameters.get("taskid"));
+			Integer sessionTaskid = (Integer)session.getValue("taskid");
+			if(sessionTaskid != null) {
+				taskid = sessionTaskid.intValue();
+			}
 			
-			if("accept".equals((String)parameters.get("action"))){
+			try {
+				taskid = Integer.parseInt((String)parameters.get("taskid"));
+			} catch(Exception exc) {
+				exc.printStackTrace();
+			}
+			session.putValue("taskid", new Integer(taskid));
+			parameters.put("taskid", taskid + "");
+			
+			if("acceptok".equals((String)parameters.get("action"))){
 				// accept the task
 				cms.acceptTask(taskid);
 				// TODO: this must be read from a xml-language-file
 				String comment = "";
 				cms.writeTaskLog(taskid, comment, C_TASKLOGTYPE_ACCEPTED);
-			} else if("ok".equals((String)parameters.get("action"))){
+			} else if("accept".equals((String)parameters.get("action"))){
+				// show dialog
+				templateSelector = "accept";
+			} else if("okok".equals((String)parameters.get("action"))){
 				// ok the task
 				cms.endTask(taskid);
 				// TODO: this must be read from a xml-language-file
 				String comment = "";
 				cms.writeTaskLog(taskid, comment, C_TASKLOGTYPE_OK);
+			} else if("ok".equals((String)parameters.get("action"))) {
+				// show dialog
+				templateSelector = "ok";
 			}
 			
 			task = cms.readTask(taskid);

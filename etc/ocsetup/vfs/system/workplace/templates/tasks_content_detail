@@ -116,6 +116,94 @@ function show_help()
 
 </TEMPLATE>
 
+
+<TEMPLATE name="accept">
+<![CDATA[
+
+<HTML>
+
+<script language=JavaScript>
+<!--
+function show_help()
+{
+	return '4_4_10.html';
+}
+//-->
+</script>
+
+<head>
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+
+<title>OpenCms</title>
+
+<link rel=stylesheet type="text/css" href="../css/format.css">
+
+</HEAD>
+<BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
+
+<!-- Tabelle um vertikal und horizontal zu zentrieren-->
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+	<tr><td align=center valign=middle>
+
+    ]]><MESSAGEBOX title="messagebox.title.accept" message1="messagebox.message1.accept" message2="messagebox.message2.accept" button1="button.ok" button2="button.cancel" link1="tasks_content_detail.html?action=acceptok" link2="tasks_content_detail.html"><PROCESS>task</PROCESS></MESSAGEBOX><![CDATA[
+
+	</td></tr>
+</table>
+</form>
+
+</td></tr>
+</table>
+</body>
+</html>
+
+]]>
+
+</TEMPLATE>
+
+<TEMPLATE name="ok">
+<![CDATA[
+
+<HTML>
+
+<script language=JavaScript>
+<!--
+function show_help()
+{
+	return '4_4_16.html';
+}
+//-->
+</script>
+
+<head>
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+
+<title>OpenCms</title>
+
+<link rel=stylesheet type="text/css" href="../css/format.css">
+
+</HEAD>
+<BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
+
+<!-- Tabelle um vertikal und horizontal zu zentrieren-->
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+	<tr><td align=center valign=middle>
+
+    ]]><MESSAGEBOX title="messagebox.title.ok" message1="messagebox.message1.ok" message2="messagebox.message2.ok" button1="button.ok" button2="button.cancel" link1="tasks_content_detail.html?action=okok" link2="tasks_content_detail.html"><PROCESS>task</PROCESS></MESSAGEBOX><![CDATA[
+
+	</td></tr>
+</table>
+</form>
+
+</td></tr>
+</table>
+</body>
+</html>
+
+]]>
+</TEMPLATE>
+
 	<!-- Priorities -->
 	<priority1><![CDATA[<IMG border=0 width=16 height=16 src="]]><METHOD name="picsUrl">ic_task_priohigh.gif</METHOD><![CDATA[">&nbsp;]]><LABEL value="task.label.prioritylevel.high" /><![CDATA[]]></priority1>
 	<priority2><LABEL value="task.label.prioritylevel.middle" /></priority2>
