@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFileMySql.java,v $
- * Date   : $Date: 2000/03/22 09:22:34 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2000/03/23 10:21:19 $
+ * Version: $Revision: 1.44 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.util.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.43 $ $Date: 2000/03/22 09:22:34 $
+ * @version $Revision: 1.44 $ $Date: 2000/03/23 10:21:19 $
  */
  class CmsAccessFileMySql implements I_CmsAccessFile, I_CmsConstants, I_CmsLogChannels  {
 
@@ -1208,11 +1208,11 @@ import com.opencms.util.*;
          // the current implementation only deletes empty folders
          // check if the folder has any files in it
          Vector files= getFilesInFolder(project,foldername);
+         files=getUndeletedResources(files);
          if (files.size()==0) {
-             System.err.println("Files in folder "+files.size());
-             System.err.println(files);
              // check if the folder has any folders in it
              Vector folders= getSubFolders(project,foldername);
+             folders=getUndeletedResources(folders);
              if (folders.size()==0) {
                  System.err.println("Folders in folder "+folders.size());
                  System.err.println(folders);
@@ -1249,15 +1249,13 @@ import com.opencms.util.*;
          // the current implementation only deletes empty folders
          // check if the folder has any files in it
          Vector files= getFilesInFolder(project,foldername);
+         files=getUndeletedResources(files);
          if (files.size()==0) {
-             System.err.println("Files in folder "+files.size());
-             System.err.println(files);
              // check if the folder has any folders in it
              Vector folders= getSubFolders(project,foldername);
+             folders=getUndeletedResources(folders);
              if (folders.size()==0) {
-                 System.err.println("Folders in folder "+folders.size());
-                 System.err.println(folders);
-                 //this folder is empty, delete it
+             //this folder is empty, delete it
                  try {             
 		            // delete the folder
 		            PreparedStatement statementResourceDelete=m_Con.prepareStatement(C_RESOURCE_DELETE);
@@ -1267,7 +1265,11 @@ import com.opencms.util.*;
                  } catch (SQLException e){
 		              throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
 		         }
-             }
+             } else {
+                 throw new CmsException("["+this.getClass().getName()+"] "+foldername,CmsException.C_NOT_EMPTY);  
+              }
+         } else {
+                 throw new CmsException("["+this.getClass().getName()+"] "+foldername,CmsException.C_NOT_EMPTY);  
          }
 	 }
      
@@ -1488,7 +1490,7 @@ import com.opencms.util.*;
                         (folder.getState() == C_STATE_NEW) ||
                         (folder.getState() == C_STATE_UNCHANGED )){
                         // delete an exitsing old folder in the online project
-                        removeFolder(onlineProject,folder.getAbsolutePath());
+                        removeFolderForPublish(onlineProject,folder.getAbsolutePath());
                         // write the new folder
                         // HACK: remove a lock if nescessary. This is a temporary fix,
                         // this has to be done in the resource broker
@@ -1496,7 +1498,7 @@ import com.opencms.util.*;
                         createFolder(onlineProject,folder,folder.getAbsolutePath());
                         resources.addElement(folder.getAbsolutePath()); 
                     } else if (folder.getState() == C_STATE_DELETED) {
-                        removeFolder(onlineProject,folder.getAbsolutePath());
+                        removeFolderForPublish(onlineProject,folder.getAbsolutePath());
                         resources.addElement(folder.getAbsolutePath()); 
                 }
             }
@@ -1562,6 +1564,31 @@ import com.opencms.util.*;
         return file;
        }
            
+     
+     
+     
+      /**
+      * Deletes a folder in the database. 
+      * This method is used to physically remove a folder form the database.
+      * It is internally used by the publish project method.
+      * 
+      * @param project The project in which the resource will be used.
+	  * @param foldername The complete path of the folder.
+      * @exception CmsException Throws CmsException if operation was not succesful
+      */
+     private void removeFolderForPublish(A_CmsProject project, String foldername) 
+        throws CmsException{
+        try {             
+		    // delete the folder
+		    PreparedStatement statementResourceDelete=m_Con.prepareStatement(C_RESOURCE_DELETE);
+		    statementResourceDelete.setString(1,absoluteName(foldername));
+		    statementResourceDelete.setInt(2,project.getId());
+		    statementResourceDelete.executeUpdate();
+        } catch (SQLException e){
+		    throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+	    }
+     }
+     
      /**
      * Connects to the property database.
      * 
@@ -1578,6 +1605,21 @@ import com.opencms.util.*;
          	throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);
 		}
     }
+    
+    private Vector getUndeletedResources(Vector resources) {
+        Vector undeletedResources=new Vector();
+                
+        for (int i=0;i<resources.size();i++) {
+            A_CmsResource res=(A_CmsResource)resources.elementAt(i);
+            if (res.getState() != C_STATE_DELETED) {
+                undeletedResources.addElement(res);
+            }
+        }
+        
+        return undeletedResources;
+    }
+    
+    
     
     /**
 	 * Calculates the absolute path to a file mounted in this database.
