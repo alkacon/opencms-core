@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/prototyp/js/Attic/opencms_kontextmenu.js,v $
- * Date   : $Date: 2000/09/06 08:46:33 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/09/21 15:32:43 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -102,6 +102,7 @@ var DO_PREACT=20;
 //==ADMINISTRATION/MODULES=================================
 var DO_DELMOD=60;
 var DO_PREFMOD=61;
+var DO_EXPMOD=62;
 //==TASKS=================================
 var DO_TASKREQUEST= 70;
 var DO_TASKACCEPT=  71;
@@ -400,6 +401,12 @@ function doAction(action) // which action on layer is clicked
 			location.href='administration_content_modules_proper.html';
 			break;
 		}
+		case 62:
+		{
+			location.href='administration_content_modexp_blank.html';
+			break;
+		}
+		
 		case 70:
 		{
 			location.href='tasks_content_dialogquestion.html';
