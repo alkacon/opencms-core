@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetupThread.java,v $
-* Date   : $Date: 2001/07/31 15:50:12 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2002/06/30 22:49:55 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -105,6 +105,11 @@ public class CmsSetupThread extends Thread {
     /** Set the base path to the given value */
     public void setBasePath(String basePath)  {
         this.basePath = basePath;
+        if (! basePath.endsWith(File.separator)) {
+            // Make sure that Path always ends with a separator, not always the case in different environments
+            // since getServletContext().getRealPath("/") does not end with a "/" in all servlet runtimes
+            this.basePath += File.separator;
+        }
     }
 
     /** Returns the status of the logging thread */

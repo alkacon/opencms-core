@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetup.java,v $
-* Date   : $Date: 2001/12/18 15:26:18 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2002/06/30 22:49:24 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -123,6 +123,11 @@ public class CmsSetup {
   /** Sets the path to the OpenCms home directory */
   public void setBasePath(String basePath)  {
     m_basePath = basePath;
+    if (! m_basePath.endsWith(File.separator)) {
+        // Make sure that Path always ends with a separator, not always the case in different environments
+        // since getServletContext().getRealPath("/") does not end with a "/" in all servlet runtimes
+        m_basePath += File.separator;
+    }    
   }
 
   /** Returns the absolute path to the OpenCms home directory */
