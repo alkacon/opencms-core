@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<editor>
+	<label>editor.title.simplehtml</label>
+	<resourcetypes>
+		<type>
+			<name>xmlpage</name>
+			<ranking>0</ranking>
+		</type>
+	</resourcetypes>
+	<useragents>
+		<agent>.*</agent>
+	</useragents>
+</editor>

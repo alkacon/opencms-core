@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<editor>
+	<label>editor.title.simpletext</label>
+	<resourcetypes>
+		<type>
+			<name>plain</name>
+			<ranking>0</ranking>
+		</type>
+		<type>
+			<name>jsp</name>
+			<ranking>0</ranking>
+			<mapto>plain</mapto>
+		</type>
+		<type>
+			<name>XMLTemplate</name>
+			<ranking>0</ranking>
+			<mapto>plain</mapto>
+		</type>
+	</resourcetypes>
+	<useragents>
+		<agent>.*</agent>
+	</useragents>
+</editor>

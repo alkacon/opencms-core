@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2004/02/04 10:48:13 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/02/06 16:44:56 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Hashtable;
  * Object to conveniently access and modify the users workplace settings.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.1.12
  */
@@ -54,8 +54,10 @@ public class CmsUserSettings {
     /** Identifier for the users additional editor settings information */
     public static final String C_ADDITIONAL_INFO_EDITORSETTINGS = "USER_EDITORSETTINGS";
     
-    /** Identifier for the explorer button style setting key */
+    /** Identifier for the editor button style setting key */
     public static final String C_EDITOR_BUTTONSTYLE = "EDITOR_BUTTONSTYLE";
+    /** Identifier for the preferred editor setting key (prefix) */
+    public static final String C_EDITOR_PREFERRED_PREFIX = "EDITOR_PREFERRED_";
     /** Identifier for the explorer button style setting key */
     public static final String C_EXPLORER_BUTTONSTYLE = "EXPLORER_BUTTONSTYLE";
     /** Identifier for the explorer number of file entries per page setting key */
@@ -274,6 +276,29 @@ public class CmsUserSettings {
      */
     public void setEditorButtonStyle(int style) {
         m_editorSettings.put(C_EDITOR_BUTTONSTYLE, "" + style);
+    }
+    
+    /**
+     * Returns the preferred editor for the given resource type of the user.<p>
+     * 
+     * @param resourceType the resource type
+     * @return the preferred editor for the resource type or null, if not specified
+     */
+    public String getPreferredEditor(String resourceType) {
+        return (String)m_editorSettings.get(C_EDITOR_PREFERRED_PREFIX + resourceType.toUpperCase());
+    }
+    
+    /**
+     * Sets the preferred editor for the given resource type of the user.<p>
+     * 
+     * @param resourceType the resource type
+     * @param editorUri the editor URI
+     */
+    public void setPreferredEditor(String resourceType, String editorUri) {
+        if (editorUri == null) {
+            m_editorSettings.remove(C_EDITOR_PREFERRED_PREFIX + resourceType.toUpperCase());
+        }
+        m_editorSettings.put(C_EDITOR_PREFERRED_PREFIX + resourceType.toUpperCase(), editorUri);
     }
     
     /**

@@ -6709,6 +6709,25 @@
 		<accesscontrol/>
 	</file>
 	<file>
+		<source>system/workplace/jsp/editors/ledit/editor_configuration.xml</source>
+		<destination>system/workplace/jsp/editors/ledit/editor_configuration.xml</destination>
+		<type>plain</type>
+		<uuidresource>c7822cf9-57d4-11d8-8f29-d1f54806edfa</uuidresource>
+		<uuidcontent>c7822cfa-57d4-11d8-8f29-d1f54806edfa</uuidcontent>
+		<datelastmodified>1076073636000</datelastmodified>
+		<userlastmodified>Admin</userlastmodified>
+		<datecreated>1075983239000</datecreated>
+		<usercreated>Admin</usercreated>
+		<flags>0</flags>
+		<properties>
+			<property>
+				<name>Title</name>
+				<value><![CDATA[Editor configuration file]]></value>
+			</property>
+		</properties>
+		<accesscontrol/>
+	</file>
+	<file>
 		<source>system/workplace/jsp/editors/ledit/mainpage.txt</source>
 		<destination>system/workplace/jsp/editors/ledit/mainpage.txt</destination>
 		<type>plain</type>
@@ -6768,6 +6787,25 @@
 			<property>
 				<name>Title</name>
 				<value><![CDATA[IE DHTML editor]]></value>
+			</property>
+		</properties>
+		<accesscontrol/>
+	</file>
+	<file>
+		<source>system/workplace/jsp/editors/msdhtml/editor_configuration.xml</source>
+		<destination>system/workplace/jsp/editors/msdhtml/editor_configuration.xml</destination>
+		<type>plain</type>
+		<uuidresource>39a63bcc-572d-11d8-8795-d1f54806edfa</uuidresource>
+		<uuidcontent>39a63bcd-572d-11d8-8795-d1f54806edfa</uuidcontent>
+		<datelastmodified>1076073665000</datelastmodified>
+		<userlastmodified>Admin</userlastmodified>
+		<datecreated>1075911275000</datecreated>
+		<usercreated>Admin</usercreated>
+		<flags>0</flags>
+		<properties>
+			<property>
+				<name>Title</name>
+				<value><![CDATA[Editor configuration file]]></value>
 			</property>
 		</properties>
 		<accesscontrol/>
@@ -6894,6 +6932,25 @@
 		<accesscontrol/>
 	</file>
 	<file>
+		<source>system/workplace/jsp/editors/simple/editor_configuration.xml</source>
+		<destination>system/workplace/jsp/editors/simple/editor_configuration.xml</destination>
+		<type>plain</type>
+		<uuidresource>9df51f06-57d4-11d8-8f29-d1f54806edfa</uuidresource>
+		<uuidcontent>9df51f07-57d4-11d8-8f29-d1f54806edfa</uuidcontent>
+		<datelastmodified>1076073685000</datelastmodified>
+		<userlastmodified>Admin</userlastmodified>
+		<datecreated>1075983170000</datecreated>
+		<usercreated>Admin</usercreated>
+		<flags>0</flags>
+		<properties>
+			<property>
+				<name>Title</name>
+				<value><![CDATA[Editor configuration file]]></value>
+			</property>
+		</properties>
+		<accesscontrol/>
+	</file>
+	<file>
 		<source>system/workplace/jsp/editors/simple/mainpage.txt</source>
 		<destination>system/workplace/jsp/editors/simple/mainpage.txt</destination>
 		<type>plain</type>
@@ -6953,6 +7010,25 @@
 			<property>
 				<name>Title</name>
 				<value><![CDATA[Simple page editor]]></value>
+			</property>
+		</properties>
+		<accesscontrol/>
+	</file>
+	<file>
+		<source>system/workplace/jsp/editors/simplehtml/editor_configuration.xml</source>
+		<destination>system/workplace/jsp/editors/simplehtml/editor_configuration.xml</destination>
+		<type>plain</type>
+		<uuidresource>8a077f63-57d4-11d8-8f29-d1f54806edfa</uuidresource>
+		<uuidcontent>8a077f64-57d4-11d8-8f29-d1f54806edfa</uuidcontent>
+		<datelastmodified>1076073702000</datelastmodified>
+		<userlastmodified>Admin</userlastmodified>
+		<datecreated>1075983136000</datecreated>
+		<usercreated>Admin</usercreated>
+		<flags>0</flags>
+		<properties>
+			<property>
+				<name>Title</name>
+				<value><![CDATA[Editor configuration file]]></value>
 			</property>
 		</properties>
 		<accesscontrol/>

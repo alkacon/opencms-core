@@ -61,36 +61,43 @@ function cancelButtonAction() {
 
 <form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin">
 <%= wp.paramsAsHidden() %>
-<%= wp.dialogTabContentStart(wp.getParamTitle(), "style=\"height: 250px;\" id=\"tabcontent\"") %>
+<%= wp.dialogTabContentStart(wp.getParamTitle(), "style=\"height: 260px;\" id=\"tabcontent\"") %>
 
 <%
 switch (wp.getActiveTab()) {
 case 1:
 	// ########## workplace settings
 	%>
+		<%= wp.dialogBlockStart(wp.key("preferences.subhead.startup")) %>
 		<table border="0" cellpadding="4" cellspacing="0">
 		<tr>
-			<td><%= wp.key("input.lang") %></td><td><%= wp.buildSelectLanguage("name=\"tabwplanguage\" style=\"width: 200px;\"") %></td>
+			<td style="white-space: nowrap;"><%= wp.key("input.lang") %></td><td><%= wp.buildSelectLanguage("name=\"" + wp.PARAM_WORKPLACE_LANGUAGE + "\" style=\"width: 200px;\"") %></td>
 		</tr>
 		<tr>
-			<td><%= wp.key("input.startupproject") %></td><td><%= wp.buildSelectProject("name=\"tabwpproject\" style=\"width: 200px;\"") %></td>
+			<td style="white-space: nowrap;"><%= wp.key("input.startupproject") %></td><td><%= wp.buildSelectProject("name=\"" + wp.PARAM_WORKPLACE_PROJECT + "\" style=\"width: 200px;\"") %></td>
 		</tr>
 		<tr>
-			<td><%= wp.key("input.startupview") %></td><td><%= wp.buildSelectView("name=\"tabwpview\" style=\"width: 200px;\"") %></td>
-		</tr>
-		<tr>
-			<td><%= wp.key("input.workplace.buttonstyle") %></td><td><%= wp.buildSelectWorkplaceButtonStyle("name=\"tabwpbuttonstyle\" style=\"width: 200px;\"") %></td>
-		</tr>
-		<tr>
-			<td><%= wp.key("input.reporttype") %></td><td><%= wp.buildSelectReportType("name=\"tabwpreporttype\" style=\"width: 200px;\"") %></td>
-		</tr>
-		<tr>
-			<td colspan="2"><input type="checkbox" name="tabwpshowlock" value="true"<%= wp.isChecked(wp.getParamTabWpShowLock()) %>> <%= wp.key("input.showlockdialog") %></td>
-		</tr>
-		<tr>
-			<td colspan="2"><input type="checkbox" name="tabwpuseuploadapplet" value="true"<%= wp.isChecked(wp.getParamTabWpUseUploadApplet()) %>> <%= wp.key("input.uploadapplet") %></td>
+			<td style="white-space: nowrap;"><%= wp.key("input.startupview") %></td><td><%= wp.buildSelectView("name=\"" + wp.PARAM_WORKPLACE_VIEW + "\" style=\"width: 200px;\"") %></td>
 		</tr>
 		</table>
+		<%= wp.dialogBlockEnd() %>
+		<%= wp.dialogSpacer() %>
+		<%= wp.dialogBlockStart(wp.key("preferences.subhead.general")) %>
+		<table border="0" cellpadding="4" cellspacing="0">
+		<tr>
+			<td style="white-space: nowrap;"><%= wp.key("input.workplace.buttonstyle") %></td><td><%= wp.buildSelectWorkplaceButtonStyle("name=\"" + wp.PARAM_WORKPLACE_BUTTONSTYLE + "\" style=\"width: 200px;\"") %></td>
+		</tr>
+		<tr>
+			<td style="white-space: nowrap;"><%= wp.key("input.reporttype") %></td><td><%= wp.buildSelectReportType("name=\"" + wp.PARAM_WORKPLACE_REPORTTYPE + "\" style=\"width: 200px;\"") %></td>
+		</tr>
+		<tr>
+			<td colspan="2" style="white-space: nowrap;"><input type="checkbox" name="<%= wp.PARAM_WORKPLACE_SHOWLOCK %>" value="true"<%= wp.isChecked(wp.getParamTabWpShowLock()) %>> <%= wp.key("input.showlockdialog") %></td>
+		</tr>
+		<tr>
+			<td colspan="2" style="white-space: nowrap;"><input type="checkbox" name="<%= wp.PARAM_WORKPLACE_USEUPLOADAPPLET %>" value="true"<%= wp.isChecked(wp.getParamTabWpUseUploadApplet()) %>> <%= wp.key("input.uploadapplet") %></td>
+		</tr>
+		</table>
+		<%= wp.dialogBlockEnd() %>
 	<%
 default:
 break;
@@ -101,89 +108,95 @@ case 2:
 		<!--
 			function setToDefault() {
 				var theForm = document.forms[0];
-				theForm.tabexfileentries.selectedIndex = 2;
-				theForm.tabexbuttonstyle.selectedIndex = 1;
-				theForm.tabexfiletitle.checked = true;
-				theForm.tabexfiletype.checked = true;
-				theForm.tabexfiledatelastmodified.checked = true;				
-				theForm.tabexfileuserlastmodified.checked = false;
-				theForm.tabexfilesize.checked = false;
-				theForm.tabexfiledatecreated.checked = false;
-				theForm.tabexfilepermissions.checked = false;
-				theForm.tabexfileusercreated.checked = false;
-				theForm.tabexfilelockedby.checked = false;
-				theForm.tabexfilestate.checked = false;
-			}
-			function IsDigit() {
-				return ((event.keyCode >= 48) && (event.keyCode <= 57))
+				theForm.<%= wp.PARAM_EXPLORER_FILEENTRIES %>.selectedIndex = 2;
+				theForm.<%= wp.PARAM_EXPLORER_BUTTONSTYLE %>.selectedIndex = 1;
+				theForm.<%= wp.PARAM_EXPLORER_FILETITLE %>.checked = true;
+				theForm.<%= wp.PARAM_EXPLORER_FILETYPE %>.checked = true;
+				theForm.<%= wp.PARAM_EXPLORER_FILEDATELASTMODIFIED %>.checked = true;				
+				theForm.<%= wp.PARAM_EXPLORER_FILEUSERLASTMODIFIED %>.checked = false;
+				theForm.<%= wp.PARAM_EXPLORER_FILESIZE %>.checked = false;
+				theForm.<%= wp.PARAM_EXPLORER_FILEDATECREATED %>.checked = false;
+				theForm.<%= wp.PARAM_EXPLORER_FILEPERMISSIONS %>.checked = false;
+				theForm.<%= wp.PARAM_EXPLORER_FILEUSERCREATED %>.checked = false;
+				theForm.<%= wp.PARAM_EXPLORER_FILELOCKEDBY %>.checked = false;
+				theForm.<%= wp.PARAM_EXPLORER_FILESTATE %>.checked = false;
 			}
 		//-->
 		</script>
+		<%= wp.dialogBlockStart(wp.key("preferences.subhead.general")) %>
 		<table border="0" cellpadding="4" cellspacing="0">
 		<tr>
-			<td><%= wp.key("input.fileentries") %></td>
-			<td><%= wp.buildSelectExplorerFileEntries("name=\"tabexfileentries\" style=\"width: 200px;\"") %></td>
+			<td style="white-space: nowrap;"><%= wp.key("input.explorer.buttonstyle") %></td>
+			<td><%= wp.buildSelectExplorerButtonStyle("name=\"" + wp.PARAM_EXPLORER_BUTTONSTYLE + "\" style=\"width: 200px;\"") %></td>
 		</tr>
 		<tr>
-			<td><%= wp.key("input.explorer.buttonstyle") %></td>
-			<td><%= wp.buildSelectExplorerButtonStyle("name=\"tabexbuttonstyle\" style=\"width: 200px;\"") %></td>
+			<td style="white-space: nowrap;"><%= wp.key("input.fileentries") %></td>
+			<td><%= wp.buildSelectExplorerFileEntries("name=\"" + wp.PARAM_EXPLORER_FILEENTRIES + "\" style=\"width: 200px;\"") %></td>
 		</tr>
 		</table>
+		<%= wp.dialogBlockEnd() %>
+		<%= wp.dialogSpacer() %>
+		<%= wp.dialogBlockStart(wp.key("preferences.subhead.display")) %>
 		<table border="0" cellpadding="4" cellspacing="0">
 		<tr>
-			<td><input type="checkbox" name="tabexfiletitle" value="true"<%= wp.isChecked(wp.getParamTabExFileTitle()) %>> <%= wp.key("input.title") %></td>
+			<td><input type="checkbox" name="<%= wp.PARAM_EXPLORER_FILETITLE %>" value="true"<%= wp.isChecked(wp.getParamTabExFileTitle()) %>> <%= wp.key("input.title") %></td>
 			<td style="width: 40px;">&nbsp;</td>
-			<td><input type="checkbox" name="tabexfiledatelastmodified" value="true"<%= wp.isChecked(wp.getParamTabExFileDateLastModified()) %>> <%= wp.key("input.datelastmodified") %></td>
+			<td><input type="checkbox" name="<%= wp.PARAM_EXPLORER_FILEDATELASTMODIFIED %>" value="true"<%= wp.isChecked(wp.getParamTabExFileDateLastModified()) %>> <%= wp.key("input.datelastmodified") %></td>
+			<td rowspan="5" style="width: 20px;">&nbsp;</td>
+			<td rowspan="5" style="vertical-align: bottom;"><input type="button" class="dialogbutton" style="margin-left: 0px;" value="<%= wp.key("button.default") %>" onclick="setToDefault();"></td>
 		</tr>
 		<tr>
-			<td><input type="checkbox" name="tabexfiletype" value="true"<%= wp.isChecked(wp.getParamTabExFileType()) %>> <%= wp.key("input.type") %></td>
+			<td><input type="checkbox" name="<%= wp.PARAM_EXPLORER_FILETYPE %>" value="true"<%= wp.isChecked(wp.getParamTabExFileType()) %>> <%= wp.key("input.type") %></td>
 			<td>&nbsp;</td>
-			<td><input type="checkbox" name="tabexfileuserlastmodified" value="true"<%= wp.isChecked(wp.getParamTabExFileUserLastModified()) %>> <%= wp.key("input.userlastmodified") %></td>
+			<td><input type="checkbox" name="<%= wp.PARAM_EXPLORER_FILEUSERLASTMODIFIED %>" value="true"<%= wp.isChecked(wp.getParamTabExFileUserLastModified()) %>> <%= wp.key("input.userlastmodified") %></td>
 		</tr>
 		<tr>
-			<td><input type="checkbox" name="tabexfilesize" value="true"<%= wp.isChecked(wp.getParamTabExFileSize()) %>> <%= wp.key("input.size") %></td>
+			<td><input type="checkbox" name="<%= wp.PARAM_EXPLORER_FILESIZE %>" value="true"<%= wp.isChecked(wp.getParamTabExFileSize()) %>> <%= wp.key("input.size") %></td>
 			<td>&nbsp;</td>
-			<td><input type="checkbox" name="tabexfiledatecreated" value="true"<%= wp.isChecked(wp.getParamTabExFileDateCreated()) %>> <%= wp.key("input.datecreated") %></td>
+			<td><input type="checkbox" name="<%= wp.PARAM_EXPLORER_FILEDATECREATED %>" value="true"<%= wp.isChecked(wp.getParamTabExFileDateCreated()) %>> <%= wp.key("input.datecreated") %></td>
 		</tr>
 		<tr>
-			<td><input type="checkbox" name="tabexfilepermissions" value="true"<%= wp.isChecked(wp.getParamTabExFilePermissions()) %>> <%= wp.key("input.permissions") %></td>
+			<td><input type="checkbox" name="<%= wp.PARAM_EXPLORER_FILEPERMISSIONS %>" value="true"<%= wp.isChecked(wp.getParamTabExFilePermissions()) %>> <%= wp.key("input.permissions") %></td>
 			<td>&nbsp;</td>
-			<td><input type="checkbox" name="tabexfileusercreated" value="true"<%= wp.isChecked(wp.getParamTabExFileUserCreated()) %>> <%= wp.key("input.usercreated") %></td>
+			<td><input type="checkbox" name="<%= wp.PARAM_EXPLORER_FILEUSERCREATED %>" value="true"<%= wp.isChecked(wp.getParamTabExFileUserCreated()) %>> <%= wp.key("input.usercreated") %></td>
 		</tr>
 		<tr>
-			<td><input type="checkbox" name="tabexfilelockedby" value="true"<%= wp.isChecked(wp.getParamTabExFileLockedBy()) %>> <%= wp.key("input.lockedby") %></td>
+			<td><input type="checkbox" name="<%= wp.PARAM_EXPLORER_FILELOCKEDBY %>" value="true"<%= wp.isChecked(wp.getParamTabExFileLockedBy()) %>> <%= wp.key("input.lockedby") %></td>
 			<td>&nbsp;</td>
-			<td><input type="checkbox" name="tabexfilestate" value="true"<%= wp.isChecked(wp.getParamTabExFileState()) %>> <%= wp.key("input.state") %></td>
-		</tr>
-		<tr>
-			<td colspan="3">&nbsp;</td>
-		</tr>
-		<tr>
-			<td colspan="3"><input type="button" class="dialogbutton" style="margin-left: 0px;" value="<%= wp.key("button.default") %>" onclick="setToDefault();"></td>
+			<td><input type="checkbox" name="<%= wp.PARAM_EXPLORER_FILESTATE %>" value="true"<%= wp.isChecked(wp.getParamTabExFileState()) %>> <%= wp.key("input.state") %></td>
 		</tr>
 		</table>
+		<%= wp.dialogBlockEnd() %>
 	<%
 break;
 case 3:
 	// ########## editor settings
 	%>
+		<%= wp.dialogBlockStart(wp.key("preferences.subhead.general")) %>
 		<table border="0" cellpadding="4" cellspacing="0">
 		<tr>
-			<td><%= wp.key("input.editor.buttonstyle") %></td>
-			<td><%= wp.buildSelectEditorButtonStyle("name=\"tabedbuttonstyle\" style=\"width: 200px;\"") %></td>
+			<td style="white-space: nowrap;"><%= wp.key("input.editor.buttonstyle") %></td>
+			<td><%= wp.buildSelectEditorButtonStyle("name=\"" + wp.PARAM_EDITOR_BUTTONSTYLE + "\" style=\"width: 200px;\"") %></td>
 		</tr>
 		</table>
+		<%= wp.dialogBlockEnd() %>
+		<%= wp.dialogSpacer() %>
+		<%= wp.dialogBlockStart(wp.key("preferences.subhead.editors")) %>
+		<table border="0" cellpadding="4" cellspacing="0">
+		<%= wp.buildSelectPreferredEditors("style=\"width: 200px;\"") %>
+		</table>
+		<%= wp.dialogBlockEnd() %>
 	<%
 break;
 case 4:
 	// ########## workflow settings
 	%>
-		<%= wp.dialogBlockStart(wp.key("label.preferencesexplorer")) %>
+		<%= wp.dialogBlockStart(wp.key("preferences.subhead.general")) %>
 		<table border="0" cellpadding="4" cellspacing="0">
 		<tr>
-			<td><%= wp.key("input.taskfilter") %>:</td>
-			<td><%= wp.buildSelectFilter("name=\"tabwffilter\" style=\"width: 250px;\"") %></td>
-			<td><input type="checkbox" name="tabwfshowallprojects" value="true"<%= wp.isChecked(wp.getParamTabWfShowAllProjects()) %>> <%= wp.key("input.allprojects") %></td>
+			<td style="white-space: nowrap;"><%= wp.key("input.taskfilter") %>:</td>
+			<td><%= wp.buildSelectFilter("name=\"" + wp.PARAM_WORKFLOW_FILTER + "\" style=\"width: 250px;\"") %></td>
+			<td style="white-space: nowrap;"><input type="checkbox" name="<%= wp.PARAM_WORKFLOW_SHOWALLPROJECTS %>" value="true"<%= wp.isChecked(wp.getParamTabWfShowAllProjects()) %>> <%= wp.key("input.allprojects") %></td>
 		</tr>
 		</table>
 		<%= wp.dialogBlockEnd() %>
@@ -191,16 +204,16 @@ case 4:
 		<%= wp.dialogBlockStart(wp.key("input.defaulttasks")) %>
 		<table border="0" cellpadding="4" cellspacing="0">
 		<tr>
-			<td><input type="checkbox" name="tabwfmessageaccepted" value="true"<%= wp.isChecked(wp.getParamTabWfMessageAccepted()) %>> <%= wp.key("input.messageaccept") %></td>
+			<td><input type="checkbox" name="<%= wp.PARAM_WORKFLOW_MESSAGEACCEPTED %>" value="true"<%= wp.isChecked(wp.getParamTabWfMessageAccepted()) %>> <%= wp.key("input.messageaccept") %></td>
 		</tr>
 		<tr>
-			<td><input type="checkbox" name="tabwfmessageforwarded" value="true"<%= wp.isChecked(wp.getParamTabWfMessageForwarded()) %>> <%= wp.key("input.messageforward") %></td>
+			<td><input type="checkbox" name="<%= wp.PARAM_WORKFLOW_MESSAGEFORWARDED %>" value="true"<%= wp.isChecked(wp.getParamTabWfMessageForwarded()) %>> <%= wp.key("input.messageforward") %></td>
 		</tr>
 		<tr>
-			<td><input type="checkbox" name="tabwfmessagecompleted" value="true"<%= wp.isChecked(wp.getParamTabWfMessageCompleted()) %>> <%= wp.key("input.messagecompleted") %></td>
+			<td><input type="checkbox" name="<%= wp.PARAM_WORKFLOW_MESSAGECOMPLETED %>" value="true"<%= wp.isChecked(wp.getParamTabWfMessageCompleted()) %>> <%= wp.key("input.messagecompleted") %></td>
 		</tr>
 		<tr>
-			<td><input type="checkbox" name="tabwfmessagemembers" value="true"<%= wp.isChecked(wp.getParamTabWfMessageMembers()) %>> <%= wp.key("input.messagemembers") %></td>
+			<td><input type="checkbox" name="<%= wp.PARAM_WORKFLOW_MESSAGEMEMBERS %>" value="true"<%= wp.isChecked(wp.getParamTabWfMessageMembers()) %>> <%= wp.key("input.messagemembers") %></td>
 		</tr>
 		</table>
 		<%= wp.dialogBlockEnd() %>
@@ -219,14 +232,14 @@ case 5:
         			document.getElementById("tabcontent").style.height = "320px"; 
     			} else {
         			element.className = "hide";
-        			document.getElementById("tabcontent").style.height = "250px";
+        			document.getElementById("tabcontent").style.height = "260px";
     			}
 			}
 			
 			function changePassword() {
 				var pwdForm = document.forms[0];
-				var oldPwd = pwdForm.oldpassword.value;
-				var newPwd = pwdForm.newpassword.value;
+				var oldPwd = pwdForm.<%= wp.PARAM_OLDPASSWORD %>.value;
+				var newPwd = pwdForm.<%= wp.PARAM_NEWPASSWORD %>.value;
 				var conPwd = pwdForm.confirmpassword.value;
 				if (oldPwd == null || newPwd == null || conPwd == null || oldPwd == "" || newPwd == "" || conPwd == "") {
 					alert("<%= wp.key("error.message.chpwd.form") %>");
@@ -251,15 +264,15 @@ case 5:
 			<%= wp.dialogBlockStart("") %>
 			<table border="0" cellpadding="4" cellspacing="0">
 			<tr>
-				<td><%= wp.key("input.oldpwd") %></td>
-				<td><input type="password" name="oldpassword" maxlength="8" style="width: 200px;"></td>
+				<td style="white-space: nowrap;"><%= wp.key("input.oldpwd") %></td>
+				<td><input type="password" name="<%= wp.PARAM_OLDPASSWORD %>" maxlength="8" style="width: 200px;"></td>
 			</tr>
 			<tr>
-				<td><%= wp.key("input.newpwd") %></td>
-				<td><input type="password" name="newpassword" maxlength="8" style="width: 200px;"></td> 
+				<td style="white-space: nowrap;"><%= wp.key("input.newpwd") %></td>
+				<td><input type="password" name="<%= wp.PARAM_NEWPASSWORD %>" maxlength="8" style="width: 200px;"></td> 
 			</tr>
 			<tr>
-				<td><%= wp.key("input.newpwdrepeat") %></td>
+				<td style="white-space: nowrap;"><%= wp.key("input.newpwdrepeat") %></td>
 				<td><input type="password" name="confirmpassword" maxlength="8" style="width: 200px;"></td>
 			</tr>
 			<tr>

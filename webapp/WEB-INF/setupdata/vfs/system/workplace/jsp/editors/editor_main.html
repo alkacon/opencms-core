@@ -8,7 +8,10 @@
 	
 	// initialize the workplace class
 	CmsEditorSelector wp = new CmsEditorSelector(cms);
+	String editorUri = wp.getSelectedEditorUri();
 	
-	cms.include(wp.getSelectedEditorUri(), null, request.getParameterMap());
+	if (editorUri != null) {
+		cms.include(editorUri, null, request.getParameterMap());
+	}
 
 %>
