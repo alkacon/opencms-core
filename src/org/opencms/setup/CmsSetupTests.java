@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupTests.java,v $
- * Date   : $Date: 2004/12/09 13:49:52 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/12/14 14:27:15 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.xml.sax.InputSource;
  * Runs various tests to give users infos about whether their system is compatible to OpenCms.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.14 $ $Date: 2004/12/09 13:49:52 $
+ * @version $Revision: 1.15 $ $Date: 2004/12/14 14:27:15 $
  * @since 5.3
  */
 public class CmsSetupTests {
@@ -179,7 +179,8 @@ public class CmsSetupTests {
             String[] supportedEngines = { 
                     "Apache Tomcat/4.1", 
                     "Apache Tomcat/4.0", 
-                    "Apache Tomcat/5.0" 
+                    "Apache Tomcat/5.0", 
+                    "Apache Tomcat/5.5" 
             };
 
             String[] unsupportedEngines = { 
