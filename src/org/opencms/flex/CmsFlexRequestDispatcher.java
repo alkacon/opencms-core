@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequestDispatcher.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2005/03/23 16:02:47 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.http.HttpServletResponse;
  * </ol>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  */
 public class CmsFlexRequestDispatcher implements RequestDispatcher {
     
@@ -119,7 +119,7 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
      * This method will dispatch to cache, to real file system or
      * to the OpenCms VFS, whatever is needed.<p>
      *
-     * This method is much more complex then it sould be because of the internal standard 
+     * This method is much more complex than it should be because of the internal standard 
      * buffering of JSP pages.
      * Because of that I can not just intercept and buffer the stream, since I don't have 
      * access to it (it is wrapped internally in the JSP pages, which have their own buffer).
