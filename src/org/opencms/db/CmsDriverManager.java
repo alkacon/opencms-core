@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/09 13:08:57 $
- * Version: $Revision: 1.201 $
+ * Date   : $Date: 2003/09/09 14:47:05 $
+ * Version: $Revision: 1.202 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.201 $ $Date: 2003/09/09 13:08:57 $
+ * @version $Revision: 1.202 $ $Date: 2003/09/09 14:47:05 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1959,26 +1959,21 @@ public class CmsDriverManager extends Object {
     }
 
     /**
-     * Deletes the versions from the backup tables that are older then the given weeks
+     * Deletes the versions from the backup tables that are older then the given timestamp.<p>
      *
      * @param cms The CmsObject for reading the registry
      * @param context the current request context
-     * @param weeks The number of weeks: the max age of the remaining versions
+     * @param timestamp the max age of backup resources
      * @return int The oldest remaining version
      */
-    public int deleteBackups(CmsObject cms, CmsRequestContext context, int weeks) throws CmsException {
+    public int deleteBackups(CmsObject cms, CmsRequestContext context, long timestamp) throws CmsException {
         int lastVersion = 1;
         Hashtable histproperties = cms.getRegistry().getSystemValues(I_CmsConstants.C_REGISTRY_HISTORY);
         String delete = (String) histproperties.get(I_CmsConstants.C_REGISTRY_HISTORY_DELETE);
         if ("true".equalsIgnoreCase(delete)) {
             // only an Administrator can delete the backups
             if (isAdmin(context)) {
-                // calculate the max date by the given weeks
-                // one week has 604800000 milliseconds
-                long oneWeek = 604800000;
-                long maxDate = System.currentTimeMillis() - (weeks * oneWeek);
-                //System.err.println("backup max date: "+Utils.getNiceDate(maxDate));
-                lastVersion = m_backupDriver.deleteBackups(maxDate);
+                lastVersion = m_backupDriver.deleteBackups(timestamp);
             } else {
                 throw new CmsSecurityException("[" + this.getClass().getName() + "] deleteBackups()", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);                                            
             }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminHistoryProperties.java,v $
-* Date   : $Date: 2003/09/08 09:08:09 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2003/09/09 14:47:05 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -262,7 +262,11 @@ public class CmsAdminHistoryProperties extends CmsWorkplaceDefault implements I_
         Hashtable histproperties = cms.getRegistry().getSystemValues(C_REGISTRY_HISTORY);
         String weeks = (String)histproperties.get(C_REGISTRY_HISTORY_WEEKS);
         if((weeks != null) && !("".equals(weeks.trim()))){
-            versionId = cms.deleteBackups(Integer.parseInt(weeks));
+            int intWeeks=Integer.parseInt(weeks);
+            long oneWeek = 604800000;
+            long maxDate = System.currentTimeMillis() - (intWeeks * oneWeek);
+            //TODO: the second parameter is still a dummy
+            versionId = cms.deleteBackups(maxDate,100);
         }
         return versionId;
     } 
