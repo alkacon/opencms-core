@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
-* Date   : $Date: 2001/07/25 13:38:10 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2001/07/26 10:06:58 $
+* Version: $Revision: 1.29 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -46,7 +46,7 @@ import org.xml.sax.*;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.28 $ $Date: 2001/07/25 13:38:10 $
+ * @version $Revision: 1.29 $ $Date: 2001/07/26 10:06:58 $
  */
 
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannels,I_CmsConstants,I_CmsWpConstants {
@@ -161,6 +161,9 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
         // if the parameter mode=listonly is set, only the list will be shown
         boolean listonly = "listonly".equals(parameters.get("mode"));
 
+        // the flaturl to use for changing folders
+        String flaturl = (String) parameters.get("flaturl");
+
         // get the checksum
         String checksum = (String)parameters.get("check");
         boolean newTreePlease = true;
@@ -184,6 +187,11 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
             content.append(" top.openfolderMethod='openthisfolderflat';\n");
         } else {
             content.append(" top.openfolderMethod='openthisfolder';\n");
+        }
+
+        // the flaturl
+        if(flaturl != null) {
+            content.append(" top.flaturl='" + flaturl + "';\n");
         }
 
         // the help_url

@@ -11,6 +11,7 @@ Legend:
 OpenCms 4.3.34 Bela Tegeuse - ?? July 2001
 * overwrought the ímport. Now the reource type classes import the resources.
 - Added the class CmsWorkplaceDefaultNoCache again for module compatibility.
+- Switched picgalery to new filelist.
 
 OpenCms 4.3.33 Bela Tegeuse - 25 July 2001
 ! Added icons and there handling of locked ressources in the new filelist.

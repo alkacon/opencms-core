@@ -1,7 +1,7 @@
   /*
   * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/explorer.js,v $
-  * Date   : $Date: 2001/07/25 13:38:10 $
-  * Version: $Revision: 1.34 $
+  * Date   : $Date: 2001/07/26 10:06:58 $
+  * Version: $Revision: 1.35 $
   *
   * Copyright (C) 2000  The OpenCms Group
   *
@@ -32,7 +32,12 @@
   *  must set this variable with top.help_url="..."
   */
  var help_url="ExplorerAnsicht/index.html";
- 
+
+/**
+ * The flaturl to use for changing folders in filelist-only mode.
+ */
+ var flaturl="";
+
   /**
    *  contains information about the actual help page.
    *  instead of the function show_help every template displayed in the explorer view
@@ -927,7 +932,8 @@ function enableNewButton(showit){
  }
 
  function openthisfolderflat(thisdir){
-    vi.doc.location.href=vi.doc.location.pathname+"?mode=listonly&folder="+vr.actDirectory+thisdir+"/";
+    // alert(flaturl + "?folder=" + vr.actDirectory+thisdir+"/\"");
+    eval(flaturl + "?folder=" + vr.actDirectory+thisdir+"/\"");
  }
 
  /**

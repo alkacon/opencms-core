@@ -1,7 +1,7 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminPicGalleries.java,v $
-* Date   : $Date: 2001/07/25 13:38:10 $
+* Date   : $Date: 2001/07/26 10:06:58 $
 * Version: $ $
 *
 * Copyright (C) 2000  The OpenCms Group
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.18 $ $Date: 2001/07/25 13:38:10 $
+ * @version $Revision: 1.19 $ $Date: 2001/07/26 10:06:58 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -83,6 +83,11 @@ public class CmsAdminPicGalleries extends CmsWorkplaceDefault implements I_CmsCo
         // read the parameters
         String foldername = (String)parameters.get(C_PARA_FOLDER);
         if(foldername != null) {
+            int index = foldername.indexOf("/", 8);
+            if(index != foldername.lastIndexOf("/") ){
+                foldername = foldername.substring(0,index);
+                parameters.put(C_PARA_FOLDER, foldername);
+            }
 
             // need the foldername in the session in case of an exception in the dialog
             session.putValue(C_PARA_FOLDER, foldername);
@@ -245,7 +250,6 @@ public class CmsAdminPicGalleries extends CmsWorkplaceDefault implements I_CmsCo
                                        filecontent, C_TYPE_IMAGE_NAME);
                                 if(title != null) {
                                     String filepath = file.getAbsolutePath();
-                                    cms.lockResource(filepath);
                                     cms.writeProperty(filepath, C_PROPERTY_TITLE, title);
                                 }
                             }
@@ -392,4 +396,17 @@ public class CmsAdminPicGalleries extends CmsWorkplaceDefault implements I_CmsCo
         prefs = ((prefs & C_FILELIST_SIZE) == 0) ? prefs : (prefs - C_FILELIST_SIZE);
         return prefs;
     }
+
+    public Object onLoad(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) throws CmsException {
+        Hashtable parameters = (Hashtable) userObj;
+        String folder = (String)parameters.get("folder");
+
+        if(folder != null) {
+            String servletUrl = cms.getRequestContext().getRequest().getServletUrl() + "/";
+            return "window.top.body.admin_content.location.href='" + servletUrl + "system/workplace/action/explorer_files.html?mode=listonly&folder=" + folder + "'";
+        } else {
+            return "";
+        }
+    }
+
 }
