@@ -8,7 +8,7 @@
     value at the command line.
     Set it like this: ant all -Dversion.number=5.0.0   
     You can also uncomment the line below. -->
-    <property name="version.number"             value="5.0.0"/>
+    <!-- property name="version.number"             value="5.0.0"/ -->
     
     <property name="version.name"               value="Kaitain"/>
     <property name="app.name"                   value="opencms"/>
@@ -50,7 +50,10 @@
     <property name="build.tmpexcludes"          value=""/>
     <property name="excludes"                   value="**/CVS/*,**/.nbattrs,**/.project,**/.classpath"/>
         
-    <target name="init" description="Checks if all needed libaries are available">
+        
+    <target name="init" 
+    	description="Checks if all required libraries are available">
+    	
         <condition property="libsAvailable">
             <and>
                 <available file="${build.inputlib.servlet}"/>
@@ -81,9 +84,9 @@
         </condition>
     
         <tstamp>
-            <format property="timestamp" pattern="yyyy-MM-dd-HH-mm"/>
+            <format property="timestamp" pattern="yyyy.MM.dd-HH.mm"/>
         </tstamp>
-        <property name="version.number" value="${env.USERNAME}_${timestamp}_current"/>
+        <property name="version.number" value="${env.USERNAME}_${timestamp}"/>
         
         <echo message="Building OpenCms ${version.number} (${version.name})" />
         <echo message=" " />
@@ -96,10 +99,12 @@
     </target>
     
     
-    <target name="initmsg" depends="init" unless="libsAvailable" description="Stop target if required libaries are missing">
+    <target name="initmsg" depends="init" unless="libsAvailable" 
+    	description="Stop target if libraries required for compilation are missing">
+    	
         <fail>
         
-Error: Some of the required libaries are not available.
+Error: Some of the required libraries are not available.
 
 To comile OpenCms, you need the following libaries:
 ${build.inputlib.servlet}
@@ -115,7 +120,9 @@ ${build.inputlib.tidy}
     </target>
 
 
-    <target name="prepare" depends="initmsg" description="Create output directories">
+    <target name="prepare" depends="initmsg" 
+    	description="Create required output directories">
+    	
         <mkdir dir="${build.classes}"/>
         <mkdir dir="${build.home}"/>
         <mkdir dir="${build.lib}"/>
@@ -124,17 +131,23 @@ ${build.inputlib.tidy}
     </target>
 
 
-    <target name="clean" description="Delete existing ouput directories">
+    <target name="clean" 
+    	description="Delete existing ouput directories">
+    	
         <delete dir="${build.home}"/>
     </target>
 
     
-    <target name="cleanclasses" description="Delete existing class directory">
+    <target name="cleanclasses" 
+    	description="Delete existing class directory (for full recompile)">
+    	
         <delete dir="${build.classes}"/>
-    </target>
-        
+    </target>        
 
-    <target name="compileclasses" depends="prepare" if="libsAvailable" description="Compiles all OpenCms classes">
+
+    <target name="compileclasses" depends="prepare" if="libsAvailable" 
+    	description="Compile the OpenCms classes">
+    	
        <javac
             srcdir="src"
             destdir="${build.classes}"
@@ -164,7 +177,9 @@ ${build.inputlib.tidy}
     </target>
     
 
-    <target name="jar" depends="compileclasses" description="Generate OpenCms JARs">
+    <target name="jar" depends="compileclasses" 
+    	description="Generate the OpenCms .jar files">
+    	
         <jar
             jarfile="${build.lib}/opencms.jar"
             basedir="${build.classes}"
@@ -176,7 +191,9 @@ ${build.inputlib.tidy}
     </target>
 
 
-    <target name="copy" depends="jar" description="Creates WAR file structure and copies needed files to it">
+    <target name="copy" depends="jar" 
+    	description="Creates OpenCms .war file structure and copies required files to it">
+    	
        <copy todir="${build.home}">
             <fileset dir="." includes="*.*" excludes="build.xml,build_flex.xml,${excludes}"/>
        </copy>
@@ -219,7 +236,9 @@ ${build.inputlib.tidy}
     </target>
     
 
-    <target name="war" depends="copy" description="Builds the opencms.war">
+    <target name="war" depends="copy" 
+    	description="Builds the opencms.war">
+    	
         <zip zipfile="${build.home}/${app.name}.war">
             <zipfileset dir="${build.web}/META-INF" prefix="META-INF"/>
             <zipfileset dir="${build.web}/WEB-INF" prefix="WEB-INF"/>
@@ -229,7 +248,9 @@ ${build.inputlib.tidy}
     </target>
     
 
-    <target name="zip" depends="war" description="Creates a binary distribution ZIP">
+    <target name="zip" depends="war" 
+    	description="Creates a binary distribution ZIP">
+    	
         <zip
             zipfile="${zip.home}/opencms_${version.number}.zip"
             basedir="${build.home}"
@@ -237,35 +258,17 @@ ${build.inputlib.tidy}
     </target>
 
 
-    <target name="all" depends="bindist,srcdist" description="Creates binary and source distribution ZIPs"/>
+    <target name="all" depends="bindist, srcdist" 
+    	description="Creates binary and source distribution ZIPs"/>
 
 
-    <target name="compile" depends="copy" description="Default compile target"/>
+    <target name="compile" depends="copy" 
+    	description="Default compile target"/>
 
 
-    <target name="tomcat.clean" depends="prepare" description="Delete existing Tomcat webapps directory and opencms.war">
-        <delete file="${tomcat.home}/webapps/${app.name}.war"/>
-        <delete dir= "${tomcat.home}/webapps/${app.name}"/>
-    </target>
-
-
-    <target name="tomcat.dist" depends="copy" description="Direct install in Tomcat webapps directory">
-        <copy todir="${tomcat.home}/webapps/${app.name}">
-            <fileset dir="${build.web}"/>
-        </copy>
-        <copy file="etc/web.xml" todir="${tomcat.home}/webapps/${app.name}/WEB-INF"/>
-
-        <property name="copy.files" value="${build.inputlib.activation}"/>
-        <available property="copy.files" file="${build.inputlib.oracle}" value="${build.inputlib.oracle}"/>     
-        
-        <copy file="${copy.files}" todir="${tomcat.home}/webapps/${app.name}/WEB-INF/oclib"/>
-        
-        <copy todir="${tomcat.home}/webapps/${app.name}/pics">
-            <fileset dir="${build.webinf}/ocsetup/vfs/pics"/>
-        </copy>
-    </target>
-
-    <target  name="tomcat.copy" description="Copy updated files to Tomcat directorys">
+    <target name="tomcat.copy" 
+    	description="Copy updated files to Tomcat directorys">
+    	
         <copy todir="${tomcat.home}/webapps/${app.name}/WEB-INF/lib">
             <fileset dir="${build.lib}">
                 <include name="*.jar"/>
@@ -278,80 +281,22 @@ ${build.inputlib.tidy}
         <copy file="${basedir}/etc/opencms.tld" todir="${tomcat.home}/webapps/${app.name}/WEB-INF"/>
     </target>     
     
-    <target name="tomcat.update" depends="jar,tomcat.copy" description="Recompile changed classes and install in Tomcat webapps directory"/>      
-
-    <target name="tomcat.all" depends="cleanclasses,tomcat.update" description="Do a complete recompile of all classes and install in Tomcat webapps directory"/>          
     
-    <target name="setup" depends="tomcat.dist" description="Creates a new OC version and imports all workplace files">
-        <sql
-            classpath="${build.inputlib.mysql}"
-            driver="${db.driver}"
-            url="${db.setupurl}"
-            userid="${db.user}"
-            password="${db.password}"
-            autocommit="true"
-            onerror="continue">
-            drop database opencms;
-            create database opencms;
-        </sql>
-        <sql
-            classpath="${build.inputlib.mysql}"
-            driver="${db.driver}"
-            url="${db.url}"
-            userid="${db.user}"
-            password="${db.password}"
-            autocommit="true"
-            onerror="continue"
-            src="${build.webinf}/ocsetup/mysql.sql"
-            />
-        <java
-            classname="com.opencms.boot.CmsMain"
-            classpath="${tomcat.home}/webapps/${app.name}/WEB-INF/lib/opencmsboot.jar"
-            dir="${tomcat.home}/webapps/${app.name}/WEB-INF"
-            fork="true">
-            <arg value="-script=ocsetup/cmssetup.txt" />
-            <jvmarg value="-Dfile.encoding=ISO8859_1"/> 
-        </java>
-    </target>
+    <target name="tomcat.update" depends="jar, tomcat.copy" 
+    	description="Recompile changed classes and install in Tomcat webapps directory"/>      
 
 
-    <target name="tomcat.cleandist" depends="clean,tomcat.clean,tomcat.dist" description="Do complete recompile and install in Tomcat webapps directory"/>
-
-
-    <target name="cvs.update" description="Update from CVS">
-        <cvs command="update"/>
-    </target>
+    <target name="tomcat.all" depends="cleanclasses, tomcat.update" 
+    	description="Do a complete recompile of all classes and install in Tomcat webapps directory"/>              
     
     
-    <target name="tex.clean" description="Clean up TeX directories">
-        <delete>
-            <fileset dir="doc/documentation" includes="*.aux,*.toc,*.ind,*.ilg,*.idx"/>
-        </delete>        
-    </target>
+    <target name="bindist" depends="clean,zip" 
+    	description="Builds from scratch and creates a binary distribution ZIP including the required libaries"/>        
     
     
-    <target name="tex" depends="prepare" description="Creates the documentation from the TeX sources">
-        <exec dir="doc/documentation" executable="pdflatex">
-            <arg line="OpenCmsDoc"/>
-        </exec>
-        <exec dir="doc/documentation" executable="makeindex">
-            <arg line="OpenCmsDoc"/>
-        </exec>
-        <exec dir="doc/documentation" executable="pdflatex">
-            <arg line="OpenCmsDoc"/>
-        </exec>
-        <tstamp>
-            <format property="timestamp" pattern="yyyyMMdd"/>
-        </tstamp>
-        <move file="doc/documentation/OpenCmsDoc.pdf" tofile="${pdf.home}/OpenCmsDoc${timestamp}.pdf" />        
-        <move file="doc/documentation/OpenCmsDoc.log" tofile="${pdf.home}/OpenCmsDoc${timestamp}.log" />        
-    </target>
-
-    
-    <target name="bindist" depends="clean,zip" description="Builds from scratch and creates a binary distribution ZIP including the required libaries"/>    
-    
-    
-    <target name="srcdist" depends="clean" description="Clean the output folder and creates a source distribution ZIP including the required libaries">
+    <target name="srcdist" depends="clean" 
+    	description="Clean the output folder and creates a source distribution ZIP including the required libaries">
+    	
         <tstamp>
             <format property="timestamp" pattern="yyyy-MM-dd-HH-mm"/>
         </tstamp>
