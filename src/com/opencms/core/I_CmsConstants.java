@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2002/12/04 15:00:46 $
-* Version: $Revision: 1.211 $
+* Date   : $Date: 2002/12/13 17:38:13 $
+* Version: $Revision: 1.212 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ package com.opencms.core;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.211 $ $Date: 2002/12/04 15:00:46 $
+ * @version $Revision: 1.212 $ $Date: 2002/12/13 17:38:13 $
  */
 public interface I_CmsConstants {
 
@@ -1308,6 +1308,9 @@ public interface I_CmsConstants {
      * Character to separate additional resources specified in the module properties.
      */
     static final String C_MODULE_PROPERTY_ADDITIONAL_RESOURCES_SEPARATOR = ";";    
+    
+    /** name of the special body element from an XMLTemplate */
+    public final static String C_XML_BODY_ELEMENT = "body";    
 }
 
 

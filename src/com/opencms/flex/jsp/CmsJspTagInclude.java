@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagInclude.java,v $
-* Date   : $Date: 2002/12/06 23:16:58 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2002/12/13 17:38:13 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 
 package com.opencms.flex.jsp;
 
+import com.opencms.core.I_CmsConstants;
 import com.opencms.flex.cache.CmsFlexRequest;
 import com.opencms.flex.cache.CmsFlexResponse;
 import com.opencms.launcher.CmsXmlLauncher;
@@ -45,7 +46,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * This Tag is used to include another OpenCms managed resource in a JSP.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspParamParent { 
     
@@ -63,9 +64,6 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspParamPar
         
     /** Debugging on / off */
     private static final boolean DEBUG = false;
-    
-    /** Name of body for XMLTemplate includes */
-    public static final String C_BODY = "body";
     
     /**
      * Sets the include page/file target.
@@ -228,8 +226,14 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspParamPar
             if (m_part != null) {
                 addParameter(CmsJspTagTemplate.C_TEMPLATE_PART, m_part);
                 // Check for body part and add special parameters for XMLTemplate if required
-                if (C_BODY.equals(m_part.toLowerCase().trim())) {
-                    addParameter(CmsXmlLauncher.C_ELEMENT_REPLACE, "body:" + I_CmsWpConstants.C_VFS_PATH_BODIES + c_req.getCmsRequestedResource().substring(1));
+                if (I_CmsConstants.C_XML_BODY_ELEMENT.equalsIgnoreCase(m_part.trim())) {
+                    // First check if a body was set in the cms request context
+                    String body = (String)c_req.getCmsObject().getRequestContext().getAttribute(I_CmsConstants.C_XML_BODY_ELEMENT);
+                    if (body == null) {
+                        // no body was set, try to calculate the name (will not work with linked files, though)
+                        body = I_CmsWpConstants.C_VFS_PATH_BODIES + c_req.getCmsRequestedResource().substring(1);
+                    }
+                    addParameter(CmsXmlLauncher.C_ELEMENT_REPLACE, "body:" + body);
                 }
             }
             

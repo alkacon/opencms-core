@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2002/12/12 19:00:41 $
-* Version: $Revision: 1.346 $
+* Date   : $Date: 2002/12/13 17:38:12 $
+* Version: $Revision: 1.347 $
 
 *
 * This library is part of OpenCms -
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.346 $ $Date: 2002/12/12 19:00:41 $
+ * @version $Revision: 1.347 $ $Date: 2002/12/13 17:38:12 $
 
  *
  */
@@ -7182,6 +7182,8 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
             // write the file in the offline project
             // has the user write-access?
             if( accessWrite(currentUser, currentProject, (CmsResource)restoredFolder) ) {
+                // this sets a flag so that the file date is not set to the current time
+                restoredFolder.setDateLastModified(onlineFolder.getDateLastModified());                
                 // write-access  was granted - write the folder without setting state = changed
                 m_dbAccess.writeFolder(currentProject, restoredFolder, false, currentUser.getId());
                 // restore the properties in the offline project
@@ -7215,6 +7217,8 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
             // write the file in the offline project
             // has the user write-access?
             if( accessWrite(currentUser, currentProject, (CmsResource)restoredFile) ) {
+                // this sets a flag so that the file date is not set to the current time
+                restoredFile.setDateLastModified(onlineFile.getDateLastModified());
                 // write-acces  was granted - write the file without setting state = changed
                 m_dbAccess.writeFile(currentProject,
                                onlineProject(currentUser, currentProject), restoredFile, false);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2002/12/06 23:16:58 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2002/12/13 17:38:12 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since FLEX alpha 1
  */
 public class CmsXmlTemplateLoader extends CmsXmlLauncher implements I_CmsResourceLoader {
@@ -188,7 +188,7 @@ public class CmsXmlTemplateLoader extends CmsXmlLauncher implements I_CmsResourc
             }        
         }  catch (Exception e) {
             System.err.println("Error in CmsXmlTemplateLoader: " + e.toString());
-            if (DEBUG > 0) System.err.println(com.opencms.util.Utils.getStackTrace(e));
+            if (DEBUG > 0) e.printStackTrace(System.err);
             throw new ServletException("Error in CmsXmlTemplateLoader processing", e);       
         }
         if (DEBUG > 0) {

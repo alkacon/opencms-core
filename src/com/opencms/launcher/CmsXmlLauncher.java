@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsXmlLauncher.java,v $
-* Date   : $Date: 2002/12/06 23:16:54 $
-* Version: $Revision: 1.41 $
+* Date   : $Date: 2002/12/13 17:38:13 $
+* Version: $Revision: 1.42 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import javax.servlet.http.HttpServletRequest;
  * be used to create output.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.41 $ $Date: 2002/12/06 23:16:54 $
+ * @version $Revision: 1.42 $ $Date: 2002/12/13 17:38:13 $
  */
 public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_CmsConstants {
     
@@ -186,7 +186,16 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_
                     newParameters.put(elementName + "._CLASS_", doc.getElementClass(elementName));
                 }
                 if(doc.isElementTemplateDefined(elementName)) {
-                    newParameters.put(elementName + "._TEMPLATE_", doc.getElementTemplate(elementName));
+                    // need to check for the body template here so that non-XMLTemplate templates 
+                    // like JSPs know where to find the body defined in the XMLTemplate
+                    String template = doc.getElementTemplate(elementName);
+                    if (I_CmsConstants.C_XML_BODY_ELEMENT.equalsIgnoreCase(elementName)) {
+                        // found body element
+                        if (template != null) {
+                            cms.getRequestContext().setAttribute(I_CmsConstants.C_XML_BODY_ELEMENT, template);
+                        }
+                    } 
+                    newParameters.put(elementName + "._TEMPLATE_", template);
                 }
                 if(doc.isElementTemplSelectorDefined(elementName)) {
                     newParameters.put(elementName + "._TEMPLATESELECTOR_", doc.getElementTemplSelector(elementName));

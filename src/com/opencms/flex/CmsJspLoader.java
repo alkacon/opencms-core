@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsJspLoader.java,v $
-* Date   : $Date: 2002/12/06 15:56:16 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2002/12/13 17:38:12 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -108,6 +108,9 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
     // Static export related stuff
     /** Parameter constant to indicate that the export is requested */
     private static final String C_EXPORT_PARAM = "_flexexport"; 
+    
+    /** Parameter constant to indicate a body previously discovered in an XMLTemplate */
+    private static final String C_EXPORT_BODY = "_flexbody";        
     
     /** Header constant to indicate the found links in the response return headers */
     private static final String C_EXPORT_HEADER = "_flexexportlinks";
@@ -248,6 +251,10 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
             }
             cms.setMode(CmsObject.C_MODUS_EXPORT);
         }   
+        String body = req.getParameter(C_EXPORT_BODY);
+        if (body != null) {
+            cms.getRequestContext().setAttribute(I_CmsConstants.C_XML_BODY_ELEMENT, body);
+        }
         return oldMode;     
     }
 
@@ -342,6 +349,14 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
         exportUrl.append(C_EXPORT_PARAM);
         exportUrl.append("=");
         exportUrl.append(cms.getRequestContext().getUri());
+        String body = (String)cms.getRequestContext().getAttribute(I_CmsConstants.C_XML_BODY_ELEMENT);
+        if (body != null) {
+            exportUrl.append("&");
+            exportUrl.append(C_EXPORT_BODY);
+            exportUrl.append("=");
+            exportUrl.append(Encoder.encode(body, "UTF-8", true));            
+        }
+        
         if (DEBUG > 2) System.err.println("CmsJspLoader.exportJsp(): JSP export URL is " + exportUrl);
 
         // perform the export with an URLConnection

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/LinkSubstitution.java,v $
-* Date   : $Date: 2002/12/12 18:45:24 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2002/12/13 17:38:13 $
+* Version: $Revision: 1.23 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -103,7 +103,6 @@ public class LinkSubstitution {
             path = "/";
         }
         try{
-            //converter.setTidyConfFile("/andzah/projekte/ebk/config.txt");
             if(converter.hasErrors(content)){
                 String errors = converter.showErrors(content);
                 throw new CmsException(errors);
@@ -169,13 +168,13 @@ public class LinkSubstitution {
             return "";
         }
         if(!link.startsWith("/")){
-            // this is a relative link. Lets make an absolute out of it
+            // this is a relative link, lets make an absolute out of it
             link = Utils.mergeAbsolutePath(cms.getRequestContext().getRequest().getRequestedResource(), link);
         }
         // first ask if this is the export
         int modus = cms.getMode();
         if(modus == CmsObject.C_MODUS_EXPORT){
-            // we have to register this link to the requestcontex
+            // we have to register this link to the request context
             cms.getRequestContext().addLink(link);
             // and we have to process the startrule
             String startRule = OpenCms.getStaticExportProperties().getStartRule();
@@ -189,7 +188,7 @@ public class LinkSubstitution {
                 }
             }
         }
-        // check if we are in a https page (then we have to set the http
+        // check if we are in a https page, then we have to set the http
         // protocol ahead the "not-https-links" in this page
         boolean httpsMode = false;
         if(modus == CmsObject.C_MODUS_ONLINE){

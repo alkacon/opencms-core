@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsUri.java,v $
-* Date   : $Date: 2002/12/06 23:16:53 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2002/12/13 17:38:13 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -139,6 +139,15 @@ public class CmsUri implements I_CmsConstants {
             while(elementNames.hasMoreElements()){
                 String name = (String)elementNames.nextElement();
                 CmsElementDefinition currentDef = m_elementDefinitions.get(name);
+                
+                if (I_CmsConstants.C_XML_BODY_ELEMENT.equalsIgnoreCase(name)) {
+                    // need to check for the body template here so that non-XMLTemplate templates
+                    // like JSPs know where to find the body defined in the XMLTemplate
+                    if (currentDef.getTemplateName() != null) {
+                        cms.getRequestContext().setAttribute(I_CmsConstants.C_XML_BODY_ELEMENT, currentDef.getTemplateName());
+                    }
+                }
+                                
                 A_CmsElement currentEle = elementCache.getElementLocator().get(
                                         cms, new CmsElementDescriptor(currentDef.getClassName(),
                                         currentDef.getTemplateName()), parameters);

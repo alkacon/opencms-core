@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
-* Date   : $Date: 2002/12/12 18:54:31 $
-* Version: $Revision: 1.59 $
+* Date   : $Date: 2002/12/13 17:38:13 $
+* Version: $Revision: 1.60 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import com.opencms.template.cache.*;
  * @author Anders Fugmann
  * @author Alexander Lucas
  *
- * @version $Revision: 1.59 $ $Date: 2002/12/12 18:54:31 $
+ * @version $Revision: 1.60 $ $Date: 2002/12/13 17:38:13 $
  *
  */
 public class CmsRequestContext implements I_CmsConstants {
@@ -113,6 +113,8 @@ public class CmsRequestContext implements I_CmsConstants {
     /** File name translator */
     private CmsResourceTranslator m_fileTranslator = null;
 
+    /** A map for storing (optional) request context attributes */
+    private HashMap m_attributeMap = null;
     
     /**
      * The default constructor.
@@ -660,5 +662,27 @@ public class CmsRequestContext implements I_CmsConstants {
      */
     public boolean isUpdateSessionEnabled() {
         return m_updateSession;
-    }    
+    }   
+    
+    /**
+     * Gets the value of an attribute from the OpenCms request context attribute list.<p>
+     * 
+     * @param attributeName the attribute name
+     * @return Object the attribute value, or <code>null</code> if the attribute was not found
+     */
+    public Object getAttribute(String attributeName) {
+        if (m_attributeMap == null) return null;
+        return m_attributeMap.get(attributeName);
+    }
+    
+    /**
+     * Sets an attribute in the request context.<p>
+     * 
+     * @param key the attribute name
+     * @param value the attribute value
+     */
+    public void setAttribute(String key, Object value) {
+        if (m_attributeMap == null) m_attributeMap = new HashMap();
+        m_attributeMap.put(key, value);
+    } 
 }
