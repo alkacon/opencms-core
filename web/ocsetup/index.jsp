@@ -1,25 +1,38 @@
 <!-- ------------------------------------------------- JSP DECLARATIONS ------------------------------------------------ -->
-<% /* Initialize the Bean */ %>
+<% 
+boolean isInitialized = false;
+boolean wizardEnabled = false;
+
+/* next page to be accessed */
+String nextPage = "database_connection.jsp";
+	
+/* Initialize the Bean */ %>
 <jsp:useBean id="Bean" class="com.opencms.boot.CmsSetup" scope="session" />
+<%
+try { 
 
-<% /* Set the base path to the opencms home folder */ %>
+/* Set the base path to the opencms home folder */
+%>
 <jsp:setProperty name="Bean" property="basePath" value='<%= config.getServletContext().getRealPath("/") %>' />
-
-
 <%		
 	/* Initialize the properties */
 	Bean.initProperties("opencms.properties");
 	
 	/* check wizards accessability */
-	boolean wizardEnabled = Bean.getWizardEnabled();
+	wizardEnabled = Bean.getWizardEnabled();
 	
 	if(!wizardEnabled)	{
 		request.getSession().invalidate();
 	}
 	
-	/* next page to be accessed */
-	String nextPage = "database_connection.jsp";
+	isInitialized = true;
 %>
+<% 
+} catch (Exception e) {
+	// the servlet container did not unpack the war, so lets display an error message
+}
+%>
+
 
 <!-- ------------------------------------------------------------------------------------------------------------------- -->
 
@@ -44,7 +57,7 @@
 			<tr>
 				<td height="50" align="right"><img src="opencms.gif" alt="OpenCms" border="0"></td>
 			</tr>
-			<% if(wizardEnabled)	{ %>
+			<% if(wizardEnabled && isInitialized)	{ %>
 			<tr>
 				<td align="center" valign="top" height="375">					
 					<table border="0" width="600" cellpadding="5">
@@ -85,7 +98,27 @@
 					</table>
 				</td>
 			</tr>
-			<% } else	{ %>			
+			<% } else if (! isInitialized) { %>			
+			<tr>
+				<td align="center" valign="top">
+					<p><b>Error starting OpenCms setup wizard.</b></p>
+					<p>
+					It appears that your servlet container did not unpack the OpenCms WAR file.<br>
+					OpenCms requires that it's WAR file is unpacked.
+					</p><p>
+					<b>Please unpack the OpenCms WAR file and try again.</b>
+					</p><p>
+					Check out the documentation of your Servlet container to learn how to unpack the WAR file,<br>
+					or do it manually with some kind of unzip - tool.
+					</p>
+					<p>Tip for Tomcat users:<br>
+					Open the file <code>{tomcat-home}/conf/server.xml</code> and search<br>
+					for <code>unpackWARs="false"</code>. Replace this with <code>unpackWARs="true"</code>.<br>
+					Then restart Tomcat.					
+					</p>
+				</td>
+			</tr>					
+			<% } else { %>				
 			<tr>
 				<td align="center" valign="top">
 					<p><b>Sorry, wizard not available.</b></p>
@@ -93,7 +126,7 @@
 					To use the wizard again, unlock it in "opencms.properties".
 				</td>
 			</tr>			
-			<% } %>
+			<% } %>									
 		</form>
 		</table>
 	</td>

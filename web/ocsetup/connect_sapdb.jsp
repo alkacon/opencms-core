@@ -125,7 +125,7 @@
 								<table border="0" cellpadding="2">
 									<tr>
 										<td width="150" class="bold">
-											Resource Broker
+											Select Database
 										</td>
 										<td width="250">
 											<select name="resourceBroker" style="width:250px;" size="1" width="250" onchange="location.href='database_connection.jsp?resourceBroker='+this.options[this.selectedIndex].value;">
@@ -133,15 +133,17 @@
 											<%
 												/* get all available resource brokers */
 												Vector resourceBrokers = Bean.getResourceBrokers();
+												Vector resourceBrokerNames = Bean.getResourceBrokerNames();
 												/* 	List all resource broker found in the dbsetup.properties */
 												if (resourceBrokers !=null && resourceBrokers.size() > 0)	{
 													for(int i=0;i<resourceBrokers.size();i++)	{
 														String rb = resourceBrokers.elementAt(i).toString();
+														String rn = resourceBrokerNames.elementAt(i).toString();
 														String selected = "";													
 														if(Bean.getResourceBroker().equals(rb))	{
 															selected = "selected";
 														}
-														out.println("<option value='"+rb+"' "+selected+">"+rb);
+														out.println("<option value='"+rb+"' "+selected+">"+rn);
 													}
 												}
 												else	{

@@ -25,14 +25,14 @@
     int unsupportedServletEngine = -1;
     
     /* add supported engines here */
-    String[] supportedEngines = {"Apache Tomcat/4.1", "Apache Tomcat/4.0", "Tomcat Web Server/3.3", "Resin/2.0.b2"};
+    String[] supportedEngines = {"Apache Tomcat/4.1", "Apache Tomcat/4.0", "Resin/2.0.b2"};
     
     /* add unsupported enginges here */
-    String[] unsupportedEngines = {"Tomcat Web Server/3.2"};
-    String[] unsEngMessages = {"OpenCms does not work correctly with Tomcat 3.2.x. Tomcat 3.2.x uses its own XML parser which results in major errors while using OpenCms. Please use Tomcat 4.0 instead."};
+    String[] unsupportedEngines = {"Tomcat Web Server/3.2", "Tomcat Web Server/3.3"};
+    String[] unsEngMessages = {"OpenCms does not work correctly with Tomcat 3.2.x. Tomcat 3.2.x uses its own XML parser which results in major errors while using OpenCms. Please use Tomcat 4.x instead.", "Tomcat 3.3 is no longer supported. Please use Tomcat 4.x instead."};
     
     /* JDK version */
-    String requiredJDK = "1.3.0";
+    String requiredJDK = "1.4.0";
     String JDKVersion = "";
     boolean supportedJDK = false;
     
