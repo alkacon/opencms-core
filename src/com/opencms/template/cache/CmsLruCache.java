@@ -1,8 +1,8 @@
 package com.opencms.template.cache;
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsLruCache.java,v $
- * Date   : $Date: 2001/07/03 11:53:57 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2001/07/05 10:42:08 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -291,7 +291,7 @@ public class CmsLruCache {
      * uri and all element that say so have to be removed.
      * use only if this cache is for elements.
      */
-    public void deleteElementsAfterPublish(){
+    public synchronized void deleteElementsAfterPublish(){
         CacheItem item = head;
         while (item != null){
             if (((A_CmsElement)item.value).getCacheDirectives().shouldRenew()){
@@ -305,7 +305,7 @@ public class CmsLruCache {
      * Deletes the uri from the Cache. Use only if this is the cache for uris.
      *
      */
-    public void deleteUri(String uri){
+    public synchronized void deleteUri(String uri){
         CacheItem item = head;
         while (item != null){
             if(uri.equals(((CmsUriDescriptor)item.key).getKey())){
@@ -320,7 +320,7 @@ public class CmsLruCache {
     /**
      * Clears the cache completly.
      */
-    public void clearCache(){
+    public synchronized void clearCache(){
         if(C_DEBUG){
             System.err.println("--LruCache restarted");
         }
