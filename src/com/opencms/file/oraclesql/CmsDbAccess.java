@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oraclesql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/05/20 13:25:18 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2003/05/20 15:19:38 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,6 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -63,7 +62,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.13 $ $Date: 2003/05/20 13:25:18 $ *
+ * @version $Revision: 1.14 $ $Date: 2003/05/20 15:19:38 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -464,14 +463,7 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
      * Destroys this access-module
      * @throws throws CmsException if something goes wrong.
      */
-    public void destroy()
-        throws CmsException {
-//        try {
-//            ((com.opencms.dbpool.CmsDriver) DriverManager.getDriver(m_poolName)).destroy();
-//        } catch(SQLException exc) {
-//            // destroy not possible - ignoring the exception
-//        }
-
+    public void destroy() throws CmsException {
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[" + this.getClass().getName() + "] Destroyed");
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oraclesql/Attic/CmsUserAccess.java,v $
- * Date   : $Date: 2003/05/20 13:25:18 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/05/20 15:19:38 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import source.org.apache.java.util.Configurations;
  * Oracle/OCI implementation of the user access methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.9 $ $Date: 2003/05/20 13:25:18 $
+ * @version $Revision: 1.10 $ $Date: 2003/05/20 15:19:38 $
  * 
  * @see com.opencms.file.genericSql.CmsUserAccess
  * @see com.opencms.file.genericSql.I_CmsUserAccess
@@ -375,8 +375,7 @@ public class CmsUserAccess extends com.opencms.file.genericSql.CmsUserAccess imp
             throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } catch (IOException e) {
             throw m_SqlQueries.getCmsException(this, "[CmsAccessUserInfoMySql/addUserInformation(id,object)]:", CmsException.C_SERIALIZATION, e);
-        } finally {
-            
+        } finally {            
             if (stmt2 != null) {
                 try {
                     stmt2.close();

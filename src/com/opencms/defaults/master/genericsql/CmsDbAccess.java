@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/05/20 11:31:16 $
-* Version: $Revision: 1.34 $
+* Date   : $Date: 2003/05/20 15:20:22 $
+* Version: $Revision: 1.35 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -2148,6 +2148,6 @@ public class CmsDbAccess {
         } else {
             poolToUse = m_poolName;
         }
-        return DriverManager.getConnection(poolToUse);
+        return DriverManager.getConnection(CmsDbcp.C_DBCP_JDBC_URL_PREFIX + poolToUse);
     }
 }

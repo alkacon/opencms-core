@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsVfsAccess.java,v $
- * Date   : $Date: 2003/05/20 13:25:18 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/05/20 15:19:38 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,13 +64,11 @@ import source.org.apache.java.util.Configurations;
  * Generic, database server independent, implementation of the VFS access methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.10 $ $Date: 2003/05/20 13:25:18 $
+ * @version $Revision: 1.11 $ $Date: 2003/05/20 15:19:38 $
  */
 public class CmsVfsAccess extends Object implements I_CmsConstants, I_CmsLogChannels {
 
-    protected String m_poolName;
-    protected String m_poolNameBackup;
-    protected String m_poolNameOnline;
+    protected String m_dbPoolUrl;
 
     protected I_CmsResourceBroker m_ResourceBroker;
 
@@ -85,38 +83,7 @@ public class CmsVfsAccess extends Object implements I_CmsConstants, I_CmsLogChan
     public CmsVfsAccess(Configurations config, String dbPoolUrl, I_CmsResourceBroker theResourceBroker) {
         m_SqlQueries = initQueries(dbPoolUrl);
         m_ResourceBroker = theResourceBroker;
-        
-        m_poolName = m_poolNameBackup = m_poolNameOnline = dbPoolUrl;
-
-        ///////////////////////////////////////////////
-
-//        // TODO: the following code should be removed when all methods in this
-//        // class are switched to the new CmsQueries methods
-//        String brokerName = (String) config.getString(com.opencms.core.I_CmsConstants.C_CONFIGURATION_RESOURCEBROKER);
-//
-//        // get the standard pool
-//        m_poolName = config.getString(com.opencms.core.I_CmsConstants.C_CONFIGURATION_RESOURCEBROKER + "." + brokerName + "." + com.opencms.core.I_CmsConstants.C_CONFIGURATIONS_POOL);
-//        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-//            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Database offline pool: " + m_poolName);
-//        }
-//
-//        // get the pool for the online resources
-//        m_poolNameOnline = config.getString(com.opencms.core.I_CmsConstants.C_CONFIGURATION_RESOURCEBROKER + "." + brokerName + ".online." + com.opencms.core.I_CmsConstants.C_CONFIGURATIONS_POOL);
-//        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-//            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Database online pool : " + m_poolNameOnline);
-//        }
-//
-//        // get the pool for the backup resources
-//        m_poolNameBackup = config.getString(com.opencms.core.I_CmsConstants.C_CONFIGURATION_RESOURCEBROKER + "." + brokerName + ".backup." + com.opencms.core.I_CmsConstants.C_CONFIGURATIONS_POOL);
-//        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-//            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Database backup pool : " + m_poolNameBackup);
-//        }
-//
-//        // set the default pool for the id generator
-//        com.opencms.dbpool.CmsIdGenerator.setDefaultPool(m_poolName);
-
-        ///////////////////////////////////////////////////////
-
+        m_dbPoolUrl = dbPoolUrl;
     }
 
     /**
@@ -1504,12 +1471,9 @@ public class CmsVfsAccess extends Object implements I_CmsConstants, I_CmsLogChan
      *
      * @param key A key for the table to get the max-id from.
      * @return next-id The next possible id for this table.
-     * @deprecated
      */
     protected synchronized int nextId(String key) throws CmsException {
-        // TODO: the following code should be removed when all methods in this
-        // class are switched to the new CmsSqlQueries stuff
-        return com.opencms.dbpool.CmsIdGenerator.nextId(m_poolName, key);
+        return com.opencms.dbpool.CmsIdGenerator.nextId(m_dbPoolUrl, key);
     }
 
     /**

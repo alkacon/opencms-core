@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/05/20 13:25:18 $
-* Version: $Revision: 1.287 $
+* Date   : $Date: 2003/05/20 15:19:38 $
+* Version: $Revision: 1.288 $
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -47,7 +47,6 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -73,27 +72,12 @@ import source.org.apache.java.util.Configurations;
  * @author Anders Fugmann
  * @author Finn Nielsen
  * @author Mark Foley
- * @version $Revision: 1.287 $ $Date: 2003/05/20 13:25:18 $ *
+ * @version $Revision: 1.288 $ $Date: 2003/05/20 15:19:38 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     
     public static int C_RESTYPE_LINK_ID = 2;
     public static boolean C_USE_TARGET_DATE = true;    
-
-    /**
-     * The name of the pool to use
-     */
-    protected String m_poolName;
-
-    /**
-     * The name of the online pool to use
-     */
-    protected String m_poolNameOnline;
-
-    /**
-     * The name of the backup pool to use
-     */
-    protected String m_poolNameBackup;
 
     /**
      * The session-timeout value:
@@ -204,6 +188,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
    protected com.opencms.file.genericSql.CmsQueries m_SqlQueries;
    
    protected I_CmsResourceBroker m_ResourceBroker;
+   protected String m_dbPoolUrl;
 
    /**
     * TESTFIX (mfoley@iee.org) New Code:
@@ -251,7 +236,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         // all needed pools are read in the following method
         //getConnectionPools(config, rbName);
         
-        m_poolName = m_poolNameOnline = m_poolNameBackup = dbPoolUrl;
+        m_dbPoolUrl = dbPoolUrl;
 
         // have we to fill the default resource like root and guest?
         try {
@@ -276,25 +261,25 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * This method can be adjusted for each resourcebroker
      * @param config The configuration
      */
-    protected void getConnectionPools(Configurations config, String rbName){
-        // get the standard pool
-        m_poolName = config.getString(C_CONFIGURATION_RESOURCEBROKER + "." + rbName + "." + C_CONFIGURATIONS_POOL);
-        // set the default pool for the id generator
-        com.opencms.dbpool.CmsIdGenerator.setDefaultPool(m_poolName);
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Database offline pool: " + m_poolName);
-        }
-        //get the pool for the online resources
-        m_poolNameOnline = config.getString(C_CONFIGURATION_RESOURCEBROKER + "." + rbName + ".online." + C_CONFIGURATIONS_POOL);
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Database online pool : " +  m_poolNameOnline);
-        }
-        //get the pool for the backup resources
-        m_poolNameBackup = config.getString(C_CONFIGURATION_RESOURCEBROKER + "." + rbName + ".backup." + C_CONFIGURATIONS_POOL);
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Database backup pool : " + m_poolNameBackup);
-        }
-    }
+//    protected void getConnectionPools(Configurations config, String rbName){
+//        // get the standard pool
+//        m_poolName = config.getString(C_CONFIGURATION_RESOURCEBROKER + "." + rbName + "." + C_CONFIGURATIONS_POOL);
+//        // set the default pool for the id generator
+//        com.opencms.dbpool.CmsIdGenerator.setDefaultPool(m_poolName);
+//        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+//            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Database offline pool: " + m_poolName);
+//        }
+//        //get the pool for the online resources
+//        m_poolNameOnline = config.getString(C_CONFIGURATION_RESOURCEBROKER + "." + rbName + ".online." + C_CONFIGURATIONS_POOL);
+//        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+//            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Database online pool : " +  m_poolNameOnline);
+//        }
+//        //get the pool for the backup resources
+//        m_poolNameBackup = config.getString(C_CONFIGURATION_RESOURCEBROKER + "." + rbName + ".backup." + C_CONFIGURATIONS_POOL);
+//        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+//            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Database backup pool : " + m_poolNameBackup);
+//        }
+//    }
 
     /**
      * Creates a serializable object in the systempropertys.
@@ -996,14 +981,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * Destroys this access-module
      * @throws throws CmsException if something goes wrong.
      */
-    public void destroy()
-        throws CmsException {
-//        try {
-//            ((com.opencms.dbpool.CmsDriver) DriverManager.getDriver(m_poolName)).destroy();
-//        } catch(SQLException exc) {
-//            // destroy not possible - ignoring the exception
-//        }
-
+    public void destroy() throws CmsException {
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[" + this.getClass().getName() + "] Destroyed");
         }
@@ -1594,16 +1572,14 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     /**
      * Private method to get the next id for a table.
      * This method is synchronized, to generate unique id's.
-     * TODO: this method should be removed!
      *
      * @param key A key for the table to get the max-id from.
      * @return next-id The next possible id for this table.
-     * @deprecated
      */
     protected synchronized int nextId(String key)
         throws CmsException {
         // return the next id for this table
-        return com.opencms.dbpool.CmsIdGenerator.nextId(m_poolName, key);
+        return com.opencms.dbpool.CmsIdGenerator.nextId(m_dbPoolUrl, key);
     }
 
     /**
