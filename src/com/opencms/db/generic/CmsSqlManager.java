@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/generic/Attic/CmsSqlManager.java,v $
- * Date   : $Date: 2003/06/03 16:05:23 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/06/04 10:04:07 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Reads SQL queries from query.properties of the generic (ANSI-SQL) driver package.<p>
@@ -57,7 +61,7 @@ import java.util.Properties;
  * from different connection pools in the Cms depending on the CmsProject/project-ID and database pool.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $ $Date: 2003/06/03 16:05:23 $
+ * @version $Revision: 1.5 $ $Date: 2003/06/04 10:04:07 $
  * @since 5.1.2
  */
 public class CmsSqlManager extends Object implements Serializable, Cloneable {
@@ -76,6 +80,21 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
      * The URL to access the correct connection pool.
      */
     protected String m_dbPoolUrl;
+    
+    /**
+     * The pre-compiled regex pattern to adjust online/offline table names in queries.
+     */
+    protected static Pattern c_pattern = Pattern.compile("_T_");
+    
+    /**
+     * The matcher to search for the pattern in queries.
+     */
+    protected static Matcher c_matcher = null;
+    
+    /**
+     * This map caches all queries with replaced expressions to minimize costs of regex/matching operations.
+     */
+    protected Map m_cachedQueries;
 
     /**
      * CmsSqlManager constructor.
@@ -88,6 +107,8 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
         if (c_queries == null) {
             c_queries = loadProperties(C_PROPERTY_FILENAME);            
         }
+        
+        m_cachedQueries = (Map) new HashMap();
     }
     
     /**
@@ -144,8 +165,13 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
         if (c_queries != null) {
             c_queries.clear();
         }
+        
+        if (m_cachedQueries!=null) {
+            m_cachedQueries.clear();
+        }
 
         c_queries = null;
+        m_cachedQueries = null;
         m_dbPoolUrl = null;
     }
 
@@ -161,18 +187,61 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
     }
 
     /**
-     * Searches for the SQL query with the specified key and project-ID.
+     * Searches for the SQL query with the specified key and project-ID.<p>
+     * 
+     * The pattern "_T_" in table names is replaced with "_ONLINE_" or 
+     * "_OFFLINE_" to choose the right database tables for SQL queries 
+     * that are project dependent!
      * 
      * @param projectId the ID of the specified CmsProject
      * @param queryKey the key of the SQL query
      * @return the the SQL query in this property list with the specified key
      */
     public String get(int projectId, String queryKey) {
-        if (projectId == I_CmsConstants.C_PROJECT_ONLINE_ID) {
-            queryKey += "_ONLINE";
+        // get the SQL query from the properties hash
+        String query = get(queryKey);
+
+        if (projectId < 0) {
+            // a project ID < 0 is an internal indicator that a project-independent 
+            // query was requested- further regex operations are not required!
+            return query;
         }
 
-        return get(queryKey);
+        // initialize or reset the matcher with the current SQL query
+        if (c_matcher == null) {
+            c_matcher = c_pattern.matcher(query);
+        } else {
+            c_matcher.reset((CharSequence) query);
+        }
+
+        if (c_matcher.find()) {
+            // prepare a key to do a lookup in the hash map of all queries with replaced expressions
+            if (projectId == I_CmsConstants.C_PROJECT_ONLINE_ID) {
+                queryKey += "_ONLINE";
+            } else {
+                queryKey += "_OFFLINE";
+            }
+
+            if (!m_cachedQueries.containsKey(queryKey)) {
+                // query matches the pattern and is not yet cached
+                if (projectId == I_CmsConstants.C_PROJECT_ONLINE_ID) {
+                    // online
+                    query = c_matcher.replaceAll("_ONLINE_");
+                } else {
+                    // offline
+                    query = c_matcher.replaceAll("_OFFLINE_");
+                }
+
+                // to minimize costs, all queries with replaced 
+                // expressions are cached in a hash map
+                m_cachedQueries.put(queryKey, query);
+            } else {
+                // use the query where the pattern is already replaced
+                query = (String) m_cachedQueries.get(queryKey);
+            }
+        }
+
+        return query;
     }
 
     /**
@@ -217,11 +286,11 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
      * @param message a message that is written to the log
      * @param type the type of the exception
      * @param rootCause the exception that was thrown
-     * @param log logs optionally the message if set to true
+     * @param logSilent if TRUE, no entry to the log is written
      * @return CmsException
      */
-    public CmsException getCmsException(Object o, String message, int type, Throwable rootCause, boolean log) {
-        if (log && A_OpenCms.isLogging() && I_CmsLogChannels.C_LOGGING) {
+    public CmsException getCmsException(Object o, String message, int type, Throwable rootCause, boolean logSilent) {
+        if (!logSilent && A_OpenCms.isLogging() && I_CmsLogChannels.C_LOGGING) {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + o.getClass().getName() + "] " + ((message==null)?"":message) + ((rootCause==null)?"":rootCause.toString()) );
         }
         
@@ -231,20 +300,6 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
                 
         return new CmsException("[" + o.getClass().getName() + "] " + ((message==null)?"":message), type, rootCause);
     }
-
-	/**
-	 * Wraps an exception in a new CmsException object. Optionally, a log message is
-	 * written to the "critical" OpenCms logging channel.
-	 * 
-	 * @param o the object caused the exception
-	 * @param message a message that is written to the log
-	 * @param type the type of the exception
-	 * @param rootCause the exception that was thrown
-	 * @return CmsException
-	 */    
-	public CmsException getCmsException(Object o, String message, int type, Throwable rootCause) {
-		return getCmsException(o, message, type, rootCause, true);
-	}    
     
     /**
      * Receives a JDBC connection from the (offline) pool. Use this method with caution! 

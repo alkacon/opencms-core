@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/generic/Attic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/06/03 16:05:31 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/06/04 10:04:07 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import com.opencms.util.SqlHelper;
  * Generic (ANSI-SQL) database server implementation of the user driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.8 $ $Date: 2003/06/03 16:05:31 $
+ * @version $Revision: 1.9 $ $Date: 2003/06/04 10:04:07 $
  * @since 5.1.2
  */
 public class CmsUserDriver extends Object implements I_CmsUserDriver {
@@ -140,9 +140,9 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
             stmt.setInt(16, type);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (IOException e) {
-            throw m_sqlManager.getCmsException(this, "[CmsAccessUserInfoMySql/addUserInformation(id,object)]:", CmsException.C_SERIALIZATION, e);
+            throw m_sqlManager.getCmsException(this, "[CmsAccessUserInfoMySql/addUserInformation(id,object)]:", CmsException.C_SERIALIZATION, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -206,9 +206,9 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
             stmt.setInt(16, type);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (IOException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -245,7 +245,7 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
                 stmt.executeUpdate();
 
             } catch (SQLException e) {
-                throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+                throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
             } finally {
                 m_sqlManager.closeAll(conn, stmt, null);
             }
@@ -272,7 +272,7 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
             stmt.setString(2, userId.toString());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -427,7 +427,7 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
             // database.
             group = readGroup(groupName);
         } catch (SQLException e) {
-            m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -455,7 +455,7 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
             stmt.setString(1, delgroup);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -477,7 +477,7 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
             stmt.setString(1, userId.toString());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -499,7 +499,7 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
             stmt.setString(1, userName);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -575,7 +575,7 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
             }
     
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             // close all db-resources
             m_sqlManager.closeAll(conn, stmt, res);
@@ -612,7 +612,7 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
             }
 
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
@@ -647,7 +647,7 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
                 groups.addElement(createCmsGroupFromResultSet(res, true));
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
@@ -719,9 +719,9 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
                 users.addElement(createCmsUserFromResultSet(res, true));
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (Exception e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
@@ -752,9 +752,9 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
             }
 
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (Exception e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
@@ -806,9 +806,9 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
             }
 
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (Exception e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
@@ -843,9 +843,9 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
                 users.addElement(createCmsUserFromResultSet(res, false));
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (Exception e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
@@ -932,7 +932,7 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
                 userInGroup = true;
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
@@ -963,7 +963,7 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
             if (res.next()) {
                 group = createCmsGroupFromResultSet(res, true);
             } else {
-                throw m_sqlManager.getCmsException(this, null, CmsException.C_NO_GROUP, new Exception(),false);
+                throw m_sqlManager.getCmsException(this, null, CmsException.C_NO_GROUP, new Exception(), false);
             }
 
         } catch (SQLException e) {
@@ -1132,12 +1132,12 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 
             return user;
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         }
         catch (CmsException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (Exception e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
@@ -1166,7 +1166,7 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
             stmt.setString(3, digest(recoveryPassword));
             result = stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -1198,7 +1198,7 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
             stmt.setString(2, userId.toString());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -1241,7 +1241,7 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
             stmt.setString(2, userName);
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -1267,7 +1267,7 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
             stmt.setString(2, userName);
             result = stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -1303,7 +1303,7 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
                 stmt.executeUpdate();
                 
             } catch (SQLException e) {
-                throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+                throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
             } finally {
                 m_sqlManager.closeAll(conn, stmt, null);
             }
@@ -1345,14 +1345,14 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
             stmt.setString(13, user.getId().toString());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (IOException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
     }
-	
+
 	//
 	//	Access Control Entry
 	//
@@ -1380,7 +1380,7 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 			stmt.executeUpdate();
 			
 		} catch (SQLException e) {
-			throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+			throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
 		} finally {
 			m_sqlManager.closeAll(conn, stmt, null);
 		}
@@ -1407,7 +1407,7 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 			stmt.executeUpdate();
 
 		} catch (SQLException e) {
-			throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+			throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
 		} finally {
 			m_sqlManager.closeAll(conn, stmt, null);
 		}		
@@ -1434,7 +1434,7 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 			stmt.executeUpdate();
 
 		} catch (SQLException e) {
-			throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+			throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
 		} finally {
 			m_sqlManager.closeAll(conn, stmt, null);
 		}		
@@ -1462,7 +1462,7 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 			stmt.executeUpdate();
 	
 		} catch (SQLException e) {
-			throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+			throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
 		} finally {
 			m_sqlManager.closeAll(conn, stmt, null);
 		}							
@@ -1488,7 +1488,7 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 			stmt.executeUpdate();
 
 		} catch (SQLException e) {
-			throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+			throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
 		} finally {
 			m_sqlManager.closeAll(conn, stmt, null);
 		}			
@@ -1530,10 +1530,11 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 			stmt.setString(4, acEntry.getResource().toString());
 			stmt.setString(5, acEntry.getPrincipal().toString());
 
+
 			stmt.executeUpdate();
 			
 		} catch (SQLException e) {
-			throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+			throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
 		} finally {
 			m_sqlManager.closeAll(conn, stmt, null);
 		}
@@ -1574,8 +1575,7 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 			return ace;
 			
 		} catch (SQLException e) {
-			throw new CmsException("[" + this.getClass().getName() + "] ", CmsException.C_SQL_ERROR, e);
-			// TODO: changed from m_sqlManager.getCmsException(this, null, , e) to avoid message in CmsShell
+			throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, true);
 		} finally {
 			m_sqlManager.closeAll(conn, stmt, null);
 		}
@@ -1610,7 +1610,7 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 			return aceList;
 
 		} catch (SQLException e) {
-			throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+			throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
 		} finally {
 			m_sqlManager.closeAll(conn, stmt, null);
 		}
@@ -1625,11 +1625,9 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 	private CmsAccessControlEntry createAceFromResultSet(ResultSet res) throws SQLException {
 		// this method is final to allow the java compiler to inline this code!
 
-		CmsUUID resourceId   = new CmsUUID(res.getString(m_sqlManager.get("C_ACCESS_RESOURCE_ID")));
-		CmsUUID principalId  = new CmsUUID(res.getString(m_sqlManager.get("C_ACCESS_PRINCIPAL_ID")));
-		 
 		return new CmsAccessControlEntry(
-			resourceId, principalId, 
+			new CmsUUID(res.getString(m_sqlManager.get("C_ACCESS_RESOURCE_ID"))),
+			new CmsUUID(res.getString(m_sqlManager.get("C_ACCESS_PRINCIPAL_ID"))),
 			res.getInt(m_sqlManager.get("C_ACCESS_ACCESS_ALLOWED")),
 			res.getInt(m_sqlManager.get("C_ACCESS_ACCESS_DENIED")),
 			res.getInt(m_sqlManager.get("C_ACCESS_ACCESS_FLAGS"))
