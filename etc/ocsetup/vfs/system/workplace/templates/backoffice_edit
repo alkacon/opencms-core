@@ -38,36 +38,40 @@
 <SCRIPT language="JavaScript">
     ]]><PROCESS>preview</PROCESS><![CDATA[
     
-    function setMediaAction(para) {
-        window.top.body.admin_content.Editor.backofficepage.value=window.top.body.admin_head.backofficepage.value;
-        switch(para) {
-        case 1: {
-                document.Editor.media_action.value = "delPicture";
-                document.Editor.submit();
-                break;
-                }
-        case 2: {   
-                document.Editor.media_action.value = "editPicture";
-                document.Editor.submit();
-                break;
-                }
-        case 3: {
-                document.Editor.media_action.value = "prevPicture";
-                document.Editor.submit();
-                break;
-                }
-        case 4: {
-                document.Editor.media_action.value = "addPicture";
-                document.Editor.submit();
-                break;
-                }
-        case 5: {
-                document.Editor.media_action.value = "clear";
-                document.Editor.submit();
-                break;
-                }
-          }
+function setMediaAction(para) {
+  
+  //window.top.body.admin_content.Editor.backofficepage.value=window.top.body.admin_head.backofficepage.value;
+  parent.frames[1].document.getElementById("Editor").backofficepage.value=parent.frames[0].document.getElementById("backofficepage").value;
+  
+  switch(para) {
+  case 1: {
+    document.Editor.media_action.value = "delPicture";
+    document.Editor.submit();
+    break;
     }
+  case 2: { 
+    document.Editor.media_action.value = "editPicture";
+    document.Editor.submit();
+    break;
+    }
+  case 3: {
+    document.Editor.media_action.value = "prevPicture";
+    document.Editor.submit();
+    break;
+    }
+  case 4: {
+    document.Editor.media_action.value = "addPicture";
+    document.Editor.submit();
+    break;
+    }
+  case 5: {
+    document.Editor.media_action.value = "clear";
+    document.Editor.submit();
+    break;
+    }
+    }
+    
+}
 </script>
 
 <center>

@@ -23,36 +23,39 @@
 <SCRIPT LANGUAGE="JavaScript">
     var pfad="]]><METHOD name="picsUrl"/><![CDATA[";
      function doEdit(para) {
-     
-if(window.top.body.admin_content.doUpdate!=null)window.top.body.admin_content.doUpdate();
-
-        switch(para) {
-        case 1: {
-                //window.top.body.admin_content.getElementById("Editor").action.value = "exit";
-                parent.frames[1].document.getElementById("Editor").action.value = "exit";
-                if(this.backofficepage)parent.frames[1].document.getElementById("Editor").backofficepage.value = backofficepage.value;
-                parent.frames[1].document.getElementById("Editor").submit();
-                break;
-                }
-        case 2: {
-                parent.frames[1].document.getElementById("Editor").action.value = "saveexit";
-                if(this.backofficepage)parent.frames[1].document.getElementById("Editor").backofficepage.value = backofficepage.value;
-                parent.frames[1].document.getElementById("Editor").submit();
-                break;
-                }
-        case 3: {
-                parent.frames[1].document.getElementById("Editor").action.value = "save";
-                if(this.backofficepage)parent.frames[1].document.getElementById("Editor").backofficepage.value = backofficepage.value;
-                parent.frames[1].document.getElementById("Editor").submit();
-                break;
-                }
-        case 4: {
-                if(this.backofficepage)parent.frames[1].document.getElementById("Editor").backofficepage.value = backofficepage.value;
-                parent.frames[1].document.getElementById("Editor").submit();
-                break;
-                }
-          }
-      }       
+	       var backofficepagevalue="";
+	       if(document.getElementById("backofficepage")){
+	        backofficepagevalue=document.getElementById("backofficepage").value;
+	       }
+	   if(window.top.body.admin_content.doUpdate!=null)window.top.body.admin_content.doUpdate();
+	 
+	         switch(para) {
+	         
+	         case 1: {
+	                 parent.frames[1].document.getElementById("Editor").action.value = "exit";
+	                 if(parent.frames[1].document.getElementById("Editor").backofficepage)parent.frames[1].document.getElementById("Editor").backofficepage.value = backofficepagevalue;
+	                 parent.frames[1].document.getElementById("Editor").submit();
+	                 break;
+	                 }
+	         case 2: {
+	                 parent.frames[1].document.getElementById("Editor").action.value = "saveexit";
+	                 if(parent.frames[1].document.getElementById("Editor").backofficepage)parent.frames[1].document.getElementById("Editor").backofficepage.value = backofficepagevalue;
+	                 parent.frames[1].document.getElementById("Editor").submit();
+	                 break;
+	                 }
+	         case 3: {
+	                 parent.frames[1].document.getElementById("Editor").action.value = "save";
+	                 if(parent.frames[1].document.getElementById("Editor").backofficepage)parent.frames[1].document.getElementById("Editor").backofficepage.value = backofficepagevalue;
+	                 parent.frames[1].document.getElementById("Editor").submit();
+	                 break;
+	                 }
+	         case 4: {
+	                 if(parent.frames[1].document.getElementById("Editor").backofficepage)parent.frames[1].document.getElementById("Editor").backofficepage.value = backofficepagevalue;
+	                 parent.frames[1].document.getElementById("Editor").submit();
+	                 break;
+	                 }
+	           }
+	       }         
 </SCRIPT>
 <SCRIPT LANGUAGE="JavaScript">
 
