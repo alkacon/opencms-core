@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2004/06/08 13:24:46 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2004/06/08 14:08:06 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.48 $
+ * @version $Revision: 1.49 $
  * 
  * @since 5.1
  */
@@ -155,12 +155,7 @@ public class CmsFrameset extends CmsWorkplace {
      */
     public int getExplorerSettings() {
         CmsUserSettings settings = new CmsUserSettings(getCms().getRequestContext().currentUser());
-        // TODO: REMOVE THIS CODE, for developing only!
-     int warning = 0;
         int value = settings.getExplorerSettings();
- /*       if ((value & 12288) == 0) value +=12288;  
-*/
-
         return value;
     }
     
