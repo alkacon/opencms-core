@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/08/17 16:05:57 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2000/08/18 10:51:40 $
+ * Version: $Revision: 1.20 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.19 $ $Date: 2000/08/17 16:05:57 $
+ * @version $Revision: 1.20 $ $Date: 2000/08/18 10:51:40 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2840,7 +2840,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			throw new CmsException("[" + this.getClass().getName() + "] " , 
 				CmsException.C_NO_ACCESS);
 		}
-	 } 
+	 }
 	/**
 	 * Returns a CmsResourceTypes.
 	 * 
@@ -3337,6 +3337,9 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		m_refresh=config.getString(C_CONFIGURATION_CACHE + ".refresh", "");
 
 		// initialize the registry
+		if(A_OpenCms.isLogging()) {
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsResourceBroker] init registry.");
+		}
 		m_registry= new CmsRegistryDummy(config.getString(C_CONFIGURATION_REGISTRY));
 	}
 	/**

@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/08/17 16:05:56 $
- * Version: $Revision: 1.103 $
+ * Date   : $Date: 2000/08/18 10:51:40 $
+ * Version: $Revision: 1.104 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.103 $ $Date: 2000/08/17 16:05:56 $
+ * @version $Revision: 1.104 $ $Date: 2000/08/18 10:51:40 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -3285,8 +3285,6 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 				 CmsException.C_NO_ACCESS);
 		}
 	}
-
-	 
 	// Methods working with database import and export
 	
 	/**
@@ -3343,7 +3341,10 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		m_propertyDefVectorCache = new CmsCache(config.getInteger(C_CONFIGURATION_CACHE + ".propertyvectordef", 100));
 		m_refresh=config.getString(C_CONFIGURATION_CACHE + ".refresh", "");
 
-		// initialize the registry
+		// initialize the registry#
+		if(A_OpenCms.isLogging()) {
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsResourceBroker] init registry.");
+		}
 		m_registry= new CmsRegistryDummy(config.getString(C_CONFIGURATION_REGISTRY));
 	}
 	/**
