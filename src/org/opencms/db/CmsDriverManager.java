@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/11/10 08:12:58 $
- * Version: $Revision: 1.293 $
+ * Date   : $Date: 2003/11/10 10:47:14 $
+ * Version: $Revision: 1.294 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.w3c.dom.Document;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.293 $ $Date: 2003/11/10 08:12:58 $
+ * @version $Revision: 1.294 $ $Date: 2003/11/10 10:47:14 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -248,7 +248,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
     // Dummy task used in createDirectPublishProject
     protected static final CmsTask noTask = new CmsTask();
-    protected Map m_accessCache = null;
     protected Map m_accessControlListCache = null;
 
     /** The backup driver. */
@@ -1046,7 +1045,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         m_propertyDefCache.clear();
         m_propertyDefVectorCache.clear();
         m_onlineProjectCache = null;
-        m_accessCache.clear();
         m_accessControlListCache.clear();
         m_permissionCache.clear();
     }
@@ -1079,7 +1077,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      */
     protected void clearUserCache(CmsUser user) {
         removeUserFromCache(user);
-        m_accessCache.clear();
         m_resourceListCache.clear();
     }
 
@@ -1245,7 +1242,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         }
 
         clearAccessControlListCache();
-        m_accessCache.clear();
         clearResourceCache();
 
         List modifiedResources = (List)new ArrayList();
@@ -1340,7 +1336,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
         clearAccessControlListCache();
         m_resourceListCache.clear();
-        m_accessCache.clear();
 
         List modifiedResources = (List)new ArrayList();
         modifiedResources.add(sourceFolder);
@@ -1375,7 +1370,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             CmsResource offlineRes = null;
             try {
                 clearResourceCache();
-                m_accessCache.clear();
 
                 // must include files marked as deleted for publishing deleted resources
                 //offlineRes = readFileHeaderInProject(context, context.currentProject().getId(), resource, true);
@@ -2289,7 +2283,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         // flush all caches
         clearAccessControlListCache();
         clearResourceCache();
-        m_accessCache.clear();
 
         OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCES_MODIFIED, Collections.singletonMap("resources", resources)));
     }
@@ -2358,7 +2351,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         // update cache
         clearAccessControlListCache();
         clearResourceCache();
-        m_accessCache.clear();
 
         OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", cmsFolder)));
     }
@@ -2864,7 +2856,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         m_propertyCache = null;
         m_propertyDefCache = null;
         m_propertyDefVectorCache = null;
-        m_accessCache = null;
         m_resourceCache = null;
         m_resourceListCache = null;
         m_accessControlListCache = null;
@@ -3172,7 +3163,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         info.put("PropertyCache", "" + m_propertyCache.size());
         info.put("PropertyDefinitionCache", "" + m_propertyDefCache.size());
         info.put("PropertyDefinitionVectorCache", "" + m_propertyDefVectorCache.size());
-        info.put("AccessCache", "" + m_accessCache.size());
         info.put("AccessControlListCache", "" + m_accessControlListCache.size());
 
         return info;
@@ -4476,19 +4466,13 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_propertyDefVectorCache", hashMap);
         }
         
-        hashMap = new LRUMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".access", 1000));    
-        m_accessCache = Collections.synchronizedMap(hashMap);
-        if (OpenCms.getMemoryMonitor().enabled()) {
-            OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_accessCache", hashMap);
-        }
-        
-        hashMap = new LRUMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".access", 1000));    
+        hashMap = new LRUMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".accesscontrollists", 1000));    
         m_accessControlListCache = Collections.synchronizedMap(hashMap);
         if (OpenCms.getMemoryMonitor().enabled()) {
             OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_accessControlListCache", hashMap);
         }
         
-        hashMap = new LRUMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".access", 1000));    
+        hashMap = new LRUMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".permissions", 1000));    
         m_permissionCache = Collections.synchronizedMap(hashMap);
         if (OpenCms.getMemoryMonitor().enabled()) { 
             OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_permissionCache", hashMap);
@@ -7677,7 +7661,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         clearResourceCache();
 
         m_propertyCache.clear();
-        m_accessCache.clear();
 
         OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", resource)));
     }
@@ -7961,7 +7944,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
         // update the cache
         clearResourceCache();
-        m_accessCache.clear();
 
         OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", file)));
     }
@@ -8031,9 +8013,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         // update the cache
         //clearResourceCache(file.getResourceName(), context.currentProject(), context.currentUser());
         clearResourceCache();
-
-        // inform about the file-system-change
-        m_accessCache.clear();
 
         OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", file)));
     }
@@ -8243,7 +8222,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         // update the cache
         //clearResourceCache(resource.getResourceName(), context.currentProject(), context.currentUser());
         clearResourceCache();
-        m_accessCache.clear();
 
         OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", resource)));
     }
