@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsStaticExportCronJob.java,v $
- * Date   : $Date: 2004/07/07 18:01:09 $
- * Version: $Revision: 1.5 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsStaticExportJob.java,v $
+ * Date   : $Date: 2004/07/08 15:24:39 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,19 +45,19 @@ import javax.servlet.ServletException;
 import org.apache.commons.collections.ExtendedProperties;
 
 /**
- * A Cms cron job to write a complete static export (e.g. nightly exports).<p>
+ * A schedulable OpenCms job to write a complete static export (e.g. nightly exports).<p>
  * 
- * To enable logging add the following line to opencms.properties in the logging
+ * To enable logging add the following line to <code>opencms.properties</code> in the logging
  * configuration section:
  * 
  * <pre>
- * log4j.logger.org.opencms.staticexport.CmsStaticExportCronJob=INFO
+ * log4j.logger.org.opencms.staticexport.CmsStaticExportJob=INFO
  * </pre>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.1 $
  */
-public class CmsStaticExportCronJob implements I_CmsScheduledJob {
+public class CmsStaticExportJob implements I_CmsScheduledJob {
     
     /**
      * @see org.opencms.scheduler.I_CmsScheduledJob#launch(org.opencms.file.CmsObject, org.apache.commons.collections.ExtendedProperties)
@@ -67,7 +67,7 @@ public class CmsStaticExportCronJob implements I_CmsScheduledJob {
         I_CmsReport report = null;
         
         try {
-            report = new CmsLogReport(CmsStaticExportCronJob.class);
+            report = new CmsLogReport(CmsStaticExportJob.class);
             OpenCms.getStaticExportManager().exportFullStaticRender(cms, true, report);
         } catch (CmsException e) {
             report.println(e);
