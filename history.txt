@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2002/12/16 13:24:02 $
- * Version: $Revision: 1.428 $
+ * Date   : $Date: 2002/12/17 12:17:51 $
+ * Version: $Revision: 1.429 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -26,6 +26,7 @@ OpenCms 5.0 (next release)
 ! Help system will now look up if a directory for the current locale exists and display the "online help" button only in this case
 ! Preference panel for startup options will not display language selection if only one locale directory exists
 ! New "relativeroot" property tells the link substitution in the editor to generate relative URLs instead of absolute URLs
+* The Setup wizard now checks if the OpenCms WAR was unpacked and complains if this is not the case
 * Description of a Module (and Module Parameters) is now saved in a CDATA section and not longer scambled after server restart
 * It's now possible to use "special" HTML chars (like < > " &) in resource property values
 * "Undo changes" now also resets the file-last-modified date
@@ -35,9 +36,10 @@ OpenCms 5.0 (next release)
 * Added entry for module "publishclass" on the workplace dialog when creating a new module 
 * Fixed template selection issue when creating a new page
 * Fixed issue with response.setContentType() in JSP pages
+- The welcome and release note pages are now part of a module "org.opencms.welcome" which is imported during setup
 - Attribute "part" in the <cms:template> tag has been renamed to "element"
 - Added Ant 1.5 support for build.xml (thanks to Thorsten Guenther for the patch)
-- WYSIWYG editor now tries to preserve the HTML source formatting
+- WYSIWYG editor now tries to preserve the HTML source code formatting
 - WYSIWYG editor now uses the "script save" variation of the control,
   so it sould not longer be neccessary to change IE security settings for this editor
   (note: it is still required for the LEdit text editor)
