@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2004/01/06 09:46:26 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2004/01/22 15:58:36 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.39 $
  */
 public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
     
@@ -233,6 +233,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
         // ladies and gentelman: and now for something completly different 
         String absolutePath = cms.readAbsolutePath(file);
         String templateProp = cms.readProperty(absolutePath, I_CmsConstants.C_PROPERTY_TEMPLATE);
+        String templateClassProp = cms.readProperty(absolutePath, "templateclass", false, I_CmsConstants.C_XML_CONTROL_DEFAULT_CLASS);
         String xmlTemplateContent = null;
         if (templateProp != null) {
             // i got a black magic template,
@@ -244,7 +245,8 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
             // i got a black magic template,
             buf.append(templateProp);
             buf.append("</masterTemplate>\n<ELEMENTDEF name=\"body\">\n<CLASS>");
-            buf.append(I_CmsConstants.C_XML_CONTROL_DEFAULT_CLASS);
+            // buf.append(I_CmsConstants.C_XML_CONTROL_DEFAULT_CLASS);
+            buf.append(templateClassProp);
             buf.append("</CLASS>\n<TEMPLATE>");
             // i got a black magic template got me so blind I can't see,
             buf.append(uri);
