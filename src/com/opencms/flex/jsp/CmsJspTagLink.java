@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagLink.java,v $
-* Date   : $Date: 2002/08/21 11:29:32 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2002/09/03 19:43:38 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,7 +34,7 @@ package com.opencms.flex.jsp;
  * Required for the static export to work.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsJspTagLink extends javax.servlet.jsp.tagext.BodyTagSupport implements I_CmsJspConstants {
     
@@ -64,7 +64,7 @@ public class CmsJspTagLink extends javax.servlet.jsp.tagext.BodyTagSupport imple
                 // Cache to store found subsitutions in, reduces access to subtitutor 
                 java.util.Hashtable substitutions = null;
 
-                // Aqquire a hashtable with all link substitutions
+                // Get a hashtable with all link substitutions
                 // This is saved in the page context so that the database is not accessed more then once per page
                 Object o = pageContext.getAttribute(this.C_JSP_ATTR_TAGLINK);
                 if (o == null ) {
@@ -96,11 +96,7 @@ public class CmsJspTagLink extends javax.servlet.jsp.tagext.BodyTagSupport imple
                 this.getBodyContent().clear();            
                 this.getBodyContent().print(newlink);
                 this.getBodyContent().writeOut(pageContext.getOut());
-                /*
-                body.clear();            
-                body.print(newlink);
-                body.writeOut(pageContext.getOut());
-                */
+
                 // Finally store the hashtable with the substitutions back in the page context
                 if (changed) {
                     pageContext.setAttribute(this.C_JSP_ATTR_TAGLINK, substitutions);
