@@ -9,9 +9,9 @@ Legend:
 - General comment
 
 OpenCms 4.5.20 Chusuk       - 15 November 2001
-! Added otherChangeDate for timed contentdefinitions. 
+! Added AdditionalChangeDate for timed contentdefinitions. 
 ! Initial checkin of CmsCronScheduler to launch jobs "cronlike".
-* Over-worked the static export.
+* Worked at the static export.
 * Bugfixing mastermodule.
 - Enabled variant caching for class "CmsShowMedia".
 
