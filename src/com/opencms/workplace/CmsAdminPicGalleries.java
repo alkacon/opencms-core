@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminPicGalleries.java,v $
-* Date   : $Date: 2001/07/31 15:50:17 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2001/11/06 12:57:38 $
+* Version: $Revision: 1.24 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -41,7 +41,7 @@ import javax.servlet.http.*;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.23 $ $Date: 2001/07/31 15:50:17 $
+ * @version $Revision: 1.24 $ $Date: 2001/11/06 12:57:38 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -64,7 +64,6 @@ public class CmsAdminPicGalleries extends CmsWorkplaceDefault implements I_CmsCo
         I_CmsSession session = cms.getRequestContext().getSession(true);
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms,
                 templateFile, elementName, parameters, templateSelector);
-
          String unzip = (String) parameters.get("unzip");
 
         // clear session values on first load
@@ -84,7 +83,7 @@ public class CmsAdminPicGalleries extends CmsWorkplaceDefault implements I_CmsCo
         if(foldername != null) {
             try {
                 CmsFolder fold = cms.readFolder(foldername);
-                System.out.println(fold.getParent());
+                //System.out.println(fold.getParent());
                 if(!(fold.getParent().equals("/pics/"))) {
                     foldername = "/pics/";
                 }
@@ -114,6 +113,7 @@ public class CmsAdminPicGalleries extends CmsWorkplaceDefault implements I_CmsCo
         String newname = (String)parameters.get(C_PARA_NAME);
         String title = (String)parameters.get("TITLE"); // both for gallery and upload file
         String step = (String)parameters.get("step");
+        String imagedescription = (String)parameters.get("DESCRIPTION");
         if(foldername == null) {
             foldername = "";
         }
@@ -178,7 +178,6 @@ public class CmsAdminPicGalleries extends CmsWorkplaceDefault implements I_CmsCo
         }
         else {
             if("upload".equals(action)) {
-
                 // get filename and file content if available
                 String filename = null;
                 byte[] filecontent = new byte[0];
@@ -249,6 +248,7 @@ public class CmsAdminPicGalleries extends CmsWorkplaceDefault implements I_CmsCo
                                 xmlTemplateDocument.setData("FILESIZE",
                                         new Integer(filecontent.length).toString() + " Bytes");
                                 xmlTemplateDocument.setData("FILENAME", filename);
+                                xmlTemplateDocument.setData("IMAGEDESCRIPTION",imagedescription);
                                 templateSelector = "step1";
                             }
                         }
@@ -266,6 +266,10 @@ public class CmsAdminPicGalleries extends CmsWorkplaceDefault implements I_CmsCo
                                 if(title != null) {
                                     String filepath = file.getAbsolutePath();
                                     cms.writeProperty(filepath, C_PROPERTY_TITLE, title);
+                                }
+                                if(imagedescription != null) {
+                                    String filepath = file.getAbsolutePath();
+                                    cms.writeProperty(filepath, C_PROPERTY_DESCRIPTION, imagedescription);
                                 }
                             }
                             catch(CmsException ex) {
