@@ -9,6 +9,7 @@ Legend:
 - General comment
 
 OpenCms 4.5.17 Chusuk       - xx November 2001
+! Added class "com.opencms.defaults.master.CmsShowMedia".
 ! New property "description" for type image. The description can be inserted when uploading
   a picture in the picturegallery.
 ! Webusers can be added with an additional group by everybody.
