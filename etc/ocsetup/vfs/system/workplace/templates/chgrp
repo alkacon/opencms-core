@@ -135,7 +135,7 @@ function checkSelected()
 
     //alert(selectedowner);
     //location.href='chgrp.html?newowner='+selectedowner;
-    location.href='chgrp.html?newgroup='+selectedowner;
+    location.href='chgrp.html?newgroup='+selectedowner+'&flags='+document.GROUP.ALL.checked;
 }
 
 
