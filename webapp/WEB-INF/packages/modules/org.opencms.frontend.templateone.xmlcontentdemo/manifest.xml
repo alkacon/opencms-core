@@ -971,7 +971,7 @@
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Schema for Widgetdemo]]></value>
+					<value><![CDATA[XML content widgetdemo schema]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -1142,7 +1142,12 @@
 			<datecreated>Fri, 10 Dec 2004 12:08:15 CET</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[XML content address schema]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1155,7 +1160,12 @@
 			<datecreated>Fri, 10 Dec 2004 12:08:01 CET</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[XML content bookmark schema]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1221,7 +1231,7 @@
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[XML content article detail view]]></value>
+					<value><![CDATA[XML content bookmark detail view]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -1247,7 +1257,7 @@
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[XML content article demo page]]></value>
+					<value><![CDATA[XML content bookmark list view]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
