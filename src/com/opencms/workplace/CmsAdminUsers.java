@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminUsers.java,v $
-* Date   : $Date: 2001/07/23 08:39:02 $
-* Version: $Revision: 1.17 $Selector
+* Date   : $Date: 2001/07/27 06:47:41 $
+* Version: $Revision: 1.18 $Selector
 
 *
 * Copyright (C) 2000  The OpenCms Group
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.17 $ $Date: 2001/07/23 08:39:02 $
+ * @version $Revision: 1.18 $ $Date: 2001/07/27 06:47:41 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -354,7 +354,9 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
                                                 && e.getMessage().equals("user data missing")) {
                                             templateSelector = "errordatamissing1";
                                         }else {
-                                            throw e; // hand the exception down
+                                            // unknown error
+                                            xmlTemplateDocument.setData("details", Utils.getStackTrace(e));
+                                            templateSelector = "error";
                                         }
                                     }
                                 }

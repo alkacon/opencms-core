@@ -664,7 +664,7 @@ top.help_url='Administration/Benutzerverwaltung/Benutzer.html';
 
 <TEMPLATE name="error">
 <![CDATA[
-]]><ERRORPAGE title="sonstiger Fehler" message="error.message.adduser" reason="" suggestion="error.suggestion.none" ref="index.html?perspective=newuser" /><![CDATA[
+]]><ERRORPAGE title="error.title.adduser" message="error.message.adduser" reason="error.reason.deleteextension" suggestion="error.suggestion.none" ref="index.html?perspective=newuser"><PROCESS>details</PROCESS></ERRORPAGE><![CDATA[
 ]]>
 </TEMPLATE>
 
