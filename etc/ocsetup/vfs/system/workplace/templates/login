@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <WORKPLACE>
+<STARTUP>openwin('../index.html', 'opencms', 0, 0); window.close();</STARTUP>
 <TEMPLATE>
 <![CDATA[
 <html>
@@ -11,7 +12,13 @@
 <!-- Begin Styles and Scripts -->
 <link rel=stylesheet type="text/css" href="../css/format.css">
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
+
+<SCRIPT LANGUAGE=JavaScript FOR=window EVENT=onload>
+]]><PROCESS>STARTUP</PROCESS><![CDATA[
+</SCRIPT>
+
 <!-- End Styles and Scripts -->
+
 </head>
 
 <!-- Begin content login -->

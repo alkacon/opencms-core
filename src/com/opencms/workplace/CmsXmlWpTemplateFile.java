@@ -14,9 +14,10 @@ import java.util.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.9 $ $Date: 2000/01/26 17:06:21 $
+ * @version $Revision: 1.10 $ $Date: 2000/01/26 18:26:54 $
  */
-public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLogChannels {
+public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLogChannels,
+                                                                        I_CmsWpConstants {
 
     private Hashtable m_wpTags = new Hashtable();
     
@@ -90,10 +91,10 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
     private void registerMyTags() {
         registerTag("BUTTON", "com.opencms.workplace.CmsButton");
         registerTag("BUTTONSEPARATOR", "com.opencms.workplace.CmsButtonSeparator");
-        registerTag("SUBMITBUTTON", "com.opencms.workplace.CmsButtonSubmit");
-        registerTag("LABEL", "com.opencms.workplace.CmsLabel");
         registerTag("INPUTFIELD", "com.opencms.workplace.CmsInput");
+        registerTag("LABEL", "com.opencms.workplace.CmsLabel");
         registerTag("PASSWORD", "com.opencms.workplace.CmsInputPassword");
+        registerTag("SUBMITBUTTON", "com.opencms.workplace.CmsButtonSubmit");
     }    
     
     /**
@@ -130,7 +131,7 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
     public CmsXmlLanguageFile getLanguageFile() {
         return m_languageFile; 
     }
-        
+
     /**
      * Handles any occurence of any special workplace XML tag like <code>&lt;BUTTON&gt;</code> or 
      * <code>&lt;LABEL&gt;</code>. Looks up the appropriate workplace element class for the current
@@ -167,4 +168,11 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
     
         return result; 
     }                    
+    
+    /**
+     * Clears the startup tag that can be used in workplace documents.
+     */
+    public void clearStartup(){
+        setData(C_TAG_STARTUP,"");
+    }
 }

@@ -13,7 +13,7 @@ import java.util.*;
  * Definition of the CmsLogin.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2000/01/26 16:16:45 $
+ * @version $Revision: 1.3 $ $Date: 2000/01/26 18:26:54 $
  */
 public class CmsLogin extends CmsXmlTemplate {
         
@@ -84,13 +84,14 @@ public class CmsLogin extends CmsXmlTemplate {
             }
         }
         
+        CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);        
+        xmlTemplateDocument.clearFileCache(xmlTemplateDocument);
+        
+        if (user == null) {
+            xmlTemplateDocument.clearStartup();
+        }
         
         
-        CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile();       
-        String fullFileName = CmsXmlWpTemplateFile.lookupAbsoluteFilename(cms, templateFile, xmlTemplateDocument);
-        CmsFile file = cms.readFile(fullFileName);
-        xmlTemplateDocument.init(cms, file);       
-                
         // Try to process the template file
         try {
             result = xmlTemplateDocument.getProcessedTemplateContent(this, parameters);

@@ -6,7 +6,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.7 $ $Date: 2000/01/26 13:52:40 $
+ * @version $Revision: 1.8 $ $Date: 2000/01/26 18:26:54 $
  */
 public interface I_CmsWpConstants {
 
@@ -22,6 +22,11 @@ public interface I_CmsWpConstants {
      *  Name of the template containing input field definitions
      */
     public static final String C_INPUTTEMPLATE = "inputTemplate";
+    
+     /**
+     *  Name of the template containing input field definitions
+     */
+    public static final String C_STARTUPTEMPLATE = "startupTemplate";    
     
     
     // tag defnitions
@@ -40,7 +45,13 @@ public interface I_CmsWpConstants {
     * Name if the password tag in the input definiton template
     */
    public static final String C_TAG_PASSWORD="password";
+   
+   /**
+    * Name if the startup tag in the input definiton template
+    */
+   public static final String C_TAG_STARTUP="STARTUP";
     
+   
     /**
     * Name if the submitbutton tag in the button definiton template
     */
@@ -75,7 +86,14 @@ public interface I_CmsWpConstants {
     /** Name of the value */
     public static final String C_LABEL_VALUE = "value";
     
+    
+    // Parameters for startup
+    
+    /** Value of the startup */
+    public static final String C_STARTUP_VALUE = "value";
+    
         
+    
     // Parameters for input fields
     
     /** Name of the input field */
