@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskAction.java,v $
- * Date   : $Date: 2000/05/23 12:51:38 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/05/26 10:13:55 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.13 $ $Date: 2000/05/23 12:51:38 $
+ * @version $Revision: 1.14 $ $Date: 2000/05/26 10:13:55 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants, I_CmsLogChannels {
@@ -640,6 +640,7 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants, I_CmsLog
 		
 		// per default send a mail from task's organizer to task's recipient.
 		StringBuffer contentBuf = new StringBuffer(lang.getLanguageValue("task.email.create.content"));
+		
         contentBuf.append("\n");
         contentBuf.append(lang.getLanguageValue("task.label.project"));
         contentBuf.append(": ");            
@@ -680,6 +681,7 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants, I_CmsLog
 			// the news deliver always "checked" or ""
 			if (cms.getTaskPar(task.getId(),C_TASKPARA_ALL).equals("checked")) {
                 try {
+					
                     mail=new CmsMail(cms,cms.readOwner(task),cms.readGroup(task),subject,contentBuf.toString(),"text/plain");
                 } catch(CmsException e) {
                     if(A_OpenCms.isLogging()) {

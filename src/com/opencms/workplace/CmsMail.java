@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMail.java,v $
- * Date   : $Date: 2000/05/23 12:55:30 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/05/26 10:13:35 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import java.io.*;
  * This class is used to send a mail, it uses Threads to send it.
  *
  * @author $Author: w.babachan $
- * @version $Name:  $ $Revision: 1.4 $ $Date: 2000/05/23 12:55:30 $
+ * @version $Name:  $ $Revision: 1.5 $ $Date: 2000/05/26 10:13:35 $
  * @see java.lang.Thread
  */
 public class CmsMail extends Thread implements I_CmsLogChannels {
@@ -55,8 +55,8 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
 	private final String c_MAILSERVER;
 	private final String c_SUBJECT;
 	private final String c_CONTENT;	
-	private final String c_FILE;
-	private final String c_TYPE;	
+	private final String c_TYPE;
+	private final A_CmsObject c_CMS;
     
     private String m_defaultSender = null;
 	
@@ -108,9 +108,9 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
 		c_SUBJECT=(subject==null?"":subject);
 		c_CONTENT=(content==null?"":content);
 		CmsXmlWpConfigFile conf=new CmsXmlWpConfigFile(cms);		
-		c_MAILSERVER=conf.getMailServer();
+		c_MAILSERVER=conf.getMailServer();		
 		c_TYPE=type;
-		c_FILE="";
+		c_CMS=cms;			
 	}
 	
 	/**
@@ -168,8 +168,7 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
 		c_CONTENT=(content==null?"":content);
 		c_MAILSERVER=conf.getMailServer();
 		c_TYPE=type;
-		c_FILE="";
-		
+		c_CMS=cms;
 	}
 	
 	
@@ -224,14 +223,14 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
 		}
 		if (users.length==0){
 			throw new CmsException("[" + this.getClass().getName() + "] " + "Error in sending email,Unknown recipient email address.", CmsException.C_BAD_NAME);
-		}		
+		}
 		c_TO=users;
 		c_FROM=fromAddress;
 		c_SUBJECT=(subject==null?"":subject);
 		c_CONTENT=(content==null?"":content);
 		c_MAILSERVER=conf.getMailServer();
 		c_TYPE=type;
-		c_FILE="";
+		c_CMS=cms;
 	}
 	
 	
@@ -241,12 +240,11 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
 	public void run() {
 		// Send the mail
 		// create some properties and get the default Session
-		
-		Properties props=new Properties();		
+		Properties props=System.getProperties();
 		props.put("mail.smtp.host",c_MAILSERVER);		
 		Session session=Session.getDefaultInstance(props,null);	
 		MimeMessage msg=new MimeMessage(session);
-		try {
+		try {			
 			InternetAddress[] to=new InternetAddress[c_TO.length];
 			for(int i=0;i<c_TO.length;i++) {
 				to[i]=new InternetAddress(c_TO[i]);
@@ -254,9 +252,51 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
 			msg.setFrom(new InternetAddress(c_FROM));
 			msg.setRecipients(Message.RecipientType.TO,to);
 			msg.setSubject(c_SUBJECT,"ISO-8859-1");
-			msg.setContent(c_CONTENT,c_TYPE);
+						
+			Enumeration enum=c_CMS.getRequestContext().getRequest().getFileNames();
+			Vector v=new Vector();
+			while(enum.hasMoreElements()) {
+				v.addElement(enum.nextElement());
+			}		
+			int size=v.size();	
+			System.err.println("Size: "+size);			
+			if (size!=0) {
+				// create and fill the first message part
+				MimeBodyPart mbp1=new MimeBodyPart();
+				Multipart mp=new MimeMultipart();
+				if (c_TYPE.equals("text/html")) {
+					mbp1.setDataHandler(new DataHandler(new CmsByteArrayDataSource(c_CONTENT, c_TYPE)));
+				} else {
+					mbp1.setText(c_CONTENT,"ISO-8859-1");
+				}
+				mp.addBodyPart(mbp1);
+					
+				// create another message part					
+				// attach the file to the message				
+				//FileDataSource fds=new FileDataSource(c_PATH+c_FILE);
+				//mbp2.setDataHandler(new DataHandler(fds));
+					
+				for(int i=0;i<size;i++) {
+					String filename=(String)v.elementAt(i);
+					System.err.println("Filename: "+filename);
+					MimetypesFileTypeMap mimeTypeMap=new MimetypesFileTypeMap();
+					String mimeType=mimeTypeMap.getContentType(filename);
+					System.err.println("MimeType: "+mimeType);
+					MimeBodyPart mbp=new MimeBodyPart();
+					mbp.setDataHandler(new DataHandler(new CmsByteArrayDataSource(c_CMS.getRequestContext().getRequest().getFile(filename), mimeType)));
+					mbp.setFileName(filename);
+					mp.addBodyPart(mbp);
+				}
+				msg.setContent(mp);
+			} else {
+				if (c_TYPE.equals("text/html")) {
+					msg.setDataHandler(new DataHandler(new CmsByteArrayDataSource(c_CONTENT, c_TYPE)));
+				} else {
+					msg.setContent(c_CONTENT,c_TYPE);
+				}
+			}
 			msg.setSentDate(new Date());
-			Transport.send(msg);			
+			Transport.send(msg);
 		} catch(Exception e) {
 			if(A_OpenCms.isLogging()) {
 				A_OpenCms.log(C_OPENCMS_DEBUG, "Error in sending email:"+ e.getMessage());
