@@ -21,7 +21,7 @@
 <table border="0" width="100%" cellspacing=0 cellpadding=0>
 	<tr>
 		<td width="15%" class="formular" height="25">
-			&nbsp;&nbsp;]]><LABEL value="channelbackoffice.label.channelid" /><![CDATA[:
+			&nbsp;&nbsp;]]><LABEL value="com_opencms_defaults_master_CmsChannelBackoffice.label.channelid" /><![CDATA[:
 		</td>
 		<td width="85%" class="formular" >
 			]]><PROCESS>channelId</PROCESS><![CDATA[
@@ -29,7 +29,7 @@
 	</tr>
 	<tr>
 		<td width="15%" class="formular" height="25">
-			&nbsp;&nbsp;]]><LABEL value="channelbackoffice.label.channelname" /><![CDATA[:
+			&nbsp;&nbsp;]]><LABEL value="com_opencms_defaults_master_CmsChannelBackoffice.label.channelname" /><![CDATA[:
 		</td>
 		<td width="85%" class="dialogtxt" >
 			<input class="localstyle" type="text" size="30" name="channelName" id="channelName" value="]]><PROCESS>channelName</PROCESS><![CDATA[">
@@ -44,7 +44,7 @@
 	
 	<tr>
 		<td width="15%" class="formular" height="25">
-			&nbsp;&nbsp;]]><LABEL value="channelbackoffice.label.ownername" /><![CDATA[:
+			&nbsp;&nbsp;]]><LABEL value="com_opencms_defaults_master_CmsChannelBackoffice.label.ownername" /><![CDATA[:
 		</td>
 		<td width="85%" class="dialogtxt" >
 			<select class="localstyle" name="owner" width="250">]]><process>users</process><![CDATA[</select>
@@ -53,7 +53,7 @@
 
 	<tr>
 		<td width="15%" class="formular" height="25">
-			&nbsp;&nbsp;]]><LABEL value="channelbackoffice.label.group" /><![CDATA[:
+			&nbsp;&nbsp;]]><LABEL value="com_opencms_defaults_master_CmsChannelBackoffice.label.group" /><![CDATA[:
 		</td>
 		<td width="85%" class="dialogtxt" >
 			<select class="localstyle" name="groupId" width="250">]]><process>groups</process><![CDATA[</select>
@@ -68,7 +68,7 @@
 		
 	<tr>
 		<td width="15%" class="formular">
-			&nbsp;&nbsp;]]><LABEL value="channelbackoffice.label.parentname" /><![CDATA[:
+			&nbsp;&nbsp;]]><LABEL value="com_opencms_defaults_master_CmsChannelBackoffice.label.parentname" /><![CDATA[:
 		</td>
 		<td width="85%" class="formular">
 			<table border=0 cellspacing=0 cellpadding=0>
@@ -92,7 +92,7 @@
 	
 	<tr>
 		<td width="15%" class="formular" height="25">
-			&nbsp;&nbsp;]]><LABEL value="channelbackoffice.label.accessflagsasstring"/><![CDATA[:
+			&nbsp;&nbsp;]]><LABEL value="com_opencms_defaults_master_CmsChannelBackoffice.label.accessflagsasstring"/><![CDATA[:
 		</td>
 		<td width="85%" class="formular" height="25">
 			<table cellspacing=0 cellpadding=0 border=0>
