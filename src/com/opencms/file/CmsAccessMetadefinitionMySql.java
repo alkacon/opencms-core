@@ -458,7 +458,7 @@ class CmsAccessMetadefinitionMySql implements I_CmsAccessMetadefinition, I_CmsCo
 	public String readMetainformation(A_CmsResource resource, String meta)
 		throws CmsException {
 		return( readMetainformation(meta, resource.getProjectId(), 
-									resource.getPath(), resource.getType()) );
+									resource.getAbsolutePath(), resource.getType()) );
 	}
 
 	/**
