@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/07/11 13:31:20 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2003/07/11 14:06:43 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.17 $ $Date: 2003/07/11 13:31:20 $
+ * @version $Revision: 1.18 $ $Date: 2003/07/11 14:06:43 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -179,10 +179,11 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
 
     /**
      * Private helper method for publihing into the filesystem.
-     * test if resource must be written to the filesystem
+     * test if resource must be written to the filesystem.<p>
      *
-     * @param filename Name of a resource in the OpenCms system.
-     * @return key in exportpoint Hashtable or null.
+     * @param filename Name of a resource in the OpenCms system
+     * @param exportpoints the exportpoints
+     * @return key in exportpoints or null
      */
     protected String checkExport(String filename, Hashtable exportpoints) {
 
@@ -200,10 +201,11 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
     }
 
     /**
-     * creates a link entry for each of the link targets in the linktable.
+     * creates a link entry for each of the link targets in the linktable.<p>
      *
-     * @param pageId The resourceId (offline) of the page whose liks should be traced.
-     * @param linkTarget A vector of strings (the linkdestinations).
+     * @param pageId The resourceId (offline) of the page whose liks should be traced
+     * @param linkTargets A vector of strings (the linkdestinations)
+     * @throws CmsException if something goes wrong  
      */
     public void createLinkEntrys(CmsUUID pageId, Vector linkTargets) throws CmsException {
         //first delete old entrys in the database
@@ -235,10 +237,11 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
     }
 
     /**
-     * creates a link entry for each of the link targets in the online linktable.
+     * creates a link entry for each of the link targets in the online linktable.<p>
      *
-     * @param pageId The resourceId (online) of the page whose liks should be traced.
-     * @param linkTarget A vector of strings (the linkdestinations).
+     * @param pageId The resourceId (online) of the page whose liks should be traced
+     * @param linkTargets A vector of strings (the linkdestinations)
+     * @throws CmsException if something goes wrong
      */
     public void createOnlineLinkEntrys(CmsUUID pageId, Vector linkTargets) throws CmsException {
         //first delete old entrys in the database
@@ -269,19 +272,19 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         }
     }
 
-    /**
-    * Creates a project.
+   /**
+    * Creates a project.<p>
     *
-    * @param owner The owner of this project.
-    * @param group The group for this project.
-    * @param managergroup The managergroup for this project.
-    * @param task The task.
-    * @param name The name of the project to create.
-    * @param description The description for the new project.
-    * @param flags The flags for the project (e.g. archive).
-    * @param type the type for the project (e.g. normal).
-    *
-    * @throws CmsException Throws CmsException if something goes wrong.
+    * @param owner The owner of this project
+    * @param group The group for this project
+    * @param managergroup The managergroup for this project
+    * @param task The task
+    * @param name The name of the project to create
+    * @param description The description for the new project
+    * @param flags The flags for the project (e.g. archive)
+    * @param type the type for the project (e.g. normal)
+    * @return the new CmsProject instance
+    * @throws CmsException Throws CmsException if something goes wrong
     */
     public CmsProject createProject(CmsUser owner, CmsGroup group, CmsGroup managergroup, CmsTask task, String name, String description, int flags, int type) throws CmsException {
 
@@ -322,10 +325,11 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
 
     /**
      * This method creates a new session in the database. It is used
-     * for sessionfailover.
+     * for sessionfailover.<p>
      *
-     * @param sessionId the id of the session.
-     * @return data the sessionData.
+     * @param sessionId the id of the session
+     * @param data the session data
+     * @throws CmsException if something goes wrong
      */
     public void createSession(String sessionId, Hashtable data) throws CmsException {
         byte[] value = null;
@@ -352,11 +356,9 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
     }
 
     /**
-     * delete all projectResource from an given CmsProject object.
+     * Deletes all projectResource from an given CmsProject.<p>
      *
-     * @param project The project in which the resource is used.
-     *
-     *
+     * @param projectId The project in which the resource is used
      * @throws CmsException Throws CmsException if operation was not succesful
      */
     public void deleteAllProjectResources(int projectId) throws CmsException {
@@ -431,9 +433,10 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
     /****************     methods for link management            ****************************/
 
     /**
-     * deletes all entrys in the link table that belong to the pageId
+     * Deletes all entrys in the link table that belong to the pageId.<p>
      *
      * @param pageId The resourceId (offline) of the page whose links should be deleted
+     * @throws CmsException if something goes wrong
      */
     public void deleteLinkEntrys(CmsUUID pageId) throws CmsException {
         Connection conn = null;
@@ -453,9 +456,10 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
     }
 
     /**
-     * deletes all entrys in the online link table that belong to the pageId
+     * Deletes all entrys in the online link table that belong to the pageId.<p>
      *
      * @param pageId The resourceId (online) of the page whose links should be deleted
+     * @throws CmsException if something goes wrong
      */
     public void deleteOnlineLinkEntrys(CmsUUID pageId) throws CmsException {
         Connection conn = null;
@@ -530,13 +534,11 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
     }
 
     /**
-     * delete a projectResource from an given CmsResource object.
+     * delete a projectResource from an given CmsResource object.<p>
      *
-     * @param project The project in which the resource is used.
-     * @param resource The resource to be deleted from the Cms.
-     *
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
+     * @param projectId id of the project in which the resource is used
+     * @param resourceName name of the resource to be deleted from the Cms
+     * @throws CmsException if something goes wrong
      */
     public void deleteProjectResource(int projectId, String resourceName) throws CmsException {
         Connection conn = null;
@@ -642,11 +644,10 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
     }
 
     /**
-     * Ends a task from the Cms.
+     * Ends a task from the Cms.<p>
      *
-     * @param taskid Id of the task to end.
-     *
-     * @throws CmsException Throws CmsException if something goes wrong.
+     * @param taskId Id of the task to end
+     * @throws CmsException if something goes wrong
      */
     public void endTask(int taskId) throws CmsException {
         Connection conn = null;
@@ -667,7 +668,9 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
     }
 
     /**
-     * Private method to init all default-resources
+     * Method to init all default-resources.<p>
+     * 
+     * @throws CmsException if something goes wrong
      */
     public void fillDefaults() throws CmsException {
         try {
@@ -779,7 +782,10 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         m_driverManager.getVfsDriver().writeFolder(setup, setupCosFolder, false);
     }
 
-    protected void finalize() throws Throwable {
+    /**
+	 * @see java.lang.Object#finalize()
+	 */
+	protected void finalize() throws Throwable {
         if (m_sqlManager!=null) {
             m_sqlManager.finalize();
         }
@@ -816,11 +822,11 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
     }
     
     /**
-     * Returns all projects, which are accessible by a group.
+     * Returns all projects, which are accessible by a group.<p>
      *
-     * @param group The requesting group.
-     *
-     * @return a Vector of projects.
+     * @param group the requesting group
+     * @return a Vector of projects
+     * @throws CmsException if something goes wrong
      */
     public Vector getAllAccessibleProjectsByGroup(CmsGroup group) throws CmsException {
         Vector projects = new Vector();
@@ -849,11 +855,11 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
     }
     
     /**
-     * Returns all projects, which are manageable by a group.
+     * Returns all projects, which are manageable by a group.<p>
      *
-     * @param group The requesting group.
-     *
-     * @return a Vector of projects.
+     * @param group The requesting group
+     * @return a Vector of projects
+     * @throws CmsException if something goes wrong
      */
     public Vector getAllAccessibleProjectsByManagerGroup(CmsGroup group) throws CmsException {
         Vector projects = new Vector();
@@ -881,11 +887,11 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
     }
     
     /**
-     * Returns all projects, which are owned by a user.
+     * Returns all projects, which are owned by a user.<p>
      *
-     * @param user The requesting user.
-     *
-     * @return a Vector of projects.
+     * @param user The requesting user
+     * @return a Vector of projects
+     * @throws CmsException if something goes wrong
      */
     public Vector getAllAccessibleProjectsByUser(CmsUser user) throws CmsException {
         Vector projects = new Vector();
@@ -913,9 +919,10 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
     }
 
     /**
-     * Reads all export links.
+     * Reads all export links.<p>
      *
-     * @return a Vector(of Strings) with the links.
+     * @return a Vector(of Strings) with the links
+     * @throws CmsException if something goes wrong
      */
     public Vector getAllExportLinks() throws CmsException {
         Vector retValue = new Vector();
@@ -941,11 +948,11 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
     }
 
     /**
-     * Returns all projects, with the overgiven state.
+     * Returns all projects, with the overgiven state.<p>
      *
-     * @param state The state of the projects to read.
-     *
-     * @return a Vector of projects.
+     * @param state The state of the projects to read
+     * @return a Vector of projects
+     * @throws CmsException if something goes wrong
      */
     public Vector getAllProjects(int state) throws CmsException {
         Vector projects = new Vector();
@@ -984,10 +991,11 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
     }
 
     /**
-    * Reads all export links that depend on the resource.
-    * @param res. The resourceName() of the resources that has changed (or the String
-    *              that describes a contentdefinition).
-    * @return a Vector(of Strings) with the linkrequest names.
+    * Reads all export links that depend on the resource.<p>
+    * 
+    * @param resources vector of resources 
+    * @return a Vector(of Strings) with the linkrequest names
+    * @throws CmsException if something goes wrong
     */
     public Vector getDependingExportLinks(Vector resources) throws CmsException {
         Vector retValue = new Vector();
@@ -1037,10 +1045,11 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
     }
 
     /**
-     * searches for broken links in the online project.
+     * Searches for broken links in the online project.<p>
      *
      * @return A Vector with a CmsPageLinks object for each page containing broken links
-     *          this CmsPageLinks object contains all links on the page withouth a valid target.
+     *          this CmsPageLinks object contains all links on the page withouth a valid target
+     * @throws CmsException if something goes wrong
      */
     public Vector getOnlineBrokenLinks() throws CmsException {
         Vector result = new Vector();
@@ -1096,7 +1105,10 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         return readProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
     }
 
-    public void init(Configurations config, String dbPoolUrl, CmsDriverManager driverManager) throws CmsException {
+    /**
+	 * @see org.opencms.db.I_CmsProjectDriver#init(source.org.apache.java.util.Configurations, java.lang.String, org.opencms.db.CmsDriverManager)
+	 */
+	public void init(Configurations config, String dbPoolUrl, CmsDriverManager driverManager) throws CmsException {
         m_sqlManager = this.initQueries(dbPoolUrl);      
         m_driverManager = driverManager;  
 
@@ -1113,13 +1125,16 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
     }
 
     /**
-     * Publishes a specified project to the online project. <br>
+     * Publishes a specified project to the online project.<p>
      *
-     * @param project The project to be published.
-     * @param onlineProject The online project of the OpenCms.
-     * @param report A report object to provide the loggin messages.
-     * @return a vector of changed or deleted resources.
-     * @throws CmsException  Throws CmsException if operation was not succesful.
+     * @param currentUser the current user
+     * @param publishProject the project to be published
+     * @param onlineProject the online project of the OpenCms
+     * @param backupEnabled flag if the backup is enabled
+     * @param report a report object to provide the loggin messages
+     * @param exportpoints the exportpoints
+     * @return a vector of changed or deleted resources
+     * @throws CmsException if something goes wrong
      */
     public Vector publishProject(CmsUser currentUser, CmsProject publishProject, CmsProject onlineProject, boolean backupEnabled, I_CmsReport report, Hashtable exportpoints) throws CmsException {
         CmsExportPointDriver discAccess = new CmsExportPointDriver(exportpoints);
@@ -1205,7 +1220,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                                 throw exc;
                             }
     
-                            m_driverManager.getVfsDriver().updateOnlineResourceFromOfflineResource( (CmsResource)onlineFolder, (CmsResource)currentFolder);
+                            m_driverManager.getVfsDriver().updateOnlineResourceFromOfflineResource((CmsResource)onlineFolder, (CmsResource)currentFolder);
                         } else {
                             throw e;
                         }
@@ -1264,7 +1279,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                         }
                     }                                    
     
-                    m_driverManager.getVfsDriver().updateOnlineResourceFromOfflineResource( (CmsResource)onlineFolder, (CmsResource)currentFolder);               
+                    m_driverManager.getVfsDriver().updateOnlineResourceFromOfflineResource((CmsResource)onlineFolder, (CmsResource)currentFolder);               
                     
                     // copy the access control entries of the folder
                     m_driverManager.getUserDriver().publishAccessControlEntries(publishProject, onlineProject, currentFolder.getResourceAceId(), onlineFolder.getResourceAceId());                
@@ -1486,7 +1501,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                                 throw exc;
                             }
     
-                            m_driverManager.getVfsDriver().updateOnlineResourceFromOfflineResource( (CmsResource)onlineFile, (CmsResource)currentFile);
+                            m_driverManager.getVfsDriver().updateOnlineResourceFromOfflineResource((CmsResource)onlineFile, (CmsResource)currentFile);
                             m_driverManager.getVfsDriver().writeFileContent(onlineFile.getFileId(), currentFile.getContents(), I_CmsConstants.C_PROJECT_ONLINE_ID, false);
                         } else {
                             throw e;
@@ -1576,12 +1591,11 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
     }
 
     /**
-     * select all projectResources from an given project
+     * Select all projectResources from an given project.<p>
      *
-     * @param project The project in which the resource is used.
-     *
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
+     * @param projectId the project in which the resource is used
+     * @return Vector of resources belongig to the project
+     * @throws CmsException if something goes wrong
      */
     public Vector readAllProjectResources(int projectId) throws CmsException {
         Connection conn = null;
@@ -1687,10 +1701,12 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
     }
 
     /**
-     * returns a Vector (Strings) with the link destinations of all links on the page with
-     * the pageId.
+     * Returns a Vector (Strings) with the link destinations of all links on the page with
+     * the pageId.<p>
      *
-     * @param pageId The resourceId (offline) of the page whose liks should be read.
+     * @param pageId The resourceId (offline) of the page whose liks should be read
+     * @return the vector of link destinations
+     * @throws CmsException if something goes wrong
      */
     public Vector readLinkEntrys(CmsUUID pageId) throws CmsException {
         Vector result = new Vector();
@@ -1719,9 +1735,11 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
     }
 
     /**
-     * reads the online id of a offline file.
-     * @param filename
-     * @return the id or -1 if not found (should not happen).
+     * Reads the online id of a offline file.<p>
+     * 
+     * @param filename name of the file
+     * @return the id or -1 if not found (should not happen)
+     * @throws CmsException if something goes wrong
      */
     private CmsUUID readOnlineId(String filename) throws CmsException {
         ResultSet res = null;
@@ -1753,10 +1771,12 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
     }
 
     /**
-     * returns a Vector (Strings) with the link destinations of all links on the page with
-     * the pageId.
+     * Returns a Vector (Strings) with the link destinations of all links on the page with
+     * the pageId.<p>
      *
-     * @param pageId The resourceId (online) of the page whose liks should be read.
+     * @param pageId The resourceId (online) of the page whose liks should be read
+     * @return the vector of link destinations
+     * @throws CmsException if something goes wrong
      */
     public Vector readOnlineLinkEntrys(CmsUUID pageId) throws CmsException {
         Vector result = new Vector();
@@ -1785,10 +1805,11 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
     }
 
     /**
-     * Reads a project by task-id.
+     * Reads a project by task-id.<p>
      *
-     * @param task The task to read the project for.
-     * @throws CmsException Throws CmsException if something goes wrong.
+     * @param task the task to read the project for
+     * @return the project the tasks belongs to
+     * @throws CmsException if something goes wrong
      */
     public CmsProject readProject(CmsTask task) throws CmsException {
         PreparedStatement stmt = null;
@@ -1818,10 +1839,11 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
     }
 
     /**
-     * Reads a project.
+     * Reads a project.<p>
      *
-     * @param id The id of the project.
-     * @throws CmsException Throws CmsException if something goes wrong.
+     * @param id the id of the project
+     * @return the project with the given id
+     * @throws CmsException if something goes wrong
      */
     public CmsProject readProject(int id) throws CmsException {
         PreparedStatement stmt = null;
@@ -1862,11 +1884,11 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
     }
 
     /**
-     * Reads log entries for a project.
+     * Reads log entries for a project.<p>
      *
-     * @param project The projec for tasklog to read.
-     * @return A Vector of new TaskLog objects
-     * @throws CmsException Throws CmsException if something goes wrong.
+     * @param projectid the project for tasklog to read
+     * @return a vector of new TaskLog objects
+     * @throws CmsException if something goes wrong
      */
     public Vector readProjectLogs(int projectid) throws CmsException {
         ResultSet res = null;
@@ -1965,11 +1987,11 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
     }
 
     /**
-     * Reads a session from the database.
+     * Reads a session from the database.<p>
      *
-     * @param sessionId, the id og the session to read.
-     * @return the read session as Hashtable.
-     * @throws thorws CmsException if something goes wrong.
+     * @param sessionId the id og the session to read
+     * @return the session data as Hashtable
+     * @throws CmsException if something goes wrong
      */
     public Hashtable readSession(String sessionId) throws CmsException {
         PreparedStatement stmt = null;
@@ -2058,9 +2080,13 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         return property;
     }
 
-    /**
-     * Helper method to serialize the hashtable.
-     * This method is used by updateSession() and createSession()
+	/**
+     * Helper method to serialize the hashtable.<p>
+     * This method is used by updateSession() and createSession().
+     * 
+	 * @param data the data to be serialized
+	 * @return byte array of serialized data
+	 * @throws IOException if something goes wrong 
      */
     private byte[] serializeSession(Hashtable data) throws IOException {
         // serialize the hashtable
@@ -2101,8 +2127,8 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
      * This method uses an insertion sort algorithm.
      * NOT IN USE AT THIS TIME
      *
-     * @param unsortedList Array of strings containing the list of files or folders.
-     * @return Array of sorted strings.
+     * @param list array of strings containing the list of files or folders
+     * @return Vector of sorted strings
      */
     protected Vector SortEntrys(Vector list) {
         int in, out;
@@ -2153,11 +2179,13 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
     }
 
     /**
-     * When a project is published this method aktualises the online link table.
+     * Update the online link table (after a project is published).<p>
      *
-     * @param deleted A Vector (of CmsResources) with the deleted resources of the project.
-     * @param changed A Vector (of CmsResources) with the changed resources of the project.
-     * @param newRes A Vector (of CmsResources) with the newRes resources of the project.
+     * @param deleted vector (of CmsResources) with the deleted resources of the project
+     * @param changed vector (of CmsResources) with the changed resources of the project
+     * @param newRes vector (of CmsResources) with the newRes resources of the project
+     * @param pageType the page type
+     * @throws CmsException if something goes wrong
      */
     public void updateOnlineProjectLinks(Vector deleted, Vector changed, Vector newRes, int pageType) throws CmsException {
         if (deleted != null) {
@@ -2198,10 +2226,12 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
 
     /**
      * This method updates a session in the database. It is used
-     * for sessionfailover.
+     * for sessionfailover.<p>
      *
-     * @param sessionId the id of the session.
-     * @return data the sessionData.
+     * @param sessionId the id of the session
+     * @param data the session data
+     * @return the amount of data written to the database
+     * @throws CmsException if something goes wrong
      */
     public int updateSession(String sessionId, Hashtable data) throws CmsException {
         byte[] value = null;

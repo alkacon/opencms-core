@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/07/08 16:30:53 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/07/11 14:06:43 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Vector;
  * Oracle/OCI implementation of the backup driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $ $Date: 2003/07/08 16:30:53 $
+ * @version $Revision: 1.4 $ $Date: 2003/07/11 14:06:43 $
  * @since 5.1
  */
 public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {   
@@ -109,6 +109,9 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
         return new org.opencms.db.oracle.CmsSqlManager(dbPoolUrl);
     }
 
+	/**
+	 * @see org.opencms.db.I_CmsBackupDriver#writeBackupFileContent(com.opencms.flex.util.CmsUUID, com.opencms.flex.util.CmsUUID, byte[], int)
+	 */
 	public void writeBackupFileContent(CmsUUID backupId, CmsUUID fileId, byte[] fileContent, int versionId) throws CmsException {
 		
 		PreparedStatement stmt = null;
