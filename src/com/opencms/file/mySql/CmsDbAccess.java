@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/09/13 14:39:18 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2000/09/14 14:02:11 $
+ * Version: $Revision: 1.32 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -52,9 +52,19 @@ import com.opencms.file.genericSql.I_CmsDbPool;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.31 $ $Date: 2000/09/13 14:39:18 $ * 
+ * @version $Revision: 1.32 $ $Date: 2000/09/14 14:02:11 $ * 
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
+	/**
+	 * Instanciates the access-module and sets up all required modules and connections.
+	 * @param config The OpenCms configuration.
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public CmsDbAccess(Configurations config) 
+		throws CmsException {
+
+		super(config);
+	}
 	/**
 	 * Adds a user to the database.
 	 * 
@@ -485,6 +495,9 @@ protected com.opencms.file.genericSql.CmsQueries getQueries()
 				  m_cq.C_RESOURCES_READ_ALL);
 	m_pool.initPreparedStatement (m_cq.C_RESOURCES_UPDATE_LOCK_KEY,
 				  m_cq.C_RESOURCES_UPDATE_LOCK);
+	m_pool.initPreparedStatement(m_cq.C_RESOURCES_GET_FILES_WITH_PROPERTY_KEY ,
+		m_cq.C_RESOURCES_GET_FILES_WITH_PROPERTY);
+
 
 	// init statements for groups
 	m_pool.initPreparedStatement (m_cq.C_GROUPS_MAXID_KEY, m_cq.C_GROUPS_MAXID);
@@ -622,17 +635,7 @@ protected com.opencms.file.genericSql.CmsQueries getQueries()
 	m_pool.initPreparedStatement (m_cq.C_SESSION_UPDATE_KEY, m_cq.C_SESSION_UPDATE);
 	m_pool.initPreparedStatement (m_cq.C_SESSION_READ_KEY, m_cq.C_SESSION_READ);
 	m_pool.initPreparedStatement (m_cq.C_SESSION_DELETE_KEY, m_cq.C_SESSION_DELETE);
-  }  
-	/**
-	 * Instanciates the access-module and sets up all required modules and connections.
-	 * @param config The OpenCms configuration.
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */
-	public CmsDbAccess(Configurations config) 
-		throws CmsException {
-
-		super(config);
-	}
+  }    
 	/**
 	 * Private method to get the next id for a table.
 	 * This method is synchronized, to generate unique id's.
