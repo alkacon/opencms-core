@@ -67,6 +67,18 @@
     
     <property environment="env" />
 
+	<taskdef name="deploy" classname="org.apache.catalina.ant.DeployTask">
+    	<classpath>
+        	<pathelement path="${tomcat.home}/server/lib/catalina-ant.jar"/>
+    	</classpath>
+	</taskdef>
+		
+	<taskdef name="reload" classname="org.apache.catalina.ant.ReloadTask">
+    	<classpath>
+        	<pathelement path="${tomcat.home}/server/lib/catalina-ant.jar"/>
+    	</classpath>
+	</taskdef>
+		
     <target name="init" 
     	description="Checks if all required libraries are available">
     	
@@ -584,4 +596,23 @@ ${opencms.inputlib.pdfbox}
 		</junit>
 	</target>
 
+	<target name="tomcat.deploy" depends="war"
+		description="Deploys the OpenCms web application">
+		<echo message="Deploying ${opencms.output}build/${app.name}.war to /${app.name}"/>
+		<echo message="using ${tomcat.manager.username}@${tomcat.manager.url}"/>
+		<deploy url="${tomcat.manager.url}" 
+			username="${tomcat.manager.username}" password="${tomcat.manager.password}" 
+		    path="/${app.name}"
+			war="file:${opencms.output}build/${app.name}.war"
+			update="true"/>
+	</target>
+
+	<target name="tomcat.reload" depends="tomcat.update"
+		description="Updates and reloads the OpenCms web application">
+		<echo message="Reloading /${app.name}"/>
+		<echo message="using ${tomcat.manager.username}@${tomcat.manager.url}"/>
+        <reload url="${tomcat.manager.url}"
+            username="${tomcat.manager.username}" password="${tomcat.manager.password}"
+            path="/${app.name}"/>
+	</target>	
 </project>
