@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2004/08/27 10:26:29 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/11/11 16:30:12 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.1
  */
@@ -749,7 +749,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                 try {
                     file = getCms().readResource(resourceName, CmsResourceFilter.ALL);
                     // check if resource is a folder
-                    if (file.isFolder()) {
+                    if (file.isFolder() && !resourceName.endsWith("/")) {
                         resourceName += "/";
                     }
                 } catch (CmsException e) {
