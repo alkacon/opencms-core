@@ -18,6 +18,7 @@ function show_help()
 <head>
 
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
 <title>OpenCms</title>
 
 <!-- Beginn Style -->
