@@ -1748,19 +1748,20 @@ Provides a means of receiving an identification number
 that is used to identify a special user. Session Ids are defined by
 using cookies. Cookies are short text files that are stored on the
 client and can be used to identify users and keep track of their actions.\\ \hline
-{\bf {\meth getServletPath()}}&
+{\bf {\meth getServletPath()}}
+deprecated&
 Returns the relative path of the directory in
 which the servlets reside on the server. This method is used to write
 templates that are independent of the servlet path. The servlet path
 can be changed without affecting the template files when this method
 is used to refer to the path.
 In times of static export you should not use this method any longer. 
-Instead you can use the link tag mentiond in the section about the 
+Instead you should use the link tag mentiond in the section about the 
 static export.\\ \hline
 {\bf {\meth getPathUri()}}&
-Returns the path of the requested file.\\ \hline
+Returns the path of the requested file. To create proper links you should use the link tag.\\ \hline
 {\bf {\meth getFileUri()}}&
-Returns the file name of the requested file.\\ \hline
+Returns the file name of the requested file. To create proper links you should use the link tag.\\ \hline
 {\bf {\meth getUri()}}&
 Returns the link to the requested file parsed through the getLinkSubstitution method. 
 If needed you can submit parameters in the tagcontent (like "{\code cmsframe=main\&id=7}")\\ \hline
@@ -1778,21 +1779,19 @@ appropriate style sheet based on the browser that is used by the
 client. By using this method and different style sheets for Netscape
 Navigator and Windows Explorer, the appropriate style sheet is used
 if the method manages to detect the user's browser.\\ \hline
-{\bf {\meth getQueryString()}}&
+{\bf {\meth getQueryString()}}
+deprecated&
 Returns a string that contains the parameters
-that have been passed with the URL when the page was requested.\\ \hline
-{\bf {\meth getFrameQueryString()}}&
+that have been passed with the URL when the page was requested.
+You should use the method getUriWithParameters().\\ \hline
+{\bf {\meth getFrameQueryString()}}
+deprecated&
 Provides access to the parameters that have
 been passed with the URL in a frame. In general, the parameters are
 only accessible in the file that was requested and contains the frames.
 Each frame usually contains a different HTML page. The parameters that
-are passed to the parent file are not directly accessible in the frames.\\ \hline
-{\bf {\meth parameters()}}&
-Is used for debugging. It returns all of the parameters
-for the current template file that are passed with the URL. It also
-returns additional parameters for internal use that contain the name
-of the element, the complete file name of the body element, and the
-controlling Java class for this element.\\ \hline 
+are passed to the parent file are not directly accessible in the frames.
+You should use the method getUriWithParameters().\\ \hline
 \end{tabular}
 \end{table}
 
@@ -1801,6 +1800,12 @@ controlling Java class for this element.\\ \hline
 \hline
 {\bf Method}&
 {\bf Description}\\ \hline
+{\bf {\meth parameters()}}&
+Is used for debugging. It returns all of the parameters
+for the current template file that are passed with the URL. It also
+returns additional parameters for internal use that contain the name
+of the element, the complete file name of the body element, and the
+controlling Java class for this element.\\ \hline 
 {\bf {\meth getFrameTarget()}}&
 Is used to specify the target for a link in a
 template that works both in a version with and without frames. The
