@@ -29,7 +29,7 @@ if (editElement != null) {
 
 --%><cms:template element="start_editarea_enabled">
 <!-- EDIT BLOCK START -->
-<span id="<%= editId %>" class="editarea_norm">
+<div id="<%= editId %>" class="editarea_norm">
 <form name="form_<%= editId %>" method="post" action="<%= editLink %>" class="nomargin">
 <input type="hidden" name="resource" value="<%= editTarget %>">
 <input type="hidden" name="directedit" value="true">
@@ -46,13 +46,13 @@ if (editElement != null) {
 </cms:template><%--
 
 --%><cms:template element="end_editarea_enabled">
-</span>
+</div>
 <!-- EDIT BLOCK END -->
 </cms:template><%--
 
 --%><cms:template element="start_editarea_disabled">
 <!-- EDIT BLOCK START -->
-<span id="<%= editId %>" class="editarea_norm">
+<div id="<%= editId %>" class="editarea_norm">
 <span class="editarea_button" onmouseover="activate('<%=editId%>');" onmouseout="deactivate('<%=editId%>');">
 <table border="0" cellpadding="1" cellspacing="0">
 <tr>
@@ -62,7 +62,7 @@ if (editElement != null) {
 </cms:template><%--
 
 --%><cms:template element="end_editarea_disabled">
-</span>
+</div>
 <!-- EDIT BLOCK END -->
 </cms:template><%--
 
@@ -129,12 +129,12 @@ span.disabled {
 	border: 1px solid #c0c0c0;
 	color: #888888;
 }
-span.editarea_norm {
+div.editarea_norm {
 	width: 100%;
 	padding-top: 1px;
 	padding-bottom: 1px;
 }
-span.editarea_over {
+div.editarea_over {
 	width: 100%;
 	padding-top: 0;
 	padding-bottom: 0;
