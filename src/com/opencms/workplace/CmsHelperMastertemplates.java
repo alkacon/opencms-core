@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsHelperMastertemplates.java,v $
-* Date   : $Date: 2003/06/05 14:15:48 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2003/06/09 17:09:13 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.Vector;
 
 /**
  * Helper class to receive all mastertemplates that are currently in the system.
- * @version $Revision: 1.11 $ $Date: 2003/06/05 14:15:48 $
+ * @version $Revision: 1.12 $ $Date: 2003/06/09 17:09:13 $
  */
 
 public class CmsHelperMastertemplates {
@@ -149,18 +149,6 @@ public class CmsHelperMastertemplates {
      * @throws CmsException if something goes wrong.
      */
     public static boolean checkVisible(CmsObject cms, CmsResource res) throws CmsException {
-        boolean access = false;
-        int accessflags = res.getAccessFlags();
-
-        // First check if the user may have access by one of his groups.
-        boolean groupAccess = false;
-        Enumeration allGroups = cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()).elements();
-        while((!groupAccess) && allGroups.hasMoreElements()) {
-            groupAccess = cms.readGroup(res).equals((CmsGroup)allGroups.nextElement());
-        }
-        if(((accessflags & I_CmsConstants.C_ACCESS_PUBLIC_VISIBLE) > 0) || (cms.readOwner(res).equals(cms.getRequestContext().currentUser()) && (accessflags & I_CmsConstants.C_PERMISSION_VIEW) > 0) || (groupAccess && (accessflags & I_CmsConstants.C_ACCESS_GROUP_VISIBLE) > 0) || (cms.getRequestContext().currentUser().getName().equals(I_CmsConstants.C_USER_ADMIN))) {
-            access = true;
-        }
-        return access;
+        return cms.checkPermissions(res, I_CmsConstants.C_VIEW_ACCESS);
     }
 }

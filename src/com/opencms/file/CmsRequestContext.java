@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
-* Date   : $Date: 2003/06/04 13:39:33 $
-* Version: $Revision: 1.70 $
+* Date   : $Date: 2003/06/09 17:06:35 $
+* Version: $Revision: 1.71 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,8 +39,8 @@ import com.opencms.core.I_CmsResponse;
 import com.opencms.core.I_CmsSession;
 import com.opencms.db.CmsDriverManager;
 import com.opencms.flex.util.CmsResourceTranslator;
-import com.opencms.repository.CmsCredentials;
-import com.opencms.repository.CmsRepository;
+//import com.opencms.repository.CmsCredentials;
+//import com.opencms.repository.CmsRepository;
 import com.opencms.template.cache.CmsElementCache;
 import com.opencms.workplace.I_CmsWpConstants;
 
@@ -67,7 +67,7 @@ import javax.servlet.http.HttpSession;
  * @author Anders Fugmann
  * @author Alexander Lucas
  *
- * @version $Revision: 1.70 $ $Date: 2003/06/04 13:39:33 $
+ * @version $Revision: 1.71 $ $Date: 2003/06/09 17:06:35 $
  *
  */
 public class CmsRequestContext implements I_CmsConstants {
@@ -207,14 +207,14 @@ public class CmsRequestContext implements I_CmsConstants {
         m_directoryTranslator = directoryTranslator;
         m_fileTranslator = fileTranslator;
         
-        try {
-            Credentials credentials = (Credentials) new CmsCredentials(m_user, m_currentGroup, project);
-            Repository repository = (Repository) new CmsRepository(m_driverManager);
-            m_ticket = repository.connect(credentials);
-        } catch (LoginException e) {
+ //       try {
+ //           Credentials credentials = (Credentials) new CmsCredentials(m_user, m_currentGroup, project);
+ //           Repository repository = (Repository) new CmsRepository(m_driverManager);
+ //           m_ticket = repository.connect(credentials);
+ //       } catch (LoginException e) {
             // TODO: implement repository.connect(Credentials) with authentication/authorization
             m_ticket = null;
-        }
+//        }
 
         // Analyze the user's preferred languages coming with the request
         if (req != null) {

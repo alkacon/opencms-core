@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/06/06 12:48:11 $
-* Version: $Revision: 1.278 $
+* Date   : $Date: 2003/06/09 17:05:53 $
+* Version: $Revision: 1.279 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -60,6 +60,7 @@ import com.opencms.report.CmsShellReport;
 import com.opencms.report.I_CmsReport;
 import com.opencms.security.CmsAccessControlEntry;
 import com.opencms.security.CmsAccessControlList;
+import com.opencms.security.CmsPermissionSet;
 import com.opencms.security.I_CmsPrincipal;
 import com.opencms.template.cache.CmsElementCache;
 import com.opencms.util.LinkSubstitution;
@@ -79,7 +80,7 @@ import com.opencms.util.Utils;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.278 $
+ * @version $Revision: 1.279 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -4266,21 +4267,7 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
     public int deleteBackups(int weeks) throws CmsException{
        return m_driverManager.deleteBackups(this, m_context.currentUser(), m_context.currentProject(), weeks);
     }
-    
-    /**
-     * Checks, if the user may read this resource and if it is visible to him.
-     * NOTE: If the ressource is in the project you never have to fallback.
-     *
-     * @param currentUser The user who requested this method.
-     * @param currentProject The current project of the user.
-     * @param resource The resource to check.
-     *
-     * @return weather the user has access, or not.
-     */
-    public boolean accessReadVisible(CmsResource resource) throws CmsException{
-        return m_driverManager.accessReadVisible(m_context.currentUser(), m_context.currentProject(), resource);
-    }
-    
+        
     /**
      * Returns a Vector with all resources of the given type that have set the given property to the given value.
      *
@@ -4502,42 +4489,30 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
 		return m_driverManager.getAccessControlEntries(m_context.currentUser(), m_context.currentProject(), res, true);
 	}
 	
-	public int getPermissions(String resourceName, String userName) throws CmsException {
+	public CmsPermissionSet getPermissions(String resourceName, String userName) throws CmsException {
 		CmsAccessControlList acList = getAccessControlList(resourceName);
 		CmsUser user = readUser(userName);
 		return acList.getPermissions(user, getGroupsOfUser(userName));		
 	}
 	
-	public int getPermissions(String resourceName) throws CmsException {
+	public CmsPermissionSet getPermissions(String resourceName) throws CmsException {
 		CmsResource resource = readFileHeader(resourceName);
 		CmsUser user = m_context.currentUser();
 		
 		return m_driverManager.getPermissions(m_context.currentUser(), m_context.currentProject(), resource,user);		
 	}
-
-	public String getPermissionString(String resourceName) throws CmsException {
+	
+	public boolean checkPermissions(String resourceName, CmsPermissionSet requiredPermissions) throws CmsException {
 		CmsResource resource = readFileHeader(resourceName);
-		CmsUser user = m_context.currentUser();
-		
-		return CmsAccessControlEntry.toPermissionString(m_driverManager.getPermissions(m_context.currentUser(), m_context.currentProject(), resource,user),0,0);		
+		return m_driverManager.getVfsAccessGuard(m_context.currentUser(), m_context.currentProject()).check(resource, requiredPermissions, false);		
 	}
-		
-	/**
-	 * Checks if the current user has the requested permissions on the given resource
-	 * 
-	 * @param resourceName
-	 * @param permissionString
-	 * @return
-	 * @throws CmsException
-	 */
-	public boolean checkPermissions(String resourceName, String permissionString) throws CmsException {
-		CmsResource resource = readFileHeader(resourceName);
-		CmsUser user = m_context.currentUser();
-
-		int permissions[] = {0,0};
-		CmsAccessControlEntry.readPermissionString(permissionString, permissions);
-
-		return m_driverManager.checkPermissions(m_context.currentUser(), m_context.currentProject(), user, resource, permissions[0]);	
+	
+	public boolean checkPermissions(CmsResource resource, CmsPermissionSet requiredPermissions) throws CmsException {
+		return m_driverManager.getVfsAccessGuard(m_context.currentUser(), m_context.currentProject()).check(resource, requiredPermissions, false);		
+	}
+	
+	public boolean checkPermissions(CmsProject project, CmsResource resource, CmsPermissionSet requiredPermissions) throws CmsException {
+		return m_driverManager.getVfsAccessGuard(m_context.currentUser(), project).check(resource, requiredPermissions, false);
 	}
 	
 	/**
@@ -4555,10 +4530,7 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
 		if ("".equals(permissionString)) {
 			m_driverManager.removeAccessControlEntry(m_context.currentUser(), m_context.currentProject(), res, principal.getId());	
 		} else {
-			int permissions[] = {0,0};
-			int flags = CmsAccessControlEntry.readPermissionString(permissionString, permissions);
-
-			CmsAccessControlEntry acEntry = new CmsAccessControlEntry(res.getResourceId(), principal.getId(), permissions[0], permissions[1], flags);
+			CmsAccessControlEntry acEntry = new CmsAccessControlEntry(res.getResourceId(), principal.getId(), permissionString);
 			m_driverManager.writeAccessControlEntry(m_context.currentUser(), m_context.currentProject(), res, acEntry);
 		}
 	}
@@ -4578,5 +4550,11 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
 				
 		CmsAccessControlEntry acEntry = new CmsAccessControlEntry(res.getResourceId(), principal.getId(), allowedPermissions, deniedPermissions, flags);
 		m_driverManager.writeAccessControlEntry(m_context.currentUser(), m_context.currentProject(), res, acEntry);
+	}
+	
+	public void cpacc(String sourceName, String destName) throws CmsException {
+		CmsResource source = readFileHeader(sourceName);
+		CmsResource dest = readFileHeader(destName);
+		m_driverManager.copyAccessControlEntries(m_context.currentUser(), m_context.currentProject(), source, dest);
 	}
 }

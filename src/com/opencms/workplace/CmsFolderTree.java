@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFolderTree.java,v $
-* Date   : $Date: 2003/06/05 14:15:48 $
-* Version: $Revision: 1.50 $
+* Date   : $Date: 2003/06/09 17:09:01 $
+* Version: $Revision: 1.51 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  *
  *
  * @author Michael Emmerich
- * @version $Revision: 1.50 $ $Date: 2003/06/05 14:15:48 $
+ * @version $Revision: 1.51 $ $Date: 2003/06/09 17:09:01 $
  */
 
 public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstants {
@@ -168,21 +168,8 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
         if(res.getState() == C_STATE_DELETED){
             return false;
         }
-        int accessflags = res.getAccessFlags();
-
-        // First check if the user may have access by one of his groups.
-        boolean groupAccess = false;
-        Enumeration allGroups = cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()).elements();
-        while((!groupAccess) && allGroups.hasMoreElements()) {
-            groupAccess = cms.readGroup(res).equals((CmsGroup)allGroups.nextElement());
-        }
-        if(((accessflags & C_ACCESS_PUBLIC_VISIBLE) > 0)
-                || (cms.readOwner(res).equals(cms.getRequestContext().currentUser()) && (accessflags & C_PERMISSION_VIEW) > 0)
-                || (groupAccess && (accessflags & C_ACCESS_GROUP_VISIBLE) > 0)
-                || (cms.getRequestContext().isAdmin())) {
-            access = true;
-        }
-        return access;
+        
+		return cms.checkPermissions(res, C_VIEW_ACCESS);
     }
 
     /**
@@ -194,20 +181,7 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
      */
 
     private boolean checkWriteable(CmsObject cms, CmsResource res) throws CmsException {
-        boolean access = false;
-        int accessflags = res.getAccessFlags();
-        boolean groupAccess = false;
-        Enumeration allGroups = cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()).elements();
-        while((!groupAccess) && allGroups.hasMoreElements()) {
-            groupAccess = cms.readGroup(res).equals((CmsGroup)allGroups.nextElement());
-        }
-        if(((accessflags & C_ACCESS_PUBLIC_WRITE) > 0)
-                || (cms.getRequestContext().isAdmin())
-                || (cms.readOwner(res).equals(cms.getRequestContext().currentUser()) && (accessflags & C_PERMISSION_WRITE) > 0)
-                || (groupAccess && (accessflags & C_ACCESS_GROUP_WRITE) > 0)) {
-            access = true;
-        }
-        return access;
+    	return cms.checkPermissions(res, C_WRITE_ACCESS);
     }
 
     /**

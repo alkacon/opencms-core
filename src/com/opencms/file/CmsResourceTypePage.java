@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2003/05/21 14:34:28 $
-* Version: $Revision: 1.52 $
+* Date   : $Date: 2003/06/09 17:06:52 $
+* Version: $Revision: 1.53 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * Implementation of a resource type for "editable content pages" in OpenCms.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.52 $ $Date: 2003/05/21 14:34:28 $
+ * @version $Revision: 1.53 $ $Date: 2003/06/09 17:06:52 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, I_CmsWpConstants {
 
@@ -560,13 +560,13 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
     }
 
     /**
-     * When a resource has to be exported, the ID´s inside the
-     * Linkmanagement-Tags have to be changed to the corresponding URL´s
+     * When a resource has to be exported, the ID?s inside the
+     * Linkmanagement-Tags have to be changed to the corresponding URL?s
      *
      * @param file is the file that has to be changed
      */
     public CmsFile exportResource(CmsObject cms, CmsFile file) throws CmsException {
-        //nothing to do here, because there couldn´t be any Linkmanagement-Tags in a page-file (control-file)
+        //nothing to do here, because there couldn?t be any Linkmanagement-Tags in a page-file (control-file)
         return file;
     }
 
@@ -917,9 +917,11 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
                   CmsFolder newfolder=cms.doCreateFolder(completePath,foldername);
                   CmsFolder folder=cms.readFolder(orgFolder);
                   cms.doLockResource(newfolder.getAbsolutePath(),false);
-                  cms.doChgrp(newfolder.getAbsolutePath(),cms.readGroup(folder).getName());
-                  cms.doChmod(newfolder.getAbsolutePath(),folder.getAccessFlags());
-                  cms.doChown(newfolder.getAbsolutePath(),cms.readOwner(folder).getName());
+                  cms.cpacc(orgFolder, newfolder.getAbsolutePath());
+                  // TODO: remove this later
+                  //cms.doChgrp(newfolder.getAbsolutePath(),cms.readGroup(folder).getName());
+                  //cms.doChmod(newfolder.getAbsolutePath(),folder.getAccessFlags());
+                  //cms.doChown(newfolder.getAbsolutePath(),cms.readOwner(folder).getName());
                   try{
                     CmsFolder correspondingFolder = cms.readFolder(correspFolder);
                     if(!correspondingFolder.isLocked()){

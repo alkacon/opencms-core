@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsSyncFolder.java,v $
-* Date   : $Date: 2003/06/05 14:15:48 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2003/06/09 17:09:25 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.15 $ $Date: 2003/06/05 14:15:48 $
+ * @version $Revision: 1.16 $ $Date: 2003/06/09 17:09:25 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -305,34 +305,8 @@ public class CmsSyncFolder extends CmsWorkplaceDefault implements I_CmsConstants
      * @throws CmsException if something goes wrong.
      */
 
-    private boolean checkWriteable(CmsObject cms, String resPath) {
-        boolean access = false;
-        int accessflags;
-        CmsResource res = null;
-        try {
-            if(resPath.endsWith("/")){
-                res = cms.readFolder(resPath);
-            } else {
-                res = cms.readFileHeader(resPath);
-            }
-            accessflags = res.getAccessFlags();
-            boolean groupAccess = false;
-            Enumeration allGroups = cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()).elements();
-            while((!groupAccess) && allGroups.hasMoreElements()) {
-                groupAccess = cms.readGroup(res).equals((CmsGroup)allGroups.nextElement());
-            }
-            if(((accessflags & C_ACCESS_PUBLIC_WRITE) > 0)
-                    || (cms.getRequestContext().isAdmin())
-                    || (cms.readOwner(res).equals(cms.getRequestContext().currentUser())
-                    && (accessflags & C_PERMISSION_WRITE) > 0)
-                    || (groupAccess && (accessflags & C_ACCESS_GROUP_WRITE) > 0)) {
-                access = true;
-            }
-        }
-        catch(CmsException e) {
-            access = false;
-        }
-        return access;
+    private boolean checkWriteable(CmsObject cms, String resPath)  throws CmsException {
+    	return cms.checkPermissions(resPath, C_WRITE_ACCESS);
     }
     /**
      * Parse the hashtable which holds all resources

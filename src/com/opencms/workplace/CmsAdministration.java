@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdministration.java,v $
-* Date   : $Date: 2003/06/05 14:15:48 $
-* Version: $Revision: 1.32 $
+* Date   : $Date: 2003/06/09 17:07:51 $
+* Version: $Revision: 1.33 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.Vector;
  *
  * Creation date: (09.08.00 14:01:21)
  * @author Hanjo Riege
- * @version $Name:  $ $Revision: 1.32 $ $Date: 2003/06/05 14:15:48 $
+ * @version $Name:  $ $Revision: 1.33 $ $Date: 2003/06/09 17:07:51 $
  */
 
 public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -425,32 +425,6 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
      */
 
     private boolean checkVisible(CmsObject cms, CmsResource resource) throws CmsException {
-        boolean access = false;
-        int accessflags = resource.getAccessFlags();
-
-        // First check if the user may have access by one of his groups.
-        boolean groupAccess = false;
-        Enumeration allGroups = cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()).elements();
-        while((!groupAccess) && allGroups.hasMoreElements()) {
-            CmsGroup nextGroup = (CmsGroup)allGroups.nextElement();
-            if(nextGroup.getName().equals(C_GROUP_ADMIN)){
-                return true;
-            }
-            groupAccess = cms.readGroup(resource).equals(nextGroup);
-
-        }
-        if(groupAccess && (accessflags & C_ACCESS_GROUP_VISIBLE) == C_ACCESS_GROUP_VISIBLE) {
-            return true;
-        }
-        // is the resource owned by this user?
-        if(resource.getOwnerId().equals(cms.getRequestContext().currentUser().getId())) {
-            if( (accessflags & C_PERMISSION_VIEW) == C_PERMISSION_VIEW ) {
-                return true ;
-            }
-        }
-        if ((accessflags & C_ACCESS_PUBLIC_VISIBLE) == C_ACCESS_PUBLIC_VISIBLE){
-            return true;
-        }
-        return access;
+    	return cms.checkPermissions(resource, C_VIEW_ACCESS);
     }
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsExplorerTree.java,v $
-* Date   : $Date: 2003/06/05 14:15:48 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2003/06/09 17:08:34 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * 
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.18 $ $Date: 2003/06/05 14:15:48 $
+ * @version $Revision: 1.19 $ $Date: 2003/06/09 17:08:34 $
  */
 
 public class CmsExplorerTree extends CmsWorkplaceDefault implements I_CmsWpConstants {
@@ -150,22 +150,12 @@ public class CmsExplorerTree extends CmsWorkplaceDefault implements I_CmsWpConst
      */
     
     private boolean checkAccess(CmsObject cms, CmsResource res) throws CmsException {
-        boolean access = false;
-        int accessflags = res.getAccessFlags();
+
+		if(res.getState() == C_STATE_DELETED) {
+			return false;
+		}
         
-        // First check if the user may have access by one of his groups.
-        boolean groupAccess = false;
-        Enumeration allGroups = cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()).elements();
-        while((!groupAccess) && allGroups.hasMoreElements()) {
-            groupAccess = cms.readGroup(res).equals((CmsGroup)allGroups.nextElement());
-        }
-        if(((accessflags & C_ACCESS_PUBLIC_VISIBLE) > 0) || (cms.readOwner(res).equals(cms.getRequestContext().currentUser()) && (accessflags & C_PERMISSION_VIEW) > 0) || (groupAccess && (accessflags & C_ACCESS_GROUP_VISIBLE) > 0) || (cms.getRequestContext().currentUser().getName().equals(C_USER_ADMIN))) {
-            access = true;
-        }
-        if(res.getState() == C_STATE_DELETED) {
-            access = false;
-        }
-        return access;
+		return cms.checkPermissions(res, C_VIEW_ACCESS);
     }
     
     /**

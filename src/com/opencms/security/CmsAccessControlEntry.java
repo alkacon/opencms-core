@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/security/Attic/CmsAccessControlEntry.java,v $
- * Date   : $Date: 2003/06/04 12:08:56 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/06/09 17:07:08 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,13 +30,10 @@
  */
 package com.opencms.security;
 
-import java.util.StringTokenizer;
-
-import com.opencms.core.I_CmsConstants;
 import com.opencms.flex.util.CmsUUID;
 
 /**
- * @version $Revision: 1.3 $ $Date: 2003/06/04 12:08:56 $
+ * @version $Revision: 1.4 $ $Date: 2003/06/09 17:07:08 $
  * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
  */
 /**
@@ -46,7 +43,7 @@ import com.opencms.flex.util.CmsUUID;
  * The access control entry contains two binary permission sets, the first grants permissions
  * and the second revokes permissions explicitly (second should have precedence)
  * 
- * @version $Revision: 1.3 $ $Date: 2003/06/04 12:08:56 $
+ * @version $Revision: 1.4 $ $Date: 2003/06/09 17:07:08 $
  * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsAccessControlEntry {
@@ -62,19 +59,9 @@ public class CmsAccessControlEntry {
 	private CmsUUID m_principal;
 	
 	/*
-	 * Allowed permission set
+	 * the permission set
 	 */
-	private int m_allowed;
-	
-	/*
-	 * Denied permission set
-	 */
-	private int m_denied;
-	
-	/*
-	 * Further control flags
-	 */
-	private int m_flags;
+	private CmsPermissionSet m_permissions;
 	
 	/**
 	 * Constructor to create a new access control entry on a given resource and a given entity.
@@ -88,9 +75,23 @@ public class CmsAccessControlEntry {
 	
 		m_resource = resource;
 		m_principal = principal;
-		m_allowed = allowed;
-		m_denied = denied;	
-		m_flags = flags;
+		m_permissions = new CmsPermissionSet(allowed, denied);
+		m_permissions.setFlags(flags);
+	}
+	
+	public CmsAccessControlEntry(CmsUUID resource, CmsUUID principal, CmsPermissionSet permissions, int flags) {
+		
+		m_resource = resource;
+		m_principal = principal;
+		m_permissions = permissions;
+		m_permissions.setFlags(flags);
+	}
+	
+	public CmsAccessControlEntry(CmsUUID resource, CmsUUID principal, String permissionString) {
+		
+		m_resource = resource;
+		m_principal = principal;
+		m_permissions = new CmsPermissionSet (permissionString);
 	}
 	
 	/**
@@ -98,19 +99,26 @@ public class CmsAccessControlEntry {
 	 * 
 	 * @param allowed	the set of allowed permissions
 	 */
-	public void setAllowedPermissions(int allowed) {
-		
-		m_allowed = allowed;
+	public void grantPermissions(int allowed) {
+		m_permissions.grantPermissions (allowed);
 	}
 	
 	/**
 	 * Returns the allowed permissions
 	 * 
-	 * @return	the set of allowed permissions
+	 * @return	the set of permissions
 	 */
-	public int getAllowedPermissions() {
+	public CmsPermissionSet getPermissions() {
 		
-		return m_allowed;
+		return m_permissions;
+	}
+	
+	public int getAllowedPermissions() {
+		return m_permissions.getAllowedPermissions();
+	}
+	
+	public int getDeniedPermissions() {
+		return m_permissions.getDeniedPermissions();
 	}
 	
 	/**
@@ -118,46 +126,14 @@ public class CmsAccessControlEntry {
 	 * 
 	 * @param denied
 	 */
-	public void setDeniedPermissions(int denied) {
+	public void denyPermissions(int denied) {
 		
-		m_denied = denied;
+		m_permissions.denyPermissions(denied);
 	}
-	
-	/**
-	 * Returns the denied permissions
-	 * 
-	 * @return	the set of explicitly denied permissions
-	 */
-	public int getDeniedPermissions() {
-
-		return m_denied;		
-	}
-	
-	/**
-	 * Sets the given flags in the access control entry
-	 * @param flags bitset with flag values to set
-	 */
-	public void setFlags(int flags) {
 		
-		m_flags |= flags;
-	}
-	
-	/**
-	 * Resets the given flags in the access control entry
-	 * @param flags bitset with flag values to reset
-	 */
-	public void resetFlags(int flags) {
+	public void setPermissions(CmsPermissionSet permissions) {
 		
-		m_flags &= ~flags;
-	}
-	
-	/**
-	 * Returns the current flags
-	 * @return bitset with flag values
-	 */
-	public int getFlags() {
-		
-		return m_flags;
+		m_permissions.setPermissions(permissions);
 	}
 	
 	/**
@@ -180,55 +156,13 @@ public class CmsAccessControlEntry {
 		return m_principal;
 	}
 	
-	public String getPermissionString() {
-	
-		return CmsAccessControlEntry.toPermissionString(m_allowed, m_denied, m_flags);
+	public int getFlags() {
+		
+		return m_permissions.getFlags();
 	}
 	
 	public String toString() {
 		
-		return "[Ace:] " + "ResourceId=" + m_resource + ", PrincipalId=" + m_principal + ", Allowed=" + m_allowed + ", Denied=" + m_denied + ", Flags=" + m_flags;
-	}
-	
-	public static String toPermissionString (int allowed, int denied, int flags){
-		StringBuffer p = new StringBuffer("");
-		p.append(((allowed & I_CmsConstants.C_ACCESS_READ)>0)    ? "+r":""); 
-		p.append(((allowed & I_CmsConstants.C_ACCESS_WRITE)>0)   ? "+w":"");
-		p.append(((allowed & I_CmsConstants.C_ACCESS_VISIBLE)>0) ? "+v":"");
-		p.append(((denied  & I_CmsConstants.C_ACCESS_READ)>0)    ? "-r":""); 
-		p.append(((denied  & I_CmsConstants.C_ACCESS_WRITE)>0)   ? "-w":"");
-		p.append(((denied  & I_CmsConstants.C_ACCESS_VISIBLE)>0) ? "-v":"");
-		p.append(((flags   & I_CmsConstants.C_ACCESS_VISIBLE)>0) ? "+i":"");
-		return p.toString();		
-	}
-	
-	public static int readPermissionString(String permissionString, int perm[]) {
-		StringTokenizer tok = new StringTokenizer(permissionString, "+-", true);
-		int flags = 0;
-		
-		while(tok.hasMoreElements()) {
-			String prefix = tok.nextToken();
-			String suffix = tok.nextToken();
-			switch (suffix.charAt(0)) {
-				case 'R': case 'r':
-					if (prefix.charAt(0) == '+') perm[0] |= I_CmsConstants.C_ACCESS_READ;
-					if (prefix.charAt(0) == '-') perm[1] |= I_CmsConstants.C_ACCESS_READ;
-					break;
-				case 'W': case 'w':
-					if (prefix.charAt(0) == '+') perm[0] |= I_CmsConstants.C_ACCESS_WRITE;
-					if (prefix.charAt(0) == '-') perm[1] |= I_CmsConstants.C_ACCESS_WRITE;				
-					break;
-				case 'V': case 'v':
-					if (prefix.charAt(0) == '+') perm[0] |= I_CmsConstants.C_ACCESS_VISIBLE;
-					if (prefix.charAt(0) == '-') perm[1] |= I_CmsConstants.C_ACCESS_VISIBLE;
-					break;
-				case 'I': case 'i':
-					if (prefix.charAt(0) == '+') flags |= I_CmsConstants.C_ACCESSFLAGS_INHERITED;
-					if (prefix.charAt(0) == '-') flags &= ~I_CmsConstants.C_ACCESSFLAGS_INHERITED;
-					break;
-			}
-		}
-		
-		return flags;
+		return "[Ace:] " + "ResourceId=" + m_resource + ", PrincipalId=" + m_principal + ", Permissions=" + m_permissions.toString();
 	}
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
-* Date   : $Date: 2003/06/06 12:48:11 $
-* Version: $Revision: 1.63 $
+* Date   : $Date: 2003/06/09 17:08:47 $
+* Version: $Revision: 1.64 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.w3c.dom.Element;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.63 $ $Date: 2003/06/06 12:48:11 $
+ * @version $Revision: 1.64 $ $Date: 2003/06/09 17:08:47 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -165,19 +165,9 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
      */
 
     private boolean checkAccess(CmsObject cms, CmsResource res) throws CmsException {
-        boolean access = false;
-        int accessflags = res.getAccessFlags();
 
-        // First check if the user may have access by one of his groups.
-        boolean groupAccess = false;
-        Enumeration allGroups = cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()).elements();
-        while((!groupAccess) && allGroups.hasMoreElements()) {
-            groupAccess = cms.readGroup(res).equals((CmsGroup)allGroups.nextElement());
-        }
-        if(((accessflags & C_ACCESS_PUBLIC_VISIBLE) > 0) || (cms.readOwner(res).equals(cms.getRequestContext().currentUser()) && (accessflags & C_PERMISSION_VIEW) > 0) || (groupAccess && (accessflags & C_ACCESS_GROUP_VISIBLE) > 0) || (cms.getRequestContext().currentUser().getName().equals(C_USER_ADMIN))) {
-            access = true;
-        }
-        return access;
+		return cms.checkPermissions(res, C_VIEW_ACCESS);
+		
     }
 
     /**
@@ -508,12 +498,15 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
                         CmsGroup group = cms.readGroup(res);
                         template.fastSetXmlData(C_FILELIST_GROUP_VALUE, group.getName());
                     }
+                    // TODO: remove later
+                    /*
                     if((filelist & C_FILELIST_ACCESS) != 0) {
 
                         // get the access flags
                         int access = res.getAccessFlags();
                         template.fastSetXmlData(C_FILELIST_ACCESS_VALUE, cms.getPermissionString(res.getName()));
                     }
+                    */
                     if((filelist & C_FILELIST_LOCKED) != 0) {
 
                         // get the locked by
@@ -611,12 +604,15 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
                         CmsGroup group = cms.readGroup(file);
                         template.fastSetXmlData(C_FILELIST_GROUP_VALUE, group.getName());
                     }
+                    // TODO: remove later
+                    /*
                     if((filelist & C_FILELIST_ACCESS) != 0) {
 
                         // get the access flags
                         int access = file.getAccessFlags();
                         template.fastSetXmlData(C_FILELIST_ACCESS_VALUE, cms.getPermissionString(res.getName()));
                     }
+                    */
                     if((filelist & C_FILELIST_ACCESS) != 0) {
 
                         // get the locked by

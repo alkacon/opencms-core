@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/Attic/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/06/03 17:45:46 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/06/09 17:05:17 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import source.org.apache.java.util.Configurations;
  * Definitions of all required VFS driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $ $Date: 2003/06/03 17:45:46 $
+ * @version $Revision: 1.4 $ $Date: 2003/06/09 17:05:17 $
  * @since 5.1.2
  */
 public interface I_CmsVfsDriver {
@@ -101,8 +101,8 @@ public interface I_CmsVfsDriver {
     void init(Configurations config, String dbPoolUrl, CmsDriverManager driverManager);
     com.opencms.db.generic.CmsSqlManager initQueries(String dbPoolUrl);
     Vector readAllFileHeaders(int projectId, String resourceName) throws CmsException;
-    Vector readAllPropertydefinitions(I_CmsResourceType resourcetype) throws CmsException;
-    Vector readAllPropertydefinitions(int resourcetype) throws CmsException;
+    Vector readAllPropertydefinitions(int projectId, I_CmsResourceType resourcetype) throws CmsException;
+    Vector readAllPropertydefinitions(int projectId, int resourcetype) throws CmsException;
     Vector readBackupProjectResources(int versionId) throws CmsException;
     CmsFile readFile(int projectId, String filename) throws CmsException;
     CmsFile readFile(int projectId, String filename, boolean includeDeleted) throws CmsException;

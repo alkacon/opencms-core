@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminSyncProperties.java,v $
-* Date   : $Date: 2003/06/05 14:15:48 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2003/06/09 17:08:09 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -453,28 +453,9 @@ public class CmsAdminSyncProperties extends CmsWorkplaceDefault implements I_Cms
      * @return True or false.
      * @throws CmsException if something goes wrong.
      */
-    private boolean checkWriteable(CmsObject cms, String resPath, int projectId) {
-        boolean access = false;
-        int accessflags;
-        try {
-            CmsResource res = cms.readFileHeader(resPath, projectId);
-            accessflags = res.getAccessFlags();
-            boolean groupAccess = false;
-            Enumeration allGroups = cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()).elements();
-            while((!groupAccess) && allGroups.hasMoreElements()) {
-                groupAccess = cms.readGroup(res).equals((CmsGroup)allGroups.nextElement());
-            }
-            if(((accessflags & C_ACCESS_PUBLIC_WRITE) > 0)
-                    || (cms.getRequestContext().isAdmin())
-                    || (cms.readOwner(res).equals(cms.getRequestContext().currentUser())
-                    && (accessflags & C_PERMISSION_WRITE) > 0)
-                    || (groupAccess && (accessflags & C_ACCESS_GROUP_WRITE) > 0)) {
-                access = true;
-            }
-        }
-        catch(CmsException e) {
-            access = false;
-        }
-        return access;
+    private boolean checkWriteable(CmsObject cms, String resPath, int projectId)  throws CmsException {
+		CmsProject theProject = cms.readProject(projectId);
+		CmsResource res = cms.readFileHeader(resPath, projectId);
+        return cms.checkPermissions(theProject, res, C_WRITE_ACCESS);
     }
 }
