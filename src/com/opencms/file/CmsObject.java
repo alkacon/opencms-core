@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/11 10:38:38 $
-* Version: $Revision: 1.308 $
+* Date   : $Date: 2003/07/11 12:54:53 $
+* Version: $Revision: 1.309 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.308 $
+ * @version $Revision: 1.309 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -1713,7 +1713,7 @@ public Vector getFilesWithProperty(String propertyDefinition, String propertyVal
 }
 
 /**
-* Returns a List with all sub resources of a given folder that have set the given property.<p>
+* Returns a List with the complete sub tree of a given folder that have set the given property.<p>
 *
 * <B>Security:</B>
 * All users are granted.
@@ -1734,7 +1734,9 @@ public List getResourcesWithProperty(String folder,String propertyDefinition)
 
 /**
 * Returns a List with all sub resources of a given folder that have benn modified
-* in a given time range<p>
+* in a given time range.<p>
+* 
+* The rertuned list is sorted descending (newest resource first).
 *
 * <B>Security:</B>
 * All users are granted.
