@@ -1,8 +1,8 @@
 package com.opencms.template.cache;
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsLruCache.java,v $
- * Date   : $Date: 2001/05/31 12:04:15 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2001/06/05 07:07:40 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -34,7 +34,7 @@ import java.util.*;
  * chaining method for collision handling. The sequence of the Objects is stored in
  * an extra chain. Each object has a pointer to the previous and next object in this
  * chain. If an object is inserted or used it is set to the tail of the chain. If an
- * object has to be remouved it will be the head object.
+ * object has to be remouved it will be the head object. Only works with more than one element.
  *
  * @author Hanjo Riege
  * @version 1.0
@@ -90,6 +90,7 @@ public class CmsLruCache {
      * @param value The object.
      */
     public synchronized void put (Object key, Object value){
+
         int hashIndex = (key.hashCode() & 0x7FFFFFFF) % m_maxSize;
         CacheItem item = m_cache[hashIndex];
         CacheItem newItem = null;

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsUriLocator.java,v $
-* Date   : $Date: 2001/05/31 12:04:15 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2001/06/05 07:07:40 $
+* Version: $Revision: 1.6 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -51,7 +51,7 @@ public class CmsUriLocator {
      * The default constructor for this locator.
      */
     CmsUriLocator(int cacheSize) {
-        if(cacheSize < 0){
+        if(cacheSize < 2){
             cacheSize = 10000;
         }
         m_uris = new CmsLruCache(cacheSize);
