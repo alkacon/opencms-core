@@ -6,13 +6,13 @@ import javax.servlet.http.*;
 import com.opencms.core.*;
 
 /**
- * This public class describes the access to groups and users in the Cms.<BR/>
+ * This interface describes the access to groups and users in the Cms.<BR/>
  * 
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2000/01/03 09:54:34 $
+ * @version $Revision: 1.3 $ $Date: 2000/01/04 12:23:27 $
  */
 interface I_CmsAccessUserGroup {
 

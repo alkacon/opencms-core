@@ -5,7 +5,8 @@ package com.opencms.core;
  * class to get access to this contsnats.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.11 $ $Date: 2000/01/03 10:54:24 $
+ * @uathor Michael Emmerich
+ * @version $Revision: 1.12 $ $Date: 2000/01/04 12:23:27 $
  */
 public interface I_CmsConstants
 {

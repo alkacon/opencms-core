@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.11 $ $Date: 2000/01/04 11:56:59 $ 
+ * @version $Revision: 1.12 $ $Date: 2000/01/04 12:23:27 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -101,7 +101,7 @@ public abstract class A_CmsObject {
 	 * a project with the same name for this resource-type exists already.
 	 */
 	abstract public A_CmsProject createProject(String name, String description, int flags)
-		throws CmsException, CmsDuplicateKeyException;
+		throws CmsException;
 	
 	/**
 	 * Publishes a project.
@@ -170,7 +170,7 @@ public abstract class A_CmsObject {
 	 */
 	abstract public CmsFile createFile(String folder, String filename, 
 								byte[] contents, A_CmsResourceType type)
-		throws CmsException, CmsDuplicateKeyException;
+		throws CmsException;
 	
 	/**
 	 * Creates a new file with the overgiven content and resourcetype.
@@ -201,7 +201,7 @@ public abstract class A_CmsObject {
 	abstract public CmsFile createFile(String folder, String filename, 
 								byte[] contents, A_CmsResourceType type, 
 								Hashtable metainfos)
-		throws CmsException, CmsDuplicateKeyException;
+		throws CmsException;
 	
 	/**
 	 * Reads a file from the Cms.<BR/>
@@ -338,7 +338,7 @@ public abstract class A_CmsObject {
 	 * the destination filename.
 	 */	
 	abstract public void copyFile(String source, String destination)
-		throws CmsException, CmsDuplicateKeyException;
+		throws CmsException;
 	
 	/**
 	 * Moves the file.
@@ -353,7 +353,7 @@ public abstract class A_CmsObject {
 	 * the destination filename.
 	 */	
 	abstract public void moveFile(String source, String destination)
-		throws CmsException, CmsDuplicateKeyException;
+		throws CmsException;
 	
 	/**
 	 * Sets the resource-type of this resource.
@@ -406,7 +406,7 @@ public abstract class A_CmsObject {
 	 * this name.
 	 */
 	abstract public CmsFolder createFolder(String folder, String newFolderName)
-		throws CmsException, CmsDuplicateKeyException;
+		throws CmsException;
 	
 	/**
 	 * Creates a new file with the overgiven content and resourcetype.
@@ -434,7 +434,7 @@ public abstract class A_CmsObject {
 	 */
 	abstract public CmsFolder createFolder(String folder, String newFolderName, 
 											 Hashtable metainfos)
-		throws CmsException, CmsDuplicateKeyException;
+		throws CmsException;
 
 	/**
 	 * Reads a folder from the Cms.<BR/>
@@ -507,7 +507,7 @@ public abstract class A_CmsObject {
 	 */	
 	abstract public void copyFolder(String source, String destination, 
 									boolean force)
-		throws CmsException, CmsDuplicateKeyException;
+		throws CmsException;
 	
 	/**
 	 * Moves a folder.
@@ -528,7 +528,7 @@ public abstract class A_CmsObject {
 	 */	
 	abstract public void moveFolder(String source, String destination, 
 									boolean force)
-		throws CmsException, CmsDuplicateKeyException;
+		throws CmsException;
 
 	/**
 	 * Returns a Vector with all subfolders.<BR/>
@@ -823,7 +823,7 @@ public abstract class A_CmsObject {
 	 */
 	abstract public A_CmsUser addUser(String name, String password, String group, 
 							 String description, Hashtable additionalInfos, int flags)
-		throws CmsException, CmsDuplicateKeyException;
+		throws CmsException;
 	
 	/** 
 	 * Deletes a user from the Cms.
@@ -923,6 +923,7 @@ public abstract class A_CmsObject {
 	abstract public A_CmsGroup addGroup(String name, String description, int flags, 
 										String parent)
 		throws CmsException;
+
 	
     /**
 	 * Writes an already existing group in the Cms.<BR/>
@@ -1007,7 +1008,7 @@ public abstract class A_CmsObject {
 	 */
 	abstract public void writeMetadefinition(String name, A_CmsResourceType resourcetype, 
 									int type)
-		throws CmsDuplicateKeyException, CmsException;
+		throws  CmsException;
 	
 	/**
 	 * Delete the Metadefinition for the resource type.<BR/>

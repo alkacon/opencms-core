@@ -6,12 +6,12 @@ import javax.servlet.http.*;
 import com.opencms.core.*;
 
 /**
- * This public class describes the access to users information in the Cms.<BR/>
+ * This interface describes the access to users information in the Cms.<BR/>
  * 
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 1999/12/21 15:08:47 $
+ * @version $Revision: 1.2 $ $Date: 2000/01/04 12:23:27 $
  */
 interface I_CmsAccessUserInfo {
 

@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.5 $ $Date: 2000/01/04 11:56:59 $ 
+ * @version $Revision: 1.6 $ $Date: 2000/01/04 12:23:27 $ 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	
@@ -128,7 +128,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * a project with the same name for this resource-type exists already.
 	 */
 	public A_CmsProject createProject(String name, String description, int flags)
-		throws CmsException, CmsDuplicateKeyException { 
+		throws CmsException { 
 		return null; // TODO: implement this! 
 	}
 	
@@ -207,7 +207,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */
 	public CmsFile createFile(String folder, String filename, 
 								byte[] contents, A_CmsResourceType type)
-		throws CmsException, CmsDuplicateKeyException { 
+		throws CmsException { 
 		return null; // TODO: implement this! 
 	}
 	
@@ -240,7 +240,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	public CmsFile createFile(String folder, String filename, 
 								byte[] contents, A_CmsResourceType type, 
 								Hashtable metainfos)
-		throws CmsException, CmsDuplicateKeyException { 
+		throws CmsException { 
 		return null; // TODO: implement this! 
 	}
 	
@@ -395,7 +395,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * the destination filename.
 	 */	
 	public void copyFile(String source, String destination)
-		throws CmsException, CmsDuplicateKeyException { 
+		throws CmsException { 
 		return ; // TODO: implement this! 
 	}
 	
@@ -412,7 +412,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * the destination filename.
 	 */	
 	public void moveFile(String source, String destination)
-		throws CmsException, CmsDuplicateKeyException { 
+		throws CmsException { 
 		return ; // TODO: implement this! 
 	}
 	
@@ -471,7 +471,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * this name.
 	 */
 	public CmsFolder createFolder(String folder, String newFolderName)
-		throws CmsException, CmsDuplicateKeyException { 
+		throws CmsException { 
 		return null; // TODO: implement this! 
 	}
 	
@@ -501,7 +501,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */
 	public CmsFolder createFolder(String folder, String newFolderName, 
 											 Hashtable metainfos)
-		throws CmsException, CmsDuplicateKeyException { 
+		throws CmsException { 
 		return null; // TODO: implement this! 
 	}
 
@@ -582,7 +582,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */	
 	public void copyFolder(String source, String destination, 
 									boolean force)
-		throws CmsException, CmsDuplicateKeyException { 
+		throws CmsException { 
 		return ; // TODO: implement this! 
 	}
 	
@@ -605,7 +605,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */	
 	public void moveFolder(String source, String destination, 
 									boolean force)
-		throws CmsException, CmsDuplicateKeyException { 
+		throws CmsException { 
 		return ; // TODO: implement this! 
 	}
 
@@ -924,6 +924,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */
 	public A_CmsUser readUser(String username, String password) 
 		throws CmsException { 
+          System.err.println("Cms readuser "+username+":"+password);
 		return( c_rb.readUser(m_context.currentUser(), m_context.getCurrentProject(),
 							  username, password) );
 	}	
@@ -939,6 +940,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */
 	public String loginUser(String username, String password) 
 		throws CmsException { 
+        System.err.println("Cms login "+username+":"+password);
 		A_CmsUser newUser = readUser(username, password);
 		
 		// is the user enabled?
@@ -975,11 +977,12 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */
 	public A_CmsUser addUser(String name, String password, String group, 
 							 String description, Hashtable additionalInfos, int flags)
-		throws CmsException, CmsDuplicateKeyException { 
+		throws CmsException { 
 		
 		return( c_rb.addUser(m_context.currentUser(), m_context.getCurrentProject(),
 							  name, password, group, description, additionalInfos, 
 							  flags) );
+
 	}
 	
 	/** 
@@ -1086,6 +1089,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 		throws CmsException { 
 		return( c_rb.addGroup(m_context.currentUser(), m_context.getCurrentProject(),
 							  name, description, flags, parent) );
+
 	}
 	
     /**
@@ -1187,7 +1191,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */
 	public void writeMetadefinition(String name, A_CmsResourceType resourcetype, 
 									int type)
-		throws CmsDuplicateKeyException, CmsException { 
+		throws  CmsException { 
 		return ; // TODO: implement this! 
 	}
 	

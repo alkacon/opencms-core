@@ -8,7 +8,7 @@ import com.opencms.core.*;
  * It helps the core to set up all layers correctly.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 1999/12/23 16:49:21 $
+ * @version $Revision: 1.2 $ $Date: 2000/01/04 12:23:27 $
  */
 public class CmsInitMySql extends A_CmsInit {
 	
@@ -26,6 +26,7 @@ public class CmsInitMySql extends A_CmsInit {
 	public I_CmsResourceBroker init( String propertyDriver, 
 									 String propertyConnectString )
 		throws Exception {
+        System.err.println("Init "+propertyDriver+":"+propertyConnectString);
 			return( new CmsResourceBroker(		
 			new CmsRbUserGroup( 
 				new CmsAccessUserGroup(

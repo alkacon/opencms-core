@@ -6,7 +6,7 @@ import javax.servlet.http.*;
 import com.opencms.core.*;
 
 /**
- * This public class describes a resource broker for user and groups in the Cms.<BR/>
+ * This interface describes a resource broker for user and groups in the Cms.<BR/>
  * <B>All</B> Methods get a first parameter: A_CmsUser. It is the current user. This 
  * is for security-reasons, to check if this current user has the rights to call the
  * method.<BR/>
@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 1999/12/21 15:08:47 $
+ * @version $Revision: 1.2 $ $Date: 2000/01/04 12:23:27 $
  */
 interface I_CmsRbUserGroup {
 
