@@ -87,7 +87,6 @@ function showkontext(welche, parameter, id)
 {
 	// set the kontextparameter
 	kontextparam = parameter.replace(/\//g, "%2F");
-	//kontextparam = parameter;
 	
 	if(welche!='')
 	{
@@ -184,8 +183,6 @@ function checklyrheight(welche)
 function doAction(action) {
 	hidemenu(letztelyr);
 	var encLasturl = simpleEscape(location.href);
-	alert(encLasturl);
-	//encLasturl = location.href;
 	
 	switch(action)	{
 		case 1: {
