@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/17 13:54:10 $
- * Version: $Revision: 1.231 $
+ * Date   : $Date: 2003/09/17 15:38:20 $
+ * Version: $Revision: 1.232 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.231 $ $Date: 2003/09/17 13:54:10 $
+ * @version $Revision: 1.232 $ $Date: 2003/09/17 15:38:20 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -96,15 +96,15 @@ public class CmsDriverManager extends Object {
 
     // Dummy task used in createDirectPublishProject
     protected static final CmsTask noTask = new CmsTask();
-    
+
     //
     public static final int C_NOTHING_CHANGED = 0;
     public static final int C_UPDATE_RESOURCE_STATE = 1;
     public static final int C_UPDATE_STRUCTURE_STATE = 2;
-    public static final int C_UPDATE_ALL = 3; 
+    public static final int C_UPDATE_ALL = 3;
     public static final int C_UPDATE_RESOURCE = 4;
     public static final int C_UPDATE_STRUCTURE = 5;
-    
+
     /** The backup driver. */
     protected I_CmsBackupDriver m_backupDriver;
     protected int m_cachelimit = 0;
@@ -149,14 +149,14 @@ public class CmsDriverManager extends Object {
     protected Map m_projectCache = null;
     protected Map m_propertyCache = null;
     protected Map m_propertyDefCache = null;
-    protected Map m_propertyDefVectorCache = null;    
+    protected Map m_propertyDefVectorCache = null;
     protected Map m_resourceCache = null;
     protected Map m_resourceListCache = null;
     protected Map m_userGroupsCache = null;
     protected Map m_groupCache = null;
     protected Map m_accessCache = null;
     protected Map m_accessControlListCache = null;
-    protected Map m_permissionCache = null;    
+    protected Map m_permissionCache = null;
 
     /** The user driver. */
     protected I_CmsUserDriver m_userDriver;
@@ -166,7 +166,7 @@ public class CmsDriverManager extends Object {
 
     /** The workflow driver. */
     protected I_CmsWorkflowDriver m_workflowDriver;
-    
+
     protected CmsLockDispatcher m_lockDispatcher = CmsLockDispatcher.getInstance();
 
     /**
@@ -216,7 +216,7 @@ public class CmsDriverManager extends Object {
                 return false;
             if (!(o instanceof CacheId))
                 return false;
-            CacheId other = (CacheId) o;
+            CacheId other = (CacheId)o;
             boolean result;
             if (m_uuid != null) {
                 result = m_uuid.equals(other.m_uuid);
@@ -230,13 +230,13 @@ public class CmsDriverManager extends Object {
             }
             return false;
         }
-        
+
         public int hashCode() {
             if (m_uuid == null) {
                 return 509;
             } else {
                 return m_uuid.hashCode();
-    }
+            }
         }
 
     }
@@ -253,7 +253,7 @@ public class CmsDriverManager extends Object {
          * @see java.lang.Object#equals(java.lang.Object)
          */
         public boolean equals(Object obj) {
-            return ((obj instanceof CmsResource) && m_path.equals(((CmsResource) obj).getName()));
+            return ((obj instanceof CmsResource) && m_path.equals(((CmsResource)obj).getName()));
         }
 
         /**
@@ -283,7 +283,7 @@ public class CmsDriverManager extends Object {
      * @throws CmsException if the driver manager couldn't be instanciated.
      */
     public static final CmsDriverManager newInstance(Configurations configurations) throws CmsException {
-        
+
         List drivers = null;
         String driverName = null;
 
@@ -310,7 +310,7 @@ public class CmsDriverManager extends Object {
 
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Driver manager init  : phase 2 - initializing pools");
-        }        
+        }
 
         // read the pool names to initialize
         String driverPoolNames[] = configurations.getStringArray(I_CmsConstants.C_CONFIGURATION_DB + ".pools");
@@ -318,48 +318,48 @@ public class CmsDriverManager extends Object {
             String names = "";
             for (int p = 0; p < driverPoolNames.length; p++) {
                 names += driverPoolNames[p] + " ";
-            }            
+            }
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Resource pools       : " + names);
         }
-        
+
         // initialize each pool
         for (int p = 0; p < driverPoolNames.length; p++) {
             driverManager.newPoolInstance(configurations, driverPoolNames[p]);
         }
-        
+
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Driver manager init  : phase 3 - initializing drivers");
-        }                
+        }
 
         // read the vfs driver class properties and initialize a new instance 
         drivers = Arrays.asList(configurations.getStringArray(I_CmsConstants.C_CONFIGURATION_VFS));
         driverName = configurations.getString((String)drivers.get(0) + ".vfs.driver");
-        drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null; 
-        vfsDriver = (I_CmsVfsDriver) driverManager.newDriverInstance(configurations, driverName, drivers);
+        drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
+        vfsDriver = (I_CmsVfsDriver)driverManager.newDriverInstance(configurations, driverName, drivers);
 
         // read the user driver class properties and initialize a new instance 
         drivers = Arrays.asList(configurations.getStringArray(I_CmsConstants.C_CONFIGURATION_USER));
         driverName = configurations.getString((String)drivers.get(0) + ".user.driver");
         drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
-        userDriver = (I_CmsUserDriver) driverManager.newDriverInstance(configurations, driverName, drivers);
+        userDriver = (I_CmsUserDriver)driverManager.newDriverInstance(configurations, driverName, drivers);
 
         // read the project driver class properties and initialize a new instance 
         drivers = Arrays.asList(configurations.getStringArray(I_CmsConstants.C_CONFIGURATION_PROJECT));
         driverName = configurations.getString((String)drivers.get(0) + ".project.driver");
         drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
-        projectDriver = (I_CmsProjectDriver) driverManager.newDriverInstance(configurations, driverName, drivers);
+        projectDriver = (I_CmsProjectDriver)driverManager.newDriverInstance(configurations, driverName, drivers);
 
         // read the workflow driver class properties and initialize a new instance 
-        drivers = Arrays.asList(configurations.getStringArray(I_CmsConstants.C_CONFIGURATION_WORKFLOW)); 
+        drivers = Arrays.asList(configurations.getStringArray(I_CmsConstants.C_CONFIGURATION_WORKFLOW));
         driverName = configurations.getString((String)drivers.get(0) + ".workflow.driver");
         drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
-        workflowDriver = (I_CmsWorkflowDriver) driverManager.newDriverInstance(configurations, driverName, drivers);
+        workflowDriver = (I_CmsWorkflowDriver)driverManager.newDriverInstance(configurations, driverName, drivers);
 
         // read the backup driver class properties and initialize a new instance 
         drivers = Arrays.asList(configurations.getStringArray(I_CmsConstants.C_CONFIGURATION_BACKUP));
         driverName = configurations.getString((String)drivers.get(0) + ".backup.driver");
         drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
-        backupDriver = (I_CmsBackupDriver) driverManager.newDriverInstance(configurations, driverName, drivers);
+        backupDriver = (I_CmsBackupDriver)driverManager.newDriverInstance(configurations, driverName, drivers);
 
         try {
             // invoke the init method of the driver manager
@@ -381,7 +381,7 @@ public class CmsDriverManager extends Object {
         String cosPoolUrl = configurations.getString("db.cos.pool");
         OpenCms.setRuntimeProperty("cosPoolUrl", cosPoolUrl);
         CmsDbUtil.setDefaultPool(cosPoolUrl);
-                
+
         // return the configured driver manager
         return driverManager;
     }
@@ -437,7 +437,7 @@ public class CmsDriverManager extends Object {
 
         // test, if the user is in the same groups like the project.
         for (int i = 0; i < groups.size(); i++) {
-            CmsUUID groupId = ((CmsGroup) groups.elementAt(i)).getId();
+            CmsUUID groupId = ((CmsGroup)groups.elementAt(i)).getId();
             if ((groupId.equals(testProject.getGroupId())) || (groupId.equals(testProject.getManagerGroupId()))) {
                 return (true);
             }
@@ -458,7 +458,7 @@ public class CmsDriverManager extends Object {
     public void addFileExtension(CmsRequestContext context, String extension, String resTypeName) throws CmsException {
         if (extension != null && resTypeName != null) {
             if (isAdmin(context)) {
-                Hashtable suffixes = (Hashtable) m_projectDriver.readSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_EXTENSIONS);
+                Hashtable suffixes = (Hashtable)m_projectDriver.readSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_EXTENSIONS);
                 if (suffixes == null) {
                     suffixes = new Hashtable();
                     suffixes.put(extension, resTypeName);
@@ -482,19 +482,17 @@ public class CmsDriverManager extends Object {
      * @throws CmsException if something goes wrong
      */
     public List setFullResourceNames(CmsRequestContext context, List resourceList) throws CmsException {
-        Iterator i=resourceList.iterator();
-      
+        Iterator i = resourceList.iterator();
+
         while (i.hasNext()) {
-            CmsResource res=(CmsResource)i.next();
+            CmsResource res = (CmsResource)i.next();
             if (!res.hasFullResourceName()) {
-            res.setFullResourceName(readPath(context,res, true));
+                res.setFullResourceName(readPath(context, res, true));
+            }
         }
-        }
-         
+
         return resourceList;
     }
-    
-    
 
     /**
      * Adds a user to the Cms.
@@ -537,7 +535,7 @@ public class CmsDriverManager extends Object {
             addUserToGroup(context, newUser.getName(), group.getName());
             return newUser;
         } else {
-            throw new CmsSecurityException("[" + this.getClass().getName() + "] addImportUser() " + name, CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);            
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] addImportUser() " + name, CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
         }
     }
 
@@ -580,7 +578,7 @@ public class CmsDriverManager extends Object {
                 throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_INVALID_PASSWORD);
             }
         } else {
-            throw new CmsSecurityException("[" + this.getClass().getName() + "] addUser() " + name, CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);            
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] addUser() " + name, CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
         }
     }
 
@@ -628,7 +626,7 @@ public class CmsDriverManager extends Object {
                     throw new CmsException("[" + getClass().getName() + "]" + username, CmsException.C_NO_USER);
                 }
             } else {
-                throw new CmsSecurityException("[" + this.getClass().getName() + "] addUserToGroup() " + username + " " + groupname, CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);                            
+                throw new CmsSecurityException("[" + this.getClass().getName() + "] addUserToGroup() " + username + " " + groupname, CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
             }
         }
     }
@@ -785,13 +783,13 @@ public class CmsDriverManager extends Object {
     public void changeLockedInProject(CmsRequestContext context, int projectId, String resourcename) throws CmsException {
         // include deleted resources, otherwise publishing of them will not work
         List path = readPath(context, resourcename, true);
-        CmsResource resource = (CmsResource) path.get(path.size() - 1);
+        CmsResource resource = (CmsResource)path.get(path.size() - 1);
 
         // update the project flag of a modified resource as "modified inside the current project"
         m_vfsDriver.writeLastModifiedProjectId(context.currentProject(), context.currentProject().getId(), resource);
 
         clearResourceCache();
-        
+
         OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", resource)));
     }
 
@@ -809,7 +807,7 @@ public class CmsDriverManager extends Object {
             clearUserCache(user);
             m_userDriver.writeUserType(user.getId(), userType);
         } else {
-            throw new CmsSecurityException("[" + this.getClass().getName() + "] changeUserType() " + user.getName(), CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);                            
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] changeUserType() " + user.getName(), CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
         }
     }
 
@@ -864,16 +862,16 @@ public class CmsDriverManager extends Object {
     private void checkParentsPublished(CmsObject cms, CmsRequestContext context, CmsResource directPublishResource) throws CmsException {
         CmsUUID parentID = directPublishResource.getParentStructureId();
         // get the onlineProject
-        CmsProject onlineProject=readProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
+        CmsProject onlineProject = readProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
         try {
             getVfsDriver().readFolder(onlineProject.getId(), parentID);
         } catch (CmsException e) {
-            if (e.getType()==2) {
-                throw new CmsException("Parent folder not published yet",2);
+            if (e.getType() == 2) {
+                throw new CmsException("Parent folder not published yet", 2);
             } else {
                 throw e;
             }
-        }                
+        }
     }
 
     /**
@@ -918,7 +916,7 @@ public class CmsDriverManager extends Object {
         if (filename.endsWith("/")) {
             resource = readFolder(context, filename);
         } else {
-            resource = (CmsFile) readFileHeader(context, filename);
+            resource = (CmsFile)readFileHeader(context, filename);
         }
 
         // check the access rights
@@ -928,12 +926,12 @@ public class CmsDriverManager extends Object {
         resource.setState(state);
         // write-acces  was granted - write the file.
         if (filename.endsWith("/")) {
-            m_vfsDriver.writeFolder(context.currentProject(), (CmsFolder) resource, C_UPDATE_ALL, context.currentUser().getId());
+            m_vfsDriver.writeFolder(context.currentProject(), (CmsFolder)resource, C_UPDATE_ALL, context.currentUser().getId());
             // update the cache
             //clearResourceCache(filename, context.currentProject(), context.currentUser());
             clearResourceCache();
         } else {
-            m_vfsDriver.writeFileHeader(context.currentProject(), (CmsFile) resource, C_UPDATE_ALL, context.currentUser().getId());
+            m_vfsDriver.writeFileHeader(context.currentProject(), (CmsFile)resource, C_UPDATE_ALL, context.currentUser().getId());
             // update the cache
             //clearResourceCache(filename, context.currentProject(), context.currentUser());
             clearResourceCache();
@@ -977,7 +975,7 @@ public class CmsDriverManager extends Object {
         // write-access  was granted - write the file.
         resource.setType(type.getResourceType());
         resource.setLoaderId(type.getLoaderId());
-        m_vfsDriver.writeFileHeader(context.currentProject(), (CmsFile) resource, C_UPDATE_STRUCTURE_STATE, context.currentUser().getId());
+        m_vfsDriver.writeFileHeader(context.currentProject(), (CmsFile)resource, C_UPDATE_STRUCTURE_STATE, context.currentUser().getId());
         if (resource.getState() == I_CmsConstants.C_STATE_UNCHANGED) {
             resource.setState(I_CmsConstants.C_STATE_CHANGED);
         }
@@ -1071,10 +1069,10 @@ public class CmsDriverManager extends Object {
         clearAccessControlListCache();
 
         while (acEntries.hasNext()) {
-            writeAccessControlEntry(context, dest, (CmsAccessControlEntry) acEntries.next());
+            writeAccessControlEntry(context, dest, (CmsAccessControlEntry)acEntries.next());
         }
-        
-        touchResource(context, dest, System.currentTimeMillis(),context.currentUser().getId());
+
+        touchResource(context, dest, System.currentTimeMillis(), context.currentUser().getId());
     }
 
     /**
@@ -1114,10 +1112,9 @@ public class CmsDriverManager extends Object {
             return;
         }
 
-
         // validate the destination path/filename
         validFilename(destination.replace('/', 'a'));
-        
+
         // extract the destination folder and filename
         destinationFolderName = destination.substring(0, destination.lastIndexOf("/") + 1);
         destinationFileName = destination.substring(destination.lastIndexOf("/") + 1, destination.length());
@@ -1126,38 +1123,36 @@ public class CmsDriverManager extends Object {
         CmsFile sourceFile = readFile(context, source, false);
         CmsFolder destinationFolder = readFolder(context, destinationFolderName);
 
-
         // check the link mode to see if this resource has to be copied as a link.
         // only check this if the override flag "copyAsLink" is not set.
         if (!copyAsLink) {
             // if we have the copy mode "copy as link, set the override flag to true
-            if (copyMode==I_CmsConstants.C_COPY_AS_LINK) {
-                copyAsLink=true;
+            if (copyMode == I_CmsConstants.C_COPY_AS_LINK) {
+                copyAsLink = true;
             }
             // if the mode is "preservre links", we have to check the link counter
-            if (copyMode==I_CmsConstants.C_COPY_PRESERVE_LINK) {
-                if (sourceFile.getLinkCount()>1) {
-                    copyAsLink=true;
+            if (copyMode == I_CmsConstants.C_COPY_PRESERVE_LINK) {
+                if (sourceFile.getLinkCount() > 1) {
+                    copyAsLink = true;
                 }
             }
         }
-
 
         // checks, if the type is valid, i.e. the user can copy files of this type
         // we can't utilize the access guard to do this, since it needs a resource to check   
         if (!isAdmin(context) && (sourceFile.getType() == CmsResourceTypeXMLTemplate.C_RESOURCE_TYPE_ID || sourceFile.getType() == CmsResourceTypeJsp.C_RESOURCE_TYPE_ID)) {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] copyFile() " + source, CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
-        
+
         // check if the user has read access to the source file and write access to the destination folder
         checkPermissions(context, sourceFile, I_CmsConstants.C_READ_ACCESS);
         checkPermissions(context, destinationFolder, I_CmsConstants.C_WRITE_ACCESS);
 
         // read the source properties
         properties = readProperties(context, source, null, false);
-        
+
         if (copyAsLink) {
-        // create a copy of the source file in the destination parent folder      
+            // create a copy of the source file in the destination parent folder      
             newResource = createVfsLink(context, destination, source, properties, false);
         } else {
             // create a new resource in the destination folder
@@ -1168,37 +1163,37 @@ public class CmsDriverManager extends Object {
                 // reset "labeled" link flag
                 flags &= ~I_CmsConstants.C_RESOURCEFLAG_LABELLINK;
             }
-            
+
             // create the file
             newResource = m_vfsDriver.createFile(context.currentUser(), context.currentProject(), destinationFileName, flags, destinationFolder, sourceFile.getContents(), getResourceType(sourceFile.getType()));
             newResource.setFullResourceName(destination);
 
             // copy the properties
             m_vfsDriver.writeProperties(properties, context.currentProject().getId(), newResource, newResource.getType(), false);
-            m_propertyCache.clear();             
+            m_propertyCache.clear();
 
             // copy the access control entries
             ListIterator aceList = m_userDriver.readAccessControlEntries(context.currentProject(), sourceFile.getResourceId(), false).listIterator();
             while (aceList.hasNext()) {
-                CmsAccessControlEntry ace = (CmsAccessControlEntry) aceList.next();
+                CmsAccessControlEntry ace = (CmsAccessControlEntry)aceList.next();
                 m_userDriver.createAccessControlEntry(context.currentProject(), newResource.getResourceId(), ace.getPrincipal(), ace.getPermissions().getAllowedPermissions(), ace.getPermissions().getDeniedPermissions(), ace.getFlags());
 
             }
-                        
+
             m_vfsDriver.writeResourceState(context.currentProject(), newResource, C_UPDATE_ALL);
-            
-            touch(context,destination,sourceFile.getDateLastModified(),sourceFile.getUserLastModified());            
-        
-        if (lockCopy) {
+
+            touch(context, destination, sourceFile.getDateLastModified(), sourceFile.getUserLastModified());
+
+            if (lockCopy) {
                 lockResource(context, destination);
-        }
+            }
         }
 
         clearAccessControlListCache();
         m_accessCache.clear();
         clearResourceCache();
-        
-        List modifiedResources = (List) new ArrayList();
+
+        List modifiedResources = (List)new ArrayList();
         modifiedResources.add(sourceFile);
         modifiedResources.add(newResource);
         modifiedResources.add(destinationFolder);
@@ -1230,7 +1225,7 @@ public class CmsDriverManager extends Object {
         long dateLastModified = 0;
         long dateCreated = 0;
         CmsUUID userLastModified = null;
-        CmsUUID userCreated = null;        
+        CmsUUID userCreated = null;
         CmsResource newResource = null;
         String destinationFoldername = null;
         String destinationResourceName = null;
@@ -1242,7 +1237,7 @@ public class CmsDriverManager extends Object {
         destinationResourceName = destination.substring(destinationFoldername.length());
 
         if (destinationResourceName.endsWith("/")) {
-            destinationResourceName = destinationResourceName.substring(0, destinationResourceName.length()-1);
+            destinationResourceName = destinationResourceName.substring(0, destinationResourceName.length() - 1);
         }
 
         CmsFolder destinationFolder = readFolder(context, destinationFoldername);
@@ -1261,12 +1256,11 @@ public class CmsDriverManager extends Object {
             dateLastModified = System.currentTimeMillis();
             dateCreated = System.currentTimeMillis();
             userLastModified = context.currentUser().getId();
-            userCreated = context.currentUser().getId();            
+            userCreated = context.currentUser().getId();
         }
 
-
         // create a copy of the folder
-        newResource = m_vfsDriver.createFolder(context.currentProject(), destinationFolder.getStructureId(), CmsUUID.getNullUUID(), destinationResourceName, sourceFolder.getFlags(), dateLastModified,userLastModified, dateCreated, userCreated);
+        newResource = m_vfsDriver.createFolder(context.currentProject(), destinationFolder.getStructureId(), CmsUUID.getNullUUID(), destinationResourceName, sourceFolder.getFlags(), dateLastModified, userLastModified, dateCreated, userCreated);
         newResource.setFullResourceName(destination);
 
         clearResourceCache();
@@ -1274,19 +1268,19 @@ public class CmsDriverManager extends Object {
         // copy the properties
         Map properties = readProperties(context, source, null, false);
         m_vfsDriver.writeProperties(properties, context.currentProject().getId(), newResource, newResource.getType(), false);
-        m_propertyCache.clear();      
-        
+        m_propertyCache.clear();
+
         if (preserveTimestaps) {
-            touch(context,destination,dateLastModified,userLastModified);
+            touch(context, destination, dateLastModified, userLastModified);
         }
 
         // copy the access control entries of this resource
         ListIterator aceList = getAccessControlEntries(context, sourceFolder, false).listIterator();
         while (aceList.hasNext()) {
-            CmsAccessControlEntry ace = (CmsAccessControlEntry) aceList.next();
+            CmsAccessControlEntry ace = (CmsAccessControlEntry)aceList.next();
             m_userDriver.createAccessControlEntry(context.currentProject(), newResource.getResourceId(), ace.getPrincipal(), ace.getPermissions().getAllowedPermissions(), ace.getPermissions().getDeniedPermissions(), ace.getFlags());
         }
-        
+
         if (lockCopy) {
             lockResource(context, destination);
         }
@@ -1294,13 +1288,13 @@ public class CmsDriverManager extends Object {
         clearAccessControlListCache();
         m_resourceListCache.clear();
         m_accessCache.clear();
-        
-        List modifiedResources = (List) new ArrayList();
+
+        List modifiedResources = (List)new ArrayList();
         modifiedResources.add(sourceFolder);
         modifiedResources.add(newResource);
         modifiedResources.add(destinationFolder);
         OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCES_MODIFIED, Collections.singletonMap("resources", modifiedResources)));
-        
+
     }
 
     /**
@@ -1334,11 +1328,11 @@ public class CmsDriverManager extends Object {
                 // must include files marked as deleted for publishing deleted resources
                 //offlineRes = readFileHeaderInProject(context, context.currentProject().getId(), resource, true);
                 offlineRes = readFileHeader(context, resource, true);
-                
+
                 if (!isInsideCurrentProject(context, offlineRes)) {
                     offlineRes = null;
                 }
-                
+
             } catch (CmsException exc) {
                 // if the resource does not exist in the offlineProject - it's ok
             }
@@ -1348,7 +1342,7 @@ public class CmsDriverManager extends Object {
                 if (resource.endsWith("/")) {
                     List projectResources = m_projectDriver.readProjectResources(context.currentProject());
                     for (int i = 0; i < projectResources.size(); i++) {
-                        String resname = (String) projectResources.get(i);
+                        String resname = (String)projectResources.get(i);
                         if (resname.startsWith(resource)) {
                             // delete the existing project resource first
                             m_projectDriver.deleteProjectResource(context.currentProject().getId(), resname);
@@ -1404,7 +1398,7 @@ public class CmsDriverManager extends Object {
         } else {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] countLockedResources()", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
-    }    
+    }
 
     /**
      * Creates a project for the direct publish.<p>
@@ -1422,7 +1416,7 @@ public class CmsDriverManager extends Object {
      * @throws CmsException if something goes wrong
      */
     public CmsProject createDirectPublishProject(CmsRequestContext context, String name, String description, String groupname, String managergroupname, int projecttype) throws CmsException {
-       if (isAdmin(context) || isManagerOfProject(context)) {
+        if (isAdmin(context) || isManagerOfProject(context)) {
             if (I_CmsConstants.C_PROJECT_ONLINE.equals(name)) {
                 throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_BAD_NAME);
             }
@@ -1474,7 +1468,7 @@ public class CmsDriverManager extends Object {
 
         // checks, if the type is valid, i.e. the user can create files of this type
         // we can't utilize the access guard to do this, since it needs a resource to check   
-        if (!isAdmin(context) && (CmsResourceTypeXMLTemplate.C_RESOURCE_TYPE_NAME.equals(type) || CmsResourceTypeJsp.C_RESOURCE_TYPE_NAME.equals(type))) { 
+        if (!isAdmin(context) && (CmsResourceTypeXMLTemplate.C_RESOURCE_TYPE_NAME.equals(type) || CmsResourceTypeJsp.C_RESOURCE_TYPE_NAME.equals(type))) {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] createFile() " + resourceName, CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
 
@@ -1485,17 +1479,17 @@ public class CmsDriverManager extends Object {
 
         // create and return the file.
         CmsFile newFile = m_vfsDriver.createFile(context.currentUser(), context.currentProject(), resourceName, 0, parentFolder, contents, getResourceType(type));
-        newFile.setFullResourceName(newFileName);        
+        newFile.setFullResourceName(newFileName);
 
         // write the metainfos
         //writeProperties(context, newFileName, propertyinfos);
         m_vfsDriver.writeProperties(propertyinfos, context.currentProject().getId(), newFile, newFile.getType(), false);
-        m_propertyCache.clear();     
-           
+        m_propertyCache.clear();
+
         clearResourceCache();
-        
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", newFile)));        
-        
+
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", newFile)));
+
         return newFile;
     }
 
@@ -1545,17 +1539,17 @@ public class CmsDriverManager extends Object {
         // create the folder.
         CmsFolder newFolder = m_vfsDriver.createFolder(context.currentProject(), cmsFolder.getStructureId(), CmsUUID.getNullUUID(), resourceName, 0, 0, context.currentUser().getId(), 0, context.currentUser().getId());
         newFolder.setFullResourceName(newFolderName);
-        
+
         // write metainfos for the folder
         //writeProperties(context, newFolderName, propertyinfos);
         m_vfsDriver.writeProperties(propertyinfos, context.currentProject().getId(), newFolder, newFolder.getType(), false);
-        m_propertyCache.clear();        
-        
+        m_propertyCache.clear();
+
         clearResourceCache();
 
         OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", newFolder)));
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_PROJECT_MODIFIED, Collections.singletonMap("project", context.currentProject())));        
-        
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_PROJECT_MODIFIED, Collections.singletonMap("project", context.currentProject())));
+
         // return the folder        
         return newFolder;
     }
@@ -1591,7 +1585,7 @@ public class CmsDriverManager extends Object {
                 throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_BAD_NAME);
             }
         } else {
-            throw new CmsSecurityException("[" + this.getClass().getName() + "] createGroup() " + name, CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);                                        
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] createGroup() " + name, CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
         }
     }
 
@@ -1715,7 +1709,7 @@ public class CmsDriverManager extends Object {
             m_propertyDefVectorCache.clear();
             return (m_vfsDriver.createPropertyDefinition(name, context.currentProject().getId(), resourcetype));
         } else {
-            throw new CmsSecurityException("[" + this.getClass().getName() + "] createPropertydefinition() " + name, CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);                            
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] createPropertydefinition() " + name, CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
         }
     }
 
@@ -1812,7 +1806,7 @@ public class CmsDriverManager extends Object {
             OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_PROJECT_MODIFIED, Collections.singletonMap("project", tempProject)));
             return tempProject;
         } else {
-            throw new CmsSecurityException("[" + this.getClass().getName() + "] createTempfileProject() " + name, CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);                                        
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] createTempfileProject() " + name, CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
         }
     }
 
@@ -1832,18 +1826,18 @@ public class CmsDriverManager extends Object {
         CmsResource linkResource = null;
         String parentFolderName = null;
         CmsFolder parentFolder = null;
-        String resourceName = null;        
+        String resourceName = null;
 
         parentFolderName = linkName.substring(0, linkName.lastIndexOf(I_CmsConstants.C_FOLDER_SEPARATOR) + 1);
         resourceName = linkName.substring(linkName.lastIndexOf(I_CmsConstants.C_FOLDER_SEPARATOR) + 1, linkName.length());
 
         // read the target resource
         targetResource = this.readFileHeader(context, targetName);
-        
+
         if (targetResource.isFolder()) {
             throw new CmsException("Setting links on folders is not supported");
         }
-        
+
         // read the parent folder
         parentFolder = this.readFolder(context, parentFolderName, false);
 
@@ -1851,26 +1845,8 @@ public class CmsDriverManager extends Object {
         checkPermissions(context, parentFolder, I_CmsConstants.C_WRITE_ACCESS);
 
         // construct a dummy that is written to the db
-        linkResource =
-            new CmsResource(
-                new CmsUUID(),
-                targetResource.getResourceId(),
-                parentFolder.getStructureId(),
-                CmsUUID.getNullUUID(),
-                resourceName,
-                CmsResourceTypePointer.C_RESOURCE_TYPE_ID,
-                targetResource.getFlags(),
-                context.currentProject().getId(),
-                com.opencms.core.I_CmsConstants.C_STATE_NEW,
-                targetResource.getLoaderId(),
-                System.currentTimeMillis(),
-                context.currentUser().getId(),
-                System.currentTimeMillis(),
-                context.currentUser().getId(),
-                0,
-                targetResource.getLinkCount()+1);
+        linkResource = new CmsResource(new CmsUUID(), targetResource.getResourceId(), parentFolder.getStructureId(), CmsUUID.getNullUUID(), resourceName, CmsResourceTypePointer.C_RESOURCE_TYPE_ID, targetResource.getFlags(), context.currentProject().getId(), com.opencms.core.I_CmsConstants.C_STATE_NEW, targetResource.getLoaderId(), System.currentTimeMillis(), context.currentUser().getId(), System.currentTimeMillis(), context.currentUser().getId(), 0, targetResource.getLinkCount() + 1);
 
-        
         // check if the target resource is already marked
         if (!targetResource.isLabeled()) {
             // check if the new link lies in the "marked sites"
@@ -1878,8 +1854,7 @@ public class CmsDriverManager extends Object {
             Iterator i = markedSites.iterator();
             while (i.hasNext()) {
                 String curSite = (String)i.next();
-                if (linkName.startsWith(curSite)
-                        || targetResource.getRootPath().startsWith(curSite)) {
+                if (linkName.startsWith(curSite) || targetResource.getRootPath().startsWith(curSite)) {
                     // the link or target lies in the marked site, so update the file header!
                     int flags = linkResource.getFlags();
                     linkResource.setFlags(flags |= I_CmsConstants.C_RESOURCEFLAG_LABELLINK);
@@ -1887,30 +1862,30 @@ public class CmsDriverManager extends Object {
                 }
             }
         }
-        
+
         // setting the full resource name twice here looks crude but is essential!
         linkResource.setFullResourceName(linkName);
         linkResource = m_vfsDriver.createSibling(context.currentProject(), linkResource, context.currentUser().getId(), parentFolder.getStructureId(), resourceName);
         linkResource.setFullResourceName(linkName);
-        
+
         // mark the new sibling as modified in the current project
         m_vfsDriver.writeLastModifiedProjectId(context.currentProject(), context.currentProject().getId(), linkResource);
-        
+
         if (linkProperties == null) {
             // "empty" properties are represented by an empty property map
             linkProperties = Collections.EMPTY_MAP;
         }
         // write its properties
         m_vfsDriver.writeProperties(linkProperties, context.currentProject().getId(), linkResource, linkResource.getType(), false);
-        
+
         // if the source
         clearResourceCache();
         m_propertyCache.clear();
-        
+
         OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", parentFolder)));
-        
+
         if (lockResource) {
-        // lock the resource
+            // lock the resource
             lockResource(context, linkName);
         }
 
@@ -1935,7 +1910,7 @@ public class CmsDriverManager extends Object {
         checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);
 
         m_userDriver.deleteAccessControlEntries(context.currentProject(), resource.getResourceId());
-        
+
         // not here
         // touchResource(context, resource, System.currentTimeMillis());
         clearAccessControlListCache();
@@ -1964,7 +1939,7 @@ public class CmsDriverManager extends Object {
         //delete all Properties
         m_vfsDriver.deleteProperties(context.currentProject().getId(), res);
         m_propertyCache.clear();
-        
+
         OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", res)));
     }
 
@@ -1980,9 +1955,9 @@ public class CmsDriverManager extends Object {
      * @param timestamp the max age of backup resources
      * @return int The oldest remaining version
      */
-    public int deleteBackups(CmsObject cms, CmsRequestContext context, long timestamp, int versions) throws CmsException {     
+    public int deleteBackups(CmsObject cms, CmsRequestContext context, long timestamp, int versions) throws CmsException {
         int lastVersion = 1;
-        
+
         // TODO: this is the old code, remove it when this method is completed
         /*Hashtable histproperties = cms.getRegistry().getSystemValues(I_CmsConstants.C_REGISTRY_HISTORY);
         String delete = (String) histproperties.get(I_CmsConstants.C_REGISTRY_HISTORY_DELETE);
@@ -1994,40 +1969,40 @@ public class CmsDriverManager extends Object {
                 throw new CmsSecurityException("[" + this.getClass().getName() + "] deleteBackups()", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);                                            
             }
         } */
-        
+
         // TODO: make a own method in the registry for that
-       // only an Administrator can delete the backups
-       if (isAdmin(context)) {
-           // get all resources from the backup table
-           // do only get one version per resource
-           List allBackupFiles=m_backupDriver.readBackupFileHeaders();
-           // get the tagId of the oldest Backupproject which will be kept in the database
-           int maxTag = m_backupDriver.readBackupProjectTag(timestamp);
-           Iterator i=allBackupFiles.iterator();
-       // TODO: work in progress, continue this code later           
-//System.err.println("");
-//System.err.println("");    
-//System.err.println("[keep verions] "+versions);
-//System.err.println("[max tag] "+maxTag);
-//System.err.println("[delete before] "+Utils.getNiceDate(timestamp));  
-//System.err.println("");             
-           while (i.hasNext()) {
-               // now check get a single backup resource
-               CmsBackupResource res=(CmsBackupResource)i.next();
-               // now delete all versions of this resource that have more than the maximun number
-               // of allowed versions and which are older then the maximum backup date
-              int resVersions=m_backupDriver.readBackupMaxVersion(res.getResourceId());
-              int versionsToDelete=resVersions-versions;
-              // now we know which backup versions must be deleted, so remove them now
-              if (versionsToDelete>0) {
-                 //TODO: uncomment this later                                          
-                //m_backupDriver.deleteBackup(res, maxTag, versionsToDelete);           
-             }
-           }
-       }           
+        // only an Administrator can delete the backups
+        if (isAdmin(context)) {
+            // get all resources from the backup table
+            // do only get one version per resource
+            List allBackupFiles = m_backupDriver.readBackupFileHeaders();
+            // get the tagId of the oldest Backupproject which will be kept in the database
+            int maxTag = m_backupDriver.readBackupProjectTag(timestamp);
+            Iterator i = allBackupFiles.iterator();
+            // TODO: work in progress, continue this code later           
+            //System.err.println("");
+            //System.err.println("");    
+            //System.err.println("[keep verions] "+versions);
+            //System.err.println("[max tag] "+maxTag);
+            //System.err.println("[delete before] "+Utils.getNiceDate(timestamp));  
+            //System.err.println("");             
+            while (i.hasNext()) {
+                // now check get a single backup resource
+                CmsBackupResource res = (CmsBackupResource)i.next();
+                // now delete all versions of this resource that have more than the maximun number
+                // of allowed versions and which are older then the maximum backup date
+                int resVersions = m_backupDriver.readBackupMaxVersion(res.getResourceId());
+                int versionsToDelete = resVersions - versions;
+                // now we know which backup versions must be deleted, so remove them now
+                if (versionsToDelete > 0) {
+                    //TODO: uncomment this later                                          
+                    //m_backupDriver.deleteBackup(res, maxTag, versionsToDelete);           
+                }
+            }
+        }
         return lastVersion;
     }
-    
+
     /**
      * Deletes a file in the Cms.<br>
      *
@@ -2049,7 +2024,7 @@ public class CmsDriverManager extends Object {
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public void deleteFile(CmsRequestContext context, String filename, int deleteOption) throws CmsException {
-        List resources = (List) new ArrayList();
+        List resources = (List)new ArrayList();
         CmsResource currentResource = null;
         CmsLock currentLock = null;
         CmsResource resource = null;
@@ -2060,11 +2035,11 @@ public class CmsDriverManager extends Object {
 
         // read the resource to delete/remove
         resource = readFileHeader(context, filename, false);
-        
+
         // upgrade a potential inherited, non-shared lock into an exclusive lock
         currentLock = getLock(context, filename);
         if (currentLock.getType() == CmsLock.C_TYPE_INHERITED) {
-            lockResource(context, filename);            
+            lockResource(context, filename);
         }
 
         // add the resource itself to the list of all resources that get deleted/removed
@@ -2078,7 +2053,7 @@ public class CmsDriverManager extends Object {
         // ensure that each link pointing to the resource is unlocked or locked by the current user
         i = resources.iterator();
         while (i.hasNext()) {
-            currentResource = (CmsResource) i.next();
+            currentResource = (CmsResource)i.next();
             currentLock = getLock(context, currentResource);
 
             if (!currentLock.equals(CmsLock.getNullLock()) && !currentLock.getUserId().equals(context.currentUser().getId())) {
@@ -2086,13 +2061,13 @@ public class CmsDriverManager extends Object {
                 int exceptionType = currentLock.getUserId().equals(context.currentUser().getId()) ? CmsLockException.C_RESOURCE_LOCKED_BY_CURRENT_USER : CmsLockException.C_RESOURCE_LOCKED_BY_OTHER_USER;
                 throw new CmsLockException("VFS link " + currentResource.getRootPath() + " pointing to " + filename + " is locked by another user!", exceptionType);
             }
-        }       
+        }
 
         // delete/remove all collected resources
         i = resources.iterator();
         while (i.hasNext()) {
             existsOnline = false;
-            currentResource = (CmsResource) i.next();
+            currentResource = (CmsResource)i.next();
 
             // try to delete/remove the resource only if the user has write access to the resource
             if (hasPermissions(context, currentResource, I_CmsConstants.C_WRITE_ACCESS, false)) {
@@ -2104,8 +2079,8 @@ public class CmsDriverManager extends Object {
                 } catch (CmsException exc) {
                     existsOnline = false;
                 }
-                
-                m_lockDispatcher.removeResource(this, context, currentResource.getRootPath(), true);                
+
+                m_lockDispatcher.removeResource(this, context, currentResource.getRootPath(), true);
 
                 if (!existsOnline) {
                     // remove the properties                
@@ -2126,21 +2101,21 @@ public class CmsDriverManager extends Object {
                     // the resource exists online => mark the file as deleted
                     //m_vfsDriver.deleteFile(context.currentProject(), currentResource);
                     currentResource.setState(I_CmsConstants.C_STATE_DELETED);
-                    m_vfsDriver.writeResourceState(context.currentProject(), currentResource, C_UPDATE_STRUCTURE_STATE);                    
+                    m_vfsDriver.writeResourceState(context.currentProject(), currentResource, C_UPDATE_STRUCTURE_STATE);
                     // add the project id as a property, this is later used for publishing
-                    m_vfsDriver.writeProperty(I_CmsConstants.C_PROPERTY_INTERNAL, context.currentProject().getId(), ""+context.currentProject().getId(), currentResource, currentResource.getType(), false);
+                    m_vfsDriver.writeProperty(I_CmsConstants.C_PROPERTY_INTERNAL, context.currentProject().getId(), "" + context.currentProject().getId(), currentResource, currentResource.getType(), false);
                     // TODO: still necessary after we have the property?
                     // update the project ID
                     m_vfsDriver.writeLastModifiedProjectId(context.currentProject(), context.currentProject().getId(), currentResource);
                 }
             }
-        }               
-        
+        }
+
         // flush all caches
         clearAccessControlListCache();
         clearResourceCache();
         m_accessCache.clear();
-        
+
         OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCES_MODIFIED, Collections.singletonMap("resources", resources)));
     }
 
@@ -2170,8 +2145,9 @@ public class CmsDriverManager extends Object {
         CmsResource onlineFolder;
 
         // TODO: "/" is currently used inconsistent !!! 
-        if (!foldername.endsWith("/")) foldername = foldername.concat("/");
-        
+        if (!foldername.endsWith("/"))
+            foldername = foldername.concat("/");
+
         // read the folder, that should be deleted
         CmsFolder cmsFolder = readFolder(context, foldername);
         try {
@@ -2183,8 +2159,8 @@ public class CmsDriverManager extends Object {
 
         // check if the user has write access to the folder
         checkPermissions(context, cmsFolder, I_CmsConstants.C_WRITE_ACCESS);
-        
-        m_lockDispatcher.removeResource(this, context, foldername, true);        
+
+        m_lockDispatcher.removeResource(this, context, foldername, true);
 
         // write-acces  was granted - delete the folder and metainfos.
         if (onlineFolder == null) {
@@ -2197,22 +2173,22 @@ public class CmsDriverManager extends Object {
         } else {
             // m_vfsDriver.deleteFolder(context.currentProject(), cmsFolder);
             // add the project id as a property, this is later used for publishing
-            m_vfsDriver.writeProperty(I_CmsConstants.C_PROPERTY_INTERNAL, context.currentProject().getId(), ""+context.currentProject().getId(), cmsFolder, cmsFolder.getType(), false);
+            m_vfsDriver.writeProperty(I_CmsConstants.C_PROPERTY_INTERNAL, context.currentProject().getId(), "" + context.currentProject().getId(), cmsFolder, cmsFolder.getType(), false);
             cmsFolder.setState(I_CmsConstants.C_STATE_DELETED);
             m_vfsDriver.writeResourceState(context.currentProject(), cmsFolder, C_UPDATE_STRUCTURE_STATE);
             // delete the access control entries
             deleteAllAccessControlEntries(context, cmsFolder);
             // update the project ID
             // TODO: still nescessary?
-            m_vfsDriver.writeLastModifiedProjectId(context.currentProject(), context.currentProject().getId(), cmsFolder);            
-        }       
-        
+            m_vfsDriver.writeLastModifiedProjectId(context.currentProject(), context.currentProject().getId(), cmsFolder);
+        }
+
         // update cache
         clearAccessControlListCache();
         clearResourceCache();
         m_accessCache.clear();
-        
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", cmsFolder)));        
+
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", cmsFolder)));
     }
 
     /**
@@ -2245,7 +2221,7 @@ public class CmsDriverManager extends Object {
                 throw new CmsException(delgroup, CmsException.C_GROUP_NOT_EMPTY);
             }
         } else {
-            throw new CmsSecurityException("[" + this.getClass().getName() + "] deleteGroup() " + delgroup, CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);                                                        
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] deleteGroup() " + delgroup, CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
         }
     }
 
@@ -2275,15 +2251,15 @@ public class CmsDriverManager extends Object {
         CmsProject deleteProject = readProject(context, projectId);
 
         if ((isAdmin(context) || isManagerOfProject(context)) && (projectId != I_CmsConstants.C_PROJECT_ONLINE_ID)) {
-//            List allFiles = m_vfsDriver.readFiles(deleteProject.getId(), false, true);
-//            List allFolders = m_vfsDriver.readFolders(deleteProject, false, true);
-            
+            //            List allFiles = m_vfsDriver.readFiles(deleteProject.getId(), false, true);
+            //            List allFolders = m_vfsDriver.readFolders(deleteProject, false, true);
+
             List allFiles = readChangedResourcesInsideProject(context, projectId, 1);
             List allFolders = readChangedResourcesInsideProject(context, projectId, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
-            
+
             // first delete files or undo changes in files
             for (int i = 0; i < allFiles.size(); i++) {
-                CmsFile currentFile = (CmsFile) allFiles.get(i);
+                CmsFile currentFile = (CmsFile)allFiles.get(i);
                 String currentResourceName = readPath(context, currentFile, true);
                 if (currentFile.getState() == I_CmsConstants.C_STATE_NEW) {
                     CmsLock lock = getLock(context, currentFile);
@@ -2312,8 +2288,8 @@ public class CmsDriverManager extends Object {
                 } else if (currentFile.getState() == I_CmsConstants.C_STATE_DELETED) {
                     // first undelete the file
                     undeleteResource(context, currentResourceName);
-                    
-                    CmsLock lock = getLock(context, currentFile);                    
+
+                    CmsLock lock = getLock(context, currentFile);
                     if (lock.isNullLock()) {
                         // lock the resource
                         lockResource(context, currentResourceName);
@@ -2323,12 +2299,12 @@ public class CmsDriverManager extends Object {
                     // then undo all changes in the file
                     undoChanges(context, currentResourceName);
                 }
-                
+
                 OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", currentFile)));
             }
             // now delete folders or undo changes in folders
             for (int i = 0; i < allFolders.size(); i++) {
-                CmsFolder currentFolder = (CmsFolder) allFolders.get(i);
+                CmsFolder currentFolder = (CmsFolder)allFolders.get(i);
                 String currentResourceName = readPath(context, currentFolder, true);
                 CmsLock lock = getLock(context, currentFolder);
                 if (currentFolder.getState() == I_CmsConstants.C_STATE_NEW) {
@@ -2336,7 +2312,7 @@ public class CmsDriverManager extends Object {
                     m_vfsDriver.deleteProperties(projectId, currentFolder);
                     // add the folder to the vector of folders that has to be deleted
                     deletedFolders.addElement(currentFolder);
-                } else if (currentFolder.getState() == I_CmsConstants.C_STATE_CHANGED) {                    
+                } else if (currentFolder.getState() == I_CmsConstants.C_STATE_CHANGED) {
                     if (lock.isNullLock()) {
                         // lock the resource
                         lockResource(context, currentResourceName);
@@ -2357,16 +2333,16 @@ public class CmsDriverManager extends Object {
                     // then undo all changes in the folder
                     undoChanges(context, currentResourceName);
                 }
-                
+
                 OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", currentFolder)));
             }
             // now delete the folders in the vector
             for (int i = deletedFolders.size() - 1; i > -1; i--) {
-                CmsFolder delFolder = ((CmsFolder) deletedFolders.elementAt(i));
+                CmsFolder delFolder = ((CmsFolder)deletedFolders.elementAt(i));
                 m_vfsDriver.removeFolder(context.currentProject(), delFolder);
                 // remove the access control entries
                 m_userDriver.removeAccessControlEntries(context.currentProject(), delFolder.getResourceId());
-                
+
                 OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", delFolder)));
             }
             // unlock all resources in the project
@@ -2380,9 +2356,9 @@ public class CmsDriverManager extends Object {
             // delete the project
             m_projectDriver.deleteProject(deleteProject);
             m_projectCache.remove(new Integer(projectId));
-            
+
             OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_PROJECT_MODIFIED, Collections.singletonMap("project", deleteProject)));
-        } else if (projectId == I_CmsConstants.C_PROJECT_ONLINE_ID) { 
+        } else if (projectId == I_CmsConstants.C_PROJECT_ONLINE_ID) {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] deleteProject() " + deleteProject.getName(), CmsSecurityException.C_SECURITY_NO_MODIFY_IN_ONLINE_PROJECT);
         } else {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] deleteProject() " + deleteProject.getName(), CmsSecurityException.C_SECURITY_PROJECTMANAGER_PRIVILEGES_REQUIRED);
@@ -2405,13 +2381,13 @@ public class CmsDriverManager extends Object {
     public void deleteProperty(CmsRequestContext context, String resource, String property) throws CmsException {
         // read the resource
         CmsResource res = readFileHeader(context, resource);
- 
+
         // check if the user has write access to the resource
         checkPermissions(context, res, I_CmsConstants.C_WRITE_ACCESS);
 
         // read the metadefinition
         I_CmsResourceType resType = getResourceType(res.getType());
-        
+
         // get the property definition
         CmsPropertydefinition metadef = readPropertydefinition(context, property, resType.getResourceType());
 
@@ -2420,24 +2396,24 @@ public class CmsDriverManager extends Object {
 
             // set the file-state to changed
             if (res.isFile()) {
-                m_vfsDriver.writeFileHeader(context.currentProject(), (CmsFile) res, C_UPDATE_STRUCTURE_STATE, context.currentUser().getId());
+                m_vfsDriver.writeFileHeader(context.currentProject(), (CmsFile)res, C_UPDATE_STRUCTURE_STATE, context.currentUser().getId());
             } else {
                 m_vfsDriver.writeFolder(context.currentProject(), readFolder(context, resource), C_UPDATE_STRUCTURE_STATE, context.currentUser().getId());
             }
-            
+
             if (res.getState() == I_CmsConstants.C_STATE_UNCHANGED) {
                 res.setState(I_CmsConstants.C_STATE_CHANGED);
             }
-            
+
             // update the cache
             //clearResourceCache(resource, context.currentProject(), context.currentUser());
             clearResourceCache();
             m_propertyCache.clear();
-            
-            Map data = (Map) new HashMap();
+
+            Map data = (Map)new HashMap();
             data.put("resource", res);
-            data.put("property", property);            
-            OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_PROPERTY_MODIFIED, data));            
+            data.put("property", property);
+            OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_PROPERTY_MODIFIED, data));
         } else {
             // yes - throw exception
             throw new CmsException("[" + this.getClass().getName() + "] " + resource, CmsException.C_UNKNOWN_EXCEPTION);
@@ -2465,7 +2441,7 @@ public class CmsDriverManager extends Object {
             m_propertyDefCache.remove(name + (getResourceType(resourcetype)).getResourceType());
             m_vfsDriver.deletePropertyDefinition(readPropertydefinition(context, name, resourcetype));
         } else {
-            throw new CmsSecurityException("[" + this.getClass().getName() + "] deletePropertydefinition() " + name, CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);            
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] deletePropertydefinition() " + name, CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
         }
     }
 
@@ -2587,7 +2563,7 @@ public class CmsDriverManager extends Object {
         if (isAdmin(context)) {
             new CmsExportModuledata(cms, exportFile, exportChannels, exportModules, report);
         } else {
-            throw new CmsSecurityException("[" + this.getClass().getName() + "] exportModuledata()", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);            
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] exportModuledata()", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
         }
     }
 
@@ -2608,7 +2584,7 @@ public class CmsDriverManager extends Object {
         if (isAdmin(context)) {
             new CmsExport(cms, exportFile, exportPaths, false, false);
         } else {
-            throw new CmsSecurityException("[" + this.getClass().getName() + "] exportResources()", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);                                                
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] exportResources()", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
         }
     }
 
@@ -2631,7 +2607,7 @@ public class CmsDriverManager extends Object {
         if (isAdmin(context)) {
             new CmsExport(cms, exportFile, exportPaths, excludeSystem, excludeUnchanged);
         } else {
-            throw new CmsSecurityException("[" + this.getClass().getName() + "] exportResources()", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);                                    
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] exportResources()", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
         }
     }
 
@@ -2656,7 +2632,7 @@ public class CmsDriverManager extends Object {
         if (isAdmin(context)) {
             new CmsExport(cms, exportFile, exportPaths, excludeSystem, excludeUnchanged, null, exportUserdata, contentAge, report);
         } else {
-            throw new CmsSecurityException("[" + this.getClass().getName() + "] exportResources()", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);                        
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] exportResources()", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
         }
     }
 
@@ -2670,12 +2646,12 @@ public class CmsDriverManager extends Object {
      * @throws CmsException if operation was not succesful
      */
     private List extractResourcesInTree(CmsRequestContext context, Set storage, List resources) throws CmsException {
-        List result = (List) new ArrayList();
+        List result = (List)new ArrayList();
         Iterator i = resources.iterator();
-        
+
         // now select only those resources which are in the folder tree below the given folder
         while (i.hasNext()) {
-            CmsResource res = (CmsResource) i.next();
+            CmsResource res = (CmsResource)i.next();
             // ckeck if the parent id of the resource is within the folder tree            
             if (storage.contains(res.getParentStructureId())) {
                 //this resource is inside the folder tree.
@@ -2684,17 +2660,16 @@ public class CmsDriverManager extends Object {
                     // check the read access
                     if (hasPermissions(context, res, I_CmsConstants.C_READ_ACCESS, false)) {
                         // this is a valid resouce, add it to the result list
-                        res.setFullResourceName(readPath(context,res,false));
+                        res.setFullResourceName(readPath(context, res, false));
                         result.add(res);
                     }
                 }
             }
         }
-        
+
         return result;
     }
-    
-    
+
     /**
      * Tests if a resource with the given resourceId does already exist in the Database.<p>
      * 
@@ -2703,10 +2678,9 @@ public class CmsDriverManager extends Object {
      * @return true if a resource with the given id was found, false otherweise
      * @throws CmsException if something goes wrong
      */
-      public boolean existsResourceId (CmsRequestContext context, CmsUUID resourceId) throws CmsException {
-          return m_vfsDriver.validateResourceIdExists(context.currentProject().getId(), resourceId);          
-      }
-    
+    public boolean existsResourceId(CmsRequestContext context, CmsUUID resourceId) throws CmsException {
+        return m_vfsDriver.validateResourceIdExists(context.currentProject().getId(), resourceId);
+    }
 
     /**
      * Reads all siblings that point to the resource record of a specified resource name.<p>
@@ -2721,25 +2695,25 @@ public class CmsDriverManager extends Object {
         if (resourcename == null || "".equals(resourcename)) {
             return Collections.EMPTY_LIST;
         }
-        
+
         CmsResource resource = readFileHeader(context, resourcename);
         List siblings = m_vfsDriver.readSiblings(context.currentProject(), resource);
 
         int n = siblings.size();
         for (int i = 0; i < n; i++) {
-            CmsResource currentResource = (CmsResource) siblings.get(i);
-    
+            CmsResource currentResource = (CmsResource)siblings.get(i);
+
             if (!readAllSiblings && currentResource.getStructureId().equals(resource.getStructureId())) {
                 siblings.remove(i);
                 n--;
-    }
+            }
         }
-    
+
         setFullResourceNames(context, siblings);
 
         return siblings;
     }
-    
+
     protected void finalize() throws Throwable {
         clearcache();
 
@@ -2856,7 +2830,7 @@ public class CmsDriverManager extends Object {
     public CmsAccessControlList getAccessControlList(CmsRequestContext context, CmsResource resource, boolean inheritedOnly) throws CmsException {
 
         CmsResource res = resource;
-        CmsAccessControlList acList = (CmsAccessControlList) m_accessControlListCache.get(getCacheKey(inheritedOnly + "_", null, context.currentProject(), resource.getStructureId().toString()));
+        CmsAccessControlList acList = (CmsAccessControlList)m_accessControlListCache.get(getCacheKey(inheritedOnly + "_", null, context.currentProject(), resource.getStructureId().toString()));
         ListIterator acEntries = null;
         CmsUUID resourceId = null;
 
@@ -2868,7 +2842,7 @@ public class CmsDriverManager extends Object {
         if (!(resourceId = res.getParentStructureId()).isNullUUID()) {
             // TODO try to read the cached resource from the driver manager
             res = m_vfsDriver.readFolder(context.currentProject().getId(), resourceId);
-            acList = (CmsAccessControlList) getAccessControlList(context, res, true).clone();
+            acList = (CmsAccessControlList)getAccessControlList(context, res, true).clone();
         } else {
             acList = new CmsAccessControlList();
         }
@@ -2876,7 +2850,7 @@ public class CmsDriverManager extends Object {
         // add the access control entries belonging to this resource
         acEntries = m_userDriver.readAccessControlEntries(context.currentProject(), resource.getResourceId(), inheritedOnly).listIterator();
         while (acEntries.hasNext()) {
-            CmsAccessControlEntry acEntry = (CmsAccessControlEntry) acEntries.next();
+            CmsAccessControlEntry acEntry = (CmsAccessControlEntry)acEntries.next();
 
             // if the overwrite flag is set, reset the allowed permissions to the permissions of this entry	
             if ((acEntry.getFlags() & I_CmsConstants.C_ACCESSFLAGS_OVERWRITE) > 0)
@@ -2911,12 +2885,12 @@ public class CmsDriverManager extends Object {
         for (int i = 0; i < groups.size(); i++) {
             Vector projectsByGroup;
             // is this the admin-group?
-            if (((CmsGroup) groups.elementAt(i)).getName().equals(OpenCms.getDefaultUsers().getGroupAdministrators())) {
+            if (((CmsGroup)groups.elementAt(i)).getName().equals(OpenCms.getDefaultUsers().getGroupAdministrators())) {
                 // yes - all unlocked projects are accessible for him
                 projectsByGroup = m_projectDriver.readProjects(I_CmsConstants.C_PROJECT_STATE_UNLOCKED);
             } else {
                 // no - get all projects, which can be accessed by the current group
-                projectsByGroup = m_projectDriver.readProjectsForGroup((CmsGroup) groups.elementAt(i));
+                projectsByGroup = m_projectDriver.readProjectsForGroup((CmsGroup)groups.elementAt(i));
             }
 
             // merge the projects to the vector
@@ -2977,12 +2951,12 @@ public class CmsDriverManager extends Object {
             // get all projects, which can be managed by the current group
             Vector projectsByGroup;
             // is this the admin-group?
-            if (((CmsGroup) groups.elementAt(i)).getName().equals(OpenCms.getDefaultUsers().getGroupAdministrators())) {
+            if (((CmsGroup)groups.elementAt(i)).getName().equals(OpenCms.getDefaultUsers().getGroupAdministrators())) {
                 // yes - all unlocked projects are accessible for him
                 projectsByGroup = m_projectDriver.readProjects(I_CmsConstants.C_PROJECT_STATE_UNLOCKED);
             } else {
                 // no - get all projects, which can be accessed by the current group
-                projectsByGroup = m_projectDriver.readProjectsForManagerGroup((CmsGroup) groups.elementAt(i));
+                projectsByGroup = m_projectDriver.readProjectsForManagerGroup((CmsGroup)groups.elementAt(i));
             }
 
             // merge the projects to the vector
@@ -3011,11 +2985,11 @@ public class CmsDriverManager extends Object {
         if (m_resourceTypes == null) {
             synchronized (this) {
                 // get the resourceTypes from the registry
-                List resTypes = m_registry.getResourceTypes();                
+                List resTypes = m_registry.getResourceTypes();
                 m_resourceTypes = new I_CmsResourceType[resTypes.size() * 2];
                 for (int i = 0; i < resTypes.size(); i++) {
                     // add the resource-type
-                    try {                        
+                    try {
                         I_CmsResourceType resTypeClass = (I_CmsResourceType)Class.forName((String)resTypes.get(i)).newInstance();
                         int pos = resTypeClass.getResourceType();
                         if (pos > m_resourceTypes.length) {
@@ -3145,7 +3119,7 @@ public class CmsDriverManager extends Object {
         buffer.append(resource);
         return buffer.toString();
     }
-    
+
     /**
      * Returns all child groups of a group<P/>
      *
@@ -3193,12 +3167,12 @@ public class CmsDriverManager extends Object {
                 // now get all subchilds for each group
                 Enumeration enu = childs.elements();
                 while (enu.hasMoreElements()) {
-                    group = (CmsGroup) enu.nextElement();
+                    group = (CmsGroup)enu.nextElement();
                     subchilds = getChilds(context, group.getName());
                     //add the subchilds to the already existing groups
                     Enumeration enusub = subchilds.elements();
                     while (enusub.hasMoreElements()) {
-                        group = (CmsGroup) enusub.nextElement();
+                        group = (CmsGroup)enusub.nextElement();
                         allChilds.addElement(group);
                     }
                 }
@@ -3265,7 +3239,7 @@ public class CmsDriverManager extends Object {
      * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public Vector getFilesWithProperty(CmsRequestContext context, String propertyDefinition, String propertyValue) throws CmsException {
-        List result=setFullResourceNames(context,m_vfsDriver.readResourceNames(context.currentProject().getId(), propertyDefinition, propertyValue));         
+        List result = setFullResourceNames(context, m_vfsDriver.readResourceNames(context.currentProject().getId(), propertyDefinition, propertyValue));
         return new Vector(result);
     }
 
@@ -3336,9 +3310,9 @@ public class CmsDriverManager extends Object {
      * @throws CmsException if operation was not succesful
      */
     private Set getFolderIds(CmsRequestContext context, String folder) throws CmsException {
-        CmsFolder parentFolder = readFolder(context, folder);        
-        return (Set) new HashSet(m_vfsDriver.readFolderTree(context.currentProject(), parentFolder));
-            }
+        CmsFolder parentFolder = readFolder(context, folder);
+        return (Set)new HashSet(m_vfsDriver.readFolderTree(context.currentProject(), parentFolder));
+    }
 
     /**
      * Returns all groups<P/>
@@ -3375,7 +3349,7 @@ public class CmsDriverManager extends Object {
         CmsUser user = readUser(username);
         Vector allGroups;
 
-        allGroups = (Vector) m_userGroupsCache.get(username);
+        allGroups = (Vector)m_userGroupsCache.get(username);
         if ((allGroups == null) || (allGroups.size() == 0)) {
 
             CmsGroup subGroup;
@@ -3386,7 +3360,7 @@ public class CmsDriverManager extends Object {
             // now get all childs of the groups
             Enumeration enu = groups.elements();
             while (enu.hasMoreElements()) {
-                group = (CmsGroup) enu.nextElement();
+                group = (CmsGroup)enu.nextElement();
 
                 subGroup = getParent(context, group.getName());
                 while ((subGroup != null) && (!allGroups.contains(subGroup))) {
@@ -3444,7 +3418,7 @@ public class CmsDriverManager extends Object {
         }
 
         // try to read from cache
-        CmsGroup parent = (CmsGroup) m_groupCache.get(new CacheId(group.getParentId()));
+        CmsGroup parent = (CmsGroup)m_groupCache.get(new CacheId(group.getParentId()));
         if (parent == null) {
             parent = m_userDriver.readGroup(group.getParentId());
             m_groupCache.put(new CacheId(parent), parent);
@@ -3547,27 +3521,27 @@ public class CmsDriverManager extends Object {
         } else {
             // try to read from cache
             String cacheKey = getCacheKey(context.currentUser().getName() + "_resources", context.currentUser(), context.currentProject(), folderRes.getRootPath());
-            retValue = (Vector) m_resourceListCache.get(cacheKey);
+            retValue = (Vector)m_resourceListCache.get(cacheKey);
 
             if (retValue == null || retValue.size() == 0) {
                 //resources = m_vfsDriver.getResourcesInFolder(context.currentProject().getId(), folderRes);
-                
+
                 List subFolders = m_vfsDriver.readChildResources(context.currentProject(), folderRes, true);
                 List subFiles = m_vfsDriver.readChildResources(context.currentProject(), folderRes, false);
                 resources.addAll(subFolders);
                 resources.addAll(subFiles);
-                
+
                 setFullResourceNames(context, resources);
                 retValue = new Vector(resources.size());
 
                 // make sure that we have access to all these
                 Iterator i = resources.iterator();
-                while(i.hasNext()) {
+                while (i.hasNext()) {
                     CmsResource res = (CmsResource)i.next();
                     if (hasPermissions(context, res, I_CmsConstants.C_VIEW_ACCESS, false)) {
                         if (res.isFolder() && !res.getName().endsWith("/")) {
                             res.setFullResourceName(folderRes.getRootPath() + res.getName() + "/");
-                        } else { 
+                        } else {
                             res.setFullResourceName(folderRes.getRootPath() + res.getName());
                         }
                         retValue.addElement(res);
@@ -3578,7 +3552,7 @@ public class CmsDriverManager extends Object {
             }
         }
 
-        return (retValue == null) ? null : (Vector) retValue.clone();
+        return (retValue == null) ? null : (Vector)retValue.clone();
     }
 
     /**
@@ -3599,9 +3573,9 @@ public class CmsDriverManager extends Object {
     public List getResourcesInTimeRange(CmsRequestContext context, String folder, long starttime, long endtime) throws CmsException {
         List extractedResources = null;
         String cacheKey = null;
-        
-        cacheKey = getCacheKey(context.currentUser().getName() + "_SubtreeResourcesInTimeRange", context.currentUser(), context.currentProject(), folder + "_" + starttime + "_" + endtime);        
-        if ((extractedResources = (List) m_resourceListCache.get(cacheKey)) == null) {
+
+        cacheKey = getCacheKey(context.currentUser().getName() + "_SubtreeResourcesInTimeRange", context.currentUser(), context.currentProject(), folder + "_" + starttime + "_" + endtime);
+        if ((extractedResources = (List)m_resourceListCache.get(cacheKey)) == null) {
             // get the folder tree
             Set storage = getFolderIds(context, folder);
             // now get all resources which contain the selected property
@@ -3609,7 +3583,7 @@ public class CmsDriverManager extends Object {
             // filter the resources inside the tree
             extractedResources = extractResourcesInTree(context, storage, resources);
             // cache the calculated result list
-            m_resourceListCache.put(cacheKey, extractedResources);       
+            m_resourceListCache.put(cacheKey, extractedResources);
         }
 
         return extractedResources;
@@ -3629,8 +3603,8 @@ public class CmsDriverManager extends Object {
      * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public Vector getResourcesWithPropertyDefinition(CmsRequestContext context, String propertyDefinition) throws CmsException {
-        List result=setFullResourceNames(context,m_vfsDriver.readResources(context.currentProject().getId(), propertyDefinition));
-        return new Vector(result); 
+        List result = setFullResourceNames(context, m_vfsDriver.readResources(context.currentProject().getId(), propertyDefinition));
+        return new Vector(result);
     }
 
     /**
@@ -3649,9 +3623,9 @@ public class CmsDriverManager extends Object {
     public List getResourcesWithProperty(CmsRequestContext context, String folder, String propertyDefinition) throws CmsException {
         List extractedResources = null;
         String cacheKey = null;
-        
-        cacheKey = getCacheKey(context.currentUser().getName() + "_SubtreeResourcesWithProperty", context.currentUser(), context.currentProject(), folder + "_" + propertyDefinition);        
-        if ((extractedResources = (List) m_resourceListCache.get(cacheKey)) == null) {
+
+        cacheKey = getCacheKey(context.currentUser().getName() + "_SubtreeResourcesWithProperty", context.currentUser(), context.currentProject(), folder + "_" + propertyDefinition);
+        if ((extractedResources = (List)m_resourceListCache.get(cacheKey)) == null) {
             // get the folder tree
             Set storage = getFolderIds(context, folder);
             // now get all resources which contain the selected property
@@ -3659,10 +3633,10 @@ public class CmsDriverManager extends Object {
             // filter the resources inside the tree
             extractedResources = extractResourcesInTree(context, storage, resources);
             // cache the calculated result list
-            m_resourceListCache.put(cacheKey, extractedResources);       
+            m_resourceListCache.put(cacheKey, extractedResources);
         }
 
-        return extractedResources;        
+        return extractedResources;
     }
 
     /**
@@ -3708,12 +3682,12 @@ public class CmsDriverManager extends Object {
      */
     public I_CmsResourceType getResourceType(String resourceType) throws CmsException {
         try {
-            I_CmsResourceType[] types =  getAllResourceTypes();
-            for (int i=0; i<types.length; i++) {
+            I_CmsResourceType[] types = getAllResourceTypes();
+            for (int i = 0; i < types.length; i++) {
                 I_CmsResourceType t = types[i];
                 if ((t != null) && (t.getResourceTypeName().equals(resourceType))) {
                     return t;
-                } 
+                }
             }
             throw new Exception("Resource type not found");
         } catch (Exception e) {
@@ -3794,7 +3768,7 @@ public class CmsDriverManager extends Object {
         } else {
             cacheKey = getCacheKey(context.currentUser().getName() + "_files_" + includeDeleted, context.currentUser(), context.currentProject(), parentFolderName);
         }
-        subResources = (List) m_resourceListCache.get(cacheKey);
+        subResources = (List)m_resourceListCache.get(cacheKey);
 
         try {
             // validate the parent folder name
@@ -3823,7 +3797,7 @@ public class CmsDriverManager extends Object {
         // get the sub resources from the VFS driver and check the required permissions
         subResources = m_vfsDriver.readChildResources(context.currentProject(), parentFolder, getSubFolders);
         for (int i = 0; i < subResources.size(); i++) {
-            currentResource = (CmsResource) subResources.get(i);
+            currentResource = (CmsResource)subResources.get(i);
             if (!includeDeleted && currentResource.getState() == I_CmsConstants.C_STATE_DELETED) {
                 subResources.remove(i--);
             } else if (!hasPermissions(context, currentResource, I_CmsConstants.C_READ_OR_VIEW_ACCESS, false)) {
@@ -3833,8 +3807,8 @@ public class CmsDriverManager extends Object {
                     currentResource.setFullResourceName(parentFolderName + currentResource.getName() + "/");
                 } else {
                     currentResource.setFullResourceName(parentFolderName + currentResource.getName());
+                }
             }
-        }
         }
 
         // cache the sub resources
@@ -4015,7 +3989,7 @@ public class CmsDriverManager extends Object {
         String lastcheck = "#"; // just a char that is not valid in a filename
         while (e.hasMoreElements()) {
             CmsResource res = (CmsResource)e.nextElement();
-            if (! context.removeSiteRoot(readPath(context, res, false)).equals(lastcheck)) {
+            if (!context.removeSiteRoot(readPath(context, res, false)).equals(lastcheck)) {
                 if (hasPermissions(context, res, I_CmsConstants.C_VIEW_ACCESS, false)) {
                     visibleResources.addElement(res);
                     lastcheck = context.removeSiteRoot(readPath(context, res, false));
@@ -4044,10 +4018,10 @@ public class CmsDriverManager extends Object {
      * @throws CmsException if something goes wrong
      */
     public boolean hasPermissions(CmsRequestContext context, CmsResource resource, CmsPermissionSet requiredPermissions, boolean strongCheck) throws CmsException {
-                       
+
         StringBuffer cacheBuffer = new StringBuffer(64);
         cacheBuffer.append(context.currentUser().getName());
-        cacheBuffer.append(context.currentProject().isOnlineProject()?"_0_":"_1_");
+        cacheBuffer.append(context.currentProject().isOnlineProject() ? "_0_" : "_1_");
         cacheBuffer.append(requiredPermissions.getPermissionString());
         cacheBuffer.append("_");
         cacheBuffer.append(strongCheck);
@@ -4059,7 +4033,7 @@ public class CmsDriverManager extends Object {
         if (cacheResult != null) {
             return cacheResult.booleanValue();
         }
-        
+
         CmsLock lock = getLock(context, resource);
         CmsPermissionSet permissions = null;
         int denied = 0;
@@ -4074,17 +4048,17 @@ public class CmsDriverManager extends Object {
 
         // if the resource type is jsp or xml template
         // write is only allowed for administrators
-        if (!isAdmin && ((resource.getType() == CmsResourceTypeXMLTemplate.C_RESOURCE_TYPE_ID) || (resource.getType() == CmsResourceTypeJsp.C_RESOURCE_TYPE_ID))) {            
+        if (!isAdmin && ((resource.getType() == CmsResourceTypeXMLTemplate.C_RESOURCE_TYPE_ID) || (resource.getType() == CmsResourceTypeJsp.C_RESOURCE_TYPE_ID))) {
             denied |= I_CmsConstants.C_PERMISSION_WRITE;
         }
 
         if (!lock.isNullLock()) {
             // if the resource is locked by another user, write is rejected
             // read must still be possible, since the explorer file list needs some properties
-            if (!context.currentUser().getId().equals(lock.getUserId())) {         
+            if (!context.currentUser().getId().equals(lock.getUserId())) {
                 denied |= I_CmsConstants.C_PERMISSION_WRITE;
+            }
         }
-        }        
 
         if (isAdmin) {
             // if the current user is administrator, anything is allowed
@@ -4102,7 +4076,7 @@ public class CmsDriverManager extends Object {
             result = (requiredPermissions.getPermissions() & (permissions.getPermissions())) == requiredPermissions.getPermissions();
         } else {
             result = (requiredPermissions.getPermissions() & (permissions.getPermissions())) > 0;
-    }
+        }
         m_permissionCache.put(cacheKey, new Boolean(result));
         return result;
     }
@@ -4160,77 +4134,75 @@ public class CmsDriverManager extends Object {
       * or if the filename is not valid. The CmsException will also be thrown, if the
       * user has not the rights for this resource.
       */
-     public CmsResource importResource(CmsRequestContext context, String newResourceName, CmsResource resource, byte[] filecontent, Map propertyinfos) throws CmsException {
-         
-         // extract folder information
-         String folderName = null;
-         String resourceName = null;   
+    public CmsResource importResource(CmsRequestContext context, String newResourceName, CmsResource resource, byte[] filecontent, Map propertyinfos) throws CmsException {
 
-         if (resource.isFolder()) {
-             // append I_CmsConstants.C_FOLDER_SEPARATOR if required
-             if (!newResourceName.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR))
-                 newResourceName += I_CmsConstants.C_FOLDER_SEPARATOR;
-             // extract folder information
-             folderName = newResourceName.substring(0, newResourceName.lastIndexOf(I_CmsConstants.C_FOLDER_SEPARATOR, newResourceName.length() - 2) + 1);
-             resourceName = newResourceName.substring(folderName.length(), newResourceName.length() - 1);
-         } else {
-             folderName = newResourceName.substring(0, newResourceName.lastIndexOf(I_CmsConstants.C_FOLDER_SEPARATOR, newResourceName.length()) + 1);
-             resourceName = newResourceName.substring(folderName.length(), newResourceName.length());
-             
-             // check if a link to the imported resource lies in a marked site
-             // get the list of marked sites from the runtime property
-             List markedSites = (List)OpenCms.getRuntimeProperty("site.labeled.folders");
-             // now check if one of the other vfs links lies in a marked site
-             List vfsLinkList = m_vfsDriver.readSiblings(context.currentProject(), resource);
-             setFullResourceNames(context, vfsLinkList);
-             Iterator i = vfsLinkList.iterator();
-             boolean markedFound = false;
-             while (!markedFound && i.hasNext()) {
-                 CmsResource currentResource = (CmsResource)i.next();
-                 String curPath = currentResource.getRootPath();
-                 for (int k = 0; k < markedSites.size(); k++) {
-                     if (curPath.startsWith((String)markedSites.get(k))) {
-                         // one link is in a marked site, so update the flags
-                         int flags = resource.getFlags();
-                         resource.setFlags(flags |= I_CmsConstants.C_RESOURCEFLAG_LABELLINK);
-                         markedFound = true;
-                     }
-                 }
-             }              
-         }       
-         
-         // checks, if the filename is valid, if not it throws a exception
-         validFilename(resourceName);
+        // extract folder information
+        String folderName = null;
+        String resourceName = null;
 
-         CmsFolder parentFolder = readFolder(context, folderName);
+        if (resource.isFolder()) {
+            // append I_CmsConstants.C_FOLDER_SEPARATOR if required
+            if (!newResourceName.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR))
+                newResourceName += I_CmsConstants.C_FOLDER_SEPARATOR;
+            // extract folder information
+            folderName = newResourceName.substring(0, newResourceName.lastIndexOf(I_CmsConstants.C_FOLDER_SEPARATOR, newResourceName.length() - 2) + 1);
+            resourceName = newResourceName.substring(folderName.length(), newResourceName.length() - 1);
+        } else {
+            folderName = newResourceName.substring(0, newResourceName.lastIndexOf(I_CmsConstants.C_FOLDER_SEPARATOR, newResourceName.length()) + 1);
+            resourceName = newResourceName.substring(folderName.length(), newResourceName.length());
 
-         // check if the user has write access to the destination folder
-         checkPermissions(context, parentFolder, I_CmsConstants.C_WRITE_ACCESS);
+            // check if a link to the imported resource lies in a marked site
+            // get the list of marked sites from the runtime property
+            List markedSites = (List)OpenCms.getRuntimeProperty("site.labeled.folders");
+            // now check if one of the other vfs links lies in a marked site
+            List vfsLinkList = m_vfsDriver.readSiblings(context.currentProject(), resource);
+            setFullResourceNames(context, vfsLinkList);
+            Iterator i = vfsLinkList.iterator();
+            boolean markedFound = false;
+            while (!markedFound && i.hasNext()) {
+                CmsResource currentResource = (CmsResource)i.next();
+                String curPath = currentResource.getRootPath();
+                for (int k = 0; k < markedSites.size(); k++) {
+                    if (curPath.startsWith((String)markedSites.get(k))) {
+                        // one link is in a marked site, so update the flags
+                        int flags = resource.getFlags();
+                        resource.setFlags(flags |= I_CmsConstants.C_RESOURCEFLAG_LABELLINK);
+                        markedFound = true;
+                    }
+                }
+            }
+        }
 
+        // checks, if the filename is valid, if not it throws a exception
+        validFilename(resourceName);
 
-         // create a new CmsResourceObject
-         if (filecontent == null) {
-             filecontent = new byte[0];
-         }
+        CmsFolder parentFolder = readFolder(context, folderName);
 
-         // set the parent id
-         resource.setParentId(parentFolder.getStructureId());
+        // check if the user has write access to the destination folder
+        checkPermissions(context, parentFolder, I_CmsConstants.C_WRITE_ACCESS);
 
-         // create the folder
-         CmsResource newResource = m_vfsDriver.importResource(context.currentProject(), parentFolder.getStructureId(), resource, filecontent, context.currentUser().getId(), resource.isFolder());
-         newResource.setFullResourceName(newResourceName);
+        // create a new CmsResourceObject
+        if (filecontent == null) {
+            filecontent = new byte[0];
+        }
 
-         clearResourceCache();
-         
-         // write metainfos for the folder
-         m_vfsDriver.writeProperties(propertyinfos, context.currentProject().getId(), newResource, newResource.getType(), true);
-         
-         OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_LIST_MODIFIED, Collections.singletonMap("resource", parentFolder)));         
-         
-         // return the folder
-         return newResource;
-     }
-    
+        // set the parent id
+        resource.setParentId(parentFolder.getStructureId());
+
+        // create the folder
+        CmsResource newResource = m_vfsDriver.importResource(context.currentProject(), parentFolder.getStructureId(), resource, filecontent, context.currentUser().getId(), resource.isFolder());
+        newResource.setFullResourceName(newResourceName);
+
+        clearResourceCache();
+
+        // write metainfos for the folder
+        m_vfsDriver.writeProperties(propertyinfos, context.currentProject().getId(), newResource, newResource.getType(), true);
+
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_LIST_MODIFIED, Collections.singletonMap("resource", parentFolder)));
+
+        // return the folder
+        return newResource;
+    }
 
     /**
      * Imports a import-resource (folder or zipfile) to the cms.<p>
@@ -4261,7 +4233,6 @@ public class CmsDriverManager extends Object {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] importResources()", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
         }
     }
-
 
     /**
      * Initializes the driver and sets up all required modules and connections.
@@ -4376,7 +4347,7 @@ public class CmsDriverManager extends Object {
 
         for (int i = 0; i < groups.size(); i++) {
             // is this a managergroup for this project?
-            if (((CmsGroup) groups.elementAt(i)).getId().equals(context.currentProject().getManagerGroupId())) {
+            if (((CmsGroup)groups.elementAt(i)).getId().equals(context.currentProject().getManagerGroupId())) {
                 // this group is manager of the project
                 return true;
             }
@@ -4508,39 +4479,39 @@ public class CmsDriverManager extends Object {
 
         // update the resource cache
         clearResourceCache();
-        
+
         OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", resource)));
     }
-    
+
     public void changeLock(CmsRequestContext context, String resourcename) throws CmsException {
         CmsResource resource = readFileHeader(context, resourcename);
         CmsLock oldLock = getLock(context, resourcename);
         CmsLock exclusiveLock = null;
 
         if (oldLock.isNullLock()) {
-            throw new CmsLockException( "Unable to steal lock on a unlocked resource", CmsLockException.C_RESOURCE_UNLOCKED);
+            throw new CmsLockException("Unable to steal lock on a unlocked resource", CmsLockException.C_RESOURCE_UNLOCKED);
         }
 
-            // stealing a lock: checking permissions will throw an exception coz the
-            // resource is still locked for the other user. thus, the resource is unlocked
-            // before the permissions of the new user are checked. if the new user 
-            // has insufficient permissions, the previous lock is restored.
+        // stealing a lock: checking permissions will throw an exception coz the
+        // resource is still locked for the other user. thus, the resource is unlocked
+        // before the permissions of the new user are checked. if the new user 
+        // has insufficient permissions, the previous lock is restored.
 
-            // save the lock of the resource's exclusive locked sibling
-            exclusiveLock = m_lockDispatcher.getExclusiveLockedSibling(this, context, resourcename);
-            // save the lock of the resource itself
-            oldLock = getLock(context, resourcename);
+        // save the lock of the resource's exclusive locked sibling
+        exclusiveLock = m_lockDispatcher.getExclusiveLockedSibling(this, context, resourcename);
+        // save the lock of the resource itself
+        oldLock = getLock(context, resourcename);
 
         // remove the lock
-        m_lockDispatcher.removeResource(this, context, resourcename, true);  
+        m_lockDispatcher.removeResource(this, context, resourcename, true);
 
         try {
             // check if the user has write access to the resource
             checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);
         } catch (CmsSecurityException e) {
-                // restore the lock of the exclusive locked sibling in case a lock gets stolen by 
-                // a new user with insufficient permissions on the resource
-                m_lockDispatcher.addResource(this, context, exclusiveLock.getResourceName(), exclusiveLock.getUserId(), exclusiveLock.getProjectId());
+            // restore the lock of the exclusive locked sibling in case a lock gets stolen by 
+            // a new user with insufficient permissions on the resource
+            m_lockDispatcher.addResource(this, context, exclusiveLock.getResourceName(), exclusiveLock.getUserId(), exclusiveLock.getProjectId());
 
             throw e;
         }
@@ -4553,7 +4524,7 @@ public class CmsDriverManager extends Object {
         m_lockDispatcher.addResource(this, context, resource.getRootPath(), context.currentUser().getId(), context.currentProject().getId());
 
         clearResourceCache();
-        
+
         OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", resource)));
     }
 
@@ -4591,7 +4562,7 @@ public class CmsDriverManager extends Object {
             m_userGroupsCache.clear();
             m_resourceListCache.clear();
             m_permissionCache.clear();
-            
+
             return (newUser);
         } else {
             // No Access!
@@ -4647,7 +4618,7 @@ public class CmsDriverManager extends Object {
         try {
             CmsGroup group = m_userDriver.readGroup(principalId);
             if (group != null) {
-                return (I_CmsPrincipal) group;
+                return (I_CmsPrincipal)group;
             }
         } catch (Exception e) {
             // ignore this exception 
@@ -4656,7 +4627,7 @@ public class CmsDriverManager extends Object {
         try {
             CmsUser user = readUser(principalId);
             if (user != null) {
-                return (I_CmsPrincipal) user;
+                return (I_CmsPrincipal)user;
             }
         } catch (Exception e) {
             // ignore this exception
@@ -4678,7 +4649,7 @@ public class CmsDriverManager extends Object {
         try {
             CmsGroup group = m_userDriver.readGroup(principalName);
             if (group != null) {
-                return (I_CmsPrincipal) group;
+                return (I_CmsPrincipal)group;
             }
         } catch (Exception e) {
             // ignore this exception
@@ -4687,7 +4658,7 @@ public class CmsDriverManager extends Object {
         try {
             CmsUser user = readUser(principalName, I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
             if (user != null) {
-                return (I_CmsPrincipal) user;
+                return (I_CmsPrincipal)user;
             }
         } catch (Exception e) {
             // ignore this exception
@@ -4711,13 +4682,13 @@ public class CmsDriverManager extends Object {
      * for this resource.
      */
     public void moveResource(CmsRequestContext context, String sourceName, String destinationName) throws CmsException {
-        
+
         // read the source file
         CmsResource source = readFileHeader(context, sourceName);
 
-        if (source.isFile()) { 
+        if (source.isFile()) {
             // file is copied as link
-            copyFile(context, sourceName, destinationName, true, true,I_CmsConstants.C_COPY_AS_LINK);
+            copyFile(context, sourceName, destinationName, true, true, I_CmsConstants.C_COPY_AS_LINK);
             deleteFile(context, sourceName, I_CmsConstants.C_DELETE_OPTION_PRESERVE_VFS_LINKS);
         } else {
             // folder is copied as link
@@ -4725,7 +4696,7 @@ public class CmsDriverManager extends Object {
             deleteFolder(context, sourceName);
         }
         // read the moved file
-        CmsResource destination = readFileHeader(context, destinationName);   
+        CmsResource destination = readFileHeader(context, destinationName);
         // since the resource was copied as link, we have to update the date/user lastmodified
         // its sufficient to use source instead of dest, since there is only one resource
         destination.setDateLastModified(System.currentTimeMillis());
@@ -4733,8 +4704,8 @@ public class CmsDriverManager extends Object {
         m_vfsDriver.writeResourceState(context.currentProject(), destination, C_UPDATE_STRUCTURE);
 
         // lock the new resource
-        lockResource(context,destinationName);
-        
+        lockResource(context, destinationName);
+
         /*
         List modifiedResources = (List) new ArrayList();
         modifiedResources.add(source);
@@ -4742,8 +4713,7 @@ public class CmsDriverManager extends Object {
         OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCES_MODIFIED, Collections.singletonMap("resources", modifiedResources)));
         */
     }
-    
-    
+
     /**
     * Moves a resource to the lost and found folder.<p>
     *
@@ -4756,75 +4726,73 @@ public class CmsDriverManager extends Object {
     */
     public String copyToLostAndFound(CmsRequestContext context, String resourcename, boolean copyResource) throws CmsException {
 
-        String siteRoot=context.getSiteRoot();
-        Stack storage=new Stack();
+        String siteRoot = context.getSiteRoot();
+        Stack storage = new Stack();
         context.setSiteRoot("/");
-        String destination=I_CmsConstants.C_VFS_LOST_AND_FOUND+resourcename;
+        String destination = I_CmsConstants.C_VFS_LOST_AND_FOUND + resourcename;
         // create the require folders if nescessary
-        String des=destination;
+        String des = destination;
         // collect all folders...
         try {
-            while (des.indexOf("/")==0) {
-                des=des.substring(0, des.lastIndexOf("/"));          
-                storage.push(des+"/");
+            while (des.indexOf("/") == 0) {
+                des = des.substring(0, des.lastIndexOf("/"));
+                storage.push(des + "/");
             }
             // ...now create them....
-            while (storage.size()!=0) {
-                des=(String)storage.pop();
+            while (storage.size() != 0) {
+                des = (String)storage.pop();
                 try {
                     readFolder(context, des);
                 } catch (Exception e1) {
                     // the folder is not existing, so create it
-                    createFolder(context, des, new HashMap());            
-                }                    
+                    createFolder(context, des, new HashMap());
+                }
             }
             // check if this resource name does already exist
             // if so add a psotfix to the name
-            des=destination;
-            int postfix=1;
-            boolean found=true;
-            while (found) {            
+            des = destination;
+            int postfix = 1;
+            boolean found = true;
+            while (found) {
                 try {
                     // try to read the file.....
-                    found=true;
+                    found = true;
                     readFileHeader(context, des);
                     // ....it's there, so add a postfix and try again
-                    String path=destination.substring(0, destination.lastIndexOf("/")+1);
-                    String filename=destination.substring(destination.lastIndexOf("/")+1, destination.length());
-                    
-                    des=path;
-                    
-                    if (filename.lastIndexOf(".")>0) {            
-                        des +=filename.substring(0, filename.lastIndexOf("."));
+                    String path = destination.substring(0, destination.lastIndexOf("/") + 1);
+                    String filename = destination.substring(destination.lastIndexOf("/") + 1, destination.length());
+
+                    des = path;
+
+                    if (filename.lastIndexOf(".") > 0) {
+                        des += filename.substring(0, filename.lastIndexOf("."));
                     } else {
-                        des+=filename;
-                    }                       
-                    des +="_"+postfix;
-                    if (filename.lastIndexOf(".")>0) {
+                        des += filename;
+                    }
+                    des += "_" + postfix;
+                    if (filename.lastIndexOf(".") > 0) {
                         des += filename.substring(filename.lastIndexOf("."), filename.length());
                     }
-                    postfix++;                    
-                } catch (CmsException e3) {                         
+                    postfix++;
+                } catch (CmsException e3) {
                     // the file does not exist, so we can use this filename                               
-                    found=false; 
+                    found = false;
                 }
             }
-            destination=des;                     
-            
-            if (copyResource) {                
+            destination = des;
+
+            if (copyResource) {
                 // move the existing resource to the lost and foud folder
-            moveResource(context,resourcename, destination) ;
-            }           
-          } catch (CmsException e2) {
-            throw e2;           
+                moveResource(context, resourcename, destination);
+            }
+        } catch (CmsException e2) {
+            throw e2;
         } finally {
             // set the site root to the old value again
             context.setSiteRoot(siteRoot);
-        }            
+        }
         return destination;
     }
-       
-        
 
     /**
      * Method to create a new instance of a driver.<p>
@@ -4834,8 +4802,7 @@ public class CmsDriverManager extends Object {
      * @param driverPoolUrl the pool url for the driver
      * @return an initialized instance of the driver
      */
-    public Object newDriverInstance(Configurations configurations, String driverName, String driverPoolUrl) throws CmsException
-    {
+    public Object newDriverInstance(Configurations configurations, String driverName, String driverPoolUrl) throws CmsException {
 
         Class initParamClasses[] = { Configurations.class, String.class, CmsDriverManager.class };
         Object initParams[] = { configurations, driverPoolUrl, this };
@@ -4874,7 +4841,7 @@ public class CmsDriverManager extends Object {
     }
 
     public Object newDriverInstance(Configurations configurations, String driverName, List successiveDrivers) throws CmsException {
-        
+
         Class initParamClasses[] = { Configurations.class, List.class, CmsDriverManager.class };
         Object initParams[] = { configurations, successiveDrivers, this };
 
@@ -4908,7 +4875,7 @@ public class CmsDriverManager extends Object {
             throw new CmsException(message, CmsException.C_RB_INIT_ERROR, exc);
         }
 
-        return driver;        
+        return driver;
     }
 
     /**
@@ -4978,25 +4945,25 @@ public class CmsDriverManager extends Object {
                 } else {
                     tagId = 0;
                 }
-                
+
                 //TODO: check why this does not work
                 // get the maximum number of backup versions
-                int maxVersions=cms.getRegistry().getMaximumBackupVersions();                
+                int maxVersions = cms.getRegistry().getMaximumBackupVersions();
                 //int maxVersions=42;
-                
+
                 //if we do a direct publishing, check if all parent resources are already published
                 if (directPublishResource != null) {
                     try {
-                        checkParentsPublished(cms, context, directPublishResource); 
+                        checkParentsPublished(cms, context, directPublishResource);
                     } catch (CmsException e) {
                         allChanged.setChangedCosResources(new Vector());
                         allChanged.setChangedVfsResources(new Vector());
-                        report.println(e.getMessage(), I_CmsReport.C_FORMAT_WARNING);     
-                        return null;                
+                        report.println(e.getMessage(), I_CmsReport.C_FORMAT_WARNING);
+                        return null;
                     }
-                
+
                 }
-                
+
                 changedResources = m_projectDriver.publishProject(context, readProject(I_CmsConstants.C_PROJECT_ONLINE_ID), isHistoryEnabled(cms), tagId, report, m_registry.getExportpoints(), directPublishResource, maxVersions);
 
                 // now publish the module masters
@@ -5008,7 +4975,7 @@ public class CmsDriverManager extends Object {
                 if (backupEnabled) {
                     /*
                     versionId = m_backupDriver.nextBackupVersionId();
-
+                    
                     // get the version_id for the currently published version
                     if (versionId > 1) {
                         versionId--;
@@ -5033,16 +5000,16 @@ public class CmsDriverManager extends Object {
                     try {
                         // The changed masters are added to the vector changedModuleMasters, so after the last module
                         // was published the vector contains the changed masters of all published modules
-                        Class.forName((String) publishModules.elementAt(i)).getMethod("publishProject", new Class[] { CmsObject.class, Boolean.class, Integer.class, Integer.class, Long.class, Vector.class, Vector.class }).invoke(null, new Object[] { cms, new Boolean(isHistoryEnabled(cms)), new Integer(publishProjectId), new Integer(tagId), new Long(publishDate), changedResources, changedModuleMasters });
+                        Class.forName((String)publishModules.elementAt(i)).getMethod("publishProject", new Class[] { CmsObject.class, Boolean.class, Integer.class, Integer.class, Long.class, Vector.class, Vector.class }).invoke(null, new Object[] { cms, new Boolean(isHistoryEnabled(cms)), new Integer(publishProjectId), new Integer(tagId), new Long(publishDate), changedResources, changedModuleMasters });
                     } catch (ClassNotFoundException ec) {
-                        report.println(report.key("report.publish_class_for_module_does_not_exist_1") + (String) publishModules.elementAt(i) + report.key("report.publish_class_for_module_does_not_exist_2"), I_CmsReport.C_FORMAT_WARNING);
+                        report.println(report.key("report.publish_class_for_module_does_not_exist_1") + (String)publishModules.elementAt(i) + report.key("report.publish_class_for_module_does_not_exist_2"), I_CmsReport.C_FORMAT_WARNING);
                         if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isInfoEnabled()) {
-                            OpenCms.getLog(CmsLog.CHANNEL_MAIN).info("Error calling publish class of module " + (String) publishModules.elementAt(i) + "!: " + ec.getMessage());
+                            OpenCms.getLog(CmsLog.CHANNEL_MAIN).info("Error calling publish class of module " + (String)publishModules.elementAt(i) + "!: " + ec.getMessage());
                         }
                     } catch (Exception ex) {
                         report.println(ex);
                         if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isInfoEnabled()) {
-                            OpenCms.getLog(CmsLog.CHANNEL_MAIN).info("Error when publish data of module " + (String) publishModules.elementAt(i) + "!: " + ex.getMessage());
+                            OpenCms.getLog(CmsLog.CHANNEL_MAIN).info("Error when publish data of module " + (String)publishModules.elementAt(i) + "!: " + ex.getMessage());
                         }
                     }
                 }
@@ -5191,7 +5158,7 @@ public class CmsDriverManager extends Object {
         I_CmsResourceType resType = getResourceType(resourcetype);
         return readAllPropertydefinitions(context, resType);
     }
-    
+
     /**
      * Reads all propertydefinitions for the given resource type.
      *
@@ -5208,13 +5175,13 @@ public class CmsDriverManager extends Object {
      */
     public Vector readAllPropertydefinitions(CmsRequestContext context, int resourceType) throws CmsException {
         I_CmsResourceType resType = getResourceType(resourceType);
-        return readAllPropertydefinitions(context, resType);        
+        return readAllPropertydefinitions(context, resType);
     }
-    
+
     private Vector readAllPropertydefinitions(CmsRequestContext context, I_CmsResourceType resourceType) throws CmsException {
         Vector returnValue = null;
-        
-        returnValue = (Vector) m_propertyDefVectorCache.get(Integer.toString(resourceType.getResourceType()));
+
+        returnValue = (Vector)m_propertyDefVectorCache.get(Integer.toString(resourceType.getResourceType()));
         if (returnValue == null) {
             returnValue = m_vfsDriver.readPropertyDefinitions(context.currentProject().getId(), resourceType);
             Collections.sort(returnValue);
@@ -5244,7 +5211,7 @@ public class CmsDriverManager extends Object {
 
         try {
             List path = readPath(context, filename, false);
-            CmsResource resource = (CmsResource) path.get(path.size() - 1);
+            CmsResource resource = (CmsResource)path.get(path.size() - 1);
 
             backupResource = m_backupDriver.readBackupFile(versionId, resource.getStructureId());
             backupResource.setFullResourceName(filename);
@@ -5308,14 +5275,13 @@ public class CmsDriverManager extends Object {
      * @return the crontable.
      */
     public String readCronTable() throws CmsException {
-        String retValue = (String) m_projectDriver.readSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_CRONTABLE);
+        String retValue = (String)m_projectDriver.readSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_CRONTABLE);
         if (retValue == null) {
             return "";
         } else {
             return retValue;
         }
     }
-
 
     /**
      * Reads the package path of the system.
@@ -5325,9 +5291,8 @@ public class CmsDriverManager extends Object {
      * @throws CmsException if operation was not successful
      */
     public String readPackagePath() throws CmsException {
-        return (String) m_projectDriver.readSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_PACKAGEPATH);
+        return (String)m_projectDriver.readSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_PACKAGEPATH);
     }
-
 
     /**
      * Reads a file from the Cms.<p>
@@ -5370,7 +5335,7 @@ public class CmsDriverManager extends Object {
 
         try {
             List path = readPath(context, filename, false);
-            CmsResource resource = (CmsResource) path.get(path.size() - 1);
+            CmsResource resource = (CmsResource)path.get(path.size() - 1);
 
             cmsFile = m_vfsDriver.readFile(context.currentProject().getId(), includeDeleted, resource.getStructureId());
             cmsFile.setFullResourceName(filename);
@@ -5385,7 +5350,7 @@ public class CmsDriverManager extends Object {
         // access to all subfolders was granted - return the file.
         return cmsFile;
     }
-    
+
     /**
      * Reads a file from the Cms.<p>
      *
@@ -5404,7 +5369,7 @@ public class CmsDriverManager extends Object {
      * @return the file read from the VFS
      *
      * @throws CmsException if operation was not succesful
-     */    
+     */
     public CmsFile readFileInProject(CmsRequestContext context, int projectId, CmsUUID structureId, boolean includeDeleted) throws CmsException {
         CmsFile cmsFile = null;
 
@@ -5420,7 +5385,7 @@ public class CmsDriverManager extends Object {
         checkPermissions(context, cmsFile, I_CmsConstants.C_READ_ACCESS);
 
         // access to all subfolders was granted - return the file.
-        return cmsFile;    
+        return cmsFile;
     }
 
     /**
@@ -5433,7 +5398,7 @@ public class CmsDriverManager extends Object {
      * @return Hashtable with file extensions as Strings
      */
     public Hashtable readFileExtensions() throws CmsException {
-        Hashtable res = (Hashtable) m_projectDriver.readSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_EXTENSIONS);
+        Hashtable res = (Hashtable)m_projectDriver.readSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_EXTENSIONS);
         return ((res != null) ? res : new Hashtable());
     }
 
@@ -5488,7 +5453,7 @@ public class CmsDriverManager extends Object {
         }
 
         List path = readPath(context, filename, includeDeleted);
-        CmsResource resource = (CmsResource) path.get(path.size() - 1);
+        CmsResource resource = (CmsResource)path.get(path.size() - 1);
 
         // check if the user has read access to the file
         checkPermissions(context, resource, I_CmsConstants.C_READ_OR_VIEW_ACCESS);
@@ -5497,7 +5462,7 @@ public class CmsDriverManager extends Object {
         if (resource.isFolder()) {
             resource.setFullResourceName(filename + I_CmsConstants.C_FOLDER_SEPARATOR);
         } else {
-        resource.setFullResourceName(filename);
+            resource.setFullResourceName(filename);
         }
 
         // access was granted - return the file-header.
@@ -5529,20 +5494,20 @@ public class CmsDriverManager extends Object {
         if (filename == null) {
             return null;
         }
-        
+
         if (filename.endsWith("/")) {
             return readFolderInProject(context, projectId, filename);
         }
 
         List path = readPathInProject(context, projectId, filename, includeDeleted);
-        CmsResource resource = (CmsResource) path.get(path.size() - 1);
-        List projectResources = readProjectResources(context,readProject(context, projectId));
+        CmsResource resource = (CmsResource)path.get(path.size() - 1);
+        List projectResources = readProjectResources(context, readProject(context, projectId));
         // set full resource name
         resource.setFullResourceName(filename);
 
         if (CmsProject.isInsideProject(projectResources, resource)) {
-                return resource;
-            }
+            return resource;
+        }
 
         throw new CmsResourceNotFoundException("File " + filename + " is not inside project with ID " + projectId);
     }
@@ -5565,9 +5530,9 @@ public class CmsDriverManager extends Object {
         // check if the user has view access 
         Enumeration e = resources.elements();
         while (e.hasMoreElements()) {
-            CmsFile res = (CmsFile) e.nextElement();
+            CmsFile res = (CmsFile)e.nextElement();
             if (hasPermissions(context, res, I_CmsConstants.C_VIEW_ACCESS, false)) {
-                res.setFullResourceName(readPath(context,res,true));
+                res.setFullResourceName(readPath(context, res, true));
                 retValue.addElement(res);
             }
         }
@@ -5599,7 +5564,7 @@ public class CmsDriverManager extends Object {
 
         try {
             cmsFolder = m_vfsDriver.readFolder(context.currentProject().getId(), folderId);
-            cmsFolder.setFullResourceName(readPath(context,cmsFolder,includeDeleted));   
+            cmsFolder.setFullResourceName(readPath(context, cmsFolder, includeDeleted));
         } catch (CmsException exc) {
             throw exc;
         }
@@ -5668,7 +5633,7 @@ public class CmsDriverManager extends Object {
         }
 
         List path = readPath(context, foldername, includeDeleted);
-        CmsFolder cmsFolder = (CmsFolder) path.get(path.size() - 1);
+        CmsFolder cmsFolder = (CmsFolder)path.get(path.size() - 1);
 
         // check if the user has read access to the folder
         checkPermissions(context, cmsFolder, I_CmsConstants.C_READ_ACCESS);
@@ -5719,7 +5684,7 @@ public class CmsDriverManager extends Object {
 
         // now set the full resource name
         cmsFolder.setFullResourceName(foldername);
-        
+
         if (CmsProject.isInsideProject(projectResources, cmsFolder)) {
             return cmsFolder;
         }
@@ -5770,7 +5735,7 @@ public class CmsDriverManager extends Object {
     public CmsGroup readGroup(CmsRequestContext context, CmsProject project) throws CmsException {
 
         // try to read group form cache
-        CmsGroup group = (CmsGroup) m_groupCache.get(new CacheId(project.getGroupId()));
+        CmsGroup group = (CmsGroup)m_groupCache.get(new CacheId(project.getGroupId()));
         if (group == null) {
             try {
                 group = m_userDriver.readGroup(project.getGroupId());
@@ -5832,7 +5797,7 @@ public class CmsDriverManager extends Object {
     public CmsGroup readGroup(CmsRequestContext context, String groupname) throws CmsException {
         CmsGroup group = null;
         // try to read group form cache
-        group = (CmsGroup) m_groupCache.get(new CacheId(groupname));
+        group = (CmsGroup)m_groupCache.get(new CacheId(groupname));
         if (group == null) {
             group = m_userDriver.readGroup(groupname);
             m_groupCache.put(new CacheId(group), group);
@@ -5866,7 +5831,7 @@ public class CmsDriverManager extends Object {
      * @return the linkchecktable.
      */
     public Hashtable readLinkCheckTable() throws CmsException {
-        Hashtable retValue = (Hashtable) m_projectDriver.readSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_LINKCHECKTABLE);
+        Hashtable retValue = (Hashtable)m_projectDriver.readSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_LINKCHECKTABLE);
         if (retValue == null) {
             return new Hashtable();
         } else {
@@ -5897,7 +5862,7 @@ public class CmsDriverManager extends Object {
     public CmsGroup readManagerGroup(CmsProject project) throws CmsException {
         CmsGroup group = null;
         // try to read group form cache
-        group = (CmsGroup) m_groupCache.get(new CacheId(project.getManagerGroupId()));
+        group = (CmsGroup)m_groupCache.get(new CacheId(project.getManagerGroupId()));
         if (group == null) {
             try {
                 group = m_userDriver.readGroup(project.getManagerGroupId());
@@ -6053,7 +6018,7 @@ public class CmsDriverManager extends Object {
      * @param includeDeleted include resources that are marked as deleted
      * @return String the path of the resource
      * @throws CmsException if something goes wrong
-     */        
+     */
     public String readPathInProject(CmsRequestContext context, int projectId, CmsResource resource, boolean includeDeleted) throws CmsException {
         if (resource.hasFullResourceName()) {
             // we did already what we want to do- no further operations required here!
@@ -6082,14 +6047,14 @@ public class CmsDriverManager extends Object {
         while (!(currentParentId = currentResource.getParentStructureId()).equals(CmsUUID.getNullUUID())) {
             // see if we can find an already cached path for the current parent-ID
             pathCacheKey = getCacheKey("path", context.currentUser(), projectId, currentParentId.toString());
-            if ((cachedPath = (String) m_resourceCache.get(pathCacheKey)) != null) {
+            if ((cachedPath = (String)m_resourceCache.get(pathCacheKey)) != null) {
                 path = cachedPath + path;
                 break;
             }
 
             // see if we can find a cached parent-resource for the current parent-ID
             resourceCacheKey = getCacheKey("parent", context.currentUser(), projectId, currentParentId.toString());
-            if ((currentResource = (CmsResource) m_resourceCache.get(resourceCacheKey)) == null) {
+            if ((currentResource = (CmsResource)m_resourceCache.get(resourceCacheKey)) == null) {
                 currentResource = m_vfsDriver.readFileHeader(projectId, currentParentId, includeDeleted);
                 m_resourceCache.put(resourceCacheKey, currentResource);
             }
@@ -6136,7 +6101,7 @@ public class CmsDriverManager extends Object {
     public List readPath(CmsRequestContext context, String path, boolean includeDeleted) throws CmsException {
         return readPathInProject(context, context.currentProject().getId(), path, includeDeleted);
     }
-    
+
     /**
      * Builds a list of resources for a given path.<p>
      * 
@@ -6151,7 +6116,7 @@ public class CmsDriverManager extends Object {
      * @param includeDeleted include resources that are marked as deleted
      * @return List of CmsResource's
      * @throws CmsException if something goes wrong
-     */    
+     */
     public List readPathInProject(CmsRequestContext context, int projectId, String path, boolean includeDeleted) throws CmsException {
         // splits the path into folder and filename tokens
         StringTokenizer tokens = null;
@@ -6178,7 +6143,7 @@ public class CmsDriverManager extends Object {
 
         // the root folder is no token in the path but a resource which has to be added to the path
         count = tokens.countTokens() + 1;
-        pathList = (List) new ArrayList(count);
+        pathList = (List)new ArrayList(count);
 
         folderCount = count;
         if (!path.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
@@ -6189,7 +6154,7 @@ public class CmsDriverManager extends Object {
         // read the root folder, coz it's ID is required to read any sub-resources
         currentResourceName = currentPath = I_CmsConstants.C_ROOT;
         cacheKey = getCacheKey(null, context.currentUser(), projectId, currentPath);
-        if ((currentResource = (CmsResource) m_resourceCache.get(cacheKey)) == null) {
+        if ((currentResource = (CmsResource)m_resourceCache.get(cacheKey)) == null) {
             currentResource = m_vfsDriver.readFolder(projectId, CmsUUID.getNullUUID(), currentResourceName);
             currentResource.setFullResourceName(currentPath);
             m_resourceCache.put(cacheKey, currentResource);
@@ -6211,7 +6176,7 @@ public class CmsDriverManager extends Object {
 
             // read the folder
             cacheKey = getCacheKey(null, context.currentUser(), projectId, currentPath);
-            if ((currentResource = (CmsResource) m_resourceCache.get(cacheKey)) == null) {
+            if ((currentResource = (CmsResource)m_resourceCache.get(cacheKey)) == null) {
                 currentResource = m_vfsDriver.readFolder(projectId, lastParent.getStructureId(), currentResourceName);
                 currentResource.setFullResourceName(currentPath);
                 m_resourceCache.put(cacheKey, currentResource);
@@ -6236,7 +6201,7 @@ public class CmsDriverManager extends Object {
 
             // read the file
             cacheKey = getCacheKey(null, context.currentUser(), projectId, currentPath);
-            if ((currentResource = (CmsResource) m_resourceCache.get(cacheKey)) == null) {
+            if ((currentResource = (CmsResource)m_resourceCache.get(cacheKey)) == null) {
                 currentResource = m_vfsDriver.readFileHeader(projectId, lastParent.getStructureId(), currentResourceName, includeDeleted);
                 currentResource.setFullResourceName(currentPath);
                 m_resourceCache.put(cacheKey, currentResource);
@@ -6282,7 +6247,7 @@ public class CmsDriverManager extends Object {
      */
     public CmsProject readProject(CmsRequestContext context, int id) throws CmsException {
         CmsProject project = null;
-        project = (CmsProject) m_projectCache.get(new Integer(id));
+        project = (CmsProject)m_projectCache.get(new Integer(id));
         if (project == null) {
             project = m_projectDriver.readProject(id);
             m_projectCache.put(new Integer(id), project);
@@ -6307,7 +6272,7 @@ public class CmsDriverManager extends Object {
 
     public CmsProject readProject(int id) throws CmsException {
         CmsProject project = null;
-        project = (CmsProject) m_projectCache.get(new Integer(id));
+        project = (CmsProject)m_projectCache.get(new Integer(id));
         if (project == null) {
             project = m_projectDriver.readProject(id);
             m_projectCache.put(new Integer(id), project);
@@ -6341,11 +6306,11 @@ public class CmsDriverManager extends Object {
         List resources = null;
         CmsResource currentResource = null;
         CmsLock currentLock = null;
-        
+
         resources = readChangedResourcesInsideProject(context, projectId, I_CmsConstants.C_UNKNOWN_ID);
         Iterator i = resources.iterator();
         while (i.hasNext()) {
-            currentResource = (CmsResource) i.next();
+            currentResource = (CmsResource)i.next();
             if (hasPermissions(context, currentResource, I_CmsConstants.C_READ_ACCESS, false)) {
                 if ("new".equalsIgnoreCase(filter) && currentResource.getState() == I_CmsConstants.C_STATE_NEW) {
                     retValue.addElement(currentResource);
@@ -6363,18 +6328,18 @@ public class CmsDriverManager extends Object {
                 }
             }
         }
-        
+
         resources.clear();
         resources = null;
 
         return retValue;
     }
-    
+
     public Vector readPublishProjectView(CmsRequestContext context, int projectId, String filter) throws CmsException {
         Vector retValue = new Vector();
         List resources = m_projectDriver.readProjectView(projectId, filter);
         boolean onlyLocked = false;
-        
+
         // check if only locked resources should be displayed
         if ("locked".equalsIgnoreCase(filter)) {
             onlyLocked = true;
@@ -6383,13 +6348,13 @@ public class CmsDriverManager extends Object {
         // check the security
         Iterator i = resources.iterator();
         while (i.hasNext()) {
-            CmsResource currentResource = (CmsResource) i.next();
+            CmsResource currentResource = (CmsResource)i.next();
             if (hasPermissions(context, currentResource, I_CmsConstants.C_READ_ACCESS, false)) {
                 if (onlyLocked) {
                     // check if resource is locked
                     CmsLock lock = getLock(context, currentResource);
                     if (!lock.isNullLock()) {
-                        retValue.addElement(currentResource);            
+                        retValue.addElement(currentResource);
                     }
                 } else {
                     // add all resources with correct permissions
@@ -6399,7 +6364,7 @@ public class CmsDriverManager extends Object {
         }
 
         return retValue;
-                
+
         /*
         Vector retValue = new Vector();
         List resources = null;
@@ -6412,7 +6377,7 @@ public class CmsDriverManager extends Object {
         } else {
             resources = m_projectDriver.readProjectView(projectId, filter);
         }
-
+        
         // check the security
         Iterator i = resources.iterator();
         while (i.hasNext()) {
@@ -6433,11 +6398,11 @@ public class CmsDriverManager extends Object {
         
         resources.clear();
         resources = null;
-
+        
         return retValue;
         */
-    }    
-    
+    }
+
     /**
      * Reads all resources that are inside and changed in a specified project.<p>
      * 
@@ -6448,16 +6413,16 @@ public class CmsDriverManager extends Object {
      * @throws CmsException if somethong goes wrong
      */
     public List readChangedResourcesInsideProject(CmsRequestContext context, int projectId, int resourceType) throws CmsException {
-        List projectResources = readProjectResources(context,readProject(projectId));
-        List result = (List) new ArrayList();
+        List projectResources = readProjectResources(context, readProject(projectId));
+        List result = (List)new ArrayList();
         String currentProjectResource = null;
-        List resources = (List) new ArrayList();
+        List resources = (List)new ArrayList();
         CmsResource currentResource = null;
         CmsLock currentLock = null;
 
         for (int i = 0; i < projectResources.size(); i++) {
             // read all resources that are inside the project by visiting each project resource
-            currentProjectResource = (String) projectResources.get(i);
+            currentProjectResource = (String)projectResources.get(i);
 
             try {
                 currentResource = readFileHeader(context, currentProjectResource, true);
@@ -6466,7 +6431,7 @@ public class CmsDriverManager extends Object {
                     resources.addAll(readAllSubResourcesInDfs(context, currentProjectResource, resourceType));
                 } else {
                     resources.add(currentResource);
-        }
+                }
             } catch (CmsException e) {
                 // the project resource probably doesnt exist (anymore)...
                 if (e.getType() != CmsException.C_NOT_FOUND) {
@@ -6474,9 +6439,9 @@ public class CmsDriverManager extends Object {
                 }
             }
         }
-        
+
         for (int j = 0; j < resources.size(); j++) {
-            currentResource = (CmsResource) resources.get(j);
+            currentResource = (CmsResource)resources.get(j);
             currentLock = getLock(context, currentResource.getRootPath());
 
             if (currentResource.getState() != I_CmsConstants.C_STATE_UNCHANGED) {
@@ -6488,8 +6453,8 @@ public class CmsDriverManager extends Object {
                     result.add(currentResource);
                 }
             }
-        }        
-        
+        }
+
         resources.clear();
         resources = null;
 
@@ -6511,12 +6476,12 @@ public class CmsDriverManager extends Object {
      * @throws CmsException if something goes wrong
      */
     public List readAllSubResourcesInDfs(CmsRequestContext context, String resourcename, int resourceType) throws CmsException {
-        List result = (List) new ArrayList();
+        List result = (List)new ArrayList();
         Vector unvisited = new Vector();
         CmsFolder currentFolder = null;
         Enumeration unvisitedFolders = null;
         boolean isFirst = true;
-        
+
         currentFolder = readFolder(context, resourcename, true);
         unvisited.add(currentFolder);
 
@@ -6524,31 +6489,31 @@ public class CmsDriverManager extends Object {
             // visit all unvisited folders
             unvisitedFolders = unvisited.elements();
             while (unvisitedFolders.hasMoreElements()) {
-                currentFolder = (CmsFolder) unvisitedFolders.nextElement();
+                currentFolder = (CmsFolder)unvisitedFolders.nextElement();
 
                 // remove the current folder from the list of unvisited folders
                 unvisited.remove(currentFolder);
-                
+
                 if (!isFirst && resourceType <= CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
                     // add the current folder to the result list
                     result.add(currentFolder);
                 }
-                
+
                 if (resourceType != CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
                     // add all sub-files in the current folder to the result list
                     result.addAll(getSubFiles(context, currentFolder.getRootPath(), true));
                 }
-                
+
                 // add all sub-folders in the current folder to the list of unvisited folders
                 // to visit them in the next iteration                        
                 unvisited.addAll(getSubFolders(context, currentFolder.getRootPath(), true));
-                
+
                 if (isFirst) {
                     isFirst = false;
+                }
             }
         }
-        }
-        
+
         // TODO the calculated resource list should be cached
 
         return result;
@@ -6574,15 +6539,15 @@ public class CmsDriverManager extends Object {
     public Map readProperties(CmsRequestContext context, String resource, String siteRoot, boolean search) throws CmsException {
         // read the resource
         CmsResource res = readFileHeader(context, resource);
-    
+
         // check the security
         checkPermissions(context, res, I_CmsConstants.C_READ_OR_VIEW_ACCESS);
-    
+
         search = search && (siteRoot != null);
         // check if we have the result already cached
         String cacheKey = getCacheKey(C_CACHE_ALL_PROPERTIES + search, null, context.currentProject().getId(), res.getRootPath());
-        Map value = (Map) m_propertyCache.get(cacheKey);
-    
+        Map value = (Map)m_propertyCache.get(cacheKey);
+
         if (value == null) {
             // result not cached, let's look it up in the DB
             if (search) {
@@ -6592,13 +6557,13 @@ public class CmsDriverManager extends Object {
                 Map parentValue;
                 do {
                     try {
-                        parentValue = (Map) readProperties(context, resource, siteRoot, false);
-                    parentValue.putAll(value);
-                    value.clear();
-                    value.putAll(parentValue);
+                        parentValue = (Map)readProperties(context, resource, siteRoot, false);
+                        parentValue.putAll(value);
+                        value.clear();
+                        value.putAll(parentValue);
                         resource = CmsResource.getParentFolder(resource);
-                    // cont = (! ((resource.length() < siteRoot.length()) || (resource == null)));
-                    cont = (! "/".equals(resource));
+                        // cont = (! ((resource.length() < siteRoot.length()) || (resource == null)));
+                        cont = (!"/".equals(resource));
                     } catch (CmsSecurityException se) {
                         // a security exception (probably no read permission) we return the current result                      
                         cont = false;
@@ -6610,7 +6575,7 @@ public class CmsDriverManager extends Object {
             // store the result in the cache
             m_propertyCache.put(cacheKey, value);
         }
-        return (Map) new HashMap(value);
+        return (Map)new HashMap(value);
     }
 
     /**
@@ -6635,23 +6600,23 @@ public class CmsDriverManager extends Object {
     public String readProperty(CmsRequestContext context, String resource, String siteRoot, String property, boolean search) throws CmsException {
         // read the resource
         CmsResource res = readFileHeader(context, resource);
-        
+
         // check the security
         checkPermissions(context, res, I_CmsConstants.C_READ_OR_VIEW_ACCESS);
-    
+
         search = search && (siteRoot != null);
         // check if we have the result already cached
         String cacheKey = getCacheKey(property + search, null, context.currentProject().getId(), res.getRootPath());
-        String value = (String) m_propertyCache.get(cacheKey);
-    
+        String value = (String)m_propertyCache.get(cacheKey);
+
         if (value == null) {
             // check if the map of all properties for this resource is alreday cached
             String cacheKey2 = getCacheKey(C_CACHE_ALL_PROPERTIES + search, null, context.currentProject().getId(), res.getRootPath());
-            Map allProperties = (HashMap) m_propertyCache.get(cacheKey2);
-    
+            Map allProperties = (HashMap)m_propertyCache.get(cacheKey2);
+
             if (allProperties != null) {
                 // map of properties already read, look up value there 
-                value = (String) allProperties.get(property);
+                value = (String)allProperties.get(property);
                 if (value == null) {
                     // unfortunatly, the Map is always case sentitive, but in MySQL 
                     // using readProperty() is not, so to make really sure a property is found
@@ -6659,9 +6624,9 @@ public class CmsDriverManager extends Object {
                     // then a connect to the DB nevertheless
                     Iterator i = allProperties.keySet().iterator();
                     while (i.hasNext()) {
-                        String key = (String) i.next();
+                        String key = (String)i.next();
                         if (key.equalsIgnoreCase(property)) {
-                            value = (String) allProperties.get(key);
+                            value = (String)allProperties.get(key);
                             break;
                         }
                     }
@@ -6669,27 +6634,28 @@ public class CmsDriverManager extends Object {
             } else if (search) {
                 // result not cached, look it up recursivly with search enabled
                 String cacheKey3 = getCacheKey(property + false, null, context.currentProject().getId(), res.getRootPath());
-                value = (String) m_propertyCache.get(cacheKey3);
+                value = (String)m_propertyCache.get(cacheKey3);
                 if ((value == null) || (value == C_CACHE_NULL_PROPERTY_VALUE)) {
                     boolean cont;
                     siteRoot += "/";
                     do {
                         try {
-                        value = readProperty(context, resource, siteRoot, property, false);
-                        // cont = !((value != null) || (resource.length() < siteRoot.length()) || "/".equals(resource));
-                        cont = ((value == null) && (! "/".equals(resource)));
+                            value = readProperty(context, resource, siteRoot, property, false);
+                            // cont = !((value != null) || (resource.length() < siteRoot.length()) || "/".equals(resource));
+                            cont = ((value == null) && (!"/".equals(resource)));
                         } catch (CmsSecurityException se) {
                             // a security exception (probably no read permission) we return the current result                      
                             cont = false;
                         }
-                        if (cont) resource = CmsResource.getParentFolder(resource);
+                        if (cont)
+                            resource = CmsResource.getParentFolder(resource);
                     } while (cont);
                 }
             } else {
                 // result not cached, look it up in the DB without search
                 value = m_vfsDriver.readProperty(property, context.currentProject().getId(), res, res.getType());
             }
-            if (value == null) {                
+            if (value == null) {
                 value = C_CACHE_NULL_PROPERTY_VALUE;
             }
             // store the result in the cache
@@ -6747,7 +6713,7 @@ public class CmsDriverManager extends Object {
      */
     public CmsPropertydefinition readPropertydefinition(CmsRequestContext context, String name, int resourcetype) throws CmsException {
         CmsPropertydefinition returnValue = null;
-        returnValue = (CmsPropertydefinition) m_propertyDefCache.get(name + resourcetype);
+        returnValue = (CmsPropertydefinition)m_propertyDefCache.get(name + resourcetype);
 
         if (returnValue == null) {
             returnValue = m_vfsDriver.readPropertyDefinition(name, context.currentProject().getId(), resourcetype);
@@ -6924,17 +6890,17 @@ public class CmsDriverManager extends Object {
         }
         return user;
     }
-    
+
     private static final String C_USER_CACHE_SEP = "\u0000";
-    
+
     private String getUserCacheKey(String username, int type) {
         return username + C_USER_CACHE_SEP + CmsUser.isSystemUser(type);
     }
-    
+
     private String getUserCacheKey(CmsUUID id) {
         return id.toString();
     }
-           
+
     private CmsUser getUserFromCache(String username, int type) {
         return (CmsUser)m_userCache.get(getUserCacheKey(username, type));
     }
@@ -6942,16 +6908,16 @@ public class CmsDriverManager extends Object {
     private CmsUser getUserFromCache(CmsUUID id) {
         return (CmsUser)m_userCache.get(getUserCacheKey(id));
     }
-        
+
     private void putUserInCache(CmsUser user) {
         m_userCache.put(getUserCacheKey(user.getName(), user.getType()), user);
         m_userCache.put(getUserCacheKey(user.getId()), user);
     }
-    
+
     private void removeUserFromCache(CmsUser user) {
         m_userCache.remove(getUserCacheKey(user.getName(), user.getType()));
         m_userCache.remove(getUserCacheKey(user.getId()));
-    }    
+    }
 
     /**
      * Returns a user object if the password for the user is correct.<P/>
@@ -6983,7 +6949,6 @@ public class CmsDriverManager extends Object {
     public CmsUser readWebUser(String username) throws CmsException {
         return readUser(username, I_CmsConstants.C_USER_TYPE_WEBUSER);
     }
-    
 
     /**
      * Returns a user object if the password for the user is correct.<P/>
@@ -7003,7 +6968,7 @@ public class CmsDriverManager extends Object {
         CmsUser user = m_userDriver.readUser(username, password, I_CmsConstants.C_USER_TYPE_WEBUSER);
         putUserInCache(user);
         return user;
-    }    
+    }
 
     /**
      * Reaktivates a task from the Cms.
@@ -7021,12 +6986,12 @@ public class CmsDriverManager extends Object {
         task.setState(I_CmsConstants.C_TASK_STATE_STARTED);
         task.setPercentage(0);
         task = m_workflowDriver.writeTask(task);
-        m_workflowDriver.writeSystemTaskLog(taskId, "Task was reactivated from " + context.currentUser().getFirstname() + " " + context.currentUser().getLastname() + ".");    
+        m_workflowDriver.writeSystemTaskLog(taskId, "Task was reactivated from " + context.currentUser().getFirstname() + " " + context.currentUser().getLastname() + ".");
     }
-    
-    /** The class used for password validation */        
+
+    /** The class used for password validation */
     private I_CmsPasswordValidation m_passwordValidationClass;
-        
+
     /**
      * This method checks if a new password follows the rules for
      * new passwords, which are defined by a Class configured in opencms.properties.<p>
@@ -7037,10 +7002,10 @@ public class CmsDriverManager extends Object {
      *
      * @throws CmsSecurityException if the password is not valid
      */
-    public void validatePassword(String password) throws CmsSecurityException {            
+    public void validatePassword(String password) throws CmsSecurityException {
         if (m_passwordValidationClass == null) {
             synchronized (this) {
-                String className = OpenCms.getPasswordValidatingClass();   
+                String className = OpenCms.getPasswordValidatingClass();
                 try {
                     m_passwordValidationClass = (I_CmsPasswordValidation)Class.forName(className).getConstructor(new Class[] {}).newInstance(new Class[] {});
                 } catch (Exception e) {
@@ -7050,7 +7015,7 @@ public class CmsDriverManager extends Object {
         }
         m_passwordValidationClass.validatePassword(password);
     }
-    
+
     /**
      * Sets a new password only if the user knows his recovery-password.
      *
@@ -7092,17 +7057,17 @@ public class CmsDriverManager extends Object {
     public void removeAccessControlEntry(CmsRequestContext context, CmsResource resource, CmsUUID principal) throws CmsException {
 
         // get the old values
-        long dateLastModified=resource.getDateLastModified();
-        CmsUUID userLastModified=resource.getUserLastModified();
-        
+        long dateLastModified = resource.getDateLastModified();
+        CmsUUID userLastModified = resource.getUserLastModified();
+
         checkPermissions(context, resource, I_CmsConstants.C_CONTROL_ACCESS);
 
         m_userDriver.removeAccessControlEntry(context.currentProject(), resource.getResourceId(), principal);
         clearAccessControlListCache();
-        
+
         touchResource(context, resource, dateLastModified, userLastModified);
     }
-    
+
     /**
      * Checks if one of the resources VFS links (except the resource itself) resides in a "labeled" site folder.<p>
      *   
@@ -7130,7 +7095,7 @@ public class CmsDriverManager extends Object {
                         return true;
                     }
                 }
-            }              
+            }
         }
         return hasLinks;
     }
@@ -7218,23 +7183,23 @@ public class CmsDriverManager extends Object {
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public void renameResource(CmsRequestContext context, String oldname, String newname) throws CmsException {
-        
-        String destination = oldname.substring(0, oldname.lastIndexOf("/")+1);
+
+        String destination = oldname.substring(0, oldname.lastIndexOf("/") + 1);
         this.moveResource(context, oldname, destination + newname);
         /*
         // read the old file
         CmsResource resource = readFileHeader(context, oldname);
-
+        
         // checks, if the newname is valid, if not it throws a exception
         validFilename(newname);
-
+        
         // check if the user has write access to the file
         checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);
-
+        
         m_vfsDriver.renameResource(context.currentUser(), context.currentProject(), resource, newname);
         clearResourceCache();
         */
-        }
+    }
 
     /**
      * Replaces the content and properties of an existing resource.<p>
@@ -7251,35 +7216,35 @@ public class CmsDriverManager extends Object {
         CmsResource resource = null;
 
         // clear the cache
-         clearResourceCache();
+        clearResourceCache();
 
         // read the existing resource
         resource = readFileHeader(context, resourceName, false);
-        
+
         // check if the user has write access 
         checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);
 
         // replace the existing with the new file content
-        m_vfsDriver.replaceResource(context.currentUser(), context.currentProject(), resource, newResourceContent, newResourceType, getResourceType(newResourceType).getLoaderId());    
+        m_vfsDriver.replaceResource(context.currentUser(), context.currentProject(), resource, newResourceContent, newResourceType, getResourceType(newResourceType).getLoaderId());
 
         // write the properties
         m_vfsDriver.writeProperties(newResourceProperties, context.currentProject().getId(), resource, newResourceType, false);
         m_propertyCache.clear();
-        
+
         // update the resource state
         if (resource.getState() == I_CmsConstants.C_STATE_UNCHANGED) {
             resource.setState(I_CmsConstants.C_STATE_CHANGED);
         }
         resource.setUserLastModified(context.currentUser().getId());
 
-        touch(context,resourceName, System.currentTimeMillis(), context.currentUser().getId());
+        touch(context, resourceName, System.currentTimeMillis(), context.currentUser().getId());
 
-        m_vfsDriver.writeResourceState(context.currentProject(), resource, C_UPDATE_RESOURCE);        
+        m_vfsDriver.writeResourceState(context.currentProject(), resource, C_UPDATE_RESOURCE);
 
         // clear the cache
         clearResourceCache();
-        
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", resource)));        
+
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", resource)));
 
         return resource;
     }
@@ -7294,49 +7259,31 @@ public class CmsDriverManager extends Object {
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public void restoreResource(CmsRequestContext context, int versionId, String filename) throws CmsException {
-        if(context.currentProject().isOnlineProject()) {
+        if (context.currentProject().isOnlineProject()) {
             // this is the onlineproject
             throw new CmsSecurityException("Can't write to the online project", CmsSecurityException.C_SECURITY_NO_MODIFY_IN_ONLINE_PROJECT);
-        }       
-        CmsFile offlineFile = readFile(context, filename);        
+        }
+        CmsFile offlineFile = readFile(context, filename);
         // check if the user has write access 
         checkPermissions(context, offlineFile, I_CmsConstants.C_WRITE_ACCESS);
-       
+
         int state = I_CmsConstants.C_STATE_CHANGED;
         CmsBackupResource backupFile = readBackupFile(context, versionId, filename);
         if (offlineFile.getState() == I_CmsConstants.C_STATE_NEW) {
             state = I_CmsConstants.C_STATE_NEW;
         }
         if (backupFile != null && offlineFile != null) {
-            CmsFile newFile =
-                new CmsFile(
-                    offlineFile.getStructureId(),
-                    offlineFile.getResourceId(),
-                    offlineFile.getParentStructureId(),
-                    offlineFile.getFileId(),
-                    offlineFile.getName(),
-                    backupFile.getType(),
-                    backupFile.getFlags(),
-                    context.currentProject().getId(),
-                    state,
-                    backupFile.getLoaderId(),
-                    offlineFile.getDateCreated(),
-                    backupFile.getUserCreated(),
-                    offlineFile.getDateLastModified(),
-                    context.currentUser().getId(),
-                    backupFile.getLength(),
-                    backupFile.getLinkCount(),
-                    backupFile.getContents());
+            CmsFile newFile = new CmsFile(offlineFile.getStructureId(), offlineFile.getResourceId(), offlineFile.getParentStructureId(), offlineFile.getFileId(), offlineFile.getName(), backupFile.getType(), backupFile.getFlags(), context.currentProject().getId(), state, backupFile.getLoaderId(), offlineFile.getDateCreated(), backupFile.getUserCreated(), offlineFile.getDateLastModified(), context.currentUser().getId(), backupFile.getLength(), backupFile.getLinkCount(), backupFile.getContents());
             writeFile(context, newFile);
-            
+
             // now read the backup properties
-            HashMap backupProperties=m_backupDriver.readBackupProperties(backupFile);
+            HashMap backupProperties = m_backupDriver.readBackupProperties(backupFile);
             //and write them to the curent resource
             writeProperties(context, filename, backupProperties);
-      
+
             clearResourceCache();
         }
-        
+
         OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", offlineFile)));
     }
 
@@ -7444,14 +7391,12 @@ public class CmsDriverManager extends Object {
         CmsUser user = null;
         try {
             user = m_userDriver.readUser(username, oldPassword, I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
-        } catch (CmsException exc) {
-        }
+        } catch (CmsException exc) {}
 
         if (user == null)
             try {
                 user = m_userDriver.readUser(username, oldPassword, I_CmsConstants.C_USER_TYPE_WEBUSER);
-            } catch (CmsException e) {
-            }
+            } catch (CmsException e) {}
 
         m_userDriver.writePassword(username, newPassword);
     }
@@ -7500,14 +7445,12 @@ public class CmsDriverManager extends Object {
         CmsUser user = null;
         try {
             user = m_userDriver.readUser(username, password, I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
-        } catch (CmsException exc) {
-        }
+        } catch (CmsException exc) {}
 
         if (user == null)
             try {
                 user = m_userDriver.readUser(username, password, I_CmsConstants.C_USER_TYPE_WEBUSER);
-            } catch (CmsException e) {
-            }
+            } catch (CmsException e) {}
 
         m_userDriver.writeRecoveryPassword(username, newPassword);
     }
@@ -7573,20 +7516,20 @@ public class CmsDriverManager extends Object {
      * @param user the user who is inserted as userladtmodified
      */
     private void touchResource(CmsRequestContext context, CmsResource res, long timestamp, CmsUUID user) throws CmsException {
-        
+
         // NOTE: this is the new way to update the state !
         // if (res.getState() < I_CmsConstants.C_STATE_CHANGED)
-        
-        res.setState(I_CmsConstants.C_STATE_CHANGED);        
+
+        res.setState(I_CmsConstants.C_STATE_CHANGED);
         res.setDateLastModified(timestamp);
         res.setUserLastModified(user);
         m_vfsDriver.writeResourceState(context.currentProject(), res, C_UPDATE_RESOURCE);
-        
-        clearResourceCache();        
-        
+
+        clearResourceCache();
+
         OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", res)));
     }
-    
+
     /**
      * Undeletes a file in the Cms.<br>
      *
@@ -7611,11 +7554,11 @@ public class CmsDriverManager extends Object {
         // try to trad the resource
         CmsResource resource = readFileHeader(context, filename, true);
         // this resource must be marked as deleted
-        if (resource.getState()==I_CmsConstants.C_STATE_DELETED) {
+        if (resource.getState() == I_CmsConstants.C_STATE_DELETED) {
             undoChanges(context, filename);
         } else {
             throw new CmsException("Resource already exists. Remove the existing blue resource before undeleting.", CmsException.C_FILE_EXISTS);
-        }    
+        }
     }
 
     /**
@@ -7627,16 +7570,16 @@ public class CmsDriverManager extends Object {
      * @throws CmsException Throws CmsException if something goes wrong.
      */
     public void undoChanges(CmsRequestContext context, String resourceName) throws CmsException {
-        if(context.currentProject().isOnlineProject()) {
+        if (context.currentProject().isOnlineProject()) {
             // this is the onlineproject
             throw new CmsSecurityException("Can't undo changes to the online project", CmsSecurityException.C_SECURITY_NO_MODIFY_IN_ONLINE_PROJECT);
-        }                
+        }
         CmsProject onlineProject = readProject(context, I_CmsConstants.C_PROJECT_ONLINE_ID);
         CmsResource resource = readFileHeader(context, resourceName, true);
-        
+
         // check if the user has write access
         checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);
-                
+
         // change folder or file?
         if (resource.isFolder()) {
 
@@ -7644,32 +7587,17 @@ public class CmsDriverManager extends Object {
             CmsFolder onlineFolder = readFolderInProject(context, I_CmsConstants.C_PROJECT_ONLINE_ID, resourceName);
             //we must ensure that the resource contains it full resource name as this is required for the 
             // property operations
-            readPath(context,onlineFolder,true);
-            
-            CmsFolder restoredFolder =
-                new CmsFolder(
-                    resource.getStructureId(),
-                    resource.getResourceId(),
-                    resource.getParentStructureId(),
-                    resource.getFileId(),
-                    resource.getName(),
-                    onlineFolder.getType(),
-                    onlineFolder.getFlags(),
-                    context.currentProject().getId(),
-                    I_CmsConstants.C_STATE_UNCHANGED,
-                    onlineFolder.getDateCreated(),
-                    onlineFolder.getUserCreated(),
-                    onlineFolder.getDateLastModified(),
-                    onlineFolder.getUserLastModified(),
-                    resource.getLinkCount());
-                    
+            readPath(context, onlineFolder, true);
+
+            CmsFolder restoredFolder = new CmsFolder(resource.getStructureId(), resource.getResourceId(), resource.getParentStructureId(), resource.getFileId(), resource.getName(), onlineFolder.getType(), onlineFolder.getFlags(), context.currentProject().getId(), I_CmsConstants.C_STATE_UNCHANGED, onlineFolder.getDateCreated(), onlineFolder.getUserCreated(), onlineFolder.getDateLastModified(), onlineFolder.getUserLastModified(), resource.getLinkCount());
+
             // write the file in the offline project
             // this sets a flag so that the file date is not set to the current time
             restoredFolder.setDateLastModified(onlineFolder.getDateLastModified());
             // write the folder without setting state = changed
             m_vfsDriver.writeFolder(context.currentProject(), restoredFolder, C_NOTHING_CHANGED, restoredFolder.getUserLastModified());
             // restore the properties in the offline project
-            readPath(context,restoredFolder,true);
+            readPath(context, restoredFolder, true);
             m_vfsDriver.deleteProperties(context.currentProject().getId(), restoredFolder);
             Map propertyInfos = m_vfsDriver.readProperties(onlineProject.getId(), onlineFolder, onlineFolder.getType());
             m_vfsDriver.writeProperties(propertyInfos, context.currentProject().getId(), restoredFolder, restoredFolder.getType(), false);
@@ -7678,67 +7606,49 @@ public class CmsDriverManager extends Object {
             // read the file from the online project
             CmsFile onlineFile = readFileInProject(context, I_CmsConstants.C_PROJECT_ONLINE_ID, resource.getStructureId(), false);
             //(context, resourceName);
-            readPath(context,onlineFile,true);
-            
+            readPath(context, onlineFile, true);
+
             // get flags of the deleted file
             int flags = onlineFile.getFlags();
             if (resource.isLabeled()) {
-               // set the flag for labeled links on the restored file
-               flags |= I_CmsConstants.C_RESOURCEFLAG_LABELLINK; 
+                // set the flag for labeled links on the restored file
+                flags |= I_CmsConstants.C_RESOURCEFLAG_LABELLINK;
             }
 
-            CmsFile restoredFile =
-                new CmsFile(
-                    resource.getStructureId(),
-                    resource.getResourceId(),
-                    resource.getParentStructureId(),
-                    resource.getFileId(),
-                    resource.getName(),
-                    onlineFile.getType(),
-                    flags,
-                    context.currentProject().getId(),
-                    I_CmsConstants.C_STATE_UNCHANGED,
-                    onlineFile.getLoaderId(),
-                    onlineFile.getDateCreated(),
-                    onlineFile.getUserCreated(),
-                    onlineFile.getDateLastModified(),
-                    onlineFile.getUserLastModified(),
-                    onlineFile.getLength(),
-                    resource.getLinkCount(),
-                    onlineFile.getContents());
-            
+            CmsFile restoredFile = new CmsFile(resource.getStructureId(), resource.getResourceId(), resource.getParentStructureId(), resource.getFileId(), resource.getName(), onlineFile.getType(), flags, context.currentProject().getId(), I_CmsConstants.C_STATE_UNCHANGED, onlineFile.getLoaderId(), onlineFile.getDateCreated(), onlineFile.getUserCreated(), onlineFile.getDateLastModified(), onlineFile.getUserLastModified(), onlineFile.getLength(), resource.getLinkCount(), onlineFile.getContents());
+
             // write the file in the offline project
             // this sets a flag so that the file date is not set to the current time
             restoredFile.setDateLastModified(onlineFile.getDateLastModified());
-            
+
             // write-acces  was granted - write the file without setting state = changed
             //m_vfsDriver.writeFile(context.currentProject(), restoredFile, C_NOTHING_CHANGED, restoredFile.getUserLastModified());
             m_vfsDriver.writeFileHeader(context.currentProject(), restoredFile, C_NOTHING_CHANGED, restoredFile.getUserLastModified());
-            m_vfsDriver.writeFileContent(restoredFile.getFileId(), restoredFile.getContents(), context.currentProject().getId(), false);            
-            
+            m_vfsDriver.writeFileContent(restoredFile.getFileId(), restoredFile.getContents(), context.currentProject().getId(), false);
+
             // restore the properties in the offline project
-            readPath(context,restoredFile,true);
+            readPath(context, restoredFile, true);
             m_vfsDriver.deleteProperties(context.currentProject().getId(), restoredFile);
             Map propertyInfos = m_vfsDriver.readProperties(onlineProject.getId(), onlineFile, onlineFile.getType());
             m_vfsDriver.writeProperties(propertyInfos, context.currentProject().getId(), restoredFile, restoredFile.getType(), false);
 
         }
-        
-        m_userDriver.removeAccessControlEntries(context.currentProject(),resource.getResourceId());
+
+        m_userDriver.removeAccessControlEntries(context.currentProject(), resource.getResourceId());
         // copy the access control entries
-        ListIterator aceList = m_userDriver.readAccessControlEntries(onlineProject,resource.getResourceId(), false).listIterator();
+        ListIterator aceList = m_userDriver.readAccessControlEntries(onlineProject, resource.getResourceId(), false).listIterator();
         while (aceList.hasNext()) {
-            CmsAccessControlEntry ace = (CmsAccessControlEntry) aceList.next();
+            CmsAccessControlEntry ace = (CmsAccessControlEntry)aceList.next();
             m_userDriver.createAccessControlEntry(context.currentProject(), resource.getResourceId(), ace.getPrincipal(), ace.getPermissions().getAllowedPermissions(), ace.getPermissions().getDeniedPermissions(), ace.getFlags());
-        }                        
+        }
 
         // update the cache
         clearResourceCache();
 
         m_propertyCache.clear();
         m_accessCache.clear();
-        
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", resource)));        
+
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", resource)));
     }
 
     /**
@@ -7768,7 +7678,7 @@ public class CmsDriverManager extends Object {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] unlockProject() " + projectId, CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
     }
-    
+
     /**
      * Unlocks a resource by removing the exclusive lock on the exclusive locked sibling.<p>
      *
@@ -7780,14 +7690,14 @@ public class CmsDriverManager extends Object {
      */
     public CmsLock unlockResource(CmsRequestContext context, String resourcename) throws CmsException {
         CmsLock oldLock = m_lockDispatcher.removeResource(this, context, resourcename, false);
-        clearResourceCache();   
-        
+        clearResourceCache();
+
         CmsResource resource = readFileHeader(context, resourcename);
         OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", resource)));
 
-        return oldLock;     
-        }
-        
+        return oldLock;
+    }
+
     /**
      * When a project is published this method aktualises the online link table.
      *
@@ -7798,7 +7708,6 @@ public class CmsDriverManager extends Object {
     public void updateOnlineProjectLinks(Vector deleted, Vector changed, Vector newRes, int pageType) throws CmsException {
         m_projectDriver.writeProjectLinksOnline(deleted, changed, newRes, pageType);
     }
-
 
     /**
      * Checks if a user is member of a group.<P/>
@@ -7819,7 +7728,7 @@ public class CmsDriverManager extends Object {
         Vector groups = getGroupsOfUser(context, username);
         CmsGroup group;
         for (int z = 0; z < groups.size(); z++) {
-            group = (CmsGroup) groups.elementAt(z);
+            group = (CmsGroup)groups.elementAt(z);
             if (groupname.equals(group.getName())) {
                 return true;
             }
@@ -7941,7 +7850,7 @@ public class CmsDriverManager extends Object {
 
         Iterator i = acEntries.iterator();
         while (i.hasNext()) {
-            m_userDriver.writeAccessControlEntry(context.currentProject(), (CmsAccessControlEntry) i.next());
+            m_userDriver.writeAccessControlEntry(context.currentProject(), (CmsAccessControlEntry)i.next());
         }
 
         clearAccessControlListCache();
@@ -7965,11 +7874,11 @@ public class CmsDriverManager extends Object {
     public void writeAccessControlEntry(CmsRequestContext context, CmsResource resource, CmsAccessControlEntry acEntry) throws CmsException {
 
         // get the old values
-        long dateLastModified=resource.getDateLastModified();
-        CmsUUID userLastModified=resource.getUserLastModified();
-        
+        long dateLastModified = resource.getDateLastModified();
+        CmsUUID userLastModified = resource.getUserLastModified();
+
         checkPermissions(context, resource, I_CmsConstants.C_CONTROL_ACCESS);
-        
+
         m_userDriver.writeAccessControlEntry(context.currentProject(), acEntry);
         clearAccessControlListCache();
         touchResource(context, resource, dateLastModified, userLastModified);
@@ -7993,7 +7902,7 @@ public class CmsDriverManager extends Object {
                 m_projectDriver.writeSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_CRONTABLE, crontable);
             }
         } else {
-            throw new CmsSecurityException("[" + this.getClass().getName() + "] writeCronTable()", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);       
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] writeCronTable()", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
         }
     }
 
@@ -8019,7 +7928,7 @@ public class CmsDriverManager extends Object {
             }
 
         } else {
-            throw new CmsSecurityException("[" + this.getClass().getName() + "] writePackagePath()", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);            
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] writePackagePath()", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
         }
     }
 
@@ -8052,7 +7961,7 @@ public class CmsDriverManager extends Object {
         // write-acces  was granted - write the file.
         //m_vfsDriver.writeFile(context.currentProject(), file, C_UPDATE_RESOURCE_STATE, context.currentUser().getId());
         m_vfsDriver.writeFileHeader(context.currentProject(), file, C_UPDATE_RESOURCE_STATE, context.currentUser().getId());
-        m_vfsDriver.writeFileContent(file.getFileId(), file.getContents(), context.currentProject().getId(), false);        
+        m_vfsDriver.writeFileContent(file.getFileId(), file.getContents(), context.currentProject().getId(), false);
 
         if (file.getState() == I_CmsConstants.C_STATE_UNCHANGED) {
             file.setState(I_CmsConstants.C_STATE_CHANGED);
@@ -8061,8 +7970,8 @@ public class CmsDriverManager extends Object {
         // update the cache
         clearResourceCache();
         m_accessCache.clear();
-        
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", file)));        
+
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", file)));
     }
 
     /**
@@ -8080,7 +7989,7 @@ public class CmsDriverManager extends Object {
             if (isAdmin(context)) {
                 Enumeration enu = extensions.keys();
                 while (enu.hasMoreElements()) {
-                    String key = (String) enu.nextElement();
+                    String key = (String)enu.nextElement();
                     validFilename(key);
                 }
                 if (m_projectDriver.readSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_EXTENSIONS) == null) {
@@ -8091,7 +8000,7 @@ public class CmsDriverManager extends Object {
                     m_projectDriver.writeSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_EXTENSIONS, extensions);
                 }
             } else {
-                throw new CmsSecurityException("[" + this.getClass().getName() + "] writeFileExtensions() ", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);                                        
+                throw new CmsSecurityException("[" + this.getClass().getName() + "] writeFileExtensions() ", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
             }
         }
     }
@@ -8135,8 +8044,8 @@ public class CmsDriverManager extends Object {
 
         // inform about the file-system-change
         m_accessCache.clear();
-        
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", file)));        
+
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", file)));
     }
 
     /**
@@ -8154,7 +8063,7 @@ public class CmsDriverManager extends Object {
             m_userDriver.writeGroup(group);
             m_groupCache.put(new CacheId(group), group);
         } else {
-            throw new CmsSecurityException("[" + this.getClass().getName() + "] writeGroup() " + group.getName(), CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);                        
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] writeGroup() " + group.getName(), CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
         }
     }
 
@@ -8203,7 +8112,7 @@ public class CmsDriverManager extends Object {
         m_propertyCache.clear();
 
         if (res.isFile()) {
-            m_vfsDriver.writeFileHeader(context.currentProject(), (CmsFile) res, C_UPDATE_RESOURCE_STATE, context.currentUser().getId());
+            m_vfsDriver.writeFileHeader(context.currentProject(), (CmsFile)res, C_UPDATE_RESOURCE_STATE, context.currentUser().getId());
         } else {
             m_vfsDriver.writeFolder(context.currentProject(), readFolder(context, resource), C_UPDATE_RESOURCE_STATE, context.currentUser().getId());
         }
@@ -8211,11 +8120,11 @@ public class CmsDriverManager extends Object {
         if (res.getState() == I_CmsConstants.C_STATE_UNCHANGED) {
             res.setState(I_CmsConstants.C_STATE_CHANGED);
         }
-        
+
         // update the cache
         clearResourceCache();
-        
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", res)));        
+
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", res)));
     }
 
     /**
@@ -8244,22 +8153,22 @@ public class CmsDriverManager extends Object {
         m_propertyCache.clear();
         // set the file-state to changed
         if (res.isFile()) {
-            m_vfsDriver.writeFileHeader(context.currentProject(), (CmsFile) res, C_UPDATE_RESOURCE_STATE, context.currentUser().getId());
+            m_vfsDriver.writeFileHeader(context.currentProject(), (CmsFile)res, C_UPDATE_RESOURCE_STATE, context.currentUser().getId());
         } else {
             m_vfsDriver.writeFolder(context.currentProject(), readFolder(context, resource), C_UPDATE_RESOURCE_STATE, context.currentUser().getId());
         }
-        
+
         if (res.getState() == I_CmsConstants.C_STATE_UNCHANGED) {
             res.setState(I_CmsConstants.C_STATE_CHANGED);
         }
 
         // update the cache
         clearResourceCache();
-        
-        Map data = (Map) new HashMap();
+
+        Map data = (Map)new HashMap();
         data.put("resource", res);
         data.put("property", property);
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_PROPERTY_MODIFIED, data));        
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_PROPERTY_MODIFIED, data));
     }
 
     /**
@@ -8281,7 +8190,7 @@ public class CmsDriverManager extends Object {
             m_propertyDefVectorCache.clear();
             return (m_vfsDriver.writePropertyDefinition(propertydef));
         } else {
-            throw new CmsSecurityException("[" + this.getClass().getName() + "] writePropertydefinition() " + propertydef.getName(), CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);                                                    
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] writePropertydefinition() " + propertydef.getName(), CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
         }
     }
 
@@ -8329,8 +8238,8 @@ public class CmsDriverManager extends Object {
         //clearResourceCache(resource.getResourceName(), context.currentProject(), context.currentUser());
         clearResourceCache();
         m_accessCache.clear();
-        
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", resource)));        
+
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", resource)));
     }
 
     /**
@@ -8391,7 +8300,7 @@ public class CmsDriverManager extends Object {
             clearUserCache(user);
             putUserInCache(user);
         } else {
-            throw new CmsSecurityException("[" + this.getClass().getName() + "] writeUser() " + user.getName(), CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);                                                                
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] writeUser() " + user.getName(), CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
         }
     }
 
@@ -8432,24 +8341,24 @@ public class CmsDriverManager extends Object {
                 return CmsLock.getNullLock();
             }
         }
-        
+
         return getLock(context, resource.getRootPath());
     }
-    
+
     /**
      * @see org.opencms.lock.CmsLockDispatcher#getLock(CmsDriverManager, CmsRequestContext, String)
      */
     public CmsLock getLock(CmsRequestContext context, String resourcename) throws CmsException {
         return m_lockDispatcher.getLock(this, context, resourcename);
-    } 
-    
+    }
+
     /**
      * @see org.opencms.lock.CmsLockDispatcher#isLocked(CmsDriverManager, CmsRequestContext, String)
      */
     public boolean isLocked(CmsRequestContext context, String resourcename) throws CmsException {
         return m_lockDispatcher.isLocked(this, context, resourcename);
     }
-    
+
     /**
      * Proves if a specified resource is inside the current project.<p>
      * 
@@ -8460,19 +8369,19 @@ public class CmsDriverManager extends Object {
      */
     public boolean isInsideCurrentProject(CmsRequestContext context, CmsResource resource) {
         List projectResources = null;
-           
+
         try {
-            projectResources = readProjectResources(context,context.currentProject());
+            projectResources = readProjectResources(context, context.currentProject());
         } catch (CmsException e) {
             if (OpenCms.getLog(CmsLog.CHANNEL_MAIN).isErrorEnabled()) {
                 OpenCms.getLog(CmsLog.CHANNEL_MAIN).error("Error reading project resources", e);
             }
-                        
+
             return false;
-        }                     
+        }
         return CmsProject.isInsideProject(projectResources, resource);
-    } 
-    
+    }
+
     /**
      * Returns the list of all resource names that define the "view" of the given project.<p>
      *
@@ -8481,10 +8390,10 @@ public class CmsDriverManager extends Object {
      * @return the list of all resource names that define the "view" of the given project
      * @throws CmsException if something goes wrong
      */
-    public List readProjectResources(CmsRequestContext context, CmsProject project) throws CmsException {      
+    public List readProjectResources(CmsRequestContext context, CmsProject project) throws CmsException {
         return m_projectDriver.readProjectResources(project);
     }
-    
+
     /**
      * Recovers a resource from the online project back to the offline project as an unchanged resource.<p>
      * 
@@ -8521,48 +8430,17 @@ public class CmsDriverManager extends Object {
                 onlineFolder = readFolder(context, resourcename);
                 contents = new byte[0];
                 properties = readProperties(context, resourcename, context.getAdjustedSiteRoot(resourcename), false);
-}
+            }
             // switch back to the previous project
             context.setCurrentProject(oldProject.getId());
 
             if (!resourcename.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
                 // create the file in the offline project     
-                newFile = new CmsFile(
-                    onlineFile.getStructureId(), 
-                    onlineFile.getResourceId(), 
-                    parentFolder.getStructureId(), 
-                    onlineFile.getFileId(), 
-                    CmsResource.getName(resourcename), 
-                    onlineFile.getType(), 
-                    onlineFile.getFlags(), 
-                    0, 
-                    com.opencms.core.I_CmsConstants.C_STATE_UNCHANGED, 
-                    getResourceType(onlineFile.getType()).getLoaderId(), 
-                    0, 
-                    context.currentUser().getId(), 
-                    0, 
-                    context.currentUser().getId(), 
-                    contents.length, 
-                    1, 
-                    contents);
+                newFile = new CmsFile(onlineFile.getStructureId(), onlineFile.getResourceId(), parentFolder.getStructureId(), onlineFile.getFileId(), CmsResource.getName(resourcename), onlineFile.getType(), onlineFile.getFlags(), 0, com.opencms.core.I_CmsConstants.C_STATE_UNCHANGED, getResourceType(onlineFile.getType()).getLoaderId(), 0, context.currentUser().getId(), 0, context.currentUser().getId(), contents.length, 1, contents);
                 newResource = m_vfsDriver.createFile(context.currentProject(), newFile, context.currentUser().getId(), parentFolder.getStructureId(), CmsResource.getName(resourcename));
             } else {
                 // create the folder in the offline project  
-                newFolder = new CmsFolder(
-                    onlineFolder.getStructureId(), 
-                    onlineFolder.getResourceId(), 
-                    parentFolder.getStructureId(), 
-                    CmsUUID.getNullUUID(), 
-                    CmsResource.getName(resourcename), 
-                    CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, 
-                    onlineFolder.getFlags(), 
-                    0, 
-                    com.opencms.core.I_CmsConstants.C_STATE_UNCHANGED, 
-                    0, 
-                    context.currentUser().getId(), 
-                    0, 
-                    context.currentUser().getId(), 
-                    1);
+                newFolder = new CmsFolder(onlineFolder.getStructureId(), onlineFolder.getResourceId(), parentFolder.getStructureId(), CmsUUID.getNullUUID(), CmsResource.getName(resourcename), CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, onlineFolder.getFlags(), 0, com.opencms.core.I_CmsConstants.C_STATE_UNCHANGED, 0, context.currentUser().getId(), 0, context.currentUser().getId(), 1);
                 newResource = m_vfsDriver.createFolder(context.currentProject(), newFolder, parentFolder.getStructureId());
             }
 
@@ -8578,14 +8456,14 @@ public class CmsDriverManager extends Object {
             throw e;
         } finally {
             // switch back to the previous project
-            context.setCurrentProject(oldProject.getId());                        
+            context.setCurrentProject(oldProject.getId());
             clearResourceCache();
         }
-        
+
         newResource.setFullResourceName(resourcename);
-        
+
         OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", newResource)));
-        
+
         return newResource;
     }
 
