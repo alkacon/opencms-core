@@ -8,6 +8,21 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.0a28 Giedi Prime: Rabban - 19 May 2000
+ 
+! Added new import/export which uses a zip-file for storing data.
+! Use fastSetXmlData for setting xml tags in file list. Performance improvement 
+  of about 15 percent with long file lists.
+! New resource type 'link'. Links to other files in the filesystem possible.
+* Corrected an access-check error for publishing projects.
+* If a owner or group of a resource was deleted the filelist throwed an exception. 
+  Now dummy-user and group objects will be used.
+* Tasks revised, only tasks for valid projects will be shown now.
+- Exception that are thrown while generating emails to notify tasks are now caught 
+  and logged.
+ 
+
+ 
 OpenCms 4.0a27 Giedi Prime: Rabban - 05 May 2000
 
 ! New locking mechanism for folders: All lock operations are also applied on the subresources of
