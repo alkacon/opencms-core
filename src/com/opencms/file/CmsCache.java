@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsCache.java,v $
- * Date   : $Date: 2000/10/12 12:36:46 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/10/13 16:09:26 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -35,7 +35,7 @@ import com.opencms.core.*;
  * data read from the File DB.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.13 $ $Date: 2000/10/12 12:36:46 $
+ * @version $Revision: 1.14 $ $Date: 2000/10/13 16:09:26 $
  */
 
 public class CmsCache implements I_CmsConstants {
@@ -218,16 +218,22 @@ public class CmsCache implements I_CmsConstants {
 	 * @param id The Id of the Object to be removed from the cache.
 	 */
 	public  void remove(int id)	{
-	  String key = (String)index.get(new Integer(id));
-	  index.remove(new Integer(id));
-	  cache.remove(key);
+		if (max_objects > 0)
+		{
+			String key = (String)index.get(new Integer(id));
+	  		index.remove(new Integer(id));
+			cache.remove(key);
+		}
 	}
 	/**
 	 * Removes a CmsCachedObject from the cache.
 	 * @param key The key of the Object to be removed from the cache.
 	 */
-	public  void remove(String key)	{ 
-	  cache.remove(key);
+	public  void remove(String key)	{
+		if (max_objects > 0)
+		{
+			cache.remove(key);
+		}
 	}
 	/**
 	 * Removes the least recent used object from the cache.
