@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/util/Attic/CmsMessages.java,v $
- * Date   : $Date: 2003/11/08 10:32:43 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/02/04 10:48:13 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,12 +47,15 @@ import java.util.ResourceBundle;
  * that can be checked to see if the instance was properly initialized.
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.0 beta 2
  */
 public final class CmsMessages extends Object {  
-       
+        
+    /** Prefix / Suffix for unknown keys */
+    public static final String C_UNKNOWN_KEY_EXTENSION = "???";
+    
     // member variables
     private ResourceBundle m_bundle; 
     private Locale m_locale;
@@ -131,7 +134,13 @@ public final class CmsMessages extends Object {
      * @return the formatted unknown key
      */
     public static String formatUnknownKey(String keyName) {
-        return "??? " + keyName + " ???";        
+        StringBuffer buf = new StringBuffer(64);
+        buf.append(C_UNKNOWN_KEY_EXTENSION);
+        buf.append(" ");
+        buf.append(keyName);
+        buf.append(" ");
+        buf.append(C_UNKNOWN_KEY_EXTENSION);
+        return buf.toString();        
     }
     
     /**

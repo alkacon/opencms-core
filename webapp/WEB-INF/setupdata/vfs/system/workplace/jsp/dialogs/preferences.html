@@ -167,7 +167,12 @@ break;
 case 3:
 	// ########## editor settings
 	%>
-		Not yet available...
+		<table border="0" cellpadding="4" cellspacing="0">
+		<tr>
+			<td><%= wp.key("input.editor.buttonstyle") %></td>
+			<td><%= wp.buildSelectEditorButtonStyle("name=\"tabedbuttonstyle\" style=\"width: 200px;\"") %></td>
+		</tr>
+		</table>
 	<%
 break;
 case 4:

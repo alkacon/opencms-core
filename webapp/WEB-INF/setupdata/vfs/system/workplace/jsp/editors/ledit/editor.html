@@ -9,7 +9,7 @@ CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response
 CmsEditorDisplayOptions options = new CmsEditorDisplayOptions(cms.getCmsObject());
 CmsLEditEditor wp = new CmsLEditEditor(cms);
 
-int buttonStyle = 0;
+int buttonStyle = wp.getSettings().getUserSettings().getEditorButtonStyle();
 
 //////////////////// start of switch statement 
 	

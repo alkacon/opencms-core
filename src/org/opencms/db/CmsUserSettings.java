@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2004/02/03 17:06:44 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/04 10:48:13 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,18 +38,24 @@ import com.opencms.workplace.I_CmsWpConstants;
 
 import org.opencms.workplace.CmsReport;
 
+import java.util.HashMap;
 import java.util.Hashtable;
 
 /**
  * Object to conveniently access and modify the users workplace settings.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.1.12
  */
 public class CmsUserSettings {
     
+    /** Identifier for the users additional editor settings information */
+    public static final String C_ADDITIONAL_INFO_EDITORSETTINGS = "USER_EDITORSETTINGS";
+    
+    /** Identifier for the explorer button style setting key */
+    public static final String C_EDITOR_BUTTONSTYLE = "EDITOR_BUTTONSTYLE";
     /** Identifier for the explorer button style setting key */
     public static final String C_EXPLORER_BUTTONSTYLE = "EXPLORER_BUTTONSTYLE";
     /** Identifier for the explorer number of file entries per page setting key */
@@ -66,6 +72,7 @@ public class CmsUserSettings {
     private int m_explorerButtonStyle;
     private int m_explorerFileEntries;
     private int m_explorerSettings;
+    private HashMap m_editorSettings;
     private Hashtable m_taskSettings;
     private int m_taskMessages;
     private Hashtable m_workplaceSettings;
@@ -80,6 +87,7 @@ public class CmsUserSettings {
         m_explorerButtonStyle = C_BUTTONSTYLE_DEFAULT;
         m_explorerFileEntries = C_ENTRYS_PER_PAGE_DEFAULT;
         m_explorerSettings = I_CmsWpConstants.C_FILELIST_NAME;
+        m_editorSettings = new HashMap();
         m_taskSettings = new Hashtable();
         m_taskMessages = 0;
         m_workplaceSettings = new Hashtable();
@@ -125,6 +133,10 @@ public class CmsUserSettings {
             setShowExplorerFileType(true);
             setShowExplorerFileDateLastModified(true);
         }
+        m_editorSettings = (HashMap)m_user.getAdditionalInfo(C_ADDITIONAL_INFO_EDITORSETTINGS);
+        if (m_editorSettings == null) {
+            m_editorSettings = new HashMap();
+        }
         m_workplaceSettings = (Hashtable)m_user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_STARTSETTINGS);
         m_taskSettings = (Hashtable)m_user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_TASKSETTINGS);
         m_zipCode = (String)m_user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_ZIPCODE);
@@ -151,6 +163,9 @@ public class CmsUserSettings {
         m_user.setAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_ZIPCODE, m_zipCode);
         m_taskSettings.put(I_CmsConstants.C_TASK_MESSAGES, new Integer(m_taskMessages));
         m_user.setAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_TASKSETTINGS, m_taskSettings);
+        if (m_editorSettings.size() > 0) {
+            m_user.setAdditionalInfo(C_ADDITIONAL_INFO_EDITORSETTINGS, m_editorSettings);
+        }
 
         cms.writeUser(m_user);
     }
@@ -235,6 +250,30 @@ public class CmsUserSettings {
         } else {
             m_taskMessages &= ~setting;
         }
+    }
+    
+    /**
+     * Returns the style of the editor buttons of the user.<p>
+     * 
+     * @return the style of the editor buttons of the user
+     */
+    public int getEditorButtonStyle() {
+        int style = 0;
+        try {
+            style = Integer.parseInt((String)m_editorSettings.get(C_EDITOR_BUTTONSTYLE));
+        } catch (Throwable t) {
+            // ignore this exception
+        }
+        return style;
+    }
+    
+    /**
+     * Sets the style of the editor buttons of the user.<p>
+     * 
+     * @param style the style of the editor buttons of the user
+     */
+    public void setEditorButtonStyle(int style) {
+        m_editorSettings.put(C_EDITOR_BUTTONSTYLE, "" + style);
     }
     
     /**

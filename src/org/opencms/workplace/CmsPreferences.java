@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPreferences.java,v $
- * Date   : $Date: 2004/02/03 17:06:44 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/02/04 10:48:13 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.1.12
  */
@@ -291,6 +291,17 @@ public class CmsPreferences extends CmsTabDialog {
         String [] vals = new String[] {"0", "1", "2"};
         List values = new ArrayList(java.util.Arrays.asList(vals));
         return buildSelect(htmlAttributes, options, values, selectedIndex);
+    }
+    
+    /**
+     * Builds the html for the editor button style select box.<p>
+     * 
+     * @param htmlAttributes optional html attributes for the &lgt;select&gt; tag
+     * @return the html for the editor button style select box
+     */
+    public String buildSelectEditorButtonStyle(String htmlAttributes) {
+        int selectedIndex = Integer.parseInt(getParamTabEdButtonStyle());
+        return buildSelectButtonStyle(htmlAttributes, selectedIndex);
     }
     
     /**
@@ -587,6 +598,28 @@ public class CmsPreferences extends CmsTabDialog {
             return "true";
         }
         return "";
+    }
+    
+    /**
+     * Returns the "editor button style" setting.<p>
+     * 
+     * @return the "editor button style" setting
+     */
+    public final String getParamTabEdButtonStyle() {
+        return "" + m_userSettings.getEditorButtonStyle();
+    }
+    
+    /**
+     * Sets the "editor button style" setting.<p>
+     * 
+     * @param value a String representation of an int value to set the "editor button style" setting
+     */
+    public final void setParamTabEdButtonStyle(String value) {
+        try {
+            m_userSettings.setEditorButtonStyle(Integer.parseInt(value));
+        } catch (Throwable t) {
+            // ignore this exception
+        }
     }
     
     /**
