@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/11 13:53:07 $
-* Version: $Revision: 1.311 $
+* Date   : $Date: 2003/07/11 19:42:40 $
+* Version: $Revision: 1.312 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.311 $
+ * @version $Revision: 1.312 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -334,254 +334,54 @@ public CmsUser addWebUser(String name, String password, String group, String add
 public CmsUser anonymousUser() throws CmsException {
     return (m_driverManager.anonymousUser(m_context.currentUser(), m_context.currentProject()));
 }
-/**
- * Changes the group of a resource.
- * <br>
- * Only the group of a resource in an offline project can be changed. The state
- * of the resource is set to CHANGED (1).
- * If the content of this resource is not existing in the offline project already,
- * it is read from the online project and written into the offline project.
- * <p>
- * <B>Security:</B>
- * Access is granted, if:
- * <ul>
- * <li>the user has access to the project</li>
- * <li>the user is owner of the resource or is admin</li>
- * <li>the resource is locked by the callingUser</li>
- * </ul>
- *
- * @param filename the complete path to the resource.
- * @param newGroup the name of the new group for this resource.
- *
- * @throws CmsException if operation was not successful.
- */
-public void chgrp(String filename, String newGroup) throws CmsException {
-    CmsResource res = readFileHeader(filename);
-    I_CmsResourceType rt = getResourceType(res.getType());
-    rt.chgrp(this, filename, newGroup, false);
-}
 
-/**
- * Changes the group of a resource.
- * <br>
- * Only the group of a resource in an offline project can be changed. The state
- * of the resource is set to CHANGED (1).
- * If the content of this resource is not existing in the offline project already,
- * it is read from the online project and written into the offline project.
- * <p>
- * <B>Security:</B>
- * Access is granted, if:
- * <ul>
- * <li>the user has access to the project</li>
- * <li>the user is owner of the resource or is admin</li>
- * <li>the resource is locked by the callingUser</li>
- * </ul>
- *
- * @param filename the complete path to the resource.
- * @param newGroup the name of the new group for this resource.
- * @param chRekursive shows if the subResources (of a folder) should be changed too.
- *
- * @throws CmsException if operation was not successful.
- */
-public void chgrp(String filename, String newGroup, boolean chRekursive) throws CmsException {
-    CmsResource res = readFileHeader(filename);
-    I_CmsResourceType rt = getResourceType(res.getType());
-    rt.chgrp(this, filename, newGroup, chRekursive);
-}
+    /**
+     * Does nothing.<p>
+     *
+     * @deprecated the VFS now uses ACL's instead of user/group/permissions
+     */
+    public void chgrp(String filename, String newGroup) throws CmsException {
+    }
 
-/**
- * Changes the group of a resource.
- * <br>
- * Only the group of a resource in an offline project can be changed. The state
- * of the resource is set to CHANGED (1).
- * If the content of this resource is not existing in the offline project already,
- * it is read from the online project and written into the offline project.
- * <p>
- * <B>Security:</B>
- * Access is granted, if:
- * <ul>
- * <li>the user has access to the project</li>
- * <li>the user is owner of the resource or is admin</li>
- * <li>the resource is locked by the callingUser</li>
- * </ul>
- *
- * @param filename the complete path to the resource.
- * @param newGroup the name of the new group for this resource.
- *
- * @throws CmsException if operation was not successful.
- */
-protected void doChgrp(String filename, String newGroup) throws CmsException {
-    m_driverManager.chgrp(m_context.currentUser(), m_context.currentProject(), addSiteRoot(filename), newGroup);
-}
+    /**
+     * Does nothing.<p>
+     *
+     * @deprecated the VFS now uses ACL's instead of user/group/permissions
+     */
+    public void chgrp(String filename, String newGroup, boolean chRekursive) throws CmsException {
+    }
 
-/**
- * Changes the flags of a resource.
- * <br>
- * Only the flags of a resource in an offline project can be changed. The state
- * of the resource is set to CHANGED (1).
- * If the content of this resource is not existing in the offline project already,
- * it is read from the online project and written into the offline project.
- * The user may change the flags, if he is admin of the resource.
- * <p>
- * <B>Security:</B>
- * Access is granted, if:
- * <ul>
- * <li>the user has access to the project</li>
- * <li>the user can write the resource</li>
- * <li>the resource is locked by the callingUser</li>
- * </ul>
- *
- * @param filename the complete path to the resource.
- * @param flags the new flags for the resource.
- *
- * @throws CmsException if operation was not successful.
- * for this resource.
- */
-public void chmod(String filename, int flags) throws CmsException {
-    CmsResource res = readFileHeader(filename);
-    I_CmsResourceType rt = getResourceType(res.getType());
-    rt.chmod(this, filename, flags, false);
-}
+    /**
+     * Does nothing.<p>
+     *
+     * @deprecated the VFS now uses ACL's instead of user/group/permissions
+     */
+    public void chmod(String filename, int flags) throws CmsException {
+    }
 
-/**
- * Changes the flags of a resource.
- * <br>
- * Only the flags of a resource in an offline project can be changed. The state
- * of the resource is set to CHANGED (1).
- * If the content of this resource is not existing in the offline project already,
- * it is read from the online project and written into the offline project.
- * The user may change the flags, if he is admin of the resource.
- * <p>
- * <B>Security:</B>
- * Access is granted, if:
- * <ul>
- * <li>the user has access to the project</li>
- * <li>the user can write the resource</li>
- * <li>the resource is locked by the callingUser</li>
- * </ul>
- *
- * @param filename the complete path to the resource.
- * @param flags the new flags for the resource.
- * @param chRekursive shows if the subResources (of a folder) should be changed too.
- *
- * @throws CmsException if operation was not successful.
- * for this resource.
- */
-public void chmod(String filename, int flags, boolean chRekursive) throws CmsException {
-    CmsResource res = readFileHeader(filename);
-    I_CmsResourceType rt = getResourceType(res.getType());
-    rt.chmod(this, filename, flags, chRekursive);
-}
+    /**
+     * Does nothing.<p>
+     *
+     * @deprecated the VFS now uses ACL's instead of user/group/permissions
+     */
+    public void chmod(String filename, int flags, boolean chRekursive) throws CmsException {
+    }
 
-/**
- * Changes the flags of a resource.
- * <br>
- * Only the flags of a resource in an offline project can be changed. The state
- * of the resource is set to CHANGED (1).
- * If the content of this resource is not existing in the offline project already,
- * it is read from the online project and written into the offline project.
- * The user may change the flags, if he is admin of the resource.
- * <p>
- * <B>Security:</B>
- * Access is granted, if:
- * <ul>
- * <li>the user has access to the project</li>
- * <li>the user can write the resource</li>
- * <li>the resource is locked by the callingUser</li>
- * </ul>
- *
- * @param filename the complete path to the resource.
- * @param flags the new flags for the resource.
- *
- * @throws CmsException if operation was not successful.
- * for this resource.
- */
-protected void doChmod(String filename, int flags) throws CmsException {
-    m_driverManager.chmod(m_context.currentUser(), m_context.currentProject(), addSiteRoot(filename), flags);
-}
+    /**
+     * Does nothing.<p>
+     *
+     * @deprecated the VFS now uses ACL's instead of user/group/permissions
+     */
+    public void chown(String filename, String newOwner) throws CmsException {
+    }
 
-/**
- * Changes the owner of a resource.
- * <br>
- * Only the owner of a resource in an offline project can be changed. The state
- * of the resource is set to CHANGED (1).
- * If the content of this resource is not existing in the offline project already,
- * it is read from the online project and written into the offline project.
- * The user may change this, if he is admin of the resource.
- * <p>
- * <B>Security:</B>
- * Access is granted, if:
- * <ul>
- * <li>the user has access to the project</li>
- * <li>the user is owner of the resource or the user is admin</li>
- * <li>the resource is locked by the callingUser</li>
- * </ul>
- *
- * @param filename the complete path to the resource.
- * @param newOwner the name of the new owner for this resource.
- *
- * @throws CmsException if operation was not successful.
- */
-public void chown(String filename, String newOwner) throws CmsException {
-    CmsResource res = readFileHeader(filename);
-    I_CmsResourceType rt = getResourceType(res.getType());
-    rt.chown(this, filename, newOwner, false);
-}
-
-/**
- * Changes the owner of a resource.
- * <br>
- * Only the owner of a resource in an offline project can be changed. The state
- * of the resource is set to CHANGED (1).
- * If the content of this resource is not existing in the offline project already,
- * it is read from the online project and written into the offline project.
- * The user may change this, if he is admin of the resource.
- * <p>
- * <B>Security:</B>
- * Access is granted, if:
- * <ul>
- * <li>the user has access to the project</li>
- * <li>the user is owner of the resource or the user is admin</li>
- * <li>the resource is locked by the callingUser</li>
- * </ul>
- *
- * @param filename the complete path to the resource.
- * @param newOwner the name of the new owner for this resource.
- * @param chRekursive shows if the subResources (of a folder) should be changed too.
- *
- * @throws CmsException if operation was not successful.
- */
-public void chown(String filename, String newOwner, boolean chRekursive) throws CmsException {
-    CmsResource res = readFileHeader(filename);
-    I_CmsResourceType rt = getResourceType(res.getType());
-    rt.chown(this, filename, newOwner, chRekursive);
-}
-
-/**
- * Changes the owner of a resource.
- * <br>
- * Only the owner of a resource in an offline project can be changed. The state
- * of the resource is set to CHANGED (1).
- * If the content of this resource is not existing in the offline project already,
- * it is read from the online project and written into the offline project.
- * The user may change this, if he is admin of the resource.
- * <p>
- * <B>Security:</B>
- * Access is granted, if:
- * <ul>
- * <li>the user has access to the project</li>
- * <li>the user is owner of the resource or the user is admin</li>
- * <li>the resource is locked by the callingUser</li>
- * </ul>
- *
- * @param filename the complete path to the resource.
- * @param newOwner the name of the new owner for this resource.
- *
- * @throws CmsException if operation was not successful.
- */
-protected void doChown(String filename, String newOwner) throws CmsException {
-    m_driverManager.chown(m_context.currentUser(), m_context.currentProject(), addSiteRoot(filename), newOwner);
-}
+    /**
+     * Does nothing.<p>
+     *
+     * @deprecated the VFS now uses ACL's instead of user/group/permissions
+     */
+    public void chown(String filename, String newOwner, boolean chRekursive) throws CmsException {
+    }
 
 /**
  * Changes the resourcetype of a resource.
