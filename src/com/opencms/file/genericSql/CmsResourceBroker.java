@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/07 16:08:23 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2000/06/07 16:09:53 $
+ * Version: $Revision: 1.19 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.18 $ $Date: 2000/06/07 16:08:23 $
+ * @version $Revision: 1.19 $ $Date: 2000/06/07 16:09:53 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1191,7 +1191,29 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public Vector getGroupsOfUser(CmsUser currentUser, CmsProject currentProject, 
 								  String username)
         throws CmsException {
-        return null;
+            
+         Vector allGroups;
+         CmsGroup subGroup;
+         CmsGroup group;
+         // get all groups of the user
+         Vector groups=m_dbAccess.getGroupsOfUser(username);
+         allGroups=groups;
+         // now get all childs of the groups
+         Enumeration enu = groups.elements();
+         while (enu.hasMoreElements()) {
+             group=(CmsGroup)enu.nextElement();
+             subGroup=getParent(currentUser, currentProject,group.getName());
+			 while(subGroup != null) {
+				 // is the subGroup already in the vector?
+				 if(!allGroups.contains(subGroup)) {
+					 // no! add it
+					 allGroups.addElement(subGroup);
+				 }
+				 // read next sub group
+				 subGroup = getParent(currentUser, currentProject,subGroup.getName());
+			 }   
+         }
+         return allGroups;
     }
 	
 	/**
@@ -1496,7 +1518,18 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		throws CmsException {
 		// Check the security
 		if( isAdmin(currentUser, currentProject) ) {
-			m_dbAccess.deleteGroup(delgroup);
+            Vector childs=null;
+		    Vector users=null;
+            // get all child groups of the group
+            childs=getChild(currentUser,currentProject,delgroup);
+		    // get all users in this group
+		    users=getUsersOfGroup(currentUser,currentProject,delgroup);
+            // delete group only if it has no childs and there are no users in this group.
+            if ((childs == null) && ((users == null) || (users.size() == 0))) {                  
+			    m_dbAccess.deleteGroup(delgroup);
+            } else {
+                throw new CmsException(delgroup, CmsException.C_GROUP_NOT_EMPTY);	
+            }
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + delgroup, 
 				CmsException.C_NO_ACCESS);
@@ -1558,6 +1591,30 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public void addUserToGroup(CmsUser currentUser, CmsProject currentProject, 
 							   String username, String groupname)
         throws CmsException {
+        // Check the security
+		if( isAdmin(currentUser, currentProject) ) {
+			CmsUser user;
+            CmsGroup group;
+         
+            user=readUser(currentUser,currentProject,username);
+            //check if the user exists
+            if (user != null) {
+                group=readGroup(currentUser,currentProject,groupname);
+                //check if group exists
+                if (group != null){
+                    //add this user to the group
+                    m_dbAccess.addUserToGroup(user.getId(),group.getId());
+                } else {
+                    throw new CmsException("["+this.getClass().getName()+"]"+groupname,CmsException.C_NO_GROUP);
+                }
+            } else {
+                throw new CmsException("["+this.getClass().getName()+"]"+username,CmsException.C_NO_USER);
+            }
+		   
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + username, 
+				CmsException.C_NO_ACCESS);
+		}
     }
 
 	/**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/06/07 13:56:36 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/06/07 16:09:53 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -32,7 +32,7 @@ package com.opencms.file.genericSql;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.12 $ $Date: 2000/06/07 13:56:36 $
+ * @version $Revision: 1.13 $ $Date: 2000/06/07 16:09:53 $
  */
 public interface I_CmsQuerys {
     
@@ -76,7 +76,19 @@ public interface I_CmsQuerys {
     public static final Integer C_GROUPS_GETPARENT_KEY = new Integer(208);
     public static final String C_GROUPS_GETPARENT = "SELECT * FROM " + C_DATABASE_PREFIX + "GROUPS WHERE GROUP_ID = ?";
        
+    public static final Integer C_GROUPS_GETGROUPSOFUSER_KEY = new Integer(209);
+    public static final String C_GROUPS_GETGROUPSOFUSER = "SELECT * FROM " + C_DATABASE_PREFIX + "GROUPS AS G, "
+                                                        + C_DATABASE_PREFIX + "USERS AS U, "
+                                                        + C_DATABASE_PREFIX + "GROUPUSERS AS GU  "
+                                                        + "where U.USER_NAME = ? AND U.USER_ID=GU.USER_ID "
+                                                        + "AND GU.GROUP_ID = G.GROUP_ID";
     
+    public static final Integer C_GROUPS_ADDUSERTOGROUP_KEY = new Integer(210);
+    public static final String C_GROUPS_ADDUSERTOGROUP = "INSERT INTO " + C_DATABASE_PREFIX + "GROUPUSERS VALUES(?,?,?)";
+
+    public static final Integer C_GROUPS_USERINGROUP_KEY = new Integer(211);
+    public static final String C_GROUPS_USERINGROUP = "SELECT * FROM " + C_DATABASE_PREFIX + "GROUPUSERS WHERE GROUP_ID = ? AND USER_ID = ?";
+
     
     // Constants for Systemproperties
     public static final String C_SYSTEMPROPERTY_VALUE="SYSTEMPROPERTY_VALUE";

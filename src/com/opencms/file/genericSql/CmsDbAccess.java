@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/07 14:45:20 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2000/06/07 16:09:53 $
+ * Version: $Revision: 1.24 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.23 $ $Date: 2000/06/07 14:45:20 $ * 
+ * @version $Revision: 1.24 $ $Date: 2000/06/07 16:09:53 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	
@@ -553,7 +553,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	 * @return The parent group of the actual group or null;
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	/*public A_CmsGroup getParent(String groupname)
+	public CmsGroup getParent(String groupname)
         throws CmsException {
         CmsGroup parent = null;
         
@@ -567,24 +567,143 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
              statement=m_pool.getPreparedStatement(C_GROUPS_GETPARENT_KEY);
 			 statement.setInt(1,group.getParentId());
 			 res = statement.executeQuery();
-             m_pool.putPreparedStatement(C_GROUPS_GETPARENT_KEY,statement);
-        
+             
              // create new Cms group object
 			 if(res.next()) {
-                parent=new CmsGroup(res.getInt(C_GROUP_ID),
-                                    res.getInt(C_PARENT_GROUP_ID),
-                                    res.getString(C_GROUP_NAME),
-                                    res.getString(C_GROUP_DESCRIPTION),
-                                    res.getInt(C_GROUP_FLAGS));                                
+                group=new CmsGroup(res.getInt(C_GROUPS_GROUP_ID),
+                                  res.getInt(C_GROUPS_PARENT_GROUP_ID),
+                                  res.getString(C_GROUPS_GROUP_NAME),
+                                  res.getString(C_GROUPS_GROUP_DESCRIPTION),
+                                  res.getInt(C_GROUPS_GROUP_FLAGS));                          
              }
-       
+            res.close();
          } catch (SQLException e){
-            putConnection(con);
-            throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
-		}
+             throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		} finally {
+	        if( statement != null) {
+		         m_pool.putPreparedStatement(C_GROUPS_GETPARENT_KEY,statement);
+	        }
+         }
         return parent;
-    }*/
-     
+    }
+    
+    /**
+	 * Returns a list of groups of a user.<P/>
+	 * 
+	 * @param name The name of the user.
+	 * @return Vector of groups
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public Vector getGroupsOfUser(String name)
+		throws CmsException {
+        CmsGroup group;
+        Vector groups=new Vector();
+
+        PreparedStatement statement = null;
+		ResultSet res = null;
+        
+        try {
+          //  get all all groups of the user
+            statement = m_pool.getPreparedStatement(C_GROUPS_GETGROUPSOFUSER_KEY);
+			statement.setString(1,name);
+	
+            res = statement.executeQuery();
+
+		    while ( res.next() ) {
+                 group=new CmsGroup(res.getInt(C_GROUPS_GROUP_ID),
+                                  res.getInt(C_GROUPS_PARENT_GROUP_ID),
+                                  res.getString(C_GROUPS_GROUP_NAME),
+                                  res.getString(C_GROUPS_GROUP_DESCRIPTION),
+                                  res.getInt(C_GROUPS_GROUP_FLAGS));         
+                 groups.addElement(group);
+             }
+            res.close();  
+         } catch (SQLException e){
+              throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(),CmsException.C_SQL_ERROR, e);		
+        } finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(C_GROUPS_GETGROUPSOFUSER_KEY, statement);
+			}
+		}             
+        return groups;
+    }
+
+    
+    
+	/**
+	 * Adds a user to a group.<BR/>
+     *
+	 * Only the admin can do this.<P/>
+	 * 
+	 * @param userid The id of the user that is to be added to the group.
+	 * @param groupid The id of the group.
+	 * @exception CmsException Throws CmsException if operation was not succesfull.
+	 */	
+	public void addUserToGroup(int userid, int groupid)
+        throws CmsException {
+        
+        PreparedStatement statement = null;
+        // check if user is already in group
+        if (!userInGroup(userid,groupid)) {
+            // if not, add this user to the group
+            try {
+				// create statement
+                statement = m_pool.getPreparedStatement(C_GROUPS_ADDUSERTOGROUP_KEY);
+				// write the new assingment to the database
+				statement.setInt(1,groupid);
+				statement.setInt(2,userid);
+				// flag field is not used yet
+				statement.setInt(3,C_UNKNOWN_INT);
+				statement.executeUpdate();
+               
+             } catch (SQLException e){
+                 
+                 throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+             } finally {
+			    if( statement != null) {
+				m_pool.putPreparedStatement(C_GROUPS_ADDUSERTOGROUP_KEY, statement);
+			}
+		}             
+        }        
+    }
+
+    /**
+	 * Checks if a user is member of a group.<P/>
+	 *  
+	 * @param nameid The id of the user to check.
+	 * @param groupid The id of the group to check.
+	 * @return True or False
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	 public boolean userInGroup(int userid, int groupid)
+         throws CmsException {
+         boolean userInGroup=false;
+         PreparedStatement statement = null;
+		 ResultSet res = null;
+        try {
+			// create statement
+            statement = m_pool.getPreparedStatement(C_GROUPS_USERINGROUP_KEY);
+				
+			statement.setInt(1,groupid);
+			statement.setInt(2,userid);
+			res = statement.executeQuery();
+            if (res.next()){        
+                userInGroup=true;
+            }  
+            res.close();
+         } catch (SQLException e){       
+            throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		 } finally {
+			 if( statement != null) {
+				m_pool.putPreparedStatement(C_GROUPS_ADDUSERTOGROUP_KEY, statement);
+            }            
+        }
+         return userInGroup;
+     }
+
+    
+    
 	/**
 	 * Adds a user to the database.
 	 * 
@@ -938,14 +1057,14 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	/**
 	 * Gets all users of a type.
 	 * 
-	 * @param type the type of the users to get
+	 * @param type The type of the user.
 	 * @exception thorws CmsException if something goes wrong.
 	 */ 
 	public Vector getUsers(int type) 
 		throws CmsException {
-		PreparedStatement statement = null;
-		ResultSet res = null;
 		Vector users = new Vector();
+        PreparedStatement statement = null;
+		ResultSet res = null;
 		
 		try	{			
             statement = m_pool.getPreparedStatement(C_USERS_GETUSERS_KEY);
@@ -996,6 +1115,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 		return users;
 	}
 	
+    
 	/**
 	 * Sets a new password for a user.
 	 * 
@@ -1188,6 +1308,10 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
         m_pool.initPreparedStatement(C_GROUPS_GETGROUPS_KEY,C_GROUPS_GETGROUPS);
         m_pool.initPreparedStatement(C_GROUPS_GETCHILD_KEY,C_GROUPS_GETCHILD);
         m_pool.initPreparedStatement(C_GROUPS_GETPARENT_KEY,C_GROUPS_GETPARENT);
+        m_pool.initPreparedStatement(C_GROUPS_GETGROUPSOFUSER_KEY,C_GROUPS_GETGROUPSOFUSER);
+        m_pool.initPreparedStatement(C_GROUPS_ADDUSERTOGROUP_KEY,C_GROUPS_ADDUSERTOGROUP);
+        m_pool.initPreparedStatement(C_GROUPS_USERINGROUP_KEY,C_GROUPS_USERINGROUP);
+       
         
 		// init statements for users
 		m_pool.initPreparedStatement(C_USERS_MAXID_KEY,C_USERS_MAXID);
