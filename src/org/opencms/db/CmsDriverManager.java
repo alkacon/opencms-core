@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/10/02 16:37:49 $
- * Version: $Revision: 1.259 $
+ * Date   : $Date: 2003/10/06 13:50:19 $
+ * Version: $Revision: 1.260 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,10 +85,10 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.259 $ $Date: 2003/10/02 16:37:49 $
+ * @version $Revision: 1.260 $ $Date: 2003/10/06 13:50:19 $
  * @since 5.1
  */
-public class CmsDriverManager extends Object {
+public class CmsDriverManager extends Object implements I_CmsEventListener {
 
     /**
      * Provides a method to build cache keys for groups and users that depend either on 
@@ -433,6 +433,11 @@ public class CmsDriverManager extends Object {
         OpenCms.setRuntimeProperty("cosPoolUrl", cosPoolUrl);
         CmsDbUtil.setDefaultPool(cosPoolUrl);
 
+        // register the driver manager for clearcache events
+        org.opencms.main.OpenCms.addCmsEventListener(driverManager, new int[] {
+            I_CmsEventListener.EVENT_CLEAR_CACHES
+        });
+        
         // return the configured driver manager
         return driverManager;
     }
@@ -1034,6 +1039,7 @@ public class CmsDriverManager extends Object {
     /**
      * Clears all internal DB-Caches.<p>
      */
+    // TODO: should become protected, use event instead
     public void clearcache() {
         m_userCache.clear();
         m_groupCache.clear();
@@ -1082,6 +1088,23 @@ public class CmsDriverManager extends Object {
         m_resourceListCache.clear();
     }
 
+    /**
+     * @see org.opencms.main.I_CmsEventListener#cmsEvent(org.opencms.main.CmsEvent)
+     */
+    public void cmsEvent(CmsEvent event) {
+        if (org.opencms.main.OpenCms.getLog(this).isDebugEnabled()) {
+            org.opencms.main.OpenCms.getLog(this).debug("handling event: " + event.getType());
+        }
+        
+        switch (event.getType()) {                
+            case I_CmsEventListener.EVENT_CLEAR_CACHES:
+                this.clearcache();
+                break;
+            default:
+                break;
+        }        
+    }
+    
     /**
      * Copies the access control entries of a given resource to another resorce.<p>
      *
