@@ -8,6 +8,10 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.1.44 Arakis - 11 December 2000
+
+* Bugfixing new explorer.
+
 OpenCms 4.1.43 Arakis - 07 December 2000
 
 * Bugfixing new explorer.
