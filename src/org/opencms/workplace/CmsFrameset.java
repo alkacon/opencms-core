@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2004/01/30 14:33:29 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2004/01/30 16:49:27 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  * 
  * @since 5.1
  */
@@ -135,7 +135,7 @@ public class CmsFrameset extends CmsWorkplace {
     public String getBroadcastMessage() {
         StringBuffer result = new StringBuffer(512);
         // get the broadcast message from the session
-        String message = (String) getCms().getRequestContext().getSession(true).getValue(I_CmsConstants.C_SESSION_BROADCASTMESSAGE);
+        String message = (String)getCms().getRequestContext().getSession(true).getValue(I_CmsConstants.C_SESSION_BROADCASTMESSAGE);
         if (message != null) {
             // remove the message from session
             getCms().getRequestContext().getSession(true).removeValue(I_CmsConstants.C_SESSION_BROADCASTMESSAGE);
@@ -245,7 +245,7 @@ public class CmsFrameset extends CmsWorkplace {
         int selectedIndex = 0;                   
 
         List sites = CmsSiteManager.getAvailableSites(getCms(), true);
-
+ 
         Iterator i = sites.iterator();
         int pos = 0;
         while (i.hasNext()) {
@@ -259,7 +259,7 @@ public class CmsFrameset extends CmsWorkplace {
             pos++;
         }
         
-        return buildSelect(htmlAttributes, options, values, selectedIndex);
+        return buildSelect(htmlAttributes, options, values, selectedIndex);    
     }    
     
     /**
@@ -445,6 +445,16 @@ public class CmsFrameset extends CmsWorkplace {
         } catch (CmsException e) {
             return false;
         }        
+    }
+    
+    /**
+     * Indicates if the site selector should be shown in the top frame depending on the count of accessible sites.<p>
+     * 
+     * @return true if site selector should be shown, otherwise false
+     */
+    public boolean showSiteSelector() {
+        int siteCount = CmsSiteManager.getAvailableSites(getCms(), true).size();
+        return (siteCount > 1);    
     }
     
 }

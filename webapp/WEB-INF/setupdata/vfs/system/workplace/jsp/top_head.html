@@ -16,7 +16,7 @@
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=<%= wp.getEncoding() %>">
 <link rel="stylesheet" type="text/css" href="<%= wp.getSkinUri() %>files/css_workplace.css">
 
-<script language="JavaScript">
+<script type="text/javascript">
     var pfad="<%= wp.getResourceUri() %>";
     var encoding="<%= wp.getEncoding() %>";
     
@@ -58,9 +58,10 @@ if (wp.isPublishEnabled()) {
 	} else {
 	out.println(wp.button(null, null, "publish_in", "button.publish", buttonStyle));
 }
-%>
 
-<%= wp.buttonBarSeparator(5, 0) %>          
+if (wp.showSiteSelector()) {
+
+%><%= wp.buttonBarSeparator(5, 0) %>          
 <%= wp.buttonBarLabel("label.site") %>
 
 <form name="wpSiteSelect" method="post" action="<%= cms.link(cms.getRequestContext().getUri()) %>">
@@ -70,6 +71,7 @@ if (wp.isPublishEnabled()) {
         
 %></td>
 </form>
+<% } %>
 
 <%= wp.buttonBarSeparator(5, 0) %>          
 <%= wp.buttonBarLabel("label.view") %>
@@ -105,5 +107,4 @@ if (wp.isHelpEnabled()) {
 <%= wp.buttonBar(wp.HTML_END) %>
 
 </body>
-
 </html>

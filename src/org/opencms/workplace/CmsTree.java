@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsTree.java,v $
- * Date   : $Date: 2004/01/28 13:05:36 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/01/30 16:49:27 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 5.1
  */
@@ -615,18 +615,15 @@ public class CmsTree extends CmsWorkplace {
     }
     
     /**
-     * Indicates if the site selector should be shown depending on the tree type.<p>
+     * Indicates if the site selector should be shown depending on the tree type and the count of accessible sites.<p>
      * 
      * @return true if site selector should be shown, otherwise false
      */
     public boolean showSiteSelector() {
-        boolean show = (C_TYPE_VFSLINK.equals(getTreeType()) || C_TYPE_COPY.equals(getTreeType()) || C_TYPE_PAGELINK.equals(getTreeType()));
-        if (show) {
+        if (C_TYPE_VFSLINK.equals(getTreeType()) || C_TYPE_COPY.equals(getTreeType()) || C_TYPE_PAGELINK.equals(getTreeType())) {
             int siteCount = CmsSiteManager.getAvailableSites(getCms(), true).size();
-            if (siteCount < 2) {
-                return false;
-            }
+            return (siteCount > 1);
         }
-        return show;
+        return false;
     }
 }
