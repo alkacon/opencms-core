@@ -17,6 +17,7 @@ var y=0;
 
 // parameter for the kontextmenu
 var kontextparam;
+var kontextid;
 
 // which operation is clicked
 var DO_LOCK=1;
@@ -100,7 +101,7 @@ function showkontext(welche, parameter, id)
 {
 	// set the kontextparameter
 	kontextparam = parameter.replace(/\//g, "%2F");
-	
+	kontextid = id;	
 	if(welche!='')
 	{
 	
@@ -301,7 +302,13 @@ function doAction(action) {
 		} case 42: {
 			location.href='copy.html?file='+ kontextparam;
 			break;
-		}
+		} case 98:{
+		    location.href='NewsEditBodyBackoffice.html?id=' + kontextid;
+			break;
+		} case 97:{
+		    window.top.location.href='NewsDeleteBackoffice.html?id=' + kontextid;
+			break;
+		}		
 	}
 }
 
