@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
-* Date   : $Date: 2001/07/19 19:11:50 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2001/07/25 12:51:54 $
+* Version: $Revision: 1.13 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -63,7 +63,7 @@ import com.opencms.util.*;
  * Http requests.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.12 $ $Date: 2001/07/19 19:11:50 $
+ * @version $Revision: 1.13 $ $Date: 2001/07/25 12:51:54 $
  *
  * */
 public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_CmsLogChannels {
@@ -807,7 +807,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
                         m_sessionStorage.putUser(session.getId(), sessionData);
 
                         // restore the session-data
-                        session.putValue(C_SESSION_DATA, sessionData.get(C_SESSION_DATA));
+                        session.setAttribute(C_SESSION_DATA, sessionData.get(C_SESSION_DATA));
                     }
                 }
             }
@@ -861,7 +861,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
                             // authentification was successful create a session
                             session = req.getSession(true);
                             OpenCmsServletNotify notify = new OpenCmsServletNotify(session.getId(), m_sessionStorage);
-                            session.putValue("NOTIFY", notify);
+                            session.setAttribute("NOTIFY", notify);
                         }
                         catch(CmsException e) {
                             if(e.getType() == CmsException.C_NO_ACCESS) {
@@ -927,7 +927,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
                 sessionData.put(C_SESSION_USERNAME, cms.getRequestContext().currentUser().getName());
                 sessionData.put(C_SESSION_CURRENTGROUP, cms.getRequestContext().currentGroup().getName());
                 sessionData.put(C_SESSION_PROJECT, new Integer(cms.getRequestContext().currentProject().getId()));
-                Hashtable oldData = (Hashtable)session.getValue(C_SESSION_DATA);
+                Hashtable oldData = (Hashtable)session.getAttribute(C_SESSION_DATA);
                 if(oldData == null) {
                     oldData = new Hashtable();
                 }
@@ -943,10 +943,10 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
                 m_sessionStorage.putUser(session.getId(), sessionData);
 
                 // was the session changed?
-                if((session.getValue(C_SESSION_IS_DIRTY) != null) || dirty) {
+                if((session.getAttribute(C_SESSION_IS_DIRTY) != null) || dirty) {
 
                     // yes- store it to the database
-                    session.removeValue(C_SESSION_IS_DIRTY);
+                    session.removeAttribute(C_SESSION_IS_DIRTY);
                     try {
                         m_opencms.storeSession(session.getId(), sessionData);
                     }
@@ -961,17 +961,17 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
 
                 // session from the internal storage on its destruction.
                 OpenCmsServletNotify notify = null;
-                Object sessionValue = session.getValue("NOTIFY");
+                Object sessionValue = session.getAttribute("NOTIFY");
                 if(sessionValue instanceof OpenCmsServletNotify) {
                     notify = (OpenCmsServletNotify)sessionValue;
                     if(notify == null) {
                         notify = new OpenCmsServletNotify(session.getId(), m_sessionStorage);
-                        session.putValue("NOTIFY", notify);
+                        session.setAttribute("NOTIFY", notify);
                     }
                 }
                 else {
                     notify = new OpenCmsServletNotify(session.getId(), m_sessionStorage);
-                    session.putValue("NOTIFY", notify);
+                    session.setAttribute("NOTIFY", notify);
                 }
             }
         }
