@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsUserDriver.java,v $
- * Date   : $Date: 2003/09/25 14:38:59 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2003/10/07 12:36:43 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
 /**
  * Oracle implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.18 $ $Date: 2003/09/25 14:38:59 $
+ * @version $Revision: 1.19 $ $Date: 2003/10/07 12:36:43 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -98,7 +98,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             stmt.close();
             stmt = null;
 
-            internalWriteUserInfo(id, additionalInfos);
+            internalWriteUserInfo(id, additionalInfos, null);
              
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, "createUser name=" + name + " id=" + id.toString(), CmsException.C_SQL_ERROR, e, false);
@@ -119,7 +119,13 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
      
         try {
 
-            conn = m_sqlManager.getConnection();
+            if (reservedParam == null) {
+                // get a JDBC connection from the OpenCms standard {online|offline|backup} pools
+                conn = m_sqlManager.getConnection();
+            } else {
+                // get a JDBC connection from the reserved JDBC pools
+                conn = m_sqlManager.getConnection(((Integer) reservedParam).intValue());
+            }
 
             // write data to database
             stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_USERS_ADD");
@@ -144,7 +150,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             stmt.close();
             stmt = null;
 
-            internalWriteUserInfo(id, additionalInfos);
+            internalWriteUserInfo(id, additionalInfos, reservedParam);
                         
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, "importUser name=" + name + " id=" + id.toString(), CmsException.C_SQL_ERROR, e, false);
@@ -193,7 +199,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             stmt.close();
             stmt = null;
             
-            internalWriteUserInfo(user.getId(), user.getAdditionalInfo());
+            internalWriteUserInfo(user.getId(), user.getAdditionalInfo(), null);
             
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, "writeUser name=" + user.getName() + " id=" + user.getId().toString(), CmsException.C_SQL_ERROR, e, false);
@@ -207,9 +213,10 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
      * 
      * @param userId the user id
      * @param additionalInfo the additional user info
+     * @param reservedParam for future use
      * @throws CmsException if something goes wrong
      */
-    private void internalWriteUserInfo (CmsUUID userId, Hashtable additionalInfo) throws CmsException {
+    private void internalWriteUserInfo (CmsUUID userId, Hashtable additionalInfo, Object reservedParam) throws CmsException {
 
         PreparedStatement stmt = null;
         PreparedStatement commit = null;
@@ -223,7 +230,13 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             byte[] value = internalSerializeAdditionalUserInfo(additionalInfo);
             
             // get connection
-            conn = m_sqlManager.getConnection();
+            if (reservedParam == null) {
+                // get a JDBC connection from the OpenCms standard {online|offline|backup} pools
+                conn = m_sqlManager.getConnection();
+            } else {
+                // get a JDBC connection from the reserved JDBC pools
+                conn = m_sqlManager.getConnection(((Integer) reservedParam).intValue());
+            }            
             conn.setAutoCommit(false);
                         
             // update user_info in this special way because of using blob
