@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Encoder.java,v $
-* Date   : $Date: 2002/09/03 11:57:06 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2002/09/03 19:43:08 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,55 +29,110 @@
 
 package com.opencms.util;
 
-import java.io.*;
-import java.util.*;
-import java.net.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.util.StringTokenizer;
 
 /**
- * The Encoder provies static methods to decode and encode data. <br>
+ * The OpenCms Encoder class provides static methods to decode and encode data.<p>
+ * 
+ * The methods in this class are substitutes for <code>java.net.URLEncoder.encode()</code> and
+ * <code>java.net.URLDecoder.decode()</code>. Use the methods from this class in all OpenCms 
+ * core classes to ensure the encoding is always handled the same way.<p>
+ * 
  * The de- and encoding uses the same coding mechanism as JavaScript, special characters are
- * replaxed with <code>%hex</code> where hex is a two digit hex number.
- * <br><br>
- * On client side (browser) instead of using corresponding <code>escape</code>
- * and <code>unescape</code> JavaScript functions, use <code>encodeURIComponent</code> and
- * <code>decodeURIComponent</code> functions wich are proper work with unicode characters.
- * These functions are supported in IE 5.5+ and NS 6+
+ * replaxed with <code>%hex</code> where hex is a two digit hex number.<p>
+ * 
+ * <b>Note:</b> On the client side (browser) instead of using corresponding <code>escape</code>
+ * and <code>unescape</code> JavaScript functions, better use <code>encodeURIComponent</code> and
+ * <code>decodeURIComponent</code> functions wich are work properly with unicode characters.
+ * These functions are supported in IE 5.5+ and NS 6+ only.
  *
  * @author Michael Emmerich
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Unknown guys from Gridnine AB
  */
-//Gridnine AB Aug 9, 2002
-// see JavaDoc comments above
 public class Encoder {
 
     /**
      * Constructor
      */
+    public Encoder() {}
 
-    public Encoder() {
-
+    /**
+     * This method is a substitute for <code>URLEncoder.encode()</code>.
+     * Use this in all OpenCms core classes to ensure the encoding is
+     * always handled the same way.<p>
+     * 
+     * In case you don't know what encoding to use, set the value of 
+     * the <code>encoding</code> parameter to <code>null</code>. 
+     * This will use the default encoding, which is propably the right one.<p>
+     * 
+     * It also solves a backward compatiblity issue between Java 1.3 and 1.4,
+     * since 1.3 does not support an explicit encoding parameter and always uses
+     * the default system encoding.<p>
+     * 
+     * @param source The string to encode
+     * @param encoding The encoding to use (if null, the system default is used)
+     * @return The encoded source String
+     */
+    public static String encode(String source, String encoding) {
+        if (encoding != null) {
+            try {
+                return URLEncoder.encode(source, encoding);                
+            } catch (Exception e) {
+                // might be UnsupportedEncodingException or NoSuchMethodError                
+            }
+        }
+        // Use default encoding
+        // This is also important for Java 1.3 compatibility
+        return URLEncoder.encode(source);
     }
 
     /**
-     * Encodes a textstring that is compatible with the JavaScript escape function
+     * This method is a substitute for <code>URLDecoder.decode()</code>.
+     * Use this in all OpenCms core classes to ensure the encoding is
+     * always handled the same way.<p>
+     * 
+     * In case you don't know what encoding to use, set the value of 
+     * the <code>encoding</code> parameter to <code>null</code>. 
+     * This will use the default encoding, which is propably the right one.<p>
+     * 
+     * It also solves a backward compatiblity issue between Java 1.3 and 1.4,
+     * since 1.3 does not support an explicit encoding parameter and always uses
+     * the default system encoding.<p>
+     * 
+     * @param source The string to decode
+     * @param encoding The encoding to use (if null, the system default is used)
+     * @return The decoded source String
+     */
+    public static String decode(String source, String encoding) {
+        if (encoding != null) {
+            try {
+                return URLDecoder.decode(source, encoding);                
+            } catch (Exception e) {
+                // might be UnsupportedEncodingException or NoSuchMethodError                
+            }
+        }
+        // Use default encoding
+        // This is also important for Java 1.3 compatibility
+        return URLDecoder.decode(source);        
+    }
+
+    /**
+     * Encodes a String in a way that is compatible with the JavaScript escape function.
+     * 
      * @param Source The textstring to be encoded.
      * @return The JavaScript escaped string.
      */
-    //Gridnine AB Aug 8, 2002
+    // Gridnine AB Aug 8, 2002
     // added support for different encodings
     public static String escape(String source, String encoding) {
         StringBuffer ret = new StringBuffer();
 
         // URLEncode the text string. This produces a very similar encoding to JavaSscript
-
         // encoding, except the blank which is not encoded into a %20.
-        String enc;
-        try {
-            enc = URLEncoder.encode(source, encoding);
-        } catch (UnsupportedEncodingException uee) {
-            enc = URLEncoder.encode(source);
-        }
+        String enc = encode(source, encoding);
         StringTokenizer t = new StringTokenizer(enc, "+");
         while(t.hasMoreTokens()) {
             ret.append(t.nextToken());
@@ -89,12 +144,13 @@ public class Encoder {
     }
 
     /**
-     * Encodes a textstring that is compatible with the JavaScript escape function.
-     * Muliple blanks are encoded _multiply _with %20
+     * Encodes a String in a way that is compatible with the JavaScript escape function.
+     * Muliple blanks are encoded _multiply _with %20.
+     * 
      * @param Source The textstring to be encoded.
      * @return The JavaScript escaped string.
      */
-    //Gridnine AB Aug 8, 2002
+    // Gridnine AB Aug 8, 2002
     // added support for different encodings
     public static String escapeWBlanks(String source, String encoding) {
         if(source == null) {
@@ -104,12 +160,7 @@ public class Encoder {
 
         // URLEncode the text string. This produces a very similar encoding to JavaSscript
         // encoding, except the blank which is not encoded into a %20.
-        String enc;
-        try {
-            enc = URLEncoder.encode(source, encoding);
-        } catch (UnsupportedEncodingException e) {
-            enc = URLEncoder.encode(source);
-        }
+        String enc = encode(source, encoding);
         for(int z = 0;z < enc.length();z++) {
             if(enc.charAt(z) == '+') {
                 ret.append("%20");
@@ -122,7 +173,7 @@ public class Encoder {
     }
 
     /**
-     * Escapes a string so it may be printed as text content or attribute
+     * Escapes a String so it may be printed as text content or attribute
      * value. Non printable characters are escaped using character references.
      * Where the format specifies a deault entity reference, that reference
      * is used (e.g. <tt>&amp;lt;</tt>).
@@ -130,7 +181,6 @@ public class Encoder {
      * @param source The string to escape
      * @return The escaped string
      */
-
     public static String escapeXml(String source) {
         StringBuffer result;
         int i;
@@ -144,7 +194,7 @@ public class Encoder {
                 result.append(ch);
             }
             else {
-                result.append('&').append(charRef).append(';');
+                result.append(charRef);
             }
         }
         return result.toString();
@@ -154,34 +204,34 @@ public class Encoder {
      * Encodes special XML characters into the equivalent character references.
      *
      * @param ch The character to encode
-     * @return The encoded character as string
+     * @return The encoded character as a String
      */
-
-    protected static String getEntityRef(char ch) {
-
+    private static String getEntityRef(char ch) {
         // These four entities have to be escaped by default.
         switch(ch) {
         case '<':
-            return "lt";
+            return "&lt;";
 
         case '>':
-            return "gt";
+            return "&gt;";
 
         case '&':
-            return "amp";
+            return "&amp;";
 
         case '"':
-            return "quot";
+            return "&quot;";
         }
         return null;
     }
 
     /**
-     * Decodes a textstring that is compatible with the JavaScript unescape function.
-     * @param Source The textstring to be decoded.
-     * @return The JavaScript unescaped string.
+     * Decodes a String in a way that is compatible with the JavaScript 
+     * unescape function.
+     * 
+     * @param Source The String to be decoded.
+     * @return The JavaScript unescaped String.
      */
-    //Gridnine AB Aug 8, 2002
+    // Gridnine AB Aug 8, 2002
     // changed to support different encodings
     public static String unescape(String source, String encoding) {
         if(source == null){
@@ -198,79 +248,6 @@ public class Encoder {
                 preparedSource.append(c);
             }
         }
-        try {
-            return URLDecoder.decode(preparedSource.toString(), encoding);
-        } catch (UnsupportedEncodingException e) {
-            return URLDecoder.decode(preparedSource.toString());
-        }
-        /*
-        if(source == null){
-            return null;
-        }
-        StringBuffer unescaped = new StringBuffer();
-        String token = "";
-        String hex = "";
-        int code;
-        Byte bytecode;
-        byte bytestorage[] = new byte[1];
-        String stringcode;
-
-        // the flag signals if the character conversion should be skipped.
-        boolean flag = false;
-
-        // check if the escaped string starts with an escaped character
-        if(!source.startsWith("%")) {
-            flag = true;
-        }
-
-        // convert all %hex in the texttring
-        StringTokenizer t = new StringTokenizer(source, "%");
-        while(t.hasMoreTokens()) {
-            token = t.nextToken();
-
-            // skip conversion if token is only one character
-            if(token.length() < 2) {
-                flag = true;
-            }
-            if(!flag) {
-
-                // get the real character from the hex code and append it to the already converted
-
-                // result
-                if ((token.startsWith("u") || token.startsWith("U"))
-                    && (token.length() > 2)) {
-                    // skip leading Unicode mark
-                    hex = token.substring(1, 5);
-                    token = token.substring(5);
-                } else {
-                    hex = token.substring(0, 2);
-                    token = token.substring(2);
-                }
-                try {
-                    code = Integer.parseInt(hex, 16);
-                }
-                catch(Exception e) {
-                    code = 32;
-                    token = " ";
-                }
-                bytecode = new Byte(new Integer(code).byteValue());
-                bytestorage[0] = bytecode.byteValue();
-                try {
-                    stringcode = new String(bytestorage, encoding);
-                } catch (UnsupportedEncodingException e) {
-                    stringcode = new String(bytestorage);
-                }
-                unescaped.append(stringcode);
-                unescaped.append(token);
-            }
-            else {
-
-                // only add the token to the result, do not convert it
-                flag = false;
-                unescaped.append(token);
-            }
-        }
-        return unescaped.toString();
-        */
+        return decode(preparedSource.toString(), encoding);
     }
 }
