@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2000/03/28 09:10:41 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/03/28 16:17:06 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 2000/03/28 09:10:41 $
+ * @version $Revision: 1.2 $ $Date: 2000/03/28 16:17:06 $
  */
 public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -167,11 +167,12 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
       * @param names The names of the new rescources.
       * @param values The links that are connected with each resource.
       * @param parameters Hashtable of parameters (not used yet).
+      * @param descriptions Description that will be displayed for the new resource.
       * @returns The vectors names and values are filled with the information found in the 
       * workplace.ini.
       * @exception Throws CmsException if something goes wrong.
       */
-      public void getResources(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+      public void getResources(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Vector descriptions, Hashtable parameters) 
             throws CmsException {
 
            // Check if the list of available resources is not yet loaded from the workplace.ini
@@ -191,6 +192,9 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
             if (values == null) {
                 values=new Vector();
             }
+            if (descriptions == null) {
+                descriptions=new Vector();
+            }
             
             // OK. Now m_names and m_values contain all available
             // resource information.
@@ -200,7 +204,14 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
                 String loopValue = (String)m_values.elementAt(i);
                 String loopName = (String)m_names.elementAt(i);
                 values.addElement(loopValue);
-                names.addElement(loopName);
+                names.addElement("file_" + loopName);
+                String descr;
+                if(lang != null) {
+                    descr = lang.getLanguageValue("fileicon." + loopName);
+                } else {
+                    descr = loopName;
+                }
+                descriptions.addElement(descr);
             }
       }     
 
