@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
-* Date   : $Date: 2002/10/22 12:40:46 $
-* Version: $Revision: 1.55 $
+* Date   : $Date: 2002/11/16 13:15:20 $
+* Version: $Revision: 1.56 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import com.opencms.template.cache.*;
  * @author Anders Fugmann
  * @author Alexander Lucas
  *
- * @version $Revision: 1.55 $ $Date: 2002/10/22 12:40:46 $
+ * @version $Revision: 1.56 $ $Date: 2002/11/16 13:15:20 $
  *
  */
 public class CmsRequestContext implements I_CmsConstants {
@@ -143,13 +143,13 @@ public class CmsRequestContext implements I_CmsConstants {
         CmsElementCache elementCache,
         CmsResourceTranslator directoryTranslator,
         CmsResourceTranslator fileTranslator)
-        throws CmsException {
+    throws CmsException {
         m_rb = rb;
         m_req = req;
         m_resp = resp;
         m_links = new Vector();
         m_dependencies = new Vector();
-
+        
         try {
             m_user = m_rb.readUser(null, null, user);
         } catch (CmsException ex) {
@@ -205,8 +205,9 @@ public class CmsRequestContext implements I_CmsConstants {
                 }
             } catch (UnsupportedOperationException e) {
             }
-            // Gridnine AB Aug 1, 2002
-            detectEncoding();
+
+            // Initialize encoding 
+            initEncoding();
         }
     }
 
@@ -529,12 +530,20 @@ public class CmsRequestContext implements I_CmsConstants {
     }    
 
     /**
-     * Returns the name of the current site, e.g. /default
+     * Returns the site name, e.g. <code>/default</code>
      *
-     * @return String The site name
+     * @return the site name, e.g. <code>/default</code>
      */
     public String getSiteName() {
         return C_DEFAULT_SITE;
+    }
+    
+    /**
+     * Returns the site root, e.g. <code>/default/vfs</code>
+     *      * @return the site root, e.g. <code>/default/vfs</code>
+     */
+    public String getSiteRoot() {
+        return m_siteRoot;
     }
 
     /**
@@ -549,56 +558,34 @@ public class CmsRequestContext implements I_CmsConstants {
      * Detects current content encoding to be used in HTTP response
      * based on requested resource or session state.
      */
-    //Gridnine AB Aug 13, 2002
-    public void detectEncoding() {
-        m_encoding = null;
-        String requestedResource = null;
+    public void initEncoding() {
         try {
-            // try to get content encoding for requested resource
-            // or for its parents if any
-            try {
-                requestedResource = m_req.getRequestedResource();
-                String resName = getSiteRoot(requestedResource);
-                while (resName != null) {
-                    try {
-                        m_encoding =
-                            m_rb.readProperty(m_user, m_currentProject,
-                                resName, C_PROPERTY_CONTENT_ENCODING);
-                    } catch (CmsException ce) {}
-                    if (m_encoding != null) {
-                        break;
-                    }
-                    CmsResource res = m_rb.getParentResource(m_user, m_currentProject, resName);
-                    if (res == null) {
-                        break;
-                    }
-                    resName = getSiteRoot(res.getAbsolutePath());
-                }
-            } catch (Throwable t) {;}
-            if ((m_encoding == null) || "".equals(m_encoding.trim())) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG,
-                    "[" + getClass().getName() + "] can't get encoding property "
-                    + C_PROPERTY_CONTENT_ENCODING + " or original XML encoding for resource "
-                    + requestedResource + ", try to get it from session");
-                I_CmsSession session = getSession(false);
-                if (session != null) {
-                    m_encoding =
-                        (String) session.getValue(
-                            I_CmsConstants.C_SESSION_CONTENT_ENCODING);
-                }
-            }
-            if (m_encoding == null) {
-                // no encoding found - use default one
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, "no encoding found - use default one");
-                m_encoding = OpenCms.getDefaultEncoding();
-            }
-        } catch (Throwable t) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, "an error [" + t + "] has occured while determining content encoding - use default one");
-            setEncoding(OpenCms.getDefaultEncoding());
+            m_encoding = m_rb.readProperty(m_user, m_currentProject, getSiteRoot(m_req.getRequestedResource()), m_siteRoot, C_PROPERTY_CONTENT_ENCODING, true);
+        } catch (CmsException e) {
+            m_encoding = null;
         }
-        A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, "["
-            + getClass().getName() + "] resource=" + requestedResource
-            + ",  encoding=" + m_encoding);
+        if ((m_encoding != null) && ! "".equals(m_encoding)) {
+            // encoding was read from resource property
+            return;
+        } else {                
+            if (A_OpenCms.C_LOGGING && A_OpenCms.isLogging(A_OpenCms.C_OPENCMS_DEBUG)) {                                
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG,
+                    "[" + getClass().getName() + "] can't get encoding property for resource "
+                    + m_req.getRequestedResource() + ", trying to get it from session.");
+            }                    
+            I_CmsSession session = getSession(false);
+            if (session != null) {
+                m_encoding = (String)session.getValue(I_CmsConstants.C_SESSION_CONTENT_ENCODING);
+            }
+        }
+        if (m_encoding == null || "".equals(m_encoding)) {
+            // no encoding found - use default one
+            if (A_OpenCms.C_LOGGING && A_OpenCms.isLogging(A_OpenCms.C_OPENCMS_DEBUG)) {                                
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG,
+                    "[" + getClass().getName() + "] no encoding found - using default: " + A_OpenCms.getDefaultEncoding());
+            }                  
+            m_encoding = A_OpenCms.getDefaultEncoding();
+        }
     }
 
     /**
