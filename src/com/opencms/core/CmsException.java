@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsException.java,v $
- * Date   : $Date: 2000/02/21 22:25:09 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2000/03/01 13:22:30 $
+ * Version: $Revision: 1.22 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -32,7 +32,7 @@ package com.opencms.core;
  * This exception is thrown for security reasons in the Cms.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.21 $ $Date: 2000/02/21 22:25:09 $
+ * @version $Revision: 1.22 $ $Date: 2000/03/01 13:22:30 $
  */
 public class CmsException extends Exception {
 	
@@ -350,6 +350,16 @@ public class CmsException extends Exception {
 	public Exception getException()	{
 		return m_Exception;
 	}
+    
+     /**
+	 * Get the exeption message
+	 * 
+	 * @return Exception messge.
+	 */
+	public String getMessage()	{
+		return m_message;
+	}
+    
     
     /**
      * Overwrites the standart toString method.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
- * Date   : $Date: 2000/02/29 16:44:45 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2000/03/01 13:22:30 $
+ * Version: $Revision: 1.23 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -65,7 +65,7 @@ import com.opencms.file.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.22 $ $Date: 2000/02/29 16:44:45 $  
+* @version $Revision: 1.23 $ $Date: 2000/03/01 13:22:30 $  
 * 
 */
 
@@ -455,8 +455,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
             case CmsException.C_NOT_FOUND:
                 //System.err.println(e.toString());
                 res.setContentType("text/plain");
-                e.printStackTrace();
-                res.getWriter().print(e.toString());
+                res.getWriter().print(createErrorBox(e));
                 //res.sendError(res.SC_NOT_FOUND);
                 break;
             case CmsException.C_SERVICE_UNAVAILABLE:
@@ -467,12 +466,93 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
                 //System.err.println(e.toString());
                 res.setContentType("text/plain");
                 e.printStackTrace();
-                res.getWriter().print(e.toString());
+                res.getWriter().print(createErrorBox(e));
                 //res.sendError(res.SC_INTERNAL_SERVER_ERROR);
             }
         } catch (IOException ex) {
            
         }
     }
+     
+     /**
+      * Generates a formate exception output. <br>
+      * Because the exception could be thrown while accessing the system files,
+      * the complete HTML code must be added here!
+      * @param e The caught CmsException.
+      * @return String containing the HTML code of the error message.
+      */
+     private String createErrorBox(CmsException e) {
+         StringBuffer output=new StringBuffer();
+         output.append("<HTML>\n");
+         output.append("<HEAD>\n");
+         output.append("<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html\"; charset=iso-8859-1>\n");       
+         output.append("<TITLE>System Exception</TITLE>\n");
+         output.append("<style type=\"text/css\">\n");
+         output.append("TD.head {\n");
+         output.append("BACKGROUND-COLOR: #000066;\n");
+         output.append("COLOR: white;\n");
+         output.append("FONT-FAMILY: MS Sans Serif, Arial, helevitca, sans-serif;\n");
+         output.append("FONT-SIZE: 8pt;\n");
+         output.append("FONT-WEIGHT: bold }\n");
+         output.append("TD.leerzeile {\n");
+         output.append("BACKGROUND-COLOR: #c0c0c0;\n");
+         output.append("HEIGHT: 3px;\n");
+         output.append("PADDING-BOTTOM: 0px;\n");
+         output.append("PADDING-LEFT: 10px;\n");
+         output.append("PADDING-RIGHT: 10px }\n");
+         output.append("TD.dialogtxt{\n");
+         output.append("BACKGROUND-COLOR: #c0c0c0;\n");
+         output.append("COLOR: #000000;\n");
+         output.append("FONT-FAMILY: MS sans serif,arial,helvetica,sans-serif;\n");
+         output.append("FONT-SIZE: 8pt;\n");
+         output.append("FONT-WEIGHT: normal}\n"); 
+         output.append("INPUT.button{\n");      
+         output.append("COLOR: black;\n");
+         output.append("FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;\n");
+         output.append("FONT-SIZE: 8pt;\n");
+         output.append("FONT-WEIGHT: normal;\n");
+         output.append("WIDTH: 100px}\n");        
+         output.append("</style>\n");
+         output.append("</HEAD>\n");
+         output.append("<BODY bgcolor=\"#ffffff\"  background=\"/picssystem/bg_weiss.gif\"  bgproperties=fixed marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>\n");	
+         output.append("<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>\n");
+         output.append("<tr><td align=middle valign=center>\n");
+         output.append("<table cellspacing=0 cellpadding=0 border=2 width=300>\n");
+         output.append("<tr><td>\n");
+         output.append("<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>\n");
+         output.append("<tr>\n");
+         output.append("<td colspan=2 class=\"head\">System Exception</td>\n");
+         output.append("</tr>\n");
+         output.append("<tr><td colspan=2 class=\"leerzeile\">&nbsp;</td></tr>\n");
+         output.append("<tr><td class=dialogtxt rowspan=4 valign=top><img src=\"/pics/system/ic_caution.gif\" border=0 width=32 height=32></td>\n");
+         output.append("<td class=dialogtxt>A CmsException was thrown. [CmsException]: ");
+         output.append(e.getType());
+         output.append("</td></tr>\n");
+         output.append("<tr><td class=dialogtxt>Exception type: ");
+         output.append(CmsException.C_EXTXT[+e.getType()]+"\n");
+		 output.append("</td></tr>\n");	
+         output.append("<tr><td class=dialogtxt>Detailed Error: ");
+         output.append(e.getMessage());
+		 output.append("</td></tr>\n");	 
+         if (e.getException() != null){
+            output.append("<tr><td class=dialogtxt>Caught Exception:: ");
+            output.append(e.getException());
+		    output.append("</td></tr>\n");	
+         }
+         output.append("<tr><td colspan=2 class=\"leerzeile\">&nbsp;</td></tr>\n");
+         output.append("<tr><td class=dialogtxt colspan=2>\n");
+         output.append("<table cellspacing=0 cellpadding=5 width=100%>\n");         
+         output.append("<tr><td colspan=2 align=middle><input type=\"submit\" class=\"button\" width=100 value=\"Ok\" name=\"ok\" id=\"ok\" onClick=\"javascript:history.back()\"></td></tr>");
+         output.append("</table>\n");
+         output.append("</td></tr>\n");   
+         output.append("</table>\n");
+         output.append("</td></tr>\n");
+         output.append("</table>\n");
+         output.append("</td></tr>\n");
+         output.append("</table>\n");
+         output.append("</BODY>\n");
+         output.append("</HTML>\n");
+         return output.toString();
+     }
                  
 }
