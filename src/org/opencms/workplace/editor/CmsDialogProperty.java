@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDialogProperty.java,v $
- * Date   : $Date: 2004/02/21 17:11:43 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/03/05 15:03:46 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,13 +56,15 @@ import javax.servlet.jsp.PageContext;
 /**
  * Provides methods for the editor property dialog.<p> 
  * 
+ * This is a speciall dialog that is used for xmlpages in the workplace.<p>
+ * 
  * The following files use this class:
  * <ul>
  * <li>/jsp/editors/dialogs/property.html
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 5.3.0
  */
@@ -190,7 +192,7 @@ public class CmsDialogProperty extends CmsProperty {
         if (activeProperties.containsKey(I_CmsConstants.C_PROPERTY_NAVTEXT) && activeProperties.containsKey(I_CmsConstants.C_PROPERTY_NAVPOS)) {
             retValue.append(" checked=\"checked\"");
         }
-        retValue.append(">");
+        retValue.append(disabled + ">");
         retValue.append("</td>\n");
         retValue.append("\t<td class=\"textcenter\">");       
         retValue.append("&nbsp;");
@@ -258,7 +260,7 @@ public class CmsDialogProperty extends CmsProperty {
             if (editable) {
                 retValue.append(" onClick=\"toggleDelete('"+propertyName+"');\"");
             }
-            retValue.append(disabled+">");
+            retValue.append(disabled + ">");
         } else {
             // property is not used, create an empty text input field
             retValue.append("<input type=\"text\" class=\"maxwidth\" ");

@@ -101,7 +101,7 @@ function submitAdvanced() {
 function toggleNav() {
 	var checked = document.getElementById("enablenav").checked;
 	var disableFields = false;
-	if (checked == true) {
+	if (checked == true && document.getElementById("enablenav").disabled == false) {
 		if (document.getElementById("<%= wp.PREFIX_HIDDEN %>NavText")) {
 			var hiddenValue = document.getElementById("<%= wp.PREFIX_HIDDEN %>NavText").value;
 			if (hiddenValue != null && hiddenValue != "" && document.getElementById("<%= wp.PREFIX_USEPROPERTY %>NavText")) {
