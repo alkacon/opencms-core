@@ -2,6 +2,7 @@
 
     <property name="app.name"                   value="opencms"/>
     <property name="build.home"                 value="../build"/>
+    <property name="zip.home"                   value="../zip"/>
     <property name="build.classes"              value="${build.home}/classes"/>
     <property name="build.inputlib"             value="../ExternalComponents"/>
     <property name="build.inputlib.servlet"     value="${build.inputlib}/servlet.jar"/>
@@ -28,6 +29,7 @@
         <mkdir dir="${build.home}"/>
         <mkdir dir="${build.lib}"/>
         <mkdir dir="${build.oclib}"/>
+        <mkdir dir="${zip.home}"/>
     </target>
 
 
@@ -75,7 +77,7 @@
     
     <target name="copy" depends="jar">
        <copy todir="${build.home}">
-            <fileset dir="." includes="*.*" excludes="web.xml"/>
+            <fileset dir="." includes="*.*" excludes="build.xml"/>
        </copy>
         
        <copy file="${build.inputlib.xerces}" todir="${build.oclib}"/>
@@ -85,15 +87,19 @@
        <copy file="${build.inputlib.fop}" todir="${build.oclib}"/>
        
        <copy todir="${build.webinf}">
-            <fileset dir="etc" excludes="*/CVS/*"/>
+            <fileset dir="etc" excludes="*/CVS/*,web.xml"/>
        </copy>
        
+       <copy todir="${build.web}">
+            <fileset dir="web" excludes="*/CVS/*"/>
+       </copy>
+
     </target>
     
     <target name="war" depends="copy">
         <war 
             warfile="${build.home}/${app.name}.war"
-            webxml="${build.webinf}/web.xml"
+            webxml="etc/web.xml"
             basedir="${build.web}"
             />
     </target>
@@ -127,10 +133,24 @@
             onerror="continue"
             src="${build.webinf}/ocsetup/mysql.sql"
             />
+        <java 
+            classname="com.opencms.boot.CmsMain"
+            classpath="${build.lib}/opencmsboot.jar"
+            dir="${build.webinf}"
+            fork="true">
+            <arg value="${build.webinf}/ocsetup/cmssetup.txt" />
+        </java>
+    </target>
+    
+    <target name="zip" depends="war">
+        <zip
+            zipfile="${zip.home}/opencms_build.zip"
+            basedir="${build.home}"
+            excludes="**/classes/,**/opencms/" />
     </target>
     
 
-    <target name="all" depends="clean,war"/>
+    <target name="all" depends="clean,zip"/>
 
     <target name="compile" depends="copy"/>
 
