@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsDefaultPage.java,v $
- * Date   : $Date: 2003/11/28 17:00:18 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/12/05 11:02:07 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
 package org.opencms.page;
 
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsLinkProcessor;
+import org.opencms.util.CmsLinkTable;
 import org.opencms.util.CmsStringSubstitution;
 
 import com.opencms.file.CmsFile;
@@ -58,7 +60,7 @@ import org.dom4j.io.XMLWriter;
 /**
  * Simple implementation of CmsDefaultPage.<p>
  * 
- * @version $Revision: 1.5 $ $Date: 2003/11/28 17:00:18 $
+ * @version $Revision: 1.6 $ $Date: 2003/12/05 11:02:07 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsDefaultPage extends CmsXmlPage implements Serializable  {
@@ -77,6 +79,8 @@ public class CmsDefaultPage extends CmsXmlPage implements Serializable  {
      */
     public CmsDefaultPage(CmsFile file) {
         super(file);
+        
+        m_elements = new HashMap();
     }
     
     /**
@@ -93,6 +97,7 @@ public class CmsDefaultPage extends CmsXmlPage implements Serializable  {
               .addAttribute("name", name)
               .addAttribute("language", language);
        
+        element.addElement("links");
         element.addElement("editdata");
         element.addElement("displaydata");
 
@@ -123,22 +128,47 @@ public class CmsDefaultPage extends CmsXmlPage implements Serializable  {
      * @param name name of the element
      * @param language language of the element
      * @param data character data (CDATA) of the element
+     * 
+     * @throws CmsPageException if something goes wrong
      */
-    public void setElementData(String name, String language, byte[] data) {
+    public void setElementData(String name, String language, byte[] data) 
+        throws CmsPageException {
         
         Element element = (Element)m_elements.get(language+"_"+name);
         Element editdata = element.element("editdata");
         Element displaydata = element.element("displaydata");
-        String content = new String(data);
-        String cdata = CmsStringSubstitution.substituteContextPath(content, OpenCms.getOpenCmsContext()  + "/");
+        Element links = element.element("links");
         
+        String content = new String(data);
+        
+        String cdata = CmsStringSubstitution.substituteContextPath(content, OpenCms.getOpenCmsContext()  + "/");
         editdata.setContent(null);
         editdata.addCDATA(cdata);
 
         // TODO: convert editdata to displaydata
-        displaydata.setContent(null);
-        displaydata.addCDATA(content);
+        CmsLinkTable linkTable = new CmsLinkTable();
+        try {
+
+            CmsLinkProcessor linkReplacer = new CmsLinkProcessor(linkTable);
+        
+            displaydata.setContent(null);
+            displaydata.addCDATA(linkReplacer.replaceLinks(content));
+            
+        } catch (Exception exc) {
+            throw new CmsPageException ("HTML data processing failed", exc);
+        }
+        
+        links.setContent(null);
+        for (Iterator i = linkTable.iterator(); i.hasNext();) {
+            CmsLinkTable.CmsLink link = linkTable.getLink((String)i.next());
+            links.addElement("link")
+                .addAttribute("name", link.getName())
+                .addAttribute("type", link.getType())
+                .addAttribute("target", link.getTarget())
+                .addAttribute("internal", Boolean.toString(link.isInternal()));
+        }
     }
+
     
     /**
      * Returns the data of an element.<p>
@@ -204,17 +234,53 @@ public class CmsDefaultPage extends CmsXmlPage implements Serializable  {
         }
         return languages;
     }
+
+    /**
+     * @see org.opencms.page.CmsXmlPage#getLinkTable(java.lang.String, java.lang.String)
+     */
+    public CmsLinkTable getLinkTable(String name, String language) {
+
+        Element element = (Element)m_elements.get(language+"_"+name);
+        Element links = element.element("links");
+        
+        CmsLinkTable linkTable = new CmsLinkTable();
+        
+        for (Iterator i = links.elementIterator("link"); i.hasNext();) {
+                    
+            Element lelem = (Element)i.next();
+            linkTable.addLink(lelem.attribute("name").getValue(), 
+                    lelem.attribute("type").getValue(), 
+                    lelem.attribute("target").getValue(), 
+                    Boolean.getBoolean(lelem.attribute("internal").getValue()));
+        }        
+        
+        return linkTable;
+    }
     
     /**
      * @see org.opencms.page.CmsXmlPage#getContent(java.lang.String, java.lang.String)
      */
-    public byte[] getContent(String name, String language) {
+    public byte[] getContent(String name, String language) 
+        throws CmsPageException {
 
         Element element = (Element)m_elements.get(language+"_"+name);
         Element displaydata = element.element("displaydata");
+        String content = displaydata.getText();
         
-        // TODO: if displaydata contains link macros, replace them
-        return displaydata.getText().getBytes();
+        CmsLinkTable linkTable = getLinkTable(name, language);
+        if (!linkTable.isEmpty()) {
+            
+            CmsLinkProcessor macroReplacer = new CmsLinkProcessor(linkTable);
+        
+            try {
+            
+                content = macroReplacer.processLinks(content);
+            } catch (Exception exc) {
+                throw new CmsPageException ("HTML data processing failed", exc);
+            }
+        } 
+            
+        return content.getBytes();
     }
     
     /**
@@ -224,7 +290,7 @@ public class CmsDefaultPage extends CmsXmlPage implements Serializable  {
         throws CmsPageException {
 
         byte[] content = getContents();
-        m_elements = new HashMap();
+        
         
         if (content.length > 0) { 
             InputStream in = new ByteArrayInputStream(content);
@@ -233,17 +299,15 @@ public class CmsDefaultPage extends CmsXmlPage implements Serializable  {
                 SAXReader reader = new SAXReader();
                 reader.setEntityResolver(new CmsEntityResolver(cms));
                 m_document = reader.read(in);
-    
-                
+     
                 for (Iterator i = m_document.getRootElement().element("elements").elementIterator("element"); i.hasNext();) {
                    
                     Element elem = (Element)i.next();
                     String elementName = elem.attribute("name").getValue();
                     String elementLang = elem.attribute("language").getValue();
                     
-                    m_elements.put(elementLang+"_"+elementName, elem);
-                }
-                
+                    m_elements.put(elementLang+"_"+elementName, elem);              
+                }                
             } catch (Exception exc) {
                 throw new CmsPageException("Unmarshalling xml page failed", exc);
             } finally {

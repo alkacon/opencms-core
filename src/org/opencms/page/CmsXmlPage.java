@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsXmlPage.java,v $
- * Date   : $Date: 2003/11/28 17:00:18 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/12/05 11:02:07 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,13 +30,15 @@
  */
 package org.opencms.page;
 
+import org.opencms.util.CmsLinkTable;
+
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
 import java.util.List;
 import java.util.Set;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2003/11/28 17:00:18 $
+ * @version $Revision: 1.5 $ $Date: 2003/12/05 11:02:07 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public abstract class CmsXmlPage extends CmsFile {
@@ -66,6 +68,15 @@ public abstract class CmsXmlPage extends CmsFile {
      * @return list of languages with available elements
      */
     public abstract Set getLanguages();
+
+    /**
+     * Returns the link table of an element.<p>
+     * 
+     * @param name name of the element
+     * @param language language of the element
+     * @return the link table
+     */
+    public abstract CmsLinkTable getLinkTable(String name, String language);
     
     /**
      * Returns the display content (processed data) of an element.<p>
@@ -73,8 +84,10 @@ public abstract class CmsXmlPage extends CmsFile {
      * @param name name of the element
      * @param language language of the element
      * @return the display content
+     * 
+     * @throws CmsPageException if something goes wrong
      */
-    public abstract byte[] getContent(String name, String language);
+    public abstract byte[] getContent(String name, String language) throws CmsPageException;
     
 
     /**
