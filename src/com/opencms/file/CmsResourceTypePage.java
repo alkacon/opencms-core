@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2003/02/15 11:14:54 $
-* Version: $Revision: 1.45 $
+* Date   : $Date: 2003/02/26 15:29:33 $
+* Version: $Revision: 1.46 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Vector;
  * Access class for resources of the type "Page".
  *
  * @author Alexander Lucas
- * @version $Revision: 1.45 $ $Date: 2003/02/15 11:14:54 $
+ * @version $Revision: 1.46 $ $Date: 2003/02/26 15:29:33 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, I_CmsWpConstants {
 
@@ -593,8 +593,8 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
      * 
      */
     public CmsResource importResource(CmsObject cms, String source, String destination, String type,
-                                       String user, String group, String access, Hashtable properties, 
-                                       String launcherStartClass, byte[] content, String importPath) 
+                                       String user, String group, String access, long lastmodified, 
+                                       Hashtable properties, String launcherStartClass, byte[] content, String importPath) 
                        throws CmsException {
         CmsResource importedResource = null;
         destination = importPath + destination;
@@ -627,8 +627,8 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         	resgroup = cms.getRequestContext().currentGroup();	
         }        
         try {
-            importedResource = cms.doCreateResource(destination, resourceType ,properties, launcherType, 
-                                             launcherStartClass, resowner.getName(), resgroup.getName(), Integer.parseInt(access), content);
+            importedResource = cms.doImportResource(destination, resourceType ,properties, launcherType, 
+                                             launcherStartClass, resowner.getName(), resgroup.getName(), Integer.parseInt(access), lastmodified, content);
             if(importedResource != null){
                 changed = false;
             }

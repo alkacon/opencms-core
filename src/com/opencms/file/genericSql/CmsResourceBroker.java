@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2003/02/15 11:14:55 $
-* Version: $Revision: 1.355 $
+* Date   : $Date: 2003/02/26 15:29:34 $
+* Version: $Revision: 1.356 $
 
 *
 * This library is part of OpenCms -
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.355 $ $Date: 2003/02/15 11:14:55 $
+ * @version $Revision: 1.356 $ $Date: 2003/02/26 15:29:34 $
 
  *
  */
@@ -201,7 +201,7 @@ public void acceptTask(CmsUser currentUser, CmsProject currentProject, int taskI
         }
 
          // check the rights for the current resource
-        if( ! ( accessOther(currentUser, currentProject, resource, C_ACCESS_PUBLIC_WRITE) ||
+        if( ! ( accessOther(resource, C_ACCESS_PUBLIC_WRITE) ||
                 accessOwner(currentUser, currentProject, resource, C_ACCESS_OWNER_WRITE) ||
                 accessGroup(currentUser, currentProject, resource, C_ACCESS_GROUP_WRITE) ) ) {
             // no write access to this resource!
@@ -219,7 +219,7 @@ public void acceptTask(CmsUser currentUser, CmsProject currentProject, int taskI
 
         // check the rights and if the resource is not locked
         do {
-            if( accessOther(currentUser, currentProject, resource, C_ACCESS_PUBLIC_READ) ||
+            if( accessOther(resource, C_ACCESS_PUBLIC_READ) ||
                 accessOwner(currentUser, currentProject, resource, C_ACCESS_OWNER_READ) ||
                 accessGroup(currentUser, currentProject, resource, C_ACCESS_GROUP_READ) ) {
 
@@ -360,14 +360,12 @@ public void acceptTask(CmsUser currentUser, CmsProject currentProject, int taskI
 /**
  * Checks, if others may access this resource.
  *
- * @param currentUser The user who requested this method.
- * @param currentProject The current project of the user.
  * @param resource The resource to check.
  * @param flags The flags to check.
  *
  * @return wether the user has access, or not.
  */
-protected boolean accessOther(CmsUser currentUser, CmsProject currentProject, CmsResource resource, int flags) throws CmsException
+protected boolean accessOther(CmsResource resource, int flags) throws CmsException
 {
     if ((resource.getAccessFlags() & flags) == flags)
     {
@@ -472,7 +470,7 @@ public boolean accessRead(CmsUser currentUser, CmsProject currentProject, CmsRes
             return access.booleanValue();
     } else {
     if ((resource == null) || !accessProject(currentUser, currentProject, resource.getProjectId()) ||
-            (!accessOther(currentUser, currentProject, resource, C_ACCESS_PUBLIC_READ) && !accessOwner(currentUser, currentProject, resource, C_ACCESS_OWNER_READ) && !accessGroup(currentUser, currentProject, resource, C_ACCESS_GROUP_READ))) {
+            (!accessOther(resource, C_ACCESS_PUBLIC_READ) && !accessOwner(currentUser, currentProject, resource, C_ACCESS_OWNER_READ) && !accessGroup(currentUser, currentProject, resource, C_ACCESS_GROUP_READ))) {
         m_accessCache.put(currentUser.getId()+":"+currentProject.getId()+":"+resource.getResourceName(), new Boolean(false));
         return false;
     }
@@ -490,7 +488,7 @@ public boolean accessRead(CmsUser currentUser, CmsProject currentProject, CmsRes
             }
             throw new CmsException(this.getClass().getName() + ".accessRead(): Cannot find \'" + resource.getName(), CmsException.C_NOT_FOUND);
         }
-        if (!accessOther(currentUser, currentProject, res, C_ACCESS_PUBLIC_READ) && !accessOwner(currentUser, currentProject, res, C_ACCESS_OWNER_READ) && !accessGroup(currentUser, currentProject, res, C_ACCESS_GROUP_READ)) {
+        if (!accessOther(res, C_ACCESS_PUBLIC_READ) && !accessOwner(currentUser, currentProject, res, C_ACCESS_OWNER_READ) && !accessGroup(currentUser, currentProject, res, C_ACCESS_GROUP_READ)) {
             m_accessCache.put(currentUser.getId()+":"+currentProject.getId()+":"+resource.getResourceName(), new Boolean(false));
             return false;
         }
@@ -614,7 +612,7 @@ public boolean accessRead(CmsUser currentUser, CmsProject currentProject, String
         }
 
         // check the rights for the current resource
-        if( ! ( accessOther(currentUser, currentProject, resource, C_ACCESS_PUBLIC_WRITE) ||
+        if( ! ( accessOther(resource, C_ACCESS_PUBLIC_WRITE) ||
                 accessOwner(currentUser, currentProject, resource, C_ACCESS_OWNER_WRITE) ||
                 accessGroup(currentUser, currentProject, resource, C_ACCESS_GROUP_WRITE) ) ) {
             // no write access to this resource!
@@ -634,7 +632,7 @@ public boolean accessRead(CmsUser currentUser, CmsProject currentProject, String
         // check the rights and if the resource is not locked
         // for parent folders only read access is needed
         do {
-           if( accessOther(currentUser, currentProject, resource, C_ACCESS_PUBLIC_READ) ||
+           if( accessOther(resource, C_ACCESS_PUBLIC_READ) ||
                 accessOwner(currentUser, currentProject, resource, C_ACCESS_OWNER_READ) ||
                 accessGroup(currentUser, currentProject, resource, C_ACCESS_GROUP_READ) ) {
 
@@ -706,7 +704,7 @@ public boolean accessRead(CmsUser currentUser, CmsProject currentProject, String
         }
 
         // check the rights for the current resource
-        if( ! ( accessOther(currentUser, currentProject, resource, C_ACCESS_PUBLIC_WRITE) ||
+        if( ! ( accessOther(resource, C_ACCESS_PUBLIC_WRITE) ||
                 accessOwner(currentUser, currentProject, resource, C_ACCESS_OWNER_WRITE) ||
                 accessGroup(currentUser, currentProject, resource, C_ACCESS_GROUP_WRITE) ) ) {
             // no write access to this resource!
@@ -726,7 +724,7 @@ public boolean accessRead(CmsUser currentUser, CmsProject currentProject, String
         // check the rights and if the resource is not locked
         // for parent folders only read access is needed
         do {
-           if( accessOther(currentUser, currentProject, resource, C_ACCESS_PUBLIC_READ) ||
+           if( accessOther(resource, C_ACCESS_PUBLIC_READ) ||
                 accessOwner(currentUser, currentProject, resource, C_ACCESS_OWNER_READ) ||
                 accessGroup(currentUser, currentProject, resource, C_ACCESS_GROUP_READ) ) {
 
@@ -1538,7 +1536,7 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
 
         CmsFolder cmsFolder = readFolder(currentUser,currentProject, foldername);
         if( accessCreate(currentUser, currentProject, (CmsResource)cmsFolder) ) {
-            if(( accessOther(currentUser, currentProject, file, C_ACCESS_PUBLIC_WRITE) ||
+            if(( accessOther(file, C_ACCESS_PUBLIC_WRITE) ||
                 accessOwner(currentUser, currentProject, file, C_ACCESS_OWNER_WRITE) ||
                 accessGroup(currentUser, currentProject, file, C_ACCESS_GROUP_WRITE) )){
                 // write-acces  was granted - copy the file and the metainfos
@@ -1596,7 +1594,7 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
             // write-acces  was granted - copy the folder and the properties
             CmsFolder folder=readFolder(currentUser,currentProject,source);
             // check write access to the folder that has to be copied
-            if(( accessOther(currentUser, currentProject, (CmsResource)folder, C_ACCESS_PUBLIC_WRITE) ||
+            if(( accessOther((CmsResource)folder, C_ACCESS_PUBLIC_WRITE) ||
                 accessOwner(currentUser, currentProject, (CmsResource)folder, C_ACCESS_OWNER_WRITE) ||
                 accessGroup(currentUser, currentProject, (CmsResource)folder, C_ACCESS_GROUP_WRITE) )){
                 m_dbAccess.createFolder(currentUser,currentProject,onlineProject(currentUser, currentProject),folder,cmsFolder.getResourceId(),destination);
@@ -1902,7 +1900,7 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
     }
     
     /**
-     * Creates a new resource.
+     * Imports a resource.
      *
      * <B>Security:</B>
      * Access is granted, if:
@@ -1935,12 +1933,12 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
      * or if the filename is not valid. The CmsException will also be thrown, if the
      * user has not the rights for this resource.
      */
-    public CmsResource createResource(CmsUser currentUser, CmsProject currentProject,
+    public CmsResource importResource(CmsUser currentUser, CmsProject currentProject,
                                        String newResourceName,
                                        int resourceType, Hashtable propertyinfos, int launcherType,
                                        String launcherClassname,
                                        String ownername, String groupname, int accessFlags,
-                                       byte[] filecontent)
+                                       long lastmodified, byte[] filecontent)
         throws CmsException {
 
         // extract folder information
@@ -1977,9 +1975,10 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
                                     owner.getId(), group.getId(), currentProject.getId(),
                                     accessFlags, C_STATE_NEW, currentUser.getId(),
                                     launcherType, launcherClassname,
-                                    System.currentTimeMillis(), System.currentTimeMillis(),
+                                    lastmodified, lastmodified,
                                     currentUser.getId(),filecontent.length, currentProject.getId());
-			
+            newResource.setDateLastModified(lastmodified);
+            
             // write-acces  was granted - create the folder.
             newResource = m_dbAccess.createResource(currentProject,onlineProject(currentUser, currentProject),newResource,filecontent, currentUser.getId(), isFolder);
             
@@ -2446,7 +2445,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
                 deleteAllProperties(currentUser,currentProject, cmsFolder.getResourceName());
                 m_dbAccess.removeFolder(currentProject.getId(),cmsFolder);
             } else {
-                m_dbAccess.deleteFolder(currentProject,cmsFolder, false);
+                m_dbAccess.deleteFolder(currentProject,cmsFolder);
             }
             // update cache
             this.clearResourceCache(foldername);
@@ -3438,7 +3437,7 @@ public Vector getFolderTree(CmsUser currentUser, CmsProject currentProject, Stri
         for (Enumeration e = resources.elements(); e.hasMoreElements();) {
             CmsResource res = (CmsResource) e.nextElement();
             if (!res.getAbsolutePath().startsWith(lastcheck)) {
-                if (accessOther(currentUser, currentProject, res, C_ACCESS_PUBLIC_READ + C_ACCESS_PUBLIC_VISIBLE) ||
+                if (accessOther(res, C_ACCESS_PUBLIC_READ + C_ACCESS_PUBLIC_VISIBLE) ||
                     accessOwner(currentUser, currentProject, res, C_ACCESS_OWNER_READ + C_ACCESS_OWNER_VISIBLE) ||
                     accessGroup(currentUser, currentProject, res, C_ACCESS_GROUP_READ + C_ACCESS_GROUP_VISIBLE)) {
 
@@ -3646,7 +3645,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
             //make sure that we have access to all these.
             for (Enumeration e = resources.elements(); e.hasMoreElements();) {
                 CmsResource res = (CmsResource) e.nextElement();
-                if (accessOther(currentUser, currentProject, res, C_ACCESS_PUBLIC_READ + C_ACCESS_PUBLIC_VISIBLE) ||
+                if (accessOther(res, C_ACCESS_PUBLIC_READ + C_ACCESS_PUBLIC_VISIBLE) ||
                     accessOwner(currentUser, currentProject, res, C_ACCESS_OWNER_READ + C_ACCESS_OWNER_VISIBLE) ||
                     accessGroup(currentUser, currentProject, res, C_ACCESS_GROUP_READ + C_ACCESS_GROUP_VISIBLE)) {
                     retValue.addElement(res);
@@ -4041,7 +4040,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
                 for (Enumeration e = _files.elements();e.hasMoreElements();)
                 {
                     CmsFile file = (CmsFile) e.nextElement();
-                    if( accessOther(currentUser, currentProject, (CmsResource)file, C_ACCESS_PUBLIC_READ) ||
+                    if( accessOther((CmsResource)file, C_ACCESS_PUBLIC_READ) ||
                             accessOwner(currentUser, currentProject, (CmsResource)file, C_ACCESS_OWNER_READ) ||
                             accessGroup(currentUser, currentProject, (CmsResource)file, C_ACCESS_GROUP_READ) )
                     {
@@ -4078,7 +4077,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
                 // read the current folder
                 folder = (CmsFolder)folders.elementAt(z);
                 // check the readability for the folder
-                if( !( accessOther(currentUser, currentProject, (CmsResource)folder, C_ACCESS_PUBLIC_READ) ||
+                if( !( accessOther((CmsResource)folder, C_ACCESS_PUBLIC_READ) ||
                        accessOwner(currentUser, currentProject, (CmsResource)folder, C_ACCESS_OWNER_READ) ||
                        accessGroup(currentUser, currentProject, (CmsResource)folder, C_ACCESS_GROUP_READ) ) ) {
                     // access to the folder was not granted delete him
@@ -4623,7 +4622,7 @@ public CmsProject onlineProject(CmsUser currentUser, CmsProject currentProject) 
     if (project == null) {
         // the project was not in the cache
         // lookup the currentProject in the CMS_SITE_PROJECT table, and in the same call return it.
-        project = m_dbAccess.getOnlineProject(currentProject.getId());
+        project = m_dbAccess.getOnlineProject();
         // store the project into the cache
         if(project != null){
             m_onlineProjectCache = (CmsProject)project.clone();
@@ -4908,7 +4907,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
          if( accessRead(currentUser, currentProject, cmsFile) ) {
 
             // access to all subfolders was granted - return the file-history.
-            return(m_dbAccess.readAllFileHeadersForHist(currentProject.getId(), filename));
+            return(m_dbAccess.readAllFileHeadersForHist(filename));
         } else {
             throw new CmsException("[" + this.getClass().getName() + "] " + filename,
                  CmsException.C_ACCESS_DENIED);
@@ -5112,7 +5111,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
      * @param newRes A vecor (of CmsResources) with the new resources in the project.
      */
      public void getBrokenLinks(int projectId, I_CmsReport report, Vector changed, Vector deleted, Vector newRes)throws CmsException{
-        m_dbAccess.getBrokenLinks(projectId, report, changed, deleted, newRes);
+        m_dbAccess.getBrokenLinks(report, changed, deleted, newRes);
      }
 
     /**
@@ -8304,7 +8303,7 @@ protected void validName(String name, boolean blank) throws CmsException {
         Enumeration e = resources.elements();
         while (e.hasMoreElements()) {
             CmsFile res = (CmsFile) e.nextElement();
-            if (accessOther(currentUser, currentProject, res, C_ACCESS_PUBLIC_READ + C_ACCESS_PUBLIC_VISIBLE) ||
+            if (accessOther(res, C_ACCESS_PUBLIC_READ + C_ACCESS_PUBLIC_VISIBLE) ||
                 accessOwner(currentUser, currentProject, res, C_ACCESS_OWNER_READ + C_ACCESS_OWNER_VISIBLE) ||
                 accessGroup(currentUser, currentProject, res, C_ACCESS_GROUP_READ + C_ACCESS_GROUP_VISIBLE)) {
                 retValue.addElement(res);
@@ -8400,7 +8399,7 @@ protected void validName(String name, boolean blank) throws CmsException {
      */
     public boolean accessReadVisible(CmsUser currentUser, CmsProject currentProject, CmsResource resource) throws CmsException{
         if ((resource == null) || !accessProject(currentUser, currentProject, resource.getProjectId()) ||
-            (!accessOther(currentUser, currentProject, resource, C_ACCESS_PUBLIC_READ + C_ACCESS_PUBLIC_VISIBLE) &&
+            (!accessOther(resource, C_ACCESS_PUBLIC_READ + C_ACCESS_PUBLIC_VISIBLE) &&
              !accessOwner(currentUser, currentProject, resource, C_ACCESS_PUBLIC_READ + C_ACCESS_PUBLIC_VISIBLE) &&
              !accessGroup(currentUser, currentProject, resource, C_ACCESS_PUBLIC_READ + C_ACCESS_PUBLIC_VISIBLE))) {
             return false;
@@ -8417,7 +8416,7 @@ protected void validName(String name, boolean blank) throws CmsException {
                 }
                 throw new CmsException(this.getClass().getName() + ".accessRead(): Cannot find \'" + resource.getName(), CmsException.C_NOT_FOUND);
             }
-            if (!accessOther(currentUser, currentProject, res, C_ACCESS_PUBLIC_READ + C_ACCESS_PUBLIC_VISIBLE) &&
+            if (!accessOther(res, C_ACCESS_PUBLIC_READ + C_ACCESS_PUBLIC_VISIBLE) &&
                 !accessOwner(currentUser, currentProject, res, C_ACCESS_PUBLIC_READ + C_ACCESS_PUBLIC_VISIBLE) &&
                 !accessGroup(currentUser, currentProject, res, C_ACCESS_PUBLIC_READ + C_ACCESS_PUBLIC_VISIBLE)) {
                 return false;

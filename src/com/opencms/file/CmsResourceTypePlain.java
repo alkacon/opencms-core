@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePlain.java,v $
-* Date   : $Date: 2003/01/20 23:59:16 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2003/02/26 15:29:33 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -366,8 +366,8 @@ public class CmsResourceTypePlain implements I_CmsResourceType, I_CmsConstants, 
      * 
      */
     public CmsResource importResource(CmsObject cms, String source, String destination, String type,
-                                       String user, String group, String access, Hashtable properties, 
-                                       String launcherStartClass, byte[] content, String importPath) 
+                                       String user, String group, String access, long lastmodified, 
+                                       Hashtable properties, String launcherStartClass, byte[] content, String importPath) 
                        throws CmsException {
         CmsResource importedResource = null;
 
@@ -401,8 +401,8 @@ public class CmsResourceTypePlain implements I_CmsResourceType, I_CmsConstants, 
             resgroup = cms.getRequestContext().currentGroup();  
         }       
         try {
-            importedResource = cms.doCreateResource(destination, resourceType ,properties, launcherType, 
-                                             launcherStartClass, resowner.getName(), resgroup.getName(), Integer.parseInt(access), content);
+            importedResource = cms.doImportResource(destination, resourceType ,properties, launcherType, 
+                                             launcherStartClass, resowner.getName(), resgroup.getName(), Integer.parseInt(access), lastmodified, content);
             if(importedResource != null){
                 changed = false;
             }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImportModuledata.java,v $
-* Date   : $Date: 2003/02/15 11:14:54 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2003/02/26 15:29:33 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.w3c.dom.NodeList;
  * into the cms.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.6 $ $Date: 2003/02/15 11:14:54 $
+ * @version $Revision: 1.7 $ $Date: 2003/02/26 15:29:33 $
  */
 public class CmsImportModuledata implements I_CmsConstants, Serializable {
 
@@ -176,8 +176,9 @@ public class CmsImportModuledata implements I_CmsConstants, Serializable {
     public void importChannels(Vector excludeList, Vector writtenFilenames, Vector fileCodes, String propertyName, String propertyValue) throws CmsException {
         NodeList fileNodes, propertyNodes;
         Element currentElement, currentProperty;
-        String destination, type, user, group, access;
+        String destination, type, user, group, access, dummy;
         Hashtable properties;
+        long lastmodified = 0;
         Vector types = new Vector(); // stores the file types for which the property already exists
 
         // first lock the resource to import
@@ -195,6 +196,13 @@ public class CmsImportModuledata implements I_CmsConstants, Serializable {
                 user = getTextNodeValue(currentElement, C_EXPORT_TAG_USER);
                 group = getTextNodeValue(currentElement, C_EXPORT_TAG_GROUP);
                 access = getTextNodeValue(currentElement, C_EXPORT_TAG_ACCESS);
+                
+                if ((dummy=getTextNodeValue(currentElement,C_EXPORT_TAG_LASTMODIFIED))!=null) {
+                    lastmodified = Long.parseLong(dummy);
+                }
+                else {
+                    lastmodified = System.currentTimeMillis();
+                }                 
 
                 if (!inExcludeList(excludeList, m_importPath + destination)) {
                     // get all properties for this file
@@ -227,7 +235,7 @@ public class CmsImportModuledata implements I_CmsConstants, Serializable {
                     }
 
                     // import the specified file and write maybe put it on the lists writtenFilenames,fileCodes
-                    importChannel(destination, type, user, group, access, properties, writtenFilenames, fileCodes);
+                    importChannel(destination, type, user, group, access, lastmodified, properties, writtenFilenames, fileCodes);
                 } else {
                     System.out.print("skipping " + destination);
                 }
@@ -356,7 +364,7 @@ public class CmsImportModuledata implements I_CmsConstants, Serializable {
      * @param fileCodes code of the written files (for the registry)
      *       not used when null
      */
-    private void importChannel(String destination, String type, String user, String group, String access, Hashtable properties, Vector writtenFilenames, Vector fileCodes) {
+    private void importChannel(String destination, String type, String user, String group, String access, long lastmodified, Hashtable properties, Vector writtenFilenames, Vector fileCodes) {
         // print out the information for shell-users
         System.out.print("Importing ");
         System.out.print(destination + " ");
@@ -375,7 +383,7 @@ public class CmsImportModuledata implements I_CmsConstants, Serializable {
                 // get a new channelid
                 int newChannelId = com.opencms.dbpool.CmsIdGenerator.nextId(C_TABLE_CHANNELID);
                 properties.put(I_CmsConstants.C_PROPERTY_CHANNELID, newChannelId+"");
-                res = m_cms.importResource("", destination, type, user, group, access,
+                res = m_cms.importResource("", destination, type, user, group, access, lastmodified,
                                             properties, "", null, m_importPath);
             }
             m_cms.setContextToVfs();

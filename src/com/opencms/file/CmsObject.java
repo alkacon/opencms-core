@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/02/15 11:14:54 $
-* Version: $Revision: 1.257 $
+* Date   : $Date: 2003/02/26 15:29:34 $
+* Version: $Revision: 1.258 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.257 $
+ * @version $Revision: 1.258 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -1056,11 +1056,11 @@ protected CmsFolder doCreateFolder(String newFolderName, Hashtable properties) t
 	 * a new resource.
 	 *
 	 */
-	protected CmsResource doCreateResource(String newResourceName, int resourceType, Hashtable properties, int launcherType,
-                                        String launcherClassname, String ownername, String groupname, int accessFlags, byte[] filecontent) throws CmsException {
-    	CmsResource cmsResource = m_rb.createResource(m_context.currentUser(), m_context.currentProject(),
+	protected CmsResource doImportResource(String newResourceName, int resourceType, Hashtable properties, int launcherType,
+                                        String launcherClassname, String ownername, String groupname, int accessFlags, long lastmodified, byte[] filecontent) throws CmsException {
+    	CmsResource cmsResource = m_rb.importResource(m_context.currentUser(), m_context.currentProject(),
                                             getSiteRoot(newResourceName), resourceType, properties, launcherType,
-                                            launcherClassname, ownername, groupname, accessFlags, filecontent);
+                                            launcherClassname, ownername, groupname, accessFlags, lastmodified, filecontent);
 
 	    return cmsResource;
 	}
@@ -1145,20 +1145,6 @@ public CmsProject createTempfileProject() throws CmsException
 {
     CmsProject newProject = m_rb.createTempfileProject(this, m_context.currentUser(), m_context.currentProject());
     return (newProject);
-}
-
-/**
- * Creates the property-definition for a resource type.
- *
- * @param name the name of the property-definition to overwrite.
- * @param resourcetype the name of the resource-type for the property-definition.
- * @param type the type of the property-definition (normal|optional)
- *
- * @throws CmsException if operation was not successful.
- * @deprecated Use createPropertydefinition without type of propertydefinition instead.
- */
-public CmsPropertydefinition createPropertydefinition(String name, String resourcetype, int type) throws CmsException {
-    return createPropertydefinition(name, resourcetype);
 }
 
 /**
@@ -2163,12 +2149,12 @@ public void importFolder(String importFile, String importPath) throws CmsExcepti
  * @throws CmsException if operation was not successful.
  */
 public CmsResource importResource(String source, String destination, String type,
-                                  String user, String group, String access,
+                                  String user, String group, String access, long lastmodified,
                                   Hashtable properties, String launcherStartClass,
                                   byte[] content, String importPath)
     throws CmsException {
     I_CmsResourceType rt = getResourceType(type);
-    return rt.importResource(this, source, destination, type, user, group, access, properties, launcherStartClass, content, importPath);
+    return rt.importResource(this, source, destination, type, user, group, access, lastmodified, properties, launcherStartClass, content, importPath);
 }
 
 /**
@@ -2705,22 +2691,6 @@ public Hashtable readAllProperties(String name) throws CmsException {
  * Reads all property-definitions for the given resource type.
  *
  * @param id the id of the resource type to read the property-definitions for.
- * @param type the type of the property-definition (normal|optional).
- *
- * @return a Vector with property-defenitions for the resource type.
- * The Vector may be empty.
- *
- * @throws CmsException if operation was not successful.
- * @deprecated Use the method readAllPropertydefinitions without type of propertydefinition instead
- */
-public Vector readAllPropertydefinitions(int id, int type) throws CmsException {
-    return (m_rb.readAllPropertydefinitions(m_context.currentUser(), m_context.currentProject(), id));
-}
-
-/**
- * Reads all property-definitions for the given resource type.
- *
- * @param id the id of the resource type to read the property-definitions for.
  *
  * @return a Vector with property-defenitions for the resource type.
  * The Vector may be empty.
@@ -2743,23 +2713,6 @@ public Vector readAllPropertydefinitions(int resourceType) throws CmsException {
  * @throws CmsException if operation was not successful.
  */
 public Vector readAllPropertydefinitions(String resourcetype) throws CmsException {
-    return (m_rb.readAllPropertydefinitions(m_context.currentUser(), m_context.currentProject(), resourcetype));
-}
-
-/**
- * Reads all property-definitions for the given resource type.
- *
- * @param resourcetype The name of the resource type to read the
- * property-definitions for.
- * @param type the type of the property-definition (normal|optional).
- *
- * @return a Vector with property-defenitions for the resource type.
- * The Vector may be empty.
- *
- * @throws CmsException if operation was not successful.
- * @deprecated Use the method readAllPropertydefinitions without type of propertydefinition instead
- */
-public Vector readAllPropertydefinitions(String resourcetype, int type) throws CmsException {
     return (m_rb.readAllPropertydefinitions(m_context.currentUser(), m_context.currentProject(), resourcetype));
 }
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2003/02/15 11:14:54 $
-* Version: $Revision: 1.39 $
+* Date   : $Date: 2003/02/26 15:29:34 $
+* Version: $Revision: 1.40 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Vector;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.39 $
+ * @version $Revision: 1.40 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants, Serializable, com.opencms.workplace.I_CmsWpConstants {
 
@@ -730,8 +730,8 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
      * 
      */
     public CmsResource importResource(CmsObject cms, String source, String destination, String type,
-                                       String user, String group, String access, Hashtable properties, 
-                                       String launcherStartClass, byte[] content, String importPath) 
+                                       String user, String group, String access, long lastmodified, 
+                                       Hashtable properties, String launcherStartClass, byte[] content, String importPath) 
                        throws CmsException {
         CmsResource importedResource = null;
         destination = importPath + destination;
@@ -761,8 +761,8 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         } 
         // try to create the resource		
         try {
-            importedResource = cms.doCreateResource(destination, C_TYPE_FOLDER, properties, C_UNKNOWN_LAUNCHER_ID, 
-                                             C_UNKNOWN_LAUNCHER, resowner.getName(), resgroup.getName(), Integer.parseInt(access), new byte[0]);
+            importedResource = cms.doImportResource(destination, C_TYPE_FOLDER, properties, C_UNKNOWN_LAUNCHER_ID, 
+                                             C_UNKNOWN_LAUNCHER, resowner.getName(), resgroup.getName(), Integer.parseInt(access), lastmodified, new byte[0]);
             if(importedResource != null){
                 changed = false;
             }

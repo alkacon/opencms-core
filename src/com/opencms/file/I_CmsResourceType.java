@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceType.java,v $
-* Date   : $Date: 2003/01/20 23:59:17 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2003/02/26 15:29:33 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -259,7 +259,7 @@ public interface I_CmsResourceType
      *
      * @param file is the file that has to be changed
      */
-    public CmsResource importResource(CmsObject cms, String source, String destination, String type, String user, String group, String access, Hashtable properties, String launcherStartClass, byte[] content, String importPath) throws CmsException;
+    public CmsResource importResource(CmsObject cms, String source, String destination, String type, String user, String group, String access, long lastmodified, Hashtable properties, String launcherStartClass, byte[] content, String importPath) throws CmsException;
 
     /**
     * Locks a given resource.

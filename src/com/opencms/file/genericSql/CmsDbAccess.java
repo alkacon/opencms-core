@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/02/22 15:15:40 $
-* Version: $Revision: 1.271 $
+* Date   : $Date: 2003/02/26 15:29:34 $
+* Version: $Revision: 1.272 $
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Anders Fugmann
  * @author Finn Nielsen
  * @author Mark Foley
- * @version $Revision: 1.271 $ $Date: 2003/02/22 15:15:40 $ *
+ * @version $Revision: 1.272 $ $Date: 2003/02/26 15:29:34 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -702,7 +702,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
          // read sourcefile
          file=readFile(project.getId(),onlineProject.getId(),source);
          // create destination file
-         createFile(project,onlineProject,file,userId,parentId,destination, true);
+         createFile(project,onlineProject,file,userId,parentId,destination);
      }
 
     /**
@@ -850,7 +850,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                                CmsProject onlineProject,
                                CmsFile file,
                                int userId,
-                               int parentId, String filename, boolean copy)
+                               int parentId, String filename)
 
          throws CmsException {
         String usedPool = null;
@@ -1358,9 +1358,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         if (newResource.getResourceName().length() > C_MAX_LENGTH_RESOURCE_NAME){
             throw new CmsException("["+this.getClass().getName()+"] "+"Resourcename too long(>"+C_MAX_LENGTH_RESOURCE_NAME+") ",CmsException.C_BAD_NAME);
         }
+        
         int state=0;
         int modifiedBy = userId;
-        long dateModified = System.currentTimeMillis();
+        long dateModified = newResource.isTouched() ? newResource.getDateLastModified() : System.currentTimeMillis();
+        
         if (project.equals(onlineProject)) {
             state= newResource.getState();
             usedPool = m_poolNameOnline;
@@ -2038,13 +2040,10 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @param project The project in which the resource will be used.
      * @param orgFolder The folder that will be deleted.
-     * @param force If force is set to true, all sub-resources will be deleted.
-     * If force is set to false, the folder will be deleted only if it is empty.
-     * This parameter is not used yet as only empty folders can be deleted!
      *
      * @throws CmsException Throws CmsException if operation was not succesful.
      */
-    public void deleteFolder(CmsProject project, CmsFolder orgFolder, boolean force)
+    public void deleteFolder(CmsProject project, CmsFolder orgFolder)
         throws CmsException {
         String usedPool = null;
         String usedStatement = null;
@@ -3885,13 +3884,12 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     }
 
     /**
-     * Retrieves the onlineproject from the database based on the given project.
+     * Retrieves the online project from the database.
      *
-     * @param projectId int the project id for which to find the online project.
      * @return com.opencms.file.CmsProject the  onlineproject for the given project.
      * @throws CmsException Throws CmsException if the resource is not found, or the database communication went wrong.
      */
-    public CmsProject getOnlineProject(int projectId) throws CmsException {
+    public CmsProject getOnlineProject() throws CmsException {
         return readProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
     }
 
@@ -5140,7 +5138,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                         }
                         // create a new File
                         currentFile.setState(C_STATE_UNCHANGED);
-                        onlineFile = createFile(onlineProject, onlineProject, currentFile, user.getId(), parentId.intValue(), currentFile.getResourceName(), false);
+                        onlineFile = createFile(onlineProject, onlineProject, currentFile, user.getId(), parentId.intValue(), currentFile.getResourceName());
                     }
                 } // end of catch
                 Connection con = null;
@@ -5239,7 +5237,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 }
                 // create the new file
                 try {
-                    newFile = createFile(onlineProject, onlineProject, currentFile, user.getId(), parentId.intValue(), currentFile.getResourceName(), false);
+                    newFile = createFile(onlineProject, onlineProject, currentFile, user.getId(), parentId.intValue(), currentFile.getResourceName());
                     newFile.setState(C_STATE_UNCHANGED);
                     updateResourcestate(newFile);
                 } catch (CmsException e) {
@@ -5763,7 +5761,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @throws CmsException Throws CmsException if operation was not succesful
      */
-    public Vector readAllFileHeadersForHist(int projectId, String resourceName)
+    public Vector readAllFileHeadersForHist(String resourceName)
         throws CmsException {
 
         CmsBackupResource file=null;
@@ -6424,13 +6422,12 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     /**
      * checks a project for broken links that would appear if the project is published.
      *
-     * @param projectId
      * @param report A cmsReport object for logging while the method is still running.
      * @param changed A vecor (of CmsResources) with the changed resources in the project.
      * @param deleted A vecor (of CmsResources) with the deleted resources in the project.
      * @param newRes A vecor (of CmsResources) with the new resources in the project.
      */
-     public void getBrokenLinks(int projectId, I_CmsReport report, Vector changed, Vector deleted, Vector newRes)throws CmsException{
+     public void getBrokenLinks(I_CmsReport report, Vector changed, Vector deleted, Vector newRes)throws CmsException{
 
         // first create some Vectors for performance increase
         Vector deletedByName = new Vector(deleted.size());
@@ -10853,7 +10850,7 @@ public CmsTask readTask(int id) throws CmsException {
 
             if(res.next()) {
                 //Parameter exisits, so make an update
-                updateTaskPar(res.getInt(m_cq.get("C_PAR_ID")), parname, parvalue);
+                updateTaskPar(res.getInt(m_cq.get("C_PAR_ID")), parvalue);
             }
             else {
                 //Parameter is not exisiting, so make an insert
@@ -11174,7 +11171,7 @@ public CmsTask readTask(int id) throws CmsException {
         }
         return retValue;
     }
-    protected void updateTaskPar(int parid, String parname, String parvalue)
+    protected void updateTaskPar(int parid, String parvalue)
         throws CmsException {
 
         PreparedStatement statement = null;

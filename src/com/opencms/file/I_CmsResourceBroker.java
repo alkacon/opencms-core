@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
-* Date   : $Date: 2003/01/20 23:59:17 $
-* Version: $Revision: 1.192 $
+* Date   : $Date: 2003/02/26 15:29:33 $
+* Version: $Revision: 1.193 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import source.org.apache.java.util.Configurations;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.192 $ $Date: 2003/01/20 23:59:17 $
+ * @version $Revision: 1.193 $ $Date: 2003/02/26 15:29:33 $
  *
  */
 
@@ -630,12 +630,12 @@ public interface I_CmsResourceBroker {
      * or if the filename is not valid. The CmsException will also be thrown, if the
      * user has not the rights for this resource.
      */
-    public CmsResource createResource(CmsUser currentUser, CmsProject currentProject,
+    public CmsResource importResource(CmsUser currentUser, CmsProject currentProject,
                                        String newResourceName,
                                        int resourceType, Hashtable propertyinfos, int launcherType,
                                        String launcherClassname,
                                        String ownername, String groupname, int accessFlags,
-                                       byte[] filecontent)
+                                       long lastmodified, byte[] filecontent)
         throws CmsException;
 /**
  * Creates a project.
