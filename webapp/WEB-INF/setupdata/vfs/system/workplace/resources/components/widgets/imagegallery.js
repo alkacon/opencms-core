@@ -42,7 +42,7 @@ var imgGalleryPath;
 function openImageSelector(dialogMode, fieldId) {
 	var paramString = "&dialogmode=" + dialogMode;
 	paramString += "&fieldid=" + fieldId;
-	var treewin = window.open(contextPath + imgGalleryPath + paramString, "opencms", 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=20,left=150,width=650,height=700');
+	treewin = window.open(contextPath + imgGalleryPath + paramString, "opencms", 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=20,left=150,width=650,height=700');
 }
 
 // opens a preview popup window to display the currently selected image
@@ -50,6 +50,6 @@ function previewImage(fieldId) {
 	var imgUri = document.getElementById(fieldId).value;
 	imgUri = imgUri.replace(/ /, "");
 	if ((imgUri != "") && (imgUri.charAt(0) == "/")) {
-		var treewin = window.open(contextPath + imgUri, "opencms", 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=20,left=150,width=550,height=550');
+		treewin = window.open(contextPath + imgUri, "opencms", 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=20,left=150,width=550,height=550');
 	}
 }

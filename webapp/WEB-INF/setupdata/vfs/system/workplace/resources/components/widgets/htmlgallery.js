@@ -42,7 +42,7 @@ var htmlGalleryPath;
 function openHtmlGallery(dialogMode, fieldId) {
 	var paramString = "&dialogmode=" + dialogMode;
 	paramString += "&fieldid=" + fieldId;
-	var treewin = window.open(contextPath + htmlGalleryPath + paramString, "opencms", 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=20,left=150,width=650,height=700');
+	treewin = window.open(contextPath + htmlGalleryPath + paramString, "opencms", 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=20,left=150,width=650,height=700');
 }
 
 // pastes the content from hidden field to div

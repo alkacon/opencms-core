@@ -42,7 +42,7 @@ var linkGalleryPath;
 function openLinkSelector(dialogMode, fieldId) {
 	var paramString = "&dialogmode=" + dialogMode;
 	paramString += "&fieldid=" + fieldId;
-	var treewin = window.open(contextPath + linkGalleryPath + paramString, "opencms", 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=20,left=150,width=650,height=700');
+	treewin = window.open(contextPath + linkGalleryPath + paramString, "opencms", 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=20,left=150,width=650,height=700');
 }
 
 // opens a preview popup window to display the currently selected link
@@ -53,6 +53,6 @@ function previewLink(fieldId) {
 		if (linkUri.charAt(0) == "/") {
 			linkUri = contextPath + linkUri;
 		}
-		var treewin = window.open(linkUri, "opencms", 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=20,left=150,width=750,height=700');
+		treewin = window.open(linkUri, "opencms", 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=20,left=150,width=750,height=700');
 	}
 }

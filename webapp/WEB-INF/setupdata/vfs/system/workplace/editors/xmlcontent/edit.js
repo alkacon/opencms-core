@@ -33,6 +33,9 @@
 // Script for xml content editor 
 //------------------------------------------------------//
 
+// stores the opened window object
+var treewin = null;
+
 // function action on button click
 function buttonAction(para) {	
 	var _form = document.EDITOR;
