@@ -9,12 +9,11 @@ import org.xml.sax.*;
 
 import java.util.*;
 
-
 /**
  * Content definition for Workplace template files.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.3 $ $Date: 2000/01/25 18:05:34 $
+ * @version $Revision: 1.4 $ $Date: 2000/01/26 09:40:49 $
  */
 public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLogChannels {
 
@@ -107,10 +106,34 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
         return m_languageFile; 
     }
     
+    /**
+     * Gets the processed data of the <code>&lt;TEMPLATE&gt;</code> section of
+     * this workplace template file.
+     * 
+     * @param callingObject reference to the calling object. Used to look up user methods while processing.
+     * @param parameters hashtable containing all user parameters.
+     * @return Processed template data.
+     * @exception CmsException
+     */
     public String getProcessedTemplateContent(Object callingObject, Hashtable parameters) throws CmsException {
         return getProcessedDataValue("TEMPLATE", callingObject, parameters);
     }
     
+    
+    /**
+     * Handles any occurence of any special workplace XML tag like <code>&lt;BUTTON&gt;</code> or 
+     * <code>&lt;LABEL&gt;</code>. Looks up the appropriate workplace element class for the current
+     * tag and calls the <code>handleSpecialWorkplaceTag()</code> method of this class.
+     * <P>
+     * Every workplace element class used by this method has to implement the interface
+     * <code>I_CmsWpElement</code>
+     * 
+     * @param n XML element containing the current special workplace tag.
+     * @param callingObject reference to the calling object <em>(not used here)</em>.
+     * @param userObj hashtable containig all user parameters.
+     * @exception CmsException
+     * @see com.opencms.workplace.I_CmsWpElement
+     */
     public Object handleAnyTag(Element n, Object callingObject, Object userObj) throws CmsException {
         Object result = null;        
         I_CmsWpElement workplaceObject = null;        
