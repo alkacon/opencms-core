@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/Attic/CmsMSDHtmlEditor.java,v $
- * Date   : $Date: 2004/08/19 11:26:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/10/07 10:45:17 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.workplace.editors;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsHtmlConverter;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.I_CmsWpConstants;
 
@@ -51,7 +52,7 @@ import java.util.regex.Pattern;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1.12
  */
@@ -130,9 +131,14 @@ public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
         content = CmsStringUtil.extractHtmlBody(content);
         // remove unwanted "&amp;" from links
         content = filterAnchors(content);
+       
         // ensure all chars in the content are valid for the selected encoding
-        content = CmsEncoder.adjustHtmlEncoding(content, getFileEncoding());        
+        content = CmsEncoder.adjustHtmlEncoding(content, getFileEncoding());
         
+        int warning = 0;
+        //CmsHtmlConverter converter = new CmsHtmlConverter(getFileEncoding(), 2);
+        //content = converter.convertToStringSilent(content);
+                
         if (! ("edit".equals(getParamEditormode()) || save)) {
             // editor is in html mode, add tags for stylesheet
             String stylesheet = getUriStyleSheet();                      
@@ -154,8 +160,8 @@ public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
             result.append("\"></base></head><body>");
             result.append(content);
             result.append("</body></html>");
-            content = result.toString();       
-        }
+            content = result.toString();   
+          }
         if (!save) {
             // set the content parameter to the modified content
             setParamContent(content);
