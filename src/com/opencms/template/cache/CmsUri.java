@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsUri.java,v $
-* Date   : $Date: 2003/08/01 15:42:18 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2003/08/04 11:20:06 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -74,9 +74,9 @@ public class CmsUri {
      * @param readAccessGroup the Group that can read the uri.
      * @param def a content-definition for the an element (normaly body).
      */
-    public CmsUri(CmsElementDescriptor startingElement, String readAccessGroup,
-        CmsElementDefinition def, boolean https){
-        this(startingElement, readAccessGroup, new CmsElementDefinitionCollection(), https);
+    public CmsUri(CmsElementDescriptor startingElement, CmsElementDefinition def,
+        boolean https){
+        this(startingElement, new CmsElementDefinitionCollection(), https);
         m_elementDefinitions.add(def);
     }
 
@@ -87,8 +87,8 @@ public class CmsUri {
      * @param readAccessGroup the Group that can read the uri.
      * @param definitions a vector of definitions for elements.
      */
-    public CmsUri(CmsElementDescriptor startingElement, String readAccessGroup,
-        CmsElementDefinitionCollection definitions, boolean https) {
+    public CmsUri(CmsElementDescriptor startingElement, CmsElementDefinitionCollection definitions,
+        boolean https) {
         m_startingElement = startingElement;
         m_elementDefinitions = definitions;
         m_https = https;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2003/08/03 15:12:00 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/08/04 11:20:06 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since FLEX alpha 1
  */
 public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
@@ -522,11 +522,9 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
                 // we cant cach this
                 eldefs.add(replaceDef);
                 String readAccessGroup = cms.getReadingpermittedGroup(cms.getRequestContext().currentProject().getId(), templateName);
-                cmsUri = new CmsUri(elemDesc, readAccessGroup, eldefs, Utils.isHttpsResource(cms, file));
+                cmsUri = new CmsUri(elemDesc, eldefs, Utils.isHttpsResource(cms, file));
             } else {
-                cmsUri = new CmsUri(elemDesc, cms.getReadingpermittedGroup(
-                            cms.getRequestContext().currentProject().getId(),
-                            templateName), eldefs, Utils.isHttpsResource(cms, file));
+                cmsUri = new CmsUri(elemDesc, eldefs, Utils.isHttpsResource(cms, file));
                 elementCache.getUriLocator().put(uriDesc, cmsUri);
             }
         }
