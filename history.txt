@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/10/09 22:45:30 $
- * Version: $Revision: 1.510 $
+ * Date   : $Date: 2003/11/10 08:22:19 $
+ * Version: $Revision: 1.511 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,7 +19,18 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 5.1.12 Salusa Secundus - October xx, 2003
+OpenCms 5.1.12 Salusa Secundus - November 10, 2003
+! Added memory monitor to watch memory consumption
+! Publishing and Lock/Unlocking added to JSP workplace
+! Interface for overwriting the dialogs in the JSP workplace
+- Added dependency to Apache Commons Collections
+- Replaced CmsLruHashMap with LRUMap from Commons Collections
+- Replaced Collecitons and ExtendedProperties from source.apache tree 
+  with ExtendedProperties from Commons Collections
+- Removed source.apache code tree
+* Fixed Workplace "show resources that changed in a project" function
+! Improved "direct publish" of a single file resource
+! Export points are now written after publish based on events and the publish history
 
 OpenCms 5.1.11 Salusa Secundus - October 09, 2003
 ! Added first version of handler interface in org.opencms.main package
@@ -29,7 +40,7 @@ OpenCms 5.1.11 Salusa Secundus - October 09, 2003
   from ZIP file
 ! Automatic VFS link conversion for links of 5.0.x in import version 2
 - Improvements in the new static export handling siblings,
-  also nw based on events and the publish history
+  also now based on events and the publish history
 ! All files published in a project are now written to a DB table, so it's easy to get
   a list of all files that where published for that project
 ! Implemented improved behaviour for folder rename in Offline project
