@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/11 18:30:52 $
- * Version: $Revision: 1.152 $
+ * Date   : $Date: 2003/08/12 08:06:20 $
+ * Version: $Revision: 1.153 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.152 $ $Date: 2003/08/11 18:30:52 $
+ * @version $Revision: 1.153 $ $Date: 2003/08/12 08:06:20 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -4670,7 +4670,7 @@ public class CmsDriverManager extends Object {
      * @param driverPoolUrl the pool url for the driver
      * @return an initialized instance of the driver
      */
-    public Object newDriverInstance(Configurations configurations, String driverName, String driverPoolUrl) //throws CmsException
+    public Object newDriverInstance(Configurations configurations, String driverName, String driverPoolUrl) throws CmsException
     {
 
         Class initParamClasses[] = { Configurations.class, String.class, CmsDriverManager.class };
@@ -4705,7 +4705,7 @@ public class CmsDriverManager extends Object {
             }
 
             exc.printStackTrace(System.err);
-            // throw new CmsException(message, CmsException.C_RB_INIT_ERROR, exc);
+            throw new CmsException(message, CmsException.C_RB_INIT_ERROR, exc);
         }
 
         return driver;
