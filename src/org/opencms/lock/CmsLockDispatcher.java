@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/Attic/CmsLockDispatcher.java,v $
- * Date   : $Date: 2003/07/28 16:06:00 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2003/07/29 08:18:57 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,13 +57,10 @@ import java.util.Map;
  * 
  * The lock state depends on the path of the resource, and probably 
  * locked parent folders. The result of a query to the lock dispatcher
- * are instances of CmsLock objects.<p>
- * 
- * The LockDispatcher implements the event listener interface to
- * re-initialize itself while the app. with a clear cache event.
+ * are instances of CmsLock objects.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.15 $ $Date: 2003/07/28 16:06:00 $
+ * @version $Revision: 1.16 $ $Date: 2003/07/29 08:18:57 $
  * @since 5.1.4
  * @see com.opencms.file.CmsObject#getLock(CmsResource)
  * @see org.opencms.lock.CmsLock
@@ -115,6 +112,20 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
     public void addResource(String resourcename, CmsUUID userId, int projectId) {
         CmsLock newLock = new CmsLock(resourcename, userId, projectId, CmsLock.C_TYPE_EXCLUSIVE);
         m_exclusiveLocks.put(resourcename, newLock);
+        
+        // handle collisions with exclusive locked sub-resources in case of a folder
+        if (resourcename.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
+            Iterator i = m_exclusiveLocks.keySet().iterator();
+            String lockedPath = null;
+            
+            while (i.hasNext()) {
+                lockedPath = (String) i.next();
+                
+                if (lockedPath.startsWith(resourcename) && !lockedPath.equals(resourcename)) {
+                    i.remove();
+                }
+            }
+        }
     }
 
     /**
