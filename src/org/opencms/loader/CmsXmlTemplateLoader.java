@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2003/09/02 12:15:38 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2003/09/02 14:47:54 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  */
 public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
     
@@ -116,7 +116,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
      * @param clearFiles if true, A_CmsXmlContent cache is cleared
      * @param clearTemplates if true, internal template cache is cleared
      */
-    private static void clearLoaderCache(CmsObject cms, boolean clearFiles, boolean clearTemplates) {
+    private static void clearLoaderCache(boolean clearFiles, boolean clearTemplates) {
         if (clearFiles) {
             A_CmsXmlContent.clearFileCache();
         }
@@ -443,7 +443,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
             // Element cache is deactivated. So let's go on as usual.
             try {
                 CmsFile masterTemplate = loadMasterTemplateFile(cms, templateName, doc);
-                I_CmsTemplate tmpl = getTemplateClass(cms, templateClass);               
+                I_CmsTemplate tmpl = getTemplateClass(templateClass);               
                 if (!(tmpl instanceof I_CmsXmlTemplate)) {
                     String errorMessage = "Error in " + cms.readAbsolutePath(file) + ": " + templateClass + " is not a XML template class.";
                     if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
@@ -451,6 +451,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
                     } 
                     throw new CmsException(errorMessage, CmsException.C_XML_WRONG_TEMPLATE_CLASS);
                 }
+                A_CmsXmlContent.clearFileCache();
                 output = callCanonicalRoot(cms, tmpl, masterTemplate, newParameters);
             } catch (CmsException e) {
                 if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
@@ -505,7 +506,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
      * @return instance of the template class
      * @throws CmsException if something goes wrong
      */
-    private I_CmsTemplate getTemplateClass(CmsObject cms, String classname) throws CmsException {
+    private I_CmsTemplate getTemplateClass(String classname) throws CmsException {
         if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_DEBUG)) {
             OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, getClassName() + "Getting start template class " + classname + ". ");
         }
@@ -663,8 +664,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
         String clearcache = cms.getRequestContext().getRequest().getParameter("_clearcache");
         
         // Clear loader caches if this is required
-        clearLoaderCache(cms, 
-            ((clearcache != null) && ("all".equals(clearcache) || "file".equals(clearcache))),
+        clearLoaderCache(((clearcache != null) && ("all".equals(clearcache) || "file".equals(clearcache))), 
             ((clearcache != null) && ("all".equals(clearcache) || "template".equals(clearcache))));
         
         // get the CmsRequest
