@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2002/04/09 12:35:30 $
-* Version: $Revision: 1.43 $
+* Date   : $Date: 2002/06/28 16:17:15 $
+* Version: $Revision: 1.44 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -3329,7 +3329,8 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
       String name=m.getName().toLowerCase();
 
       //now extract all methods whose name starts with a "get"
-      if (name.startsWith("get")) {
+      // TESTFIX (a.kandzior@alkacon.com) Added "boignore" suffix to prevent BO from calling the method
+      if (name.startsWith("get") && !(name.endsWith("boignore"))) {
         Class[] param = m.getParameterTypes();
         //only take those methods that have no parameter and return a String
         if (param.length==0) {
@@ -3358,8 +3359,8 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
       Method m=methods[i];
       String name=m.getName().toLowerCase();
       //now extract all methods whose name starts with a "set"
-      if (name.startsWith("set")) {
-
+      // TESTFIX (a.kandzior@alkacon.com) Added "boignore" suffix to prevent BO from calling the method
+      if (name.startsWith("set") && !(name.endsWith("boignore"))) {
         Class[] param = m.getParameterTypes();
         //only take those methods that have a single string parameter and return nothing
         if (param.length==1) {
