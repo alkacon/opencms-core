@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2002/10/18 16:56:31 $
-* Version: $Revision: 1.95 $
+* Date   : $Date: 2002/10/21 15:26:59 $
+* Version: $Revision: 1.96 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import com.opencms.template.cache.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.95 $ $Date: 2002/10/18 16:56:31 $
+ * @version $Revision: 1.96 $ $Date: 2002/10/21 15:26:59 $
  *
  * */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
@@ -696,26 +696,22 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
     }
 
     /**
-     * Sets the mimetype of the response.<br>
+     * Sets the mimetype of the response.<p>
+     * 
      * The mimetype is selected by the file extension of the requested document.
      * If no available mimetype is found, it is set to the default
      * "application/octet-stream".
      *
-     * @param cms The actual OpenCms object.
-     * @param file The requested document.
-     *
+     * @param cms The current initialized CmsObject
+     * @param file The requested document
      */
-    //Gridnine AB Aug 6, 2002
     void setResponse(CmsObject cms, CmsFile file) {
-        String ext = null;
         String mimetype = null;
         int lastDot = file.getName().lastIndexOf(".");
-
         // check if there was a file extension
-        if((lastDot > 0) && (!file.getName().endsWith("."))) {
-            ext = file.getName().substring(lastDot + 1, file.getName().length());
+        if((lastDot > 0) && (lastDot < (file.getName().length()-1))) {
+            String ext = file.getName().substring(lastDot + 1, file.getName().length());
             mimetype = (String)m_mt.get(ext);
-
             // was there a mimetype fo this extension?
             if(mimetype == null) {
                 mimetype = C_DEFAULT_MIMETYPE;
@@ -723,8 +719,9 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
         } else {
             mimetype = C_DEFAULT_MIMETYPE;
         }
-        if (mimetype.toLowerCase().startsWith("text")
-            && (mimetype.toLowerCase().indexOf("charset") == -1)) {
+        mimetype = mimetype.toLowerCase();
+        if (mimetype.startsWith("text")
+            && (mimetype.indexOf("charset") == -1)) {
             mimetype += "; charset=" + cms.getRequestContext().getEncoding();
         }
         cms.getRequestContext().getResponse().setContentType(mimetype);
