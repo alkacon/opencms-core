@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2001/07/16 18:24:16 $
- * Version: $Revision: 1.167 $
+ * Date   : $Date: 2001/07/18 06:07:29 $
+ * Version: $Revision: 1.168 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -49,7 +49,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.167 $ $Date: 2001/07/16 18:24:16 $
+ * @version $Revision: 1.168 $ $Date: 2001/07/18 06:07:29 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -2465,6 +2465,23 @@ public Hashtable readFileExtensions() throws CmsException {
  */
 public CmsResource readFileHeader(String filename) throws CmsException {
     return (m_rb.readFileHeader(m_context.currentUser(), m_context.currentProject(), filename));
+}
+
+/**
+ * Reads a file header from the Cms.
+ * <br>
+ * The reading excludes the filecontent.
+ *
+ * @param filename the complete path of the file to be read.
+ * @param projectId the id of the project where the resource should belong to
+ *
+ * @return file the read file.
+ *
+ * @exception CmsException , if the user has not the rights
+ * to read the file headers, or if the file headers couldn't be read.
+ */
+public CmsResource readFileHeader(String filename, int projectId) throws CmsException {
+    return (m_rb.readFileHeader(m_context.currentUser(), m_context.currentProject(), projectId, filename));
 }
 
 /**
