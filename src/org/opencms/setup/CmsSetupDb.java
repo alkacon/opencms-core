@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupDb.java,v $
- * Date   : $Date: 2004/08/10 15:45:55 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/08/11 10:44:18 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.10 $ $Date: 2004/08/10 15:45:55 $
+ * @version $Revision: 1.11 $ $Date: 2004/08/11 10:44:18 $
  */
 public class CmsSetupDb extends Object {
     
@@ -132,7 +132,7 @@ public class CmsSetupDb extends Object {
      */
     public void dropDatabase(String database, Map replacer) {
         m_errorLogging = true;
-        executeSql(database, "drop_db.sql", replacer);
+        executeSql(database, "drop_db.sql", replacer, false);
     }
 
     /**
@@ -143,7 +143,7 @@ public class CmsSetupDb extends Object {
      */
     public void createDatabase(String database, Map replacer) {
         m_errorLogging = true;
-        executeSql(database, "create_db.sql", replacer);
+        executeSql(database, "create_db.sql", replacer, true);
     }
 
     /**
@@ -154,7 +154,7 @@ public class CmsSetupDb extends Object {
      */
     public void createTables(String database, Map replacer) {
         m_errorLogging = true;
-        executeSql(database, "create_tables.sql", replacer);
+        executeSql(database, "create_tables.sql", replacer, true);
     }
 
     /**
@@ -164,7 +164,7 @@ public class CmsSetupDb extends Object {
      */
     public void dropTables(String database) {
         m_errorLogging = true;
-        executeSql(database, "drop_tables.sql", null);
+        executeSql(database, "drop_tables.sql", null, false);
     }
 
     /**
@@ -175,7 +175,7 @@ public class CmsSetupDb extends Object {
      */
     public void updateDatabase(String updateScript, Map replacers) {
         StringReader reader = new StringReader(updateScript);
-        executeSql(reader, replacers);
+        executeSql(reader, replacers, true);
     }
     
     /**
@@ -185,12 +185,12 @@ public class CmsSetupDb extends Object {
      * @param sqlScript the name of the script
      * @param replacers the replacements to perform in the script
      */
-    private void executeSql(String databaseKey, String sqlScript, Map replacers) {
+    private void executeSql(String databaseKey, String sqlScript, Map replacers, boolean abortOnError) {
         String filename = null;
         InputStreamReader reader = null;
         try {
             filename = m_basePath + "setup" + File.separator + "database" + File.separator + databaseKey + File.separator + sqlScript;
-            executeSql(new FileReader(filename), replacers);
+            executeSql(new FileReader(filename), replacers, abortOnError);
         } catch (FileNotFoundException e) {
             if (m_errorLogging) {
                 m_errors.addElement("Database setup SQL script not found: " + filename);
@@ -213,7 +213,7 @@ public class CmsSetupDb extends Object {
      * @param inputReader an input stream reader on the setup script
      * @param replacers the replacements to perform in the script
      */
-    private void executeSql(Reader inputReader, Map replacers) {
+    private void executeSql(Reader inputReader, Map replacers, boolean abortOnError) {
         String statement = "";
         LineNumberReader reader = null;
         String line = null;
@@ -251,12 +251,25 @@ public class CmsSetupDb extends Object {
                         // cut of ';' at the end 
                         statement = statement.substring(0, (statement.length() - 1));
 
-                        // normal statement, execute it 
-                        if (replacers != null) {
-                            executeStatement(replaceValues(statement, replacers));
-                        } else {
-                            executeStatement(statement);
+                        // normal statement, execute it
+                        try {
+                            if (replacers != null) {
+                                statement = replaceValues(statement, replacers);
+                                executeStatement(statement);
+                            } else {
+                                executeStatement(statement);
+                            }
+                        } catch (SQLException e) {
+                            if (!abortOnError) {
+                                if (m_errorLogging) {
+                                    m_errors.addElement("Error executing SQL statement: " + statement);
+                                    m_errors.addElement(CmsException.getStackTraceAsString(e));
+                                }  
+                            } else {
+                                throw e;
+                            }
                         }
+                        
                         // reset
                         statement = "";
                     }
@@ -361,7 +374,7 @@ public class CmsSetupDb extends Object {
      */
     protected void finalize() throws Throwable {
         try {
-            closeConnection();
+        	closeConnection();
         } catch (Throwable t) {
             // ignore
         }
