@@ -1,7 +1,7 @@
-/*
+ /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
- * Date   : $Date: 2000/05/25 09:37:48 $
- * Version: $Revision: 1.93 $
+ * Date   : $Date: 2000/05/25 15:10:40 $
+ * Version: $Revision: 1.94 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.93 $ $Date: 2000/05/25 09:37:48 $
+ * @version $Revision: 1.94 $ $Date: 2000/05/25 15:10:40 $
  */
 public interface I_CmsWpConstants {
 
@@ -770,7 +770,10 @@ public interface I_CmsWpConstants {
     // Constants for user default preferences
     
     /** Number of images to be shown per page in the picture browser */
-    public static final int C_PICBROWSER_MAXIMAGES = 20;
+    public static final int C_PICBROWSER_MAXIMAGES = 15;
+	
+	/** Number of images to be shown per page in the download browser */
+    public static final int C_DOWNBROWSER_MAXENTRIES = 30;
     
     /** Name of the filelist preferences */
     public static final String C_USERPREF_FILELIST ="filelist";

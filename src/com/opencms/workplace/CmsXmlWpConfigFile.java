@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpConfigFile.java,v $
- * Date   : $Date: 2000/05/22 12:17:39 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2000/05/25 15:10:22 $
+ * Version: $Revision: 1.19 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.18 $ $Date: 2000/05/22 12:17:39 $
+ * @version $Revision: 1.19 $ $Date: 2000/05/25 15:10:22 $
  */
 public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChannels, I_CmsConstants {
 
@@ -185,6 +185,24 @@ public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChann
     public String getCommonPicturePath() throws CmsException {
         return getDataValue("path.commonpictures");
     }
+	
+	/**
+     * Gets the path at which the folders with the picture galleries are
+     * @return Path for picture galleries.
+     * @exception CmsException if the corresponding XML tag doesn't exist in the workplace definition file.
+     */
+    public String getPicGalleryPath() throws CmsException {
+        return getDataValue("path.picgallery");
+    }
+	
+	/**
+     * Gets the path at which the folders with the download galleries are
+     * @return Path for download galleries.
+     * @exception CmsException if the corresponding XML tag doesn't exist in the workplace definition file.
+     */
+    public String getDownGalleryPath() throws CmsException {
+        return getDataValue("path.downloadgallery");
+    }
     
     /**
      * Gets the URL where workplace pisc reside.
@@ -198,8 +216,7 @@ public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChann
         if(s == null || "".equals(s)) {
             s = ((HttpServletRequest)m_cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath() + getDataValue("path.wppictures");
         }
-        return s;
-        
+        return s; 
     }
 
     /**

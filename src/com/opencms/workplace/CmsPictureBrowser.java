@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPictureBrowser.java,v $
- * Date   : $Date: 2000/04/20 08:11:55 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/05/25 15:09:05 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,8 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.15 $ $Date: 2000/04/20 08:11:55 $
+ * @author Mario Stanke
+ * @version $Revision: 1.16 $ $Date: 2000/05/25 15:09:05 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsPictureBrowser extends CmsWorkplaceDefault {
@@ -78,42 +79,60 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
             A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "getting content of element " + ((elementName==null)?"<root>":elementName));
             A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "template file is: " + templateFile);
             A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
-        }
-
-        String folder = (String)parameters.get(C_PARA_FOLDER);
-        String pageText = (String)parameters.get(C_PARA_PAGE);
-        String filter = (String)parameters.get(C_PARA_FILTER);
-                
-        // Check if the user requested a special folder
-        if(folder == null || "".equals(folder)) {
-            folder = getConfigFile(cms).getCommonPicturePath();
-            parameters.put(C_PARA_FOLDER, folder);
-        }
-
-        // Check if the user requested a special page
-        if(pageText == null ||"".equals(pageText))  {
-            pageText = "1";
-            parameters.put(C_PARA_PAGE, pageText);
-        }
-        
-        // Check if the user requested a filter
-        if(filter == null || "".equals(filter)) {
-            filter = "*";
-            parameters.put(C_PARA_FILTER, filter);
-        }
-        
-        // Compute the maximum page number
-        Vector filteredPics = getFilteredPicList(cms, folder, filter);
-        int maxpage = ((filteredPics.size()-1)/C_PICBROWSER_MAXIMAGES)+1;
-                        
-        // Now load the template file and set the appropriate datablocks
+        }    
+		HttpSession session = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);     
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
-        xmlTemplateDocument.setData(C_PARA_FOLDER, Encoder.escape(folder));
-        xmlTemplateDocument.setData(C_PARA_PAGE, pageText);
-        xmlTemplateDocument.setData(C_PARA_FILTER, filter);
-        xmlTemplateDocument.setData(C_PARA_MAXPAGE, "" + maxpage);
+		
+		// test whether the pics folder exists at all
+		try {
+			cms.readFileHeader(getConfigFile(cms).getDownGalleryPath()); 
+		} catch (CmsException e) { 
+			xmlTemplateDocument.setData("ERRORDETAILS", Utils.getStackTrace(e));
+			templateSelector="error";	
+		}
+		
+		if (!"error".equals(templateSelector)) {
+		
+			if (parameters.get(C_PARA_INITIAL) != null) {
+				session.removeValue(C_PARA_FOLDER);
+			}
+		
+			String folder = (String)parameters.get(C_PARA_FOLDER);
+			if (folder != null) {
+				session.putValue(C_PARA_FOLDER, folder);
+			}
+			folder = (String) session.getValue(C_PARA_FOLDER);
+			if (folder == null || "".equals(folder)) {
+				folder = getConfigFile(cms).getDownGalleryPath();
+			    session.putValue(C_PARA_FOLDER, folder);
+			}
+			String pageText = (String)parameters.get(C_PARA_PAGE);
+			String filter = (String)parameters.get(C_PARA_FILTER);
+			        
+			// Check if the user requested a special page
+			if(pageText == null ||"".equals(pageText))  {
+			    pageText = "1";
+			    parameters.put(C_PARA_PAGE, pageText);
+			}
         
-        parameters.put("_PICLIST_", filteredPics);
+			// Check if the user requested a filter
+			if (filter == null) {
+			    filter = "";
+			    parameters.put(C_PARA_FILTER, filter);
+			}
+        
+			// Compute the maximum page number
+			Vector filteredPics = getFilteredPicList(cms, folder, filter);
+			int maxpage = ((filteredPics.size()-1)/C_PICBROWSER_MAXIMAGES)+1;
+			                
+			// Now set the appropriate datablocks
+			xmlTemplateDocument.setData(C_PARA_FOLDER, Encoder.escape(folder));
+			xmlTemplateDocument.setData(C_PARA_PAGE, pageText);
+			xmlTemplateDocument.setData(C_PARA_FILTER, filter);
+			xmlTemplateDocument.setData(C_PARA_MAXPAGE, "" + maxpage);
+        
+			parameters.put("_PICLIST_", filteredPics);
+		}
         // Start the processing        
         return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
     }                    
@@ -138,9 +157,11 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
     public Object pictureList(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
             throws CmsException {
 
+		HttpSession session = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);     
         Hashtable parameters = (Hashtable)userObj;
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)doc;
-
+		CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
+		
         StringBuffer result = new StringBuffer();
 
         String pageText = (String)parameters.get(C_PARA_PAGE);
@@ -153,11 +174,23 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
         int page = new Integer(pageText).intValue();
         int from = (page-1) * C_PICBROWSER_MAXIMAGES;
         int to = ((from+C_PICBROWSER_MAXIMAGES)>numPics)?numPics:(from+C_PICBROWSER_MAXIMAGES);
-        
-        String picsUrl = getConfigFile(cms).getCommonPictureUrl();
+		
+        String folder = (String) parameters.get(C_PARA_FOLDER);
+		if (folder == null) {
+			folder = (String) session.getValue(C_PARA_FOLDER);
+		}
+		
+		if(folder == null || "".equals(folder)) {
+            folder = getConfigFile(cms).getDownGalleryPath();
+            parameters.put(C_PARA_FOLDER, folder);
+        }
+		
+        //String picsUrl = getConfigFile(cms).getCommonPictureUrl();
         HttpServletRequest req = (HttpServletRequest)(cms.getRequestContext().getRequest().getOriginalRequest());
-        String hostName = req.getScheme() + "://" + req.getHeader("HOST");
-             
+        String hostName = req.getScheme() + "://" + req.getHeader("HOST");  
+		String picsUrl = req.getServletPath() + folder;
+		
+		
         // Generate the picture list for all pictures on the selected page
         for(int i=from; i<to; i++) {
             CmsFile file = (CmsFile)filteredPics.elementAt(i);
@@ -180,7 +213,7 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
             if(dotIndex > 0) {
                 type = filename.substring(filename.lastIndexOf(".")+1).toUpperCase() + "-Bild";                
             } else {
-                type = "unbekannt";
+                type = lang.getDataValue("input.unknown");
             }
                 
             // Set all datablocks for the current picture list entry
@@ -199,7 +232,7 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
         }
         return result.toString();
     }
-
+	
     /**
      * Used by the workplace "back" button to decide whether the icon should 
      * be activated or not. A button will use this method if the attribute <code>method="showBackButton"</code>
@@ -246,8 +279,8 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
         int numPics = filteredPics.size();
         
         // Get the maximum page number
-        int maxpage = ((numPics - 1) / C_PICBROWSER_MAXIMAGES) + 1;        
-        return new Boolean(numPics == 0 || (page < maxpage));
+        int maxpage = ((numPics - 1) / C_PICBROWSER_MAXIMAGES) + 1;   
+        return new Boolean(page < maxpage);
     }    
     
     /**
@@ -270,7 +303,7 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
             String title = cms.readProperty(file.getAbsolutePath(), C_PROPERTY_TITLE); 
             boolean filenameFilter = inFilter(filename, filter);
             boolean titleFilter = ((title == null) || ("".equals(title)))? false : inFilter(title, filter);
-            if((filenameFilter || titleFilter) && isImage(filename)) {
+            if((filenameFilter || titleFilter) && isImage(filename)) { 
                 filteredPics.addElement(file);
             }
         }
@@ -286,7 +319,7 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
     private boolean inFilter(String name, String filter) {
         String compareName = name.toLowerCase();
         String compareFilter = filter.toLowerCase();
-        if("*".equals(compareFilter) || "".equals(compareFilter) || (compareName.indexOf(compareFilter) != -1)) {
+        if("".equals(compareFilter) || (compareName.indexOf(compareFilter) != -1)) {
             return true;
         } else {
             return false;
@@ -306,5 +339,94 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
         } else {
             return false;
         }
-    }        
+    } 
+	 /**
+     * Gets the filenames of all picture galleries
+     * <P>
+     * The given vectors <code>names</code> and <code>values</code> will 
+     * be filled with the appropriate information to be used for building
+     * a select box. The values will be the paths to the galleries.
+     * 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param names Vector to be filled with the appropriate values in this method.
+     * @param values Vector to be filled with the appropriate values in this method.
+     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
+     * @return Index of the selected Gallery
+     * @exception CmsException
+     */
+	
+	public Integer getPicGalleryNames(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+		throws CmsException {
+		int ret=-1;
+		
+		HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
+		
+		// which folder is the gallery?
+		String chosenFolder = (String)parameters.get(C_PARA_FOLDER);
+		if (chosenFolder == null) {
+			chosenFolder = (String) session.getValue(C_PARA_FOLDER);
+		}
+		if (chosenFolder == null) {
+			chosenFolder = "";	
+		} 
+		
+        Vector folders = cms.getSubFolders(getConfigFile(cms).getPicGalleryPath()); 
+        int numFolders = folders.size();
+		
+        for(int i=0; i<numFolders; i++) {
+            A_CmsResource currFolder = (A_CmsResource)folders.elementAt(i);  
+			String name = currFolder.getName(); 
+			if (chosenFolder.equals(currFolder.getAbsolutePath())) {
+				ret = i;	
+			}
+			values.addElement(currFolder.getAbsolutePath());
+			names.addElement(name);
+		} 
+        return new Integer(ret);
+    } 	
+	
+	 /**
+     * Gets the filenames of all download galleries
+     * <P>
+     * The given vectors <code>names</code> and <code>values</code> will 
+     * be filled with the appropriate information to be used for building
+     * a select box. The values will be the paths to the galleries.
+     * 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param names Vector to be filled with the appropriate values in this method.
+     * @param values Vector to be filled with the appropriate values in this method.
+     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
+     * @return Index of the selected Gallery
+     * @exception CmsException
+     */
+	
+	public Integer getDownGalleryNames(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+		throws CmsException {
+		int ret=-1;
+		
+		HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
+		
+		// which folder is the gallery?
+		String chosenFolder = (String)parameters.get(C_PARA_FOLDER);
+		if (chosenFolder == null) {
+			chosenFolder = (String) session.getValue(C_PARA_FOLDER);
+		}
+		if (chosenFolder == null) {
+			chosenFolder = "";	
+		} 
+		
+        Vector folders = cms.getSubFolders(getConfigFile(cms).getDownGalleryPath()); 
+        int numFolders = folders.size();
+		
+        for(int i=0; i<numFolders; i++) {
+            A_CmsResource currFolder = (A_CmsResource)folders.elementAt(i);  
+			String name = currFolder.getName(); 
+			if (chosenFolder.equals(currFolder.getAbsolutePath())) {
+				ret = i;	
+			}
+			values.addElement(currFolder.getAbsolutePath());
+			names.addElement(name);
+		} 
+        return new Integer(ret);
+    } 	
 }

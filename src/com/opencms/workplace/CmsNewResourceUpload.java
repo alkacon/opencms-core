@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2000/05/11 10:18:40 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/05/25 15:09:05 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.11 $ $Date: 2000/05/11 10:18:40 $
+ * @version $Revision: 1.12 $ $Date: 2000/05/25 15:09:05 $
  */
 public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -101,13 +101,17 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
             session.removeValue(C_PARA_FILECONTENT);
             session.removeValue(C_PARA_NEWTYPE);
         }
-
+		String lastUrl = getLastUrl(cms, parameters); 
         // get the parameters from the request and session
-        String step=(String)parameters.get("STEP");                  
-        String currentFolder=(String)session.getValue(C_PARA_FILELIST);
+        String step=(String)parameters.get("STEP");   
+		String currentFolder = (String) parameters.get(C_PARA_FILELIST); 
+		if (currentFolder != null) {
+			session.putValue(C_PARA_FILELIST, currentFolder);
+		}
+        currentFolder = (String) session.getValue(C_PARA_FILELIST);
         if (currentFolder==null) {
-                   currentFolder=cms.rootFolder().getAbsolutePath();
-                }   
+			currentFolder=cms.rootFolder().getAbsolutePath();
+        }   
         String title=(String)parameters.get(C_PARA_TITLE);       
         String newname=(String)parameters.get(C_PARA_NAME);
         
@@ -201,8 +205,7 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
                 // check if a file title was given
                 if (title!= null) {
                     cms.lockResource(file.getAbsolutePath());
-                    cms.writeProperty(file.getAbsolutePath(),C_PROPERTY_TITLE,title);                  
-                    cms.unlockResource(file.getAbsolutePath());                    
+                    cms.writeProperty(file.getAbsolutePath(),C_PROPERTY_TITLE,title);                    
                 }
                 
                 // remove the values form the session
@@ -211,7 +214,11 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
                 session.removeValue(C_PARA_NEWTYPE);
                 // return to the filelist
                 try {
-                    cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);
+					if (lastUrl != null) { 
+						cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+lastUrl);	
+					} else {
+						cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);
+					}
                 } catch (Exception ex) {
                     throw new CmsException("Redirect fails :"+ getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST,CmsException.C_UNKNOWN_EXCEPTION,ex);
                 }  
