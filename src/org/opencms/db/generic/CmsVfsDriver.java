@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/10/06 15:51:01 $
- * Version: $Revision: 1.142 $
+ * Date   : $Date: 2003/10/06 16:55:51 $
+ * Version: $Revision: 1.143 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import source.org.apache.java.util.Configurations;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.142 $ $Date: 2003/10/06 15:51:01 $
+ * @version $Revision: 1.143 $ $Date: 2003/10/06 16:55:51 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -554,12 +554,12 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         }
         
         // now try to write the backup propertydefinition as well
-        try {
+        /*try {
             m_driverManager.getBackupDriver().createBackupPropertyDefinition(name, resourcetype);         
         } catch (CmsException ex) {
             // do nothing here
             // an error is thrown if the propertydefnition is already existing in the backup tables
-        }
+        }*/
 
         return readPropertyDefinition(name, projectId, resourcetype);
     }
@@ -2313,7 +2313,8 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         if (propdef == null) {
             // create the definition of the property optionally if it is missing
             if (addDefinition) {
-                propdef = createPropertyDefinition(meta, projectId, resourceType);                
+                propdef = createPropertyDefinition(meta, projectId, resourceType); 
+                m_driverManager.getBackupDriver().createBackupPropertyDefinition(meta,resourceType);               
             } else {
                 throw new CmsException("[" + this.getClass().getName() + ".writeProperty/1] " + meta, CmsException.C_NOT_FOUND);
             }
