@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/11/02 09:47:38 $
- * Version: $Revision: 1.436 $
+ * Date   : $Date: 2004/11/03 13:22:03 $
+ * Version: $Revision: 1.437 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.436 $ $Date: 2004/11/02 09:47:38 $
+ * @version $Revision: 1.437 $ $Date: 2004/11/03 13:22:03 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -2345,8 +2345,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      */
     public void deleteProject(CmsRequestContext context, I_CmsRuntimeInfo runtimeInfo, CmsProject deleteProject)
     throws CmsException {
-
-        Vector deletedFolders = new Vector();
+      
         int projectId = deleteProject.getId();
 
         List allFiles = readChangedResourcesInsideProject(context, projectId, 1);
@@ -2355,11 +2354,15 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             projectId,
             CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
 
-        // first delete files or undo changes in files
+        
+        // all resources inside the project have to be be reset to their online state.
+        // this has to be done in 4 steps:
+        
+        // 1. step: delete all new files
         for (int i = 0; i < allFiles.size(); i++) {
 
-            CmsFile currentFile = (CmsFile)allFiles.get(i);
-
+            CmsResource currentFile = (CmsResource)allFiles.get(i);
+            
             if (currentFile.getState() == I_CmsConstants.C_STATE_NEW) {
 
                 CmsLock lock = getLock(context, runtimeInfo, currentFile);
@@ -2387,34 +2390,17 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                     context.currentProject(), 
                     currentFile.getResourceId());
 
-            } else if ((currentFile.getState() == I_CmsConstants.C_STATE_CHANGED)
-                || (currentFile.getState() == I_CmsConstants.C_STATE_DELETED)) {
-
-                CmsLock lock = getLock(context, runtimeInfo, currentFile);
-                if (lock.isNullLock()) {
-                    // lock the resource
-                    lockResource(context, runtimeInfo, currentFile, CmsLock.C_MODE_COMMON);
-                } else if (!lock.getUserId().equals(context.currentUser().getId())
-                    || lock.getProjectId() != context.currentProject().getId()) {
-                    changeLock(context, runtimeInfo, currentFile);
-                }
-
-                // undo all changes in the file
-                undoChanges(context, runtimeInfo, currentFile);
+                OpenCms.fireCmsEvent(
+                    new CmsEvent(
+                        I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, 
+                        Collections.singletonMap("resource", currentFile)));
             }
-
-            OpenCms.fireCmsEvent(
-                new CmsEvent(
-                    I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, 
-                    Collections.singletonMap("resource", currentFile)));
         }
-
-        // now delete folders or undo changes in folders
+        
+        // 2. step: delete all new folders
         for (int i = 0; i < allFolders.size(); i++) {
 
-            CmsFolder currentFolder = (CmsFolder)allFolders.get(i);
-            CmsLock lock = getLock(context, runtimeInfo, currentFolder);
-
+            CmsResource currentFolder = (CmsResource)allFolders.get(i);            
             if (currentFolder.getState() == I_CmsConstants.C_STATE_NEW) {
 
                 // delete the properties
@@ -2424,12 +2410,25 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                     currentFolder,
                     CmsProperty.C_DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);
 
-                // add the folder to the vector of folders that has to be deleted
-                deletedFolders.addElement(currentFolder);
+                m_vfsDriver.removeFolder(runtimeInfo, context.currentProject(), currentFolder);
 
-            } else if ((currentFolder.getState() == I_CmsConstants.C_STATE_CHANGED)
+                // remove the access control entries
+                m_userDriver.removeAccessControlEntries(runtimeInfo, context.currentProject(), currentFolder.getResourceId());
+
+                OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections
+                .singletonMap("resource", currentFolder)));
+            }
+         }
+
+
+        // 3. step: undo changes on all changed or deleted folders
+        for (int i = 0; i < allFolders.size(); i++) {
+
+            CmsResource currentFolder = (CmsResource)allFolders.get(i);
+       
+            if ((currentFolder.getState() == I_CmsConstants.C_STATE_CHANGED)
                 || (currentFolder.getState() == I_CmsConstants.C_STATE_DELETED)) {
-
+                CmsLock lock = getLock(context, runtimeInfo, currentFolder);
                 if (lock.isNullLock()) {
                     // lock the resource
                     lockResource(context, runtimeInfo, currentFolder, CmsLock.C_MODE_COMMON);
@@ -2440,23 +2439,38 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
                 // undo all changes in the folder
                 undoChanges(context, runtimeInfo, currentFolder);
+           
+             OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections
+                    .singletonMap("resource", currentFolder)));
             }
-
-            OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections
-                .singletonMap("resource", currentFolder)));
         }
+        
+        // 4. step: undo changes on all changed or deleted files 
 
-        // now delete the folders in the vector
-        for (int i = deletedFolders.size() - 1; i > -1; i--) {
+        for (int i = 0; i < allFiles.size(); i++) {
 
-            CmsFolder delFolder = ((CmsFolder)deletedFolders.elementAt(i));
-            m_vfsDriver.removeFolder(runtimeInfo, context.currentProject(), delFolder);
+            CmsResource currentFile = (CmsResource)allFiles.get(i);
+            
+            if ((currentFile.getState() == I_CmsConstants.C_STATE_CHANGED)
+                || (currentFile.getState() == I_CmsConstants.C_STATE_DELETED)) {
+               
+                CmsLock lock = getLock(context, runtimeInfo, currentFile);
+                if (lock.isNullLock()) {
+                    // lock the resource
+                    lockResource(context, runtimeInfo, currentFile, CmsLock.C_MODE_COMMON);
+                } else if (!lock.getUserId().equals(context.currentUser().getId())
+                    || lock.getProjectId() != context.currentProject().getId()) {
+                    changeLock(context, runtimeInfo, currentFile);
+                }
 
-            // remove the access control entries
-            m_userDriver.removeAccessControlEntries(runtimeInfo, context.currentProject(), delFolder.getResourceId());
+                // undo all changes in the file
+                undoChanges(context, runtimeInfo, currentFile);           
 
-            OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections
-                .singletonMap("resource", delFolder)));
+                OpenCms.fireCmsEvent(
+                    new CmsEvent(
+                        I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, 
+                        Collections.singletonMap("resource", currentFile)));
+            }    
         }
 
         // unlock all resources in the project
@@ -2467,6 +2481,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         // set project to online project if current project is the one which will be deleted 
         if (projectId == context.currentProject().getId()) {
             context.setCurrentProject(readProject(I_CmsConstants.C_PROJECT_ONLINE_ID));
+            
         }
 
         // delete the project
@@ -2476,6 +2491,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_PROJECT_MODIFIED, Collections.singletonMap(
             "project",
             deleteProject)));
+        
     }
 
     /**
@@ -4879,7 +4895,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 currentResource = readResource(context, null, currentProjectResource, CmsResourceFilter.ALL);
 
                 if (currentResource.isFolder()) {
-                    resources.addAll(readResources(context, currentResource, CmsResourceFilter.DEFAULT, true));
+                    resources.addAll(readResources(context, currentResource, CmsResourceFilter.ALL, true));
                 } else {
                     resources.add(currentResource);
                 }
@@ -4902,7 +4918,10 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                     // - inside the project,
                     // - changed in the project,
                     // - either unlocked, or locked for the current user in the project
-                    result.add(currentResource);
+                    if ((currentResource.isFolder() && resourceType <= 0) 
+                    || (currentResource.isFile() && resourceType != 0)) { 
+                        result.add(currentResource);
+                    }
                 }
             }
         }
@@ -6711,6 +6730,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 false);
 
             // copy the access control entries form the online project
+            m_userDriver.removeAccessControlEntries(runtimeInfo, context.currentProject(), resource.getResourceId());            
             ListIterator aceList = m_userDriver.readAccessControlEntries(
                 onlineProject,
                 onlineFile.getResourceId(),

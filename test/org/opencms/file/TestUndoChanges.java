@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestUndoChanges.java,v $
- * Date   : $Date: 2004/08/10 15:42:43 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/11/03 13:22:03 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import junit.framework.TestSuite;
  * Unit test for the "undoChanges" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class TestUndoChanges extends OpenCmsTestCase {
   
@@ -78,6 +78,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         suite.addTest(new TestUndoChanges("testUndoChangesFolderRecursive"));
         suite.addTest(new TestUndoChanges("testUndoChangesAfterCopyNewOverDeleted"));
         suite.addTest(new TestUndoChanges("testUndoChangesAfterCopySiblingOverDeleted"));
+        suite.addTest(new TestUndoChanges("testUndoChangesWithAce"));
         
         TestSetup wrapper = new TestSetup(suite) {
             
@@ -229,7 +230,8 @@ public class TestUndoChanges extends OpenCmsTestCase {
         // project must be current project
         tc.assertProject(cms, resource1, cms.getRequestContext().currentProject());
     }
-
+  
+    
     /**
      *  Test undoChanges method to a single folder.<p>
      * @param tc the OpenCmsTestCase
@@ -387,6 +389,19 @@ public class TestUndoChanges extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();        
         echo("Testing undoChanges on a folder _with_ recursion");
         undoChangesFolderRecursive(this, cms, "/folder1/");
+    }
+    
+    
+    /**
+     * Test undoChanges method to a resource with an ace.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testUndoChangesWithAce() throws Throwable {
+        
+        CmsObject cms = getCmsObject();        
+        echo("Testing undoChanges on a resource with an ACE");
+        undoChanges(this, cms, "/folder2/index.html");
     }
     
 }
