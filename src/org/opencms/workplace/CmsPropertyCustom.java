@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPropertyCustom.java,v $
- * Date   : $Date: 2004/04/01 10:19:08 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/04/02 10:25:42 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@
  */
 package org.opencms.workplace;
 
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
@@ -56,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.3.3
  */
@@ -129,7 +130,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
         // get all used properties for the resource
         Map activeProperties = null;
         try {
-            activeProperties = getCms().readProperties(getParamResource());
+            activeProperties = CmsPropertyAdvanced.getPropertyMap(getCms().readPropertyObjects(getParamResource(), false));
         } catch (CmsException e) { 
             // ignore this exception
         }
@@ -194,7 +195,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
         // get the old NavPos value and store it in hidden field
         String navPos = null;
         try {
-            navPos = getCms().readProperty(getParamResource(), I_CmsConstants.C_PROPERTY_NAVPOS);
+            navPos = getCms().readPropertyObject(getParamResource(), I_CmsConstants.C_PROPERTY_NAVPOS, false).getValue();
         } catch (CmsException e) {
             // ignore this exception
         }
@@ -229,7 +230,12 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
         result.append(buildTableRowStart(propertyTitle));
         if (activeProperties.containsKey(propertyName)) {
             // the property is used, so create text field with value, checkbox and hidden field
-            String propValue = CmsEncoder.escapeXml((String)activeProperties.get(propertyName));
+            CmsProperty currentProperty = (CmsProperty)activeProperties.get(propertyName);
+            String propValue = currentProperty.getValue();
+            if (propValue != null) {
+                propValue = propValue.trim();   
+            }
+            propValue = CmsEncoder.escapeXml(propValue);
             propertyName = CmsEncoder.escapeXml(propertyName);
             result.append("<input type=\"text\" class=\"maxwidth\" value=\"");
             result.append(propValue+"\" name=\"" + PREFIX_VALUE + propertyName + "\" id=\"" + PREFIX_VALUE + propertyName + "\"");
@@ -409,7 +415,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
      * @throws CmsException if editing is not successful
      */
     protected boolean performEditOperation(HttpServletRequest request) throws CmsException {
-        Map activeProperties = getCms().readProperties(getParamResource());
+        Map activeProperties = CmsPropertyAdvanced.getPropertyMap(getCms().readPropertyObjects(getParamResource(), false));
         boolean useTempfileProject = "true".equals(getParamUsetempfileproject());
         try {
             if (useTempfileProject) {
@@ -468,6 +474,14 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
      * @throws CmsException if something goes wrong
      */
     protected void writeProperty(String propName, String propValue, String oldValue, Map activeProperties) throws CmsException {
+        // get the current property object
+        CmsProperty currentProperty = (CmsProperty)activeProperties.get(propName);
+        if (currentProperty == null) {
+            // new property, create new property object
+            currentProperty = new CmsProperty();
+            currentProperty.setKey(propName);
+        }
+    
         // check if there is a parameter value for the current property
         boolean emptyParam = true;
         if (propValue != null) {
@@ -480,10 +494,14 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
             if (activeProperties.containsKey(propName)) {
                 // lock resource if autolock is enabled
                 checkLock(getParamResource());
-                
-                //getCms().writePropertyObject(getParamResource(), curProperty);
-                
-                getCms().deleteProperty(getParamResource(), propName);
+                // determine the value to delete
+                if (currentProperty.getStructureValue() != null) {
+                    currentProperty.setStructureValue("");    
+                } else {
+                    currentProperty.setResourceValue("");    
+                }
+                // write the updated property object
+                getCms().writePropertyObject(getParamResource(), currentProperty);
             }
         } else {
             // parameter is not empty, check if the value has changed
@@ -491,11 +509,27 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
                 try {
                     // lock resource if autolock is enabled
                     checkLock(getParamResource());
-                    getCms().writeProperty(getParamResource(), propName, propValue);
+                    if (currentProperty.getStructureValue() == null && currentProperty.getResourceValue() == null) {
+                        // new property, determine setting from OpenCms workplace configuration
+                        if (OpenCms.getWorkplaceManager().isDefaultPropertiesOnStructure()) {
+                            currentProperty.setStructureValue(propValue);
+                        } else {
+                            currentProperty.setResourceValue(propValue);
+                        }
+                        
+                    } else if (currentProperty.getStructureValue() != null) {
+                        // structure value has to be updated
+                        currentProperty.setStructureValue(propValue);    
+                    } else {
+                        // resource value has to be updated
+                        currentProperty.setResourceValue(propValue);    
+                    }
+                    // write the updated property object
+                    getCms().writePropertyObject(getParamResource(), currentProperty);
                 } catch (CmsException e) {
                     if (e.getType() == CmsException.C_NOT_FOUND) {
                         defineProperty(propName);
-                        getCms().writeProperty(getParamResource(), propName, propValue);
+                        getCms().writePropertyObject(getParamResource(), currentProperty);
                     } else {
                         throw e;
                     }

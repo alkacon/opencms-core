@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2004/03/29 10:39:54 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/04/02 10:25:42 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpSession;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 5.3.1
  */
@@ -85,6 +85,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     
     /** The configured default locale of the workplace */
     private Locale m_defaultLocale;
+    
+    /** The default property setting for setting new property values */
+    private boolean m_defaultPropertiesOnStructure;
     
     /** The configured dialog handlers */
     private Map m_dialogHandler;
@@ -143,6 +146,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         m_fileMaxUploadSize = -1;
         m_explorerTypeSettings = new ArrayList();
         m_explorerTypeSettingsMap = new HashMap();
+        m_defaultPropertiesOnStructure = true;
         // TODO: Set workplace encoding independent from main system (use UTF-8 as default)
         m_defaultEncoding = OpenCms.getSystemInfo().getDefaultEncoding();
     }
@@ -479,6 +483,14 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
             }
         }
     }
+    /**
+     * Returns the default property editing mode on resources.<p>
+     *
+     * @return the default property editing mode on resources
+     */
+    public boolean isDefaultPropertiesOnStructure() {
+        return m_defaultPropertiesOnStructure;
+    }
     
     
     /**
@@ -509,6 +521,17 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Workplace init       : Default locale is '" + m_defaultLocale + "'");
         }        
+    }
+    /**
+     * Sets the default property editing mode on resources.<p>
+     *
+     * @param defaultPropertiesOnStructure the default property editing mode on resources
+     */
+    public void setDefaultPropertiesOnStructure(String defaultPropertiesOnStructure) {
+        m_defaultPropertiesOnStructure = Boolean.valueOf(defaultPropertiesOnStructure).booleanValue();
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Properties on struct : " + (m_defaultPropertiesOnStructure?"true":"false"));
+        }       
     }
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDialogProperty.java,v $
- * Date   : $Date: 2004/03/18 16:13:59 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/04/02 10:25:42 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,10 +30,12 @@
  */
 package org.opencms.workplace.editor;
 
+import org.opencms.file.CmsProperty;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.workplace.CmsNewResourceXmlPage;
+import org.opencms.workplace.CmsPropertyAdvanced;
 import org.opencms.workplace.CmsPropertyCustom;
 
 import java.util.ArrayList;
@@ -57,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 5.3.0
  */
@@ -105,7 +107,7 @@ public class CmsDialogProperty extends CmsPropertyCustom {
         // get all used properties for the resource
         Map activeProperties = null;
         try {
-            activeProperties = getCms().readProperties(getParamResource());
+            activeProperties = CmsPropertyAdvanced.getPropertyMap(getCms().readPropertyObjects(getParamResource(), false));
         } catch (CmsException e) { 
             // ignore this exception
         }
@@ -204,7 +206,7 @@ public class CmsDialogProperty extends CmsPropertyCustom {
      * @throws CmsException if editing is not successful
      */
     protected boolean performEditOperation(HttpServletRequest request) throws CmsException {
-        Map activeProperties = getCms().readProperties(getParamResource());
+        Map activeProperties = CmsPropertyAdvanced.getPropertyMap(getCms().readPropertyObjects(getParamResource(), false));
         boolean useTempfileProject = "true".equals(getParamUsetempfileproject());
         try {
             if (useTempfileProject) {

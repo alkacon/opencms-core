@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2004/03/12 16:00:48 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/04/02 10:25:42 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -96,6 +96,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     /** The name of the default properties node */
     protected static final String N_DEFAULTPROPERTIES = "defaultproperties";
     
+    /** The name of the default properties on structure node */
+    protected static final String N_DEFAULTPROPERTIESONSTRUCTURE = "defaultpropertiesonstructure";
+    
     /** Indivividual workplace handler node name */
     protected static final String N_DIALOGHANDLER = "dialoghandler";      
     
@@ -165,6 +168,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         
         // add default locale rule
         digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_DEFAULTLOCALE, "setDefaultLocale", 0);
+        
+        // add default properties on structure setting
+        digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_DEFAULTPROPERTIESONSTRUCTURE, "setDefaultPropertiesOnStructure", 0);
         
         // add rules for dialog handlers
         digester.addObjectCreate("*/" + N_WORKPLACE + "/" + N_DIALOGHANDLERS + "/" + N_DIALOGHANDLER, A_CLASS, CmsConfigurationException.class);

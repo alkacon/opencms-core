@@ -18,6 +18,7 @@
 	exportpoints, 
 	autolock?, 
 	enableusermanagement?, 
+	defaultpropertiesonstructure,
 	maxfileuploadsize?, 
 	labeledfolders?,
 	explorertypes+ )>
@@ -86,6 +87,15 @@
 # The default is "true".
 -->
 <!ELEMENT enableusermanagement (#PCDATA)>
+
+<!--
+# The default properties on structure setting of the OpenCms workplace 
+# determines if a new property in the customized property dialogs should be written
+# to the structure entry of a resource (i.e. a sibling) or to a resource.
+# Resource properties are valid for all siblings until they are overwritten by setting
+# an individual structure property.
+-->
+<!ELEMENT defaultpropertiesonstructure (#PCDATA)>
 
 <!--
 # Limits the size of the files which can be uploaded

@@ -319,6 +319,12 @@ input.dialogbutton {
 	overflow: visible;
 }
 
+/* Special input field for property dialog */
+input.dialogmarkedfield {
+	width: 100%;
+	background-color: #E0E0E0;
+}
+
 /* row marked as selected */
 .dialogmarked {
 	background-color: ActiveCaption;

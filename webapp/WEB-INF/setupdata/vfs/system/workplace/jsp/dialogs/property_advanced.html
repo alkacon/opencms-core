@@ -114,27 +114,75 @@ default:
 
 wp.setParamAction(wp.DIALOG_SAVE_EDIT);
 	
-%><%= wp.htmlStart("help.explorer.contextmenu.properties", wp.getParamTitle()) %>
+%><%= wp.htmlStart("help.explorer.contextmenu.properties") %>
 <script type="text/javascript">
 <!--
-function toggleDelete(propName) {
-	var hiddenValue = document.getElementById("<%= wp.PREFIX_HIDDEN %>"+propName).value;
+
+// called when using the checkbox, removes or adds content from/to input field
+function toggleDelete(propName, prefix, activeTab) {
+	var hiddenValue = document.getElementById(prefix+propName).value;
 	var checked = document.getElementById("<%= wp.PREFIX_USEPROPERTY %>"+propName).checked;
 	var field = document.getElementById("<%= wp.PREFIX_VALUE %>"+propName);
 	if (checked == true) {
+		// box has been checked, get value from hidden field
 		field.value = hiddenValue;
+		if (activeTab == "1" && field.className == "dialogmarkedfield") {
+			field.className = "maxwidth";
+		}
 	} else {
-		field.value = "";
+		// box has been unchecked 
+		var resValue = document.getElementById("<%= wp.PREFIX_RESOURCE %>"+propName).value;
+		if (activeTab == "1" && resValue.length > 0) {
+			// in "sahred properties" form, show resource value if present
+			field.value = resValue;
+			field.className = "dialogmarkedfield";
+		} else {
+			// otherwise, clear input field
+			field.value = "";
+		}
 	}
 }
 
-function checkValue(propName) {
+// checks the value of an input field and (de)activates the checkbox, if necessary
+function checkValue(propName, activeTab) {
 	var newVal = document.getElementById("<%= wp.PREFIX_VALUE %>"+propName).value;
-	var field = document.getElementById("<%= wp.PREFIX_USEPROPERTY %>"+propName);
+	var checkfield = document.getElementById("<%= wp.PREFIX_USEPROPERTY %>"+propName);
 	if (newVal != null && newVal != "") {
-		field.checked = true;
+		if (checkfield != null) {
+			checkfield.checked = true;
+		}
 	} else {
-		field.checked = false;
+		if (checkfield != null) {
+			checkfield.checked = false;
+		}
+	}
+}
+
+// called on the onFocus event of an input field
+function deleteResEntry(propName, activeTab) {
+	var field = document.getElementById("<%= wp.PREFIX_VALUE %>"+propName);
+	if (activeTab == "1" && field.className == "dialogmarkedfield") {
+		// clear field to allow individual input
+		field.value = "";
+		field.className = "maxwidth";
+	}
+}
+
+// called on the onBlur event of an input field
+function checkResEntry(propName, activeTab) {
+	if (activeTab == "1") {
+		// check only in "shared properties" form
+		var newVal = document.getElementById("<%= wp.PREFIX_VALUE %>"+propName).value;
+		var resVal = document.getElementById("<%= wp.PREFIX_RESOURCE %>"+propName).value;
+		var checkfield = document.getElementById("<%= wp.PREFIX_USEPROPERTY %>"+propName);
+		if (newVal == "" && resVal != "") {
+			// new value is empty and resource value present, show resource value 
+			document.getElementById("<%= wp.PREFIX_VALUE %>"+propName).value = resVal;
+			document.getElementById("<%= wp.PREFIX_VALUE %>"+propName).className = "dialogmarkedfield";
+			if (checkfield != null) {
+				checkfield.checked = false;
+			}			
+		}
 	}
 }
 
@@ -148,18 +196,15 @@ function definePropertyForm() {
 <%= wp.bodyStart("dialog") %>
 
 <%= wp.dialogStart() %>
-<%= wp.dialogContentStart(wp.getParamTitle()) %>
-
-<%@ include file="common/resourceinfo.txt" %>
-<%= wp.dialogSpacer() %>
 
 <form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
 <%= wp.paramsAsHidden() %>
 <input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
+<%= wp.dialogTabContentStart(wp.getParamTitle(), "style=\"height: 260px;\" id=\"tabcontent\"") %>
 
 <%= wp.buildEditForm() %>
 
-<%= wp.dialogContentEnd() %>
+<%= wp.dialogTabContentEnd() %>
 <%= wp.dialogButtonsOkCancelDefine() %>
 </form>
 

@@ -22,6 +22,7 @@
 		</exportpoints>
 		<autolock>true</autolock>
 		<enableusermanagement>true</enableusermanagement>
+		<defaultpropertiesonstructure>true</defaultpropertiesonstructure>
 		<maxfileuploadsize>-1</maxfileuploadsize>
 		<labeledfolders/>
 		<explorertypes>
