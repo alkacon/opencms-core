@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsResourceType.java,v $
- * Date   : $Date: 2003/07/15 12:30:13 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/07/15 13:43:48 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since 5.1
  */
 public abstract class A_CmsResourceType implements I_CmsResourceType {
@@ -191,14 +191,14 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     /**
      * @see com.opencms.file.I_CmsResourceType#importResource(com.opencms.file.CmsObject, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, java.util.Map, java.lang.String, byte[], java.lang.String)
      */
-    public CmsResource importResource(CmsObject cms, String resourcename, String destination, String user, String group, String access, long lastmodified, Map properties, String launcherStartClass, byte[] content, String importPath) throws CmsException {
+    public CmsResource importResource(CmsObject cms, String resourcename, String destination, String uuid, String uuidfile, String uuidresource, String type, String user, String group, String access, long lastmodified, Map properties, String launcherStartClass, byte[] content, String importPath) throws CmsException {
         // TODO: Remove owner / group / access / launcherStartClass parameter
         CmsResource importedResource = null;
         destination = importPath + destination;
         boolean changed = true;
 
         try {
-            importedResource = cms.doImportResource(destination, getResourceType(), properties, getLauncherType(), getLauncherClass(), cms.getRequestContext().currentUser().getName(), cms.getRequestContext().currentGroup().getName(), 0, lastmodified, content);
+            importedResource = cms.doImportResource(destination, uuid, uuidfile, uuidresource, getResourceType(), properties, getLauncherType(), getLauncherClass(), cms.getRequestContext().currentUser().getName(), cms.getRequestContext().currentGroup().getName(), 0, lastmodified, content);
             changed = (importedResource == null);
         } catch (CmsException e) {
             // an exception is thrown if the resource already exists

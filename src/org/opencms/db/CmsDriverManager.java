@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/15 12:30:13 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2003/07/15 13:43:48 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.47 $ $Date: 2003/07/15 12:30:13 $
+ * @version $Revision: 1.48 $ $Date: 2003/07/15 13:43:48 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -4093,33 +4093,37 @@ public class CmsDriverManager extends Object {
      * <li>the resource is not locked by another user</li>
      * </ul>
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param currentGroup The group who requested this method.
-     * @param context.currentProject() The current project of the user.
-     * @param folder The complete m_path to the folder in which the new resource will
-     * be created.
-     * @param newResourceName The name of the new resource (No pathinformation allowed).
-     * @param resourceType The resourcetype of the new resource
-     * @param propertyinfos A Hashtable of propertyinfos, that should be set for this folder.
+     * @param context the current request ocntext
+     * @param newResourceName the name of the new resource (No pathinformation allowed)
+     * @param uuid  the structure uuid of the resource
+     * @param uuidfile  the file uuid of the resource
+     * @param uuidresource  the resource uuid of the resource     
+     * @param resourceType the resourcetype of the new resource
+     * @param propertyinfos a Hashtable of propertyinfos, that should be set for this folder
      * The keys for this Hashtable are the names for propertydefinitions, the values are
-     * the values for the propertyinfos.
-     * @param launcherType The launcher type of the new resource
-     * @param launcherClassname The name of the launcherclass of the new resource
-     * @param ownername The name of the owner of the new resource
-     * @param groupname The name of the group of the new resource
-     * @param accessFlags The accessFlags of the new resource
-     * @param filecontent The content of the resource if it is of type file 
+     * the values for the propertyinfos
+     * @param launcherType the launcher type of the new resource
+     * @param launcherClassname the name of the launcherclass of the new resource
+     * @param ownername the name of the owner of the new resource
+     * @param groupname the name of the group of the new resource
+     * @param accessFlags the accessFlags of the new resource
+     * @param lastmodified the last modification date of the resource
+     * @param filecontent the content of the resource if it is of type file 
      * 
-     * @return CmsResource The created resource.
+     * @return CmsResource The created resource
      *
      * @throws CmsException will be thrown for missing propertyinfos, for worng propertydefs
      * or if the filename is not valid. The CmsException will also be thrown, if the
      * user has not the rights for this resource.
      */
-    public CmsResource importResource(CmsRequestContext context, String newResourceName, int resourceType, Map propertyinfos, int launcherType, String launcherClassname, String ownername, String groupname, int accessFlags, long lastmodified, byte[] filecontent) throws CmsException {
+    public CmsResource importResource(CmsRequestContext context, String newResourceName, String uuid, String uuidfile, String uuidresource, int resourceType, Map propertyinfos, int launcherType, String launcherClassname, String ownername, String groupname, int accessFlags, long lastmodified, byte[] filecontent) throws CmsException {
         // extract folder information
         String folderName = null;
-        String resourceName = null;
+        String resourceName = null;   
+        // the uuid's
+        CmsUUID newUuid = new CmsUUID();
+        CmsUUID newUuidfile = new CmsUUID();
+        CmsUUID newUuidresource = new CmsUUID();
 
         boolean isFolder = (resourceType == CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
         if (isFolder) {
@@ -4151,8 +4155,23 @@ public class CmsDriverManager extends Object {
             filecontent = new byte[0];
         }
 
+        // use the old uuids's if possible;
+        if (uuid!=null) {
+            newUuid = new CmsUUID(uuid);       
+        }
+        if (uuidfile!=null) {
+            newUuidfile = new CmsUUID(uuidfile);
+        }
+        if (uuidresource!=null) { 
+            newUuidresource = new CmsUUID(uuidresource);
+        }
+
+       
+
         // TODO VFS links: refactor all upper methods to support the VFS link type param
-        CmsResource newResource = new CmsResource(CmsUUID.getNullUUID(), CmsUUID.getNullUUID(), parentFolder.getId(), CmsUUID.getNullUUID(), resourceName, resourceType, 0, owner.getId(), group.getId(), context.currentProject().getId(), accessFlags, I_CmsConstants.C_STATE_NEW, context.currentUser().getId(), launcherType, launcherClassname, lastmodified, lastmodified, context.currentUser().getId(), filecontent.length, context.currentProject().getId(), I_CmsConstants.C_VFS_LINK_TYPE_MASTER);
+        CmsResource newResource = new CmsResource(newUuid, newUuidresource, parentFolder.getId(), newUuidfile, resourceName, resourceType, 0, owner.getId(), group.getId(), context.currentProject().getId(), accessFlags, I_CmsConstants.C_STATE_NEW, context.currentUser().getId(), launcherType, launcherClassname, lastmodified, lastmodified, context.currentUser().getId(), filecontent.length, context.currentProject().getId(), I_CmsConstants.C_VFS_LINK_TYPE_MASTER);
+        //CmsResource newResource = new CmsResource(CmsUUID.getNullUUID(), CmsUUID.getNullUUID(), parentFolder.getId(), CmsUUID.getNullUUID(), resourceName, resourceType, 0, owner.getId(), group.getId(), context.currentProject().getId(), accessFlags, I_CmsConstants.C_STATE_NEW, context.currentUser().getId(), launcherType, launcherClassname, lastmodified, lastmodified, context.currentUser().getId(), filecontent.length, context.currentProject().getId(), I_CmsConstants.C_VFS_LINK_TYPE_MASTER);
+
 
         // create the folder.
         newResource = m_vfsDriver.importResource(context.currentProject(), parentFolder.getId(), newResource, filecontent, context.currentUser().getId(), isFolder);

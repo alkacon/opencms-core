@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
- * Date   : $Date: 2003/07/15 12:17:05 $
- * Version: $Revision: 1.63 $
+ * Date   : $Date: 2003/07/15 13:43:48 $
+ * Version: $Revision: 1.64 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.w3c.dom.Text;
  * @author Andreas Schouten
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.63 $ $Date: 2003/07/15 12:17:05 $
+ * @version $Revision: 1.64 $ $Date: 2003/07/15 13:43:48 $
  */
 public class CmsExport implements I_CmsConstants, Serializable {
 
@@ -108,7 +108,7 @@ public class CmsExport implements I_CmsConstants, Serializable {
     
     /** Set of all exported files, required for later page body file export */
     private Set m_exportedResources = null;
-        
+    
     /** Indicates if module data is exported */
     protected boolean m_exportingModuleData = false;   
 
@@ -211,7 +211,7 @@ public class CmsExport implements I_CmsConstants, Serializable {
         exportAllResources(resourcesToExport);
 
         // export userdata and groupdata if desired
-        if(m_exportUserdata){
+        if (m_exportUserdata) {
             exportGroups();
             exportUsers();
         }
@@ -244,7 +244,7 @@ public class CmsExport implements I_CmsConstants, Serializable {
 
         try {
             m_exportZipStream.close();
-        } catch(IOException exc) {
+        } catch (IOException exc) {
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         }        
     }
@@ -274,7 +274,7 @@ public class CmsExport implements I_CmsConstants, Serializable {
         // init sets required for the body file exports 
         m_exportedPageFiles = new HashSet();
         m_exportedResources = new HashSet();
-
+        
         // export the folders
         for (int i=0; i<folderNames.size(); i++) {
             String path = (String) folderNames.elementAt(i);
@@ -454,13 +454,13 @@ public class CmsExport implements I_CmsConstants, Serializable {
                 String fileName = (String) fileNames.elementAt(i);
                 try {
                     CmsFile file = m_cms.readFile(fileName);
-                    if((file.getState() != C_STATE_DELETED) && (!file.getResourceName().startsWith("~"))) {
+                    if ((file.getState() != C_STATE_DELETED) && (!file.getResourceName().startsWith("~"))) {
                         addSuperFolders(fileName);
                         exportResource(file);
                         m_exportedResources.add(fileName);
                     }
-                } catch(CmsException exc) {
-                    if(exc.getType() != CmsException.C_RESOURCE_DELETED) {
+                } catch (CmsException exc) {
+                    if (exc.getType() != CmsException.C_RESOURCE_DELETED) {
                         throw exc;
                     }
                 }
@@ -617,7 +617,7 @@ public class CmsExport implements I_CmsConstants, Serializable {
             // collect channel id information if required
             String channelId = m_cms.readProperty(path, I_CmsConstants.C_PROPERTY_CHANNELID);
             if (channelId != null) {
-                if(! m_exportedChannelIds.contains(channelId)) {
+                if (! m_exportedChannelIds.contains(channelId)) {
                     m_exportedChannelIds.add(channelId);
                 }
             }
@@ -709,17 +709,19 @@ public class CmsExport implements I_CmsConstants, Serializable {
      * @throws CmsException if something goes wrong
      */
     private void writeXmlEntrys(CmsResource resource) throws CmsException {
-        String source, launcherStartClass, lastModified;
+        String source, launcherStartClass, lastModified, uuid, uuidFile, uuidResource;
+        int type;
 
         // get all needed informations from the resource
         source = getSourceFilename(m_cms.readAbsolutePath(resource));
-        // TODO: fix this later
-        // user = m_cms.readOwner(resource).getName();
-        // group = m_cms.readGroup(resource).getName();
-        // access = resource.getAccessFlags() + "";
+        type = resource.getType();
+        
         launcherStartClass = resource.getLauncherClassname();
         lastModified = String.valueOf(resource.getDateLastModified()); 
-
+        uuid=resource.getId().toString();
+        uuidFile=resource.getFileId().toString();
+        uuidResource=resource.getResourceId().toString();
+        
         // write these informations to the xml-manifest
         Element file = m_docXml.createElement(C_EXPORT_TAG_FILE);
         m_filesElement.appendChild(file);
@@ -735,10 +737,10 @@ public class CmsExport implements I_CmsConstants, Serializable {
             m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
         }
         addElement(m_docXml, file, C_EXPORT_TAG_DESTINATION, source);
-        addElement(m_docXml, file, C_EXPORT_TAG_TYPE, m_cms.getResourceType(resource.getType()).getResourceTypeName());
-        // addElement(m_docXml, file, C_EXPORT_TAG_USER, user);
-        // addElement(m_docXml, file, C_EXPORT_TAG_GROUP, group);
-        // addElement(m_docXml, file, C_EXPORT_TAG_ACCESS, access);
+        addElement(m_docXml, file, C_EXPORT_TAG_UUID, uuid);
+        addElement(m_docXml, file, C_EXPORT_TAG_UUIDFILE, uuidFile);
+        addElement(m_docXml, file, C_EXPORT_TAG_UUIDRESOURCE, uuidResource);
+        addElement(m_docXml, file, C_EXPORT_TAG_TYPE, m_cms.getResourceType(type).getResourceTypeName());
         addElement(m_docXml, file, C_EXPORT_TAG_LASTMODIFIED, lastModified);
         if (launcherStartClass != null
             && !"".equals(launcherStartClass)
@@ -764,7 +766,7 @@ public class CmsExport implements I_CmsConstants, Serializable {
                 properties.appendChild(property);
     
                 String value = (String)fileProperties.get(key);
-                String propertyType = m_cms.readPropertydefinition(key, resource.getType()).getType() + "";
+                String propertyType = m_cms.readPropertydefinition(key, type).getType() + "";
     
                 addElement(m_docXml, property, C_EXPORT_TAG_NAME, key);
                 addElement(m_docXml, property, C_EXPORT_TAG_TYPE, propertyType);
@@ -784,17 +786,15 @@ public class CmsExport implements I_CmsConstants, Serializable {
         
         // create xml elements for each access control entry
         while (i.hasNext()) {
-        	CmsAccessControlEntry ace = (CmsAccessControlEntry)i.next();
-        	Element acentry = m_docXml.createElement(C_EXPORT_TAG_ACCESSCONTROL_ENTRY);
-        	acentries.appendChild(acentry);
-        	
-        	addElement(m_docXml, acentry, C_EXPORT_TAG_ID, ace.getPrincipal().toString());
-        	addElement(m_docXml, acentry, C_EXPORT_TAG_FLAGS, new Integer(ace.getFlags()).toString());
-        	
-        	Element acpermissionset = m_docXml.createElement(C_EXPORT_TAG_ACCESSCONTROL_PERMISSIONSET); 
-        	acentry.appendChild(acpermissionset);
-        	addElement(m_docXml, acpermissionset, C_EXPORT_TAG_ACCESSCONTROL_ALLOWEDPERMISSIONS, new Integer(ace.getAllowedPermissions()).toString());
-        	addElement(m_docXml, acpermissionset, C_EXPORT_TAG_ACCESSCONTROL_DENIEDPERMISSIONS, new Integer(ace.getDeniedPermissions()).toString());
+            CmsAccessControlEntry ace = (CmsAccessControlEntry)i.next();
+            Element acentry = m_docXml.createElement(C_EXPORT_TAG_ACCESSCONTROL_ENTRY);
+            acentries.appendChild(acentry);
+            addElement(m_docXml, acentry, C_EXPORT_TAG_ID, ace.getPrincipal().toString());
+            addElement(m_docXml, acentry, C_EXPORT_TAG_FLAGS, new Integer(ace.getFlags()).toString());
+            Element acpermissionset = m_docXml.createElement(C_EXPORT_TAG_ACCESSCONTROL_PERMISSIONSET); 
+            acentry.appendChild(acpermissionset);
+            addElement(m_docXml, acpermissionset, C_EXPORT_TAG_ACCESSCONTROL_ALLOWEDPERMISSIONS, new Integer(ace.getAllowedPermissions()).toString());
+            addElement(m_docXml, acpermissionset, C_EXPORT_TAG_ACCESSCONTROL_DENIEDPERMISSIONS, new Integer(ace.getDeniedPermissions()).toString());
         }
     }
 
@@ -805,7 +805,7 @@ public class CmsExport implements I_CmsConstants, Serializable {
      */
     private void exportGroups() throws CmsException {
         Vector allGroups = m_cms.getGroups();
-        for (int i = 0; i < allGroups.size(); i++){
+        for (int i = 0; i < allGroups.size(); i++) {
             exportGroup((CmsGroup)allGroups.elementAt(i));
         }
     }
@@ -817,7 +817,7 @@ public class CmsExport implements I_CmsConstants, Serializable {
      */
     private void exportUsers() throws CmsException {
         Vector allUsers = m_cms.getUsers();
-        for (int i = 0; i < allUsers.size(); i++){
+        for (int i = 0; i < allUsers.size(); i++) {
             exportUser((CmsUser)allUsers.elementAt(i));
         }
     }
@@ -886,8 +886,7 @@ public class CmsExport implements I_CmsConstants, Serializable {
         // write these informations to the xml-manifest
         Element groupdata = m_docXml.createElement(C_EXPORT_TAG_GROUPDATA);
         m_userdataElement.appendChild(groupdata);
-
-		addElement(m_docXml, groupdata, C_EXPORT_TAG_ID, id);
+        addElement(m_docXml, groupdata, C_EXPORT_TAG_ID, id);
         addElement(m_docXml, groupdata, C_EXPORT_TAG_NAME, name);
         addCdataElement(m_docXml, groupdata, C_EXPORT_TAG_DESCRIPTION, description);
         addElement(m_docXml, groupdata, C_EXPORT_TAG_FLAGS, flags);
@@ -930,7 +929,7 @@ public class CmsExport implements I_CmsConstants, Serializable {
         Element userdata = m_docXml.createElement(C_EXPORT_TAG_USERDATA);
         m_userdataElement.appendChild(userdata);
 
-		addElement(m_docXml, userdata, C_EXPORT_TAG_ID, id);
+        addElement(m_docXml, userdata, C_EXPORT_TAG_ID, id);
         addElement(m_docXml, userdata, C_EXPORT_TAG_NAME, name);
         //Encode the info value, using any base 64 decoder
         enc = new sun.misc.BASE64Encoder();

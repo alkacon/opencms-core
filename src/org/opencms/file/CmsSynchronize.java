@@ -1,7 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsSynchronize.java,v $
- * Date   : $Date: 2003/07/15 12:17:05 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/07/15 13:43:48 $
+ * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/07/15 13:43:48 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +62,7 @@ import java.util.Vector;
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.8 $ $Date: 2003/07/15 12:17:05 $
+ * @version $Revision: 1.9 $ $Date: 2003/07/15 13:43:48 $
  */
 public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
 
@@ -392,7 +394,6 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
         } else {
             // the resource name was not found in the sync list
             // this is a new resource
-
             action = C_EXPORT_VFS;
         }
         //free mem
@@ -477,7 +478,7 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
         // filename.
         CmsSynchronizeList sync = (CmsSynchronizeList)m_syncList.get(translate(m_cms.readAbsolutePath(res)));
         // if no entry in the sync list was found, its a new resource and we 
-        // can use the name of the VFS resource
+        // can use the name of the VFS resource.
         if (sync != null) {
             resourcename = sync.getResName();
         } else {
@@ -491,7 +492,7 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
             CmsSynchronizeList parentSync = (CmsSynchronizeList)m_newSyncList.get(parent);
             // use the non-translated pathname
             if (parentSync != null) {
-                resourcename = parentSync.getResName() + res.getResourceName();
+                resourcename = parentSync.getResName() + res.getName();
             }
         }
         if ((res.isFolder()) && (!resourcename.endsWith("/"))) {

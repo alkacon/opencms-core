@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2003/07/15 10:42:58 $
-* Version: $Revision: 1.244 $
+* Date   : $Date: 2003/07/15 13:43:48 $
+* Version: $Revision: 1.245 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,24 +40,14 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.244 $ $Date: 2003/07/15 10:42:58 $
+ * @version $Revision: 1.245 $ $Date: 2003/07/15 13:43:48 $
  */
 public interface I_CmsConstants {
 
     /**
      * The copyright message for OpenCms.
      */
-    String C_COPYRIGHT[] =  {
-        "",
-        "Copyright (c) 2002-2003 Alkacon Software",        
-        "Copyright (c) 2000-2002 The OpenCms Group",
-        "OpenCms comes with ABSOLUTELY NO WARRANTY",
-        "This is free software, and you are welcome to",
-        "redistribute it under certain conditions.",
-        "Please see the GNU Lesser General Public Licence for",
-        "further details.",
-        ""
-    };
+    String C_COPYRIGHT[] = {"", "Copyright (c) 2002-2003 Alkacon Software", "Copyright (c) 2000-2002 The OpenCms Group", "OpenCms comes with ABSOLUTELY NO WARRANTY", "This is free software, and you are welcome to", "redistribute it under certain conditions.", "Please see the GNU Lesser General Public Licence for", "further details.", "" };
 
     /**
      * Replacekey for the webapplication name (used in opencms.properties)
@@ -163,7 +153,7 @@ public interface I_CmsConstants {
      * Property for the description
      */
     String C_PROPERTY_CHANNELID = "ChannelId";
-    
+
     /**
      * Property for content encoding
      */
@@ -337,37 +327,37 @@ public interface I_CmsConstants {
      * The permission to view a resource
      */
     int C_PERMISSION_VIEW = 4;
-    
+
     /**
      * The permission to control a resource
      */
     int C_PERMISSION_CONTROL = 8;
 
-	/**
-	 * Permission set to check read acces
-	 */
-	CmsPermissionSet C_READ_ACCESS = new CmsPermissionSet(C_PERMISSION_READ);
-	
-	/**
-	 * Permission set to check write access
-	 */
-	CmsPermissionSet C_WRITE_ACCESS = new CmsPermissionSet(C_PERMISSION_WRITE);
-	
-	/**
-	 * Permission set to check view access
-	 */
-	CmsPermissionSet C_VIEW_ACCESS = new CmsPermissionSet(C_PERMISSION_VIEW);
-	
-	/**
-	 * Permission set to check control access
-	 */
-	CmsPermissionSet C_CONTROL_ACCESS = new CmsPermissionSet(C_PERMISSION_CONTROL);
- 
- 	/**
- 	 * Permission set to check read and/or view access
- 	 */
- 	CmsPermissionSet C_READ_OR_VIEW_ACCESS = new CmsPermissionSet(C_PERMISSION_READ|C_PERMISSION_VIEW);
- 	
+    /**
+     * Permission set to check read acces
+     */
+    CmsPermissionSet C_READ_ACCESS = new CmsPermissionSet(C_PERMISSION_READ);
+
+    /**
+     * Permission set to check write access
+     */
+    CmsPermissionSet C_WRITE_ACCESS = new CmsPermissionSet(C_PERMISSION_WRITE);
+
+    /**
+     * Permission set to check view access
+     */
+    CmsPermissionSet C_VIEW_ACCESS = new CmsPermissionSet(C_PERMISSION_VIEW);
+
+    /**
+     * Permission set to check control access
+     */
+    CmsPermissionSet C_CONTROL_ACCESS = new CmsPermissionSet(C_PERMISSION_CONTROL);
+
+    /**
+     * Permission set to check read and/or view access
+     */
+    CmsPermissionSet C_READ_OR_VIEW_ACCESS = new CmsPermissionSet(C_PERMISSION_READ | C_PERMISSION_VIEW);
+
     /**
      * Group may read this resource
      */
@@ -407,7 +397,7 @@ public interface I_CmsConstants {
      * All may read this resource.
      */
     int C_ACCESS_READ = C_PERMISSION_READ + C_ACCESS_PUBLIC_READ;
-	// + C_ACCESS_GROUP_READ
+    // + C_ACCESS_GROUP_READ
     /**
      * All may write this resource.
      */
@@ -427,7 +417,7 @@ public interface I_CmsConstants {
      * Group has full access to this resource.
      */
     int C_ACCESS_GROUP = C_ACCESS_GROUP_WRITE + C_ACCESS_GROUP_VISIBLE;
-	// + C_ACCESS_GROUP_READ
+    // + C_ACCESS_GROUP_READ
     /**
      *  has full access to this resource.
      */
@@ -436,40 +426,39 @@ public interface I_CmsConstants {
     /**
      * The default-flags for a new resource.
      */
-    int C_ACCESS_DEFAULT_FLAGS = C_PERMISSION_READ + C_PERMISSION_WRITE + C_PERMISSION_VIEW
-             + C_ACCESS_GROUP_WRITE + C_ACCESS_GROUP_VISIBLE + C_ACCESS_PUBLIC_READ + C_ACCESS_PUBLIC_VISIBLE;
-	// + C_ACCESS_GROUP_READ
-	
-	/**
-	 * Flag to indicate that an access control entry is currently deleted
-	 */
-	int C_ACCESSFLAGS_DELETED = 1;
-	
-	/**
-	 * Flag to indicate that an access control entry should be inherited
-	 */
-	int C_ACCESSFLAGS_INHERIT = 2;
+    int C_ACCESS_DEFAULT_FLAGS = C_PERMISSION_READ + C_PERMISSION_WRITE + C_PERMISSION_VIEW + C_ACCESS_GROUP_WRITE + C_ACCESS_GROUP_VISIBLE + C_ACCESS_PUBLIC_READ + C_ACCESS_PUBLIC_VISIBLE;
+    // + C_ACCESS_GROUP_READ
 
-	/*
-	 * Flag to indicate that an access control entry overwrites inherited entries 
-	 */
-	int C_ACCESSFLAGS_OVERWRITE = 4;
-	 	
-	/**
-	 * Flag to indicate that an access control entry was inherited (read only)
-	 */
-	int C_ACCESSFLAGS_INHERITED = 8;
-	
-	/**
-	 * Flag to signal the principal type user
-	 */
-	int C_ACCESSFLAGS_USER = 16;
-	
-	/**
-	 * Flag to signal the pricipal type group
-	 */
-	int C_ACCESSFLAGS_GROUP = 32;
-	
+    /**
+     * Flag to indicate that an access control entry is currently deleted
+     */
+    int C_ACCESSFLAGS_DELETED = 1;
+
+    /**
+     * Flag to indicate that an access control entry should be inherited
+     */
+    int C_ACCESSFLAGS_INHERIT = 2;
+
+    /*
+     * Flag to indicate that an access control entry overwrites inherited entries 
+     */
+    int C_ACCESSFLAGS_OVERWRITE = 4;
+
+    /**
+     * Flag to indicate that an access control entry was inherited (read only)
+     */
+    int C_ACCESSFLAGS_INHERITED = 8;
+
+    /**
+     * Flag to signal the principal type user
+     */
+    int C_ACCESSFLAGS_USER = 16;
+
+    /**
+     * Flag to signal the pricipal type group
+     */
+    int C_ACCESSFLAGS_GROUP = 32;
+
     /**
      * Is set, if the resource is unchanged in this project.
      */
@@ -619,11 +608,11 @@ public interface I_CmsConstants {
      * The key for the project in the user information hashtable.
      */
     String C_SESSION_PROJECT = "PROJECT";
-    
+
     /**
      * The key for the current site in the user information hashtable.
      */
-    String C_SESSION_CURRENTSITE = "CURRENTSITE";    
+    String C_SESSION_CURRENTSITE = "CURRENTSITE";
 
     /**
      * The key for the dirty-flag in the session.
@@ -659,7 +648,7 @@ public interface I_CmsConstants {
      * Session key for storing the files Vector for moduleimport.
      */
     String C_SESSION_MODULE_VECTOR = "modulevector";
-    
+
     /**
      * Session key for storing the current charcter encoding to be used in HTTP
      * requests and responses.
@@ -1168,66 +1157,82 @@ public interface I_CmsConstants {
      * A tag in the manifest-file.
      */
     String C_EXPORT_TAG_GROUPNAME = "groupname";
-    
+
     /**
      * The "lastmodified" tag in the manifest-file.
      */
     String C_EXPORT_TAG_LASTMODIFIED = "lastmodified";
-	
-	/**
-	 * Tag to identify a generic id
-	 */
-	String C_EXPORT_TAG_ID = "id";
-	
-	/**
-	 * Tag to identify accesscontrolentries 
-	 */
-	String C_EXPORT_TAG_ACCESSCONTROL_ENTRIES = "accesscontrol";
-	
-	/**
-	 * Tag to identify a single access control entry
-	 */
-	String C_EXPORT_TAG_ACCESSCONTROL_ENTRY = "accessentry";
-	
-	/**
-	 * Tag to identify a permission set
-	 */
-	String C_EXPORT_TAG_ACCESSCONTROL_PERMISSIONSET = "permissionset";
-	
-	/**
-	 * Tag to identify allowed permissions
-	 */
-	String C_EXPORT_TAG_ACCESSCONTROL_ALLOWEDPERMISSIONS = "allowed";
-	
-	/**
-	 * Tag to identify denied permissions
-	 */
-	String C_EXPORT_TAG_ACCESSCONTROL_DENIEDPERMISSIONS = "denied";
+
+    /**
+     * The "uuid" tag in the manifest-file.
+     */
+    String C_EXPORT_TAG_UUID = "uuid";
+    
+    /**
+     * The "uuidfile" tag in the manifest-file.
+     */
+    String C_EXPORT_TAG_UUIDFILE = "uuidfile";
+    
+    /**
+     * The "uuidresource" tag in the manifest-file.
+     */
+    String C_EXPORT_TAG_UUIDRESOURCE = "uuidresource";
+    
+
+    /**
+     * Tag to identify a generic id
+     */
+    String C_EXPORT_TAG_ID = "id";
+
+    /**
+     * Tag to identify accesscontrolentries 
+     */
+    String C_EXPORT_TAG_ACCESSCONTROL_ENTRIES = "accesscontrol";
+
+    /**
+     * Tag to identify a single access control entry
+     */
+    String C_EXPORT_TAG_ACCESSCONTROL_ENTRY = "accessentry";
+
+    /**
+     * Tag to identify a permission set
+     */
+    String C_EXPORT_TAG_ACCESSCONTROL_PERMISSIONSET = "permissionset";
+
+    /**
+     * Tag to identify allowed permissions
+     */
+    String C_EXPORT_TAG_ACCESSCONTROL_ALLOWEDPERMISSIONS = "allowed";
+
+    /**
+     * Tag to identify denied permissions
+     */
+    String C_EXPORT_TAG_ACCESSCONTROL_DENIEDPERMISSIONS = "denied";
 
     /**
      * A string in the configuration-file.
-     */    
+     */
     String C_CONFIGURATIONS_POOL = "pool";
 
-	/**
-	 * A string in the configuration-file.
-	 */    
-	String C_CONFIGURATIONS_ACCESS = "access";
+    /**
+     * A string in the configuration-file.
+     */
+    String C_CONFIGURATIONS_ACCESS = "access";
 
-	/**
-	 * A string in the configuration-file.
-	 */  
-	String C_CONFIGURATION_DB = "db";
-		
+    /**
+     * A string in the configuration-file.
+     */
+    String C_CONFIGURATION_DB = "db";
+
     /**
      * A string in the configuration-file.
      */
     String C_CONFIGURATION_CACHE = "cache";
-    
+
     /**
      * Prefix for history/backup config keys.
      */
-    String C_CONFIGURATION_HISTORY = "history";    
+    String C_CONFIGURATION_HISTORY = "history";
 
     /**
      * A string in the configuration-file.
@@ -1243,7 +1248,7 @@ public interface I_CmsConstants {
      * A string in the configuration-file.
      */
     String C_CLUSTERURL = "clusterurl";
-    
+
     /**
      * wasLoggedIn
      */
@@ -1288,7 +1293,7 @@ public interface I_CmsConstants {
      * The name of the launcher tag in registry.
      */
     String C_REGISTRY_LAUNCHER = "launcher";
-    
+
     /**
      * The name of the exportpoint source tag in registry.
      */
@@ -1298,16 +1303,16 @@ public interface I_CmsConstants {
      * The name of the exportpoint destination tag in registry.
      */
     String C_REGISTRY_DESTINATION = "destination";
-    
+
     /**
      * The name of the error tag seperator in backoffice templates
      */
-    String C_ERRSPERATOR="_";
+    String C_ERRSPERATOR = "_";
 
     /**
     * The name of the error tag prefix in backoffice templates
     */
-    String C_ERRPREFIX="err";
+    String C_ERRPREFIX = "err";
 
     /**
      * The name of the default site
@@ -1325,7 +1330,7 @@ public interface I_CmsConstants {
     String C_ROOTNAME_COS = "cos";
 
     String C_VFS_DEFAULT = "/" + C_DEFAULT_SITE + "/" + C_ROOTNAME_VFS;
-    String C_COS_DEFAULT = "/" + C_DEFAULT_SITE + "/" + C_ROOTNAME_COS;       
+    String C_COS_DEFAULT = "/" + C_DEFAULT_SITE + "/" + C_ROOTNAME_COS;
 
     /**
      * The name of the entry for the id generator to create new channelid's
@@ -1354,56 +1359,54 @@ public interface I_CmsConstants {
      * The key for the date of the last linkcheck in the linkchecktable
      */
     String C_LINKCHECKTABLE_DATE = "linkcheckdate";
-    
+
     /**
      * The name of the tag in registry for history properties.
-     */ 
+     */
     String C_REGISTRY_HISTORY = "history";
-    
+
     /**
      * The name of the tag in registry if versions of the history should be deleted 
-     */     
+     */
     String C_DELETE_HISTORY = "deleteversions";
-    
+
     /**
      * The name of the tag in registry for the number of weeks the versions should remain in the history.
-     */ 
+     */
     String C_WEEKS_HISTORY = "weeks";
-    
+
     /**
      * The name of the tag in registry if history is enabled.
-     */     
+     */
     String C_ENABLE_HISTORY = "enabled";
-    
+
     /**
      * The module property key name to specifiy additional resources which are
      * part of a module outside of {system/modules}.
      */
     String C_MODULE_PROPERTY_ADDITIONAL_RESOURCES = "additionalresources";
-    
+
     /**
      * Character to separate additional resources specified in the module properties.
      */
-    String C_MODULE_PROPERTY_ADDITIONAL_RESOURCES_SEPARATOR = ";";    
-    
+    String C_MODULE_PROPERTY_ADDITIONAL_RESOURCES_SEPARATOR = ";";
+
     /** name of the special body element from an XMLTemplate */
-    String C_XML_BODY_ELEMENT = "body"; 
-    
+    String C_XML_BODY_ELEMENT = "body";
+
     /** Type ID of a hard VFS link.<p> */
     int C_VFS_LINK_TYPE_MASTER = 1;
-    
+
     /** Type ID of a soft VFS link.<p> */
-    int C_VFS_LINK_TYPE_SLAVE = 2;     
-  
+    int C_VFS_LINK_TYPE_SLAVE = 2;
+
     /** suffix for caching of simple pages */
     String C_XML_CONTROL_FILE_SUFFIX = ".xmlcontrol";
-    
+
     /** template property for simple pages */
     String C_XML_CONTROL_TEMPLATE_PROPERTY = "template";
-    
+
     /** default class for templates */
-    String C_XML_CONTROL_DEFAULT_CLASS = "com.opencms.template.CmsXmlTemplate";  
-  
+    String C_XML_CONTROL_DEFAULT_CLASS = "com.opencms.template.CmsXmlTemplate";
+
 }
-
-

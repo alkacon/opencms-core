@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/15 12:30:13 $
-* Version: $Revision: 1.321 $
+* Date   : $Date: 2003/07/15 13:43:48 $
+* Version: $Revision: 1.322 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.321 $
+ * @version $Revision: 1.322 $
  */
 public class CmsObject extends Object {
 
@@ -637,7 +637,6 @@ public class CmsObject extends Object {
     public CmsFile createFile(String folder, String filename, byte[] contents, int type) throws CmsException {
         return (CmsFile) createResource(folder, filename, type, null, contents);
     }
-    
     /**
      * Creates a new file with the given content and resourcetype.
      *
@@ -1275,29 +1274,32 @@ public class CmsObject extends Object {
     }
 
     /**
-     * Creates a new resource.
+     * Creates a new resource.<p>
      *
-     * @param folder the complete path to the folder in which the new resource will
-     * be created.
-     * @param newResourceName the name of the new resource.
+     * @param newResourceName the name of the new resource
+     * @param uuid  the structure uuid of the resource
+     * @param uuidfile  the file uuid of the resource
+     * @param uuidresource  the resource uuid of the resource
      * @param resourceType The resourcetype of the new resource
-     * @param properties A Hashtable of propertyinfos, that should be set for this folder.
+     * @param properties A Hashtable of propertyinfos, that should be set for this folder
      * The keys for this Hashtable are the names for propertydefinitions, the values are
-     * the values for the propertyinfos.
+     * the values for the propertyinfos
      * @param launcherType The launcher type of the new resource
      * @param launcherClassname The name of the launcherclass of the new resource
      * @param ownername The name of the owner of the new resource
      * @param groupname The name of the group of the new resource
      * @param accessFlags The accessFlags of the new resource
+     * @param lastmodified the last modification date of the resource
      * @param filecontent The content of the resource if it is of type file 
      *
-     * @return a <code>CmsFolder</code> object representing the newly created folder.
+     * @return a <code>CmsFolder</code> object representing the newly created folder
      * @throws CmsException if the resourcename is not valid, or if the user has not the appropriate rights to create
-     * a new resource.
+     * a new resource
      *
      */
-    protected CmsResource doImportResource(String newResourceName, int resourceType, Map properties, int launcherType, String launcherClassname, String ownername, String groupname, int accessFlags, long lastmodified, byte[] filecontent) throws CmsException {
-        CmsResource cmsResource = m_driverManager.importResource(m_context, addSiteRoot(newResourceName), resourceType, properties, launcherType, launcherClassname, ownername, groupname, accessFlags, lastmodified, filecontent);
+    protected CmsResource doImportResource(String newResourceName, String uuid, String uuidfile, String uuidresource, int resourceType, Map properties, int launcherType, String launcherClassname, String ownername, String groupname, int accessFlags, long lastmodified, byte[] filecontent) throws CmsException {
+    
+        CmsResource cmsResource = m_driverManager.importResource(m_context, addSiteRoot(newResourceName), uuid, uuidfile, uuidresource, resourceType, properties, launcherType, launcherClassname, ownername, groupname, accessFlags, lastmodified, filecontent);
 
         return cmsResource;
     }
@@ -2437,24 +2439,29 @@ public class CmsObject extends Object {
     }
 
     /**
-     * Imports a resource to the cms.
+     * Imports a resource to the cms.<p>
      *
-     * @param source the name of the import resource (zipfile or folder).
-     * @param destination the name (absolute Path) of the folder in which should be imported.
+     * @param source the name of the import resource (zipfile or folder)
+     * @param destination the name (absolute Path) of the folder in which should be imported
+     * @param uuid  the structure uuid of the resource
+     * @param uuidfile  the file uuid of the resource
+     * @param uuidresource  the resource uuid of the resource
      * @param type the type of the resource
      * @param user the owner of the resource
      * @param group the group of the resource
      * @param access the access flags of the resource
+     * @param lastmodified the last modifcation date of the resource
      * @param properties the properties of the resource
      * @param launcherStartClass the name of launcher start class
      * @param content the content of the resource
      * @param importPath the name of the import path
-     *
-     * @throws CmsException if operation was not successful.
+     * @return the imported CmsResource
+     * @throws CmsException if operation was not successful
      */
-    public CmsResource importResource(String source, String destination, String type, String user, String group, String access, long lastmodified, Map properties, String launcherStartClass, byte[] content, String importPath) throws CmsException {
+    public CmsResource importResource(String source, String destination, String uuid, String uuidfile, String uuidresource, String type, String user, String group, String access, long lastmodified, Map properties, String launcherStartClass, byte[] content, String importPath) throws CmsException {
         I_CmsResourceType rt = getResourceType(type);
-        return rt.importResource(this, source, destination, user, group, access, lastmodified, properties, launcherStartClass, content, importPath);
+      
+        return rt.importResource(this, source, destination, uuid, uuidfile, uuidresource, type, user, group, access, lastmodified, properties, launcherStartClass, content, importPath);
     }
 
     /**
@@ -2836,7 +2843,7 @@ public class CmsObject extends Object {
 
             // update the online links table for the new resources (now they are there)
             updateOnlineProjectLinks(null, null, newResources, CmsResourceTypePage.C_RESOURCE_TYPE_ID);
-            
+
             changedResources.clear();
             changedResources = null;
             newResources = null;

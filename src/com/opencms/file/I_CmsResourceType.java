@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceType.java,v $
- * Date   : $Date: 2003/07/15 12:30:13 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2003/07/15 13:43:48 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import java.util.Map;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Michael Emmerich (m.emmerich@alkacon.com)
  */
 public interface I_CmsResourceType {
     
@@ -249,6 +250,10 @@ public interface I_CmsResourceType {
      * @param cms the current cms context
      * @param resourcename the name of the resource to apply this operation to
      * @param destination the destination
+     * @param uuid  the structure uuid of the resource
+     * @param uuidfile  the file uuid of the resource
+     * @param uuidresource  the resource uuid of the resource* 
+     * @param type the type of the resource
      * @param user the user (deprecated)
      * @param group the group (deprecated)
      * @param access the access flags (deprecated)
@@ -262,5 +267,5 @@ public interface I_CmsResourceType {
      */
     // TODO: Remove user / group / access
     // TODO: Add "creation date" (?)
-    CmsResource importResource(CmsObject cms, String resourcename, String destination, String user, String group, String access, long lastmodified, Map properties, String launcherStartClass, byte[] content, String importPath) throws CmsException;
+    CmsResource importResource(CmsObject cms, String resourcename, String destination, String uuid, String uuidfile, String uuidresource, String type, String user, String group, String access, long lastmodified, Map properties, String launcherStartClass, byte[] content, String importPath) throws CmsException;
 }
