@@ -46,6 +46,3 @@ addFileExtension png image
 addFileExtension tif image
 addFileExtension tiff image
 addFileExtension jsp jsp
-
-# Set the path for the VFS database export / import
-writePackagePath "packages/"
