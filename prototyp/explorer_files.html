@@ -1,141 +1,88 @@
 <html>
 <head>
+    <link rel=stylesheet type="text/css" href="format.css">
+<script>
 
-<script language=JavaScript>
-<!--
-function show_help()
-{
-	return '2_1_2_2.html';
+/* 
+    parent.aF(
+            "blahg.txt",                -filename
+            "/blah/blah/bla/"           -path
+            "super blah textdatei",     -title
+            0,                          -type    (->resource file)
+            "11.10.1988",               -date of last change
+            "otto",                     -who changed file last time
+            "12.10.1988",                -date
+            "234",                      -size
+            0,                          -status (unchanged=0 / changed=1 / new=2 / deleted=3)
+            1,                          -project
+            "horst",                    -owner
+            "users",                    -group
+            178,                        -permissions
+            "peter",                    -locked by
+            );
+*/
+
+function initialize() {
+
+    top.setProject(1);
+    top.setOnlineProject(2); //zugehoeriges onlineprojekt
+
+    top.setChecksum("324980");
+    top.setDirectory("/blah1/bla2/blah3/blah4/ffff5/");
+
+    top.rD();
+    top.aF("blahfolder","/usr/local/","",5,"10.10.1988","otto","01.10.1988",2454,0,2,"horst","Administrators",317,"tom");
+    top.aF("blahfolder","/usr/local/","",5,"10.10.1988","otto","01.10.1988",2454,0,2,"horst","Administrators",513,"helmut");
+    top.aF("blah.jpg","usr/local/","superbild",0,"10.10.1988","otto","01.10.1988",454,1,2,"horst","Administrators",237,"");
+    top.aF("blah.gif","/usr/local/","superbild",0,"10.10.1988","otto","01.10.1988",2454,2,2,"horst","Administrators",1023,"");
+    top.aF("blah.txt","/usr/local/","Titel",1,"10.10.1988","otto","01.10.1988",2454,3,2,"horst","Administrators",478,"helmut");
+    top.aF("blah.txt","/usr/local/","Titel",1,"10.10.1988","otto","01.10.1988",2454,2,2,"horst","Administrators",317,"tom");
+    top.aF("blah.txt","/usr/local/","Titel",2,"10.10.1988","otto","01.10.1988",2454,1,2,"horst","Administrators",137,"");
+    top.aF("blah.txt","/usr/local/","Titel",2,"10.10.1988","otto","01.10.1988",2454,0,2,"horst","Administrators",487,"helmut");
+    top.aF("core","/usr/local/","Titel",3,"10.10.1988","otto","01.10.1988",2454,1,2,"horst","Administrators",1023,"tom");
+    top.aF("core","/usr/local/","Titel",3,"10.10.1988","otto","01.10.1988",2454,2,2,"horst","Administrators",27,"");
+    top.aF("neues","/usr/local/","bad news",6,"10.10.1988","otto","01.10.1988",2454,3,2,"horst","Administrators",137,"helmut");
+    top.aF("neues","/usr/local/","bad news ",6,"10.10.1988","otto","01.10.1988",2454,0,2,"horst","Administrators",237,"");
+    top.aF("blah.html","/usr/local/","tolle seite",4,"10.10.1988","otto","01.10.1988",2454,1,2,"horst","Administrators",174,"helmut");
+    top.aF("blah.html","/usr/local/","tollste seite",4,"10.10.1988","otto","01.10.1988",2454,2,2,"horst","Administrators",117,"");
+
+    top.rT(); //reset tree
+    top.aC(0,"root",-1);
+    top.aC(1,"dir1",0);
+    top.aC(2,"dir2",1);
+    top.aC(3,"dir3",1);
+    top.aC(4,"dir4",0);
+    top.aC(5,"dir5",4);
+    top.aC(6,"dir6",5);
+    top.aC(7,"dir6a",4);
+    top.aC(8,"dir7",6);
+    top.aC(9,"dir7a",7);
+    top.aC(10,"dir7a1",9);
+    top.aC(11,"dir7a2",10);
+    top.aC(12,"dir7b",8);
+    top.aC(40,"dir8",0);
+    top.aC(14,"dir9",13);
+    top.aC(15,"dir10",14);
+    top.aC(16,"dir11",15);
+    top.aC(17,"dir7b",1);
+    top.aC(18,"dir8",7);
+    top.aC(19,"dir9",12);
+    top.aC(20,"dir10",1);
+    top.aC(21,"dir11",5);
+    top.aC(22,"dir9",3);
+    top.aC(23,"dir10",2);
+    top.aC(24,"dir11",22);
+    top.aC(25,"dir7b",18);
+    top.aC(26,"dir8",19);
+    top.aC(27,"dir9",26);
+    top.aC(28,"dir10",5);
+    top.aC(29,"dir11",8);
+
+    top.dU(document);
 }
-//-->
+
 </script>
-
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
-
-<title>OpenCms Arbeitsplatz von Alexander Kandzior</title>
-
-<link rel=stylesheet type="text/css" href="css/format.css">
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="js/opencms_choosebrowser.js"></SCRIPT>
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="js/opencms_kontextmenu.js"></SCRIPT>
 </head>
-<body bgcolor="#ffffff" background="pics/bg_weiss.gif"  bgproperties=fixed>
-
-<table cellspacing=1 cellpadding=1 border=0 width="466">
-	<tr bgcolor="#c0c0c0">
-		<td valign=bottom width=16 nowrap>&nbsp;</td>
-		<td valign=bottom width=100 nowrap><p class=einzug>Name</p></td>
-		<td valign=bottom width=100 nowrap><p class=einzug>Titel</p></td>
-		<td valign=bottom width=100 nowrap><p class=einzug>Typ</p></td>
-		<td valign=bottom width=100 nowrap><p class=einzug>Ge&auml;ndert am</p></td>
-		<td valign=bottom width=50 nowrap><p class=einzug>Gr&ouml;&szlig;e</p></td>
-	</tr>
-	
-	<tr valign=top>
-		<td valign=bottom width=18 nowrap><A href="javascript:showkontext('online_p',0)"><IMG border=0  src="pics/ic_file_binary.gif" width=16 height=16></A></td>
-		<td valign=bottom nowrap><p class=einzug><a href='#' class=dateingeandert>MhtEBKEmailEditor.class</a></p></td>
-		<td valign=bottom nowrap><p class=einzug>Titel</p></td>
-		<td valign=bottom width=100 nowrap><p class=einzug>Binär</p></td>
-		<td valign=bottom nowrap><p class=einzug>01.12.1999 08:30</p></td>
-		<td valign=bottom align=right nowrap><p class=einzug>6616</p></td>
-	</tr>
-	<tr valign=top>
-		<td valign=bottom width=18 nowrap><A href="javascript:showkontext('online_p',2)"><IMG border=0  src="pics/ic_file_binary.gif" width=16 height=16></A></td>
-		<td valign=bottom nowrap><p class=einzug><a href='#' class=dateingeandert>mindfact.pdf</a></p></td>
-		<td valign=bottom nowrap><p class=einzug>Titel</p></td>
-		<td valign=bottom width=100 nowrap><p class=einzug>Binär</p></td>
-		<td valign=bottom nowrap><p class=einzug>01.12.1999 15:33</p></td>
-		<td valign=bottom align=right nowrap><p class=einzug>6616</p></td>
-	</tr>
-	<tr valign=top>
-		<td valign=bottom width=18 nowrap><A href="javascript:showkontext('online_p',3)"><IMG border=0  src="pics/ic_file_binary.gif" width=16 height=16></A></td>
-		<td valign=bottom nowrap><p class=einzug><a href='#' class=dateingeandert>mindfact.txt</a></p></td>
-		<td valign=bottom nowrap><p class=einzug>Titel</p></td>
-		<td valign=bottom width=100 nowrap><p class=einzug>Binär</p></td>
-		<td valign=bottom nowrap><p class=einzug>01.12.1999 17:05</p></td>
-		<td valign=bottom align=right nowrap><p class=einzug>6616</p></td>
-	</tr>
-	<tr valign=top>
-		<td valign=bottom width=18 nowrap><A href="javascript:showkontext('online_p',3)"><IMG border=0  src="pics/ic_file_plain.gif" width=16 height=16></A></td>
-		<td valign=bottom nowrap><p class=einzug><a href='#' class=dateingeandert>mindfact.html</a></p></td>
-		<td valign=bottom nowrap><p class=einzug>Titel</p></td>
-		<td valign=bottom width=100 nowrap><p class=einzug>Seite</p></td>
-		<td valign=bottom nowrap><p class=einzug>01.12.1999 17:05</p></td>
-		<td valign=bottom align=right nowrap><p class=einzug>6616</p></td>
-	</tr>
-
-	<tr valign=top>
-		<td valign=bottom nowrap><A href="javascript:showkontext('online_p',4)"><IMG border=0  src="pics/ic_file_image.gif" width=16 height=16></A></td>
-		<td valign=bottom nowrap><p class=einzug><a href='#' class=dateingeandert>Home.gif</a></p></td>
-		<td valign=bottom nowrap><p class=einzug>Alttext</p></td>
-		<td valign=bottom nowrap><p class=einzug>Bild</p></td>
-		<td valign=bottom nowrap><p class=einzug>30.11.1999 12:03</p></td>
-		<td valign=bottom align=right nowrap><p class=einzug>7678</p></td>
-	</tr>
-<!-- erstmal nicht 
-	<tr valign=top nowrap>
-		<td valign=bottom><A href="javascript:showkontext('online_p',5)"><IMG border=0  src="pics/ic_file_docloader.gif" width=16 height=16></A></td>
-		<td valign=bottom nowrap><p class=einzug><a href='#' class=dateingeandert>neu</a></p></td>
-		<td valign=bottom nowrap><p class=einzug></p></td>
-		<td valign=bottom nowrap><p class=einzug>Docloader</p></td>
-		<td valign=bottom nowrap><p class=einzug>30.11.1999 14:54</p></td>
-		<td valign=bottom align=right nowrap><p class=einzug>10774</p></td>
-	</tr>
-
-	<tr valign=top>
-		<td valign=bottom nowrap><A href="javascript:showkontext('online_p',6)"><IMG border=0  src="pics/ic_file_maileditor.gif" width=16 height=16></A></td>
-		<td valign=bottom nowrap><p class=einzug><a href='#' class=dateingeandert>eMailformular</a></p></td>
-		<td valign=bottom 0 nowrap><p class=einzug></p></td>
-		<td valign=bottom nowrap><p class=einzug>EMail Formular</p></td>
-		<td valign=bottom nowrap><p class=einzug>01.12.1999 13:21</p></td>
-		<td valign=bottom align=right nowrap><p class=einzug>12135</p></td>
-	</tr>
--->
-	<tr valign=top>
-		<td valign=bottom nowrap><A href="javascript:showkontext('online_p',7)"><IMG border=0  src="pics/ic_file_plain.gif" width=16 height=16></A></td>
-		<td valign=bottom nowrap><p class=einzug><a href='#' class=dateingeandert>opencms.html</a></p></td>
-		<td valign=bottom nowrap><p class=einzug>OpenCMS</p></td>
-		<td valign=bottom nowrap><p class=einzug>Seite</p></td>
-		<td valign=bottom nowrap><p class=einzug>01.12.1999 18:10</p></td>
-		<td valign=bottom align=right nowrap><p class=einzug>12135</p></td>
-	</tr>
-	<tr valign=top>
-		<td valign=bottom nowrap><A href="javascript:showkontext('online_p',7)"><IMG border=0  src="pics/ic_file_script.gif" width=16 height=16></A></td>
-		<td valign=bottom nowrap><p class=einzug><a href='#' class=dateingeandert>opencms.js</a></p></td>
-		<td valign=bottom nowrap><p class=einzug>OpenCMS</p></td>
-		<td valign=bottom nowrap><p class=einzug>Skript</p></td>
-		<td valign=bottom nowrap><p class=einzug>01.12.1999 18:10</p></td>
-		<td valign=bottom align=right nowrap><p class=einzug>135</p></td>
-	</tr>
-</table>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-
-
-<div id="online_p" class="kontextmenu">
-<table CELLPADDING=1 CELLSPACING=0 BORDER=0 bgcolor="#000000">
-<tr>
-<td>
-<table class=filekontext CELLPADDING=1 CELLSPACING=0 BORDER=0>
-<tr><td>
-<table width="150" CELLPADDING=1 CELLSPACING=1 BORDER=0>
-<TR><TD>
-<A class=kontextlink href="javascript:doAction(DO_HISTVIEW);">Historie<!--#=POP_META#--></A>
-</TD></TR>
-<TR><TD>
-<A class=kontextlink href="javascript:doAction(DO_METAVIEW);">Eigenschaften<!--#=POP_META#--></A>
-</TD></TR>
-</table>             
-</td></tr>
-</table>
-</td></tr>
-</table>
-
-</div>
-
-</body>
+<BODY onLoad="initialize()"></BODY>
 </html>
+
