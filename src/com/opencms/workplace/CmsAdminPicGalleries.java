@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminPicGalleries.java,v $
-* Date   : $Date: 2003/01/20 17:57:48 $
-* Version: $Revision: 1.30 $
+* Date   : $Date: 2003/04/22 12:16:19 $
+* Version: $Revision: 1.31 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
 
 package com.opencms.workplace;
 
+import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsFile;
@@ -44,7 +45,7 @@ import java.util.Hashtable;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.30 $ $Date: 2003/01/20 17:57:48 $
+ * @version $Revision: 1.31 $ $Date: 2003/04/22 12:16:19 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -103,8 +104,25 @@ public class CmsAdminPicGalleries extends CmsAdminGallery {
                 
         // Get the folder for the gallery
         String foldername = getGalleryPath(cms, session, parameters);        
-        CmsFolder thefolder = cms.readFolder(foldername);   
-                
+        CmsFolder thefolder = cms.readFolder(foldername);  
+        
+        // get the file size upload limitation value (value is in kB)
+        int maxFileSize = ((Integer)A_OpenCms.getRuntimeProperty("workplace.file.maxuploadsize")).intValue();                          
+        // check if current user belongs to Admin group, if so no file upload limit
+        if ((maxFileSize <= 0) || cms.userInGroup(cms.getRequestContext().currentUser().getName(), C_GROUP_ADMIN)) {
+            maxFileSize = -1;
+            xmlTemplateDocument.setData("limitation", "");
+        } 
+        else {
+            xmlTemplateDocument.setData("maxfilesize", "" + maxFileSize);
+            try {
+                String limitation = xmlTemplateDocument.getProcessedDataValue("filesize_limited");
+                xmlTemplateDocument.setData("limitation", limitation);
+            } catch (CmsException e) {
+                xmlTemplateDocument.setData("limitation", "");
+            }
+        }
+               
         // Check if we must redirect to head_1
         if(foldername.equals(C_VFS_GALLERY_PICS) && templateFile.endsWith("administration_head_picgalleries2")) {
             // we are in the wrong head - use the first one
@@ -191,7 +209,9 @@ public class CmsAdminPicGalleries extends CmsAdminGallery {
             }
         }
         else {
+            
             if("upload".equals(action)) {
+
                 // get filename and file content if available
                 String filename = null;
                 byte[] filecontent = new byte[0];
@@ -228,6 +248,13 @@ public class CmsAdminPicGalleries extends CmsAdminGallery {
                                 templateSelector = "error";
                                 xmlTemplateDocument.setData("details", filename);
                             }
+                            
+                            // check if the file size is larger than the maximum allowed upload size 
+                            else if ((maxFileSize > 0) && (filecontent.length > (maxFileSize * 1024))) {
+                                templateSelector = "errorfilesize";
+                                xmlTemplateDocument.setData("details", filename+": "+(filecontent.length/1024)+" kb, max. "+maxFileSize+" kb.");
+                            }
+                                             
                             else {
                                 if(unzip != null) {
                                     // try to unzip the file here ...

@@ -37,6 +37,7 @@ var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
         <td class=formular width=10%>]]><LABEL value="input.name" /><![CDATA[:</td>
         <td class=dialogtxt align=left><INPUT size="30" class="textfeld3" type="file" id=DATEINAME name=DATEINAME onfocus="UPLOAD.WEITER.disabled=false"></td>
     </tr>
+    ]]><process>limitation</process><![CDATA[
     <tr>
         <td class=formular colspan=2><input type=checkbox name="unzip" name="unzip">&nbsp;]]><LABEL value="button.unzip" /><![CDATA[</td>
     <tr>
@@ -339,7 +340,7 @@ var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
                 <tr> <td class="leerzeile">&nbsp;</td></tr>
                 <!-- Ende Leerzeile-->
 
-                <!-- Beginn Buttonleisete-->
+                <!-- Beginn Buttonleiste-->
                 <tr><td class=dialogtxt colspan=2>
                     <table cellspacing=0 cellpadding=5 width=100%>
                     <tr>
@@ -350,7 +351,7 @@ var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
                 </td>
                 </tr>
                 </table>
-                <!-- Ende Buttonleisete-->
+                <!-- Ende Buttonleiste-->
         </td></tr>
     </table>
     </form>
@@ -377,5 +378,16 @@ var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
     </html>
 ]]>
 </TEMPLATE>
+
+<TEMPLATE name="errorfilesize">
+<ERRORPAGE title="error.title.upload" message="error.message.upload" reason="error.reason.uploadsize" suggestion="error.suggestion.uploadsize" ref="administration_content_downgallery_upload.html" ><process>details</process></ERRORPAGE>
+</TEMPLATE>
+
+<filesize_limited><![CDATA[
+<tr>
+	<td class=dialogtxt align=left colspan=2>]]><LABEL value="messagebox.upload.filesize" /><![CDATA[&nbsp;]]><process>maxfilesize</process><![CDATA[</td>
+</tr>
+]]>
+</filesize_limited>
 
 </WORKPLACE>

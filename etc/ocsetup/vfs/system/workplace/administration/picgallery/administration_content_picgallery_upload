@@ -40,6 +40,7 @@ var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
         <td class=formular width=10%>]]><LABEL value="input.name" /><![CDATA[:</td>
         <td class=dialogtxt align=left><INPUT size="30" class="textfeld3" type="file" id="DATEINAME" name="DATEINAME" onfocus="UPLOAD.WEITER.disabled=false"></td>
     </tr>
+    ]]><process>limitation</process><![CDATA[
     <tr>
         <td class=formular colspan=2><input type=checkbox name="unzip" name="unzip">&nbsp;]]><LABEL value="button.unzip" /><![CDATA[</td>
     </tr>
@@ -169,5 +170,16 @@ function check_textfeld(formular, feld)
 <TEMPLATE name="error">
 <ERRORPAGE title="error.title.upload" message="error.message.upload" reason="error.reason.upload" suggestion="error.suggestion.upload" ref="administration_content_picgallery_upload.html" ><process>details</process></ERRORPAGE>
 </TEMPLATE>
+
+<TEMPLATE name="errorfilesize">
+<ERRORPAGE title="error.title.upload" message="error.message.upload" reason="error.reason.uploadsize" suggestion="error.suggestion.uploadsize" ref="administration_content_picgallery_upload.html" ><process>details</process></ERRORPAGE>
+</TEMPLATE>
+
+<filesize_limited><![CDATA[
+<tr>
+	<td class=dialogtxt align=left colspan=2>]]><LABEL value="messagebox.upload.filesize" /><![CDATA[&nbsp;]]><process>maxfilesize</process><![CDATA[</td>
+</tr>
+]]>
+</filesize_limited>
 
 </WORKPLACE>
