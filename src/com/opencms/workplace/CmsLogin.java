@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLogin.java,v $
- * Date   : $Date: 2000/04/18 15:16:33 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2000/04/20 08:11:55 $
+ * Version: $Revision: 1.22 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.21 $ $Date: 2000/04/18 15:16:33 $
+ * @version $Revision: 1.22 $ $Date: 2000/04/20 08:11:55 $
  */
 public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -185,7 +185,7 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
         if (username == null) {
             xmlTemplateDocument.clearStartup();
         } else {
-            xmlTemplateDocument.setXmlData("ID",session.getId().replace('.','_'));
+            xmlTemplateDocument.setData("ID",session.getId().replace('.','_'));
         }
         // process the selected template
         return startProcessing(cms,xmlTemplateDocument,"",parameters,template);

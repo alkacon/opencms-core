@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContentDetail.java,v $
- * Date   : $Date: 2000/03/16 21:05:35 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/04/20 08:11:55 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.11 $ $Date: 2000/03/16 21:05:35 $
+ * @version $Revision: 1.12 $ $Date: 2000/04/20 08:11:55 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsWpConstants {
@@ -226,7 +226,7 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsCo
 		} catch(Exception exc) {
 			// no root?!
 		}
-		priority = xmlTemplateDocument.getProcessedXmlDataValue("priority" + task.getPriority(), this);
+		priority = xmlTemplateDocument.getProcessedDataValue("priority" + task.getPriority(), this);
 		startTime = task.getStartTime().getTime();
 		timeout = task.getTimeOut().getTime();
 		String due = "";
@@ -243,7 +243,7 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsCo
 			// ignore the exception
 		}
 
-		xmlTemplateDocument.setXmlData("taskid", task.getId() + "");
+		xmlTemplateDocument.setData("taskid", task.getId() + "");
 		
 		boolean isOwner = context.currentUser().equals(owner);
 		boolean isEditor = context.currentUser().equals(editor);
@@ -290,9 +290,9 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsCo
 				button6 = getButton(xmlTemplateDocument, "button_reakt", false);
 			}
 			if(timeout < now ) {
-				style = xmlTemplateDocument.getProcessedXmlDataValue("style_ok", this);
+				style = xmlTemplateDocument.getProcessedDataValue("style_ok", this);
 			} else {
-				style = xmlTemplateDocument.getProcessedXmlDataValue("style_ok", this);
+				style = xmlTemplateDocument.getProcessedDataValue("style_ok", this);
 			}
 		} else if(task.getPercentage() == 0) {
 			if(isOwner && isEditor) {
@@ -337,9 +337,9 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsCo
 				button6 = getButton(xmlTemplateDocument, "button_ok", false);
 			}
 			if(timeout < now ) {
-				style = xmlTemplateDocument.getProcessedXmlDataValue("style_alert", this);
+				style = xmlTemplateDocument.getProcessedDataValue("style_alert", this);
 			} else {
-				style = xmlTemplateDocument.getProcessedXmlDataValue("style_new", this);
+				style = xmlTemplateDocument.getProcessedDataValue("style_new", this);
 			}
 		} else {
 			if(isOwner && isEditor) {
@@ -384,30 +384,30 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsCo
 				button6 = getButton(xmlTemplateDocument, "button_ok", false);
 			}
 			if(timeout < now ) {
-				style = xmlTemplateDocument.getProcessedXmlDataValue("style_alert", this);
+				style = xmlTemplateDocument.getProcessedDataValue("style_alert", this);
 			} else {
-				style = xmlTemplateDocument.getProcessedXmlDataValue("style_activ", this);
+				style = xmlTemplateDocument.getProcessedDataValue("style_activ", this);
 			}
 		}
 			  
 		// get the processed list.
-		xmlTemplateDocument.setXmlData("style", style);
-		xmlTemplateDocument.setXmlData("priority", priority);
-		xmlTemplateDocument.setXmlData("task", task.getName());
-		xmlTemplateDocument.setXmlData("foruser", Utils.getFullName(editor));
-		xmlTemplateDocument.setXmlData("forrole", roleName);
-		xmlTemplateDocument.setXmlData("actuator", Utils.getFullName(owner));
-		xmlTemplateDocument.setXmlData("due", due);
-		xmlTemplateDocument.setXmlData("from", from);
-		xmlTemplateDocument.setXmlData("project", projectname);
+		xmlTemplateDocument.setData("style", style);
+		xmlTemplateDocument.setData("priority", priority);
+		xmlTemplateDocument.setData("task", task.getName());
+		xmlTemplateDocument.setData("foruser", Utils.getFullName(editor));
+		xmlTemplateDocument.setData("forrole", roleName);
+		xmlTemplateDocument.setData("actuator", Utils.getFullName(owner));
+		xmlTemplateDocument.setData("due", due);
+		xmlTemplateDocument.setData("from", from);
+		xmlTemplateDocument.setData("project", projectname);
 		
 		// now setting the buttons
-		xmlTemplateDocument.setXmlData("button1", button1);
-		xmlTemplateDocument.setXmlData("button2", button2);
-		xmlTemplateDocument.setXmlData("button3", button3);
-		xmlTemplateDocument.setXmlData("button4", button4);
-		xmlTemplateDocument.setXmlData("button5", button5);
-		xmlTemplateDocument.setXmlData("button6", button6);
+		xmlTemplateDocument.setData("button1", button1);
+		xmlTemplateDocument.setData("button2", button2);
+		xmlTemplateDocument.setData("button3", button3);
+		xmlTemplateDocument.setData("button4", button4);
+		xmlTemplateDocument.setData("button5", button5);
+		xmlTemplateDocument.setData("button6", button6);
 		
 		// Now load the template file and start the processing
 		return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
@@ -426,12 +426,12 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsCo
 		throws CmsException {
 		if(enabled) {
 			// the button is enabled
-			xmlTemplateDocument.setXmlData("disabled", "");
+			xmlTemplateDocument.setData("disabled", "");
 		} else {
 			// the button is disabled
-			xmlTemplateDocument.setXmlData("disabled", "disabled");
+			xmlTemplateDocument.setData("disabled", "disabled");
 		}
 		// return the generated button
-		return xmlTemplateDocument.getProcessedXmlDataValue(name, this);		
+		return xmlTemplateDocument.getProcessedDataValue(name, this);		
 	}
 }

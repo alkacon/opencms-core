@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsContextmenue.java,v $
- * Date   : $Date: 2000/04/11 13:38:09 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/04/20 08:11:54 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.lang.reflect.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ICON&gt;</code>.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.6 $ $Date: 2000/04/11 13:38:09 $
+ * @version $Revision: 1.7 $ $Date: 2000/04/20 08:11:54 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsContextmenue extends A_CmsWpElement implements I_CmsWpElement,
@@ -100,8 +100,8 @@ public class CmsContextmenue extends A_CmsWpElement implements I_CmsWpElement,
             CmsXmlWpTemplateFile context = getContextmenueDefinitions(cms);
 		
 		    // set the name (id) of the contextmenu
-		    context.setXmlData("name", name);
-		    result.append(context.getProcessedXmlDataValue("CONTEXTHEAD", callingObject, parameters));
+		    context.setData("name", name);
+		    result.append(context.getProcessedDataValue("CONTEXTHEAD", callingObject, parameters));
 		
     		NodeList nl = n.getChildNodes();
 	    	// get each childnode
@@ -112,21 +112,21 @@ public class CmsContextmenue extends A_CmsWpElement implements I_CmsWpElement,
 			    	// this is not a text node, process it
     				if(e.getTagName().toLowerCase().equals("contextspacer")) {
 	    				// append a spacer
-		    			result.append(context.getProcessedXmlDataValue("CONTEXTSPACER", callingObject, parameters));
+		    			result.append(context.getProcessedDataValue("CONTEXTSPACER", callingObject, parameters));
 			    	} else if(e.getTagName().toLowerCase().equals("contextentry")){
     					// append a entry
-	    				context.setXmlData("name", lang.getLanguageValue(e.getAttribute("name")));
-		    			context.setXmlData("href", e.getAttribute("href"));
-			    		result.append(context.getProcessedXmlDataValue("CONTEXTENTRY", callingObject, parameters));
+	    				context.setData("name", lang.getLanguageValue(e.getAttribute("name")));
+		    			context.setData("href", e.getAttribute("href"));
+			    		result.append(context.getProcessedDataValue("CONTEXTENTRY", callingObject, parameters));
     				} else if(e.getTagName().toLowerCase().equals("contextdisabled")){
 	    				// append a entry
-			    		context.setXmlData("name", lang.getLanguageValue(e.getAttribute("name")));
-		    			result.append(context.getProcessedXmlDataValue("CONTEXTDISABLED", callingObject, parameters));
+			    		context.setData("name", lang.getLanguageValue(e.getAttribute("name")));
+		    			result.append(context.getProcessedDataValue("CONTEXTDISABLED", callingObject, parameters));
     				}
 	    		}
             }
 		
-		    result.append(context.getProcessedXmlDataValue("CONTEXTFOOT", callingObject, parameters));
+		    result.append(context.getProcessedDataValue("CONTEXTFOOT", callingObject, parameters));
             output=result.toString();
             m_storage.put(currentLanguage+name,output);            
         }

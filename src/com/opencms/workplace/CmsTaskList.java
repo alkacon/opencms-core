@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskList.java,v $
- * Date   : $Date: 2000/03/13 15:40:30 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/04/20 08:11:55 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import java.lang.reflect.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;tasklist&gt;</code>.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.10 $ $Date: 2000/03/13 15:40:30 $
+ * @version $Revision: 1.11 $ $Date: 2000/04/20 08:11:55 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants, I_CmsConstants {
@@ -141,34 +141,34 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
 			} catch(Exception exc) {
 				// no root?!
 			}
-			priority = listdef.getProcessedXmlDataValue("priority" + task.getPriority(), callingObject);
+			priority = listdef.getProcessedDataValue("priority" + task.getPriority(), callingObject);
 			startTime = task.getStartTime().getTime();
 			timeout = task.getTimeOut().getTime();
 			
 			// choose the right state-icon
 			if(task.getState() == C_TASK_STATE_ENDED) {
 				if(timeout < now ) {
-					stateIcon = listdef.getProcessedXmlDataValue("ok", callingObject);
-					style = listdef.getProcessedXmlDataValue("style_ok", callingObject);
+					stateIcon = listdef.getProcessedDataValue("ok", callingObject);
+					style = listdef.getProcessedDataValue("style_ok", callingObject);
 				} else {
-					stateIcon = listdef.getProcessedXmlDataValue("ok", callingObject);
-					style = listdef.getProcessedXmlDataValue("style_ok", callingObject);
+					stateIcon = listdef.getProcessedDataValue("ok", callingObject);
+					style = listdef.getProcessedDataValue("style_ok", callingObject);
 				}
 			} else if(task.getPercentage() == 0) {
 				if(timeout < now ) {
-					stateIcon = listdef.getProcessedXmlDataValue("alert", callingObject);
-					style = listdef.getProcessedXmlDataValue("style_alert", callingObject);
+					stateIcon = listdef.getProcessedDataValue("alert", callingObject);
+					style = listdef.getProcessedDataValue("style_alert", callingObject);
 				} else {
-					stateIcon = listdef.getProcessedXmlDataValue("new", callingObject);
-					style = listdef.getProcessedXmlDataValue("style_new", callingObject);
+					stateIcon = listdef.getProcessedDataValue("new", callingObject);
+					style = listdef.getProcessedDataValue("style_new", callingObject);
 				}
 			} else {
 				if(timeout < now ) {
-					stateIcon = listdef.getProcessedXmlDataValue("alert", callingObject);
-					style = listdef.getProcessedXmlDataValue("style_alert", callingObject);
+					stateIcon = listdef.getProcessedDataValue("alert", callingObject);
+					style = listdef.getProcessedDataValue("style_alert", callingObject);
 				} else {
-					stateIcon = listdef.getProcessedXmlDataValue("activ", callingObject);
-					style = listdef.getProcessedXmlDataValue("style_activ", callingObject);
+					stateIcon = listdef.getProcessedDataValue("activ", callingObject);
+					style = listdef.getProcessedDataValue("style_activ", callingObject);
 				}
 			}
 			
@@ -203,19 +203,19 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
 				// ignore the exception
 			}
 			// get the processed list.
-			listdef.setXmlData("stateicon", stateIcon);
-			listdef.setXmlData("style", style);
-			listdef.setXmlData("priority", priority);
-			listdef.setXmlData("taskid", task.getId() + "");
-			listdef.setXmlData("task", task.getName());
-			listdef.setXmlData("foruser", agent);
-			listdef.setXmlData("forrole", group);
-			listdef.setXmlData("actuator", owner);
-			listdef.setXmlData("due", due);
-			listdef.setXmlData("from", from);
-			listdef.setXmlData("project", projectname);
+			listdef.setData("stateicon", stateIcon);
+			listdef.setData("style", style);
+			listdef.setData("priority", priority);
+			listdef.setData("taskid", task.getId() + "");
+			listdef.setData("task", task.getName());
+			listdef.setData("foruser", agent);
+			listdef.setData("forrole", group);
+			listdef.setData("actuator", owner);
+			listdef.setData("due", due);
+			listdef.setData("from", from);
+			listdef.setData("project", projectname);
 			
-			result.append(listdef.getProcessedXmlDataValue("defaulttasklist", callingObject, parameters));
+			result.append(listdef.getProcessedDataValue("defaulttasklist", callingObject, parameters));
 		}		
 		return result.toString();
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChmod.java,v $
- * Date   : $Date: 2000/04/19 08:07:58 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/04/20 08:11:54 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 2000/04/19 08:07:58 $
+ * @version $Revision: 1.9 $ $Date: 2000/04/20 08:11:54 $
  */
 public class CmsChmod extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -272,63 +272,63 @@ public class CmsChmod extends CmsWorkplaceDefault implements I_CmsWpConstants,
             title="";
         }
         A_CmsUser owner=cms.readOwner(file);
-        xmlTemplateDocument.setXmlData("TITLE",title);
-        xmlTemplateDocument.setXmlData("STATE",getState(cms,file,new CmsXmlLanguageFile(cms)));
-        xmlTemplateDocument.setXmlData("OWNER",owner.getFirstname()+" "+owner.getLastname()+"("+owner.getName()+")");
-        xmlTemplateDocument.setXmlData("GROUP",cms.readGroup(file).getName());
-		xmlTemplateDocument.setXmlData("FILENAME",file.getName());
+        xmlTemplateDocument.setData("TITLE",title);
+        xmlTemplateDocument.setData("STATE",getState(cms,file,new CmsXmlLanguageFile(cms)));
+        xmlTemplateDocument.setData("OWNER",owner.getFirstname()+" "+owner.getLastname()+"("+owner.getName()+")");
+        xmlTemplateDocument.setData("GROUP",cms.readGroup(file).getName());
+		xmlTemplateDocument.setData("FILENAME",file.getName());
    
         // now set the actual access flags i the dialog
         int flags = file.getAccessFlags();
         if ((flags & C_ACCESS_OWNER_READ) >0 ) {
-            xmlTemplateDocument.setXmlData("CHECKUR","CHECKED");    
+            xmlTemplateDocument.setData("CHECKUR","CHECKED");    
         } else {
-            xmlTemplateDocument.setXmlData("CHECKUR"," ");    
+            xmlTemplateDocument.setData("CHECKUR"," ");    
         }
         if ((flags & C_ACCESS_OWNER_WRITE) >0 ) {
-            xmlTemplateDocument.setXmlData("CHECKUW","CHECKED");    
+            xmlTemplateDocument.setData("CHECKUW","CHECKED");    
         } else {
-            xmlTemplateDocument.setXmlData("CHECKUW"," ");    
+            xmlTemplateDocument.setData("CHECKUW"," ");    
         }
         if ((flags & C_ACCESS_OWNER_VISIBLE) >0 ) {
-            xmlTemplateDocument.setXmlData("CHECKUV","CHECKED");    
+            xmlTemplateDocument.setData("CHECKUV","CHECKED");    
         } else {
-            xmlTemplateDocument.setXmlData("CHECKUV"," ");    
+            xmlTemplateDocument.setData("CHECKUV"," ");    
         }     
         if ((flags & C_ACCESS_GROUP_READ) >0 ) {
-            xmlTemplateDocument.setXmlData("CHECKGR","CHECKED");    
+            xmlTemplateDocument.setData("CHECKGR","CHECKED");    
         } else {
-            xmlTemplateDocument.setXmlData("CHECKGR"," ");    
+            xmlTemplateDocument.setData("CHECKGR"," ");    
         }
         if ((flags & C_ACCESS_GROUP_WRITE) >0 ) {
-            xmlTemplateDocument.setXmlData("CHECKGW","CHECKED");    
+            xmlTemplateDocument.setData("CHECKGW","CHECKED");    
         } else {
-            xmlTemplateDocument.setXmlData("CHECKGW"," ");    
+            xmlTemplateDocument.setData("CHECKGW"," ");    
         }
         if ((flags & C_ACCESS_GROUP_VISIBLE) >0 ) {
-            xmlTemplateDocument.setXmlData("CHECKGV","CHECKED");    
+            xmlTemplateDocument.setData("CHECKGV","CHECKED");    
         } else {
-            xmlTemplateDocument.setXmlData("CHECKGV"," ");    
+            xmlTemplateDocument.setData("CHECKGV"," ");    
         }  
         if ((flags & C_ACCESS_PUBLIC_READ) >0 ) {
-            xmlTemplateDocument.setXmlData("CHECKPR","CHECKED");    
+            xmlTemplateDocument.setData("CHECKPR","CHECKED");    
         } else {
-            xmlTemplateDocument.setXmlData("CHECKPR"," ");    
+            xmlTemplateDocument.setData("CHECKPR"," ");    
         }
         if ((flags & C_ACCESS_PUBLIC_WRITE) >0 ) {
-            xmlTemplateDocument.setXmlData("CHECKPW","CHECKED");    
+            xmlTemplateDocument.setData("CHECKPW","CHECKED");    
         } else {
-            xmlTemplateDocument.setXmlData("CHECKPW"," ");    
+            xmlTemplateDocument.setData("CHECKPW"," ");    
         }
         if ((flags & C_ACCESS_PUBLIC_VISIBLE) >0 ) {
-            xmlTemplateDocument.setXmlData("CHECKPV","CHECKED");    
+            xmlTemplateDocument.setData("CHECKPV","CHECKED");    
         } else {
-            xmlTemplateDocument.setXmlData("CHECKPV"," ");    
+            xmlTemplateDocument.setData("CHECKPV"," ");    
         }  
         if ((flags & C_ACCESS_INTERNAL_READ) >0 ) {
-            xmlTemplateDocument.setXmlData("CHECKIF","CHECKED");    
+            xmlTemplateDocument.setData("CHECKIF","CHECKED");    
         } else {
-            xmlTemplateDocument.setXmlData("CHECKIF"," ");    
+            xmlTemplateDocument.setData("CHECKIF"," ");    
         }  
         
         // process the selected template 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2000/04/17 16:11:35 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/04/20 08:11:55 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 2000/04/17 16:11:35 $
+ * @version $Revision: 1.9 $ $Date: 2000/04/20 08:11:55 $
  */
 public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -157,9 +157,9 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
                 if (newtype.equals(C_TYPE_IMAGE_NAME)) {
                     // the file type is an image
                     template="image";   
-                    xmlTemplateDocument.setXmlData("MIME",filename);
-                    xmlTemplateDocument.setXmlData("SIZE","Not yet available");
-                    xmlTemplateDocument.setXmlData("FILESIZE",new Integer(filecontent.length).toString()+" Bytes");
+                    xmlTemplateDocument.setData("MIME",filename);
+                    xmlTemplateDocument.setData("SIZE","Not yet available");
+                    xmlTemplateDocument.setData("FILESIZE",new Integer(filecontent.length).toString()+" Bytes");
         
                 } else {
                     // create the new file.    
@@ -210,7 +210,7 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
         }
         
        if (filename != null) {
-            xmlTemplateDocument.setXmlData("FILENAME",filename);
+            xmlTemplateDocument.setData("FILENAME",filename);
        }
      
         // process the selected template 

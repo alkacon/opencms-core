@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContentDialogMsg.java,v $
- * Date   : $Date: 2000/03/13 15:40:30 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/04/20 08:11:55 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 2000/03/13 15:40:30 $
+ * @version $Revision: 1.2 $ $Date: 2000/04/20 08:11:55 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskContentDialogMsg extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsWpConstants {
@@ -104,7 +104,7 @@ public class CmsTaskContentDialogMsg extends CmsWorkplaceDefault implements I_Cm
 			// unexpected exception - ignoring
 		}
 		
-		xmlTemplateDocument.setXmlData("user", userName);
+		xmlTemplateDocument.setData("user", userName);
 		
 		// Now load the template file and start the processing
 		return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChtype.java,v $
- * Date   : $Date: 2000/04/17 16:11:35 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/04/20 08:11:54 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2000/04/17 16:11:35 $
+ * @version $Revision: 1.5 $ $Date: 2000/04/20 08:11:54 $
  */
 public class CmsChtype extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -131,13 +131,13 @@ public class CmsChtype extends CmsWorkplaceDefault implements I_CmsWpConstants,
         }  
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);
 	    // set all required datablocks
-        xmlTemplateDocument.setXmlData("OWNER",cms.readOwner(file).getName());
-        xmlTemplateDocument.setXmlData("GROUP",cms.readGroup(file).getName());
-        xmlTemplateDocument.setXmlData("FILENAME",file.getName()); 
+        xmlTemplateDocument.setData("OWNER",cms.readOwner(file).getName());
+        xmlTemplateDocument.setData("GROUP",cms.readGroup(file).getName());
+        xmlTemplateDocument.setData("FILENAME",file.getName()); 
         
         getResources(cms,null,null,null,null,null);
         if (m_names != null) {
-            xmlTemplateDocument.setXmlData(C_RADIOSIZE,new Integer(m_names.size()).toString());
+            xmlTemplateDocument.setData(C_RADIOSIZE,new Integer(m_names.size()).toString());
         }
         
         // process the selected template 

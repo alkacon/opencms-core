@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskNew.java,v $
- * Date   : $Date: 2000/04/19 09:04:31 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2000/04/20 08:11:55 $
+ * Version: $Revision: 1.18 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.17 $ $Date: 2000/04/19 09:04:31 $
+ * @version $Revision: 1.18 $ $Date: 2000/04/20 08:11:55 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskNew extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -149,10 +149,10 @@ public class CmsTaskNew extends CmsWorkplaceDefault implements I_CmsConstants {
 			}
 		}
 
-		xmlTemplateDocument.setXmlData(C_TASKPARA_ACCEPTATION, paraAcceptation);
-		xmlTemplateDocument.setXmlData(C_TASKPARA_ALL, paraAll);
-		xmlTemplateDocument.setXmlData(C_TASKPARA_COMPLETION, paraCompletion);
-		xmlTemplateDocument.setXmlData(C_TASKPARA_DELIVERY, paraDelivery);
+		xmlTemplateDocument.setData(C_TASKPARA_ACCEPTATION, paraAcceptation);
+		xmlTemplateDocument.setData(C_TASKPARA_ALL, paraAll);
+		xmlTemplateDocument.setData(C_TASKPARA_COMPLETION, paraCompletion);
+		xmlTemplateDocument.setData(C_TASKPARA_DELIVERY, paraDelivery);
 
 		// are the constants read from the cms already?
 		if( C_ROLE == null ) {
@@ -301,14 +301,14 @@ public class CmsTaskNew extends CmsWorkplaceDefault implements I_CmsConstants {
 	 */
 	private void initConstants(CmsXmlWpTemplateFile document) {
 		try {
-			C_ROLE = document.getXmlDataValue("role");
-			C_ROLE_1 = document.getXmlDataValue("role_1");
-			C_ROLE_2 = document.getXmlDataValue("role_2");
-			C_USER_1 = document.getXmlDataValue("user_1");
-			C_USER_2 = document.getXmlDataValue("user_2");
-			C_USER_3 = document.getXmlDataValue("user_3");
-			C_USER_4 = document.getXmlDataValue("user_4");
-			C_USER_5 = document.getXmlDataValue("user_5");
+			C_ROLE = document.getDataValue("role");
+			C_ROLE_1 = document.getDataValue("role_1");
+			C_ROLE_2 = document.getDataValue("role_2");
+			C_USER_1 = document.getDataValue("user_1");
+			C_USER_2 = document.getDataValue("user_2");
+			C_USER_3 = document.getDataValue("user_3");
+			C_USER_4 = document.getDataValue("user_4");
+			C_USER_5 = document.getDataValue("user_5");
 		} catch (CmsException exc) {
 			A_OpenCms.log(C_MODULE_CRITICAL, "Couldn't get xml datablocks for CmsTaskNew");
 		}

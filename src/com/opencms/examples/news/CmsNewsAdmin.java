@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/news/Attic/CmsNewsAdmin.java,v $
- * Date   : $Date: 2000/04/11 13:38:08 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/04/20 08:11:54 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * editing news.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.7 $ $Date: 2000/04/11 13:38:08 $
+ * @version $Revision: 1.8 $ $Date: 2000/04/20 08:11:54 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsNewsConstants, I_CmsFileListUsers {
@@ -143,7 +143,7 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
                     parameters.put(C_NEWS_PARAM_TEXT, newsFile.getNewsText("\n\n"));
                     parameters.put(C_NEWS_PARAM_EXTLINK, newsFile.getNewsExternalLink());
                     parameters.put(C_NEWS_PARAM_STATE, new Boolean(newsFile.isNewsActive()));
-                    xmlTemplateDocument.setXmlData(C_NEWS_PARAM_AUTHOR, newsFile.getNewsAuthor());
+                    xmlTemplateDocument.setData(C_NEWS_PARAM_AUTHOR, newsFile.getNewsAuthor());
                     session.putValue(C_NEWS_PARAM_AUTHOR, newsFile.getNewsAuthor());
                 } else {
                     // the user requested a new article
@@ -164,7 +164,7 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
                         authorText = authorText + " (" + initials + ")";
                     }
                     session.putValue(C_NEWS_PARAM_AUTHOR, authorText);
-                    xmlTemplateDocument.setXmlData(C_NEWS_PARAM_AUTHOR, authorText);
+                    xmlTemplateDocument.setData(C_NEWS_PARAM_AUTHOR, authorText);
                     
                     // Get the Sting for the actual date
                     String dateText = Utils.getNiceShortDate(cal.getTime().getTime());
@@ -221,9 +221,9 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
         // this is only done if the project is not the online project.
         if(xmlTemplateDocument.hasData(C_NEW_DISABLED) && xmlTemplateDocument.hasData(C_NEW_ENABLED)) {
             if (cms.getRequestContext().currentProject().equals(cms.onlineProject()) || !checkWriteAccess(cms)) {
-                xmlTemplateDocument.setData(C_NEW,xmlTemplateDocument.getProcessedXmlDataValue(C_NEW_DISABLED,this));                
+                xmlTemplateDocument.setData(C_NEW,xmlTemplateDocument.getProcessedDataValue(C_NEW_DISABLED,this));                
             } else {
-                xmlTemplateDocument.setData(C_NEW,xmlTemplateDocument.getProcessedXmlDataValue(C_NEW_ENABLED,this));       
+                xmlTemplateDocument.setData(C_NEW,xmlTemplateDocument.getProcessedDataValue(C_NEW_ENABLED,this));       
             }
         }
         

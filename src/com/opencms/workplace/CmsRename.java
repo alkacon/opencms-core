@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsRename.java,v $
- * Date   : $Date: 2000/04/17 16:11:35 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/04/20 08:11:55 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.15 $ $Date: 2000/04/17 16:11:35 $
+ * @version $Revision: 1.16 $ $Date: 2000/04/20 08:11:55 $
  */
 public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -218,11 +218,11 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
             }            
             
             A_CmsUser owner=cms.readOwner(file);
-            xmlTemplateDocument.setXmlData("TITLE",title);
-            xmlTemplateDocument.setXmlData("STATE",getState(cms,file,new CmsXmlLanguageFile(cms)));
-            xmlTemplateDocument.setXmlData("OWNER",owner.getFirstname()+" "+owner.getLastname()+"("+owner.getName()+")");
-            xmlTemplateDocument.setXmlData("GROUP",cms.readGroup(file).getName());
-		    xmlTemplateDocument.setXmlData("FILENAME",file.getName());
+            xmlTemplateDocument.setData("TITLE",title);
+            xmlTemplateDocument.setData("STATE",getState(cms,file,new CmsXmlLanguageFile(cms)));
+            xmlTemplateDocument.setData("OWNER",owner.getFirstname()+" "+owner.getLastname()+"("+owner.getName()+")");
+            xmlTemplateDocument.setData("GROUP",cms.readGroup(file).getName());
+		    xmlTemplateDocument.setData("FILENAME",file.getName());
         }
         
         // process the selected template 

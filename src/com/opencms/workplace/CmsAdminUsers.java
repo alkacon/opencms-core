@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminUsers.java,v $
- * Date   : $Date: 2000/04/13 18:06:06 $
- * Version: $Revision: 1.3 $Selector
+ * Date   : $Date: 2000/04/20 08:11:54 $
+ * Version: $Revision: 1.4 $Selector
 
  *
  * Copyright (C) 2000  The OpenCms Group 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Mario Stanke
- * @version $Revision: 1.3 $ $Date: 2000/04/13 18:06:06 $
+ * @version $Revision: 1.4 $ $Date: 2000/04/20 08:11:54 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -440,7 +440,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
 				session.putValue("notSelectedGroups", notSelectedGroups); 
 				session.putValue("DEFAULTGROUP", defaultGroup); 
 				
-				xmlTemplateDocument.setXmlData("DISABLED", disabled? "checked" : "");
+				xmlTemplateDocument.setData("DISABLED", disabled? "checked" : "");
 			}
 				// again common part for 'newuser' and 'changeuser':
 				// set the variables for display in the document
@@ -476,16 +476,16 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
 				email = "";
 			}
 			
-			xmlTemplateDocument.setXmlData("USERFIRSTNAME", firstname);
-			xmlTemplateDocument.setXmlData("USERDESC", desc);
-			xmlTemplateDocument.setXmlData("USERSTREET", street);
-			xmlTemplateDocument.setXmlData("PWD", pwd);
-			xmlTemplateDocument.setXmlData("PWD2", pwd2);
-			xmlTemplateDocument.setXmlData("USER", user);
-			xmlTemplateDocument.setXmlData("USERNAME", userLastname);
-			xmlTemplateDocument.setXmlData("TOWN", town);
-			xmlTemplateDocument.setXmlData("ZIP", zipcode);
-			xmlTemplateDocument.setXmlData("EMAIL", email);
+			xmlTemplateDocument.setData("USERFIRSTNAME", firstname);
+			xmlTemplateDocument.setData("USERDESC", desc);
+			xmlTemplateDocument.setData("USERSTREET", street);
+			xmlTemplateDocument.setData("PWD", pwd);
+			xmlTemplateDocument.setData("PWD2", pwd2);
+			xmlTemplateDocument.setData("USER", user);
+			xmlTemplateDocument.setData("USERNAME", userLastname);
+			xmlTemplateDocument.setData("TOWN", town);
+			xmlTemplateDocument.setData("ZIP", zipcode);
+			xmlTemplateDocument.setData("EMAIL", email);
 		} // belongs to: 'if perspective is newuser or changeuser'
 		else if (perspective.equals("deleteuser")){
 			// deleting a user
@@ -495,7 +495,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
 				templateSelector="";
 			} catch (Exception e) {
 				// user == null or delete failed
-				xmlTemplateDocument.setXmlData("DELETEDETAILS", Utils.getStackTrace(e));
+				xmlTemplateDocument.setData("DELETEDETAILS", Utils.getStackTrace(e));
 				templateSelector="deleteerror";
 			}
 		} // delete user

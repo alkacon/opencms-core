@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminGroups.java,v $
- * Date   : $Date: 2000/04/07 08:59:07 $
- * Version: $Revision: 1.3 $Selector
+ * Date   : $Date: 2000/04/20 08:11:54 $
+ * Version: $Revision: 1.4 $Selector
 
  *
  * Copyright (C) 2000  The OpenCms Group 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Mario Stanke
- * @version $Revision: 1.3 $ $Date: 2000/04/07 08:59:07 $
+ * @version $Revision: 1.4 $ $Date: 2000/04/20 08:11:54 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -343,7 +343,7 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
 							session.removeValue("ROLE"); 
 							session.removeValue("ERROR");
 							if (defaultProblem) { 
-								xmlTemplateDocument.setXmlData("RMDEFAULTDETAIL", 
+								xmlTemplateDocument.setData("RMDEFAULTDETAIL", 
 															   "The following users which were to be removed had " 
 															   + groupname + " as default group: "+ falseUsers);
 								templateSelector="errorremovedefault";
@@ -379,12 +379,12 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
 			if ( description == null ) {description = "";}
 			if ( supergroup == null ) {supergroup = "";}
 			
-			xmlTemplateDocument.setXmlData("GROUPNAME", groupname);
-			xmlTemplateDocument.setXmlData("GROUPDESC", description);
-			xmlTemplateDocument.setXmlData("SUPERGROUP", supergroup);
-			xmlTemplateDocument.setXmlData("PCWCHECKED", projectCoWorker? "checked" : "");
-			xmlTemplateDocument.setXmlData("PMCHECKED", projectManager? "checked" : "");
-			xmlTemplateDocument.setXmlData("PRCHECKED", role? "checked" : "");
+			xmlTemplateDocument.setData("GROUPNAME", groupname);
+			xmlTemplateDocument.setData("GROUPDESC", description);
+			xmlTemplateDocument.setData("SUPERGROUP", supergroup);
+			xmlTemplateDocument.setData("PCWCHECKED", projectCoWorker? "checked" : "");
+			xmlTemplateDocument.setData("PMCHECKED", projectManager? "checked" : "");
+			xmlTemplateDocument.setData("PRCHECKED", role? "checked" : "");
 					
 		} // belongs to: 'if perspective is newgroup or changegroup'
 		else if (perspective.equals("deletegroup")){
@@ -395,7 +395,7 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
 				templateSelector="";
 			} catch (Exception e) {
 				// groupname == null or delete failed
-				xmlTemplateDocument.setXmlData("DELETEDETAILS", Utils.getStackTrace(e));
+				xmlTemplateDocument.setData("DELETEDETAILS", Utils.getStackTrace(e));
 				templateSelector="deleteerror";
 			}
 		} 

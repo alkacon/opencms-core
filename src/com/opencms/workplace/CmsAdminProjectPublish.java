@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectPublish.java,v $
- * Date   : $Date: 2000/04/06 09:26:34 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/04/20 08:11:54 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.4 $ $Date: 2000/04/06 09:26:34 $
+ * @version $Revision: 1.5 $ $Date: 2000/04/20 08:11:54 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProjectPublish extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsLogChannels {
@@ -87,8 +87,8 @@ public class CmsAdminProjectPublish extends CmsWorkplaceDefault implements I_Cms
 		
 		A_CmsProject project = cms.readProject(projectId);
 		
-		xmlTemplateDocument.setXmlData("projectid", projectId + "");
-		xmlTemplateDocument.setXmlData("projectname", project.getName());
+		xmlTemplateDocument.setData("projectid", projectId + "");
+		xmlTemplateDocument.setData("projectname", project.getName());
 		
 		if(parameters.get("ok") != null) {
 			// publish the project

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPictureBrowser.java,v $
- * Date   : $Date: 2000/04/18 14:39:23 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/04/20 08:11:55 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.14 $ $Date: 2000/04/18 14:39:23 $
+ * @version $Revision: 1.15 $ $Date: 2000/04/20 08:11:55 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsPictureBrowser extends CmsWorkplaceDefault {
@@ -108,10 +108,10 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
                         
         // Now load the template file and set the appropriate datablocks
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
-        xmlTemplateDocument.setXmlData(C_PARA_FOLDER, Encoder.escape(folder));
-        xmlTemplateDocument.setXmlData(C_PARA_PAGE, pageText);
-        xmlTemplateDocument.setXmlData(C_PARA_FILTER, filter);
-        xmlTemplateDocument.setXmlData(C_PARA_MAXPAGE, "" + maxpage);
+        xmlTemplateDocument.setData(C_PARA_FOLDER, Encoder.escape(folder));
+        xmlTemplateDocument.setData(C_PARA_PAGE, pageText);
+        xmlTemplateDocument.setData(C_PARA_FILTER, filter);
+        xmlTemplateDocument.setData(C_PARA_MAXPAGE, "" + maxpage);
         
         parameters.put("_PICLIST_", filteredPics);
         // Start the processing        
@@ -194,7 +194,7 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
             // if this is not the last entry on the current page,
             // append a separator
             if(i<(to-1)) {
-                result.append(xmlTemplateDocument.getProcessedXmlDataValue("part", this, userObj));
+                result.append(xmlTemplateDocument.getProcessedDataValue("part", this, userObj));
             }
         }
         return result.toString();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsExplorerHead.java,v $
- * Date   : $Date: 2000/03/27 10:00:27 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/04/20 08:11:54 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.14 $ $Date: 2000/03/27 10:00:27 $
+ * @version $Revision: 1.15 $ $Date: 2000/04/20 08:11:54 $
  */
 public class CmsExplorerHead extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                      I_CmsConstants {
@@ -168,8 +168,8 @@ public class CmsExplorerHead extends CmsWorkplaceDefault implements I_CmsWpConst
                 // check if the requested url is a file or a folder.
                 if (url.endsWith("/")) {
                     // the url is a folder, so prepare to update the file list and tree
-                    xmlTemplateDocument.setXmlData(C_FILELIST,url);          
-                    xmlTemplateDocument.setXmlData(C_STARTUP,xmlTemplateDocument.getProcessedXmlDataValue(C_STARTUP_FOLDER,this));
+                    xmlTemplateDocument.setData(C_FILELIST,url);          
+                    xmlTemplateDocument.setData(C_STARTUP,xmlTemplateDocument.getProcessedDataValue(C_STARTUP_FOLDER,this));
                     currentFilelist=(String)session.getValue(C_PARA_FILELIST);
                     if (currentFilelist == null) {
                          currentFilelist=cms.rootFolder().getAbsolutePath();
@@ -179,8 +179,8 @@ public class CmsExplorerHead extends CmsWorkplaceDefault implements I_CmsWpConst
                     session.putValue(C_PARA_FOLDER,url);
                 } else {
                     // the url is a file, so show the requested document
-                    xmlTemplateDocument.setXmlData(C_LINK_VALUE,servlets+url); 
-                    xmlTemplateDocument.setXmlData(C_STARTUP,xmlTemplateDocument.getProcessedXmlDataValue(C_STARTUP_FILE,this));
+                    xmlTemplateDocument.setData(C_LINK_VALUE,servlets+url); 
+                    xmlTemplateDocument.setData(C_STARTUP,xmlTemplateDocument.getProcessedDataValue(C_STARTUP_FILE,this));
                     // the url is a file
                 } 
             }
@@ -222,8 +222,8 @@ public class CmsExplorerHead extends CmsWorkplaceDefault implements I_CmsWpConst
     
             // put the refereences to the filelist and the previous filelist into the
             // template.
-            xmlTemplateDocument.setXmlData(C_FILELIST,newFilelist);
-            xmlTemplateDocument.setXmlData(C_PREVIOUSLIST,previousFilelist);
+            xmlTemplateDocument.setData(C_FILELIST,newFilelist);
+            xmlTemplateDocument.setData(C_PREVIOUSLIST,previousFilelist);
         
             // update the value for the back link.
             // this is required that for the explorer head after the back link is used.
@@ -231,24 +231,24 @@ public class CmsExplorerHead extends CmsWorkplaceDefault implements I_CmsWpConst
                
             // set the parent button to enabled if not on the root folder
             if (currentFilelist.equals("/")) {
-                xmlTemplateDocument.setXmlData(C_PARENT,xmlTemplateDocument.getProcessedXmlDataValue(C_PARENT_DISABLED,this));
+                xmlTemplateDocument.setData(C_PARENT,xmlTemplateDocument.getProcessedDataValue(C_PARENT_DISABLED,this));
             } else {
-                xmlTemplateDocument.setXmlData(C_PARENT,xmlTemplateDocument.getProcessedXmlDataValue(C_PARENT_ENABLED,this));
+                xmlTemplateDocument.setData(C_PARENT,xmlTemplateDocument.getProcessedDataValue(C_PARENT_ENABLED,this));
             }
         
             // set the parent button to enabled if not on the root folder
             if (previousFilelist == null) {
-                xmlTemplateDocument.setXmlData(C_PREVIOUS,xmlTemplateDocument.getProcessedXmlDataValue(C_PREVIOUS_DISABLED,this));
+                xmlTemplateDocument.setData(C_PREVIOUS,xmlTemplateDocument.getProcessedDataValue(C_PREVIOUS_DISABLED,this));
             } else {
-                xmlTemplateDocument.setXmlData(C_PREVIOUS,xmlTemplateDocument.getProcessedXmlDataValue(C_PREVIOUS_ENABLED,this));
+                xmlTemplateDocument.setData(C_PREVIOUS,xmlTemplateDocument.getProcessedDataValue(C_PREVIOUS_ENABLED,this));
             }
             
             // check if the new resource button must be enabeld.
             // this is only done if the project is not the online project.
             if (cms.getRequestContext().currentProject().equals(cms.onlineProject())) {
-                xmlTemplateDocument.setXmlData(C_NEW,xmlTemplateDocument.getProcessedXmlDataValue(C_NEW_DISABLED,this));                
+                xmlTemplateDocument.setData(C_NEW,xmlTemplateDocument.getProcessedDataValue(C_NEW_DISABLED,this));                
             } else {
-                xmlTemplateDocument.setXmlData(C_NEW,xmlTemplateDocument.getProcessedXmlDataValue(C_NEW_ENABLED,this));       
+                xmlTemplateDocument.setData(C_NEW,xmlTemplateDocument.getProcessedDataValue(C_NEW_ENABLED,this));       
             }
         }
         // process the selected template

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskDocu.java,v $
- * Date   : $Date: 2000/03/15 14:32:15 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/04/20 08:11:55 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import java.lang.reflect.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;TASKDOCU&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 2000/03/15 14:32:15 $
+ * @version $Revision: 1.6 $ $Date: 2000/04/20 08:11:55 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskDocu extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants, I_CmsConstants {
@@ -107,21 +107,21 @@ public class CmsTaskDocu extends A_CmsWpElement implements I_CmsWpElement, I_Cms
             if (type >= 100) {
                 // add the time
                 java.sql.Timestamp time=tasklog.getStartTime();
-                template.setXmlData("DATE", Utils.getNiceDate(time.getTime()));
+                template.setData("DATE", Utils.getNiceDate(time.getTime()));
                 // add the user
                 A_CmsUser user=cms.readOwner(tasklog);
-                template.setXmlData("USER", Utils.getFullName(user) );
+                template.setData("USER", Utils.getFullName(user) );
                 // set the message
-                template.setXmlData("MESSAGE", addBrTags(tasklog.getComment()));
+                template.setData("MESSAGE", addBrTags(tasklog.getComment()));
                 // set the image
-                template.setXmlData("ICON",template.getProcessedXmlDataValue("ICON"+type, callingObject, parameters));
+                template.setData("ICON",template.getProcessedDataValue("ICON"+type, callingObject, parameters));
                 // set the headline
-                template.setXmlData("HEADLINE",lang.getLanguageValue("task.headline.m"+type)); 
+                template.setData("HEADLINE",lang.getLanguageValue("task.headline.m"+type)); 
                 
                 // generate the entry
-                result.append(template.getProcessedXmlDataValue("LISTENTRY", callingObject, parameters));
+                result.append(template.getProcessedDataValue("LISTENTRY", callingObject, parameters));
                 // generate the spacerline
-                result.append(template.getProcessedXmlDataValue("LISTSEPETATOR", callingObject, parameters));
+                result.append(template.getProcessedDataValue("LISTSEPETATOR", callingObject, parameters));
          
 	        }
      

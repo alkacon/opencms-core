@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWorkplaceDefault.java,v $
- * Date   : $Date: 2000/04/19 13:12:42 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2000/04/20 08:11:55 $
+ * Version: $Revision: 1.24 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * Most special workplace classes may extend this class.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.23 $ $Date: 2000/04/19 13:12:42 $
+ * @version $Revision: 1.24 $ $Date: 2000/04/20 08:11:55 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConstants {
@@ -137,7 +137,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
      */
     protected byte[] startProcessing(A_CmsObject cms, CmsXmlTemplateFile xmlTemplateDocument, String elementName, Hashtable parameters, String templateSelector) throws CmsException {     
         String lasturl = getLastUrl(cms, parameters);
-        ((CmsXmlWpTemplateFile)xmlTemplateDocument).setXmlData("lasturl", lasturl);        
+        ((CmsXmlWpTemplateFile)xmlTemplateDocument).setData("lasturl", lasturl);        
         return super.startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
     }    
     

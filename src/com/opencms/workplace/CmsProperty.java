@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProperty.java,v $
- * Date   : $Date: 2000/04/17 16:11:35 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/04/20 08:11:55 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 2000/04/17 16:11:35 $
+ * @version $Revision: 1.7 $ $Date: 2000/04/20 08:11:55 $
  */
 public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -141,7 +141,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
         if (edit != null) {
             // check if a property was selected          
             if (propertydef != null) {
-                xmlTemplateDocument.setXmlData("PROPERTYDEF",propertydef);
+                xmlTemplateDocument.setData("PROPERTYDEF",propertydef);
                 // check if a edited property is available
                 String newValue=(String)parameters.get("EDITEDPROPERTY");
                 if (newValue != null) {
@@ -233,11 +233,11 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
             title="";
         }
         A_CmsUser owner=cms.readOwner(file);
-        xmlTemplateDocument.setXmlData("TITLE",title);
-        xmlTemplateDocument.setXmlData("STATE",getState(cms,file,new CmsXmlLanguageFile(cms)));
-        xmlTemplateDocument.setXmlData("OWNER",owner.getFirstname()+" "+owner.getLastname()+"("+owner.getName()+")");
-        xmlTemplateDocument.setXmlData("GROUP",cms.readGroup(file).getName());
-		xmlTemplateDocument.setXmlData("FILENAME",file.getName());
+        xmlTemplateDocument.setData("TITLE",title);
+        xmlTemplateDocument.setData("STATE",getState(cms,file,new CmsXmlLanguageFile(cms)));
+        xmlTemplateDocument.setData("OWNER",owner.getFirstname()+" "+owner.getLastname()+"("+owner.getName()+")");
+        xmlTemplateDocument.setData("GROUP",cms.readGroup(file).getName());
+		xmlTemplateDocument.setData("FILENAME",file.getName());
    
         
         // process the selected template 

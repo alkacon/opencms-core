@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectLockchange.java,v $
- * Date   : $Date: 2000/04/13 19:48:08 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/04/20 08:11:54 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 2000/04/13 19:48:08 $
+ * @version $Revision: 1.2 $ $Date: 2000/04/20 08:11:54 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProjectLockchange extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsLogChannels {
@@ -87,8 +87,8 @@ public class CmsAdminProjectLockchange extends CmsWorkplaceDefault implements I_
 		
 		A_CmsProject project = cms.readProject(projectId);
 		
-		xmlTemplateDocument.setXmlData("projectid", projectId + "");
-		xmlTemplateDocument.setXmlData("projectname", project.getName());
+		xmlTemplateDocument.setData("projectid", projectId + "");
+		xmlTemplateDocument.setData("projectname", project.getName());
 		
 		if(parameters.get("ok") != null) {
 			// change the lock of the project

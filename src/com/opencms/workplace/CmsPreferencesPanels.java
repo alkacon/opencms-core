@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPreferencesPanels.java,v $
- * Date   : $Date: 2000/04/17 16:11:35 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/04/20 08:11:55 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import java.util.*;
  * TODO: use predefined constants in this class, clean up this class and add more comments!
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.11 $ $Date: 2000/04/17 16:11:35 $
+ * @version $Revision: 1.12 $ $Date: 2000/04/20 08:11:55 $
  */
 public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                          I_CmsConstants {
@@ -386,57 +386,57 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
                                              
         // now update the datablocks in the template
         if ((explorerSettingsValue & C_FILELIST_TITLE) >0) {
-            xmlTemplateDocument.setXmlData(C_CHECKTITLE,C_CHECKED);
+            xmlTemplateDocument.setData(C_CHECKTITLE,C_CHECKED);
         } else {
-            xmlTemplateDocument.setXmlData(C_CHECKTITLE," ");
+            xmlTemplateDocument.setData(C_CHECKTITLE," ");
         }
                 
         if ((explorerSettingsValue & C_FILELIST_TYPE) >0) {
-            xmlTemplateDocument.setXmlData(C_CHECKTYPE,C_CHECKED);
+            xmlTemplateDocument.setData(C_CHECKTYPE,C_CHECKED);
         } else {
-            xmlTemplateDocument.setXmlData(C_CHECKTYPE," ");
+            xmlTemplateDocument.setData(C_CHECKTYPE," ");
         }
                
         if ((explorerSettingsValue & C_FILELIST_CHANGED) >0) {
-            xmlTemplateDocument.setXmlData(C_CHECKCHANGED,C_CHECKED);
+            xmlTemplateDocument.setData(C_CHECKCHANGED,C_CHECKED);
         } else {
-            xmlTemplateDocument.setXmlData(C_CHECKCHANGED," ");
+            xmlTemplateDocument.setData(C_CHECKCHANGED," ");
         }
                 
         if ((explorerSettingsValue & C_FILELIST_SIZE) >0) {
-            xmlTemplateDocument.setXmlData(C_CHECKSIZE,C_CHECKED);
+            xmlTemplateDocument.setData(C_CHECKSIZE,C_CHECKED);
         } else {
-            xmlTemplateDocument.setXmlData(C_CHECKSIZE," ");
+            xmlTemplateDocument.setData(C_CHECKSIZE," ");
         }
                
         if ((explorerSettingsValue & C_FILELIST_STATE) >0) {
-            xmlTemplateDocument.setXmlData(C_CHECKSTATE,C_CHECKED);
+            xmlTemplateDocument.setData(C_CHECKSTATE,C_CHECKED);
         } else {
-            xmlTemplateDocument.setXmlData(C_CHECKSTATE," ");
+            xmlTemplateDocument.setData(C_CHECKSTATE," ");
         }
               
         if ((explorerSettingsValue & C_FILELIST_OWNER) >0) {
-            xmlTemplateDocument.setXmlData(C_CHECKOWNER,C_CHECKED);
+            xmlTemplateDocument.setData(C_CHECKOWNER,C_CHECKED);
         } else {
-            xmlTemplateDocument.setXmlData(C_CHECKOWNER," ");
+            xmlTemplateDocument.setData(C_CHECKOWNER," ");
         }
                
         if ((explorerSettingsValue & C_FILELIST_GROUP) >0) {
-            xmlTemplateDocument.setXmlData(C_CHECKGROUP,C_CHECKED);
+            xmlTemplateDocument.setData(C_CHECKGROUP,C_CHECKED);
         } else {
-            xmlTemplateDocument.setXmlData(C_CHECKGROUP," ");
+            xmlTemplateDocument.setData(C_CHECKGROUP," ");
         }
                
         if ((explorerSettingsValue & C_FILELIST_ACCESS) >0) {
-            xmlTemplateDocument.setXmlData(C_CHECKACCESS,C_CHECKED);
+            xmlTemplateDocument.setData(C_CHECKACCESS,C_CHECKED);
         } else {
-            xmlTemplateDocument.setXmlData(C_CHECKACCESS," ");
+            xmlTemplateDocument.setData(C_CHECKACCESS," ");
         }
                
         if ((explorerSettingsValue & C_FILELIST_LOCKED) >0) {
-            xmlTemplateDocument.setXmlData(C_CHECKLOCKEDBY,C_CHECKED);
+            xmlTemplateDocument.setData(C_CHECKLOCKEDBY,C_CHECKED);
         } else {
-            xmlTemplateDocument.setXmlData(C_CHECKLOCKEDBY," ");
+            xmlTemplateDocument.setData(C_CHECKLOCKEDBY," ");
         }
     }
                                          
@@ -511,35 +511,35 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
                 
        //now update the data in the template
        if (((Boolean)taskSettings.get(C_TASK_VIEW_ALL)).booleanValue()) {
-            xmlTemplateDocument.setXmlData(C_CHVIEWALL,C_CHECKED);
+            xmlTemplateDocument.setData(C_CHVIEWALL,C_CHECKED);
        } else {
-            xmlTemplateDocument.setXmlData(C_CHVIEWALL," ");
+            xmlTemplateDocument.setData(C_CHVIEWALL," ");
        }
        
        int taskMessages=((Integer)taskSettings.get(C_TASK_MESSAGES)).intValue();
                
        if ((taskMessages & C_TASK_MESSAGES_ACCEPTED) >0){
-            xmlTemplateDocument.setXmlData(C_CHMESSAGEACCEPTED,C_CHECKED);
+            xmlTemplateDocument.setData(C_CHMESSAGEACCEPTED,C_CHECKED);
        } else {
-            xmlTemplateDocument.setXmlData(C_CHMESSAGEACCEPTED," ");
+            xmlTemplateDocument.setData(C_CHMESSAGEACCEPTED," ");
        }
            
        if ((taskMessages & C_TASK_MESSAGES_FORWARDED) >0){
-            xmlTemplateDocument.setXmlData(C_CHMESSAGEFORWARDED,C_CHECKED);
+            xmlTemplateDocument.setData(C_CHMESSAGEFORWARDED,C_CHECKED);
        } else {
-            xmlTemplateDocument.setXmlData(C_CHMESSAGEFORWARDED," ");
+            xmlTemplateDocument.setData(C_CHMESSAGEFORWARDED," ");
        }
                 
        if ((taskMessages & C_TASK_MESSAGES_COMPLETED) >0){
-            xmlTemplateDocument.setXmlData(C_CHMESSAGECOMPLETED,C_CHECKED);
+            xmlTemplateDocument.setData(C_CHMESSAGECOMPLETED,C_CHECKED);
        } else {
-            xmlTemplateDocument.setXmlData(C_CHMESSAGECOMPLETED," ");
+            xmlTemplateDocument.setData(C_CHMESSAGECOMPLETED," ");
        }
                 
        if ((taskMessages & C_TASK_MESSAGES_MEMBERS) >0){
-            xmlTemplateDocument.setXmlData(C_CHMESSAGEMEMEBERS,C_CHECKED);
+            xmlTemplateDocument.setData(C_CHMESSAGEMEMEBERS,C_CHECKED);
        } else {
-            xmlTemplateDocument.setXmlData(C_CHMESSAGEMEMEBERS," ");
+            xmlTemplateDocument.setData(C_CHMESSAGEMEMEBERS," ");
        }                          
     }
      
@@ -634,54 +634,54 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         // now update the data in the template                                    
         int flags=((Integer)startSettings.get(C_START_ACCESSFLAGS)).intValue();
         if ((flags & C_ACCESS_OWNER_READ) >0 ) {
-            xmlTemplateDocument.setXmlData(C_CHECKUR,C_CHECKED);    
+            xmlTemplateDocument.setData(C_CHECKUR,C_CHECKED);    
         } else {
-            xmlTemplateDocument.setXmlData(C_CHECKUR," ");    
+            xmlTemplateDocument.setData(C_CHECKUR," ");    
         }
         if ((flags & C_ACCESS_OWNER_WRITE) >0 ) {
-            xmlTemplateDocument.setXmlData(C_CHECKUW,C_CHECKED);    
+            xmlTemplateDocument.setData(C_CHECKUW,C_CHECKED);    
         } else {
-            xmlTemplateDocument.setXmlData(C_CHECKUW," ");    
+            xmlTemplateDocument.setData(C_CHECKUW," ");    
         }
         if ((flags & C_ACCESS_OWNER_VISIBLE) >0 ) {
-            xmlTemplateDocument.setXmlData(C_CHECKUV,C_CHECKED);    
+            xmlTemplateDocument.setData(C_CHECKUV,C_CHECKED);    
         } else {
-            xmlTemplateDocument.setXmlData(C_CHECKUV," ");    
+            xmlTemplateDocument.setData(C_CHECKUV," ");    
         }     
         if ((flags & C_ACCESS_GROUP_READ) >0 ) {
-            xmlTemplateDocument.setXmlData(C_CHECKGR,C_CHECKED);    
+            xmlTemplateDocument.setData(C_CHECKGR,C_CHECKED);    
         } else {
-            xmlTemplateDocument.setXmlData(C_CHECKGR," ");    
+            xmlTemplateDocument.setData(C_CHECKGR," ");    
         }
         if ((flags & C_ACCESS_GROUP_WRITE) >0 ) {
-            xmlTemplateDocument.setXmlData(C_CHECKGW,C_CHECKED);    
+            xmlTemplateDocument.setData(C_CHECKGW,C_CHECKED);    
         } else {
-            xmlTemplateDocument.setXmlData(C_CHECKGW," ");    
+            xmlTemplateDocument.setData(C_CHECKGW," ");    
         }
         if ((flags & C_ACCESS_GROUP_VISIBLE) >0 ) {
-            xmlTemplateDocument.setXmlData(C_CHECKGV,C_CHECKED);    
+            xmlTemplateDocument.setData(C_CHECKGV,C_CHECKED);    
         } else {
-            xmlTemplateDocument.setXmlData(C_CHECKGV," ");    
+            xmlTemplateDocument.setData(C_CHECKGV," ");    
         }  
         if ((flags & C_ACCESS_PUBLIC_READ) >0 ) {
-            xmlTemplateDocument.setXmlData(C_CHECKPR,C_CHECKED);    
+            xmlTemplateDocument.setData(C_CHECKPR,C_CHECKED);    
         } else {
-            xmlTemplateDocument.setXmlData(C_CHECKPR," ");    
+            xmlTemplateDocument.setData(C_CHECKPR," ");    
         }
         if ((flags & C_ACCESS_PUBLIC_WRITE) >0 ) {
-            xmlTemplateDocument.setXmlData(C_CHECKPW,C_CHECKED);    
+            xmlTemplateDocument.setData(C_CHECKPW,C_CHECKED);    
         } else {
-            xmlTemplateDocument.setXmlData(C_CHECKPW," ");    
+            xmlTemplateDocument.setData(C_CHECKPW," ");    
         }
         if ((flags & C_ACCESS_PUBLIC_VISIBLE) >0 ) {
-            xmlTemplateDocument.setXmlData(C_CHECKPV,C_CHECKED);    
+            xmlTemplateDocument.setData(C_CHECKPV,C_CHECKED);    
         } else {
-            xmlTemplateDocument.setXmlData(C_CHECKPV," ");    
+            xmlTemplateDocument.setData(C_CHECKPV," ");    
         }  
         if ((flags & C_ACCESS_INTERNAL_READ) >0 ) {
-            xmlTemplateDocument.setXmlData(C_CHECKIF,C_CHECKED);    
+            xmlTemplateDocument.setData(C_CHECKIF,C_CHECKED);    
         } else {
-            xmlTemplateDocument.setXmlData(C_CHECKIF," ");    
+            xmlTemplateDocument.setData(C_CHECKIF," ");    
         }  
     }
     
@@ -787,12 +787,12 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         A_CmsUser user=reqCont.currentUser();
 
         //set the required datablocks
-        xmlTemplateDocument.setXmlData("USER",user.getName());
-        xmlTemplateDocument.setXmlData("FIRSTNAME",user.getFirstname());
-        xmlTemplateDocument.setXmlData("LASTNAME",user.getLastname());
-        xmlTemplateDocument.setXmlData("DESCRIPTION",user.getDescription());
-        xmlTemplateDocument.setXmlData("EMAIL",user.getEmail());
-        xmlTemplateDocument.setXmlData("ADRESS",user.getAddress());                
+        xmlTemplateDocument.setData("USER",user.getName());
+        xmlTemplateDocument.setData("FIRSTNAME",user.getFirstname());
+        xmlTemplateDocument.setData("LASTNAME",user.getLastname());
+        xmlTemplateDocument.setData("DESCRIPTION",user.getDescription());
+        xmlTemplateDocument.setData("EMAIL",user.getEmail());
+        xmlTemplateDocument.setData("ADRESS",user.getAddress());                
     }
            
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsHistory.java,v $
- * Date   : $Date: 2000/04/18 14:13:27 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/04/20 08:11:54 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 2000/04/18 14:13:27 $
+ * @version $Revision: 1.7 $ $Date: 2000/04/20 08:11:54 $
  */
 public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -114,27 +114,27 @@ public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,
         if (id != null) {
             template="detail";
             A_CmsProject project=cms.readProject(id.intValue());
-            xmlTemplateDocument.setXmlData("PROJECT",project.getName());
+            xmlTemplateDocument.setData("PROJECT",project.getName());
             String title=cms.readProperty(filename,C_PROPERTY_TITLE);
             if (title== null) {
                     title="";
             }            
-            xmlTemplateDocument.setXmlData("TITLE",title);
-            xmlTemplateDocument.setXmlData("SIZE",new Integer(file.getLength()).toString());
-            xmlTemplateDocument.setXmlData("EDITEDBY","Not yet available");
-            xmlTemplateDocument.setXmlData("EDITEDAT",Utils.getNiceDate(file.getDateLastModified()));
-            xmlTemplateDocument.setXmlData("PUBLISHEDBY","Not yet available");
+            xmlTemplateDocument.setData("TITLE",title);
+            xmlTemplateDocument.setData("SIZE",new Integer(file.getLength()).toString());
+            xmlTemplateDocument.setData("EDITEDBY","Not yet available");
+            xmlTemplateDocument.setData("EDITEDAT",Utils.getNiceDate(file.getDateLastModified()));
+            xmlTemplateDocument.setData("PUBLISHEDBY","Not yet available");
             String published="---";
             if (project.getFlags() == this.C_PROJECT_STATE_ARCHIVE) {
             published=Utils.getNiceDate(project.getPublishingDate());                
             }                             
-            xmlTemplateDocument.setXmlData("PUBLISHEDAT",published);
-            xmlTemplateDocument.setXmlData("PROJECTDESCRIPTION",project.getDescription());
+            xmlTemplateDocument.setData("PUBLISHEDAT",published);
+            xmlTemplateDocument.setData("PROJECTDESCRIPTION",project.getDescription());
         }
         
         
         
-        xmlTemplateDocument.setXmlData("FILENAME",file.getName());
+        xmlTemplateDocument.setData("FILENAME",file.getName());
         // process the selected template 
         return startProcessing(cms,xmlTemplateDocument,"",parameters,template);   
     }  

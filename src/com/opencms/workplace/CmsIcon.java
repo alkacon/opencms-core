@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsIcon.java,v $
- * Date   : $Date: 2000/03/16 19:21:11 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/04/20 08:11:54 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.lang.reflect.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ICON&gt;</code>.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.6 $ $Date: 2000/03/16 19:21:11 $
+ * @version $Revision: 1.7 $ $Date: 2000/04/20 08:11:54 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsIcon extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants {    
@@ -120,15 +120,15 @@ public class CmsIcon extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpCo
 		}
         
 		// get the processed button.
-		icondef.setXmlData(C_ICON_NAME, iconName);
-		icondef.setXmlData(C_ICON_LABEL, iconLabelBuffer.toString());
-		icondef.setXmlData(C_ICON_ACTION, iconAction);
-		icondef.setXmlData(C_ICON_HREF, iconHref);
-		icondef.setXmlData(C_ICON_TARGET, iconTarget);
+		icondef.setData(C_ICON_NAME, iconName);
+		icondef.setData(C_ICON_LABEL, iconLabelBuffer.toString());
+		icondef.setData(C_ICON_ACTION, iconAction);
+		icondef.setData(C_ICON_HREF, iconHref);
+		icondef.setData(C_ICON_TARGET, iconTarget);
         if(activate) {
-            return icondef.getProcessedXmlDataValue("defaulticon", callingObject);
+            return icondef.getProcessedDataValue("defaulticon", callingObject);
         } else {
-            return icondef.getProcessedXmlDataValue("deactivatedicon", callingObject);
+            return icondef.getProcessedDataValue("deactivatedicon", callingObject);
         }
     }           
 }

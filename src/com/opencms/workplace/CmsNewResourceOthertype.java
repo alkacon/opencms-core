@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceOthertype.java,v $
- * Date   : $Date: 2000/04/19 09:04:31 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/04/20 08:11:55 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.13 $ $Date: 2000/04/19 09:04:31 $
+ * @version $Revision: 1.14 $ $Date: 2000/04/20 08:11:55 $
  */
 public class CmsNewResourceOthertype extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -150,7 +150,7 @@ public class CmsNewResourceOthertype extends CmsWorkplaceDefault implements I_Cm
         // set the size of the radiobox entrys
         getResources(cms,null,null,null,null,null);
         if (m_names != null) { 
-             xmlTemplateDocument.setXmlData(C_RADIOSIZE,new Integer(m_names.size()).toString());
+             xmlTemplateDocument.setData(C_RADIOSIZE,new Integer(m_names.size()).toString());
         } 
         
         // process the selected template 

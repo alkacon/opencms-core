@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsEditor.java,v $
- * Date   : $Date: 2000/04/05 08:45:55 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/04/20 08:11:54 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.11 $ $Date: 2000/04/05 08:45:55 $
+ * @version $Revision: 1.12 $ $Date: 2000/04/20 08:11:54 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsEditor extends CmsWorkplaceDefault {
@@ -135,9 +135,9 @@ public class CmsEditor extends CmsWorkplaceDefault {
 
         // Put the "file" datablock for processing in the template file.
         // It will be inserted in a hidden input field and given back when submitting.
-        xmlTemplateDocument.setXmlData(C_PARA_FILE, file);
-        xmlTemplateDocument.setXmlData(C_PARA_JSFILE, jsfile);                
-        xmlTemplateDocument.setXmlData("editorframe", (String)parameters.get("root.editorframe"));                
+        xmlTemplateDocument.setData(C_PARA_FILE, file);
+        xmlTemplateDocument.setData(C_PARA_JSFILE, jsfile);                
+        xmlTemplateDocument.setData("editorframe", (String)parameters.get("root.editorframe"));                
         return startProcessing(cms, xmlTemplateDocument, elementName, parameters, sectionName);
     }                  
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsUnlock.java,v $
- * Date   : $Date: 2000/04/17 16:11:36 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2000/04/20 08:11:55 $
+ * Version: $Revision: 1.19 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.util.*;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * @author Alexander Lucas
- * @version $Revision: 1.18 $ $Date: 2000/04/17 16:11:36 $
+ * @version $Revision: 1.19 $ $Date: 2000/04/20 08:11:55 $
  */
 public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants, I_CmsNewsConstants {
@@ -157,7 +157,7 @@ public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,
         }
 
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);
-		xmlTemplateDocument.setXmlData("FILENAME",file.getName());
+		xmlTemplateDocument.setData("FILENAME",file.getName());
        
         // process the selected template 
         return startProcessing(cms,xmlTemplateDocument,"",parameters,template);

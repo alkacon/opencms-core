@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProjectlist.java,v $
- * Date   : $Date: 2000/04/13 19:48:08 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/04/20 08:11:55 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import java.lang.reflect.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ICON&gt;</code>.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.12 $ $Date: 2000/04/13 19:48:08 $
+ * @version $Revision: 1.13 $ $Date: 2000/04/20 08:11:55 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsProjectlist extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants {
@@ -126,7 +126,7 @@ public class CmsProjectlist extends A_CmsWpElement implements I_CmsWpElement, I_
         /** StringBuffer for the generated output */
         StringBuffer result = new StringBuffer();
 		String state = C_PROJECTLIST_STATE_UNLOCKED;
-		String snaplock = listdef.getProcessedXmlDataValue(C_TAG_PROJECTLIST_SNAPLOCK,
+		String snaplock = listdef.getProcessedDataValue(C_TAG_PROJECTLIST_SNAPLOCK,
 														   callingObject, parameters);
 		
 		for(int i = 0; i < list.size(); i++) {
@@ -145,15 +145,15 @@ public class CmsProjectlist extends A_CmsWpElement implements I_CmsWpElement, I_
 			setListEntryData(cms, lang, listdef, project);
 
 			if( state.equals(C_PROJECTLIST_STATE_UNLOCKED) ) {
-				listdef.setXmlData(C_PROJECTLIST_LOCKSTATE, "");
-				listdef.setXmlData(C_PROJECTLIST_MENU, C_PROJECT_UNLOCK);
+				listdef.setData(C_PROJECTLIST_LOCKSTATE, "");
+				listdef.setData(C_PROJECTLIST_MENU, C_PROJECT_UNLOCK);
 			} else {
-				listdef.setXmlData(C_PROJECTLIST_LOCKSTATE, snaplock);
-				listdef.setXmlData(C_PROJECTLIST_MENU, C_PROJECT_LOCK);
+				listdef.setData(C_PROJECTLIST_LOCKSTATE, snaplock);
+				listdef.setData(C_PROJECTLIST_MENU, C_PROJECT_LOCK);
 			}
 
-			listdef.setXmlData(C_PROJECTLIST_IDX, new Integer(i).toString());
-			result.append(listdef.getProcessedXmlDataValue(C_TAG_PROJECTLIST_DEFAULT, callingObject, parameters));
+			listdef.setData(C_PROJECTLIST_IDX, new Integer(i).toString());
+			result.append(listdef.getProcessedDataValue(C_TAG_PROJECTLIST_DEFAULT, callingObject, parameters));
 		}		
 		return result.toString();
     }
@@ -177,14 +177,14 @@ public class CmsProjectlist extends A_CmsWpElement implements I_CmsWpElement, I_
 		} else {
 			state = C_PROJECTLIST_STATE_LOCKED;
 		}
-		xmlFile.setXmlData(C_PROJECTLIST_NAME, project.getName());
-		xmlFile.setXmlData(C_PROJECTLIST_NAME_ESCAPED, Encoder.escape(project.getName()));
-		xmlFile.setXmlData(C_PROJECTLIST_PROJECTID, project.getId() + "");
-		xmlFile.setXmlData(C_PROJECTLIST_DESCRIPTION, project.getDescription());
-		xmlFile.setXmlData(C_PROJECTLIST_STATE, lang.getLanguageValue(state));
-		xmlFile.setXmlData(C_PROJECTLIST_PROJECTMANAGER, cms.readManagerGroup(project).getName());
-		xmlFile.setXmlData(C_PROJECTLIST_PROJECTWORKER, cms.readGroup(project).getName());
-		xmlFile.setXmlData(C_PROJECTLIST_DATECREATED, Utils.getNiceDate(project.getCreateDate()) );
-		xmlFile.setXmlData(C_PROJECTLIST_OWNER, cms.readOwner(project).getName());
+		xmlFile.setData(C_PROJECTLIST_NAME, project.getName());
+		xmlFile.setData(C_PROJECTLIST_NAME_ESCAPED, Encoder.escape(project.getName()));
+		xmlFile.setData(C_PROJECTLIST_PROJECTID, project.getId() + "");
+		xmlFile.setData(C_PROJECTLIST_DESCRIPTION, project.getDescription());
+		xmlFile.setData(C_PROJECTLIST_STATE, lang.getLanguageValue(state));
+		xmlFile.setData(C_PROJECTLIST_PROJECTMANAGER, cms.readManagerGroup(project).getName());
+		xmlFile.setData(C_PROJECTLIST_PROJECTWORKER, cms.readGroup(project).getName());
+		xmlFile.setData(C_PROJECTLIST_DATECREATED, Utils.getNiceDate(project.getCreateDate()) );
+		xmlFile.setData(C_PROJECTLIST_OWNER, cms.readOwner(project).getName());
 	}
 }

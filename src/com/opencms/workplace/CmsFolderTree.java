@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFolderTree.java,v $
- * Date   : $Date: 2000/04/13 22:05:12 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2000/04/20 08:11:54 $
+ * Version: $Revision: 1.21 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.20 $ $Date: 2000/04/13 22:05:12 $
+ * @version $Revision: 1.21 $ $Date: 2000/04/20 08:11:54 $
  */
 public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstants  {
 
@@ -166,8 +166,8 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
         varname=(String)session.getValue(C_PARA_VARIABLE);       
         
         //set the required datablocks
-        xmlTemplateDocument.setXmlData("FORMNAME",formname);
-        xmlTemplateDocument.setXmlData("VARIABLE",varname);
+        xmlTemplateDocument.setData("FORMNAME",formname);
+        xmlTemplateDocument.setData("VARIABLE",varname);
         
         // process the selected template
         return startProcessing(cms,xmlTemplateDocument,"",parameters,"template");
@@ -216,12 +216,12 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
             //get the template
             CmsXmlWpTemplateFile template=(CmsXmlWpTemplateFile)doc;
             if (filelist!=null) {
-                template.setXmlData("PREVIOUS",filelist);
+                template.setData("PREVIOUS",filelist);
             } else {
-                template.setXmlData("PREVIOUS",currentFilelist);  
+                template.setData("PREVIOUS",currentFilelist);  
             }
             
-            String tab=template.getProcessedXmlDataValue(C_TREEIMG_EMPTY0,this);
+            String tab=template.getProcessedDataValue(C_TREEIMG_EMPTY0,this);
             showTree(cms,rootFolder,currentFolder,currentFilelist,template,output,tab);
             return output.toString();
      }
@@ -282,9 +282,9 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
                                   
                     // check if this folder must diplayes open
                     if (folder.getAbsolutePath().equals(filelist)) {
-                        folderimg=template.getProcessedXmlDataValue(C_TREEIMG_FOLDEROPEN,this);   
+                        folderimg=template.getProcessedDataValue(C_TREEIMG_FOLDEROPEN,this);   
                     } else {
-                        folderimg=template.getProcessedXmlDataValue(C_TREEIMG_FOLDERCLOSE,this);   
+                        folderimg=template.getProcessedDataValue(C_TREEIMG_FOLDERCLOSE,this);   
                     }
                     
                     // now check if a treeswitch has to displayed
@@ -295,14 +295,14 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
                         if (subfolders.size() >0) {
                             // test if the + or minus must be displayed
                             if (endfolder.startsWith(folder.getAbsolutePath())) {
-                                template.setXmlData(C_TREELINK,C_WP_FOLDER_TREE+"?"+C_PARA_FOLDERTREE+"="+Encoder.escape(curfolder));
-                                treeswitch=template.getProcessedXmlDataValue(C_TREEIMG_MEND,this);    
+                                template.setData(C_TREELINK,C_WP_FOLDER_TREE+"?"+C_PARA_FOLDERTREE+"="+Encoder.escape(curfolder));
+                                treeswitch=template.getProcessedDataValue(C_TREEIMG_MEND,this);    
                             } else {
-                              template.setXmlData(C_TREELINK,C_WP_FOLDER_TREE+"?"+C_PARA_FOLDERTREE+"="+Encoder.escape(folder.getAbsolutePath()));
-                                treeswitch=template.getProcessedXmlDataValue(C_TREEIMG_PEND,this); 
+                              template.setData(C_TREELINK,C_WP_FOLDER_TREE+"?"+C_PARA_FOLDERTREE+"="+Encoder.escape(folder.getAbsolutePath()));
+                                treeswitch=template.getProcessedDataValue(C_TREEIMG_PEND,this); 
                             }
                         } else {
-                            treeswitch=template.getProcessedXmlDataValue(C_TREEIMG_END,this);              
+                            treeswitch=template.getProcessedDataValue(C_TREEIMG_END,this);              
                         }
                     } else {
                         // use the cross image
@@ -311,47 +311,47 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
                         if (subfolders.size() >0) {
                              // test if the + or minus must be displayed
                             if (endfolder.startsWith(folder.getAbsolutePath())) {
-                                template.setXmlData(C_TREELINK,C_WP_FOLDER_TREE+"?"+C_PARA_FOLDERTREE+"="+Encoder.escape(curfolder));
-                                treeswitch=template.getProcessedXmlDataValue(C_TREEIMG_MCROSS,this);                          
+                                template.setData(C_TREELINK,C_WP_FOLDER_TREE+"?"+C_PARA_FOLDERTREE+"="+Encoder.escape(curfolder));
+                                treeswitch=template.getProcessedDataValue(C_TREEIMG_MCROSS,this);                          
                             } else {   
-                                template.setXmlData(C_TREELINK,C_WP_FOLDER_TREE+"?"+C_PARA_FOLDERTREE+"="+Encoder.escape(folder.getAbsolutePath()));
-                                treeswitch=template.getProcessedXmlDataValue(C_TREEIMG_PCROSS,this);
+                                template.setData(C_TREELINK,C_WP_FOLDER_TREE+"?"+C_PARA_FOLDERTREE+"="+Encoder.escape(folder.getAbsolutePath()));
+                                treeswitch=template.getProcessedDataValue(C_TREEIMG_PCROSS,this);
                             }
                         } else {
-                            treeswitch=template.getProcessedXmlDataValue(C_TREEIMG_CROSS,this);
+                            treeswitch=template.getProcessedDataValue(C_TREEIMG_CROSS,this);
                         }
                     }
     
                     if (folder.getAbsolutePath().equals(lastFolder.getAbsolutePath())) {
-                        newtab=tab+template.getProcessedXmlDataValue(C_TREEIMG_EMPTY,this);     
+                        newtab=tab+template.getProcessedDataValue(C_TREEIMG_EMPTY,this);     
                     } else {
-                        newtab=tab+template.getProcessedXmlDataValue(C_TREEIMG_VERT,this);     
+                        newtab=tab+template.getProcessedDataValue(C_TREEIMG_VERT,this);     
                     }
                 
                    // test if the folder is in the current project
                     if (folder.inProject(cms.getRequestContext().currentProject())) {
-                        template.setXmlData(C_TREESTYLE,C_FILE_INPROJECT);
+                        template.setData(C_TREESTYLE,C_FILE_INPROJECT);
                     } else {
-                        template.setXmlData(C_TREESTYLE,C_FILE_NOTINPROJECT);
+                        template.setData(C_TREESTYLE,C_FILE_NOTINPROJECT);
                     }
  
                     // set all data for the treeline tag
-                    template.setXmlData(C_FILELIST,C_WP_EXPLORER_FILELIST+"?"+C_PARA_FILELIST+"="+folder.getAbsolutePath());
-                    template.setXmlData(C_TREELIST,C_WP_EXPLORER_TREE+"?"+C_PARA_FILELIST+"="+folder.getAbsolutePath());
-                    template.setXmlData(C_TREEENTRY,folder.getName());
-                    template.setXmlData(C_TREEVAR,folder.getAbsolutePath());
-                    template.setXmlData(C_TREETAB,tab);
-                    template.setXmlData(C_TREEFOLDER,folderimg);
-                    template.setXmlData(C_TREESWITCH,treeswitch);
+                    template.setData(C_FILELIST,C_WP_EXPLORER_FILELIST+"?"+C_PARA_FILELIST+"="+folder.getAbsolutePath());
+                    template.setData(C_TREELIST,C_WP_EXPLORER_TREE+"?"+C_PARA_FILELIST+"="+folder.getAbsolutePath());
+                    template.setData(C_TREEENTRY,folder.getName());
+                    template.setData(C_TREEVAR,folder.getAbsolutePath());
+                    template.setData(C_TREETAB,tab);
+                    template.setData(C_TREEFOLDER,folderimg);
+                    template.setData(C_TREESWITCH,treeswitch);
                     // test if the folder is in the current project and if the user has
 					// write access to this folder.
                     if (folder.inProject(cms.getRequestContext().currentProject()) &&
 						checkWriteable(cms, folder)) {
-                        template.setXmlData(C_TREESTYLE,C_FILE_INPROJECT);
-                        output.append(template.getProcessedXmlDataValue(C_TREELINE,this));
+                        template.setData(C_TREESTYLE,C_FILE_INPROJECT);
+                        output.append(template.getProcessedDataValue(C_TREELINE,this));
                     } else {
-                        template.setXmlData(C_TREESTYLE,C_FILE_NOTINPROJECT);
-                        output.append(template.getProcessedXmlDataValue(C_TREELINEDISABLED,this));
+                        template.setData(C_TREESTYLE,C_FILE_NOTINPROJECT);
+                        output.append(template.getProcessedDataValue(C_TREELINEDISABLED,this));
                     }
                   
                 
