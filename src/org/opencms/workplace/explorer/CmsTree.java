@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsTree.java,v $
- * Date   : $Date: 2004/09/20 12:39:00 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/10/22 10:03:42 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.1
  */
@@ -145,10 +145,10 @@ public class CmsTree extends CmsWorkplace {
             CmsPermissionSet permissions;
             try {
                 // get permissions of the current user
-                permissions = typeSettings.getAccessControlList().getPermissions(cms.getRequestContext().currentUser(), cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()));
+                permissions = typeSettings.getAccess().getAccessControlList().getPermissions(cms.getRequestContext().currentUser(), cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()));
             } catch (CmsException e) {
                 // error reading the groups of the current user
-                permissions = typeSettings.getAccessControlList().getPermissions(cms.getRequestContext().currentUser());
+                permissions = typeSettings.getAccess().getAccessControlList().getPermissions(cms.getRequestContext().currentUser());
                 if (OpenCms.getLog(CmsTree.class).isErrorEnabled()) {
                     OpenCms.getLog(CmsTree.class).error("Error reading groups of user " + cms.getRequestContext().currentUser().getName());
                 }      

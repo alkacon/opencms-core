@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResource.java,v $
- * Date   : $Date: 2004/08/19 11:26:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/10/22 10:03:42 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.3.3
  */
@@ -164,10 +164,10 @@ public class CmsNewResource extends CmsDialog {
                 CmsPermissionSet permissions;
                 try {
                     // get permissions of the current user
-                    permissions = currSettings.getAccessControlList().getPermissions(getSettings().getUser(), getCms().getGroupsOfUser(getSettings().getUser().getName()));
+                    permissions = currSettings.getAccess().getAccessControlList().getPermissions(getSettings().getUser(), getCms().getGroupsOfUser(getSettings().getUser().getName()));
                 } catch (CmsException e) {
                     // error reading the groups of the current user
-                    permissions = currSettings.getAccessControlList().getPermissions(getSettings().getUser());
+                    permissions = currSettings.getAccess().getAccessControlList().getPermissions(getSettings().getUser());
                     if (OpenCms.getLog(this).isErrorEnabled()) {
                         OpenCms.getLog(this).error("Error reading groups of user " + getSettings().getUser().getName());
                     }      

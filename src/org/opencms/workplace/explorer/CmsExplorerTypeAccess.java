@@ -1,0 +1,141 @@
+/*
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerTypeAccess.java,v $
+ * Date   : $Date: 2004/10/22 10:03:42 $
+ * Version: $Revision: 1.1 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * Copyright (C) 2002 - 2004 Alkacon Software (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+ 
+package org.opencms.workplace.explorer;
+
+import org.opencms.file.CmsObject;
+import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
+import org.opencms.security.CmsAccessControlEntry;
+import org.opencms.security.CmsAccessControlList;
+import org.opencms.security.I_CmsPrincipal;
+import org.opencms.util.CmsUUID;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+/**
+ * Explorer type access object, encapsulates access control entires and lists of a explorer type.<p>
+ * 
+ * @author Michael Emmerich (m.emmerich@alkacon.com)
+ * @version $Revision: 1.1 $
+ */
+public class CmsExplorerTypeAccess {
+
+    private Map m_accessControl;  
+    private CmsAccessControlList m_accessControlList;
+    
+    /**
+     * Constructor, creates an empty, CmsExplorerTypeAccess object.<p>
+     */
+    public CmsExplorerTypeAccess () {
+        m_accessControl = new HashMap();
+        m_accessControlList = new CmsAccessControlList();
+    }
+    
+    /** 
+     * Adds a single access entry to the map of access entries of the explorer type setting.<p>
+     * 
+     * This stores the configuration data in a map which is used in the initialize process 
+     * to create the access control list.<p> 
+     * 
+     * @param key the principal of the ace
+     * @param value the permissions for the principal
+     */
+    public void addAccessEntry(String key, String value) {
+        m_accessControl.put(key, value);
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("Adding entry: " + key + ", " + value);
+        }      
+    }
+    
+    /** 
+     * Creates the access control list from the temporary map.<p> 
+     * 
+     * @param cms the CmsObject
+     * @throws CmsException if reading a group or user fails
+     */
+    public void createAccessControlList(CmsObject cms) throws CmsException {
+        m_accessControlList = new CmsAccessControlList();
+        Iterator i = m_accessControl.keySet().iterator();
+        while (i.hasNext()) {
+            String key = (String)i.next();
+            String value = (String)m_accessControl.get(key);
+            CmsUUID principalId = new CmsUUID();
+            // get the principal name from the principal String
+            String principal = key.substring(key.indexOf(".") + 1, key.length());
+    
+            if (key.startsWith(I_CmsPrincipal.C_PRINCIPAL_GROUP)) {
+                // read the group
+                principal = OpenCms.getImportExportManager().translateGroup(principal);  
+                principalId = cms.readGroup(principal).getId();
+            } else {
+                // read the user
+                principal = OpenCms.getImportExportManager().translateUser(principal);  
+                principalId = cms.readUser(principal).getId();
+            }
+            // create a new entry for the principal
+            CmsAccessControlEntry entry = new CmsAccessControlEntry(null, principalId , value);
+            m_accessControlList.add(entry);
+        }
+    }
+    
+    /**
+     * Returns the list of access control entries of the explorer type setting.<p>
+     * 
+     * @return the list of access control entries of the explorer type setting
+     */
+    public CmsAccessControlList getAccessControlList() {
+        return m_accessControlList;
+    }
+    
+    /**
+     * Returns the map of access entries of the explorer type setting.<p>
+     * 
+     * @return the map of access entries of the explorer type setting
+     */
+    public Map getAccessEntries() {
+        return m_accessControl;
+    }
+    
+    /**
+     * Tests if there are any access information stored.<p>
+     * @return true or false
+     */
+    public boolean isEmpty() {
+        boolean isEmpty = false;
+        if (m_accessControl.size() == 0) {
+            isEmpty = true;
+        } 
+        return isEmpty;
+    }
+}

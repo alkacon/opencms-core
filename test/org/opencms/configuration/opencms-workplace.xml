@@ -335,8 +335,19 @@
 					</contextmenu>
 				</editoptions>
 			</explorertype>
+			<explorertype name="Jobs" key="fileicon.Jobs" icon="xmlcontent.gif" reference="XMLTemplate" >
+				<newresource uri="newresource.jsp?newresourcetype=xmlcontent" order="98"/>
+				<accesscontrol>
+					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v"/>
+					<accessentry principal="GROUP.Users" permissions="+r+v"/>
+				</accesscontrol>				
+			</explorertype>
+			<explorertype name="News" key="fileicon.News" icon="xmlcontent.gif" reference="XMLTemplate" >
+				<newresource uri="newresource.jsp?newresourcetype=xmlcontent" order="99"/>	
+			</explorertype>	
 			<explorertype name="link" key="fileicon.link" icon="link.gif">
-				<newresource uri="newresource_sibling.html" order="90"/>
+				<newresource uri="newresource_sibling.jsp" order="90"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
@@ -344,13 +355,20 @@
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="upload" key="fileicon.upload" icon="upload.gif">
-				<newresource uri="newresource_upload.html" order="100"/>
+				<newresource uri="newresource_upload.jsp" order="100"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
+			<defaultaccesscontrol>
+				<accesscontrol>
+					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
+				</accesscontrol>
+			</defaultaccesscontrol>
 		</explorertypes>
 		<default-preferences>
 			<workplace-preferences>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2004/10/05 14:31:31 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/10/22 10:03:42 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.explorer.CmsExplorerContextMenuItem;
+import org.opencms.workplace.explorer.CmsExplorerTypeAccess;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 
 import java.util.ArrayList;
@@ -159,6 +160,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     /** The "principal" attribute. */
     protected static final String A_PRINCIPAL = "principal";
     
+    /** The "reference" attribute. */
+    protected static final String A_REFERENCE = "reference";
+    
     /** The "rules" attribute. */
     protected static final String A_RULES = "rules";
     
@@ -191,6 +195,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     
     /** The node name of the date released  column node. */
     protected static final String N_DATERELEASED = "show-datereleased";    
+
+    /** The name of the default access control node. */
+    protected static final String N_DEFAULTACCESSCONTROL = "defaultaccesscontrol";
     
     /** The name of the node for the default locale. */
     protected static final String N_DEFAULTLOCALE = "defaultlocale";
@@ -324,9 +331,17 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addObjectCreate("*/" + N_WORKPLACE, CmsWorkplaceManager.class);                         
         // import/export manager finished
         digester.addSetNext("*/" + N_WORKPLACE, "setWorkplaceManager");
-        
+                
         // add default locale rule
         digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_DEFAULTLOCALE, "setDefaultLocale", 0);
+       
+        digester.addObjectCreate("*/" + N_WORKPLACE + "/" + N_EXPLORERTYPES +"/" + N_DEFAULTACCESSCONTROL + "/" + N_ACCESSCONTROL, CmsExplorerTypeAccess.class);
+        digester.addSetNext("*/" + N_WORKPLACE + "/" + N_EXPLORERTYPES +"/" + N_DEFAULTACCESSCONTROL + "/" + N_ACCESSCONTROL, "setDefaultAccess");        
+        
+        digester.addCallMethod("*/" + N_WORKPLACE + "/" +  N_EXPLORERTYPES + "/" + N_DEFAULTACCESSCONTROL + "/" + N_ACCESSCONTROL + "/" +N_ACCESSENTRY, "addAccessEntry", 2);
+        digester.addCallParam("*/" + N_WORKPLACE + "/" +  N_EXPLORERTYPES + "/" + N_DEFAULTACCESSCONTROL + "/" + N_ACCESSCONTROL + "/" + N_ACCESSENTRY, 0, A_PRINCIPAL);
+        digester.addCallParam("*/" + N_WORKPLACE + "/" +  N_EXPLORERTYPES + "/" + N_DEFAULTACCESSCONTROL + "/" + N_ACCESSCONTROL + "/" + N_ACCESSENTRY, 1, A_PERMISSIONS);
+  
         
         // add default properties on structure setting
         digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_DEFAULTPROPERTIESONSTRUCTURE, "setDefaultPropertiesOnStructure", 0);
@@ -372,15 +387,19 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addObjectCreate("*/" + N_EXPLORERTYPE, CmsExplorerTypeSettings.class);
         digester.addSetNext("*/" + N_EXPLORERTYPE, "addExplorerTypeSetting");
         
-        digester.addCallMethod("*/" + N_EXPLORERTYPE, "setTypeAttributes", 3);
+        digester.addCallMethod("*/" + N_EXPLORERTYPE, "setTypeAttributes", 4);
         digester.addCallParam("*/" + N_EXPLORERTYPE, 0, A_NAME);
         digester.addCallParam("*/" + N_EXPLORERTYPE, 1, A_KEY);
         digester.addCallParam("*/" + N_EXPLORERTYPE, 2, A_ICON);
-        
+        digester.addCallParam("*/" + N_EXPLORERTYPE, 3, A_REFERENCE);
+                
         digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, "setNewResourceUri", 1);
         digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, 0, A_URI);
         digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, "setNewResourceOrder", 1);
         digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_NEWRESOURCE, 0, A_ORDER);
+        
+        digester.addObjectCreate("*/" + N_EXPLORERTYPE +"/" + N_ACCESSCONTROL, CmsExplorerTypeAccess.class);
+        digester.addSetNext("*/" + N_EXPLORERTYPE +"/" + N_ACCESSCONTROL, "setAccess");        
         
         digester.addCallMethod("*/" + N_EXPLORERTYPE + "/" + N_ACCESSCONTROL + "/" + N_ACCESSENTRY, "addAccessEntry", 2);
         digester.addCallParam("*/" + N_EXPLORERTYPE + "/" + N_ACCESSCONTROL + "/" + N_ACCESSENTRY, 0, A_PRINCIPAL);
@@ -582,27 +601,34 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
             explorerTypeElement.addAttribute(A_NAME, settings.getName());
             explorerTypeElement.addAttribute(A_KEY, settings.getKey());
             explorerTypeElement.addAttribute(A_ICON, settings.getIcon());
+            if (settings.getReference() != null) {
+                explorerTypeElement.addAttribute(A_REFERENCE, settings.getReference());
+            }
             // create subnode <newresource>
             Element newResElement = explorerTypeElement.addElement(N_NEWRESOURCE);
             newResElement.addAttribute(A_URI, settings.getNewResourceUri());
             newResElement.addAttribute(A_ORDER, settings.getNewResourceOrder());
-            // create subnode <accesscontrol>
-            Element accessControlElement = explorerTypeElement.addElement(N_ACCESSCONTROL);
-            // sort accessEntries
-            List accessEntries = new ArrayList();
-            Iterator iter = settings.getAccessEntries().keySet().iterator();
+            // create subnode <accesscontrol>            
+            List accessEntries = new ArrayList(); 
+            // sort accessEntries   
+            CmsExplorerTypeAccess access = settings.getAccess();
+            Iterator iter = access.getAccessEntries().keySet().iterator();
             while (iter.hasNext()) {
                 accessEntries.add(iter.next());                 
             }
             Collections.sort(accessEntries);
             
-            Iterator k = accessEntries.iterator();
-            while (k.hasNext()) {
-                String key = (String)k.next();
-                String value = (String)settings.getAccessEntries().get(key);
-                Element accessEntryElement = accessControlElement.addElement(N_ACCESSENTRY);
-                accessEntryElement.addAttribute(A_PRINCIPAL, key);
-                accessEntryElement.addAttribute(A_PERMISSIONS, value);
+            if (accessEntries.size() >0) {
+                Element accessControlElement = explorerTypeElement.addElement(N_ACCESSCONTROL);
+                Iterator k = accessEntries.iterator();
+            
+                while (k.hasNext()) {
+                    String key = (String)k.next();
+                    String value = (String)settings.getAccess().getAccessEntries().get(key);
+                    Element accessEntryElement = accessControlElement.addElement(N_ACCESSENTRY);
+                    accessEntryElement.addAttribute(A_PRINCIPAL, key);
+                    accessEntryElement.addAttribute(A_PERMISSIONS, value);
+                }        
             }
             // create subnode <editoptions>
             if (settings.isResourceType()) {
@@ -639,6 +665,32 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
                 }
             }            
         }
+        // add the <defaultaccesscontrol> node
+        Element defaultAccessControlElement = explorerTypesElement.addElement(N_DEFAULTACCESSCONTROL);
+        // create subnode <accesscontrol>            
+        List accessEntries = new ArrayList(); 
+        // sort accessEntries   
+        CmsExplorerTypeAccess access = m_workplaceManager.getDefaultAccess();
+        Iterator iter = access.getAccessEntries().keySet().iterator();
+        while (iter.hasNext()) {
+            accessEntries.add(iter.next());                 
+        }
+        Collections.sort(accessEntries);
+        
+        if (accessEntries.size() >0) {
+            Element accessControlElement = defaultAccessControlElement.addElement(N_ACCESSCONTROL);
+            Iterator k = accessEntries.iterator();
+        
+            while (k.hasNext()) {
+                String key = (String)k.next();
+                String value = (String)m_workplaceManager.getDefaultAccess().getAccessEntries().get(key);
+                Element accessEntryElement = accessControlElement.addElement(N_ACCESSENTRY);
+                accessEntryElement.addAttribute(A_PRINCIPAL, key);
+                accessEntryElement.addAttribute(A_PERMISSIONS, value);
+            }        
+        }
+
+        
         
         // add the <default-preferences> user settings main node
         Element defaultPreferences = workplaceElement.addElement(N_USER);

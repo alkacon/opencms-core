@@ -129,18 +129,19 @@
 <!--
 # Settings for the new resource dialog and the contextmenus in the explorer view.
 # Configure which options are shown in the new resource dialog and if resources are 
-# visible and editable depending on the current users group(s).
+# visible and editable depending on the current users group(s). The defaultaccesscontrol
+# describes the default access control settings for all resourcestypes
 -->
-<!ELEMENT explorertypes (explorertype+)>
+<!ELEMENT explorertypes (explorertype+, defaultaccesscontrol)>
 
 <!--
 # The resource type name, the key of the localized name and the used icon are required.
 -->
 <!ELEMENT explorertype (
 	newresource,
-	accesscontrol,
+	accesscontrol?,
 	editoptions?)>
-<!ATTLIST explorertype name CDATA #REQUIRED key CDATA #REQUIRED icon CDATA #REQUIRED>
+<!ATTLIST explorertype name CDATA #REQUIRED key CDATA #REQUIRED icon CDATA #REQUIRED reference CDATA #IMPLIED>
 
 <!--
 # The URI for the new resource dialog and the ranking is required.
@@ -165,6 +166,13 @@
 <!ELEMENT editoptions (
 	defaultproperties,
 	contextmenu)>
+
+<!--
+# Enter the default permissions for OpenCms groups. 
+-->
+<!ELEMENT defaultaccesscontrol (accesscontrol)>
+
+
 
 <!--
 # Define here the properties which can be edited in the new resource dialog.

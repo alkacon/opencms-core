@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChtype.java,v $
- * Date   : $Date: 2004/08/20 09:52:01 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/10/22 10:03:42 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.5.0
  */
@@ -124,10 +124,10 @@ public class CmsChtype extends CmsDialog {
                 CmsPermissionSet permissions;
                 try {
                     // get permissions of the current user
-                    permissions = settings.getAccessControlList().getPermissions(cms.getRequestContext().currentUser(), cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()));
+                    permissions = settings.getAccess().getAccessControlList().getPermissions(cms.getRequestContext().currentUser(), cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()));
                 } catch (CmsException e) {
                     // error reading the groups of the current user
-                    permissions = settings.getAccessControlList().getPermissions(cms.getRequestContext().currentUser());
+                    permissions = settings.getAccess().getAccessControlList().getPermissions(cms.getRequestContext().currentUser());
                     if (OpenCms.getLog(dialog.getClass()).isErrorEnabled()) {
                         OpenCms.getLog(dialog.getClass()).error("Error reading groups of user " + cms.getRequestContext().currentUser().getName());
                     }      

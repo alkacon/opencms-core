@@ -5196,6 +5196,32 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/commons/newresource_xmlcontent.jsp</source>
+			<destination>system/workplace/commons/newresource_xmlcontent.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>5b3c560a-2340-11d9-a61d-65782206c658</uuidresource>
+			<datelastmodified>Thu, 21 Oct 2004 11:29:41 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 21 Oct 2004 11:05:29 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Dialog - New resource xmlcontent]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/commons/newresource_xmlpage.jsp</source>
 			<destination>system/workplace/commons/newresource_xmlpage.jsp</destination>
 			<type>jsp</type>

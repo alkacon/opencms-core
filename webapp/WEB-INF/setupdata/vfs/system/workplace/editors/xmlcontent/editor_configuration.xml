@@ -6,6 +6,10 @@
 			<name>xmlcontent</name>
 			<ranking>0</ranking>
 		</type>		
+		<class>
+			<name>org.opencms.workplace.editors.CmsXmlContentEditorTypeMatcher</name>
+			<ranking>0</ranking>
+		</class>	
 	</resourcetypes>
 	<useragents>
 		<agent>.*</agent>

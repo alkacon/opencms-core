@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerContextMenu.java,v $
- * Date   : $Date: 2004/08/19 11:26:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/10/22 10:03:42 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.Locale;
  * in the OpenCms configuration.<p> 
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.3.3
  */
@@ -84,6 +84,15 @@ public class CmsExplorerContextMenu {
     public void addEntries(List entries) {
         m_allEntries.addAll(entries);
         sortEntries();
+    }
+    
+    /**
+     * @see java.lang.Object#clone()
+     */
+    public Object clone() {
+        CmsExplorerContextMenu objectClone = new CmsExplorerContextMenu();
+        objectClone.setAllEntries(m_allEntries);
+        return objectClone;
     }
       
     /**
@@ -166,10 +175,10 @@ public class CmsExplorerContextMenu {
         CmsPermissionSet permissions;
         try {
             // get permissions of the current user
-            permissions = settings.getAccessControlList().getPermissions(cms.getRequestContext().currentUser(), cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()));
+            permissions = settings.getAccess().getAccessControlList().getPermissions(cms.getRequestContext().currentUser(), cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()));
         } catch (CmsException e) {
             // error reading the groups of the current user
-            permissions = settings.getAccessControlList().getPermissions(cms.getRequestContext().currentUser());
+            permissions = settings.getAccess().getAccessControlList().getPermissions(cms.getRequestContext().currentUser());
             if (OpenCms.getLog(this).isErrorEnabled()) {
                 OpenCms.getLog(this).error("Error reading groups of user " + cms.getRequestContext().currentUser().getName());
             }      
@@ -180,6 +189,38 @@ public class CmsExplorerContextMenu {
         }
         
         return entries;
+    }
+    
+    /**
+     * Tests if the context menu is empty.<p>
+     * 
+     * @return true or false
+     */
+    public boolean isEmpty() {
+        boolean empty = true;
+        if (m_allEntries.size() > 0) {
+            empty = false;
+        }
+        return empty;
+    }
+
+    /**
+     * Sets all entries of the context menu.<p>
+     * 
+     * The list is sorted by their order after that operation.<p>
+     * 
+     * @param entries all entries of the context menu
+     */
+    public void setAllEntries(List entries) {
+        m_allEntries = entries;
+        sortEntries();
+    }
+    
+    /**
+     * Sorts the list of entries according to the value of the "order" attribute in the configuration.<p>
+     */
+    public void sortEntries() {
+        Collections.sort(m_allEntries);
     }
     
     /**
@@ -202,24 +243,6 @@ public class CmsExplorerContextMenu {
         newRules.append(rules.substring(6));
         return newRules.toString();
     }
-
-    /**
-     * Sets all entries of the context menu.<p>
-     * 
-     * The list is sorted by their order after that operation.<p>
-     * 
-     * @param entries all entries of the context menu
-     */
-    public void setAllEntries(List entries) {
-        m_allEntries = entries;
-        sortEntries();
-    }
     
-    /**
-     * Sorts the list of entries according to the value of the "order" attribute in the configuration.<p>
-     */
-    public void sortEntries() {
-        Collections.sort(m_allEntries);
-    }
 
 }

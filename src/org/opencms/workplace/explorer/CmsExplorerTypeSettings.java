@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerTypeSettings.java,v $
- * Date   : $Date: 2004/08/19 11:26:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/10/22 10:03:42 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,19 +31,11 @@
 
 package org.opencms.workplace.explorer;
 
-import org.opencms.file.CmsObject;
-import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.security.CmsAccessControlEntry;
-import org.opencms.security.CmsAccessControlList;
-import org.opencms.security.I_CmsPrincipal;
-import org.opencms.util.CmsUUID;
+import org.opencms.workplace.CmsWorkplaceManager;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Holds all information to build the explorer context menu of a resource type 
@@ -53,14 +45,13 @@ import java.util.Map;
  * in the new resource dialog.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.3.3
  */
 public class CmsExplorerTypeSettings implements Comparable {
     
-    private Map m_accessControl;  
-    private CmsAccessControlList m_accessControlList;
+    private CmsExplorerTypeAccess m_access;
     private CmsExplorerContextMenu m_contextMenu;
     
     private List m_contextMenuEntries;  
@@ -76,14 +67,14 @@ public class CmsExplorerTypeSettings implements Comparable {
     private List m_properties;
     
     private boolean m_propertiesEnabled;
+    private String m_reference;
     private boolean m_showNavigation;
     
     /**
      * Default constructor.<p>
      */
     public CmsExplorerTypeSettings() {
-        m_accessControl = new HashMap();
-        m_accessControlList = new CmsAccessControlList();
+        m_access = new CmsExplorerTypeAccess();
         m_properties = new ArrayList();
         m_contextMenuEntries = new ArrayList();
         m_contextMenu = new CmsExplorerContextMenu();
@@ -92,21 +83,6 @@ public class CmsExplorerTypeSettings implements Comparable {
         m_showNavigation = false;
     }
     
-    /** 
-     * Adds a single access entry to the map of access entries of the explorer type setting.<p>
-     * 
-     * This stores the configuration data in a map which is used in the initialize process 
-     * to create the access control list.<p> 
-     * 
-     * @param key the principal of the ace
-     * @param value the permissions for the principal
-     */
-    public void addAccessEntry(String key, String value) {
-        m_accessControl.put(key, value);
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Adding entry: " + key + ", " + value);
-        }      
-    }
     
     /**
      * Adds a single context menu entry to the list of context menu items.<p>
@@ -134,7 +110,7 @@ public class CmsExplorerTypeSettings implements Comparable {
             OpenCms.getLog(this).debug("Adding menu entry: " + key + ", " + order);
         }      
     }
-    
+   
     /**
      * Adds a menu separator to the list of context menu items.<p>
      * 
@@ -155,6 +131,7 @@ public class CmsExplorerTypeSettings implements Comparable {
             OpenCms.getLog(this).debug("Adding menu separator: " + order);
         }     
     }
+    
     
     /**
      * Adds a property definition name to the list of editable properties.<p>
@@ -183,36 +160,6 @@ public class CmsExplorerTypeSettings implements Comparable {
         return 0;
     }
     
-    /** 
-     * Creates the access control list from the temporary map.<p> 
-     * 
-     * @param cms the CmsObject
-     * @throws CmsException if reading a group or user fails
-     */
-    public void createAccessControlList(CmsObject cms) throws CmsException {
-        m_accessControlList = new CmsAccessControlList();
-        Iterator i = m_accessControl.keySet().iterator();
-        while (i.hasNext()) {
-            String key = (String)i.next();
-            String value = (String)m_accessControl.get(key);
-            CmsUUID principalId = new CmsUUID();
-            // get the principal name from the principal String
-            String principal = key.substring(key.indexOf(".") + 1, key.length());
-    
-            if (key.startsWith(I_CmsPrincipal.C_PRINCIPAL_GROUP)) {
-                // read the group
-                principal = OpenCms.getImportExportManager().translateGroup(principal);  
-                principalId = cms.readGroup(principal).getId();
-            } else {
-                // read the user
-                principal = OpenCms.getImportExportManager().translateUser(principal);  
-                principalId = cms.readUser(principal).getId();
-            }
-            // create a new entry for the principal
-            CmsAccessControlEntry entry = new CmsAccessControlEntry(null, principalId , value);
-            m_accessControlList.add(entry);
-        }
-    }
     
     /**
      * Adds all context menu entries to the context menu object.<p>
@@ -221,7 +168,7 @@ public class CmsExplorerTypeSettings implements Comparable {
      * added to the list of entries.<p>
      */
     public void createContextMenu() {
-        m_contextMenu.addEntries(getContextMenuEntries());
+        m_contextMenu.addEntries(getContextMenuEntries());        
         if (OpenCms.getLog(this).isDebugEnabled()) {
             OpenCms.getLog(this).debug("Creating context menu for " + getName() + ".");
         }     
@@ -237,30 +184,30 @@ public class CmsExplorerTypeSettings implements Comparable {
         CmsExplorerTypeSettings other = (CmsExplorerTypeSettings)o;
         return getName().equals(other.getName());
     }
-     
-    /**
-     * Returns the list of access control entries of the explorer type setting.<p>
-     * 
-     * @return the list of access control entries of the explorer type setting
-     */
-    public CmsAccessControlList getAccessControlList() {
-        return m_accessControlList;
-    }
     
     /**
-     * Returns the map of access entries of the explorer type setting.<p>
+     * Gets the access object of the type settings.<p>
      * 
-     * @return the map of access entries of the explorer type setting
+     * @return access object of the type settings
      */
-    public Map getAccessEntries() {
-        return m_accessControl;
+    public CmsExplorerTypeAccess getAccess() {
+        if (m_access.isEmpty()) {
+            CmsWorkplaceManager workplaceManager = OpenCms.getWorkplaceManager();
+            if (workplaceManager != null) {
+                m_access = workplaceManager.getDefaultAccess();
+            }
+        }
+        return m_access;        
     }
-    
+         
     /**
      * Returns the context menu.<p>
      * @return the context menu
      */
     public CmsExplorerContextMenu getContextMenu() {
+        if ((m_reference != null) && (m_contextMenu.isEmpty())) {
+            m_contextMenu = (CmsExplorerContextMenu)OpenCms.getWorkplaceManager().getExplorerTypeSetting(m_reference).getContextMenu().clone();
+        }
         return m_contextMenu;
     }
 
@@ -327,6 +274,15 @@ public class CmsExplorerTypeSettings implements Comparable {
     }
     
     /**
+     * Returns the reference of the explorer type setting.<p>
+     * 
+     * @return the reference of the explorer type setting
+     */
+    public String getReference() {
+        return m_reference;
+    }
+    
+    /**
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
@@ -358,6 +314,15 @@ public class CmsExplorerTypeSettings implements Comparable {
      */
     public boolean isShowNavigation() {
         return m_showNavigation;
+    }
+    
+    /**
+     * Sets the access object of the type settings.<p>
+     * 
+     * @param access access object
+     */
+    public void setAccess (CmsExplorerTypeAccess access) {
+        m_access = access;
     }
 
     /**
@@ -479,6 +444,18 @@ public class CmsExplorerTypeSettings implements Comparable {
     }
 
     /**
+     * Sets the reference of the explorer type setting.<p>
+     * 
+     * @param reference the reference of the explorer type setting
+     */
+    public void setReference(String reference) {
+        m_reference = reference;
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("Setting reference: " + m_reference);
+        }      
+    }
+
+    /**
      * Sets if this explorer type setting displays the navigation properties in the special properties dialog.<p>
      * 
      * @param navigation true, if this explorer type setting displays the navigation properties in the special properties dialog
@@ -500,4 +477,17 @@ public class CmsExplorerTypeSettings implements Comparable {
         setIcon(icon);
     }
 
+    /**
+     * Sets the basic attributes of the type settings.<p>
+     * 
+     * @param name the name of the type setting
+     * @param key the key name of the explorer type setting 
+     * @param icon the icon path and file name of the explorer type setting
+     * @param reference the reference of the explorer type setting
+     */
+    public void setTypeAttributes(String name, String key, String icon, String reference) {
+        setName(name);
+        setKey(key);
+        setIcon(icon);        
+        setReference(reference);    }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2004/09/21 16:21:30 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2004/10/22 10:03:43 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,12 +46,17 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsAccessControlEntry;
+import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsSecurityException;
+import org.opencms.security.I_CmsPrincipal;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.editors.CmsEditorDisplayOptions;
 import org.opencms.workplace.editors.CmsEditorHandler;
 import org.opencms.workplace.editors.CmsWorkplaceEditorManager;
 import org.opencms.workplace.editors.I_CmsEditorActionHandler;
 import org.opencms.workplace.editors.I_CmsEditorHandler;
+import org.opencms.workplace.explorer.CmsExplorerTypeAccess;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 
 import java.io.UnsupportedEncodingException;
@@ -75,7 +80,7 @@ import javax.servlet.http.HttpSession;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  * 
  * @since 5.3.1
  */
@@ -153,7 +158,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     
     /** The configured workplace views. */
     private List m_views;
-    
+
+    /** The default acces for explorer types */
+    private CmsExplorerTypeAccess m_defaultAccess;
     /**
      * Creates a new instance for the workplace manager, will be called by the workplace configuration manager.<p>
      */
@@ -179,7 +186,10 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         m_defaultEncoding = OpenCms.getSystemInfo().getDefaultEncoding();
         // m_defaultEncoding = C_DEFAULT_WORKPLACE_ENCODING;
         m_defaultUserSettings = new CmsDefaultUserSettings();
+        m_defaultAccess = new CmsExplorerTypeAccess();
+
     }
+
     
     /**
      * Adds a dialog handler instance to the list of configured dialog handlers.<p>
@@ -256,7 +266,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     public boolean autoLockResources() {
         return m_autoLockResources;
     }
-    
+        
     /**
      * Returns the default workplace encoding.<p>
      * 
@@ -539,8 +549,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         Iterator i = m_explorerTypeSettings.iterator();
         while (i.hasNext()) {
             CmsExplorerTypeSettings settings = (CmsExplorerTypeSettings)i.next();
-            settings.createAccessControlList(cms);
+            settings.getAccess().createAccessControlList(cms);
         }
+        
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Workplace config     : vfs access initialized");
         }
@@ -555,6 +566,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         }
         // create an instance of editor display options
         m_editorDisplayOptions = new CmsEditorDisplayOptions();
+        
+
     }
     /**
      * Returns the default property editing mode on resources.<p>
@@ -826,4 +839,24 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         Collections.sort(m_views);
         return m_views;
     }
+    
+    /**
+     * Sets the access object of the type settings.<p>
+     * 
+     * @param access access object
+     */
+    public void setDefaultAccess (CmsExplorerTypeAccess access) {
+        m_defaultAccess = access;
+    }
+    
+    /**
+     * Gets the access object of the type settings.<p>
+     * 
+     * @return access object of the type settings
+     */
+    public CmsExplorerTypeAccess getDefaultAccess() {
+        return m_defaultAccess;
+    }
+    
+    
 }

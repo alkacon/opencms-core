@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/08/23 15:37:02 $
- * Version: $Revision: 1.89 $
+ * Date   : $Date: 2004/10/22 10:03:43 $
+ * Version: $Revision: 1.90 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import org.apache.commons.fileupload.FileUploadException;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.89 $
+ * @version $Revision: 1.90 $
  * 
  * @since 5.1
  */
@@ -352,10 +352,10 @@ public abstract class CmsWorkplace {
             CmsPermissionSet permissions;
             try {
                 // get permissions of the current user
-                permissions = typeSettings.getAccessControlList().getPermissions(cms.getRequestContext().currentUser(), cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()));
+                permissions = typeSettings.getAccess().getAccessControlList().getPermissions(cms.getRequestContext().currentUser(), cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()));
             } catch (CmsException e) {
                 // error reading the groups of the current user
-                permissions = typeSettings.getAccessControlList().getPermissions(cms.getRequestContext().currentUser());
+                permissions = typeSettings.getAccess().getAccessControlList().getPermissions(cms.getRequestContext().currentUser());
                 if (OpenCms.getLog(CmsWorkplace.class).isWarnEnabled()) {
                     OpenCms.getLog(CmsTree.class).warn("Error reading groups of user " + cms.getRequestContext().currentUser().getName());
                 }      

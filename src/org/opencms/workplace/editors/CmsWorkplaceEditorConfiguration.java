@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsWorkplaceEditorConfiguration.java,v $
- * Date   : $Date: 2004/08/19 11:26:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/10/22 10:03:42 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.dom4j.Element;
  * Provides methods to get the editor information for the editor manager.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.3.1
  */
@@ -73,6 +73,9 @@ public class CmsWorkplaceEditorConfiguration {
     
     /** Name of the resource type node. */
     protected static final String C_NODE_TYPE = "type";
+
+    /** Name of the resource type class node. */
+    protected static final String C_NODE_CLASS = "class";
     
     /** Name of the resource type subnode name. */
     protected static final String C_NODE_NAME = "name";
@@ -151,6 +154,40 @@ public class CmsWorkplaceEditorConfiguration {
             }
             resTypes.put(name, new String[] {"" + ranking, mapTo});          
         }
+        // add the additional resource types
+       i = document.getRootElement().element(C_NODE_RESOURCETYPES).elementIterator(C_NODE_CLASS);
+       while (i.hasNext()) {
+           Element currentClass = (Element)i.next();          
+           String name = currentClass.elementText(C_NODE_NAME);
+           List assignedTypes = new ArrayList();
+           try {
+               // get the editor type matcher class
+                I_CmsEditorTypeMatcher matcher = (I_CmsEditorTypeMatcher)Class.forName(name).newInstance();
+                assignedTypes = matcher.getAdditionalResourceTypes();           
+           } catch (Throwable t) {
+                logConfigurationError("Invalid class for resource type " + name + ".", t);
+                continue;
+           }
+           float ranking;
+           try {
+               ranking = Float.parseFloat(currentClass.elementText(C_NODE_RANKING));
+           } catch (Throwable t) {
+               logConfigurationError("Invalid ranking for resource type " + name + ".", t);
+               continue;
+           }
+           String mapTo = currentClass.elementText(C_NODE_MAPTO);
+           if ("".equals(mapTo)) {
+               mapTo = null;
+           }
+           // now loop through all types found and add them 
+           Iterator j = assignedTypes.iterator();
+           while (j.hasNext()) {
+               String typeName = (String)j.next();
+               resTypes.put(typeName, new String[] {"" + ranking, mapTo});   
+           }
+       }
+        
+        
         setResourceTypes(resTypes);
         
         // create the list of user agents & compiled patterns for editor

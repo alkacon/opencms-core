@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerContextMenuItem.java,v $
- * Date   : $Date: 2004/08/19 11:26:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/10/22 10:03:42 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ package org.opencms.workplace.explorer;
  * An item can be a context menu entry or a separator line.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.3.3
  */
@@ -76,6 +76,14 @@ public class CmsExplorerContextMenuItem implements Comparable {
         m_order = order;
         m_target = target;
         m_isXml = isXml;
+    }
+    
+    
+    /**
+     * @see java.lang.Object#clone()
+     */
+    public Object clone() {
+        return new CmsExplorerContextMenuItem(m_type, m_key, m_uri, m_rules, m_target, m_order, m_isXml);
     }
     
     /**
