@@ -130,7 +130,7 @@ start();
 
 <contextmenue name="backofficeedit"> 
 	<contextentry name="button.edit" href="javascript:location.href=editUrl+'?idedit='+kontextparam;"/>
-	<contextentry name="explorer.context.delete" href="javascript:location.href=editUrl+'?iddelete='+kontextparam;"/>
+	<contextentry name="explorer.context.delete" href="javascript:location.href=backofficeUrl+'?iddelete='+kontextparam;"/>
 </contextmenue>
 
 <contextmenue name="backofficelock"> 
