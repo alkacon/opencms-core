@@ -96,7 +96,9 @@ function continueReport() {
 		parent.initButtons();
 	}
 	parent.disableButtons("buttonrowok");
-	parent.displayButtonRowOk();	
+	parent.displayButtonRowOk();
+	parent.hasError = false;
+	parent.lastError = "";		
 	setTimeout("reload('<%= wp.REPORT_END %>');", <%= wp.REPORT_UPDATE_TIME %>);
 	if (parent.document.main.<%= wp.PARAM_THREAD_HASNEXT %>) {
 		parent.document.main.<%= wp.PARAM_THREAD_HASNEXT %>.value = "false";
