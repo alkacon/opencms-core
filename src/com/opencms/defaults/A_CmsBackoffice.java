@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2001/11/05 11:11:33 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2001/11/06 08:06:36 $
+* Version: $Revision: 1.32 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -2735,8 +2735,6 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
       Hashtable setMethods=this.getSetMethods(cd);
       //set all data from the parameters into the CD
       this.fillContentDefinition(cms,cd,parameters,setMethods);
-      //now set all the data from the CD into the template
-      this.setDatablocks(template,cd,methods);
 
       // store the modified CD in the session
       session.putValue(this.getContentDefinitionClass().getName(),cd);
@@ -2749,8 +2747,12 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
       }
 
       // now check if one of the exit buttons is used
-      returnProcess = getContentButtonsInternal(cms,cd,session,template,parameters,templateSelector,
-                                                action,error);
+      templateSelector = getContentButtonsInternal(cms,cd,session,template,parameters,templateSelector, action,error);
+
+      //now set all the data from the CD into the template
+      this.setDatablocks(template,cd,methods);
+
+      returnProcess = startProcessing(cms,template,"",parameters,templateSelector);
     }
 
     //finally retrun processed data
@@ -2815,8 +2817,6 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
 
       //set all data from the parameters into the CD
       this.fillContentDefinition(cms,cd,parameters,setMethods);
-      //now set all the data from the CD into the template
-      this.setDatablocks(template,cd,getMethods);
 
       // store the modified CD in the session
       session.putValue(this.getContentDefinitionClass().getName(),cd);
@@ -2840,10 +2840,16 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
       }
 
       // now check if one of the exit buttons is used
-      returnProcess = getContentButtonsInternal(cms,cd,session,template,parameters,templateSelector,
-                                                action,error);
+      templateSelector = getContentButtonsInternal(cms,cd,session,template,parameters,templateSelector, action,error);
 
+      //now set all the data from the CD into the template
+      this.setDatablocks(template,cd,getMethods);
+
+      returnProcess = startProcessing(cms,template,"",parameters,templateSelector);
     }
+
+
+
     //finally return processed data
     return returnProcess;
   }
@@ -2861,9 +2867,9 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
    *  @param template The template file.
    *  @param parameters All parameters of this request.
    *  @param templateSelector The template selector.
-   *  @returns Content of the template, as an array of bytes or null if a rediect has happend.
+   *  @returns The template selector.
    */
- private byte[] getContentButtonsInternal(CmsObject cms,A_CmsContentDefinition cd,
+ private String getContentButtonsInternal(CmsObject cms,A_CmsContentDefinition cd,
                                           I_CmsSession session, CmsXmlWpTemplateFile template,
                                           Hashtable parameters, String templateSelector,
                                           String action, String error) throws CmsException{
@@ -3011,7 +3017,7 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
       } // if (exit || saveexit)
     } // noerror
   } // if (action!=null)
-  return startProcessing(cms,template,"",parameters,templateSelector);
+  return templateSelector;
  }
 
 

@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
- * Author : $Author: e.falkenhan $
- * Date   : $Date: 2001/11/05 16:46:13 $
- * Version: $Revision: 1.3 $
+ * Author : $Author: a.schouten $
+ * Date   : $Date: 2001/11/06 08:06:36 $
+ * Version: $Revision: 1.4 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Framfab Deutschland ag.   All Rights Reserved.
@@ -39,8 +39,8 @@ import com.opencms.template.*;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.3 $
- * $Date: 2001/11/05 16:46:13 $
+ * $Revision: 1.4 $
+ * $Date: 2001/11/06 08:06:36 $
  */
 public abstract class CmsMasterContent
     extends A_CmsContentDefinition
@@ -234,10 +234,12 @@ public abstract class CmsMasterContent
         } else {
             // this is a existing row - call the write statement
             if(m_lockstateWasChanged) {
-                // first update the locksyte
+                // update the locksyte
                 getDbAccessObject(getSubId()).writeLockstate(m_cms, this, m_dataSet);
+            } else {
+                // write the changes to the database
+                getDbAccessObject(getSubId()).write(m_cms, this, m_dataSet);
             }
-            getDbAccessObject(getSubId()).write(m_cms, this, m_dataSet);
         }
         // everything is written - so lockstate was updated
         m_lockstateWasChanged = false;
