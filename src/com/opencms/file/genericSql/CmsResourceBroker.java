@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2001/09/03 11:42:23 $
-* Version: $Revision: 1.268 $
+* Date   : $Date: 2001/09/04 07:29:06 $
+* Version: $Revision: 1.269 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.268 $ $Date: 2001/09/03 11:42:23 $
+ * @version $Revision: 1.269 $ $Date: 2001/09/04 07:29:06 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1492,11 +1492,19 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
             // try to read the resource from the offline project, include deleted
             CmsResource offlineRes = null;
             try{
-                if(resource.endsWith("/")){
-                    m_resourceCache.remove(resource);
-                } else {
-                    m_resourceCache.remove(resource);
+                m_resourceCache.remove(resource);
+                Vector subFiles = getFilesInFolder(currentUser, currentProject, resource, true);
+                Vector subFolders = getSubFolders(currentUser, currentProject, resource, true);
+                for(int i=0; i<subFolders.size(); i++){
+                    String foldername = ((CmsResource)subFolders.elementAt(i)).getAbsolutePath();
+                    m_resourceCache.remove(foldername);
                 }
+                for(int i=0; i<subFiles.size(); i++){
+                    String filename = ((CmsResource)subFiles.elementAt(i)).getAbsolutePath();
+                    m_resourceCache.remove(filename);
+                }
+                m_subresCache.clear();
+                m_accessCache.clear();
                 offlineRes = readFileHeader(currentUser, currentProject, currentProject.getId(),resource);
             } catch (CmsException exc){
                 // if the resource does not exist in the offlineProject - it's ok
@@ -3931,7 +3939,6 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
 
         // Can't lock what isn't there
         if (cmsResource == null) throw new CmsException(CmsException.C_NOT_FOUND);
-
         // check, if the resource is in the offline-project
         if(cmsResource.getProjectId() != currentProject.getId()) {
             // the resource is not in the current project and can't be locked - so ignore.
