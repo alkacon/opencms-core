@@ -169,24 +169,8 @@
 									<tr>
 										<td>Connection String</td><td colspan="2"><input type="text" name="dbCreateConStr" size="22" style="width:250px;" value='<%= Bean.getDbCreateConStr() %>'></td>
 									</tr>
-									<%
-									
-									/* Get database name.if name is not set, take the context path as default */
-									
-									String database = "";
-									if(Bean.getDb() != null)	{
-										database = Bean.getDb();
-									}
-									else	{
-										database = request.getContextPath();
-									}
-									/* cut off leading slash ('/') */
-									if(database.startsWith("/"))	{
-										database = database.substring(1,database.length());
-									}
-									%>
 									<tr>
-										<td>Database</td><td colspan="2"><input type="text" name="db" size="22" style="width:250px;" value='<%= database %>'></td>
+										<td>Database</td><td colspan="2"><input type="text" name="db" size="22" style="width:250px;" value='<%= Bean.getDb() %>'></td>
 									</tr>
 									<tr><td colspan="3"><hr></td></tr>
 									<tr><td colspan="3" align="center"><input type="checkbox" name="createDb" value="true" checked> Create database and tables<br>

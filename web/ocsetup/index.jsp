@@ -9,14 +9,20 @@ String nextPage = "content_encoding.jsp";
 /* Initialize the Bean */ %>
 <jsp:useBean id="Bean" class="com.opencms.boot.CmsSetup" scope="session" />
 <%
-try { 
-
-/* Set the base path to the opencms home folder */
-%>
-<jsp:setProperty name="Bean" property="basePath" value='<%= config.getServletContext().getRealPath("/") %>' />
-<%		
+try { 	
+	/* set the base path to the opencms home folder */
+	Bean.setBasePath(config.getServletContext().getRealPath("/"));
+		
 	/* Initialize the properties */
 	Bean.initProperties("opencms.properties");
+	
+	/* Initialize the name of the database */
+	String appName = request.getContextPath().replaceAll("\\W","");
+	if (appName != null && appName.length() > 0) {
+		
+		Bean.setDb(appName);
+		Bean.setDbWorkUser(appName);
+	}
 	
 	/* check wizards accessability */
 	wizardEnabled = Bean.getWizardEnabled();
@@ -26,8 +32,6 @@ try {
 	}
 	
 	isInitialized = true;
-%>
-<% 
 } catch (Exception e) {
 	// the servlet container did not unpack the war, so lets display an error message
 }

@@ -58,7 +58,7 @@
 					db.clearErrors();
 				}
 			}
-			if(!dbExists || dropDb)	{
+			if( !dbExists || dropDb)	{
 				db.setConnection(Bean.getDbDriver(), Bean.getDbCreateConStr(), Bean.getDbCreateUser(), Bean.getDbCreatePwd());
 			}
 			else {

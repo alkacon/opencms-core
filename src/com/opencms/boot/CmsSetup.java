@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetup.java,v $
-* Date   : $Date: 2003/06/13 10:04:21 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2003/07/02 15:12:07 $
+* Version: $Revision: 1.34 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -879,11 +879,11 @@ public class CmsSetup {
 	public String getDbCreateConStr() {
 		String constr = null;
         
-        constr = this.getDbWorkConStr();
+        // constr = this.getDbWorkConStr();
         
-		if (constr == null || "".equals(constr)) {
+		//if (constr == null || "".equals(constr)) {
 			constr = this.getDbProperty(m_database + ".constr");
-		}
+		//}
         
 		return constr;
 	}

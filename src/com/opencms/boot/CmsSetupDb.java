@@ -13,22 +13,36 @@ import java.util.Vector;
 
 /**
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $ $Date: 2003/06/13 10:04:21 $
+ * @version $Revision: 1.5 $ $Date: 2003/07/02 15:12:07 $
  */
 public class CmsSetupDb extends Object {
 
-    private Connection m_con;
-    private Vector m_errors;
-    private String m_basePath;
+	static String C_OCSETUP_FOLDER = "WEB-INF/ocsetup/";
+	
+    private Connection m_con = null;
+    private Vector m_errors = null;
+    private String m_basePath = null;
     private boolean m_errorLogging = true;
-    private final String C_OCSETUP_FOLDER = "WEB-INF/ocsetup/";
 
-    public CmsSetupDb(String basePath) {
+    /**
+     * Creates a new CmsSetupDb object.<p>
+     * 
+	 * @param basePath the location of the setup scripts
+	 */
+	public CmsSetupDb(String basePath) {
         m_errors = new Vector();
         m_basePath = basePath;
     }
 
-    public void setConnection(String DbDriver, String DbConStr, String DbUser, String DbPwd) {
+    /**
+     * Creates a new internal connection to the database.<p>
+     * 
+	 * @param DbDriver	the name of the driver class
+	 * @param DbConStr	the databse url
+	 * @param DbUser	the database user
+	 * @param DbPwd		the password of the database user
+	 */
+	public void setConnection(String DbDriver, String DbConStr, String DbUser, String DbPwd) {
         try {
             Class.forName(DbDriver);
             m_con = DriverManager.getConnection(DbConStr, DbUser, DbPwd);
@@ -39,53 +53,84 @@ public class CmsSetupDb extends Object {
         }
     }
 
-    public void closeConnection() {
+    /**
+	 * Closes the internal connection to the database.<p>
+	 */
+	public void closeConnection() {
         try {
             m_con.close();
         } catch (Exception e) {}
     }
 
-    public void dropDatabase(String resourceBroker, Hashtable replacer) {
-        String file = getScript(resourceBroker + ".dropdb");
+    /**
+     * Calls the drop script for the given database.
+     * 
+	 * @param database the name of the database
+	 * @param replacer the replacements to perform in the drop script
+	 */
+	public void dropDatabase(String database, Hashtable replacer) {
+        String file = getScript(database + ".dropdb");
         if (file != null) {
             m_errorLogging = true;
             parseScript(file, replacer);
         } else {
-            m_errors.addElement("Could not open database drop script: " + resourceBroker + ".dropdb");
+            m_errors.addElement("Could not open database drop script: " + database + ".dropdb");
         }
     }
 
-    public void createDatabase(String resourceBroker, Hashtable replacer) {
-        String file = getScript(resourceBroker + ".createdb");
+    /**
+     * Calls the create database script for the given database.<p>
+     * 
+	 * @param database	the name of the database
+	 * @param replacer	the replacements to perform in the drop script
+	 */
+	public void createDatabase(String database, Hashtable replacer) {
+        String file = getScript(database + ".createdb");
         if (file != null) {
             m_errorLogging = true;
             parseScript(file, replacer);
         } else {
-            m_errors.addElement("No create database script found: " + resourceBroker + ".createdb \n");
+            m_errors.addElement("No create database script found: " + database + ".createdb \n");
         }
     }
 
-    public void createTables(String resourceBroker) {
-        String file = getScript(resourceBroker + ".createtables");
+    /**
+     * Calls the create tables script for the given database.<p>
+     * 
+	 * @param database the name of the database
+	 */
+	public void createTables(String database) {
+        String file = getScript(database + ".createtables");
         if (file != null) {
             m_errorLogging = true;
             parseScript(file, null);
         } else {
-            m_errors.addElement("No create tables script found: " + resourceBroker + ".createtables \n");
+            m_errors.addElement("No create tables script found: " + database + ".createtables \n");
         }
     }
 
-    public void dropTables(String resourceBroker) {
-        String file = getScript(resourceBroker + ".droptables");
+    /**
+     * Calls the drop tables script for the given database.<p>
+     * 
+	 * @param database the name of the database
+	 */
+	public void dropTables(String database) {
+        String file = getScript(database + ".droptables");
         if (file != null) {
             m_errorLogging = true;
             parseScript(file, null);
         } else {
-            m_errors.addElement("No drop tables script found: " + resourceBroker + ".droptables \n");
+            m_errors.addElement("No drop tables script found: " + database + ".droptables \n");
         }
     }
 
-    private void parseScript(String file, Hashtable replacers) {
+    /**
+     * Internal method to parse and execute a setup script.<p>
+     * 
+	 * @param file		the filename of the setup script
+	 * @param replacers	the replacements to perform in the script
+	 */
+	private void parseScript(String file, Hashtable replacers) {
 
         /* indicates if the setup script contains included files (oracle) */
         boolean includedFile = false;
@@ -140,9 +185,8 @@ public class CmsSetupDb extends Object {
                             }
                             //reset
                             includedFile = false;
-                        }
-                        /* normal statement. Execute it */
-                        else {
+                        } else {
+							/* normal statement. Execute it */
                             if (replacers != null) {
                                 ExecuteStatement(replaceValues(statement, replacers));
                             } else {
@@ -158,12 +202,19 @@ public class CmsSetupDb extends Object {
             reader.close();
         } catch (Exception e) {
             if (m_errorLogging) {
-                m_errors.addElement( "error: " + e.toString() + "\nin statement:\n" + statement);
+                m_errors.addElement("error: " + e.toString() + "\nin statement:\n" + statement);
             }
         }
     }
 
-    private String replaceValues(String source, Hashtable replacers) {
+    /**
+     * Internal method to perform replacements within a single line of script code.<p>
+     * 
+	 * @param source	the line of script code
+	 * @param replacers	the replacements to perform in the line
+	 * @return 			the script line with replaced values
+	 */
+	private String replaceValues(String source, Hashtable replacers) {
         StringTokenizer tokenizer = new StringTokenizer(source);
         String temp = "";
 
@@ -186,7 +237,13 @@ public class CmsSetupDb extends Object {
         return temp;
     }
 
-    private String getScript(String key) {
+    /**
+     * Returns the filename of a script from dbsetup.properties.<p> 
+     * 
+	 * @param key	the key to identify the script
+	 * @return		the filename of the script
+	 */
+	private String getScript(String key) {
         /* open properties, get the value */
         try {
             Properties properties = new Properties();
@@ -201,7 +258,13 @@ public class CmsSetupDb extends Object {
         }
     }
 
-    private String getIncludedFile(String statement) {
+    /**
+     * Returns an included file as a String.<p>
+     * 
+	 * @param statement	the filename from the include statement  
+	 * @return the contents of the file as String
+	 */
+	private String getIncludedFile(String statement) {
         String file;
         statement = statement.trim();
 
@@ -240,7 +303,12 @@ public class CmsSetupDb extends Object {
         }
     }
 
-    private void ExecuteStatement(String statement) {
+    /**
+     * Creates and executes a database statment from a String.<p>
+     * 
+	 * @param statement the database statement
+	 */
+	private void ExecuteStatement(String statement) {
         Statement stat;
         try {
             stat = m_con.createStatement();
@@ -248,23 +316,40 @@ public class CmsSetupDb extends Object {
             stat.close();
         } catch (Exception e) {
             if (m_errorLogging) {
-                m_errors.addElement( "error: " + e.toString() + "\nin statement:\n" + statement);
+                m_errors.addElement("error: " + e.toString() + "\nin statement:\n" + statement);
             }
         }
     }
 
-    public Vector getErrors() {
+    /**
+     * Returns a Vector of Error messages.<p>
+     * 
+	 * @return all error messages collected internally
+	 */
+	public Vector getErrors() {
         return m_errors;
     }
-    public void clearErrors() {
+    
+    /**
+	 * Clears the error messages stored internally.<p>
+	 */
+	public void clearErrors() {
         m_errors.clear();
     }
 
-    public boolean noErrors() {
+    /**
+     * Checks if internal errors occured.<p>
+     * 
+	 * @return true if internal errors occured
+	 */
+	public boolean noErrors() {
         return m_errors.isEmpty();
     }
 
-    protected void finalize() {
+    /**
+	 * @see java.lang.Object#finalize()
+	 */
+	protected void finalize() {
         try {
             m_con.close();
         } catch (SQLException e) {}
