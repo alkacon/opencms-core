@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsProperty.java,v $
- * Date   : $Date: 2004/03/18 16:13:59 $
- * Version: $Revision: 1.40 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPropertyAdvanced.java,v $
+ * Date   : $Date: 2004/04/01 10:19:08 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,15 +57,15 @@ import javax.servlet.jsp.PageContext;
  * 
  * The following files use this class:
  * <ul>
- * <li>/jsp/dialogs/property_standard_html
+ * <li>/jsp/dialogs/property_advanced_html
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.1 $
  * 
  * @since 5.1
  */
-public class CmsProperty extends CmsDialog implements I_CmsDialogHandler {
+public class CmsPropertyAdvanced extends CmsDialog implements I_CmsDialogHandler {
     
     /** The dialog type */
     public static final String DIALOG_TYPE = "property";
@@ -116,7 +116,7 @@ public class CmsProperty extends CmsDialog implements I_CmsDialogHandler {
     public static final String PARAM_NEWPROPERTY = "newproperty";   
     
     /** The URI to the standard property dialog */
-    public static final String URI_PROPERTY_DIALOG = C_PATH_DIALOGS + "property_standard.html";
+    public static final String URI_PROPERTY_DIALOG = C_PATH_DIALOGS + "property_advanced.html";
     /** The URI to the customized property dialog */
     public static final String URI_PROPERTY_CUSTOM_DIALOG = C_PATH_DIALOGS + "property_custom.html"; 
 
@@ -131,7 +131,7 @@ public class CmsProperty extends CmsDialog implements I_CmsDialogHandler {
     /**
      * Default constructor needed for dialog handler implementation.<p>
      */
-    public CmsProperty() {
+    public CmsPropertyAdvanced() {
         super(null);
     }
     
@@ -140,7 +140,7 @@ public class CmsProperty extends CmsDialog implements I_CmsDialogHandler {
      * 
      * @param jsp an initialized JSP action element
      */
-    public CmsProperty(CmsJspActionElement jsp) {
+    public CmsPropertyAdvanced(CmsJspActionElement jsp) {
         super(jsp);
     }
     
@@ -151,7 +151,7 @@ public class CmsProperty extends CmsDialog implements I_CmsDialogHandler {
      * @param req the JSP request
      * @param res the JSP response
      */
-    public CmsProperty(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public CmsPropertyAdvanced(PageContext context, HttpServletRequest req, HttpServletResponse res) {
         this(new CmsJspActionElement(context, req, res));
     }
     

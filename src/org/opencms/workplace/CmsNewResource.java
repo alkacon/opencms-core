@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsNewResource.java,v $
- * Date   : $Date: 2004/03/31 14:06:50 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/04/01 10:19:08 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.3.3
  */
@@ -221,7 +221,7 @@ public class CmsNewResource extends CmsDialog {
         if (editProps) {
             // edit properties checkbox checked, redirect to property dialog
             String params = "?" + PARAM_RESOURCE + "=" + CmsEncoder.encode(getParamResource());
-            params += "&" + CmsProperty.PARAM_DIALOGMODE + "=" + CmsProperty.MODE_WIZARD; 
+            params += "&" + CmsPropertyAdvanced.PARAM_DIALOGMODE + "=" + CmsPropertyAdvanced.MODE_WIZARD; 
             sendCmsRedirect(CmsWorkplace.C_PATH_DIALOGS + "property.html" + params);
         } else {
             // edit properties not checked, close the dialog

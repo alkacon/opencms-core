@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPropertyCustom.java,v $
- * Date   : $Date: 2004/03/31 14:06:50 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/04/01 10:19:08 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,11 +56,11 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.3.3
  */
-public class CmsPropertyCustom extends CmsProperty {
+public class CmsPropertyCustom extends CmsPropertyAdvanced {
     
     /** Value for the action: edit the properties */
     public static final int ACTION_EDIT = 500;
@@ -103,8 +103,13 @@ public class CmsPropertyCustom extends CmsProperty {
                 performEditOperation(request);    
             }    
         } catch (CmsException e) {
-            // error defining property, show error dialog
+            // Cms error defining property, show error dialog
             setParamErrorstack(e.getStackTraceAsString());
+            setParamReasonSuggestion(getErrorSuggestionDefault());
+            getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
+        } catch (Exception e) {
+            // other error defining property, show error dialog
+            setParamErrorstack(e.getStackTrace().toString());
             setParamReasonSuggestion(getErrorSuggestionDefault());
             getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
         } 
@@ -368,7 +373,7 @@ public class CmsPropertyCustom extends CmsProperty {
             setAction(ACTION_DEFAULT);
             try {
                 actionEdit(request);
-                sendCmsRedirect(CmsProperty.URI_PROPERTY_DIALOG + "?" + paramsAsRequest());
+                sendCmsRedirect(CmsPropertyAdvanced.URI_PROPERTY_DIALOG + "?" + paramsAsRequest());
             } catch (Exception e) {
                 // ignore this exception
             }          
@@ -475,6 +480,9 @@ public class CmsPropertyCustom extends CmsProperty {
             if (activeProperties.containsKey(propName)) {
                 // lock resource if autolock is enabled
                 checkLock(getParamResource());
+                
+                //getCms().writePropertyObject(getParamResource(), curProperty);
+                
                 getCms().deleteProperty(getParamResource(), propName);
             }
         } else {

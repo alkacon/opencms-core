@@ -6166,6 +6166,36 @@
 	    <accesscontrol/>
 	</file>
 	<file>
+	    <source>system/workplace/jsp/dialogs/property_advanced.html</source>
+	    <destination>system/workplace/jsp/dialogs/property_advanced.html</destination>
+	    <type>jsp</type>
+	    <uuidresource>315df874-d180-11d7-906b-cde257eddd82</uuidresource>
+	    <uuidcontent>315df875-d180-11d7-906b-cde257eddd82</uuidcontent>
+	    <datelastmodified>1061213454000</datelastmodified>
+	    <userlastmodified>Admin</userlastmodified>
+	    <datecreated>1061213454000</datecreated>
+	    <usercreated>Admin</usercreated>
+	    <flags>0</flags>
+	    <properties>
+	        <property>
+	            <name>export</name>
+	            <type>8</type>
+	            <value><![CDATA[false]]></value>
+	        </property>
+	        <property>
+	            <name>content-encoding</name>
+	            <type>8</type>
+	            <value><![CDATA[ISO-8859-1]]></value>
+	        </property>
+	        <property>
+	            <name>Title</name>
+	            <type>8</type>
+	            <value><![CDATA[Dialog - Advanced properties]]></value>
+	        </property>
+	    </properties>
+	    <accesscontrol/>
+	</file>
+	<file>
 		<source>system/workplace/jsp/dialogs/property_custom.html</source>
 		<destination>system/workplace/jsp/dialogs/property_custom.html</destination>
 		<type>jsp</type>
@@ -6191,36 +6221,6 @@
 			</property>
 		</properties>
 		<accesscontrol/>
-	</file>
-	<file>
-	    <source>system/workplace/jsp/dialogs/property_standard.html</source>
-	    <destination>system/workplace/jsp/dialogs/property_standard.html</destination>
-	    <type>jsp</type>
-	    <uuidresource>315df874-d180-11d7-906b-cde257eddd82</uuidresource>
-	    <uuidcontent>315df875-d180-11d7-906b-cde257eddd82</uuidcontent>
-	    <datelastmodified>1061213454000</datelastmodified>
-	    <userlastmodified>Admin</userlastmodified>
-	    <datecreated>1061213454000</datecreated>
-	    <usercreated>Admin</usercreated>
-	    <flags>0</flags>
-	    <properties>
-	        <property>
-	            <name>export</name>
-	            <type>8</type>
-	            <value><![CDATA[false]]></value>
-	        </property>
-	        <property>
-	            <name>content-encoding</name>
-	            <type>8</type>
-	            <value><![CDATA[ISO-8859-1]]></value>
-	        </property>
-	        <property>
-	            <name>Title</name>
-	            <type>8</type>
-	            <value><![CDATA[Dialog - Properties]]></value>
-	        </property>
-	    </properties>
-	    <accesscontrol/>
 	</file>
 	<file>
 		<source>system/workplace/jsp/dialogs/publishresource.html</source>

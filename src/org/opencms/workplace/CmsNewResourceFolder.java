@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsNewResourceFolder.java,v $
- * Date   : $Date: 2004/03/18 16:13:59 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/04/01 10:19:08 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.3.3
  */
@@ -124,10 +124,10 @@ public class CmsNewResourceFolder extends CmsNewResource {
             String params = "?" + PARAM_RESOURCE + "=" + CmsEncoder.encode(getParamResource());
             if (createIndex) {
                 // set dialogmode to wizard - create index page to indicate the creation of the index page
-                params += "&" + CmsProperty.PARAM_DIALOGMODE + "=" + CmsProperty.MODE_WIZARD_CREATEINDEX;
+                params += "&" + CmsPropertyAdvanced.PARAM_DIALOGMODE + "=" + CmsPropertyAdvanced.MODE_WIZARD_CREATEINDEX;
             } else {
                 // set dialogmode to wizard
-                params += "&" + CmsProperty.PARAM_DIALOGMODE + "=" + CmsProperty.MODE_WIZARD;
+                params += "&" + CmsPropertyAdvanced.PARAM_DIALOGMODE + "=" + CmsPropertyAdvanced.MODE_WIZARD;
             }
             if (editProps) {
                 // edit properties of folder, redirect to property dialog

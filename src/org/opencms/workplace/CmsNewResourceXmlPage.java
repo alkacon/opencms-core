@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsNewResourceXmlPage.java,v $
- * Date   : $Date: 2004/03/19 16:36:01 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/04/01 10:19:08 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.3.3
  */
@@ -130,7 +130,7 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
      * @throws JspException if including an element fails
      */
     public void actionCloseDialog() throws JspException {     
-        if (CmsProperty.MODE_WIZARD_CREATEINDEX.equals(getParamDialogmode())) {
+        if (CmsPropertyAdvanced.MODE_WIZARD_CREATEINDEX.equals(getParamDialogmode())) {
             // set the current explorer resource to the new created folder
             String updateFolder = CmsResource.getParentFolder(getSettings().getExplorerResource());
             getSettings().setExplorerResource(updateFolder);
@@ -196,10 +196,10 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
         if (editProps) {
             // edit properties checkbox checked, redirect to property dialog
             String params = "?" + PARAM_RESOURCE + "=" + CmsEncoder.encode(getParamResource());
-            if (CmsProperty.MODE_WIZARD_CREATEINDEX.equals(getParamDialogmode())) {
-                params += "&" + CmsProperty.PARAM_DIALOGMODE + "=" + CmsProperty.MODE_WIZARD_INDEXCREATED; 
+            if (CmsPropertyAdvanced.MODE_WIZARD_CREATEINDEX.equals(getParamDialogmode())) {
+                params += "&" + CmsPropertyAdvanced.PARAM_DIALOGMODE + "=" + CmsPropertyAdvanced.MODE_WIZARD_INDEXCREATED; 
             } else {
-                params += "&" + CmsProperty.PARAM_DIALOGMODE + "=" + CmsProperty.MODE_WIZARD; 
+                params += "&" + CmsPropertyAdvanced.PARAM_DIALOGMODE + "=" + CmsPropertyAdvanced.MODE_WIZARD; 
             }
             
             sendCmsRedirect(CmsWorkplace.C_PATH_DIALOGS + "property.html" + params);

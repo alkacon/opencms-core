@@ -1,19 +1,19 @@
 <%@ page import="org.opencms.workplace.*" buffer="none" %><%	
 
 	// initialize the workplace class
-	CmsProperty wp = new CmsProperty(pageContext, request, response);
+	CmsPropertyAdvanced wp = new CmsPropertyAdvanced(pageContext, request, response);
 	
 //////////////////// start of switch statement 
 	
 switch (wp.getAction()) {
 
-case CmsProperty.ACTION_CLOSEPOPUP_SAVE:
+case CmsPropertyAdvanced.ACTION_CLOSEPOPUP_SAVE:
 //////////////////// ACTION: save edited properties for the current resource type and close the popup window
 
 	wp.actionEdit(request);
 
 
-case CmsProperty.ACTION_CLOSEPOPUP:
+case CmsPropertyAdvanced.ACTION_CLOSEPOPUP:
 //////////////////// ACTION: close the popup window
 %>
 	
@@ -27,7 +27,7 @@ case CmsProperty.ACTION_CLOSEPOPUP:
 break;
 
 
-case CmsProperty.ACTION_CANCEL:
+case CmsPropertyAdvanced.ACTION_CANCEL:
 //////////////////// ACTION: cancel button pressed
 
 	wp.actionDeleteResource();
@@ -36,7 +36,7 @@ case CmsProperty.ACTION_CANCEL:
 break;
 
 
-case CmsProperty.ACTION_SAVE_EDIT:
+case CmsPropertyAdvanced.ACTION_SAVE_EDIT:
 //////////////////// ACTION: save edited properties for the current resource type and close dialog
 
 	wp.actionEdit(request);
@@ -45,7 +45,7 @@ case CmsProperty.ACTION_SAVE_EDIT:
 break;
 
 
-case CmsProperty.ACTION_SAVE_DEFINE:
+case CmsPropertyAdvanced.ACTION_SAVE_DEFINE:
 //////////////////// ACTION: save new property definition for the current resource type
 	
 	wp.actionDefine();
@@ -53,7 +53,7 @@ case CmsProperty.ACTION_SAVE_DEFINE:
 break;
 
 
-case CmsProperty.ACTION_SHOW_DEFINE:
+case CmsPropertyAdvanced.ACTION_SHOW_DEFINE:
 //////////////////// ACTION: show define properties window, but first save changed property values
 	
 	wp.actionEdit(request);
@@ -107,8 +107,8 @@ function checkName() {
 break;
 
 
-case CmsProperty.ACTION_DEFAULT:
-case CmsProperty.ACTION_SHOW_EDIT:
+case CmsPropertyAdvanced.ACTION_DEFAULT:
+case CmsPropertyAdvanced.ACTION_SHOW_EDIT:
 default:
 //////////////////// ACTION: show edit properties window (default)
 
