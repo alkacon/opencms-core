@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChacc.java,v $
- * Date   : $Date: 2003/07/02 09:22:10 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/07/02 09:34:53 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.opencms.security.I_CmsPrincipal;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.1
  */
@@ -170,7 +170,7 @@ public class CmsChacc extends CmsDialog {
      * @param request the http request
      * @return true if the ace was successfully removed, otherwise false
      */
-    private boolean removeAce(HttpServletRequest request) {
+    private boolean actionRemoveAce(HttpServletRequest request) {
         String file = getSettings().getFileUri();
         String name = (String)request.getParameter("name");
         String type = (String)request.getParameter("type");
@@ -189,7 +189,7 @@ public class CmsChacc extends CmsDialog {
      * @param request the http request
      * @return true if a new ace was created, otherwise false
      */
-    private boolean addNewAce(HttpServletRequest request) {
+    private boolean actionAddAce(HttpServletRequest request) {
         String file = getSettings().getFileUri();
         String name = (String)request.getParameter("name");
         String type = (String)request.getParameter("type");
@@ -240,7 +240,7 @@ public class CmsChacc extends CmsDialog {
      * @param request the Http servlet request
      * @return true if the modification worked, otherwise false 
      */
-    private boolean modifyAce(HttpServletRequest request) {      
+    private boolean actionModifyAce(HttpServletRequest request) {      
         String file = getSettings().getFileUri();  
         
         // get request parameters
@@ -539,7 +539,7 @@ public class CmsChacc extends CmsDialog {
                 retValue.append(buildPermissionEntryForm(curEntry, false, false, true, getConnectedResource(curEntry)));
             }
         } else {
-            // show the short view
+            // show the short view, use an ACL to build the list
             try {
                 // get the inherited ACL of the parent folder 
                 String parentUri = com.opencms.file.CmsResource.getParent(getSettings().getFileUri());
@@ -559,12 +559,12 @@ public class CmsChacc extends CmsDialog {
     }
     
     /**
-     * Builds a StringBuffer with HTML code for the own access control entries of a resource.<p>
+     * Builds a StringBuffer with HTML code for the access control entries of a resource.<p>
      * 
      * @param entries all access control entries for the resource
      * @return StringBuffer with HTML code for all entries
      */
-    private StringBuffer buildOwnList(ArrayList entries) {
+    private StringBuffer buildResourceList(ArrayList entries) {
         StringBuffer retValue = new StringBuffer(1024);
         Iterator i = entries.iterator();
         boolean entriesPresent = false;
@@ -658,7 +658,7 @@ public class CmsChacc extends CmsDialog {
         retValue.append(dialogWhiteBox(HTML_END));
 
         // create the resource entries box
-        retValue.append(buildOwnList(ownEntries));
+        retValue.append(buildResourceList(ownEntries));
         
         return retValue.toString();
     }
@@ -736,13 +736,13 @@ public class CmsChacc extends CmsDialog {
             return true;
         }
         if ("set".equals(action)) {
-            return modifyAce(request);
+            return actionModifyAce(request);
         }
         if ("delete".equals(action)) {
-            return removeAce(request);
+            return actionRemoveAce(request);
         }
         if ("addACE".equals(action)) {
-            return addNewAce(request);
+            return actionAddAce(request);
         }
         return true;
     }
@@ -808,7 +808,7 @@ public class CmsChacc extends CmsDialog {
      */
     public String getErrorMessagesString() {
         StringBuffer errors = new StringBuffer("");
-        Iterator i = m_errorMessages.iterator();
+        Iterator i = getErrorMessages().iterator();
         while (i.hasNext()) {
             errors.append((String)i.next());
             if (i.hasNext()) {
@@ -913,7 +913,7 @@ public class CmsChacc extends CmsDialog {
      * 
      * @return the users permission set
      */
-    public CmsPermissionSet getCurPermissions() {
+    protected CmsPermissionSet getCurPermissions() {
         return m_curPermissions;
     }
     
