@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatabase.java,v $
-* Date   : $Date: 2003/09/25 14:38:59 $
-* Version: $Revision: 1.47 $
+* Date   : $Date: 2003/10/06 10:02:46 $
+* Version: $Revision: 1.48 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,6 @@ import com.opencms.util.Utils;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.OutputStream;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -53,7 +52,7 @@ import java.util.Vector;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Schouten
- * @version $Revision: 1.47 $ 
+ * @version $Revision: 1.48 $ 
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminDatabase extends CmsWorkplaceDefault {
@@ -347,19 +346,23 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault {
             folder.mkdirs();
         }
         // get a list of all files
-        String[] list = folder.list(new FilenameFilter() {
-            public boolean accept(File dir, String fileName) {
-                return (fileName.endsWith(".zip"));
-            }
-        });
+        String[] list = folder.list();        
         for (int i = 0; i < list.length; i++) {
-            File diskFile = new File(exportpath, list[i]);
-
-            // check if it is a file
-            if (diskFile.isFile()) {
-                values.addElement(list[i]);
-                names.addElement(list[i]);
-            }
+            try {
+                File diskFile = new File(exportpath, list[i]);
+                // check if it is a file
+                if (diskFile.isFile() && diskFile.getName().endsWith(".zip")) {
+                    values.addElement(list[i]);
+                    names.addElement(list[i]);
+                } else if (diskFile.isDirectory() 
+                    && !diskFile.getName().equalsIgnoreCase("modules") 
+                    && ((new File(diskFile + File.separator + "manifest.xml")).exists())) {
+                        values.addElement(list[i] + "/");
+                        names.addElement(list[i]);
+                }
+            } catch (Throwable t) {
+                // ignore and continue
+            }         
         }
         return new Integer(0);
     }
