@@ -54,24 +54,40 @@ wp.setParamAction("secure");
 <script type="text/javascript">
 
   // validate that the export/secure and internal property are  not checked at the same time
+  // account for the fact that some inputs might not exist
   function checkNoIntern() {
-    if((document.secure.elements['secure'][0].checked || document.secure.elements['export'][0].checked) 
-                                                      && document.secure.elements['intern'].checked) {
+    checkedExportOrSecure = false;
+    if (document.secure.elements['secure'] !=null && document.secure.elements['secure'][0].checked) {
+      checkedExportOrSecure = true;
+    }
+    if (document.secure.elements['export'] !=null && document.secure.elements['export'][0].checked) {
+      checkedExportOrSecure = true;
+    }
+    if (document.secure.elements['intern'] != null && document.secure.elements['intern'].checked && checkedExportOrSecure) {
       alert('<%= wp.key("error.message.secure.notintern") %>');
       document.secure.elements['intern'].checked = false;
     }
   }
 
-
   function checkNoSecureNorExport() {
-    if(document.secure.elements['intern'].checked && 
-      (document.secure.elements['secure'][0].checked || document.secure.elements['export'][0].checked)) {
-      alert('<%= wp.key("error.message.secure.noexportsecure") %>');
-      document.secure.elements['export'][0].checked = false;
-      document.secure.elements['export'][1].checked = true;
-      document.secure.elements['secure'][0].checked = false;
-      document.secure.elements['secure'][1].checked = true;
+
+    if (document.secure.elements['intern'] != null && document.secure.elements['intern'].checked) {
+
+      if (document.secure.elements['secure'] !=null && document.secure.elements['secure'][0].checked) {
+        checkedExportOrSecure = true;
+        document.secure.elements['secure'][0].checked = false;
+        document.secure.elements['secure'][1].checked = true;
+      }
+      if (document.secure.elements['export'] !=null && document.secure.elements['export'][0].checked) {
+        checkedExportOrSecure = true;
+        document.secure.elements['export'][0].checked = false;
+        document.secure.elements['export'][1].checked = true;  
+      }
+      if (checkedExportOrSecure) {
+        alert('<%= wp.key("error.message.secure.noexportsecure") %>');
+      }
     }
+
   }
 </script>
 
