@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsScheduleManager.java,v $
- * Date   : $Date: 2004/07/07 18:01:08 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/07/08 12:19:02 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.scheduler;
 
+import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -66,26 +67,26 @@ import org.quartz.impl.StdSchedulerFactory;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  *  
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.3
  */
 public class CmsScheduleManager implements Job {
 
-    /** Key for the scheduled entry in the job data map. */
-    public static final String C_SCHEDULER_JOB_ENTRY = "org.opencms.scheduler.CmsSchedulerEntry";
-
+    /** Key for the scheduled job description in the job data map. */
+    public static final String C_SCHEDULER_JOB_INFO = "org.opencms.scheduler.CmsScheduledJobInfo";
+    
     /** The Admin context used for creation of users for the individual jobs. */
     private static CmsObject m_adminCms;
 
-    /** Flag to indicate if the scheduler is already initialized. */
-    private static boolean m_initialized;
-
-    /** The number of configured job entries. */
+    /** The number of scheduled jobs. */
     private int m_jobCount;
 
-    /** The list of configured job entries. */
+    /** The list of scheduled jobs. */
     private List m_jobEntries;
-
+    
+    /** The list of job entries from the configuration. */
+    private List m_configuredJobEntries;
+    
     /** The initialized scheduler. */
     private Scheduler m_scheduler;
 
@@ -101,14 +102,14 @@ public class CmsScheduleManager implements Job {
     }
 
     /**
-     * Adds a new entry to the scheduler.<p>
+     * Adds a new job to the scheduler.<p>
      *  
      * @param cms an OpenCms context object that must have been initialized with "Admin" permissions
-     * @param entry the entry to add
+     * @param jobInfo the job info describing the job to schedule
      * 
      * @throws CmsException if something goes wrong
      */
-    public void addSchedulerEntry(CmsObject cms, CmsScheduledJobInfo entry) throws CmsException {
+    public void scheduleJob(CmsObject cms, CmsScheduledJobInfo jobInfo) throws CmsException {
 
         if (OpenCms.getRunLevel() > 1) {
             // simple unit tests will have runlevel 1 and no CmsObject
@@ -117,17 +118,23 @@ public class CmsScheduleManager implements Job {
             }
         }
 
-        if ((entry == null) || (entry.getClassName() == null)) {
+        if ((jobInfo == null) || (jobInfo.getClassName() == null)) {
             // prevent NPE
             OpenCms.getLog(this).error("Scheduler: Invalid job configuation provided");
             // can not continue
             return;
         }
-
+        
+        if (m_scheduler == null) {
+            OpenCms.getLog(this).error("Scheduler: No scheduler available to schedule job '" + jobInfo.getJobName() + "'");
+            // can not continue
+            return;            
+        }
+        
         try {
-            Class.forName(entry.getClassName());
+            Class.forName(jobInfo.getClassName());
         } catch (ClassNotFoundException e) {
-            OpenCms.getLog(this).error("Scheduler: Class not found '" + entry.getClassName() + "'", e);
+            OpenCms.getLog(this).error("Scheduler: Class not found '" + jobInfo.getClassName() + "'", e);
             // can not continue
             return;
         }
@@ -147,58 +154,79 @@ public class CmsScheduleManager implements Job {
             Scheduler.DEFAULT_GROUP);
 
         try {
-            trigger.setCronExpression(entry.getCronExpression());
+            trigger.setCronExpression(jobInfo.getCronExpression());
         } catch (ParseException e) {
-            OpenCms.getLog(this).error("Scheduler: Bad cron expression '" + entry.getCronExpression() + "'", e);
+            OpenCms.getLog(this).error("Scheduler: Bad cron expression for job '" + jobInfo.getJobName() + "': [" + jobInfo.getCronExpression() + "]", e);
             // can not continue
             return;
         }
 
-        if (!m_initialized) {
-            // initialize scheduler if required
-            initialize();
-        }
-
         // now set the job data
         JobDataMap jobData = new JobDataMap();
-        jobData.put(CmsScheduleManager.C_SCHEDULER_JOB_ENTRY, entry);
+        jobData.put(CmsScheduleManager.C_SCHEDULER_JOB_INFO, jobInfo);
         jobDetail.setJobDataMap(jobData);
 
-        // freeze the scheduled entry
-        entry.initConfiguration();
+        // freeze the scheduled job configuration
+        jobInfo.initConfiguration();
 
         try {
             m_scheduler.scheduleJob(jobDetail, trigger);
         } catch (SchedulerException e) {
-            OpenCms.getLog(this).error("Scheduler: Could not schedule job for class '" + entry.getClassName() + "'", e);
+            OpenCms.getLog(this).error("Scheduler: Could not schedule job '" + jobInfo.getJobName() + "' for class '" + jobInfo.getClassName() + "'", e);
             // can not continue
             return;
         }
 
         // add the job to the list of configured jobs
-        m_jobEntries.add(entry);
+        m_jobEntries.add(jobInfo);
 
         if (OpenCms.getLog(this).isInfoEnabled()) {
             OpenCms.getLog(this).info(
-                "Scheduled job "
+                "Scheduled job "                    
                     + m_jobEntries.size()
-                    + " for class '"
-                    + entry.getClassName()
-                    + "' with user '"
-                    + entry.getContextInfo());
+                    + " named '" 
+                    + jobInfo.getJobName()                    
+                    + "' for class '"
+                    + jobInfo.getClassName()
+                    + "' with user "
+                    + jobInfo.getContextInfo().getUserName());
         }
     }
 
     /**
-     * Adds a new entry to the scheduler.<p>
+     * Adds a new job description to the scheduler, 
+     * can be used only during the configuration phase in system startup.<p>
      *  
-     * @param entry the entry to add
+     * If you want to add a job programatically during OpenCms runtime, use 
+     * {@link #scheduleJob(CmsObject, CmsScheduledJobInfo)} instead.<p>
      * 
-     * @throws CmsException if something goes wrong
+     * @param jobInfo the job description to add
+     * 
+     * @throws CmsException if called after configuration is finished
+     * 
+     * @see CmsScheduleManager#scheduleJob(CmsObject, CmsScheduledJobInfo)
      */
-    public void addSchedulerEntry(CmsScheduledJobInfo entry) throws CmsException {
+    public void addJobFromConfiguration(CmsScheduledJobInfo jobInfo) throws CmsException {
 
-        addSchedulerEntry(null, entry);
+        if (OpenCms.getRunLevel() > 1) {
+            throw new CmsConfigurationException(CmsConfigurationException.C_CONFIGURATION_ERROR);
+        }
+        
+        if (m_configuredJobEntries == null) {
+            m_configuredJobEntries = new ArrayList();
+        }
+        
+        m_configuredJobEntries.add(jobInfo);
+        
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
+                ". Scheduler config     : configured job named '" 
+                    + jobInfo.getJobName()                    
+                    + "' for class '"
+                    + jobInfo.getClassName()
+                    + "' with user "
+                    + jobInfo.getContextInfo().getUserName());
+        }          
     }
 
     /**
@@ -214,7 +242,7 @@ public class CmsScheduleManager implements Job {
     public void execute(JobExecutionContext context) {
 
         JobDataMap jobData = context.getJobDetail().getJobDataMap();
-        CmsScheduledJobInfo jobInfo = (CmsScheduledJobInfo)jobData.get(C_SCHEDULER_JOB_ENTRY);
+        CmsScheduledJobInfo jobInfo = (CmsScheduledJobInfo)jobData.get(C_SCHEDULER_JOB_INFO);
 
         if (jobInfo == null) {
             OpenCms.getLog(this).error("Scheduler: Invalid job data for " + context.getJobDetail().getFullName());
@@ -240,23 +268,23 @@ public class CmsScheduleManager implements Job {
                 }
                 
                 String result = job.launch(cms, jobInfo.getParameters());
-                if (result != null) {
-                    OpenCms.getLog(this).info(result);
+                if ((result != null) && OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info(jobInfo.getJobName() + ": " + result);
                 }
             } catch (Throwable t) {
-                OpenCms.getLog(this).error("Scheduler: Error launching job " + jobInfo.getJobName(), t);
+                OpenCms.getLog(this).error("Scheduler: Error launching job '" + jobInfo.getJobName() + "'", t);
             }
         }
 
         if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Scheduler: Finished job " + jobInfo.getJobName());
+            OpenCms.getLog(this).debug("Scheduler: Finished job '" + jobInfo.getJobName() + "'");
         }
     }
 
     /**
-     * Returns the configured job entries in an unmodifiable list.<p>
+     * Returns the currently scheduled job descriptions in an unmodifiable list.<p>
      *
-     * @return the configured job entries in an unmodifiable list
+     * @return the currently scheduled job descriptions in an unmodifiable list
      */
     public List getJobEntries() {
 
@@ -279,93 +307,16 @@ public class CmsScheduleManager implements Job {
             }
         }
 
-        if (!m_initialized) {
-            // initialize scheduler if required
-            initialize();
-        }
+        // set job counter
+        m_jobCount = 0;
+
+        // the list of job entries
+        m_jobEntries = new ArrayList();
 
         // save the admin cms
         m_adminCms = adminCms;
-
-        try {
-            // start the scheduler
-            m_scheduler.start();
-        } catch (Exception e) {
-            OpenCms.getLog(this).error("Could not initialize the scheduler", e);
-        }
-    }
-
-    /** 
-     * Shuts down this instance of the OpenCms scheduler manager.<p>
-     */
-    public void shutDown() {
         
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
-                ". Shutting down        : " + this.getClass().getName() + " ... ok!");
-        }
-
-        m_adminCms = null;
-        m_initialized = false;
-
-        try {
-            m_scheduler.shutdown();
-        } catch (SchedulerException e) {
-            OpenCms.getLog(this).error("Scheduler: Problems shutting down", e);
-        }
-        
-        m_scheduler = null;
-    }
-    
-    /**
-     * @see java.lang.Object#finalize()
-     */
-    protected void finalize() throws Throwable {
-
-        try {
-            if (m_initialized) {
-                shutDown();
-            }
-        } catch (Throwable t) {
-            // noop
-        }
-        super.finalize();
-    }
-    
-    /**
-     * Initializes the scheduler.<p>
-     */
-    private synchronized void initialize() {
-
-        if (!m_initialized) {
-            // set init flag            
-            m_initialized = true;
-            
-            // reset Admin cms
-            m_adminCms = null;
-            
-            // set job counter
-            m_jobCount = 0;
-
-            // the list of job entries
-            m_jobEntries = new ArrayList();
-
-            // initialize the scheduler
-            m_scheduler = initOpenCmsScheduler();
-        }
-    }
-
-    /**
-     * Initializes the Quartz scheduler.<p>
-     * 
-     * @return the initialized scheduler
-     * 
-     * @throws SchedulerException in case something goes wrong
-     */
-    private Scheduler initOpenCmsScheduler() {
-
-        Scheduler scheduler = null;
-
+        // Quartz scheduler settings
         Properties properties = new Properties();
         properties.put(StdSchedulerFactory.PROP_SCHED_INSTANCE_NAME, "OpenCmsScheduler");
         properties.put(StdSchedulerFactory.PROP_SCHED_THREAD_NAME, "OpenCms: Scheduler");
@@ -375,12 +326,63 @@ public class CmsScheduleManager implements Job {
         properties.put(StdSchedulerFactory.PROP_JOB_STORE_CLASS, "org.quartz.simpl.RAMJobStore");
 
         try {
+            // initilize the Quartz scheduler
             SchedulerFactory schedulerFactory = new StdSchedulerFactory(properties);
-            scheduler = schedulerFactory.getScheduler();
+            m_scheduler = schedulerFactory.getScheduler();
         } catch (Exception e) {
             OpenCms.getLog(this).error("Could not initialize the scheduler", e);
+            // can not continue
+            m_scheduler = null;
+            return;
+        }        
+        
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Scheduler config     : scheduler initialized");
+        }          
+
+        if (m_configuredJobEntries != null) {
+            // add all jobs from the system configuration
+            for (int i=0; i<m_configuredJobEntries.size(); i++) {
+                scheduleJob(adminCms, (CmsScheduledJobInfo)m_configuredJobEntries.get(i));
+            }
+        }
+        
+        try {
+            // start the scheduler
+            m_scheduler.start();
+        } catch (Exception e) {
+            OpenCms.getLog(this).error("Could not start the scheduler", e);
+            // can not continue
+            m_scheduler = null;
+            return;            
         }
 
-        return scheduler;
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Scheduler config     : scheduler started");
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Scheduler config     : finished");
+        }          
+    }
+
+    /** 
+     * Shuts down this instance of the OpenCms scheduler manager.<p>
+     */
+    public void shutDown() {
+        
+        m_adminCms = null;
+        
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
+                ". Shutting down        : " + this.getClass().getName() + " ... ok!");
+        }
+
+        if (m_scheduler != null) {
+            try {
+                m_scheduler.shutdown();
+            } catch (SchedulerException e) {
+                OpenCms.getLog(this).error("Scheduler: Problems shutting down", e);
+            }
+        }
+        
+        m_scheduler = null;
     }
 }

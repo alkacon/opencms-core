@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/scheduler/TestCmsScheduler.java,v $
- * Date   : $Date: 2004/07/07 18:02:18 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/07/08 12:18:44 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.quartz.impl.StdSchedulerFactory;
  * Test cases for the OpenCms scheduler thread pool.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.1
  */
@@ -179,7 +179,7 @@ public class TestCmsScheduler extends TestCase {
         jobInfo.setClassName(TestScheduledJob.class.getName());  
         
         JobDataMap jobData = new JobDataMap();      
-        jobData.put(CmsScheduleManager.C_SCHEDULER_JOB_ENTRY, jobInfo);
+        jobData.put(CmsScheduleManager.C_SCHEDULER_JOB_INFO, jobInfo);
         
         jobDetail.setJobDataMap(jobData);
         
@@ -230,7 +230,7 @@ public class TestCmsScheduler extends TestCase {
         jobInfo.setCronExpression("0/2 * * * * ?");
         
         // add the job to the manager
-        manager.addSchedulerEntry(null, jobInfo);
+        manager.addJobFromConfiguration(jobInfo);
         
         // initialize the manager, this will start the scheduled jobs
         manager.initialize(null);
@@ -281,7 +281,7 @@ public class TestCmsScheduler extends TestCase {
         jobInfo.setCronExpression("0/2 * * * * ?");
         
         // add the job to the manager
-        manager.addSchedulerEntry(null, jobInfo);
+        manager.addJobFromConfiguration(jobInfo);
         
         // initialize the manager, this will start the scheduled jobs
         manager.initialize(null);

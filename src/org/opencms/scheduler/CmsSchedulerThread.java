@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsSchedulerThread.java,v $
- * Date   : $Date: 2004/07/07 18:01:08 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/07/08 12:19:02 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.opencms.main.OpenCms;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  *  
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.3
  */
 public class CmsSchedulerThread extends Thread {
@@ -127,8 +127,8 @@ public class CmsSchedulerThread extends Thread {
                 m_runnable = null;
             }
         }
-        if (OpenCms.getLog(this).isInfoEnabled()) {
-            OpenCms.getLog(this).info("Scheduler thread '" + getName() + "'shutting down");
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("Scheduler thread '" + getName() + "' is shutting down");
         }
     }
 

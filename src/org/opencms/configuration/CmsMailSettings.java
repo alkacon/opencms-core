@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/Attic/CmsMailSettings.java,v $
- * Date   : $Date: 2004/06/14 12:02:26 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/07/08 12:18:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -223,7 +223,7 @@ public class CmsMailSettings {
         CmsMailHost host = new CmsMailHost(hostname, theOrder, protocol, username, password);
         m_mailHosts.add(host);
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Mail configuration   : Added " + host);
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Mail configuration   : added " + host);
         }           
         Collections.sort(m_mailHosts);
     }
@@ -254,7 +254,7 @@ public class CmsMailSettings {
     public void setMailFromDefault(String sender) {
         m_mailFromDefault = sender;
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Mail configuration   : Default mail sender is '" + m_mailFromDefault + "'");
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Mail configuration   : default mail sender is '" + m_mailFromDefault + "'");
         }                
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2004/07/07 18:01:08 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/07/08 12:18:54 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -247,7 +247,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         digester.addBeanPropertySetter("*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB + "/" + N_CLASS, "className");
         digester.addBeanPropertySetter("*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB + "/" + N_CRONEXPRESSION, "cronExpression");
         digester.addBeanPropertySetter("*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB + "/" + N_REUSEINSTANCE, "reuseInstance");
-        digester.addSetNext("*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB, "addSchedulerEntry");
+        digester.addSetNext("*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB, "addJobFromConfiguration");
         
         // add job context creation rule
         digester.addObjectCreate("*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB + "/" + N_CONTEXT, CmsContextInfo.class);
@@ -442,7 +442,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         
         m_scheduleManager = scheduleManager;
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Scheduler config     : finished");
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Scheduler config     : scheduler created");
         }          
     }
     
@@ -458,7 +458,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             m_tempFileProjectId = -1;
         }
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". System configuration : Temporary file project id is " + m_tempFileProjectId);
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". System configuration : temporary file project id is " + m_tempFileProjectId);
         }             
     }
         

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsSchedulerThreadPool.java,v $
- * Date   : $Date: 2004/07/07 18:01:08 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/07/08 12:19:02 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.quartz.spi.ThreadPool;
  * @author James House
  * @author Juergen Donnerstag
  *
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.3
  */
 public class CmsSchedulerThreadPool implements ThreadPool {
@@ -192,7 +192,7 @@ public class CmsSchedulerThreadPool implements ThreadPool {
         }
 
         if (m_inheritLoader) {
-            OpenCms.getLog(this).info(
+            OpenCms.getLog(this).debug(
                 "Job execution threads will use class loader of thread: " + Thread.currentThread().getName());
         }
 
