@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminHtmlGalleries.java,v $
-* Date   : $Date: 2002/06/10 15:29:57 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2002/08/26 14:44:48 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import javax.servlet.http.*;
  * <p>
  *
  * @author simmeu
- * @version $Revision: 1.1 $ $Date: 2002/06/10 15:29:57 $
+ * @version $Revision: 1.2 $ $Date: 2002/08/26 14:44:48 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -104,6 +104,8 @@ public class CmsAdminHtmlGalleries extends CmsWorkplaceDefault implements I_CmsC
                 foldername = htmlRootFolder;
             }
           session.putValue("lastgallery",foldername);
+          // ednfal 02-08-26: set the parameter here because of indefinable problems with SAPDB 
+          parameters.put(C_PARA_FOLDER, foldername);
         }
         else {
             foldername = (String)session.getValue(C_PARA_FOLDER);
@@ -126,7 +128,8 @@ public class CmsAdminHtmlGalleries extends CmsWorkplaceDefault implements I_CmsC
             }
         }
 
-        parameters.put(C_PARA_FOLDER, foldername);
+        // ednfal 02-08-26: there are indefinable problems with SAPDB if the parameter is set here
+        //parameters.put(C_PARA_FOLDER, foldername);
 
         // need the foldername in the session in case of an exception in the dialog
         session.putValue(C_PARA_FOLDER, foldername);
@@ -212,7 +215,6 @@ public class CmsAdminHtmlGalleries extends CmsWorkplaceDefault implements I_CmsC
                       cms.unlockResource(folder.getAbsolutePath());
                     }
                     catch (CmsException e) {
-
                       cms.unlockResource(folder.getParent());
                       cms.unlockResource(folder.getAbsolutePath());
 
@@ -250,7 +252,6 @@ public class CmsAdminHtmlGalleries extends CmsWorkplaceDefault implements I_CmsC
             */
           }
         }
-
 
         xmlTemplateDocument.setData("link_value", foldername);
         xmlTemplateDocument.setData("lasturl", lasturl);
@@ -304,7 +305,8 @@ public class CmsAdminHtmlGalleries extends CmsWorkplaceDefault implements I_CmsC
 
     public Vector getFiles(CmsObject cms) throws CmsException {
         Vector galleries = new Vector();
-        Vector folders = cms.getSubFolders(getConfigFile(cms).getPicGalleryPath());
+        //Vector folders = cms.getSubFolders(getConfigFile(cms).getPicGalleryPath());
+        Vector folders = cms.getSubFolders(getConfigFile(cms).getHtmlGalleryPath());
         int numFolders = folders.size();
         for(int i = 0;i < numFolders;i++) {
             CmsResource currFolder = (CmsResource)folders.elementAt(i);
@@ -388,7 +390,6 @@ public class CmsAdminHtmlGalleries extends CmsWorkplaceDefault implements I_CmsC
     public Object onLoad(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) throws CmsException {
         Hashtable parameters = (Hashtable) userObj;
         String folder = (String)parameters.get("folder");
-
         if(folder != null) {
             String servletUrl = cms.getRequestContext().getRequest().getServletUrl() + "/";
             return "window.top.body.admin_content.location.href='" + servletUrl + "system/workplace/action/explorer_files.html?mode=listonly&folder=" + folder + "'";
