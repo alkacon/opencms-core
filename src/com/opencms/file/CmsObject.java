@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2002/01/18 08:29:01 $
-* Version: $Revision: 1.216 $
+* Date   : $Date: 2002/01/18 13:39:32 $
+* Version: $Revision: 1.217 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.216 $ $Date: 2002/01/18 08:29:01 $
+ * @version $Revision: 1.217 $ $Date: 2002/01/18 13:39:32 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -2277,7 +2277,7 @@ public void publishProject(int id) throws CmsException {
     Vector changedResources = null;
     Vector changedModuleMasters = null;
     boolean success = false;
-    boolean doStatExp = readProject(id).doStaticExport();
+    CmsProject theProject = readProject(id);
     try{
         Vector projectResources = readProjectView(id, "all");
         allChanged = m_rb.publishProject(this, m_context.currentUser(), m_context.currentProject(), id);
@@ -2285,8 +2285,8 @@ public void publishProject(int id) throws CmsException {
         changedModuleMasters = allChanged.getChangedModuleMasters();
         getOnlineElementCache().cleanupCache(changedResources, changedModuleMasters);
         clearcache();
-        // do static export if the static-export flag is set for the project
-        if (doStatExp){
+        // do static export if the static-export is enabled in opencms.properties
+        if (this.isStaticExportEnabled()){
             try{
                 int oldId = m_context.currentProject().getId();
                 m_context.setCurrentProject(C_PROJECT_ONLINE_ID);
@@ -2320,6 +2320,12 @@ public void publishProject(int id) throws CmsException {
         }
         if(!success){
             getOnlineElementCache().clearCache();
+        }
+        // set current project to online project if the published project was temporary
+        // and the published project is still the current project
+        if(theProject.getId() == m_context.currentProject().getId() &&
+            theProject.getType() == I_CmsConstants.C_PROJECT_TYPE_TEMPORARY){
+            m_context.setCurrentProject(C_PROJECT_ONLINE_ID);
         }
     }
 }
