@@ -3710,6 +3710,15 @@
             <properties/>
         </file>
         <file>
+            <source>system/workplace/action/ocms_searchform.html</source>
+            <destination>system/workplace/action/ocms_searchform.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>
+        <file>
             <source>system/workplace/action/old_explorer_files.html</source>
             <destination>system/workplace/action/old_explorer_files.html</destination>
             <type>XMLTemplate</type>
@@ -10704,6 +10713,15 @@
         <file>
             <source>system/workplace/templates/new_explorer_files</source>
             <destination>system/workplace/templates/new_explorer_files</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
+            <source>system/workplace/templates/ocms_searchform</source>
+            <destination>system/workplace/templates/ocms_searchform</destination>
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
