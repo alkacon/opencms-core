@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2002/04/17 09:53:40 $
-* Version: $Revision: 1.317 $
+* Date   : $Date: 2002/04/18 09:25:43 $
+* Version: $Revision: 1.318 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.w3c.dom.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.317 $ $Date: 2002/04/17 09:53:40 $
+ * @version $Revision: 1.318 $ $Date: 2002/04/18 09:25:43 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -7662,9 +7662,19 @@ protected void validName(String name, boolean blank) throws CmsException {
      * Clears the user cache for the given user
      */
     public void clearUserCache(CmsUser user){
-        m_userCache.remove(user.getId());
-        m_userCache.remove(user.getName());
-        m_userCache.remove(user.getName()+user.getType());
+        try{
+            m_userCache.remove(user.getId());
+        } catch (Exception e){
+        }
+        try{
+            m_userCache.remove(user.getName());
+        } catch (Exception e){
+        }
+        try{
+            m_userCache.remove(user.getName()+user.getType());
+        } catch (Exception e){
+        }
+        m_accessCache.clear();
     }
 
     /**
