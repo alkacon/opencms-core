@@ -8,6 +8,14 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.3.23 Bela Tegeuse - 9 July 2001
+! New features for resources (only on the shell): resources can be undeleted, changes can be 
+  undone by copying the resource from the online project, a version of a resource can be 
+  restored from the history, a single resource can be published, single resources can be copied
+  to an existing project. A history for published projects is stored in backup tables.
+- The datastructure has been changed for the history, the projects. There is no type for 
+  propertydefinitions any longer. 
+
 OpenCms 4.3.22 Bela Tegeuse - 3 July 2001
 ! The resource types are stored in the registry.xml now. Actions on resources are depending
   on the resourcetype, so there is a special class for each resource type that handles the
