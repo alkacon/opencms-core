@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestResourceStorage.java,v $
- * Date   : $Date: 2004/05/26 17:04:08 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/05/27 10:13:02 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.Map;
  * Storage object for storing all attributes of vfs resources.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class OpenCmsTestResourceStorage {
 
@@ -92,8 +92,7 @@ public class OpenCmsTestResourceStorage {
      */
     public OpenCmsTestResourceStorageEntry get(String resourceName) throws CmsException {
 
-        //TODO: do the name mapping here
-        String mappedResourceName = resourceName;
+        String mappedResourceName = mapResourcename(resourceName);
 
         OpenCmsTestResourceStorageEntry entry = null;
         entry = (OpenCmsTestResourceStorageEntry)m_storage.get(mappedResourceName);
@@ -137,5 +136,26 @@ public class OpenCmsTestResourceStorage {
 
         m_sourceNameMapping = source;
         m_targetNameMapping = target;
+    }
+    
+    /**
+     * Does the name mapping of a resourceName.<p>
+     * 
+     * This is required to find resources in the resource storage afer their path in the vfs
+     * has changed (e.g. after a copy operation).<p>
+     *
+     * @param resourceName the resource name to map
+     * @return mapped resource name
+     */
+    private String mapResourcename(String resourceName) {
+        // only modify the name if we have set some kind of mapping
+        if (m_sourceNameMapping != null && m_targetNameMapping != null) {
+            // check if the resourcename starts with the source map name
+            if (resourceName.startsWith(m_sourceNameMapping)) {
+                // exchange the prefix with the target map name
+                resourceName = m_targetNameMapping + resourceName.substring(m_sourceNameMapping.length());
+            }
+        }
+        return resourceName;
     }
 }

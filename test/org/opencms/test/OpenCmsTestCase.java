@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2004/05/26 17:04:08 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/05/27 10:13:02 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * values in the provided <code>./test/data/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.3.5
  */
@@ -119,11 +119,11 @@ public class OpenCmsTestCase extends TestCase {
             CmsResource res = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
             
             if (res.getDateLastModified() != dateLastModified) {
-                fail("[DateLastModified "+dateLastModified + " <-> "+res.getDateLastModified() +"]");
+                fail("[DateLastModified " + dateLastModified + " <-> " + res.getDateLastModified() + "]");
             }
             
         } catch (CmsException e) {
-            fail("cannot read resource "+resourceName+" "+CmsException.getStackTraceAsString(e));     
+            fail("cannot read resource " + resourceName + " "+CmsException.getStackTraceAsString(e));     
         }
     }
     
@@ -140,11 +140,11 @@ public class OpenCmsTestCase extends TestCase {
             CmsResource res = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
             
             if (res.getDateLastModified() < dateLastModified) {
-                fail("[DateLastModified "+dateLastModified + " > "+res.getDateLastModified() +"]");
+                fail("[DateLastModified " + dateLastModified + " > "+res.getDateLastModified() + "]");
             }
             
         } catch (CmsException e) {
-            fail("cannot read resource "+resourceName+" "+CmsException.getStackTraceAsString(e));     
+            fail("cannot read resource " + resourceName+" " + CmsException.getStackTraceAsString(e));     
         }
     }
     
@@ -171,7 +171,7 @@ public class OpenCmsTestCase extends TestCase {
             // compare the content Id if nescessary
             if (filter.testContentId()) {
                if (!storedResource.getFileId().equals(res.getFileId())) {
-                noMatches += "[ContentId "+storedResource.getFileId()+ " <-> "+res.getFileId()+"]";
+                noMatches += "[ContentId " + storedResource.getFileId() + " <-> " + res.getFileId() + "]";
                }
             }
             // compare the contents if nescessary
@@ -189,74 +189,74 @@ public class OpenCmsTestCase extends TestCase {
             // compare the date creted if nescessary
             if (filter.testDateCreated()) {
                if (storedResource.getDateCreated() != res.getDateCreated() ) {
-                noMatches += "[DateCreated "+storedResource.getDateCreated() + " <-> "+res.getDateCreated() +"]";
+                noMatches += "[DateCreated " + storedResource.getDateCreated() + " <-> " + res.getDateCreated() + "]";
                }
             }
             // compare the date expired if nescessary
             if (filter.testDateExpired()) {
                if (storedResource.getDateExpired() != res.getDateExpired() ) {
-                noMatches += "[DateExpired "+storedResource.getDateExpired() + " <-> "+res.getDateExpired() +"]";
+                noMatches += "[DateExpired " + storedResource.getDateExpired() + " <-> " + res.getDateExpired() + "]";
                }
             }
             // compare the date last modified if nescessary
             if (filter.testDateLastModified()) {
                if (storedResource.getDateLastModified() != res.getDateLastModified() ) {
-                noMatches += "[DateLastModified "+storedResource.getDateLastModified() + " <-> "+res.getDateLastModified() +"]";
+                noMatches += "[DateLastModified " + storedResource.getDateLastModified() + " <-> " + res.getDateLastModified() + "]";
                }
             }
             // compare the date last released if nescessary
             if (filter.testDateReleased()) {
                if (storedResource.getDateReleased() != res.getDateReleased() ) {
-                noMatches += "[DateReleased "+storedResource.getDateReleased() + " <-> "+res.getDateReleased() +"]";
+                noMatches += "[DateReleased " + storedResource.getDateReleased() + " <-> " + res.getDateReleased() + "]";
                }
             }
             // compare the flags if nescessary
             if (filter.testFlags()) {
                if (storedResource.getFlags() != res.getFlags() ) {
-                noMatches += "[Flags "+storedResource.getFlags() + " <-> "+res.getFlags() +"]";
+                noMatches += "[Flags " + storedResource.getFlags() + " <-> "+res.getFlags() + "]";
                }
             }
             // compare the length if nescessary
             if (filter.testLength()) {
                if (storedResource.getLength() != res.getLength() ) {
-                noMatches += "[Length "+storedResource.getLength() + " <-> "+res.getLength() +"]";
+                noMatches += "[Length " + storedResource.getLength() + " <-> " + res.getLength() + "]";
                }
             }
             // compare the link count if nescessary
             if (filter.testLinkCount()) {
                if (storedResource.getLinkCount() != res.getLinkCount() ) {
-                noMatches += "[LinkCount "+storedResource.getLinkCount() + " <-> "+res.getLinkCount() +"]";
+                noMatches += "[LinkCount " + storedResource.getLinkCount() + " <-> " + res.getLinkCount() + "]";
                }
             }
             // compare the loader id if nescessary
             if (filter.testLoaderId()) {
                if (storedResource.getLoaderId() != res.getLoaderId() ) {
-                noMatches += "[LoaderId "+storedResource.getLoaderId() + " <-> "+res.getLoaderId() +"]";
+                noMatches += "[LoaderId " + storedResource.getLoaderId() + " <-> " + res.getLoaderId() + "]";
                }
             }
             // compare the lockstate if nescessary
             if (filter.testLock()) {
                CmsLock resLock = cms.getLock(res);
                if (!storedResource.getLock().equals(resLock)) {
-                noMatches += "[Lockstate "+storedResource.getLock() + " <-> "+resLock +"]";
+                noMatches += "[Lockstate " + storedResource.getLock() + " <-> "+resLock + "]";
                }
             }
             // compare the name if nescessary
             if (filter.testName()) {
                if (!storedResource.getName().equals(res.getName()) ) {
-                noMatches += "[Name "+storedResource.getName() + " <-> "+res.getName() +"]";
+                noMatches += "[Name " + storedResource.getName() + " <-> " + res.getName() + "]";
                }
             }
             // compare the parent id if nescessary
             if (filter.testParentId()) {
                if (!storedResource.getParentStructureId().equals(res.getParentStructureId()) ) {
-                noMatches += "[ParentId "+storedResource.getParentStructureId() + " <-> "+res.getParentStructureId() +"]";
+                noMatches += "[ParentId " + storedResource.getParentStructureId() + " <-> " + res.getParentStructureId() + "]";
                }
             }
             // compare the project last modified if nescessary
             if (filter.testProjectLastModified()) {
                if (storedResource.getProjectLastModified() != res.getProjectLastModified() ) {
-                noMatches += "[ProjectLastModified "+storedResource.getProjectLastModified() + " <-> "+res.getProjectLastModified() +"]";
+                noMatches += "[ProjectLastModified " + storedResource.getProjectLastModified() + " <-> " + res.getProjectLastModified() + "]";
                }
             }
             // compare the properties if nescessary
@@ -266,53 +266,53 @@ public class OpenCmsTestCase extends TestCase {
             // compare the resource id if nescessary
             if (filter.testResourceId()) {
                if (!storedResource.getResourceId().equals(res.getResourceId()) ) {
-                noMatches += "[ResourceId "+storedResource.getResourceId() + " <-> "+res.getResourceId() +"]";
+                noMatches += "[ResourceId " + storedResource.getResourceId() + " <-> " + res.getResourceId() + "]";
                }
             }
             // compare the state if nescessary
             if (filter.testState()) {
                if (storedResource.getState() != res.getState() ) {
-                noMatches += "[State "+storedResource.getState() + " <-> "+res.getState() +"]";
+                noMatches += "[State " + storedResource.getState() + " <-> " + res.getState() + "]";
                }
             }
             // compare the structure id if nescessary
             if (filter.testStructureId()) {
                if (!storedResource.getStructureId().equals(res.getStructureId()) ) {
-                noMatches += "[StructureId "+storedResource.getStructureId() + " <-> "+res.getStructureId() +"]";
+                noMatches += "[StructureId " + storedResource.getStructureId() + " <-> " + res.getStructureId() + "]";
                }
             }
             // compare the touched flag if nescessary
             if (filter.testTouched()) {
                if (storedResource.isTouched() != res.isTouched() ) {
-                noMatches += "[Touched "+storedResource.isTouched() + " <-> "+res.isTouched() +"]";
+                noMatches += "[Touched " + storedResource.isTouched() + " <-> " + res.isTouched() + "]";
                }
             }
             // compare the type if nescessary
             if (filter.testType()) {
                if (storedResource.getType() != res.getType() ) {
-                noMatches += "[Type "+storedResource.getType() + " <-> "+res.getType() +"]";
+                noMatches += "[Type " + storedResource.getType() + " <-> " + res.getType() + "]";
                }
             }
             // compare the user created if nescessary
             if (filter.testUserCreated()) {
                if (!storedResource.getUserCreated().equals(res.getUserCreated()) ) {
-                noMatches += "[UserCreated "+storedResource.getUserCreated() + " <-> "+res.getUserCreated() +"]";
+                noMatches += "[UserCreated " + storedResource.getUserCreated() + " <-> " + res.getUserCreated() +"]";
                }
             }
             // compare the user created if nescessary
             if (filter.testUserLastModified()) {
                if (!storedResource.getUserLastModified().equals(res.getUserLastModified()) ) {
-                noMatches += "[UserLastModified "+storedResource.getUserLastModified() + " <-> "+res.getUserLastModified() +"]";
+                noMatches += "[UserLastModified " + storedResource.getUserLastModified() + " <-> " + res.getUserLastModified() + "]";
                }
             }
             
             // now see if we have collected any no-matches
             if (noMatches.length() > 0) {
-                fail("error comparing resource "+resourceName+" with stored values: "+noMatches);
+                fail("error comparing resource " + resourceName + " with stored values: " + noMatches);
             }
             
         } catch (CmsException e) {
-            fail("cannot read resource "+resourceName+" "+CmsException.getStackTraceAsString(e));     
+            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));     
         }
     }
     
@@ -330,11 +330,11 @@ public class OpenCmsTestCase extends TestCase {
             CmsResource res = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
             
             if (res.getProjectLastModified() != project.getId()) {
-                fail("[ProjectLastModified "+project.getId() + " <-> "+res.getProjectLastModified() +"]");
+                fail("[ProjectLastModified " + project.getId() + " <-> " + res.getProjectLastModified() + "]");
             }
             
         } catch (CmsException e) {
-            fail("cannot read resource "+resourceName+" "+CmsException.getStackTraceAsString(e));     
+            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));     
         }
     }
     
@@ -358,21 +358,26 @@ public class OpenCmsTestCase extends TestCase {
             
             // now see if we have collected any no-matches
             if (noMatches.length() > 0) {
-                fail("error comparing resource "+resourceName+" with stored values: "+noMatches);
+                fail("error comparing resource " + resourceName + " with stored values: " + noMatches);
             }   
             
-            // finally test if the values of the changed properties are correct.
-            CmsProperty resourceProperty = cms.readPropertyObject(resourceName, property.getKey(), false);
-            if (!resourceProperty.isIdentical(property)) {
-                fail("properties are not identical :"+property+" <-> "+ resourceProperty);              
+            // test if the property was already in the stored result
+            List storedProperties =  storedResource.getProperties();
+            if (!storedProperties.contains(property)) {
+                 fail("property not found in stored value: " + property);     
             }
             
-            
+            // test if the values of the changed propertiy is correct.
+            CmsProperty resourceProperty = cms.readPropertyObject(resourceName, property.getKey(), false);
+            if (!resourceProperty.isIdentical(property)) {
+                fail("property is not identical :" + property + " <-> " + resourceProperty);              
+            }  
         } catch (CmsException e) {
-            fail("cannot read resource "+resourceName+" "+CmsException.getStackTraceAsString(e));     
+            fail("cannot read resource " + resourceName + " "+CmsException.getStackTraceAsString(e));     
         }
     }
-     
+    
+    
      /**
      * Compares the current properties of a resource with the stored values and a list of changed property.<p>
      * 
@@ -381,6 +386,7 @@ public class OpenCmsTestCase extends TestCase {
      * @param excludeList a list of CmsProperties to exclude
      */
     protected void assertPropertyChanged(CmsObject cms, String resourceName, List excludeList) {
+        
         try {
             // get the stored resource
             OpenCmsTestResourceStorageEntry storedResource = m_resourceStrorage.get(resourceName);    
@@ -391,13 +397,40 @@ public class OpenCmsTestCase extends TestCase {
             if (noMatches.length() > 0) {
                 fail("error comparing resource "+resourceName+" with stored values: "+noMatches);
             }   
+  
+            // test if the values of the changed properties are correct and if the properties
+            // were already in the stored result
             
+            String propertyNoMatches = "";
+            String storedNotFound = "";
+            Iterator i = excludeList.iterator();
+            List storedProperties =  storedResource.getProperties();
+            while (i.hasNext()) {
+                CmsProperty property = (CmsProperty)i.next();
+                CmsProperty resourceProperty = cms.readPropertyObject(resourceName, property.getKey(), false);
+                // test if the property has the same value
+                if (!resourceProperty.isIdentical(property)) {
+                    propertyNoMatches +=  "[" + property + " <-> " + resourceProperty + "]";          
+                }
+                // test if the property was already in the stored object
+                if (!storedProperties.contains(property)) {
+                    storedNotFound +=  "[" + property + "]"; 
+                }
+            }                        
+            // now see if we have collected any property no-matches
+            if (propertyNoMatches.length() > 0) {
+                fail("error comparing properties for resource " + resourceName + ": " + propertyNoMatches);
+            }
+            // now see if we have collected any property not found in the stored original
+            if (storedNotFound.length() > 0) {
+                fail("properties not found in stored value: " + storedNotFound);
+            }          
         } catch (CmsException e) {
-            fail("cannot read resource "+resourceName+" "+CmsException.getStackTraceAsString(e));     
+            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));     
         }
     } 
-     
-     
+    
+    
     /**
      * Compares the current properties of a resource with the stored values.<p>
      * 
@@ -412,13 +445,199 @@ public class OpenCmsTestCase extends TestCase {
             
             // now see if we have collected any no-matches
             if (noMatches.length() > 0) {
-                fail("error comparing resource "+resourceName+" with stored values: "+noMatches);
+                fail("error comparing resource " + resourceName + " with stored values: " + noMatches);
             }   
             
         } catch (CmsException e) {
-            fail("cannot read resource "+resourceName+" "+CmsException.getStackTraceAsString(e));     
+            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));     
         }
     }
+     
+    /**
+     * Compares the current properties of a resource with the stored values and a given, new property.<p>
+     * 
+     * @param cms the CmsObject
+     * @param resourceName the name of the resource to compare
+     * @param property the changed property
+     */
+    protected void assertPropertyNew(CmsObject cms, String resourceName, CmsProperty property) {
+        try {
+            // get the stored resource
+            OpenCmsTestResourceStorageEntry storedResource = m_resourceStrorage.get(resourceName);
+            
+            // create the exclude list
+            List excludeList = new ArrayList();
+            excludeList.add(property);            
+            
+            String noMatches = compareProperties(cms, resourceName, storedResource, excludeList);   
+            
+            // now see if we have collected any no-matches
+            if (noMatches.length() > 0) {
+                fail("error comparing resource " + resourceName + " with stored values: " + noMatches);
+            }   
+            
+            // test if the property was already in the stored result
+            List storedProperties =  storedResource.getProperties();
+            if (storedProperties.contains(property)) {
+                 fail("property already found in stored value: " + property);     
+            }
+            
+            // test if the values of the changed propertiy is correct.
+            CmsProperty resourceProperty = cms.readPropertyObject(resourceName, property.getKey(), false);
+            if (!resourceProperty.isIdentical(property)) {
+                fail("property is not identical :" + property + " <-> " + resourceProperty);              
+            }  
+        } catch (CmsException e) {
+            fail("cannot read resource " + resourceName + " "+CmsException.getStackTraceAsString(e));     
+        }
+    }
+    
+    
+    /**
+     * Compares the current properties of a resource with the stored values and a list of new property.<p>
+     * 
+     * @param cms an initialized CmsObject
+     * @param resourceName the name of the resource to compare
+     * @param excludeList a list of CmsProperties to exclude
+     */
+    protected void assertPropertyNew(CmsObject cms, String resourceName, List excludeList) {
+        
+        try {
+            // get the stored resource
+            OpenCmsTestResourceStorageEntry storedResource = m_resourceStrorage.get(resourceName);    
+            
+            String noMatches = compareProperties(cms, resourceName, storedResource, excludeList);   
+            
+            // now see if we have collected any no-matches
+            if (noMatches.length() > 0) {
+                fail("error comparing resource "+resourceName+" with stored values: "+noMatches);
+            }   
+  
+            // test if the values of the changed properties are correct and if the properties
+            // were already in the stored result
+            
+            String propertyNoMatches = "";
+            String storedFound = "";
+            Iterator i = excludeList.iterator();
+            List storedProperties =  storedResource.getProperties();
+            while (i.hasNext()) {
+                CmsProperty property = (CmsProperty)i.next();
+                CmsProperty resourceProperty = cms.readPropertyObject(resourceName, property.getKey(), false);
+                // test if the property has the same value
+                if (!resourceProperty.isIdentical(property)) {
+                    propertyNoMatches +=  "[" + property + " <-> " + resourceProperty + "]";          
+                }
+                // test if the property was already in the stored object
+                if (storedProperties.contains(property)) {
+                    storedFound +=  "[" + property + "]"; 
+                }
+            }                        
+            // now see if we have collected any property no-matches
+            if (propertyNoMatches.length() > 0) {
+                fail("error comparing properties for resource " + resourceName + ": " + propertyNoMatches);
+            }
+            // now see if we have collected any property not found in the stored original
+            if (storedFound.length() > 0) {
+                fail("properties already found in stored value: " + storedFound);
+            }          
+        } catch (CmsException e) {
+            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));     
+        }
+    } 
+     
+    /**
+     * Compares the current properties of a resource with the stored values and a given, deleted property.<p>
+     * 
+     * @param cms the CmsObject
+     * @param resourceName the name of the resource to compare
+     * @param property the deleted property
+     */
+    protected void assertPropertyRemoved(CmsObject cms, String resourceName, CmsProperty property) {
+        try {
+            // get the stored resource
+            OpenCmsTestResourceStorageEntry storedResource = m_resourceStrorage.get(resourceName);
+            
+            // create the exclude list
+            List excludeList = new ArrayList();
+            excludeList.add(property);            
+            
+            String noMatches = compareProperties(cms, resourceName, storedResource, excludeList);   
+            
+            // now see if we have collected any no-matches
+            if (noMatches.length() > 0) {
+                fail("error comparing resource "+resourceName+" with stored values: "+noMatches);
+            }   
+            
+            // test if the property was already in the stored result
+            List storedProperties =  storedResource.getProperties();
+            if (!storedProperties.contains(property)) {
+                 fail("property not found in stored value: "+property);     
+            }
+            
+            // test if the values of the changed propertiy is correct.
+            CmsProperty resourceProperty = cms.readPropertyObject(resourceName, property.getKey(), false);
+            if (resourceProperty != CmsProperty.getNullProperty()) {
+                fail("property is not removed :"+property+" <-> "+ resourceProperty);              
+            }  
+        } catch (CmsException e) {
+            fail("cannot read resource " + resourceName + " "+CmsException.getStackTraceAsString(e));     
+        }
+    }  
+    
+    
+    /**
+     * Compares the current properties of a resource with the stored values and a list of deleted properties.<p>
+     * 
+     * @param cms an initialized CmsObject
+     * @param resourceName the name of the resource to compare
+     * @param excludeList a list of CmsProperties to exclude
+     */
+    protected void assertPropertyRemoved(CmsObject cms, String resourceName, List excludeList) {
+        
+        try {
+            // get the stored resource
+            OpenCmsTestResourceStorageEntry storedResource = m_resourceStrorage.get(resourceName);    
+            
+            String noMatches = compareProperties(cms, resourceName, storedResource, excludeList);   
+            
+            // now see if we have collected any no-matches
+            if (noMatches.length() > 0) {
+                fail("error comparing resource "+resourceName+" with stored values: "+noMatches);
+            }   
+  
+            // test if the values of the changed properties are correct and if the properties
+            // were already in the stored result
+            
+            String propertyNotDeleted = "";
+            String storedNotFound = "";
+            Iterator i = excludeList.iterator();
+            List storedProperties =  storedResource.getProperties();
+            List resourceProperties = cms.readPropertyObjects(resourceName, false);
+            
+            while (i.hasNext()) {
+                CmsProperty property = (CmsProperty)i.next();
+                 // test if the property has the same value
+                if (resourceProperties.contains(property)) {
+                    CmsProperty resourceProperty = cms.readPropertyObject(resourceName, property.getKey(), false);
+                    propertyNotDeleted +=  "[" + property + " <-> " + resourceProperty +"]";          
+                }
+                // test if the property was already in the stored object
+                if (!storedProperties.contains(property)) {
+                    storedNotFound +=  "[" + property + "]"; 
+                }
+            }                        
+            // now see if we have collected any property no-matches
+            if (propertyNotDeleted.length() > 0) {
+                fail("properties not deleted for "+resourceName+": "+propertyNotDeleted);
+            }
+            // now see if we have collected any property not found in the stored original
+            if (storedNotFound.length() > 0) {
+                fail("properties not found in stored value: "+storedNotFound);
+            }          
+        } catch (CmsException e) {
+            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));     
+        }
+    } 
     
     /**
      * Compares the current state of a resource with a given state.<p>
@@ -433,11 +652,11 @@ public class OpenCmsTestCase extends TestCase {
             CmsResource res = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
             
             if (res.getState() != state) {
-                fail("[State "+state + " <-> "+res.getState() +"]");
+                fail("[State " + state + " <-> " + res.getState() + "]");
             }
             
         } catch (CmsException e) {
-            fail("cannot read resource "+resourceName+" "+CmsException.getStackTraceAsString(e));     
+            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));     
         }
     }
     
@@ -454,11 +673,11 @@ public class OpenCmsTestCase extends TestCase {
             CmsResource res = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
             
             if (!res.getUserLastModified().equals(user.getId())) {
-                fail("[UserLastModified ("+user.getName()+") "+user.getId() + " <-> "+res.getUserLastModified() +"]");
+                fail("[UserLastModified (" + user.getName() + ") " + user.getId() + " <-> " + res.getUserLastModified() + "]");
             }
             
         } catch (CmsException e) {
-            fail("cannot read resource "+resourceName+" "+CmsException.getStackTraceAsString(e));     
+            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));     
         }
     }
     
@@ -799,16 +1018,29 @@ public class OpenCmsTestCase extends TestCase {
      * @param resourceName the name of the resource in the vfs
      */
     protected void storeResources(CmsObject cms, String resourceName) {
-        try {
+        
+        String resName = "";
+        
+        try {            
             CmsResource resource = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
             // test if the name belongs to a file or folder
             if (resource.isFile()) {
                 m_resourceStrorage.add(resourceName, resource);
             } else {
-                // TODO: add handling for subtrees here
+                // this is a folder, so first add the folder itself to the storeage
+                m_resourceStrorage.add(resourceName, resource);
+                
+                // now get all subresources and add them as well
+                List resources = cms.getResourcesInTimeRange(resourceName, CmsResource.DATE_RELEASED_DEFAULT, CmsResource.DATE_EXPIRED_DEFAULT);
+                Iterator i = resources.iterator();
+                while (i.hasNext()) {
+                    CmsResource res = (CmsResource) i.next();
+                    resName = cms.readAbsolutePath(resource, CmsResourceFilter.ALL) + res.getName();
+                    m_resourceStrorage.add(resName, res);
+                }
             }
             } catch (CmsException e) {
-                fail("cannot read resource "+resourceName+" "+CmsException.getStackTraceAsString(e));                
+                fail("cannot read resource "+resourceName+" or " +resName + " "+CmsException.getStackTraceAsString(e));                
             }
     }
     
