@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2003/11/08 10:32:44 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2003/11/10 10:09:52 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,11 @@ import com.opencms.flex.jsp.CmsJspActionElement;
 import com.opencms.util.Encoder;
 import com.opencms.workplace.I_CmsWpConstants;
 
+import org.opencms.main.OpenCms;
+import org.opencms.site.CmsSite;
+import org.opencms.site.CmsSiteManager;
+import org.opencms.util.CmsStringSubstitution;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.ParseException;
@@ -57,16 +62,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.PageContext;
 
-import org.opencms.main.OpenCms;
-import org.opencms.site.CmsSite;
-import org.opencms.site.CmsSiteManager;
-
 /**
  * Master class for the JSP based workplace which provides default methods and
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  * 
  * @since 5.1
  */
@@ -434,12 +435,25 @@ public abstract class CmsWorkplace {
     public long getCalendarDate(String dateString) throws ParseException {
         long dateLong = 0;
         String dateFormat = key("calendar.dateformat");
-        // substitute small "m" with capital "M" because calendar syntax != DateFormat syntax
+        // substitute some chars because calendar syntax != DateFormat syntax
+        dateFormat = dateFormat.replace('e', 'd');
+        dateFormat = dateFormat.replace('Y', 'y');
         dateFormat = dateFormat.replace('m', 'M');
-        
+        dateFormat = CmsStringSubstitution.substitute(dateFormat, "%", "");
         SimpleDateFormat df = new SimpleDateFormat(dateFormat);       
-        dateLong = df.parse(dateString).getTime();       
+        dateLong = df.parse(dateString).getTime();    
         return dateLong;
+    }
+    
+    /**
+     * Displays a javascript calendar element with the standard "system" style.<p>
+     * 
+     * Creates the HTML javascript and stylesheet includes for the head of the page.<p>
+     * 
+     * @return the necessary HTML code for the js and stylesheet includes
+     */
+    public String calendarIncludes() {
+        return calendarIncludes("system");
     }
     
     /**
@@ -447,12 +461,16 @@ public abstract class CmsWorkplace {
      * 
      * Creates the HTML javascript and stylesheet includes for the head of the page.<p>
      * 
+     * @param style the name of the used calendar style, e.g. "system", "blue"
      * @return the necessary HTML code for the js and stylesheet includes
      */
-    public String calendarIncludes() {
+    public String calendarIncludes(String style) {
         StringBuffer result = new StringBuffer(512);
         String calendarPath = getSkinUri() + "components/js_calendar/";
-        result.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + calendarPath + "calendar-system.css\">\n");
+        if (style == null || "".equals(style)) {
+            style = "system";
+        }
+        result.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + calendarPath + "calendar-" + style + ".css\">\n");
         result.append("<script type=\"text/javascript\" src=\"" + calendarPath + "calendar.js\"></script>\n");
         result.append("<script type=\"text/javascript\" src=\"" + calendarPath + "lang/calendar-" + getSettings().getLanguage() + ".js\"></script>\n");
         result.append("<script type=\"text/javascript\" src=\"" + calendarPath + "calendar-setup.js\"></script>\n");
@@ -470,10 +488,10 @@ public abstract class CmsWorkplace {
      * @param singleClick if true, a single click selects a date and closes the calendar, otherwise calendar is closed by doubleclick
      * @param weekNumbers show the week numbers in the calendar or not
      * @param mondayFirst show monday as first day of week
-     * @param disableFunc name of the function which determines is a date should be disabled
+     * @param dateStatusFunc name of the function which determines if/how a date should be disabled
      * @return the HTML code to initialize a calendar poup element
      */
-    public String calendarInit(String inputFieldId, String triggerButtonId, String align, boolean singleClick, boolean weekNumbers, boolean mondayFirst, String disableFunc) {
+    public String calendarInit(String inputFieldId, String triggerButtonId, String align, boolean singleClick, boolean weekNumbers, boolean mondayFirst, String dateStatusFunc) {
         StringBuffer result = new StringBuffer(512);
         if (align == null || "".equals(align)) {
             align = "Bc";
@@ -488,8 +506,8 @@ public abstract class CmsWorkplace {
         result.append("\t\tsingleClick    :    " + singleClick + ",\n");
         result.append("\t\tweekNumbers    :    " + weekNumbers + ",\n");
         result.append("\t\tmondayFirst    :    " + mondayFirst);
-        if (disableFunc != null && !"".equals(disableFunc)) {
-            result.append(",\n\t\tdisableFunc    :    " + disableFunc);
+        if (dateStatusFunc != null && !"".equals(dateStatusFunc)) {
+            result.append(",\n\t\tdateStatusFunc :    " + dateStatusFunc);
         }
         result.append("\n\t});\n");
 
