@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/htmlconverter/Attic/CmsHtmlConverter.java,v $
-* Date   : $Date: 2001/11/21 11:28:31 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2001/11/23 15:04:56 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@ package com.opencms.htmlconverter;
 
 import java.io.*;
 import java.util.*;
+import java.net.*;
 import org.w3c.tidy.Tidy;
 import org.w3c.dom.*;
 import com.opencms.htmlconverter.*;
@@ -71,6 +72,8 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
     private CmsHtmlConverterObjectReplaceBlocks m_blockObject = new CmsHtmlConverterObjectReplaceBlocks();
     // replacestring for the modifyParameter methode. Used for the html editor replacement
     private String m_servletPrefix = null;
+    //the url object for links that should not be replaced
+    private URL m_url = null;
 
     /**
      * default constructor
@@ -106,6 +109,15 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
      */
     public void setServletPrefix(String prefix){
         m_servletPrefix = prefix;
+    }
+
+    /**
+     * sets the url.
+     *
+     * @param url object.
+     */
+    public void setOriginalUrl(URL orgUrl){
+        m_url = orgUrl;
     }
 
     /**
@@ -438,7 +450,12 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
                         valueParam = m_tools.scanNodeAttrs(node,m_tagObject.getParameter());
                         // HACK: only replace attribute value of parameter attribute!
                         if (m_tagObject.getReplaceParamAttr()) {
-                            valueParam = m_tools.modifyParameter(valueParam, m_servletPrefix);
+                            if (!m_tools.shouldReplaceUrl(m_url,valueParam)) {
+                                tempReplaceString = "$parameter$";
+                            }
+                            else {
+                                valueParam = m_tools.modifyParameter(m_url, valueParam, m_servletPrefix);
+                            }
                             tempReplaceString = m_tools.reconstructTag(tempReplaceString,node,m_tagObject.getParameter(),m_configuration.getQuotationmark());
                         }
                         tempReplaceString = m_tools.replaceString(tempReplaceString,"$parameter$",valueParam);

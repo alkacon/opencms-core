@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/htmlconverter/Attic/CmsHtmlConverterTools.java,v $
-* Date   : $Date: 2001/11/21 11:28:31 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2001/11/23 15:04:56 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,7 +33,7 @@ import java.util.*;
 import org.w3c.dom.*;
 import com.opencms.htmlconverter.*;
 //HACK for Hanjo: parametermodification
-import java.net.URL;
+import java.net.*;
 
 /**
  * Various methods used by CmsHtmlConverter to
@@ -154,13 +154,20 @@ final class CmsHtmlConverterTools {
         return "";
     }
 
-    protected String modifyParameter(String parameter, String prefix) {
+    protected String modifyParameter(URL orgUrl, String parameter, String prefix) {
         try {
             URL myURL = new URL(parameter);
             parameter = myURL.getFile();
         }
-        catch (IOException e) {
-            System.err.println("Error: " + e.toString());
+        catch (MalformedURLException e) {
+            if(!parameter.startsWith("/")){
+                //this is a relative link
+                try{
+                    URL newUrl = new URL(orgUrl, parameter);
+                    parameter = newUrl.getFile();
+                }catch(MalformedURLException exc){
+                }
+            }
         }
         // remove the servletprefix
         if(prefix != null && !"".equals(prefix)){
@@ -169,6 +176,34 @@ final class CmsHtmlConverterTools {
             }
         }
         return parameter;
+    }
+
+    protected boolean shouldReplaceUrl(URL orgUrl, String valueParam) {
+
+        // HACK: if this link has already a link tag in it don't replace it
+        // this is only for a special project and should be removed sometime...
+        if(valueParam != null && (valueParam.indexOf("<link>") != -1 || valueParam.indexOf("<LINK>") != -1)){
+            return false;
+        }
+        if (orgUrl == null) {
+            return false;
+        }
+        URL paramUrl = null;
+        try {
+            paramUrl = new URL(valueParam);
+        }
+        catch (MalformedURLException e) {
+            return true;
+        }
+        if (orgUrl.getProtocol().equalsIgnoreCase(paramUrl.getProtocol())
+                && orgUrl.getHost().equalsIgnoreCase(paramUrl.getHost())) {
+            if(paramUrl.getFile() == null || "".equals(paramUrl.getFile())){
+                return false;
+            }else{
+                return true;
+            }
+        }
+        return false;
     }
 
     protected String reconstructTag(String replace, Node node, String param, String quotationMark) {

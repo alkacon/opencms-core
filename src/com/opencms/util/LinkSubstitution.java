@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/LinkSubstitution.java,v $
-* Date   : $Date: 2001/11/22 17:26:37 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2001/11/23 15:04:56 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@ import com.opencms.file.CmsObject;
 import com.opencms.core.*;
 import com.opencms.htmlconverter.*;
 import org.apache.oro.text.perl.*;
+import javax.servlet.http.*;
+import java.net.*;
 import java.io.*;
 
 /**
@@ -73,13 +75,24 @@ public class LinkSubstitution {
         return result;
     }
 
-    /**
+     /**
      * parses the html content from the editor. It replaces the links in <a href=""
      * and in <image src="". They will be replaced with ]]><LINK> path in opencms <LINK><![CDATA[
      */
     public String substituteEditorContent(CmsObject cms, String content)throws CmsException{
+        return substituteEditorContent(cms, content, null);
+    }
+
+   /**
+     * parses the html content from the editor. It replaces the links in <a href=""
+     * and in <image src="". They will be replaced with ]]><LINK> path in opencms <LINK><![CDATA[
+     */
+    public String substituteEditorContent(CmsObject cms, String content, String path)throws CmsException{
         CmsHtmlConverter converter = new CmsHtmlConverter();
         String retValue = null;
+        if(path == null || "".equals(path)){
+            path = "/";
+        }
         try{
             //converter.setTidyConfFile("/andzah/projekte/ebk/config.txt");
             if(converter.hasErrors(content)){
@@ -109,7 +122,15 @@ public class LinkSubstitution {
                         "		<tag name=\"a\" attrib=\"href\" replacestarttag=\"]]&gt;&lt;LINK&gt;&lt;![CDATA[$parameter$]]&gt;&lt;/LINK&gt;&lt;![CDATA[\" replaceendtag=\"&lt;/a&gt;\" parameter=\"href\" replaceparamattr=\"true\"/>"+
                         "	</replacetags>"+
                         "</converterconfig>");
-            converter.setServletPrefix("/opencms");//Todo:replace this by the aktual servletprefix
+            // get parameter to create the url object of the edited file
+            String servletPrefix = cms.getRequestContext().getRequest().getServletUrl();
+            String spec = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getRequestURL().toString();
+            String prot = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getScheme();
+            String host = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServerName();
+            int port = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServerPort();
+            URL urltool = new URL(prot, host, port, servletPrefix + path);
+            converter.setServletPrefix(servletPrefix);
+            converter.setOriginalUrl(urltool);
             retValue = converter.convertHTML(content);
         }catch ( Exception e ){
             throw new CmsException("["+this.getClass().getName()+"] cant convert the editor content:"+e.toString());
