@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagProperty.java,v $
- * Date   : $Date: 2004/02/13 13:41:44 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/04/10 12:58:55 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -87,7 +87,7 @@ import javax.servlet.jsp.JspException;
  * </DL>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsJspTagProperty extends javax.servlet.jsp.tagext.TagSupport {
     
@@ -306,27 +306,27 @@ public class CmsJspTagProperty extends javax.servlet.jsp.tagext.TagSupport {
             case 0: // USE_URI
             case 1: // USE_PARENT
                 // Read properties of parent (i.e. top requested) file
-                value = controller.getCmsObject().readProperty(controller.getCmsObject().getRequestContext().getUri(), property, false, defaultValue); 
+                value = controller.getCmsObject().readPropertyObject(controller.getCmsObject().getRequestContext().getUri(), property, false).getValue(defaultValue); 
                 break;
             case 2: // USE_SEARCH
             case 3: // USE_SEARCH_URI
             case 4: // USE_SEARCH_PARENT 
                 // Try to find property on parent file and all parent folders
-                value = controller.getCmsObject().readProperty(controller.getCmsObject().getRequestContext().getUri(), property, true, defaultValue);
+                value = controller.getCmsObject().readPropertyObject(controller.getCmsObject().getRequestContext().getUri(), property, true).getValue(defaultValue);
                 break;                
             case 5: // USE_ELEMENT_URI
             case 6: // USE_THIS
                 // Read properties of this file            
-                value = controller.getCmsObject().readProperty(controller.getCurrentRequest().getElementUri(), property, false, defaultValue);
+                value = controller.getCmsObject().readPropertyObject(controller.getCurrentRequest().getElementUri(), property, false).getValue(defaultValue);
                 break;
             case 7: // USE_SEARCH_ELEMENT_URI
             case 8: // USE_SEARCH_THIS
                 // Try to find property on this file and all parent folders
-                value = controller.getCmsObject().readProperty(controller.getCurrentRequest().getElementUri(), property, true, defaultValue);
+                value = controller.getCmsObject().readPropertyObject(controller.getCurrentRequest().getElementUri(), property, true).getValue(defaultValue);
                 break;
             default:
                 // Read properties of the file named in the attribute            
-                value = controller.getCmsObject().readProperty(CmsLinkManager.getAbsoluteUri(action, controller.getCurrentRequest().getElementUri()), property, false, defaultValue);
+                value = controller.getCmsObject().readPropertyObject(CmsLinkManager.getAbsoluteUri(action, controller.getCurrentRequest().getElementUri()), property, false).getValue(defaultValue);
         }           
         if (escape) {
             value = CmsEncoder.escapeHtml(value);

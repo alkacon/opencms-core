@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspNavBuilder.java,v $
- * Date   : $Date: 2004/02/13 14:37:04 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/04/10 12:58:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Map;
  * {@link org.opencms.jsp.CmsJspNavElement}.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @see org.opencms.jsp.CmsJspNavElement
  * 
@@ -632,7 +632,7 @@ public class CmsJspNavBuilder {
             try {
                 cms.getRequestContext().saveSiteRoot();
                 cms.setContextToCos();
-                m_title = cms.readProperty(cms.readAbsolutePath(res), org.opencms.main.I_CmsConstants.C_PROPERTY_TITLE);
+                m_title = cms.readPropertyObject(cms.readAbsolutePath(res), org.opencms.main.I_CmsConstants.C_PROPERTY_TITLE, false).getValue();
                 cms.getRequestContext().restoreSiteRoot();
             } catch (Exception e) {
                 m_title = "";

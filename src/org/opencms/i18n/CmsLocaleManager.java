@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleManager.java,v $
- * Date   : $Date: 2004/03/29 10:39:53 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/04/10 12:56:15 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Map;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class CmsLocaleManager {
     
@@ -258,7 +258,7 @@ public class CmsLocaleManager {
     
         String availableNames = null;
         try {
-            availableNames = cms.readProperty(resourceName, I_CmsConstants.C_PROPERTY_AVAILABLE_LOCALES, true);
+            availableNames = cms.readPropertyObject(resourceName, I_CmsConstants.C_PROPERTY_AVAILABLE_LOCALES, true).getValue();
         } catch (CmsException exc) {
             // noop
         }
@@ -409,7 +409,7 @@ public class CmsLocaleManager {
         
         String defaultNames = null;
         try {
-            defaultNames = cms.readProperty(resourceName, I_CmsConstants.C_PROPERTY_LOCALE, true);
+            defaultNames = cms.readPropertyObject(resourceName, I_CmsConstants.C_PROPERTY_LOCALE, true).getValue();
         } catch (CmsException e) {
             OpenCms.getLog(this).warn("Could not read locale property for resource " + resourceName, e);
         }        

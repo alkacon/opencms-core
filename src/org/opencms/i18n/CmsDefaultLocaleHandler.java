@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsDefaultLocaleHandler.java,v $
- * Date   : $Date: 2004/03/29 10:39:53 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/04/10 12:56:15 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com) 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  */
 public class CmsDefaultLocaleHandler implements I_CmsLocaleHandler {
 
@@ -84,10 +84,11 @@ public class CmsDefaultLocaleHandler implements I_CmsLocaleHandler {
             defaultLocales = localeManager.getDefaultLocales(m_adminCmsObject, resourceName);
             // get the encoding
             try {
-                encoding = m_adminCmsObject.readProperty(resourceName, I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, true, OpenCms.getSystemInfo().getDefaultEncoding());
+                encoding = m_adminCmsObject.readPropertyObject(resourceName, I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, true).getValue(OpenCms.getSystemInfo().getDefaultEncoding());
             } catch (CmsException e) {
-                // should never happen since the resource must exist
-                OpenCms.getLog(this).error("Could not read encoding property for resource " + resourceName, e);
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info("Could not read encoding property for resource " + resourceName, e);
+                } 
                 encoding = OpenCms.getSystemInfo().getDefaultEncoding();
             }
         }

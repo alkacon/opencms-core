@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInclude.java,v $
- * Date   : $Date: 2004/03/29 10:39:54 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2004/04/10 12:58:55 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * Used to include another OpenCms managed resource in a JSP.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  */
 public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParamParent { 
     
@@ -259,7 +259,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
                     System.err.println("IncludeTag: property=" + m_property);
                 }
                 try { 
-                    String prop = controller.getCmsObject().readProperty(controller.getCmsObject().getRequestContext().getUri(), m_property, true);
+                    String prop = controller.getCmsObject().readPropertyObject(controller.getCmsObject().getRequestContext().getUri(), m_property, true).getValue();
                     if (DEBUG) {
                         System.err.println("IncludeTag: property=" + m_property + " is " + prop);
                     }
