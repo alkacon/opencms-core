@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
- * Date   : $Date: 2000/05/02 14:23:12 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2000/05/03 14:41:24 $
+ * Version: $Revision: 1.32 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -32,6 +32,7 @@ import java.util.*;
 import java.io.*;
 import com.opencms.launcher.*;
 import com.opencms.file.*;
+import com.opencms.util.*;
 import com.opencms.core.*;
 
 import org.w3c.dom.*;
@@ -44,7 +45,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.31 $ $Date: 2000/05/02 14:23:12 $
+ * @version $Revision: 1.32 $ $Date: 2000/05/03 14:41:24 $
  */
 public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLogChannels {
     
@@ -553,9 +554,53 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
     public Object getFrameQueryString(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
             throws CmsException {
         String query = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getQueryString();
+        
+        StringBuffer encQuery = new StringBuffer();
+        boolean notfirst = false;
+        if(query != null) {
+            // Fine. A lasturl parameter was found in session or parameter hashtable.
+            // Check, if the URL parameters of the last url have to be encoded.
+            int asteriskIdx = query.indexOf("?");
+            if(asteriskIdx > -1 && (asteriskIdx < (query.length()-1))) {
+                // In fact, there are URL parameters
+                encQuery.append(query.substring(0, asteriskIdx + 1));       
+                String queryString = query.substring(asteriskIdx + 1);
+                StringTokenizer st = new StringTokenizer(queryString, "&");
+                while(st.hasMoreTokens()) {
+                    // Loop through all URL parameters
+                    String currToken = st.nextToken();
+                    if(currToken != null && !"".equals(currToken)) {
+                        // Look for the "=" character to divide parameter name and value
+                        int idx = currToken.indexOf("=");
+                        if(notfirst) {
+                            encQuery.append("&");
+                        } else {
+                            notfirst = true;
+                        }
+                        if(idx > -1) {
+                            // A parameter name/value pair was found.
+                            // Encode the parameter value and write back!
+                            String key = currToken.substring(0,idx);
+                            String value = (idx < (currToken.length()-1))?currToken.substring(idx+1):"";
+                            encQuery.append(key);
+                            encQuery.append("=");
+                            encQuery.append(Encoder.escape(value));
+                        } else {
+                            // Something strange happened.
+                            // Maybe a parameter without "=" ?
+                            // Write back without encoding!
+                            encQuery.append(currToken);
+                        }
+                    }                    
+                }
+                query = encQuery.toString();
+            }
+        }
+        
 		if (query==null) {
 			query="";
 		}
+                
         if(!query.equals("")) {
 			if (query.indexOf("cmsframe=")!=-1) {
 				int start=query.indexOf("cmsframe=");

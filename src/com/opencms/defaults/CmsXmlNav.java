@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlNav.java,v $
- * Date   : $Date: 2000/05/02 14:22:45 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/05/03 14:41:15 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -30,6 +30,7 @@ package com.opencms.defaults;
 
 import com.opencms.file.*;
 import com.opencms.core.*;
+import com.opencms.util.*;
 import com.opencms.template.*;
 
 import javax.servlet.*;
@@ -42,7 +43,7 @@ import java.util.*;
  * 
  * @author Alexander Kandzior
  * @author Waruschan Babachan
- * @version $Revision: 1.12 $ $Date: 2000/05/02 14:22:45 $
+ * @version $Revision: 1.13 $ $Date: 2000/05/03 14:41:15 $
  */
 public class CmsXmlNav extends A_CmsNavBase {
 	
@@ -991,9 +992,9 @@ public class CmsXmlNav extends A_CmsNavBase {
 				if (navLink[i].endsWith("/")) {
 					String cmsfold="";
 					if (cmsframe.equals("")) {
-						cmsfold="?cmsfolder="+navLink[i];
+						cmsfold="?cmsfolder="+ Encoder.escape(navLink[i]);
 					} else {
-						cmsfold="&cmsfolder="+navLink[i];
+						cmsfold="&cmsfolder="+ Encoder.escape(navLink[i]);
 					}
 					String navIndex=cms.readProperty(navLink[i],C_PROPERTY_NAVINDEX);
 					if (navIndex==null) {
