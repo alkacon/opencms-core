@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2003/01/23 10:44:09 $
-* Version: $Revision: 1.37 $
+* Date   : $Date: 2003/01/23 20:38:49 $
+* Version: $Revision: 1.38 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Vector;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants, Serializable, com.opencms.workplace.I_CmsWpConstants {
 
@@ -780,20 +780,23 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
             if(properties == null){
                 properties = new Hashtable();
             }
-            if(oldProperties.size() != properties.size()){
-            	changed = true;
-            } else {
-            	// check each of the properties
-            	Enumeration keys = properties.keys();
-            	while(keys.hasMoreElements()){
-            		String curKey = (String)keys.nextElement();
-            		String value = (String)properties.get(curKey);
-            		String oldValue = (String)oldProperties.get(curKey);
-            		if((oldValue == null) || !(value.trim().equals(oldValue.trim()))){
-            			changed = true;
-            			break;
-            		}
-            	}
+            if (properties.size() > 0) {
+                // if no properties are to be imported we do not need to check the old properties
+                if (oldProperties.size() != properties.size()) {
+                    changed = true;
+                } else {
+                    // check each of the properties
+                    Enumeration keys = properties.keys();
+                    while (keys.hasMoreElements()) {
+                        String curKey = (String) keys.nextElement();
+                        String value = (String) properties.get(curKey);
+                        String oldValue = (String) oldProperties.get(curKey);
+                        if ((oldValue == null) || !(value.trim().equals(oldValue.trim()))) {
+                            changed = true;
+                            break;
+                        }
+                    }
+                }
             }
             // check changes of the owner, group and access
             if(importedResource.getAccessFlags() != Integer.parseInt(access) ||
