@@ -1,6 +1,6 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDownGalleries.java,v $
- * Date   : $Date: 2000/05/30 10:06:09 $
+ * Date   : $Date: 2000/05/31 12:17:20 $
  * Version: $ $
  *
  * Copyright (C) 2000  The OpenCms Group 
@@ -41,7 +41,7 @@ import javax.servlet.http.*;
  * <p> 
  * 
  * @author Mario Stanke
- * @version $Revision: 1.2 $ $Date: 2000/05/30 10:06:09 $
+ * @version $Revision: 1.3 $ $Date: 2000/05/31 12:17:20 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminDownGalleries extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsFileListUsers {
@@ -111,8 +111,8 @@ public class CmsAdminDownGalleries extends CmsWorkplaceDefault implements I_CmsC
 			try {   
 				// create the folder
 				// get the path from the workplace.ini
-				String superfolder = getConfigFile(cms).getDownGalleryPath(); 
-				CmsFolder folder=cms.createFolder(superfolder, galleryname); 
+				String superfolder = getConfigFile(cms).getDownGalleryPath();  
+				CmsFolder folder=cms.createFolder(superfolder, galleryname);
 				cms.lockResource(folder.getAbsolutePath()); 
 				cms.writeProperty(folder.getAbsolutePath(), C_PROPERTY_TITLE, title);
 				cms.chgrp(folder.getAbsolutePath(), group);
@@ -125,7 +125,7 @@ public class CmsAdminDownGalleries extends CmsWorkplaceDefault implements I_CmsC
 					flag ^= C_ACCESS_PUBLIC_WRITE;	
 				}  
 				cms.chmod(folder.getAbsolutePath(), flag);
-            } catch (CmsException ex) { 
+            } catch (CmsException ex) {  
 				xmlTemplateDocument.setData("ERRORDETAILS", Utils.getStackTrace(ex));
 				templateSelector="error"; 
             } 
@@ -192,7 +192,7 @@ public class CmsAdminDownGalleries extends CmsWorkplaceDefault implements I_CmsC
 		}
 		
 		xmlTemplateDocument.setData("link_value", foldername); 
-		xmlTemplateDocument.setData("lasturl", lasturl);
+		xmlTemplateDocument.setData("lasturl", lasturl); 
 		
         // Finally start the processing
 		return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
