@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSite.java,v $
- * Date   : $Date: 2004/06/14 15:50:10 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/10/05 14:31:31 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,15 +38,15 @@ import org.opencms.util.CmsUUID;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since 5.1
  */
-public final class CmsSite implements Cloneable {   
+public final class CmsSite implements Cloneable {
 
     /** Name of the property to use for defining directories as site roots. */
     public static final String C_PROPERTY_SITE = "siteroot";
-    
-    /** The site matcher that describes the site. */ 
+
+    /** The site matcher that describes the site. */
     private CmsSiteMatcher m_siteMatcher;
 
     /** Root directory of this site in the OpenCms VFS. */
@@ -55,15 +55,8 @@ public final class CmsSite implements Cloneable {
     /** UUID of this site's root directory in the OpenCms VFS. */
     private CmsUUID m_siteRootUUID;
 
-    /** Display title of this site. */    
+    /** Display title of this site. */
     private String m_title;
-
-    /**
-     * Hides the public default constructor.<p>
-     */
-    private CmsSite() {
-        // NOOP
-    }
 
     /**
      * Constructs a new site object without title and id information,
@@ -73,9 +66,10 @@ public final class CmsSite implements Cloneable {
      * @param siteMatcher the site matcher for this site
      */
     public CmsSite(String siteRoot, CmsSiteMatcher siteMatcher) {
+
         this(siteRoot, CmsUUID.getNullUUID(), siteRoot, siteMatcher);
     }
-        
+
     /**
      * Constructs a new site object with a default (wildcard) a site matcher,
      * this is to be used for display purposes only.<p>
@@ -85,8 +79,9 @@ public final class CmsSite implements Cloneable {
      * @param title display name of this site
      */
     public CmsSite(String siteRoot, CmsUUID siteRootUUID, String title) {
+
         this(siteRoot, siteRootUUID, title, CmsSiteMatcher.C_DEFAULT_MATCHER);
-    }    
+    }
 
     /**
      * Constructs a new site object.<p>
@@ -97,34 +92,44 @@ public final class CmsSite implements Cloneable {
      * @param siteMatcher the site matcher for this site
      */
     public CmsSite(String siteRoot, CmsUUID siteRootUUID, String title, CmsSiteMatcher siteMatcher) {
+
         setSiteRoot(siteRoot);
         setSiteRootUUID(siteRootUUID);
         setTitle(title);
         setSiteMatcher(siteMatcher);
     }
-    
+
+    /**
+     * Hides the public default constructor.<p>
+     */
+    private CmsSite() {
+
+        // NOOP
+    }
+
     /**
      * Returns a clone of this Objects instance.<p>
      * 
      * @return a clone of this instance
      */
     public Object clone() {
+
         return new CmsSite(
-            getSiteRoot(), 
-            (CmsUUID)getSiteRootUUID().clone(), 
-            getTitle(), 
-            (CmsSiteMatcher)getSiteMatcher().clone()
-        );
+            getSiteRoot(),
+            (CmsUUID)getSiteRootUUID().clone(),
+            getTitle(),
+            (CmsSiteMatcher)getSiteMatcher().clone());
     }
-    
+
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(Object o) {
+
         if ((o == null) || !(o instanceof CmsSite)) {
             return false;
         }
-        return getSiteMatcher().equals(((CmsSite)o).getSiteMatcher());        
+        return getSiteMatcher().equals(((CmsSite)o).getSiteMatcher());
     }
 
     /**
@@ -133,6 +138,7 @@ public final class CmsSite implements Cloneable {
      * @return the site matcher that describes the URL of this site
      */
     public CmsSiteMatcher getSiteMatcher() {
+
         return m_siteMatcher;
     }
 
@@ -142,6 +148,7 @@ public final class CmsSite implements Cloneable {
      * @return the server URL prefix to which this site is mapped
      */
     public String getSiteRoot() {
+
         return m_siteRoot;
     }
 
@@ -151,16 +158,8 @@ public final class CmsSite implements Cloneable {
      * @return the UUID of this site's root directory in the OpenCms VFS
      */
     public CmsUUID getSiteRootUUID() {
+
         return m_siteRootUUID;
-    }
-    
-    /**
-     * Returns the server url of this site root.<p>
-     * 
-     * @return the server url
-     */
-    public String getUrl() {
-        return m_siteMatcher.getUrl();
     }
 
     /**
@@ -169,14 +168,41 @@ public final class CmsSite implements Cloneable {
      * @return the root directory of this site in the OpenCms VFS
      */
     public String getTitle() {
+
         return m_title;
     }
-    
+
+    /**
+     * Returns the server url of this site root.<p>
+     * 
+     * @return the server url
+     */
+    public String getUrl() {
+
+        return m_siteMatcher.getUrl();
+    }
+
     /**
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
+
         return m_siteRootUUID.hashCode();
+    }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    public String toString() {
+
+        StringBuffer result = new StringBuffer(128);
+        result.append("server: ");
+        result.append(m_siteMatcher != null ? m_siteMatcher.toString() : "null");
+        result.append(" uri: ");
+        result.append(m_siteRoot);
+        result.append(" title: ");
+        result.append(m_title);
+        return result.toString();
     }
 
     /**
@@ -185,6 +211,7 @@ public final class CmsSite implements Cloneable {
      * @param siteMatcher the site matcher that describes the URL of this site
      */
     protected void setSiteMatcher(CmsSiteMatcher siteMatcher) {
+
         m_siteMatcher = siteMatcher;
     }
 
@@ -194,10 +221,11 @@ public final class CmsSite implements Cloneable {
      * @param siteRoot the server URL prefix to which this site is mapped
      */
     protected void setSiteRoot(String siteRoot) {
+
         // site roots must never end with a "/"
         if (siteRoot.endsWith("/")) {
-            m_siteRoot = siteRoot.substring(0, siteRoot.length()-1);
-        } else {        
+            m_siteRoot = siteRoot.substring(0, siteRoot.length() - 1);
+        } else {
             m_siteRoot = siteRoot;
         }
     }
@@ -208,6 +236,7 @@ public final class CmsSite implements Cloneable {
      * @param siteRootUUID the UUID of this site's root directory in the OpenCms VFS
      */
     protected void setSiteRootUUID(CmsUUID siteRootUUID) {
+
         m_siteRootUUID = siteRootUUID;
     }
 
@@ -217,20 +246,8 @@ public final class CmsSite implements Cloneable {
      * @param name the display title of this site in the OpenCms VFS
      */
     protected void setTitle(String name) {
+
         m_title = name;
-    }
-    
-    /**
-     * @see java.lang.Object#toString()
-     */
-    public String toString() {
-        StringBuffer result = new StringBuffer(128);
-        result.append(m_siteMatcher!= null?m_siteMatcher.toString():"null");
-        result.append("|");
-        result.append(m_siteRoot);
-        result.append("|");
-        result.append(m_title);
-        return result.toString();
     }
 
 }

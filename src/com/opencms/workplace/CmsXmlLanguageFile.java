@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlLanguageFile.java,v $
-* Date   : $Date: 2004/07/18 16:27:12 $
-* Version: $Revision: 1.62 $
+* Date   : $Date: 2004/10/05 14:31:31 $
+* Version: $Revision: 1.63 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,12 +35,13 @@ package com.opencms.workplace;
  * been changed to use the standard <code>java.util.ResouceBundle</code> technology.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.62 $ $Date: 2004/07/18 16:27:12 $
+ * @version $Revision: 1.63 $ $Date: 2004/10/05 14:31:31 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 
@@ -53,6 +54,9 @@ public class CmsXmlLanguageFile {
 
     /** The name of the property file */
     public static final String C_BUNDLE_NAME = "org.opencms.workplace.workplace";
+    
+    /** The Locales Support Runtime Property Name */
+    public static final String C_COMPATIBILITY_OLDLOCALES = "compatibility.support.oldlocales";
     
     /** Localized message access object for the default workplace */
     private CmsMessages m_messages;
@@ -131,10 +135,13 @@ public class CmsXmlLanguageFile {
         }      
         if (m_supportOldLocale == null) {
             if (DEBUG > 0) System.err.println("CmsXmlLanguageFile(): reading old locale support property");
-            synchronized(this) {
+            synchronized (this) {
                 // set compatiblity flag for old locales
-                Boolean flag = (Boolean)OpenCms.getRuntimeProperty("compatibility.support.oldlocales");
-                m_supportOldLocale = (flag != null)?flag:new Boolean(false);                
+                Boolean flag = Boolean.valueOf((String)OpenCms.getRuntimeProperty(C_COMPATIBILITY_OLDLOCALES));
+                m_supportOldLocale = (flag != null)?flag:new Boolean(false);
+                if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                    OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Old locale support   : " + (m_supportOldLocale.booleanValue() ? "enabled" : "disabled"));
+                }
             }
         }
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2004/09/22 12:08:53 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/10/05 14:31:31 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -127,11 +127,8 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     public static final String N_SHOWLOCK = "showlock";
     
     /** The node name of the showprojects node. */
-    public static final String N_SHOWPROJECTS = "showprojects"; 
+    public static final String N_SHOWPROJECTS = "showprojects";    
     
-    /** The node name of the start site node. */
-    public static final String N_SITE = "site";
-   
     /** The node name of the startupfilter node. */
     public static final String N_STARTUPFILTER = "startupfilter";    
     
@@ -170,10 +167,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     
     /** The "target" attribute. */
     protected static final String A_TARGET = "target";
-
-    
-    /** The "value" attribute. */
-    protected static final String A_VALUE = "value";    
     
     /** The name of the access control node. */
     protected static final String N_ACCESSCONTROL = "accesscontrol";

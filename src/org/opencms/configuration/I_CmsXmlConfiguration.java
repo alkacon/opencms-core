@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/I_CmsXmlConfiguration.java,v $
- * Date   : $Date: 2004/09/20 08:15:06 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/10/05 14:31:31 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,6 +66,9 @@ public interface I_CmsXmlConfiguration extends I_CmsConfigurationParameterHandle
 
     /** The "name" attribute. */
     String A_NAME = "name";
+    
+    /** The "value" attribute. */
+    String A_VALUE = "value";       
 
     /** The "order" attribute. */
     String A_ORDER = "order";
@@ -102,6 +105,10 @@ public interface I_CmsXmlConfiguration extends I_CmsConfigurationParameterHandle
         
     /** An individual resource node. */
     String N_RESOURCE = "resource";
+    
+    /** An individual site node. */
+    String N_SITE = "site";
+
     
     /**
      * Digests an XML node and creates an instance of this configurable class.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2004/08/19 12:26:13 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/10/05 14:31:31 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,11 +41,16 @@ import org.opencms.main.I_CmsResourceInit;
 import org.opencms.main.OpenCms;
 import org.opencms.scheduler.CmsScheduleManager;
 import org.opencms.scheduler.CmsScheduledJobInfo;
+import org.opencms.site.CmsSite;
+import org.opencms.site.CmsSiteManager;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.digester.Digester;
@@ -144,11 +149,26 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     /** The node name for the version history. */
     protected static final String N_VERSIONHISTORY = "versionhistory";
     
+    /** The node name for the sites node. */
+    protected static final String N_SITES = "sites";
+    
+    /** The node name for the workplace-server node. */
+    protected static final String N_WORKPLACE_SERVER = "workplace-server";
+    
+    /** The node name for the default-uri node. */
+    protected static final String N_DEFAULT_URI = "default-uri";
+    
+    /** The node name for the runtime properties node. */
+    private static final String N_RUNTIMEPROPERTIES = "runtimeproperties";   
+    
     /** The name of the DTD for this configuration. */
     private static final String C_CONFIGURATION_DTD_NAME = "opencms-system.dtd";
     
     /** The name of the default XML file for this configuration. */
-    private static final String C_DEFAULT_XML_FILE_NAME = "opencms-system.xml";    
+    private static final String C_DEFAULT_XML_FILE_NAME = "opencms-system.xml";  
+    
+    /** The "server" attribute. */
+    protected static final String A_SERVER = "server";   
            
     /** The list of jobs for the scheduler. */
     private List m_configuredJobs;
@@ -177,6 +197,13 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     /** The maximum number of entries in the version history (per resource). */
     private int m_versionHistoryMaxCount;
     
+    /** The configured site manager. */
+    private CmsSiteManager m_siteManager;
+    
+    /** The runtime properties. */
+    private Map m_runtimeProperties;
+
+     
     /**
      * Public constructor, will be called by configuration manager.<p> 
      */
@@ -187,9 +214,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         m_resourceInitHandlers = new ArrayList();
         m_requestHandlers = new ArrayList();
         m_configuredJobs = new ArrayList();
+        m_runtimeProperties = new HashMap();
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". System configuration : initialized");
-        }           
+        }          
     }
         
     /**
@@ -268,7 +296,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     public void addScheduleManager() {
         
         m_scheduleManager = new CmsScheduleManager(m_configuredJobs);   
-    }
+    } 
+    
 
     /**
      * @see org.opencms.configuration.I_CmsXmlConfiguration#addXmlDigesterRules(org.apache.commons.digester.Digester)
@@ -340,13 +369,31 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
 
         // add request handler classes
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_REQUESTHANDLERS + "/" + N_REQUESTHANDLER, "addRequestHandler", 1);
-        digester.addCallParam("*/" + N_SYSTEM + "/" +  N_REQUESTHANDLERS + "/" + N_REQUESTHANDLER, 0, A_CLASS);    
+        digester.addCallParam("*/" + N_SYSTEM + "/" +  N_REQUESTHANDLERS + "/" + N_REQUESTHANDLER, 0, A_CLASS);   
+        
+        // add site configuration rule        
+        digester.addObjectCreate("*/" + N_SYSTEM + "/" + N_SITES, CmsSiteManager.class);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_WORKPLACE_SERVER, "setWorkplaceServer", 0);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_DEFAULT_URI, "setDefaultUri", 0);
+        digester.addSetNext("*/" + N_SYSTEM + "/" + N_SITES, "setSiteManager");
+        
+        // add site configuration rule
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE, "addSite", 2);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE, 0, A_SERVER);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE, 1, A_URI);
+        
+        // add compatibility parameter rules 
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_RUNTIMEPROPERTIES + "/" + N_PARAM, I_CmsConfigurationParameterHandler.C_ADD_PARAMETER_METHOD, 2);
+        digester.addCallParam ("*/" + N_SYSTEM + "/" + N_RUNTIMEPROPERTIES + "/" + N_PARAM, 0, I_CmsXmlConfiguration.A_NAME);
+        digester.addCallParam ("*/" + N_SYSTEM + "/" + N_RUNTIMEPROPERTIES + "/" + N_PARAM, 1);     
+        
     }
     
     /**
      * @see org.opencms.configuration.I_CmsXmlConfiguration#generateXml(org.dom4j.Element)
      */
     public Element generateXml(Element parent) {
+        
         // generate vfs node and subnodes
         Element systemElement = parent.addElement(N_SYSTEM);        
         
@@ -359,6 +406,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             m_versionHistoryMaxCount = OpenCms.getSystemInfo().getVersionHistoryMaxCount();
             // m_resourceInitHandlers instance must be the one from configuration
             // m_requestHandlers instance must be the one from configuration
+            m_siteManager = OpenCms.getSiteManager();
         }
         
         // i18n nodes
@@ -449,6 +497,34 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             I_CmsRequestHandler clazz = (I_CmsRequestHandler)i.next();
             Element handlerElement = requesthandlersElement.addElement(N_REQUESTHANDLER);
             handlerElement.addAttribute(A_CLASS, clazz.getClass().getName());            
+        }
+        
+        // create <sites> node 
+        Element sitesElement = systemElement.addElement(N_SITES);
+        sitesElement.addElement(N_WORKPLACE_SERVER).addText(m_siteManager.getWorkplaceServer());
+        sitesElement.addElement(N_DEFAULT_URI).addText(m_siteManager.getDefaultUri());
+        Iterator siteIterator = m_siteManager.getSites().values().iterator();
+        while (siteIterator.hasNext()) {
+            CmsSite site = (CmsSite) siteIterator.next();
+            // create <site server="" uri=""/> subnode(s)
+            sitesElement.addElement(N_SITE)
+                .addAttribute(A_SERVER, site.getSiteMatcher().toString())
+                .addAttribute(A_URI, site.getSiteRoot().concat("/"));            
+        }
+        
+        // create <runtimeproperties> node
+        Element runtimepropertiesElement = systemElement.addElement(N_RUNTIMEPROPERTIES);
+        if (m_runtimeProperties != null) {
+            List sortedRuntimeProperties = new ArrayList(m_runtimeProperties.keySet());
+            Collections.sort(sortedRuntimeProperties);
+            Iterator it = sortedRuntimeProperties.iterator();
+            while (it.hasNext()) {
+                String key = (String)it.next();
+                // create <param name="">value</param> subnodes
+                runtimepropertiesElement.addElement(N_PARAM)
+                    .addAttribute(A_NAME, key)
+                    .addText((String)m_runtimeProperties.get(key));
+            }
         }
         
         // return the vfs node
@@ -600,5 +676,45 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". History settings     : enabled=" + m_versionHistoryEnabled + " count=" + m_versionHistoryMaxCount);
         }             
+    }
+    /**
+     * Returns the site manager.<p>
+     *
+     * @return the site manager
+     */
+    public CmsSiteManager getSiteManager() {
+
+        return m_siteManager;
+    }
+    
+    /**
+     * Sets the site manager.<p>
+     *
+     * @param siteManager the site manager to set
+     */
+    public void setSiteManager(CmsSiteManager siteManager) {
+
+        m_siteManager = siteManager;
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". site configuration   : finished");
+        }          
+    }    
+    
+    /**
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
+     */
+    public void addConfigurationParameter(String paramName, String paramValue) {
+        
+        m_runtimeProperties.put(paramName, paramValue);        
+    }
+        
+    /**
+     * Returns the runtime Properties.<p>
+     *
+     * @return the runtime Properties
+     */
+    public Map getRuntimeProperties() {
+
+        return m_runtimeProperties;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/configuration/TestConfiguration.java,v $
- * Date   : $Date: 2004/09/22 11:54:33 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/10/05 14:31:31 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,8 +43,6 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.dom4j.Document;
-import org.dom4j.io.OutputFormat;
-import org.dom4j.io.XMLWriter;
 import org.dom4j.util.NodeComparator;
 import org.xml.sax.InputSource;
 
@@ -104,15 +102,8 @@ public class TestConfiguration extends TestCase {
             Document inputDoc = CmsXmlUtils.unmarshalHelper(source, new CmsXmlEntityResolver(null));
             int result = comparator.compare(outputDoc, inputDoc);
 
-            // output the document
-            XMLWriter writer;
-            OutputFormat format = OutputFormat.createPrettyPrint();
-            format.setIndentSize(4);
-            format.setTrimText(false);
-            format.setEncoding("UTF-8");
-            writer = new XMLWriter(System.out, format);
-            writer.write("\n");
-            writer.write(outputDoc);
+            // output the document            
+            System.out.println(CmsXmlUtils.marshal(outputDoc, "UTF-8"));
 
             // triggers a failure that is recorded by JUnit when the argument are not equals            
             if (result != 0) {

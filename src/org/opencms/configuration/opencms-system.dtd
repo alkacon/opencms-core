@@ -14,7 +14,9 @@
 	scheduler,
 	versionhistory,
 	resourceinit?,
-	requesthandlers? )>
+	requesthandlers?,
+	sites,
+	runtimeproperties? )>
 
 <!--
 # Version history settings.
@@ -135,4 +137,27 @@ Each job can have an optional list of parameters.
 
 <!ELEMENT param (#PCDATA)>
 <!ATTLIST param name CDATA #REQUIRED>
+
+<!--
+# Configuration that controls individual sites in OpenCms.
+# Each <site> subnode of <sites> defines a site with the server name
+# and the corresponding VFS uri in OpenCms.
+#
+# workplace-server: the default server of the OpenCms workplace
+# default-uri: the default uri marks the site that is used when 
+#              a request matches no defined site 
+-->
+<!ELEMENT sites (workplace-server, default-uri, site+)>
+<!ELEMENT workplace-server (#PCDATA)>
+<!ELEMENT default-uri (#PCDATA)>
+<!ELEMENT site EMPTY>
+<!ATTLIST site 
+	server CDATA #REQUIRED
+	uri CDATA #REQUIRED>
+	
+<!--
+# Optional configuration that controls some additional information as key/value param pairs
+# Parameters and values are stored as OpenCms runtime properties.
+-->
+<!ELEMENT runtimeproperties (param*)>
 

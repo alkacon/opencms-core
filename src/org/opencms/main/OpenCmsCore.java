@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/10/03 11:37:53 $
- * Version: $Revision: 1.142 $
+ * Date   : $Date: 2004/10/05 14:31:31 $
+ * Version: $Revision: 1.143 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -106,7 +106,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.142 $
+ * @version $Revision: 1.143 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -932,11 +932,13 @@ public final class OpenCmsCore {
             if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
                 getLog(CmsLog.CHANNEL_INIT).warn(". Request handler class: " + handler.getClass().getName() + " activated");
             }                    
-        }        
+        }    
+        // get Site Manager
+        m_siteManager = systemConfiguration.getSiteManager();        
         
         // get the VFS configuration
         CmsVfsConfiguration vfsConfiguation = (CmsVfsConfiguration)m_configurationManager.getConfiguration(CmsVfsConfiguration.class);
-        m_resourceManager = vfsConfiguation.getResourceManager();    
+        m_resourceManager = vfsConfiguation.getResourceManager();        
         m_xmlContentTypeManager = vfsConfiguation.getXmlContentTypeManager();
 
         // get the import/export configuration
@@ -1007,42 +1009,11 @@ public final class OpenCmsCore {
             getLog(CmsLog.CHANNEL_INIT).info(". Password validation  : " + m_passwordValidatingClass);
         }
 
-        // read old (proprietary XML-style) locale backward compatibily support flag
-        Boolean supportOldLocales = configuration.getBoolean("compatibility.support.oldlocales", new Boolean(false));
-        setRuntimeProperty("compatibility.support.oldlocales", supportOldLocales);
-        if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            getLog(CmsLog.CHANNEL_INIT).info(". Old locale support   : " + (supportOldLocales.booleanValue() ? "enabled" : "disabled"));
+        if (m_runtimeProperties == null) {
+            m_runtimeProperties = Collections.synchronizedMap(new HashMap());
         }
+        m_runtimeProperties.putAll(systemConfiguration.getRuntimeProperties());
 
-        // old web application names (for editor macro replacement) 
-        String[] appNames = configuration.getStringArray("compatibility.support.webAppNames");
-        if (appNames == null) {
-            appNames = new String[0];
-        }
-        List webAppNamesOri = java.util.Arrays.asList(appNames);
-        ArrayList webAppNames = new ArrayList();
-        for (int i = 0; i < webAppNamesOri.size(); i++) {
-            // remove possible white space
-            String name = ((String)webAppNamesOri.get(i)).trim();
-            if (name != null && !"".equals(name)) {
-                webAppNames.add(name);
-                if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                    getLog(CmsLog.CHANNEL_INIT).info(". Old context path     : " + (i + 1) + " - " + name);
-                }
-            }
-        }
-        if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            getLog(CmsLog.CHANNEL_INIT).info(". Old context support  : " + ((webAppNames.size() > 0) ? "enabled" : "disabled"));
-        }
-        // add current context to webapp names list
-        if (webAppNames == null) {
-            webAppNames = new ArrayList();
-        }
-        if (!webAppNames.contains(getSystemInfo().getOpenCmsContext())) {
-            webAppNames.add(getSystemInfo().getOpenCmsContext());
-        }        
-        setRuntimeProperty("compatibility.support.webAppNames", webAppNames);
-        
         // get an Admin cms context object with site root set to "/"
         CmsObject adminCms = initCmsObject(null, null, getDefaultUsers().getUserAdmin(), null);
 
@@ -1057,18 +1028,19 @@ public final class OpenCmsCore {
         m_localeManager.initialize(adminCms);
         
         // initialize the site manager
-        m_siteManager = CmsSiteManager.initialize(configuration, adminCms);
+        m_siteManager.initialize(adminCms);
+        
         // initialize the search manager
         m_searchManager.initialize(adminCms);
         
         // initialize the static export manager
         m_staticExportManager.initialize(adminCms);
-
+        
         // initialize the XML content type manager
         m_xmlContentTypeManager.initialize(adminCms);
 
         // intialize the module manager
-        m_moduleManager.initialize(adminCms);        
+        m_moduleManager.initialize(adminCms);
     }
 
     /**

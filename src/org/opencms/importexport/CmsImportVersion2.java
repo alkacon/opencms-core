@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2004/08/27 09:02:02 $
- * Version: $Revision: 1.73 $
+ * Date   : $Date: 2004/10/05 14:31:31 $
+ * Version: $Revision: 1.74 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
@@ -54,6 +55,8 @@ import java.io.File;
 import java.security.MessageDigest;
 import java.util.*;
 import java.util.zip.ZipFile;
+
+import org.apache.commons.collections.ExtendedProperties;
 
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -74,6 +77,9 @@ public class CmsImportVersion2 extends A_CmsImport {
     
     /** The version number of this import implementation. */
     private static final int C_IMPORT_VERSION = 2;
+    
+    /** The runtime property name for old webapp names. */
+    private static final String C_COMPATIBILITY_WEBAPPNAMES = "compatibility.support.webAppNames";
 
     /** Web application names for conversion support. */
     protected List m_webAppNames;
@@ -205,7 +211,12 @@ public class CmsImportVersion2 extends A_CmsImport {
             excludeList = new Vector();
         }
 
-        m_webAppNames = (List)OpenCms.getRuntimeProperty("compatibility.support.webAppNames");
+        try {
+            m_webAppNames = getCompatibilityWebAppNames();
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+            m_report.println(e);
+        }
         if (m_webAppNames == null) {
             m_webAppNames = Collections.EMPTY_LIST;
         }
@@ -867,6 +878,45 @@ public class CmsImportVersion2 extends A_CmsImport {
             }
         }
         return content;
+    }
+    
+    /**
+     * Returns the compatibility web app names.<p>
+     * 
+     * @return the compatibility web app names
+     */
+    private List getCompatibilityWebAppNames() throws Exception {        
+        
+        String[] appNames = new ExtendedProperties((String)OpenCms.getRuntimeProperty(C_COMPATIBILITY_WEBAPPNAMES)).getStringArray(C_COMPATIBILITY_WEBAPPNAMES);
+        // old web application names (for editor macro replacement) 
+        if (appNames == null) {
+            appNames = new String[0];
+        }
+        List webAppNamesOri = Arrays.asList(appNames);
+        List webAppNames = new ArrayList();
+        for (int i = 0; i < webAppNamesOri.size(); i++) {
+            // remove possible white space
+            String name = ((String)webAppNamesOri.get(i)).trim();
+            if (name != null && !"".equals(name)) {
+                webAppNames.add(name);
+                if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                    OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Old context path     : " + (i + 1) + " - " + name);
+                }
+            }
+        }
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Old context support  : " + ((webAppNames.size() > 0) ? "enabled" : "disabled"));
+        }
+        // check if list is null
+        if (webAppNames == null) {
+            webAppNames = new ArrayList();
+        }
+        // add current context to webapp names list
+        if (!webAppNames.contains(OpenCms.getSystemInfo().getOpenCmsContext())) {
+            webAppNames.add(OpenCms.getSystemInfo().getOpenCmsContext());
+        }   
+        
+        return webAppNames;
     }
 
 }
