@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsUnlock.java,v $
- * Date   : $Date: 2000/02/21 13:58:39 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/02/22 11:16:44 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,12 +43,26 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.10 $ $Date: 2000/02/21 13:58:39 $
+ * @version $Revision: 1.11 $ $Date: 2000/02/22 11:16:44 $
  */
 public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
            
 
+      /**
+     * Indicates if the results of this class are cacheable.
+     * 
+     * @param cms A_CmsObject Object for accessing system resources
+     * @param templateFile Filename of the template file 
+     * @param elementName Element name of this template in our parent template.
+     * @param parameters Hashtable with all template class parameters.
+     * @param templateSelector template section that should be processed.
+     * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
+     */
+    public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+        return false;
+    }
+    
     /**
      * Overwrties the getContent method of the CmsWorkplaceDefault.<br>
      * Gets the content of the unlock templated and processed the data input.

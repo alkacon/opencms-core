@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFileMySql.java,v $
- * Date   : $Date: 2000/02/22 10:27:18 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2000/02/22 11:16:44 $
+ * Version: $Revision: 1.30 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,9 +41,9 @@ import com.opencms.util.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.29 $ $Date: 2000/02/22 10:27:18 $
+ * @version $Revision: 1.30 $ $Date: 2000/02/22 11:16:44 $
  */
- class CmsAccessFileMySql implements I_CmsAccessFile, I_CmsConstants  {
+ class CmsAccessFileMySql implements I_CmsAccessFile, I_CmsConstants, I_CmsLogChannels  {
 
     /**
     * This is the connection object to the database
@@ -777,23 +777,20 @@ import com.opencms.util.*;
                     // add the file content to the offline project.
                     //System.err.println("WFH] Got file form online project");
                
-                    // first check if the file is already there
-                    statementFileRead=m_Con.prepareStatement(C_FILE_READ);
-                    statementFileRead.setString(1,absoluteName(file.getAbsolutePath()));
-                    statementFileRead.setInt(2,project.getId());
-                    tmpres = statementFileRead.executeQuery();
-                    //System.err.println("WFH] Check if the file content is already there");
-              
-                    if (tmpres.next()) {
-                      //   System.err.println("WFH] Content is there, so no update is required");
-                    } else {
-                      //  System.err.println("WFH] Content is not there, so write content");
+                    try {
+                        //  System.err.println("WFH] Content is not there, so write content");
                         PreparedStatement statementFileWrite=m_Con.prepareStatement(C_FILE_WRITE);
                         statementFileWrite.setString(1,absoluteName(file.getAbsolutePath()));
                         statementFileWrite.setInt(2,project.getId());     
                         statementFileWrite.setBytes(3,content);
                         statementFileWrite.executeUpdate();
-                    }
+                        } catch (SQLException se) {
+                        if(A_OpenCms.isLogging()) {
+                            A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsAccessFileMySql] " + se.getMessage());
+                            se.printStackTrace();
+                            }                            
+                        }
+                    
                 }             
                 // update resource in the database
                 PreparedStatement statementResourceUpdate=m_Con.prepareStatement(C_RESOURCE_UPDATE);
