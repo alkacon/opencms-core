@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/18 17:22:50 $
-* Version: $Revision: 1.335 $
+* Date   : $Date: 2003/07/18 18:20:37 $
+* Version: $Revision: 1.336 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.335 $
+ * @version $Revision: 1.336 $
  */
 public class CmsObject extends Object {
 
@@ -1306,13 +1306,12 @@ public class CmsObject extends Object {
      * a new resource
      *
      */
-    protected CmsResource doImportResource(String newResourceName, String uuid, String uuidfile, String uuidresource, int resourceType, Map properties, int launcherType, int accessFlags, long lastmodified, byte[] filecontent) throws CmsException {
-
-        CmsResource cmsResource = m_driverManager.importResource(m_context, addSiteRoot(newResourceName), uuid, uuidfile, uuidresource, resourceType, properties, launcherType, accessFlags, lastmodified, filecontent);
-
+    protected CmsResource doImportResource(CmsResource resource, byte content[], Map properties, String destination)
+        throws CmsException
+    {
+        CmsResource cmsResource = m_driverManager.importResource(m_context, addSiteRoot(destination), resource, content, properties);
         return cmsResource;
     }
-
     /**
      * Increment the VFS link counter for a resource. 
      * The link counter is saved in the RESOURCE_FLAGS table attribute.
@@ -2448,22 +2447,15 @@ public class CmsObject extends Object {
     /**
      * Imports a resource to the cms.<p>
      *
-     * @param source the name of the import resource (zipfile or folder)
-     * @param destination the name (absolute Path) of the folder in which should be imported
-     * @param uuid  the structure uuid of the resource
-     * @param uuidfile  the file uuid of the resource
-     * @param uuidresource  the resource uuid of the resource
-     * @param type the type of the resource
-     * @param access the access flags of the resource
-     * @param lastmodified the last modifcation date of the resource
-     * @param properties the properties of the resource
+     * @param resource the resource to be imported
      * @param content the content of the resource
-     * @param importPath the name of the import path
+     * @param properties the properties of the resource
+     * @param importpath the name of the resource destinaition
      * @return the imported CmsResource
      * @throws CmsException if operation was not successful
      */
-    public CmsResource importResource(String source, String destination, String uuid, String uuidfile, String uuidresource, int type, String access, long lastmodified, Map properties, byte[] content, String importPath) throws CmsException {
-        return getResourceType(type).importResource(this, source, destination, uuid, uuidfile, uuidresource, access, lastmodified, properties, content, importPath);
+    public CmsResource importResource(CmsResource resource, byte[] content, Map properties, String importpath) throws CmsException {
+        return getResourceType(resource.getType()).importResource(this, resource, content, properties, importpath);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2003/07/18 12:44:46 $
-* Version: $Revision: 1.247 $
+* Date   : $Date: 2003/07/18 18:20:37 $
+* Version: $Revision: 1.248 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.247 $ $Date: 2003/07/18 12:44:46 $
+ * @version $Revision: 1.248 $ $Date: 2003/07/18 18:20:37 $
  */
 public interface I_CmsConstants {
 
@@ -967,7 +967,7 @@ public interface I_CmsConstants {
 
     // Constants for import/export
 
-    /**
+    /** 
      * The filename of the xml manifest.
      */
     String C_EXPORT_XMLFILENAME = "manifest.xml";
@@ -975,7 +975,7 @@ public interface I_CmsConstants {
     /**
      * The version of the opencms export (appears in the export manifest-file).
      */
-    String C_EXPORT_VERSION = "2";
+    String C_EXPORT_VERSION = "3"; 
 
     /**
      * A tag in the export manifest-file.
@@ -1170,18 +1170,44 @@ public interface I_CmsConstants {
     /**
      * The "uuid" tag in the manifest-file.
      */
-    String C_EXPORT_TAG_UUID = "uuid";
+    String C_EXPORT_TAG_UUIDSTRUCTURE = "uuidstructure";
     
     /**
      * The "uuidfile" tag in the manifest-file.
      */
-    String C_EXPORT_TAG_UUIDFILE = "uuidfile";
+    String C_EXPORT_TAG_UUIDCONTENT = "uuidcontent";
     
     /**
      * The "uuidresource" tag in the manifest-file.
      */
     String C_EXPORT_TAG_UUIDRESOURCE = "uuidresource";
     
+    /**
+     * The "datelastmodified" tag in the manifest-file.
+     */
+    String C_EXPORT_TAG_DATELASTMODIFIED = "datelastmodified";
+
+    /**
+     * The "userlastmodified" tag in the manifest-file.
+     */
+    String C_EXPORT_TAG_USERLASTMODIFIED = "userlastmodified";
+    
+    /**
+     * The "datecreated" tag in the manifest-file.
+     */
+    String C_EXPORT_TAG_DATECREATED = "datecreated";
+
+    /**
+     * The "usercreated" tag in the manifest-file.
+     */
+    String C_EXPORT_TAG_USERCREATED = "usercreated";
+
+    /**
+     * The "link" tag in the manifest-file.
+     */
+    String C_EXPORT_TAG_LINK = "link";
+
+
     /**
      * Tag to identify a generic id
      */
@@ -1197,10 +1223,18 @@ public interface I_CmsConstants {
      */
     String C_EXPORT_TAG_ACCESSCONTROL_ENTRY = "accessentry";
 
+
+    /**
+     * Tag to identify a principal set
+     */
+    String C_EXPORT_TAG_ACCESSCONTROL_PRINCIPAL = "uuidprincipal";
+
+
     /**
      * Tag to identify a permission set
      */
     String C_EXPORT_TAG_ACCESSCONTROL_PERMISSIONSET = "permissionset";
+
 
     /**
      * Tag to identify allowed permissions
@@ -1231,7 +1265,7 @@ public interface I_CmsConstants {
      * A string in the configuration-file.
      */
     String C_CONFIGURATION_REGISTRY = "registry";
-    
+
     /**
      * wasLoggedIn
      */

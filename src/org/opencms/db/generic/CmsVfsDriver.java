@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/18 16:15:28 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2003/07/18 18:20:37 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.38 $ $Date: 2003/07/18 16:15:28 $
+ * @version $Revision: 1.39 $ $Date: 2003/07/18 18:20:37 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -820,116 +820,128 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
     }
 
     /**
-     * Creates a new resource from an given CmsResource object.
-     *
-     * @param project The project in which the resource will be used.
-     * @param onlineProject The online project of the OpenCms.
-     * @param newResource The resource to be written to the Cms.
-     * @param filecontent The filecontent if the resource is a file
-     * @param userId The ID of the current user.
-     * @param parentId The parentId of the resource.
-     *
-     * @return resource The created resource.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-    public CmsResource importResource(CmsProject project, CmsUUID parentId, CmsResource newResource, byte[] filecontent, CmsUUID userId, boolean isFolder) throws CmsException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
+   * Creates a new resource from an given CmsResource object.
+   *
+   * @param project The project in which the resource will be used.
+   * @param onlineProject The online project of the OpenCms.
+   * @param newResource The resource to be written to the Cms.
+   * @param filecontent The filecontent if the resource is a file
+   * @param userId The ID of the current user.
+   * @param parentId The parentId of the resource.
+   *
+   * @return resource The created resource.
+   *
+   * @throws CmsException Throws CmsException if operation was not succesful
+   */
+  public CmsResource importResource(CmsProject project, CmsUUID parentId, CmsResource newResource, byte[] filecontent, CmsUUID userId, boolean isFolder) throws CmsException {
+      Connection conn = null;
+      PreparedStatement stmt = null;
         
-        if (newResource.getResourceName().length() > I_CmsConstants.C_MAX_LENGTH_RESOURCE_NAME) {
-            throw new CmsException("The resource name '" + newResource.getResourceName() + "' is too long! (max. allowed length must be <= " + I_CmsConstants.C_MAX_LENGTH_RESOURCE_NAME + " chars.!)", CmsException.C_BAD_NAME);
-        }         
+      if (newResource.getResourceName().length() > I_CmsConstants.C_MAX_LENGTH_RESOURCE_NAME) {
+          throw new CmsException("The resource name '" + newResource.getResourceName() + "' is too long! (max. allowed length must be <= " + I_CmsConstants.C_MAX_LENGTH_RESOURCE_NAME + " chars.!)", CmsException.C_BAD_NAME);
+      }         
 
-        int state = 0;
-        CmsUUID modifiedByUserId = userId;
-        //long dateModified = newResource.isTouched() ? newResource.getDateLastModified() : System.currentTimeMillis();
+      int state = 0;
+      CmsUUID modifiedByUserId = newResource.getUserLastModified();
+      //long dateModified = newResource.isTouched() ? newResource.getDateLastModified() : System.currentTimeMillis();
 
-        if (project.getId() == I_CmsConstants.C_PROJECT_ONLINE_ID) {
-            state = newResource.getState();
-            modifiedByUserId = newResource.getUserLastModified();
-            //dateModified = newResource.getDateLastModified();
-        } else {
-            state = I_CmsConstants.C_STATE_NEW;
-        }
+      if (project.getId() == I_CmsConstants.C_PROJECT_ONLINE_ID) {
+          state = newResource.getState();
+          modifiedByUserId = newResource.getUserLastModified();
+          //dateModified = newResource.getDateLastModified();
+      } else {
+          state = I_CmsConstants.C_STATE_NEW;
+      }
 
-        try {
-            readResource(project, parentId, newResource.getResourceName());
-            throw new CmsException("[" + this.getClass().getName() + "] ", CmsException.C_FILE_EXISTS);
-        } catch (CmsException e) {
-            // if the resource is marked as deleted remove it!
-            if (e.getType() == CmsException.C_RESOURCE_DELETED) {
-                if (isFolder) {
-                    removeFolder(project, (CmsFolder) newResource);
-                } else {
-                    removeFile(project, parentId, newResource.getResourceName());
-                }
-                state = I_CmsConstants.C_STATE_CHANGED;
-                //throw new CmsException("["+this.getClass().getName()+"] ",CmsException.C_FILE_EXISTS);
-            }
-            if (e.getType() == CmsException.C_FILE_EXISTS) {
-                throw e;
-            }
-        }
+      try {
+          readResource(project, parentId, newResource.getResourceName());
+          throw new CmsException("[" + this.getClass().getName() + "] ", CmsException.C_FILE_EXISTS);
+      } catch (CmsException e) {
+          // if the resource is marked as deleted remove it!
+          if (e.getType() == CmsException.C_RESOURCE_DELETED) {
+              if (isFolder) {
+                  removeFolder(project, (CmsFolder) newResource);
+              } else {
+                  removeFile(project, parentId, newResource.getResourceName());
+              }
+              state = I_CmsConstants.C_STATE_CHANGED;
+              //throw new CmsException("["+this.getClass().getName()+"] ",CmsException.C_FILE_EXISTS);
+          }
+          if (e.getType() == CmsException.C_FILE_EXISTS) {
+              throw e;
+          }
+      }
 
-        CmsUUID newFileId = CmsUUID.getNullUUID();
-        CmsUUID resourceId = new CmsUUID();
-        CmsUUID structureId = new CmsUUID();
 
-        // now write the resource
-        try {
-            conn = m_sqlManager.getConnection(project);
+      // check if we can use some existing UUID's             
+      CmsUUID newFileId = CmsUUID.getNullUUID();
+      CmsUUID resourceId = new CmsUUID();
+      CmsUUID structureId = new CmsUUID();
+      if (newResource.getId()!=CmsUUID.getNullUUID()) {
+          structureId=newResource.getId();
+      }
+      if (newResource.getResourceId()!=CmsUUID.getNullUUID()) {
+          resourceId=newResource.getResourceId();
+      }
+
+
+      // now write the resource
+      try {
+          conn = m_sqlManager.getConnection(project);
             
-            // write the content
-            if (!isFolder) {
-                newFileId = new CmsUUID();
-                try {
-                    createFileContent(newFileId, filecontent, 0, project.getId(), false);
-                } catch (CmsException se) {
-                    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                        A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + "] " + se.getMessage());
-                    }
-                }
-            }            
+          // write the content
+          if (!isFolder) {
+              newFileId = new CmsUUID();
+              if (newResource.getFileId()!=CmsUUID.getNullUUID()) {
+                  newFileId=newResource.getFileId();
+              }
+              try {
+                  createFileContent(newFileId, filecontent, 0, project.getId(), false);
+              } catch (CmsException se) {
+                  if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                      A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + "] " + se.getMessage());
+                  }
+              }
+          }            
             
-            // write the resource
-            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_WRITE");           
-            stmt.setString(1, resourceId.toString());
-            stmt.setInt(2, newResource.getType());
-            stmt.setInt(3, newResource.getFlags());         
-            stmt.setString(4, newFileId.toString());          
-            stmt.setInt(5, newResource.getLauncherType());
-            stmt.setTimestamp(6, new Timestamp(newResource.getDateCreated()));
-			stmt.setString(7, userId.toString());
-            stmt.setTimestamp(8, new Timestamp(newResource.getDateLastModified()));
-			stmt.setString(9, modifiedByUserId.toString());
-			stmt.setInt(10, state);
-            stmt.setInt(11, newResource.getLength());
-            stmt.setString(12, newResource.isLockedBy().toString());
-            stmt.setInt(13, project.getId());
-            stmt.executeUpdate();
-            m_sqlManager.closeAll(null, stmt, null);
+          // write the resource
+          stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_WRITE");           
+          stmt.setString(1, resourceId.toString());
+          stmt.setInt(2, newResource.getType());
+          stmt.setInt(3, newResource.getFlags());         
+          stmt.setString(4, newFileId.toString());          
+          stmt.setInt(5, newResource.getLauncherType());
+          stmt.setTimestamp(6, new Timestamp(newResource.getDateCreated()));
+          stmt.setString(7, newResource.getUserCreated().toString());
+          stmt.setTimestamp(8, new Timestamp(newResource.getDateLastModified()));
+          stmt.setString(9, modifiedByUserId.toString());
+          stmt.setInt(10, state);
+          stmt.setInt(11, newResource.getLength());
+          stmt.setString(12, newResource.isLockedBy().toString());
+          stmt.setInt(13, project.getId());
+          stmt.executeUpdate();
+          m_sqlManager.closeAll(null, stmt, null);
             
-            // write the structure                                  
-            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_STRUCTURE_WRITE");
-            stmt.setString(1, structureId.toString());
-            stmt.setString(2, parentId.toString());
-            stmt.setString(3, resourceId.toString());
-            stmt.setString(4, newResource.getResourceName());
-            stmt.setInt(5, newResource.getVfsLinkType());
-            stmt.setInt(6, state);
-            stmt.setTimestamp(7, new Timestamp(newResource.getDateLastModified()));
-            stmt.setString(8, modifiedByUserId.toString());
-            stmt.setString(9, userId.toString());              
-            stmt.executeUpdate();                        
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
+          // write the structure                                  
+          stmt = m_sqlManager.getPreparedStatement(conn, project, "C_STRUCTURE_WRITE");
+          stmt.setString(1, structureId.toString());
+          stmt.setString(2, parentId.toString());
+          stmt.setString(3, resourceId.toString());
+          stmt.setString(4, newResource.getResourceName());
+          stmt.setInt(5, newResource.getVfsLinkType());
+          stmt.setInt(6, state);
+          stmt.setTimestamp(7, new Timestamp(newResource.getDateLastModified()));
+          stmt.setString(8, newResource.getUserCreated().toString());
+          stmt.setString(9, newResource.getUserLastModified().toString());                
+          stmt.executeUpdate();                        
+      } catch (SQLException e) {
+          throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+      } finally {
+          m_sqlManager.closeAll(conn, stmt, null);
+      }
 
-        return readResource(project, parentId, newResource.getResourceName());
-    }
+      return readResource(project, parentId, newResource.getResourceName());
+  }
 
     /**
      * delete all projectResource from an given CmsProject object.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceType.java,v $
- * Date   : $Date: 2003/07/17 12:00:40 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2003/07/18 18:20:37 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package com.opencms.file;
 
 import com.opencms.core.CmsException;
@@ -43,27 +43,27 @@ import java.util.Map;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  */
 public interface I_CmsResourceType {
-    
-     /**
-      * Returns the name of the the {@link com.opencms.launcher.I_CmsLauncher} of this resource type.<p> 
-      *
-      * @return the name of the launcher class
-      */
-     String getLauncherClass();
 
-     /**
-      * Returns the launcher type id needed for this resource type.<p>
-      *
-      * @return the launcher type id for this resource type
-      */
-     int getLauncherType();
+    /**
+     * Returns the name of the the {@link com.opencms.launcher.I_CmsLauncher} of this resource type.<p> 
+     *
+     * @return the name of the launcher class
+     */
+    String getLauncherClass();
+
+    /**
+     * Returns the launcher type id needed for this resource type.<p>
+     *
+     * @return the launcher type id for this resource type
+     */
+    int getLauncherType();
 
     /**
      * Returns the name for this resource type.<p>
      *
      * @return the name for this resource type
      */
-     String getResourceTypeName();
+    String getResourceTypeName();
 
     /**
      * Returns the type id of this resource type.<p>
@@ -84,7 +84,7 @@ public interface I_CmsResourceType {
      * @throws CmsException if something goes wrong
      */
     CmsResource createResource(CmsObject cms, String resourcename, Map properties, byte[] contents, Object parameter) throws CmsException;
-        
+
     /**
      * Locks a resource.<p>
      *
@@ -104,7 +104,7 @@ public interface I_CmsResourceType {
      * @throws CmsException if something goes wrong
      */
     void unlockResource(CmsObject cms, String resourcename, boolean recursive) throws CmsException;
-    
+
     /**
      * Copies a Resource.
      *
@@ -154,7 +154,7 @@ public interface I_CmsResourceType {
      * @throws CmsException if something goes wrong
      */
     void undeleteResource(CmsObject cms, String resourcename) throws CmsException;
-            
+
     /**
      * Change the timestamp of a resource.<p>
      * 
@@ -175,7 +175,7 @@ public interface I_CmsResourceType {
      * @throws CmsException if something goes wrong
      */
     void chtype(CmsObject cms, String resourcename, int newtype) throws CmsException;
-    
+
     /**
      * Replaces the content and properties of a resource.<p>
      * 
@@ -242,26 +242,16 @@ public interface I_CmsResourceType {
     CmsFile exportResource(CmsObject cms, CmsFile file) throws CmsException;
 
     /**
-     * Imports a resource to the VFS.<p>
-     * 
-     * When a resource is imported, the URL´s of the
-     * links inside the link tags have to be saved and changed to the corresponding ID´s.<p>
+     * Imports a resource to the cms.<p>
      *
-     * @param cms the current cms context
-     * @param resourcename the name of the resource to apply this operation to
-     * @param destination the destination
-     * @param uuid  the structure uuid of the resource
-     * @param uuidfile  the file uuid of the resource
-     * @param uuidresource  the resource uuid of the resource* 
-     * @param access the access flags (deprecated)
-     * @param lastmodified the date of last modification
-     * @param properties properties of the resource
-     * @param content the contents
-     * @param importPath the import path
-     * @throws CmsException if something goes wrong
-     * @return CmsResource the imported resources
+     * @param the current cms object
+     * @param resource the resource to be imported
+     * @param content the content of the resource
+     * @param properties the properties of the resource
+     * @param destination the name of the resource destinaition
+     * @return the imported CmsResource
+     * @throws CmsException if operation was not successful
      */
-    // TODO: Remove user / group / access
-    // TODO: Add "creation date" (?)
-    CmsResource importResource(CmsObject cms, String resourcename, String destination, String uuid, String uuidfile, String uuidresource, String access, long lastmodified, Map properties,  byte[] content, String importPath) throws CmsException;
+    CmsResource importResource(CmsObject cms, CmsResource resource, byte[] content, Map properties, String destinition) throws CmsException;
+
 }

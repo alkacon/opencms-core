@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsResourceType.java,v $
- * Date   : $Date: 2003/07/17 12:00:40 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2003/07/18 18:20:37 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * @since 5.1
  */
 public abstract class A_CmsResourceType implements I_CmsResourceType {
@@ -191,27 +191,29 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     /**
      * @see com.opencms.file.I_CmsResourceType#importResource(com.opencms.file.CmsObject, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, java.util.Map, java.lang.String, byte[], java.lang.String)
      */
-    public CmsResource importResource(CmsObject cms, String resourcename, String destination, String uuid, String uuidfile, String uuidresource, String access, long lastmodified, Map properties,  byte[] content, String importPath) throws CmsException {
+    public CmsResource importResource(CmsObject cms, CmsResource resource, byte[] content, Map properties, String destination) throws CmsException {
         CmsResource importedResource = null;
-        destination = importPath + destination;
-        boolean changed = true;
+        
+      boolean changed = true;
 
-        try {
-            importedResource = cms.doImportResource(destination, uuid, uuidfile, uuidresource, getResourceType(), properties, getLauncherType(),  0, lastmodified, content);
-            changed = (importedResource == null);
-        } catch (CmsException e) {
-            // an exception is thrown if the resource already exists
-        }
+      try {          
+          importedResource = cms.doImportResource(resource,  content, properties,  destination);
+          changed = (importedResource == null);
+      } catch (CmsException e) {
+          // an exception is thrown if the resource already exists
+      }
 
-        if (changed) {
-            // if the resource already exists it must be updated
-            lockResource(cms, destination, true);
-            cms.doWriteResource(destination, properties, null, null, -1, getResourceType(), content);
-            importedResource = cms.readFileHeader(destination);
-        }
+      if (changed) {
+          // if the resource already exists it must be updated
+          lockResource(cms, destination, true);
+          cms.doWriteResource(destination, properties, null, null, -1, getResourceType(), content);
+          importedResource = cms.readFileHeader(destination);
+      }
 
-        return importedResource;
+      return importedResource;
     }
+
+
 
     /**
      * @see java.lang.Object#toString()

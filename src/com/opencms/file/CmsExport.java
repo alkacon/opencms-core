@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
- * Date   : $Date: 2003/07/15 13:43:48 $
- * Version: $Revision: 1.64 $
+ * Date   : $Date: 2003/07/18 18:20:37 $
+ * Version: $Revision: 1.65 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.w3c.dom.Text;
  * @author Andreas Schouten
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.64 $ $Date: 2003/07/15 13:43:48 $
+ * @version $Revision: 1.65 $ $Date: 2003/07/18 18:20:37 $
  */
 public class CmsExport implements I_CmsConstants, Serializable {
 
@@ -702,6 +702,7 @@ public class CmsExport implements I_CmsConstants, Serializable {
         return path;
     }
     
+
     /**
      * Writes the data for a resource (like access-rights) to the <code>manifest.xml</code> file.<p>
      * 
@@ -709,26 +710,13 @@ public class CmsExport implements I_CmsConstants, Serializable {
      * @throws CmsException if something goes wrong
      */
     private void writeXmlEntrys(CmsResource resource) throws CmsException {
-        String source, launcherStartClass, lastModified, uuid, uuidFile, uuidResource;
-        int type;
-
-        // get all needed informations from the resource
-        source = getSourceFilename(m_cms.readAbsolutePath(resource));
-        type = resource.getType();
-        
-        launcherStartClass = resource.getLauncherClassname();
-        lastModified = String.valueOf(resource.getDateLastModified()); 
-        uuid=resource.getId().toString();
-        uuidFile=resource.getFileId().toString();
-        uuidResource=resource.getResourceId().toString();
-        
-        // write these informations to the xml-manifest
+        // define the file node
         Element file = m_docXml.createElement(C_EXPORT_TAG_FILE);
         m_filesElement.appendChild(file);
-
-        // only write source if resource is a file
+        
+        // only write <source> if resource is a file
         if (resource.isFile()) {
-            addElement(m_docXml, file, C_EXPORT_TAG_SOURCE, source);
+            addElement(m_docXml, file, C_EXPORT_TAG_SOURCE, getSourceFilename(m_cms.readAbsolutePath(resource)));
         } else {
             // output something to the report for the folder
             m_report.print(m_report.key("report.exporting"), I_CmsReport.C_FORMAT_NOTE);
@@ -736,26 +724,35 @@ public class CmsExport implements I_CmsConstants, Serializable {
             m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
             m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
         }
-        addElement(m_docXml, file, C_EXPORT_TAG_DESTINATION, source);
-        addElement(m_docXml, file, C_EXPORT_TAG_UUID, uuid);
-        addElement(m_docXml, file, C_EXPORT_TAG_UUIDFILE, uuidFile);
-        addElement(m_docXml, file, C_EXPORT_TAG_UUIDRESOURCE, uuidResource);
-        addElement(m_docXml, file, C_EXPORT_TAG_TYPE, m_cms.getResourceType(type).getResourceTypeName());
-        addElement(m_docXml, file, C_EXPORT_TAG_LASTMODIFIED, lastModified);
-        if (launcherStartClass != null
-            && !"".equals(launcherStartClass)
-            && !C_UNKNOWN_LAUNCHER.equals(launcherStartClass)) {
-            addElement(m_docXml, file, C_EXPORT_TAG_LAUNCHER_START_CLASS, launcherStartClass);
-        }
-
+        // <destination>
+        addElement(m_docXml, file, C_EXPORT_TAG_DESTINATION, getSourceFilename(m_cms.readAbsolutePath(resource)));
+        // <type>
+        addElement(m_docXml, file, C_EXPORT_TAG_TYPE, m_cms.getResourceType(resource.getType()).getResourceTypeName());
+        // <link>
+        addElement(m_docXml, file, C_EXPORT_TAG_LINK, String.valueOf(resource.getVfsLinkType()));
+        // <uuidstructure>
+        addElement(m_docXml, file, C_EXPORT_TAG_UUIDSTRUCTURE,resource.getId().toString());
+        //  <uuidresource>
+        addElement(m_docXml, file, C_EXPORT_TAG_UUIDRESOURCE, resource.getResourceId().toString());
+        //  <uuidcontent>
+        addElement(m_docXml, file, C_EXPORT_TAG_UUIDCONTENT, resource.getFileId().toString());
+        // <datelastmodified>
+        addElement(m_docXml, file, C_EXPORT_TAG_DATELASTMODIFIED, String.valueOf(resource.getDateLastModified()));
+        // <userlastmodified>
+        addElement(m_docXml, file, C_EXPORT_TAG_USERLASTMODIFIED, resource.getUserLastModified().toString());       
+        // <datecreated>
+        addElement(m_docXml, file, C_EXPORT_TAG_DATECREATED, String.valueOf(resource.getDateCreated()));       
+        // <usercreated>
+        addElement(m_docXml, file, C_EXPORT_TAG_USERCREATED, resource.getUserCreated().toString());       
+        // <flags>
+        addElement(m_docXml, file,  C_EXPORT_TAG_FLAGS, String.valueOf(resource.getFlags())); 
+        
         // append the node for properties
         Element properties = m_docXml.createElement(C_EXPORT_TAG_PROPERTIES);
         file.appendChild(properties);
-
         // read the properties
         Map fileProperties = m_cms.readProperties(m_cms.readAbsolutePath(resource));
         Iterator i = fileProperties.keySet().iterator();
-
         // create xml-elements for the properties
         while (i.hasNext()) {
             String key = (String)i.next();
@@ -763,40 +760,34 @@ public class CmsExport implements I_CmsConstants, Serializable {
             if ((! m_exportingModuleData) || (! I_CmsConstants.C_PROPERTY_CHANNELID.equals(key))) {            
                 // append the node for a property
                 Element property = m_docXml.createElement(C_EXPORT_TAG_PROPERTY);
-                properties.appendChild(property);
-    
-                String value = (String)fileProperties.get(key);
-                String propertyType = m_cms.readPropertydefinition(key, type).getType() + "";
-    
+                properties.appendChild(property);              
                 addElement(m_docXml, property, C_EXPORT_TAG_NAME, key);
-                addElement(m_docXml, property, C_EXPORT_TAG_TYPE, propertyType);
-                addCdataElement(m_docXml, property, C_EXPORT_TAG_VALUE, value);
-            }
-        }
+                addElement(m_docXml, property, C_EXPORT_TAG_TYPE, m_cms.readPropertydefinition(key, resource.getType()).getType() + "");
+                addCdataElement(m_docXml, property, C_EXPORT_TAG_VALUE, (String)fileProperties.get(key));
+           }
+       }
+       // append the nodes for access control entries
+       Element acentries = m_docXml.createElement(C_EXPORT_TAG_ACCESSCONTROL_ENTRIES);
+       file.appendChild(acentries);
+
+       // read the access control entries
+       Vector fileAcEntries = m_cms.getAccessControlEntries(m_cms.readAbsolutePath(resource), false);
+       i = fileAcEntries.iterator();
         
-        // append the nodes for access control entries
-        Element acentries = m_docXml.createElement(C_EXPORT_TAG_ACCESSCONTROL_ENTRIES);
-        file.appendChild(acentries);
-        // TODO: this should be already available in the resource
-        addElement(m_docXml, acentries, C_EXPORT_TAG_ID, resource.getResourceAceId().toString());
-        
-        // read the access control entries
-        Vector fileAcEntries = m_cms.getAccessControlEntries(m_cms.readAbsolutePath(resource), false);
-        i = fileAcEntries.iterator();
-        
-        // create xml elements for each access control entry
-        while (i.hasNext()) {
-            CmsAccessControlEntry ace = (CmsAccessControlEntry)i.next();
-            Element acentry = m_docXml.createElement(C_EXPORT_TAG_ACCESSCONTROL_ENTRY);
-            acentries.appendChild(acentry);
-            addElement(m_docXml, acentry, C_EXPORT_TAG_ID, ace.getPrincipal().toString());
-            addElement(m_docXml, acentry, C_EXPORT_TAG_FLAGS, new Integer(ace.getFlags()).toString());
-            Element acpermissionset = m_docXml.createElement(C_EXPORT_TAG_ACCESSCONTROL_PERMISSIONSET); 
-            acentry.appendChild(acpermissionset);
-            addElement(m_docXml, acpermissionset, C_EXPORT_TAG_ACCESSCONTROL_ALLOWEDPERMISSIONS, new Integer(ace.getAllowedPermissions()).toString());
-            addElement(m_docXml, acpermissionset, C_EXPORT_TAG_ACCESSCONTROL_DENIEDPERMISSIONS, new Integer(ace.getDeniedPermissions()).toString());
-        }
+       // create xml elements for each access control entry
+       while (i.hasNext()) {
+           CmsAccessControlEntry ace = (CmsAccessControlEntry)i.next();
+           Element acentry = m_docXml.createElement(C_EXPORT_TAG_ACCESSCONTROL_ENTRY);
+           acentries.appendChild(acentry);
+           addElement(m_docXml, acentry, C_EXPORT_TAG_ACCESSCONTROL_PRINCIPAL, ace.getPrincipal().toString());
+           addElement(m_docXml, acentry, C_EXPORT_TAG_FLAGS, new Integer(ace.getFlags()).toString());
+           Element acpermissionset = m_docXml.createElement(C_EXPORT_TAG_ACCESSCONTROL_PERMISSIONSET); 
+           acentry.appendChild(acpermissionset);
+           addElement(m_docXml, acpermissionset, C_EXPORT_TAG_ACCESSCONTROL_ALLOWEDPERMISSIONS, new Integer(ace.getAllowedPermissions()).toString());
+           addElement(m_docXml, acpermissionset, C_EXPORT_TAG_ACCESSCONTROL_DENIEDPERMISSIONS, new Integer(ace.getDeniedPermissions()).toString());
+       }               
     }
+
 
     /**
      * Exports all groups with all data.<p>
