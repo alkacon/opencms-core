@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2004/04/02 10:25:42 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/04/02 10:37:48 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.1
  */
@@ -830,8 +830,8 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                 switchToTempProject();
             }
             Map activeProperties = getPropertyMap(getCms().readPropertyObjects(getParamResource(), false));
-            boolean lockChecked = false;
             int activeTab = getActiveTab();
+            List propertiesToWrite = new ArrayList();
             
             // check all property definitions of the resource for new values
             for (int i=0; i<propertyDef.size(); i++) {
@@ -888,16 +888,16 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                 
                 // check if saving the properties is necessary
                 if (!newProperty.equals(oldProperty)) {
-                    // save only if property values have changed
-                    if (!lockChecked) {
-                        // lock resource if autolock is enabled
-                        checkLock(getParamResource());
-                        lockChecked = true;
-                    }
-                    // write the new property values
-                    getCms().writePropertyObject(getParamResource(), newProperty);
+                    // add property to list only if property values have changed
+                    propertiesToWrite.add(newProperty);
                 }   
-            }    
+            }
+            if (propertiesToWrite.size() > 0) {
+                // lock resource if autolock is enabled
+                checkLock(getParamResource());
+                //write the new property values
+                getCms().writePropertyObjects(getParamResource(), propertiesToWrite);
+            }
         } finally {
             if (useTempfileProject) {
                 switchToCurrentProject();
