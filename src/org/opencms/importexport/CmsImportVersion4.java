@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2003/10/06 14:20:56 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2003/10/08 20:49:33 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -438,34 +438,34 @@ public class CmsImportVersion4 extends A_CmsImport {
             // get the file content
             if (source != null) {
                 content = getFileBytes(source);
-                    } 
+            }
             int size = 0;
             if (content != null) {
                 size = content.length;
             }
-            
+
             // get UUIDs for the user   
             CmsUUID newUserlastmodified;
             CmsUUID newUsercreated;
             // check if user created and user lastmodified are valid users in this system.
             // if not, use the current user
             try {
-                newUserlastmodified =m_cms.readUser(userlastmodified).getId();
+                newUserlastmodified = m_cms.readUser(userlastmodified).getId();
             } catch (CmsException e) {
                 newUserlastmodified = m_cms.getRequestContext().currentUser().getId();
                 // datelastmodified = System.currentTimeMillis();
             }
-            
+
             try {
-                newUsercreated =m_cms.readUser(usercreated).getId();
+                newUsercreated = m_cms.readUser(usercreated).getId();
             } catch (CmsException e) {
                 newUsercreated = m_cms.getRequestContext().currentUser().getId();
                 // datecreated = System.currentTimeMillis();
             }
-            
+
             // get UUIDs for the resource and content        
             CmsUUID newUuidresource;
-            if (uuidresource != null) {
+            if ((uuidresource != null) && (resType != CmsResourceTypeFolder.C_RESOURCE_TYPE_ID)) {
                 newUuidresource = new CmsUUID(uuidresource);
             } else {
                 newUuidresource = new CmsUUID();
