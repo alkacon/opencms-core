@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/09 17:00:57 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2000/06/13 09:23:21 $
+ * Version: $Revision: 1.46 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.45 $ $Date: 2000/06/09 17:00:57 $
+ * @version $Revision: 1.46 $ $Date: 2000/06/13 09:23:21 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2316,8 +2316,8 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		 // read the resource from the currentProject, or the online-project
 		 try {
 			 cmsFile = m_dbAccess.readFile(currentProject.getId(), 
-										 onlineProject(currentUser, currentProject).getId(),
-										 filename);
+										   onlineProject(currentUser, currentProject).getId(),
+										   filename);
 		 } catch(CmsException exc) {
 			 // the resource was not readable
 			 if(currentProject.equals(onlineProject(currentUser, currentProject))) {
@@ -2789,6 +2789,36 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public void deleteFolder(CmsUser currentUser, CmsProject currentProject,
 							 String foldername)
         throws CmsException {
+        
+        CmsResource onlineFolder;
+		
+		// read the folder, that shold be deleted
+		CmsFolder cmsFolder = m_dbAccess.readFolder(currentProject.getId(), 
+												  foldername);
+		try {
+			onlineFolder = m_dbAccess.readFolder(onlineProject(currentUser, currentProject).getId(), foldername);
+		} catch (CmsException exc) {
+			// the file dosent exist
+			onlineFolder = null;
+		}
+		// check, if the user may delete the resource
+		if( accessWrite(currentUser, currentProject, cmsFolder) ) {
+				
+			// write-acces  was granted - delete the folder and metainfos.
+			deleteAllProperties(currentUser,currentProject, cmsFolder.getAbsolutePath());
+			if(onlineFolder == null) {
+				// the onlinefile dosent exist => remove the file realy!
+				m_dbAccess.removeFolder(cmsFolder);
+			} else {
+				m_dbAccess.deleteFolder(currentProject,cmsFolder, false);
+			}
+			// inform about the file-system-change
+			fileSystemChanged();
+		
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + foldername, 
+				CmsException.C_NO_ACCESS);
+		}
     }
 
     
@@ -2863,8 +2893,39 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
      * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */	
 	public void copyFolder(CmsUser currentUser, CmsProject currentProject,
-                         String source, String destination)
+                           String source, String destination)
         throws CmsException {
+         	
+		// the name of the new file.
+		String filename;
+		// the name of the folder.
+		String foldername;
+		
+		// read the sourcefolder to check readaccess
+		//CmsFolder folder=(CmsFolder)readFolder(currentUser, currentProject, source);
+		
+		foldername = destination.substring(0, destination.substring(0,destination.length()-1).lastIndexOf("/")+1);
+					
+		CmsFolder cmsFolder = m_dbAccess.readFolder(currentProject.getId(), foldername);
+		if( accessCreate(currentUser, currentProject, (CmsResource)cmsFolder) ) {
+				
+		    // write-acces  was granted - copy the folder and the properties
+            CmsFolder folder=m_dbAccess.readFolder(currentProject.getId(),source);
+            m_dbAccess.createFolder(currentUser,currentProject,onlineProject(currentUser, currentProject),folder,cmsFolder.getResourceId(),destination);        
+
+			// copy the properties
+			m_metadefRb.writeMetainformations(m_metadefRb.readAllMetainformations(folder),
+											  currentProject.getId(), 
+											  destination, 
+											  folder.getType());			
+            
+			// inform about the file-system-change
+			fileSystemChanged();                      
+        } else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + destination, 
+				CmsException.C_ACCESS_DENIED);
+		}
+        
     }
     
    	/**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/13 09:06:05 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2000/06/13 09:23:21 $
+ * Version: $Revision: 1.61 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.60 $ $Date: 2000/06/13 09:06:05 $ * 
+ * @version $Revision: 1.61 $ $Date: 2000/06/13 09:23:21 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -3542,11 +3542,12 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 	 * @return The created folder.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	 public CmsFolder createFolder(CmsProject project,
+	 public CmsFolder createFolder(CmsUser user,
+                                   CmsProject project,
                                    CmsProject onlineProject,
                                    CmsFolder folder,
-                                   int resourceId, int parentId,int fileId,
-                                   String foldername,int resourceLastModifiedBy)
+                                   int parentId,
+                                   String foldername)
          throws CmsException{
           CmsFolder oldFolder = null;
           int state=0;         
@@ -3565,12 +3566,10 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 					state = C_STATE_CHANGED;
 				 }	     
            } catch (CmsException e) {}
-		   if (resourceId == C_UNKNOWN_ID){
-				resourceId = nextId(C_TABLE_RESOURCES);
-		   }
-           if (fileId == C_UNKNOWN_ID){
-				fileId = nextId(C_TABLE_FILES);
-		   }
+	
+           int resourceId = nextId(C_TABLE_RESOURCES);
+	       int fileId = nextId(C_TABLE_FILES);
+	
 		   PreparedStatement statement = null;
             try {   
                 // write new resource to the database
@@ -3592,7 +3591,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                 statement.setTimestamp(15,new Timestamp(folder.getDateCreated()));
                 statement.setTimestamp(16,new Timestamp(System.currentTimeMillis()));
                 statement.setInt(17,0);
-                statement.setInt(18,resourceLastModifiedBy);
+                statement.setInt(18,user.getId());
                 statement.executeUpdate();
 
             } catch (SQLException e){
