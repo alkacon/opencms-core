@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/09/01 15:10:26 $
- * Version: $Revision: 1.205 $
+ * Date   : $Date: 2004/09/17 14:27:53 $
+ * Version: $Revision: 1.206 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.205 $ $Date: 2004/09/01 15:10:26 $
+ * @version $Revision: 1.206 $ $Date: 2004/09/17 14:27:53 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -1036,48 +1036,6 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         }
 
         return folders;
-    }
-
-    /**
-     * @see org.opencms.db.I_CmsVfsDriver#readFolderTree(org.opencms.file.CmsProject, org.opencms.file.CmsResource)
-     */
-    public List readFolderTree(CmsProject currentProject, CmsResource parentResource) throws CmsException {
-        ResultSet res = null;
-        PreparedStatement stmt = null;
-        Connection conn = null;
-        CmsAdjacencyTree adjacencyTree = new CmsAdjacencyTree();
-        CmsUUID parentId = null;
-        CmsUUID structureId = null;
-
-        /*
-         * possible other SQL queries to select a tree view:
-         * SELECT PARENT.RESOURCE_NAME, CHILD.RESOURCE_NAME FROM CMS_OFFLINE_STRUCTURE PARENT, CMS_OFFLINE_STRUCTURE CHILD WHERE PARENT.STRUCTURE_ID=CHILD.PARENT_ID;
-         * SELECT PARENT.RESOURCE_NAME, CHILD.RESOURCE_NAME FROM CMS_OFFLINE_STRUCTURE PARENT LEFT JOIN CMS_OFFLINE_STRUCTURE CHILD ON PARENT.STRUCTURE_ID=CHILD.PARENT_ID; 
-         */
-
-        try {
-            conn = m_sqlManager.getConnection(currentProject);
-            stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_RESOURCES_GET_FOLDERTREE");
-            stmt.setInt(1, I_CmsConstants.C_STATE_CHANGED);
-            stmt.setInt(2, I_CmsConstants.C_STATE_NEW);
-            stmt.setInt(3, I_CmsConstants.C_STATE_UNCHANGED);
-            res = stmt.executeQuery();
-
-            while (res.next()) {
-                parentId = new CmsUUID(res.getString(1));
-                structureId = new CmsUUID(res.getString(2));
-                adjacencyTree.add(parentId, structureId);
-            }
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } catch (Exception ex) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, ex, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
-
-        List dfsList = adjacencyTree.toList(parentResource.getStructureId());
-        return dfsList;
     }
 
     /**

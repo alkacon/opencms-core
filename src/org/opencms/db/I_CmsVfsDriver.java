@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2004/09/01 15:10:15 $
- * Version: $Revision: 1.91 $
+ * Date   : $Date: 2004/09/17 14:28:01 $
+ * Version: $Revision: 1.92 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.List;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.91 $ $Date: 2004/09/01 15:10:15 $
+ * @version $Revision: 1.92 $ $Date: 2004/09/17 14:28:01 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -285,16 +285,6 @@ public interface I_CmsVfsDriver {
      * @throws CmsException  if operation was not succesful
      */
     List readFolders(int projectId) throws CmsException;
-
-    /**
-     * Reads all folders in a DFS list view.<p>
-     * 
-     * @param currentProject the current project
-     * @param parentResource the parent resource from where the tree is built (should be / usually)
-     * @return List a DFS list view of all folders in the VFS
-     * @throws CmsException if something goes wrong
-     */
-    List readFolderTree(CmsProject currentProject, CmsResource parentResource) throws CmsException;
 
     /**
      * Reads a property definition for the soecified resource type.<p>
