@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPublishResource.java,v $
-* Date   : $Date: 2001/07/31 15:50:19 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2001/08/07 15:13:30 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -41,7 +41,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.4 $ $Date: 2001/07/31 15:50:19 $
+ * @version $Revision: 1.5 $ $Date: 2001/08/07 15:13:30 $
  */
 
 public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -185,6 +185,8 @@ public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpCo
     private void unlockResource(CmsObject cms, CmsResource resource) throws CmsException{
         // if the folder itself is locked, all subresources are unlocked by unlocking the folder
         if(resource.isLocked()){
+            // first lock resource to set locked by to the current user
+            cms.lockResource(resource.getAbsolutePath(),true);
             cms.unlockResource(resource.getAbsolutePath());
         } else {
             // need to unlock each resource
