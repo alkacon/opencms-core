@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/12/20 11:35:43 $
- * Version: $Revision: 1.99 $
+ * Date   : $Date: 2004/12/20 15:18:45 $
+ * Version: $Revision: 1.100 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.99 $
+ * @version $Revision: 1.100 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -539,6 +539,8 @@ public class CmsObject {
     /**
      * Copies access control entries of a given resource to another resource.<p>
      * 
+     * Already existing access control entries of the destination resource are removed.<p>
+     * 
      * @param sourceName the name of the resource of which the access control entries are copied.
      * @param destName the name of the resource to which the access control entries are applied.
      * 
@@ -928,7 +930,7 @@ public class CmsObject {
      * @param resourceName the name of the resource.
      * @param getInherited <code>true</code>, if inherited access control entries should be returned, too.
      * 
-     * @return a list of <code>{@link CmsAccessControlEntry}</code> objects.
+     * @return a list of <code>{@link CmsAccessControlEntry}</code> objects defining all permissions for the given resource.
      * 
      * @throws CmsException if something goes wrong.
      */
@@ -954,6 +956,8 @@ public class CmsObject {
 
     /**
      * Returns the access control list (summarized access control entries) of a given resource.<p>
+     * 
+     * If <code>inheritedOnly</code> is set, only inherited access control entries are returned.<p>
      * 
      * @param resourceName the name of the resource.
      * @param inheritedOnly if set, the non-inherited entries are skipped.
@@ -1220,7 +1224,7 @@ public class CmsObject {
      * 
      * @param resourceName the name of the resource.
      * 
-     * @return the set of the permissions of the current user.
+     * @return the bitset of the permissions of the current user.
      * 
      * @throws CmsException if something goes wrong.
      */
@@ -1520,10 +1524,12 @@ public class CmsObject {
     }
 
     /**
-     * Writes access control entries for a given resource.<p>
+     * Writes a list of access control entries as new access control entries of a given resource.<p>
+     * 
+     * Already existing access control entries of this resource are removed before.<p>
      * 
      * @param resource the resource to attach the control entries to.
-     * @param acEntries a list of access control entries.
+     * @param acEntries a list of <code>{@link CmsAccessControlEntry}</code> objects.
      * 
      * @throws CmsException if something goes wrong.
      */
@@ -1537,7 +1543,7 @@ public class CmsObject {
      *
      * It is important that a <code>manifest.xml</code> is present in the 
      * given folder or the root path inside the zip file, if not a 
-     * <code>CmsException</code> is thrown.<p>
+     * <code>{@link CmsException}</code> is thrown.<p>
      *
      * @param importFile the name (absolute Path) of the import resource (zipfile or folder).
      * @param importPath the name (absolute Path) of the folder in which should be imported.
@@ -2648,7 +2654,7 @@ public class CmsObject {
      * 
      * @param timestamp a timestamp for reading the data from the db.
      * 
-     * @return List of template resources as <code>{@link String}</code>s.
+     * @return a list of template resources as <code>{@link String}</code> objects.
      * 
      * @throws CmsException if something goes wrong.
      */
@@ -2827,9 +2833,9 @@ public class CmsObject {
         CmsResource res = readResource(resourceName, CmsResourceFilter.ALL);
         I_CmsPrincipal principal = null;
 
-        if ("group".equals(principalType.toLowerCase())) {
+        if (I_CmsPrincipal.C_PRINCIPAL_GROUP.equalsIgnoreCase(principalType)) {
             principal = readGroup(principalName);
-        } else if ("user".equals(principalType.toLowerCase())) {
+        } else if (I_CmsPrincipal.C_PRINCIPAL_USER.equalsIgnoreCase(principalType)) {
             principal = readUser(principalName);
         }
 
@@ -3294,9 +3300,7 @@ public class CmsObject {
      * @param securityManager the security manager.
      * @param context the request context that contains the user authentification.
      */
-    private void init(
-        CmsSecurityManager securityManager,
-        CmsRequestContext context) {
+    private void init(CmsSecurityManager securityManager, CmsRequestContext context) {
 
         m_securityManager = securityManager;
         m_context = context;

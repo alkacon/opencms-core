@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/12/17 16:15:23 $
- * Version: $Revision: 1.459 $
+ * Date   : $Date: 2004/12/20 15:18:45 $
+ * Version: $Revision: 1.460 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,17 @@
 package org.opencms.db;
 
 import org.opencms.configuration.CmsConfigurationManager;
+
 import org.opencms.file.*;
+import org.opencms.file.CmsBackupProject;
+import org.opencms.file.CmsBackupResource;
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsGroup;
+import org.opencms.file.CmsProject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsUser;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.flex.CmsFlexRequestContextInfo;
@@ -85,7 +95,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.459 $ $Date: 2004/12/17 16:15:23 $
+ * @version $Revision: 1.460 $ $Date: 2004/12/20 15:18:45 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -450,14 +460,12 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     }
 
     /**
-     * Accept a task from the Cms.<p>
+     * Updates the state of the given task as accepted by the current user.<p>
      *
-     * All users are granted.
-     *
-     * @param dbc the current database context
+     * @param dbc the current database context.
      * @param taskId the Id of the task to accept.
      *
-     * @throws CmsException if something goes wrong
+     * @throws CmsException if something goes wrong.
      */
     public void acceptTask(CmsDbContext dbc, int taskId) throws CmsException {
 
@@ -2025,19 +2033,19 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Creates a new task.<p>
      *
-     * All users are granted.
-     *
-     * @param dbc the current database context
-     * @param currentUser the current user
-     * @param projectid the current project id
-     * @param agentName user who will edit the task
-     * @param roleName usergroup for the task
-     * @param taskName name of the task
-     * @param taskType type of the task
-     * @param taskComment description of the task
-     * @param timeout time when the task must finished
-     * @param priority Id for the priority
-     * @return a new task object
+     * @param dbc the current database context.
+     * @param currentUser the current user.
+     * @param projectid the current project id.
+     * @param agentName user who will edit the task.
+     * @param roleName usergroup for the task.
+     * @param taskName name of the task.
+     * @param taskType type of the task.
+     * @param taskComment description of the task.
+     * @param timeout time when the task must finished.
+     * @param priority Id for the priority.
+     * 
+     * @return a new task object.
+     * 
      * @throws CmsException if something goes wrong.
      */
     public CmsTask createTask(
@@ -2087,17 +2095,26 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
     /**
      * Creates a new task.<p>
-     *
-     * All users are granted.
-     *
-     * @param dbc the current database context
-     * @param agentName username who will edit the task
-     * @param roleName usergroupname for the task
-     * @param taskname name of the task
-     * @param timeout time when the task must finished
-     * @param priority Id for the priority
-     * @return A new Task Object
-     * @throws CmsException if something goes wrong
+     * 
+     * This is just a more limited version of the 
+     * <code>{@link #createTask(CmsDbContext, CmsUser, int, String, String, String, String, int, long, int)}</code>
+     * method, where: <br>
+     * <ul>
+     * <il>the project id is the current project id.</il>
+     * <il>the task type is the standard task type <b>1</b>.</il>
+     * <il>with no comments</il>
+     * </ul><p>
+     * 
+     * @param dbc the current database context.
+     * @param agentName the user who will edit the task.
+     * @param roleName a usergroup for the task.
+     * @param taskname the name of the task.
+     * @param timeout the time when the task must finished.
+     * @param priority the id for the priority of the task.
+     * 
+     * @return the created task.
+     * 
+     * @throws CmsException if something goes wrong.
      */
     public CmsTask createTask(
         CmsDbContext dbc,
@@ -2836,14 +2853,12 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     }
 
     /**
-     * Ends a task from the Cms.<p>
+     * Ends a task.<p>
      *
-     * All users are granted.
+     * @param dbc the current databsae context.
+     * @param taskid the ID of the task to end.
      *
-     * @param dbc the current databsae context
-     * @param taskid the ID of the task to end
-     *
-     * @throws CmsException if something goes wrong
+     * @throws CmsException if something goes wrong.
      */
     public void endTask(CmsDbContext dbc, int taskid) throws CmsException {
 
@@ -2876,13 +2891,12 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Forwards a task to a new user.<p>
      *
-     * All users are granted.
-     *
-     * @param dbc the current database context
-     * @param taskid the Id of the task to forward
-     * @param newRoleName the new group name for the task
-     * @param newUserName the new user who gets the task. if its "" the a new agent will automatic selected
-     * @throws CmsException if something goes wrong
+     * @param dbc the current database context.
+     * @param taskid the Id of the task to forward.
+     * @param newRoleName the new group name for the task.
+     * @param newUserName the new user who gets the task. if it is empty, a new agent will automatic selected.
+     * 
+     * @throws CmsException if something goes wrong.
      */
     public void forwardTask(CmsDbContext dbc, int taskid, String newRoleName, String newUserName)
     throws CmsException {
@@ -2908,15 +2922,15 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     }
 
     /**
-     * Reads all access control entries for a given resource.<p>
+     * Returns the list of access control entries of a resource given its name.<p>
      * 
-     * @param dbc the current database context
-     * @param resource the resource to read the access control entries for
-     * @param getInherited true if the result should include all access control entries inherited by parent folders
+     * @param dbc the current database context.
+     * @param resource the resource to read the access control entries for.
+     * @param getInherited true if the result should include all access control entries inherited by parent folders.
      * 
-     * @return a vector of access control entries defining all permissions for the given resource
+     * @return a list of <code>{@link CmsAccessControlEntry}</code> objects defining all permissions for the given resource.
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsException if something goes wrong.
      */
     public List getAccessControlEntries(CmsDbContext dbc, CmsResource resource, boolean getInherited)
     throws CmsException {
@@ -2961,13 +2975,13 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * If <code>inheritedOnly</code> is set, only inherited access control entries 
      * are returned.<p>
      * 
-     * @param dbc the current database context
-     * @param resource the resource
-     * @param inheritedOnly skip non-inherited entries if set
+     * @param dbc the current database context.
+     * @param resource the resource.
+     * @param inheritedOnly skip non-inherited entries if set.
      * 
-     * @return the access control list of the resource
+     * @return the access control list of the resource.
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsException if something goes wrong.
      */
     public CmsAccessControlList getAccessControlList(
         CmsDbContext dbc,
@@ -3400,15 +3414,15 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     }
 
     /**
-     * Returns a users the permissions on a given resource.<p>
+     * Returns the set of permissions of the current user for a given resource.<p>
      * 
-     * @param dbc the current database context
-     * @param resource the resource
-     * @param user the user
+     * @param dbc the current database context.
+     * @param resource the resource.
+     * @param user the user.
      * 
-     * @return bitset with allowed permissions
+     * @return bitset with allowed permissions.
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsException if something goes wrong.
      */
     public CmsPermissionSetCustom getPermissions(CmsDbContext dbc, CmsResource resource, CmsUser user)
     throws CmsException {
@@ -3603,16 +3617,15 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     }
 
     /**
-     * Get a parameter value for a task.<p>
+     * Returns the value of the given parameter for the given task.<p>
      *
-     * All users are granted.
-     *
-     * @param dbc the current database context
-     * @param taskId the Id of the task
-     * @param parName name of the parameter
+     * @param dbc the current database context.
+     * @param taskId the Id of the task.
+     * @param parName name of the parameter.
      * 
-     * @return task parameter value
-     * @throws CmsException if something goes wrong
+     * @return task parameter value.
+     * 
+     * @throws CmsException if something goes wrong.
      */
     public String getTaskPar(CmsDbContext dbc, int taskId, String parName) throws CmsException {
 
@@ -3620,13 +3633,14 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     }
 
     /**
-     * Get the template task id for a given taskname.<p>
+     * Returns the template task id for a given taskname.<p>
      *
-     * @param dbc the current database context
-     * @param taskName name of the task
+     * @param dbc the current database context.
+     * @param taskName the name of the task.
      * 
-     * @return id from the task template
-     * @throws CmsException if something goes wrong
+     * @return the id of the task template.
+     * 
+     * @throws CmsException if operation was not successful.
      */
     public int getTaskType(CmsDbContext dbc, String taskName) throws CmsException {
 
@@ -3734,15 +3748,15 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * Writes a vector of access control entries as new access control entries of a given resource.<p>
      * 
      * Already existing access control entries of this resource are removed before.
-     * Access is granted, if:
+     * Access is granted, if:<p>
      * <ul>
-     * <li>the current user has control permission on the resource
+     * <li>the current user has control permission on the resource</li>
      * </ul>
      * 
-     * @param dbc the current database context
-     * @param resource the resource
+     * @param dbc the current database context.
+     * @param resource the resource.
+     * @param acEntries a list of <code>{@link CmsAccessControlEntry}</code> objects.
      * 
-     * @param acEntries list of access control entries applied to the resource
      * @throws CmsException if something goes wrong
      */
     public void importAccessControlEntries(CmsDbContext dbc, CmsResource resource, List acEntries)
@@ -3758,15 +3772,18 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     }
 
     /**
-     * Imports a import-resource (folder or zipfile) to the cms.<p>
+     * Imports an import-resource (folder or zipfile).<p>
      *
-     * Only Administrators can do this.
+     * It is important that a <code>manifest.xml</code> is present in the 
+     * given folder or the root path inside the zip file, if not a 
+     * <code>{@link CmsException}</code> is thrown.<p>
      *
-     * @param cms the cms-object to use for the export
-     * @param dbc the current database context
-     * @param importFile the name (absolute Path) of the import resource (zip or folder)
-     * @param importPath the name (absolute Path) of folder in which should be imported
-     * @throws CmsException if something goes wrong
+     * @param cms the cms-object to use for the export.
+     * @param dbc the current database context.
+     * @param importFile the name (absolute Path) of the import resource (zip or folder).
+     * @param importPath the name (absolute Path) of folder in which should be imported.
+     * 
+     * @throws CmsException if something goes wrong.
      */
     public void importFolder(CmsObject cms, CmsDbContext dbc, String importFile, String importPath)
     throws CmsException {
@@ -3881,8 +3898,9 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * Administrator permissions means that the user is a member of the 
      * administrators group, which per default is called "Administrators".<p>
      *
-     * @param dbc the current database context
-     * @return true, if the current user has "Administrator" permissions
+     * @param dbc the current database context.
+     * 
+     * @return <code>true</code>, if the current user has "Administrator" permissions.
      * 
      * @see CmsObject#isAdmin()
      */
@@ -3907,10 +3925,10 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * If the resource starts with any one of this prefixes, it is considered to 
      * be "inside" the project.<p>
      * 
-     * @param dbc the current database context
-     * @param resourcename the specified resource name (full path)
+     * @param dbc the current database context.
+     * @param resourcename the specified resource name (full path).
      * 
-     * @return true, if the specified resource is inside the current project
+     * @return <code>true</code>, if the specified resource is inside the current project.
      */
     public boolean isInsideCurrentProject(CmsDbContext dbc, String resourcename) {
 
@@ -3948,13 +3966,13 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Checks if the current user has management access to the project.<p>
      *
-     * Please note: This is NOT the same as the {@link #isProjectManager(CmsDbContext)} 
+     * Please note: This is NOT the same as the <code>{@link #isProjectManager(CmsDbContext)}</code> 
      * check. If the user has management access to a project depends on the
      * project settings.<p>
      * 
-     * @param dbc the current database context
+     * @param dbc the current database context.
      *
-     * @return true if the user has management access to the project
+     * @return <code>true</code>, if the user has management access to the project.
      * 
      * @see CmsObject#isManagerOfProject()
      * @see #isProjectManager(CmsDbContext)
@@ -3994,13 +4012,13 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Checks if the current user is a member of the project manager group.<p>
      *
-     * Please note: This is NOT the same as the {@link #isManagerOfProject(CmsDbContext)} 
+     * Please note: This is NOT the same as the <code>{@link #isManagerOfProject(CmsDbContext)}</code> 
      * check. If the user is a member of the project manager group, 
      * he can create new projects.<p>
      *
      * @param dbc the current database context
      * 
-     * @return true if the user is a member of the project manager group
+     * @return <code>true</code>, if the user is a member of the project manager group.
      * 
      * @see CmsObject#isProjectManager()
      * @see #isManagerOfProject(CmsDbContext)
@@ -4292,10 +4310,10 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Lookup and read the user or group with the given UUID.<p>
      * 
-     * @param dbc the current database context
-     * @param principalId the UUID of the principal to lookup
+     * @param dbc the current database context.
+     * @param principalId the UUID of the principal to lookup.
      * 
-     * @return the principal (group or user) if found, otherwise null
+     * @return the principal (group or user) if found, otherwise <code>null</code>.
      */
     public I_CmsPrincipal lookupPrincipal(CmsDbContext dbc, CmsUUID principalId) {
 
@@ -4323,10 +4341,10 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Lookup and read the user or group with the given name.<p>
      * 
-     * @param dbc the current database context
-     * @param principalName the name of the principal to lookup
+     * @param dbc the current database context.
+     * @param principalName the name of the principal to lookup.
      * 
-     * @return the principal (group or user) if found, otherwise null
+     * @return the principal (group or user) if found, otherwise <code>null</code>.
      */
     public I_CmsPrincipal lookupPrincipal(CmsDbContext dbc, String principalName) {
 
@@ -4669,13 +4687,15 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     }
 
     /**
-     * Reaktivates a task from the Cms.<p>
+     * Reactivates a task.<p>
+     * 
+     * Setting its state to <code>{@link I_CmsConstants#C_TASK_STATE_STARTED}</code> and
+     * the percentage to <b>zero</b>.<p>
      *
-     * All users are granted.
+     * @param dbc the current database context.
+     * @param taskId the id of the task to reactivate.
      *
-     * @param dbc the current database context
-     * @param taskId the Id of the task to accept
-     * @throws CmsException if something goes wrong
+     * @throws CmsException if something goes wrong.
      */
     public void reactivateTask(CmsDbContext dbc, int taskId) throws CmsException {
 
@@ -4710,12 +4730,14 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     }
 
     /**
-     * Reads the agent of a task from the OpenCms.<p>
+     * Reads the agent of a task.<p>
      *
-     * @param dbc the current database context
-     * @param task the task to read the agent from
-     * @return the owner of a task
-     * @throws CmsException if something goes wrong
+     * @param dbc the current database context.
+     * @param task the task to read the agent from.
+     * 
+     * @return the owner of a task.
+     * 
+     * @throws CmsException if something goes wrong.
      */
     public CmsUser readAgent(CmsDbContext dbc, CmsTask task) throws CmsException {
 
@@ -5016,14 +5038,25 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Reads all given tasks from a user for a project.<p>
      *
+     * The <code>tasktype</code> parameter will filter the tasks.
+     * The possible values for this parameter are:<br>
+     * <ul>
+     * <il><code>{@link I_CmsConstants#C_TASKS_ALL}</code>: Reads all tasks</il>
+     * <il><code>{@link I_CmsConstants#C_TASKS_OPEN}</code>: Reads all open tasks</il>
+     * <il><code>{@link I_CmsConstants#C_TASKS_DONE}</code>: Reads all finished tasks</il>
+     * <il><code>{@link I_CmsConstants#C_TASKS_NEW}</code>: Reads all new tasks</il>
+     * </ul>
+     *
      * @param dbc the current database context
-     * @param projectId the id of the Project in which the tasks are defined
-     * @param ownerName owner of the task
-     * @param taskType task type you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
-     * @param orderBy chooses, how to order the tasks
-     * @param sort sorting of the tasks
-     * @return vector of tasks
-     * @throws CmsException if something goes wrong
+     * @param projectId the id of the project in which the tasks are defined.
+     * @param ownerName the owner of the task.
+     * @param taskType the type of task you want to read.
+     * @param orderBy specifies how to order the tasks.
+     * @param sort sorting of the tasks.
+     * 
+     * @return a list of given <code>{@link CmsTask}</code> objects for a user for a project.
+     * 
+     * @throws CmsException if operation was not successful.
      */
     public List readGivenTasks(CmsDbContext dbc, int projectId, String ownerName, int taskType, String orderBy, String sort)
     throws CmsException {
@@ -5078,12 +5111,12 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Reads the group (role) of a task.<p>
      *
-     * @param dbc the current database context
-     * @param task the task to read from
+     * @param dbc the current database context.
+     * @param task the task to read from.
      * 
-     * @return the group of a resource
+     * @return the group of a resource.
      * 
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not succesful.
      */
     public CmsGroup readGroup(CmsDbContext dbc, CmsTask task) throws CmsException {
 
@@ -5161,13 +5194,14 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     }
 
     /**
-     * Reads the original agent of a task from the OpenCms.<p>
+     * Reads the original agent of a task.<p>
      *
-     * @param dbc the current database context
-     * @param task the task to read the original agent from
+     * @param dbc the current database context.
+     * @param task the task to read the original agent from.
      * 
-     * @return the owner of a task
-     * @throws CmsException if something goes wrong
+     * @return the owner of a task.
+     * 
+     * @throws CmsException if something goes wrong.
      */
     public CmsUser readOriginalAgent(CmsDbContext dbc, CmsTask task) throws CmsException {
 
@@ -5191,11 +5225,12 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Reads the owner (initiator) of a task.<p>
      * 
-     * @param dbc the current database context
-     * @param task the task to read the owner from
+     * @param dbc the current database context.
+     * @param task the task to read the owner from.
      * 
-     * @return the owner of a task
-     * @throws CmsException if something goes wrong
+     * @return the owner of a task.
+     * 
+     * @throws CmsException if something goes wrong.
      */
     public CmsUser readOwner(CmsDbContext dbc, CmsTask task) throws CmsException {
 
@@ -5205,11 +5240,12 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Reads the owner of a tasklog.<p>
      *
-     * @param dbc the current database context
-     * @param log the tasklog
+     * @param dbc the current database context.
+     * @param log the tasklog.
      * 
-     * @return the owner of a resource
-     * @throws CmsException if something goes wrong
+     * @return the owner of a resource.
+     * 
+     * @throws CmsException if something goes wrong.
      */
     public CmsUser readOwner(CmsDbContext dbc, CmsTaskLog log) throws CmsException {
 
@@ -5319,13 +5355,14 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     }
 
     /**
-     * Reads a project from the Cms.<p>
+     * Reads a project of a given task.<p>
      *
-     * @param dbc the current database context
-     * @param task the task to read the project of
+     * @param dbc the current database context.
+     * @param task the task to read the project of.
      * 
-     * @return the project read from the cms
-     * @throws CmsException if something goes wrong
+     * @return the project of the task.
+     * 
+     * @throws CmsException if something goes wrong.
      */
     public CmsProject readProject(CmsDbContext dbc, CmsTask task) throws CmsException {
 
@@ -5382,11 +5419,12 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     }
 
     /**
-     * Reads log entries for a project.<p>
+     * Reads all task log entries for a project.
      *
-     * @param dbc the current database context
-     * @param projectId the id of the projec for tasklog to read
-     * @return a list of new TaskLog objects
+     * @param dbc the current database context.
+     * @param projectId the id of the project for which the tasklog will be read.
+     * 
+     * @return a list of <code>{@link CmsTaskLog}</code> objects.
      * 
      * @throws CmsException if something goes wrong.
      */
@@ -5411,12 +5449,20 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
     /**
      * Reads all resources of a project that match a given state from the VFS.<p>
-     *
+     * 
+     * Possible values for the <code>state</code> parameter are:<br>
+     * <ul>
+     * <li><code>{@link I_CmsConstants#C_STATE_CHANGED}</code>: Read all "changed" resources in the project</li>
+     * <li><code>{@link I_CmsConstants#C_STATE_NEW}</code>: Read all "new" resources in the project</li>
+     * <li><code>{@link I_CmsConstants#C_STATE_DELETED}</code>: Read all "deleted" resources in the project</li>
+     * <li><code>{@link I_CmsConstants#C_STATE_KEEP}</code>: Read all resources either "changed", "new" or "deleted" in the project</li>
+     * </ul><p>
+     * 
      * @param dbc the current database context
      * @param projectId the id of the project to read the file resources for
      * @param state the resource state to match 
      *
-     * @return all resources of a project that match a given criteria from the VFS
+     * @return a list of <code>{@link CmsResource}</code> objects matching the filter criteria.
      * 
      * @throws CmsException if something goes wrong
      * 
@@ -5731,13 +5777,16 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     }
 
     /**
-     * Reads all resources below the given parent matching the filter criteria.<p>
+     * Reads all resources below the given path matching the filter criteria,
+     * including the full tree below the path only in case the <code>readTree</code> 
+     * parameter is <code>true</code>.<p>
      * 
-     * @param dbc the current database context
-     * @param parent the parent to read the resources from
-     * @param filter the filter criteria to apply
-     * @param readTree true to indicate to read all subresources, false to read immediate children only
-     * @return a list with resources below parentPath matchin the filter criteria
+     * @param dbc the current database context.
+     * @param parent the parent path to read the resources from.
+     * @param filter the filter.
+     * @param readTree <code>true</code> to read all subresources.
+     * 
+     * @return a list of <code>{@link CmsResource}</code> objects matching the filter criteria.
      *  
      * @throws CmsException if something goes wrong
      */
@@ -5883,11 +5932,12 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Returns the parameters of a resource in the table of all published template resources.<p>
      *
-     * @param dbc the current database context
-     * @param rfsName the rfs name of the resource
+     * @param dbc the current database context.
+     * @param rfsName the rfs name of the resource.
      * 
-     * @return the paramter string of the requested resource
-     * @throws CmsException if something goes wrong
+     * @return the paramter string of the requested resource.
+     * 
+     * @throws CmsException if something goes wrong.
      */
     public String readStaticExportPublishedResourceParameters(CmsDbContext dbc, String rfsName)
     throws CmsException {
@@ -5898,12 +5948,13 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Returns a list of all template resources which must be processed during a static export.<p>
      * 
-     * @param dbc the current database context
-     * @param parameterResources flag for reading resources with parameters (1) or without (0)
-     * @param timestamp for reading the data from the db
+     * @param dbc the current database context.
+     * @param parameterResources flag for reading resources with parameters (1) or without (0).
+     * @param timestamp for reading the data from the db.
      * 
-     * @return List of template resources
-     * @throws CmsException if something goes wrong
+     * @return a list of template resources as <code>{@link String}</code> objects.
+     * 
+     * @throws CmsException if something goes wrong.
      */
     public List readStaticExportResources(CmsDbContext dbc, int parameterResources, long timestamp)
     throws CmsException {
@@ -5912,13 +5963,14 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     }
 
     /**
-     * Read a task by id.<p>
+     * Reads the task with the given id.<p>
      *
-     * @param dbc the current database context
-     * @param id the id for the task to read
+     * @param dbc the current database context.
+     * @param id the id for the task to read.
      * 
-     * @return a task
-     * @throws CmsException if something goes wrong
+     * @return the task with the given id.
+     * 
+     * @throws CmsException if something goes wrong.
      */
     public CmsTask readTask(CmsDbContext dbc, int id) throws CmsException {
 
@@ -5928,11 +5980,12 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Reads log entries for a task.<p>
      *
-     * @param dbc the current database context
-     * @param taskid the task for the tasklog to read
+     * @param dbc the current satabase context.
+     * @param taskid the task for the tasklog to read.
      * 
-     * @return a Vector of new TaskLog objects
-     * @throws CmsException if something goes wrong
+     * @return a list of <code>{@link CmsTaskLog}</code> objects.
+     * 
+     * @throws CmsException if something goes wrong.
      */
     public List readTaskLogs(CmsDbContext dbc, int taskid) throws CmsException {
 
@@ -5942,16 +5995,24 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Reads all tasks for a project.<p>
      *
-     * All users are granted.
+     * The <code>tasktype</code> parameter will filter the tasks.
+     * The possible values are:<br>
+     * <ul>
+     * <il><code>{@link I_CmsConstants#C_TASKS_ALL}</code>: Reads all tasks</il>
+     * <il><code>{@link I_CmsConstants#C_TASKS_OPEN}</code>: Reads all open tasks</il>
+     * <il><code>{@link I_CmsConstants#C_TASKS_DONE}</code>: Reads all finished tasks</il>
+     * <il><code>{@link I_CmsConstants#C_TASKS_NEW}</code>: Reads all new tasks</il>
+     * </ul><p>
      *
      * @param dbc the current database context
-     * @param projectId the id of the Project in which the tasks are defined. Can be null for all tasks
-     * @param tasktype task type you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW
-     * @param orderBy chooses, how to order the tasks
-     * @param sort sort order C_SORT_ASC, C_SORT_DESC, or null
+     * @param projectId the id of the project in which the tasks are defined. Can be null to select all tasks.
+     * @param tasktype the type of task you want to read.
+     * @param orderBy specifies how to order the tasks.
+     * @param sort sort order: C_SORT_ASC, C_SORT_DESC, or null.
      * 
-     * @return a vector of tasks
-     * @throws CmsException  if something goes wrong
+     * @return a list of <code>{@link CmsTask}</code> objects for the project.
+     * 
+     * @throws CmsException if operation was not successful.
      */
     public List readTasksForProject(CmsDbContext dbc, int projectId, int tasktype, String orderBy, String sort) throws CmsException {
 
@@ -5966,14 +6027,25 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Reads all tasks for a role in a project.<p>
      *
-     * @param dbc the current database context
-     * @param projectId the id of the Project in which the tasks are defined
-     * @param roleName the user who has to process the task
-     * @param tasktype task type you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW
-     * @param orderBy chooses, how to order the tasks
-     * @param sort Sort order C_SORT_ASC, C_SORT_DESC, or null
-     * @return a vector of tasks
-     * @throws CmsException if something goes wrong
+     * The <code>tasktype</code> parameter will filter the tasks.
+     * The possible values for this parameter are:<br>
+     * <ul>
+     * <il><code>{@link I_CmsConstants#C_TASKS_ALL}</code>: Reads all tasks</il>
+     * <il><code>{@link I_CmsConstants#C_TASKS_OPEN}</code>: Reads all open tasks</il>
+     * <il><code>{@link I_CmsConstants#C_TASKS_DONE}</code>: Reads all finished tasks</il>
+     * <il><code>{@link I_CmsConstants#C_TASKS_NEW}</code>: Reads all new tasks</il>
+     * </ul><p>
+     *
+     * @param dbc the current database context.
+     * @param projectId the id of the Project in which the tasks are defined.
+     * @param roleName the role who has to process the task.
+     * @param tasktype the type of task you want to read.
+     * @param orderBy specifies how to order the tasks.
+     * @param sort sort order C_SORT_ASC, C_SORT_DESC, or null.
+     * 
+     * @return list of <code>{@link CmsTask}</code> objects for the role.
+     * 
+     * @throws CmsException if operation was not successful.
      */
     public List readTasksForRole(CmsDbContext dbc, int projectId, String roleName, int tasktype, String orderBy, String sort)
     throws CmsException {
@@ -5995,15 +6067,25 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Reads all tasks for a user in a project.<p>
      *
-     * @param dbc the current database context
-     * @param projectId the id of the Project in which the tasks are defined
-     * @param userName the user who has to process the task
-     * @param taskType task type you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW
-     * @param orderBy chooses, how to order the tasks
-     * @param sort sort order C_SORT_ASC, C_SORT_DESC, or null
+     * The <code>tasktype</code> parameter will filter the tasks.
+     * The possible values for this parameter are:<br>
+     * <ul>
+     * <il><code>{@link I_CmsConstants#C_TASKS_ALL}</code>: Reads all tasks</il>
+     * <il><code>{@link I_CmsConstants#C_TASKS_OPEN}</code>: Reads all open tasks</il>
+     * <il><code>{@link I_CmsConstants#C_TASKS_DONE}</code>: Reads all finished tasks</il>
+     * <il><code>{@link I_CmsConstants#C_TASKS_NEW}</code>: Reads all new tasks</il>
+     * </ul>
+     *
+     * @param dbc the current database context.
+     * @param projectId the id of the Project in which the tasks are defined.
+     * @param userName the user who has to process the task.
+     * @param taskType the type of task you want to read.
+     * @param orderBy specifies how to order the tasks.
+     * @param sort sort order C_SORT_ASC, C_SORT_DESC, or null.
      * 
-     * @return a vector of tasks
-     * @throws CmsException if something goes wrong
+     * @return a list of <code>{@link CmsTask}</code> objects for the user .
+     * 
+     * @throws CmsException if operation was not successful.
      */
     public List readTasksForUser(CmsDbContext dbc, int projectId, String userName, int taskType, String orderBy, String sort)
     throws CmsException {
@@ -6132,11 +6214,11 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Removes an access control entry for a given resource and principal.<p>
      * 
-     * @param dbc the current database context
-     * @param resource the resource
-     * @param principal the id of the principal to remove the the access control entry for
+     * @param dbc the current database context.
+     * @param resource the resource.
+     * @param principal the id of the principal to remove the the access control entry for.
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsException if something goes wrong.
      */
     public void removeAccessControlEntry(
         CmsDbContext dbc,
@@ -6405,12 +6487,11 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Set a new name for a task.<p>
      *
-     * All users are granted.
-     *
-     * @param dbc the current database context
-     * @param taskId the Id of the task to set the percentage
-     * @param name the new name value
-     * @throws CmsException if something goes wrong
+     * @param dbc the current database context.
+     * @param taskId the Id of the task to set the percentage.
+     * @param name the new name value.
+     * 
+     * @throws CmsException if something goes wrong.
      */
     public void setName(CmsDbContext dbc, int taskId, String name) throws CmsException {
 
@@ -6531,13 +6612,11 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Set priority of a task.<p>
      *
-     * All users are granted.
-     *
-     * @param dbc the current database context
-     * @param taskId the Id of the task to set the percentage
-     * @param priority the priority value
+     * @param dbc the current database context.
+     * @param taskId the Id of the task to set the percentage.
+     * @param priority the priority value.
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsException if something goes wrong.
      */
     public void setPriority(CmsDbContext dbc, int taskId, int priority) throws CmsException {
 
@@ -6556,10 +6635,10 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Set a Parameter for a task.<p>
      *
-     * @param dbc the current database context
-     * @param taskId the Id of the task
-     * @param parName name of the parameter
-     * @param parValue value if the parameter
+     * @param dbc the current database context.
+     * @param taskId the Id of the task.
+     * @param parName name of the parameter.
+     * @param parValue value if the parameter.
      * 
      * @throws CmsException if something goes wrong.
      */
@@ -6571,11 +6650,11 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Set the timeout of a task.<p>
      *
-     * @param dbc the current database context
-     * @param taskId the Id of the task to set the percentage
-     * @param timeout new timeout value
+     * @param dbc the current database context.
+     * @param taskId the Id of the task to set the percentage.
+     * @param timeout new timeout value.
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsException if something goes wrong.
      */
     public void setTimeout(CmsDbContext dbc, int taskId, long timeout) throws CmsException {
 
@@ -7447,12 +7526,11 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Writes a new user tasklog for a task.<p>
      *
-     * All users are granted.
-     *
-     * @param dbc the current database context
-     * @param taskid the Id of the task
-     * @param comment description for the log
-     * @throws CmsException if something goes wrong
+     * @param dbc the current database context.
+     * @param taskid the Id of the task.
+     * @param comment description for the log.
+     * 
+     * @throws CmsException if something goes wrong.
      */
     public void writeTaskLog(CmsDbContext dbc, int taskid, String comment) throws CmsException {
 
@@ -7468,13 +7546,12 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Writes a new task log entry for a task.<p>
      *
-     * All users are granted.
-     *
-     * @param dbc the current database context
-     * @param taskId the Id of the task
-     * @param comment description for the log
-     * @param type type of the tasklog. User tasktypes must be greater then 100
-     * @throws CmsException something goes wrong
+     * @param dbc the current database context.
+     * @param taskId the Id of the task.
+     * @param comment description for the log.
+     * @param type type of the tasklog. User tasktypes must be greater then 100.
+     * 
+     * @throws CmsException something goes wrong.
      */
     public void writeTaskLog(CmsDbContext dbc, int taskId, String comment, int type) throws CmsException {
 

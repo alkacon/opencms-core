@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2004/12/15 12:29:45 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2004/12/20 15:18:46 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Map;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.40 $ $Date: 2004/12/15 12:29:45 $
+ * @version $Revision: 1.41 $ $Date: 2004/12/20 15:18:46 $
  * @since 5.1
  */
 public interface I_CmsUserDriver extends I_CmsDriver {
@@ -304,11 +304,12 @@ public interface I_CmsUserDriver extends I_CmsDriver {
     /**
      * Reads all relevant access control entries for a given resource.<p>
      * 
-     * @param dbc the current database context
-     * @param project the project to write the entry
-     * @param resource the id of the resource
-     * @param inheritedOnly flag to indicate that only inherited entries should be returned
-     * @return a vector of access control entries defining all permissions for the given resource
+     * @param dbc the current database context.
+     * @param project the project to write the entry.
+     * @param resource the id of the resource.
+     * @param inheritedOnly flag to indicate that only inherited entries should be returned.
+     * 
+     * @return a list of <code>{@link CmsAccessControlEntry}</code> objects defining all permissions for the given resource.
      * 
      * @throws CmsException if something goes wrong
      */

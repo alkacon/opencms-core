@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2004/12/15 12:29:45 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2004/12/20 15:18:46 $
+ * Version: $Revision: 1.59 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Set;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.58 $ $Date: 2004/12/15 12:29:45 $
+ * @version $Revision: 1.59 $ $Date: 2004/12/20 15:18:46 $
  * @since 5.1
  */
 public interface I_CmsProjectDriver {
@@ -472,12 +472,13 @@ public interface I_CmsProjectDriver {
     /**
      * Returns the parameters of a resource in the table of all published template resources.<p>
      *
-     * @param dbc the current database context
-     * @param currentProject the current project
-     * @param rfsName the rfs name of the resource
+     * @param dbc the current database context.
+     * @param currentProject the current project.
+     * @param rfsName the rfs name of the resource.
      * 
-     * @return the paramter string of the requested resource
-     * @throws CmsException if something goes wrong
+     * @return the paramter string of the requested resource.
+     * 
+     * @throws CmsException if something goes wrong.
      */
     String readStaticExportPublishedResourceParameters(CmsDbContext dbc, CmsProject currentProject, String rfsName)
     throws CmsException;
@@ -485,13 +486,14 @@ public interface I_CmsProjectDriver {
     /**
      * Returns a list of all template resources which must be processed during a static export.<p>
      * 
-     * @param dbc the current database context
-     * @param currentProject the current project
-     * @param parameterResources flag for reading resources with parameters (1) or without (0)
-     * @param timestamp the timestamp information
+     * @param dbc the current database context.
+     * @param currentProject the current project.
+     * @param parameterResources flag for reading resources with parameters (1) or without (0).
+     * @param timestamp the timestamp information.
      * 
-     * @return a List of template resources
-     * @throws CmsException if something goes wrong
+     * @return a list of template resources as <code>{@link String}</code> objects.
+     * 
+     * @throws CmsException if something goes wrong.
      */
     List readStaticExportResources(
         CmsDbContext dbc,

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workflow/Attic/CmsTaskService.java,v $
- * Date   : $Date: 2004/12/20 09:17:23 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/12/20 15:18:46 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -169,7 +169,7 @@ public class CmsTaskService {
      *
      * @param taskid the id of the task which will be forwarded.
      * @param newRoleName the new group for the task.
-     * @param newUserName the new user who gets the task.
+     * @param newUserName the new user who gets the task. if it is empty, a new agent will automatic selected.
      *
      * @throws CmsException if operation was not successful.
      */
@@ -453,7 +453,7 @@ public class CmsTaskService {
      *
      * @throws CmsException if something goes wrong.
      */
-    public void reaktivateTask(int taskId) throws CmsException {
+    public void reactivateTask(int taskId) throws CmsException {
 
         m_securityManager.reactivateTask(m_context, taskId);
     }

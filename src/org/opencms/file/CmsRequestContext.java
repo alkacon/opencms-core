@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsRequestContext.java,v $
- * Date   : $Date: 2004/10/22 14:37:40 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/12/20 15:18:45 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Locale;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  *
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class CmsRequestContext {
 
@@ -312,9 +312,9 @@ public class CmsRequestContext {
      * Adjusts the absolute resource root path for the current site.<p> 
      * 
      * The full root path of a resource is always available using
-     * {@link CmsResource#getRootPath()}. From this name this method cuts 
+     * <code>{@link CmsResource#getRootPath()}</code>. From this name this method cuts 
      * of the current site root using 
-     * {@link CmsRequestContext#removeSiteRoot(String)}.<p>
+     * <code>{@link CmsRequestContext#removeSiteRoot(String)}</code>.<p>
      * 
      * @param resource the resource to get the adjusted site root path for
      * 
