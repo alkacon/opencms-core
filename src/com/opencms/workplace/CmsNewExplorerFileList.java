@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
-* Date   : $Date: 2001/10/01 14:15:30 $
-* Version: $Revision: 1.40 $
+* Date   : $Date: 2001/10/01 14:39:11 $
+* Version: $Revision: 1.41 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.xml.sax.*;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.40 $ $Date: 2001/10/01 14:15:30 $
+ * @version $Revision: 1.41 $ $Date: 2001/10/01 14:39:11 $
  */
 
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannels,I_CmsConstants,I_CmsWpConstants {
@@ -176,7 +176,9 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
 
         // the flaturl to use for changing folders
         String flaturl = (String) parameters.get("flaturl");
-        flaturl = "window.body.admin_head.location.href=" + flaturl;
+        if((flaturl != null) && (!"".equals(flaturl))){
+            flaturl = "window.body.admin_head.location.href=" + flaturl;
+        }
 
         // get the checksum
         String checksum = (String)parameters.get("check");
