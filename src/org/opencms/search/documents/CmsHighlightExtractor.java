@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsHighlightExtractor.java,v $
- * Date   : $Date: 2005/03/07 17:07:02 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/03/13 09:50:05 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -330,7 +330,7 @@ public final class CmsHighlightExtractor {
                     if (tokenText.length() > fragmentSize / 2) {
                         newText.append(
                             tokenText.substring(0, fragmentSize / 2));
-                        newText.append("...");
+                        newText.append(" ");
                     } else {
                         newText.append(tokenText);
                     }
@@ -397,9 +397,8 @@ public final class CmsHighlightExtractor {
     }
 
     /**
-     * Highlights a text in accordance to the given m_query, extracting the most
-     * relevant sections. and concatenating the chosen fragments with a
-     * separator (typically "...") The document text is analysed in
+     * Highlights a text in accordance to the given m_query and extracting the most
+     * relevant sections. The document text is analysed in
      * fragmentSize chunks to record hit statistics across the document. After
      * accumulating stats, the fragments with the highest scores are returned
      * in order as "separator" delimited strings.
@@ -412,7 +411,7 @@ public final class CmsHighlightExtractor {
      *            the maximum number of fragments.
      * @param separator
      *            the separator used to intersperse the document fragments
-     *            (typically "...")
+     *            (typically " ... ")
      * 
      * @return highlighted text
      * @throws IOException if something goes wrong

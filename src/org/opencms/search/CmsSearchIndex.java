@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2005/03/09 11:59:13 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2005/03/13 09:50:05 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.apache.lucene.search.Searcher;
 /**
  * Implements the search within an index and the management of the index configuration.<p>
  *   
- * @version $Revision: 1.38 $ $Date: 2005/03/09 11:59:13 $
+ * @version $Revision: 1.39 $ $Date: 2005/03/13 09:50:05 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -718,7 +718,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
         int highlightFragmentSizeInBytes = 60;
         int maxNumFragmentsRequired = 5;
-        String fragmentSeparator = ".. ";
+        String fragmentSeparator = " ... ";
 
         String excerpt = null;
         Analyzer analyzer = null;
