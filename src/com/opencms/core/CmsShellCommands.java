@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2002/07/24 16:03:45 $
-* Version: $Revision: 1.50 $
+* Date   : $Date: 2002/09/02 07:52:49 $
+* Version: $Revision: 1.51 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  *
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.50 $ $Date: 2002/07/24 16:03:45 $
+ * @version $Revision: 1.51 $ $Date: 2002/09/02 07:52:49 $
  */
 public class CmsShellCommands implements I_CmsConstants {
 
@@ -440,7 +440,7 @@ public class CmsShellCommands implements I_CmsConstants {
      */
     public void copyFile(String source, String destination) {
         try {
-            m_cms.copyFile(source, destination);
+            m_cms.copyResource(source, destination);
         }
         catch(Exception exc) {
             CmsShell.printException(exc);
@@ -528,7 +528,7 @@ public class CmsShellCommands implements I_CmsConstants {
      */
     public void createFolder(String folder, String newFolderName) {
         try {
-            System.out.println(m_cms.createFolder(folder, newFolderName));
+            System.out.println((CmsFolder)m_cms.createResource(folder, newFolderName, C_TYPE_FOLDER_NAME));
         }
         catch(Exception exc) {
             CmsShell.printException(exc);
@@ -694,7 +694,7 @@ public class CmsShellCommands implements I_CmsConstants {
      */
     public void deleteFile(String filename) {
         try {
-            m_cms.deleteFile(filename);
+            m_cms.deleteResource(filename);
         }
         catch(Exception exc) {
             CmsShell.printException(exc);
@@ -708,7 +708,7 @@ public class CmsShellCommands implements I_CmsConstants {
      */
     public void deleteFolder(String foldername) {
         try {
-            m_cms.deleteFolder(foldername);
+            m_cms.deleteResource(foldername);
         }
         catch(Exception exc) {
             CmsShell.printException(exc);
@@ -2052,7 +2052,7 @@ public class CmsShellCommands implements I_CmsConstants {
      */
     public void moveFile(String source, String destination) {
         try {
-            m_cms.moveFile(source, destination);
+            m_cms.moveResource(source, destination);
         }
         catch(Exception exc) {
             CmsShell.printException(exc);
@@ -2229,7 +2229,7 @@ public class CmsShellCommands implements I_CmsConstants {
      */
     public void readAllPropertydefinitions(String resourcetype, String type) {
         try {
-            Vector propertydefs = m_cms.readAllPropertydefinitions(resourcetype, Integer.parseInt(type));
+            Vector propertydefs = m_cms.readAllPropertydefinitions(resourcetype);
             for(int i = 0;i < propertydefs.size();i++) {
                 System.out.println((CmsPropertydefinition)propertydefs.elementAt(i));
             }
@@ -2813,7 +2813,7 @@ public class CmsShellCommands implements I_CmsConstants {
      */
     public void renameFile(String oldname, String newname) {
         try {
-            m_cms.renameFile(oldname, newname);
+            m_cms.renameResource(oldname, newname);
         }
         catch(Exception exc) {
             CmsShell.printException(exc);
@@ -3251,7 +3251,7 @@ public class CmsShellCommands implements I_CmsConstants {
      */
     public void uploadFile(String lokalfile, String folder, String filename, String type) {
         try {
-            System.out.println(m_cms.createFile(folder, filename, importFile(lokalfile), type));
+            System.out.println((CmsFile)m_cms.createResource(folder, filename, type, null, importFile(lokalfile)));
         }
         catch(Exception exc) {
             CmsShell.printException(exc);
@@ -3369,6 +3369,7 @@ public class CmsShellCommands implements I_CmsConstants {
      * @exception CmsException Throws CmsException if something goes wrong.
      * @deprecated Do not use this method any longer because there is no type of propertydefinition
      */
+    /*
     public void writePropertydefinition(String name, String resourcetype, String type) {
         try {
             CmsPropertydefinition propertydef = m_cms.readPropertydefinition(name, resourcetype);
@@ -3379,6 +3380,7 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
+    */
 
     /**
      * Writes a new user tasklog for a task.
