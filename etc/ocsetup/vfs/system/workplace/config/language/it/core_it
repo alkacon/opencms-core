@@ -928,6 +928,7 @@
                 <export>Esporta Modulo: </export>
                 <export1>Sei certo di voler esportare il modulo </export1>
                 <export2> ?</export2>
+				<moduletype>Module Type Simple</moduletype>
             </lable>
             <error>
                 <parametertitle>Cambia proprietà per il modulo</parametertitle>

@@ -931,6 +931,7 @@
                 <export>Export Module: </export>
                 <export1>Sind Sie sicher, dass sie das Modul </export1>
                 <export2> exportieren wollen</export2>
+				<moduletype>Module Type Simple</moduletype>
             </lable>
             <error>
                 <parametertitle>Change property for module</parametertitle>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <LANGUAGE>
         <name>Deutsch</name>
-        <content-encoding>utf-8</content-encoding>
+        <content-encoding>UTF-8</content-encoding>
         <button>
             <all>Alle</all>
             <unzip>Zip-File entpacken</unzip>
@@ -932,6 +932,7 @@
                 <export>Modul exportieren: </export>
                 <export1>Sind Sie sicher, dass sie das Modul </export1>
                 <export2> exportieren wollen</export2>
+				<moduletype>Modul Typ Simple</moduletype>
             </lable>
             <error>
                 <parametertitle>Eigenschaft für Modul ändern</parametertitle>
