@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/oracle/Attic/CmsSqlManager.java,v $
- * Date   : $Date: 2003/05/21 14:32:53 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/05/22 10:14:37 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,12 +41,12 @@ import oracle.jdbc.driver.OracleResultSet;
  * Reads SQL queries from query.properties of this driver package.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2003/05/21 14:32:53 $ 
+ * @version $Revision: 1.2 $ $Date: 2003/05/22 10:14:37 $ 
  */
 public class CmsSqlManager extends com.opencms.db.generic.CmsSqlManager {
     
     private static Properties m_queries = null;    
-    private static final String C_PROPERTY_FILENAME = "com/opencms/db/oracles/query.properties";
+    private static final String C_PROPERTY_FILENAME = "com/opencms/db/oracle/query.properties";
     
     /**
      * CmsSqlManager constructor.
