@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsProperty.java,v $
- * Date   : $Date: 2003/07/28 13:56:38 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/07/29 10:45:00 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.1
  */
@@ -340,8 +340,17 @@ public class CmsProperty extends CmsDialog {
             }             
         }
         
+        boolean showButtons = false;
         if (!lock.isNullLock()) {
-            // resource is locked, show "define" & "modify" button
+            // determine when to show buttons...
+            if (lock.getType() != CmsLock.C_TYPE_SHARED_EXCLUSIVE && lock.getType() != CmsLock.C_TYPE_SHARED_INHERITED
+                    && lock.getUserId().equals(getCms().getRequestContext().currentUser().getId())) {
+                // lock is not shared and belongs to current user, so show buttons
+                showButtons = true;
+            }
+        }
+        
+        if (showButtons) {
             StringBuffer retValue = new StringBuffer(256);
             
             retValue.append("<table border=\"0\">\n");
