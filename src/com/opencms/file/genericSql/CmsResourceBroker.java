@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2001/10/31 13:05:07 $
-* Version: $Revision: 1.286 $
+* Date   : $Date: 2001/11/02 14:44:03 $
+* Version: $Revision: 1.287 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.286 $ $Date: 2001/10/31 13:05:07 $
+ * @version $Revision: 1.287 $ $Date: 2001/11/02 14:44:03 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -4321,8 +4321,8 @@ public void setCmsObjectForStaticExport(CmsObject cms){
 
         CmsProject publishProject = readProject(currentUser, currentProject, id);
         CmsPublishedResources allChanged = new CmsPublishedResources();
-        Vector changedResources = null;
-        Vector changedModuleMasters = null;
+        Vector changedResources = new Vector();
+        Vector changedModuleMasters = new Vector();
 
         // check the security
         if ((isAdmin(currentUser, currentProject) || isManagerOfProject(currentUser, publishProject)) &&
