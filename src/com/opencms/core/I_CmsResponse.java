@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsResponse.java,v $
-* Date   : $Date: 2001/01/24 09:41:40 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2001/02/06 13:50:07 $
+* Version: $Revision: 1.12 $
 *
 * Copyright (C) 2000  The OpenCms Group 
 * 
@@ -42,7 +42,7 @@ import java.io.*;
  * 
  * @author Michael Emmerich
  * @author Alexander Kandzior
- * @version $Revision: 1.11 $ $Date: 2001/01/24 09:41:40 $  
+ * @version $Revision: 1.12 $ $Date: 2001/02/06 13:50:07 $  
  */
 public interface I_CmsResponse {
     
@@ -68,6 +68,18 @@ public interface I_CmsResponse {
      * @exception Throws IOException if an error occurs.
      */
     public OutputStream getOutputStream() throws IOException;
+
+    /**
+     * Check if the output stream was requested previously.
+     * @return <code>true</code> if getOutputStream() was called, <code>false</code> otherwise.
+     */
+    public boolean isOutputWritten();
+    
+    /**
+     * Check if the current request was redirected. In this case, the
+     * servlet must not write any bytes to the output stream.
+     * @return <code>true</code> if the request is redirected, <code>false</code> otherwise.
+     */
     public boolean isRedirected();
     
     /**
@@ -127,6 +139,14 @@ public interface I_CmsResponse {
      * @param value The value for the header.
      */
     public void setHeader(String key, String value);
+
+    /**
+     * Add a header-field in the response.
+     * 
+     * @param key The key for the header.
+     * @param value The value for the header.
+     */
+    public void addHeader(String key, String value);
     
     /**
      * Sets the last modified header-field in the response.
