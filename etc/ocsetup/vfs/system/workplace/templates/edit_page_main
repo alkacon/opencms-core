@@ -136,7 +136,7 @@
                 <td class=menubold><p class=einzug>]]><LABEL value="input.title"/>:<![CDATA[&nbsp;&nbsp;&nbsp;</td>
                 <td class=dialogtxt>]]><INPUTFIELD name="title" class="textfeld" size="10" length="255" method="setTitle"/><![CDATA[</td>
                 <td class=menubold><p class=tab>]]><LABEL value="input.editor"/>:<![CDATA[&nbsp;&nbsp;&nbsp;</td>
-                <td class=dialogtxt>]]><SELECT class="textfeld" name="editor" width="100" method="getEditorViews" onchange="doTemplSubmit(3);"/><![CDATA[</td>
+                <td class=dialogtxt>]]><SELECT class="textfeld" name="editor" width="200" method="getEditorViews" onchange="doTemplSubmit(3);"/><![CDATA[</td>
                 <td class=menu width="100%" align=right>]]><BUTTON href="#" name="bt_docpreview" action="javascript:doTemplSubmit(5);" alt="preview"/><![CDATA[</td>
             </tr>
         </table>
@@ -151,7 +151,7 @@
 
                 <td class=menu><p class=tab>]]><BUTTON href="javascript:doTemplSubmit(6);" name="bt_newdoc" action="" alt="newbody"/><![CDATA[</td>
                 <td class=menubold><p class=tab>]]><LABEL value="input.template"/>:<![CDATA[&nbsp;&nbsp;&nbsp;</td>
-                <td class=dialogtxt>]]><SELECT class="textfeld" name="template" width="150" method="getAvailableTemplates" onchange="doTemplSubmit(4);"/><![CDATA[</td>
+                <td class=dialogtxt>]]><SELECT class="textfeld" name="template" width="220" method="getAvailableTemplates" onchange="doTemplSubmit(4);"/><![CDATA[</td>
                 <td class=menu width="100%" align=right>&nbsp;</td>
             </tr>
         </table>
