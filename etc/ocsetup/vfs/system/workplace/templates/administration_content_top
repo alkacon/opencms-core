@@ -28,11 +28,11 @@ top.help_url='Administration/index.html';
 </TEMPLATE>
 
 <list_row>
-	<PROCESS>entrys</PROCESS>
+    <PROCESS>entrys</PROCESS>
 </list_row>
 
 <defaulticon><![CDATA[
-<div style="height:120px; float:left;">
+<div style="width:120px; height:120px; float:left;">
 <table width=120 height=120 align=left>
 <tr>
 <td align=center><a href="javascript:document.location.href=']]><PROCESS>linkTo</PROCESS><![CDATA['"> <img src="]]><PROCESS>picture</PROCESS><![CDATA[" border=0 width=32 height=32 vspace=4><br>]]><PROCESS>linkName</PROCESS><![CDATA[ </a></td>
@@ -42,7 +42,7 @@ top.help_url='Administration/index.html';
 </defaulticon>
 
 <deactivatedicon><![CDATA[
-<div style="height:120px; float:left;">
+<div style="width:120px; height:120px; float:left;">
 <table width=120 height=120 align=left>
 <tr>
 <td align=center><img src="]]><PROCESS>picture</PROCESS><![CDATA[" border=0 width=32 height=32 vspace=4><br><font color="silver">]]><PROCESS>linkName</PROCESS><![CDATA[ </font></td>
