@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFolderTree.java,v $
- * Date   : $Date: 2000/04/06 15:56:41 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2000/04/13 22:05:12 $
+ * Version: $Revision: 1.20 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.19 $ $Date: 2000/04/06 15:56:41 $
+ * @version $Revision: 1.20 $ $Date: 2000/04/13 22:05:12 $
  */
 public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstants  {
 
@@ -295,10 +295,10 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
                         if (subfolders.size() >0) {
                             // test if the + or minus must be displayed
                             if (endfolder.startsWith(folder.getAbsolutePath())) {
-                                template.setXmlData(C_TREELINK,C_WP_FOLDER_TREE+"?"+C_PARA_FOLDERTREE+"="+curfolder);
+                                template.setXmlData(C_TREELINK,C_WP_FOLDER_TREE+"?"+C_PARA_FOLDERTREE+"="+Encoder.escape(curfolder));
                                 treeswitch=template.getProcessedXmlDataValue(C_TREEIMG_MEND,this);    
                             } else {
-                              template.setXmlData(C_TREELINK,C_WP_FOLDER_TREE+"?"+C_PARA_FOLDERTREE+"="+folder.getAbsolutePath());
+                              template.setXmlData(C_TREELINK,C_WP_FOLDER_TREE+"?"+C_PARA_FOLDERTREE+"="+Encoder.escape(folder.getAbsolutePath()));
                                 treeswitch=template.getProcessedXmlDataValue(C_TREEIMG_PEND,this); 
                             }
                         } else {
@@ -311,10 +311,10 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
                         if (subfolders.size() >0) {
                              // test if the + or minus must be displayed
                             if (endfolder.startsWith(folder.getAbsolutePath())) {
-                                template.setXmlData(C_TREELINK,C_WP_FOLDER_TREE+"?"+C_PARA_FOLDERTREE+"="+curfolder);
+                                template.setXmlData(C_TREELINK,C_WP_FOLDER_TREE+"?"+C_PARA_FOLDERTREE+"="+Encoder.escape(curfolder));
                                 treeswitch=template.getProcessedXmlDataValue(C_TREEIMG_MCROSS,this);                          
                             } else {   
-                                template.setXmlData(C_TREELINK,C_WP_FOLDER_TREE+"?"+C_PARA_FOLDERTREE+"="+folder.getAbsolutePath());
+                                template.setXmlData(C_TREELINK,C_WP_FOLDER_TREE+"?"+C_PARA_FOLDERTREE+"="+Encoder.escape(folder.getAbsolutePath()));
                                 treeswitch=template.getProcessedXmlDataValue(C_TREEIMG_PCROSS,this);
                             }
                         } else {
@@ -375,10 +375,18 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
          boolean access=false;
          int accessflags=res.getAccessFlags();
          
+         // First check if the user may have access by one of his groups.
+         boolean groupAccess = false;
+         Enumeration allGroups = cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()).elements();
+         while((!groupAccess) && allGroups.hasMoreElements()) {
+             groupAccess = cms.readGroup(res).equals((A_CmsGroup)allGroups.nextElement());
+         }
+         
          if ( ((accessflags & C_ACCESS_PUBLIC_VISIBLE) > 0) ||
               (cms.readOwner(res).equals(cms.getRequestContext().currentUser()) && (accessflags & C_ACCESS_OWNER_VISIBLE) > 0) ||
-              (cms.readGroup(res).equals(cms.getRequestContext().currentGroup()) && (accessflags & C_ACCESS_GROUP_VISIBLE) > 0)) {    
-              access=true;
+              (groupAccess && (accessflags & C_ACCESS_GROUP_VISIBLE) > 0) ||
+              (cms.getRequestContext().currentUser().getName().equals(C_USER_ADMIN))) {
+             access=true;
          }
                
          return access;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsExplorerTree.java,v $
- * Date   : $Date: 2000/04/04 10:03:10 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/04/13 22:05:12 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 2000/04/04 10:03:10 $
+ * @version $Revision: 1.4 $ $Date: 2000/04/13 22:05:12 $
  */
 public class CmsExplorerTree extends CmsWorkplaceDefault implements I_CmsWpConstants  {
 
@@ -277,10 +277,10 @@ public class CmsExplorerTree extends CmsWorkplaceDefault implements I_CmsWpConst
                         if (subfolders.size() >0) {
                             // test if the + or minus must be displayed
                             if (endfolder.startsWith(folder.getAbsolutePath())) {
-                                template.setXmlData(C_TREELINK,C_WP_EXPLORER_TREE+"?"+C_PARA_FOLDER+"="+curfolder);
+                                template.setXmlData(C_TREELINK,C_WP_EXPLORER_TREE+"?"+C_PARA_FOLDER+"="+Encoder.escape(curfolder));
                                 treeswitch=template.getProcessedXmlDataValue(C_TREEIMG_MEND,this);    
                             } else {
-                              template.setXmlData(C_TREELINK,C_WP_EXPLORER_TREE+"?"+C_PARA_FOLDER+"="+folder.getAbsolutePath());
+                              template.setXmlData(C_TREELINK,C_WP_EXPLORER_TREE+"?"+C_PARA_FOLDER+"="+Encoder.escape(folder.getAbsolutePath()));
                                 treeswitch=template.getProcessedXmlDataValue(C_TREEIMG_PEND,this); 
                             }
                         } else {
@@ -293,10 +293,10 @@ public class CmsExplorerTree extends CmsWorkplaceDefault implements I_CmsWpConst
                         if (subfolders.size() >0) {
                              // test if the + or minus must be displayed
                             if (endfolder.startsWith(folder.getAbsolutePath())) {
-                                template.setXmlData(C_TREELINK,C_WP_EXPLORER_TREE+"?"+C_PARA_FOLDER+"="+curfolder);
+                                template.setXmlData(C_TREELINK,C_WP_EXPLORER_TREE+"?"+C_PARA_FOLDER+"="+Encoder.escape(curfolder));
                                 treeswitch=template.getProcessedXmlDataValue(C_TREEIMG_MCROSS,this);                          
                             } else {   
-                                template.setXmlData(C_TREELINK,C_WP_EXPLORER_TREE+"?"+C_PARA_FOLDER+"="+folder.getAbsolutePath());
+                                template.setXmlData(C_TREELINK,C_WP_EXPLORER_TREE+"?"+C_PARA_FOLDER+"="+Encoder.escape(folder.getAbsolutePath()));
                                 treeswitch=template.getProcessedXmlDataValue(C_TREEIMG_PCROSS,this);
                             }
                         } else {
@@ -346,9 +346,17 @@ public class CmsExplorerTree extends CmsWorkplaceDefault implements I_CmsWpConst
          boolean access=false;
          int accessflags=res.getAccessFlags();
          
+         // First check if the user may have access by one of his groups.
+         boolean groupAccess = false;
+         Enumeration allGroups = cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()).elements();
+         while((!groupAccess) && allGroups.hasMoreElements()) {
+             groupAccess = cms.readGroup(res).equals((A_CmsGroup)allGroups.nextElement());
+         }
+         
          if ( ((accessflags & C_ACCESS_PUBLIC_VISIBLE) > 0) ||
               (cms.readOwner(res).equals(cms.getRequestContext().currentUser()) && (accessflags & C_ACCESS_OWNER_VISIBLE) > 0) ||
-              (cms.readGroup(res).equals(cms.getRequestContext().currentGroup()) && (accessflags & C_ACCESS_GROUP_VISIBLE) > 0)) {
+              (groupAccess && (accessflags & C_ACCESS_GROUP_VISIBLE) > 0) ||
+              (cms.getRequestContext().currentUser().getName().equals(C_USER_ADMIN))) {
              access=true;
          }
          if (res.getState()==C_STATE_DELETED) {

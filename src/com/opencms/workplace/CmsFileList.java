@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
- * Date   : $Date: 2000/04/13 19:48:08 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2000/04/13 22:05:12 $
+ * Version: $Revision: 1.32 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -50,7 +50,7 @@ import javax.servlet.http.*;
  * 
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.31 $ $Date: 2000/04/13 19:48:08 $
+ * @version $Revision: 1.32 $ $Date: 2000/04/13 22:05:12 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants,
@@ -701,9 +701,16 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
          boolean access=false;
          int accessflags=res.getAccessFlags();
          
+         // First check if the user may have access by one of his groups.
+         boolean groupAccess = false;
+         Enumeration allGroups = cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()).elements();
+         while((!groupAccess) && allGroups.hasMoreElements()) {
+             groupAccess = cms.readGroup(res).equals((A_CmsGroup)allGroups.nextElement());
+         }
+         
          if ( ((accessflags & C_ACCESS_PUBLIC_VISIBLE) > 0) ||
               (cms.readOwner(res).equals(cms.getRequestContext().currentUser()) && (accessflags & C_ACCESS_OWNER_VISIBLE) > 0) ||
-              (cms.readGroup(res).equals(cms.getRequestContext().currentGroup()) && (accessflags & C_ACCESS_GROUP_VISIBLE) > 0) ||
+              (groupAccess && (accessflags & C_ACCESS_GROUP_VISIBLE) > 0) ||
               (cms.getRequestContext().currentUser().getName().equals(C_USER_ADMIN))) {
              access=true;
          }
