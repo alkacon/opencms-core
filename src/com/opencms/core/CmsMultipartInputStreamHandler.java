@@ -1,11 +1,11 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsMultipartInputStreamHandler.java,v $
-* Date   : $Date: 2001/01/24 09:41:40 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2001/04/10 15:08:43 $
+* Version: $Revision: 1.8 $
 *
-* Copyright (C) 2000  The OpenCms Group 
-* 
+* Copyright (C) 2000  The OpenCms Group
+*
 * This File is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -13,15 +13,15 @@
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
 * of the License, or (at your option) any later version.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-* 
+*
 * For further information about OpenCms, please see the
 * OpenCms Website: http://www.opencms.com
-* 
+*
 * You should have received a copy of the GNU General Public License
 * long with this program; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
@@ -37,9 +37,9 @@ import java.util.*;
 /**A class to aid in reading multipart/form-data from a ServletInputStream.
  * <p>
  * It keeps track of how many bytes have been read and detects when the
- * Content-Length limit has been reached.  This is necessary since some 
+ * Content-Length limit has been reached.  This is necessary since some
  * servlet engines are slow to notice the end of stream.
- * 
+ *
  * @author Michael Emmerich
  * @author Alexander Lucas
  * */
@@ -49,25 +49,25 @@ class CmsMultipartInputStreamHandler {
     int m_totalExpected;
     int totalRead = 0;
     int m_newLine = 0;
-    byte[] buf = new byte[8 * 1024];
-    
+    byte[] buf = new byte[64 * 1024];
+
     /**
      * Constructor, creates a new CmsMultipartInputStreamHandler
-     * 
+     *
      * @param in An input stream
      * @param boundary Boundary defintition
-     * @param totalExpected Number of bytes expected to be read 
+     * @param totalExpected Number of bytes expected to be read
      */
     public CmsMultipartInputStreamHandler(ServletInputStream in, String boundary, int totalExpected) {
         m_in = in;
         m_boundary = boundary;
         m_totalExpected = totalExpected;
     }
-    
+
     /** A pass-through to ServletInputStream.read() that keeps track
-     * how many bytes have been read and stops reading when the 
+     * how many bytes have been read and stops reading when the
      * Content-Length limit has been reached.
-     * 
+     *
      * @return value of the next byte or -1 if no byte could be read.
      * @exception IOException Throws IOException if any error with the input stream occurs.
      */
@@ -83,10 +83,10 @@ class CmsMultipartInputStreamHandler {
             return result;
         }
     }
-    
+
     /** Reads the next line of input.  Returns null to indicate the end
      * of stream.
-     * 
+     *
      * @return Line of input.
      * @exception IOException Throws IOException if any error with the input stream occurs.
      */
@@ -94,10 +94,10 @@ class CmsMultipartInputStreamHandler {
         StringBuffer sbuf = new StringBuffer();
         int result;
         String line;
-        
+
         // loop only if the buffer was filled
         do {
-            
+
             // this.readLine() does +=
             result = this.readLine(buf, 0, buf.length);
             if(result != -1) {
@@ -105,11 +105,11 @@ class CmsMultipartInputStreamHandler {
             }
         }while(result == buf.length);
         if(sbuf.length() == 0) {
-            
+
             // nothing read, must be at the end of stream
             return null;
         }
-        
+
         // cut off the trailing newline
         if(m_newLine == 0) {
             m_newLine = (result > 1 && (buf[result - 2] == '\r' || buf[result - 2] == '\n')) ? 2 : 1;
@@ -117,11 +117,11 @@ class CmsMultipartInputStreamHandler {
         sbuf.setLength(sbuf.length() - m_newLine);
         return sbuf.toString();
     }
-    
+
     /** A pass-through to ServletInputStream.readLine() that keeps track
-     * how many bytes have been read and stops reading when the 
+     * how many bytes have been read and stops reading when the
      * Content-Length limit has been reached.
-     * 
+     *
      * @param b[] Array of bytes.
      * @param off Read offset.
      * @param len Length of byte buffer.
