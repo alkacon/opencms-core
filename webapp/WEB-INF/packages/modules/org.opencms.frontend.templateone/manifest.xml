@@ -498,6 +498,43 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<destination>system/modules/org.opencms.frontend.templateone/dialogs</destination>
+			<type>folder</type>
+			<datelastmodified>Thu, 28 Oct 2004 16:44:12 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 28 Oct 2004 16:44:12 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/dialogs/property.jsp</source>
+			<destination>system/modules/org.opencms.frontend.templateone/dialogs/property.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>e286571e-28ef-11d9-ace6-5b969dcba4c0</uuidresource>
+			<datelastmodified>Thu, 28 Oct 2004 17:30:12 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 28 Oct 2004 16:44:34 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Page properties dialog]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/modules/org.opencms.frontend.templateone/elements</destination>
 			<type>folder</type>
 			<datelastmodified>Thu, 22 Jul 2004 12:57:22 CEST</datelastmodified>
