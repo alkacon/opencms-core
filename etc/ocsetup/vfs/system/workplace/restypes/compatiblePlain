@@ -1,0 +1,16 @@
+
+	vi.resource[resource_id]=new res("compatiblePlain",vi.iconPath+"ic_file_plain.gif");
+
+    addMenuEntry(resource_id, "language_key(explorer.context.lock)", "lock.html?initial=true", "''","0222000000000");
+    addMenuEntry(resource_id, "language_key(explorer.context.overridelock)", "lockchange.html?initial=true", "''","0000000002220");
+    addMenuEntry(resource_id, "language_key(explorer.context.unlock)", "unlock.html?initial=true", "''","0000022200000");
+
+
+	addMenuEntry(resource_id, "-", " ", "_top","0222022202220");
+	addMenuEntry(resource_id, "language_key(explorer.context.copy)", "copy.html?initial=true", "''","0222022202220");
+	addMenuEntry(resource_id, "language_key(explorer.context.delete)", "delete.html?initial=true", "''","0111022201110");
+
+	addMenuEntry(resource_id, "-", " ", "_top","0222022202220");
+	addMenuEntry(resource_id, "language_key(explorer.context.history)", "history.html?initial=true", "''","2222222222222");
+    
+    
