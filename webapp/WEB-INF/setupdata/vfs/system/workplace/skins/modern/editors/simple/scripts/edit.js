@@ -133,7 +133,7 @@ function keyDownHandler(e) {
 	if (typeof(e.which) == 'number') {
 		//NS 4, NS 6+, Mozilla 0.9+, Opera
 		key = e.which;
-	} else if (typeof(E.keyCode) == 'number') {
+	} else if (typeof(e.keyCode) == 'number') {
 		//IE, NS 6+, Mozilla 0.9+
 		key = e.keyCode;
 	} else if (typeof(e.charCode) == 'number') {
