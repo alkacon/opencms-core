@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/09/14 08:44:29 $
- * Version: $Revision: 1.122 $
+ * Date   : $Date: 2000/09/14 13:29:10 $
+ * Version: $Revision: 1.123 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.template.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.122 $ $Date: 2000/09/14 08:44:29 $
+ * @version $Revision: 1.123 $ $Date: 2000/09/14 13:29:10 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -3770,10 +3770,10 @@ public CmsSite getSite(CmsUser user, CmsProject project, String siteName)
  * @exception CmsException Throws CmsException if something goes wrong.
  */
 public CmsProject onlineProject(CmsUser currentUser, CmsProject currentProject) throws CmsException {
-
-	if (CmsConstants.USE_MULTISITE)		
-	// lookup the currentProject in the CMS_SITE_PROJECT table, and in the same call return it.
-	  return m_dbAccess.getOnlineProject(currentProject.getId());
+	if (CmsConstants.USE_MULTISITE)
+		
+		// lookup the currentProject in the CMS_SITE_PROJECT table, and in the same call return it.
+		return m_dbAccess.getOnlineProject(currentProject.getId());
 	else
 		return readProject(currentUser, currentProject, C_PROJECT_ONLINE_ID);
 }

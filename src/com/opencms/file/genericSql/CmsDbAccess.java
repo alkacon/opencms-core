@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/09/14 08:44:28 $
- * Version: $Revision: 1.125 $
+ * Date   : $Date: 2000/09/14 13:29:10 $
+ * Version: $Revision: 1.126 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -50,7 +50,7 @@ import com.opencms.util.*;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.125 $ $Date: 2000/09/14 08:44:28 $ * 
+ * @version $Revision: 1.126 $ $Date: 2000/09/14 13:29:10 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	
@@ -3032,6 +3032,7 @@ public CmsSite getSite(int projectId) throws CmsException
 		m_pool.initPreparedStatement(m_cq.C_RESOURCES_RENAMERESOURCE_KEY,m_cq.C_RESOURCES_RENAMERESOURCE);
 		m_pool.initPreparedStatement(m_cq.C_RESOURCES_READ_ALL_KEY,m_cq.C_RESOURCES_READ_ALL);
 		m_pool.initPreparedStatement(m_cq.C_RESOURCES_UPDATE_LOCK_KEY,m_cq.C_RESOURCES_UPDATE_LOCK);
+		m_pool.initPreparedStatement(m_cq.C_RESOURCES_GET_FILES_WITH_PROPERTY_KEY ,m_cq.C_RESOURCES_GET_FILES_WITH_PROPERTY);
 
 		// init statements for groups
 		m_pool.initPreparedStatement(m_cq.C_GROUPS_MAXID_KEY,m_cq.C_GROUPS_MAXID);
