@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsLoaderManager.java,v $
- * Date   : $Date: 2003/11/10 08:12:58 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/12/12 12:16:42 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,11 @@ package org.opencms.loader;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.file.CmsFile;
+import com.opencms.file.CmsObject;
+
 import java.util.Iterator;
 import java.util.List;
 
@@ -46,7 +51,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since 5.1
  */
 public class CmsLoaderManager {
@@ -97,6 +102,32 @@ public class CmsLoaderManager {
         return m_loaders[id];
     }
 
+    /**
+     * Returns a resource loader facade for the given file.<p>
+     * 
+     * @param cms the current cms context
+     * @param file the requested file
+     * @return a resource loader facade for the given file
+     * @throws CmsException if something goes wrong
+     */
+    public CmsResourceLoaderFacade getLoaderFacade(CmsObject cms, CmsFile file) throws CmsException {        
+        String absolutePath = cms.readAbsolutePath(file);        
+        String templateProp = cms.readProperty(absolutePath, I_CmsConstants.C_PROPERTY_TEMPLATE);       
+
+        if (templateProp == null) {
+            // no template property defined, throw exception
+            throw new CmsException("Property '" + I_CmsConstants.C_PROPERTY_TEMPLATE + "' undefined for page file " + absolutePath);
+        }        
+
+        CmsFile templateFile = cms.readFile(templateProp);
+        
+        if (templateFile.getLoaderId() == CmsJspLoader.C_RESOURCE_LOADER_ID) {
+            return new CmsResourceLoaderFacade(getLoader(CmsJspLoader.C_RESOURCE_LOADER_ID), templateFile);
+        } else {
+            return new CmsResourceLoaderFacade(getLoader(CmsXmlTemplateLoader.C_RESOURCE_LOADER_ID), file);
+        }
+    }
+    
     /**
      * Adds a new loader to the internal list of loaded loaders.<p>
      *

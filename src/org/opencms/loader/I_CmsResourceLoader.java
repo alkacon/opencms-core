@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/I_CmsResourceLoader.java,v $
- * Date   : $Date: 2003/11/10 08:12:58 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/12/12 12:16:42 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since FLEX alpha 1
  * 
  * @see com.opencms.flex.cache.CmsFlexRequest
@@ -123,16 +123,6 @@ public interface I_CmsResourceLoader {
      */
     void load(CmsObject cms, CmsFile file, HttpServletRequest req, HttpServletResponse res) 
     throws ServletException, IOException;
-    
-    /**
-     * Exports the contents of the requested file and it's sub-elements.<p>
-     * 
-     * @param cms the initialized CmsObject which provides user permissions
-     * @param file the requested OpenCms VFS resource
-     * @throws CmsException in case of errors during export
-     */
-    void export(CmsObject cms, CmsFile file) 
-    throws CmsException;
     
     /**
      * Exports the contents of the requested file and it's sub-elements.<p>

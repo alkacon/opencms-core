@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2003/11/17 07:45:11 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2003/12/12 12:16:42 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -213,25 +213,6 @@ public class CmsJspLoader implements I_CmsResourceLoader {
     /** Destroy this ResourceLoder, this is a NOOP so far.  */
     public void destroy() {
         // NOOP
-    }
-    
-    /**
-     * @see org.opencms.loader.I_CmsResourceLoader#export(com.opencms.file.CmsObject, com.opencms.file.CmsFile)
-     */
-    public void export(CmsObject cms, CmsFile file) {
-        try {    
-            OutputStream responsestream = cms.getRequestContext().getResponse().getOutputStream();
-            if (DEBUG > 1) {
-                System.err.println("FlexJspLoader: Export requested for " + cms.readAbsolutePath(file));
-            }
-            // get the contents of the exported page and  try to write the result to the export output stream
-            responsestream.write(exportJsp(cms, file));
-            responsestream.close();
-        } catch (Throwable t) {
-            if (OpenCms.getLog(this).isErrorEnabled()) { 
-                OpenCms.getLog(this).error("Error during static export of " + cms.readAbsolutePath(file), t);
-            }         
-        }        
     }
 
     /**

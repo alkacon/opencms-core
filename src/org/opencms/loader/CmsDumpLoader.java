@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsDumpLoader.java,v $
- * Date   : $Date: 2003/11/26 10:34:33 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2003/12/12 12:16:42 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * by other loaders.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  */
 public class CmsDumpLoader implements I_CmsResourceLoader {
     
@@ -83,21 +83,6 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
      */
     public void destroy() {
         // NOOP
-    }
-    
-    /**
-     * @see org.opencms.loader.I_CmsResourceLoader#export(com.opencms.file.CmsObject, com.opencms.file.CmsFile)
-     */
-    public void export(CmsObject cms, CmsFile file) {
-        try {    
-            OutputStream exportStream = cms.getRequestContext().getResponse().getOutputStream();
-            exportStream.write(file.getContents());
-            exportStream.close();
-        } catch (Throwable t) {
-            if (OpenCms.getLog(this).isErrorEnabled()) { 
-                OpenCms.getLog(this).error("Error during static export of " + cms.readAbsolutePath(file), t);
-            }         
-        }        
     }
 
     /**

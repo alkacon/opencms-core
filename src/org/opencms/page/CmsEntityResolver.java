@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsEntityResolver.java,v $
- * Date   : $Date: 2003/12/12 11:56:22 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/12/12 12:16:42 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,7 +30,6 @@
  */
 package org.opencms.page;
 
-import com.opencms.core.CmsException;
 import com.opencms.file.CmsObject;
 
 import java.io.ByteArrayInputStream;
@@ -41,18 +40,16 @@ import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2003/12/12 11:56:22 $
+ * Resolves XML entities (e.g. external DTDs) in the OpenCms VFS.<p>
+ * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
+ * @version $Revision: 1.5 $ 
  */
 public class CmsEntityResolver implements EntityResolver {
 
-//    /** The cms root prefix */
-//    private static String C_FILE_PREFIX = "file://";
-    
     /** The cms object */
     private CmsObject m_cms = null;
-    
-    
+        
     /**
      * Creates a new entity resolver to read the dtd.
      * 
@@ -65,23 +62,10 @@ public class CmsEntityResolver implements EntityResolver {
     /**
      * @see org.xml.sax.EntityResolver#resolveEntity(java.lang.String, java.lang.String)
      */
-    public InputSource resolveEntity(String publicId, String systemId) {
-//        if (publicId == null && systemId.startsWith(C_FILE_PREFIX + "/")) {
-//            
-//            try {
-//                String dtdPath = systemId.substring(C_FILE_PREFIX.length());
-//                InputStream in = new ByteArrayInputStream(m_cms.readFile(dtdPath).getContents());
-//                return new InputSource (in);
-//            } catch (CmsException exc) {
-//                // noop
-//            }
-//        }
-        
-        if (publicId == null) {
-            
+    public InputSource resolveEntity(String publicId, String systemId) {        
+        if (publicId == null) {            
             try {
-                URI dtdURI = new URI(systemId);
-                
+                URI dtdURI = new URI(systemId);                
                 // TODO: assumes that the system id is an opencms internal path 
                 InputStream in = new ByteArrayInputStream(m_cms.readFile(dtdURI.getPath()).getContents());
                 return new InputSource(in);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsPageLoader.java,v $
- * Date   : $Date: 2003/11/10 08:12:58 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2003/12/12 12:16:42 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
 import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
@@ -56,7 +55,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * @since 5.1
  */
 public class CmsPageLoader implements I_CmsResourceLoader {   
@@ -70,29 +69,13 @@ public class CmsPageLoader implements I_CmsResourceLoader {
     public void destroy() {
         // NOOP
     }
-    
-    /**
-     * @see org.opencms.loader.I_CmsResourceLoader#export(com.opencms.file.CmsObject, com.opencms.file.CmsFile)
-     */
-    public void export(CmsObject cms, CmsFile file) throws CmsException {  
-        CmsFile templateFile = getTemplateFile(cms, file);  
-        if (templateFile.getLoaderId() == CmsJspLoader.C_RESOURCE_LOADER_ID) {
-            OpenCms.getLoaderManager().getLoader(CmsJspLoader.C_RESOURCE_LOADER_ID).export(cms, templateFile);           
-        } else {
-            OpenCms.getLoaderManager().getLoader(CmsXmlTemplateLoader.C_RESOURCE_LOADER_ID).export(cms, file);
-        }     
-    }    
 
     /**
      * @see org.opencms.loader.I_CmsResourceLoader#export(com.opencms.file.CmsObject, com.opencms.file.CmsFile, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     public void export(CmsObject cms, CmsFile file, OutputStream exportStream, HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException, CmsException {
-        CmsFile templateFile = getTemplateFile(cms, file);  
-        if (templateFile.getLoaderId() == CmsJspLoader.C_RESOURCE_LOADER_ID) {
-            OpenCms.getLoaderManager().getLoader(CmsJspLoader.C_RESOURCE_LOADER_ID).export(cms, templateFile, exportStream, req, res);           
-        } else {
-            OpenCms.getLoaderManager().getLoader(CmsXmlTemplateLoader.C_RESOURCE_LOADER_ID).export(cms, file, exportStream, req, res);
-        }  
+        CmsResourceLoaderFacade loaderFacade = OpenCms.getLoaderManager().getLoaderFacade(cms, file);        
+        loaderFacade.getLoader().export(cms, loaderFacade.getFile(), exportStream, req, res);
     }    
                
     /**
@@ -111,26 +94,6 @@ public class CmsPageLoader implements I_CmsResourceLoader {
     public String getResourceLoaderInfo() {
         return "The OpenCms default resource loader for pages";
     }
-    
-    /**
-     * Reads the template file for the selected page.<p>
-     * 
-     * @param cms the current cms context
-     * @param file the requested file
-     * @return the template file for the selected page
-     * @throws CmsException if something goes wrong
-     */
-    private CmsFile getTemplateFile(CmsObject cms, CmsFile file) throws CmsException {        
-        String absolutePath = cms.readAbsolutePath(file);        
-        String templateProp = cms.readProperty(absolutePath, I_CmsConstants.C_PROPERTY_TEMPLATE);       
-
-        if (templateProp == null) {
-            // no template property defined, throw exception
-            throw new CmsException("Property '" + I_CmsConstants.C_PROPERTY_TEMPLATE + "' undefined for page file " + absolutePath);
-        }        
-
-        return cms.readFile(templateProp);
-    }
 
     /**
      * @see org.opencms.loader.I_CmsResourceLoader#init(source.org.apache.java.util.Configurations)
@@ -144,17 +107,12 @@ public class CmsPageLoader implements I_CmsResourceLoader {
     /**
      * @see org.opencms.loader.I_CmsResourceLoader#load(com.opencms.file.CmsObject, com.opencms.file.CmsFile, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public void load(CmsObject cms, CmsFile file, HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {        
-        CmsFile templateFile = null;
+    public void load(CmsObject cms, CmsFile file, HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         try {
-            templateFile = getTemplateFile(cms, file);
+            CmsResourceLoaderFacade loaderFacade = OpenCms.getLoaderManager().getLoaderFacade(cms, file);        
+            loaderFacade.getLoader().load(cms, loaderFacade.getFile(), req, res);
         } catch (CmsException e) {
             throw new ServletException(e.getMessage(), e);            
-        }        
-        if (templateFile.getLoaderId() == CmsJspLoader.C_RESOURCE_LOADER_ID) {
-            OpenCms.getLoaderManager().getLoader(CmsJspLoader.C_RESOURCE_LOADER_ID).load(cms, templateFile, req, res);
-        } else {
-            OpenCms.getLoaderManager().getLoader(CmsXmlTemplateLoader.C_RESOURCE_LOADER_ID).load(cms, file, req, res);
         }
     }
 
