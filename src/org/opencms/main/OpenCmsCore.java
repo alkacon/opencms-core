@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/07/18 16:33:00 $
- * Version: $Revision: 1.134 $
+ * Date   : $Date: 2004/07/19 17:05:00 $
+ * Version: $Revision: 1.135 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -104,7 +104,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.134 $
+ * @version $Revision: 1.135 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1225,7 +1225,11 @@ public final class OpenCmsCore {
      */
     protected void removeCmsEventListener(I_CmsEventListener listener) {
         synchronized (m_eventListeners) {
-            m_eventListeners.remove(listener);
+            Iterator it = m_eventListeners.keySet().iterator();
+            while (it.hasNext()) {
+                List listeners = (List)m_eventListeners.get(it.next());
+                listeners.remove(listener);
+            }
         }
     }
 
