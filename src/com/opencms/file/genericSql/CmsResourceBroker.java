@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2001/03/02 13:14:42 $
- * Version: $Revision: 1.234 $
+ * Date   : $Date: 2001/03/08 10:10:44 $
+ * Version: $Revision: 1.235 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.234 $ $Date: 2001/03/02 13:14:42 $
+ * @version $Revision: 1.235 $ $Date: 2001/03/08 10:10:44 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1519,11 +1519,11 @@ public void copyResourceToProject(CmsProject currentProject, CmsProject fromProj
 					    offlineRes = readFileHeader(currentUser,currentProject, parent);
 
 				 	    // copy the metainfos
-					    writeProperties(currentUser,currentProject,offlineRes.getAbsolutePath(), readAllProperties(currentUser,currentProject,onlineRes.getAbsolutePath()));
+                        m_dbAccess.writeProperties(readAllProperties(currentUser,online,onlineRes.getAbsolutePath()), offlineRes.getResourceId(), offlineRes.getType());
 
 						chstate(currentUser,currentProject,offlineRes.getAbsolutePath(),C_STATE_UNCHANGED);
 
-					 	} catch (CmsException exc) {
+				 	} catch (CmsException exc) {
 		 	    	// if the subfolder exists already - all is ok
 			        }
 				}
