@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleNew.java,v $
-* Date   : $Date: 2003/03/04 18:48:06 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2004/01/07 10:57:09 $
+* Version: $Revision: 1.19.2.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -160,7 +160,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault implements I_CmsConst
                 filename = (String) files.nextElement();
             }
             if (filename != null) {
-                session.putValue(C_PARA_FILE, filename);
+                session.putValue(C_PARA_FILE, filename.trim());
             }
             filename = (String) session.getValue(C_PARA_FILE);
 

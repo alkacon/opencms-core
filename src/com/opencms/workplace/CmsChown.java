@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChown.java,v $
- * Date   : $Date: 2003/01/20 17:57:48 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2004/01/07 10:57:09 $
+ * Version: $Revision: 1.30.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import java.util.Vector;
  * Template class for displaying the chown screen of the OpenCms workplace.<P>
  *
  * @author Michael Emmerich
- * @version $Revision: 1.30 $ $Date: 2003/01/20 17:57:48 $
+ * @version $Revision: 1.30.2.1 $ $Date: 2004/01/07 10:57:09 $
  */
 public class CmsChown extends CmsWorkplaceDefault implements I_CmsWpConstants {
     
@@ -81,12 +81,16 @@ public class CmsChown extends CmsWorkplaceDefault implements I_CmsWpConstants {
 		String newowner = (String)parameters.get(C_PARA_NEWOWNER);
 		String filename = (String)parameters.get(C_PARA_FILE);
 		String flags = (String)parameters.get(C_PARA_FLAGS);
-		if(flags == null) flags = "false";
-		if(filename != null) session.putValue(C_PARA_FILE, filename);
-
+		
+        if(flags == null) flags = "false";
+		
+        if(filename != null) {
+            session.putValue(C_PARA_FILE, filename.trim());
+        }
 		// check if the lock parameter was included in the request
 		// if not, the lock page is shown for the first time
 		filename = (String)session.getValue(C_PARA_FILE);
+        
 		CmsResource file = (CmsResource)cms.readFileHeader(filename);
 
 		// select the template to be displayed

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChnav.java,v $
-* Date   : $Date: 2003/05/05 09:40:40 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2004/01/07 10:57:09 $
+* Version: $Revision: 1.11.2.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.11 $ $Date: 2003/05/05 09:40:40 $
+ * @version $Revision: 1.11.2.1 $ $Date: 2004/01/07 10:57:09 $
  */
 
 public class CmsChnav extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -90,8 +90,10 @@ public class CmsChnav extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
             filename = (String)session.getValue(C_SESSIONHEADER + C_PARA_FILE);
         }
         if(filename != null){
+            filename = filename.trim();
             session.putValue(C_SESSIONHEADER + C_PARA_FILE, filename);
         }
+        
         CmsResource resource = (CmsResource)cms.readFileHeader(filename);
 
         // get request parameters
@@ -288,6 +290,10 @@ public class CmsChnav extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
         String filename = (String)parameters.get(C_PARA_FILE);
         if(filename == null || "".equals(filename)){
             filename = (String)session.getValue(C_SESSIONHEADER + C_PARA_FILE);
+        }
+        
+        if (filename != null) {
+            filename = filename.trim();
         }
 
        // get the nav information

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceLink.java,v $
-* Date   : $Date: 2003/05/05 07:50:52 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2004/01/07 10:57:09 $
+* Version: $Revision: 1.35.2.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.35 $ $Date: 2003/05/05 07:50:52 $
+ * @version $Revision: 1.35.2.1 $ $Date: 2004/01/07 10:57:09 $
  */
 
 public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -105,13 +105,16 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
         // get the linkname and the linkurl
         filename = cms.getRequestContext().getRequest().getParameter(C_PARA_FILE);
         if(filename != null) {
+            filename = filename.trim();
             session.putValue(C_PARA_FILE, filename);
         }  else {
             // try to get the value from the session, e.g. after an error
             filename = (String)session.getValue(C_PARA_FILE)!=null?(String)session.getValue(C_PARA_FILE):"";
         }
+        
         link = cms.getRequestContext().getRequest().getParameter(C_PARA_LINK);
         if(link != null) {
+            link = link.trim();
             session.putValue(C_PARA_LINK, link);
         } else {
             // try to get the value from the session, e.g. after an error
@@ -292,16 +295,16 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
         if(!checkurl){
             xmlTemplateDocument.setData("folder", foldername);
             xmlTemplateDocument.setData("newlink", notChange);
-            session.putValue(C_PARA_LINK, link);
-            session.putValue(C_PARA_FILE, filename);
+            session.putValue(C_PARA_LINK, link.trim());
+            session.putValue(C_PARA_FILE, filename.trim());
             session.putValue(C_PARA_NAVTEXT, navtitle);
             session.putValue(C_PARA_NAVPOS, navpos);
             templateSelector = "errorcheckurl";
         }
         if(!"".equals(error.trim())){
             xmlTemplateDocument.setData("errordetails", error);
-            session.putValue(C_PARA_LINK, link);
-            session.putValue(C_PARA_FILE, filename);
+            session.putValue(C_PARA_LINK, link.trim());
+            session.putValue(C_PARA_FILE, filename.trim());
             session.putValue(C_PARA_NAVTEXT, navtitle);
             session.putValue(C_PARA_NAVPOS, navpos);
             templateSelector = "error";

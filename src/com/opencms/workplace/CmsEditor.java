@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsEditor.java,v $
-* Date   : $Date: 2003/02/11 19:41:50 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2004/01/07 10:57:09 $
+* Version: $Revision: 1.42.2.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import javax.servlet.http.HttpServletRequest;
  * <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.42 $ $Date: 2003/02/11 19:41:50 $
+ * @version $Revision: 1.42.2.1 $ $Date: 2004/01/07 10:57:09 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -124,6 +124,7 @@ public class CmsEditor extends CmsWorkplaceDefault {
             session.removeValue(C_PARA_FILE);
         }        
         if((file != null) && (! "".equals(file))) {
+            file = file.trim();
             session.putValue("te_file", file);
         }
         String content = (String)parameters.get(C_PARA_CONTENT);
@@ -230,6 +231,7 @@ public class CmsEditor extends CmsWorkplaceDefault {
         String lasturlname = null;
         if(!"".equals(saveerror)){
             if(file != null){
+                file = file.trim();
                 session.putValue(C_PARA_FILE, file);
             }
             if(content != null){

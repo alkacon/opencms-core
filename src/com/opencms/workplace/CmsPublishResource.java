@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPublishResource.java,v $
-* Date   : $Date: 2003/02/21 15:18:23 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2004/01/07 10:57:09 $
+* Version: $Revision: 1.15.2.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.15 $ $Date: 2003/02/21 15:18:23 $
+ * @version $Revision: 1.15.2.1 $ $Date: 2004/01/07 10:57:09 $
  */
 
 public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -91,7 +91,7 @@ public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpCo
         // get the filename parameter
         String filename = (String)parameters.get(C_PARA_FILE);
         if(filename != null) {
-            session.putValue(C_PARA_FILE, filename);
+            session.putValue(C_PARA_FILE, filename.trim());
         }
         filename = (String)session.getValue(C_PARA_FILE);
 

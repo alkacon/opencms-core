@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2003/03/20 13:11:06 $
-* Version: $Revision: 1.92 $
+* Date   : $Date: 2004/01/07 10:57:09 $
+* Version: $Revision: 1.92.2.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.92 $ $Date: 2003/03/20 13:11:06 $
+ * @version $Revision: 1.92.2.1 $ $Date: 2004/01/07 10:57:09 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -283,6 +283,11 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             file = (String)session.getValue(C_PARA_FILE);
             session.removeValue(C_PARA_FILE);
         }
+        
+        if (file != null) {
+            file = file.trim();
+        }
+        
         String editor = (String)parameters.get("editor");
         if((editor == null) || "".equals(editor)){
             // try to get the value from the session because we might come from errorpage
@@ -622,7 +627,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
                     session.putValue("body", body);
                 }
                 if(file != null){
-                    session.putValue(C_PARA_FILE, file);
+                    session.putValue(C_PARA_FILE, file.trim());
                 }
                 if(editor != null){
                     session.putValue("editor", editor);

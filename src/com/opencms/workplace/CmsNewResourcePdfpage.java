@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePdfpage.java,v $
-* Date   : $Date: 2003/02/03 19:47:28 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2004/01/07 10:57:09 $
+* Version: $Revision: 1.22.2.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.w3c.dom.Node;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.22 $ $Date: 2003/02/03 19:47:28 $
+ * @version $Revision: 1.22.2.1 $ $Date: 2004/01/07 10:57:09 $
  */
 
 public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -193,10 +193,13 @@ public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsW
 
         // get request parameters
         String newFile = (String)parameters.get(C_PARA_NEWFILE);
-
         String templatefile = (String)parameters.get(C_PARA_TEMPLATE);
         String navtitle = Encoder.redecodeUriComponent((String)parameters.get(C_PARA_NAVTEXT));
         String navpos = (String)parameters.get(C_PARA_NAVPOS);
+        
+        if (newFile != null) {
+            newFile = newFile.trim();
+        }        
 
         // get the current phase of this wizard
         String step = cms.getRequestContext().getRequest().getParameter("step");

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePage.java,v $
-* Date   : $Date: 2003/05/05 07:50:52 $
-* Version: $Revision: 1.64 $
+* Date   : $Date: 2004/01/07 10:57:09 $
+* Version: $Revision: 1.64.2.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.w3c.dom.Node;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.64 $ $Date: 2003/05/05 07:50:52 $
+ * @version $Revision: 1.64.2.1 $ $Date: 2004/01/07 10:57:09 $
  */
 
 public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -158,6 +158,10 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
         String title = Encoder.redecodeUriComponent((String)parameters.get(C_PARA_TITLE));                   
         String keywords = Encoder.redecodeUriComponent((String)parameters.get(C_PARA_KEYWORDS));
         String description = Encoder.redecodeUriComponent((String)parameters.get(C_PARA_DESCRIPTION));
+        
+        if (newFile != null) {
+            newFile = newFile.trim();
+        }        
 
         // look if createFolder called us, then we have to preselect index.html as name
         String fromFolder = (String)parameters.get("fromFolder");

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCopy.java,v $
-* Date   : $Date: 2003/02/15 11:14:53 $
-* Version: $Revision: 1.51 $
+* Date   : $Date: 2004/01/07 10:57:09 $
+* Version: $Revision: 1.51.2.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.51 $ $Date: 2003/02/15 11:14:53 $
+ * @version $Revision: 1.51.2.1 $ $Date: 2004/01/07 10:57:09 $
  */
 
 public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -95,9 +95,10 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
         // get the file to be copied
         String filename = (String)parameters.get(C_PARA_FILE);
         if(filename != null) {
-            session.putValue(C_PARA_FILE, filename);
+            session.putValue(C_PARA_FILE, filename.trim());
         }
         filename = (String)session.getValue(C_PARA_FILE);
+        
         CmsResource file = (CmsResource)cms.readFileHeader(filename);
 
         // read all request parameters
@@ -120,11 +121,12 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
         }
 
         if(newFile != null && !("".equals(newFile))) {
-            session.putValue(C_PARA_NEWFILE, newFile);
+            session.putValue(C_PARA_NEWFILE, newFile.trim());
         }
         newFile = (String)session.getValue(C_PARA_NEWFILE);
+        
         if(newFolder != null && !("".equals(newFolder))) {
-            session.putValue(C_PARA_NEWFOLDER, newFolder);
+            session.putValue(C_PARA_NEWFOLDER, newFolder.trim());
         }
         newFolder = (String)session.getValue(C_PARA_NEWFOLDER);
 

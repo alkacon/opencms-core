@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChtype.java,v $
- * Date   : $Date: 2003/01/20 17:57:47 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/01/07 10:57:09 $
+ * Version: $Revision: 1.18.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import java.util.Vector;
  * Template class for displaying the type screen of the OpenCms workplace.<p>
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.18 $ $Date: 2003/01/20 17:57:47 $
+ * @version $Revision: 1.18.2.1 $ $Date: 2004/01/07 10:57:09 $
  */
 public class CmsChtype extends CmsWorkplaceDefault implements I_CmsWpConstants {
 
@@ -92,9 +92,10 @@ public class CmsChtype extends CmsWorkplaceDefault implements I_CmsWpConstants {
         // get the filename
         String filename = (String)parameters.get(C_PARA_FILE);
         if(filename != null) {
-            session.putValue(C_PARA_FILE, filename);
+            session.putValue(C_PARA_FILE, filename.trim());
         }
         filename = (String)session.getValue(C_PARA_FILE);
+        
         CmsFile file = (CmsFile)cms.readFileHeader(filename);
 
         // check if the newtype parameter is available. This parameter is set when

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsReplace.java,v $
- * Date   : $Date: 2003/01/20 23:59:18 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/01/07 10:57:09 $
+ * Version: $Revision: 1.4.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Vector;
  * This class is invoked for the workplace "replace" function in the context menu.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.4.2.1 $
  */
 public final class CmsReplace extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsWpConstants {
 
@@ -131,6 +131,7 @@ public final class CmsReplace extends CmsWorkplaceDefault implements I_CmsConsta
 		// save the name of the old resource in the session
 		m_OldResourceName = (String) theParameters.get(I_CmsWpConstants.C_PARA_FILE);
 		if (m_OldResourceName != null) {
+            m_OldResourceName = m_OldResourceName.trim();
 			session.putValue(I_CmsWpConstants.C_PARA_FILE, m_OldResourceName);
 
 			// preserve the type of the old resource depending on the file extension as well

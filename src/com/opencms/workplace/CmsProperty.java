@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProperty.java,v $
-* Date   : $Date: 2003/03/04 17:26:34 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2004/01/07 10:57:09 $
+* Version: $Revision: 1.35.2.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.35 $ $Date: 2003/03/04 17:26:34 $
+ * @version $Revision: 1.35.2.1 $ $Date: 2004/01/07 10:57:09 $
  */
 public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
 
@@ -123,13 +123,15 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
         // get all parameters and put them into the session
         String filename = (String)parameters.get(C_PARA_FILE);
         if(filename != null) {
-            session.putValue(C_PARA_FILE, filename);
+            session.putValue(C_PARA_FILE, filename.trim());
         }
+        filename = (String)session.getValue(C_PARA_FILE);
+        
         String propertydef = (String)parameters.get("selectproperty");
         if(propertydef != null) {
             session.putValue(C_PARA_PROPERTYDEF, propertydef);
         }
-        filename = (String)session.getValue(C_PARA_FILE);
+        
         propertydef = (String)session.getValue(C_PARA_PROPERTYDEF);
         CmsResource file = (CmsResource)cms.readFileHeader(filename);
         String edit = (String)parameters.get("EDIT");

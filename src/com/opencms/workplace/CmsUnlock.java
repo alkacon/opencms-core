@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsUnlock.java,v $
-* Date   : $Date: 2003/01/20 23:59:18 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2004/01/07 10:57:09 $
+* Version: $Revision: 1.42.2.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Hashtable;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * @author Alexander Lucas
- * @version $Revision: 1.42 $ $Date: 2003/01/20 23:59:18 $
+ * @version $Revision: 1.42.2.1 $ $Date: 2004/01/07 10:57:09 $
  */
 
 public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -101,14 +101,15 @@ public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,I
         // get the lasturl parameter
         String lasturl = getLastUrl(cms, parameters);
         String unlock = (String)parameters.get(C_PARA_UNLOCK);
+        
         String filename = (String)parameters.get(C_PARA_FILE);
         if(filename != null) {
-            session.putValue(C_PARA_FILE, filename);
+            session.putValue(C_PARA_FILE, filename.trim());
         }
-
         //check if the user wants the lock dialog
         // if yes, the lock page is shown for the first time
         filename = (String)session.getValue(C_PARA_FILE);
+        
         CmsResource file = (CmsResource)cms.readFileHeader(filename);
 
         // select the template to be displayed

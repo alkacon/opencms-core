@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTouch.java,v $
- * Date   : $Date: 2002/12/15 14:21:18 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/01/07 10:57:09 $
+ * Version: $Revision: 1.6.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Hashtable;
  * This class is invoked for the workplace "touch" function in the context menu.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.6.2.1 $
  */
 public final class CmsTouch extends CmsWorkplaceDefault implements I_CmsWpConstants, I_CmsConstants {
 
@@ -113,6 +113,7 @@ public final class CmsTouch extends CmsWorkplaceDefault implements I_CmsWpConsta
 		if (m_ResourceName != null) {
 			// the form was submitted the first time, put the name of the 
 			// resource (which isnt changed anymore) into the session
+            m_ResourceName = m_ResourceName.trim();
 			session.putValue(I_CmsWpConstants.C_PARA_FILE, m_ResourceName);
 		}
 		else {

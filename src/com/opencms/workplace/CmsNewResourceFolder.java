@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceFolder.java,v $
-* Date   : $Date: 2003/05/05 07:50:52 $
-* Version: $Revision: 1.39 $
+* Date   : $Date: 2004/01/07 10:57:09 $
+* Version: $Revision: 1.39.2.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.39 $ $Date: 2003/05/05 07:50:52 $
+ * @version $Revision: 1.39.2.1 $ $Date: 2004/01/07 10:57:09 $
  */
 
 public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -115,6 +115,10 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
         String title = Encoder.redecodeUriComponent((String)parameters.get(C_PARA_TITLE));
         String navtitle = Encoder.redecodeUriComponent((String)parameters.get(C_PARA_NAVTEXT));
         String navpos = (String)parameters.get(C_PARA_NAVPOS);
+        
+        if (newFolder != null) {
+            newFolder = newFolder.trim();
+        }
 
         // get the current phase of this wizard
         String step = (String)parameters.get("step");
@@ -129,7 +133,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
             }
             if(step.equals("1")) {
                 // store all data in session for ext nav or in case of an error
-                session.putValue(C_SESSIONHEADER + C_PARA_NEWFOLDER, newFolder);
+                session.putValue(C_SESSIONHEADER + C_PARA_NEWFOLDER, newFolder.trim());
                 session.putValue(C_SESSIONHEADER + C_PARA_TITLE, title);
                 if(navtitle != null) {
                     session.putValue(C_SESSIONHEADER + C_PARA_NAVTEXT, navtitle);
