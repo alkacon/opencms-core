@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePage.java,v $
- * Date   : $Date: 2000/10/25 08:14:27 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2000/10/25 08:33:43 $
+ * Version: $Revision: 1.31 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.30 $ $Date: 2000/10/25 08:14:27 $
+ * @version $Revision: 1.31 $ $Date: 2000/10/25 08:33:43 $
  */
 public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpConstants,
 																   I_CmsConstants {
@@ -410,6 +410,18 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
 			throws CmsException {
 
 			Vector files=cms.getFilesInFolderRecursively(C_CONTENTTEMPLATEPATH);
+
+			// get all module Templates
+			Vector modules = new Vector();
+			modules = cms.getSubFoldersRecursively(C_MODULES_PATH);
+			for(int i=0; i < modules.size(); i++){
+				Vector moduleTemplateFiles = new Vector();
+				moduleTemplateFiles = cms.getFilesInFolderRecursively( ((CmsFolder)modules.elementAt(i)).getAbsolutePath() + "templates/");
+				for (int j=0; j < moduleTemplateFiles.size(); j++){
+					files.addElement(moduleTemplateFiles.elementAt(j));
+				}
+			}
+				
 			Enumeration enum=files.elements();
 			while (enum.hasMoreElements()) {
 				CmsFile file =(CmsFile)enum.nextElement();
