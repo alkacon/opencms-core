@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/06/24 15:46:32 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/06/25 16:23:11 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
  
 package org.opencms.db;
 
-import org.opencms.db.generic.CmsUserDriver;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsAccessGuard;
@@ -71,7 +70,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * This is the driver manager.
  * 
- * @version $Revision: 1.11 $ $Date: 2003/06/24 15:46:32 $
+ * @version $Revision: 1.12 $ $Date: 2003/06/25 16:23:11 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -109,7 +108,7 @@ public class CmsDriverManager implements I_CmsConstants {
     /**
      * Inner class to define the access policy when checking permissions on vfs operations.
      * 
-	 * @version $Revision: 1.11 $ $Date: 2003/06/24 15:46:32 $
+	 * @version $Revision: 1.12 $ $Date: 2003/06/25 16:23:11 $
 	 * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
 	 */
     class VfsAccessGuard extends CmsAccessGuard {
@@ -218,7 +217,7 @@ public class CmsDriverManager implements I_CmsConstants {
 	/**
 	 * Inner class to define the access policy when checking permissions on user operations.
 	 * 
-	 * @version $Revision: 1.11 $ $Date: 2003/06/24 15:46:32 $
+	 * @version $Revision: 1.12 $ $Date: 2003/06/25 16:23:11 $
 	 * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
 	 */
 	class UserAccessGuard extends CmsAccessGuard {
@@ -648,114 +647,6 @@ public class CmsDriverManager implements I_CmsConstants {
         }
         return (false);
     }
-
-    /**
-     * Checks, if the user may write this resource.
-     *
-     * @param currentUser The user who requested this method.
-     * @param currentProject The current project of the user.
-     * @param resource The resource to check.
-     *
-     * @return wether the user has access, or not.
-     *//*
-    public boolean accessWrite(CmsUser currentUser, CmsProject currentProject,
-                               CmsResource resource) throws CmsException {
-
-
-        // check, if this is the onlineproject
-
-        if(currentProject.isOnlineProject()){
-            // the online-project is not writeable!
-            return(false);
-        }
-
-        // check the access to the project
-        if(! accessProject(currentUser, currentProject, currentProject.getId())) {
-            // no access to the project!
-            return(false);
-        }
-
-        // check if the resource belongs to the current project
-        if(resource.getProjectId() != currentProject.getId()) {
-            return false;
-        }
-
-        // check, if the resource is locked by the current user
-        if(!resource.isLockedBy().equals(currentUser.getId())) {
-            // resource is not locked by the current user, no writing allowed
-            return(false);
-        } else {
-            //check if the project that has locked the resource is the current project
-            if((resource.getLockedInProject() != currentProject.getId())){
-                return (false);
-            }
-        }
-
-        // check the rights for the current resource
-		if (! getVfsAccessGuard(currentUser, currentProject).check(resource, C_WRITE_ACCESS, true, false))
-            return false;
-
-        //if( ! ( accessOther(resource, C_ACCESS_PUBLIC_WRITE) ||
-        //        accessOwner(currentUser, currentProject, resource, C_PERMISSION_WRITE) ||
-        //        accessGroup(currentUser, currentProject, resource, C_ACCESS_GROUP_WRITE) ) ) {
-            // no write access to this resource!
-        //    return false;
-        //}
-
-        // read the parent folder
-        if(resource.getParent() != null) {
-            // readFolder without checking access
-            resource = m_vfsDriver.readFolder(resource.getProjectId(), resource.getRootName()+resource.getParent());
-        } else {
-            // no parent folder!
-            return true;
-        }
-
-
-        // check the rights and if the resource is not locked
-        // for parent folders only read access is needed
-        do {
-          // if( accessOther(resource, C_ACCESS_PUBLIC_READ) ||
-          //      accessOwner(currentUser, currentProject, resource, C_PERMISSION_READ) ||
-          //      accessGroup(currentUser, currentProject, resource, C_ACCESS_GROUP_READ) ) {
-
-                // is the resource locked?
-                if( resource.isLocked() && ( !resource.isLockedBy().equals(currentUser.getId()) ) ) {
-                    // resource locked by anopther user, no creation allowed
-
-                    return(false);
-                }
-
-                // read next resource
-                if(resource.getParent() != null) {
-                    // readFolder without checking access
-                    resource = m_vfsDriver.readFolder(resource.getProjectId(), resource.getRootName()+resource.getParent());
-                }
-            //} else {
-            //    // last check was negative
-            //    return(false);
-            // }
-        } while(resource.getParent() != null);
-
-        // all checks are done positive
-        return(true);
-    }*/
-    
-    /**
-     * Checks, if the user may write this resource.
-     *
-     * @param currentUser The user who requested this method.
-     * @param currentProject The current project of the user.
-     * @param resourceName The name of the resource to check.
-     *
-     * @return wether the user has access, or not.
-     *//*
-    public boolean accessWrite(CmsUser currentUser, CmsProject currentProject,
-                               String resourceName) throws CmsException {
-
-        CmsResource resource = m_vfsDriver.readFileHeader(currentProject.getId(), resourceName, false);
-        return accessWrite(currentUser,currentProject,resource);
-    }*/
     
     /**
      * Returns an instance of the vfs access guard performing permission checks for vfs operations.
@@ -811,6 +702,7 @@ public class CmsDriverManager implements I_CmsConstants {
             }
         }
     }
+    
     /**
      * Add a new group to the Cms.<BR/>
      *
@@ -821,32 +713,50 @@ public class CmsDriverManager implements I_CmsConstants {
      *
      * @param currentUser The user who requested this method.
      * @param currentProject The current project of the user.
+     * @param id The id of the new group.
      * @param name The name of the new group.
      * @param description The description for the new group.
      * @param flags The flags for the new group.
-     * @param name The name of the parent group (or null).
+     * @param parent The name of the parent group (or null).
      *
      * @return Group
      *
-     * @throws CmsException Throws CmsException if operation was not succesfull.
+     * @throws CmsException if operation was not successfull.
      */
-    public CmsGroup addGroup(CmsUser currentUser, CmsProject currentProject,
-                               String name, String description, int flags, String parent)
+	public CmsGroup createGroup(CmsUser currentUser, CmsProject currentProject, CmsUUID id, String name, String description, int flags, String parent)
+		throws CmsException {    
+		// Check the security
+		if(isAdmin(currentUser, currentProject)) {
+			name = name.trim();
+			validFilename(name);
+			// check the lenght of the groupname
+			if(name.length() > 1) {
+				return m_userDriver.createGroup(id, name, description, flags, parent);
+			} else {
+				throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_BAD_NAME);
+			}
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + name,
+				CmsException.C_NO_ACCESS);
+		}
+	}
+	
+	/**
+	 * @see createGroup
+	 */
+	public CmsGroup createGroup(CmsUser currentUser, CmsProject currentProject, String name, String description, int flags, String parent)
+		throws CmsException {
+			
+		return createGroup(currentUser, currentProject, new CmsUUID(), name, description, flags, parent);	
+	}
+
+	/**
+	 * @see createGroup
+	 */	
+    public CmsGroup createGroup(CmsUser currentUser, CmsProject currentProject, String id, String name, String description, int flags, String parent)
         throws CmsException {
-        // Check the security
-        if( isAdmin(currentUser, currentProject) ) {
-            name = name.trim();
-            validFilename(name);
-            // check the lenght of the groupname
-            if(name.length() > 1) {
-                return( m_userDriver.createGroup(name, description, flags, parent) );
-            } else {
-                throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_BAD_NAME);
-            }
-        } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + name,
-                CmsException.C_NO_ACCESS);
-        }
+        	
+        return createGroup(currentUser, currentProject, new CmsUUID(id), name, description, flags, parent);
     }
 
     /**
@@ -908,6 +818,7 @@ public class CmsDriverManager implements I_CmsConstants {
      *
      * @param currentUser The user who requested this method.
      * @param currentProject The current project of the user.
+     * @param id the id of the user.
      * @param name The name for the user.
      * @param password The password for the user.
      * @param recoveryPassword The recoveryPassword for the user.
@@ -928,18 +839,18 @@ public class CmsDriverManager implements I_CmsConstants {
      * @throws CmsException Throws CmsException if operation was not succesfull.
      */
     public CmsUser addImportUser(CmsUser currentUser, CmsProject currentProject,
-        String name, String password, String recoveryPassword, String description,
+        String id, String name, String password, String recoveryPassword, String description,
         String firstname, String lastname, String email, int flags, Hashtable additionalInfos,
         String defaultGroup, String address, String section, int type)
         throws CmsException {
         // Check the security
-        if( isAdmin(currentUser, currentProject) ) {
+        if(isAdmin(currentUser, currentProject)) {
             // no space before or after the name
             name = name.trim();
             // check the username
             validFilename(name);
             CmsGroup group =  readGroup(currentUser, defaultGroup);
-            CmsUser newUser = m_userDriver.addImportUser(name, password, recoveryPassword, description, firstname, lastname, email, 0, 0, flags, additionalInfos, group, address, section, type);
+            CmsUser newUser = m_userDriver.addImportUser(new CmsUUID(id), name, password, recoveryPassword, description, firstname, lastname, email, 0, 0, flags, additionalInfos, group, address, section, type);
             addUserToGroup(currentUser, currentProject, newUser.getName(), group.getName());
             return newUser;
         } else {
@@ -6460,15 +6371,6 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
         return user;
     }
     
-	static int hash(Object x) {
-		int h = x.hashCode();
-
-		h += ~(h << 9);
-		h ^=  (h >>> 14);
-		h +=  (h << 4);
-		h ^=  (h >>> 10);
-		return h;
-	}
      /**
      * Returns a user object.<P/>
      *
