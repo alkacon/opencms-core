@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsMSDHtmlEditor.java,v $
- * Date   : $Date: 2003/11/27 16:18:52 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/11/27 16:41:08 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,10 +38,9 @@ import com.opencms.util.Encoder;
 import com.opencms.workplace.I_CmsWpConstants;
 
 import org.opencms.main.OpenCms;
-import org.opencms.page.CmsXmlPage;
-import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.page.CmsDefaultPage;
 import org.opencms.page.CmsXmlPage;
+import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.io.IOException;
@@ -61,7 +60,7 @@ import javax.servlet.jsp.JspException;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.1.12
  */
@@ -97,8 +96,8 @@ public class CmsMSDHtmlEditor extends CmsEditor {
             } else if (EDITOR_CHANGE_BODY.equals(getParamAction())) {
                 setAction(ACTION_CHANGE_BODY);
             } else if (EDITOR_CHANGE_TEMPLATE.equals(getParamAction())) {
-                actionChangeTemplate();
                 setAction(ACTION_SHOW);
+                actionChangeTemplate();
             } else if (EDITOR_SHOW.equals(getParamAction())) {
                 setAction(ACTION_SHOW);
             } else if (EDITOR_PREVIEW.equals(getParamAction())) {
@@ -106,37 +105,31 @@ public class CmsMSDHtmlEditor extends CmsEditor {
             } else {
                 // initial call of editor
                 setAction(ACTION_DEFAULT);
-                
-                    setParamTempfile(createTempFile());
-
-                    CmsDefaultPage page = (CmsDefaultPage)CmsXmlPage.newInstance(getCms(), getCms().readFile(this.getParamTempfile()));
-                    byte[] elementData = page.getElementData("body", "en");
-                    if (elementData != null) {
-                        setParamContent(new String(elementData));
-                    } else {
-                        setParamContent("");
-                    }
- 
-                    //setParamPagetemplate("/system/modules/com.lgt.intranet.modules.frontend/templates/lgt_intranet_main");
-                    setParamPagetemplate(getJsp().property(I_CmsConstants.C_PROPERTY_TEMPLATE, getParamTempfile(), ""));                    
-                    setParamPagetitle(getJsp().property(I_CmsConstants.C_PROPERTY_TITLE, getParamTempfile(), ""));
-                    
-                    
-                
+                // create the temporary file
+                setParamTempfile(createTempFile());
+                // initialise the editor content
+                initContent();
+                // set template and page title  
+                setParamPagetemplate(getJsp().property(I_CmsConstants.C_PROPERTY_TEMPLATE, getParamTempfile(), ""));                    
+                setParamPagetitle(getJsp().property(I_CmsConstants.C_PROPERTY_TITLE, getParamTempfile(), ""));                   
             } 
         } catch (CmsException e) {
             // TODO: show error page!
         }
-        prepareContent(false);              
+        prepareContent(false);
+        if (!(getAction() == ACTION_SAVE) && !(getAction() == ACTION_SAVEEXIT)) {
+            setParamPagetitle(Encoder.escapeXml(getParamPagetitle()));
+        }
     }
     
     /**
      * Manipulates the content String for the different editor views and the save operation.<p>
      * 
      * @param save if set to true, the result String is not escaped
+     * @return the prepared content String
      */
-    public void prepareContent(boolean save) {
-        String content = getParamContent();
+    public String prepareContent(boolean save) {
+        String content = Encoder.unescape(getParamContent(), Encoder.C_UTF8_ENCODING);
         boolean isBrowserNS = BROWSER_NS.equals(getBrowserType());
         if ("edit".equals(getParamEditormode()) || isBrowserNS || save) {
             // editor is in text mode or content should be saved
@@ -165,9 +158,11 @@ public class CmsMSDHtmlEditor extends CmsEditor {
         }
         if (!save) {
             // escape the content String if it is not saved
-            content = Encoder.escapeWBlanks(content, Encoder.C_UTF8_ENCODING); 
+            content = Encoder.escapeWBlanks(content, Encoder.C_UTF8_ENCODING);
+            // set the content parameter to the escaped content
+            setParamContent(content);
         }
-        setParamContent(content);
+        return content;
     }
     
     public String buildSelectBody() throws CmsException {
@@ -258,18 +253,8 @@ public class CmsMSDHtmlEditor extends CmsEditor {
      * @see org.opencms.workplace.editor.CmsEditor#actionExit()
      */
     public void actionExit() throws CmsException, IOException {
-        // switch to the temporary file project
-        switchToTempProject();
-        try {
-            // delete the temporary file
-            getCms().deleteResource(getParamTempfile(), I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
-        } catch (CmsException e) {
-            // ignore this exception
-        }
-    
-        // switch back to the current project
-        switchToCurrentProject();
-    
+        // delete the temporary file        
+        deleteTempFile();
         // now redirect to the workplace explorer view
         getJsp().getResponse().sendRedirect(getJsp().link(CmsWorkplaceAction.C_JSP_WORKPLACE_URI));   
     }
@@ -277,25 +262,33 @@ public class CmsMSDHtmlEditor extends CmsEditor {
     /**
      * @see org.opencms.workplace.editor.CmsEditor#actionSave()
      */
-    public void actionSave() { 
-        // TODO: save modified content
+    public void actionSave() throws JspException { 
         try {
-            
-            prepareContent(true);
-            
+            // write the modified title to the temporary file
+            if (getParamPagetitle() != null && !"null".equals(getParamPagetitle())) {
+                getCms().writeProperty(getParamTempfile(), I_CmsConstants.C_PROPERTY_TITLE, getParamPagetitle());
+            }
+            // prepare the content for saving
+            String content = prepareContent(true);
             CmsDefaultPage page = (CmsDefaultPage)CmsXmlPage.newInstance(getCms(), getCms().readFile(this.getParamTempfile()));
-            
             if (!page.hasElement("body", "en")) {
                 page.addElement("body", "en");
             }
-            
-            page.setElementData("body", "en", Encoder.unescape(getParamContent(),Encoder.C_UTF8_ENCODING).getBytes());
-            
+            page.setElementData("body", "en", content.getBytes());
             getCms().writeFile(page.marshal());
+            // copy the temporary file content back to the original file
             commitTempFile();
         } catch (CmsException e) {
-            
-        }       
+            // error during saving, show error dialog
+            setParamErrorstack(e.getStackTraceAsString());
+            setParamTitle(key("error.title.editorsave"));
+            setParamMessage(key("error.message.editorsave"));
+            String reasonSuggestion = key("error.reason.editorsave") + "<br>\n" + key("error.suggestion.editorsave") + "\n";
+            setParamReasonSuggestion(reasonSuggestion);
+            getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
+        }
+        // now escape the title parameter in case the editor is re-displayed
+        setParamPagetitle(Encoder.escapeXml(getParamPagetitle()));
     }
     
     /**
@@ -303,12 +296,20 @@ public class CmsMSDHtmlEditor extends CmsEditor {
      */
     public void initContent() {
         // TODO: initialize content of editor properly
+        // save initialized instance of this class in request attribute for included sub-elements
+        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
+        
         try {
-            CmsDefaultPage page = (CmsDefaultPage)CmsXmlPage.newInstance(getCms(), getCms().readFile(this.getParamTempfile()));
-            setParamContent(new String(page.getElementData("body", "en")));
-
+			CmsDefaultPage page = (CmsDefaultPage)CmsXmlPage.newInstance(getCms(), getCms().readFile(this.getParamTempfile()));
+                    byte[] elementData = page.getElementData("body", "en");
+                    if (elementData != null) {
+                        setParamContent(new String(elementData));
+                    } else {
+                        setParamContent("");
+                    }
         } catch (CmsException e) {
             // reading of file contents failed, show error dialog
+            setAction(ACTION_SHOW_ERRORMESSAGE);
             setParamErrorstack(e.getStackTraceAsString());
             setParamTitle(key("error.title.editorread"));
             setParamMessage(key("error.message.editorread"));
@@ -327,8 +328,6 @@ public class CmsMSDHtmlEditor extends CmsEditor {
             }
         }
         //setParamBodyelement("");
-        setParamPagetemplate(getJsp().property(I_CmsConstants.C_PROPERTY_TEMPLATE, getParamTempfile(), ""));                    
-        setParamPagetitle(getJsp().property(I_CmsConstants.C_PROPERTY_TITLE, getParamTempfile(), ""));
     }
 
 }

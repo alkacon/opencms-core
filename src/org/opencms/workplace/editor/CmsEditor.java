@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditor.java,v $
- * Date   : $Date: 2003/11/26 15:13:27 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/11/27 16:41:08 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,9 @@ import com.opencms.flex.jsp.CmsJspActionElement;
 import com.opencms.workplace.CmsHelperMastertemplates;
 import com.opencms.workplace.I_CmsWpConstants;
 
+import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsDialog;
+import org.opencms.workplace.CmsWorkplaceAction;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -54,7 +56,7 @@ import javax.servlet.jsp.JspException;
  * Provides methods for building the file editors of OpenCms.<p> 
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.1.12
  */
@@ -73,6 +75,7 @@ public abstract class CmsEditor extends CmsDialog {
     public static final String EDITOR_SHOW = "show";
     public static final String EDITOR_PREVIEW = "preview";
     public static final String EDITOR_NEW_BODY = "newbody";
+    public static final String EDITOR_SHOW_ERRORMESSAGE = "newbody";
     
     public static final int ACTION_SAVE = 121;
     public static final int ACTION_EXIT = 122;
@@ -82,6 +85,7 @@ public abstract class CmsEditor extends CmsDialog {
     public static final int ACTION_SHOW = 126;
     public static final int ACTION_PREVIEW = 127;
     public static final int ACTION_NEW_BODY = 128;
+    public static final int ACTION_SHOW_ERRORMESSAGE = 129;
     
     private String m_paramEditormode;
     private String m_paramBodyelement;
@@ -403,6 +407,22 @@ public abstract class CmsEditor extends CmsDialog {
     }
     
     /**
+     * Deletes a temporary file from the OpenCms VFS, needed when exiting an editor.<p> 
+     */
+    protected void deleteTempFile() {       
+        try {
+            // switch to the temporary file project
+            switchToTempProject();
+            // delete the temporary file
+            getCms().deleteResource(getParamTempfile(), I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
+            // switch back to the current project
+            switchToCurrentProject();
+        } catch (CmsException e) {
+            // ignore this exception
+        }
+    }
+    
+    /**
      * Returns the browser type currently used by the client.<p>
      * 
      * @return the brwoser type
@@ -523,6 +543,20 @@ public abstract class CmsEditor extends CmsDialog {
             m_selectTemplates = buildSelect(attributes, names, values, selectedValue.intValue(), false);
         }
         return m_selectTemplates;
+    }
+    
+    /**
+     * Returns the editor action for a "cancel" button.<p>
+     * 
+     * This overwrites the cancel method in the CmsDialog class.<p>
+     * 
+     * Always use this value, do not write anything directly in the html page.<p>
+     * 
+     * @return the default action for a "cancel" button
+     */
+    public String buttonActionCancel() {
+        String target = OpenCms.getLinkManager().substituteLink(getCms(), CmsWorkplaceAction.C_JSP_WORKPLACE_URI);
+        return "onClick=\"top.location.href='" + target + "';\"";
     }
    
     /**
