@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsQueries.java,v $
- * Date   : $Date: 2000/11/16 10:05:15 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2000/11/22 10:34:56 $
+ * Version: $Revision: 1.33 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.32 $ $Date: 2000/11/16 10:05:15 $
+ * @version $Revision: 1.33 $ $Date: 2000/11/22 10:34:56 $
  */
 public class CmsQueries
 {
@@ -362,7 +362,15 @@ public class CmsQueries
 	public String C_LOG_TASK = C_TABLENAME_TASKLOG + ".taskref";
 	public String C_LOG_USER = C_TABLENAME_TASKLOG + ".userref";
 	public String C_LOG_TYPE = C_TABLENAME_TASKLOG + ".type";
-
+	// Constants for fields of TaskLog table without tablename
+	public String C_TASKLOG_ID = "id";
+	public String C_TASKLOG_COMMENT = "coment";
+	public String C_TASKLOG_EXUSERNAME = "externalusername";
+	public String C_TASKLOG_STARTTIME = "starttime";
+	public String C_TASKLOG_TASK = "taskref";
+	public String C_TASKLOG_USER = "userref";
+	public String C_TASKLOG_TYPE = "type";
+	
 	// Constants for TaskPar table
 	public String C_PAR_ID = "id";
 	public String C_PAR_NAME = "parname";

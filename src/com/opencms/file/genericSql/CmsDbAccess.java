@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/11/20 14:22:48 $
- * Version: $Revision: 1.168 $
+ * Date   : $Date: 2000/11/22 10:34:55 $
+ * Version: $Revision: 1.169 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import com.opencms.util.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.168 $ $Date: 2000/11/20 14:22:48 $ * 
+ * @version $Revision: 1.169 $ $Date: 2000/11/22 10:34:55 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	
@@ -5019,14 +5019,13 @@ public CmsTask readTask(int id) throws CmsException {
 			statement.setInt(1, taskId);
 			res = statement.executeQuery();
 			while(res.next()) {				 
-				comment = res.getString(m_cq.C_LOG_COMMENT);
-				externalusername = res.getString(m_cq.C_LOG_EXUSERNAME);
-				id = res.getInt(m_cq.C_LOG_ID);
-				starttime = SqlHelper.getTimestamp(res,m_cq.C_LOG_STARTTIME);
-				task = res.getInt(m_cq.C_LOG_TASK);
-				user = res.getInt(m_cq.C_LOG_USER);
-				type = res.getInt(m_cq.C_LOG_TYPE);
-				
+				comment = res.getString(m_cq.C_TASKLOG_COMMENT);
+				externalusername = res.getString(m_cq.C_TASKLOG_EXUSERNAME);
+				id = res.getInt(m_cq.C_TASKLOG_ID);
+				starttime = SqlHelper.getTimestamp(res,m_cq.C_TASKLOG_STARTTIME);
+				task = res.getInt(m_cq.C_TASKLOG_TASK);
+				user = res.getInt(m_cq.C_TASKLOG_USER);
+				type = res.getInt(m_cq.C_TASKLOG_TYPE);	
 				tasklog =  new CmsTaskLog(id, comment, task, user, starttime, type);
 				logs.addElement(tasklog);
 			}
