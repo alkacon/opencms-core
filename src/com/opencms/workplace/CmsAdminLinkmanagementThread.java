@@ -1,12 +1,36 @@
+/*
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminLinkmanagementThread.java,v $
+ * Date   : $Date: 2002/11/07 13:29:04 $
+ * Version: $Revision: 1.3 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * Copyright (C) 2001  The OpenCms Group
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about OpenCms, please see the
+ * OpenCms Website: http://www.opencms.org
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 package com.opencms.workplace;
 
 /**
- * Title:        OpenCms
- * Description:
- * Copyright:    Copyright (c) 2001
- * Company:
  * @author Hanjo Riege
- * @version 1.0
+ * @version $Revision: 1.3 $
  */
 
 import com.opencms.file.*;
@@ -37,9 +61,14 @@ public class CmsAdminLinkmanagementThread extends Thread {
         }
         catch(CmsException e) {
             m_report.addSeperator(0);
-            m_report.addString(e.getMessage());
+            m_report.addString(e.getMessage());            
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                 A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL, e.getMessage());
+                StackTraceElement[] stack = e.getStackTrace();
+                int len = (stack.length>5)?5:stack.length;
+                for (int i=0; i<len; i++) {
+                    A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL, " > " + stack[i]);
+                }
             }
         }
     }
