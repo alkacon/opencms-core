@@ -8,7 +8,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 4.7.0 Ecaz - ?? March 2001
+OpenCms 4.7.0 Ecaz - 14 March 2002
 ! workplace limited port
   This is the port the workplace access is limited to. With the opencms.properties
   the access to the workplace can be limited to a user defined port. With this
@@ -19,10 +19,10 @@ OpenCms 4.7.0 Ecaz - ?? March 2001
   Mails to all members of a role. A role member can see if the task is directly for him 
   without have a look into the taskmanagement in OpenCms.
 
-OpenCms 4.6.0 Tleilax - 07 March 2001
+OpenCms 4.6.0 Tleilax - 07 March 2002
 * Fixed bug in static export. Nullpointer exception for link resources was fixed.
 
-OpenCms 4.5.36 Chusuk - 05 March 2001
+OpenCms 4.5.36 Chusuk - 05 March 2002
 ! New function for HTML-Editor: inserting internal links
 ! Added menu entry for folders, pages and links: changing the navigation informations (Navigation Text and Position)
 ! Now navigation information can be inserted when creating a link. You need to add the required propertydefinitions
@@ -36,7 +36,7 @@ OpenCms 4.5.36 Chusuk - 05 March 2001
   to save the content to a local editor. So the content is not lost.
 - The texteditor can now be used in the IE without having installed the ActiveX Control
 
-OpenCms 4.5.35 Release Candidate Chusuk - 15 February 2001
+OpenCms 4.5.35 Release Candidate Chusuk - 15 February 2002
 ! Export and Import of channels and moduledata
 * When static export was disabled the servletpath was not configurable. Now it can be 
   changed using the url_prefix_http variable in the opencms.properties.
@@ -48,7 +48,7 @@ OpenCms 4.5.35 Release Candidate Chusuk - 15 February 2001
 * New way to encode the passwords.
 - Removed old Usermanual. The usermanual is now part of the complete OpenCms documentation.
 
-OpenCms 4.5.34 Chusuk - 05 February 2001
+OpenCms 4.5.34 Chusuk - 05 February 2002
 ! The copy method of the mastermodule now returns the id of the new content definition. 
   The dataset can be cloned.
 ! Modules may have a new Method witch is called after publishing.
@@ -60,7 +60,7 @@ OpenCms 4.5.34 Chusuk - 05 February 2001
 - Removed file.encoding warnings about passwords. file.encoding for passwords can be
   set manually in the opencms.properties.
 
-OpenCms 4.5.33 Chusuk - 30 January 2001
+OpenCms 4.5.33 Chusuk - 30 January 2002
 * Change current project to online project after publishing a temporary project.
 - Addind mechanism of redirect to the correct ressource based on the current project
   for showing preview of ressources from explorer-view.
@@ -72,7 +72,7 @@ OpenCms 4.5.33 Chusuk - 30 January 2001
   have changed.
 - Removed the redirect points. They are not needed since we have the static export.
 
-OpenCms 4.5.32 Chusuk - 18 January 2001
+OpenCms 4.5.32 Chusuk - 18 January 2002
 ! The digest-method for encrypting passwords is now available in the CmsObject.
 ! Static export. Only changed or new files are exported. 
 * when the property export is set to https, the 404 error is thrown only in the online project
@@ -86,7 +86,7 @@ OpenCms 4.5.32 Chusuk - 18 January 2001
   This allows control about the used protocol-sheme (http or https) for previews in the online
   project.
 
-OpenCms 4.5.31 Chusuk - 09 January 2001
+OpenCms 4.5.31 Chusuk - 09 January 2002
 ! Modification on Explorer-View for "Gecko" support. The "Gecko-Support" is not finished yet.
   ATTENTION: The workplace has currently some problems displaying german umlauts. We will fix 
   that in the next release.
