@@ -2,8 +2,8 @@ package com.opencms.file.oracleplsql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/11/16 13:12:54 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/11/16 13:31:52 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.template.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.6 $ $Date: 2000/11/16 13:12:54 $
+ * @version $Revision: 1.7 $ $Date: 2000/11/16 13:31:52 $
  */
 public class CmsResourceBroker extends com.opencms.file.genericSql.CmsResourceBroker {
 	
@@ -921,7 +921,7 @@ public void publishProject(CmsUser currentUser, CmsProject currentProject, int i
 			}
 		}
 	} else {
-		throw new CmsException("[" + this.getClass().getName() + "] could not publish project " + id, CmsException.C_ACCESS_DENIED);
+		throw new CmsException("[" + this.getClass().getName() + "] could not publish project " + id, CmsException.C_NO_ACCESS);
 	}
 }
 // Methods working with system properties

@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/11/16 13:12:53 $
- * Version: $Revision: 1.192 $
+ * Date   : $Date: 2000/11/16 13:31:51 $
+ * Version: $Revision: 1.193 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.192 $ $Date: 2000/11/16 13:12:53 $
+ * @version $Revision: 1.193 $ $Date: 2000/11/16 13:31:51 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1996,9 +1996,8 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
 		// read the project that should be deleted.
   		CmsProject deleteProject = readProject(currentUser, currentProject, id);
 
-		if( isAdmin(currentUser, currentProject) || 
-			isManagerOfProject(currentUser, deleteProject) || 
-			(deleteProject.getFlags() == C_PROJECT_STATE_UNLOCKED )) {
+		if(isAdmin(currentUser, currentProject) || 
+		   isManagerOfProject(currentUser, deleteProject)) {
 			 // delete the project
 			 m_dbAccess.deleteProject(deleteProject);
 			 m_projectCache.remove(id);
@@ -3841,7 +3840,7 @@ public void publishProject(CmsUser currentUser, CmsProject currentProject, int i
 			}
 		}
 	} else {
-		throw new CmsException("[" + this.getClass().getName() + "] could not publish project " + id, CmsException.C_ACCESS_DENIED);
+		throw new CmsException("[" + this.getClass().getName() + "] could not publish project " + id, CmsException.C_NO_ACCESS);
 	}
 }
 	/**
