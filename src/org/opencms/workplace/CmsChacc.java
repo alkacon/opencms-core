@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChacc.java,v $
- * Date   : $Date: 2003/07/30 13:34:50 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2003/07/31 09:22:38 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.opencms.security.I_CmsPrincipal;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 5.1
  */
@@ -100,8 +100,8 @@ public class CmsChacc extends CmsDialog {
     /** Indicates if forms are editable by current user */
     private boolean m_editable;
     
-    /** Indicates if inheritance flags are displayed for resource */
-    private boolean m_showinherit;
+    /** Indicates if inheritance flags are set as hidden fields for resource folders */
+    private boolean m_inherit;
     
     /** PermissionSet of the current user for the resource */
     private CmsPermissionSet m_curPermissions;
@@ -220,7 +220,7 @@ public class CmsChacc extends CmsDialog {
         
         // set flags to show editable or non editable entries
         setEditable(false);
-        setShowInherit(false);
+        setInherit(false);
                  
         try {      
             // get the current users' permissions
@@ -229,7 +229,7 @@ public class CmsChacc extends CmsDialog {
             // check if the current resource is a folder
             CmsResource resource = getCms().readFileHeader(getParamResource());
             if (resource.isFolder()) {
-                setShowInherit(true);
+                setInherit(true);
             }
         } catch (CmsException e) { }
 
@@ -394,11 +394,10 @@ public class CmsChacc extends CmsDialog {
      * @param id the UUID of the principal of the permission set
      * @param curSet the current permission set 
      * @param editable boolean to determine if the form is editable
-     * @param showinherit boolean to determine if the "inherit" checkbox should be displayed
      * @param extendedView boolean to determine if the view is selectable with DHTML
      * @return String with HTML code of the form
      */
-    private StringBuffer buildPermissionEntryForm(CmsUUID id, CmsPermissionSet curSet, boolean editable, boolean showinherit, boolean extendedView) {
+    private StringBuffer buildPermissionEntryForm(CmsUUID id, CmsPermissionSet curSet, boolean editable, boolean extendedView) {
         String fileName = getParamResource();
         int flags = 0;
         try {
@@ -415,7 +414,7 @@ public class CmsChacc extends CmsDialog {
             CmsResource res = getCms().readFileHeader(fileName);
             CmsUUID fileId = res.getFileId();
             CmsAccessControlEntry entry = new CmsAccessControlEntry(fileId, id, curSet, flags);
-            return buildPermissionEntryForm(entry, editable, showinherit, extendedView, null);
+            return buildPermissionEntryForm(entry, editable, extendedView, null);
         } catch (CmsException e) {
             return new StringBuffer("");
         }
@@ -426,15 +425,14 @@ public class CmsChacc extends CmsDialog {
      * 
      * @param entry the current access control entry
      * @param editable boolean to determine if the form is editable
-     * @param showinherit boolean to determine if the "inherit" checkbox should be displayed
      * @param extendedView boolean to determine if the view is selectable with DHTML
      * @param inheritRes the resource name from which the ace is inherited
      * @return StringBuffer with HTML code of the form
      */
-    private StringBuffer buildPermissionEntryForm(CmsAccessControlEntry entry, boolean editable, boolean showinherit, boolean extendedView, String inheritRes) {
+    private StringBuffer buildPermissionEntryForm(CmsAccessControlEntry entry, boolean editable, boolean extendedView, String inheritRes) {
         StringBuffer retValue = new StringBuffer("");
         
-        // get name and type of current entry
+        // get name and type of the current entry
         String name = "";
         try {
             name = getCms().lookupPrincipal(entry.getPrincipal()).getName();
@@ -500,7 +498,8 @@ public class CmsChacc extends CmsDialog {
             // set parameters to show correct hidden input fields
             setParamAction(DIALOG_SET);
             retValue.append(paramsAsHidden());
-            if (showinherit) {
+            // inherit permissions on folders
+            if (getInherit()) {
                 retValue.append("<input type=\"hidden\" name=\"inherit\" value=\"true\"\n");
             }
         } else {
@@ -536,8 +535,10 @@ public class CmsChacc extends CmsDialog {
             retValue.append("</tr>\n");
         }  
         
-        // show overwrite inherited checkbox only on folders
-        if (showinherit) {
+        // show overwrite checkbox and buttons only for editable entries
+        if (editable) {
+        
+            // show overwrite inherited checkbox
             retValue.append("<tr>\n");
             retValue.append("\t<td class=\"dialogpermissioncell\">"+key("dialog.permission.list.overwrite")+"</td>\n");
             retValue.append("\t<td class=\"dialogpermissioncell textcenter\"><input type=\"checkbox\" name=\"overwriteinherited\" value=\"true\""+disabled);
@@ -547,10 +548,9 @@ public class CmsChacc extends CmsDialog {
             retValue.append("></td>\n"); 
             retValue.append("\t<td class=\"dialogpermissioncell\">&nbsp;</td>\n");
             retValue.append("</tr>\n");    
-        }                 
+                 
             
-        // show "set" and "delete" buttons depending on editable value 
-        if (editable) {
+            // show "set" and "delete" buttons    
             retValue.append("<tr>\n");
             retValue.append("\t<td>&nbsp;</td>\n");
             retValue.append("\t<td class=\"textcenter\"><input class=\"dialogbutton\" type=\"submit\" value=\""+key("button.submit")+"\"></form></td>\n");           
@@ -596,7 +596,7 @@ public class CmsChacc extends CmsDialog {
             while (i.hasNext()) {
                 CmsAccessControlEntry curEntry = (CmsAccessControlEntry)i.next();
                 // build the list with enabled extended view and resource name
-                retValue.append(buildPermissionEntryForm(curEntry, false, false, true, getConnectedResource(curEntry, parents)));
+                retValue.append(buildPermissionEntryForm(curEntry, false, true, getConnectedResource(curEntry, parents)));
             }
         } else {
             // show the short view, use an ACL to build the list
@@ -611,7 +611,7 @@ public class CmsChacc extends CmsDialog {
                     I_CmsPrincipal principal = getCms().lookupPrincipal(principalId);
                     CmsPermissionSet permissions = acList.getPermissions(principal);
                     // build the list with enabled extended view only
-                    retValue.append(buildPermissionEntryForm(principalId, permissions, false, false, true));
+                    retValue.append(buildPermissionEntryForm(principalId, permissions, false, true));
                 }
             } catch (CmsException e) { }
         }
@@ -640,7 +640,7 @@ public class CmsChacc extends CmsDialog {
         // list all entries
         while (i.hasNext()) {
             CmsAccessControlEntry curEntry = (CmsAccessControlEntry)i.next();
-            retValue.append(buildPermissionEntryForm(curEntry, m_editable, m_showinherit, false, null));
+            retValue.append(buildPermissionEntryForm(curEntry, this.getEditable(), false, null));
             if (i.hasNext()) {
                 retValue.append(dialogSeparator()); 
             }
@@ -793,7 +793,7 @@ public class CmsChacc extends CmsDialog {
      * @return HTML String with the access rights of the current user
      */
     public String buildCurrentPermissions() {
-        return buildPermissionEntryForm(getSettings().getUser().getId(), getCurPermissions(), false, false, false).toString();
+        return buildPermissionEntryForm(getSettings().getUser().getId(), getCurPermissions(), false, false).toString();
     }
     
     /**
@@ -992,8 +992,8 @@ public class CmsChacc extends CmsDialog {
      * 
      * @param value set to true for folders, otherwise false
      */
-    protected void setShowInherit(boolean value) {
-        m_showinherit = value;
+    protected void setInherit(boolean value) {
+        m_inherit = value;
     }
     
     /**
@@ -1001,8 +1001,8 @@ public class CmsChacc extends CmsDialog {
      * 
      * @return true to show the checkbox, otherwise false
      */
-    protected boolean getShowInherit() {
-        return m_showinherit;
+    protected boolean getInherit() {
+        return m_inherit;
     }
       
 }
