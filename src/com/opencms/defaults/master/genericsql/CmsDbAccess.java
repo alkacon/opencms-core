@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2002/01/25 08:04:54 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2002/01/31 10:19:33 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -155,8 +155,9 @@ public class CmsDbAccess {
      * @param dataset the set of data for this contentdefinition.
      * @param mediaToAdd a Vector of media to add.
      * @param channelToAdd a Vector of channels to add.
+     * @return int The id of the new content definition
      */
-    public void copy(CmsObject cms, CmsMasterContent content,
+    public int copy(CmsObject cms, CmsMasterContent content,
                        CmsMasterDataSet dataset, Vector mediaToAdd, Vector channelToAdd)
         throws CmsException {
         if(isOnlineProject(cms)) {
@@ -201,6 +202,7 @@ public class CmsDbAccess {
         } finally {
             sqlClose(con, stmnt, null);
         }
+        return newMasterId;
     }
 
     /**

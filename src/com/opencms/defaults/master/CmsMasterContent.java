@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2002/01/25 08:04:54 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2002/01/31 10:18:41 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -43,8 +43,8 @@ import com.opencms.template.*;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.13 $
- * $Date: 2002/01/25 08:04:54 $
+ * $Revision: 1.14 $
+ * $Date: 2002/01/31 10:18:41 $
  */
 public abstract class CmsMasterContent
     extends A_CmsContentDefinition
@@ -268,10 +268,11 @@ public abstract class CmsMasterContent
      * copy method
      *
      * @param cms the CmsObject to use.
+     * @return int The id of the new content definition
      */
-    public void copy(CmsObject cms) throws Exception {
+    public int copy(CmsObject cms) throws Exception {
         // insert the new cd with the copied dataset
-        getDbAccessObject(getSubId()).copy(cms, this, m_dataSet, this.getMedia(), this.getChannels());
+        return getDbAccessObject(getSubId()).copy(cms, this, (CmsMasterDataSet)m_dataSet.clone(), this.getMedia(), this.getChannels());
     }
 
     /**

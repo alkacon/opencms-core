@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/I_CmsExtendedContentDefinition.java,v $
-* Date   : $Date: 2002/01/09 08:38:55 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2002/01/31 10:18:03 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -196,8 +196,9 @@ public interface I_CmsExtendedContentDefinition {
      * for copying content definition
      *
      * @param cms The CmsObject
+     * @return int The id of the new content definition
      */
-    public void copy(CmsObject cms) throws Exception;
+    public int copy(CmsObject cms) throws Exception;
 
     /**
      * History method

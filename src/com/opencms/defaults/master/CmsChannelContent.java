@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2002/01/25 08:04:54 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2002/01/31 10:18:21 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -45,8 +45,8 @@ import java.lang.*;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.6 $
- * $Date: 2002/01/25 08:04:54 $
+ * $Revision: 1.7 $
+ * $Date: 2002/01/31 10:18:21 $
  */
 public class CmsChannelContent extends A_CmsContentDefinition
                                implements I_CmsContent, I_CmsLogChannels, I_CmsExtendedContentDefinition{
@@ -323,11 +323,13 @@ public class CmsChannelContent extends A_CmsContentDefinition
      * Copy method
      * for copying content definition
      * @param cms the CmsObject to use.
+     * @return int The id of the new content definition
      */
-    public void copy(CmsObject cms) {
+    public int copy(CmsObject cms) {
         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
             A_OpenCms.log(C_OPENCMS_INFO, "[CmsChannelContent] Channels can be copied!");
         }
+        return -1;
     }
 
     /**
