@@ -5,7 +5,11 @@
     <area.name/>
     <navigation.startfolder/>
     <headnav.menus>true</headnav.menus>
+    <headnav.menudepth><![CDATA[3]]></headnav.menudepth>
+    <headnav.markcurrent>true</headnav.markcurrent>
     <navleft.showselected>false</navleft.showselected>
+    <login.uri/>
+    <help.uri/>
     <page.form.letter/>
     <page.form.recommend/>
   </configuration>
