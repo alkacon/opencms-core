@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDialogElements.java,v $
- * Date   : $Date: 2004/01/23 14:25:56 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/01/28 13:05:36 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.3.0
  */
@@ -384,44 +384,44 @@ public class CmsDialogElements extends CmsDialog {
      */
     public static List computeElements(CmsObject cms, String resource) throws CmsException {   
         List elementList = new ArrayList();
-        synchronized (elementList) {
-            String currentTemplate = cms.readProperty(resource, I_CmsConstants.C_PROPERTY_TEMPLATE, true);
-            if (currentTemplate == null) {
-                currentTemplate = "";
-            }
-            String elements = null;
+        String currentTemplate = cms.readProperty(resource, I_CmsConstants.C_PROPERTY_TEMPLATE, true);
+        if (currentTemplate == null || currentTemplate.length() == 0) {
+            // no template found, return empty list
+            return elementList;
+        }
+        String elements = null;
+        
+        try {
             // read the property from the template file
-            try {
             elements = cms.readProperty(currentTemplate, I_CmsConstants.C_PROPERTY_TEMPLATE_ELEMENTS, false, null);
-            } catch (CmsException e) {
-                // ingor this exception
+        } catch (CmsException e) {
+            // ignore this exception
+        }
+        if (elements == null) {
+            // no elements defined on template file , return empty list
+            return elementList;
+        }
+        StringTokenizer T = new StringTokenizer(elements, ",");
+        while (T.hasMoreTokens()) {
+            String currentElement = T.nextToken();
+            String niceName = "";
+            String mandatory = "0";
+            int sepIndex = currentElement.indexOf("|");
+            if (sepIndex != -1) {
+                // nice name found for current element, extract it
+                niceName = currentElement.substring(sepIndex + 1);
+                currentElement = currentElement.substring(0, sepIndex);
             }
-            if (elements == null) {
-                // no elements defined on template file, don't create list
-                return null;
+            if (currentElement.endsWith("*")) {
+                // element is mandatory
+                mandatory = "1";
+                currentElement = currentElement.substring(0, currentElement.length() - 1);
             }
-            StringTokenizer T = new StringTokenizer(elements, ",");
-            while (T.hasMoreTokens()) {
-                String currentElement = T.nextToken();
-                String niceName = "";
-                String mandatory = "0";
-                int sepIndex = currentElement.indexOf("|");
-                if (sepIndex != -1) {
-                    // nice name found for current element, extract it
-                    niceName = currentElement.substring(sepIndex + 1);
-                    currentElement = currentElement.substring(0, sepIndex);
-                }
-                if (currentElement.endsWith("*")) {
-                    // element is mandatory
-                    mandatory = "1";
-                    currentElement = currentElement.substring(0, currentElement.length() - 1);
-                }
-                if ("".equals(niceName)) {
-                    // no nice name found, use element name as nice name
-                    niceName = currentElement;
-                }
-                elementList.add(new String[] {currentElement, niceName, mandatory});
+            if ("".equals(niceName)) {
+                // no nice name found, use element name as nice name
+                niceName = currentElement;
             }
+            elementList.add(new String[] {currentElement, niceName, mandatory});
         }
         return elementList;
     }
