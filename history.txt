@@ -9,8 +9,9 @@ Legend:
 - General comment
 
 
-OpenCms 4.3.8 Bela Tegeuse - 
-! added static export. It now is possible to export static resources to the filesystem.
+OpenCms 4.3.8 Bela Tegeuse - 26 April 2001
+! added static export. It is now possible to export static resources to the filesystem.
+- Changed multipart-request. Now it is possible to get the name of the uploaded file.
 
 OpenCms 4.3.7 Bela Tegeuse - 19 April 2001
 
