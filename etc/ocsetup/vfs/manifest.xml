@@ -8281,6 +8281,15 @@
             <access>383</access>
             <properties/>
         </file>
+        <file>
+            <source>pics/system/ic_admin_staticexport_in.gif</source>
+            <destination>system/workplace/pics/ic_admin_staticexport_in.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties/>
+        </file>
 		<file>
 			<source>pics/system/ic_caution.gif</source>
 			<destination>system/workplace/pics/ic_caution.gif</destination>
