@@ -38,6 +38,7 @@
     <property name="build.inputlib.uuid"        value="${build.inputlib}/jug.jar"/>
     <property name="build.inputlib.dbcp"        value="${build.inputlib}/commons-dbcp.jar"/>
     <property name="build.inputlib.pool"        value="${build.inputlib}/commons-pool.jar"/>    
+    <property name="build.inputlib.jcr"			value="${build.inputlib}/jcr.jar"/>    
         
     <property name="build.version.propertyfile" value="${build.classes}/com/opencms/core/version.properties"/>
     <property name="build.version.jsfile"       value="${build.webinf}/ocsetup/vfs/system/login/version.js"/>
@@ -68,6 +69,7 @@
                 <available file="${build.inputlib.uuid}"/>                
                 <available file="${build.inputlib.pool}"/> 
                 <available file="${build.inputlib.dbcp}"/> 
+                <available file="${build.inputlib.jcr}"/> 
             </and>
         </condition>
         
@@ -121,6 +123,7 @@ ${build.inputlib.tidy}
 ${build.inputlib.uuid}
 ${build.inputlib.pool}
 ${build.inputlib.dbcp}
+${build.inputlib.jcr}
 
         </fail>
     </target>
@@ -169,7 +172,8 @@ ${build.inputlib.dbcp}
                         ${build.inputlib.tidy}:
                         ${build.inputlib.dbcp}:
                         ${build.inputlib.pool}:
-                        ${build.inputlib.uuid}"
+                        ${build.inputlib.uuid}:
+                        ${build.inputlib.jcr}"
             debug="on"
             optimize="on"
             deprecation="off"
