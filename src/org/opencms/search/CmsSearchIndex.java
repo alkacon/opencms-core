@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2005/03/23 19:08:23 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2005/03/23 22:09:06 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.apache.lucene.search.Searcher;
 /**
  * Implements the search within an index and the management of the index configuration.<p>
  *   
- * @version $Revision: 1.41 $ $Date: 2005/03/23 19:08:23 $
+ * @version $Revision: 1.42 $ $Date: 2005/03/23 22:09:06 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -94,8 +94,23 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     /** Special root path start token for optimized path queries. */
     public static final String C_ROOT_PATH_TOKEN = "root";
 
-    /** A search query to return all documents in the index. */
-    public static final String C_SEARCH_QUERY_RETURN_ALL = "*";
+    /** Value for "high" search boost. */
+    public static final String SEARCH_BOOST_HIGH_VALUE = "high";
+
+    /** Value for "maximum" search boost. */
+    public static final String SEARCH_BOOST_MAX_VALUE = "max";
+    
+    /** Value search boost term prefix. */
+    public static final String SEARCH_BOOST_PREFIX = "boost@";
+
+    /** Boost query for meta field. */
+    public static final String SEARCH_BOOST_QUERY = " ("
+        + CmsSearchIndex.SEARCH_BOOST_PREFIX
+        + CmsSearchIndex.SEARCH_BOOST_HIGH_VALUE
+        + "^2.0 "
+        + CmsSearchIndex.SEARCH_BOOST_PREFIX
+        + CmsSearchIndex.SEARCH_BOOST_MAX_VALUE
+        + "^4.0)";
 
     /** Constant for a field list that cointains only the "meta" field. */
     private static final String[] C_DOC_META_FIELDS = new String[] {
@@ -235,10 +250,10 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         if (m_priority > 0) {
             result.put(C_PRIORITY, new Integer(m_priority));
         }
-        if (! m_createExcerpt) {
+        if (!m_createExcerpt) {
             result.put(C_EXCERPT, new Boolean(m_createExcerpt));
         }
-        if (! m_checkPermissions) {
+        if (!m_checkPermissions) {
             result.put(C_PERMISSIONS, new Boolean(m_checkPermissions));
         }
         return result;
@@ -286,7 +301,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             File f = new File(m_path);
 
             if (f.exists()) {
+                
                 indexWriter = new IndexWriter(m_path, analyzer, !m_incremental);
+
             } else {
                 f = f.getParentFile();
                 if (f != null && !f.exists()) {
@@ -446,7 +463,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         long timeTotal = -System.currentTimeMillis();
         long timeLucene;
         long timeResultProcessing;
-        
+
         if (OpenCms.getLog(this).isDebugEnabled()) {
             OpenCms.getLog(this).debug(
                 "Searching for \"" + searchQuery + "\" in fields \"" + fields + "\" of index " + m_name);
@@ -514,12 +531,18 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 query.add(phraseQuery, true, false);
             }
 
-            if (!C_SEARCH_QUERY_RETURN_ALL.equals(searchQuery) && (fields != null) && (fields.length > 0)) {
+            if ((fields != null) && (fields.length > 0)) {
                 // this is a "regular" query over one or more fields
                 BooleanQuery fieldsQuery = new BooleanQuery();
                 // add one sub-query for each of the selected fields, e.g. "content", "title" etc.
                 for (int i = 0; i < fields.length; i++) {
-                    fieldsQuery.add(QueryParser.parse(searchQuery, fields[i], languageAnalyzer), false, false);
+
+                    String queryStr = searchQuery;
+                    if (I_CmsDocumentFactory.DOC_META.equals(fields[i])) {
+                        queryStr += CmsSearchIndex.SEARCH_BOOST_QUERY;
+                    }
+
+                    fieldsQuery.add(QueryParser.parse(queryStr, fields[i], languageAnalyzer), false, false);
                 }
                 // finally add the field queries to the main query
                 query.add(fieldsQuery, true, false);
@@ -540,6 +563,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 Query rewrittenQuery = query.rewrite(reader);
                 OpenCms.getLog(this).debug("Base query: " + query);
                 OpenCms.getLog(this).debug("Rewritten query: " + rewrittenQuery);
+                reader.close();
             }
 
             // perform the search operation
@@ -547,7 +571,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
             timeLucene += System.currentTimeMillis();
             timeResultProcessing = -System.currentTimeMillis();
-            
+
             if (hits != null) {
                 maxScore = (hits.length() > 0) ? hits.score(0) : 0.0;
 
@@ -585,7 +609,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                                 cnt++;
                             } else {
                                 // document removed due to permissions, adjust max score
-                                if ((hits.score(i) == maxScore) && (i < (hits.length()-1))) {
+                                if ((hits.score(i) == maxScore) && (i < (hits.length() - 1))) {
                                     maxScore = hits.score(i + 1);
                                 }
                             }
@@ -619,7 +643,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             }
 
             timeResultProcessing += System.currentTimeMillis();
-            
+
         } catch (Exception exc) {
             throw new CmsException("[" + this.getClass().getName() + "] " + "Search on " + m_path + " failed. ", exc);
         } finally {
@@ -725,32 +749,23 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
             if (rawContent != null) {
 
-                // there are no search terms to highlight if the query 
-                // was a search query to return all documents from the index                 
-                if (!C_SEARCH_QUERY_RETURN_ALL.equalsIgnoreCase(searchQuery)) {
+                // open the index reader
+                reader = IndexReader.open(m_path);
 
-                    // open the index reader
-                    reader = IndexReader.open(m_path);
+                analyzer = OpenCms.getSearchManager().getAnalyzer(m_locale);
+                // create the query 
+                query = QueryParser.parse(searchQuery, I_CmsDocumentFactory.DOC_CONTENT, analyzer);
+                // rewrite the query, this will remove wildcards and replace them with full terms
+                query = query.rewrite(reader);
+                termHighlighter = OpenCms.getSearchManager().getHighlighter();
+                highlighter = new CmsHighlightFinder(termHighlighter, query, analyzer);
 
-                    analyzer = OpenCms.getSearchManager().getAnalyzer(m_locale);
-                    // create the query 
-                    query = QueryParser.parse(searchQuery, I_CmsDocumentFactory.DOC_CONTENT, analyzer);
-                    // rewrite the query, this will remove wildcards and replace them with full terms
-                    query = query.rewrite(reader);
-                    termHighlighter = OpenCms.getSearchManager().getHighlighter();
-                    highlighter = new CmsHighlightFinder(termHighlighter, query, analyzer);
-
-                    excerpt = highlighter.getBestFragments(
-                        rawContent,
-                        highlightFragmentSizeInBytes,
-                        maxNumFragmentsRequired,
-                        fragmentSeparator);
-                    excerpt = excerpt.replaceAll("[\\t\\n\\x0B\\f\\r]", "");
-
-                } else {
-
-                    excerpt = rawContent.replaceAll("[\\t\\n\\x0B\\f\\r]", "");
-                }
+                excerpt = highlighter.getBestFragments(
+                    rawContent,
+                    highlightFragmentSizeInBytes,
+                    maxNumFragmentsRequired,
+                    fragmentSeparator);
+                excerpt = excerpt.replaceAll("[\\t\\n\\x0B\\f\\r]", " ");
 
                 if (excerpt != null && excerpt.length() > maxExcerptLength) {
                     excerpt = excerpt.substring(0, maxExcerptLength);

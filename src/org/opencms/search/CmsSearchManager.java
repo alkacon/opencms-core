@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2005/03/23 19:08:23 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2005/03/23 22:09:06 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.lucene.index.IndexWriter;
  * Implements the general management and configuration of the search and 
  * indexing facilities in OpenCms.<p>
  * 
- * @version $Revision: 1.33 $ $Date: 2005/03/23 19:08:23 $
+ * @version $Revision: 1.34 $ $Date: 2005/03/23 22:09:06 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -645,9 +645,11 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     try {
                         writer.close();
                     } catch (IOException e) {
-                        // noop
+                        if (OpenCms.getLog(this).isDebugEnabled()) {
+                            OpenCms.getLog(this).debug("Unable to close index writer", e);
+                        }
                     }
-                }
+                }                
 
                 // switch back to the original project
                 context.setCurrentProject(currentProject);

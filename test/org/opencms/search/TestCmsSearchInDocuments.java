@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearchInDocuments.java,v $
- * Date   : $Date: 2005/03/23 19:08:23 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/03/23 22:09:06 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,7 @@ import org.opencms.test.OpenCmsTestProperties;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import junit.extensions.TestSetup;
@@ -54,12 +55,15 @@ import junit.framework.TestSuite;
  * Unit test for searching in extracted document text.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class TestCmsSearchInDocuments extends OpenCmsTestCase {
 
     /** Name of the index used for testing. */
-    public static final String C_TEST_INDEX = "Offline project (VFS)";
+    public static final String INDEX_OFFLINE = "Offline project (VFS)";
+    
+    /** The index used for testing. */
+    public static final String INDEX_ONLINE = "Online project (VFS)";
 
     /**
      * Default JUnit constructor.<p>
@@ -85,6 +89,7 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
 
         suite.addTest(new TestCmsSearchInDocuments("testSearchIndexGeneration"));
         suite.addTest(new TestCmsSearchInDocuments("testSearchInDocuments"));
+        suite.addTest(new TestCmsSearchInDocuments("testSearchBoost"));
         
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -174,9 +179,6 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
         assertTrue(cms.existsResource("/search/test1.ppt"));        
     }
     
-    /** The index used for testing. */
-    public static final String TEST_INDEX = "Online project (VFS)";
-    
     /**
      * Tests searching in the VFS for specific Strings that are placed in 
      * various document formats.<p>
@@ -190,13 +192,13 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
         
         // perform a search on the newly generated index
         CmsSearch searchBean = new CmsSearch();
-        List searchResult;
+        List searchResult;               
 
         // count depend on the number of documents indexed
         int expected = 6;
         
         searchBean.init(cms);
-        searchBean.setIndex(TEST_INDEX);
+        searchBean.setIndex(INDEX_ONLINE);
         searchBean.setSearchRoot("/search/");
 
         searchBean.setQuery("Alkacon Software");
@@ -226,5 +228,89 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
         searchBean.setQuery("‰ˆ¸ƒ÷‹ﬂ");
         searchResult = searchBean.getSearchResult();
         assertEquals(expected, searchResult.size());
+    }
+    
+    /**
+     * Tests search boosting.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testSearchBoost() throws Exception {
+        
+        CmsObject cms = getCmsObject();
+        echo("Testing search boosting");        
+        
+        // perform a search on the newly generated index
+        CmsSearch searchBean = new CmsSearch();
+        List searchResult;               
+
+        // count depend on the number of documents indexed
+        int expected = 6;
+        
+        searchBean.init(cms);
+        searchBean.setIndex(INDEX_OFFLINE);
+        searchBean.setSearchRoot("/search/");
+        
+        searchBean.setQuery("Alkacon Software");
+        searchResult = searchBean.getSearchResult();
+        assertEquals(expected, searchResult.size());
+        
+        Iterator i = searchResult.iterator();
+        while (i.hasNext()) {
+            CmsSearchResult res = (CmsSearchResult)i.next();
+            System.out.println(res.getPath());            
+        }
+        
+        CmsSearchResult res1 = (CmsSearchResult)searchResult.get(searchResult.size()-1);
+        CmsSearchResult res2 = (CmsSearchResult)searchResult.get(searchResult.size()-2);
+        
+        String path1 = cms.getRequestContext().removeSiteRoot(res1.getPath());
+        String path2 = cms.getRequestContext().removeSiteRoot(res2.getPath());
+        
+        CmsProperty maxBoost = new CmsProperty(I_CmsConstants.C_PROPERTY_SEARCH_PRIORITY, CmsSearchIndex.SEARCH_BOOST_MAX_VALUE, null, true);
+        CmsProperty highBoost = new CmsProperty(I_CmsConstants.C_PROPERTY_SEARCH_PRIORITY, CmsSearchIndex.SEARCH_BOOST_HIGH_VALUE, null, true);
+
+        
+        cms.lockResource(path1);
+        cms.writePropertyObject(path1, maxBoost);
+        cms.unlockResource(path1);
+        cms.lockResource(path2);
+        cms.writePropertyObject(path2, highBoost);
+        cms.unlockResource(path2);      
+        
+        // update the search indexes
+        OpenCms.getSearchManager().updateIndex(new CmsShellReport());        
+        
+        // perform the same search again in the online index - must be same result as before
+        searchBean.setIndex(INDEX_ONLINE);        
+        searchBean.setQuery("Alkacon Software");
+        searchResult = searchBean.getSearchResult();
+        assertEquals(expected, searchResult.size());
+        
+        assertEquals(expected, searchResult.size());
+        i = searchResult.iterator();
+        while (i.hasNext()) {
+            CmsSearchResult res = (CmsSearchResult)i.next();
+            System.out.println(res.getPath());            
+        }
+        
+        assertTrue(((CmsSearchResult)searchResult.get(searchResult.size()-1)).getPath().equals(res1.getPath()));
+        assertTrue(((CmsSearchResult)searchResult.get(searchResult.size()-2)).getPath().equals(res2.getPath()));
+        
+        // now the search in the offline index - the boosted docs should now be on top
+        searchBean.setIndex(INDEX_OFFLINE);        
+        searchBean.setQuery("Alkacon Software");
+        searchResult = searchBean.getSearchResult();
+        
+        assertEquals(expected, searchResult.size());
+        i = searchResult.iterator();
+        while (i.hasNext()) {
+            CmsSearchResult res = (CmsSearchResult)i.next();
+            System.out.println(res.getPath());            
+        }
+        
+        // ensure boosted results are on top
+        assertTrue(((CmsSearchResult)searchResult.get(0)).getPath().equals(res1.getPath()));
+        assertTrue(((CmsSearchResult)searchResult.get(1)).getPath().equals(res2.getPath()));
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsVfsDocument.java,v $
- * Date   : $Date: 2005/03/23 19:08:22 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/03/23 22:09:06 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.lucene.document.Field;
  * Lucene document factory class to extract index data from a vfs resource 
  * of any type derived from <code>CmsResource</code>.<p>
  * 
- * @version $Revision: 1.17 $ $Date: 2005/03/23 19:08:22 $
+ * @version $Revision: 1.18 $ $Date: 2005/03/23 22:09:06 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsVfsDocument implements I_CmsDocumentFactory {
@@ -77,6 +77,24 @@ public class CmsVfsDocument implements I_CmsDocumentFactory {
     public CmsVfsDocument(String name) {
 
         m_name = name;
+    }
+
+    /**
+     * Returns the raw text content of a vfs resource.<p>
+     * 
+     * @param cms the cms object 
+     * @param resource the resource
+     * @param language the language requested
+     * @return the raw text content
+     * @throws CmsException if something goes wrong
+     */
+    public I_CmsExtractionResult extractContent(CmsObject cms, A_CmsIndexResource resource, String language) throws CmsException {
+
+        if (resource == null) {
+            throw new CmsIndexException("Can not get raw content for language " + language + " from a 'null' resource");
+        }
+        // just return an empty result set
+        return new CmsExtractionResult("");
     }
 
     /**
@@ -134,24 +152,6 @@ public class CmsVfsDocument implements I_CmsDocumentFactory {
     }
 
     /**
-     * Returns the raw text content of a vfs resource.<p>
-     * 
-     * @param cms the cms object 
-     * @param resource the resource
-     * @param language the language requested
-     * @return the raw text content
-     * @throws CmsException if something goes wrong
-     */
-    public I_CmsExtractionResult extractContent(CmsObject cms, A_CmsIndexResource resource, String language) throws CmsException {
-
-        if (resource == null) {
-            throw new CmsIndexException("Can not get raw content for language " + language + " from a 'null' resource");
-        }
-        // just return an empty result set
-        return new CmsExtractionResult("");
-    }
-
-    /**
      * Generates a new lucene document instance from contents of the given resource.<p>
      * 
      * @see org.opencms.search.documents.I_CmsDocumentFactory#newInstance(org.opencms.file.CmsObject, org.opencms.search.A_CmsIndexResource, java.lang.String)
@@ -164,7 +164,7 @@ public class CmsVfsDocument implements I_CmsDocumentFactory {
         String value;
 
         StringBuffer meta = new StringBuffer(512);
-
+       
         if ((value = cms.readPropertyObject(path, I_CmsConstants.C_PROPERTY_TITLE, false).getValue()) != null) {
             document.add(Field.Text(I_CmsDocumentFactory.DOC_TITLE, value));
             meta.append(value);
@@ -183,6 +183,17 @@ public class CmsVfsDocument implements I_CmsDocumentFactory {
             meta.append(value);
             meta.append(" ");
         }
+        if ((value = cms.readPropertyObject(path, I_CmsConstants.C_PROPERTY_SEARCH_PRIORITY, true).getValue()) != null) {            
+            if (value.indexOf(CmsSearchIndex.SEARCH_BOOST_MAX_VALUE) > -1) {
+                meta.append(CmsSearchIndex.SEARCH_BOOST_PREFIX);
+                meta.append(CmsSearchIndex.SEARCH_BOOST_MAX_VALUE);
+                meta.append(" ");
+            } else if (value.indexOf(CmsSearchIndex.SEARCH_BOOST_HIGH_VALUE) > -1) {
+                meta.append(CmsSearchIndex.SEARCH_BOOST_PREFIX);
+                meta.append(CmsSearchIndex.SEARCH_BOOST_HIGH_VALUE);
+                meta.append(" ");
+            }
+        } 
 
         String rootPath = CmsSearchIndex.rewriteResourcePath(resource.getRootPath(), false);
         document.add(Field.UnStored(I_CmsDocumentFactory.DOC_ROOT, rootPath));

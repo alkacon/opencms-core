@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2005/03/19 13:58:20 $
- * Version: $Revision: 1.113 $
+ * Date   : $Date: 2005/03/23 22:09:06 $
+ * Version: $Revision: 1.114 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import java.util.Map;
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.113 $
+ * @version $Revision: 1.114 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -2450,8 +2450,8 @@ public class CmsObject {
      * 
      * @param resourcePath the name of resource where the property is attached to
      * @param property the property name
-     * @param search if true, the property is searched on all parent folders of the resource. 
-     *      if it's not found attached directly to the resource.
+     * @param search if true, the property is searched on all parent folders of the resource, 
+     *      if it's not found attached directly to the resource
      * 
      * @return the required property, or <code>{@link CmsProperty#getNullProperty()}</code> if the property was not found
      * 
