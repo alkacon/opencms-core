@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/importexport/TestCmsImport.java,v $
- * Date   : $Date: 2004/08/10 15:42:43 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/10/14 08:25:51 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,8 @@ import junit.framework.TestCase;
 
 /**
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @author Carsten Weinholz (c.weinholz@alkacon.com)
+ * @version $Revision: 1.3 $
  * 
  * @since 5.0
  */
@@ -115,4 +116,34 @@ public class TestCmsImport extends TestCase {
         assertEquals(content, result);           
     }
 
+    /**
+     * Runs a test for the conversion of the digest encoding.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testConvertDigestEncoding() throws Throwable {
+        
+        A_CmsImport imp = new CmsImportVersion4();
+        String result;
+        
+        // test 'password'
+        result = imp.convertDigestEncoding("dfcd4cbbda27e5569d03a75e38024f19");
+        assertEquals(result, "X03MO1qnZdYdgyfeuILPmQ==");
+        
+        // test 'admin'
+        result = imp.convertDigestEncoding("a1a3afa9fad72527c309ca8eca009f43");
+        assertEquals(result, "ISMvKXpXpadDiUoOSoAfww==");
+        
+        // test 'test'
+        result = imp.convertDigestEncoding("890feb4dc6a153f34a5ece03a6a73476");
+        assertEquals(result, "CY9rzUYh03PK3k6DJie09g==");
+        
+        // test '12345678901234567890'
+        result = imp.convertDigestEncoding("7d0566ad1b6bc5c207f16ce8049832f1");
+        assertEquals(result, "/YXmLZvrRUKHcexohBiycQ==");
+        
+        // test 'undnocheins'
+        result = imp.convertDigestEncoding("7fd2de3ccff5567c2fc64fe744283452");
+        assertEquals(result, "/1JevE911vyvRs9nxKi00g==");    
+    }
 }
