@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2003/09/25 16:07:45 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2003/09/26 16:00:00 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -90,7 +90,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * @since 5.1
  */
 public class OpenCmsCore {
@@ -943,21 +943,27 @@ public class OpenCmsCore {
             // session exists, try to reuse the user from the session
             user = m_sessionStorage.getUserName(session.getId());
         }
+
+        // initialize the requested site root
+        CmsSite site = getSiteManager().matchRequest(req);
                    
         if (user != null) {
             // a user name is found in the session, reuse this user
             Integer project = m_sessionStorage.getCurrentProject(session.getId());
-            // initialize the requested site root from session if available
-            String siteroot = m_sessionStorage.getCurrentSite(session.getId());
+
+            // initialize site root from request
+            String siteroot = null;
+            // a dedicated workplace site is configured
+            if ((getSiteManager().getWorkplaceSite().equals(site.getSiteMatcher()))) {
+                // if no dedicated workplace site is configured, 
+                // or for the dedicated workplace site, use the site root from the session attribute
+                siteroot = m_sessionStorage.getCurrentSite(session.getId());
+            }
             if (siteroot == null) {
-                // initialize site root from request
-                CmsSite site = OpenCms.getSiteManager().matchRequest(req);
                 siteroot = site.getSiteRoot();
-            }        
+            }             
             cms = initCmsObject(cmsReq, cmsRes, user, siteroot, project.intValue(), m_sessionStorage);
         } else {
-            // initialize the requested site root
-            CmsSite site = OpenCms.getSiteManager().matchRequest(req);
             // no user name found in session or no session, login the user as guest user
             cms = initCmsObject(cmsReq, cmsRes, OpenCms.getDefaultUsers().getUserGuest(), site.getSiteRoot(), I_CmsConstants.C_PROJECT_ONLINE_ID, null);            
             if (m_useBasicAuthentication) {
@@ -1405,10 +1411,7 @@ public class OpenCmsCore {
                 getLog(CmsLog.CHANNEL_INIT).warn(". Property dialog class: non-critical error " + e.toString());
             }   
         }
-        
-        // initialize the site manager
-        m_siteManager = CmsSiteManager.initialize(conf);        
-        
+                
         // read old (proprietary XML-style) locale backward compatibily support flag
         Boolean supportOldLocales = conf.getBoolean("compatibility.support.oldlocales", new Boolean(false));
         setRuntimeProperty("compatibility.support.oldlocales", supportOldLocales);
@@ -1467,6 +1470,11 @@ public class OpenCmsCore {
             getLog(CmsLog.CHANNEL_INIT).info(". Old context support  : " + ((webAppNames.size() > 0) ? "enabled" : "disabled"));
         }
         setRuntimeProperty("compatibility.support.webAppNames", webAppNames);
+
+        // get a Admin cms context object
+        CmsObject adminCms = initCmsObject(null, null, getDefaultUsers().getUserAdmin(), null);
+        // initialize the site manager
+        m_siteManager = CmsSiteManager.initialize(conf, adminCms);        
 
         // site folders for which links should be labeled specially in the explorer
         String[] labelSiteFolderString = conf.getStringArray("site.labeled.folders");

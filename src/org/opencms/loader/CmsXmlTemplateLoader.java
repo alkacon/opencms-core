@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2003/09/19 14:42:53 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2003/09/26 16:00:00 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  */
 public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
     
@@ -635,10 +635,10 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
         // check all values to be valid
         String errorMessage = null;
         if (file == null) {
-            errorMessage = "Got \"null\" CmsFile object. :-(";
+            errorMessage = "CmsFile missing";
         }
         if (cms == null) {
-            errorMessage = "Actual cms object missing";
+            errorMessage = "CmsObject missing";
         }
         if (errorMessage != null) {
             if (OpenCms.getLog(this).isErrorEnabled()) {

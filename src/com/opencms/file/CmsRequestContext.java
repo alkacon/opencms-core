@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
- * Date   : $Date: 2003/09/24 14:19:24 $
- * Version: $Revision: 1.102 $
+ * Date   : $Date: 2003/09/26 16:00:00 $
+ * Version: $Revision: 1.103 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.http.HttpSession;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  *
- * @version $Revision: 1.102 $
+ * @version $Revision: 1.103 $
  */
 public class CmsRequestContext {
 
@@ -128,7 +128,11 @@ public class CmsRequestContext {
         m_updateSession = true;
         m_language = new Vector();
         m_savedSiteRoot = null;
-        m_siteRoot = OpenCms.getSiteManager().getDefaultSite().getSiteRoot();
+        if ((OpenCms.getSiteManager() != null) && (OpenCms.getSiteManager().getDefaultSite() != null)) { 
+            m_siteRoot = OpenCms.getSiteManager().getDefaultSite().getSiteRoot();
+        } else {
+            setSiteRoot("/");
+        }
     }
 
     /**

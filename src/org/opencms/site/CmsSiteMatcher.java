@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteMatcher.java,v $
- * Date   : $Date: 2003/09/12 10:01:53 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/09/26 16:00:00 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ package org.opencms.site;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.1
  */
 public final class CmsSiteMatcher implements Cloneable {   
@@ -225,8 +225,9 @@ public final class CmsSiteMatcher implements Cloneable {
         if ((o == null) || !(o instanceof CmsSiteMatcher)) return false;
         // if one of the object is the default matcher the result is true
         if ((this == C_DEFAULT_MATCHER) || (o == C_DEFAULT_MATCHER)) return true;
-        
-        CmsSiteMatcher matcher = (CmsSiteMatcher)o;                
+        if (o == this) return true;        
+
+        CmsSiteMatcher matcher = (CmsSiteMatcher)o;            
         if (getServerPort() != matcher.getServerPort()) {
             return false;
         }                

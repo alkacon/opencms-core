@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManager.java,v $
- * Date   : $Date: 2003/09/25 16:07:45 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2003/09/26 16:00:00 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * @since 5.1
  */
 public final class CmsSiteManager implements Cloneable {
@@ -67,13 +67,18 @@ public final class CmsSiteManager implements Cloneable {
     /** The list of configured site roots */
     private HashMap m_sites;
     
+    /** The site where the workplace is accessed through */
+    private CmsSiteMatcher m_workplaceSite;
+    
     /**
      * Creates a new site manager.<p>
      * 
+     * @param cms an OpenCms context object that must have been initialized with "Admin" permissions
      * @param siteRoots the array of configured site roots (usually read from the configuration file)
      * @param siteDefault the default site, if null no default site is used
+     * @param siteWorkplace the workplace site, if null no special workplace site is used
      */
-    public CmsSiteManager(String[] siteRoots, String siteDefault) {
+    public CmsSiteManager(CmsObject cms, String[] siteRoots, String siteDefault, String siteWorkplace) {
                 
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Site roots configured: " + (siteRoots.length + ((siteDefault!=null)?1:0)));
@@ -82,46 +87,43 @@ public final class CmsSiteManager implements Cloneable {
         m_sites = new HashMap(siteRoots.length);        
         
         for (int i=0; i<siteRoots.length; i++) {
-            int pos = siteRoots[i].indexOf('|'); 
-
-            // check if this is a vailid site root entry
-            if (pos < 0) {
-                // entry must have a "|" in the string
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error("Site root init error : malformed entry " + siteRoots[i]);
+    
+            CmsSite site = parseSite(siteRoots[i]); 
+            if (site != null) {       
+                try {
+                    cms.readFileHeader(site.getSiteRoot());
+                } catch (Throwable t) {
+                    if (OpenCms.getLog(this).isErrorEnabled()) {
+                        OpenCms.getLog(this).error("Error initializing site " + site + " (ignoring this site entry)", t);
+                    }
                 }
-                continue;
-            }
-
-            String matcherStr = siteRoots[i].substring(0, pos);
-            String rootStr = siteRoots[i].substring(pos + 1);
+                m_sites.put(site.getSiteMatcher(), site);
             
-            if ((matcherStr.length() == 0) || (rootStr.length() == 0)) {
-                // both matcher and root must not be empty
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error("Site root init error : malformed entry " + siteRoots[i]);
+                if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                    OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Site root added      : " + site.toString());
                 }
-                continue;
-            }            
-            
-            // TODO: check if found site root VFS resource actually exists (needs a CmsObject)            
-            CmsSiteMatcher matcher = new CmsSiteMatcher(matcherStr);
-            CmsSite site = new CmsSite(rootStr, matcher);
-            m_sites.put(matcher, site);
-            
-            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Site root added      : " + site.toString());
             }
         }
-        // TODO: check if default site root VFS resource actually exists (needs a CmsObject)
         if ((siteDefault == null) || "".equals(siteDefault.trim())) {
             m_defaultSite = null;
         } else {            
             m_defaultSite = new CmsSite(siteDefault, CmsSiteMatcher.C_DEFAULT_MATCHER);
+            try {
+                cms.readFileHeader(m_defaultSite.getSiteRoot());
+            } catch (Throwable t) {
+                if (OpenCms.getLog(this).isErrorEnabled()) {
+                    OpenCms.getLog(this).error("Error initializing default site " + m_defaultSite + " (setting default site to null)", t);
+                }
+                m_defaultSite = null;
+            }
         } 
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Site root default    : " + m_defaultSite);
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Site root default    : " + (m_defaultSite!=null?"" + m_defaultSite: "(not configured)"));
         }
+        m_workplaceSite = new CmsSiteMatcher(siteWorkplace);
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Site of workplace    : " + (m_workplaceSite!=null?"" + m_workplaceSite: "(not configured)"));
+        }        
     }
     
     /**
@@ -222,24 +224,25 @@ public final class CmsSiteManager implements Cloneable {
      * Initializes the site manager with the OpenCms system configuration.<p>
      * 
      * @param conf the OpenCms configuration
+     * @param cms an OpenCms context object that must have been initialized with "Admin" permissions
      * @return the initialized site manager
      */
-    public static CmsSiteManager initialize(Configurations conf) {
-        String[] siteRoots;
-        String siteDefault;
-        
+    public static CmsSiteManager initialize(Configurations conf, CmsObject cms) {        
         // try to initialize the site root list from the configuration
-        siteRoots = conf.getStringArray("site.root.list");            
+        String[] siteRoots = conf.getStringArray("site.root.list");            
         if (siteRoots == null) {
             // if no site root list is defined we use only the site root default
             siteRoots = new String[0];
         }
 
         // read the site root default from the configuration 
-        siteDefault = conf.getString("site.root.default");            
+        String siteDefault = conf.getString("site.root.default");            
+
+        // read the workplace site from the configuration 
+        String siteWorkplace = conf.getString("site.workplace");            
         
         // create ad return the site manager 
-        return new CmsSiteManager(siteRoots, siteDefault);
+        return new CmsSiteManager(cms, siteRoots, siteDefault, siteWorkplace);
     }
     
     /**
@@ -259,6 +262,15 @@ public final class CmsSiteManager implements Cloneable {
     public Map getSiteList() {
         return m_sites;
     }
+
+    /**
+     * Returns the site where the workplace is accessed through.<p>
+     * 
+     * @return the site where the workplace is accessed through
+     */
+    public CmsSiteMatcher getWorkplaceSite() {
+        return m_workplaceSite;
+    }   
     
     /**
      * Matches the given request against all configures sites and returns 
@@ -275,6 +287,42 @@ public final class CmsSiteManager implements Cloneable {
             site = m_defaultSite;
         }
         return site;
+    }
+    
+    /**
+     * Creates a CmsSite object from a string in the configuration properties file.<p>
+     * 
+     * @param siteStr the String to parse 
+     * @return the CmsSite object that matches the given site String
+     */
+    private CmsSite parseSite(String siteStr) {
+        if (siteStr == null) {
+            return null;
+        }
+        int pos = siteStr.indexOf('|'); 
+
+        // check if this is a vailid site root entry
+        if (pos < 0) {
+            // entry must have a "|" in the string
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error("Site root init error : malformed entry " + siteStr);
+            }
+            return null;
+        }
+
+        String matcherStr = siteStr.substring(0, pos);
+        String rootStr = siteStr.substring(pos + 1);
+            
+        if ((matcherStr.length() == 0) || (rootStr.length() == 0)) {
+            // both matcher and root must not be empty
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error("Site root init error : malformed entry " + siteStr);
+            }
+            return null;
+        }            
+            
+        CmsSiteMatcher matcher = new CmsSiteMatcher(matcherStr);
+        return new CmsSite(rootStr, matcher);      
     }
     
 }

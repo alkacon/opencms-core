@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSite.java,v $
- * Date   : $Date: 2003/09/25 10:47:48 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/09/26 16:00:00 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,13 +38,16 @@ import org.opencms.util.CmsUUID;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.1
  */
 public final class CmsSite implements Cloneable {   
 
     /** Name of the property to use for defining directories as site roots */
     public static final String C_PROPERTY_SITE = "siteroot";
+    
+    /** The site matcher that describes the site */ 
+    private CmsSiteMatcher m_siteMatcher;
 
     /** Root directory of this site in the OpenCms VFS */
     private String m_siteRoot;
@@ -54,23 +57,12 @@ public final class CmsSite implements Cloneable {
 
     /** Display title of this site */    
     private String m_title;
-    
-    /** The site matcher that describes the site */ 
-    private CmsSiteMatcher m_siteMatcher;
 
     /**
-     * Constructs a new site object.<p>
-     * 
-     * @param siteRoot root directory of this site in the OpenCms VFS
-     * @param siteRootUUID UUID of this site's root directory in the OpenCms VFS
-     * @param title display name of this site
-     * @param siteMatcher the site matcher for this site
+     * Hides the public default constructor.<p>
      */
-    public CmsSite(String siteRoot, CmsUUID siteRootUUID, String title, CmsSiteMatcher siteMatcher) {
-        setSiteRoot(siteRoot);
-        setSiteRootUUID(siteRootUUID);
-        setTitle(title);
-        setSiteMatcher(siteMatcher);
+    private CmsSite() {
+        // NOOP
     }
 
     /**
@@ -97,21 +89,40 @@ public final class CmsSite implements Cloneable {
     }    
 
     /**
-     * Returns the root directory of this site in the OpenCms VFS.<p>
+     * Constructs a new site object.<p>
      * 
-     * @return the root directory of this site in the OpenCms VFS
+     * @param siteRoot root directory of this site in the OpenCms VFS
+     * @param siteRootUUID UUID of this site's root directory in the OpenCms VFS
+     * @param title display name of this site
+     * @param siteMatcher the site matcher for this site
      */
-    public String getTitle() {
-        return m_title;
+    public CmsSite(String siteRoot, CmsUUID siteRootUUID, String title, CmsSiteMatcher siteMatcher) {
+        setSiteRoot(siteRoot);
+        setSiteRootUUID(siteRootUUID);
+        setTitle(title);
+        setSiteMatcher(siteMatcher);
     }
-
+    
     /**
-     * Sets the root directory of this site in the OpenCms VFS
+     * Returns a clone of this Objects instance.<p>
      * 
-     * @param name the root directory of this site in the OpenCms VFS
+     * @return a clone of this instance
      */
-    protected void setTitle(String name) {
-        m_title = name;
+    public Object clone() {
+        return new CmsSite(
+            getSiteRoot(), 
+            (CmsUUID)getSiteRootUUID().clone(), 
+            getTitle(), 
+            (CmsSiteMatcher)getSiteMatcher().clone()
+        );
+    }
+    
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    public boolean equals(Object o) {
+        if ((o == null) || !(o instanceof CmsSite)) return false;        
+        return getSiteMatcher().equals(((CmsSite)o).getSiteMatcher());        
     }
 
     /**
@@ -124,21 +135,46 @@ public final class CmsSite implements Cloneable {
     }
 
     /**
-     * Sets the site matcher that describes the URL of this site.<p>
-     * 
-     * @param siteMatcher the site matcher that describes the URL of this site
-     */
-    protected void setSiteMatcher(CmsSiteMatcher siteMatcher) {
-        m_siteMatcher = siteMatcher;
-    }
-
-    /**
      * Returns the server URL prefix to which this site is mapped.<p>
      * 
      * @return the server URL prefix to which this site is mapped
      */
     public String getSiteRoot() {
         return m_siteRoot;
+    }
+
+    /**
+     * Returns the UUID of this site's root directory in the OpenCms VFS.<p>
+     * 
+     * @return the UUID of this site's root directory in the OpenCms VFS
+     */
+    public CmsUUID getSiteRootUUID() {
+        return m_siteRootUUID;
+    }
+
+    /**
+     * Returns the root directory of this site in the OpenCms VFS.<p>
+     * 
+     * @return the root directory of this site in the OpenCms VFS
+     */
+    public String getTitle() {
+        return m_title;
+    }
+    
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+        return m_siteRootUUID.hashCode();
+    }
+
+    /**
+     * Sets the site matcher that describes the URL of this site.<p>
+     * 
+     * @param siteMatcher the site matcher that describes the URL of this site
+     */
+    protected void setSiteMatcher(CmsSiteMatcher siteMatcher) {
+        m_siteMatcher = siteMatcher;
     }
 
     /**
@@ -156,15 +192,6 @@ public final class CmsSite implements Cloneable {
     }
 
     /**
-     * Returns the UUID of this site's root directory in the OpenCms VFS.<p>
-     * 
-     * @return the UUID of this site's root directory in the OpenCms VFS
-     */
-    public CmsUUID getSiteRootUUID() {
-        return m_siteRootUUID;
-    }
-
-    /**
      * Sets the UUID of this site's root directory in the OpenCms VFS.<p>
      * 
      * @param siteRootUUID the UUID of this site's root directory in the OpenCms VFS
@@ -172,19 +199,14 @@ public final class CmsSite implements Cloneable {
     protected void setSiteRootUUID(CmsUUID siteRootUUID) {
         m_siteRootUUID = siteRootUUID;
     }
-    
+
     /**
-     * Returns a clone of this Objects instance.<p>
+     * Sets the root directory of this site in the OpenCms VFS
      * 
-     * @return a clone of this instance
+     * @param name the root directory of this site in the OpenCms VFS
      */
-    public Object clone() {
-        return new CmsSite(
-            getSiteRoot(), 
-            (CmsUUID)getSiteRootUUID().clone(), 
-            getTitle(), 
-            (CmsSiteMatcher)getSiteMatcher().clone()
-        );
+    protected void setTitle(String name) {
+        m_title = name;
     }
     
     /**
