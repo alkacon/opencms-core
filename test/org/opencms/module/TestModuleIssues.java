@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/module/TestModuleIssues.java,v $
- * Date   : $Date: 2004/08/10 15:42:43 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/11/15 09:46:23 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class TestModuleIssues extends OpenCmsTestCase {
   
@@ -71,6 +71,9 @@ public class TestModuleIssues extends OpenCmsTestCase {
                 
         suite.addTest(new TestModuleIssues("testAdditionalSystemFolder"));
         
+        // important: this must be the last called method since the OpenCms installation is removed from there
+        suite.addTest(new TestModuleIssues("testShutdownMethod"));
+        
         TestSetup wrapper = new TestSetup(suite) {
             
             protected void setUp() {
@@ -78,7 +81,8 @@ public class TestModuleIssues extends OpenCmsTestCase {
             }
             
             protected void tearDown() {
-                removeOpenCms();
+                // done in "testShutdownMethod"
+                // removeOpenCms();
             }
         };
         
@@ -117,4 +121,40 @@ public class TestModuleIssues extends OpenCmsTestCase {
             fail("Additional 'system' folder was created!");
         }
     }  
+    
+    /**
+     * Issue: Sthudown method never called on module.<p>
+     * 
+     * @throws Exception if something goews wrong
+     */
+    public void testShutdownMethod() throws Exception {
+        
+        echo("Testing module shutdown method");
+              
+        String moduleName = "org.opencms.configuration.TestModule1";
+        
+        // basic check if the module was imported correctly (during configuration)
+        if (! OpenCms.getModuleManager().hasModule(moduleName)) {
+            fail("Module '" + moduleName + "' was not imported!");
+        }
+        
+        I_CmsModuleAction actionInstance = OpenCms.getModuleManager().getActionInstance(moduleName);
+        
+        if (actionInstance == null) {
+            fail("Module '" + moduleName + "' has no action instance!");            
+        }
+
+        if (! (actionInstance instanceof TestModuleActionImpl)) {
+            fail("Module '" + moduleName + "' has action class of unexpected type!");                        
+        } 
+        
+        // remove OpenCms installations, must call shutdown
+        removeOpenCms();
+        
+        // check if shutdown flag was set to "true"
+        assertTrue(TestModuleActionImpl.m_shutDown);   
+        
+        // reset flag for next test
+        TestModuleActionImpl.m_shutDown = false;
+    }
 }

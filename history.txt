@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/11/11 13:10:09 $
- * Version: $Revision: 1.588 $
+ * Date   : $Date: 2004/11/15 09:46:23 $
+ * Version: $Revision: 1.589 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,8 @@ OpenCms 5.x.x Caladan - xxx, 2004
 * Fixed issue with HTML comments in editor causing invalid HTML documents
 ! First draft version of cascaded (nested) XML content definitions
 ! Added GUI to modify property values and delete definitions in Administration view
+* Fixed issue with shutDown() method of modules not being called
+- Improved DB performance on MySQL after heavy testing
 
 OpenCms 5.5.3 Caladan (aka 6.0 alpha 2) - October 26, 2004
 ! Added 'templateone' default module as an extended template demo

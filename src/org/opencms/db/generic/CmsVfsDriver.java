@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/11/12 17:44:20 $
- * Version: $Revision: 1.216 $
+ * Date   : $Date: 2004/11/15 09:46:23 $
+ * Version: $Revision: 1.217 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.216 $ $Date: 2004/11/12 17:44:20 $
+ * @version $Revision: 1.217 $ $Date: 2004/11/15 09:46:23 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -1100,17 +1100,16 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
 
         List result = new ArrayList();
         
-        String query, order;
         StringBuffer conditions = new StringBuffer();
         List params = new ArrayList(5);
         
         // prepare the selection criteria
         prepareProjectCondition(projectId, mode, conditions, params);
         prepareResourceCondition(projectId, mode, conditions);
-        preparePathCondition(projectId, parentPath, mode, conditions, params);
         prepareTypeCondition(projectId, type, mode, conditions, params);
-        prepareStateCondition(projectId, state, mode, conditions, params);
         prepareTimeRangeCondition(projectId, startTime, endTime, conditions, params);
+        preparePathCondition(projectId, parentPath, mode, conditions, params);
+        prepareStateCondition(projectId, state, mode, conditions, params);
 
         // now read matching resources within the subtree 
         ResultSet res = null;
@@ -1119,8 +1118,8 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
 
         try {
             conn = m_sqlManager.getConnection();
-            query = m_sqlManager.readQuery(projectId, "C_RESOURCES_READ_TREE");
-            order = m_sqlManager.readQuery(projectId, "C_RESOURCES_ORDER_BY_PATH");
+            String query = m_sqlManager.readQuery(projectId, "C_RESOURCES_READ_TREE");
+            String order = m_sqlManager.readQuery(projectId, "C_RESOURCES_ORDER_BY_PATH");
             stmt = m_sqlManager.getPreparedStatementForSql(conn, query + conditions + order);
             
             for (int i = 0; i < params.size(); i++) {
@@ -1186,7 +1185,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
      * @param params list to append the selection params
      */
     private void preparePathCondition(int projectId, String parentPath, int mode, StringBuffer conditions, List params) {
-        if (parentPath != I_CmsConstants.C_READ_IGNORE_PARENT) {
+        if ((parentPath != I_CmsConstants.C_READ_IGNORE_PARENT) && !"/".equals(parentPath)) {
             // C_READ_IGNORE_PARENT: if NOT set, add condition to match the parent path as prefix of RESOURCE_PATH
             conditions.append(C_BEGIN_INCLUDE_CONDITION);
             conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_BY_PATH_PREFIX"));
@@ -1365,9 +1364,9 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     
     
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#readResources(int, java.lang.String)
+     * @see org.opencms.db.I_CmsVfsDriver#readResourcesWithProperty(int, CmsUUID)
      */
-    public List readResources(int projectId, String propertyDefName) throws CmsException {
+    public List readResourcesWithProperty(int projectId, CmsUUID propertyDef) throws CmsException {
         List resources = new ArrayList();
         ResultSet res = null;
         PreparedStatement stmt = null;
@@ -1376,10 +1375,8 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         try {
             conn = m_sqlManager.getConnection(projectId);
             stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_GET_RESOURCE_WITH_PROPERTYDEF");
-            stmt.setString(1, propertyDefName);
-            stmt.setInt(2, CmsProperty.C_STRUCTURE_RECORD_MAPPING);
-            stmt.setInt(3, CmsProperty.C_RESOURCE_RECORD_MAPPING);
-            res = stmt.executeQuery();
+            stmt.setString(1, propertyDef.toString());
+            res = stmt.executeQuery();  
 
             while (res.next()) {
                 CmsResource resource = createResource(res, projectId);

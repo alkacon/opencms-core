@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/Attic/TestProperyDefinition.java,v $
- * Date   : $Date: 2004/11/12 17:31:49 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/11/15 09:46:23 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.file;
 
 import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.util.CmsUUID;
 
@@ -46,7 +47,7 @@ import junit.framework.TestSuite;
  * "readAllPropertyDefintions" methods of the CmsObject.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class TestProperyDefinition extends OpenCmsTestCase {
 
@@ -72,7 +73,8 @@ public class TestProperyDefinition extends OpenCmsTestCase {
 
         suite.addTest(new TestProperyDefinition("testCreatePropertyDefinition"));
         suite.addTest(new TestProperyDefinition("testCreateReadDeletePropertyDefinition"));
-
+        suite.addTest(new TestProperyDefinition("testGetResourcesWithProperty"));
+        
         TestSetup wrapper = new TestSetup(suite) {
 
             protected void setUp() {
@@ -88,7 +90,7 @@ public class TestProperyDefinition extends OpenCmsTestCase {
 
         return wrapper;
     }
-
+    
     /**
      * Test the createPropertyDefintion method.<p>
      * @param tc the OpenCmsTestCase
@@ -240,4 +242,21 @@ public class TestProperyDefinition extends OpenCmsTestCase {
         
     }
 
+    /**
+     * Tests reading all resources that have a specific property definition set.<p>
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public void testGetResourcesWithProperty() throws Exception {
+        
+        echo("Testing reading all resources with a specific property");        
+        CmsObject cms = getCmsObject();
+        List result;
+        
+        result = cms.readResourcesWithProperty(I_CmsConstants.C_PROPERTY_TITLE);
+        assertEquals(56, result.size());
+        result = cms.readResourcesWithProperty(I_CmsConstants.C_PROPERTY_TEMPLATE);
+        assertEquals(24, result.size());
+    }
+    
 }

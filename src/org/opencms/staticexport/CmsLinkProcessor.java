@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkProcessor.java,v $
- * Date   : $Date: 2004/11/04 14:00:27 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2004/11/15 09:46:23 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.htmlparser.util.ParserException;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * @since 5.3
  */
 public class CmsLinkProcessor {
@@ -341,7 +341,7 @@ public class CmsLinkProcessor {
 
             // if we have a local link, leave it unchanged
             // cms may be null for unit tests
-            if ((m_cms == null) || (link.getUri().charAt(0) == '#')) {
+            if ((m_cms == null) || (link.getUri().length() == 0) || (link.getUri().charAt(0) == '#')) {
                 return link.getUri();
             }
 

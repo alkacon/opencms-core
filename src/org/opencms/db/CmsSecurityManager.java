@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2004/11/10 16:12:32 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/11/15 09:46:23 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.collections.map.LRUMap;
  * are granted, the security manager invokes a method on the OpenCms driver manager to access the database.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -504,7 +504,7 @@ public final class CmsSecurityManager {
         // collect the resources to look up
         List resources = new ArrayList();
         if (recursive) {
-            resources = getResourcesWithProperty(context, resource.getRootPath(), propertyDefinition);
+            resources = readResourcesWithProperty(context, resource.getRootPath(), propertyDefinition);
         } else {
             resources.add(resource);
         }
@@ -956,16 +956,18 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Creates the propertydefinition for the resource type.<p>
+     * Creates a property definition.<p>
      *
-     * Only the admin can do this.
+     * Property definitions are valid for all resource types.<p>
+     * 
      * @param context the current request context
-     * @param name the name of the propertydefinition to overwrite
-     * @param mappingtype the mapping type of the propertydefinition. Currently only the mapping type C_PROPERYDEFINITION_RESOURCE is supported
-     * @return the created propertydefinition
-     * @throws CmsException if something goes wrong.
+     * @param name the name of the property definition to create
+     * 
+     * @return the created property definition
+     * 
+     * @throws CmsException if something goes wrong
      */
-    public CmsPropertydefinition createPropertydefinition(CmsRequestContext context, String name, int mappingtype)
+    public CmsPropertydefinition createPropertydefinition(CmsRequestContext context, String name)
     throws CmsException {
 
         CmsPropertydefinition propertyDefinition;
@@ -981,7 +983,7 @@ public final class CmsSecurityManager {
             I_CmsRuntimeInfo.C_RUNTIMEINFO_VFS + I_CmsRuntimeInfo.C_RUNTIMEINFO_BACKUP);
 
         try {
-            propertyDefinition = m_driverManager.createPropertydefinition(context, runtimeInfo, name, mappingtype);
+            propertyDefinition = m_driverManager.createPropertydefinition(context, runtimeInfo, name);
             runtimeInfo.pop();
         } catch (CmsException e) {
             runtimeInfo.report(null, "Error creating property definition " + name, e);
@@ -1308,17 +1310,14 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Delete the propertydefinition for the resource type.<p>
-     *
-     * Only the admin can do this.<p>
+     * Deletes a property definition.<p>
      * 
      * @param context the current request context
-     * @param name the name of the propertydefinition to read
-     * @param mappingtype the name of the resource type for which the propertydefinition is valid
+     * @param name the name of the property definition to delete
      *
      * @throws CmsException if something goes wrong
      */
-    public void deletePropertydefinition(CmsRequestContext context, String name, int mappingtype) throws CmsException {
+    public void deletePropertydefinition(CmsRequestContext context, String name) throws CmsException {
 
         if (!isAdmin(context)) {
             throw new CmsSecurityException(
@@ -1331,7 +1330,7 @@ public final class CmsSecurityManager {
             I_CmsRuntimeInfo.C_RUNTIMEINFO_VFS + I_CmsRuntimeInfo.C_RUNTIMEINFO_BACKUP);
 
         try {
-            m_driverManager.deletePropertydefinition(context, runtimeInfo, name, mappingtype);
+            m_driverManager.deletePropertydefinition(context, runtimeInfo, name);
             runtimeInfo.pop();
         } catch (CmsException e) {
             runtimeInfo.report(null, "Error deleting property definition " + name, e);
@@ -1861,37 +1860,22 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Returns a list with all sub resources of a given folder that have set the given property.<p>
-     *
-     * All users are granted.<p>
-     *
-     * @param context the current request context
-     * @param path the folder to get the subresources from
-     * @param propertyDefinition the name of the propertydefinition to check
-     * @return list with all resources
-     *
-     * @throws CmsException if operation was not succesful
-     */
-    public List getResourcesWithProperty(CmsRequestContext context, String path, String propertyDefinition)
-    throws CmsException {
-
-        return m_driverManager.getResourcesWithProperty(context, path, propertyDefinition);
-    }
-
-    /**
-     * Reads all resources that have set the specified property.<p>
+     * Reads all resources that have a value set for the specified property (definition) in the given path.<p>
      * 
-     * A property definition is the "key name" of a property.<p>
+     * Both individual and shared properties of a resource are checked.<p>
      *
      * @param context the current request context
-     * @param propertyDefinition the name of the property definition
-     * @return list of Cms resources having set the specified property definition
-     * @throws CmsException if operation was not successful
-     */
-    public List getResourcesWithPropertyDefinition(CmsRequestContext context, String propertyDefinition)
+     * @param path the folder to get the resources with the property from
+     * @param propertyDefinition the name of the property (definition) to check for
+     * 
+     * @return all resources that have a value set for the specified property (definition) in the given path
+     * 
+     * @throws CmsException if something goes wrong
+     */   
+    public List readResourcesWithProperty(CmsRequestContext context, String path, String propertyDefinition)
     throws CmsException {
 
-        return m_driverManager.getResourcesWithPropertyDefinition(context, propertyDefinition);
+        return m_driverManager.readResourcesWithProperty(context, path, propertyDefinition);
     }
 
     /**
@@ -2857,20 +2841,22 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Reads a definition for the given resource type.<p>
+     * Reads a property definition.<p>
      *
-     * All users are granted.<p>
-     *
+     * If no property definition with the given name is found, 
+     * <code>null</code> is returned.<p>
+     * 
      * @param context the current request context
-     * @param name the name of the propertydefinition to read
-     * @param mappingtype the mapping type of this propery definition
-     * @return the propertydefinition that corresponds to the overgiven arguments - or null if there is no valid propertydefinition.
+     * @param name the name of the property definition to read
+     * 
+     * @return the property definition that was read, or null if there is no property definition with the given name
+     * 
      * @throws CmsException if something goes wrong
      */
-    public CmsPropertydefinition readPropertydefinition(CmsRequestContext context, String name, int mappingtype)
+    public CmsPropertydefinition readPropertydefinition(CmsRequestContext context, String name)
     throws CmsException {
 
-        return m_driverManager.readPropertydefinition(context, name, mappingtype);
+        return m_driverManager.readPropertydefinition(context, name);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/11/04 13:57:40 $
- * Version: $Revision: 1.197 $
+ * Date   : $Date: 2004/11/15 09:46:23 $
+ * Version: $Revision: 1.198 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.197 $ $Date: 2004/11/04 13:57:40 $
+ * @version $Revision: 1.198 $ $Date: 2004/11/15 09:46:23 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -529,7 +529,20 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     /**
      * @see org.opencms.db.I_CmsProjectDriver#publishDeletedFolder(org.opencms.file.CmsRequestContext, I_CmsRuntimeInfo, org.opencms.report.I_CmsReport, int, int, org.opencms.file.CmsProject, org.opencms.file.CmsFolder, boolean, long, org.opencms.util.CmsUUID, int, int)
      */
-    public void publishDeletedFolder(CmsRequestContext context, I_CmsRuntimeInfo runtimeInfo, I_CmsReport report, int m, int n, CmsProject onlineProject, CmsFolder currentFolder, boolean backupEnabled, long publishDate, CmsUUID publishHistoryId, int backupTagId, int maxVersions) throws Exception {
+    public void publishDeletedFolder(
+        CmsRequestContext context, 
+        I_CmsRuntimeInfo runtimeInfo, 
+        I_CmsReport report, 
+        int m, 
+        int n, 
+        CmsProject onlineProject, 
+        CmsFolder currentFolder, 
+        boolean backupEnabled, 
+        long publishDate, 
+        CmsUUID publishHistoryId, 
+        int backupTagId, 
+        int maxVersions) throws Exception {
+        
         CmsFolder onlineFolder = null;
         List offlineProperties = null;
 
@@ -607,6 +620,14 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 throw e;
             }
             report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+            
+            if (OpenCms.getLog(this).isDebugEnabled()) {
+                OpenCms.getLog(this).debug("( " + m + " / " + n + " ) " 
+                    + report.key("report.deleting.folder")
+                    + currentFolder.getRootPath()
+                    + report.key("report.dots")
+                    + report.key("report.ok"));
+            }               
         } catch (Exception e) {
             // this is a dummy try-catch block to have a finally clause here
 
@@ -742,6 +763,15 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     throw e;
                 }
                 report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+                
+                if (OpenCms.getLog(this).isDebugEnabled()) {
+                    OpenCms.getLog(this).debug("( " + m + " / " + n + " ) " 
+                        + report.key("report.deleting.file")
+                        + offlineFileHeader.getRootPath()
+                        + report.key("report.dots")
+                        + report.key("report.ok"));
+                }
+                
             } else if (offlineFileHeader.getState() == I_CmsConstants.C_STATE_CHANGED) {
                 report.print("( " + m + " / " + n + " ) " + report.key("report.publishing.file"), I_CmsReport.C_FORMAT_NOTE);
                 report.print(context.removeSiteRoot(offlineFileHeader.getRootPath()));
@@ -854,6 +884,15 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     throw e;
                 }
                 report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+                
+                if (OpenCms.getLog(this).isDebugEnabled()) {
+                    OpenCms.getLog(this).debug("( " + m + " / " + n + " ) " 
+                        + report.key("report.publishing.file")
+                        + offlineFileHeader.getRootPath()
+                        + report.key("report.dots")
+                        + report.key("report.ok"));
+                }
+                
             } else if (offlineFileHeader.getState() == I_CmsConstants.C_STATE_NEW) {
                 report.print("( " + m + " / " + n + " ) " + report.key("report.publishing.file"), I_CmsReport.C_FORMAT_NOTE);
                 report.print(context.removeSiteRoot(offlineFileHeader.getRootPath()));
@@ -945,6 +984,14 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     throw e;
                 }
                 report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+                
+                if (OpenCms.getLog(this).isDebugEnabled()) {
+                    OpenCms.getLog(this).debug("( " + m + " / " + n + " ) " 
+                        + report.key("report.publishing.file")
+                        + offlineFileHeader.getRootPath()
+                        + report.key("report.dots")
+                        + report.key("report.ok"));
+                }                
             }
         } catch (Exception e) {
             // this is a dummy try-catch block to have a finally clause here 
@@ -1136,6 +1183,14 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 throw e;
             }
             report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+            
+            if (OpenCms.getLog(this).isDebugEnabled()) {
+                OpenCms.getLog(this).debug("( " + m + " / " + n + " ) " 
+                    + report.key("report.publishing.folder")
+                    + offlineFolder.getRootPath()
+                    + report.key("report.dots")
+                    + report.key("report.ok"));
+            }            
         } catch (Exception e) {
             // this is a dummy try-catch block to have a finally clause here
 
@@ -1161,7 +1216,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         CmsProject onlineProject,
         CmsPublishList publishList,
         boolean backupEnabled,
-        int backupTagId, int maxVersions) throws Exception {
+        int backupTagId, 
+        int maxVersions) throws Exception {
 
         CmsResource currentFileHeader = null;
         long publishDate = System.currentTimeMillis();
@@ -1205,6 +1261,13 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
             if (n > 0) {
                 report.println(report.key("report.publish_folders_begin"), I_CmsReport.C_FORMAT_HEADLINE);
+                
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info("Starting publish of project " 
+                        + context.currentProject().getName() 
+                        + " by user " 
+                        + context.currentUser().getName());
+                }                   
             }
 
             while (i.hasNext()) {

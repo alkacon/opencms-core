@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/11/11 16:03:04 $
- * Version: $Revision: 1.152 $
+ * Date   : $Date: 2004/11/15 09:46:23 $
+ * Version: $Revision: 1.153 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -109,7 +109,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.152 $
+ * @version $Revision: 1.153 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -448,21 +448,33 @@ public final class OpenCmsCore {
                     getLog(CmsLog.CHANNEL_INIT).info(". Shutdown time        : " + (new Date(System.currentTimeMillis())));
                 }
                 try {
-                    if (m_threadStore != null) {
-                        m_threadStore.shutDown();
+                    if (m_moduleManager != null) {
+                        m_moduleManager.shutDown();
                     }
+                } catch (Throwable e) {
+                    getLog(CmsLog.CHANNEL_INIT).error(". Error during module manager shutdown: " + e.toString(), e);
+                }
+                try {
                     if (m_scheduleManager != null) {
                         m_scheduleManager.shutDown();
                     }
+                } catch (Throwable e) {
+                    getLog(CmsLog.CHANNEL_INIT).error(". Error during schedule manager shutdown: " + e.toString(), e);
+                }                
+                try {
                     if (m_securityManager != null) {
                         m_securityManager.destroy();
                     }
                 } catch (Throwable e) {
-                    if (getLog(CmsLog.CHANNEL_INIT).isErrorEnabled()) {
-                        getLog(CmsLog.CHANNEL_INIT).error(". Error during shutdown: " + e.toString(), e);
-                    }
+                    getLog(CmsLog.CHANNEL_INIT).error(". Error during security manager shutdown: " + e.toString(), e);
                 }
-        
+                try {
+                    if (m_threadStore != null) {
+                        m_threadStore.shutDown();
+                    }
+                } catch (Throwable e) {
+                    getLog(CmsLog.CHANNEL_INIT).error(". Error during thread store shutdown: " + e.toString(), e);
+                }        
                 String runtime = CmsStringUtil.formatRuntime(getSystemInfo().getRuntime());
                 if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
                     getLog(CmsLog.CHANNEL_INIT).info(". OpenCms stopped!     : Total uptime was " + runtime);

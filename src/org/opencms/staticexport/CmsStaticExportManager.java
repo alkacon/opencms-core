@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2004/11/08 15:06:43 $
- * Version: $Revision: 1.78 $
+ * Date   : $Date: 2004/11/15 09:46:23 $
+ * Version: $Revision: 1.79 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import org.apache.commons.collections.map.LRUMap;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.78 $
+ * @version $Revision: 1.79 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
 
@@ -266,6 +266,10 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 }
 
                 clearCaches(event);
+                
+                if (OpenCms.getLog(this).isDebugEnabled()) {
+                    OpenCms.getLog(this).debug("Static export manager finished publish event for project ID " + publishHistoryId);
+                }                
                 break;
             case I_CmsEventListener.EVENT_CLEAR_CACHES:
                 clearCaches(event);
@@ -1826,7 +1830,11 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      * @param onlyDeleted flag to remove only those files which were deleted in the publish proces
      */
     private void scrubExportFolders(CmsUUID publishHistoryId, boolean onlyDeleted) {
-
+        
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("Static export manager scrubbing export folders for project ID " + publishHistoryId);
+        }      
+        
         Set scrubedFolders = new HashSet();
         Set scrubedFiles = new HashSet();
         // get a export user cms context        
@@ -1944,11 +1952,15 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      */
     private synchronized void setExportnames() {
 
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("Static export manager starting update of list of resources with 'exportname' property");
+        }
+        
         List resources;
         CmsObject cms = null;
         try {
             cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
-            resources = cms.getResourcesWithPropertyDefinition(I_CmsConstants.C_PROPERTY_EXPORTNAME);
+            resources = cms.readResourcesWithProperty(I_CmsConstants.C_PROPERTY_EXPORTNAME);
         } catch (CmsException e) {
             resources = Collections.EMPTY_LIST;
         }
@@ -1974,6 +1986,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             }
         }
         m_exportnameResources = Collections.unmodifiableMap(m_exportnameResources);
+        
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("Static export manager finished update of list of resources with 'exportname' property");
+        }
     }
-    
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2004/11/12 17:31:48 $
- * Version: $Revision: 1.95 $
+ * Date   : $Date: 2004/11/15 09:46:23 $
+ * Version: $Revision: 1.96 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.List;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.95 $ $Date: 2004/11/12 17:31:48 $
+ * @version $Revision: 1.96 $ $Date: 2004/11/15 09:46:23 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -389,22 +389,26 @@ public interface I_CmsVfsDriver {
      * @param currentProject the current project
      * @param starttime the begin of the time range
      * @param endtime the end of the time range
+     * 
      * @return List with all resources
-     * @throws CmsException if operation was not succesful 
+     * 
+     * @throws CmsException if something goes wrong 
      */
     List readResources(int currentProject, long starttime, long endtime) throws CmsException;
 
     /**
-     * Reads all resources that have set the specified property.<p>
+     * Reads all resources that have a value set for the specified property (definition).<p>
      * 
-     * A property definition is the "key name" of a property.<p>
+     * Both individual and shared properties of a resource are checked.<p>
      *
      * @param projectId the id of the project
-     * @param propertyDefinition the name of the property definition
-     * @return list of Cms resources having set the specified property definition
-     * @throws CmsException if operation was not successful
+     * @param propertyDefinition the id of the property definition
+     * 
+     * @return all resources that have a value set for the specified property (definition)
+     * 
+     * @throws CmsException if something goes wrong
      */
-    List readResources(int projectId, String propertyDefinition) throws CmsException;
+    List readResourcesWithProperty(int projectId, CmsUUID propertyDefinition) throws CmsException;
 
     /**
      * Reads all siblings that point to the resource record of a specified resource.<p>
@@ -414,7 +418,8 @@ public interface I_CmsVfsDriver {
      * @param resource the specified resource
      * @param includeDeleted true if deleted siblings should be included in the result List
      * 
-     * @return a List with the fileheaders
+     * @return a List with the sibling resources
+     * 
      * @throws CmsException if something goes wrong
      */
     List readSiblings(I_CmsRuntimeInfo runtimeInfo, CmsProject currentProject, CmsResource resource, boolean includeDeleted) throws CmsException;

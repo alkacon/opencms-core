@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/11/10 15:21:17 $
- * Version: $Revision: 1.83 $
+ * Date   : $Date: 2004/11/15 09:46:23 $
+ * Version: $Revision: 1.84 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.83 $
+ * @version $Revision: 1.84 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -2142,7 +2142,7 @@ public class CmsObject {
      * Writes a property as a structure value for a file or folder.<p>
      *
      * @param resourceName the resource-name for which the property will be set
-     * @param key the property-definition name
+     * @param key the property definition name
      * @param value the value for the property to be set
      * @throws CmsException if operation was not successful
      * @deprecated use {@link #writePropertyObject(String, CmsProperty)} instead
@@ -3202,15 +3202,16 @@ public class CmsObject {
     }        
 
     /**
-     * Reads the property-definition for a resource.<p>
+     * Reads a property definition.<p>
      *
-     * @param name the name of the property-definition to read.
-     * @return the property-definition.
+     * @param name the name of the property definition to read
+     * @return the property definition that was read
      *
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if something goes wrong
      */
     public CmsPropertydefinition readPropertydefinition(String name) throws CmsException {
-        return (m_securityManager.readPropertydefinition(m_context, name, I_CmsConstants.C_PROPERYDEFINITION_RESOURCE));
+        
+        return (m_securityManager.readPropertydefinition(m_context, name));
     }
     
     /**
@@ -3251,26 +3252,28 @@ public class CmsObject {
     }   
     
     /**
-     * Creates a property-definition.<p>
+     * Creates a property definition.<p>
      *
-     * @param name the name of the property-definition to overwrite
-     * @return the new property definition
+     * @param name the name of the property definition to create
+     * @return the created property definition
      * 
-     * @throws CmsException if operation was not successful.
+     * @throws CmsException if something goes wrong
      */
     public CmsPropertydefinition createPropertydefinition(String name) throws CmsException {
-        return (m_securityManager.createPropertydefinition(m_context, name, I_CmsConstants.C_PROPERYDEFINITION_RESOURCE));
+        
+        return (m_securityManager.createPropertydefinition(m_context, name));
     }
 
     /**
-     * Deletes the property-definition for a resource.<p>
+     * Deletes a property definition.<p>
      *
-     * @param name the name of the property-definition to delete
+     * @param name the name of the property definition to delete
      *
      * @throws CmsException if something goes wrong
      */
     public void deletePropertydefinition(String name) throws CmsException {
-        m_securityManager.deletePropertydefinition(m_context, name, I_CmsConstants.C_PROPERYDEFINITION_RESOURCE);
+        
+        m_securityManager.deletePropertydefinition(m_context, name);
     }
 
     /**
@@ -3298,46 +3301,36 @@ public class CmsObject {
     }
 
     /**
-     * Returns a List with resources that have set the given property.<p>
-     *
-     * <B>Security:</B>
-     * All users are granted.<p>
-     *
-     * @param propertyDefinition the name of the propertydefinition to check
-     * @return List with all resources
-     * @throws CmsException if operation was not succesful
-     */
-    public List getResourcesWithProperty(String propertyDefinition) throws CmsException {
-        return m_securityManager.getResourcesWithProperty(m_context, "/", propertyDefinition);
-    }
-
-    /**
-     * Returns a List with the complete sub tree of a given folder that have set the given property.<p>
-     *
-     * <B>Security:</B>
-     * All users are granted.<p>
-     *
-     * @param folder the folder to get the subresources from
-     * @param propertyDefinition the name of the propertydefinition to check
-     * @return List with all resources
-     *
-     * @throws CmsException if operation was not succesful
-     */
-    public List getResourcesWithProperty(String folder, String propertyDefinition) throws CmsException {
-        return m_securityManager.getResourcesWithProperty(m_context, addSiteRoot(folder), propertyDefinition);
-    }
-
-    /**
-     * Reads all resources that have set the specified property.<p>
+     * Reads all resources that have a value set for the specified property (definition).<p>
      * 
-     * A property definition is the "key name" of a property.<p>
+     * Both individual and shared properties of a resource are checked.<p>
      *
-     * @param propertyDefinition the name of the property definition
-     * @return list of Cms resources having set the specified property definition
-     * @throws CmsException if operation was not successful
+     * @param propertyDefinition the name of the property (definition) to check for
+     * 
+     * @return all resources that have a value set for the specified property (definition)
+     * 
+     * @throws CmsException if something goes wrong
      */
-    public List getResourcesWithPropertyDefinition(String propertyDefinition) throws CmsException {
-        return m_securityManager.getResourcesWithPropertyDefinition(m_context, propertyDefinition);
+    public List readResourcesWithProperty(String propertyDefinition) throws CmsException {
+        
+        return m_securityManager.readResourcesWithProperty(m_context, "/", propertyDefinition);
+    }
+
+    /**
+     * Reads all resources that have a value set for the specified property (definition) in the given path.<p>
+     * 
+     * Both individual and shared properties of a resource are checked.<p>
+     *
+     * @param path the folder to get the resources with the property from
+     * @param propertyDefinition the name of the property (definition) to check for
+     * 
+     * @return all resources that have a value set for the specified property (definition) in the given path
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public List readResourcesWithProperty(String path, String propertyDefinition) throws CmsException {
+        
+        return m_securityManager.readResourcesWithProperty(m_context, addSiteRoot(path), propertyDefinition);
     }
     
     /**
