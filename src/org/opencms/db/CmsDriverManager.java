@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/07 09:31:53 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2003/07/07 09:37:45 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * This is the driver manager.
  * 
- * @version $Revision: 1.21 $ $Date: 2003/07/07 09:31:53 $
+ * @version $Revision: 1.22 $ $Date: 2003/07/07 09:37:45 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -134,11 +134,11 @@ public class CmsDriverManager extends Object {
      */
     protected int m_limitedWorkplacePort = -1;
     
-    /**
-     * The driver pools available
-     */
-    protected HashMap m_driverPools = null;
-
+	/**
+	 * The configured drivers 
+	 */
+	protected HashMap m_drivers = null;
+	
     // Define caches for often read resources
     protected Map m_userCache = null;
     protected Map m_groupCache = null;
@@ -161,23 +161,18 @@ public class CmsDriverManager extends Object {
     protected String m_refresh = null;
 
 	/**
-	 * Creates a new instance of a driver.<p>
+	 * Method to create a new instance of a driver.<p>
 	 * 
 	 * @param configurations the configurations from the propertyfile
 	 * @param driverName the class name of the driver
-	 * @param driverPoolName the pool name of the driver
-	 * @param driverManager back link to the driver manager
+	 * @param driverPoolUrl the pool url for the driver
 	 * @return an initialized instance of the driver
-	 * @throws CmsException if something goes wrong
 	 */
-	public static final Object newDriverInstance(Configurations configurations, String driverName, String driverPoolName, CmsDriverManager driverManager)
-		//throws CmsException 
-		{
-		
-		String driverPoolUrl = (String) driverManager.m_driverPools.get(driverPoolName);
+	public Object newDriverInstance(Configurations configurations, String driverName, String driverPoolUrl) //throws CmsException
+ 	{
 		
 		Class initParamClasses[] = {Configurations.class, String.class, CmsDriverManager.class};
-		Object initParams[] = {configurations, driverPoolUrl, driverManager};
+		Object initParams[] = {configurations, driverPoolUrl, this};
 		 
 		Class driverClass = null;
 		Object driver = null;
@@ -213,6 +208,36 @@ public class CmsDriverManager extends Object {
 		
 		return driver;
 	}
+
+	/**
+	 * Method to create a new instance of a pool.<p>
+	 * 
+	 * @param configurations	the configurations from the propertyfile
+	 * @param poolName			the configuration name of the pool
+	 * @return					the pool url
+	 * @throws CmsException		if something goes wrong
+	 */
+	public String newPoolInstance(Configurations configurations, String poolName) throws CmsException {
+		
+		String poolUrl = null;
+		
+		try {
+			poolUrl = CmsDbPool.createDriverConnectionPool(configurations,poolName); 
+			if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Initializing pool    : " + poolUrl);
+			}
+		} catch (Exception exc) {
+			String message = "Critical error while initializing resource pool " + poolName;
+			if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsDriverManager] " + message);
+			}
+
+			exc.printStackTrace(System.err);
+			throw new CmsException(message, CmsException.C_RB_INIT_ERROR, exc);         
+		}
+		
+		return poolUrl;			
+	}
 	
     /**
      * Reads the required configurations from the opencms.properties file and creates
@@ -233,10 +258,10 @@ public class CmsDriverManager extends Object {
      * @throws CmsException if the driver manager couldn't be instanciated.
      */
     public static final CmsDriverManager newInstance(Configurations configurations) throws CmsException {
-        String driverPoolNames[] = null;
+        
     
         String driverName = null;
-        String driverPoolName = null;
+        String driverPoolUrl = null;
         //Class driverClass = null;
                 
         I_CmsVfsDriver vfsDriver = null;
@@ -262,56 +287,41 @@ public class CmsDriverManager extends Object {
 			throw new CmsException(message, CmsException.C_RB_INIT_ERROR, exc);
 		}
 		        
-        // read the pools to initialize from the properties
-        driverPoolNames = configurations.getStringArray(I_CmsConstants.C_CONFIGURATION_DB + ".pools");
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Resource pools       : ");
-        }
-        
-        // for each pool, read its properties and initialize it
-        driverManager.m_driverPools = new HashMap();
-        for (int p=0; p<driverPoolNames.length; p++) {
-            try {
-                String poolUrl = CmsDbPool.createDriverConnectionPool(configurations,driverPoolNames[p]); 
-                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Initializing pool    : " + poolUrl);
-                }
-				driverManager.m_driverPools.put (driverPoolNames[p],poolUrl);
-            } catch (Exception exc) {
-                String message = "Critical error while initializing resource pool " + driverPoolNames[p];
-                if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsDriverManager] " + message);
-                }
-    
-                exc.printStackTrace(System.err);
-                throw new CmsException(message, CmsException.C_RB_INIT_ERROR, exc);         
-            }
-        }        
-                
+        // read the pool names to initialize
+		String driverPoolNames[] = configurations.getStringArray(I_CmsConstants.C_CONFIGURATION_DB + ".pools");
+		if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Resource pools       : ");
+		}   
+		     
+		// initialize each pool
+		for (int p=0; p<driverPoolNames.length; p++) {
+			driverManager.newPoolInstance(configurations, driverPoolNames[p]);
+		} 
+
         // read the vfs driver class properties and initialize a new instance 
         driverName = configurations.getString(I_CmsConstants.C_CONFIGURATION_DB + ".vfs.driver");
-        driverPoolName = configurations.getString(I_CmsConstants.C_CONFIGURATION_DB + ".vfs.pool");
-        vfsDriver = (I_CmsVfsDriver) newDriverInstance(configurations, driverName, driverPoolName, driverManager);
+        driverPoolUrl = configurations.getString(I_CmsConstants.C_CONFIGURATION_DB + ".vfs.pool");
+        vfsDriver = (I_CmsVfsDriver) driverManager.newDriverInstance(configurations, driverName, driverPoolUrl);
                 
         // read the user driver class properties and initialize a new instance 
         driverName = configurations.getString(I_CmsConstants.C_CONFIGURATION_DB + ".user.driver");
-        driverPoolName = configurations.getString(I_CmsConstants.C_CONFIGURATION_DB + ".user.pool");
-        userDriver = (I_CmsUserDriver) newDriverInstance(configurations, driverName, driverPoolName, driverManager);
+        driverPoolUrl = configurations.getString(I_CmsConstants.C_CONFIGURATION_DB + ".user.pool");
+        userDriver = (I_CmsUserDriver) driverManager.newDriverInstance(configurations, driverName, driverPoolUrl);
 		
         // read the project driver class properties and initialize a new instance 
         driverName = configurations.getString(I_CmsConstants.C_CONFIGURATION_DB + ".project.driver");
-        driverPoolName = configurations.getString(I_CmsConstants.C_CONFIGURATION_DB + ".project.pool");
-		projectDriver = (I_CmsProjectDriver) newDriverInstance(configurations, driverName, driverPoolName, driverManager);
+        driverPoolUrl = configurations.getString(I_CmsConstants.C_CONFIGURATION_DB + ".project.pool");
+		projectDriver = (I_CmsProjectDriver) driverManager.newDriverInstance(configurations, driverName, driverPoolUrl);
         
         // read the workflow driver class properties and initialize a new instance 
         driverName = configurations.getString(I_CmsConstants.C_CONFIGURATION_DB + ".workflow.driver");
-        driverPoolName = configurations.getString(I_CmsConstants.C_CONFIGURATION_DB + ".workflow.pool");
-		workflowDriver = (I_CmsWorkflowDriver) newDriverInstance(configurations, driverName, driverPoolName, driverManager);
+        driverPoolUrl = configurations.getString(I_CmsConstants.C_CONFIGURATION_DB + ".workflow.pool");
+		workflowDriver = (I_CmsWorkflowDriver) driverManager.newDriverInstance(configurations, driverName, driverPoolUrl);
 
         // read the backup driver class properties and initialize a new instance 
         driverName = configurations.getString(I_CmsConstants.C_CONFIGURATION_DB + ".backup.driver");
-        driverPoolName = configurations.getString(I_CmsConstants.C_CONFIGURATION_DB + ".backup.pool");
-		backupDriver = (I_CmsBackupDriver) newDriverInstance(configurations, driverName, driverPoolName, driverManager);
+        driverPoolUrl = configurations.getString(I_CmsConstants.C_CONFIGURATION_DB + ".backup.pool");
+		backupDriver = (I_CmsBackupDriver) driverManager.newDriverInstance(configurations, driverName, driverPoolUrl);
 
         try {                        
             // invoke the init method of the driver manager
@@ -332,10 +342,9 @@ public class CmsDriverManager extends Object {
         
         // set the pool for the COS
         // TODO: check if there is a better place for this
-        driverPoolName = configurations.getString(I_CmsConstants.C_CONFIGURATION_DB + ".cos.pool");
-        driverPoolName = (String)driverManager.m_driverPools.get(driverPoolName);
-        A_OpenCms.setRuntimeProperty("cosPoolUrl", driverPoolName);
-        CmsIdGenerator.setDefaultPool(driverPoolName);            
+        driverPoolUrl = configurations.getString(I_CmsConstants.C_CONFIGURATION_DB + ".cos.pool");
+        A_OpenCms.setRuntimeProperty("cosPoolUrl", driverPoolUrl);
+        CmsIdGenerator.setDefaultPool(driverPoolUrl);            
         
         // return the configured driver manager
         return driverManager;        
