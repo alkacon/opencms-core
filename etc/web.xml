@@ -21,7 +21,7 @@
     <servlet-mapping>
       <servlet-name>OpenCmsServlet</servlet-name>
       <url-pattern>/opencms/*</url-pattern>
-    </servlet-mapping> -->
+    </servlet-mapping>
 
     <servlet-mapping>
       <servlet-name>OpenCmsServlet</servlet-name>
