@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2003/06/06 16:47:10 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/06/12 09:43:46 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ package org.opencms.workplace;
 
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
+import com.opencms.core.OpenCms;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
 import com.opencms.flex.jsp.CmsJspActionElement;
@@ -41,6 +42,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 /**
@@ -48,69 +50,41 @@ import javax.servlet.http.HttpSession;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1
  */
-public class CmsWorkplace {
+public abstract class CmsWorkplace {
     
-    protected static final String C_SESSION_WORKPLACE_SESSTINGS = "__org.opencms.workplace.CmsWorkplaceSesstings";
-    protected static final String C_WORKPLACE_LOCALES_BUNDLE = "com.opencms.workplace.workplace";
+    protected static final String C_SESSION_WORKPLACE_SETTINGS = "__org.opencms.workplace.CmsWorkplaceSettings";
     
     private CmsJspActionElement m_jsp;
     private CmsObject m_cms;
     private HttpSession m_session;
     private CmsWorkplaceSettings m_settings;
-    private CmsWorkplaceMessages m_messages;
-    
+    private String m_resourceUri = null;
+        
     /**
      * Public constructor.<p>
      * 
      * @param jsp the initialized JSP context
-     */
+     */    
     public CmsWorkplace(CmsJspActionElement jsp) {
         m_jsp = jsp;        
-        m_cms = m_jsp.getCmsObject();
-        
+        m_cms = m_jsp.getCmsObject();                
         m_session = m_jsp.getRequest().getSession();
-        m_settings = (CmsWorkplaceSettings)m_session.getAttribute(C_SESSION_WORKPLACE_SESSTINGS);
+        
+        // get / create the workplace settings 
+        m_settings = (CmsWorkplaceSettings)m_session.getAttribute(C_SESSION_WORKPLACE_SETTINGS);
         if (m_settings == null) {
             initWorkplaceSettings(m_cms);
         }
-        CmsRequestContext reqCont = m_cms.getRequestContext();
         
-        // check if the user requested a group change
-        String newGroup = (String)m_jsp.getRequest().getParameter("wpGroup");
-        if (newGroup != null) {
-            if (!(newGroup.equals(reqCont.currentGroup().getName()))) {
-                try {
-                    reqCont.setCurrentGroup(newGroup);
-                } catch (CmsException e) {
-                    // do nothing
-                }
-            }
-        }
-
-        // check if the user requested a project change
-        String newProject = (String)m_jsp.getRequest().getParameter("wpProject");
-        if (newProject != null) {
-            if (!(Integer.parseInt(newProject) == reqCont.currentProject().getId())) {
-                try {                
-                    reqCont.setCurrentProject(Integer.parseInt(newProject));
-                } catch (CmsException e) {
-                    // do nothing
-                }                    
-            }
-        }
-
-        // check if the user requested a view change
-        String newView = (String)m_jsp.getRequest().getParameter("wpView");
-        if (newView != null) {
-            System.err.println("view: " + newView);
-            m_session.setAttribute(I_CmsWpConstants.C_PARA_VIEW, newView);
-        }
-                
-        m_messages = m_settings.getMessages();
+        // check request for changes in the workplace settings
+        initWorkplaceRequestValues(m_settings, m_jsp.getRequest());        
+        
+        // set cms context accordingly
+        initWorkplaceCmsContext(m_settings, m_cms);
     }    
     
     /**
@@ -120,7 +94,7 @@ public class CmsWorkplace {
      * @return a localized key value
      */
     public String key(String keyName) {
-        return m_messages.key(keyName);
+        return m_settings.getMessages().key(keyName);
     } 
     
     /**
@@ -129,16 +103,20 @@ public class CmsWorkplace {
      * @return the current workplace encoding
      */
     public String getEncoding() {
-        return m_messages.getEncoding();
+        return  m_settings.getMessages().getEncoding();
     }
     
     /**
-     * Initializes the current users workplace settnings.<p>
+     * Initializes the current users workplace settings.<p>
+     * 
+     * This method is synchronized to ensure that the settings are
+     * initialized only once for a user.
      * 
      * @param cms the cms object for the current user
      */    
-    private void initWorkplaceSettings(CmsObject cms) {        
+    private synchronized void initWorkplaceSettings(CmsObject cms) {        
         // create the settings object
+        if (m_settings != null) return;
         CmsWorkplaceSettings settings = new CmsWorkplaceSettings();
         
         // initialize the current user language
@@ -176,9 +154,62 @@ public class CmsWorkplace {
         CmsWorkplaceMessages messages = new CmsWorkplaceMessages(cms, language);
         settings.setMessages(messages);
         
+        // save current workplace user
+        settings.setUser(cms.getRequestContext().currentUser());
+
+        // save current default group
+        settings.setGroup(cms.getRequestContext().currentGroup().getName());        
+        
+        // save current project
+        settings.setProject(cms.getRequestContext().currentProject().getId());
+        
+        // check out the user infor1ation if a default view is stored there
+        if (startSettings != null) {
+            settings.setCurrentView(getJsp().link((String)startSettings.get(I_CmsConstants.C_START_VIEW)));
+        }
+                
         // save the workplace settings in the session
-        m_session.setAttribute(C_SESSION_WORKPLACE_SESSTINGS, settings);     
+        m_session.setAttribute(C_SESSION_WORKPLACE_SETTINGS, settings);     
         m_settings = settings;   
+    }
+    
+    /**
+     * Analyzes the request for workplace parametes and adjusts the workplace
+     * settings accordingly.<p> 
+     * 
+     * @param settings the workplace settings
+     * @param request the current request
+     */
+    protected abstract void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request);
+        
+    /**
+     * Sets the cms request context and other cms related settings to the 
+     * values stored int the workplace settings.<p>
+     * 
+     * @param settings the workplace settings
+     * @param cms the current cms object
+     */
+    private void initWorkplaceCmsContext(CmsWorkplaceSettings settings, CmsObject cms) {
+
+        CmsRequestContext reqCont = cms.getRequestContext();
+
+        // check project setting        
+        if (settings.getProject() != reqCont.currentProject().getId()) {
+            try {                
+                reqCont.setCurrentProject(settings.getProject());
+            } catch (CmsException e) {
+                // do nothing
+            }                    
+        }
+
+        // check group setting
+        if (!(settings.getGroup().equals(reqCont.currentGroup().getName()))) {
+            try {
+                reqCont.setCurrentGroup(settings.getGroup());
+            } catch (CmsException e) {
+                // do nothing
+            }
+        }
     }
     
     /**
@@ -200,15 +231,6 @@ public class CmsWorkplace {
     }
 
     /**
-     * Returns the current workplace message object.<p>
-     * 
-     * @return the current workplace message object
-     */
-    public CmsWorkplaceMessages getMessages() {
-        return m_messages;
-    }
-
-    /**
      * Returns the current user http session.<p>
      * 
      * @return the current user http session
@@ -226,6 +248,43 @@ public class CmsWorkplace {
         return m_settings;
     }
     
+    /**
+     * Returns the path to the workplace static resources.<p>
+     * 
+     * Workplaces static resources are images, css files etc.
+     * These are exported during the installation of OpenCms,
+     * and are usually only read from this exported location to 
+     * avoid the overhaead of accessing the database later.<p> 
+     * 
+     * @return the path to the workplace static resources
+     */
+    public String getResourceUri() {
+        if (m_resourceUri != null) return m_resourceUri;
+        synchronized(this) {
+            boolean useVfs = true;
+            // check registry for setting of workplace images
+            try {
+                useVfs = (new Boolean(OpenCms.getRegistry().getSystemValue("UseWpPicturesFromVFS"))).booleanValue();
+            } catch (CmsException e) {
+                // by default (useVfs == true) we assume that we want to use exported resources
+            }            
+            if (useVfs) {
+                m_resourceUri = m_cms.getRequestContext().getRequest().getServletUrl() + I_CmsWpConstants.C_VFS_PATH_SYSTEMPICS;
+            } else {
+                m_resourceUri = m_cms.getRequestContext().getRequest().getWebAppUrl() + I_CmsWpConstants.C_SYSTEM_PICS_EXPORT_PATH;
+            }            
+        }
+        return m_resourceUri;
+    }
+    
+    /**
+     * Returns the path to the currently selected skin.<p>
+     * 
+     * @return the path to the currently selected skin
+     */
+    public String getSkinUri() {
+        return m_cms.getRequestContext().getRequest().getWebAppUrl() + "/skins/modern/";        
+    }    
     
     /**
      * Generates a html select box out of the provided values.<p>

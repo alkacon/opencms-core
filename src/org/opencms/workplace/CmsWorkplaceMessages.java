@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceMessages.java,v $
- * Date   : $Date: 2003/06/06 16:47:10 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/06/12 09:43:46 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Set;
  * Provides access to the localized lables for the workplace.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1
  */
@@ -81,7 +81,7 @@ public class CmsWorkplaceMessages {
     private static Map m_allEncodings = null;
 
     /** DEBUG flag */
-    private static final int DEBUG = 1; 
+    private static final int DEBUG = 0; 
 
     /**
      * Constructor for creating a new messages object
@@ -192,7 +192,27 @@ public class CmsWorkplaceMessages {
         m_allEncodings.put(m_locale, result);
         return result;
     }    
-
+    
+    /**
+     * Returns a date formatted according to the users language settings.<p>
+     *  
+     * @param timestamp the date to format
+     * @return a date formatted according to the users language settings
+     */
+    public String getDate(long timestamp) {
+        return m_messages.getDate(timestamp);
+    }
+    
+    /**
+     * Returns a date/time formatted according to the users language settings.<p>
+     *  
+     * @param timestamp the date to format
+     * @return a date/time formatted according to the users language settings
+     */
+    public String getDateTime(long timestamp) {
+        return m_messages.getDateTime(timestamp);
+    }
+    
     /**
      * Returns the language value of the requested label key.<p>
      *

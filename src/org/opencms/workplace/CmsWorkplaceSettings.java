@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2003/06/06 16:47:10 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/06/12 09:43:46 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,13 +30,15 @@
  */
 package org.opencms.workplace;
 
+import com.opencms.file.CmsUser;
+
 
 /**
  * Object to conveniently access and modify the state of the workplace for a user,
  * will be stored in the session of a user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1
  */
@@ -44,7 +46,17 @@ public class CmsWorkplaceSettings {
     
     private String m_language;
     private CmsWorkplaceMessages m_messages;
-    
+    private int m_project;
+    private String m_group;
+    private CmsUser m_user; 
+    private String m_currentView;
+    private String m_explorerFolder;
+    private String m_explorerMode;
+    private int m_explorerPage = 1;
+    private boolean m_explorerContext = true;
+    private int m_explorerChecksum = -1;
+    private String m_explorerFlaturl;
+        
     /**
      * Constructor, only package visible.<p>
      */
@@ -55,7 +67,7 @@ public class CmsWorkplaceSettings {
      * 
      * @return the currently selected user language
      */
-    public String getLanguage() {
+    public synchronized String getLanguage() {
         return m_language;
     }
 
@@ -64,7 +76,7 @@ public class CmsWorkplaceSettings {
      * 
      * @param value the selected user language
      */
-    public void setLanguage(String value) {
+    public synchronized void setLanguage(String value) {
         m_language = value;
     }
 
@@ -82,8 +94,189 @@ public class CmsWorkplaceSettings {
      * 
      * @param messages the workplace messages for the current user
      */
-    public void setMessages(CmsWorkplaceMessages messages) {
+    public synchronized void setMessages(CmsWorkplaceMessages messages) {
         m_messages = messages;
+    }
+    
+
+    /**
+     * Returns the current view selected in the workplace.<p>
+     * 
+     * @return the current view selected in the workplace 
+     */
+    public synchronized String getCurrentView() {
+        return m_currentView;
+    }
+
+    /**
+     * Sets the view for the workplace.<p>
+     * 
+     * @param string the view for the workplace
+     */
+    public synchronized void setCurrentView(String string) {
+        m_currentView = string;
+    }
+
+    /**
+     * Returns the currently selected default group of the workplace user.<p>
+     * 
+     * @return the currently selected default group of the workplace user
+     */
+    public synchronized String getGroup() {
+        return m_group;
+    }
+
+    /**
+     * Sets the default group of the workplace user.<p>
+     * 
+     * @param group the default group of the workplace user
+     */
+    public synchronized void setGroup(String group) {
+        m_group = group;
+    }
+
+    /**
+     * Returns the currently selected project of the workplace user.<p> 
+     * 
+     * @return the currently selected project of the workplace user
+     */
+    public synchronized int getProject() {
+        return m_project;
+    }
+
+    /**
+     * Sets the currently selected project of the workplace user.<p>
+     * 
+     * @param project the currently selected project of thw workplace user
+     */
+    public synchronized void setProject(int project) {
+        m_project = project;
+    }
+
+    /**
+     * Returns the current workplace user.<p>
+     * 
+     * @return the current workplace user
+     */
+    public synchronized CmsUser getUser() {
+        return m_user;
+    }
+
+    /**
+     * Sets the current workplace user.<p>
+     * 
+     * @param user the current workplace user
+     */
+    public synchronized void setUser(CmsUser user) {
+        m_user = user;
+    }
+        
+    /**
+     * Returns the current folder to be displayed in the explorer.<p>
+     * 
+     * @return the current folder to be displayed in the explorer
+     */
+    public synchronized String getExplorerFolder() {
+        return m_explorerFolder;
+    }
+    
+    /**
+     * Sets the current folder to be displayed in the explorer.<p>
+     * 
+     * @param value the current folder to be displayed in the explorer
+     */
+    public synchronized void setExplorerFolder(String value) {
+        m_explorerFolder = value;
+    }
+    
+    /**
+     * Returns the current explorer mode.<p> 
+     * 
+     * @return the current explorer mode
+     */
+    public synchronized String getExplorerMode() {
+        return m_explorerMode;
+    }
+
+    /**
+     * Sets the current explorer mode.<p>
+     * 
+     * @param value the current explorer mode
+     */
+    public synchronized void setExplorerMode(String value) {
+        m_explorerMode = value;
+    }
+
+    /**
+     * Returns the currently selected page in the explorer view.<p>
+     * 
+     * @return the currently selected page in the explorer view
+     */
+    public synchronized int getExplorerPage() {
+        return m_explorerPage;
+    }
+
+    /**
+     * Sets the currently selected page in the explorer view.<p>
+     * 
+     * @param page the currently selected page in the explorer view
+     */
+    public synchronized void setExplorerPage(int page) {
+        m_explorerPage = page;
+    }
+
+    /**
+     * Returns the explorer checksum.<p>
+     * 
+     * @return the explorer checksum
+     */
+    public int getExplorerChecksum() {
+        return m_explorerChecksum;
+    }
+
+    /**
+     * Sets the explorer checksum.<p>
+     * 
+     * @param value the explorer checksum
+     */
+    public void setExplorerChecksum(int value) {
+        m_explorerChecksum = value;
+    }
+
+    /**
+     * Returns true if the explorer context menues are enabled.<p>
+     * 
+     * @return true if the explorer context menues are enabled
+     */
+    public boolean getExplorerContext() {
+        return m_explorerContext;
+    }
+
+    /**
+     * Controls if the explorer context menues are enabled
+     * 
+     * @param value if true, the explorer context menues are enabled
+     */
+    public void setExplorerContext(boolean value) {
+        m_explorerContext = value;
+    }
+
+    /**
+     * Returns the explorer flat url.<p>
+     *  
+     * @return the explorer flat url
+     */
+    public String getExplorerFlaturl() {
+        return m_explorerFlaturl;
+    }
+
+    /**
+     * Sets the explorer flat url.<p>
+     * 
+     * @param value the explorer flat url
+     */
+    public void setExplorerFlaturl(String value) {
+        m_explorerFlaturl = value;
     }
 
 }
