@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/18 09:50:57 $
- * Version: $Revision: 1.238 $
+ * Date   : $Date: 2003/09/18 14:50:33 $
+ * Version: $Revision: 1.239 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.238 $ $Date: 2003/09/18 09:50:57 $
+ * @version $Revision: 1.239 $ $Date: 2003/09/18 14:50:33 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -2117,34 +2117,14 @@ public class CmsDriverManager extends Object {
     public int deleteBackups(CmsObject cms, CmsRequestContext context, long timestamp, int versions) throws CmsException {
         int lastVersion = 1;
 
-        // TODO: this is the old code, remove it when this method is completed
-        /*Hashtable histproperties = cms.getRegistry().getSystemValues(I_CmsConstants.C_REGISTRY_HISTORY);
-        String delete = (String) histproperties.get(I_CmsConstants.C_REGISTRY_HISTORY_DELETE);
-        if ("true".equalsIgnoreCase(delete)) {
-            // only an Administrator can delete the backups
-            if (isAdmin(context)) {
-                lastVersion = m_backupDriver.deleteBackups(timestamp);
-            } else {
-                throw new CmsSecurityException("[" + this.getClass().getName() + "] deleteBackups()", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);                                            
-            }
-        } */
 
-        // TODO: make a own method in the registry for that
-        // only an Administrator can delete the backups
         if (isAdmin(context)) {
             // get all resources from the backup table
             // do only get one version per resource
             List allBackupFiles = m_backupDriver.readBackupFileHeaders();
             // get the tagId of the oldest Backupproject which will be kept in the database
             int maxTag = m_backupDriver.readBackupProjectTag(timestamp);
-            Iterator i = allBackupFiles.iterator();
-            // TODO: work in progress, continue this code later           
-            //System.err.println("");
-            //System.err.println("");    
-            //System.err.println("[keep verions] "+versions);
-            //System.err.println("[max tag] "+maxTag);
-            //System.err.println("[delete before] "+Utils.getNiceDate(timestamp));  
-            //System.err.println("");             
+            Iterator i = allBackupFiles.iterator();        
             while (i.hasNext()) {
                 // now check get a single backup resource
                 CmsBackupResource res = (CmsBackupResource)i.next();
@@ -4457,7 +4437,7 @@ public class CmsDriverManager extends Object {
         // initialize the key generator
         m_keyGenerator = (I_CmsCacheKey)Class.forName(config.getString(I_CmsConstants.C_CONFIGURATION_CACHE + ".keygenerator")).newInstance(); 
 
-        // initalize the caches
+        // initalize the caches 
         m_userCache = Collections.synchronizedMap(new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".user", 50)));
         m_groupCache = Collections.synchronizedMap(new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".group", 50)));
         m_userGroupsCache = Collections.synchronizedMap(new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".usergroups", 50)));
@@ -6549,7 +6529,7 @@ public class CmsDriverManager extends Object {
                 Map parentValue;
                 do {
                     try {
-                        parentValue = (Map)readProperties(context, resource, siteRoot, false);
+                        parentValue = readProperties(context, resource, siteRoot, false);
                         parentValue.putAll(value);
                         value.clear();
                         value.putAll(parentValue);

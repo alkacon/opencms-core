@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminHistoryProperties.java,v $
-* Date   : $Date: 2003/09/17 14:30:13 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2003/09/18 14:50:34 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -246,8 +246,8 @@ public class CmsAdminHistoryProperties extends CmsWorkplaceDefault implements I_
      * @return String - String that is written to the opencms -log
      */
     public String launch(CmsObject cms, String parameter) throws CmsException {
-        int version = executeDeleting(cms, parameter);
-        return ("CmsAdminHistoryProperties.launch(): History cleaned, oldest version: "+version);
+        executeDeleting(cms, parameter);
+        return ("CmsAdminHistoryProperties.launch(): History cleaned");
     }
     
     /**
@@ -255,11 +255,9 @@ public class CmsAdminHistoryProperties extends CmsWorkplaceDefault implements I_
      * 
      * @param CmsObject
      * @param parameter
-     * @return int - The version-id of the oldest remaining version
      */
-    private int executeDeleting(CmsObject cms, String parameter) throws CmsException{
-        int versionId = 0;
-        // get the number of weeks from the registry
+    private void executeDeleting(CmsObject cms, String parameter) throws CmsException{
+         // get the number of weeks from the registry
         Hashtable histproperties = cms.getRegistry().getSystemValues(C_REGISTRY_HISTORY);
         String weeks = (String)histproperties.get(C_REGISTRY_HISTORY_WEEKS);
         if((weeks != null) && !("".equals(weeks.trim()))){
@@ -267,8 +265,8 @@ public class CmsAdminHistoryProperties extends CmsWorkplaceDefault implements I_
             long oneWeek = 604800000;
             long maxDate = System.currentTimeMillis() - (intWeeks * oneWeek);
             //TODO: the second parameter is still a dummy
-            versionId = cms.deleteBackups(maxDate, intWeeks*2);
+            cms.deleteBackups(maxDate, intWeeks*2);
         }
-        return versionId;
+       
     } 
 }

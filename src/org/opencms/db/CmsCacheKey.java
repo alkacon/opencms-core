@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsCacheKey.java,v $
- * Date   : $Date: 2003/09/18 09:50:57 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/09/18 14:50:34 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import com.opencms.file.CmsResource;
 import com.opencms.file.CmsUser;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/09/18 09:50:57 $
+ * @version $Revision: 1.3 $ $Date: 2003/09/18 14:50:34 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsCacheKey implements I_CmsCacheKey {
@@ -46,7 +46,7 @@ public class CmsCacheKey implements I_CmsCacheKey {
      * Constructor to create a new instance of CmsCacheKey.<p>
      */
     public CmsCacheKey() { 
-    };
+    }
     
     /**
      * @see org.opencms.db.I_CmsCacheKey#createPermissionKey(com.opencms.file.CmsRequestContext, com.opencms.file.CmsResource, org.opencms.security.CmsPermissionSet, boolean)

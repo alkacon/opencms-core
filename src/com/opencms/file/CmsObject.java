@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/09/17 14:30:14 $
-* Version: $Revision: 1.412 $
+* Date   : $Date: 2003/09/18 14:50:34 $
+* Version: $Revision: 1.413 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.412 $
+ * @version $Revision: 1.413 $
  */
 public class CmsObject {
 
@@ -905,10 +905,9 @@ public class CmsObject {
      * 
      * @param timestamp timestamp which defines the date after which backup resources must be deleted
      * @param the number of versions per file which should kept in the system.
-     * @return int The oldest remaining version
      */
-    public int deleteBackups(long timestamp, int versions) throws CmsException {
-        return m_driverManager.deleteBackups(this, m_context, timestamp, versions);
+    public void deleteBackups(long timestamp, int versions) throws CmsException {
+       m_driverManager.deleteBackups(this, m_context, timestamp, versions);
     }
 
     /**
