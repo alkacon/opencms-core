@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectPublish.java,v $
-* Date   : $Date: 2001/05/17 14:10:32 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2001/06/22 16:01:33 $
+* Version: $Revision: 1.16 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.15 $ $Date: 2001/05/17 14:10:32 $
+ * @version $Revision: 1.16 $ $Date: 2001/06/22 16:01:33 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -128,7 +128,8 @@ public class CmsAdminProjectPublish extends CmsWorkplaceDefault implements I_Cms
                 if(doPublish.isAlive()) {
                     String time = (String)parameters.get("time");
                     int wert = Integer.parseInt(time);
-                    wert += 20;
+                    //wert += 20;
+                    wert += 2;
                     xmlTemplateDocument.setData("time", "" + wert);
                     templateSelector = "wait";
                 } else {

@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceFolder.java,v $
-* Date   : $Date: 2001/05/23 09:19:29 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2001/06/22 16:01:33 $
+* Version: $Revision: 1.25 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -45,7 +45,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.24 $ $Date: 2001/05/23 09:19:29 $
+ * @version $Revision: 1.25 $ $Date: 2001/06/22 16:01:33 $
  */
 
 public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -156,17 +156,26 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
                         CmsFolder folder = cms.createFolder(currentFilelist, newFolder);
                         cms.lockResource(folder.getAbsolutePath());
                         cms.writeProperty(folder.getAbsolutePath(), C_PROPERTY_TITLE, title);
+                        // create the folder in content bodys
+                        try{
+                            CmsFolder bodyFolder = cms.createFolder(C_CONTENTBODYPATH.substring(0, C_CONTENTBODYPATH.length()-1)+currentFilelist, newFolder);
+                            cms.lockResource(bodyFolder.getAbsolutePath());
+                            cms.writeProperty(bodyFolder.getAbsolutePath(), C_PROPERTY_TITLE, title);
+                        } catch (CmsException ce){
+                            //throw ce;
+                        }
                         // now check if navigation informations have to be added to the new page.
                         if(navtitle != null) {
                             cms.writeProperty(folder.getAbsolutePath(), C_PROPERTY_NAVTEXT, navtitle);
                             // update the navposition.
                             if(navpos != null) {
                                 updateNavPos(cms, folder, navpos);
+                                // ednfal(20.06.01) new projectmechanism: do not unlock the new folder
                                 // try to unlock the folder, ignore the Exception (the parent folder is looked)
-                                try{
-                                    cms.unlockResource(folder.getAbsolutePath());
-                                }catch(CmsException e){
-                                }
+                                //try{
+                                //    cms.unlockResource(folder.getAbsolutePath());
+                                //}catch(CmsException e){
+                                //}
                                 // prepare to call the dialog for creating the index.html page
                                 session.putValue(C_PARA_FILELIST, folder.getAbsolutePath());
                                 xmlTemplateDocument.setData("indexlocation", folder.getAbsolutePath());
@@ -211,14 +220,23 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
                         CmsFolder folder = cms.createFolder(currentFilelist, newFolder);
                         cms.lockResource(folder.getAbsolutePath());
                         cms.writeProperties(folder.getAbsolutePath(), allProperties);
+                        // create the folder in content bodys
+                        try{
+                            CmsFolder bodyFolder = cms.createFolder(C_CONTENTBODYPATH.substring(0, C_CONTENTBODYPATH.length()-1)+currentFilelist, newFolder);
+                            cms.lockResource(bodyFolder.getAbsolutePath());
+                            cms.writeProperty(bodyFolder.getAbsolutePath(), C_PROPERTY_TITLE, title);
+                        } catch (CmsException ce){
+                            //throw ce;
+                        }
                         // update the navposition.
                         if ((navtitle != null) && (navpos != null)){
                             updateNavPos(cms, folder, navpos);
+                            // ednfal(20.06.01) new projectmechanism: do not unlock the new folder
                             // try to unlock the folder, ignore the Exception (the parent folder is looked)
-                            try{
-                                cms.unlockResource(folder.getAbsolutePath());
-                            }catch(CmsException e){
-                            }
+                            //try{
+                            //    cms.unlockResource(folder.getAbsolutePath());
+                            //}catch(CmsException e){
+                            //}
                             // prepare to call the new Page dialog
                             xmlTemplateDocument.setData("indexlocation", folder.getAbsolutePath());
                             session.putValue(C_PARA_FILELIST, folder.getAbsolutePath());

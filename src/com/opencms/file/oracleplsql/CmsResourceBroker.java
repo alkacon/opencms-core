@@ -2,8 +2,8 @@ package com.opencms.file.oracleplsql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2001/05/17 14:10:31 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2001/06/22 16:00:59 $
+ * Version: $Revision: 1.25 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -49,7 +49,7 @@ import com.opencms.template.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.24 $ $Date: 2001/05/17 14:10:31 $
+ * @version $Revision: 1.25 $ $Date: 2001/06/22 16:00:59 $
  */
 public class CmsResourceBroker extends com.opencms.file.genericSql.CmsResourceBroker {
 
@@ -165,26 +165,7 @@ public void copyFile(CmsUser currentUser, CmsProject currentProject, String sour
 		throw e;
 	}
 }
-/**
- * Copies a resource from the online project to a new, specified project.<br>
- * Copying a resource will copy the file header or folder into the specified
- * offline project and set its state to UNCHANGED.
- *
- * <B>Security:</B>
- * Access is granted, if:
- * <ul>
- * <li>the user is the owner of the project</li>
- * </ul>
- *
- * @param currentUser The user who requested this method.
- * @param currentProject The current project of the user.
- * @param resource The name of the resource.
- 	 * @exception CmsException  Throws CmsException if operation was not succesful.
- */
-public void copyResourceToProject(CmsUser currentUser, CmsProject currentProject, String resource) throws CmsException {
-	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
-	dbAccess.copyResourceToProject(currentUser, currentProject, resource);
-}
+
 /**
  * return the correct DbAccess class.
  * This method should be overloaded by all other Database Drivers

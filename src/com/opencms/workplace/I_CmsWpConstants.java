@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
-* Date   : $Date: 2001/04/27 14:40:07 $
-* Version: $Revision: 1.105 $
+* Date   : $Date: 2001/06/22 16:01:33 $
+* Version: $Revision: 1.106 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -35,7 +35,7 @@ package com.opencms.workplace;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.105 $ $Date: 2001/04/27 14:40:07 $
+ * @version $Revision: 1.106 $ $Date: 2001/06/22 16:01:33 $
  */
 
 public interface I_CmsWpConstants {
@@ -56,6 +56,11 @@ public interface I_CmsWpConstants {
     /** Parameter for content templates folder */
     public static final String C_CONTENTTEMPLATEPATH = C_CONTENTPATH + "templates/";
 
+    /** Parameter for content internal folder */
+    public static final String C_CONTENTINTERNALPATH = C_CONTENTPATH + "internal/";
+
+    /** Parameter for content default_bodies folder */
+    public static final String C_CONTENTDEFAULTBODIESPATH = C_CONTENTPATH + "default_bodies/";
 
     /** Parameter for content body folder */
     public static final String C_CONTENTBODYPATH = C_CONTENTPATH + "bodys/";
@@ -1146,6 +1151,10 @@ public interface I_CmsWpConstants {
 
     /** Parameter of projectnew */
     public static final String C_PROJECTNEW_MANAGERGROUP = "MANAGERGROUP";
+
+
+    /** Parameter of projectnew */
+    public static final String C_PROJECTNEW_TYPE = "TYPE";
 
 
     /** Parameter of projectnew */

@@ -45,9 +45,7 @@ addFileExtension jpeg image
 addFileExtension jpg image
 addFileExtension gif image
 addFileExtension js script
-createProject  "__setupproj" "The project to setup the cms" Administrators Administrators
 setCurrentProject 2
-copyResourceToProject "/"
 importResources "workplace/"
 publishProject "2"
 writeExportPath "export/"

@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsSynchronize.java,v $
- * Date   : $Date: 2001/04/17 14:39:10 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2001/06/22 16:00:28 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -44,7 +44,7 @@ import source.org.apache.java.util.*;
  * into the cms and back.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.5 $ $Date: 2001/04/17 14:39:10 $
+ * @version $Revision: 1.6 $ $Date: 2001/06/22 16:00:28 $
  */
 public class CmsSynchronize implements I_CmsConstants{
 
@@ -274,7 +274,7 @@ public class CmsSynchronize implements I_CmsConstants{
 								m_synchronizeList.putDates(sfsAbsolutePath+currentFile.getName(), newFile.getDateLastModified(), currentFile.lastModified());
 							} catch (CmsException e) {
 								if (e.getType() == CmsException.C_FILE_EXISTS){
-                                    System.out.println("File "+sfsAbsolutePath+currentFile.getName()+" already exists!");
+                                    //System.out.println("File "+sfsAbsolutePath+currentFile.getName()+" already exists!");
 									// if the file exists try to update the file
 									//try {
 									//	CmsFile updFile = m_cms.readFile(sfsAbsolutePath+currentFile.getName());

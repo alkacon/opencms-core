@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2001/05/31 12:04:15 $
- * Version: $Revision: 1.160 $
+ * Date   : $Date: 2001/06/22 16:00:28 $
+ * Version: $Revision: 1.161 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -49,7 +49,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.160 $ $Date: 2001/05/31 12:04:15 $
+ * @version $Revision: 1.161 $ $Date: 2001/06/22 16:00:28 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -567,6 +567,23 @@ public CmsTask createProject(String projectname, int projectType, String roleNam
 public CmsProject createProject(String name, String description, String groupname, String managergroupname) throws CmsException
 {
     CmsProject newProject = m_rb.createProject(m_context.currentUser(), m_context.currentProject(), name, description, groupname, managergroupname);
+    return (newProject);
+}
+
+/**
+ * Creates a new project.
+ *
+ * @param name the name of the project to read.
+ * @param description the description for the new project.
+ * @param groupname the name of the group to be set.
+ * @param managergroupname the name of the managergroup to be set.
+ * @param projecttype the type of the project (normal or temporary)
+ *
+ * @exception CmsException if operation was not successful.
+ */
+public CmsProject createProject(String name, String description, String groupname, String managergroupname, String projecttype) throws CmsException
+{
+    CmsProject newProject = m_rb.createProject(m_context.currentUser(), m_context.currentProject(), name, description, groupname, managergroupname, Integer.parseInt(projecttype));
     return (newProject);
 }
 /**
@@ -1421,10 +1438,15 @@ public CmsProject onlineProject() throws CmsException {
  */
 public void publishProject(int id) throws CmsException {
     clearcache();
+    long startTime = System.currentTimeMillis();
     Vector changedResources = m_rb.publishProject(m_context.currentUser(), m_context.currentProject(), id);
     try{
         getRequestContext().getElementCache().cleanupCache(changedResources);
     }catch (Exception e){}
+    long stopTime = System.currentTimeMillis();
+    if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+        A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsObject] publishProject time: "+(stopTime-startTime));
+    }
     clearcache();
 }
 /**

@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2001/04/04 12:19:14 $
-* Version: $Revision: 1.30 $
+* Date   : $Date: 2001/06/22 16:00:10 $
+* Version: $Revision: 1.31 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -41,7 +41,7 @@ import source.org.apache.java.util.*;
  *
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.30 $ $Date: 2001/04/04 12:19:14 $
+ * @version $Revision: 1.31 $ $Date: 2001/06/22 16:00:10 $
  */
 public class CmsShellCommands implements I_CmsConstants {
 
@@ -545,7 +545,23 @@ public class CmsShellCommands implements I_CmsConstants {
      */
     public void createProject(String name, String description, String groupname, String managergroupname) {
         try {
-            System.out.println(m_cms.createProject(name, description, groupname, managergroupname).toString());
+            System.out.println(m_cms.createProject(name, description, groupname, managergroupname));
+        }
+        catch(Exception exc) {
+            CmsShell.printException(exc);
+        }
+    }
+
+    /**
+     * Creates a project.
+     *
+     * @param name The name of the project to read.
+     * @param description The description for the new project.
+     * @param groupname the name of the group to be set.
+     */
+    public void createProject(String name, String description, String groupname, String managergroupname, String projecttype) {
+        try {
+            System.out.println(m_cms.createProject(name, description, groupname, managergroupname, projecttype));
         }
         catch(Exception exc) {
             CmsShell.printException(exc);

@@ -148,6 +148,13 @@ var lasturl=']]><PROCESS>backButton</PROCESS><![CDATA[';
 								</td>
 								<td class=formular>&nbsp;</td>
 							</tr>
+							<tr> 
+								<td class=formular width=10%>&nbsp;</td>
+								<td class=formular>
+								<input type=checkbox name="projecttype" value="projecttype">]]><LABEL value="label.projecttype"/><![CDATA[
+								</td>
+								<td class=formular>&nbsp;</td>
+							</tr>
 				</table>
 			</td></tr>
 			
@@ -208,7 +215,7 @@ function reload(){
 </SCRIPT>
 
 </HEAD>
-<BODY onload="setTimeout('reload()', 15000);">
+<BODY onload="setTimeout('reload()', 1000);">
 <CENTER>
 <!-- Begin Logo opencms -->
 <table border=0 cellspacing=0 cellpadding=0 align=center height=100>
@@ -225,11 +232,6 @@ function reload(){
 </tr>
 </table>
 <!-- End please wait text -->
-<table cellspacing=0 cellpadding=0 border=0>
-	<tr><br><br>
-		<td><IMG width=]]><PROCESS>time</PROCESS><![CDATA[ height=20 border=0 hspace=0 src="]]><METHOD name="picsUrl">pixel_blue.gif</METHOD><![CDATA["></td>
-	</tr>
-</table>
 </CENTER>
 </BODY>
 </HTML>

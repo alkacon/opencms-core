@@ -1,10 +1,19 @@
 DROP TABLE CMS_SYSTEMPROPERTIES;
 DROP TABLE CMS_USERS;
 DROP TABLE CMS_PROJECTS;
+DROP TABLE CMS_PROJECTRESOURCES;
 DROP TABLE CMS_PROPERTYDEF;
 DROP TABLE CMS_PROPERTIES;
 DROP TABLE CMS_RESOURCES;
 DROP TABLE CMS_FILES;
+DROP TABLE CMS_ONLINE_PROPERTYDEF;
+DROP TABLE CMS_ONLINE_PROPERTIES;
+DROP TABLE CMS_ONLINE_RESOURCES;
+DROP TABLE CMS_ONLINE_FILES;
+DROP TABLE CMS_BACKUP_PROPERTYDEF;
+DROP TABLE CMS_BACKUP_PROPERTIES;
+DROP TABLE CMS_BACKUP_RESOURCES;
+DROP TABLE CMS_BACKUP_FILES;
 DROP TABLE CMS_GROUPS;
 DROP TABLE CMS_SYSTEMID;
 DROP TABLE CMS_GROUPUSERS;
@@ -57,7 +66,28 @@ PROJECT_TYPE int not null,
 primary key (PROJECT_ID),
 unique(PROJECT_NAME,PROJECT_CREATEDATE) );
 
+CREATE TABLE CMS_PROJECTRESOURCES
+(PROJECT_ID NUMBER NOT NULL,
+RESOURCE_NAME VARCHAR2(248) NOT NULL,
+PRIMARY KEY (PROJECT_ID, RESOURCE_NAME));
+
 CREATE TABLE CMS_PROPERTYDEF
+( PROPERTYDEF_ID int not null,
+PROPERTYDEF_NAME VARCHAR2(64) not null,
+RESOURCE_TYPE int not null,
+PROPERTYDEF_TYPE int not null,
+primary key(PROPERTYDEF_ID),
+unique(PROPERTYDEF_NAME, RESOURCE_TYPE) );
+
+CREATE TABLE CMS_ONLINE_PROPERTYDEF
+( PROPERTYDEF_ID int not null,
+PROPERTYDEF_NAME VARCHAR2(64) not null,
+RESOURCE_TYPE int not null,
+PROPERTYDEF_TYPE int not null,
+primary key(PROPERTYDEF_ID),
+unique(PROPERTYDEF_NAME, RESOURCE_TYPE) );
+
+CREATE TABLE CMS_BACKUP_PROPERTYDEF
 ( PROPERTYDEF_ID int not null,
 PROPERTYDEF_NAME VARCHAR2(64) not null,
 RESOURCE_TYPE int not null,
@@ -73,32 +103,103 @@ PROPERTY_VALUE VARCHAR2(255) not null,
 primary key(PROPERTY_ID),
 unique(PROPERTYDEF_ID, RESOURCE_ID) );
 
+CREATE TABLE CMS_ONLINE_PROPERTIES
+( PROPERTY_ID int not null,
+PROPERTYDEF_ID int not null,
+RESOURCE_ID int not null,
+PROPERTY_VALUE VARCHAR2(255) not null,
+primary key(PROPERTY_ID),
+unique(PROPERTYDEF_ID, RESOURCE_ID) );
+
+CREATE TABLE CMS_BACKUP_PROPERTIES
+( PROPERTY_ID int not null,
+PROPERTYDEF_ID int not null,
+RESOURCE_ID int not null,
+PROPERTY_VALUE VARCHAR2(255) not null,
+primary key(PROPERTY_ID),
+unique(PROPERTYDEF_ID, RESOURCE_ID) );
+
 CREATE TABLE CMS_RESOURCES
-( RESOURCE_ID int not null,
-PARENT_ID int not null,
-RESOURCE_NAME VARCHAR2(248) not null,
-RESOURCE_TYPE int not null,
-RESOURCE_FLAGS int not null,
-USER_ID int not null,
-GROUP_ID int not null,
-PROJECT_ID int not null,
-FILE_ID int not null,
-ACCESS_FLAGS int not null,
-STATE int not null,
-LOCKED_BY int not null,
-LAUNCHER_TYPE int not null,
-LAUNCHER_CLASSNAME VARCHAR2(255) not null,
-DATE_CREATED DATE not null,
-DATE_LASTMODIFIED DATE not null,
-RESOURCE_SIZE int not null,
-RESOURCE_LASTMODIFIED_BY int not null,
-primary key(RESOURCE_ID),
-unique(RESOURCE_NAME,PROJECT_ID) );
+(RESOURCE_ID int not null,
+ PARENT_ID int not null,
+ RESOURCE_NAME VARCHAR2(248) not null,
+ RESOURCE_TYPE int not null,
+ RESOURCE_FLAGS int not null,
+ USER_ID int not null,
+ GROUP_ID int not null,
+ PROJECT_ID int not null,
+ FILE_ID int not null,
+ ACCESS_FLAGS int not null,
+ STATE int not null,
+ LOCKED_BY int not null,
+ LAUNCHER_TYPE int not null,
+ LAUNCHER_CLASSNAME VARCHAR2(255) not null,
+ DATE_CREATED DATE not null,
+ DATE_LASTMODIFIED DATE not null,
+ RESOURCE_SIZE int not null,
+ RESOURCE_LASTMODIFIED_BY int not null,
+ primary key(RESOURCE_ID),
+ unique(RESOURCE_NAME));
+
+CREATE TABLE CMS_ONLINE_RESOURCES
+(RESOURCE_ID int not null,
+ PARENT_ID int not null,
+ RESOURCE_NAME VARCHAR2(248) not null,
+ RESOURCE_TYPE int not null,
+ RESOURCE_FLAGS int not null,
+ USER_ID int not null,
+ GROUP_ID int not null,
+ PROJECT_ID int not null,
+ FILE_ID int not null,
+ ACCESS_FLAGS int not null,
+ STATE int not null,
+ LOCKED_BY int not null,
+ LAUNCHER_TYPE int not null,
+ LAUNCHER_CLASSNAME VARCHAR2(255) not null,
+ DATE_CREATED DATE not null,
+ DATE_LASTMODIFIED DATE not null,
+ RESOURCE_SIZE int not null,
+ RESOURCE_LASTMODIFIED_BY int not null,
+ primary key(RESOURCE_ID),
+ unique(RESOURCE_NAME));
+
+CREATE TABLE CMS_BACKUP_RESOURCES
+(RESOURCE_ID int not null,
+ PARENT_ID int not null,
+ RESOURCE_NAME VARCHAR2(248) not null,
+ RESOURCE_TYPE int not null,
+ RESOURCE_FLAGS int not null,
+ USER_ID int not null,
+ GROUP_ID int not null,
+ PROJECT_ID int not null,
+ FILE_ID int not null,
+ ACCESS_FLAGS int not null,
+ STATE int not null,
+ LOCKED_BY int not null,
+ LAUNCHER_TYPE int not null,
+ LAUNCHER_CLASSNAME VARCHAR2(255) not null,
+ DATE_CREATED DATE not null,
+ DATE_LASTMODIFIED DATE not null,
+ RESOURCE_SIZE int not null,
+ RESOURCE_LASTMODIFIED_BY int not null,
+ VERSION_ID int not null,
+ primary key(RESOURCE_ID),
+ unique(VERSION_ID,RESOURCE_NAME,DATE_LASTMODIFIED) );
 
 CREATE TABLE CMS_FILES
-( FILE_ID int not null,
-FILE_CONTENT blob not null,
-primary key (FILE_ID) );
+(FILE_ID int not null,
+ FILE_CONTENT blob not null,
+ primary key (FILE_ID));
+
+CREATE TABLE CMS_ONLINE_FILES
+(FILE_ID int not null,
+ FILE_CONTENT blob not null,
+ primary key (FILE_ID));
+
+CREATE TABLE CMS_BACKUP_FILES
+(FILE_ID int not null,
+ FILE_CONTENT blob not null,
+ primary key (FILE_ID));
 
 CREATE TABLE CMS_GROUPS
 (GROUP_ID int not null,
@@ -120,10 +221,57 @@ USER_ID int not null,
 GROUPUSER_FLAGS int not null );
 
 CREATE TABLE CMS_Task
-( autofinish int, endtime date, escalationtyperef int, id int NOT NULL, initiatoruserref int, milestoneref int, name varchar(254), originaluserref int, agentuserref int, parent int, percentage varchar(50), permission varchar(50), priorityref int DEFAULT '2', roleref int, root int, starttime date, state int, tasktyperef int, timeout date, wakeuptime date, htmllink varchar(254), estimatetime int DEFAULT '86400', PRIMARY KEY (id));
-CREATE TABLE CMS_TaskType ( autofinish int, escalationtyperef int, htmllink varchar(254), id int NOT NULL, name varchar(50), permission varchar(50), priorityref int, roleref int, PRIMARY KEY (id) );
-CREATE TABLE CMS_TaskLog ( coment long, externalusername varchar(254), id int NOT NULL, starttime date, taskref int, userref int, type int DEFAULT '0', PRIMARY KEY (id) );
-CREATE TABLE CMS_TaskPar ( id int NOT NULL, parname varchar(50), parvalue varchar(50), ref int, PRIMARY KEY (id) );
+( autofinish int, 
+endtime date, 
+escalationtyperef int, 
+id int NOT NULL, 
+initiatoruserref int, 
+milestoneref int, 
+name varchar(254), 
+originaluserref int, 
+agentuserref int, 
+parent int, 
+percentage varchar(50), 
+permission varchar(50), 
+priorityref int DEFAULT '2', 
+roleref int, 
+root int, 
+starttime date, 
+state int, 
+tasktyperef int, 
+timeout date, 
+wakeuptime date, 
+htmllink varchar(254), 
+estimatetime int DEFAULT '86400', 
+PRIMARY KEY (id));
+
+CREATE TABLE CMS_TaskType 
+(autofinish int, 
+escalationtyperef int, 
+htmllink varchar(254), 
+id int NOT NULL, 
+name varchar(50), 
+permission varchar(50), 
+priorityref int, 
+roleref int, 
+PRIMARY KEY (id) );
+
+CREATE TABLE CMS_TaskLog 
+(coment long, 
+externalusername varchar(254), 
+id int NOT NULL, 
+starttime date, 
+taskref int, 
+userref int, 
+type int DEFAULT '0', 
+PRIMARY KEY (id));
+
+CREATE TABLE CMS_TaskPar 
+(id int NOT NULL, 
+parname varchar(50), 
+parvalue varchar(50), 
+ref int, 
+PRIMARY KEY (id));
 
 create table CMS_SESSIONS
 (SESSION_ID varchar(255) not null,
@@ -158,20 +306,20 @@ CREATE INDEX PROJECT_NAME ON
 CREATE INDEX PROJECT_TASKID ON
   CMS_PROJECTS(TASK_ID);
 
-create index projects_flags on
-cms_projects (project_flags);
+CREATE INDEX PROJECTS_FLAGS ON
+  CMS_PROJECTS (PROJECT_FLAGS);
 
-create index resources_type on
-cms_resources (resource_type);
+CREATE INDEX RESOURCES_TYPE ON
+  CMS_RESOURCES (RESOURCE_TYPE);
 
-create index resources_state on
-cms_resources (state);
+CREATE INDEX RESOURCES_STATE ON
+  CMS_RESOURCES (STATE);
 
-create index resources_project_type on
-cms_resources (project_id, resource_type);
+CREATE INDEX RESOURCES_PROJECT_TYPE ON
+  CMS_RESOURCES (PROJECT_ID, RESOURCE_TYPE);
 
-create index resources_resourceid_project on
-cms_resources (resource_id, project_id);
+CREATE INDEX RESOURCES_RESOURCEID_PROJECT ON
+  CMS_RESOURCES (RESOURCE_ID, PROJECT_ID);
 
 CREATE INDEX RESOURCE_FILEID ON
   CMS_RESOURCES(FILE_ID);
@@ -181,9 +329,6 @@ CREATE INDEX RESOURCE_GROUP ON
 
 CREATE INDEX RESOURCE_LOCKED_BY ON
   CMS_RESOURCES(LOCKED_BY);
-
-CREATE INDEX RESOURCE_NAME ON
-  CMS_RESOURCES(RESOURCE_NAME);
 
 CREATE INDEX RESOURCE_PARENTID ON
   CMS_RESOURCES(PARENT_ID);
@@ -206,15 +351,16 @@ CREATE INDEX TASK_PARENT ON
 CREATE INDEX TASK_TYPETASKREF ON
   CMS_TASK(TASKTYPEREF);
 
-
 CREATE INDEX TASKLOG_REF ON
   CMS_TASKLOG(TASKREF);
 
 CREATE INDEX TASKLOG_USERREF ON
   CMS_TASKLOG(USERREF);
 
-
 CREATE INDEX TASKPAR_REF ON
   CMS_TASKPAR(REF);
+
+CREATE INDEX PROJECTRESOURCE_RESOURCE_NAME ON
+  CMS_PROJECTRESOURCES(RESOURCE_NAME);
 
 @./oracleplsql/install_with_db.sql;

@@ -9,9 +9,11 @@ PACKAGE BODY opencmsAccess IS
     recResource cms_resources%ROWTYPE;
     vNextResource NUMBER;
     vNextPath cms_resources.resource_name%TYPE;
+    vOnlineProject NUMBER;
   BEGIN
-    -- project = online-project => false
-    IF pProjectID = opencmsConstants.C_PROJECT_ONLINE_ID THEN
+    -- project = online-project => false 
+    vOnlineProject := opencmsProject.onlineProject(pProjectID).project_id;
+    IF pProjectID = vOnlineProject THEN
       RETURN 0;
     END IF;
     -- no access for projekt => false
@@ -20,9 +22,11 @@ PACKAGE BODY opencmsAccess IS
     END IF;
     -- resource does not belong to the projekt with project_id = pProjectId => false
     BEGIN
-      select project_id, resource_name into vResProjectID, vNextPath
-             from cms_resources
-             where resource_id = pResourceID;
+      select max(p.project_id), max(r.resource_name) into vResProjectID, vNextPath
+             from cms_resources r, cms_projectresources p
+             where resource_id = pResourceID
+             and r.resource_name like concat(p.resource_name, '%')
+             and p.project_id in (pProjectID, vOnlineProject);
     EXCEPTION
       WHEN NO_DATA_FOUND THEN
         vResProjectID := null;
@@ -70,9 +74,11 @@ PACKAGE BODY opencmsAccess IS
     vResPath cms_resources.resource_name%TYPE;
     curResource userTypes.anyCursor;
     recResource cms_resources%ROWTYPE;
+    vOnlineProject NUMBER;
   BEGIN
     -- project = online-Project => false
-    IF pProjectID = opencmsConstants.C_PROJECT_ONLINE_ID THEN
+    vOnlineProject := opencmsProject.onlineProject(pProjectID).project_id;
+    IF pProjectID = vOnlineProject THEN
       RETURN 0;
     END IF;
     -- not accessProject => false
@@ -80,9 +86,11 @@ PACKAGE BODY opencmsAccess IS
       RETURN 0;
     END IF;
     BEGIN
-      select project_id, resource_name into vResProject, vResPath
-           from cms_resources
-           where resource_id = pResourceID;
+      select max(p.project_id), max(r.resource_name) into vResProject, vResPath
+             from cms_resources r, cms_projectresources p
+             where resource_id = pResourceID
+             and r.resource_name like concat(p.resource_name, '%')
+             and p.project_id in (pProjectID, vOnlineProject);
     EXCEPTION
       WHEN NO_DATA_FOUND THEN
         vResProject := NULL;
@@ -127,9 +135,11 @@ PACKAGE BODY opencmsAccess IS
     vResPath cms_resources.resource_name%TYPE;
     curResource userTypes.anyCursor;
     recResource cms_resources%ROWTYPE;
+    vOnlineProject NUMBER;
   BEGIN
     -- project = online-Project => false
-    IF pProjectID = opencmsConstants.C_PROJECT_ONLINE_ID THEN
+    vOnlineProject := opencmsProject.onlineProject(pProjectID).project_id;
+    IF pProjectID = vOnlineProject THEN
       RETURN 0;
     END IF;
     -- not accessProject => false
@@ -137,9 +147,11 @@ PACKAGE BODY opencmsAccess IS
       RETURN 0;
     END IF;
     BEGIN
-      select project_id, resource_name into vResProject, vResPath
-           from cms_resources
-           where resource_id = pResourceID;
+      select max(p.project_id), max(r.resource_name) into vResProject, vResPath
+             from cms_resources r, cms_projectresources p
+             where resource_id = pResourceID
+             and r.resource_name like concat(p.resource_name, '%')
+             and p.project_id in (pProjectID, vOnlineProject);
     EXCEPTION
       WHEN NO_DATA_FOUND THEN
         vResProject := NULL;
@@ -190,7 +202,7 @@ PACKAGE BODY opencmsAccess IS
     recGroupName cms_groups.group_name%TYPE;
   BEGIN
     -- project_id = online-project => true
-    IF pProjectID = opencmsConstants.C_PROJECT_ONLINE_ID THEN
+    IF pProjectID = opencmsProject.onlineProject(pProjectID).project_id THEN
       RETURN 1;
     END IF;
     BEGIN
@@ -234,14 +246,24 @@ PACKAGE BODY opencmsAccess IS
     vNextResource NUMBER;
     vNextPath cms_resources.resource_name%TYPE;
     vProjectId cms_resources.project_id%TYPE;
+    vOnlineProject NUMBER;
   BEGIN
     IF pResourceId IS NULL THEN
       RETURN 0;
     END IF;
     BEGIN
-      select resource_name, project_id into vNextPath, vProjectId
-           from cms_resources
-           where resource_id = pResourceID;
+      vOnlineProject := opencmsProject.onlineProject(pProjectId).project_id;
+      IF pProjectID = vOnlineProject THEN
+        select resource_name, project_id into vNextPath, vProjectId
+               from cms_online_resources
+               where resource_id = pResourceID;
+      ELSE
+        select max(p.project_id), max(r.resource_name) into vProjectId, vNextPath
+             from cms_resources r, cms_projectresources p
+             where resource_id = pResourceID
+             and r.resource_name like concat(p.resource_name, '%')
+             and p.project_id in (pProjectID, vOnlineProject);
+      END IF;
     EXCEPTION
       WHEN NO_DATA_FOUND THEN
         vNextPath := NULL;
@@ -282,9 +304,11 @@ PACKAGE BODY opencmsAccess IS
     vNextResource NUMBER;
     vNextPath cms_resources.resource_name%TYPE;
     vLockedBy NUMBER;
+    vOnlineProject NUMBER;
   BEGIN
     -- project = online-project => false
-    IF pProjectID = opencmsConstants.C_PROJECT_ONLINE_ID THEN
+    vOnlineProject := opencmsProject.onlineProject(pProjectID).project_id;
+    IF pProjectID = vOnlineProject THEN
       RETURN 0;
     END IF;
     -- NOT accessProject => false
@@ -292,10 +316,15 @@ PACKAGE BODY opencmsAccess IS
       RETURN 0;
     END IF;
     BEGIN
-      select project_id, resource_name, parent_id, locked_by
+      select a.project_id, b.resource_name, b.parent_id, b.locked_by
              into vResProjectID, vNextPath, vNextResource, vLockedBy
-             from cms_resources
-             where resource_id = pResourceID;
+             from (select max(p.project_id) project_id
+                   from cms_resources r, cms_projectresources p
+                   where resource_id = pResourceID
+                   and r.resource_name like concat(p.resource_name, '%')
+                   and p.project_id in (pProjectID, vOnlineProject)) a, 
+                   cms_resources b
+             where b.resource_id = pResourceID;
     EXCEPTION
       WHEN NO_DATA_FOUND THEN
         vResProjectId := null;
@@ -355,8 +384,14 @@ PACKAGE BODY opencmsAccess IS
 ---------------------------------------------------------------------------------------------------
   FUNCTION accessOther(pUserID NUMBER, pProjectID NUMBER, pResourceID NUMBER, pAccess NUMBER) RETURN NUMBER IS
     vAccessFlag NUMBER;
+    vOnlineProject NUMBER;
   BEGIN
-    select access_flags into vAccessFlag from cms_resources where resource_id = pResourceID;
+    vOnlineProject := opencmsProject.onlineProject(pProjectId).project_id;
+    IF pProjectID = vOnlineProject THEN
+      select access_flags into vAccessFlag from cms_online_resources where resource_id = pResourceID;
+    ELSE
+      select access_flags into vAccessFlag from cms_resources where resource_id = pResourceID;
+    END IF;
     IF bitand(vAccessFlag, pAccess) = pAccess THEN
       RETURN 1;
     END IF;
@@ -372,12 +407,20 @@ PACKAGE BODY opencmsAccess IS
     vAccessFlag NUMBER;
     vOwnerID NUMBER;
     vAdminId NUMBER;
+    vOnlineProject NUMBER;
   BEGIN
     select group_id into vAdminId from cms_groups where group_name = opencmsConstants.C_GROUP_ADMIN;
     IF opencmsGroup.userInGroup(pUserId, vAdminId) = 1 THEN
       RETURN 1;
     END IF;
-    select user_id, access_flags into vOwnerId, vAccessFlag from cms_resources where resource_id = pResourceId;
+    vOnlineProject := opencmsProject.onlineProject(pProjectId).project_id;
+    IF pProjectID = vOnlineProject THEN
+      select user_id, access_flags into vOwnerId, vAccessFlag
+             from cms_online_resources where resource_id = pResourceId;
+    ELSE
+      select user_id, access_flags into vOwnerId, vAccessFlag
+             from cms_resources where resource_id = pResourceId;
+    END IF;
     IF vOwnerId = pUserId THEN
       IF bitand(vAccessFlag, pAccess) = pAccess THEN
         RETURN 1;
@@ -394,10 +437,18 @@ PACKAGE BODY opencmsAccess IS
   FUNCTION accessGroup(pUserID NUMBER, pProjectID NUMBER, pResourceID NUMBER, pAccess NUMBER) RETURN NUMBER IS
     vGroupId NUMBER;
     vAccessFlag NUMBER;
+    vOnlineProject NUMBER;
   BEGIN
-    select group_id into vGroupId from cms_resources where resource_id = pResourceID;
+    vOnlineProject := opencmsProject.onlineProject(pProjectId).project_id;
+    IF pProjectID = vOnlineProject THEN
+      select group_id, access_flags into vGroupId, vAccessFlag
+             from cms_online_resources
+             where resource_id = pResourceID;
+    ELSE
+      select group_id, access_flags into vGroupId, vAccessFlag
+             from cms_resources where resource_id = pResourceID;
+    END IF;
     IF opencmsGroup.userInGroup(pUserID, vGroupId) = 1 THEN
-      select access_flags into vAccessFlag from cms_resources where resource_id = pResourceID;
       IF bitand(vAccessFlag, pAccess) = pAccess THEN
         RETURN 1;
       END IF;

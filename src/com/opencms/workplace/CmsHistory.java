@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsHistory.java,v $
-* Date   : $Date: 2001/02/22 15:29:06 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2001/06/22 16:01:33 $
+* Version: $Revision: 1.20 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -41,7 +41,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.19 $ $Date: 2001/02/22 15:29:06 $
+ * @version $Revision: 1.20 $ $Date: 2001/06/22 16:01:33 $
  */
 
 public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -150,9 +150,9 @@ public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,
             // fill the names and values
             for(int i = 0;i < allFiles.size();i++) {
                 CmsFile file = ((CmsFile)allFiles.elementAt(i));
-                if(file.getState() != C_STATE_UNCHANGED) {
+                //if(file.getState() != C_STATE_UNCHANGED) {
                     CmsProject project = cms.readProject(file);
-                    if(project.getFlags() == this.C_PROJECT_STATE_ARCHIVE) {
+                  //  if(project.getFlags() == this.C_PROJECT_STATE_ARCHIVE) {
                         String projectName = "unknown Project";
                         String projectId = "-1";
                         if(project != null) {
@@ -160,7 +160,8 @@ public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,
                             projectId = project.getId() + "";
                         }
                         //long updated = file.getDateLastModified();
-                        long updated = cms.readProject(file).getPublishingDate();
+                        //long updated = cms.readProject(file).getPublishingDate();
+                        long updated = file.getDateCreated();
                         String userName = cms.readUser(file.getResourceLastModifiedBy()).getName();
                         long lastModified = file.getDateLastModified();
                         String output = Utils.getNiceDate(lastModified) + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
@@ -168,8 +169,8 @@ public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                         + userName;
                         names.addElement(output);
                         values.addElement(projectId);
-                    }
-                }
+                    //}
+                //}
             }
         }
         return new Integer(-1);

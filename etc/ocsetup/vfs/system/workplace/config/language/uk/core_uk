@@ -562,6 +562,7 @@
 			<project>Project</project>
 			<projectdescription>Description</projectdescription>
 			<projectname>Project Name</projectname>
+			<projecttype>Delete project after publishing</projecttype>
 			<publishedat>Published</publishedat>
 			<publishedby>Published by</publishedby>
 			<readrights>permission to read for others</readrights>

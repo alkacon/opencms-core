@@ -2,11 +2,11 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsProject.java,v $
- * Date   : $Date: 2000/10/31 13:11:24 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2001/06/22 16:00:28 $
+ * Version: $Revision: 1.28 $
  *
- * Copyright (C) 2000  The OpenCms Group 
- * 
+ * Copyright (C) 2000  The OpenCms Group
+ *
  * This File is part of OpenCms -
  * the Open Source Content Mananagement System
  *
@@ -14,15 +14,15 @@ package com.opencms.file;
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * For further information about OpenCms, please see the
  * OpenCms Website: http://www.opencms.com
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * long with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
@@ -30,25 +30,26 @@ package com.opencms.file;
 
 import com.opencms.core.*;
 import java.sql.*;
+import java.util.Vector;
 import com.opencms.util.SqlHelper;
 
 /**
- * This class describes a project. A project is used to handle versions of 
+ * This class describes a project. A project is used to handle versions of
  * one resource.
- * 
+ *
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Anders Fugmann
  * @author Jan Krag
- * @version $Revision: 1.27 $ $Date: 2000/10/31 13:11:24 $
+ * @version $Revision: 1.28 $ $Date: 2001/06/22 16:00:28 $
  */
 public class CmsProject implements I_CmsConstants, Cloneable{
-	
+
 	/**
 	 * The id of this project.
 	 */
 	private int m_id = C_UNKNOWN_ID;
-	
+
 	/**
 	 * The user_id of the owner.
 	 */
@@ -58,62 +59,68 @@ public class CmsProject implements I_CmsConstants, Cloneable{
 	 * The group_id of the group, who may access the project.
 	 */
 	private int m_groupId = C_UNKNOWN_ID;
-	
+
 	/**
 	 * The manager group_id of the group, who may manage the project.
 	 */
 	private int m_managergroupId = C_UNKNOWN_ID;
-	
+
 	/**
 	 * The task_id for this project.
 	 */
 	private int m_taskId = C_UNKNOWN_ID;
-	
+
 	/**
 	 * The name of this project.
 	 */
 	private String m_name = null;
-	
+
 	/**
 	 * The description of this project.
 	 */
 	private String m_description = null;
-	
+
 	 /**
 	 * The manager group  of this resource.
 	 */
 	private int m_managerGroupId;
-	
+
 	/**
 	 * The creation date of this project.
 	 */
 	private long m_createdate = C_UNKNOWN_LONG;
-	
+
 	/**
 	 * The publishing date of this project.
 	 */
 	private long m_publishingdate = C_UNKNOWN_LONG;
-	
+
 	/**
 	 * The state of this project.
 	 */
 	private int m_flags = C_PROJECT_STATE_UNLOCKED;
-	
+
 	/**
 	 * The user-id of the publisher
 	 */
 	private int m_publishedBy = C_UNKNOWN_ID;
-	
+
 	/**
 	 * The project type
 	 */
 	private int m_type = C_UNKNOWN_ID;
 
-	public CmsProject(int projectId, String name, String description, int taskId, 
-					  int ownerId, int group, int managerGroup, int flags, 
-					  Timestamp createdate, Timestamp publishingdate, int publishedBy, 
+    /**
+     * The resources of the project
+     */
+    private Vector m_projectresources = null;
+
+
+	public CmsProject(int projectId, String name, String description, int taskId,
+					  int ownerId, int group, int managerGroup, int flags,
+					  Timestamp createdate, Timestamp publishingdate, int publishedBy,
 					  int type) {
-		
+
 		m_id = projectId;
 		m_name = name;
 		m_description = description;
@@ -143,20 +150,20 @@ public class CmsProject implements I_CmsConstants, Cloneable{
  * @param rs java.sql.ResultSet
  */
 public CmsProject(ResultSet res, com.opencms.file.genericSql.CmsQueries m_cq) throws SQLException {
-				 this(res.getInt(m_cq.C_PROJECTS_PROJECT_ID),
-							res.getString(m_cq.C_PROJECTS_PROJECT_NAME),
-							res.getString(m_cq.C_PROJECTS_PROJECT_DESCRIPTION),
-							res.getInt(m_cq.C_PROJECTS_TASK_ID),
-							res.getInt(m_cq.C_PROJECTS_USER_ID),
-							res.getInt(m_cq.C_PROJECTS_GROUP_ID),
-							res.getInt(m_cq.C_PROJECTS_MANAGERGROUP_ID),
-							res.getInt(m_cq.C_PROJECTS_PROJECT_FLAGS),
-							SqlHelper.getTimestamp(res,m_cq.C_PROJECTS_PROJECT_CREATEDATE),
-							SqlHelper.getTimestamp(res,m_cq.C_PROJECTS_PROJECT_PUBLISHDATE),
-							res.getInt(m_cq.C_PROJECTS_PROJECT_PUBLISHED_BY),
-							res.getInt(m_cq.C_PROJECTS_PROJECT_TYPE) );
+				 this(res.getInt(m_cq.get("C_PROJECTS_PROJECT_ID")),
+							res.getString(m_cq.get("C_PROJECTS_PROJECT_NAME")),
+							res.getString(m_cq.get("C_PROJECTS_PROJECT_DESCRIPTION")),
+							res.getInt(m_cq.get("C_PROJECTS_TASK_ID")),
+							res.getInt(m_cq.get("C_PROJECTS_USER_ID")),
+							res.getInt(m_cq.get("C_PROJECTS_GROUP_ID")),
+							res.getInt(m_cq.get("C_PROJECTS_MANAGERGROUP_ID")),
+							res.getInt(m_cq.get("C_PROJECTS_PROJECT_FLAGS")),
+							SqlHelper.getTimestamp(res,m_cq.get("C_PROJECTS_PROJECT_CREATEDATE")),
+							SqlHelper.getTimestamp(res,m_cq.get("C_PROJECTS_PROJECT_PUBLISHDATE")),
+							res.getInt(m_cq.get("C_PROJECTS_PROJECT_PUBLISHED_BY")),
+							res.getInt(m_cq.get("C_PROJECTS_PROJECT_TYPE")));
 }
-	/** 
+	/**
 	* Clones the CmsProject by creating a new CmsProject Object.
 	* @return Cloned CmsProject.
 	*/
@@ -167,11 +174,11 @@ public CmsProject(ResultSet res, com.opencms.file.genericSql.CmsQueries m_cq) th
 									   this.m_flags,new Timestamp(this.m_createdate),
 									   new Timestamp(this.m_publishingdate),this.m_publishedBy,
 									   this.m_type);
-		return project;    
+		return project;
 	}
 	/**
 	 * Compares the overgiven object with this object.
-	 * 
+	 *
 	 * @return true, if the object is identically else it returns false.
 	 */
 	public boolean equals(Object obj) {
@@ -187,7 +194,7 @@ public CmsProject(ResultSet res, com.opencms.file.genericSql.CmsQueries m_cq) th
 	}
 	/**
 	 * Returns the creation date of this project.
-	 * 
+	 *
 	 * @return the creation date of this project.
 	 */
 	public long getCreateDate() {
@@ -195,7 +202,7 @@ public CmsProject(ResultSet res, com.opencms.file.genericSql.CmsQueries m_cq) th
 	}
 	/**
 	 * Returns the description of this project.
-	 * 
+	 *
 	 * @return description The description of this project.
 	 */
 	public String getDescription() {
@@ -207,9 +214,9 @@ public CmsProject(ResultSet res, com.opencms.file.genericSql.CmsQueries m_cq) th
 	}
 	/**
 	 * Returns the state of this project.<BR/>
-	 * This may be C_PROJECT_STATE_UNLOCKED, C_PROJECT_STATE_LOCKED, 
+	 * This may be C_PROJECT_STATE_UNLOCKED, C_PROJECT_STATE_LOCKED,
 	 * C_PROJECT_STATE_ARCHIVE.
-	 * 
+	 *
 	 * @return the state of this project.
 	 */
 	public int getFlags() {
@@ -217,7 +224,7 @@ public CmsProject(ResultSet res, com.opencms.file.genericSql.CmsQueries m_cq) th
 	}
 	/**
 	 * Returns the groupid of this project.
-	 * 
+	 *
 	 * @return the groupid of this project.
 	 */
 	public int getGroupId() {
@@ -225,15 +232,15 @@ public CmsProject(ResultSet res, com.opencms.file.genericSql.CmsQueries m_cq) th
 	}
 	/**
 	 * Returns the id of this project.
-	 * 
+	 *
 	 * @return the id of this project.
-	 */	
+	 */
 	public int getId() {
 		return(m_id);
 	}
 	/**
 	 * Returns the manager groupid of this project.
-	 * 
+	 *
 	 * @return the manager groupid of this project.
 	 */
 	public int getManagerGroupId() {
@@ -241,7 +248,7 @@ public CmsProject(ResultSet res, com.opencms.file.genericSql.CmsQueries m_cq) th
 	}
 	/**
 	 * Returns the name of this project.
-	 * 
+	 *
 	 * @return the name of this project.
 	 */
 	public String getName() {
@@ -249,7 +256,7 @@ public CmsProject(ResultSet res, com.opencms.file.genericSql.CmsQueries m_cq) th
 	}
 	/**
 	 * Returns the userid of the project owner.
-	 * 
+	 *
 	 * @return the userid of the project owner.
 	 */
 	public int getOwnerId() {
@@ -257,7 +264,7 @@ public CmsProject(ResultSet res, com.opencms.file.genericSql.CmsQueries m_cq) th
 	}
 	/**
 	 * Gets the published-by value.
-	 * 
+	 *
 	 * @return the published-by value.
 	 */
 	public int getPublishedBy() {
@@ -265,7 +272,7 @@ public CmsProject(ResultSet res, com.opencms.file.genericSql.CmsQueries m_cq) th
 	}
 	/**
 	 * Returns the publishing date of this project.
-	 * 
+	 *
 	 * @return the publishing date of this project.
 	 */
 	public long getPublishingDate() {
@@ -273,7 +280,7 @@ public CmsProject(ResultSet res, com.opencms.file.genericSql.CmsQueries m_cq) th
 	}
 	/**
 	 * Returns the taskid of this project.
-	 * 
+	 *
 	 * @return the taskid of this project.
 	 */
    public  int getTaskId() {
@@ -281,15 +288,30 @@ public CmsProject(ResultSet res, com.opencms.file.genericSql.CmsQueries m_cq) th
 	}
 	/**
 	 * Gets the type.
-	 * 
+	 *
 	 * @return the type.
 	 */
-	int getType() {
+	public int getType() {
 		return m_type;
 	}
+
+    /**
+     * Gets the projectresources
+     */
+    public Vector getProjectResources(){
+        return m_projectresources;
+    }
+
+    /**
+     * Sets the projectresources
+     */
+    public void setProjectResources(Vector projectResources){
+        m_projectresources = projectResources;
+    }
+
 	/**
 	 * Sets the description of this project.
-	 * 
+	 *
 	 * @param description The description of this project.
 	 */
 	public void setDescription(String description) {
@@ -297,9 +319,9 @@ public CmsProject(ResultSet res, com.opencms.file.genericSql.CmsQueries m_cq) th
 	}
 	/**
 	 * Sets the state of this project.<BR/>
-	 * This may be C_PROJECT_STATE_UNLOCKED, C_PROJECT_STATE_LOCKED, 
+	 * This may be C_PROJECT_STATE_UNLOCKED, C_PROJECT_STATE_LOCKED,
 	 * C_PROJECT_STATE_ARCHIVE.
-	 * 
+	 *
 	 * @param flags The flag to bes set.
 	 */
 	public void setFlags(int flags) {
@@ -307,7 +329,7 @@ public CmsProject(ResultSet res, com.opencms.file.genericSql.CmsQueries m_cq) th
 	}
 	/**
 	 * Sets the published-by value.
-	 * 
+	 *
 	 * @param the published-by value.
 	 */
 	public void setPublishedBy(int id) {
@@ -315,7 +337,7 @@ public CmsProject(ResultSet res, com.opencms.file.genericSql.CmsQueries m_cq) th
 	}
 	/**
 	 * Sets the publishing date of this project.
-	 * 
+	 *
 	 * @param the publishing date of this project.
 	 */
 	public void setPublishingDate(long publishingDate) {
@@ -323,7 +345,7 @@ public CmsProject(ResultSet res, com.opencms.file.genericSql.CmsQueries m_cq) th
 	}
 	/**
 	 * Sets the type.
-	 * 
+	 *
 	 * @param the type.
 	 */
 	void setType(int id) {
@@ -332,7 +354,7 @@ public CmsProject(ResultSet res, com.opencms.file.genericSql.CmsQueries m_cq) th
 	/**
 	 * Returns a string-representation for this object.
 	 * This can be used for debugging.
-	 * 
+	 *
 	 * @return string-representation for this object.
 	 */
 	public String toString() {

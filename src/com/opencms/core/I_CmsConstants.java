@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2001/06/18 15:05:20 $
-* Version: $Revision: 1.164 $
+* Date   : $Date: 2001/06/22 16:00:10 $
+* Version: $Revision: 1.165 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -37,7 +37,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  *
- * @version $Revision: 1.164 $ $Date: 2001/06/18 15:05:20 $
+ * @version $Revision: 1.165 $ $Date: 2001/06/22 16:00:10 $
  */
 public interface I_CmsConstants {
 
@@ -290,6 +290,12 @@ public interface I_CmsConstants {
      * This constant defines a normal project-type.
      */
     static final int C_PROJECT_TYPE_NORMAL = 0;
+
+    /**
+     * This constant defines a temporary project-type.
+     * The project will be deleted after publishing
+     */
+    static final int C_PROJECT_TYPE_TEMPORARY = 1;
 
     /**
      * This constant defines a unlocked project.

@@ -3,8 +3,8 @@ package com.opencms.file.oracleplsql;
 import oracle.jdbc.driver.*;
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/05/28 15:01:55 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2001/06/22 16:00:59 $
+ * Version: $Revision: 1.31 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -51,7 +51,7 @@ import com.opencms.util.*;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.30 $ $Date: 2001/05/28 15:01:55 $ *
+ * @version $Revision: 1.31 $ $Date: 2001/06/22 16:00:59 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -82,7 +82,7 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 		try {
 			// create the statement
 			con = DriverManager.getConnection(m_poolName);
-			statement = con.prepareCall(cq.C_PLSQL_ACCESS_ACCESSCREATE);
+			statement = con.prepareCall(cq.get("C_PLSQL_ACCESS_ACCESSCREATE"));
 			statement.registerOutParameter(1, Types.INTEGER);
 			statement.setInt(2, currentUser.getId());
 			statement.setInt(3, currentProject.getId());
@@ -132,7 +132,7 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 		try {
 			// create the statement
 			con = DriverManager.getConnection(m_poolName);
-			statement = con.prepareCall(cq.C_PLSQL_ACCESS_ACCESSLOCK);
+			statement = con.prepareCall(cq.get("C_PLSQL_ACCESS_ACCESSLOCK"));
 			statement.registerOutParameter(1, Types.INTEGER);
 			statement.setInt(2, currentUser.getId());
 			statement.setInt(3, currentProject.getId());
@@ -182,7 +182,7 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 		try {
 			// create the statement
 			con = DriverManager.getConnection(m_poolName);
-			statement = con.prepareCall(cq.C_PLSQL_ACCESS_ACCESSPROJECT);
+			statement = con.prepareCall(cq.get("C_PLSQL_ACCESS_ACCESSPROJECT"));
 			statement.registerOutParameter(1, Types.INTEGER);
 			statement.setInt(2, currentUser.getId());
 			statement.setInt(3, projectId);
@@ -231,7 +231,7 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 		try {
 			// create the statement
 			con = DriverManager.getConnection(m_poolName);
-			statement = con.prepareCall(cq.C_PLSQL_ACCESS_ACCESSREAD);
+			statement = con.prepareCall(cq.get("C_PLSQL_ACCESS_ACCESSREAD"));
 			statement.registerOutParameter(1, Types.INTEGER);
 			statement.setInt(2, currentUser.getId());
 			statement.setInt(3, currentProject.getId());
@@ -281,7 +281,7 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 		try {
 			// create the statement
 			con = DriverManager.getConnection(m_poolName);
-			statement = con.prepareCall(cq.C_PLSQL_ACCESS_ACCESSWRITE);
+			statement = con.prepareCall(cq.get("C_PLSQL_ACCESS_ACCESSWRITE"));
 			statement.registerOutParameter(1, Types.INTEGER);
 			statement.setInt(2, currentUser.getId());
 			statement.setInt(3, currentProject.getId());
@@ -345,14 +345,14 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 			// first insert the new systemproperty with empty systemproperty_value, then update
 			// the systemproperty_value. These two steps are necessary because of using Oracle BLOB
 			con = DriverManager.getConnection(m_poolName);
-			statement = con.prepareStatement(cq.C_PLSQL_SYSTEMPROPERTIES_FORINSERT);
+			statement = con.prepareStatement(cq.get("C_PLSQL_SYSTEMPROPERTIES_FORINSERT"));
 			statement.setInt(1, id);
 			statement.setString(2, name);
 			//statement.setBytes(3,value);
 			statement.executeUpdate();
 			//statement.close();
 			// now update the systemproperty_value
-			statement2 = con.prepareStatement(cq.C_PLSQL_SYSTEMPROPERTIES_FORUPDATE);
+			statement2 = con.prepareStatement(cq.get("C_PLSQL_SYSTEMPROPERTIES_FORUPDATE"));
 			statement2.setInt(1, id);
 			con.setAutoCommit(false);
 			res = statement2.executeQuery();
@@ -372,7 +372,7 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 			//res.close();
 			// for the oracle-driver commit or rollback must be executed manually
 			// because setAutoCommit = false
-			nextStatement = con.prepareStatement(cq.C_COMMIT);
+			nextStatement = con.prepareStatement(cq.get("C_COMMIT"));
 			nextStatement.execute();
 			nextStatement.close();
 			con.setAutoCommit(true);
@@ -399,7 +399,7 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 				} catch (SQLException exc){
 				}
 				try {
-					nextStatement = con.prepareStatement(cq.C_ROLLBACK);
+					nextStatement = con.prepareStatement(cq.get("C_ROLLBACK"));
 					nextStatement.execute();
 				} catch (SQLException exc){
 					// nothing to do here
@@ -467,7 +467,7 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 			// write data to database
 			// first insert the data without user_info
 			con = DriverManager.getConnection(m_poolName);
-			statement = con.prepareStatement(cq.C_PLSQL_USERSFORINSERT);
+			statement = con.prepareStatement(cq.get("C_PLSQL_USERSFORINSERT"));
 			statement.setInt(1, id);
 			statement.setString(2, name);
 			// crypt the password with MD5
@@ -488,7 +488,7 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 			statement.executeUpdate();
 			statement.close();
 			// now update user_info of the new user
-			statement2 = con.prepareStatement(cq.C_PLSQL_USERSFORUPDATE);
+			statement2 = con.prepareStatement(cq.get("C_PLSQL_USERSFORUPDATE"));
 			statement2.setInt(1, id);
 			con.setAutoCommit(false);
 			res = statement2.executeQuery();
@@ -508,7 +508,7 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 			res.close();
 			// for the oracle-driver commit or rollback must be executed manually
 			// because setAutoCommit = false in CmsDbPool.CmsDbPool
-			nextStatement = con.prepareStatement(cq.C_COMMIT);
+			nextStatement = con.prepareStatement(cq.get("C_COMMIT"));
 			nextStatement.execute();
 			nextStatement.close();
 			con.setAutoCommit(true);
@@ -535,7 +535,7 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 				} catch (SQLException exc){
 				}
 				try {
-					nextStatement = con.prepareStatement(cq.C_ROLLBACK);
+					nextStatement = con.prepareStatement(cq.get("C_ROLLBACK"));
 					nextStatement.execute();
 				} catch (SQLException se) {
 				}
@@ -603,7 +603,7 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 			// write data to database
 			// first insert the data without user_info
 			con = DriverManager.getConnection(m_poolName);
-			statement = con.prepareStatement(cq.C_PLSQL_USERSFORINSERT);
+			statement = con.prepareStatement(cq.get("C_PLSQL_USERSFORINSERT"));
 			statement.setInt(1, id);
 			statement.setString(2, name);
 			// crypt the password with MD5
@@ -624,7 +624,7 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 			statement.executeUpdate();
 			statement.close();
 			// now update user_info of the new user
-			statement2 = con.prepareStatement(cq.C_PLSQL_USERSFORUPDATE);
+			statement2 = con.prepareStatement(cq.get("C_PLSQL_USERSFORUPDATE"));
 			statement2.setInt(1, id);
 			con.setAutoCommit(false);
 			res = statement2.executeQuery();
@@ -644,7 +644,7 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 			res.close();
 			// for the oracle-driver commit or rollback must be executed manually
 			// because setAutoCommit = false in CmsDbPool.CmsDbPool
-			nextStatement = con.prepareStatement(cq.C_COMMIT);
+			nextStatement = con.prepareStatement(cq.get("C_COMMIT"));
 			nextStatement.execute();
 			nextStatement.close();
 			con.setAutoCommit(true);
@@ -671,7 +671,7 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 				} catch (SQLException exc){
 				}
 				try {
-					nextStatement = con.prepareStatement(cq.C_ROLLBACK);
+					nextStatement = con.prepareStatement(cq.get("C_ROLLBACK"));
 					nextStatement.execute();
 				} catch (SQLException se) {
 				}
@@ -720,7 +720,7 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 		try {
 			// create the statement
 			con = DriverManager.getConnection(m_poolName);
-			statement = con.prepareCall(cq.C_PLSQL_RESOURCES_COPYFILE);
+			statement = con.prepareCall(cq.get("C_PLSQL_RESOURCES_COPYFILE"));
 			statement.setInt(1, project.getId());
 			statement.setInt(2, userId);
 			statement.setString(3, source);
@@ -747,48 +747,6 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 		}
 	}
 	// methods working with resources
-
-	/**
-	 * Copies a resource from the online project to a new, specified project.<br>
-	 *
-	 * @param project The project to be published.
-	 * @param onlineProject The online project of the OpenCms.
-	 * @param resource The resource to be copied to the offline project.
-	 * @exception CmsException  Throws CmsException if operation was not succesful.
-	 */
-	public void copyResourceToProject(CmsUser currentUser, CmsProject currentProject, String resource) throws CmsException {
-		//System.out.println("PL/SQL: copyResourceToProject");
-		com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
-		CallableStatement statement = null;
-		Connection con = null;
-		try {
-			// create the statement
-			con = DriverManager.getConnection(m_poolName);
-			statement = con.prepareCall(cq.C_PLSQL_PROJECTS_COPYRESOURCETOPROJECT);
-			statement.setInt(1, currentUser.getId());
-			statement.setInt(2, currentProject.getId());
-			statement.setString(3, resource);
-			statement.execute();
-		} catch (SQLException sqlexc) {
-			CmsException cmsException = getCmsException("[" + this.getClass().getName() + "] ", sqlexc);
-			throw cmsException;
-		} catch (Exception e) {
-			throw new CmsException("[" + this.getClass().getName() + "]", e);
-		} finally {
-			if (statement != null) {
-				try {
-					statement.close();
-				} catch (SQLException exc){
-				}
-			}
-			if (con != null) {
-				try {
-					con.close();
-				} catch (SQLException e){
-				}
-			}
-		}
-	}
 
 /**
  * Creates a new file with the given content and resourcetype.
@@ -845,8 +803,8 @@ public CmsFile createFile(CmsUser user, CmsProject project, CmsProject onlinePro
                         }
                 }
 	}
-	int resourceId = nextId(C_TABLE_RESOURCES);
-	int fileId = nextId(C_TABLE_FILES);
+	int resourceId = nextId(m_cq.get("C_TABLE_RESOURCES"));
+	int fileId = nextId(m_cq.get("C_TABLE_FILES"));
 
 	PreparedStatement statement = null;
 	PreparedStatement statementFileIns = null;
@@ -854,9 +812,18 @@ public CmsFile createFile(CmsUser user, CmsProject project, CmsProject onlinePro
 	PreparedStatement nextStatement = null;
 	Connection con = null;
 	ResultSet res = null;
+    String usedPool;
+    String usedStatement;
+    if (project.getId() == onlineProject.getId()){
+        usedPool = m_poolNameOnline;
+        usedStatement = "_ONLINE";
+    } else {
+        usedPool = m_poolName;
+        usedStatement = "";
+    }
 	try {
-		con = DriverManager.getConnection(m_poolName);
-		statement = con.prepareStatement(m_cq.C_RESOURCES_WRITE);
+		con = DriverManager.getConnection(usedPool);
+		statement = con.prepareStatement(m_cq.get("C_RESOURCES_WRITE"+usedStatement));
 		// write new resource to the database
 		statement.setInt(1, resourceId);
 		statement.setInt(2, parentId);
@@ -880,12 +847,12 @@ public CmsFile createFile(CmsUser user, CmsProject project, CmsProject onlinePro
 		statement.close();
 		// first insert new file without file_content, then update the file_content
 		// these two steps are necessary because of using BLOBs	in the Oracle DB
-		statementFileIns = con.prepareStatement(cq.C_PLSQL_FILESFORINSERT);
+		statementFileIns = con.prepareStatement(cq.get("C_PLSQL_FILESFORINSERT"+usedStatement));
 		statementFileIns.setInt(1, fileId);
 		statementFileIns.executeUpdate();
 		statementFileIns.close();
 		// update the file content in the FILES database.
-		statementFileUpd = con.prepareStatement(cq.C_PLSQL_FILESFORUPDATE);
+		statementFileUpd = con.prepareStatement(cq.get("C_PLSQL_FILESFORUPDATE"+usedStatement));
 		statementFileUpd.setInt(1, fileId);
 		con.setAutoCommit(false);
 		res = statementFileUpd.executeQuery();
@@ -904,7 +871,7 @@ public CmsFile createFile(CmsUser user, CmsProject project, CmsProject onlinePro
 			}
 			// for the oracle-driver commit or rollback must be executed manually
 			// because setAutoCommit = false
-			nextStatement = con.prepareStatement(cq.C_COMMIT);
+			nextStatement = con.prepareStatement(cq.get("C_COMMIT"));
 			nextStatement.execute();
 			nextStatement.close();
 			con.setAutoCommit(true);
@@ -940,7 +907,7 @@ public CmsFile createFile(CmsUser user, CmsProject project, CmsProject onlinePro
 			} catch (SQLException exc) {
 			}
 			try {
-				nextStatement = con.prepareStatement(cq.C_ROLLBACK);
+				nextStatement = con.prepareStatement(cq.get("C_ROLLBACK"));
 				nextStatement.execute();
 			} catch (SQLException se) {
 			}
@@ -992,12 +959,12 @@ public void createSession(String sessionId, Hashtable data) throws CmsException 
 
 		// write data to database
 		con = DriverManager.getConnection(m_poolName);
-		statement = con.prepareStatement(cq.C_PLSQL_SESSION_FORINSERT);
+		statement = con.prepareStatement(cq.get("C_PLSQL_SESSION_FORINSERT"));
 		statement.setString(1, sessionId);
 		statement.setTimestamp(2, new java.sql.Timestamp(System.currentTimeMillis()));
 		statement.executeUpdate();
 		statement.close();
-		statement2 = con.prepareStatement(cq.C_PLSQL_SESSION_FORUPDATE);
+		statement2 = con.prepareStatement(cq.get("C_PLSQL_SESSION_FORUPDATE"));
 		statement2.setString(1, sessionId);
 		con.setAutoCommit(false);
 		res = statement2.executeQuery();
@@ -1017,7 +984,7 @@ public void createSession(String sessionId, Hashtable data) throws CmsException 
 		res.close();
 		// for the oracle-driver commit or rollback must be executed manually
 		// because setAutoCommit = false
-		nextStatement = con.prepareStatement(cq.C_COMMIT);
+		nextStatement = con.prepareStatement(cq.get("C_COMMIT"));
 		nextStatement.execute();
 		nextStatement.close();
 		con.setAutoCommit(true);
@@ -1044,7 +1011,7 @@ public void createSession(String sessionId, Hashtable data) throws CmsException 
 			} catch (SQLException exc) {
 			}
 			try {
-				nextStatement = con.prepareStatement(cq.C_ROLLBACK);
+				nextStatement = con.prepareStatement(cq.get("C_ROLLBACK"));
 				nextStatement.execute();
 			} catch (SQLException se) {
 			}
@@ -1084,13 +1051,24 @@ public Vector getAllAccessibleProjects(CmsUser user) throws CmsException {
 	try {
 		// create the statement
 		con = DriverManager.getConnection(m_poolName);
-		statement = con.prepareCall(cq.C_PLSQL_PROJECTS_GETALLACCESS);
+		statement = con.prepareCall(cq.get("C_PLSQL_PROJECTS_GETALLACCESS"));
 		statement.registerOutParameter(1, oracle.jdbc.driver.OracleTypes.CURSOR);
 		statement.setInt(2, user.getId());
 		statement.execute();
 		res = (ResultSet) statement.getObject(1);
 		while (res.next()) {
-			projects.addElement(new CmsProject(res.getInt(m_cq.C_PROJECTS_PROJECT_ID), res.getString(m_cq.C_PROJECTS_PROJECT_NAME), res.getString(m_cq.C_PROJECTS_PROJECT_DESCRIPTION), res.getInt(m_cq.C_PROJECTS_TASK_ID), res.getInt(m_cq.C_PROJECTS_USER_ID), res.getInt(m_cq.C_PROJECTS_GROUP_ID), res.getInt(m_cq.C_PROJECTS_MANAGERGROUP_ID), res.getInt(m_cq.C_PROJECTS_PROJECT_FLAGS), SqlHelper.getTimestamp(res, m_cq.C_PROJECTS_PROJECT_CREATEDATE), SqlHelper.getTimestamp(res, m_cq.C_PROJECTS_PROJECT_PUBLISHDATE), res.getInt(m_cq.C_PROJECTS_PROJECT_PUBLISHED_BY), res.getInt(m_cq.C_PROJECTS_PROJECT_TYPE)));
+			projects.addElement(new CmsProject(res.getInt(m_cq.get("C_PROJECTS_PROJECT_ID")),
+                                res.getString(m_cq.get("C_PROJECTS_PROJECT_NAME")),
+                                res.getString(m_cq.get("C_PROJECTS_PROJECT_DESCRIPTION")),
+                                res.getInt(m_cq.get("C_PROJECTS_TASK_ID")),
+                                res.getInt(m_cq.get("C_PROJECTS_USER_ID")),
+                                res.getInt(m_cq.get("C_PROJECTS_GROUP_ID")),
+                                res.getInt(m_cq.get("C_PROJECTS_MANAGERGROUP_ID")),
+                                res.getInt(m_cq.get("C_PROJECTS_PROJECT_FLAGS")),
+                                SqlHelper.getTimestamp(res, m_cq.get("C_PROJECTS_PROJECT_CREATEDATE")),
+                                SqlHelper.getTimestamp(res, m_cq.get("C_PROJECTS_PROJECT_PUBLISHDATE")),
+                                res.getInt(m_cq.get("C_PROJECTS_PROJECT_PUBLISHED_BY")),
+                                res.getInt(m_cq.get("C_PROJECTS_PROJECT_TYPE"))));
 		}
 	} catch (SQLException sqlexc) {
 		CmsException cmsException = getCmsException("[" + this.getClass().getName() + "] ", sqlexc);
@@ -1143,13 +1121,17 @@ public Vector getAllGroupsOfUser(String username) throws CmsException {
 	try {
 		//  get all all groups of the user
         con = DriverManager.getConnection(m_poolName);
-		statement = con.prepareCall(cq.C_PLSQL_GROUPS_GETGROUPSOFUSER);
+		statement = con.prepareCall(cq.get("C_PLSQL_GROUPS_GETGROUPSOFUSER"));
 		statement.registerOutParameter(1, oracle.jdbc.driver.OracleTypes.CURSOR);
 		statement.setInt(2, user.getId());
 		statement.execute();
 		res = (ResultSet) statement.getObject(1);
 		while (res.next()) {
-			group = new CmsGroup(res.getInt(m_cq.C_GROUPS_GROUP_ID), res.getInt(m_cq.C_GROUPS_PARENT_GROUP_ID), res.getString(m_cq.C_GROUPS_GROUP_NAME), res.getString(m_cq.C_GROUPS_GROUP_DESCRIPTION), res.getInt(m_cq.C_GROUPS_GROUP_FLAGS));
+			group = new CmsGroup(res.getInt(m_cq.get("C_GROUPS_GROUP_ID")),
+                                 res.getInt(m_cq.get("C_GROUPS_PARENT_GROUP_ID")),
+                                 res.getString(m_cq.get("C_GROUPS_GROUP_NAME")),
+                                 res.getString(m_cq.get("C_GROUPS_GROUP_DESCRIPTION")),
+                                 res.getInt(m_cq.get("C_GROUPS_GROUP_FLAGS")));
 			groups.addElement(group);
 		}
 	} catch (SQLException sqlexc) {
@@ -1305,39 +1287,39 @@ protected com.opencms.file.genericSql.CmsQueries getQueries()
 		ResultSet res = null;
 		try	{
                         con = DriverManager.getConnection(m_poolName);
-			statement = con.prepareStatement(m_cq.C_USERS_GETUSERS);
+			statement = con.prepareStatement(m_cq.get("C_USERS_GETUSERS"));
 			statement.setInt(1,type);
 			res = statement.executeQuery();
 			// create new Cms user objects
 			while( res.next() ) {
 				// read the additional infos.
-				oracle.sql.BLOB blob = ((OracleResultSet)res).getBLOB(m_cq.C_USERS_USER_INFO);
+				oracle.sql.BLOB blob = ((OracleResultSet)res).getBLOB(m_cq.get("C_USERS_USER_INFO"));
                                 byte[] value = new byte[(int) blob.length()];
 				value = blob.getBytes(1, (int) blob.length());
 				// now deserialize the object
 				ByteArrayInputStream bin= new ByteArrayInputStream(value);
 				ObjectInputStream oin = new ObjectInputStream(bin);
 				Hashtable info=(Hashtable)oin.readObject();
-				CmsUser user = new CmsUser(res.getInt(m_cq.C_USERS_USER_ID),
-										   res.getString(m_cq.C_USERS_USER_NAME),
-										   res.getString(m_cq.C_USERS_USER_PASSWORD),
-										   res.getString(m_cq.C_USERS_USER_RECOVERY_PASSWORD),
-										   res.getString(m_cq.C_USERS_USER_DESCRIPTION),
-										   res.getString(m_cq.C_USERS_USER_FIRSTNAME),
-										   res.getString(m_cq.C_USERS_USER_LASTNAME),
-										   res.getString(m_cq.C_USERS_USER_EMAIL),
-										   SqlHelper.getTimestamp(res,m_cq.C_USERS_USER_LASTLOGIN).getTime(),
-										   SqlHelper.getTimestamp(res,m_cq.C_USERS_USER_LASTUSED).getTime(),
-										   res.getInt(m_cq.C_USERS_USER_FLAGS),
+				CmsUser user = new CmsUser(res.getInt(m_cq.get("C_USERS_USER_ID")),
+										   res.getString(m_cq.get("C_USERS_USER_NAME")),
+										   res.getString(m_cq.get("C_USERS_USER_PASSWORD")),
+										   res.getString(m_cq.get("C_USERS_USER_RECOVERY_PASSWORD")),
+										   res.getString(m_cq.get("C_USERS_USER_DESCRIPTION")),
+										   res.getString(m_cq.get("C_USERS_USER_FIRSTNAME")),
+										   res.getString(m_cq.get("C_USERS_USER_LASTNAME")),
+										   res.getString(m_cq.get("C_USERS_USER_EMAIL")),
+										   SqlHelper.getTimestamp(res,m_cq.get("C_USERS_USER_LASTLOGIN")).getTime(),
+										   SqlHelper.getTimestamp(res,m_cq.get("C_USERS_USER_LASTUSED")).getTime(),
+										   res.getInt(m_cq.get("C_USERS_USER_FLAGS")),
 										   info,
-										   new CmsGroup(res.getInt(m_cq.C_GROUPS_GROUP_ID),
-														res.getInt(m_cq.C_GROUPS_PARENT_GROUP_ID),
-														res.getString(m_cq.C_GROUPS_GROUP_NAME),
-														res.getString(m_cq.C_GROUPS_GROUP_DESCRIPTION),
-														res.getInt(m_cq.C_GROUPS_GROUP_FLAGS)),
-										   res.getString(m_cq.C_USERS_USER_ADDRESS),
-										   res.getString(m_cq.C_USERS_USER_SECTION),
-										   res.getInt(m_cq.C_USERS_USER_TYPE));
+										   new CmsGroup(res.getInt(m_cq.get("C_GROUPS_GROUP_ID")),
+														res.getInt(m_cq.get("C_GROUPS_PARENT_GROUP_ID")),
+														res.getString(m_cq.get("C_GROUPS_GROUP_NAME")),
+														res.getString(m_cq.get("C_GROUPS_GROUP_DESCRIPTION")),
+														res.getInt(m_cq.get("C_GROUPS_GROUP_FLAGS"))),
+										   res.getString(m_cq.get("C_USERS_USER_ADDRESS")),
+										   res.getString(m_cq.get("C_USERS_USER_SECTION")),
+										   res.getInt(m_cq.get("C_USERS_USER_TYPE")));
 				users.addElement(user);
 			}
 		} catch (SQLException e){
@@ -1391,11 +1373,13 @@ protected com.opencms.file.genericSql.CmsQueries getQueries()
 			res = statement.executeQuery();*/
 
 			//res = statement.executeQuery("SELECT * FROM CMS_USERS,CMS_GROUPS where USER_TYPE = "+type+" and USER_DEFAULT_GROUP_ID = GROUP_ID and USER_NAME like '"+namefilter+"%' ORDER BY USER_NAME");
-			res = statement.executeQuery(m_cq.C_USERS_GETUSERS_FILTER1+type+m_cq.C_USERS_GETUSERS_FILTER2+namefilter+m_cq.C_USERS_GETUSERS_FILTER3);
+			res = statement.executeQuery(m_cq.get("C_USERS_GETUSERS_FILTER1")+type+
+                                         m_cq.get("C_USERS_GETUSERS_FILTER2")+namefilter+
+                                         m_cq.get("C_USERS_GETUSERS_FILTER3"));
 			// create new Cms user objects
 			while( res.next() ) {
 				// read the additional infos.
-				oracle.sql.BLOB blob = ((OracleResultSet)res).getBLOB(m_cq.C_USERS_USER_INFO);
+				oracle.sql.BLOB blob = ((OracleResultSet)res).getBLOB(m_cq.get("C_USERS_USER_INFO"));
 				byte[] value = new byte[(int) blob.length()];
 				value = blob.getBytes(1, (int) blob.length());
 				// now deserialize the object
@@ -1403,26 +1387,26 @@ protected com.opencms.file.genericSql.CmsQueries getQueries()
 				ObjectInputStream oin = new ObjectInputStream(bin);
 				Hashtable info=(Hashtable)oin.readObject();
 
-				CmsUser user = new CmsUser(res.getInt(m_cq.C_USERS_USER_ID),
-										   res.getString(m_cq.C_USERS_USER_NAME),
-										   res.getString(m_cq.C_USERS_USER_PASSWORD),
-										   res.getString(m_cq.C_USERS_USER_RECOVERY_PASSWORD),
-										   res.getString(m_cq.C_USERS_USER_DESCRIPTION),
-										   res.getString(m_cq.C_USERS_USER_FIRSTNAME),
-										   res.getString(m_cq.C_USERS_USER_LASTNAME),
-										   res.getString(m_cq.C_USERS_USER_EMAIL),
-										   SqlHelper.getTimestamp(res,m_cq.C_USERS_USER_LASTLOGIN).getTime(),
-										   SqlHelper.getTimestamp(res,m_cq.C_USERS_USER_LASTUSED).getTime(),
-										   res.getInt(m_cq.C_USERS_USER_FLAGS),
+				CmsUser user = new CmsUser(res.getInt(m_cq.get("C_USERS_USER_ID")),
+										   res.getString(m_cq.get("C_USERS_USER_NAME")),
+										   res.getString(m_cq.get("C_USERS_USER_PASSWORD")),
+										   res.getString(m_cq.get("C_USERS_USER_RECOVERY_PASSWORD")),
+										   res.getString(m_cq.get("C_USERS_USER_DESCRIPTION")),
+										   res.getString(m_cq.get("C_USERS_USER_FIRSTNAME")),
+										   res.getString(m_cq.get("C_USERS_USER_LASTNAME")),
+										   res.getString(m_cq.get("C_USERS_USER_EMAIL")),
+										   SqlHelper.getTimestamp(res,m_cq.get("C_USERS_USER_LASTLOGIN")).getTime(),
+										   SqlHelper.getTimestamp(res,m_cq.get("C_USERS_USER_LASTUSED")).getTime(),
+										   res.getInt(m_cq.get("C_USERS_USER_FLAGS")),
 										   info,
-										   new CmsGroup(res.getInt(m_cq.C_GROUPS_GROUP_ID),
-														res.getInt(m_cq.C_GROUPS_PARENT_GROUP_ID),
-														res.getString(m_cq.C_GROUPS_GROUP_NAME),
-														res.getString(m_cq.C_GROUPS_GROUP_DESCRIPTION),
-														res.getInt(m_cq.C_GROUPS_GROUP_FLAGS)),
-										   res.getString(m_cq.C_USERS_USER_ADDRESS),
-										   res.getString(m_cq.C_USERS_USER_SECTION),
-										   res.getInt(m_cq.C_USERS_USER_TYPE));
+										   new CmsGroup(res.getInt(m_cq.get("C_GROUPS_GROUP_ID")),
+														res.getInt(m_cq.get("C_GROUPS_PARENT_GROUP_ID")),
+														res.getString(m_cq.get("C_GROUPS_GROUP_NAME")),
+														res.getString(m_cq.get("C_GROUPS_GROUP_DESCRIPTION")),
+														res.getInt(m_cq.get("C_GROUPS_GROUP_FLAGS"))),
+										   res.getString(m_cq.get("C_USERS_USER_ADDRESS")),
+										   res.getString(m_cq.get("C_USERS_USER_SECTION")),
+										   res.getInt(m_cq.get("C_USERS_USER_TYPE")));
 
 				users.addElement(user);
 			}
@@ -1472,7 +1456,7 @@ public Vector getUsersOfGroup(CmsUser currentUser, String name, int type) throws
 	ResultSet res = null;
 	try {
 		con = DriverManager.getConnection(m_poolName);
-		statement = con.prepareCall(cq.C_PLSQL_GROUPS_GETUSERSOFGROUP);
+		statement = con.prepareCall(cq.get("C_PLSQL_GROUPS_GETUSERSOFGROUP"));
 		statement.registerOutParameter(1, oracle.jdbc.driver.OracleTypes.CURSOR);
 		statement.setInt(2, currentUser.getId());
 		statement.setString(3, name);
@@ -1481,14 +1465,32 @@ public Vector getUsersOfGroup(CmsUser currentUser, String name, int type) throws
 		res = (ResultSet) statement.getObject(1);
 		while (res.next()) {
 			// read the additional infos.
-			oracle.sql.BLOB blob = ((OracleResultSet)res).getBLOB(m_cq.C_USERS_USER_INFO);
+			oracle.sql.BLOB blob = ((OracleResultSet)res).getBLOB(m_cq.get("C_USERS_USER_INFO"));
 			byte[] value = new byte[(int) blob.length()];
 			value = blob.getBytes(1, (int) blob.length());
 			// now deserialize the object
 			ByteArrayInputStream bin = new ByteArrayInputStream(value);
 			ObjectInputStream oin = new ObjectInputStream(bin);
 			Hashtable info = (Hashtable) oin.readObject();
-			CmsUser user = new CmsUser(res.getInt(m_cq.C_USERS_USER_ID), res.getString(m_cq.C_USERS_USER_NAME), res.getString(m_cq.C_USERS_USER_PASSWORD), res.getString(m_cq.C_USERS_USER_RECOVERY_PASSWORD), res.getString(m_cq.C_USERS_USER_DESCRIPTION), res.getString(m_cq.C_USERS_USER_FIRSTNAME), res.getString(m_cq.C_USERS_USER_LASTNAME), res.getString(m_cq.C_USERS_USER_EMAIL), SqlHelper.getTimestamp(res, m_cq.C_USERS_USER_LASTLOGIN).getTime(), SqlHelper.getTimestamp(res, m_cq.C_USERS_USER_LASTUSED).getTime(), res.getInt(m_cq.C_USERS_USER_FLAGS), info, new CmsGroup(res.getInt(m_cq.C_USERS_USER_DEFAULT_GROUP_ID), res.getInt(m_cq.C_GROUPS_PARENT_GROUP_ID), res.getString(m_cq.C_GROUPS_GROUP_NAME), res.getString(m_cq.C_GROUPS_GROUP_DESCRIPTION), res.getInt(m_cq.C_GROUPS_GROUP_FLAGS)), res.getString(m_cq.C_USERS_USER_ADDRESS), res.getString(m_cq.C_USERS_USER_SECTION), res.getInt(m_cq.C_USERS_USER_TYPE));
+			CmsUser user = new CmsUser(res.getInt(m_cq.get("C_USERS_USER_ID")),
+                                       res.getString(m_cq.get("C_USERS_USER_NAME")),
+                                       res.getString(m_cq.get("C_USERS_USER_PASSWORD")),
+                                       res.getString(m_cq.get("C_USERS_USER_RECOVERY_PASSWORD")),
+                                       res.getString(m_cq.get("C_USERS_USER_DESCRIPTION")),
+                                       res.getString(m_cq.get("C_USERS_USER_FIRSTNAME")),
+                                       res.getString(m_cq.get("C_USERS_USER_LASTNAME")),
+                                       res.getString(m_cq.get("C_USERS_USER_EMAIL")),
+                                       SqlHelper.getTimestamp(res, m_cq.get("C_USERS_USER_LASTLOGIN")).getTime(),
+                                       SqlHelper.getTimestamp(res, m_cq.get("C_USERS_USER_LASTUSED")).getTime(),
+                                       res.getInt(m_cq.get("C_USERS_USER_FLAGS")), info,
+                                       new CmsGroup(res.getInt(m_cq.get("C_USERS_USER_DEFAULT_GROUP_ID")),
+                                       res.getInt(m_cq.get("C_GROUPS_PARENT_GROUP_ID")),
+                                       res.getString(m_cq.get("C_GROUPS_GROUP_NAME")),
+                                       res.getString(m_cq.get("C_GROUPS_GROUP_DESCRIPTION")),
+                                       res.getInt(m_cq.get("C_GROUPS_GROUP_FLAGS"))),
+                                       res.getString(m_cq.get("C_USERS_USER_ADDRESS")),
+                                       res.getString(m_cq.get("C_USERS_USER_SECTION")),
+                                       res.getInt(m_cq.get("C_USERS_USER_TYPE")));
 			users.addElement(user);
 		}
 	} catch (SQLException sqlexc) {
@@ -1549,13 +1551,13 @@ public Vector getUsersOfGroup(CmsUser currentUser, String name, int type) throws
 
             if(wasLoggedIn == C_AT_LEAST_ONCE)
 			    statement = con.prepareStatement(
-                        m_cq.C_USERS_GETUSERS_BY_LASTNAME_ONCE);
+                        m_cq.get("C_USERS_GETUSERS_BY_LASTNAME_ONCE"));
             else if(wasLoggedIn == C_NEVER)
                 statement = con.prepareStatement(
-                        m_cq.C_USERS_GETUSERS_BY_LASTNAME_NEVER);
+                        m_cq.get("C_USERS_GETUSERS_BY_LASTNAME_NEVER"));
             else // C_WHATEVER or whatever else
                 statement = con.prepareStatement(
-                        m_cq.C_USERS_GETUSERS_BY_LASTNAME_WHATEVER);
+                        m_cq.get("C_USERS_GETUSERS_BY_LASTNAME_WHATEVER"));
 
             statement.setString(1, lastname + "%");
             statement.setInt(2, userType);
@@ -1565,7 +1567,7 @@ public Vector getUsersOfGroup(CmsUser currentUser, String name, int type) throws
 			// create new Cms user objects
 			while( res.next() && (i++ < nMax)) {
 				// read the additional infos.
-				oracle.sql.BLOB blob = ((OracleResultSet)res).getBLOB(m_cq.C_USERS_USER_INFO);
+				oracle.sql.BLOB blob = ((OracleResultSet)res).getBLOB(m_cq.get("C_USERS_USER_INFO"));
 				byte[] value = new byte[(int) blob.length()];
 				value = blob.getBytes(1, (int) blob.length());
 				// now deserialize the object
@@ -1573,26 +1575,26 @@ public Vector getUsersOfGroup(CmsUser currentUser, String name, int type) throws
 				ObjectInputStream oin = new ObjectInputStream(bin);
 				Hashtable info=(Hashtable)oin.readObject();
 
-				CmsUser user = new CmsUser(res.getInt(m_cq.C_USERS_USER_ID),
-										   res.getString(m_cq.C_USERS_USER_NAME),
-										   res.getString(m_cq.C_USERS_USER_PASSWORD),
-										   res.getString(m_cq.C_USERS_USER_RECOVERY_PASSWORD),
-										   res.getString(m_cq.C_USERS_USER_DESCRIPTION),
-										   res.getString(m_cq.C_USERS_USER_FIRSTNAME),
-										   res.getString(m_cq.C_USERS_USER_LASTNAME),
-										   res.getString(m_cq.C_USERS_USER_EMAIL),
-										   SqlHelper.getTimestamp(res,m_cq.C_USERS_USER_LASTLOGIN).getTime(),
-										   SqlHelper.getTimestamp(res,m_cq.C_USERS_USER_LASTUSED).getTime(),
-										   res.getInt(m_cq.C_USERS_USER_FLAGS),
+				CmsUser user = new CmsUser(res.getInt(m_cq.get("C_USERS_USER_ID")),
+										   res.getString(m_cq.get("C_USERS_USER_NAME")),
+										   res.getString(m_cq.get("C_USERS_USER_PASSWORD")),
+										   res.getString(m_cq.get("C_USERS_USER_RECOVERY_PASSWORD")),
+										   res.getString(m_cq.get("C_USERS_USER_DESCRIPTION")),
+										   res.getString(m_cq.get("C_USERS_USER_FIRSTNAME")),
+										   res.getString(m_cq.get("C_USERS_USER_LASTNAME")),
+										   res.getString(m_cq.get("C_USERS_USER_EMAIL")),
+										   SqlHelper.getTimestamp(res,m_cq.get("C_USERS_USER_LASTLOGIN")).getTime(),
+										   SqlHelper.getTimestamp(res,m_cq.get("C_USERS_USER_LASTUSED")).getTime(),
+										   res.getInt(m_cq.get("C_USERS_USER_FLAGS")),
 										   info,
-										   new CmsGroup(res.getInt(m_cq.C_GROUPS_GROUP_ID),
-														res.getInt(m_cq.C_GROUPS_PARENT_GROUP_ID),
-														res.getString(m_cq.C_GROUPS_GROUP_NAME),
-														res.getString(m_cq.C_GROUPS_GROUP_DESCRIPTION),
-														res.getInt(m_cq.C_GROUPS_GROUP_FLAGS)),
-										   res.getString(m_cq.C_USERS_USER_ADDRESS),
-										   res.getString(m_cq.C_USERS_USER_SECTION),
-										   res.getInt(m_cq.C_USERS_USER_TYPE));
+										   new CmsGroup(res.getInt(m_cq.get("C_GROUPS_GROUP_ID")),
+														res.getInt(m_cq.get("C_GROUPS_PARENT_GROUP_ID")),
+														res.getString(m_cq.get("C_GROUPS_GROUP_NAME")),
+														res.getString(m_cq.get("C_GROUPS_GROUP_DESCRIPTION")),
+														res.getInt(m_cq.get("C_GROUPS_GROUP_FLAGS"))),
+										   res.getString(m_cq.get("C_USERS_USER_ADDRESS")),
+										   res.getString(m_cq.get("C_USERS_USER_SECTION")),
+										   res.getInt(m_cq.get("C_USERS_USER_TYPE")));
 
 				users.addElement(user);
 			}
@@ -1644,7 +1646,7 @@ public boolean isManagerOfProject(CmsUser currentUser, CmsProject currentProject
 	try {
 		// create the statement
 		con = DriverManager.getConnection(m_poolName);
-		statement = con.prepareCall(cq.C_PLSQL_GROUPS_ISMANAGEROFPROJECT);
+		statement = con.prepareCall(cq.get("C_PLSQL_GROUPS_ISMANAGEROFPROJECT"));
 		statement.registerOutParameter(1, Types.INTEGER);
 		statement.setInt(2, currentUser.getId());
 		statement.setInt(3, currentProject.getId());
@@ -1692,7 +1694,7 @@ public Vector lockResource(CmsUser currentUser, CmsProject currentProject, Strin
 	try {
 		// create the statement
 		con = DriverManager.getConnection(m_poolName);
-		statement = con.prepareCall(cq.C_PLSQL_RESOURCES_LOCKRESOURCE);
+		statement = con.prepareCall(cq.get("C_PLSQL_RESOURCES_LOCKRESOURCE"));
 		statement.setInt(1, currentUser.getId());
 		statement.setInt(2, currentProject.getId());
 		statement.setString(3, resourcename);
@@ -1705,24 +1707,24 @@ public Vector lockResource(CmsUser currentUser, CmsProject currentProject, Strin
 		statement.execute();
 		res = (ResultSet) statement.getObject(5);
 		while (res.next()) {
-			int resId = res.getInt(m_cq.C_RESOURCES_RESOURCE_ID);
-			int parentId = res.getInt(m_cq.C_RESOURCES_PARENT_ID);
-			String resName = res.getString(m_cq.C_RESOURCES_RESOURCE_NAME);
-			int resType = res.getInt(m_cq.C_RESOURCES_RESOURCE_TYPE);
-			int resFlags = res.getInt(m_cq.C_RESOURCES_RESOURCE_FLAGS);
-			int userId = res.getInt(m_cq.C_RESOURCES_USER_ID);
-			int groupId = res.getInt(m_cq.C_RESOURCES_GROUP_ID);
-			int projectId = res.getInt(m_cq.C_RESOURCES_PROJECT_ID);
-			int fileId = res.getInt(m_cq.C_RESOURCES_FILE_ID);
-			int accessFlags = res.getInt(m_cq.C_RESOURCES_ACCESS_FLAGS);
-			int state = res.getInt(m_cq.C_RESOURCES_STATE);
-			int lockedBy = res.getInt(m_cq.C_RESOURCES_LOCKED_BY);
-			int launcherType = res.getInt(m_cq.C_RESOURCES_LAUNCHER_TYPE);
-			String launcherClass = res.getString(m_cq.C_RESOURCES_LAUNCHER_CLASSNAME);
-			long created = SqlHelper.getTimestamp(res, m_cq.C_RESOURCES_DATE_CREATED).getTime();
-			long modified = SqlHelper.getTimestamp(res, m_cq.C_RESOURCES_DATE_LASTMODIFIED).getTime();
-			int modifiedBy = res.getInt(m_cq.C_RESOURCES_LASTMODIFIED_BY);
-			int resSize = res.getInt(m_cq.C_RESOURCES_SIZE);
+			int resId = res.getInt(m_cq.get("C_RESOURCES_RESOURCE_ID"));
+			int parentId = res.getInt(m_cq.get("C_RESOURCES_PARENT_ID"));
+			String resName = res.getString(m_cq.get("C_RESOURCES_RESOURCE_NAME"));
+			int resType = res.getInt(m_cq.get("C_RESOURCES_RESOURCE_TYPE"));
+			int resFlags = res.getInt(m_cq.get("C_RESOURCES_RESOURCE_FLAGS"));
+			int userId = res.getInt(m_cq.get("C_RESOURCES_USER_ID"));
+			int groupId = res.getInt(m_cq.get("C_RESOURCES_GROUP_ID"));
+			int projectId = res.getInt(m_cq.get("C_RESOURCES_PROJECT_ID"));
+			int fileId = res.getInt(m_cq.get("C_RESOURCES_FILE_ID"));
+			int accessFlags = res.getInt(m_cq.get("C_RESOURCES_ACCESS_FLAGS"));
+			int state = res.getInt(m_cq.get("C_RESOURCES_STATE"));
+			int lockedBy = res.getInt(m_cq.get("C_RESOURCES_LOCKED_BY"));
+			int launcherType = res.getInt(m_cq.get("C_RESOURCES_LAUNCHER_TYPE"));
+			String launcherClass = res.getString(m_cq.get("C_RESOURCES_LAUNCHER_CLASSNAME"));
+			long created = SqlHelper.getTimestamp(res, m_cq.get("C_RESOURCES_DATE_CREATED")).getTime();
+			long modified = SqlHelper.getTimestamp(res, m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
+			int modifiedBy = res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
+			int resSize = res.getInt(m_cq.get("C_RESOURCES_SIZE"));
 			resource = new CmsResource(resId, parentId, fileId, resName, resType, resFlags, userId,
 										groupId, projectId, accessFlags, state, lockedBy, launcherType,
 										launcherClass, created, modified, modifiedBy, resSize);
@@ -1765,12 +1767,12 @@ public Vector lockResource(CmsUser currentUser, CmsProject currentProject, Strin
  *
  * @param currentUser The user who requested this method.
  * @param currentProject The current project of the user.
- * @param id The id of the project to be published.
+ * @param projectId The id of the project to be published.
  * @return a vector of changed resources.
  *
  * @exception CmsException Throws CmsException if something goes wrong.
  */
-public Vector publishProject(CmsUser currentUser, int id, CmsProject onlineProject) throws CmsException {
+public Vector publishProject(CmsUser currentUser, int projectId, CmsProject onlineProject, boolean enableHistory) throws CmsException {
 	//System.out.println("PL/SQL: publishProject");
 	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
 	CmsAccessFilesystem discAccess = new CmsAccessFilesystem(m_exportpointStorage);
@@ -1781,21 +1783,28 @@ public Vector publishProject(CmsUser currentUser, int id, CmsProject onlineProje
 	ResultSet res3 = null;
 	ResultSet res4 = null;
     Vector changedResources = new Vector();
+    int enableHistoryInt = 1; // enable history
+    if (!enableHistory){
+        enableHistoryInt = 0; // disable history
+    }
 	try {
 		// create the statement
 		con = DriverManager.getConnection(m_poolName);
-		statement = con.prepareCall(cq.C_PLSQL_PROJECTS_PUBLISHPROJECT);
+		statement = con.prepareCall(cq.get("C_PLSQL_PROJECTS_PUBLISHPROJECT"));
 		statement.setInt(1, currentUser.getId());
-		statement.setInt(2, id);
+		statement.setInt(2, projectId);
 		statement.setInt(3, onlineProject.getId());
-		statement.registerOutParameter(4, oracle.jdbc.driver.OracleTypes.CURSOR);
-		statement.registerOutParameter(5, oracle.jdbc.driver.OracleTypes.CURSOR);
+        statement.setInt(4, enableHistoryInt);
+        statement.setTimestamp(5, new Timestamp(System.currentTimeMillis()));
+        //statement.setString(5, Utils.getNiceDate(System.currentTimeMillis()));
 		statement.registerOutParameter(6, oracle.jdbc.driver.OracleTypes.CURSOR);
 		statement.registerOutParameter(7, oracle.jdbc.driver.OracleTypes.CURSOR);
+		statement.registerOutParameter(8, oracle.jdbc.driver.OracleTypes.CURSOR);
+		statement.registerOutParameter(9, oracle.jdbc.driver.OracleTypes.CURSOR);
 		statement.execute();
 		// now export to filesystem if necessary
 		// for deleted folder
-		res1 = (ResultSet) statement.getObject(4);
+		res1 = (ResultSet) statement.getObject(6);
 		while (res1.next()) {
 			String exportKey = checkExport(res1.getString("RESOURCE_NAME"));
 			if (exportKey != null) {
@@ -1803,7 +1812,7 @@ public Vector publishProject(CmsUser currentUser, int id, CmsProject onlineProje
 			}
 		}
 		// for changed/new folder
-		res2 = (ResultSet) statement.getObject(5);
+		res2 = (ResultSet) statement.getObject(7);
 		while (res2.next()) {
             changedResources.add(res2.getString("RESOURCE_NAME"));
 			String exportKey = checkExport(res2.getString("RESOURCE_NAME"));
@@ -1812,7 +1821,7 @@ public Vector publishProject(CmsUser currentUser, int id, CmsProject onlineProje
 			}
 		}
 		// for deleted files
-		res3 = (ResultSet) statement.getObject(6);
+		res3 = (ResultSet) statement.getObject(8);
 		while (res3.next()) {
             changedResources.add(res3.getString("RESOURCE_NAME"));
 			String exportKey = checkExport(res3.getString("RESOURCE_NAME"));
@@ -1821,14 +1830,31 @@ public Vector publishProject(CmsUser currentUser, int id, CmsProject onlineProje
 			}
 		}
 		// for changed/new files
-		res4 = (ResultSet) statement.getObject(7);
+		res4 = (ResultSet) statement.getObject(9);
 		while (res4.next()) {
             changedResources.add(res4.getString("RESOURCE_NAME"));
 			String exportKey = checkExport(res4.getString("RESOURCE_NAME"));
 			if (exportKey != null) {
-				discAccess.writeFile(res4.getString("RESOURCE_NAME"), exportKey, readFileContent(res4.getInt("FILE_ID")));
+				discAccess.writeFile(res4.getString("RESOURCE_NAME"), exportKey, readFileContent(projectId, res4.getInt("FILE_ID")));
 			}
 		}
+        res1.close();
+        res2.close();
+        res3.close();
+        res4.close();
+        statement.close();
+        // now delete the deleted files and folder from offline project and
+        // set state = unchanged for all other resources in offline project
+        statement = con.prepareCall(cq.get("C_PLSQL_RESOURCES_REMOVEALLDELETED"));
+		statement.setInt(1, C_STATE_DELETED);
+        statement.setInt(2, projectId);
+		statement.executeUpdate();
+        statement.close();
+        statement = con.prepareCall(cq.get("C_PLSQL_RESOURCES_SETALLUNCHANGED"));
+		statement.setInt(1, C_STATE_UNCHANGED);
+        statement.setInt(2, projectId);
+		statement.executeUpdate();
+        statement.close();
 	} catch (SQLException sqlexc) {
 		CmsException cmsException = getCmsException("[" + this.getClass().getName() + "] ", sqlexc);
 		throw cmsException;
@@ -1894,7 +1920,7 @@ public CmsFile readFile(int currentUserId, int currentProjectId, int onlineProje
 	ResultSet res = null;
 	try {
 		con = DriverManager.getConnection(m_poolName);
-		statement = con.prepareCall(cq.C_PLSQL_RESOURCES_READFILE);
+		statement = con.prepareCall(cq.get("C_PLSQL_RESOURCES_READFILE"));
 		statement.registerOutParameter(1, oracle.jdbc.driver.OracleTypes.CURSOR);
 		statement.setInt(2, currentUserId);
 		statement.setInt(3, currentProjectId);
@@ -1903,30 +1929,33 @@ public CmsFile readFile(int currentUserId, int currentProjectId, int onlineProje
 		statement.execute();
 		res = (ResultSet) statement.getObject(1);
 		if (res.next()) {
-			int resId = res.getInt(m_cq.C_RESOURCES_RESOURCE_ID);
-			int parentId = res.getInt(m_cq.C_RESOURCES_PARENT_ID);
-			int resType = res.getInt(m_cq.C_RESOURCES_RESOURCE_TYPE);
-			int resFlags = res.getInt(m_cq.C_RESOURCES_RESOURCE_FLAGS);
-			int userId = res.getInt(m_cq.C_RESOURCES_USER_ID);
-			int groupId = res.getInt(m_cq.C_RESOURCES_GROUP_ID);
-			int fileId = res.getInt(m_cq.C_RESOURCES_FILE_ID);
-			int accessFlags = res.getInt(m_cq.C_RESOURCES_ACCESS_FLAGS);
-			int state = res.getInt(m_cq.C_RESOURCES_STATE);
-			int lockedBy = res.getInt(m_cq.C_RESOURCES_LOCKED_BY);
-			int launcherType = res.getInt(m_cq.C_RESOURCES_LAUNCHER_TYPE);
-			String launcherClass = res.getString(m_cq.C_RESOURCES_LAUNCHER_CLASSNAME);
-			long created = SqlHelper.getTimestamp(res, m_cq.C_RESOURCES_DATE_CREATED).getTime();
-			long modified = SqlHelper.getTimestamp(res, m_cq.C_RESOURCES_DATE_LASTMODIFIED).getTime();
-			int modifiedBy = res.getInt(m_cq.C_RESOURCES_LASTMODIFIED_BY);
-			int resSize = res.getInt(m_cq.C_RESOURCES_SIZE);
+			int resId = res.getInt(m_cq.get("C_RESOURCES_RESOURCE_ID"));
+			int parentId = res.getInt(m_cq.get("C_RESOURCES_PARENT_ID"));
+			int resType = res.getInt(m_cq.get("C_RESOURCES_RESOURCE_TYPE"));
+			int resFlags = res.getInt(m_cq.get("C_RESOURCES_RESOURCE_FLAGS"));
+			int userId = res.getInt(m_cq.get("C_RESOURCES_USER_ID"));
+			int groupId = res.getInt(m_cq.get("C_RESOURCES_GROUP_ID"));
+			int fileId = res.getInt(m_cq.get("C_RESOURCES_FILE_ID"));
+			int accessFlags = res.getInt(m_cq.get("C_RESOURCES_ACCESS_FLAGS"));
+			int state = res.getInt(m_cq.get("C_RESOURCES_STATE"));
+			int lockedBy = res.getInt(m_cq.get("C_RESOURCES_LOCKED_BY"));
+			int launcherType = res.getInt(m_cq.get("C_RESOURCES_LAUNCHER_TYPE"));
+			String launcherClass = res.getString(m_cq.get("C_RESOURCES_LAUNCHER_CLASSNAME"));
+			long created = SqlHelper.getTimestamp(res, m_cq.get("C_RESOURCES_DATE_CREATED")).getTime();
+			long modified = SqlHelper.getTimestamp(res, m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
+			int modifiedBy = res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
+			int resSize = res.getInt(m_cq.get("C_RESOURCES_SIZE"));
+            int resProjectId = res.getInt(m_cq.get("C_RESOURCES_PROJECT_ID"));
 			// read the file_content from an oracle blob
-			oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB(m_cq.C_RESOURCES_FILE_CONTENT);
+			oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB(m_cq.get("C_RESOURCES_FILE_CONTENT"));
 			byte[] content = new byte[ (int) blob.length()];
 			content = blob.getBytes(1, (int) blob.length());
 			// output for testing:
 			//		String out_buffer = new String(content);
 			//		System.out.println(out_buffer);
-			file = new CmsFile(resId, parentId, fileId, filename, resType, resFlags, userId, groupId, currentProjectId, accessFlags, state, lockedBy, launcherType, launcherClass, created, modified, modifiedBy, content, resSize);
+			file = new CmsFile(resId, parentId, fileId, filename, resType, resFlags, userId, groupId,
+                               resProjectId, accessFlags, state, lockedBy, launcherType,
+                               launcherClass, created, modified, modifiedBy, content, resSize);
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_NOT_FOUND);
 		}
@@ -1980,7 +2009,7 @@ public CmsFile readFile(int currentUserId, int currentProjectId, String filename
 	ResultSet res = null;
 	try {
 		con = DriverManager.getConnection(m_poolName);
-		statement = con.prepareCall(cq.C_PLSQL_RESOURCES_READFILEACC);
+		statement = con.prepareCall(cq.get("C_PLSQL_RESOURCES_READFILEACC"));
 		statement.registerOutParameter(1, oracle.jdbc.driver.OracleTypes.CURSOR);
 		statement.setInt(2, currentUserId);
 		statement.setInt(3, currentProjectId);
@@ -1988,24 +2017,25 @@ public CmsFile readFile(int currentUserId, int currentProjectId, String filename
 		statement.execute();
 		res = (ResultSet) statement.getObject(1);
 		if (res.next()) {
-			int resId = res.getInt(m_cq.C_RESOURCES_RESOURCE_ID);
-			int parentId = res.getInt(m_cq.C_RESOURCES_PARENT_ID);
-			int resType = res.getInt(m_cq.C_RESOURCES_RESOURCE_TYPE);
-			int resFlags = res.getInt(m_cq.C_RESOURCES_RESOURCE_FLAGS);
-			int userId = res.getInt(m_cq.C_RESOURCES_USER_ID);
-			int groupId = res.getInt(m_cq.C_RESOURCES_GROUP_ID);
-			int fileId = res.getInt(m_cq.C_RESOURCES_FILE_ID);
-			int accessFlags = res.getInt(m_cq.C_RESOURCES_ACCESS_FLAGS);
-			int state = res.getInt(m_cq.C_RESOURCES_STATE);
-			int lockedBy = res.getInt(m_cq.C_RESOURCES_LOCKED_BY);
-			int launcherType = res.getInt(m_cq.C_RESOURCES_LAUNCHER_TYPE);
-			String launcherClass = res.getString(m_cq.C_RESOURCES_LAUNCHER_CLASSNAME);
-			long created = SqlHelper.getTimestamp(res, m_cq.C_RESOURCES_DATE_CREATED).getTime();
-			long modified = SqlHelper.getTimestamp(res, m_cq.C_RESOURCES_DATE_LASTMODIFIED).getTime();
-			int modifiedBy = res.getInt(m_cq.C_RESOURCES_LASTMODIFIED_BY);
-			int resSize = res.getInt(m_cq.C_RESOURCES_SIZE);
+			int resId = res.getInt(m_cq.get("C_RESOURCES_RESOURCE_ID"));
+			int parentId = res.getInt(m_cq.get("C_RESOURCES_PARENT_ID"));
+			int resType = res.getInt(m_cq.get("C_RESOURCES_RESOURCE_TYPE"));
+			int resFlags = res.getInt(m_cq.get("C_RESOURCES_RESOURCE_FLAGS"));
+			int userId = res.getInt(m_cq.get("C_RESOURCES_USER_ID"));
+			int groupId = res.getInt(m_cq.get("C_RESOURCES_GROUP_ID"));
+			int fileId = res.getInt(m_cq.get("C_RESOURCES_FILE_ID"));
+			int accessFlags = res.getInt(m_cq.get("C_RESOURCES_ACCESS_FLAGS"));
+			int state = res.getInt(m_cq.get("C_RESOURCES_STATE"));
+			int lockedBy = res.getInt(m_cq.get("C_RESOURCES_LOCKED_BY"));
+			int launcherType = res.getInt(m_cq.get("C_RESOURCES_LAUNCHER_TYPE"));
+			String launcherClass = res.getString(m_cq.get("C_RESOURCES_LAUNCHER_CLASSNAME"));
+			long created = SqlHelper.getTimestamp(res, m_cq.get("C_RESOURCES_DATE_CREATED")).getTime();
+			long modified = SqlHelper.getTimestamp(res, m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
+			int modifiedBy = res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
+			int resSize = res.getInt(m_cq.get("C_RESOURCES_SIZE"));
+            int resProjectId = res.getInt(m_cq.get("C_RESOURCES_PROJECT_ID"));
 			// read the file_content from an oracle blob
-			oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB(m_cq.C_RESOURCES_FILE_CONTENT);
+			oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB(m_cq.get("C_RESOURCES_FILE_CONTENT"));
 			byte[] content = new byte[ (int) blob.length()];
 			content = blob.getBytes(1, (int) blob.length());
 			// output for testing:
@@ -2013,7 +2043,7 @@ public CmsFile readFile(int currentUserId, int currentProjectId, String filename
 			//		System.out.println(out_buffer);
 
 			file = new CmsFile(resId, parentId, fileId, filename, resType, resFlags, userId, groupId,
-								currentProjectId, accessFlags, state, lockedBy, launcherType, launcherClass,
+								resProjectId, accessFlags, state, lockedBy, launcherType, launcherClass,
 								created, modified, modifiedBy, content, resSize);
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_NOT_FOUND);
@@ -2055,21 +2085,32 @@ public CmsFile readFile(int currentUserId, int currentProjectId, String filename
 	 *
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	protected byte[] readFileContent(int fileId)
+	protected byte[] readFileContent(int projectId, int fileId)
 		throws CmsException {
 		//System.out.println("PL/SQL: readFileContent");
 		PreparedStatement statement = null;
 		Connection con = null;
 		ResultSet res = null;
 		byte[] returnValue = null;
+        int onlineProject = getOnlineProject(projectId).getId();
+        String usedPool;
+        String usedStatement;
+        if (projectId == onlineProject){
+            usedPool = m_poolNameOnline;
+            usedStatement = "_ONLINE";
+        } else {
+            usedPool = m_poolName;
+            usedStatement = "";
+        }
+
 		try {
 			// read fileContent from database
-			con = DriverManager.getConnection(m_poolName);
-			statement = con.prepareStatement(m_cq.C_FILE_READ);
+			con = DriverManager.getConnection(usedPool);
+			statement = con.prepareStatement(m_cq.get("C_FILE_READ"+usedStatement));
 			statement.setInt(1,fileId);
 			res = statement.executeQuery();
 			if (res.next()) {
-				oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB(m_cq.C_FILE_CONTENT);
+				oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB(m_cq.get("C_FILE_CONTENT"));
 				byte[] content = new byte[(int) blob.length()];
 				content = blob.getBytes(1, (int) blob.length());
 				returnValue = content;
@@ -2118,7 +2159,7 @@ public Hashtable readSession(String sessionId) throws CmsException {
 	Hashtable session = null;
 	try {
 		con = DriverManager.getConnection(m_poolName);
-		statement = con.prepareStatement(m_cq.C_SESSION_READ);
+		statement = con.prepareStatement(m_cq.get("C_SESSION_READ"));
 		statement.setString(1, sessionId);
 		statement.setTimestamp(2, new java.sql.Timestamp(System.currentTimeMillis() - C_SESSION_TIMEOUT));
 		res = statement.executeQuery();
@@ -2183,11 +2224,11 @@ public Hashtable readSession(String sessionId) throws CmsException {
 		// create get the property data from the database
 		try {
 			con = DriverManager.getConnection(m_poolName);
-			statement = con.prepareStatement(m_cq.C_SYSTEMPROPERTIES_READ);
+			statement = con.prepareStatement(m_cq.get("C_SYSTEMPROPERTIES_READ"));
 			statement.setString(1,name);
 			res = statement.executeQuery();
 			if(res.next()) {
-				oracle.sql.BLOB blob = ((OracleResultSet)res).getBLOB(m_cq.C_SYSTEMPROPERTY_VALUE);
+				oracle.sql.BLOB blob = ((OracleResultSet)res).getBLOB(m_cq.get("C_SYSTEMPROPERTY_VALUE"));
 				byte[] value = new byte[(int) blob.length()];
 				value = blob.getBytes(1, (int) blob.length());
 				// now deserialize the object
@@ -2244,14 +2285,14 @@ public Hashtable readSession(String sessionId) throws CmsException {
 
 		try	{
 			con = DriverManager.getConnection(m_poolName);
-			statement = con.prepareStatement(m_cq.C_USERS_READID);
+			statement = con.prepareStatement(m_cq.get("C_USERS_READID"));
 			statement.setInt(1,id);
 			res = statement.executeQuery();
 
 			// create new Cms user object
 			if(res.next()) {
 				// read the additional infos.
-				oracle.sql.BLOB blob = ((OracleResultSet)res).getBLOB(m_cq.C_USERS_USER_INFO);
+				oracle.sql.BLOB blob = ((OracleResultSet)res).getBLOB(m_cq.get("C_USERS_USER_INFO"));
 				byte[] value = new byte[(int) blob.length()];
 				value = blob.getBytes(1, (int) blob.length());
 				// now deserialize the object
@@ -2259,26 +2300,26 @@ public Hashtable readSession(String sessionId) throws CmsException {
 				ObjectInputStream oin = new ObjectInputStream(bin);
 				Hashtable info=(Hashtable)oin.readObject();
 
-				user = new CmsUser(res.getInt(m_cq.C_USERS_USER_ID),
-								   res.getString(m_cq.C_USERS_USER_NAME),
-								   res.getString(m_cq.C_USERS_USER_PASSWORD),
-								   res.getString(m_cq.C_USERS_USER_RECOVERY_PASSWORD),
-								   res.getString(m_cq.C_USERS_USER_DESCRIPTION),
-								   res.getString(m_cq.C_USERS_USER_FIRSTNAME),
-								   res.getString(m_cq.C_USERS_USER_LASTNAME),
-								   res.getString(m_cq.C_USERS_USER_EMAIL),
-								   SqlHelper.getTimestamp(res,m_cq.C_USERS_USER_LASTLOGIN).getTime(),
-								   SqlHelper.getTimestamp(res,m_cq.C_USERS_USER_LASTUSED).getTime(),
-								   res.getInt(m_cq.C_USERS_USER_FLAGS),
+				user = new CmsUser(res.getInt(m_cq.get("C_USERS_USER_ID")),
+								   res.getString(m_cq.get("C_USERS_USER_NAME")),
+								   res.getString(m_cq.get("C_USERS_USER_PASSWORD")),
+								   res.getString(m_cq.get("C_USERS_USER_RECOVERY_PASSWORD")),
+								   res.getString(m_cq.get("C_USERS_USER_DESCRIPTION")),
+								   res.getString(m_cq.get("C_USERS_USER_FIRSTNAME")),
+								   res.getString(m_cq.get("C_USERS_USER_LASTNAME")),
+								   res.getString(m_cq.get("C_USERS_USER_EMAIL")),
+								   SqlHelper.getTimestamp(res,m_cq.get("C_USERS_USER_LASTLOGIN")).getTime(),
+								   SqlHelper.getTimestamp(res,m_cq.get("C_USERS_USER_LASTUSED")).getTime(),
+								   res.getInt(m_cq.get("C_USERS_USER_FLAGS")),
 								   info,
-								   new CmsGroup(res.getInt(m_cq.C_GROUPS_GROUP_ID),
-												res.getInt(m_cq.C_GROUPS_PARENT_GROUP_ID),
-												res.getString(m_cq.C_GROUPS_GROUP_NAME),
-												res.getString(m_cq.C_GROUPS_GROUP_DESCRIPTION),
-												res.getInt(m_cq.C_GROUPS_GROUP_FLAGS)),
-								   res.getString(m_cq.C_USERS_USER_ADDRESS),
-								   res.getString(m_cq.C_USERS_USER_SECTION),
-								   res.getInt(m_cq.C_USERS_USER_TYPE));
+								   new CmsGroup(res.getInt(m_cq.get("C_GROUPS_GROUP_ID")),
+												res.getInt(m_cq.get("C_GROUPS_PARENT_GROUP_ID")),
+												res.getString(m_cq.get("C_GROUPS_GROUP_NAME")),
+												res.getString(m_cq.get("C_GROUPS_GROUP_DESCRIPTION")),
+												res.getInt(m_cq.get("C_GROUPS_GROUP_FLAGS"))),
+								   res.getString(m_cq.get("C_USERS_USER_ADDRESS")),
+								   res.getString(m_cq.get("C_USERS_USER_SECTION")),
+								   res.getInt(m_cq.get("C_USERS_USER_TYPE")));
 			} else {
 				res.close();
 				res = null;
@@ -2335,7 +2376,7 @@ public Hashtable readSession(String sessionId) throws CmsException {
 
 		try	{
 			con = DriverManager.getConnection(m_poolName);
-			statement = con.prepareStatement(m_cq.C_USERS_READ);
+			statement = con.prepareStatement(m_cq.get("C_USERS_READ"));
 			statement.setString(1,name);
 			statement.setInt(2,type);
 
@@ -2344,7 +2385,7 @@ public Hashtable readSession(String sessionId) throws CmsException {
 			// create new Cms user object
 			if(res.next()) {
 				// read the additional infos.
-				oracle.sql.BLOB blob = ((OracleResultSet)res).getBLOB(m_cq.C_USERS_USER_INFO);
+				oracle.sql.BLOB blob = ((OracleResultSet)res).getBLOB(m_cq.get("C_USERS_USER_INFO"));
 				byte[] value = new byte[(int) blob.length()];
 				value = blob.getBytes(1, (int) blob.length());
 				// now deserialize the object
@@ -2352,26 +2393,26 @@ public Hashtable readSession(String sessionId) throws CmsException {
 				ObjectInputStream oin = new ObjectInputStream(bin);
 				Hashtable info=(Hashtable)oin.readObject();
 
-				user = new CmsUser(res.getInt(m_cq.C_USERS_USER_ID),
-								   res.getString(m_cq.C_USERS_USER_NAME),
-								   res.getString(m_cq.C_USERS_USER_PASSWORD),
-								   res.getString(m_cq.C_USERS_USER_RECOVERY_PASSWORD),
-								   res.getString(m_cq.C_USERS_USER_DESCRIPTION),
-								   res.getString(m_cq.C_USERS_USER_FIRSTNAME),
-								   res.getString(m_cq.C_USERS_USER_LASTNAME),
-								   res.getString(m_cq.C_USERS_USER_EMAIL),
-								   SqlHelper.getTimestamp(res,m_cq.C_USERS_USER_LASTLOGIN).getTime(),
-								   SqlHelper.getTimestamp(res,m_cq.C_USERS_USER_LASTUSED).getTime(),
-								   res.getInt(m_cq.C_USERS_USER_FLAGS),
+				user = new CmsUser(res.getInt(m_cq.get("C_USERS_USER_ID")),
+								   res.getString(m_cq.get("C_USERS_USER_NAME")),
+								   res.getString(m_cq.get("C_USERS_USER_PASSWORD")),
+								   res.getString(m_cq.get("C_USERS_USER_RECOVERY_PASSWORD")),
+								   res.getString(m_cq.get("C_USERS_USER_DESCRIPTION")),
+								   res.getString(m_cq.get("C_USERS_USER_FIRSTNAME")),
+								   res.getString(m_cq.get("C_USERS_USER_LASTNAME")),
+								   res.getString(m_cq.get("C_USERS_USER_EMAIL")),
+								   SqlHelper.getTimestamp(res,m_cq.get("C_USERS_USER_LASTLOGIN")).getTime(),
+								   SqlHelper.getTimestamp(res,m_cq.get("C_USERS_USER_LASTUSED")).getTime(),
+								   res.getInt(m_cq.get("C_USERS_USER_FLAGS")),
 								   info,
-								   new CmsGroup(res.getInt(m_cq.C_GROUPS_GROUP_ID),
-												res.getInt(m_cq.C_GROUPS_PARENT_GROUP_ID),
-												res.getString(m_cq.C_GROUPS_GROUP_NAME),
-												res.getString(m_cq.C_GROUPS_GROUP_DESCRIPTION),
-												res.getInt(m_cq.C_GROUPS_GROUP_FLAGS)),
-								   res.getString(m_cq.C_USERS_USER_ADDRESS),
-								   res.getString(m_cq.C_USERS_USER_SECTION),
-								   res.getInt(m_cq.C_USERS_USER_TYPE));
+								   new CmsGroup(res.getInt(m_cq.get("C_GROUPS_GROUP_ID")),
+												res.getInt(m_cq.get("C_GROUPS_PARENT_GROUP_ID")),
+												res.getString(m_cq.get("C_GROUPS_GROUP_NAME")),
+												res.getString(m_cq.get("C_GROUPS_GROUP_DESCRIPTION")),
+												res.getInt(m_cq.get("C_GROUPS_GROUP_FLAGS"))),
+								   res.getString(m_cq.get("C_USERS_USER_ADDRESS")),
+								   res.getString(m_cq.get("C_USERS_USER_SECTION")),
+								   res.getInt(m_cq.get("C_USERS_USER_TYPE")));
 			} else {
 				res.close();
 				res = null;
@@ -2429,7 +2470,7 @@ public Hashtable readSession(String sessionId) throws CmsException {
 
 		try	{
 			con = DriverManager.getConnection(m_poolName);
-			statement = con.prepareStatement(m_cq.C_USERS_READPW);
+			statement = con.prepareStatement(m_cq.get("C_USERS_READPW"));
 			statement.setString(1,name);
 			statement.setString(2,digest(password));
 			statement.setInt(3,type);
@@ -2438,7 +2479,7 @@ public Hashtable readSession(String sessionId) throws CmsException {
 			// create new Cms user object
 			if(res.next()) {
 				// read the additional infos.
-				oracle.sql.BLOB blob = ((OracleResultSet)res).getBLOB(m_cq.C_USERS_USER_INFO);
+				oracle.sql.BLOB blob = ((OracleResultSet)res).getBLOB(m_cq.get("C_USERS_USER_INFO"));
 				byte[] value = new byte[(int) blob.length()];
 				value = blob.getBytes(1, (int) blob.length());
 				// now deserialize the object
@@ -2446,27 +2487,27 @@ public Hashtable readSession(String sessionId) throws CmsException {
 				ObjectInputStream oin = new ObjectInputStream(bin);
 				Hashtable info=(Hashtable)oin.readObject();
 
-				user = new CmsUser(res.getInt(m_cq.C_USERS_USER_ID),
-								   res.getString(m_cq.C_USERS_USER_NAME),
-								   res.getString(m_cq.C_USERS_USER_PASSWORD),
-								   res.getString(m_cq.C_USERS_USER_RECOVERY_PASSWORD),
-								   res.getString(m_cq.C_USERS_USER_DESCRIPTION),
-								   res.getString(m_cq.C_USERS_USER_FIRSTNAME),
-								   res.getString(m_cq.C_USERS_USER_LASTNAME),
-								   res.getString(m_cq.C_USERS_USER_EMAIL),
-								   SqlHelper.getTimestamp(res,m_cq.C_USERS_USER_LASTLOGIN).getTime(),
-								   SqlHelper.getTimestamp(res,m_cq.C_USERS_USER_LASTUSED).getTime(),
-								   res.getInt(m_cq.C_USERS_USER_FLAGS),
+				user = new CmsUser(res.getInt(m_cq.get("C_USERS_USER_ID")),
+								   res.getString(m_cq.get("C_USERS_USER_NAME")),
+								   res.getString(m_cq.get("C_USERS_USER_PASSWORD")),
+								   res.getString(m_cq.get("C_USERS_USER_RECOVERY_PASSWORD")),
+								   res.getString(m_cq.get("C_USERS_USER_DESCRIPTION")),
+								   res.getString(m_cq.get("C_USERS_USER_FIRSTNAME")),
+								   res.getString(m_cq.get("C_USERS_USER_LASTNAME")),
+								   res.getString(m_cq.get("C_USERS_USER_EMAIL")),
+								   SqlHelper.getTimestamp(res,m_cq.get("C_USERS_USER_LASTLOGIN")).getTime(),
+								   SqlHelper.getTimestamp(res,m_cq.get("C_USERS_USER_LASTUSED")).getTime(),
+								   res.getInt(m_cq.get("C_USERS_USER_FLAGS")),
 								   info,
-								   new CmsGroup(res.getInt(m_cq.C_GROUPS_GROUP_ID),
-												res.getInt(m_cq.C_GROUPS_PARENT_GROUP_ID),
-												res.getString(m_cq.C_GROUPS_GROUP_NAME),
-												res.getString(m_cq.C_GROUPS_GROUP_DESCRIPTION),
-												res.getInt(m_cq.C_GROUPS_GROUP_FLAGS)),
+								   new CmsGroup(res.getInt(m_cq.get("C_GROUPS_GROUP_ID")),
+												res.getInt(m_cq.get("C_GROUPS_PARENT_GROUP_ID")),
+												res.getString(m_cq.get("C_GROUPS_GROUP_NAME")),
+												res.getString(m_cq.get("C_GROUPS_GROUP_DESCRIPTION")),
+												res.getInt(m_cq.get("C_GROUPS_GROUP_FLAGS"))),
 
-								   res.getString(m_cq.C_USERS_USER_ADDRESS),
-								   res.getString(m_cq.C_USERS_USER_SECTION),
-								   res.getInt(m_cq.C_USERS_USER_TYPE));
+								   res.getString(m_cq.get("C_USERS_USER_ADDRESS")),
+								   res.getString(m_cq.get("C_USERS_USER_SECTION")),
+								   res.getInt(m_cq.get("C_USERS_USER_TYPE")));
 			} else {
 				res.close();
 				res = null;
@@ -2525,14 +2566,14 @@ public Hashtable readSession(String sessionId) throws CmsException {
 
 		try	{
 			con = DriverManager.getConnection(m_poolName);
-			statement = con.prepareStatement(m_cq.C_USERS_READID);
+			statement = con.prepareStatement(m_cq.get("C_USERS_READID"));
 			statement.setInt(1,agentId);
 			res = statement.executeQuery();
 
 			// create new Cms user object
 			if(res.next()) {
 				// read the additional infos.
-				oracle.sql.BLOB blob = ((OracleResultSet)res).getBLOB(m_cq.C_USERS_USER_INFO);
+				oracle.sql.BLOB blob = ((OracleResultSet)res).getBLOB(m_cq.get("C_USERS_USER_INFO"));
 				byte[] value = new byte[(int) blob.length()];
 				value = blob.getBytes(1, (int) blob.length());
 				// now deserialize the object
@@ -2540,26 +2581,26 @@ public Hashtable readSession(String sessionId) throws CmsException {
 				ObjectInputStream oin = new ObjectInputStream(bin);
 				Hashtable info=(Hashtable)oin.readObject();
 
-				user = new CmsUser(res.getInt(m_cq.C_USERS_USER_ID),
-								   res.getString(m_cq.C_USERS_USER_NAME),
-								   res.getString(m_cq.C_USERS_USER_PASSWORD),
-								   res.getString(m_cq.C_USERS_USER_RECOVERY_PASSWORD),
-								   res.getString(m_cq.C_USERS_USER_DESCRIPTION),
-								   res.getString(m_cq.C_USERS_USER_FIRSTNAME),
-								   res.getString(m_cq.C_USERS_USER_LASTNAME),
-								   res.getString(m_cq.C_USERS_USER_EMAIL),
-								   SqlHelper.getTimestamp(res,m_cq.C_USERS_USER_LASTLOGIN).getTime(),
-								   SqlHelper.getTimestamp(res,m_cq.C_USERS_USER_LASTUSED).getTime(),
-								   res.getInt(m_cq.C_USERS_USER_FLAGS),
+				user = new CmsUser(res.getInt(m_cq.get("C_USERS_USER_ID")),
+								   res.getString(m_cq.get("C_USERS_USER_NAME")),
+								   res.getString(m_cq.get("C_USERS_USER_PASSWORD")),
+								   res.getString(m_cq.get("C_USERS_USER_RECOVERY_PASSWORD")),
+								   res.getString(m_cq.get("C_USERS_USER_DESCRIPTION")),
+								   res.getString(m_cq.get("C_USERS_USER_FIRSTNAME")),
+								   res.getString(m_cq.get("C_USERS_USER_LASTNAME")),
+								   res.getString(m_cq.get("C_USERS_USER_EMAIL")),
+								   SqlHelper.getTimestamp(res,m_cq.get("C_USERS_USER_LASTLOGIN")).getTime(),
+								   SqlHelper.getTimestamp(res,m_cq.get("C_USERS_USER_LASTUSED")).getTime(),
+								   res.getInt(m_cq.get("C_USERS_USER_FLAGS")),
 								   info,
-								   new CmsGroup(res.getInt(m_cq.C_GROUPS_GROUP_ID),
-												res.getInt(m_cq.C_GROUPS_PARENT_GROUP_ID),
-												res.getString(m_cq.C_GROUPS_GROUP_NAME),
-												res.getString(m_cq.C_GROUPS_GROUP_DESCRIPTION),
-												res.getInt(m_cq.C_GROUPS_GROUP_FLAGS)),
-								   res.getString(m_cq.C_USERS_USER_ADDRESS),
-								   res.getString(m_cq.C_USERS_USER_SECTION),
-								   res.getInt(m_cq.C_USERS_USER_TYPE));
+								   new CmsGroup(res.getInt(m_cq.get("C_GROUPS_GROUP_ID")),
+												res.getInt(m_cq.get("C_GROUPS_PARENT_GROUP_ID")),
+												res.getString(m_cq.get("C_GROUPS_GROUP_NAME")),
+												res.getString(m_cq.get("C_GROUPS_GROUP_DESCRIPTION")),
+												res.getInt(m_cq.get("C_GROUPS_GROUP_FLAGS"))),
+								   res.getString(m_cq.get("C_USERS_USER_ADDRESS")),
+								   res.getString(m_cq.get("C_USERS_USER_SECTION")),
+								   res.getInt(m_cq.get("C_USERS_USER_TYPE")));
 			} else {
 				res.close();
 				res = null;
@@ -2616,7 +2657,7 @@ public Vector unlockResource(CmsUser currentUser, CmsProject currentProject, Str
 	try {
 		con = DriverManager.getConnection(m_poolName);
 		// create the statement
-		statement = con.prepareCall(cq.C_PLSQL_RESOURCES_UNLOCKRESOURCE);
+		statement = con.prepareCall(cq.get("C_PLSQL_RESOURCES_UNLOCKRESOURCE"));
 		statement.setInt(1, currentUser.getId());
 		statement.setInt(2, currentProject.getId());
 		statement.setString(3, resourcename);
@@ -2624,24 +2665,24 @@ public Vector unlockResource(CmsUser currentUser, CmsProject currentProject, Str
 		statement.execute();
 		res = (ResultSet) statement.getObject(4);
 		while (res.next()) {
-			int resId = res.getInt(m_cq.C_RESOURCES_RESOURCE_ID);
-			int parentId = res.getInt(m_cq.C_RESOURCES_PARENT_ID);
-			String resName = res.getString(m_cq.C_RESOURCES_RESOURCE_NAME);
-			int resType = res.getInt(m_cq.C_RESOURCES_RESOURCE_TYPE);
-			int resFlags = res.getInt(m_cq.C_RESOURCES_RESOURCE_FLAGS);
-			int userId = res.getInt(m_cq.C_RESOURCES_USER_ID);
-			int groupId = res.getInt(m_cq.C_RESOURCES_GROUP_ID);
-			int projectId = res.getInt(m_cq.C_RESOURCES_PROJECT_ID);
-			int fileId = res.getInt(m_cq.C_RESOURCES_FILE_ID);
-			int accessFlags = res.getInt(m_cq.C_RESOURCES_ACCESS_FLAGS);
-			int state = res.getInt(m_cq.C_RESOURCES_STATE);
-			int lockedBy = res.getInt(m_cq.C_RESOURCES_LOCKED_BY);
-			int launcherType = res.getInt(m_cq.C_RESOURCES_LAUNCHER_TYPE);
-			String launcherClass = res.getString(m_cq.C_RESOURCES_LAUNCHER_CLASSNAME);
-			long created = SqlHelper.getTimestamp(res, m_cq.C_RESOURCES_DATE_CREATED).getTime();
-			long modified = SqlHelper.getTimestamp(res, m_cq.C_RESOURCES_DATE_LASTMODIFIED).getTime();
-			int modifiedBy = res.getInt(m_cq.C_RESOURCES_LASTMODIFIED_BY);
-			int resSize = res.getInt(m_cq.C_RESOURCES_SIZE);
+			int resId = res.getInt(m_cq.get("C_RESOURCES_RESOURCE_ID"));
+			int parentId = res.getInt(m_cq.get("C_RESOURCES_PARENT_ID"));
+			String resName = res.getString(m_cq.get("C_RESOURCES_RESOURCE_NAME"));
+			int resType = res.getInt(m_cq.get("C_RESOURCES_RESOURCE_TYPE"));
+			int resFlags = res.getInt(m_cq.get("C_RESOURCES_RESOURCE_FLAGS"));
+			int userId = res.getInt(m_cq.get("C_RESOURCES_USER_ID"));
+			int groupId = res.getInt(m_cq.get("C_RESOURCES_GROUP_ID"));
+			int projectId = res.getInt(m_cq.get("C_RESOURCES_PROJECT_ID"));
+			int fileId = res.getInt(m_cq.get("C_RESOURCES_FILE_ID"));
+			int accessFlags = res.getInt(m_cq.get("C_RESOURCES_ACCESS_FLAGS"));
+			int state = res.getInt(m_cq.get("C_RESOURCES_STATE"));
+			int lockedBy = res.getInt(m_cq.get("C_RESOURCES_LOCKED_BY"));
+			int launcherType = res.getInt(m_cq.get("C_RESOURCES_LAUNCHER_TYPE"));
+			String launcherClass = res.getString(m_cq.get("C_RESOURCES_LAUNCHER_CLASSNAME"));
+			long created = SqlHelper.getTimestamp(res, m_cq.get("C_RESOURCES_DATE_CREATED")).getTime();
+			long modified = SqlHelper.getTimestamp(res, m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
+			int modifiedBy = res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
+			int resSize = res.getInt(m_cq.get("C_RESOURCES_SIZE"));
 			resource = new CmsResource(resId, parentId, fileId, resName, resType, resFlags, userId, groupId,
 										projectId, accessFlags, state, lockedBy, launcherType, launcherClass,
 										created, modified, modifiedBy, resSize);
@@ -2704,13 +2745,13 @@ public int updateSession(String sessionId, Hashtable data) throws CmsException {
 		// write data to database in two steps because of using Oracle BLOB
 		// first update the session_time
 		con = DriverManager.getConnection(m_poolName);
-		statement = con.prepareStatement(cq.C_PLSQL_SESSION_UPDATE);
+		statement = con.prepareStatement(cq.get("C_PLSQL_SESSION_UPDATE"));
 		statement.setTimestamp(1, new java.sql.Timestamp(System.currentTimeMillis()));
 		statement.setString(2, sessionId);
 		retValue = statement.executeUpdate();
 		statement.close();
 		// now update the session_data
-		statement2 = con.prepareStatement(cq.C_PLSQL_SESSION_FORUPDATE);
+		statement2 = con.prepareStatement(cq.get("C_PLSQL_SESSION_FORUPDATE"));
 		statement2.setString(1, sessionId);
 		con.setAutoCommit(false);
 		res = statement2.executeQuery();
@@ -2718,9 +2759,9 @@ public int updateSession(String sessionId, Hashtable data) throws CmsException {
 			oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB("SESSION_DATA");
 			// first trim the blob to 0 bytes, otherwise there could be left some bytes
 			// of the old content
-			//trimStatement = (OraclePreparedStatement) con.prepareStatement(cq.C_TRIMBLOB);
+			//trimStatement = (OraclePreparedStatement) con.prepareStatement(cq.get("C_TRIMBLOB);
 			//trimStatement.setBLOB(1, blob);
-                        trimStatement = con.prepareStatement(cq.C_TRIMBLOB);
+                        trimStatement = con.prepareStatement(cq.get("C_TRIMBLOB"));
 			trimStatement.setBlob(1, blob);
 			trimStatement.setInt(2, 0);
 			trimStatement.execute();
@@ -2738,7 +2779,7 @@ public int updateSession(String sessionId, Hashtable data) throws CmsException {
 		res.close();
 		// for the oracle-driver commit or rollback must be executed manually
 		// because setAutoCommit = false in CmsDbPool.CmsDbPool
-		nextStatement = con.prepareStatement(cq.C_COMMIT);
+		nextStatement = con.prepareStatement(cq.get("C_COMMIT"));
 		nextStatement.execute();
 		nextStatement.close();
 		con.setAutoCommit(true);
@@ -2765,7 +2806,7 @@ public int updateSession(String sessionId, Hashtable data) throws CmsException {
 			} catch (SQLException exc) {
 			}
 			try {
-				nextStatement = con.prepareStatement(cq.C_ROLLBACK);
+				nextStatement = con.prepareStatement(cq.get("C_ROLLBACK"));
 				nextStatement.execute();
 			} catch (SQLException se) {
 			}
@@ -2813,7 +2854,7 @@ public boolean userInGroup(int userid, int groupid) throws CmsException {
 	try {
 		// create statement
 		con = DriverManager.getConnection(m_poolName);
-		statement = con.prepareCall(cq.C_PLSQL_GROUPS_USERINGROUP);
+		statement = con.prepareCall(cq.get("C_PLSQL_GROUPS_USERINGROUP"));
 		statement.registerOutParameter(1, Types.INTEGER);
 		statement.setInt(2, userid);
 		statement.setInt(3, groupid);
@@ -2853,20 +2894,28 @@ public boolean userInGroup(int userid, int groupid) throws CmsException {
  * @exception CmsException Throws CmsException if operation was not succesful.
  */
 public void writeFile(CmsProject project, CmsProject onlineProject, CmsFile file, boolean changed) throws CmsException {
-	//System.out.println("PL/SQL: writeFile");
 	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
 	PreparedStatement statement = null;
 	PreparedStatement nextStatement = null;
 	//OraclePreparedStatement trimStatement = null;
-        PreparedStatement trimStatement = null;
+    PreparedStatement trimStatement = null;
 	Connection con = null;
 	ResultSet res = null;
+    String usedPool;
+    String usedStatement;
+    if (project.getId() == onlineProject.getId()){
+        usedPool = m_poolNameOnline;
+        usedStatement = "_ONLINE";
+    } else {
+        usedPool = m_poolName;
+        usedStatement = "";
+    }
 	try {
 		// update the file header in the RESOURCE database.
 		writeFileHeader(project, file, changed);
 		// update the file content in the FILES database.
-		con = DriverManager.getConnection(m_poolName);
-		statement = con.prepareStatement(cq.C_PLSQL_FILESFORUPDATE);
+		con = DriverManager.getConnection(usedPool);
+		statement = con.prepareStatement(cq.get("C_PLSQL_FILESFORUPDATE"+usedStatement));
 		statement.setInt(1, file.getFileId());
 		con.setAutoCommit(false);
 		res = statement.executeQuery();
@@ -2875,9 +2924,9 @@ public void writeFile(CmsProject project, CmsProject onlineProject, CmsFile file
 				oracle.sql.BLOB blobnew = ((OracleResultSet) res).getBLOB("FILE_CONTENT");
 				// first trim the blob to 0 bytes, otherwise ther could be left some bytes
 				// of the old content
-				//trimStatement = (OraclePreparedStatement) con.prepareStatement(cq.C_TRIMBLOB);
+				//trimStatement = (OraclePreparedStatement) con.prepareStatement(cq.get("C_TRIMBLOB);
 				//trimStatement.setBLOB(1, blobnew);
-                                trimStatement = con.prepareStatement(cq.C_TRIMBLOB);
+                trimStatement = con.prepareStatement(cq.get("C_TRIMBLOB"));
 				trimStatement.setBlob(1, blobnew);
 				trimStatement.setInt(2, 0);
 				trimStatement.execute();
@@ -2893,7 +2942,7 @@ public void writeFile(CmsProject project, CmsProject onlineProject, CmsFile file
 			}
 			// for the oracle-driver commit or rollback must be executed manually
 			// because setAutoCommit = false in CmsDbPool.CmsDbPool
-			nextStatement = con.prepareStatement(cq.C_COMMIT);
+			nextStatement = con.prepareStatement(cq.get("C_COMMIT"));
 			nextStatement.execute();
 			nextStatement.close();
 		    con.setAutoCommit(true);
@@ -2917,7 +2966,7 @@ public void writeFile(CmsProject project, CmsProject onlineProject, CmsFile file
 			} catch (SQLException exc) {
 			}
 			try {
-				nextStatement = con.prepareStatement(cq.C_ROLLBACK);
+				nextStatement = con.prepareStatement(cq.get("C_ROLLBACK"));
 				nextStatement.execute();
 			} catch (SQLException se) {
 			}
@@ -2946,178 +2995,7 @@ public void writeFile(CmsProject project, CmsProject onlineProject, CmsFile file
 		}
 	}
 }
-/**
- * Writes the fileheader to the Cms.
- *
- * @param project The project in which the resource will be used.
- * @param onlineProject The online project of the OpenCms.
- * @param file The new file.
- * @param changed Flag indicating if the file state must be set to changed.
- *
- * @exception CmsException Throws CmsException if operation was not succesful.
- */
-public void writeFileHeader(CmsProject project, CmsFile file, boolean changed) throws CmsException {
-	//System.out.println("PL/SQL: writeFileHeader");
-	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
-	ResultSet res = null;
-	ResultSet resUpd = null;
-	byte[] content;
-	PreparedStatement statementFileRead = null;
-	PreparedStatement statementResourceUpdate = null;
-	PreparedStatement statementFileIns = null;
-	PreparedStatement statementFileUpd = null;
-	PreparedStatement commitStatement = null;
-	Connection con = null;
-	try {
-		// check if the file content for this file is already existing in the
-		// offline project. If not, load it from the online project and add it
-		// to the offline project.
-		con = DriverManager.getConnection(m_poolName);
-		if ((file.getState() == C_STATE_UNCHANGED) && (changed == true)) {
-			// read file content form the online project
-			statementFileRead = con.prepareStatement(m_cq.C_FILE_READ);
-			statementFileRead.setInt(1, file.getFileId());
-			res = statementFileRead.executeQuery();
-			if (res.next()) {
-				// read the file_content from an oracle blob
-				oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB(m_cq.C_RESOURCES_FILE_CONTENT);
-				content = new byte[ (int) blob.length()];
-				content = blob.getBytes(1, (int) blob.length());
-			} else {
-				throw new CmsException("[" + this.getClass().getName() + "]" + file.getAbsolutePath(), CmsException.C_NOT_FOUND);
-			}
-			statementFileRead.close();
-			res.close();
-			// add the file content to the offline project.
-			// first insert new file without file_content, then update the file_content
-			// these two steps are necessary because of using BLOBs	in the Oracle DB
-			file.setFileId(nextId(C_TABLE_FILES));
-			statementFileIns = con.prepareStatement(cq.C_PLSQL_FILESFORINSERT);
-			statementFileIns.setInt(1, file.getFileId());
-			statementFileIns.executeUpdate();
-			statementFileIns.close();
-			// update the file content in the FILES database.
-			try {
-				statementFileUpd = con.prepareStatement(cq.C_PLSQL_FILESFORUPDATE);
-				statementFileUpd.setInt(1, file.getFileId());
-				con.setAutoCommit(false);
-				resUpd = statementFileUpd.executeQuery();
-				while (resUpd.next()) {
-					oracle.sql.BLOB blobnew = ((OracleResultSet) resUpd).getBLOB("FILE_CONTENT");
-					ByteArrayInputStream instream = new ByteArrayInputStream(content);
-					OutputStream outstream = blobnew.getBinaryOutputStream();
-					byte[] chunk = new byte[blobnew.getChunkSize()];
-					int i = -1;
-					while ((i = instream.read(chunk)) != -1) {
-						outstream.write(chunk, 0, i);
-					}
-					instream.close();
-					outstream.close();
-				}
-				statementFileUpd.close();
-				resUpd.close();
-				// for the oracle-driver commit or rollback must be executed manually
-				// because setAutoCommit = false in CmsDbPool.CmsDbPool
-				commitStatement = con.prepareStatement(cq.C_COMMIT);
-				commitStatement.execute();
-				commitStatement.close();
-				con.setAutoCommit(true);
-			} catch (IOException e) {
-				throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), e);
-			}
-		}
-		// update resource in the database
-		statementResourceUpdate = con.prepareStatement(m_cq.C_RESOURCES_UPDATE);
-		statementResourceUpdate.setInt(1, file.getType());
-		statementResourceUpdate.setInt(2, file.getFlags());
-		statementResourceUpdate.setInt(3, file.getOwnerId());
-		statementResourceUpdate.setInt(4, file.getGroupId());
-		statementResourceUpdate.setInt(5, file.getProjectId());
-		statementResourceUpdate.setInt(6, file.getAccessFlags());
-		//STATE
-		int state = file.getState();
-		if ((state == C_STATE_NEW) || (state == C_STATE_CHANGED)) {
-			statementResourceUpdate.setInt(7, state);
-		} else {
-			if (changed == true) {
-				statementResourceUpdate.setInt(7, C_STATE_CHANGED);
-			} else {
-				statementResourceUpdate.setInt(7, file.getState());
-			}
-		}
-		statementResourceUpdate.setInt(8, file.isLockedBy());
-		statementResourceUpdate.setInt(9, file.getLauncherType());
-		statementResourceUpdate.setString(10, file.getLauncherClassname());
-		statementResourceUpdate.setTimestamp(11, new Timestamp(System.currentTimeMillis()));
-		statementResourceUpdate.setInt(12, file.getResourceLastModifiedBy());
-		statementResourceUpdate.setInt(13, file.getLength());
-		statementResourceUpdate.setInt(14, file.getFileId());
-		statementResourceUpdate.setInt(15, file.getResourceId());
-		statementResourceUpdate.executeUpdate();
-		statementResourceUpdate.close();
-	} catch (SQLException e) {
-		throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
-	} finally {
-		if (res != null) {
-			try {
-				res.close();
-			} catch (SQLException se) {
-			}
-		}
-		if (resUpd != null) {
-			try {
-				resUpd.close();
-			} catch (SQLException se) {
-			}
-		}
-		if (statementFileRead != null) {
-			try {
-				statementFileRead.close();
-			} catch (SQLException exc) {
-			}
-		}
-		if (statementFileIns != null) {
-			try {
-				statementFileIns.close();
-			} catch (SQLException exc) {
-			}
-			try {
-				commitStatement = con.prepareStatement(cq.C_ROLLBACK);
-				commitStatement.execute();
-			} catch (SQLException se) {
-			}
-		}
-		if (statementFileUpd != null) {
-			try {
-				statementFileUpd.close();
-			} catch (SQLException exc) {
-			}
-		}
-		if (statementResourceUpdate != null) {
-			try {
-				statementResourceUpdate.close();
-			} catch (SQLException exc) {
-			}
-		}
-		if (commitStatement != null) {
-			try {
-				commitStatement.close();
-			} catch (SQLException exc) {
-			}
-		}
-		if (con != null) {
-			try {
-				con.setAutoCommit(true);
-			} catch (SQLException se) {
-			} finally {
-				try {
-					con.close();
-				} catch (SQLException se) {
-				}
-			}
-		}
-	}
-}
+
 /**
  * Writes a serializable object to the systemproperties.
  *
@@ -3134,7 +3012,7 @@ public Serializable writeSystemProperty(String name, Serializable object) throws
 	PreparedStatement statement = null;
 	PreparedStatement nextStatement = null;
 	//OraclePreparedStatement trimStatement = null;
-        PreparedStatement trimStatement = null;
+    PreparedStatement trimStatement = null;
 	ResultSet res = null;
 	Connection con = null;
 	byte[] value = null;
@@ -3146,7 +3024,7 @@ public Serializable writeSystemProperty(String name, Serializable object) throws
 		oout.close();
 		value = bout.toByteArray();
 		con = DriverManager.getConnection(m_poolName);
-		statement = con.prepareStatement(cq.C_PLSQL_SYSTEMPROPERTIES_NAMEFORUPDATE);
+		statement = con.prepareStatement(cq.get("C_PLSQL_SYSTEMPROPERTIES_NAMEFORUPDATE"));
 		statement.setString(1, name);
 		con.setAutoCommit(false);
 		res = statement.executeQuery();
@@ -3154,9 +3032,9 @@ public Serializable writeSystemProperty(String name, Serializable object) throws
 			oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB("SYSTEMPROPERTY_VALUE");
 			// first trim the blob to 0 bytes, otherwise ther could be left some bytes
 			// of the old content
-			//trimStatement = (OraclePreparedStatement) con.prepareStatement(cq.C_TRIMBLOB);
+			//trimStatement = (OraclePreparedStatement) con.prepareStatement(cq.get("C_TRIMBLOB);
 			//trimStatement.setBLOB(1, blob);
-                        trimStatement = con.prepareStatement(cq.C_TRIMBLOB);
+            trimStatement = con.prepareStatement(cq.get("C_TRIMBLOB"));
 			trimStatement.setBlob(1, blob);
 			trimStatement.setInt(2, 0);
 			trimStatement.execute();
@@ -3175,7 +3053,7 @@ public Serializable writeSystemProperty(String name, Serializable object) throws
 		res.close();
 		// for the oracle-driver commit or rollback must be executed manually
 		// because setAutoCommit = false in CmsDbPool.CmsDbPool
-		nextStatement = con.prepareStatement(cq.C_COMMIT);
+		nextStatement = con.prepareStatement(cq.get("C_COMMIT"));
 		nextStatement.execute();
 		nextStatement.close();
 		con.setAutoCommit(true);
@@ -3196,7 +3074,7 @@ public Serializable writeSystemProperty(String name, Serializable object) throws
 			} catch (SQLException se) {
 			}
 			try {
-				nextStatement = con.prepareStatement(cq.C_ROLLBACK);
+				nextStatement = con.prepareStatement(cq.get("C_ROLLBACK"));
 				nextStatement.execute();
 			} catch (SQLException exc){
 			}
@@ -3253,7 +3131,7 @@ public void writeUser(CmsUser user) throws CmsException {
 		value = bout.toByteArray();
 		// write data to database
 		con = DriverManager.getConnection(m_poolName);
-		statement = con.prepareStatement(cq.C_PLSQL_USERSWRITE);
+		statement = con.prepareStatement(cq.get("C_PLSQL_USERSWRITE"));
 		statement.setString(1, checkNull(user.getDescription()));
 		statement.setString(2, checkNull(user.getFirstname()));
 		statement.setString(3, checkNull(user.getLastname()));
@@ -3270,7 +3148,7 @@ public void writeUser(CmsUser user) throws CmsException {
 		statement.executeUpdate();
 		statement.close();
 		// update user_info in this special way because of using blob
-		statement2 = con.prepareStatement(cq.C_PLSQL_USERSFORUPDATE);
+		statement2 = con.prepareStatement(cq.get("C_PLSQL_USERSFORUPDATE"));
 		statement2.setInt(1, user.getId());
 		con.setAutoCommit(false);
 		res = statement2.executeQuery();
@@ -3279,10 +3157,10 @@ public void writeUser(CmsUser user) throws CmsException {
 				oracle.sql.BLOB blobnew = ((OracleResultSet) res).getBLOB("USER_INFO");
 				// first trim the blob to 0 bytes, otherwise ther could be left some bytes
 				// of the old content
-				//trimStatement = (OraclePreparedStatement) con.prepareStatement(cq.C_TRIMBLOB);
-				trimStatement = con.prepareStatement(cq.C_TRIMBLOB);
-                                //trimStatement.setBLOB(1, blobnew);
-                                trimStatement.setBlob(1, blobnew);
+				//trimStatement = (OraclePreparedStatement) con.prepareStatement(cq.get("C_TRIMBLOB);
+				trimStatement = con.prepareStatement(cq.get("C_TRIMBLOB"));
+                //trimStatement.setBLOB(1, blobnew);
+                trimStatement.setBlob(1, blobnew);
 				trimStatement.setInt(2, 0);
 				trimStatement.execute();
 				trimStatement.close();
@@ -3298,7 +3176,7 @@ public void writeUser(CmsUser user) throws CmsException {
 			}
 			// for the oracle-driver commit or rollback must be executed manually
 			// because setAutoCommit = false in CmsDbPool.CmsDbPool
-			nextStatement = con.prepareStatement(cq.C_COMMIT);
+			nextStatement = con.prepareStatement(cq.get("C_COMMIT"));
 			nextStatement.execute();
 			nextStatement.close();
 			con.setAutoCommit(true);
@@ -3324,7 +3202,7 @@ public void writeUser(CmsUser user) throws CmsException {
 			} catch (SQLException exc) {
 			}
 			try {
-				nextStatement = con.prepareStatement(cq.C_ROLLBACK);
+				nextStatement = con.prepareStatement(cq.get("C_ROLLBACK"));
 				nextStatement.execute();
 			} catch (SQLException se) {
 			}

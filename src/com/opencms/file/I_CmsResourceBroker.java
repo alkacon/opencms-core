@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2001/05/28 15:01:52 $
- * Version: $Revision: 1.144 $
+ * Date   : $Date: 2001/06/22 16:00:29 $
+ * Version: $Revision: 1.145 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.144 $ $Date: 2001/05/28 15:01:52 $
+ * @version $Revision: 1.145 $ $Date: 2001/06/22 16:00:29 $
  *
  */
 
@@ -601,6 +601,26 @@ public interface I_CmsResourceBroker {
  * @author Martin Langelund
  */
 public CmsProject createProject(CmsUser currentUser, CmsProject currentProject, String name, String description, String groupname, String managergroupname) throws com.opencms.core.CmsException;
+
+/**
+ * Creates a project.
+ *
+ * <B>Security</B>
+ * Only the users which are in the admin or projectleader-group are granted.
+ *
+ * Changed: added the project type
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @param name The name of the project to read.
+ * @param description The description for the new project.
+ * @param group the group to be set.
+ * @param managergroup the managergroup to be set.
+ * @param projecttype the project type (normal or temporary)
+ * @exception CmsException Throws CmsException if something goes wrong.
+ * @author Edna Falkenhan
+ */
+public CmsProject createProject(CmsUser currentUser, CmsProject currentProject, String name, String description, String groupname, String managergroupname, int projecttype) throws com.opencms.core.CmsException;
+
 	/**
 	  * Creates a new project for task handling.
 	  *

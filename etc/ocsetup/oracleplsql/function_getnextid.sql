@@ -7,6 +7,10 @@ BEGIN
   commit;
   return vNextId;
 EXCEPTION
+  WHEN NO_DATA_FOUND THEN
+    insert into cms_systemid (table_key, id) values (pTableId, 2);
+    commit;
+    return 1;
   WHEN OTHERS THEN
     rollback;
     raise;

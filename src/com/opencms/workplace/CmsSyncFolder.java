@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsSyncFolder.java,v $
-* Date   : $Date: 2001/05/17 14:10:32 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2001/06/22 16:01:33 $
+* Version: $Revision: 1.7 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <P>
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.6 $ $Date: 2001/05/17 14:10:32 $
+ * @version $Revision: 1.7 $ $Date: 2001/06/22 16:01:33 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -195,7 +195,7 @@ public class CmsSyncFolder extends CmsWorkplaceDefault implements I_CmsConstants
 			            } else if (count == 0){
 				        // there is no syncproject, so create a new one and set this as the current project
 				        // the necessary resources will be copied later to this project
-				        reqCont.setCurrentProject(cms.createProject(projectName, "Project for synchronisation", "Users", "Projectmanager").getId());
+				        reqCont.setCurrentProject(cms.createProject(projectName, "Project for synchronisation", "Users", "Projectmanager", ""+C_PROJECT_TYPE_NORMAL).getId());
 				        m_newProject = true;
 			            } else {
 				        // there are too many projects with the name of the syncproject, so return an error

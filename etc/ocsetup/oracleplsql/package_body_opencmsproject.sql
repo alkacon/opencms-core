@@ -2,7 +2,6 @@ CREATE OR REPLACE
 PACKAGE BODY OpenCmsProject IS
    -- variable/funktions/procedures which are used only in this package
    bAnyList VARCHAR2(32767) := '';
-   PROCEDURE helperCopyResourceToProject(pUserId IN NUMBER, pProjectId IN NUMBER, pOnlineProjectId IN NUMBER, pResourceName IN VARCHAR2);
    FUNCTION addInList(pAnyId NUMBER) RETURN BOOLEAN;
 --------------------------------------------------------------------
 -- return all project which the user has access
@@ -123,180 +122,49 @@ PACKAGE BODY OpenCmsProject IS
       rollback;
       RAISE;
   END createProject;
---------------------------------------------------------------------------------------------------------------
--- copy the resource pResource from the online-project to the project with pProjectId
---------------------------------------------------------------------------------------------------------------
-  PROCEDURE copyResourceToProject(pUserID IN NUMBER, pProjectId IN NUMBER, pResource IN VARCHAR2) IS
-    curResource userTypes.anyCursor;
-    curProject userTypes.anyCursor;
-    curProperties userTypes.anyCursor;
-    recProject cms_projects%ROWTYPE;
-    recOnlineProject cms_projects%ROWTYPE;
-    recResource cms_resources%ROWTYPE;
-    recPropValue cms_properties.property_value%TYPE;
-    recPropName  cms_propertydef.propertydef_name%TYPE;
-    vParent cms_resources.resource_name%TYPE;
-    vResourceName cms_resources.resource_name%TYPE;
-    i NUMBER;
-    vCount NUMBER;
-  BEGIN
-    IF instr(pResource,'/') = 0 THEN
-      select resource_name into vResourceName from cms_resources where resource_id = to_number(pResource);
-    ELSE
-      vResourceName := pResource;
-    END IF;
-    -- project != online-project and project.user_id = pUserId and project.flags = C_PROJECT_STATE_UNLOCKED
-    OPEN curProject FOR select * from cms_projects where project_id = pProjectId;
-    FETCH curProject INTO recProject;
-    CLOSE curProject;
-    curProject := onlineProject(pProjectId);
-    FETCH curProject INTO recOnlineProject;
-    CLOSE curProject;
-    IF (pProjectID != recOnlineProject.project_id
-        AND recProject.user_id = pUserId
-        AND recProject.project_flags = opencmsConstants.C_PROJECT_STATE_UNLOCKED) THEN
-      -- get parentfolders of pResourceName from online-project
-      i := 1;
-      LOOP
-        -- get all parent-resources from the absolute path of pResourceName beginning with root "/"
-        vParent := substr(vResourceName, 1, instr(vResourceName, '/', 1, i));
-        IF (vParent IS NULL OR vParent = vResourceName) THEN
-          -- no more folders or parent-folder = folder to copy
-          EXIT;
-        END IF;
-        i := i+1;
-        -- dont't copy the resource if it already exists
-        select count(*) into vCount from cms_resources where resource_name = vParent and project_id = pProjectId;
-        IF vCount = 0 THEN
-          -- copy the parent-resource from online-project to project
-          opencmsResource.copyResource(pProjectId, recOnlineProject.project_id, vParent);
-          -- copy meta-information
-          curResource := opencmsResource.readFileHeader(pUserId, pProjectId, vParent);
-          FETCH curResource INTO recResource;
-          CLOSE curResource;
-          curProperties := opencmsProperty.readAllProperties(pUserId, recOnlineProject.project_id, vParent);
-          FETCH curProperties INTO recPropValue, recPropName;
-          CLOSE curProperties;
-          IF recPropValue != 'error' THEN
-            --opencmsProperty.writeProperties(pUserId, pProjectId, recResource.resource_id, recResource.resource_type, curProperties);
-            -- write Properties without checking accessWrite
-            curProperties := opencmsProperty.readAllProperties(pUserId, recOnlineProject.project_id, vParent);
-			opencmsProperty.writeProperties(curProperties, recResource.resource_id, recResource.resource_type);
-          END IF;
-          -- change state of the resource
-          --!!!!!! Error ACCESS DENIED with next statement
-          -- opencmsResource.chstate(pUserId, pProjectId, vParent, opencmsConstants.C_STATE_UNCHANGED);
-          update cms_resources set state = opencmsConstants.C_STATE_UNCHANGED
-                 where resource_name = vParent
-                 and project_id = pProjectId;
-        END IF;
-      END LOOP;
-      -- now copy the resource pResourceName and its subfolders from online-project to project
-      helperCopyResourceToProject(pUserId, pProjectId, recOnlineProject.project_id, vResourceName);
-    ELSE
-      userErrors.raiseUserError(userErrors.C_NO_ACCESS);
-    END IF;
-  EXCEPTION
-    WHEN OTHERS THEN
-      rollback;
-      RAISE;
-  END copyResourceToProject;
------------------------------------------------------------------------------------------
--- subfunction for function copyResourceToProject, helps to copy the subresources of a
--- folder to a project
------------------------------------------------------------------------------------------
-  PROCEDURE helperCopyResourceToProject(pUserId IN NUMBER, pProjectId IN NUMBER, pOnlineProjectId IN NUMBER, pResourceName IN VARCHAR2) IS
-    curResource userTypes.anyCursor;
-    curUpdResource userTypes.anyCursor;
-    curSubResource userTypes.anyCursor;
-    curProperties userTypes.anyCursor;
-    recPropValue cms_properties.property_value%TYPE;
-    recPropName cms_propertydef.propertydef_name%TYPE;
-    recResource cms_resources%ROWTYPE;
-    recUpdResource cms_resources%ROWTYPE;
-    recSubResource cms_resources%ROWTYPE;
-    tableResource userTypes.resourceTable;
-  BEGIN
-    opencmsResource.copyResource(pProjectId, pOnlineProjectId, pResourceName);
-    -- copy meta-information
-    curResource := opencmsResource.readFileHeader(pUserId, pProjectId, pResourceName);
-    FETCH curResource INTO recResource;
-    CLOSE curResource;
-    curProperties := opencmsProperty.readAllProperties(pUserId, pOnlineProjectId, pResourceName);
-    FETCH curProperties INTO recPropValue, recPropName;
-    CLOSE curProperties;
-    IF recPropValue != 'error' THEN
-      curProperties := opencmsProperty.readAllProperties(pUserId, pOnlineProjectId, pResourceName);
-      --opencmsProperty.writeProperties(pUserId, pProjectId, recResource.resource_id, recResource.resource_type, curProperties);
-      -- write Properties without checking accessWrite
-      opencmsProperty.writeProperties(curProperties, recResource.resource_id, recResource.resource_type);
-    END IF;
-    -- change state of the resource
-    --opencmsResource.chstate(pUserId, pProjectId, pResourceName, opencmsConstants.C_STATE_UNCHANGED);
-    IF substr(pResourceName, -1, 1) = '/' THEN
-      curUpdResource := opencmsResource.readFolder(pUserId, pProjectId, pResourceName);
-    ELSE
-      curUpdResource := opencmsResource.readFileHeader(pUserId, pProjectId, pResourceName);
-    END IF;
-    FETCH curUpdResource INTO recUpdResource;
-    CLOSE curUpdResource;
-    recUpdResource.state := opencmsConstants.C_STATE_UNCHANGED;
-    IF substr(pResourceName, -1, 1) = '/' THEN
-      opencmsResource.writeFolder(pProjectID, recUpdResource, 'FALSE');
-    ELSE
-      opencmsResource.writeFileHeader(pProjectID, recUpdResource, 'FALSE');
-    END IF;
-    commit;
-    -- now the subfolders/files of the folder
-    IF substr(pResourceName, -1, 1) = '/'  THEN
-      -- all files in the folder
-      tableResource := opencmsResource.getFilesInFolder(pUserId, pProjectId, pResourceName);
-      FOR i IN 1..tableResource.COUNT LOOP
-        recSubResource := tableResource(i);
-        helperCopyResourceToProject(pUserId, pProjectId, pOnlineProjectId, recSubResource.resource_name);
-      END LOOP;
-      -- all folder in the folder
-      curSubResource := opencmsResource.getFoldersInFolder(pUserId, pOnlineProjectId, pResourceName);
-      IF curSubResource IS NOT NULL THEN
-        LOOP
-          BEGIN
-            FETCH curSubResource INTO recSubResource;
-            EXIT WHEN curSubResource%NOTFOUND;
-            helperCopyResourceToProject(pUserId, pProjectId, pOnlineProjectId, recSubResource.resource_name);
-          EXCEPTION
-            WHEN invalid_cursor THEN
-              exit;
-          END;
-        END LOOP;
-      END IF;
-      IF curSubResource%ISOPEN THEN
-        CLOSE curSubResource;
-      END IF;
-    END IF;
-  EXCEPTION
-    WHEN OTHERS THEN
-      rollback;
-      RAISE;
-  END helperCopyResourceToProject;
 --------------------------------------------------------------------------------------------
 -- publishes the project: copy (insert/update) the folders, files, properties
 -- from the work-project to the online-project
 --------------------------------------------------------------------------------------------
   PROCEDURE publishProject (pUserId NUMBER, pProjectId NUMBER, pOnlineProjectId NUMBER,
+  							pEnableHistory NUMBER, pPublishDate DATE,
                             pCurDelFolders OUT userTypes.anyCursor, pCurWriteFolders OUT userTypes.anyCursor,
                             pCurDelFiles OUT userTypes.anyCursor, pCurWriteFiles OUT userTypes.anyCursor) IS
+
     CURSOR curFolders(cProjectId NUMBER) IS
-           select * from cms_resources
-                where project_id = cProjectId
-                and resource_type = opencmsConstants.C_TYPE_FOLDER
-                order by resource_name;
+           select cms_resources.resource_id, cms_resources.parent_id,
+                  cms_resources.resource_name, cms_resources.resource_type,
+                  cms_resources.resource_flags, cms_resources.user_id,
+                  cms_resources.group_id, cms_projectresources.project_id,
+                  cms_resources.file_id, cms_resources.access_flags, cms_resources.state,
+                  cms_resources.locked_by, cms_resources.launcher_type,
+                  cms_resources.launcher_classname, cms_resources.date_created,
+                  cms_resources.date_lastmodified, cms_resources.resource_size,
+                  cms_resources.resource_lastmodified_by
+                  from cms_resources, cms_projectresources
+                  where cms_projectresources.project_id= cProjectId
+                  and cms_resources.resource_type = opencmsConstants.C_TYPE_FOLDER
+                  and cms_resources.resource_name like concat(cms_projectresources.resource_name,'%')
+                  and cms_resources.state != opencmsConstants.C_STATE_UNCHANGED
+                  order by cms_resources.resource_name;
 
     CURSOR curFiles(cProjectId NUMBER) IS
-           select r.*, f.file_content from cms_resources r, cms_files f
-                where r.project_id = cProjectId
-                and r.resource_type != opencmsConstants.C_TYPE_FOLDER
-                and r.file_id = f.file_id(+)
-                order by r.resource_name;
+           select cms_resources.resource_id, cms_resources.parent_id,
+                  cms_resources.resource_name, cms_resources.resource_type,
+                  cms_resources.resource_flags, cms_resources.user_id,
+                  cms_resources.group_id, cms_projectresources.project_id,
+                  cms_resources.file_id, cms_resources.access_flags, cms_resources.state,
+                  cms_resources.locked_by, cms_resources.launcher_type,
+                  cms_resources.launcher_classname, cms_resources.date_created,
+                  cms_resources.date_lastmodified, cms_resources.resource_size,
+                  cms_resources.resource_lastmodified_by, cms_files.file_content
+                  from cms_resources, cms_projectresources, cms_files
+                  where cms_projectresources.project_id = cProjectId
+                  and cms_resources.resource_name like concat(cms_projectresources.resource_name, '%')
+                  and cms_resources.file_id = cms_files.file_id (+)
+                  and cms_resources.resource_type != opencmsConstants.C_TYPE_FOLDER
+                  and cms_resources.state != opencmsConstants.C_STATE_UNCHANGED
+                  order by cms_resources.resource_name;
 
     recFolders cms_resources%ROWTYPE;
     recFiles userTypes.fileRecord;
@@ -306,12 +174,22 @@ PACKAGE BODY OpenCmsProject IS
     curNewFile userTypes.anyCursor;
     recNewFile userTypes.fileRecord;
     vResourceId cms_resources.resource_id%TYPE;
+    vFileId cms_resources.file_id%TYPE;
     vDeletedFolders VARCHAR2(32767) := '';
     vCurDelFolders VARCHAR2(32767) := '';
     vCurDelFiles VARCHAR2(32767) := '';
     vCurWriteFolders VARCHAR2(32767) := '';
     vCurWriteFiles VARCHAR2(32767) := '';
+    vVersionId NUMBER := 1;
+    --vPublishDate DATE := to_date(pPublishDate, 'dd.mm.yyyy hh24:mi');
   BEGIN
+    ---------------------------------------
+    -- get the next version id for backup
+    -- pEnableHistory = 1 => enable history
+    ---------------------------------------
+    IF pEnableHistory = 1 THEN
+      select nvl(max(version_id),0) + 1 into vVersionId from cms_backup_resources;
+    END IF;
     ---------------------------------
     -- for all folders of the project
     ---------------------------------
@@ -319,17 +197,20 @@ PACKAGE BODY OpenCmsProject IS
     LOOP
       FETCH curFolders INTO recFolders;
       EXIT WHEN curFolders%NOTFOUND;
+      -- do not publish folders that are locked in another project
+      IF (recFolders.locked_by != opencmsConstants.C_UNKNOWN_ID) THEN
+        -- do nothing;
+        null;
       -- is the resource marked as deleted?
-      IF recFolders.state = opencmsConstants.C_STATE_DELETED THEN
+      ELSIF recFolders.state = opencmsConstants.C_STATE_DELETED THEN
         -- add to list with deleted folders
         vDeletedFolders := vDeletedFolders||'/'||to_char(recFolders.resource_id);
       -- is the resource marked as new?
       ELSIF recFolders.state = opencmsConstants.C_STATE_NEW THEN
         BEGIN
           select resource_id into vParentId
-                 from cms_resources
-                 where project_id = pOnlineProjectId
-                 and resource_name = opencmsResource.getParent(recFolders.resource_name);
+                 from cms_online_resources
+                 where resource_name = opencmsResource.getParent(recFolders.resource_name);
         EXCEPTION
           WHEN NO_DATA_FOUND THEN
             vParentId := opencmsConstants.C_UNKNOWN_ID;
@@ -340,7 +221,7 @@ PACKAGE BODY OpenCmsProject IS
           FETCH curNewFolder INTO recNewFolder;
           CLOSE curNewFolder;
 		  recNewFolder.state := opencmsConstants.C_STATE_UNCHANGED;
-		  opencmsResource.writeFolder(pProjectId, recNewFolder, 'FALSE');
+		  opencmsResource.writeFolder(pOnlineProjectId, recNewFolder, 'FALSE');
         EXCEPTION
 		  WHEN OTHERS THEN
 		  	IF sqlcode = userErrors.C_FILE_EXISTS THEN
@@ -349,7 +230,7 @@ PACKAGE BODY OpenCmsProject IS
 			  CLOSE curNewFolder;
 		  	  -- the folder already exists in the online-project
               -- update the folder in the online-project
-              update cms_resources set
+              update cms_online_resources set
                      resource_type = recFolders.resource_type,
                      resource_flags = recFolders.resource_flags,
                      user_id = recFolders.user_id,
@@ -373,14 +254,16 @@ PACKAGE BODY OpenCmsProject IS
 			  RAISE;
 		    END IF;
         END;
-        opencmsResource.writeFolder(pProjectId, recNewFolder, 'FALSE');
+        opencmsResource.writeFolder(pOnlineProjectId, recNewFolder, 'FALSE');
         -- copy properties
-        opencmsProperty.writeProperties(opencmsProperty.readAllProperties(pUserId, pProjectId, recFolders.resource_name),
+        opencmsProperty.writeProperties(pOnlineProjectId, opencmsProperty.readAllProperties(pUserId, pProjectId, recFolders.resource_name),
                                         recNewFolder.resource_id, recNewFolder.resource_type);
-        -- cursor for checkExport/discAccess
-        --vCurWriteFolders := vCurWriteFolders||','||recNewFolder.resource_id;
         -- remember only one id for mark
         vCurWriteFolders := recNewFolder.resource_id;
+        IF pEnableHistory = 1 THEN
+        	-- backup the resource
+        	opencmsResource.backupFolder(pProjectId, recFolders, vVersionId, pPublishDate);
+        END IF;
       -- is the resource marked as changed?
       ELSIF recFolders.state = opencmsConstants.C_STATE_CHANGED THEN
         -- checkExport ???
@@ -392,9 +275,8 @@ PACKAGE BODY OpenCmsProject IS
         IF recNewFolder.resource_id IS NULL THEN
           BEGIN
             select resource_id into vParentId
-                   from cms_resources
-                   where project_id = pOnlineProjectId
-                   and resource_name = opencmsResource.getParent(recFolders.resource_name);
+                   from cms_online_resources
+                   where resource_name = opencmsResource.getParent(recFolders.resource_name);
           EXCEPTION
             WHEN NO_DATA_FOUND THEN
               vParentId := opencmsConstants.C_UNKNOWN_ID;
@@ -404,10 +286,10 @@ PACKAGE BODY OpenCmsProject IS
           FETCH curNewFolder INTO recNewFolder;
           CLOSE curNewFolder;
           recNewFolder.state := opencmsConstants.C_STATE_UNCHANGED;
-          opencmsResource.writeFolder(pProjectId, recNewFolder, 'FALSE');
+          opencmsResource.writeFolder(pOnlineProjectId, recNewFolder, 'FALSE');
         END IF;
         -- update the folder in the online-project
-        update cms_resources set
+        update cms_online_resources set
                resource_type = recFolders.resource_type,
                resource_flags = recFolders.resource_flags,
                user_id = recFolders.user_id,
@@ -425,37 +307,14 @@ PACKAGE BODY OpenCmsProject IS
                where resource_id = recNewFolder.resource_id;
         commit;
         -- copy the properties
-        delete from cms_properties where resource_id = recNewFolder.resource_id;
-        opencmsProperty.writeProperties(opencmsProperty.readAllProperties(pUserId, pProjectId, recFolders.resource_name),
+        delete from cms_online_properties where resource_id = recNewFolder.resource_id;
+        opencmsProperty.writeProperties(pOnlineProjectId, opencmsProperty.readAllProperties(pUserId, pProjectId, recFolders.resource_name),
                                         recNewFolder.resource_id, recNewFolder.resource_type);
-        -- cursor for checkExport/discAccess
-        --vCurWriteFolders := vCurWriteFolders||','||recNewFolder.resource_id;
         -- remember only one id for mark
         vCurWriteFolders := recNewFolder.resource_id;
-      -- is the resource unchanged?
-      ELSIF recFolders.state = opencmsConstants.C_STATE_UNCHANGED THEN
-        curNewFolder := opencmsResource.readFolder(pUserId, pOnlineProjectId, recFolders.resource_name);
-        FETCH curNewFolder INTO recNewFolder;
-        CLOSE curNewFolder;
-        -- folder does not exist in online-project => create folder
-        IF recNewFolder.resource_id IS NULL THEN
-          BEGIN
-            select resource_id into vParentId
-                   from cms_resources
-                   where project_id = pOnlineProjectId
-                   and resource_name = opencmsResource.getParent(recFolders.resource_name);
-          EXCEPTION
-            WHEN NO_DATA_FOUND THEN
-               vParentId := opencmsConstants.C_UNKNOWN_ID;
-          END;
-          opencmsResource.createFolder(pUserId, pOnlineProjectId, pOnlineProjectId, recFolders,
-                                       vParentId, recFolders.resource_name, curNewFolder);
-          FETCH curNewFolder INTO recNewFolder;
-          CLOSE curNewFolder;
-          recNewFolder.state := opencmsConstants.C_STATE_UNCHANGED;
-          opencmsResource.writeFolder(pProjectId, recNewFolder, 'FALSE');
-          opencmsProperty.writeProperties(opencmsProperty.readAllProperties(pUserId, pProjectId, recFolders.resource_name),
-                                          recNewFolder.resource_id, recNewFolder.resource_type);
+        IF pEnableHistory = 1 THEN
+          -- backup the resource
+          opencmsResource.backupFolder(pProjectId, recFolders, vVersionId, pPublishDate);
         END IF;
       END IF;
     END LOOP;
@@ -467,19 +326,23 @@ PACKAGE BODY OpenCmsProject IS
     LOOP
       FETCH curFiles INTO recFiles;
       EXIT WHEN curFiles%NOTFOUND;
+      -- do not publish files that are locked in another project
+      IF (recFiles.locked_by != opencmsConstants.C_UNKNOWN_ID) THEN
+        -- do nothing;
+        null;
       -- resource of offline-project is marked for delete
-      IF substr(recFiles.resource_name,instr(recFiles.resource_name,'/',-1,1)+1,1) = opencmsConstants.C_TEMP_PREFIX THEN
-        delete from cms_resources where project_id = pProjectId and resource_name = recFiles.resource_name;
+      ELSIF substr(recFiles.resource_name,instr(recFiles.resource_name,'/',-1,1)+1,1) = opencmsConstants.C_TEMP_PREFIX THEN
+        delete from cms_resources where resource_name = recFiles.resource_name;
       -- resource is deleted
       ELSIF recFiles.state = opencmsConstants.C_STATE_DELETED THEN
         --checkExport ???
         curNewFile := opencmsResource.readFileNoAccess(pUserId, pOnlineProjectId, pOnlineProjectId, recFiles.resource_name);
         FETCH curNewFile INTO recNewFile;
         CLOSE curNewFile;
-        delete from cms_properties where resource_id = recNewFile.resource_id;
-        delete from cms_resources where resource_id = recNewFile.resource_id;
-        -- cursor for checkExport/discAccess
-        --vCurDelFiles := vCurDelFiles||','||recNewFile.resource_id;
+        -- delete the file from online project
+        delete from cms_online_properties where resource_id = recNewFile.resource_id;
+        delete from cms_online_resources where resource_id = recNewFile.resource_id;
+        delete from cms_online_files where file_id = recNewFile.file_id;
         -- remember only one id for mark
         vCurDelFiles := recNewFile.resource_id;
       -- resource is new
@@ -487,9 +350,8 @@ PACKAGE BODY OpenCmsProject IS
         -- checkExport ???
         BEGIN
           select resource_id into vParentId
-                 from cms_resources
-                 where project_id = pOnlineProjectId
-                 and resource_name = opencmsResource.getParent(recFiles.resource_name);
+                 from cms_online_resources
+                 where resource_name = opencmsResource.getParent(recFiles.resource_name);
         EXCEPTION
           WHEN NO_DATA_FOUND THEN
             vParentId := opencmsConstants.C_UNKNOWN_ID;
@@ -499,17 +361,19 @@ PACKAGE BODY OpenCmsProject IS
                                      recFiles.resource_name, 'FALSE', curNewFile);
           FETCH curNewFile INTO recNewFile;
           CLOSE curNewFile;
-          recNewFile.state := opencmsConstants.C_STATE_UNCHANGED;
-          opencmsResource.writeFile(pOnlineProjectId, recNewFile, 'FALSE');
+          --recNewFile.state := opencmsConstants.C_STATE_UNCHANGED;
+          --opencmsResource.writeFile(pOnlineProjectId, recNewFile, 'FALSE');
+          update cms_online_resources set state = opencmsConstants.C_STATE_UNCHANGED 
+                 where resource_id=recNewFile.resource_id;
         EXCEPTION
           WHEN OTHERS THEN
             IF sqlcode = userErrors.C_FILE_EXISTS THEN
               -- the folder already exist in the online-project
-              curNewFile := opencmsResource.readFile(pUserId, pOnlineProjectId, recFiles.resource_name);
+              curNewFile := opencmsResource.readFileNoAccess(pUserId, pOnlineProjectId, pOnlineProjectId, recFiles.resource_name);
               FETCH curNewFile INTO recNewFile;
               CLOSE curNewFile;
               -- update the file in the online-project
-              update cms_resources set
+              update cms_online_resources set
                      resource_type = recFiles.resource_type,
                      resource_flags = recFiles.resource_flags,
                      user_id = recFiles.user_id,
@@ -522,21 +386,25 @@ PACKAGE BODY OpenCmsProject IS
                      launcher_classname = recFiles.launcher_classname,
                      date_lastmodified = sysdate,
                      resource_lastmodified_by = recFiles.resource_lastmodified_by,
-                     resource_size = recFiles.resource_size,
-                     file_id = recFiles.file_id
+                     resource_size = recFiles.resource_size
                      where resource_id = recNewFile.resource_id;
+              update cms_online_files set
+              		file_content = recFiles.file_content
+              		where file_id = recNewFile.file_id;
               commit;
             ELSE
               RAISE;
             END IF;
         END;
         -- copy the properties
-        opencmsProperty.writeProperties(opencmsProperty.readAllProperties(pUserId, pProjectId, recFiles.resource_name),
-                                        recNewFile.resource_id, recNewFile.resource_type);
-        -- cursor for checkExport/discAccess
-        --vCurWriteFiles := vCurWriteFiles||','||recNewFile.resource_id;
+        opencmsProperty.writeProperties(pOnlineProjectId, opencmsProperty.readAllProperties(pUserId, pProjectId, recFiles.resource_name),
+                                        recNewFile.resource_id, recFiles.resource_type);
         -- remember only one id for mark
         vCurWriteFiles := recNewFile.resource_id;
+        IF pEnableHistory = 1 THEN
+          -- backup the resource
+          opencmsResource.backupFile(pProjectId, recFiles, vVersionId, pPublishDate);
+        END IF;
       -- resource is changed
       ELSIF recFiles.state = opencmsConstants.C_STATE_CHANGED THEN
         -- does the folder exist in the online-project?
@@ -547,9 +415,8 @@ PACKAGE BODY OpenCmsProject IS
         IF recNewFile.resource_id IS NULL THEN
           BEGIN
             select resource_id into vParentId
-                   from cms_resources
-                   where project_id = pOnlineProjectId
-                   and resource_name = opencmsResource.getParent(recFiles.resource_name);
+                   from cms_online_resources
+                   where resource_name = opencmsResource.getParent(recFiles.resource_name);
           EXCEPTION
             WHEN NO_DATA_FOUND THEN
               vParentId := opencmsConstants.C_UNKNOWN_ID;
@@ -558,11 +425,13 @@ PACKAGE BODY OpenCmsProject IS
                                      vParentId, recFiles.resource_name, 'FALSE', curNewFile);
           FETCH curNewFile INTO recNewFile;
           CLOSE curNewFile;
-          recNewFile.state := opencmsConstants.C_STATE_UNCHANGED;
-          opencmsResource.writeFile(pProjectId, recNewFile, 'FALSE');
+          --recNewFile.state := opencmsConstants.C_STATE_UNCHANGED;
+          --opencmsResource.writeFile(pOnlineProjectId, recNewFile, 'FALSE');
+          update cms_online_resources set state = opencmsConstants.C_STATE_UNCHANGED 
+                 where resource_id=recNewFile.resource_id;
         END IF;
         -- update the file in the online-project
-        update cms_resources set
+        update cms_online_resources set
                resource_type = recFiles.resource_type,
                resource_flags = recFiles.resource_flags,
                user_id = recFiles.user_id,
@@ -575,18 +444,22 @@ PACKAGE BODY OpenCmsProject IS
                launcher_classname = recFiles.launcher_classname,
                date_lastmodified = sysdate,
                resource_lastmodified_by = recFiles.resource_lastmodified_by,
-               resource_size = recFiles.resource_size,
-               file_id = recFiles.file_id
+               resource_size = recFiles.resource_size
                where resource_id = recNewFile.resource_id;
+        update cms_online_files set
+               file_content = recFiles.file_content
+               where file_id = recNewFile.file_id;
         commit;
         -- copy the properties
-        delete from cms_properties where resource_id = recNewFile.resource_id;
-        opencmsProperty.writeProperties(opencmsProperty.readAllProperties(pUserId, pProjectId, recFiles.resource_name),
+        delete from cms_online_properties where resource_id = recNewFile.resource_id;
+        opencmsProperty.writeProperties(pOnlineProjectId, opencmsProperty.readAllProperties(pUserId, pProjectId, recFiles.resource_name),
                                         recNewFile.resource_id, recNewFile.resource_type);
-        -- cursor for checkExport/discAccess
-        --vCurWriteFiles := vCurWriteFiles||','||recNewFile.resource_id;
         -- remember only one id for mark
         vCurWriteFiles := recNewFile.resource_id;
+        IF pEnableHistory = 1 THEN
+          -- backup the resource
+          opencmsResource.backupFile(pProjectId, recFiles, vVersionId, pPublishDate);
+        END IF;
       END IF;
     END LOOP;
     CLOSE curFiles;
@@ -600,11 +473,12 @@ PACKAGE BODY OpenCmsProject IS
                        (instr(vDeletedFolders, '/', 1, 2) - (instr(vDeletedFolders, '/', 1, 1)+1)));
         vDeletedFolders := substr(vDeletedFolders, (instr(vDeletedFolders, '/', 1, 2)));
         BEGIN
-          select resource_id into vResourceId from cms_resources
-          			where resource_name = (select resource_name from cms_resources where resource_id = vResourceId)
-          			and project_id = pOnlineProjectId;
-          delete from cms_properties where resource_id = vResourceId;
-          delete from cms_resources where resource_id = vResourceId;
+          select resource_id, file_id into vResourceId, vFileId
+                 from cms_online_resources
+          		 where resource_name = (select resource_name from cms_resources where resource_id = vResourceId);
+          delete from cms_online_properties where resource_id = vResourceId;
+          delete from cms_online_resources where resource_id = vResourceId;
+          delete from cms_online_files where file_id = vFileId;
         EXCEPTION
           WHEN NO_DATA_FOUND THEN
             null;
@@ -618,13 +492,14 @@ PACKAGE BODY OpenCmsProject IS
     -- build the cursors which are used in java for the discAccess
     BEGIN
       IF length(vCurDelFolders) > 0 THEN
-        --OPEN pCurDelFolders FOR 'select resource_name from cms_resources where resource_id in ('||vCurDelFolders||')';
-          OPEN pCurDelFolders FOR 'select resource_name from cms_resources where project_id = '||pProjectId||
-          						  ' and resource_type = '||opencmsConstants.C_TYPE_FOLDER||
-          						  ' and state = '||opencmsConstants.C_STATE_DELETED;
+        OPEN pCurDelFolders FOR 'select r.resource_name from cms_resources r, cms_projectresources p'||
+                                ' where p.project_id = '||pProjectId||
+                                ' and r.resource_name like concat(p.resource_name,''%'')'||
+                                ' and resource_type = '||opencmsConstants.C_TYPE_FOLDER||
+          						' and state = '||opencmsConstants.C_STATE_DELETED;
       ELSE
         -- return a cursor that contains no rows
-        OPEN pCurDelFolders FOR 'select resource_name from cms_resources where resource_id = -1';
+        OPEN pCurDelFolders FOR 'select resource_name from cms_resources where 1=2';
       END IF;
     EXCEPTION
       WHEN OTHERS THEN
@@ -632,15 +507,16 @@ PACKAGE BODY OpenCmsProject IS
     END;
     BEGIN
       IF length(vCurWriteFolders) > 0 THEN
-        --OPEN pCurWriteFolders FOR 'select resource_name from cms_resources where resource_id in ('||substr(vCurWriteFolders,2)||')';
-        OPEN pCurWriteFolders FOR 'select resource_name from cms_resources where project_id = '||pProjectId||
-        					    ' and resource_type = '||opencmsConstants.C_TYPE_FOLDER||
-        						' and state in ('||opencmsConstants.C_STATE_NEW||', '||
-        						opencmsConstants.C_STATE_CHANGED||')';
+        OPEN pCurWriteFolders FOR 'select r.resource_name from cms_resources r, cms_projectresources p'||
+                                  ' where p.project_id = '||pProjectId||
+                                  ' and r.resource_name like concat(p.resource_name,''%'')'||
+        					      ' and resource_type = '||opencmsConstants.C_TYPE_FOLDER||
+        						  ' and state in ('||opencmsConstants.C_STATE_NEW||', '||
+        						                     opencmsConstants.C_STATE_CHANGED||')';
 
       ELSE
         -- return a cursor that contains no rows
-        OPEN pCurWriteFolders FOR 'select resource_name from cms_resources where resource_id = -1';
+        OPEN pCurWriteFolders FOR 'select resource_name from cms_resources where 1=2';
       END IF;
     EXCEPTION
       WHEN OTHERS THEN
@@ -648,28 +524,30 @@ PACKAGE BODY OpenCmsProject IS
     END;
     BEGIN
       IF length(vCurDelFiles) > 0 THEN
-        -- OPEN pCurDelFiles FOR 'select resource_name from cms_resources where resource_id in ('||substr(vCurDelFiles,2)||')';
-        OPEN pCurDelFiles FOR 'select resource_name from cms_resources where project_id = '||pProjectId||
+        OPEN pCurDelFiles FOR 'select r.resource_name from cms_resources r, cms_projectresources p'||
+                              ' where p.project_id = '||pProjectId||
+                              ' and r.resource_name like concat(p.resource_name,''%'')'||
                               ' and resource_type != '||opencmsConstants.C_TYPE_FOLDER||
           					  ' and state = '||opencmsConstants.C_STATE_DELETED;
       ELSE
         -- return a cursor that contains no rows
-        OPEN pCurDelFiles FOR 'select resource_name from cms_resources where resource_id = -1';
+        OPEN pCurDelFiles FOR 'select resource_name from cms_resources where 1=2';
       END IF;
     EXCEPTION
       WHEN OTHERS THEN
-        raise_application_error(-20999, 'error open cursor pCurDelFolders: '||substr(vCurDelFiles,2,200));
+        raise_application_error(-20999, 'error open cursor pCurDelFiles: '||substr(vCurDelFiles,2,200));
     END;
     BEGIN
       IF length(vCurWriteFiles) > 0 THEN
-        --OPEN pCurWriteFiles FOR 'select resource_name, file_id from cms_resources where resource_id in ('||substr(vCurWriteFiles,2)||')';
-        OPEN pCurWriteFiles FOR 'select resource_name, file_id from cms_resources where project_id = '||pProjectId||
+        OPEN pCurWriteFiles FOR 'select r.resource_name, file_id from cms_resources r, cms_projectresources p'||
+                                ' where p.project_id = '||pProjectId||
+                                ' and r.resource_name like concat(p.resource_name,''%'')'||
                                 ' and resource_type != '||opencmsConstants.C_TYPE_FOLDER||
           					    ' and state in ('||opencmsConstants.C_STATE_NEW||', '||
-        						opencmsConstants.C_STATE_CHANGED||')';
+        						                   opencmsConstants.C_STATE_CHANGED||')';
       ELSE
         -- return a cursor that contains no rows
-        OPEN pCurWriteFiles FOR 'select resource_name, file_id from cms_resources where resource_id = -1';
+        OPEN pCurWriteFiles FOR 'select resource_name, file_id from cms_resources where 1=2';
       END IF;
     EXCEPTION
       WHEN OTHERS THEN
@@ -695,18 +573,19 @@ PACKAGE BODY OpenCmsProject IS
 -----------------------------------------------------------------------------------------
 -- returns a cursor with the online-project
 -----------------------------------------------------------------------------------------
-  FUNCTION onlineProject RETURN userTypes.anyCursor IS
-    recOnlineProject userTypes.anyCursor;
+  FUNCTION onlineProject RETURN cms_projects%ROWTYPE IS
+    recOnlineProject cms_projects%ROWTYPE;
   BEGIN
-    OPEN recOnlineProject FOR select * from cms_projects
-                                     where project_id = openCmsConstants.C_PROJECT_ONLINE_ID order by project_name;
+    select * into recOnlineProject from cms_projects
+           where project_id = openCmsConstants.C_PROJECT_ONLINE_ID
+           order by project_name;
     RETURN recOnlineProject;
   END onlineProject;
 -----------------------------------------------------------------------------------------
 -- returns a cursor with the online-project
 -----------------------------------------------------------------------------------------
-  FUNCTION onlineProject(pProjectId NUMBER) RETURN userTypes.anyCursor IS
-    curOnlineProject userTypes.anyCursor;
+  FUNCTION onlineProject(pProjectId NUMBER) RETURN cms_projects%ROWTYPE IS
+    curOnlineProject cms_projects%ROWTYPE;
     vCount NUMBER;
   BEGIN
 /* for multisite now disabled
@@ -733,8 +612,9 @@ PACKAGE BODY OpenCmsProject IS
       END IF;
     END IF;
 */
-    OPEN curOnlineProject FOR select * from cms_projects
-                              where project_id = openCmsConstants.C_PROJECT_ONLINE_ID order by project_name;
+    select * into curOnlineProject from cms_projects
+           where project_id = openCmsConstants.C_PROJECT_ONLINE_ID
+           order by project_name;
     RETURN curOnlineProject;
   END onlineProject;
 ------------------------------------------------------------------------------------------

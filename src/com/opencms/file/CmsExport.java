@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
- * Date   : $Date: 2001/05/15 19:29:00 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2001/06/22 16:00:28 $
+ * Version: $Revision: 1.20 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -42,7 +42,7 @@ import com.opencms.util.*;
  * to the filesystem.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.19 $ $Date: 2001/05/15 19:29:00 $
+ * @version $Revision: 1.20 $ $Date: 2001/06/22 16:00:28 $
  */
 public class CmsExport implements I_CmsConstants, Serializable {
 
@@ -202,7 +202,6 @@ public CmsExport(String exportFile, String[] exportPaths, CmsObject cms, boolean
 
 		// remove the possible redundancies in the list of paths
 		checkRedundancies(folderNames, fileNames);
-
 		// export the folders
 		for (int i=0; i<folderNames.size(); i++) {
 			String path = (String) folderNames.elementAt(i);

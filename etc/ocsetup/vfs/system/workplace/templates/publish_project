@@ -174,7 +174,7 @@ location.href="publish_project.html?action=working&time=]]><PROCESS>time</PROCES
 }
 </SCRIPT>
 </HEAD>
-<BODY onload="setTimeout('reload()', 15000);">
+<BODY onload="setTimeout('reload()', 2000);">
 <CENTER>
 <!-- Begin Logo opencms -->
 <table border=0 cellspacing=0 cellpadding=0 align=center height=100>
