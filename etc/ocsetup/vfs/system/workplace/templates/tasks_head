@@ -74,7 +74,7 @@ var help="]]><METHOD name="helpUrl"/><![CDATA[";
 			</select>
 			</p>
 		</td>
-		<td class=menu><p class=einzug><input type="checkbox" name=ALL id=ALL ]]><METHOD name="checked"></METHOD><![CDATA[ onchange="form1.submit();" value="OK"></td>
+		<td class=menu><p class=einzug><input type="checkbox" name=ALL id=ALL ]]><METHOD name="checked"></METHOD><![CDATA[ onclick="document.form1.submit();" value="OK"></td>
 		<td class=menubold><p class=einzug>alle Projekte anzeigen</td>
 		<td class=menu><p class=einzug>&nbsp;</td>
 		<td class=menu>]]><BUTTON href="javascript:updateFrame('body.tasks_body', 'tasks_content_new.html');" name="bt_task" action="" alt="newtask"/><![CDATA[</td>
