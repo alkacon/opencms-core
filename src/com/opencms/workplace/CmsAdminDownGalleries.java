@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDownGalleries.java,v $
-* Date   : $Date: 2004/02/22 13:52:27 $
-* Version: $Revision: 1.47 $
+* Date   : $Date: 2004/03/19 13:52:51 $
+* Version: $Revision: 1.48 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.47 $ $Date: 2004/02/22 13:52:27 $
+ * @version $Revision: 1.48 $ $Date: 2004/03/19 13:52:51 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -61,6 +61,8 @@ public class CmsAdminDownGalleries extends CmsAdminGallery {
 
     /** Vector containing all links attached to the radiobuttons */
     private Vector m_values = null;
+    
+    protected static final String C_PARAM_CANCEL = "cancel";
     
     /**
      * This method must return the path to the gallery root folder.<p>

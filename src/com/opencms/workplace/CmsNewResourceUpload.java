@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceUpload.java,v $
-* Date   : $Date: 2004/02/22 13:52:26 $
-* Version: $Revision: 1.59 $
+* Date   : $Date: 2004/03/19 13:52:51 $
+* Version: $Revision: 1.60 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -57,14 +57,14 @@ import javax.servlet.http.HttpSession;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.59 $ $Date: 2004/02/22 13:52:26 $
+ * @version $Revision: 1.60 $ $Date: 2004/03/19 13:52:51 $
  */
 public class CmsNewResourceUpload extends CmsWorkplaceDefault {
     
-    private static final String C_PARAM_OVERWRITE = "overwrite";
-    private static final String C_PARAM_CANCEL = "cancel";
+    protected static final String C_PARAM_OVERWRITE = "overwrite";
+    protected static final String C_PARAM_CANCEL = "cancel";
 
-    private static final int DEBUG = 0;    
+    protected static final int DEBUG = 0;    
 
     /** Vector containing all names of the radiobuttons */
     private Vector m_names = null;
@@ -568,7 +568,7 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault {
      * @param cms the current CmsObject
      * @return string containing the applet HTML code
      */
-    private String createAppletCode(CmsObject cms, String currentFolder) throws CmsException {
+    protected String createAppletCode(CmsObject cms, String currentFolder) throws CmsException {
        
         StringBuffer applet=new StringBuffer();
         //collect some required server data first

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLinkBrowser.java,v $
-* Date   : $Date: 2004/02/22 13:52:26 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2004/03/19 13:52:51 $
+* Version: $Revision: 1.24 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.23 $ $Date: 2004/02/22 13:52:26 $
+ * @version $Revision: 1.24 $ $Date: 2004/03/19 13:52:51 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -161,7 +161,7 @@ public class CmsLinkBrowser extends CmsWorkplaceDefault {
      * @return Vector of CmsFile objects.
      */
 
-    private Vector getFilteredLinkList(CmsObject cms, String folder, String filter) throws CmsException {
+    protected Vector getFilteredLinkList(CmsObject cms, String folder, String filter) throws CmsException {
 
         // Get all links in the given folder using the cms object
         List allLinks = cms.getFilesInFolder(folder);
