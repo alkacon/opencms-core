@@ -8,7 +8,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 4.3.15 Bela Tegeuse - XX XXX 2001
+OpenCms 4.3.15 Bela Tegeuse - 29 May 2001
 ! Added clear cache in publishproject for element cache in generic and mysql.
 
 OpenCms 4.3.14 Bela Tegeuse - 28 May 2001
