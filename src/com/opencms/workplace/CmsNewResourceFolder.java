@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceFolder.java,v $
- * Date   : $Date: 2000/04/03 10:48:32 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/05/02 16:41:13 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 2000/04/03 10:48:32 $
+ * @version $Revision: 1.7 $ $Date: 2000/05/02 16:41:13 $
  */
 public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -116,7 +116,6 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
                             updateNavPos(cms,folder,navpos);
                         }
                    }
-                    cms.unlockResource(folder.getAbsolutePath());
                   } catch (CmsException ex) {
                     throw new CmsException("Error while creating new Folder"+ex.getMessage(),ex.getType(),ex);
                 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/05/02 16:13:19 $
- * Version: $Revision: 1.114 $
+ * Date   : $Date: 2000/05/02 16:41:13 $
+ * Version: $Revision: 1.115 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.114 $ $Date: 2000/05/02 16:13:19 $
+ * @version $Revision: 1.115 $ $Date: 2000/05/02 16:41:13 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -3217,34 +3217,41 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
                                String resourcename)
         throws CmsException {
 		
-		// unlock the resource.
-		m_fileRb.unlockResource(currentUser, currentProject, 
-								onlineProject(currentUser, currentProject), 
-								resourcename);		
-		// update counter of locked resources for the project.
-		currentProject.decrementCountLockedResources();
-		m_projectRb.writeProject(currentProject);
-		
-		// read the resource, that shold be unlocked
+		// read the resource, that shold be locked
         A_CmsResource  cmsResource = m_fileRb.readFileHeader(currentProject,resourcename);
-		
-		// if this resource is a folder -> lock all subresources, too
-		if(cmsResource.isFolder()) {
-			Vector files = m_fileRb.getFilesInFolder(currentProject, cmsResource.getAbsolutePath());
-			Vector folders = m_fileRb.getSubFolders(currentProject, cmsResource.getAbsolutePath());
-			A_CmsResource currentResource;
-				
-			// lock all files in this folder
-			for(int i = 0; i < files.size(); i++ ) {
-				currentResource = (A_CmsResource)files.elementAt(i);
-				unlockResource(currentUser, currentProject, currentResource.getAbsolutePath());
-			}
 
-			// lock all files in this folder
-			for(int i = 0; i < folders.size(); i++) {
-				currentResource = (A_CmsResource)folders.elementAt(i);
-				unlockResource(currentUser, currentProject, currentResource.getAbsolutePath());
+		// check, if the user may lock the resource
+		if( accessUnlock(currentUser, currentProject, cmsResource) ) {
+			
+			// unlock the resource.
+			m_fileRb.unlockResource(currentUser, currentProject, 
+									onlineProject(currentUser, currentProject), 
+									resourcename);		
+			// update counter of locked resources for the project.
+			currentProject.decrementCountLockedResources();
+			m_projectRb.writeProject(currentProject);
+		
+			// if this resource is a folder -> lock all subresources, too
+			if(cmsResource.isFolder()) {
+				Vector files = m_fileRb.getFilesInFolder(currentProject, cmsResource.getAbsolutePath());
+				Vector folders = m_fileRb.getSubFolders(currentProject, cmsResource.getAbsolutePath());
+				A_CmsResource currentResource;
+					
+				// lock all files in this folder
+				for(int i = 0; i < files.size(); i++ ) {
+					currentResource = (A_CmsResource)files.elementAt(i);
+					unlockResource(currentUser, currentProject, currentResource.getAbsolutePath());
+				}
+
+				// lock all files in this folder
+				for(int i = 0; i < folders.size(); i++) {
+					currentResource = (A_CmsResource)folders.elementAt(i);
+					unlockResource(currentUser, currentProject, currentResource.getAbsolutePath());
+				}
 			}
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + resourcename, 
+				CmsException.C_NO_ACCESS);
 		}
 	}
 		
@@ -4308,23 +4315,72 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		
 		// check the rights and if the resource is not locked
 		do {
-			if( accessOther(currentUser, currentProject, resource, C_ACCESS_PUBLIC_WRITE) || 
-				accessOwner(currentUser, currentProject, resource, C_ACCESS_OWNER_WRITE) ||
-				accessGroup(currentUser, currentProject, resource, C_ACCESS_GROUP_WRITE) ) {
+			// is the resource locked?
+			if( resource.isLocked() && (resource.isLockedBy() != currentUser.getId() ) ) {
+				// resource locked by anopther user, no creation allowed
+				return(false);					
+			}
 				
-				// is the resource locked?
-				if( resource.isLocked() && (resource.isLockedBy() != currentUser.getId() ) ) {
-					// resource locked by anopther user, no creation allowed
-					return(false);					
-				}
+			// read next resource
+			if(resource.getParent() != null) {
+				resource = m_fileRb.readFolder(currentProject, resource.getParent());
+			}
+		} while(resource.getParent() != null);
+		
+		// all checks are done positive
+		return(true);
+	}
+	
+	/**
+	 * Checks, if the user may unlock this resource.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param resource The resource to check.
+	 * 
+	 * @return wether the user may unlock this resource, or not.
+	 */
+	public boolean accessUnlock(A_CmsUser currentUser, A_CmsProject currentProject,
+								A_CmsResource resource) 
+		throws CmsException	{
+		
+		// check, if this is the onlineproject
+		if(onlineProject(currentUser, currentProject).equals(currentProject)){
+			// the online-project is not writeable!
+			return(false);
+		}
+		
+		// check the access to the project
+		if( ! accessProject(currentUser, currentProject, currentProject.getId()) ) {
+			// no access to the project!
+			return(false);
+		}
+
+        // check if the resource belongs to the current project
+        if(resource.getProjectId() != currentProject.getId()) {
+            return false;
+        }
+        
+		// read the parent folder
+		if(resource.getParent() != null) {
+			resource = m_fileRb.readFolder(currentProject, resource.getParent());
+		} else {
+			// no parent folder!
+			return true;
+		}
+		
+		
+		// check if the resource is not locked
+		do {
+			// is the resource locked?
+			if( resource.isLocked() ) {
+				// resource locked by anopther user, no creation allowed
+				return(false);					
+			}
 				
-				// read next resource
-				if(resource.getParent() != null) {
-					resource = m_fileRb.readFolder(currentProject, resource.getParent());
-				}
-			} else {
-				// last check was negative
-				return(false);
+			// read next resource
+			if(resource.getParent() != null) {
+				resource = m_fileRb.readFolder(currentProject, resource.getParent());
 			}
 		} while(resource.getParent() != null);
 		
