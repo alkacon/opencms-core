@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
- * Date   : $Date: 2003/06/13 10:04:20 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2003/06/25 16:18:18 $
+ * Version: $Revision: 1.58 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import com.opencms.workplace.I_CmsWpConstants;
  * @author Andreas Schouten
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.57 $ $Date: 2003/06/13 10:04:20 $
+ * @version $Revision: 1.58 $ $Date: 2003/06/25 16:18:18 $
  */
 public class CmsExport implements I_CmsConstants, Serializable {
 
@@ -177,8 +177,9 @@ public class CmsExport implements I_CmsConstants, Serializable {
      * @param excludeSystem if true, the system folder is excluded, if false all the resources in
      *        resourcesToExport are included
      * @param excludeUnchanged <code>true</code>, if unchanged files should be excluded
-     * @param Node moduleNode module informations in a Node for module export
+     * @param moduleNode module informations in a Node for module export
      * @param exportUserdata if true, the user and grou pdata will also be exported
+     * @param contentAge export contents changed after this date/time
      * @param report to handle the log messages
      * 
      * @throws CmsException if something goes wrong
@@ -873,9 +874,10 @@ public class CmsExport implements I_CmsConstants, Serializable {
      * @throws CmsException if something goes wrong
      */
     private void writeXmlGroupEntrys(CmsGroup group) throws CmsException {
-        String name, description, flags, parentgroup;
+        String id, name, description, flags, parentgroup;
 
         // get all needed information from the group
+        id = group.getId().toString();
         name = group.getName();
         description = group.getDescription();
         flags = Integer.toString(group.getFlags());
@@ -890,6 +892,7 @@ public class CmsExport implements I_CmsConstants, Serializable {
         Element groupdata = m_docXml.createElement(C_EXPORT_TAG_GROUPDATA);
         m_userdataElement.appendChild(groupdata);
 
+		addElement(m_docXml, groupdata, C_EXPORT_TAG_ID, id);
         addElement(m_docXml, groupdata, C_EXPORT_TAG_NAME, name);
         addCdataElement(m_docXml, groupdata, C_EXPORT_TAG_DESCRIPTION, description);
         addElement(m_docXml, groupdata, C_EXPORT_TAG_FLAGS, flags);
@@ -899,11 +902,11 @@ public class CmsExport implements I_CmsConstants, Serializable {
     /**
      * Writes the data for a user to the <code>manifest.xml</code> file.<p>
      * 
-     * @param group The group to get the data from.
-     * @throws throws a CmsException if something goes wrong.
+     * @param user The user to write into the manifest.
+     * @throws CmsException if something goes wrong
      */
     private void writeXmlUserEntrys(CmsUser user) throws CmsException {
-        String name, password, recoveryPassword, description, firstname;
+        String id, name, password, recoveryPassword, description, firstname;
         String lastname, email, flags, defaultGroup, address, section, type;
         String datfileName = new String();
         Hashtable info = new Hashtable();
@@ -912,6 +915,7 @@ public class CmsExport implements I_CmsConstants, Serializable {
         ObjectOutputStream oout;
 
         // get all needed information from the group
+        id = user.getId().toString();
         name = user.getName();
         password = user.getPassword();
         recoveryPassword = user.getRecoveryPassword();
@@ -931,6 +935,7 @@ public class CmsExport implements I_CmsConstants, Serializable {
         Element userdata = m_docXml.createElement(C_EXPORT_TAG_USERDATA);
         m_userdataElement.appendChild(userdata);
 
+		addElement(m_docXml, userdata, C_EXPORT_TAG_ID, id);
         addElement(m_docXml, userdata, C_EXPORT_TAG_NAME, name);
         //Encode the info value, using any base 64 decoder
         enc = new sun.misc.BASE64Encoder();
