@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/opencms_edit.js,v $
-* Date   : $Date: 2002/01/17 16:38:50 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2003/01/08 10:42:25 $
+* Version: $Revision: 1.16.2.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -84,8 +84,8 @@ function setText()
 function setTextDelayed()
 {
     if(! textSetted) {
-        document.EDITOR.edit1.Text = unescape(text);
-        document.EDITOR.edit1.value = unescape(text);
+        document.EDITOR.edit1.Text = decodeURIComponent(text);
+        document.EDITOR.edit1.value = decodeURIComponent(text);
         textSetted = true;
     }
 }
@@ -94,11 +94,11 @@ function setTextDelayed()
 function doSubmit()
 {
     if(IE) {
-        document.EDITOR.content.value = escape(document.EDITOR.edit1.Text);
+        document.EDITOR.content.value = encodeURIComponent(document.EDITOR.edit1.Text);
     } else {
         // We have to do a blur on the textarea here. otherwise netscape may have problems with reading the value
         document.EDITOR.edit1.blur();
-        document.EDITOR.content.value = escape(document.EDITOR.edit1.value);
+        document.EDITOR.content.value = encodeURIComponent(document.EDITOR.edit1.value);
     }
 }
 
@@ -109,7 +109,7 @@ function doNsEdit(para)
     {
     case 1:
     {
-        document.EDITOR.content.value = escape(document.EDITOR.edit1.value);
+        document.EDITOR.content.value = encodeURIComponent(document.EDITOR.edit1.value);
         document.EDITOR.action.value = "exit";
         document.EDITOR.target = "_top";
         document.EDITOR.submit();
@@ -117,7 +117,7 @@ function doNsEdit(para)
     }
     case 2:
     {
-        document.EDITOR.content.value = escape(document.EDITOR.edit1.value);
+        document.EDITOR.content.value = encodeURIComponent(document.EDITOR.edit1.value);
         document.EDITOR.action.value = "saveexit";
         document.EDITOR.target = "_top";
         document.EDITOR.submit();
@@ -125,7 +125,7 @@ function doNsEdit(para)
     }
     case 3:
     {
-        document.EDITOR.content.value = escape(document.EDITOR.edit1.value);
+        document.EDITOR.content.value = encodeURIComponent(document.EDITOR.edit1.value);
         document.EDITOR.action.value = "save";
         document.EDITOR.submit();
         break;
@@ -233,4 +233,9 @@ function doEdit(para)
     }
     }   
     document.EDITOR.edit1.focus();
+}
+
+
+// This is not used on the code editor, but must be there since it is called on onLoad() event
+function initStyles() {
 }

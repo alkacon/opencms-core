@@ -180,7 +180,7 @@ function setMediaAction(para) {
 <![CDATA[ 
 <table cellpadding="3" cellspacing="2" border="0" align="center">
 <tr>
-    <td class="formular">ausgewählte Channels</td><td></td><td class="formular">verfügbare Channels</td>
+    <td class="formular">]]><LABEL value="input.channelselected"/><![CDATA[</td><td></td><td class="formular">]]><LABEL value="input.channelavailable"/><![CDATA[</td>
 </tr>
 <tr>
     <td class="formular">
@@ -224,7 +224,9 @@ function setMediaAction(para) {
 
 <BOHEAD>
 <![CDATA[
- <head><META HTTP-EQUIV="Content-Type" CONTENT="text/html">
+
+ <head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
+
     <title>Comments Backoffice</title>
     <link rel=stylesheet type="text/css" href="]]><METHOD name="getServletPath"/><![CDATA[system/workplace/css/format.css">     
     <script language="JavaScript">

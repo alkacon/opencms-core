@@ -8,7 +8,7 @@
 <script language="JavaScript">
 <!--
     function setValues(){
-    	var navText = unescape(']]><PROCESS>navtitle</PROCESS><![CDATA[');
+    	var navText = decodeURIComponent(']]><PROCESS>navtitle</PROCESS><![CDATA[');
     	document.navigation.navtitle.value = navText;
     }
 //-->  

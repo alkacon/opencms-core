@@ -3,7 +3,7 @@
 <TEMPLATE>
 <![CDATA[
 <html>
-<head><META HTTP-EQUIV="Content-Type" CONTENT="text/html">
+<head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
 <title>opencms</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">
 <SCRIPT LANGUAGE="JavaScript">

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <LANGUAGE>
         <name>Deutsch</name>
+        <content-encoding>utf-8</content-encoding>
         <button>
             <all>Alle</all>
             <unzip>Zip-File entpacken</unzip>
@@ -465,6 +466,9 @@
                 <paste>Einfügen</paste>             
                 <splitcell>Zellen teilen</splitcell>
             </context>
+            <message>
+            	<confirmhttp>Die Link URL sieht wie eine externe URL aus\naber es fehlt das notwendige Protokoll (z.B. 'http://').\n\nSoll das http Protokoll zur URL addiert werden?</confirmhttp>
+            </message>
         </editor>
         <explorer>
             <linkto>Verknüpfung mit</linkto>
@@ -523,6 +527,8 @@
             <center>Zentriert</center>
             <changed>Geändert am</changed>
             <changesubresources>Alle Unterverzeichnisse / Dateien ändern</changesubresources>
+            <channelavailable>verfügbare Channels</channelavailable>
+            <channelselected>ausgewählte Channels</channelselected>
             <city>Ort</city>
             <color>Farbe</color>
             <colorcode>Gewählte Farbe</colorcode>
@@ -567,11 +573,12 @@
             <lastname>Name</lastname>
             <left>Links</left>
             <linkname>Linkname</linkname>
-            <linkto>Verknüpfung</linkto>
+            <linkto>Link URL</linkto>
             <linktarget>Linkziel</linktarget>
             <linktargetself>Gleiches Fenster</linktargetself>
             <linktargetblank>Neues Fenster</linktargetblank>
             <linktargettop>Oberstes Fenster</linktargettop>
+            <linktargetnamed>Benanntes Fenster</linktargetnamed>   
             <linkanchor>Ankerlink</linkanchor>
             <linkstyle>Styleangaben</linkstyle>
             <linkstyleclass>Stylesheet Klasse</linkstyleclass>            
@@ -913,6 +920,7 @@
                 <packetname>Paketname</packetname>
                 <adminpoint>Administrationspunkt</adminpoint>
                 <maintenance>Ereignis-Verarbeitungsklasse</maintenance>
+                <publishclass>Klasse für Veröffentlichung</publishclass>
                 <dependon>Abhängig von</dependon>
                 <minversion>min Version</minversion>
                 <maxversion>max Version</maxversion>
@@ -1109,6 +1117,11 @@ Für Sie oder Ihre Rolle wurde eine Aufgabe reaktiviert.</content>
                     <head>Fällig am</head>
                     <logmessage1>Fälligkeit geändert von</logmessage1>
                     <logmessage2>auf</logmessage2>
+                    <checkdate>Bitte überprüfen Sie das eingegebene Datum.</checkdate>
+                    <format>Das Datum muss das Format tt.mm.jjjj haben.</format>
+                    <past>Das Datum darf nicht in der Vergangenheit liegen.</past>
+                    <day>Der Tag ist nicht korrekt.</day>
+                    <month>Der Monat ist nicht korrekt.</month>
                 </due>
                 <priority>
                     <title>Priorität ändern</title>                 

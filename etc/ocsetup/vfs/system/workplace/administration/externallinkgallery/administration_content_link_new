@@ -45,8 +45,8 @@ var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
 
         if(okay && lengthOkay){
                 var re='administration_content_link_new.html?action=newlink&step=1&file='+
-                    escape(document.getElementById("name").value)+
-                    '&link='+escape(document.getElementById("neulink").value);
+                    encodeURIComponent(document.getElementById("name").value)+
+                    '&link='+encodeURIComponent(document.getElementById("neulink").value);
                 //alert(re);
                 document.location.href=re;
         }

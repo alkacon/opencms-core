@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <LANGUAGE>
         <name>Italiano</name>
+        <content-encoding>utf-8</content-encoding>
         <button>
             <all>tutti</all>
             <unzip>scompatta file</unzip>
@@ -467,6 +468,9 @@
                 <mergecell>Unisci Celle</mergecell>
                 <splitcell>Dividi Celle</splitcell>
             </context>
+            <message>
+            	<confirmhttp>L'URL del link che hai inserito sembra un nome di server\nma manca del protocollo richiesto (eg. 'http://' ).\n\nIl protocollo http deve essere aggiunto all'URL?</confirmhttp>
+            </message>
         </editor>
         <explorer>
             <linkto>collegamento a</linkto>
@@ -525,6 +529,8 @@
             <center>Centro</center>
             <changed>Modificato il</changed>
             <changesubresources>Modifica tutte le sottocartelle /files</changesubresources>
+            <channelavailable>available channels</channelavailable>
+            <channelselected>selected channels</channelselected>
             <city>Città</city>
             <color>Colore</color>
             <colorcode>Colore Scelto</colorcode>
@@ -573,6 +579,7 @@
             <linktargetself>Stessa finestra</linktargetself>
             <linktargetblank>Nuova finestra</linktargetblank>
             <linktargettop>Finestra principale</linktargettop>
+            <linktargetnamed>Finestra con nome</linktargetnamed>
             <linkanchor>Ancora</linkanchor>
             <linkstyle>Definizioni di stile</linkstyle>
             <linkstyleclass>Classe stile</linkstyleclass>
@@ -913,6 +920,7 @@
                 <packetname>Nome Pacchetto</packetname>
                 <adminpoint>Punto di Amministrazione</adminpoint>
                 <maintenance>Classe di Manutenzione</maintenance>
+                <publishclass>Class for Publishing</publishclass>
                 <dependon>Dipende da</dependon>
                 <minversion>versione min</minversion>
                 <maxversion>versione max</maxversion>
@@ -1109,6 +1117,11 @@ Un nuovo compito è stato riattivato per te o per il tuo ruolo.</content>
                     <head>Scadenza il</head>
                     <logmessage1>Data di scadenza cambiata da</logmessage1>
                     <logmessage2>a</logmessage2>
+                    <checkdate>Please check the inserted date.</checkdate>
+                    <format>The date must have the format dd.mm.yyyy.</format>
+                    <past>The date must not be in the past.</past>
+                    <day>The day is not correct.</day>
+                    <month>The month is not correct.</month>
                 </due>
                 <priority>
                     <title>Cambia Priorità</title>

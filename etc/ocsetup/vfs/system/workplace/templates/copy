@@ -16,7 +16,8 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 </script>
 
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
+
 
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">
@@ -28,7 +29,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=center valign=middle>
 
-<form id=COPY name=COPY method=POST>
+<form id=COPY name=COPY method=POST action="javascript:location.href='copy.html?newfolder='+simpleEscape(escape(document.COPY.folder.value))+'&flags='+document.COPY.RIGHT.checked;">
 <table cellspacing=0 cellpadding=0 border=2 width=310px>
     <tr><td>
         <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
@@ -77,7 +78,9 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
             <tr><td class=dialogtxt colspan=3>
                 <table cellspacing=0 cellpadding=5 width=100%>
                 <tr>
-                    <td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK onClick="location.href='copy.html?newfolder='+simpleEscape(escape(document.COPY.folder.value))+'&flags='+document.COPY.RIGHT.checked;"></td>
+
+                    <td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK onClick="location.href='copy.html?newfolder='+simpleEscape(encodeURIComponent(document.COPY.folder.value))+'&flags='+document.COPY.RIGHT.checked;"></td>
+
                     <td class=formular align=left width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL name=CANCEL onClick="location.href=lasturl"></td>
                 </tr>
                 </table>
@@ -111,7 +114,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 </script>
 
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">
@@ -123,7 +126,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=center valign=middle>
 
-<form id=COPY name=COPY method=POST>
+<form id=COPY name=COPY method=POST action="javascript:location.href='copy.html?newfolder='+simpleEscape(escape(document.COPY.folder.value))+'&flags='+document.COPY.RIGHT.checked;">
 <table cellspacing=0 cellpadding=0 border=2 width=310px>
     <tr><td>
         <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
@@ -174,7 +177,9 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
             <tr><td class=dialogtxt colspan=3>
                 <table cellspacing=0 cellpadding=5 width=100%>
                 <tr>
-                    <td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK onClick="location.href='copy.html?newfolder='+simpleEscape(escape(document.COPY.folder.value))+'&flags='+document.COPY.RIGHT.checked;"></td>
+
+                    <td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK onClick="location.href='copy.html?newfolder='+simpleEscape(encodeURIComponent(document.COPY.folder.value))+'&flags='+document.COPY.RIGHT.checked;"></td>
+
                     <td class=formular align=left width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL name=CANCEL onClick="location.href=lasturl"></td>
                 </tr>
                 </table>
@@ -198,7 +203,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 <![CDATA[
 <HTML>
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">
@@ -244,7 +249,7 @@ function update_frames()
 <![CDATA[
 <HTML>
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">

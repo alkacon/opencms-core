@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <LANGUAGE>
         <name>English</name>
+        <content-encoding>utf-8</content-encoding>
         <button>
             <all>All</all>
             <unzip>unzip file</unzip>
@@ -467,6 +468,9 @@
                 <mergecell>Merge Cells</mergecell>
                 <splitcell>Split Cells</splitcell>
             </context>
+            <message>
+            	<confirmhttp>The link URL you entered looks like a server name\nbut misses the required protocol (eg. 'http://').\n\nShould the http protocol be added to the URL?</confirmhttp>
+            </message>
         </editor>
         <explorer>
             <linkto>link to</linkto>
@@ -525,6 +529,8 @@
             <center>Center</center>
             <changed>Date changed</changed>
             <changesubresources>Modify all subfolders /files</changesubresources>
+            <channelavailable>available channels</channelavailable>
+            <channelselected>selected channels</channelselected>
             <city>City</city>
             <color>Color</color>
             <colorcode>Choosen Color</colorcode>
@@ -568,11 +574,12 @@
             <lastname>Name</lastname>
             <left>Left</left>
             <linkname>Name</linkname>
-            <linkto>Link</linkto>
+            <linkto>Link URL</linkto>
             <linktarget>Target</linktarget>
             <linktargetself>Same window</linktargetself>
             <linktargetblank>New window</linktargetblank>
-            <linktargettop>Top window</linktargettop>            
+            <linktargettop>Top window</linktargettop>  
+            <linktargetnamed>Named Window</linktargetnamed>
             <linkanchor>Anchor</linkanchor>
             <linkstyle>Styledefinitions</linkstyle>
             <linkstyleclass>Stylesheet class</linkstyleclass>                        
@@ -913,6 +920,7 @@
                 <packetname>Packetname</packetname>
                 <adminpoint>Administrationpoint</adminpoint>
                 <maintenance>Maintenance class</maintenance>
+                <publishclass>Class for Publishing</publishclass>
                 <dependon>Depend on</dependon>
                 <minversion>min version</minversion>
                 <maxversion>max version</maxversion>
@@ -1109,6 +1117,11 @@ A new task was reactivated for you or your role.</content>
                     <head>Due at</head>
                     <logmessage1>Due date changed from</logmessage1>
                     <logmessage2>to</logmessage2>
+                    <checkdate>Please check the inserted date.</checkdate>
+                    <format>The date must have the format dd.mm.yyyy.</format>
+                    <past>The date must not be in the past.</past>
+                    <day>The day is not correct.</day>
+                    <month>The month is not correct.</month>
                 </due>
                 <priority>
                     <title>Change Priority</title>                  
