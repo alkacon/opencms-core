@@ -114,7 +114,7 @@ default:
 
 wp.setParamAction(wp.DIALOG_SAVE_EDIT);
 	
-%><%= wp.htmlStart("help.explorer.contextmenu.properties", wp.getParamTitle()) %>
+%><%= wp.htmlStart("help.explorer.contextmenu.properties") %>
 <script type="text/javascript">
 <!--
 
