@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2004/02/14 00:22:01 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/02/21 17:11:42 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.3.1
  */
@@ -209,19 +209,20 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     }    
     
     /**
-     * @see org.opencms.i18n.I_CmsLocaleHandler#getLocale(org.opencms.file.CmsRequestContext)
+     * @see org.opencms.i18n.I_CmsLocaleHandler#getLocale(org.opencms.file.CmsRequestContext, javax.servlet.http.HttpServletRequest)
      */
-    public Locale getLocale(CmsRequestContext context) {
+    public Locale getLocale(CmsRequestContext context, HttpServletRequest req) {
         
         // try to read locale from session
-        HttpServletRequest req = (HttpServletRequest)context.getRequest().getOriginalRequest();
-        HttpSession session = req.getSession(false);
-        if (session != null) {
-            CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplace.C_SESSION_WORKPLACE_SETTINGS);
-            if (settings != null) {
-                return settings.getUserSettings().getLocale();
-            }
-        }        
+        if (req != null) {
+            HttpSession session = req.getSession(false);
+            if (session != null) {
+                CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplace.C_SESSION_WORKPLACE_SETTINGS);
+                if (settings != null) {
+                    return settings.getUserSettings().getLocale();
+                }
+            }    
+        }
         
         // no session available, try to read the locale form the user additional info
         Locale locale = null;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsWorkplaceEditorConfiguration.java,v $
- * Date   : $Date: 2004/02/06 16:44:55 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/21 17:11:43 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,11 +56,11 @@ import org.dom4j.Element;
  * Provides methods to get the editor information for the editor manager.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.3.1
  */
-public final class CmsWorkplaceEditorConfiguration {
+public class CmsWorkplaceEditorConfiguration {
     
     /** Name of the root document node */
     public static final String C_DOCUMENT_NODE = "editor";
@@ -300,7 +300,10 @@ public final class CmsWorkplaceEditorConfiguration {
      * @param currentBrowser the users browser String to test
      * @return true if the browser matches the configuration, otherwise false
      */
-    public boolean matchesBrowser(String currentBrowser) {        
+    public boolean matchesBrowser(String currentBrowser) {      
+        if (currentBrowser == null) {
+            return false;
+        }
         for (int i = 0; i < getBrowserPattern().size(); i++) {            
             boolean matches = ((Pattern)getBrowserPattern().get(i)).matcher(currentBrowser.trim()).matches();
             if (matches) {

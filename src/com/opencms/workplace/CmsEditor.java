@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsEditor.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.65 $
+* Date   : $Date: 2004/02/21 17:11:42 $
+* Version: $Revision: 1.66 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.http.HttpServletRequest;
  * <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.65 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.66 $ $Date: 2004/02/21 17:11:42 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -229,7 +229,7 @@ public class CmsEditor extends CmsWorkplaceDefault {
         // Check if we should leave th editor instead of start processing
         if(exitRequested && ((saveerror == null) || ("".equals(saveerror)))) {
             try {
-                cms.getRequestContext().getResponse().sendCmsRedirect(CmsWorkplaceAction.getWorkplaceUri(cms));
+                cms.getRequestContext().getResponse().sendCmsRedirect(CmsWorkplaceAction.getWorkplaceUri(cms.getRequestContext().getRequest().getOriginalRequest()));
             } catch(IOException e) {
                 throwException("Could not send redirect to workplace main screen.", e);
             }

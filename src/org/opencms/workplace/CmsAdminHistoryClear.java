@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsAdminHistoryClear.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/02/21 17:11:42 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.opencms.threads.CmsAdminHistoryClearThread;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 5.1
  */
@@ -212,7 +212,7 @@ public class CmsAdminHistoryClear extends CmsReport {
                 break;
             case ACTION_REPORT_END:
                 try {
-                    getCms().getRequestContext().getResponse().sendCmsRedirect(getAdministrationBackLink());
+                    sendCmsRedirect(getAdministrationBackLink());
                     break;
                 } catch (IOException e) {
                     // ignore

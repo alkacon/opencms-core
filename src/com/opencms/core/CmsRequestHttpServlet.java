@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsRequestHttpServlet.java,v $
-* Date   : $Date: 2004/02/11 16:12:05 $
-* Version: $Revision: 1.47 $
+* Date   : $Date: 2004/02/21 17:11:42 $
+* Version: $Revision: 1.48 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,9 +28,9 @@
 
 package com.opencms.core;
 
-import org.opencms.main.*;
+import org.opencms.main.I_CmsConstants;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsResourceTranslator;
-
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -63,7 +63,7 @@ import javax.servlet.http.HttpSession;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * 
- * @version $Revision: 1.47 $ $Date: 2004/02/11 16:12:05 $
+ * @version $Revision: 1.48 $ $Date: 2004/02/21 17:11:42 $
  */
 public class CmsRequestHttpServlet implements I_CmsRequest {
 
@@ -336,7 +336,7 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
      *
      * @return The original request of the CmsRequest.
      */
-    public Object getOriginalRequest() {
+    public HttpServletRequest getOriginalRequest() {
         return m_req;
     }
     
@@ -345,8 +345,8 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
      * 
      * @param request the request
      */
-    public void setOriginalRequest(Object request) {
-        m_req = (HttpServletRequest)request;
+    public void setOriginalRequest(HttpServletRequest request) {
+        m_req = request;
     }
 
     /**

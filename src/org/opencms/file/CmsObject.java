@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/02/14 21:25:41 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/02/21 17:11:43 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsObject {
 
@@ -2385,9 +2385,8 @@ public class CmsObject {
         // login the user
         CmsUser newUser = m_driverManager.loginWebUser(username, password, m_context.getRemoteAddress());
         // init the new user
-        CmsRequestContext context = new CmsRequestContext();
-        context.init(m_driverManager, m_context.getRequest(), m_context.getResponse(), newUser.getName(), I_CmsConstants.C_PROJECT_ONLINE_ID, m_context.getSiteRoot(), m_context.getDirectoryTranslator(), m_context.getFileTranslator());
-        init(m_driverManager, context, m_sessionStorage);
+        m_context.init(m_driverManager, m_context.getRequest(), m_context.getResponse(), newUser.getName(), I_CmsConstants.C_PROJECT_ONLINE_ID, m_context.getSiteRoot(), m_context.getDirectoryTranslator(), m_context.getFileTranslator());
+        init(m_driverManager, m_context, m_sessionStorage);
         // return the user-name
         return (newUser.getName());
     }

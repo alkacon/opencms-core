@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsMail.java,v $
- * Date   : $Date: 2004/02/21 13:10:01 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/02/21 17:11:43 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,13 +31,12 @@
 
 package org.opencms.util;
 
-import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
-
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRegistry;
 import org.opencms.file.CmsUser;
+import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -46,22 +45,17 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.Properties;
 import java.util.Vector;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
-import javax.activation.MimetypesFileTypeMap;
 import javax.mail.Message;
 import javax.mail.MessagingException;
-import javax.mail.Multipart;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
 
 /**
  * This class is used to send a mail using the JavaMail package.
@@ -98,7 +92,7 @@ import javax.mail.internet.MimeMultipart;
  * @author mla
  * @author Alexander Lucas <alexander.lucas@framfab.de>
  *
- * @version $Name:  $ $Revision: 1.4 $ $Date: 2004/02/21 13:10:01 $
+ * @version $Name:  $ $Revision: 1.5 $ $Date: 2004/02/21 17:11:43 $
  * @since OpenCms 4.1.37. Previously, this class was part of the <code>com.opencms.workplace</code> package.
  */
 public class CmsMail extends Thread {
@@ -251,6 +245,9 @@ public class CmsMail extends Thread {
         m_alternativeMailserver = reg.getSystemValue("smtpserver2");
         m_type = type;
         m_cms = cms;
+        if (m_cms == null) {
+            OpenCms.getLog(this).debug("No CmsObject available for mail");
+        }
     }
 
     /**
@@ -564,61 +561,13 @@ public class CmsMail extends Thread {
 
         // Set subject
         msg.setSubject(m_subject, mail_encoding);
-
-        // Set content and attachments
-        Vector v = new Vector();
-        if (m_cms != null) {
-            Enumeration enum = m_cms.getRequestContext().getRequest().getFileNames();
-            while (enum.hasMoreElements()) {
-                v.addElement(enum.nextElement());
-            }
-        }
-        int size = v.size();
-        int numAttach = m_attachContent.size();
-        if (size != 0 || numAttach != 0) {
-
-            // create and fill the first message part
-            MimeBodyPart mbp1 = new MimeBodyPart();
-            Multipart mp = new MimeMultipart();
-            if (m_type.equals("text/html")) {
-                mbp1.setDataHandler(new DataHandler(new CmsByteArrayDataSource(m_content, m_type, mail_encoding)));
-            } else {
-                mbp1.setText(m_content, mail_encoding);
-            }
-            mp.addBodyPart(mbp1);
-
-            // Check, if there are any attachments
-            for (int i = 0; i < numAttach; i++) {
-
-                // create another message part
-                // attach the file to the message
-                MimeBodyPart mbpAttach = new MimeBodyPart();
-                if ("text/html".equals(m_attachType.elementAt(i))) {
-                    mbpAttach.setDataHandler(new DataHandler(new CmsByteArrayDataSource((String)m_attachContent.elementAt(i), "text/html", mail_encoding)));
-                } else {
-                    mbpAttach.setText((String)m_attachContent.elementAt(i), mail_encoding);
-                }
-                mp.addBodyPart(mbpAttach);
-            }
-            for (int i = 0; i < size; i++) {
-                String filename = (String)v.elementAt(i);
-                if (!"unknown".equalsIgnoreCase(filename)) {
-                    MimetypesFileTypeMap mimeTypeMap = new MimetypesFileTypeMap();
-                    String mimeType = mimeTypeMap.getContentType(filename);
-                    MimeBodyPart mbp = new MimeBodyPart();
-                    mbp.setDataHandler(new DataHandler(new CmsByteArrayDataSource(m_cms.getRequestContext().getRequest().getFile(filename), mimeType)));
-                    mbp.setFileName(filename);
-                    mp.addBodyPart(mbp);
-                }
-            }
-            msg.setContent(mp);
+        
+        if (m_type.equals("text/html")) {
+            msg.setDataHandler(new DataHandler(new CmsByteArrayDataSource(m_content, m_type, mail_encoding)));
         } else {
-            if (m_type.equals("text/html")) {
-                msg.setDataHandler(new DataHandler(new CmsByteArrayDataSource(m_content, m_type, mail_encoding)));
-            } else {
-                msg.setContent(m_content, m_type);
-            }
+            msg.setContent(m_content, m_type);
         }
+            
         msg.setSentDate(new Date());
         return msg;
     }
@@ -725,7 +674,7 @@ public class CmsMail extends Thread {
      * 
      * @author  Alexander Kandzior (a.kandzior@alkacon.com)
      * 
-     * @version $Revision: 1.4 $ $Date: 2004/02/21 13:10:01 $
+     * @version $Revision: 1.5 $ $Date: 2004/02/21 17:11:43 $
      * @see org.opencms.util.CmsMail
      */
     class CmsByteArrayDataSource implements DataSource {

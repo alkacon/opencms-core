@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsSession.java,v $
-* Date   : $Date: 2004/01/25 12:42:45 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2004/02/21 17:11:42 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,7 +34,7 @@ package com.opencms.core;
  * session data.<p>
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.17 $ $Date: 2004/01/25 12:42:45 $  
+ * @version $Revision: 1.18 $ $Date: 2004/02/21 17:11:42 $  
  */
 public interface I_CmsSession {
     
@@ -45,13 +45,6 @@ public interface I_CmsSession {
      * @return the object the is mapped to this key
      */
     Object getValue(String key);
-    
-    /**
-     * Returns an String array that contains all currently mapped key names.<p>
-     * 
-     * @return a String array that contains all currently mapped key names
-     */
-    String[] getValueNames();
     
     /**
      * Stores a value in the session

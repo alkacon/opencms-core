@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsResponseHttpServlet.java,v $
-* Date   : $Date: 2004/02/16 15:42:31 $
-* Version: $Revision: 1.40 $
+* Date   : $Date: 2004/02/21 17:11:42 $
+* Version: $Revision: 1.41 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.40 $ $Date: 2004/02/16 15:42:31 $
+ * @version $Revision: 1.41 $ $Date: 2004/02/21 17:11:42 $
  */
 public class CmsResponseHttpServlet implements I_CmsResponse {
 
@@ -121,7 +121,7 @@ public class CmsResponseHttpServlet implements I_CmsResponse {
      *
      * @return The original response of the CmsResponse.
      */
-    public Object getOriginalResponse() {
+    public HttpServletResponse getOriginalResponse() {
         return m_res;
     }
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceUpload.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.57 $
+* Date   : $Date: 2004/02/21 17:11:42 $
+* Version: $Revision: 1.58 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.http.HttpSession;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.57 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.58 $ $Date: 2004/02/21 17:11:42 $
  */
 public class CmsNewResourceUpload extends CmsWorkplaceDefault {
     
@@ -129,10 +129,10 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault {
         //String currentFolder = CmsWorkplaceAction.getCurrentFolder(cms);
         if(currentFolder != null) {
             // session.putValue(C_PARA_FILELIST, currentFolder);
-            CmsWorkplaceAction.setCurrentFolder(cms, currentFolder);
+            CmsWorkplaceAction.setCurrentFolder(currentFolder, cms.getRequestContext().getRequest().getOriginalRequest());
         }
         // currentFolder = (String)session.getValue(C_PARA_FILELIST);
-        currentFolder = CmsWorkplaceAction.getCurrentFolder(cms);
+        currentFolder = CmsWorkplaceAction.getCurrentFolder(cms.getRequestContext().getRequest().getOriginalRequest());
         if(currentFolder == null) {
             currentFolder = cms.readAbsolutePath(cms.rootFolder());
         }
@@ -293,12 +293,12 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault {
                                     }
                                     else {
                                         cms.getRequestContext().getResponse().sendCmsRedirect(
-                                            getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(cms));
+                                            getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest()));
                                     }
                                 } catch(Exception ex) {
                                     throw new CmsException(
                                         "Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath()
-                                        + CmsWorkplaceAction.getExplorerFileUri(cms), CmsException.C_UNKNOWN_EXCEPTION, ex);
+                                        + CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest()), CmsException.C_UNKNOWN_EXCEPTION, ex);
                                 }
                                 return null;
                             }
@@ -362,7 +362,7 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault {
                         // return to the filelist
                         try {
 
-                            cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+CmsWorkplaceAction.getExplorerFileUri(cms));
+                            cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest()));
 //                            if((lastUrl != null) && (lastUrl != "")) {
 //                                cms.getRequestContext().getResponse().sendRedirect(lastUrl);
 //                            }
@@ -371,7 +371,7 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault {
 //                            }
                         }
                         catch(Exception ex) {
-                            throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(cms), CmsException.C_UNKNOWN_EXCEPTION, ex);
+                            throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest()), CmsException.C_UNKNOWN_EXCEPTION, ex);
                         }
                         return null;
                     }
@@ -423,7 +423,7 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault {
 
                         // return to the filelist
                         try {
-                            cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(cms));
+                            cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest()));
 //                            if((lastUrl != null) && (lastUrl != "")) {
 //                                cms.getRequestContext().getResponse().sendRedirect(lastUrl);
 //                            }
@@ -432,7 +432,7 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault {
 //                            }
                         }
                         catch(Exception ex) {
-                            throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(cms), CmsException.C_UNKNOWN_EXCEPTION, ex);
+                            throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest()), CmsException.C_UNKNOWN_EXCEPTION, ex);
                         }
                         return null;
                     }

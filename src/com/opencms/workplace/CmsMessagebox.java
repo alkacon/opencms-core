@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMessagebox.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2004/02/21 17:11:42 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.w3c.dom.Node;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.16 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.17 $ $Date: 2004/02/21 17:11:42 $
  */
 
 public class CmsMessagebox extends A_CmsWpElement {
@@ -84,10 +84,10 @@ public class CmsMessagebox extends A_CmsWpElement {
         String messageLink1 = n.getAttribute(C_MESSAGE_LINK1);
         String messageLink2 = n.getAttribute(C_MESSAGE_LINK2);
         if ("explorer_files.html".equals(messageLink1)) {
-            messageLink1 = CmsWorkplaceAction.getExplorerFileUri(cms);
+            messageLink1 = CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest());
         }
         if ("explorer_files.html".equals(messageLink2)) {
-            messageLink2 = CmsWorkplaceAction.getExplorerFileUri(cms);
+            messageLink2 = CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest());
         }     
         if(n.hasChildNodes()) {
             helpfilename = n.getFirstChild();

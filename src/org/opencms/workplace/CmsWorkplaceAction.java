@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceAction.java,v $
- * Date   : $Date: 2004/02/13 13:45:33 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2004/02/21 17:11:42 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import javax.servlet.http.HttpSession;
  * functionality from the old XML based workplace to the new JSP workplace.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 5.1
  */
@@ -78,9 +78,10 @@ public final class CmsWorkplaceAction {
      * Updates the user preferences after changes have been made.<p>
      * 
      * @param cms the current cms context
+     * @param req the current http request
      */
-    public static void updatePreferences(CmsObject cms) {
-        HttpSession session = extractSession(cms);
+    public static void updatePreferences(CmsObject cms, HttpServletRequest req) {
+        HttpSession session = req.getSession(false);
         if (session == null) {
             return;
         }
@@ -94,11 +95,11 @@ public final class CmsWorkplaceAction {
     /**
      * Returns the uri of the top workplace frameset.<p>
      * 
-     * @param cms the current cms context
+     * @param req the current http request
      * @return the uri of the top workplace frameset
      */    
-    public static String getWorkplaceUri(CmsObject cms) {              
-        HttpSession session = extractSession(cms);
+    public static String getWorkplaceUri(HttpServletRequest req) {              
+        HttpSession session = req.getSession(false);
         if (session == null) {
             return C_XML_WORKPLACE_URI;
         }
@@ -112,11 +113,11 @@ public final class CmsWorkplaceAction {
     /**
      * Returns the folder currently selected in the explorer.<p>
      * 
-     * @param cms the current cms context
+     * @param req the current http request
      * @return the folder currently selected in the explorer
      */
-    public static String getCurrentFolder(CmsObject cms) {
-        HttpSession session = extractSession(cms);
+    public static String getCurrentFolder(HttpServletRequest req) {
+        HttpSession session = req.getSession(false);
         if (session == null) {
             return null;
         }
@@ -131,11 +132,11 @@ public final class CmsWorkplaceAction {
     /**
      * Sets the folder currently selected in the explorer
      * 
-     * @param cms the current cms context
+     * @param req the current http request
      * @param currentFolder the folder to set
      */
-    public static void setCurrentFolder(CmsObject cms, String currentFolder) {
-        HttpSession session = extractSession(cms);
+    public static void setCurrentFolder(String currentFolder, HttpServletRequest req) {
+        HttpSession session = req.getSession(false);
         if (session == null) {
             return;
         }
@@ -149,11 +150,11 @@ public final class CmsWorkplaceAction {
     /**
      * Returns the uri of the file explorer.<p>
      * 
-     * @param cms the current cms context
+     * @param req the current http request
      * @return the uri of the file explorer
      */    
-    public static String getExplorerFileUri(CmsObject cms) {              
-        HttpSession session = extractSession(cms);
+    public static String getExplorerFileUri(HttpServletRequest req) {              
+        HttpSession session = req.getSession(false);
         if (session == null) {
             return I_CmsWpConstants.C_WP_EXPLORER_FILELIST;
         }
@@ -168,10 +169,11 @@ public final class CmsWorkplaceAction {
      * Returns the full uri (absoluth path with servlet context) of the file explorer.<p>
      * 
      * @param cms the current cms context
+     * @param req the current http request
      * @return the uri of the file explorer
      */    
-    public static String getExplorerFileFullUri(CmsObject cms) {              
-        HttpSession session = extractSession(cms);
+    public static String getExplorerFileFullUri(CmsObject cms, HttpServletRequest req) {              
+        HttpSession session = req.getSession(false);
         String link = C_PATH_XML_WORKPLACE + C_FILE_WORKPLACE_FILELIST;
         if (session == null) {
             return OpenCms.getLinkManager().substituteLink(cms, link);
@@ -181,23 +183,5 @@ public final class CmsWorkplaceAction {
             return OpenCms.getLinkManager().substituteLink(cms, link);
         }
         return OpenCms.getLinkManager().substituteLink(cms, C_PATH_JSP_WORKPLACE + C_FILE_WORKPLACE_FILELIST);        
-    }    
-        
-    /**
-     * Extracts the HttpSession from the provided OpenCms context 
-     * 
-     * @param cms the current cms context
-     * @return the HttpSession from the provided context, or null if no session could be extracted 
-     */
-    private static HttpSession extractSession(CmsObject cms) {
-        HttpSession session = null;
-        try {
-            HttpServletRequest request = (HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();
-            session = request.getSession(false);
-        } catch (Exception e) {
-            // original request could not be extracted, use null return value 
-        }
-        return session;
-    }
-
+    } 
 }

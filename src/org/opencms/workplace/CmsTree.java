@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsTree.java,v $
- * Date   : $Date: 2004/02/13 13:45:33 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2004/02/21 17:11:42 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 5.1
  */
@@ -111,7 +111,7 @@ public class CmsTree extends CmsWorkplace {
      */
     public static String initTree(CmsObject cms, String encoding, String skinUri) {
         StringBuffer retValue = new StringBuffer(512);
-        String servletUrl = cms.getRequestContext().getRequest().getServletUrl();
+        String servletUrl = OpenCms.getSystemInfo().getOpenCmsContext();
         
         // get the localized workplace messages
         // TODO: Why a new message object, can it not be obtained from session?

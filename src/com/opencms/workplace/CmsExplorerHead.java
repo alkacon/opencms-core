@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsExplorerHead.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.34 $
+* Date   : $Date: 2004/02/21 17:11:42 $
+* Version: $Revision: 1.35 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.34 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.35 $ $Date: 2004/02/21 17:11:42 $
  */
 
 public class CmsExplorerHead extends CmsWorkplaceDefault {
@@ -171,13 +171,13 @@ public class CmsExplorerHead extends CmsWorkplaceDefault {
                     xmlTemplateDocument.setData(C_FILELIST, url);
                     xmlTemplateDocument.setData(C_STARTUP, xmlTemplateDocument.getProcessedDataValue(C_STARTUP_FOLDER, this));
                     // currentFilelist = (String)session.getValue(C_PARA_FILELIST);
-                    currentFilelist = CmsWorkplaceAction.getCurrentFolder(cms);
+                    currentFilelist = CmsWorkplaceAction.getCurrentFolder(cms.getRequestContext().getRequest().getOriginalRequest());
                     if(currentFilelist == null) {
                         currentFilelist = cms.readAbsolutePath(cms.rootFolder());
                     }
                     session.putValue(C_PARA_PREVIOUSLIST, currentFilelist);
                     // session.putValue(C_PARA_FILELIST, url);
-                    CmsWorkplaceAction.setCurrentFolder(cms, url);
+                    CmsWorkplaceAction.setCurrentFolder(url, cms.getRequestContext().getRequest().getOriginalRequest());
                     session.putValue(C_PARA_FOLDER, url);
                 }
                 else {
@@ -205,12 +205,12 @@ public class CmsExplorerHead extends CmsWorkplaceDefault {
             filelist = cms.getRequestContext().getRequest().getParameter(C_PARA_FILELIST);
             if(filelist != null) {
                 // session.putValue(C_PARA_FILELIST, filelist);
-                CmsWorkplaceAction.setCurrentFolder(cms, filelist);
+                CmsWorkplaceAction.setCurrentFolder(filelist, cms.getRequestContext().getRequest().getOriginalRequest());
             }
 
             // get the current filelist to calculate its patent
             // currentFilelist = (String)session.getValue(C_PARA_FILELIST);
-            currentFilelist = CmsWorkplaceAction.getCurrentFolder(cms);
+            currentFilelist = CmsWorkplaceAction.getCurrentFolder(cms.getRequestContext().getRequest().getOriginalRequest());
             
             // if no filelist parameter was given, use the current folder
             if(currentFilelist == null) {
@@ -300,7 +300,7 @@ public class CmsExplorerHead extends CmsWorkplaceDefault {
 
         // get the current filelist to display it in the address input field.
         // String currentFilelist = (String)session.getValue(C_PARA_FILELIST);
-        String currentFilelist = CmsWorkplaceAction.getCurrentFolder(cms);
+        String currentFilelist = CmsWorkplaceAction.getCurrentFolder(cms.getRequestContext().getRequest().getOriginalRequest());
 
         // if no filelist parameter was given, use the current folder
         if(currentFilelist == null) {

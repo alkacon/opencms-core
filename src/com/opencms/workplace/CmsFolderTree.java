@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFolderTree.java,v $
-* Date   : $Date: 2004/02/13 13:45:33 $
-* Version: $Revision: 1.67 $
+* Date   : $Date: 2004/02/21 17:11:42 $
+* Version: $Revision: 1.68 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.Vector;
  *
  *
  * @author Michael Emmerich
- * @version $Revision: 1.67 $ $Date: 2004/02/13 13:45:33 $
+ * @version $Revision: 1.68 $ $Date: 2004/02/21 17:11:42 $
  */
 
 public class CmsFolderTree extends CmsWorkplaceDefault {
@@ -314,7 +314,7 @@ public class CmsFolderTree extends CmsWorkplaceDefault {
 
         // get the current folder to be displayed as maximum folder in the tree.
         // currentFilelist = (String)session.getValue(C_PARA_FILELIST);
-        currentFilelist = CmsWorkplaceAction.getCurrentFolder(cms);
+        currentFilelist = CmsWorkplaceAction.getCurrentFolder(cms.getRequestContext().getRequest().getOriginalRequest());
         if(currentFilelist == null) {
             currentFilelist = cms.readAbsolutePath(cms.rootFolder());
         }
@@ -527,7 +527,7 @@ public class CmsFolderTree extends CmsWorkplaceDefault {
                 }
 
                 // set all data for the treeline tag
-                template.setData(C_FILELIST, CmsWorkplaceAction.getExplorerFileUri(cms) + "?" + C_PARA_FILELIST
+                template.setData(C_FILELIST, CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest()) + "?" + C_PARA_FILELIST
                         + "=" + cms.readAbsolutePath(res));
                 template.setData(C_TREELIST, C_WP_EXPLORER_TREE + "?" + C_PARA_FILELIST
                         + "=" + cms.readAbsolutePath(res));

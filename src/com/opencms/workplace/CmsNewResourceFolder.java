@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceFolder.java,v $
-* Date   : $Date: 2004/02/13 13:45:33 $
-* Version: $Revision: 1.57 $
+* Date   : $Date: 2004/02/21 17:11:42 $
+* Version: $Revision: 1.58 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.57 $ $Date: 2004/02/13 13:45:33 $
+ * @version $Revision: 1.58 $ $Date: 2004/02/21 17:11:42 $
  */
 
 public class CmsNewResourceFolder extends CmsWorkplaceDefault {
@@ -95,7 +95,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault {
 
         //get the current filelist
         // String currentFilelist = (String)session.getValue(C_PARA_FILELIST);
-        String currentFilelist = CmsWorkplaceAction.getCurrentFolder(cms);
+        String currentFilelist = CmsWorkplaceAction.getCurrentFolder(cms.getRequestContext().getRequest().getOriginalRequest());
         if (currentFilelist == null) {
             currentFilelist = cms.readAbsolutePath(cms.rootFolder());
         }
@@ -190,7 +190,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault {
                                 //}
                                 // prepare to call the dialog for creating the index.html page
                                 // session.putValue(C_PARA_FILELIST, cms.readAbsolutePath(folder));
-                                CmsWorkplaceAction.setCurrentFolder(cms, cms.readAbsolutePath(folder));
+                                CmsWorkplaceAction.setCurrentFolder(cms.readAbsolutePath(folder), cms.getRequestContext().getRequest().getOriginalRequest());
                                 xmlTemplateDocument.setData("indexlocation", cms.readAbsolutePath(folder));
                             }
                             template = "update2";
@@ -257,7 +257,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault {
                             // prepare to call the new Page dialog
                             xmlTemplateDocument.setData("indexlocation", cms.readAbsolutePath(folder));
                             // session.putValue(C_PARA_FILELIST, cms.readAbsolutePath(folder));
-                            CmsWorkplaceAction.setCurrentFolder(cms, cms.readAbsolutePath(folder));
+                            CmsWorkplaceAction.setCurrentFolder(cms.readAbsolutePath(folder), cms.getRequestContext().getRequest().getOriginalRequest());
                             template = "update2";
                         } else {
                             template = "update";
@@ -324,7 +324,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault {
 
         // get the current folder
         // currentFilelist = (String)session.getValue(C_PARA_FILELIST);
-        currentFilelist = CmsWorkplaceAction.getCurrentFolder(cms);
+        currentFilelist = CmsWorkplaceAction.getCurrentFolder(cms.getRequestContext().getRequest().getOriginalRequest());
         if (currentFilelist == null) {
             currentFilelist = cms.readAbsolutePath(cms.rootFolder());
         }

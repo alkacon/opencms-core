@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDownGalleries.java,v $
-* Date   : $Date: 2004/02/13 13:45:33 $
-* Version: $Revision: 1.45 $
+* Date   : $Date: 2004/02/21 17:11:42 $
+* Version: $Revision: 1.46 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Vector;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.45 $ $Date: 2004/02/13 13:45:33 $
+ * @version $Revision: 1.46 $ $Date: 2004/02/21 17:11:42 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -266,12 +266,12 @@ public class CmsAdminDownGalleries extends CmsAdminGallery {
                                             else {
                                                 cms.getRequestContext().getResponse().sendCmsRedirect(
                                                     getConfigFile(cms).getWorkplaceActionPath() 
-                                                    + CmsWorkplaceAction.getExplorerFileUri(cms));
+                                                    + CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest()));
                                             }
                                         } catch(Exception ex) {
                                             throw new CmsException(
                                                 "Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath()
-                                                + CmsWorkplaceAction.getExplorerFileUri(cms), CmsException.C_UNKNOWN_EXCEPTION, ex);
+                                                + CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest()), CmsException.C_UNKNOWN_EXCEPTION, ex);
                                         }
                                         return null;
                                     }
@@ -322,11 +322,11 @@ public class CmsAdminDownGalleries extends CmsAdminGallery {
                                         cms.getRequestContext().getResponse().sendRedirect(lasturl);
                                     }
                                     else {
-                                        cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(cms));
+                                        cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest()));
                                     }
                                 }
                                 catch(Exception ex) {
-                                    throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(cms), CmsException.C_UNKNOWN_EXCEPTION, ex);
+                                    throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest()), CmsException.C_UNKNOWN_EXCEPTION, ex);
                                 }
                                 return null;
                             }
@@ -364,11 +364,11 @@ public class CmsAdminDownGalleries extends CmsAdminGallery {
                                         cms.getRequestContext().getResponse().sendRedirect(lasturl);
                                     }
                                     else {
-                                        cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(cms));
+                                        cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest()));
                                     }
                                 }
                                 catch(Exception ex) {
-                                    throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(cms), CmsException.C_UNKNOWN_EXCEPTION, ex);
+                                    throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest()), CmsException.C_UNKNOWN_EXCEPTION, ex);
                                 }
                                 return null;
                             }              

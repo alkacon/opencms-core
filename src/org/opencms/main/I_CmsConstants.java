@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2004/02/20 07:21:06 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/02/21 17:11:42 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.4 $ $Date: 2004/02/20 07:21:06 $
+ * @version $Revision: 1.5 $ $Date: 2004/02/21 17:11:42 $
  */
 public interface I_CmsConstants {
 
@@ -533,11 +533,6 @@ public interface I_CmsConstants {
      * The key for the current site in the user information hashtable.
      */
     String C_SESSION_CURRENTSITE = "CURRENTSITE";
-
-    /**
-     * The key for the dirty-flag in the session.
-     */
-    String C_SESSION_IS_DIRTY = "_core_session_is_dirty_";
 
     /**
      * The key for the original session to store the session data.

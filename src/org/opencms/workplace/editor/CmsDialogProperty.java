@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDialogProperty.java,v $
- * Date   : $Date: 2004/02/16 17:14:20 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/02/21 17:11:43 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 5.3.0
  */
@@ -422,7 +422,7 @@ public class CmsDialogProperty extends CmsProperty {
             // redirect to the default OpenCms dialog
             setAction(ACTION_DEFAULT);
             try {
-                getCms().getRequestContext().getResponse().sendCmsRedirect(CmsProperty.URI_PROPERTY_DIALOG + "?" + paramsAsRequest());
+                sendCmsRedirect(CmsProperty.URI_PROPERTY_DIALOG + "?" + paramsAsRequest());
             } catch (Exception e) {
                 // ignore this exception
             }          

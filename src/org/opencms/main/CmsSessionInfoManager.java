@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/CmsSessionInfoManager.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/21 17:11:42 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,23 +43,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import javax.servlet.http.HttpSession;
+
 /**
- * This class implements a session info storage which is mainly used to count the
- * currently logged in OpenCms users.<p> 
+ * This class implements a session info storage which is mainly used to get an overview
+ * about currently logged in OpenCms users.<p> 
  * 
- * It is required for user authentification of OpenCms. 
- * For each active user, its name and other additional information 
- * (like the current user group) are stored in a hashtable, using the session 
+ * For each active user session, the current project of the user 
+ * and other additional information are stored in a hashtable, using the session 
  * Id as key to them.<p>
  *
- * When the session gets destroyed, the user will removed from the storage.<p>
+ * When a user session is destroyed, the user will also be removed from the storage.<p>
  *
  * One of the main purposes of this stored user session list is the 
  * <code>sendBroadcastMessage()</code> method.
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @see #sendBroadcastMessage(String message)
  */
@@ -78,12 +79,12 @@ public class CmsSessionInfoManager {
     }
 
     /**
-     * Removes a user from the session storage,
+     * Removes a user session from the session storage,
      * this is done when the session of the user is destroyed.<p>
      *
      * @param sessionId the users session id
      */
-    public void deleteUser(String sessionId) {
+    public void removeUserSession(String sessionId) {
         CmsSessionInfo sessionInfo = (CmsSessionInfo)m_sessions.get(sessionId);
         CmsUUID userId = CmsUUID.getNullUUID();
         if (sessionInfo != null) {
@@ -99,6 +100,11 @@ public class CmsSessionInfoManager {
     
     /**
      * Returns a list of all active CmsSessionInfo objects for the specified user id.<p>
+     * 
+     * An OpenCms user can have many active sessions. 
+     * This is e.g. possible when two people have logged in to the system using the
+     * same username. Even one person can have multiple sessions if he
+     * is logged in to OpenCms with several browser windows at the same time.<p>
      * 
      * @param userId the id of the user
      * @return the list of all active CmsSessionInfo objects
@@ -218,7 +224,7 @@ public class CmsSessionInfoManager {
         String name;
         synchronized (m_sessions) {
             Iterator i = m_sessions.keySet().iterator();
-            output.append("[CmsCoreSessions]:\n");
+            output.append("[CmsSessions]:\n");
             while (i.hasNext()) {
                 key = (String)i.next();
                 output.append(key + " : ");
@@ -255,9 +261,7 @@ public class CmsSessionInfoManager {
                 sessionInfo = (CmsSessionInfo)m_sessions.get(key);
                 userentry.put(I_CmsConstants.C_SESSION_USERNAME, sessionInfo.getUserName());
                 userentry.put(I_CmsConstants.C_SESSION_PROJECT, sessionInfo.getProject());
-                // userentry.put(I_CmsConstants.C_SESSION_CURRENTGROUP, value.get(I_CmsConstants.C_SESSION_CURRENTGROUP));
-                userentry.put(I_CmsConstants.C_SESSION_MESSAGEPENDING, new Boolean((sessionInfo.getSessionData()).containsKey(I_CmsConstants.C_SESSION_BROADCASTMESSAGE)));
-    
+                userentry.put(I_CmsConstants.C_SESSION_MESSAGEPENDING, new Boolean(sessionInfo.getSession().getAttribute(I_CmsConstants.C_SESSION_BROADCASTMESSAGE) != null));    
                 output.addElement(userentry);
             }
         }
@@ -273,7 +277,7 @@ public class CmsSessionInfoManager {
         String key;
         CmsSessionInfo sessionInfo;
 
-        Hashtable session_data;
+        HttpSession user_session;
         String session_message;
         
         synchronized (m_sessions) {
@@ -281,13 +285,13 @@ public class CmsSessionInfoManager {
             while (i.hasNext()) {
                 key = (String)i.next();
                 sessionInfo = (CmsSessionInfo)m_sessions.get(key);
-                session_data = sessionInfo.getSessionData();
-                session_message = (String)session_data.get(I_CmsConstants.C_SESSION_BROADCASTMESSAGE);
+                user_session = sessionInfo.getSession();
+                session_message = (String)user_session.getAttribute(I_CmsConstants.C_SESSION_BROADCASTMESSAGE);
                 if (session_message == null) {
                     session_message = "";
                 }
                 session_message += message;
-                session_data.put(I_CmsConstants.C_SESSION_BROADCASTMESSAGE, session_message);
+                user_session.setAttribute(I_CmsConstants.C_SESSION_BROADCASTMESSAGE, session_message);
             }
         }
     }

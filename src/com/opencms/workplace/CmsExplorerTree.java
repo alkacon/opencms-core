@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsExplorerTree.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.32 $
+* Date   : $Date: 2004/02/21 17:11:42 $
+* Version: $Revision: 1.33 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Vector;
  * 
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.32 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.33 $ $Date: 2004/02/21 17:11:42 $
  */
 
 public class CmsExplorerTree extends CmsWorkplaceDefault {
@@ -214,12 +214,12 @@ public class CmsExplorerTree extends CmsWorkplaceDefault {
         filelist = cms.getRequestContext().getRequest().getParameter(C_PARA_FILELIST);
         if(filelist != null) {
             // session.putValue(C_PARA_FILELIST, filelist);
-            CmsWorkplaceAction.setCurrentFolder(cms, filelist);
+            CmsWorkplaceAction.setCurrentFolder(filelist, cms.getRequestContext().getRequest().getOriginalRequest());
         }
         
         // get the current folder to be displayed as maximum folder in the tree.
         // currentFilelist = (String)session.getValue(C_PARA_FILELIST);
-        currentFilelist = CmsWorkplaceAction.getCurrentFolder(cms);
+        currentFilelist = CmsWorkplaceAction.getCurrentFolder(cms.getRequestContext().getRequest().getOriginalRequest());
         if(currentFilelist == null) {
             currentFilelist = cms.readAbsolutePath(cms.rootFolder());
         }
@@ -382,7 +382,7 @@ public class CmsExplorerTree extends CmsWorkplaceDefault {
                 }
                 
                 // set all data for the treeline tag
-                template.setData(C_FILELIST, CmsWorkplaceAction.getExplorerFileUri(cms) + "?" + C_PARA_FILELIST + "=" 
+                template.setData(C_FILELIST, CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest()) + "?" + C_PARA_FILELIST + "=" 
                         + cms.readAbsolutePath(folder));
                 template.setData(C_TREELIST, C_WP_EXPLORER_TREE + "?" + C_PARA_FILELIST + "=" 
                         + cms.readAbsolutePath(folder));

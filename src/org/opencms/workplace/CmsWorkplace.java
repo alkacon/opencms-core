@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/02/21 13:10:01 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2004/02/21 17:11:42 $
+ * Version: $Revision: 1.61 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,11 @@
 package org.opencms.workplace;
 
 import org.opencms.db.CmsUserSettings;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsRequestContext;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsUser;
+import org.opencms.file.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
@@ -41,12 +46,7 @@ import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.util.CmsStringSubstitution;
 
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsRequestContext;
-import org.opencms.file.CmsResource;
-import org.opencms.file.CmsUser;
-import org.opencms.file.I_CmsResourceType;
-
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.ParseException;
@@ -69,7 +69,7 @@ import javax.servlet.jsp.PageContext;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.60 $
+ * @version $Revision: 1.61 $
  * 
  * @since 5.1
  */
@@ -122,13 +122,16 @@ public abstract class CmsWorkplace {
     
     /** The debug flag */
     public static final boolean DEBUG = false;
+       
+    /** The URI to the skin resources */
+    private static String m_skinUri;    
 
     private static String m_file_explorer_filelist;     
     private CmsJspActionElement m_jsp;
     private CmsObject m_cms;
     private HttpSession m_session;
     private CmsWorkplaceSettings m_settings;
-    private String m_resourceUri = null;
+    private String m_resourceUri;
     
     /**
      * Public constructor.<p>
@@ -392,22 +395,15 @@ public abstract class CmsWorkplace {
     }
     
     /**
-     * Returns the path to the currently selected skin.<p>
+     * Returns the path to the skin resources.<p>
      * 
-     * @return the path to the currently selected skin
+     * @return the path to the skin resources
      */
-    public String getSkinUri() {
-        return getSkinUri(m_cms);        
-    }
-    
-    /**
-     * Returns the path to the currently selected skin.<p>
-     * 
-     * @param cms the current CmsObject
-     * @return the path to the currently selected skin
-     */
-    public static String getSkinUri(CmsObject cms) {
-        return cms.getRequestContext().getRequest().getWebAppUrl() + "/skins/modern/";
+    public static String getSkinUri() {
+        if (m_skinUri == null) {
+            m_skinUri = OpenCms.getSystemInfo().getContextPath() + "/skins/modern/";
+        }        
+        return m_skinUri;      
     }
     
     /**
@@ -1361,4 +1357,13 @@ public abstract class CmsWorkplace {
         return result.toString();
     }
     
+    /**
+     * Sends a http redirect to the specified URI in the OpenCms VFS.<p>
+     *
+     * @param location the location the response is redirected to
+     * @throws IOException in case redirection fails
+     */
+    public void sendCmsRedirect(String location) throws IOException {
+        getJsp().getResponse().sendRedirect(OpenCms.getSystemInfo().getOpenCmsContext() + location);
+    }        
 }

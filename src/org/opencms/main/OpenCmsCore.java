@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/02/21 13:33:20 $
- * Version: $Revision: 1.89 $
+ * Date   : $Date: 2004/02/21 17:11:42 $
+ * Version: $Revision: 1.90 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -104,7 +104,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.89 $
+ * @version $Revision: 1.90 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1497,21 +1497,6 @@ public final class OpenCmsCore {
         return webInfFolder;
     }
 
-    /**
-     * Sets the mimetype of the response.<p>
-     * 
-     * The mimetype is selected by the file extension of the requested document.
-     * If no available mimetype is found, it is set to the default
-     * "application/octet-stream".
-     *
-     * @param cms The current initialized CmsObject
-     * @param file The requested document
-     */
-    protected void setResponse(CmsObject cms, CmsFile file) {
-        String mimetype = getMimeType(file.getName(), cms.getRequestContext().getEncoding());
-        cms.getRequestContext().getResponse().setContentType(mimetype);
-    }
-
     /**       
      * This method adds an Object to the OpenCms runtime properties.
      * The runtime properties can be used to store Objects that are shared
@@ -1556,7 +1541,7 @@ public final class OpenCmsCore {
             CmsFile file = initResource(cms, cms.getRequestContext().getUri());
             if (file != null) {
                 // a file was read, go on process it
-                setResponse(cms, file);
+                res.setContentType(getMimeType(file.getName(), cms.getRequestContext().getEncoding()));
                 showResource(req, res, cms, file);
                 updateUser(cms, cmsReq);
             }
@@ -1760,7 +1745,7 @@ public final class OpenCmsCore {
         
         errorHtml = CmsStringSubstitution.substitute(errorHtml, "${title}", messages.key("error.system.message"));
         errorHtml = CmsStringSubstitution.substitute(errorHtml, "${encoding}", getSystemInfo().getDefaultEncoding());
-        errorHtml = CmsStringSubstitution.substitute(errorHtml, "${warnimageuri}", CmsWorkplace.getSkinUri(cms) + "explorer/report_error.gif");
+        errorHtml = CmsStringSubstitution.substitute(errorHtml, "${warnimageuri}", CmsWorkplace.getSkinUri() + "explorer/report_error.gif");
         if (cause.getLocalizedMessage() != null) {
             errorHtml = CmsStringSubstitution.substitute(errorHtml, "${message}", "<p><b>" + CmsStringSubstitution.substitute(cause.getLocalizedMessage(), "\n", "\n<br>") + "</b></p>");
         } else {
@@ -1965,24 +1950,25 @@ public final class OpenCmsCore {
         // try to get the current session
         HttpSession session = req.getSession(false);
         String sessionId;
-        // check if there is user data already stored in the session
+        
+        // check if there is user data already stored in the session manager
         String user = null;
         if (session != null) {
             // session exists, try to reuse the user from the session
-            user = m_sessionInfoManager.getUserName(session.getId());
             sessionId = session.getId();
         } else {
-            sessionId = req.getParameter("JSESSIONID");
-            if (sessionId != null) {
-                user = m_sessionInfoManager.getUserName(sessionId);
-            }
+            // special case for acessing a session from "outside" requests (e.g. upload applet)
+            sessionId = req.getParameter("jsessionid");
         }
+        if (sessionId != null) {
+            user = m_sessionInfoManager.getUserName(sessionId);
+        }        
 
         // initialize the requested site root
         CmsSite site = getSiteManager().matchRequest(req);
 
         if (user != null) {
-            // a user name is found in the session, reuse this user
+            // a user name is found in the session manager, reuse this user information
             Integer project = m_sessionInfoManager.getCurrentProject(sessionId);
 
             // initialize site root from request
@@ -2094,7 +2080,7 @@ public final class OpenCmsCore {
         }
 
         // get the original ServletRequest and response
-        HttpServletRequest req = (HttpServletRequest)cmsReq.getOriginalRequest();
+        HttpServletRequest req = cmsReq.getOriginalRequest();
 
         // get the session if it is there
         HttpSession session = req.getSession(false);
@@ -2111,15 +2097,8 @@ public final class OpenCmsCore {
                 sessionInfo.setUserId(cms.getRequestContext().currentUser().getId());
                 sessionInfo.setProject(new Integer(cms.getRequestContext().currentProject().getId()));
                 sessionInfo.setCurrentSite(cms.getRequestContext().getSiteRoot());
-
-                // get current session data
-                Hashtable oldData = (Hashtable)session.getAttribute(I_CmsConstants.C_SESSION_DATA);
-                if (oldData == null) {
-                    oldData = new Hashtable();
-                }
-                sessionInfo.setSessionData(oldData);
-
-                // update the user-data
+                sessionInfo.setSession(session);
+                // update the session info user data
                 m_sessionInfoManager.putUser(session.getId(), sessionInfo);
 
                 // ensure that the session notify is set

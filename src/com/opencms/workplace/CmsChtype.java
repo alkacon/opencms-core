@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChtype.java,v $
- * Date   : $Date: 2004/02/13 13:41:44 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2004/02/21 17:11:43 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import java.util.Vector;
  * Template class for displaying the type screen of the OpenCms workplace.<p>
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.31 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.32 $ $Date: 2004/02/21 17:11:43 $
  */
 public class CmsChtype extends CmsWorkplaceDefault {
 
@@ -146,13 +146,13 @@ public class CmsChtype extends CmsWorkplaceDefault {
             try {
                 if (lasturl == null || "".equals(lasturl)) {
 					requestContext.getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath()
-                    + CmsWorkplaceAction.getExplorerFileUri(cms));
+                    + CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest()));
                 } else {
                     requestContext.getResponse().sendRedirect(lasturl);
                 }
             } catch (Exception e) {
                 throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath()
-                        + CmsWorkplaceAction.getExplorerFileUri(cms), CmsException.C_UNKNOWN_EXCEPTION, e);
+                        + CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest()), CmsException.C_UNKNOWN_EXCEPTION, e);
             }
             return null;
         }

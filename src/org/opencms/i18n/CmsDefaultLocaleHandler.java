@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsDefaultLocaleHandler.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/02/21 17:11:43 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,12 +39,14 @@ import org.opencms.file.CmsRequestContext;
 import java.util.List;
 import java.util.Locale;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * Default implementation of the locale handler.<p>
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com) 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  */
 public class CmsDefaultLocaleHandler implements I_CmsLocaleHandler {
 
@@ -66,9 +68,9 @@ public class CmsDefaultLocaleHandler implements I_CmsLocaleHandler {
     }
     
     /**
-     * @see org.opencms.i18n.I_CmsLocaleHandler#getLocale(org.opencms.file.CmsRequestContext)
+     * @see org.opencms.i18n.I_CmsLocaleHandler#getLocale(org.opencms.file.CmsRequestContext, javax.servlet.http.HttpServletRequest)
      */
-    public Locale getLocale(CmsRequestContext context) {        
+    public Locale getLocale(CmsRequestContext context, HttpServletRequest req) {        
         // get resource name (internal "Admin" cms object is in "/" site so adjust name to full path)
         String resourceName = context.addSiteRoot(context.getUri());
 

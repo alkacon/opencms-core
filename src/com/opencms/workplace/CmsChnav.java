@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChnav.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2004/02/21 17:11:42 $
+* Version: $Revision: 1.25 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.24 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.25 $ $Date: 2004/02/21 17:11:42 $
  */
 
 public class CmsChnav extends CmsWorkplaceDefault {
@@ -129,13 +129,13 @@ public class CmsChnav extends CmsWorkplaceDefault {
                 try {
                     if(lasturl == null || "".equals(lasturl)) {
                         cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath()
-                            + CmsWorkplaceAction.getExplorerFileUri(cms));
+                            + CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest()));
                     }else {
                         cms.getRequestContext().getResponse().sendRedirect(lasturl);
                     }
                 }catch(Exception e) {
                     throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath()
-                        + CmsWorkplaceAction.getExplorerFileUri(cms), CmsException.C_UNKNOWN_EXCEPTION, e);
+                        + CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest()), CmsException.C_UNKNOWN_EXCEPTION, e);
                 }
                 return null;
             } else if("fromerror".equalsIgnoreCase(action)){
@@ -180,7 +180,7 @@ public class CmsChnav extends CmsWorkplaceDefault {
 
         // get the current folder
         // currentFilelist = (String)session.getValue(C_PARA_FILELIST);
-        currentFilelist = CmsWorkplaceAction.getCurrentFolder(cms);
+        currentFilelist = CmsWorkplaceAction.getCurrentFolder(cms.getRequestContext().getRequest().getOriginalRequest());
         if(currentFilelist == null) {
             currentFilelist = cms.readAbsolutePath(cms.rootFolder());
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsWorkplaceEditorManager.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/02/21 17:11:43 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,12 +31,11 @@
 
 package org.opencms.workplace.editor;
 
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
-
-import org.opencms.db.CmsUserSettings;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
@@ -50,8 +49,6 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import javax.servlet.http.HttpServletRequest;
-
 /**
  * The editor manager stores information about all available configured editors in OpenCms.<p>
  * 
@@ -64,11 +61,11 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.3.1
  */
-public final class CmsWorkplaceEditorManager {
+public class CmsWorkplaceEditorManager {
     
     /** The filename of the editor configuration XML file */
     public static final String C_EDITOR_CONFIGURATION_FILENAME = "editor_configuration.xml";
@@ -224,21 +221,24 @@ public final class CmsWorkplaceEditorManager {
      * 
      * @param context the request context
      * @param resourceType the current resource type
+     * @param userAgent the user agent String that identifies the browser
      * @return a valid default editor URI for the resource type or null, if no editor matches
      */
-    protected String getDefaultEditorUri(CmsRequestContext context, String resourceType) {
-        HttpServletRequest orgReq = (HttpServletRequest)context.getRequest().getOriginalRequest();
-        String browser = orgReq.getHeader("user-agent");
+    protected String getDefaultEditorUri(CmsRequestContext context, String resourceType, String userAgent) {
         SortedMap filteredEditors = filterEditorsForResourceType(resourceType);
         while (filteredEditors.size() > 0) {
             // get the configuration with the lowest key value from the map
             Float key = (Float)filteredEditors.firstKey();          
             CmsWorkplaceEditorConfiguration conf = (CmsWorkplaceEditorConfiguration)filteredEditors.get(key);
             // match the found configuration with the current users browser
-            if (conf.matchesBrowser(browser)) {
+            if (conf.matchesBrowser(userAgent)) {
                 return conf.getEditorUri();
             }
             filteredEditors.remove(key);
+        }
+        if (context == null) {
+            // this is just so that all parameters are used, signature should be identical to getEditorUri(...)
+            return null;
         }
         // no valid default editor found
         return null;
@@ -258,12 +258,10 @@ public final class CmsWorkplaceEditorManager {
      * 
      * @param context the request context
      * @param resourceType the current resource type
+     * @param userAgent the user agent String that identifies the browser
      * @return a valid editor URI for the resource type or null, if no editor matches
      */
-    protected String getEditorUri(CmsRequestContext context, String resourceType) {
-        // get the current users browser identification
-        HttpServletRequest orgReq = (HttpServletRequest)context.getRequest().getOriginalRequest();
-        String browser = orgReq.getHeader("user-agent");
+    protected String getEditorUri(CmsRequestContext context, String resourceType, String userAgent) {
         
         // step 1: check if the user specified a preferred editor for the given resource type
         CmsUserSettings settings = new CmsUserSettings(context.currentUser());
@@ -284,7 +282,7 @@ public final class CmsWorkplaceEditorManager {
         }
         if (preferredEditorSetting != null) {
             CmsWorkplaceEditorConfiguration preferredConf = filterPreferredEditor(preferredEditorSetting);
-            if (preferredConf != null && preferredConf.matchesBrowser(browser)) {
+            if (preferredConf != null && preferredConf.matchesBrowser(userAgent)) {
                 // return preferred editor only if it matches the current users browser
                 return preferredConf.getEditorUri();
             }
@@ -298,7 +296,7 @@ public final class CmsWorkplaceEditorManager {
             // check editor configuration with highest ranking 
             Float key = (Float)filteredEditors.lastKey();           
             CmsWorkplaceEditorConfiguration conf = (CmsWorkplaceEditorConfiguration)filteredEditors.get(key);
-            if (conf.matchesBrowser(browser)) {
+            if (conf.matchesBrowser(userAgent)) {
                 return conf.getEditorUri();
             }
             filteredEditors.remove(key);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPreferences.java,v $
- * Date   : $Date: 2004/02/16 17:14:20 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/02/21 17:11:42 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 5.1.12
  */
@@ -216,9 +216,9 @@ public class CmsPreferences extends CmsTabDialog {
         try {
             if (getSettings().isViewAdministration()) {                  
                 String adminLink = I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "action/administration.html";
-                getCms().getRequestContext().getResponse().sendCmsRedirect(adminLink);
+                sendCmsRedirect(adminLink);
             } else {
-                getCms().getRequestContext().getResponse().sendCmsRedirect(C_PATH_WORKPLACE + "/explorer_fs.html");
+                sendCmsRedirect(C_PATH_WORKPLACE + "/explorer_fs.html");
             }
         } catch (IOException e) {
             // do nothing
@@ -301,7 +301,7 @@ public class CmsPreferences extends CmsTabDialog {
         }
         
         // update the preferences and project after saving
-        CmsWorkplaceAction.updatePreferences(getCms());
+        CmsWorkplaceAction.updatePreferences(getCms(), getJsp().getRequest());
 
         try {
             int projectId = Integer.parseInt(m_userSettings.getStartProject());
@@ -315,7 +315,7 @@ public class CmsPreferences extends CmsTabDialog {
         try {
             if (DIALOG_SET.equals(getParamAction())) {
                 // after "set" action, leave dialog open 
-                getCms().getRequestContext().getResponse().sendCmsRedirect(C_PATH_DIALOGS + "/preferences.html?" + PARAM_TAB + "=" + getActiveTab());
+                sendCmsRedirect(C_PATH_DIALOGS + "/preferences.html?" + PARAM_TAB + "=" + getActiveTab());
             } else {
                 // after "ok" action, close dialog and reload the workplace view
                 setParamOkFunctions("window.top.location.reload(true);");
@@ -323,7 +323,7 @@ public class CmsPreferences extends CmsTabDialog {
                     closeDialog();
                 } catch (JspException e) {
                     // closing dialog failed, redirect to dialog with action set to reload the workplace
-                    getCms().getRequestContext().getResponse().sendCmsRedirect(C_PATH_DIALOGS + "/preferences.html?" + PARAM_ACTION + "=" + DIALOG_RELOAD);
+                    sendCmsRedirect(C_PATH_DIALOGS + "/preferences.html?" + PARAM_ACTION + "=" + DIALOG_RELOAD);
                 }    
             }
         } catch (IOException e) {
@@ -462,7 +462,7 @@ public class CmsPreferences extends CmsTabDialog {
      */
     public String buildSelectPreferredEditors(String htmlAttributes) {
         StringBuffer result = new StringBuffer(1024);
-        HttpServletRequest request = (HttpServletRequest)getCms().getRequestContext().getRequest().getOriginalRequest();
+        HttpServletRequest request = getJsp().getRequest();
         if (htmlAttributes != null) {
             htmlAttributes += " name=\"" + PARAM_PREFERREDEDITOR_PREFIX;
         }
@@ -1056,7 +1056,7 @@ public class CmsPreferences extends CmsTabDialog {
      */
     protected Map paramValues() {
         Map map = super.paramValues();
-        HttpServletRequest request = (HttpServletRequest)getCms().getRequestContext().getRequest().getOriginalRequest();
+        HttpServletRequest request = getJsp().getRequest();
         Enumeration enum = request.getParameterNames();
         while (enum.hasMoreElements()) {
             String paramName = (String)enum.nextElement();

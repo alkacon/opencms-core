@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceOthertype.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.40 $
+* Date   : $Date: 2004/02/21 17:11:42 $
+* Version: $Revision: 1.41 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.40 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.41 $ $Date: 2004/02/21 17:11:42 $
  */
 
 public class CmsNewResourceOthertype extends CmsWorkplaceDefault {
@@ -83,7 +83,7 @@ public class CmsNewResourceOthertype extends CmsWorkplaceDefault {
             keywords = CmsEncoder.redecodeUriComponent((String)parameters.get(C_PARA_KEYWORDS));
             description = CmsEncoder.redecodeUriComponent((String)parameters.get(C_PARA_DESCRIPTION));
             // foldername = (String)session.getValue(C_PARA_FILELIST);
-            foldername = CmsWorkplaceAction.getCurrentFolder(cms);
+            foldername = CmsWorkplaceAction.getCurrentFolder(cms.getRequestContext().getRequest().getOriginalRequest());
             if(foldername == null) {
                 foldername = cms.readAbsolutePath(cms.rootFolder());
             }
@@ -102,10 +102,10 @@ public class CmsNewResourceOthertype extends CmsWorkplaceDefault {
 
             // now return to filelist
             try {
-                cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(cms));
+                cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest()));
             }
             catch(Exception e) {
-                throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(cms), CmsException.C_UNKNOWN_EXCEPTION, e);
+                throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest()), CmsException.C_UNKNOWN_EXCEPTION, e);
             }
             return null;
         } else {

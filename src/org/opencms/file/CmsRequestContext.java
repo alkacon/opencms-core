@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsRequestContext.java,v $
- * Date   : $Date: 2004/02/16 15:43:17 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/02/21 17:11:43 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,6 @@ import com.opencms.core.I_CmsSession;
 import java.util.HashMap;
 import java.util.Locale;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 /**
@@ -57,7 +56,7 @@ import javax.servlet.http.HttpSession;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  *
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsRequestContext {
 
@@ -268,10 +267,10 @@ public class CmsRequestContext {
     public String getRemoteAddress() {
         if (m_remoteAddr == null) {
             try {
-                if ((m_req != null) && (m_req.getOriginalRequestType() == I_CmsConstants.C_REQUEST_HTTP)) {
-                    m_remoteAddr = ((HttpServletRequest)m_req.getOriginalRequest()).getHeader(I_CmsConstants.C_REQUEST_FORWARDED_FOR);
+                if (m_req != null) {
+                    m_remoteAddr = m_req.getOriginalRequest().getHeader(I_CmsConstants.C_REQUEST_FORWARDED_FOR);
                     if (m_remoteAddr == null) {
-                        m_remoteAddr = ((HttpServletRequest)m_req.getOriginalRequest()).getRemoteAddr();
+                        m_remoteAddr = m_req.getOriginalRequest().getRemoteAddr();
                     }
                 }
             } catch (Throwable t) {
@@ -313,8 +312,7 @@ public class CmsRequestContext {
      *
      */
     public I_CmsSession getSession(boolean value) {
-        HttpSession session =
-            ((HttpServletRequest) m_req.getOriginalRequest()).getSession(value);
+        HttpSession session = m_req.getOriginalRequest().getSession(value);
         if (session != null) {
             return (I_CmsSession) new CmsSession(session);
         } else {
@@ -467,10 +465,10 @@ public class CmsRequestContext {
             } else if (getUri().startsWith(I_CmsWpConstants.C_VFS_PATH_WORKPLACE)
                     || getUri().startsWith(I_CmsWpConstants.C_VFS_PATH_LOGIN)) {
                 // the workplace/login requires a special locale handler
-                m_locale = OpenCms.getWorkplaceManager().getLocale(this);
+                m_locale = OpenCms.getWorkplaceManager().getLocale(this, m_req.getOriginalRequest());
             } else {
                 // request for resource outside of workplace, use default handler
-                m_locale = localeManager.getLocaleHandler().getLocale(this);
+                m_locale = localeManager.getLocaleHandler().getLocale(this, m_req.getOriginalRequest());
             }
                         
             if (m_locale == null) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2004/02/13 13:45:33 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2004/02/21 17:11:42 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.39 $
  * 
  * @since 5.1
  */
@@ -134,10 +134,10 @@ public class CmsFrameset extends CmsWorkplace {
     public String getBroadcastMessage() {
         StringBuffer result = new StringBuffer(512);
         // get the broadcast message from the session
-        String message = (String)getCms().getRequestContext().getSession(true).getValue(I_CmsConstants.C_SESSION_BROADCASTMESSAGE);
+        String message = (String)getJsp().getRequest().getSession().getAttribute(I_CmsConstants.C_SESSION_BROADCASTMESSAGE);
         if (message != null) {
             // remove the message from session
-            getCms().getRequestContext().getSession(true).removeValue(I_CmsConstants.C_SESSION_BROADCASTMESSAGE);
+            getJsp().getRequest().getSession().removeAttribute(I_CmsConstants.C_SESSION_BROADCASTMESSAGE);
             if (!"".equals(message.trim())) {
                 // create a javascript alert for the message if message is not empty
                 result.append("\n<script type=\"text/javascript\">\n<!--\n");

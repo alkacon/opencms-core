@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsUndochanges.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2004/02/21 17:11:42 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.19 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.20 $ $Date: 2004/02/21 17:11:42 $
  */
 
 public class CmsUndochanges extends CmsWorkplaceDefault {
@@ -110,14 +110,14 @@ public class CmsUndochanges extends CmsWorkplaceDefault {
                     try {
                         if(lasturl == null || "".equals(lasturl)) {
                             cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath()
-                                        + CmsWorkplaceAction.getExplorerFileUri(cms));
+                                        + CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest()));
                         }else {
                             cms.getRequestContext().getResponse().sendRedirect(lasturl);
                         }
                     }catch(Exception e) {
                         throw new CmsException("Redirect fails :"
                             + getConfigFile(cms).getWorkplaceActionPath()
-                            + CmsWorkplaceAction.getExplorerFileUri(cms), CmsException.C_UNKNOWN_EXCEPTION, e);
+                            + CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest()), CmsException.C_UNKNOWN_EXCEPTION, e);
                     }
                     return null;
                 } catch(CmsException e){

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWorkplaceDefault.java,v $
-* Date   : $Date: 2004/02/13 13:45:33 $
-* Version: $Revision: 1.70 $
+* Date   : $Date: 2004/02/21 17:11:42 $
+* Version: $Revision: 1.71 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import java.util.Vector;
  * Most special workplace classes may extend this class.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.70 $ $Date: 2004/02/13 13:45:33 $
+ * @version $Revision: 1.71 $ $Date: 2004/02/21 17:11:42 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -606,7 +606,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsConstant
      * @throws CmsException if something goes wring
      */
     public Object explorerFileUri(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) throws CmsException {
-        return CmsWorkplaceAction.getExplorerFileUri(cms);
+        return CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest());
     }    
     
     /**
@@ -621,6 +621,6 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsConstant
      * @throws CmsException if something goes wring
      */
     public Object explorerFileFullUri(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) throws CmsException {
-        return CmsWorkplaceAction.getExplorerFileFullUri(cms);
+        return CmsWorkplaceAction.getExplorerFileFullUri(cms, cms.getRequestContext().getRequest().getOriginalRequest());
     }        
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCopy.java,v $
-* Date   : $Date: 2004/02/13 13:41:43 $
-* Version: $Revision: 1.69 $
+* Date   : $Date: 2004/02/21 17:11:42 $
+* Version: $Revision: 1.70 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Vector;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.69 $ $Date: 2004/02/13 13:41:43 $
+ * @version $Revision: 1.70 $ $Date: 2004/02/21 17:11:42 $
  */
 
 public class CmsCopy extends CmsWorkplaceDefault {
@@ -190,7 +190,7 @@ public class CmsCopy extends CmsWorkplaceDefault {
                 try {
                     if(lasturl == null || "".equals(lasturl)) {
                         cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath()
-                                + CmsWorkplaceAction.getExplorerFileUri(cms));
+                                + CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest()));
                     }
                     else {
                         cms.getRequestContext().getResponse().sendRedirect(lasturl);
@@ -199,7 +199,7 @@ public class CmsCopy extends CmsWorkplaceDefault {
                 catch(Exception e) {
                     throw new CmsException("Redirect fails :"
                             + getConfigFile(cms).getWorkplaceActionPath()
-                            + CmsWorkplaceAction.getExplorerFileUri(cms), CmsException.C_UNKNOWN_EXCEPTION, e);
+                            + CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest()), CmsException.C_UNKNOWN_EXCEPTION, e);
                 }
                 return null;
             }
@@ -259,7 +259,7 @@ public class CmsCopy extends CmsWorkplaceDefault {
 
         // now search for the current folder
         // String currentFilelist = (String)session.getValue(C_PARA_FILELIST);
-        String currentFilelist = CmsWorkplaceAction.getCurrentFolder(cms);
+        String currentFilelist = CmsWorkplaceAction.getCurrentFolder(cms.getRequestContext().getRequest().getOriginalRequest());
         for(int i = 0;i < values.size();i++) {
             if(((String)values.elementAt(i)).equals(currentFilelist)) {
                 selected = new Integer(i);

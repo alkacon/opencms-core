@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2004/02/20 12:45:54 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/21 17:11:43 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderIncludeExtension {
     
@@ -690,7 +690,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
         String rnc = cms.getRequestContext().getEncoding().trim();
         // String oldUri = cms.getRequestContext().getUri();
         I_CmsRequest cms_req = cms.getRequestContext().getRequest();        
-        HttpServletRequest originalreq = (HttpServletRequest)cms_req.getOriginalRequest();
+        HttpServletRequest originalreq = cms_req.getOriginalRequest();
         
         try {                        
             // get the CmsRequest
@@ -701,7 +701,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
             String enc = cms.readProperty(cms.readAbsolutePath(fx), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, true, dnc).trim();
             // fake the called URI (otherwise XMLTemplate / ElementCache would not work)
             // cms.getRequestContext().setUri(cms.readAbsolutePath(fx));            
-            cms_req.setOriginalRequest(req);
+            cms_req.setOriginalRequest((HttpServletRequest)req);
             cms.getRequestContext().setEncoding(enc);      
             if (DEBUG > 1) {
                 System.err.println("CmsXmlTemplateLoader.service(): Encodig set to " + cms.getRequestContext().getEncoding());

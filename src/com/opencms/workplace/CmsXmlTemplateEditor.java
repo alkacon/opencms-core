@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2004/02/13 13:41:43 $
-* Version: $Revision: 1.132 $
+* Date   : $Date: 2004/02/21 17:11:42 $
+* Version: $Revision: 1.133 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.132 $ $Date: 2004/02/13 13:41:43 $
+ * @version $Revision: 1.133 $ $Date: 2004/02/21 17:11:42 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -721,7 +721,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
             cms.deleteResource(tempPageFilename, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
             cms.getRequestContext().setCurrentProject(curProject);
             try {
-                cms.getRequestContext().getResponse().sendCmsRedirect(CmsWorkplaceAction.getWorkplaceUri(cms));
+                cms.getRequestContext().getResponse().sendCmsRedirect(CmsWorkplaceAction.getWorkplaceUri(cms.getRequestContext().getRequest().getOriginalRequest()));
             }catch(IOException e) {
                 throwException("Could not send redirect to workplace main screen.", e);
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsProperty.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2004/02/21 17:11:42 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  * 
  * @since 5.1
  */
@@ -459,7 +459,7 @@ public class CmsProperty extends CmsDialog implements I_CmsDialogHandler {
             // set the request parameters before returning to the overview
             setParamAction(DIALOG_SHOW_DEFAULT);
             setParamNewproperty(null);
-            getCms().getRequestContext().getResponse().sendCmsRedirect(getJsp().getRequestContext().getUri()+"?"+paramsAsRequest());              
+            sendCmsRedirect(getJsp().getRequestContext().getUri()+"?"+paramsAsRequest());              
         } catch (CmsException e) {
             // error defining property, show error dialog
             setParamErrorstack(e.getStackTraceAsString());

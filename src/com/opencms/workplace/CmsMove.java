@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMove.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.67 $
+* Date   : $Date: 2004/02/21 17:11:42 $
+* Version: $Revision: 1.68 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.67 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.68 $ $Date: 2004/02/21 17:11:42 $
  */
 
 public class CmsMove extends CmsWorkplaceDefault {
@@ -218,7 +218,7 @@ public class CmsMove extends CmsWorkplaceDefault {
                     // return to the calling page
                     try {
                         if(lasturl == null || "".equals(lasturl)) {
-                            cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(cms));
+                            cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest()));
                         }
                         else {
                             cms.getRequestContext().getResponse().sendRedirect(lasturl);
@@ -227,7 +227,7 @@ public class CmsMove extends CmsWorkplaceDefault {
                     catch(Exception e) {
                         throw new CmsException("Redirect fails :"
                                 + getConfigFile(cms).getWorkplaceActionPath()
-                                + CmsWorkplaceAction.getExplorerFileUri(cms), CmsException.C_UNKNOWN_EXCEPTION, e);
+                                + CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest()), CmsException.C_UNKNOWN_EXCEPTION, e);
                     }
                     return null;
                 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSessionInfo.java,v $
- * Date   : $Date: 2004/01/07 16:53:02 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/21 17:11:42 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,7 @@ package org.opencms.main;
 
 import org.opencms.util.CmsUUID;
 
-import java.util.Hashtable;
+import javax.servlet.http.HttpSession;
 
 /**
  * Stores needed information about a logged in user.<p>
@@ -42,7 +42,7 @@ import java.util.Hashtable;
  * broadcast messages to the users.
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.3.0
  */
@@ -52,9 +52,27 @@ public class CmsSessionInfo {
     private CmsUUID m_userId;
     private Integer m_project;
     private String m_currentSite;
-    private Hashtable m_sessionData;
     private boolean m_messagePending;
+    private HttpSession m_session;
 
+    /**
+     * Returns the session of the user.<p>
+     * 
+     * @return the session
+     */
+    public HttpSession getSession() {
+        return m_session;
+    }
+    
+    /**
+     * Sets the session of the user.<p>
+     * 
+     * @param session the session to set
+     */
+    public void setSession(HttpSession session) {
+        m_session = session;
+    }
+    
     /**
      * Constructor, creates a new CmsSessionInfo object.<p>
      */
@@ -151,23 +169,4 @@ public class CmsSessionInfo {
     public void setMessagePending(boolean pending) {
         m_messagePending = pending;
     }
-
-    /**
-     * Returns the session data.<p>
-     * 
-     * @return the session data
-     */
-    public Hashtable getSessionData() {
-        return m_sessionData;
-    }
-
-    /**
-     * Sets the session data.<p>
-     * 
-     * @param data the session data to set
-     */
-    public void setSessionData(Hashtable data) {
-        m_sessionData = data;
-    }
-
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsResponse.java,v $
-* Date   : $Date: 2004/02/14 22:58:32 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2004/02/21 17:11:42 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,6 +30,8 @@ package com.opencms.core;
 
 import java.io.*;
 
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * This interface defines an OpenCms response, a generic response object that 
  * is used by OpenCms and provides methods to send processed data back to 
@@ -41,7 +43,7 @@ import java.io.*;
  * @author Michael Emmerich
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.18 $ $Date: 2004/02/14 22:58:32 $  
+ * @version $Revision: 1.19 $ $Date: 2004/02/21 17:11:42 $  
  */
 public interface I_CmsResponse {
     
@@ -50,7 +52,7 @@ public interface I_CmsResponse {
      * 
      * @return The original response of the CmsResponse.
      */
-    Object getOriginalResponse();
+    HttpServletResponse getOriginalResponse();
     
     /**
      * Returns the type of the response that was used to create the CmsResponse.

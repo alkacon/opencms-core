@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsSession.java,v $
-* Date   : $Date: 2004/02/13 13:41:46 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2004/02/21 17:11:42 $
+* Version: $Revision: 1.34 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,12 +28,6 @@
 
 package com.opencms.core;
 
-import org.opencms.main.*;
-import org.opencms.main.OpenCms;
-
-import java.util.Enumeration;
-import java.util.Hashtable;
-
 import javax.servlet.http.HttpSession;
 
 /**
@@ -45,7 +39,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author Michael Emmerich
  *
- * @version $Revision: 1.33 $ $Date: 2004/02/13 13:41:46 $
+ * @version $Revision: 1.34 $ $Date: 2004/02/21 17:11:42 $
  */
 public class CmsSession implements I_CmsSession {
 
@@ -55,24 +49,12 @@ public class CmsSession implements I_CmsSession {
     private HttpSession m_session;
 
     /**
-     * The sessiondata.
-     */
-    private Hashtable m_sessionData;
-
-    /**
      * Constructs a new CmsSession based on a HttpSession.
      *
      * @param originalSession the original session to use.
      */
     public CmsSession(HttpSession originalSession) {
         m_session = originalSession;
-        m_sessionData = (Hashtable)m_session.getAttribute(I_CmsConstants.C_SESSION_DATA);
-
-        // if there is no session-data, create a new one.
-        if (m_sessionData == null) {
-            m_sessionData = new Hashtable();
-            m_session.setAttribute(I_CmsConstants.C_SESSION_DATA, m_sessionData);
-        }
     }
 
     /**
@@ -82,21 +64,7 @@ public class CmsSession implements I_CmsSession {
      * @return the object associated with this key.
      */
     public Object getValue(String name) {
-        return m_sessionData.get(name);
-    }
-
-    /**
-     * Gets the names of all values stored in the session.
-     *
-     * @return String array containing all value names.
-     */
-    public String[] getValueNames() {
-        String[] name = new String[m_sessionData.size()];
-        Enumeration enu = m_sessionData.keys();
-        for (int i = 0; i < m_sessionData.size(); i++) {
-            name[i] = (String)enu.nextElement();
-        }
-        return name;
+        return m_session.getAttribute(name);
     }
 
     /**
@@ -106,16 +74,7 @@ public class CmsSession implements I_CmsSession {
      * @param value an object to be stored in the session.
      */
     public void putValue(String name, Object value) {
-        m_sessionData.put(name, value);
-
-        try {
-            // indicate, that the session should be stored after the request.
-            m_session.setAttribute(I_CmsConstants.C_SESSION_IS_DIRTY, new Boolean(true));
-        } catch (Exception exc) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error marking session as dirty", exc);
-            }
-        }
+        m_session.setAttribute(name, value);
     }
 
     /**
@@ -124,10 +83,7 @@ public class CmsSession implements I_CmsSession {
      * @param name the key for the value to be removed.
      */
     public void removeValue(String name) {
-        m_sessionData.remove(name);
-
-        // indicate, that the session should be stored after the request.
-        m_session.setAttribute(I_CmsConstants.C_SESSION_IS_DIRTY, new Boolean(true));
+        m_session.removeAttribute(name);
     }
     
     /**
@@ -147,9 +103,5 @@ public class CmsSession implements I_CmsSession {
         if (m_session != null) {
             m_session.invalidate();
         }
-        // if there is session-data, invalidate it as well
-        if (m_sessionData != null) {
-            m_sessionData = new Hashtable();
-        }    
     }        
 }
