@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsDefaultResourceCollector.java,v $
- * Date   : $Date: 2005/03/10 09:19:39 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/03/11 15:41:53 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Map;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.5.2
  */
 public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
@@ -301,32 +301,29 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
         CmsResourceFilter filter = CmsResourceFilter.DEFAULT.addRequireType(data.getType());
         List foundResources = cms.readResources(foldername, filter, readSubTree);
 
-        // check if all found resources have the required nav. properties set or not
+        // the Cms resources are saved in a map keyed by their nav elements
+        // to save time sorting the resources by the value of their NavPos property        
         Map navElementMap = new HashMap();
         for (int i = 0, n = foundResources.size(); i < n; i++) {
 
             CmsResource resource = (CmsResource)foundResources.get(i);
             CmsJspNavElement navElement = CmsJspNavBuilder.getNavigationForResource(cms, cms.getSitePath(resource));
 
-            if (navElement != null && navElement.isInNavigation()) {
-
-                // the Cms resources are saved in a map keyed by their nav elements
-                // to save time sorting the resources by the value of their NavPos property
+            // check if the resource has the NavPos property set or not
+            if (navElement != null && navElement.getNavPosition() != Float.MAX_VALUE) {
                 navElementMap.put(navElement, resource);
-            } else if (OpenCms.getLog(this).isInfoEnabled()) {
-                
+            } else if (OpenCms.getLog(this).isInfoEnabled()) {                
                 // printing a log messages makes it a little easier to indentify 
-                // resource having not the required nav. properties set
+                // resources having not the NavPos property set
                 OpenCms.getLog(this).info("Resource w/o nav. properties found: " + navElement.getResourceName());
             }
         }
 
         List result = null;
         if (navElementMap.size() == foundResources.size()) {
-
-            // all found resources have the required nav. properties set
-            // sort the nav. elements, and get back the found Cms resources
-            // from the map in the correct order then
+            // all found resources have the NavPos property set
+            // sort the nav. elements, and pull the found Cms resources
+            // from the map in the correct order into a list
             List navElementList = new ArrayList(navElementMap.keySet());
             result = new ArrayList();
 
@@ -337,9 +334,8 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
                 result.add(navElementMap.get(navElement));
             }
         } else {
-
-            // not all found resources have the required nav. properties set
-            // sort the resources by release date
+            // not all found resources have the NavPos property set
+            // sort the resources by release date as usual
             result = foundResources;
             Collections.sort(result, CmsResource.COMPARE_DATE_RELEASED);
         }
