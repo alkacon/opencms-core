@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/02/20 19:44:16 $
- * Version: $Revision: 1.71 $
+ * Date   : $Date: 2000/02/24 14:45:03 $
+ * Version: $Revision: 1.72 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michaela Schleich
- * @version $Revision: 1.71 $ $Date: 2000/02/20 19:44:16 $
+ * @version $Revision: 1.72 $ $Date: 2000/02/24 14:45:03 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2789,7 +2789,7 @@ System.err.println(">>> readFile(2) error for\n" +
 				
 			// write-acces  was granted - write the file.
 			m_fileRb.writeFile(currentProject, 
-							   onlineProject(currentUser, currentProject), file );
+							   onlineProject(currentUser, currentProject), file,true );
 			// inform about the file-system-change
 			fileSystemChanged(currentProject.getName(), file.getAbsolutePath());
 		} else {
@@ -2829,7 +2829,7 @@ System.err.println(">>> readFile(2) error for\n" +
 				
 			// write-acces  was granted - write the file.
 			m_fileRb.writeFileHeader(currentProject, 
-									 onlineProject(currentUser, currentProject), file );
+									 onlineProject(currentUser, currentProject), file,true );
 			// inform about the file-system-change
 			fileSystemChanged(currentProject.getName(), file.getAbsolutePath());
 		} else {

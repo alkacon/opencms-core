@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFileMySql.java,v $
- * Date   : $Date: 2000/02/23 20:09:58 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2000/02/24 14:45:03 $
+ * Version: $Revision: 1.32 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.util.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.31 $ $Date: 2000/02/23 20:09:58 $
+ * @version $Revision: 1.32 $ $Date: 2000/02/24 14:45:03 $
  */
  class CmsAccessFileMySql implements I_CmsAccessFile, I_CmsConstants, I_CmsLogChannels  {
 
@@ -715,17 +715,19 @@ import com.opencms.util.*;
 	 * @param project The project in which the resource will be used.
 	 * @param onlineProject The online project of the OpenCms.
 	 * @param filename The complete name of the new file (including pathinformation).
+	 * @param changed Flag indicating if the file state must be set to changed.
 	 * 
      * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
 	 public void writeFile(A_CmsProject project,
                            A_CmsProject onlineProject,
-                           CmsFile file)
+                           CmsFile file,boolean changed)
        throws CmsException {
-     
+       System.err.println("Write File Header for "+file.getName()+":"+changed);
+        
            try {   
              // update the file header in the RESOURCE database.
-             writeFileHeader(project,onlineProject,file);
+             writeFileHeader(project,onlineProject,file,changed);
              // update the file content in the FILES database.
              PreparedStatement statementFileUpdate=m_Con.prepareStatement(C_FILE_UPDATE);
              //FILE_CONTENT
@@ -745,14 +747,16 @@ import com.opencms.util.*;
 	 * @param project The project in which the resource will be used.
 	 * @param onlineProject The online project of the OpenCms.
 	 * @param filename The complete name of the new file (including pathinformation).
-	 * 
+	 * @param changed Flag indicating if the file state must be set to changed.
+	 *
      * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
 	 public void writeFileHeader(A_CmsProject project,
                                  A_CmsProject onlineProject,
-                                 CmsFile file)
+                                 CmsFile file,boolean changed)
          throws CmsException {
          
+         System.err.println("Write File Header for "+file.getName()+":"+changed);
            ResultSet res;
            ResultSet tmpres;
            byte[] content;
@@ -805,7 +809,11 @@ import com.opencms.util.*;
                 //ACCESS_FLAGS
                 statementResourceUpdate.setInt(5,file.getAccessFlags());
                 //STATE
-                statementResourceUpdate.setInt(6,C_STATE_CHANGED);
+                if (changed==true) {
+                    statementResourceUpdate.setInt(6,C_STATE_CHANGED);
+                } else {
+                    statementResourceUpdate.setInt(6,file.getState());
+                }
                 //LOCKED_BY
                 statementResourceUpdate.setInt(7,file.isLockedBy());
                 //LAUNCHER_TYPE

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbFile.java,v $
- * Date   : $Date: 2000/02/19 10:15:27 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/02/24 14:45:03 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.14 $ $Date: 2000/02/19 10:15:27 $
+ * @version $Revision: 1.15 $ $Date: 2000/02/24 14:45:03 $
  */
  class CmsRbFile implements I_CmsRbFile, I_CmsConstants {
 	
@@ -201,14 +201,15 @@ import com.opencms.core.*;
 	 * @param project The project in which the resource will be used.
 	 * @param onlineProject The online project of the OpenCms.
 	 * @param file The file to write.
+	 * @param changed Flag indicating if the file state must be set to changed.
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */	
 	public void writeFile(A_CmsProject project,
                           A_CmsProject onlineProject,
-                          CmsFile file)
+                          CmsFile file, boolean changed)
 		throws CmsException{
-        m_accessFile.writeFile(project,onlineProject,file);
+        m_accessFile.writeFile(project,onlineProject,file,changed);
      }
 	
 	 /**
@@ -232,14 +233,15 @@ import com.opencms.core.*;
 	 * @param project The project in which the resource will be used.
 	 * @param onlineProject The online project of the OpenCms.
 	 * @param file The file to write the header of.
+	 * @param changed Flag indicating if the file state must be set to changed.
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */	
 	public void writeFileHeader(A_CmsProject project, 
                                 A_CmsProject onlineProject,
-                                CmsFile file)
+                                CmsFile file,boolean changed)
 		throws CmsException{
-        m_accessFile.writeFileHeader(project,onlineProject,file);
+        m_accessFile.writeFileHeader(project,onlineProject,file,changed);
      }
 
 	/**
@@ -602,7 +604,7 @@ import com.opencms.core.*;
         if (filename.endsWith("/")) {   
             writeFolder(project,(CmsFolder)resource);
         } else {
-            writeFileHeader(project,onlineProject,(CmsFile)resource);
+            writeFileHeader(project,onlineProject,(CmsFile)resource,true);
         }
      }
 	
@@ -650,7 +652,7 @@ import com.opencms.core.*;
         if (filename.endsWith("/")) {   
             writeFolder(project,(CmsFolder)resource);
         } else {
-           writeFileHeader(project,onlineProject,(CmsFile)resource);
+           writeFileHeader(project,onlineProject,(CmsFile)resource,true);
         }
      }
 
@@ -697,7 +699,7 @@ import com.opencms.core.*;
         if (filename.endsWith("/")) {   
             writeFolder(project,(CmsFolder)resource);
         } else {
-            writeFileHeader(project,onlineProject,(CmsFile)resource);
+            writeFileHeader(project,onlineProject,(CmsFile)resource,true);
         }
      }
 	
@@ -753,10 +755,12 @@ import com.opencms.core.*;
         // lock the resouece
         resource.setLocked(user.getId());
         //update resource
-        if (resourcename.endsWith("/")) {   
+        if (resourcename.endsWith("/")) { 
+            System.err.println("Locking folder "+resource.getName());
             writeFolder(project,(CmsFolder)resource);
         } else {
-            writeFileHeader(project,onlineProject,(CmsFile)resource);
+            System.err.println("Locking file "+resource.getName());
+            writeFileHeader(project,onlineProject,(CmsFile)resource,false);
         }
      }
 	
@@ -810,7 +814,8 @@ import com.opencms.core.*;
                 if (resourcename.endsWith("/")) {   
                     writeFolder(project,(CmsFolder)resource);
                 } else {
-                    writeFileHeader(project,onlineProject,(CmsFile)resource);
+                    System.err.println("Unlocking file "+resource.getName());
+                    writeFileHeader(project,onlineProject,(CmsFile)resource,false);
                 }
             } else {
                  throw new CmsException("[" + this.getClass().getName() + "] " + 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsAccessFile.java,v $
- * Date   : $Date: 2000/02/16 09:15:18 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/02/24 14:45:04 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.11 $ $Date: 2000/02/16 09:15:18 $
+ * @version $Revision: 1.12 $ $Date: 2000/02/24 14:45:04 $
  */
 interface I_CmsAccessFile {
 
@@ -151,12 +151,13 @@ interface I_CmsAccessFile {
 	 * @param project The project in which the resource will be used.
 	 * @param onlineProject The online project of the OpenCms.
 	 * @param filename The complete name of the new file (including pathinformation).
-	 * 
+     * @param changed Flag indicating if the file state must be set to changed.
+	 *
      * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
 	 public void writeFile(A_CmsProject project,
                            A_CmsProject onlineProject,
-                           CmsFile file)
+                           CmsFile file,boolean changed)
 		throws CmsException;
 	
 	/**
@@ -165,13 +166,14 @@ interface I_CmsAccessFile {
 	 * @param project The project in which the resource will be used.
 	 * @param onlineProject The online project of the OpenCms.
 	 * @param filename The complete name of the new file (including pathinformation).
-	 * 
+	 * @param changed Flag indicating if the file state must be set to changed.
+	 *
      * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
 
 	 public void writeFileHeader(A_CmsProject project,
                                  A_CmsProject onlineProject,
-                                 CmsFile file)
+                                 CmsFile file,boolean changed)
 		throws CmsException;
 
 	/**

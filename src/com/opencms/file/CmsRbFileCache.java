@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbFileCache.java,v $
- * Date   : $Date: 2000/02/21 12:55:31 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/02/24 14:45:03 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2000/02/21 12:55:31 $
+ * @version $Revision: 1.5 $ $Date: 2000/02/24 14:45:03 $
  */
  class CmsRbFileCache extends CmsRbFile {
      
@@ -125,19 +125,19 @@ import com.opencms.core.*;
 	 * @param project The project in which the resource will be used.
 	 * @param onlineProject The online project of the OpenCms.
 	 * @param file The file to write the header of.
-	 * 
+	 * @param changed Flag indicating if the file state must be set to changed.
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */	
 	public void writeFileHeader(A_CmsProject project, 
                                 A_CmsProject onlineProject,
-                                CmsFile file)
+                                CmsFile file,boolean changed)
 		throws CmsException{
         String key=C_FILE+project.getId()+file.getAbsolutePath();
         // check for max filesize, add it to cache if file is not too big
         if (file.getLength()<C_MAXFILESIZE) {
             m_filecache.put(key,file);
         }
-        m_accessFile.writeFileHeader(project,onlineProject,file);
+        m_accessFile.writeFileHeader(project,onlineProject,file,changed);
      }
     
   /**
