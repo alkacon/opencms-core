@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2003/12/17 17:46:37 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2003/12/18 11:55:51 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.staticexport;
 
 import org.opencms.main.OpenCms;
-import org.opencms.site.CmsSiteManager;
 import org.opencms.site.CmsSiteMatcher;
 
 import com.opencms.core.I_CmsConstants;
@@ -51,7 +50,7 @@ import java.net.URL;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class CmsLinkManager {
     
@@ -162,13 +161,17 @@ public class CmsLinkManager {
     /**
      * Returns the site path for a given uri.<p>
      * 
-     * If the uri contains no site information, but starts with the opencms context, it is returned unchanged
-     *  /opencms/opencms/system/further_path -> /opencms/opencms/system/further_path
+     * If the uri contains no site information, but starts with the opencms context, the context is removed
+     *  /opencms/opencms/system/further_path -> /system/further_path
      * 
      * If the uri contains no site information, the path will be prefixed with the current site
-     *  page.html -> /sites/mysite/page.html
      *  /folder/page.html -> /sites/mysite/folder/page.html
      *  (if mysite is the site currently selected in the workplace or in the request)
+     * 
+     * If the path of the uri is relative, i.e. does not start with "/", 
+     * the path will be prefixed with the current site and the given relative path,
+     * if no relative path is given, null is returned
+     *  page.html -> /sites/mysite/<relativePath>/page.html
      * 
      * If the uri contains a scheme/server name that denotes an opencms site, it is replaced by the appropriate site path
      *  http://www.mysite.de/folder/page.html -> /sites/mysite/folder/page.html
@@ -179,6 +182,7 @@ public class CmsLinkManager {
      *  mailto:someone@elsewhere.com -> null
      * 
      * @param cms the cms object
+     * @param relativePath path to use as prefix if neccessary
      * @param targetUri the target uri
      * @return the root path for the target uri or null
      */
@@ -212,7 +216,7 @@ public class CmsLinkManager {
         
         // relative uri starting with opencms context
         if (uri.getPath().startsWith(OpenCms.getOpenCmsContext())) {
-            return targetUri;
+            return cms.getRequestContext().addSiteRoot(uri.getPath().substring(OpenCms.getOpenCmsContext().length()));
         }
         
         // uri with relative path is relative to the given relativePath if available, otherwise invalid
@@ -227,6 +231,7 @@ public class CmsLinkManager {
         // relative uri (= vfs path relative to currently selected site root)
         return cms.getRequestContext().addSiteRoot(uri.getPath());
     }
+    
     /**
      * Checks if the export is required for a given vfs resource.<p>
      * 

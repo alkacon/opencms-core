@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkProcessor.java,v $
- * Date   : $Date: 2003/12/17 17:46:37 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/12/18 11:55:51 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.htmlparser.visitors.NodeVisitor;
 /**
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.3
  */
 public class CmsLinkProcessor extends NodeVisitor {
@@ -61,7 +61,6 @@ public class CmsLinkProcessor extends NodeVisitor {
     /** Processing modes */
     private static final int C_REPLACE_LINKS = 0;
     private static final int C_PROCESS_LINKS = 1;
-    private static final int C_PROCESS_EDIT_LINKS = 2;
     
     /** Current processing mode */
     private int m_mode;
@@ -104,6 +103,7 @@ public class CmsLinkProcessor extends NodeVisitor {
      * 
      * @param cms the cms object
      * @param content the content to process
+     * @param relativePath additional path for links with relative path
      * @return the processed content with replaced links
      * 
      * @throws ParserException if something goes wrong
@@ -128,6 +128,7 @@ public class CmsLinkProcessor extends NodeVisitor {
      * 
      * @param cms the cms object
      * @param content the content to process
+     * @param processEditorLinks flag to process links for editing purposes
      * @return the processed content with replaced macros
      * 
      * @throws ParserException if something goes wrong
@@ -284,8 +285,6 @@ public class CmsLinkProcessor extends NodeVisitor {
      * @return processed link
      */
     private String processLink(CmsLink link) {
-//        String serverURL = link.getServerURL();        
-// an internal link is substituted only, if it matches the current site
 
         if (link.isInternal()) {
 
@@ -297,23 +296,19 @@ public class CmsLinkProcessor extends NodeVisitor {
             }
 
             // otherwise get the desired site root from the stored link
-            // - if there is no site root, this site was deleted and we have an invalid link or we have a system link
-            // so, return link unprocessed
+            // - if there is no site root, we have a system link (or the site was deleted),
+            // return the link prefixed with the opencms context
             String siteRoot = link.getSiteRoot();
             if (siteRoot == null) {
-                return link.getTarget();
+                return OpenCms.getLinkManager().substituteLink(m_cms, link.getTarget());
             } else {
                 site = CmsSiteManager.getSite(siteRoot);
             }
 
-            // if we are in the desired site, relative links are generated if not in editmode (otherwise the vfs link is returned)
+            // if we are in the desired site, relative links are generated
             // otherwise, links are generated as absolute links
             if (m_cms.getRequestContext().getSiteRoot().equals(siteRoot)) {
-                if (m_processEditorLinks) {
-                    return link.getVfsTarget();
-                } else {
-                    return OpenCms.getLinkManager().substituteLink(m_cms, link.getVfsTarget());
-                }
+                return OpenCms.getLinkManager().substituteLink(m_cms, link.getVfsTarget());
             } else {
                 return site.getUrl() + OpenCms.getOpenCmsContext() + link.getVfsTarget();
             }
