@@ -1156,7 +1156,7 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
   private void clearcache(CmsObject cms) {
 
     // first the element cache
-    cms.getRequestContext().getElementCache().clearCache();
+    cms.getOnlineElementCache().clearCache();
 
     URL u = null;
     String p = ((HttpServletRequest)
