@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/I_CmsImportExportHandler.java,v $
- * Date   : $Date: 2004/02/23 17:38:27 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/24 09:08:07 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,19 +36,19 @@ package org.opencms.importexport;
  * type of Cms data.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2004/02/23 17:38:27 $
+ * @version $Revision: 1.2 $ $Date: 2004/02/24 09:08:07 $
  * @since 5.3
  */
 public interface I_CmsImportExportHandler {
 
     /** COS data import/export handler type.<p> */
-    static final String C_TYPE_COSDATA = "cosdata";
+    String C_TYPE_COSDATA = "cosdata";
     
     /** VFS data import/export handler type.<p> */
-    static final String C_TYPE_VFSDATA = "vfsdata";
+    String C_TYPE_VFSDATA = "vfsdata";
     
     /** Module import/export handler type.<p> */
-    static final String C_TYPE_MODDATA = "moddata";
+    String C_TYPE_MODDATA = "moddata";
     
     /**
      * Returns the type of this import/export handler.<p>
