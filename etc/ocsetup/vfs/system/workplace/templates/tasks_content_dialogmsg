@@ -50,7 +50,7 @@ function show_help()
 		<td class=formular nowrap>]]><LABEL value="task.dialog.message.head" /><![CDATA[ ]]><PROCESS>user</PROCESS><![CDATA[:</td>
 	</tr>	
 	<tr>
-		<td class=dialogtxt><TEXTAREA cols=60 class="textarea1" id=DESCRIPTION name=DESCRIPTION rows=6></TEXTAREA> 
+		<td class=dialogtxt><TEXTAREA cols=60 class="textarea1" id=DESCRIPTION name=DESCRIPTION rows=15></TEXTAREA> 
 		</td>
 	</tr>
 	<!-- Ende Inhalt -->
@@ -136,7 +136,7 @@ function show_help()
 		<td class=formular nowrap>]]><LABEL value="task.dialog.query.head" /><![CDATA[ ]]><PROCESS>user</PROCESS><![CDATA[:</td>
 	</tr>	
 	<tr>
-		<td class=dialogtxt><TEXTAREA cols=60 class="textarea1" id=DESCRIPTION name=DESCRIPTION rows=6></TEXTAREA> 
+		<td class=dialogtxt><TEXTAREA cols=60 class="textarea1" id=DESCRIPTION name=DESCRIPTION rows=15></TEXTAREA> 
 		</td>
 	</tr>
 	<!-- Ende Inhalt -->

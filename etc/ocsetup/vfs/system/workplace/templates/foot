@@ -3,7 +3,9 @@
 <TEMPLATE>
 <![CDATA[
 <html>
-<head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<head>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+	<meta http-equiv="refresh" content="600;url=foot.html">
 <title>opencms</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">
 </head>

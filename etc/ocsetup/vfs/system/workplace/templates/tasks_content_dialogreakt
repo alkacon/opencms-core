@@ -31,6 +31,13 @@ for(var bereiche in aRolle)
 }
 iMaxOpts = iMaxOpts + 1;
 
+function setValues() {
+	var taskname = unescape(']]><PROCESS>task</PROCESS><![CDATA[');
+	var taskdescription = unescape(']]><PROCESS>description</PROCESS><![CDATA[');
+	
+	document.NEWTASK.TASK.value = taskname;
+	document.NEWTASK.DESCRIPTION.value = taskdescription;
+}
 //-->
 </script>
 
@@ -53,7 +60,7 @@ iMaxOpts = iMaxOpts + 1;
 </head>
 
 <!-- Im onLoad-Handler den Index der select-Box auf den des vorherigen Bearbeiters setzen !! -->
-<body bgcolor="#ffffff" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA[" bgproperties=fixed onLoad="">
+<body bgcolor="#ffffff" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA[" bgproperties=fixed onLoad="setValues();">
 
 <!-- Tabelle um vertikal und horizontal zu zentrieren-->
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
@@ -88,12 +95,12 @@ iMaxOpts = iMaxOpts + 1;
 	<tr>
 		<td class=formular>]]><label value="task.label.task"/><![CDATA[:</td>
 		<td class=dialogtxt colspan=4>
-			<input type="text" size=53 class="textfeld2" name="TASK" id="TASK" value="]]><PROCESS>task</PROCESS><![CDATA[">
+			<input type="text" size=53 class="textfeld2" name="TASK" id="TASK" value="">
 		</td>
 	</tr>
 	<tr>
 		<td class=dialogtxt colspan=5>
-		<TEXTAREA rows=6 cols=60 class="textarea1" id=DESCRIPTION name=DESCRIPTION>]]><PROCESS>description</PROCESS><![CDATA[</TEXTAREA>
+		<TEXTAREA rows=6 cols=60 class="textarea1" id=DESCRIPTION name=DESCRIPTION></TEXTAREA>
 		</td>
 	</tr>
 	<tr nowrap>

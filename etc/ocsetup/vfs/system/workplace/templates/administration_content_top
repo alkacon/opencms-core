@@ -36,10 +36,10 @@ function show_help()
 	</tr>
 	<tr valign=top align=center>
 		<td><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=1 height=120></td>
-		<td>]]><ICON name="ic_usermanagement" label="user" method="doNotShow" action="location.href='administration_content_usermanagement.html';" href="administration_head_2.html" target="admin_head"/><![CDATA[</td>
+<!--		<td>]]><ICON name="ic_usermanagement" label="user" method="doNotShow" action="location.href='administration_content_usermanagement.html';" href="administration_head_2.html" target="admin_head"/><![CDATA[</td> -->
 		<td>]]><ICON name="ic_project" label="project" action="location.href='administration_content_project.html';" href="administration_head_2.html" target="admin_head"/><![CDATA[</td>
-		<td>]]><ICON name="ic_computer" label="mountpoint" method="doNotShow" action="notImplemented('Mountpointverwaltung');" href="#" target=""/><![CDATA[</td>
-		<td>]]><ICON name="ic_clock" label="processmanagement" method="doNotShow" action="notImplemented('Vorgangsverwaltung');" href="#" target=""/><![CDATA[</td>
+<!--		<td>]]><ICON name="ic_computer" label="mountpoint" method="doNotShow" action="notImplemented('Mountpointverwaltung');" href="#" target=""/><![CDATA[</td> -->
+<!--		<td>]]><ICON name="ic_clock" label="processmanagement" method="doNotShow" action="notImplemented('Vorgangsverwaltung');" href="#" target=""/><![CDATA[</td> -->
 		<td>]]><ICON name="ic_data" label="database" action="location.href='administration_content_database.html';" href="administration_head_2.html" target="admin_head"/><![CDATA[</td>
 		<td>]]><ICON name="ic_admin_newsarchive" label="news" method="isNotOnlineProject" action="location.href='administration_content_newsnew.html';" href="administration_head_2.html" target="admin_head"/><![CDATA[</td>
 	</tr>

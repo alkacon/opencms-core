@@ -49,7 +49,7 @@ function show_help()
 		<td class=formular nowrap>]]><LABEL value="task.dialog.comment.head" /><![CDATA[:</td>
 	</tr>	
 	<tr>
-		<td class=dialogtxt><TEXTAREA cols=55 class="textarea1" id=DESCRIPTION name=DESCRIPTION rows=10></TEXTAREA> 
+		<td class=dialogtxt><TEXTAREA cols=55 class="textarea1" id=DESCRIPTION name=DESCRIPTION rows=15></TEXTAREA> 
 		</td>
 	</tr>
 	<!-- Ende Inhalt -->
