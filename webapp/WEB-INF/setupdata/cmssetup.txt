@@ -11,22 +11,22 @@ createTempfileProject
 setCurrentProject "_setupProject"
 
 # Initialize the default property definitions
-createPropertydefinition Title
-createPropertydefinition Description
-createPropertydefinition Keywords
-createPropertydefinition NavText
-createPropertydefinition NavPos
-createPropertydefinition export
-createPropertydefinition exportname
-createPropertydefinition default-file
-createPropertydefinition content-encoding
-createPropertydefinition content-conversion
-createPropertydefinition internal
-createPropertydefinition cache
-createPropertydefinition stream
-createPropertydefinition template
-createPropertydefinition template-elements
-createPropertydefinition locale
+createPropertyDefinition Title
+createPropertyDefinition Description
+createPropertyDefinition Keywords
+createPropertyDefinition NavText
+createPropertyDefinition NavPos
+createPropertyDefinition export
+createPropertyDefinition exportname
+createPropertyDefinition default-file
+createPropertyDefinition content-encoding
+createPropertyDefinition content-conversion
+createPropertyDefinition internal
+createPropertyDefinition cache
+createPropertyDefinition stream
+createPropertyDefinition template
+createPropertyDefinition template-elements
+createPropertyDefinition locale
 
 # Switch to the root context
 setSiteRoot "/"

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/12/22 11:08:12 $
- * Version: $Revision: 1.601 $
+ * Date   : $Date: 2004/12/23 10:58:39 $
+ * Version: $Revision: 1.602 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -638,7 +638,7 @@ OpenCms 5.0 beta 2 Kaitain - 11 November 2002
 ! HTML Editor: Added option to remove the "new body" function while keeping the body selector (use this with default bodies)
 ! Module management: Added support for "simple" modules
 ! When importing resources the filecontent is converted if the encoding parameter does not exist in the xml- or meta-tag.
-  If the propertydefinition for a property of an imported resource does not exist, it will be created.
+  If the property definition for a property of an imported resource does not exist, it will be created.
 * HTML Editor: Fixed some issues with the new link dialog, it's now also possible to add links to images
 * The <stylesheet> tag in XMLTemplates (for display in WYSIWYG) can now start with a "/"
 * The locale "uk" has been renamed to "en" (rename your module directories accordingly)
@@ -821,7 +821,7 @@ OpenCms 4.6.0 Tleilax - 07 March 2002
 OpenCms 4.5.36 Chusuk - 05 March 2002
 ! New function for HTML-Editor: inserting internal links
 ! Added menu entry for folders, pages and links: changing the navigation informations (Navigation Text and Position)
-! Now navigation information can be inserted when creating a link. You need to add the required propertydefinitions
+! Now navigation information can be inserted when creating a link. You need to add the required property definitions
   NavText and NavPos to do this.
 ! Static export has new way for configuration: enabled=false_ssl uses dynamic rules for ssl but disables the export.
 * Bugfix for export and import of channels and moduledata
