@@ -250,7 +250,7 @@ function doEditHTML(para)
 		DECMD_IMAGE_onclick();
 		break;		
     case 43:
-        alert('muß noch geschrieben werden');
+        openwin('edit_html_piclist.html','piclist',450,550);
         break;
  	default:
 		alert("Sorry, leider kann die Funktion nicht ausgeführt werden.");			
