@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDelete.java,v $
- * Date   : $Date: 2000/03/24 08:21:28 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/03/28 13:51:16 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -32,6 +32,7 @@ import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.util.*;
 import com.opencms.template.*;
+import com.opencms.examples.news.*;
 
 import javax.servlet.http.*;
 
@@ -43,10 +44,10 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
-  * @version $Revision: 1.11 $ $Date: 2000/03/24 08:21:28 $
+  * @version $Revision: 1.12 $ $Date: 2000/03/28 13:51:16 $
  */
 public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
-                                                             I_CmsConstants {
+                                                             I_CmsConstants, I_CmsNewsConstants {
            
 
       /**
@@ -80,9 +81,12 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
         throws CmsException {
         HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
         
-       // the template to be displayed
+        // the template to be displayed
         String template=null;
         
+        // get the lasturl parameter
+        String lasturl = getLastUrl(cms, parameters);
+                        
         String delete=(String)parameters.get(C_PARA_DELETE);
         String filename=(String)parameters.get(C_PARA_FILE);
         if (filename != null) {
@@ -100,6 +104,7 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
         //check if the name parameter was included in the request
         // if not, the delete page is shown for the first time
     
+        boolean hDelete = true;
         if (delete != null) {
             
             // check if the resource is a file or a folder
@@ -109,16 +114,56 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
 			    // else delete only file
 			    if( (cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_PAGE_NAME) ){
 				    String bodyPath=getBodyPath(cms, file);
-				    int help = C_CONTENTBODYPATH.lastIndexOf("/");
-				    String hbodyPath=(C_CONTENTBODYPATH.substring(0,help))+(file.getAbsolutePath());
-				    if (hbodyPath.equals(bodyPath)){
-					    cms.deleteFile(hbodyPath);
-				    }
-			    }
-                cms.deleteFile(filename);
+					try {
+	    			    int help = C_CONTENTBODYPATH.lastIndexOf("/");
+    	          	    String hbodyPath=(C_CONTENTBODYPATH.substring(0,help))+(file.getAbsolutePath());
+				        if (hbodyPath.equals(bodyPath)){
+					        cms.deleteFile(hbodyPath);
+				        }
+    				}catch (CmsException e){
+	    				//TODO: ErrorHandling
+		    		}
+			    } else if((cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_NEWSPAGE_NAME) ){
+					String newsContentPath = getNewsContentPath(cms, file);
+					try {
+						CmsFile newsContentFile=(CmsFile)cms.readFileHeader(newsContentPath);
+						if((newsContentFile.isLocked()) && (newsContentFile.isLockedBy()==cms.getRequestContext().currentUser().getId()) ){
+							cms.deleteFile(newsContentPath);
+						}
+					}catch (CmsException e){
+						//TODO: ErrorHandling
+					}
+
+                    try {
+                        cms.deleteFile(filename);
+                        hDelete = false;
+					}catch (CmsException e){
+						//TODO: ErrorHandling
+					}
+                        
+                    try {
+                        String parentFolderName = file.getParent();
+                        CmsFolder parentFolder = cms.readFolder(parentFolderName);
+
+                        if((!parentFolder.isLocked()) || (parentFolder.isLockedBy()!=cms.getRequestContext().currentUser().getId()) ){
+                            cms.lockResource(parentFolderName);
+                        }
+                        cms.deleteFolder(parentFolderName);                                                                       
+					}catch (CmsException e){
+						//TODO: ErrorHandling
+                    }                    
+                }
+
+                if(hDelete) {
+                    cms.deleteFile(filename);
+                }
                 session.removeValue(C_PARA_FILE);
                 try {
-                  cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);        
+                if(lasturl == null || "".equals(lasturl)) {
+                    cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);
+                } else {
+                    ((HttpServletResponse)(cms.getRequestContext().getResponse().getOriginalResponse())).sendRedirect(lasturl);                       
+                }                            
                 } catch (Exception e) {
                   throw new CmsException("Redirect fails :"+ getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST,CmsException.C_UNKNOWN_EXCEPTION,e);
                 } 
@@ -153,4 +198,31 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
 		CmsXmlControlFile hXml=new CmsXmlControlFile(cms, file);
 		return hXml.getElementTemplate("body");
 	}
+    
+	/**
+	 * Get the real path of the news content file.
+	 * 
+	 * @param cms The CmsObject, to access the XML read file.
+	 * @param file File in which the body path is stored.
+	 */
+    private String getNewsContentPath(A_CmsObject cms, CmsFile file) throws CmsException {
+
+        String newsContentFilename = null;
+
+        // The given file object contains the news page file.
+        // we have to read out the article
+        CmsXmlControlFile newsPageFile = new CmsXmlControlFile(cms, file.getAbsolutePath());
+        String readParam = newsPageFile.getElementParameter("body", "read");
+        String newsfolderParam = newsPageFile.getElementParameter("body", "newsfolder");
+        
+        if(readParam != null && !"".equals(readParam)) {
+            // there is a read parameter given.
+            // so we know which news file should be read.
+            if(newsfolderParam == null || "".equals(newsfolderParam)) {
+                newsfolderParam = C_NEWS_FOLDER_CONTENT;
+            }
+            newsContentFilename = newsfolderParam + readParam;
+        }
+        return newsContentFilename;
+    }    
 }
