@@ -13,7 +13,12 @@ OpenCms 4.3.32 Bela Tegeuse - ?? July 2001
   cmsshell -mode=ecmascript
 * Fixed bug about ubloading folders.
 * Fixed bug about uploading and unzipping zip-archives.
+* Fixed bug in the synchronize administration
+* Fixed bug when renaming a folder with a wrong new name
 - Update of shellscripts to start the cmsshell.
+- Only resources that were changed in the project are published
+- A resource can only modified in the project where it was locked
+- When deleting a project all changes in the project have to be undone
 
 OpenCms 4.3.31 Bela Tegeuse - 23 July 2001
 * Fixed bug in rename dialog.
