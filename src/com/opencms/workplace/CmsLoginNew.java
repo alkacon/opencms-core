@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLoginNew.java,v $
- * Date   : $Date: 2003/03/19 08:43:10 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/04/14 08:09:47 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  */
 
 public class CmsLoginNew extends CmsXmlTemplate {
@@ -187,10 +187,11 @@ public class CmsLoginNew extends CmsXmlTemplate {
             
             // trigger call of "login()" JavaScript in Template on page load
             xmlTemplateDocument.setData("onload", "onload='login();'");
-        } else if ((! logout) && ((cms.getRequestContext().currentUser()) != null) &&        
-            ((cms.userInGroup(cms.getRequestContext().currentUser().getName(), CmsObject.C_GROUP_USERS)) ||
-             (cms.userInGroup(cms.getRequestContext().currentUser().getName(), CmsObject.C_GROUP_PROJECTLEADER)) ||
-             (cms.userInGroup(cms.getRequestContext().currentUser().getName(), CmsObject.C_GROUP_ADMIN)) )) {
+        } else if ((! logout) && ((cms.getRequestContext().currentUser()) != null) && 
+            (! C_USER_GUEST.equals(cms.getRequestContext().currentUser().getName())) &&       
+            ((cms.userInGroup(cms.getRequestContext().currentUser().getName(), C_GROUP_USERS)) ||
+             (cms.userInGroup(cms.getRequestContext().currentUser().getName(), C_GROUP_PROJECTLEADER)) ||
+             (cms.userInGroup(cms.getRequestContext().currentUser().getName(), C_GROUP_ADMIN)) )) {
             // the user is already logged in and no logout parameter is present, open a new window
             if (DEBUG > 1) System.err.println("CmsLoginNew: re-using old login");            
             xmlTemplateDocument.setData("onload", "onload='login();'");        
