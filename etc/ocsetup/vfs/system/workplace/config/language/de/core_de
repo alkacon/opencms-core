@@ -132,6 +132,15 @@
                 <testresult>Ergebnis:</testresult>
             </label>
         </staticexport>
+        
+        <flex>
+            <cache>
+                <label>
+                    <title>Flex Cache Administration</title>
+                </label>
+            </cache>
+        </flex>
+
         <elementcache>
             <label>
                 <title>Elementcache Löschen</title>

@@ -131,6 +131,15 @@
                 <testresult>Risultato:</testresult>
             </label>
         </staticexport>
+        
+        <flex>
+            <cache>
+                <label>
+                    <title>Flex Cache Administration</title>
+                </label>
+            </cache>
+        </flex>
+
         <elementcache>
             <label>
                 <title>Ripulisci cache<![CDATA[<BR>]]>elementi</title>
