@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.27 $ $Date: 2000/01/21 14:31:06 $
+ * @version $Revision: 1.28 $ $Date: 2000/01/21 16:27:10 $
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -1315,6 +1315,23 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		}		
 	}
 
+	/**
+	 * Gets the MimeTypes. 
+	 * The Mime-Types will be returned.
+	 * 
+	 * <B>Security:</B>
+	 * All users are garnted<BR/>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * 
+	 * @return the mime-types.
+	 */
+	public Hashtable readMimeTypes(A_CmsUser currentUser, A_CmsProject currentProject)
+		throws CmsException {
+		return((Hashtable) m_propertyRb.readProperty(C_PROPERTY_MIMETYPES) );			
+	}
+	
     /**
 	 * Deletes a CmsMountPoint. 
 	 * A mountpoint will be deleted.

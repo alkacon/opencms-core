@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.23 $ $Date: 2000/01/21 15:18:55 $
+ * @version $Revision: 1.24 $ $Date: 2000/01/21 16:27:10 $
  */
 interface I_CmsResourceBroker {
 
@@ -719,6 +719,21 @@ interface I_CmsResourceBroker {
 	 */
 	public void setPassword(A_CmsUser currentUser, A_CmsProject currentProject, 
 							String username, String newPassword)
+		throws CmsException;
+	
+	/**
+	 * Gets the MimeTypes. 
+	 * The Mime-Types will be returned.
+	 * 
+	 * <B>Security:</B>
+	 * All users are garnted<BR/>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * 
+	 * @return the mime-types.
+	 */
+	public Hashtable readMimeTypes(A_CmsUser currentUser, A_CmsProject currentProject)
 		throws CmsException;
 	
     /**

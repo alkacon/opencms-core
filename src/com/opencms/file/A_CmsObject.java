@@ -16,7 +16,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.28 $ $Date: 2000/01/21 15:18:55 $ 
+ * @version $Revision: 1.29 $ $Date: 2000/01/21 16:27:10 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -1024,6 +1024,22 @@ public abstract class A_CmsObject {
 	 * @exception CmsException if something goes wrong.
 	 */
 	abstract public Vector readAllScheduleTasks()
+		throws CmsException;
+	
+	/**
+	 * Gets the MimeTypes. 
+	 * The Mime-Types will be returned.
+	 * 
+	 * <B>Security:</B>
+	 * All users are garnted<BR/>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * 
+	 * @return the mime-types.
+	 */
+	abstract public Hashtable readMimeTypes(A_CmsUser currentUser, 
+											A_CmsProject currentProject)
 		throws CmsException;
 	
     /**

@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.26 $ $Date: 2000/01/21 15:18:55 $ 
+ * @version $Revision: 1.27 $ $Date: 2000/01/21 16:27:10 $ 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	
@@ -1274,6 +1274,24 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	public Vector readAllScheduleTasks()
 		throws CmsException { 
 		return null;  // TODO: implement this ScheduleTask operation!
+	}
+	
+	/**
+	 * Gets the MimeTypes. 
+	 * The Mime-Types will be returned.
+	 * 
+	 * <B>Security:</B>
+	 * All users are garnted<BR/>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * 
+	 * @return the mime-types.
+	 */
+	public Hashtable readMimeTypes(A_CmsUser currentUser, A_CmsProject currentProject)
+		throws CmsException {
+		return( c_rb.readMimeTypes(m_context.currentUser(), 
+								   m_context.currentProject()));
 	}
 	
     /**
