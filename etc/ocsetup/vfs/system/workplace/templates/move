@@ -15,7 +15,7 @@ top.help_url='ExplorerAnsicht/Kontextmenue/allgemeineAktionen/Verschieben.html';
 </script>
 
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">
@@ -27,7 +27,7 @@ top.help_url='ExplorerAnsicht/Kontextmenue/allgemeineAktionen/Verschieben.html';
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=center valign=middle>
 
-<form id=MOVE name=MOVE method=POST>
+<form id=MOVE name=MOVE method=POST action="javascript:location.href='move.html?newfolder='+simpleEscape(escape(document.MOVE.folder.value))+'&flags='+document.MOVE.RIGHT.checked;">
 <table cellspacing=0 cellpadding=0 border=2 width=310px>
     <tr><td>
         <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
@@ -76,7 +76,7 @@ top.help_url='ExplorerAnsicht/Kontextmenue/allgemeineAktionen/Verschieben.html';
             <tr><td class=dialogtxt colspan=3>
                 <table cellspacing=0 cellpadding=5 width=100%>
                 <tr>
-                    <td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK onClick="location.href='move.html?newfolder='+simpleEscape(escape(document.MOVE.folder.value))+'&flags='+document.MOVE.RIGHT.checked;"></td>
+                    <td class=formular align=right width=50%><INPUT class=button width=100 type="submit" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK></td>
                     <td class=formular align=left width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL name=CANCEL onClick="location.href=lasturl"></td>
                 </tr>
                 </table>
@@ -119,7 +119,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 </script>
 
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">
@@ -131,7 +131,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=center valign=middle>
 
-<form id=MOVE name=MOVE method=POST>
+<form id=MOVE name=MOVE method=POST action="javascript:location.href='move.html?newfolder='+document.MOVE.folder.value+'&flags='+document.MOVE.RIGHT.checked;">
 <table cellspacing=0 cellpadding=0 border=2 width=310px>
     <tr><td>
         <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
@@ -180,7 +180,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
             <tr><td class=dialogtxt colspan=3>
                 <table cellspacing=0 cellpadding=5 width=100%>
                 <tr>
-                    <td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK onClick="location.href='move.html?newfolder='+document.MOVE.folder.value+'&flags='+document.MOVE.RIGHT.checked;"></td>
+                    <td class=formular align=right width=50%><INPUT class=button width=100 type="submit" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK></td>
                     <td class=formular align=left width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL name=CANCEL onClick="location.href=lasturl"></td>
                 </tr>
                 </table>
@@ -204,7 +204,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 <![CDATA[
 <HTML>
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">
@@ -250,7 +250,7 @@ function update_frames()
 <![CDATA[
 <HTML>
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">

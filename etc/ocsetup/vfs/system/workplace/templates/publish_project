@@ -11,7 +11,7 @@ top.help_url='ExplorerAnsicht/header.html';
 </script>
 
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">
@@ -89,7 +89,7 @@ top.help_url='ExplorerAnsicht/header.html';
 //-->
 </script>
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">
 </HEAD>
@@ -222,7 +222,7 @@ location.href="publish_project.html?action=working&time=]]><PROCESS>time</PROCES
 <script language=JavaScript>
 <!--
  var pageStart="<HTML><head>"+
-                    "<META HTTP-EQUIV='Content-Type' CONTENT='text/html;  '>"+
+                    "<META HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=iso-8859-1'>"+
                     "<link rel=stylesheet type='text/css' href='../css/format.css'>"+
                 "</HEAD>"+
                 "<BODY bgcolor='#ffffff' marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onload=\"window.scrollTo(0,100000);\">";
@@ -271,7 +271,7 @@ location.href="publish_project.html?action=working&time=]]><PROCESS>time</PROCES
 </script>
 
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">
@@ -309,7 +309,7 @@ location.href="publish_project.html?action=working&time=]]><PROCESS>time</PROCES
                             </tr>
                             <tr>
                                 <td height=280px>
-                                    <iframe align="center" width="100%" height="100%" scrolling="yes" name="showframe" id="showframe">
+                                    <iframe src="empty.html" align="center" width="100%" height="100%" scrolling="yes" name="showframe" id="showframe">
                                     </iframe>
                                 </td>
                             </tr>
@@ -346,7 +346,7 @@ location.href="publish_project.html?action=working&time=]]><PROCESS>time</PROCES
 <![CDATA[
 <HTML>
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 
 <script language=JavaScript>
 <!--
