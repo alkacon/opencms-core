@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/08/01 17:04:03 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2003/08/01 19:29:22 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.46 $ $Date: 2003/08/01 17:04:03 $
+ * @version $Revision: 1.47 $ $Date: 2003/08/01 19:29:22 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -690,14 +690,14 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         }
 
         // set the groups
-        CmsGroup guests = m_driverManager.getUserDriver().createGroup(CmsUUID.getConstantUUID(I_CmsConstants.C_GROUP_GUEST), I_CmsConstants.C_GROUP_GUEST, "the guest-group", I_CmsConstants.C_FLAG_ENABLED, null);
-        CmsGroup administrators = m_driverManager.getUserDriver().createGroup(CmsUUID.getConstantUUID(I_CmsConstants.C_GROUP_ADMIN), I_CmsConstants.C_GROUP_ADMIN, "the admin-group", I_CmsConstants.C_FLAG_ENABLED | I_CmsConstants.C_FLAG_GROUP_PROJECTMANAGER, null);
-        CmsGroup users = m_driverManager.getUserDriver().createGroup(CmsUUID.getConstantUUID(I_CmsConstants.C_GROUP_USERS), I_CmsConstants.C_GROUP_USERS, "the users-group to access the workplace", I_CmsConstants.C_FLAG_ENABLED | I_CmsConstants.C_FLAG_GROUP_ROLE | I_CmsConstants.C_FLAG_GROUP_PROJECTCOWORKER, I_CmsConstants.C_GROUP_GUEST);
-        CmsGroup projectleader = m_driverManager.getUserDriver().createGroup(CmsUUID.getConstantUUID(I_CmsConstants.C_GROUP_PROJECTLEADER), I_CmsConstants.C_GROUP_PROJECTLEADER, "the projectmanager-group", I_CmsConstants.C_FLAG_ENABLED | I_CmsConstants.C_FLAG_GROUP_PROJECTMANAGER | I_CmsConstants.C_FLAG_GROUP_PROJECTCOWORKER | I_CmsConstants.C_FLAG_GROUP_ROLE, users.getName());
+        CmsGroup guests = m_driverManager.getUserDriver().createGroup(CmsUUID.getConstantUUID(I_CmsConstants.C_GROUP_GUEST), I_CmsConstants.C_GROUP_GUEST, "The guest group", I_CmsConstants.C_FLAG_ENABLED, null);
+        CmsGroup administrators = m_driverManager.getUserDriver().createGroup(CmsUUID.getConstantUUID(I_CmsConstants.C_GROUP_ADMIN), I_CmsConstants.C_GROUP_ADMIN, "The administrators group", I_CmsConstants.C_FLAG_ENABLED | I_CmsConstants.C_FLAG_GROUP_PROJECTMANAGER, null);
+        CmsGroup users = m_driverManager.getUserDriver().createGroup(CmsUUID.getConstantUUID(I_CmsConstants.C_GROUP_USERS), I_CmsConstants.C_GROUP_USERS, "The users group", I_CmsConstants.C_FLAG_ENABLED | I_CmsConstants.C_FLAG_GROUP_ROLE | I_CmsConstants.C_FLAG_GROUP_PROJECTCOWORKER, null);
+        CmsGroup projectmanager = m_driverManager.getUserDriver().createGroup(CmsUUID.getConstantUUID(I_CmsConstants.C_GROUP_PROJECTLEADER), I_CmsConstants.C_GROUP_PROJECTLEADER, "The projectmanager group", I_CmsConstants.C_FLAG_ENABLED | I_CmsConstants.C_FLAG_GROUP_PROJECTMANAGER | I_CmsConstants.C_FLAG_GROUP_PROJECTCOWORKER | I_CmsConstants.C_FLAG_GROUP_ROLE, users.getName());
 
         // add the users
-        CmsUser guest = m_driverManager.getUserDriver().addImportUser(CmsUUID.getConstantUUID(I_CmsConstants.C_USER_GUEST),I_CmsConstants.C_USER_GUEST,  m_driverManager.getUserDriver().digest(""), m_driverManager.getUserDriver().digest(""), "the guest-user", " ", " ", " ", 0, 0, I_CmsConstants.C_FLAG_ENABLED, new Hashtable(), guests, " ", " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
-        CmsUser admin = m_driverManager.getUserDriver().addImportUser(CmsUUID.getConstantUUID(I_CmsConstants.C_USER_ADMIN),I_CmsConstants.C_USER_ADMIN,  m_driverManager.getUserDriver().digest("admin"), m_driverManager.getUserDriver().digest(""), "the admin-user", " ", " ", " ", 0, 0, I_CmsConstants.C_FLAG_ENABLED, new Hashtable(), administrators, " ", " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
+        CmsUser guest = m_driverManager.getUserDriver().addImportUser(CmsUUID.getConstantUUID(I_CmsConstants.C_USER_GUEST),I_CmsConstants.C_USER_GUEST,  m_driverManager.getUserDriver().digest(""), m_driverManager.getUserDriver().digest(""), "The guest user", " ", " ", " ", 0, 0, I_CmsConstants.C_FLAG_ENABLED, new Hashtable(), guests, " ", " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
+        CmsUser admin = m_driverManager.getUserDriver().addImportUser(CmsUUID.getConstantUUID(I_CmsConstants.C_USER_ADMIN),I_CmsConstants.C_USER_ADMIN,  m_driverManager.getUserDriver().digest("admin"), m_driverManager.getUserDriver().digest(""), "The admin user", " ", " ", " ", 0, 0, I_CmsConstants.C_FLAG_ENABLED, new Hashtable(), administrators, " ", " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
         m_driverManager.getUserDriver().addUserToGroup(guest.getId(), guests.getId());
         m_driverManager.getUserDriver().addUserToGroup(admin.getId(), administrators.getId());
         m_driverManager.getWorkflowDriver().writeTaskType(1, 0, "../taskforms/adhoc.asp", "Ad-Hoc", "30308", 1, 1);
@@ -708,35 +708,13 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
 
         // create the online project
         CmsTask task = m_driverManager.getWorkflowDriver().createTask(0, 0, 1, admin.getId(), admin.getId(), administrators.getId(), I_CmsConstants.C_PROJECT_ONLINE, new java.sql.Timestamp(new java.util.Date().getTime()), new java.sql.Timestamp(new java.util.Date().getTime()), I_CmsConstants.C_TASK_PRIORITY_NORMAL);
-        CmsProject online = createProject(admin, guests, projectleader, task, I_CmsConstants.C_PROJECT_ONLINE, "the online-project", I_CmsConstants.C_FLAG_ENABLED, I_CmsConstants.C_PROJECT_TYPE_NORMAL);
+        CmsProject online = createProject(admin, guests, projectmanager, task, I_CmsConstants.C_PROJECT_ONLINE, "the online-project", I_CmsConstants.C_FLAG_ENABLED, I_CmsConstants.C_PROJECT_TYPE_NORMAL);
 
         // create the root-folder for the online project
         CmsFolder onlineRootFolder = m_driverManager.getVfsDriver().createFolder(admin, online, CmsUUID.getNullUUID(), CmsUUID.getNullUUID(), "/", 0);
         onlineRootFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
         m_driverManager.getVfsDriver().writeFolder(online, onlineRootFolder, CmsDriverManager.C_UPDATE_ALL);        		
-//
-//        // create the folder for the default site for the online project
-//        CmsFolder onlineDefaultFolder = m_driverManager.getVfsDriver().createFolder(admin, online, onlineRootFolder.getId(), CmsUUID.getNullUUID(), "default", 0);
-//        onlineDefaultFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
-//        m_driverManager.getVfsDriver().writeFolder(online, onlineDefaultFolder, CmsDriverManager.C_UPDATE_ALL); 
-//        CmsUUID onlineDefaultId = onlineDefaultFolder.getId();
-//		
-//		// create the access control entries
-//        m_driverManager.getUserDriver().createAccessControlEntry(online,onlineRootFolder.getResourceAceId(),administrators.getId(),I_CmsConstants.C_PERMISSION_READ|I_CmsConstants.C_PERMISSION_WRITE|I_CmsConstants.C_PERMISSION_VIEW|I_CmsConstants.C_PERMISSION_CONTROL,0,I_CmsConstants.C_ACCESSFLAGS_INHERIT|I_CmsConstants.C_ACCESSFLAGS_GROUP);
-//        m_driverManager.getUserDriver().createAccessControlEntry(online,onlineRootFolder.getResourceAceId(),projectleader.getId(),I_CmsConstants.C_PERMISSION_READ|I_CmsConstants.C_PERMISSION_WRITE|I_CmsConstants.C_PERMISSION_VIEW|I_CmsConstants.C_PERMISSION_CONTROL,0,I_CmsConstants.C_ACCESSFLAGS_INHERIT|I_CmsConstants.C_ACCESSFLAGS_GROUP);
-//        m_driverManager.getUserDriver().createAccessControlEntry(online,onlineRootFolder.getResourceAceId(),users.getId(),I_CmsConstants.C_PERMISSION_READ|I_CmsConstants.C_PERMISSION_WRITE|I_CmsConstants.C_PERMISSION_VIEW|I_CmsConstants.C_PERMISSION_CONTROL,0,I_CmsConstants.C_ACCESSFLAGS_INHERIT|I_CmsConstants.C_ACCESSFLAGS_GROUP);
-//        m_driverManager.getUserDriver().createAccessControlEntry(online,onlineRootFolder.getResourceAceId(),guests.getId(),I_CmsConstants.C_PERMISSION_READ|I_CmsConstants.C_PERMISSION_VIEW,0,I_CmsConstants.C_ACCESSFLAGS_INHERIT|I_CmsConstants.C_ACCESSFLAGS_GROUP);
-//
-//        // create the folder for the virtual file system for the online project
-//        CmsFolder onlineVfsFolder = m_driverManager.getVfsDriver().createFolder(admin, online, onlineDefaultId, CmsUUID.getNullUUID(), "vfs", 0);
-//        onlineVfsFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
-//        m_driverManager.getVfsDriver().writeFolder(online, onlineVfsFolder, CmsDriverManager.C_UPDATE_ALL);
-//
-//        // create the folder for the context objects system for the online project
-//        CmsFolder onlineCosFolder = m_driverManager.getVfsDriver().createFolder(admin, online, onlineDefaultId, CmsUUID.getNullUUID(), "cos", 0);
-//        onlineCosFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
-//        m_driverManager.getVfsDriver().writeFolder(online, onlineCosFolder, CmsDriverManager.C_UPDATE_ALL);
-//                
+           
         ////////////////////////////////////////////////////////////////////////////////////////////
         // setup project stuff
         ////////////////////////////////////////////////////////////////////////////////////////////
@@ -749,29 +727,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         CmsFolder setupRootFolder = m_driverManager.getVfsDriver().createFolder(admin, setup, onlineRootFolder, CmsUUID.getNullUUID(), "/");        
         setupRootFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
         m_driverManager.getVfsDriver().writeFolder(setup, setupRootFolder, CmsDriverManager.C_UPDATE_ALL);
-        
-//        
-//        // create the folder for the default site for the offline project
-//        CmsFolder setupDefaultFolder = m_driverManager.getVfsDriver().createFolder(admin, setup, onlineDefaultFolder, onlineDefaultFolder.getParentId(), "default");
-//        setupDefaultFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
-//        setupDefaultFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
-//        m_driverManager.getVfsDriver().writeFolder(setup, setupDefaultFolder, CmsDriverManager.C_UPDATE_ALL);
-//        
-//		// create the access control entries
-//        m_driverManager.getUserDriver().createAccessControlEntry(setup,onlineRootFolder.getResourceAceId(),administrators.getId(),I_CmsConstants.C_PERMISSION_READ|I_CmsConstants.C_PERMISSION_WRITE|I_CmsConstants.C_PERMISSION_VIEW|I_CmsConstants.C_PERMISSION_CONTROL,0,I_CmsConstants.C_ACCESSFLAGS_INHERIT|I_CmsConstants.C_ACCESSFLAGS_GROUP);
-//        m_driverManager.getUserDriver().createAccessControlEntry(setup,onlineRootFolder.getResourceAceId(),projectleader.getId(),I_CmsConstants.C_PERMISSION_READ|I_CmsConstants.C_PERMISSION_WRITE|I_CmsConstants.C_PERMISSION_VIEW|I_CmsConstants.C_PERMISSION_CONTROL,0,I_CmsConstants.C_ACCESSFLAGS_INHERIT|I_CmsConstants.C_ACCESSFLAGS_GROUP);
-//        m_driverManager.getUserDriver().createAccessControlEntry(setup,onlineRootFolder.getResourceAceId(),users.getId(),I_CmsConstants.C_PERMISSION_READ|I_CmsConstants.C_PERMISSION_WRITE|I_CmsConstants.C_PERMISSION_VIEW|I_CmsConstants.C_PERMISSION_CONTROL,0,I_CmsConstants.C_ACCESSFLAGS_INHERIT|I_CmsConstants.C_ACCESSFLAGS_GROUP);
-//        m_driverManager.getUserDriver().createAccessControlEntry(setup,onlineRootFolder.getResourceAceId(),guests.getId(),I_CmsConstants.C_PERMISSION_READ|I_CmsConstants.C_PERMISSION_VIEW,0,I_CmsConstants.C_ACCESSFLAGS_INHERIT|I_CmsConstants.C_ACCESSFLAGS_GROUP);
-//
-//        // create the folder for the virtual file system for the offline project
-//        CmsFolder setupVfsFolder = m_driverManager.getVfsDriver().createFolder(admin, setup, onlineVfsFolder, onlineVfsFolder.getParentId(), "vfs");
-//        setupVfsFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
-//        m_driverManager.getVfsDriver().writeFolder(setup, setupVfsFolder, CmsDriverManager.C_UPDATE_ALL);
-//        
-//        // create the folder for the context objects system for the offline project
-//        CmsFolder setupCosFolder = m_driverManager.getVfsDriver().createFolder(admin, setup, onlineCosFolder, onlineCosFolder.getParentId(), "cos");
-//        setupCosFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
-//        m_driverManager.getVfsDriver().writeFolder(setup, setupCosFolder, CmsDriverManager.C_UPDATE_ALL);
+
     }
 
     /**
