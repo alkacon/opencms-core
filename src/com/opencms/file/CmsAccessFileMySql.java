@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFileMySql.java,v $
- * Date   : $Date: 2000/02/21 22:25:09 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2000/02/22 10:27:18 $
+ * Version: $Revision: 1.29 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.util.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.28 $ $Date: 2000/02/21 22:25:09 $
+ * @version $Revision: 1.29 $ $Date: 2000/02/22 10:27:18 $
  */
  class CmsAccessFileMySql implements I_CmsAccessFile, I_CmsConstants  {
 
@@ -49,6 +49,9 @@ import com.opencms.util.*;
     * This is the connection object to the database
     */
     private Connection m_Con  = null;
+    
+    /** Definition of a temp file */
+    private static final String C_TEMPFILE = "%/"+C_TEMP_PREFIX+"%";
     
     /**
     * This is the mountpoint of this filesystem module.
@@ -147,7 +150,8 @@ import com.opencms.util.*;
                                                      + C_DATABASE_PREFIX + "FILES.FILE_CONTENT FROM " + C_DATABASE_PREFIX + "RESOURCES," + C_DATABASE_PREFIX + "FILES "
                                                      +"WHERE " + C_DATABASE_PREFIX + "RESOURCES.RESOURCE_NAME = " + C_DATABASE_PREFIX + "FILES.RESOURCE_NAME "
                                                      +"AND " + C_DATABASE_PREFIX + "RESOURCES.PROJECT_ID = " + C_DATABASE_PREFIX + "FILES.PROJECT_ID "
-                                                     +"AND " + C_DATABASE_PREFIX + "RESOURCES.PROJECT_ID = ?";
+                                                     +"AND " + C_DATABASE_PREFIX + "RESOURCES.PROJECT_ID = ? ";
+                                                   
     
     /**
      * SQL Command for reading all folders of a project. 
@@ -750,13 +754,14 @@ import com.opencms.util.*;
          throws CmsException {
          
            ResultSet res;
+           ResultSet tmpres;
            byte[] content;
            
            try {  
                 // check if the file content for this file is already existing in the
                 // offline project. If not, load it from the online project and add it
                 // to the offline project.
-      
+                //System.err.println("WFH] Try to write File header for "+file.getAbsolutePath());
                 if (file.getState() == C_STATE_UNCHANGED) {
                     // read file content form the online project
     
@@ -770,12 +775,25 @@ import com.opencms.util.*;
                         throw new CmsException("["+this.getClass().getName()+"]"+file.getAbsolutePath(),CmsException.C_NOT_FOUND);  
                     }
                     // add the file content to the offline project.
-                    PreparedStatement statementFileWrite=m_Con.prepareStatement(C_FILE_WRITE);
+                    //System.err.println("WFH] Got file form online project");
+               
+                    // first check if the file is already there
+                    statementFileRead=m_Con.prepareStatement(C_FILE_READ);
+                    statementFileRead.setString(1,absoluteName(file.getAbsolutePath()));
+                    statementFileRead.setInt(2,project.getId());
+                    tmpres = statementFileRead.executeQuery();
+                    //System.err.println("WFH] Check if the file content is already there");
               
-                    statementFileWrite.setString(1,absoluteName(file.getAbsolutePath()));
-                    statementFileWrite.setInt(2,project.getId());     
-                    statementFileWrite.setBytes(3,content);
-                    statementFileWrite.executeUpdate();
+                    if (tmpres.next()) {
+                      //   System.err.println("WFH] Content is there, so no update is required");
+                    } else {
+                      //  System.err.println("WFH] Content is not there, so write content");
+                        PreparedStatement statementFileWrite=m_Con.prepareStatement(C_FILE_WRITE);
+                        statementFileWrite.setString(1,absoluteName(file.getAbsolutePath()));
+                        statementFileWrite.setInt(2,project.getId());     
+                        statementFileWrite.setBytes(3,content);
+                        statementFileWrite.executeUpdate();
+                    }
                 }             
                 // update resource in the database
                 PreparedStatement statementResourceUpdate=m_Con.prepareStatement(C_RESOURCE_UPDATE);
@@ -1333,19 +1351,26 @@ import com.opencms.util.*;
                                            res.getBytes(C_FILE_CONTENT),
                                            res.getInt(C_SIZE)
                                            );
-             // check the state of the file
-             // new or changed files are copied to the online project, those files
-             // marked as deleted are deleted in the online project.
-             if ((file.getState()== C_STATE_CHANGED) || 
-                 (file.getState() == C_STATE_NEW)) {
-                 // delete an exitsing old file in the online project
-                 removeFile(onlineProject,file.getAbsolutePath());
-                 // write the new file
-                 createFile(onlineProject,onlineProject,file,file.getAbsolutePath());
-                 resources.addElement(file.getAbsolutePath()); 
-             } else if (file.getState() == C_STATE_DELETED) {
-                  removeFile(onlineProject,file.getAbsolutePath());
-                  resources.addElement(file.getAbsolutePath()); 
+
+             // trst if the file is a temp file. If so, do NOT publish it, but
+             // delete it.
+             if (file.getName().startsWith(C_TEMP_PREFIX)) {
+                 removeFile(project,file.getAbsolutePath());
+             } else {
+                // check the state of the file
+                // new or changed files are copied to the online project, those files
+                // marked as deleted are deleted in the online project.
+                if ((file.getState()== C_STATE_CHANGED) || 
+                     (file.getState() == C_STATE_NEW)) {
+                    // delete an exitsing old file in the online project
+                    removeFile(onlineProject,file.getAbsolutePath());
+                    // write the new file
+                    createFile(onlineProject,onlineProject,file,file.getAbsolutePath());
+                    resources.addElement(file.getAbsolutePath()); 
+                 } else if (file.getState() == C_STATE_DELETED) {
+                      removeFile(onlineProject,file.getAbsolutePath());
+                      resources.addElement(file.getAbsolutePath()); 
+                 }
              }
              
              }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServletNotify.java,v $
- * Date   : $Date: 2000/02/21 22:25:09 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/02/22 10:27:18 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import javax.servlet.http.*;
  * and must be removed from the CmsSession storage.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 2000/02/21 22:25:09 $  
+ * @version $Revision: 1.4 $ $Date: 2000/02/22 10:27:18 $  
  */
  class OpenCmsServletNotify implements HttpSessionBindingListener {
     
@@ -64,11 +64,6 @@ import javax.servlet.http.*;
      * @param event The HttpSessionBindingEvent
      */
      public void valueBound(HttpSessionBindingEvent event) {
-         System.err.println("");
-         System.err.println("#############################################");
-         System.err.println("#### Got new session :"+m_id);
-         System.err.println("#############################################");
-         System.err.println("");
         // nothing is required to be done here.
     }
      
@@ -78,11 +73,6 @@ import javax.servlet.http.*;
      * @param event The HttpSessionBindingEvent
      */
     public void valueUnbound(HttpSessionBindingEvent event) {
-         System.err.println("");
-         System.err.println("#############################################");
-         System.err.println("#### Removed sesssion:"+m_id);
-         System.err.println("#############################################");
-         System.err.println("");
         m_sessionStorage.deleteUser(m_id);
     }
 }
