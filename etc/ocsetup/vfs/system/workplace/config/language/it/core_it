@@ -184,6 +184,7 @@
                 <restoreresource>Spiacente, questa versione della risorsa non ha potuto essere ripristinata.</restoreresource>
                 <rmdefault>Spiacente, non tutti gli utenti hanno potuto essere rimossi.</rmdefault>
                 <deleteproject>Spiacente, il progetto non ha potuto essere cancellato.</deleteproject>
+                <search>Please fill in all fields for the current search.</search>
                 <staticexport>Spiacente, le Risorse non hanno potuto essere esportate.</staticexport>
                 <syncfolder>Spiacente, le cartelle non hanno potuto essere sincronizzate.</syncfolder>
                 <syncproperties>Spiacente, le proprietà per la sincronizzazione non hanno potuto essere salvate.</syncproperties>
@@ -574,8 +575,12 @@
             <allfolders>Cartelle</allfolders>
             <allchannels>Canali</allchannels>
             <author>Autore</author>
+            <byproperty>by property</byproperty>
+            <byresourcename>by resourcename</byresourcename>
+            <byfilecontent>by filecontent</byfilecontent>
             <changegroup>Modifica Gruppo</changegroup>
             <close>Chiudi</close>
+            <content>Filecontent</content>
             <createdby>Agente Compiti</createdby>
             <createnewproject>Crea nuovo Progetto</createnewproject>
             <createnewuser>Crea nuovo Utente</createnewuser>
@@ -639,6 +644,8 @@
             <publishedat>Pubblicato</publishedat>
             <publishedby>Pubblicato da</publishedby>
             <readrights>permesso di lettura per altri</readrights>
+            <resourcetype>Resourcetype</resourcetype>
+            <search>Cerca</search>
             <selectfolder>Seleziona cartella...</selectfolder>
             <size>Dimensione</size>
             <state>Stato</state>
@@ -650,6 +657,7 @@
             <upload>Carica File</upload>
             <uploaddate>Attivo dal</uploaddate>
             <user>Utente</user>
+            <value>Value</value>
             <version>Versione</version>
             <view>Vista</view>
             <wptitle>Workplace OpenCms di</wptitle>
