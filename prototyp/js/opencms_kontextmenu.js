@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/prototyp/js/Attic/opencms_kontextmenu.js,v $
- * Date   : $Date: 2000/10/23 15:41:41 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/11/10 10:43:29 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -396,7 +396,7 @@ function doAction(action) // which action on layer is clicked
 		}
 		case 60:
 		{
-			location.href='administration_content_module_overwrite.html';
+			location.href='administration_content_module_overwrfiles.html';
 			break;
 		}
 		case 61:
