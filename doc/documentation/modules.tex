@@ -317,7 +317,7 @@ elements starting from {\tag /sport/} will be displayed.\\
   If no level parameter is defined, the starting point is set to the 
 root folder. \\
 
-\subsubsection{- getNavtree:} \index{getNavtree}
+\subsubsection{- getNavTree:} \index{getNavtree}
 %============================================================================
 
   This method gets the navigation starting from a folder and shows 
@@ -641,7 +641,7 @@ this:
 
 {\tag <a href="aName.htm" target="aFrame">aNavText</a>}
 
-The parameter {\name aFrame} determines the frame in which the source should should be displayed,
+The parameter {\name aFrame} determines the frame in which the source should be displayed,
 and the parameter {\name aName.htm} determines the source that should be inserted.
 Here the parameter {\name aName.htm} has to be expanded by a parameter that defines what template has
 to be selected to insert. This is again done by the templateselector, and the parameter
@@ -733,7 +733,7 @@ frames. One implementation of the {\name plain}-template is shown now:
 \end{xml}
 
 This template inserts exactly the same subtemplates as the one that uses frames. Even the
-template for the navigation is the same. The are only set inside a table instead of frames.
+template for the navigation is the same. They are only set inside a table instead of frames.
 Now it becomes useful that we implemented the navigation with the {\meth getFrameTarget()} 
 method.
 The navigation would not work with a table, if the parameter {\tag target=...} had
@@ -867,7 +867,7 @@ The following example shows how to read all of a resource's properties
 and display them in an HTML table.\\
 
 First, the name of the current resource - the URI - must be read. This
-is done by using the {\name CmsRequestContect}. There, all of the data that
+is done by using the {\name CmsRequestContext}. There, all of the data that
 belongs to the actual request, i.e. User, Project, HttpRequest,
 HttpResponse and Session are stored:\\
 
@@ -889,7 +889,7 @@ the {\name properties'} names and values:
  Hashtable prop=cms.readAllProperties(uri);\\
 \end{java}
 
-Now that all of the data is fetched form the system, the output must be
+Now that all of the data is fetched from the system, the output must be
 generated. This is done in almost the exact same way that it was in the
 previous example:
 
@@ -1008,9 +1008,6 @@ objects - are then extracted. The required information, folder name and
 folder title, is put into the "row" data block that is defined in the
 template. The method is recursively called for each folder that is
 found, so that its subfolders are added to the list as well.\\
-
-The result of this template will look like this:\\
-
 
 The example can easily be extended to read the files of a folder as
 well. This is done in a way that is very similar of that used to read a
