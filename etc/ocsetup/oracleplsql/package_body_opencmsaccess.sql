@@ -289,10 +289,18 @@ PACKAGE BODY opencmsAccess IS
     IF accessProject(pUserID, pProjectID) = 0 THEN
       RETURN 0;
     END IF;
-    select project_id, resource_name, parent_id, locked_by
-           into vResProjectID, vNextPath, vNextResource, vLockedBy
-           from cms_resources
-           where resource_id = pResourceID;
+    BEGIN
+      select project_id, resource_name, parent_id, locked_by
+             into vResProjectID, vNextPath, vNextResource, vLockedBy
+             from cms_resources
+             where resource_id = pResourceID;
+    EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+        vResProjectId := null;
+        vNextPath := null;
+        vNextResource := null;
+        vLockedBy := null;
+    END;  
 -- the following check is disabled because there are problems
     -- not locked by user => false
     IF vLockedBy != pUserId THEN
@@ -351,6 +359,9 @@ PACKAGE BODY opencmsAccess IS
       RETURN 1;
     END IF;
     RETURN 0;
+  EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+      RETURN 0;      
   END accessOther;
 ---------------------------------------------------------------------------------------------------
 -- access defined by pAccess (read/write) for owner return boolean
@@ -372,6 +383,9 @@ PACKAGE BODY opencmsAccess IS
       END IF;
     END IF;
     RETURN 0;
+  EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+      RETURN 0;  
   END accessOwner;
 ---------------------------------------------------------------------------------------------------
 -- access defined by pAccess (read/write) for group return boolean
@@ -388,6 +402,9 @@ PACKAGE BODY opencmsAccess IS
       END IF;
     END IF;
     RETURN 0;
+  EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+      RETURN 0;      
   END accessGroup;
 ---------------------------------------------------------------------------------------------------
 END;
