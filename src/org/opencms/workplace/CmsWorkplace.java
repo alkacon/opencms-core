@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/02/12 10:17:45 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2004/02/13 11:01:24 $
+ * Version: $Revision: 1.53 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import javax.servlet.jsp.PageContext;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.52 $
+ * @version $Revision: 1.53 $
  * 
  * @since 5.1
  */
@@ -187,7 +187,7 @@ public abstract class CmsWorkplace {
      * @return a localized short key value
      */
     public String shortKey(String keyName) {
-        String value = key(keyName + ".short");
+        String value = key(keyName + CmsMessages.C_KEY_SHORT_SUFFIX);
         if (value.startsWith(CmsMessages.C_UNKNOWN_KEY_EXTENSION)) {
             // short key value not found, return default key value
             return key(keyName);
