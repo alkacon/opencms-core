@@ -9,6 +9,7 @@
 
 	var openWindow = null;
 	var focusCount = 0;
+	var dialogWindow = null;
 
 	// which button is clicked
 	function doTemplSubmit(para)
