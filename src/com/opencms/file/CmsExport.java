@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
-* Date   : $Date: 2001/09/21 06:18:51 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2001/10/15 09:59:21 $
+* Version: $Revision: 1.25.2.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import com.opencms.util.*;
  * to the filesystem.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.25 $ $Date: 2001/09/21 06:18:51 $
+ * @version $Revision: 1.25.2.1 $ $Date: 2001/10/15 09:59:21 $
  */
 public class CmsExport implements I_CmsConstants, Serializable {
 
@@ -263,7 +263,7 @@ public void addSingleFiles(Vector fileNames) throws CmsException {
             String fileName = (String) fileNames.elementAt(i);
             try {
                 CmsFile file = m_cms.readFile(fileName);
-                if(file.getState() != C_STATE_DELETED) {
+                if((file.getState() != C_STATE_DELETED) && (!file.getName().startsWith("~"))) {
                     addSuperFolders(fileName);
                     exportFile(file);
                 }
@@ -402,7 +402,7 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
             CmsResource file = (CmsResource) subFiles.elementAt(i);
             int state = file.getState();
             if(m_isOnlineProject || (!m_excludeUnchanged) || state == C_STATE_NEW || state == C_STATE_CHANGED) {
-                if(state != C_STATE_DELETED) {
+                if((state != C_STATE_DELETED) && (!file.getName().startsWith("~"))) {
                     exportFile(m_cms.readFile(file.getAbsolutePath()));
                 }
             }
