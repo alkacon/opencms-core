@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2003/03/02 18:43:53 $
-* Version: $Revision: 1.47 $
+* Date   : $Date: 2003/03/06 17:09:25 $
+* Version: $Revision: 1.48 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Vector;
  * Access class for resources of the type "Page".
  *
  * @author Alexander Lucas
- * @version $Revision: 1.47 $ $Date: 2003/03/02 18:43:53 $
+ * @version $Revision: 1.48 $ $Date: 2003/03/06 17:09:25 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, I_CmsWpConstants {
 
@@ -306,8 +306,6 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         // create a valid resource
         CmsFile file = cms.readFile( resourceName );
         
-        // check the access rights
-        if ((cms.getRequestContext().currentUser().equals(cms.readOwner(file))) || (cms.userInGroup(cms.getRequestContext().currentUser().getName(), C_GROUP_ADMIN))) {
             // touch the page itself
             cms.doTouch( resourceName, timestamp );
             
@@ -317,7 +315,6 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
                 cms.doTouch( bodyPath, timestamp );
             }            
         }
-    }    
 
     /**
     * Changes the resourcetype of a resource.
