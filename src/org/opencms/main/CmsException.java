@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsException.java,v $
- * Date   : $Date: 2004/06/25 16:34:41 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/08/17 07:09:21 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.util.*;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsException extends Exception {
 
@@ -303,7 +303,7 @@ public class CmsException extends Exception {
     public CmsException(String message, Throwable rootCause) {
         this(message, 0, rootCause, false);
     }
-
+    
     /**
      * Returns the description String for the provided CmsException type, subclasses of 
      * CmsException should overwrite this method for the types they define.<p>
