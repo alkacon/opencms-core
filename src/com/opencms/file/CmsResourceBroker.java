@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 2000/01/03 12:46:39 $
+ * @version $Revision: 1.3 $ $Date: 2000/01/03 17:37:23 $
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -456,10 +456,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 */	
 	public boolean isAdmin(A_CmsUser currentUser, A_CmsProject currentProject)
 		throws CmsException {
-		// TODO: Rubbish! determine all groups and check if it is the admingroup!
-		return( readUser(currentUser, 
-						 currentProject, 
-						 C_USER_ADMIN).equals(currentUser) );
+		return( m_userRb.userInGroup(currentUser.getName(), C_USER_ADMIN) );
 	}
     
    	/**
@@ -649,8 +646,15 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 					  String group, String description, 
 					  Hashtable additionalInfos, int flags)
 		throws CmsException {
-		// TODO: implement this!
-		return null;
+		
+		// Check the security
+		if( isAdmin(currentUser, currentProject) ) {
+			return( m_userRb.addUser(name, password, group, description, 
+ 									 additionalInfos, flags) );
+		} else {
+			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
+				CmsException.C_NO_ACCESS);
+		}
 	}
 
 	/** 
@@ -669,7 +673,17 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 */
 	public void deleteUser(A_CmsUser currentUser, A_CmsProject currentProject, 
 						   String username)
-		throws CmsException{ return; }
+		throws CmsException{ 
+		// Check the security
+		// Avoid to delete admin or guest-user
+		if( isAdmin(currentUser, currentProject) && 
+			!(username.equals(C_USER_ADMIN) || username.equals(C_USER_GUEST))) {
+			m_userRb.deleteUser(username);
+		} else {
+			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
+				CmsException.C_NO_ACCESS);
+		}
+	}
 
 	/**
 	 * Updated the user information.<BR/>
@@ -836,8 +850,13 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 */
 	public Vector getGroups(A_CmsUser currentUser, A_CmsProject currentProject)
         throws CmsException {
-		// TODO: implement this!
-		return null;
+		// check security
+		if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) ) {
+			return m_userRb.getGroups();
+		} else {
+			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
+				CmsException.C_NO_ACCESS);
+		}
 	}
     
     

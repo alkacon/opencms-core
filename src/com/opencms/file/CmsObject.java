@@ -15,9 +15,9 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 2000/01/03 12:46:39 $ 
+ * @version $Revision: 1.3 $ $Date: 2000/01/03 17:37:23 $ 
  */
-public class CmsObject extends A_CmsObject {
+public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	
 	/**
 	 * The resource broker to access the cms.
@@ -878,8 +878,9 @@ public class CmsObject extends A_CmsObject {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public Vector getGroups() { 
-		return null; // TODO: implement this! 
+	public Vector getGroups() 
+		throws CmsException { 
+		return( c_rb.getGroups(m_context.currentUser(), m_context.getCurrentProject()) );
 	}
 		
 	/**
@@ -922,8 +923,12 @@ public class CmsObject extends A_CmsObject {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public A_CmsUser loginUser(String username, String password) { 
-		return null; // TODO: implement this! 
+	public A_CmsUser loginUser(String username, String password) 
+		throws CmsException { 
+		A_CmsUser newUser = readUser(username, password);
+		init(m_context.getRequest(), m_context.getResponse(), newUser.getName(), 
+			 newUser.getDefaultGroup().getName(), C_PROJECT_ONLINE);
+		return(newUser);
 	}
 	
 	/** 
@@ -948,7 +953,10 @@ public class CmsObject extends A_CmsObject {
 	public A_CmsUser addUser(String name, String password, String group, 
 							 String description, Hashtable additionalInfos, int flags)
 		throws CmsException, CmsDuplicateKeyException { 
-		return null; // TODO: implement this! 
+		
+		return( c_rb.addUser(m_context.currentUser(), m_context.getCurrentProject(),
+							  name, password, group, description, additionalInfos, 
+							  flags) );
 	}
 	
 	/** 
@@ -962,7 +970,7 @@ public class CmsObject extends A_CmsObject {
 	 */
 	public void deleteUser(String username)
 		throws CmsException { 
-		return ; // TODO: implement this! 
+		c_rb.deleteUser(m_context.currentUser(), m_context.getCurrentProject(), username);
 	}
 	
 	/**

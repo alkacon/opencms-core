@@ -13,7 +13,7 @@ import com.opencms.core.*;
  * <p>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.5 $ $Date: 2000/01/03 12:46:39 $ 
+ * @version $Revision: 1.6 $ $Date: 2000/01/03 17:37:23 $ 
  * 
  */
 public abstract class A_CmsRequestContext
@@ -140,4 +140,18 @@ public abstract class A_CmsRequestContext
 	 * was false and no valid session is associated with this request. 
 	 */
 	public abstract HttpSession getSession(boolean create);
+	
+	/**
+	 * Gets the current request, if availaible.
+	 * 
+	 * @return the current request, if availaible.
+	 */
+	public abstract HttpServletRequest getRequest();
+
+	/**
+	 * Gets the current response, if availaible.
+	 * 
+	 * @return the current response, if availaible.
+	 */
+	public abstract HttpServletResponse getResponse();
 }

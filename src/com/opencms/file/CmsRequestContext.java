@@ -13,7 +13,7 @@ import com.opencms.core.*;
  * <p>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 2000/01/03 12:46:39 $
+ * @version $Revision: 1.3 $ $Date: 2000/01/03 17:37:23 $
  * 
  */
 public class CmsRequestContext extends A_CmsRequestContext implements I_CmsConstants {
@@ -142,11 +142,20 @@ public class CmsRequestContext extends A_CmsRequestContext implements I_CmsConst
 	 */
 	void setUserCurrentGroup(String groupname) 
 		throws CmsException {
-		m_currentGroup = m_rb.readGroup(m_user, m_currentProject, groupname);
+		
+		// is the user in that group?
+		if(m_rb.userInGroup(m_user, m_currentProject, m_user.getName(), groupname)) {
+			// Yes - set it to the current Group.
+			m_currentGroup = m_rb.readGroup(m_user, m_currentProject, groupname);
+		} else {
+			// No - throw exception.
+			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
+				CmsException.C_NO_ACCESS);
+		}
 	}
 
 	/**
-	 * Determines, if the users current group is the admin-group.
+	 * Determines, if the users is in the admin-group.
 	 * 
 	 * @return true, if the users current group is the admin-group, 
 	 * else it returns false.
@@ -189,6 +198,7 @@ public class CmsRequestContext extends A_CmsRequestContext implements I_CmsConst
 	 */
 	public A_CmsProject setCurrentProject(String projectname)
 		throws CmsException  {
+		// TODO: check if this is correct?!
 		m_currentProject = m_rb.readProject(m_user, m_currentProject, projectname);
 		return( m_currentProject );
 	}
@@ -211,6 +221,24 @@ public class CmsRequestContext extends A_CmsRequestContext implements I_CmsConst
 		}
 	}
 	
+	/**
+	 * Gets the current request, if availaible.
+	 * 
+	 * @return the current request, if availaible.
+	 */
+	public HttpServletRequest getRequest() {
+		return( m_req );
+	}
+
+	/**
+	 * Gets the current response, if availaible.
+	 * 
+	 * @return the current response, if availaible.
+	 */
+	public HttpServletResponse getResponse() {
+		return( m_resp );
+	}
+
 	/**
 	 * Translates the url-path to the cms-path.
 	 * 
