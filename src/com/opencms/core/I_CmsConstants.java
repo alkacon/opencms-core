@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2002/02/14 14:24:07 $
-* Version: $Revision: 1.196 $
+* Date   : $Date: 2002/04/05 06:37:10 $
+* Version: $Revision: 1.197 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  *
- * @version $Revision: 1.196 $ $Date: 2002/02/14 14:24:07 $
+ * @version $Revision: 1.197 $ $Date: 2002/04/05 06:37:10 $
  */
 public interface I_CmsConstants {
 
@@ -246,6 +246,11 @@ public interface I_CmsConstants {
      * A user-type
      */
     static final int C_USER_TYPE_WEBUSER = 1;
+
+    /**
+     * A user-type
+     */
+    static final int C_USER_TYPE_SYSTEMANDWEBUSER = 2;
 
     /**
      * Key for additional info address.
