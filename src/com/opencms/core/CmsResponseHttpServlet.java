@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsResponseHttpServlet.java,v $
- * Date   : $Date: 2000/07/06 13:35:45 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/07/21 09:48:38 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,10 +40,12 @@ import javax.servlet.http.*;
  * CmsResponseHttpServlet.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 2000/07/06 13:35:45 $  
+ * @version $Revision: 1.7 $ $Date: 2000/07/21 09:48:38 $  
  */
 public class CmsResponseHttpServlet implements I_CmsConstants,  
                                                I_CmsResponse{ 
+	
+	private static String C_LAST_MODIFIED = "Last-Modified";
     
      /**
      * The original response.
@@ -145,6 +147,15 @@ public class CmsResponseHttpServlet implements I_CmsConstants,
         m_res.sendRedirect(hostName + servlet + location);
     }
     
+    /**
+     * Sets the last modified header-field in the response.
+     * 
+     * @param time The last-modified time.
+     */
+	public void setLastModified(long time) {
+		m_res.setDateHeader(C_LAST_MODIFIED, time);
+	}
+	
     /**
      * Returns the type of the response that was used to create the CmsResponse.
      * The returned int must be one of the constants defined above in this interface.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsResponse.java,v $
- * Date   : $Date: 2000/02/15 17:53:48 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/07/21 09:48:38 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import java.io.*;
  * 
  * @author Michael Emmerich
  * @author Alexander Kandzior
- * @version $Revision: 1.2 $ $Date: 2000/02/15 17:53:48 $  
+ * @version $Revision: 1.3 $ $Date: 2000/07/21 09:48:38 $  
  */
 public interface I_CmsResponse { 
     
@@ -100,6 +100,13 @@ public interface I_CmsResponse {
     public void sendCmsRedirect(String location)
         throws IOException;
     
+    /**
+     * Sets the last modified header-field in the response.
+     * 
+     * @param time The last-modified time.
+     */
+    public void setLastModified(long time);
+	
     /**
      * Returns the type of the response that was used to create the CmsResponse.
      * The returned int must be one of the constants defined above in this interface.

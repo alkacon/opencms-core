@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsDumpLauncher.java,v $
- * Date   : $Date: 2000/06/25 15:54:22 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/07/21 09:48:38 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import javax.servlet.http.*;
  * be used to create output.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.9 $ $Date: 2000/06/25 15:54:22 $
+ * @version $Revision: 1.10 $ $Date: 2000/07/21 09:48:38 $
  */
 public class CmsDumpLauncher extends A_CmsLauncher { 	
         
@@ -97,6 +97,7 @@ public class CmsDumpLauncher extends A_CmsLauncher {
         }
             
         if(result != null) {
+			cms.getRequestContext().getResponse().setLastModified(file.getDateLastModified());
             writeBytesToResponse(cms, result);
         }
     }
