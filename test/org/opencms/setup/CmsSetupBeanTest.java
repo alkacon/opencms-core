@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/setup/Attic/CmsSetupBeanTest.java,v $
- * Date   : $Date: 2004/02/23 23:27:03 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/04/05 05:42:31 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,9 @@
  
 package org.opencms.setup;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Iterator;
 import java.util.Vector;
 
@@ -41,7 +43,7 @@ import org.apache.commons.collections.ExtendedProperties;
 
 /** 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.0
  */
@@ -50,7 +52,7 @@ public class CmsSetupBeanTest extends TestCase {
     // DEBUG flag
     // private static final boolean DEBUG = true;
      
-    private static final String PROPERTIES = "/opencms/etc/config/opencms.properties";
+    // private static final String PROPERTIES = "/opencms/etc/config/opencms.properties";
     // private static final String PROPERTIES = "/../OpenCms6-Setup/webapp/WEB-INF/config/opencms.properties";
     
     /**
@@ -71,17 +73,22 @@ public class CmsSetupBeanTest extends TestCase {
         CmsSetupBean bean = new CmsSetupBean();
         bean.init("", null);
 
-        String inputFile = System.getProperty("user.dir") + PROPERTIES;
-        String outputFile = System.getProperty("java.io.tmpdir") + "output.properties";
+        // get URL of test input resource
+        URL inputUrl = ClassLoader.getSystemResource("org/opencms/setup/");
+        inputUrl.getPath();
+        
+        String base = new File(inputUrl.getFile()).getAbsolutePath() + File.separator;
+        String inputFile = base + "opencms.properties";
+        String outputFile = base + "output.properties";
                
-        System.err.println("Reading properties from " + inputFile);
+        System.out.println("Reading properties from " + inputFile);
         ExtendedProperties oldProperties = bean.loadProperties(inputFile);
         
-        System.err.println("Writing properties to " + outputFile);
+        System.out.println("Writing properties to " + outputFile);
         bean.copyFile(inputFile, outputFile);
         bean.saveProperties(oldProperties, outputFile, false);
         
-        System.err.println("Checking properties from " + outputFile);
+        System.out.println("Checking properties from " + outputFile);
         ExtendedProperties newProperties = bean.loadProperties(outputFile);
         
         for (Iterator i = oldProperties.keySet().iterator(); i.hasNext();) {
