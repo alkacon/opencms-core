@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/04/01 04:49:40 $
- * Version: $Revision: 1.164 $
+ * Date   : $Date: 2004/04/01 10:22:17 $
+ * Version: $Revision: 1.165 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,9 +33,9 @@ package org.opencms.db.generic;
 
 import org.opencms.db.CmsDbUtil;
 import org.opencms.db.CmsDriverManager;
-import org.opencms.db.CmsProperty;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsVfsDriver;
+import org.opencms.file.*;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
@@ -75,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.164 $ $Date: 2004/04/01 04:49:40 $
+ * @version $Revision: 1.165 $ $Date: 2004/04/01 10:22:17 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -1639,7 +1639,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             while (res.next()) {
                 CmsResource resource = createResource(res, projectId);
                 resources.addElement(resource);
-            }
+            }            
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (Exception exc) {
@@ -1663,13 +1663,14 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         try {
             conn = m_sqlManager.getConnection(projectId);
             stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_GET_RESOURCE_WITH_PROPERTY");
-            stmt.setInt(1, projectId);
-            stmt.setString(2, propertyValue);
-            stmt.setString(3, propertyDefinition);
-            stmt.setInt(4, resourceType);
+            stmt.setString(1, propertyDefinition);
+            stmt.setInt(2, resourceType);
+            stmt.setString(3, propertyValue);
+            stmt.setInt(4, CmsProperty.C_STRUCTURE_RECORD_MAPPING);
+            stmt.setInt(5, CmsProperty.C_RESOURCE_RECORD_MAPPING);
             res = stmt.executeQuery();
-            String lastResourcename = "";
 
+            String lastResourcename = "";
             while (res.next()) {
                 CmsResource resource = createResource(res, projectId);
                 if (!resource.getName().equalsIgnoreCase(lastResourcename)) {
@@ -2473,11 +2474,10 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
      * @see org.opencms.db.I_CmsVfsDriver#writePropertyObjects(org.opencms.file.CmsProject, org.opencms.file.CmsResource, java.util.List)
      */
     public void writePropertyObjects(CmsProject project, CmsResource resource, List properties) throws CmsException {
-
         CmsProperty property = null;
-
-        for (int i = 0; i < properties.size(); i++) {
-            property = (CmsProperty)properties.get(i);
+        
+        for (int i=0;i<properties.size();i++) {
+            property = (CmsProperty) properties.get(i);
             writePropertyObject(project, resource, property);
         }
     }
