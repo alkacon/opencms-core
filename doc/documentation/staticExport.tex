@@ -87,6 +87,12 @@ The resource is dynamic. A link to this resource will be adjusted to a link into
 
 \item true, or no property:\\
 This is a static resource. The resource will be exported to the docroot of the web server.
+
+\item https_enabled:\\
+This is a static resource. The resource will be exported to the docroot of the web server. The links to this resource from a https page will not be set to http. Used to show pics on a https page.
+
+\item dynamic_https_enabled:\\
+Like dynamic but the links to this resource from a https page will not be set to http. 
 \end{itemize}
 
 You can control the name of an exported resource with the property "\texttt{exportname}". This is useful for modules which reside in the folder 
