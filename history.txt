@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/06/08 15:16:41 $
- * Version: $Revision: 1.549 $
+ * Date   : $Date: 2004/06/09 16:18:33 $
+ * Version: $Revision: 1.550 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,6 +59,8 @@ OpenCms 5.3.5 Ix - xx, 2004
 - The default encoding has been set to UTF-8
 * It's not longer required to run OpenCms with the same encoding as the default system encoding
 ! "Relase Date" and "Expire Date" are now also displayed in the OpenCms Explorer
+- Property definitions are now shared among ALL resources, not per resource type
+- Improved locale handling in XmlPage
 
 OpenCms 5.3.4 Ix - April 14, 2004
 - Updated all jars, also added version numbers to all jars
