@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspActionElement.java,v $
- * Date   : $Date: 2004/02/13 13:41:44 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/13 14:37:04 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * Initialize this bean at the beginning of your JSP like this:
  * <pre>
- * &lt;jsp:useBean id="cms" class="com.opencms.flex.jsp.CmsJspActionElement"&gt;
+ * &lt;jsp:useBean id="cms" class="org.opencms.jsp.CmsJspActionElement"&gt;
  * &lt% cms.init(pageContext, request, response); %&gt;
  * &lt;/jsp:useBean&gt;
  * </pre>
@@ -82,7 +82,7 @@ import javax.servlet.jsp.PageContext;
  * working at last in some elements.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.0 beta 2
  */
@@ -582,7 +582,7 @@ public class CmsJspActionElement {
      * Returns a selected file property value with optional HTML escaping, same as using 
      * the <code>&lt;cms:property name="..." file="..." default="..." /&gt;</code> tag.<p>
      * 
-     * Please see the description of the class {@link com.opencms.flex.jsp.CmsJspTagProperty} for
+     * Please see the description of the class {@link org.opencms.jsp.CmsJspTagProperty} for
      * valid options of the <code>file</code> parameter.<p>
      * 
      * @param name the name of the property to look for
@@ -630,7 +630,7 @@ public class CmsJspActionElement {
     /**
      * Returns all properites of the selected file.<p>
      * 
-     * Please see the description of the class {@link com.opencms.flex.jsp.CmsJspTagProperty} for
+     * Please see the description of the class {@link org.opencms.jsp.CmsJspTagProperty} for
      * valid options of the <code>file</code> parameter.<p>
      * 
      * @param file the file (or folder) to look at for the properties

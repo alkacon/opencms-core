@@ -699,7 +699,7 @@ the {\tag <PROCESS>} tag inside of the data block. This functionality will be
 enclosed in an element which we will place inside the contenttemplate. Note that
 functionality which requires Java programming should always be placed inside an element
 and not the frametemplate or contenttemplate itself, because these two templates are always
-associated with the default {\class com.opencms.file.CmsXmlTemplate} class and not a
+associated with the default {\class org.opencms.file.CmsXmlTemplate} class and not a
 userdefined class. Here is the text that the contenttemplate should contain:
 
 \begin{verbatim}
@@ -760,8 +760,8 @@ This is the source code for our new class:
 
 \begin{java}
 import com.opencms.template.*;\\
-import com.opencms.file.*;\\
-import com.opencms.core.*;\\
+import org.opencms.file.*;\\
+import org.opencms.main.*;\\
 
 import java.util.*;\\
 
@@ -840,8 +840,8 @@ A new Java class {\class CmsExample5} defines the method {\meth getHello(}):
 
 \begin{java}
 import com.opencms.template.*;\\
-import com.opencms.file.*;\\
-import com.opencms.core.*;\\
+import org.opencms.file.*;\\
+import org.opencms.main.*;\\
 
 import java.util.*;\\
 
@@ -990,8 +990,8 @@ This is the source code for the new class:
 
 \begin{java}
 import com.opencms.template.*;\\
-import com.opencms.file.*;\\
-import com.opencms.core.*;\\
+import org.opencms.file.*;\\
+import org.opencms.main.*;\\
 
 import java.util.*;\\[1ex]
 
@@ -1108,7 +1108,7 @@ insert them in the document as the data block {\name list.} Here is the
 source code of the Java class:
 
 \begin{java}
-import com.opencms.file.*;\\
+import org.opencms.file.*;\\
 import com.opencms.template.*;\\
 
 import java.util.*;\\[1ex]
@@ -1269,8 +1269,8 @@ This is the Java source code for the class needed for this example:
 
 \begin{java} 
 import com.opencms.template.*;\\
-import com.opencms.file.*;\\
-import com.opencms.core.*;\\
+import org.opencms.file.*;\\
+import org.opencms.main.*;\\
 
 import java.util.*;\\[1ex]
 
@@ -1320,8 +1320,8 @@ template to define the color that is used. This is the source code for
 the new Java class including the method:
 
 \begin{java}
-import com.opencms.core.*;\\
-import com.opencms.file.*;\\
+import org.opencms.main.*;\\
+import org.opencms.file.*;\\
 import com.opencms.template.*;\\
 
 import java.util.*;\\[1 ex]
@@ -1544,8 +1544,8 @@ element's template. This is the source code for this class:
 
 \begin{java}
 import com.opencms.template.*;\\
-import com.opencms.file.*;\\
-import com.opencms.core.*;\\
+import org.opencms.file.*;\\
+import org.opencms.main.*;\\
 
 import java.util.*;\\
 
@@ -1718,7 +1718,7 @@ The parameters that are passed to the method provide access to
 essential XML template resources:
 
 \begin{itemize}
-\item[-] cms (type {\class com.opencms.file.CmsObject})\\
+\item[-] cms (type {\class org.opencms.file.CmsObject})\\
 provides access to the user properties as well as to the files stored
 in the OpenCms system and their properties. The API that is provided by
 the CmsObject will be described later in this document.
@@ -2141,7 +2141,7 @@ protected void registerVariantDeps(\\
 The parameters have the following meaning:
 
 \begin{itemize}
-\item[-] cms (type {\class com.opencms.file.CmsObject}) provides access to system resources.
+\item[-] cms (type {\class org.opencms.file.CmsObject}) provides access to system resources.
 \item[-] templateName (type {\class java.lang.String}) the absolute path to the template. This parameter
 is passed to the {\meth getContent()} method and can be get in a user-method  by calling {\meth getAbsoluteFilename()}
 on the {\class A\_CmsXmlContent} object.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/I_CmsEventListener.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/02/13 14:37:04 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ package org.opencms.main;
  * the OpenCms event mechanism. This can be done in the constructor of a class
  * like this:
  * <pre>
- * com.opencms.core.A_OpenCms.addCmsEventListener(this);
+ * org.opencms.main.A_OpenCms.addCmsEventListener(this);
  * </pre>
  * 
  * A typical implementation might look like this:
@@ -60,7 +60,7 @@ package org.opencms.main;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since FLEX alpha 1
  * 
  * @see CmsEvent

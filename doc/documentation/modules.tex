@@ -2215,7 +2215,7 @@ mail.start(); //start thread to send the mail\\
 The variables passed to the constructor of the {\class CmsMail} class are:
 
 \begin{itemize}
-\item[-] cms (type {\code com.opencms.file.CmsObject}) object to access system resources.
+\item[-] cms (type {\code org.opencms.file.CmsObject}) object to access system resources.
 \item[-] sender (type {\code java.lang.String}) the e-mail address of the mail sender.
 \item[-] receiver (type {\code java.lang.String[]}) one or more e-mail addresses of e-mail recipients.
 \item[-] subject (type {\code java.lang.String}) the subject of the e-mail.
@@ -2295,7 +2295,7 @@ throws CmsException;}
 \end{figure}
 
 The method returns the login name when the login was successful,
-otherwise it throws a {\class com.opencms.core.CmsException}. 
+otherwise it throws a {\class org.opencms.main.CmsException}. 
 The exception can be captured and an appropriate error message 
 showed to the user.
 
@@ -2321,7 +2321,7 @@ try \{\\
 ...\\
 \end{java}
 
-The user data is accessed via the methods of the {\class com.opencms.file.CmsUser} class. 
+The user data is accessed via the methods of the {\class org.opencms.file.CmsUser} class. 
 Several get methods can be used to fetch user data such as the first and last
 name and the e-mail address. A hash table is used to store additional
 information, which is defined and passed using the methods:

@@ -2,17 +2,17 @@
 <registry>
 	<system>
 		<resourcetype>
-			<class>com.opencms.file.CmsResourceTypeFolder</class>
-			<class>com.opencms.file.CmsResourceTypePage</class>
-			<class>com.opencms.file.CmsResourceTypePointer</class>
-			<class>com.opencms.file.CmsResourceTypePlain</class>
-			<class>com.opencms.file.CmsResourceTypeXMLTemplate</class>
-			<class>com.opencms.file.CmsResourceTypeBinary</class>
-			<class>com.opencms.file.CmsResourceTypeImage</class>
-			<class>com.opencms.file.CmsResourceTypeCompatiblePlain</class>
-			<class>com.opencms.file.CmsResourceTypeJsp</class>
-			<class>com.opencms.file.CmsResourceTypeLink</class>
-			<class>com.opencms.file.CmsResourceTypeXmlPage</class>
+			<class>org.opencms.file.CmsResourceTypeFolder</class>
+			<class>org.opencms.file.CmsResourceTypePage</class>
+			<class>org.opencms.file.CmsResourceTypePointer</class>
+			<class>org.opencms.file.CmsResourceTypePlain</class>
+			<class>org.opencms.file.CmsResourceTypeXMLTemplate</class>
+			<class>org.opencms.file.CmsResourceTypeBinary</class>
+			<class>org.opencms.file.CmsResourceTypeImage</class>
+			<class>org.opencms.file.CmsResourceTypeCompatiblePlain</class>
+			<class>org.opencms.file.CmsResourceTypeJsp</class>
+			<class>org.opencms.file.CmsResourceTypeLink</class>
+			<class>org.opencms.file.CmsResourceTypeXmlPage</class>
 		</resourcetype>
 		<resourceloader>
 			<class>com.opencms.template.CmsXmlTemplateLoader</class>
@@ -88,56 +88,56 @@
             <documenttype>
                 <name>xmlpage</name>
 				<class>org.opencms.search.documents.CmsXmlPageDocument</class>
-				<resourcetype>com.opencms.file.CmsResourceTypeXmlPage</resourcetype>
+				<resourcetype>org.opencms.file.CmsResourceTypeXmlPage</resourcetype>
 				<mimetype>text/html</mimetype>
             </documenttype>
             <documenttype>
                 <name>page</name>
                 <class>org.opencms.search.documents.CmsPageDocument</class>
-                <resourcetype>com.opencms.file.CmsResourceTypePage</resourcetype>
+                <resourcetype>org.opencms.file.CmsResourceTypePage</resourcetype>
                 <mimetype>text/html</mimetype>
             </documenttype>
             <documenttype>
 			    <name>text</name>
 			    <class>org.opencms.search.documents.CmsTextDocument</class>
-			    <resourcetype>com.opencms.file.CmsResourceTypePlain</resourcetype>
+			    <resourcetype>org.opencms.file.CmsResourceTypePlain</resourcetype>
                 <mimetype>text/html</mimetype>
             </documenttype>
             <documenttype>
                 <name>jsp</name>
                 <class>org.opencms.search.documents.CmsTextDocument</class>
-                <resourcetype>com.opencms.file.CmsResourceTypeJsp</resourcetype>
+                <resourcetype>org.opencms.file.CmsResourceTypeJsp</resourcetype>
             </documenttype>
             <documenttype>
                 <name>pdf</name>
                 <class>org.opencms.search.documents.CmsPdfDocument</class>
-                <resourcetype>com.opencms.file.CmsResourceTypeBinary</resourcetype>
-                <resourcetype>com.opencms.file.CmsResourceTypePlain</resourcetype>
+                <resourcetype>org.opencms.file.CmsResourceTypeBinary</resourcetype>
+                <resourcetype>org.opencms.file.CmsResourceTypePlain</resourcetype>
                 <mimetype>application/pdf</mimetype>
             </documenttype>
             <documenttype>
                 <name>msword</name>
                 <class>org.opencms.search.documents.CmsWordDocument</class>
-                <resourcetype>com.opencms.file.CmsResourceTypeBinary</resourcetype>
-                <resourcetype>com.opencms.file.CmsResourceTypePlain</resourcetype>
+                <resourcetype>org.opencms.file.CmsResourceTypeBinary</resourcetype>
+                <resourcetype>org.opencms.file.CmsResourceTypePlain</resourcetype>
                 <mimetype>application/msword</mimetype>
             </documenttype>
             <documenttype>
                 <name>msexcel</name>
                 <class>org.opencms.search.documents.CmsExcelDocument</class>
-                <resourcetype>com.opencms.file.CmsResourceTypeBinary</resourcetype>
-                <resourcetype>com.opencms.file.CmsResourceTypePlain</resourcetype>
+                <resourcetype>org.opencms.file.CmsResourceTypeBinary</resourcetype>
+                <resourcetype>org.opencms.file.CmsResourceTypePlain</resourcetype>
                 <mimetype>application/vnd.ms-excel</mimetype>
             </documenttype>
             <documenttype>
                 <name>image</name>
                 <class>org.opencms.search.documents.CmsVfsDocument</class>
-                <resourcetype>com.opencms.file.CmsResourceTypeImage</resourcetype>
+                <resourcetype>org.opencms.file.CmsResourceTypeImage</resourcetype>
             </documenttype>
             <documenttype>
                 <name>generic</name>
                 <class>org.opencms.search.documents.CmsVfsDocument</class>
-                <resourcetype>com.opencms.file.CmsResourceTypePlain</resourcetype>
+                <resourcetype>org.opencms.file.CmsResourceTypePlain</resourcetype>
             </documenttype>
             <analyzer>
                 <class>org.apache.lucene.analysis.de.GermanAnalyzer</class>

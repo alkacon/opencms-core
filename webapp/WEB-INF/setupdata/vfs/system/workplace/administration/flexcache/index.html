@@ -3,7 +3,7 @@
 	org.opencms.i18n.*,
 	org.opencms.cache.*,
 	org.opencms.flex.*,
-	com.opencms.core.*,
+	org.opencms.main.*,
 	org.opencms.main.*,
 	java.util.*" 
 	buffer="none" 
@@ -33,7 +33,7 @@ top.head.helpUrl='administration/index.html';
     int sizeEntries = 0;
     int sizeKeys = 0;
     CmsFlexCache cache = null;
-    com.opencms.file.CmsObject cms = null;
+    org.opencms.file.CmsObject cms = null;
     int maxCacheByteSize = 0;
     int avgCacheByteSize = 0;
     int currentCacheByteSize = 0;
@@ -43,7 +43,7 @@ top.head.helpUrl='administration/index.html';
     out = pageContext.getOut();
 	
 	// initialise Cms Action Element
-	com.opencms.flex.jsp.CmsJspActionElement cmsAction = new com.opencms.flex.jsp.CmsJspActionElement(pageContext, request, response);
+	org.opencms.jsp.CmsJspActionElement cmsAction = new org.opencms.jsp.CmsJspActionElement(pageContext, request, response);
 	
 	String locale = "en";
 	CmsFlexController controller = (CmsFlexController)request.getAttribute(CmsFlexController.ATTRIBUTE_NAME);

@@ -4,8 +4,8 @@
 <!--
 
  File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/package.html,v $
- Date   : $Date: 2003/09/15 13:30:42 $
- Version: $Revision: 1.2 $
+ Date   : $Date: 2004/02/13 14:37:04 $
+ Version: $Revision: 1.3 $
 
  This library is part of OpenCms -
  the Open Source Content Mananagement System
@@ -53,14 +53,14 @@ and then dispatch to the standard JSP engine.<p>
 Here is a top-level description of how this works:
 <ol>
 <li>OpenCms gets the request through the {@link org.opencms.main.OpenCmsServlet}
-<li>The requested resource is identified as a JSP page (resource type {@link com.opencms.file.CmsResourceTypeJsp})
+<li>The requested resource is identified as a JSP page (resource type {@link org.opencms.file.CmsResourceTypeJsp})
 <li>The JSP loader is started up with the laucher manager {@link org.opencms.loader.CmsLoaderManager}
 <li>The JSP loader implements an additional interface: {@link org.opencms.loader.I_CmsResourceLoader}
 <li>A resource loader is a new interface that was introduced with the FLEX release. The main
 difference is that the original request / response is wrapped using a Servlet standard
 {@link javax.servlet.http.HttpServletRequestWrapper} / {@link javax.servlet.http.HttpServletResponseWrapper}.
 <li>On the first call to a page, the file contents of the JSP page are read from the OpenCms VFS
-using the {@link com.opencms.file.CmsObject}
+using the {@link org.opencms.file.CmsObject}
 <li>The contents of the page are written to the "real" file system of the server,
 in the default configuration to the directories <code>{WEBAPP-PATH}/opencms/WEB-INF/jsp/online</code> or
 <code>{WEBAPP-PATH}/opencms/WEB-INF/jsp/offline</code> (depending if the request was for the online or the offline

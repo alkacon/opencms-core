@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsMain.java,v $
- * Date   : $Date: 2004/02/13 13:41:46 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/02/13 14:37:04 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.io.IOException;
  * it is also used for the initial setup.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  */
 public final class CmsMain extends Object {
 
@@ -224,6 +224,6 @@ public final class CmsMain extends Object {
      * Prints out a usage help message to <code>System.out</code>.<p>
      */
     private static void usage() {
-        System.out.println("Usage: java com.opencms.core.CmsMain [-base=<basepath>] [-script=<scriptfile>]");
+        System.out.println("Usage: java org.opencms.main.CmsMain [-base=<basepath>] [-script=<scriptfile>]");
     }
 }

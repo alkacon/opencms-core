@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsException.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/13 14:37:04 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.util.*;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsException extends Exception {
 
@@ -51,7 +51,7 @@ public class CmsException extends Exception {
     public static final int C_CLASSLOADER_ERROR = 29;
 
     /** Default prefix for a CmsException message */
-    public static final String C_CMS_EXCEPTION_PREFIX = "com.opencms.core.CmsException";
+    public static final String C_CMS_EXCEPTION_PREFIX = "org.opencms.main.CmsException";
 
     /**
      * This array provides descriptions for the error codes stored as
