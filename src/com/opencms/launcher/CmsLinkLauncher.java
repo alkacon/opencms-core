@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsLinkLauncher.java,v $
-* Date   : $Date: 2001/04/18 13:16:19 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2001/04/18 13:17:14 $
+* Version: $Revision: 1.8 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -47,7 +47,7 @@ import java.io.*;
  * be used to create output.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.7 $ $Date: 2001/04/18 13:16:19 $
+ * @version $Revision: 1.8 $ $Date: 2001/04/18 13:17:14 $
  */
 public class CmsLinkLauncher extends A_CmsLauncher {
 
@@ -73,7 +73,9 @@ public class CmsLinkLauncher extends A_CmsLauncher {
      * @param openCms a instance of A_OpenCms for redirect-needs
      * @exception CmsException
      */
-    protected void launch(CmsObject cms, CmsFile file, String startTemplateClass, A_OpenCms openCms) throws CmsException {
+    protected void launch(CmsObject cms, CmsFile file,
+                          String startTemplateClass,
+                          A_OpenCms openCms) throws CmsException {
         String link = new String(file.getContents());
         if( link.startsWith("/") ) {
             // internal link ...
