@@ -116,12 +116,13 @@
 				<chown>Sorry, the owner could not be changed.</chown>
 				<chpwd>Sorry, the password could not be changed.</chpwd>
 				<chtype>Sorry, the file type could not be changed.</chtype>
-				<datamissing>You haven't entered all the required fields in the form.</datamissing>
+				<datamissing>You have not entered all the required fields in the form.</datamissing>
 				<delete>Sorry, the file could not be deleted.</delete>
 				<deleteuser> Sorry, the user could not be deleted.</deleteuser>
 				<deleteextension>Sorry, the file extension could not be deleted.</deleteextension>
 				<deletegroup>Sorry, the group could not be deleted.</deletegroup>
 				<downbrowser>Sorry, you can't use the download browser.</downbrowser>
+				<gallerynoright>Sorry, the new gallery could not be created.</gallerynoright>
 				<changeuser>Sorry, the user data could not be changed.</changeuser>
 				<adduser> Sorry, the user could not be created.</adduser>
 				<addgroup>Sorry, the group could not be created..</addgroup>
@@ -138,8 +139,7 @@
 				<picgallery>You don't have permission to create a new gallery in this project.</picgallery>
 				<propinuse>Some file uses this property.<![CDATA[<br>]]>You cannot delete it.</propinuse>
 				<projectdatamissing>Sorry, the new project could not be created.</projectdatamissing>
-				<publishproject>Sorry, the project could not be published.</publishproject>
-				<projectdatamissing>The fields 'Project name' and 'Folders' need to be filled in.</projectdatamissing>
+				<publishproject>Sorry, the project could not be published.</publishproject> 
 				<rmdefault>Sorry, not all users could be removed.</rmdefault>
 				<deleteproject>Sorry, the project could not be deleted.</deleteproject>
 				<unlock>Sorry, the file could not be locked.</unlock>
@@ -165,12 +165,14 @@
 				<downbrowser>The folder for the download galleries doesn't exist.</downbrowser> 
 				<downnogallery>There is no download gallery yet.</downnogallery> 
 				<extinuse>This extension has already been assigned to a resource type.</extinuse>
+				<gallerynoright>You don't have the rights to create this new galery in this project.</gallerynoright>
 				<lock>Either you don't have the needed permissions, or the contents of this file are locked by someone else.</lock>
 				<lockchange>The file is locked by another user.</lockchange>
 				<login>The data entered is not correct.</login>
 				<picbrowser>The folder for the picture galleries doesn't exist.</picbrowser>
 				<picdatamissing>You need to pic a foldername and a caretaker of the gallery.</picdatamissing>
 				<picnogallery>There is no picture gallery yet.</picnogallery>
+				<projectdatamissing>The fields 'Project name' and 'Folders' need to be filled in.</projectdatamissing>
 				<projectlockchange>There was an error.</projectlockchange>
 				<namemissing>The field Name must be filled out.</namemissing>
 				<titlemissing>The field Title must be filled out.</titlemissing>
@@ -245,6 +247,7 @@
 				<deletegroup>Delete Group</deletegroup>
 				<database>Database Import/Export</database>
 				<downbrowser>DownloadBrowser</downbrowser>
+				<downgallery>Creating new Download Gallery</downgallery>
 				<lock>Lock File</lock>
 				<lockchange>Steal Lock</lockchange>
  				<login>Login Error</login>
@@ -254,6 +257,7 @@
  				<newproject>New Project</newproject>
  				<newtask>New Task</newtask>
 				<picbrowser>Picture Browser</picbrowser>
+				<picgallery>Creating new Picture Gallery</picgallery>
 				<publishproject>Publish Project</publishproject>
 				<deleteproject>Delete Project</deleteproject>
 				<unlock>Unlock File</unlock>
