@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContentDetail.java,v $
- * Date   : $Date: 2000/03/15 14:32:15 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/03/16 21:05:35 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.10 $ $Date: 2000/03/15 14:32:15 $
+ * @version $Revision: 1.11 $ $Date: 2000/03/16 21:05:35 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsWpConstants {
@@ -295,7 +295,15 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsCo
 				style = xmlTemplateDocument.getProcessedXmlDataValue("style_ok", this);
 			}
 		} else if(task.getPercentage() == 0) {
-			if(isOwner) {
+			if(isOwner && isEditor) {
+				// this is a task from me and for me
+				button1 = getButton(xmlTemplateDocument, "button_query", true);
+				button2 = getButton(xmlTemplateDocument, "button_accept", true);
+				button3 = getButton(xmlTemplateDocument, "button_due", true);
+				button4 = getButton(xmlTemplateDocument, "button_priority", true);
+				button5 = getButton(xmlTemplateDocument, "button_comment", true);
+				button6 = getButton(xmlTemplateDocument, "button_ok", false);
+			} else if(isOwner) {
 				// this is the owner of the task
 				button1 = getButton(xmlTemplateDocument, "button_message", true);
 				button2 = getButton(xmlTemplateDocument, "button_forward", true);
@@ -334,7 +342,15 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsCo
 				style = xmlTemplateDocument.getProcessedXmlDataValue("style_new", this);
 			}
 		} else {
-			if(isOwner) {
+			if(isOwner && isEditor) {
+				// this is a task from me and for me
+				button1 = getButton(xmlTemplateDocument, "button_query", true);
+				button2 = getButton(xmlTemplateDocument, "button_forward", true);
+				button3 = getButton(xmlTemplateDocument, "button_due", true);
+				button4 = getButton(xmlTemplateDocument, "button_priority", true);
+				button5 = getButton(xmlTemplateDocument, "button_comment", true);
+				button6 = getButton(xmlTemplateDocument, "button_ok", true);
+			} else if(isOwner) {
 				// this is the owner of the task
 				button1 = getButton(xmlTemplateDocument, "button_message", true);
 				button2 = getButton(xmlTemplateDocument, "button_forward", true);
