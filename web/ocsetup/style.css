@@ -1,0 +1,11 @@
+body{background-color:#FFFFFF}
+
+table.background{background-color:#CCCCCC;}
+table.header{background-color:#DDDDDD;font-family:Arial;font-size:12px;font-weight:bold;}
+
+td.title{background-color:#000077;color:#FFFFFF;font-family:Arial;font-size:12px;font-weight:bold;}
+td.header{background-color:#DDDDDD;font-family:Arial;font-size:12px;font-weight:bold;}
+td.bold{font-family:Arial;font-size:12px;font-weight:bold;}
+td{font-family:Arial;font-size:12px;}
+
+input.button{font-family:Verdana;font-size:12px;width:150px;}
