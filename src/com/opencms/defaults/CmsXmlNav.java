@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlNav.java,v $
-* Date   : $Date: 2001/08/10 14:46:46 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2001/08/17 10:10:08 $
+* Version: $Revision: 1.34 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.*;
  *
  * @author Alexander Kandzior
  * @author Waruschan Babachan
- * @version $Revision: 1.33 $ $Date: 2001/08/10 14:46:46 $
+ * @version $Revision: 1.34 $ $Date: 2001/08/17 10:10:08 $
  */
 public class CmsXmlNav extends A_CmsNavBase {
 
@@ -912,6 +912,7 @@ public class CmsXmlNav extends A_CmsNavBase {
         // First build our own cache directives.
         CmsCacheDirectives result = new CmsCacheDirectives(true);
         result.setCacheUri(true);
+        result.renewAfterEveryPublish();
         return result;
     }
 }
