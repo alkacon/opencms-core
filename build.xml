@@ -47,7 +47,6 @@
     <property name="build.tmpexcludes"          value=""/>
     <property name="excludes"                   value="**/CVS/*,**/.nbattrs,**/.project,**/.classpath"/>
         
-        
     <target name="init" 
     	description="Checks if all required libraries are available">
     	
@@ -137,10 +136,8 @@ ${build.inputlib.dbcp}
         <delete dir="${build.home}"/>
     </target>
 
-    
     <target name="cleanclasses" 
     	description="Delete existing class directory (for full recompile)">
-    	
         <delete dir="${build.classes}"/>
     </target>        
 
