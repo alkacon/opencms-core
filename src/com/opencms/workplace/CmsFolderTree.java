@@ -15,12 +15,111 @@ import java.util.*;
  * 
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 2000/01/28 14:34:44 $
+ * @version $Revision: 1.4 $ $Date: 2000/01/28 17:35:37 $
  */
 public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstants  {
 
+    
+    /**
+     * Definition of the Datablock TREELINK
+     */    
+    private static final String C_TREELINK="TREELINK";
 
-     
+     /**
+     * Definition of the Datablock TREESTYLE
+     */    
+    private static final String C_TREESTYLE="TREESTYLE";
+
+     /**
+     * Definition of the Datablock TREETAB
+     */    
+    private static final String C_TREETAB="TREETAB";
+    
+     /**
+     * Definition of the Datablock TREEENTRY
+     */    
+    private static final String C_TREEENTRY="TREEENTRY";
+    
+    /**
+     * Definition of the Datablock TREEFOLDER
+     */    
+    private static final String C_TREEFOLDER="TREEFOLDER";
+
+     /**
+     * Definition of the Datablock TREESWITCH
+     */    
+    private static final String C_TREESWITCH="TREESWITCH";
+
+     /**
+     * Definition of the Datablock TREELINE
+     */    
+    private static final String C_TREELINE="TREELINE";
+    
+     /**
+     * Definition of the Datablock TREEIMG_EMPTY0
+     */    
+    private static final String C_TREEIMG_EMPTY0="TREEIMG_EMPTY0";
+  
+    /**
+     * Definition of the Datablock TREEIMG_EMPTY
+     */    
+    private static final String C_TREEIMG_EMPTY="TREEIMG_EMPTY";
+    
+     /**
+     * Definition of the Datablock TREEIMG_FOLDEROPEN
+     */    
+    private static final String C_TREEIMG_FOLDEROPEN="TREEIMG_FOLDEROPEN";
+  
+     /**
+     * Definition of the Datablock TREEIMG_FOLDERCLOSE
+     */    
+    private static final String C_TREEIMG_FOLDERCLOSE="TREEIMG_FOLDERCLOSE";
+    
+     /**
+     * Definition of the Datablock TREEIMG_MEND
+     */    
+    private static final String C_TREEIMG_MEND="TREEIMG_MEND";
+  
+     /**
+     * Definition of the Datablock TREEIMG_PEND
+     */    
+    private static final String C_TREEIMG_PEND="TREEIMG_PEND";
+    
+     /**
+     * Definition of the Datablock TREEIMG_END
+     */    
+    private static final String C_TREEIMG_END="TREEIMG_END";
+        
+     /**
+     * Definition of the Datablock TREEIMG_MCROSS
+     */    
+    private static final String C_TREEIMG_MCROSS="TREEIMG_MCROSS";
+        
+     /**
+     * Definition of the Datablock TREEIMG_PCROSS
+     */    
+    private static final String C_TREEIMG_PCROSS="TREEIMG_PCROSS";
+        
+     /**
+     * Definition of the Datablock TREEIMG_CROSS
+     */    
+    private static final String C_TREEIMG_CROSS="TREEIMG_CROSS";
+        
+     /**
+     * Definition of the Datablock TREEIMG_VERT
+     */    
+    private static final String C_TREEIMG_VERT="TREEIMG_VERT";
+        
+    /**
+     * Style for files in a project.
+     */
+    private static final String C_FILE_INPROJECT="treefolder";
+        
+    /**
+     * Style for files not in a project.
+     */
+    private static final String C_FILE_NOTINPROJECT="treefoldernip";     
+            
     /**
      * Overwries the getContent method of the CmsWorkplaceDefault.<br>
      * Gets the content of the foldertree template and processe the data input.
@@ -74,7 +173,7 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
             //get the template
             CmsXmlWpTemplateFile template=(CmsXmlWpTemplateFile)doc;
             
-            String tab=template.getProcessedXmlDataValue("TREEIMG_EMPTY0",this);
+            String tab=template.getProcessedXmlDataValue(C_TREEIMG_EMPTY0,this);
             showTree(cms,rootFolder,currentFolder,template,output,tab);
             return output.toString();
      }
@@ -114,9 +213,9 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
                 
                 // check if this folder must diplayes open
                 if (folder.getAbsolutePath().equals(endfolder)) {
-                    folderimg=template.getProcessedXmlDataValue("TREEIMG_FOLDEROPEN",this);   
+                    folderimg=template.getProcessedXmlDataValue(C_TREEIMG_FOLDEROPEN,this);   
                 } else {
-                    folderimg=template.getProcessedXmlDataValue("TREEIMG_FOLDERCLOSE",this);   
+                    folderimg=template.getProcessedXmlDataValue(C_TREEIMG_FOLDERCLOSE,this);   
                 }
                 
                 // now check if a treeswitch has to displayed
@@ -127,14 +226,14 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
                     if (subfolders.size() >0) {
                         // test if the + or minus must be displayed
                         if (endfolder.startsWith(folder.getAbsolutePath())) {
-                            template.setXmlData("TREELINK",C_WP_EXPLORER_TREE+"?"+C_PARA_FOLDER+"="+curfolder);
-                            treeswitch=template.getProcessedXmlDataValue("TREEIMG_MEND",this);    
+                            template.setXmlData(C_TREELINK,C_WP_EXPLORER_TREE+"?"+C_PARA_FOLDER+"="+curfolder);
+                            treeswitch=template.getProcessedXmlDataValue(C_TREEIMG_MEND,this);    
                         } else {
-                            template.setXmlData("TREELINK",C_WP_EXPLORER_TREE+"?"+C_PARA_FOLDER+"="+folder.getAbsolutePath());
-                            treeswitch=template.getProcessedXmlDataValue("TREEIMG_PEND",this); 
+                            template.setXmlData(C_TREELINK,C_WP_EXPLORER_TREE+"?"+C_PARA_FOLDER+"="+folder.getAbsolutePath());
+                            treeswitch=template.getProcessedXmlDataValue(C_TREEIMG_PEND,this); 
                         }
                     } else {
-                        treeswitch=template.getProcessedXmlDataValue("TREEIMG_END",this);              
+                        treeswitch=template.getProcessedXmlDataValue(C_TREEIMG_END,this);              
                     }
                 } else {
                     // use the cross image
@@ -143,30 +242,36 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
                     if (subfolders.size() >0) {
                          // test if the + or minus must be displayed
                         if (endfolder.startsWith(folder.getAbsolutePath())) {
-                            template.setXmlData("TREELINK",C_WP_EXPLORER_TREE+"?"+C_PARA_FOLDER+"="+curfolder);
-                            treeswitch=template.getProcessedXmlDataValue("TREEIMG_MCROSS",this);                          
+                            template.setXmlData(C_TREELINK,C_WP_EXPLORER_TREE+"?"+C_PARA_FOLDER+"="+curfolder);
+                            treeswitch=template.getProcessedXmlDataValue(C_TREEIMG_MCROSS,this);                          
                         } else {   
-                            template.setXmlData("TREELINK",C_WP_EXPLORER_TREE+"?"+C_PARA_FOLDER+"="+folder.getAbsolutePath());
-                            treeswitch=template.getProcessedXmlDataValue("TREEIMG_PCROSS",this);
+                            template.setXmlData(C_TREELINK,C_WP_EXPLORER_TREE+"?"+C_PARA_FOLDER+"="+folder.getAbsolutePath());
+                            treeswitch=template.getProcessedXmlDataValue(C_TREEIMG_PCROSS,this);
                         }
                     } else {
-                        treeswitch=template.getProcessedXmlDataValue("TREEIMG_CROSS",this);
+                        treeswitch=template.getProcessedXmlDataValue(C_TREEIMG_CROSS,this);
                     }
                 }
     
                 if (folder.getAbsolutePath().equals(lastFolder.getAbsolutePath())) {
-                    newtab=tab+template.getProcessedXmlDataValue("TREEIMG_EMPTY",this);     
+                    newtab=tab+template.getProcessedXmlDataValue(C_TREEIMG_EMPTY,this);     
                 } else {
-                    newtab=tab+template.getProcessedXmlDataValue("TREEIMG_VERT",this);     
+                    newtab=tab+template.getProcessedXmlDataValue(C_TREEIMG_VERT,this);     
                 }
                 
+                // test if the folder is in the current project
+                if (folder.inProject(cms.getRequestContext().currentProject())) {
+                      template.setXmlData(C_TREESTYLE,C_FILE_INPROJECT);
+                } else {
+                      template.setXmlData(C_TREESTYLE,C_FILE_NOTINPROJECT);
+                }
+
                 // set all data for the treeline tag
-                template.setXmlData("TREESTYLE","treefolder");
-                template.setXmlData("TREEENTRY",folder.getName());
-                template.setXmlData("TREETAB",tab);
-                template.setXmlData("TREEFOLDER",folderimg);
-                template.setXmlData("TREESWITCH",treeswitch);
-                output.append(template.getProcessedXmlDataValue("TREELINE",this));
+                template.setXmlData(C_TREEENTRY,folder.getName());
+                template.setXmlData(C_TREETAB,tab);
+                template.setXmlData(C_TREEFOLDER,folderimg);
+                template.setXmlData(C_TREESWITCH,treeswitch);
+                output.append(template.getProcessedXmlDataValue(C_TREELINE,this));
                 
                 //finally process all subfolders if nescessary
                 if (endfolder.startsWith(folder.getAbsolutePath())) {

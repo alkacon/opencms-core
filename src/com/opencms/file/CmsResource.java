@@ -8,7 +8,7 @@ import com.opencms.core.*;
  * This resource can be a A_CmsFile or a A_CmsFolder.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.9 $ $Date: 2000/01/10 18:15:04 $
+ * @version $Revision: 1.10 $ $Date: 2000/01/28 17:35:37 $
  */
  public class CmsResource extends A_CmsResource implements I_CmsConstants {
      
@@ -128,8 +128,7 @@ import com.opencms.core.*;
         m_lockedBy=lockedBy;
         m_dateCreated=dateCreated;
         m_dateLastModified=dateLastModified;
-        m_size=size;
-            
+        m_size=size;    
      }
 
          
@@ -477,6 +476,21 @@ import com.opencms.core.*;
         return m_size;
      }
 
+     
+     /** 
+      * Checks if a resource belongs to a project.
+      * @param project The project which the resources is checked about.
+      * @return true if the resource is in the project, false otherwise.
+      */
+     public boolean inProject(A_CmsProject project){
+         boolean inProject=false;
+         if (project.getId() == m_projectId) {
+             inProject=true;
+         }
+         return inProject;
+     }
+     
+     
 	/**
 	 * Creates a Unix-Style string of access rights from the access right flag of a 
 	 * CmsResource

@@ -8,7 +8,7 @@ import java.util.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.9 $ $Date: 2000/01/07 18:46:09 $
+ * @version $Revision: 1.10 $ $Date: 2000/01/28 17:35:37 $
  */
 public abstract class A_CmsResource  {
 	/**
@@ -238,6 +238,14 @@ public abstract class A_CmsResource  {
 	 */
     abstract public int getLength();
 
+    
+     /** 
+     * Checks if a resource belongs to a project.
+     * @param project The project which the resources is checked about.
+     * @return true if the resource is in the project, false otherwise.
+     */
+    abstract public boolean inProject(A_CmsProject project);
+    
 	/**
 	 * Creates a Unix-Style string of access rights from the access right flag 
 	 * of a resource
