@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWorkplaceDefault.java,v $
-* Date   : $Date: 2001/02/06 13:58:18 $
-* Version: $Revision: 1.36 $
+* Date   : $Date: 2001/04/20 15:50:44 $
+* Version: $Revision: 1.37 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * Most special workplace classes may extend this class.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.36 $ $Date: 2001/02/06 13:58:18 $
+ * @version $Revision: 1.37 $ $Date: 2001/04/20 15:50:44 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -510,6 +510,25 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
     public Boolean isNotOnlineProject(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) throws CmsException {
         CmsRequestContext reqCont = cms.getRequestContext();
         return new Boolean(!reqCont.currentProject().equals(cms.onlineProject()));
+    }
+
+    /**
+     * Checks if the current project is the "Online" project.
+     * <P>
+     * This method is used by workplace icons to decide whether the icon should
+     * be activated or not. Icons will use this method if the attribute <code>method="isOnlineProject"</code>
+     * is defined in the <code>&lt;ICON&gt;</code> tag.
+     *
+     * @param cms CmsObject Object for accessing system resources <em>(not used here)</em>.
+     * @param lang reference to the currently valid language file <em>(not used here)</em>.
+     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
+     * @return <code>true</code> if the current project is the online project, <code>false</code> otherwise.
+     * @exception CmsException if there were errors while accessing project data.
+     */
+
+    public Boolean isOnlineProject(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) throws CmsException {
+        CmsRequestContext reqCont = cms.getRequestContext();
+        return new Boolean(reqCont.currentProject().equals(cms.onlineProject()));
     }
 
     /**
