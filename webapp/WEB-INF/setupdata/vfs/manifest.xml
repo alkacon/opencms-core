@@ -5458,11 +5458,6 @@
                     <value><![CDATA[ISO-8859-1]]></value>
                 </property>
                 <property>
-                    <name>cache</name>
-                    <type>8</type>
-                    <value><![CDATA[user;]]></value>
-                </property>
-                <property>
                     <name>export</name>
                     <type>8</type>
                     <value><![CDATA[false]]></value>
@@ -5562,11 +5557,6 @@
             <usercreated>Admin</usercreated>
             <flags>0</flags>
             <properties>
-                <property>
-                    <name>cache</name>
-                    <type>8</type>
-                    <value><![CDATA[user;]]></value>
-                </property>
                 <property>
                     <name>Title</name>
                     <type>8</type>
