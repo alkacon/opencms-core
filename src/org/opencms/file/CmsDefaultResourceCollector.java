@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsDefaultResourceCollector.java,v $
- * Date   : $Date: 2004/10/19 18:05:16 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/10/26 16:33:35 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.List;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.5.2
  */
 public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
@@ -226,16 +226,8 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
         CmsCollectorData data = new CmsCollectorData(param);
         String foldername = CmsResource.getFolderPath(data.getFileName());
 
-        List result;
-        cms.getRequestContext().saveSiteRoot();
-        try {
-            cms.getRequestContext().setSiteRoot("/");
-
-            CmsResourceFilter filter = CmsResourceFilter.DEFAULT.addRequireType(data.getType());
-            result = cms.readResources(foldername, filter, tree);
-        } finally {
-            cms.getRequestContext().restoreSiteRoot();
-        }
+        CmsResourceFilter filter = CmsResourceFilter.DEFAULT.addRequireType(data.getType());
+        List result = cms.readResources(foldername, filter, tree);
 
         Collections.sort(result, CmsResource.COMPARE_DATE_RELEASED);
         Collections.reverse(result);
@@ -264,16 +256,8 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
         CmsCollectorData data = new CmsCollectorData(param);
         String foldername = CmsResource.getFolderPath(data.getFileName());
 
-        List result;
-        cms.getRequestContext().saveSiteRoot();
-        try {
-            cms.getRequestContext().setSiteRoot("/");
-
-            CmsResourceFilter filter = CmsResourceFilter.DEFAULT.addRequireType(data.getType());
-            result = cms.readResources(foldername, filter, tree);
-        } finally {
-            cms.getRequestContext().restoreSiteRoot();
-        }
+        CmsResourceFilter filter = CmsResourceFilter.DEFAULT.addRequireType(data.getType());
+        List result = cms.readResources(foldername, filter, tree);
 
         Collections.sort(result, CmsResource.COMPARE_ROOT_PATH);
         Collections.reverse(result);
@@ -302,34 +286,27 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
 
         String foldername = CmsResource.getFolderPath(data.getFileName());
 
-        List result;
-        cms.getRequestContext().saveSiteRoot();
-        try {
-            cms.getRequestContext().setSiteRoot("/");
-
-            // must check ALL resources in folder because name dosen't care for type
-            CmsResourceFilter filter = CmsResourceFilter.DEFAULT;
-            List resources = cms.readResources(foldername, filter, false);
-            result = new ArrayList(resources.size());
-
-            for (int i = 0; i < resources.size(); i++) {
-                CmsResource resource = (CmsResource)resources.get(i);
-                result.add(cms.getSitePath(resource));
-            }
-        } finally {
-            cms.getRequestContext().restoreSiteRoot();
+        // must check ALL resources in folder because name dosen't care for type
+        List resources = cms.readResources(foldername, CmsResourceFilter.ALL, false);
+        
+        // now create a list of all resources that just contains the file names
+        List result = new ArrayList(resources.size());
+        for (int i = 0; i < resources.size(); i++) {
+            CmsResource resource = (CmsResource)resources.get(i);
+            result.add(resource.getRootPath());
         }
 
+        String fileName = cms.getRequestContext().addSiteRoot(data.getFileName());
         String checkName;
         String number;
 
         int j = 0;
         do {
             number = C_FORMAT_NUMBER.sprintf(++j);
-            checkName = CmsStringUtil.substitute(data.getFileName(), "${number}", number);
+            checkName = CmsStringUtil.substitute(fileName, "${number}", number);
         } while (result.contains(checkName));
 
-        return checkName.substring(cms.getRequestContext().getSiteRoot().length());
+        return cms.getRequestContext().removeSiteRoot(checkName);
     }
 
     /**
