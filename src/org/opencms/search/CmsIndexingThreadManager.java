@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsIndexingThreadManager.java,v $
- * Date   : $Date: 2004/02/20 15:56:44 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/02/20 19:50:58 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.apache.lucene.index.IndexWriter;
 /**
  * Implements the management of indexing threads.<p>
  * 
- * @version $Revision: 1.5 $ $Date: 2004/02/20 15:56:44 $
+ * @version $Revision: 1.6 $ $Date: 2004/02/20 19:50:58 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.3.1
  */
@@ -68,9 +68,12 @@ public class CmsIndexingThreadManager extends Thread {
      * @param manager the index manager
      * @param report the report to write out progress information
      * @param timeout timeout after a thread is abandoned
+     * @param indexName the name of the index
      */
-    public CmsIndexingThreadManager(CmsSearchManager manager, I_CmsReport report, long timeout) {
+    public CmsIndexingThreadManager(CmsSearchManager manager, I_CmsReport report, long timeout, String indexName) {
     
+        super("OpenCms: Search thread watcher for index '" + indexName + "'");
+        
         m_manager = manager;
         m_report = report;
         m_timeout = timeout;
@@ -186,14 +189,16 @@ public class CmsIndexingThreadManager extends Thread {
      */
     public void run() {
         
-        int max = 5;
+        int max = 20;
         
         try {
-            Thread.sleep(600000);
+            // wait 30 seconds for the initial indexing
+            Thread.sleep(30000);
             
             while (m_fileCounter > m_returnedCounter && max-- > 0) {
 
-                Thread.sleep(600000);
+                Thread.sleep(30000);
+                // wait 30 seconds before we start checking for "dead" index threads
                 if (OpenCms.getLog(this).isWarnEnabled()) {
                     OpenCms.getLog(this).warn("Waiting for abandoned threads: " 
                         + m_abandonedCounter + " threads abandoned, " + (m_fileCounter - m_returnedCounter) + " threads not returned until now");

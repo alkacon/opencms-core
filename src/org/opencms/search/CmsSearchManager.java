@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2004/02/20 15:56:44 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/02/20 19:50:58 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -134,7 +134,7 @@ import org.apache.lucene.index.IndexWriter;
  * <p>The <code>GermanAnalyzer</code> will be used for analyzing the contents of resources
  * when building an index with "de" as specified language.</p>
  * 
- * @version $Revision: 1.8 $ $Date: 2004/02/20 15:56:44 $
+ * @version $Revision: 1.9 $ $Date: 2004/02/20 19:50:58 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.3.1
  */
@@ -680,7 +680,7 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
                         
         try {
             
-            CmsIndexingThreadManager threadManager = new CmsIndexingThreadManager(this, report, Long.parseLong(m_timeout));
+            CmsIndexingThreadManager threadManager = new CmsIndexingThreadManager(this, report, Long.parseLong(m_timeout), indexName);
             writer = index.getIndexWriter();
             
             List folders = index.getFolders();
