@@ -5,24 +5,28 @@
 <html>
 <head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 <title>opencms</title>
-<!-- <link rel=stylesheet type="text/css" href="../css/format.css"> -->
+<link rel=stylesheet type="text/css" href="../css/format.css">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript">
+	// to load the file content into the editor
+	function setText()
+	{
+	    if(! textSetted )
+	    {
+		   	document.all.edit1.Text = unescape("]]><METHOD name="setText"/><![CDATA[");
+		   	textSetted = true;
+		}
+	}
+
+	// URL for pictures
+	var pfad="]]><METHOD name="picsUrl"/><![CDATA[";
+
+</SCRIPT>
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms_edit.js"></SCRIPT>
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript">
-// to load the file content into the editor
-function setText()
-{
-    if(! textSetted )
-    {
-	   	document.all.edit1.Text = unescape("]]><METHOD name="setText"/><![CDATA[");
-	   	textSetted = true;
-	}
-}
-</SCRIPT>
 
 </head>
 
-<body background="../pics/bg_grau.gif" scroll=no onLoad="document.EDITTEXT.edit1.focus();" leftmargin=5 topmargin=5 marginwidth = 5 marginheight = 5>
+<body background="]]><METHOD name="picsUrl">bg_grau.gif</METHOD><![CDATA[" scroll=no onLoad="document.EDITTEXT.edit1.focus();" leftmargin=5 topmargin=5 marginwidth = 5 marginheight = 5>
 
 <!-- Buttonleiste -->
 <form id=EDITTEXT name=EDITTEXT>

@@ -6,20 +6,26 @@
 <head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 <title>opencms</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">
+<SCRIPT LANGUAGE="JavaScript">
+	var pfad="]]><METHOD name="picsUrl"/><![CDATA[";
+</SCRIPT>
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
+
+
 </head>
 
 <body bgcolor="#C0C0C0">
-<form>
-<table cellspacing=0 cellpadding=0 border=0 width="100%">
+<form 
+	name="form1"
+	id="form1"
+	method=get>
+	
+	<table cellspacing=0 cellpadding=0 border=0 width="100%">
 	<tr>
-		<td class=menu><img src="../pics/logokunde.gif" border=0 widht=70 height=26></td>
+		<td class=menu><img src="]]><METHOD name="picsUrl">logokunde.gif</METHOD><![CDATA[" border=0 widht=70 height=26></td>
 		<td class=menubold><p class=einzug>Projekt:&nbsp;&nbsp;&nbsp;</p></td>
 		<td class=dialogtxt>
-			<select class=textfeld name="project" width=150 style="width:150px" onchange="window.top.body.location.href=this.options[this.selectedIndex].value">
-			<option value="explorer.html">Online
-			<option value="explorer_projekt.html">Relaunch Sozial
-			</select>
+			]]><SELECT class="textfeld" name="project" width="150" method="getProjects" onchange="javascript:document.all.form1.submit()"/><![CDATA[
 		</td>
 		<td class=menubold><p class=tab>Ansicht:&nbsp;&nbsp;&nbsp;</p></td>
 		<td class=dialogtxt>
@@ -34,7 +40,7 @@
 		<td class=dialogtxt>]]><BUTTON href="javascript:window.top.location.href='login.html'" name="bt_exit" action="" alt="exit"/><![CDATA[</td>
 		<td class=dialogtxt>]]><BUTTON href="javascript:url=window.top.body.show_help(); openwin(url, 'Hilfe', 300, 600);" name="bt_hilfe" action="" alt="help"/><![CDATA[</td>
 		<td class=dialogtxt width="100%">&nbsp;</td>
-		<td class=dialogtxt><img src="../pics/opencms.gif" width=75 height=26 border=0 alt="opencms"><br></a></td>
+		<td class=dialogtxt><img src="]]><METHOD name="picsUrl">opencms.gif</METHOD><![CDATA[" width=75 height=26 border=0 alt="opencms"><br></a></td>
 	</tr>
 </table>
 
