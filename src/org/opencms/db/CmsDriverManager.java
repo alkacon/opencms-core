@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/12/21 15:06:52 $
- * Version: $Revision: 1.464 $
+ * Date   : $Date: 2004/12/22 09:39:11 $
+ * Version: $Revision: 1.465 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -95,7 +95,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.464 $ $Date: 2004/12/21 15:06:52 $
+ * @version $Revision: 1.465 $ $Date: 2004/12/22 09:39:11 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -7067,7 +7067,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * This method checks if a new password follows the rules for
      * new passwords, which are defined by a Class implementing the 
-     * <code>{@link org.opencms.security.I_CmsPasswordHandler}<code> 
+     * <code>{@link org.opencms.security.I_CmsPasswordHandler}</code> 
      * interface and configured in the opencms.properties file.<p>
      * 
      * If this method throws no exception the password is valid.<p>

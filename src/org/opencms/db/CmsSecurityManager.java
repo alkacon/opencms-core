@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2004/12/21 15:06:52 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2004/12/22 09:39:11 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -4324,7 +4324,7 @@ public final class CmsSecurityManager {
     /**
      * This method checks if a new password follows the rules for
      * new passwords, which are defined by a Class implementing the 
-     * <code>{@link org.opencms.security.I_CmsPasswordHandler}<code> 
+     * <code>{@link org.opencms.security.I_CmsPasswordHandler}</code> 
      * interface and configured in the opencms.properties file.<p>
      * 
      * If this method throws no exception the password is valid.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2004/12/21 11:35:00 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2004/12/22 09:39:11 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.db;
 
 import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.util.CmsUUID;
 
@@ -50,7 +49,7 @@ import java.util.Map;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.44 $ $Date: 2004/12/21 11:35:00 $
+ * @version $Revision: 1.45 $ $Date: 2004/12/22 09:39:11 $
  * @since 5.1
  */
 public interface I_CmsUserDriver extends I_CmsDriver {
@@ -244,7 +243,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param lastname the lastname of the user.
      * @param email the email of the user.
      * @param lastlogin the user lastlogin time.
-     * @param flags the flags for a user (e.g. <code>{@link I_CmsConstants#C_FLAG_ENABLED}</code>).
+     * @param flags the flags for a user (e.g. <code>{@link org.opencms.main.I_CmsConstants#C_FLAG_ENABLED}</code>).
      * @param additionalInfos a <code>{@link Map}</code> with additional infos for the user. These
      *                      infos may be stored into the Usertables (depending on the implementation).
      * @param address the address of the user.

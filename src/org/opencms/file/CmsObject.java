@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/12/21 15:06:52 $
- * Version: $Revision: 1.104 $
+ * Date   : $Date: 2004/12/22 09:37:06 $
+ * Version: $Revision: 1.105 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.104 $
+ * @version $Revision: 1.105 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -2865,8 +2865,7 @@ public class CmsObject {
      * @param oldPassword the old password.
      * @param newPassword the new password.
      * 
-     * @throws CmsException if the user data could not be read from the database.
-     * @throws CmsSecurityException if the specified username and old password could not be verified.
+     * @throws CmsException if the user data could not be read from the database
      */
     public void setPassword(String username, String oldPassword, String newPassword) throws CmsException {
 
@@ -3002,14 +3001,14 @@ public class CmsObject {
     /**
      * This method checks if a new password follows the rules for
      * new passwords, which are defined by a Class implementing the 
-     * <code>{@link org.opencms.security.I_CmsPasswordHandler}<code> 
+     * <code>{@link org.opencms.security.I_CmsPasswordHandler}</code> 
      * interface and configured in the opencms.properties file.<p>
      * 
      * If this method throws no exception the password is valid.<p>
      *
      * @param password the new password that has to be checked.
      *
-     * @throws CmsSecurityException if the password is not valid.
+     * @throws CmsSecurityException if the password is not valid
      */
     public void validatePassword(String password) throws CmsSecurityException {
 

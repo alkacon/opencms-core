@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/I_CmsWorkflowDriver.java,v $
- * Date   : $Date: 2004/12/20 15:18:46 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/12/22 09:39:11 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,6 @@ import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
 
 import java.util.List;
 
@@ -50,7 +49,7 @@ import java.util.List;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.19 $ $Date: 2004/12/20 15:18:46 $
+ * @version $Revision: 1.20 $ $Date: 2004/12/22 09:39:11 $
  * @since 5.1
  */
 public interface I_CmsWorkflowDriver {
@@ -232,10 +231,10 @@ public interface I_CmsWorkflowDriver {
      * The <code>tasktype</code> parameter will filter the tasks.
      * The possible values for this parameter are:<br>
      * <ul>
-     * <il><code>{@link I_CmsConstants#C_TASKS_ALL}</code>: Reads all tasks</il>
-     * <il><code>{@link I_CmsConstants#C_TASKS_OPEN}</code>: Reads all open tasks</il>
-     * <il><code>{@link I_CmsConstants#C_TASKS_DONE}</code>: Reads all finished tasks</il>
-     * <il><code>{@link I_CmsConstants#C_TASKS_NEW}</code>: Reads all new tasks</il>
+     * <il><code>{@link org.opencms.main.I_CmsConstants#C_TASKS_ALL}</code>: Reads all tasks</il>
+     * <il><code>{@link org.opencms.main.I_CmsConstants#C_TASKS_OPEN}</code>: Reads all open tasks</il>
+     * <il><code>{@link org.opencms.main.I_CmsConstants#C_TASKS_DONE}</code>: Reads all finished tasks</il>
+     * <il><code>{@link org.opencms.main.I_CmsConstants#C_TASKS_NEW}</code>: Reads all new tasks</il>
      * </ul>
      *
      * @param dbc the current database context

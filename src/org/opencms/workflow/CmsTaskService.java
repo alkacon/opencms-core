@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workflow/Attic/CmsTaskService.java,v $
- * Date   : $Date: 2004/12/20 15:18:46 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/12/22 09:37:06 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,6 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
 
 import java.util.List;
 
@@ -227,10 +226,10 @@ public class CmsTaskService {
      * The <code>tasktype</code> parameter will filter the tasks.
      * The possible values for this parameter are:<br>
      * <ul>
-     * <il><code>{@link I_CmsConstants#C_TASKS_ALL}</code>: Reads all tasks</il>
-     * <il><code>{@link I_CmsConstants#C_TASKS_OPEN}</code>: Reads all open tasks</il>
-     * <il><code>{@link I_CmsConstants#C_TASKS_DONE}</code>: Reads all finished tasks</il>
-     * <il><code>{@link I_CmsConstants#C_TASKS_NEW}</code>: Reads all new tasks</il>
+     * <il><code>{@link org.opencms.main.I_CmsConstants#C_TASKS_ALL}</code>: Reads all tasks</il>
+     * <il><code>{@link org.opencms.main.I_CmsConstants#C_TASKS_OPEN}</code>: Reads all open tasks</il>
+     * <il><code>{@link org.opencms.main.I_CmsConstants#C_TASKS_DONE}</code>: Reads all finished tasks</il>
+     * <il><code>{@link org.opencms.main.I_CmsConstants#C_TASKS_NEW}</code>: Reads all new tasks</il>
      * </ul>
      *
      * @param projectId the id of the project in which the tasks are defined.
@@ -367,10 +366,10 @@ public class CmsTaskService {
      * The <code>tasktype</code> parameter will filter the tasks.
      * The possible values are:<br>
      * <ul>
-     * <il><code>{@link I_CmsConstants#C_TASKS_ALL}</code>: Reads all tasks</il>
-     * <il><code>{@link I_CmsConstants#C_TASKS_OPEN}</code>: Reads all open tasks</il>
-     * <il><code>{@link I_CmsConstants#C_TASKS_DONE}</code>: Reads all finished tasks</il>
-     * <il><code>{@link I_CmsConstants#C_TASKS_NEW}</code>: Reads all new tasks</il>
+     * <il><code>{@link org.opencms.main.I_CmsConstants#C_TASKS_ALL}</code>: Reads all tasks</il>
+     * <il><code>{@link org.opencms.main.I_CmsConstants#C_TASKS_OPEN}</code>: Reads all open tasks</il>
+     * <il><code>{@link org.opencms.main.I_CmsConstants#C_TASKS_DONE}</code>: Reads all finished tasks</il>
+     * <il><code>{@link org.opencms.main.I_CmsConstants#C_TASKS_NEW}</code>: Reads all new tasks</il>
      * </ul><p>
      *
      * @param projectId the id of the project in which the tasks are defined. Can be null to select all tasks.
@@ -393,10 +392,10 @@ public class CmsTaskService {
      * The <code>tasktype</code> parameter will filter the tasks.
      * The possible values for this parameter are:<br>
      * <ul>
-     * <il><code>{@link I_CmsConstants#C_TASKS_ALL}</code>: Reads all tasks</il>
-     * <il><code>{@link I_CmsConstants#C_TASKS_OPEN}</code>: Reads all open tasks</il>
-     * <il><code>{@link I_CmsConstants#C_TASKS_DONE}</code>: Reads all finished tasks</il>
-     * <il><code>{@link I_CmsConstants#C_TASKS_NEW}</code>: Reads all new tasks</il>
+     * <il><code>{@link org.opencms.main.I_CmsConstants#C_TASKS_ALL}</code>: Reads all tasks</il>
+     * <il><code>{@link org.opencms.main.I_CmsConstants#C_TASKS_OPEN}</code>: Reads all open tasks</il>
+     * <il><code>{@link org.opencms.main.I_CmsConstants#C_TASKS_DONE}</code>: Reads all finished tasks</il>
+     * <il><code>{@link org.opencms.main.I_CmsConstants#C_TASKS_NEW}</code>: Reads all new tasks</il>
      * </ul><p>
      *
      * @param projectId the id of the Project in which the tasks are defined.
@@ -421,10 +420,10 @@ public class CmsTaskService {
      * The <code>tasktype</code> parameter will filter the tasks.
      * The possible values for this parameter are:<br>
      * <ul>
-     * <il><code>{@link I_CmsConstants#C_TASKS_ALL}</code>: Reads all tasks</il>
-     * <il><code>{@link I_CmsConstants#C_TASKS_OPEN}</code>: Reads all open tasks</il>
-     * <il><code>{@link I_CmsConstants#C_TASKS_DONE}</code>: Reads all finished tasks</il>
-     * <il><code>{@link I_CmsConstants#C_TASKS_NEW}</code>: Reads all new tasks</il>
+     * <il><code>{@link org.opencms.main.I_CmsConstants#C_TASKS_ALL}</code>: Reads all tasks</il>
+     * <il><code>{@link org.opencms.main.I_CmsConstants#C_TASKS_OPEN}</code>: Reads all open tasks</il>
+     * <il><code>{@link org.opencms.main.I_CmsConstants#C_TASKS_DONE}</code>: Reads all finished tasks</il>
+     * <il><code>{@link org.opencms.main.I_CmsConstants#C_TASKS_NEW}</code>: Reads all new tasks</il>
      * </ul>
      *
      * @param projectId the id of the Project in which the tasks are defined.
@@ -433,7 +432,7 @@ public class CmsTaskService {
      * @param orderBy specifies how to order the tasks.
      * @param sort sort order C_SORT_ASC, C_SORT_DESC, or null.
      * 
-     * @return a list of <code>{@link CmsTask}</code> objects for the user .
+     * @return a list of <code>{@link CmsTask}</code> objects for the user
      * 
      * @throws CmsException if operation was not successful.
      */
@@ -446,7 +445,7 @@ public class CmsTaskService {
     /**
      * Reactivates a task.<p>
      * 
-     * Setting its state to <code>{@link I_CmsConstants#C_TASK_STATE_STARTED}</code> and
+     * Setting its state to <code>{@link org.opencms.main.I_CmsConstants#C_TASK_STATE_STARTED}</code> and
      * the percentage to <b>zero</b>.<p>
      *
      * @param taskId the id of the task to reactivate.
