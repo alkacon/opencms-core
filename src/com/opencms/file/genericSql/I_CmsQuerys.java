@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/06/08 09:03:42 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2000/06/08 10:19:29 $
+ * Version: $Revision: 1.18 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -32,7 +32,7 @@ package com.opencms.file.genericSql;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.17 $ $Date: 2000/06/08 09:03:42 $
+ * @version $Revision: 1.18 $ $Date: 2000/06/08 10:19:29 $
  */
 public interface I_CmsQuerys {
     
@@ -156,7 +156,7 @@ public interface I_CmsQuerys {
 												   C_PROPERTYDEF_TYPE + " = ? WHERE " + 
 												   C_PROPERTYDEF_ID + " = ? ";
 	
-	// Constants for Properties table
+	// Constants for properties table
     public static final String C_PROPERTY_VALUE = "PROPERTY_VALUE";
 	public static final String C_PROPERTY_RESOURCE_ID = "RESOURCE_ID";
 
@@ -184,6 +184,21 @@ public interface I_CmsQuerys {
 													
 	public static final Integer C_PROPERTIES_CREATE_KEY = new Integer(354);	
 	public static final String C_PROPERTIES_CREATE = "INSERT INTO " + C_DATABASE_PREFIX + "PROPERTIES VALUES(?,?,?,?)";
+
+	public static final Integer C_PROPERTIES_READALL_KEY = new Integer(355);	
+	public static final String C_PROPERTIES_READALL = "SELECT " + C_DATABASE_PREFIX + "PROPERTIES.*, " + C_DATABASE_PREFIX + "PROPERTYDEF.PROPERTYDEF_NAME FROM " + C_DATABASE_PREFIX + "PROPERTIES, " + C_DATABASE_PREFIX + "PROPERTYDEF " + 
+													 "WHERE " + C_DATABASE_PREFIX + "PROPERTIES.PROPERTYDEF_ID = " + C_DATABASE_PREFIX + "PROPERTYDEF.PROPERTYDEF_ID and " +
+													 C_DATABASE_PREFIX + "PROPERTIES.RESOURCE_ID = ? and " +
+													 C_DATABASE_PREFIX + "PROPERTYDEF.RESOURCE_TYPE = ?";
+
+	public static final Integer C_PROPERTIES_DELETEALL_KEY = new Integer(356);	
+	public static final String C_PROPERTIES_DELETEALL = "DELETE FROM " + C_DATABASE_PREFIX + "PROPERTIES " + 
+													   "WHERE RESOURCE_ID = ?";
+
+	public static final Integer C_PROPERTIES_DELETE_KEY = new Integer(357);	
+	public static final String C_PROPERTIES_DELETE = "DELETE FROM " + C_DATABASE_PREFIX + "PROPERTIES " + 
+													"WHERE " + C_PROPERTYDEF_ID + " = ? and " +
+													C_PROPERTY_RESOURCE_ID + " = ? ";
 
 	
     // Constants for Projects table
