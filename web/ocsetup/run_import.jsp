@@ -14,8 +14,14 @@
         importWp = param.equals("true");
     }
 	
-	param = request.getParameter("useDirectoryTranslation");
-	Bean.setUseDirectoryTranslation( "true".equals(param) );
+	if (!Bean.getSetupType()) {
+		param = request.getParameter("directoryTranslationEnabled");
+		Bean.setDirectoryTranslationEnabled( param );
+			
+		/* Save Properties to file "opencms.properties" and 2nd time */
+		CmsSetupUtils Utils = new CmsSetupUtils(Bean.getBasePath());
+		Utils.saveProperties(Bean.getProperties(),"opencms.properties",true);								
+	}
     
     /* next page */
     String nextPage = "activex.jsp";

@@ -99,8 +99,8 @@
 						</tr>
 						<tr>
 							<td class="bold" align="center">				
-								<input type="radio" name="useDirectoryTranslation" value="true" <%=Bean.isChecked(Bean.getUseDirectoryTranslation(),"true")%>> Yes
-								<input type="radio" name="useDirectoryTranslation" value="false" <%=Bean.isChecked(Bean.getUseDirectoryTranslation(),"false")%>> No
+								<input type="radio" name="directoryTranslationEnabled" value="true" <%=Bean.isChecked(Bean.getDirectoryTranslationEnabled(),"true")%>> Yes
+								<input type="radio" name="directoryTranslationEnabled" value="false" <%=Bean.isChecked(Bean.getDirectoryTranslationEnabled(),"false")%>> No
 							</td>
 						</tr>							
 <% } %>						

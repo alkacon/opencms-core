@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetup.java,v $
-* Date   : $Date: 2002/11/07 18:09:30 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2002/11/11 16:28:21 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -830,30 +830,6 @@ public class CmsSetup {
 	public void setUrlPrefixServername(String urlPrefixServername) {
 		setExtProperty("url_prefix_servername", urlPrefixServername);
 	}  
-
-	/** 
-	 * Sets the value for the "directory.translation.enabled" option.
-	 * @param value a string which is either {"true"|"false"}
-	 */
-	public void setUseDirectoryTranslation(String value) {
-		setExtProperty("directory.translation.enabled", value);
-	}
-
-	/** 
-	 * Sets the value for the "directory.translation.enabled" option.
-	 * @param value a boolean which is either {true|false}
-	 */
-	public void setUseDirectoryTranslation(boolean value) {
-		this.setUseDirectoryTranslation("" + value);
-	}
-
-	/**
-	 * Returns the value for the "directory.translation.enabled" option.
-	 * @return a string which is either {"true"|"false"}
-	 */
-	public String getUseDirectoryTranslation() {
-		return this.getExtProperty("directory.translation.enabled");
-	}
 
 	public void setFlexCacheEnabled(String value) {
 		this.setExtProperty("flex.cache.enabled", value);
