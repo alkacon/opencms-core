@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceXmlPage.java,v $
-* Date   : $Date: 2003/11/21 16:40:53 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2003/11/27 16:26:49 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.w3c.dom.Document;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 2003/11/21 16:40:53 $
+ * @version $Revision: 1.2 $ $Date: 2003/11/27 16:26:49 $
  */
 public class CmsNewResourceXmlPage extends CmsWorkplaceDefault {
 
@@ -150,7 +150,8 @@ public class CmsNewResourceXmlPage extends CmsWorkplaceDefault {
                         bodyBytes = ("").getBytes();
                     } else {
                         // do not catch exceptions, a specified layout should exist
-                        bodyBytes = ensureBodyEncoding(cms, layoutFilePath);
+                        // bodyBytes = ensureBodyEncoding(cms, layoutFilePath);
+                        bodyBytes = cms.readFile(layoutFilePath).getContents();
                         layoutFileDefined = true;
                     }
 
@@ -172,10 +173,10 @@ public class CmsNewResourceXmlPage extends CmsWorkplaceDefault {
                     }
 
                     // care about the linkmanagement if a default body was selected
-                    if(layoutFileDefined){
-                        CmsPageLinks linkObject = cms.getPageLinks(currentFilelist+newFile);
-                        cms.createLinkEntrys(linkObject.getResourceId(), linkObject.getLinkTargets());
-                    }
+                    // if(layoutFileDefined){
+                    //    CmsPageLinks linkObject = cms.getPageLinks(currentFilelist+newFile);
+                    //    cms.createLinkEntrys(linkObject.getResourceId(), linkObject.getLinkTargets());
+                    // }
                     // now check if navigation informations have to be added to the new page.
                     if(navtitle != null) {
                         cms.writeProperty(cms.readAbsolutePath(file), C_PROPERTY_NAVTEXT, navtitle);

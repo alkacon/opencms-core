@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsMSDHtmlEditor.java,v $
- * Date   : $Date: 2003/11/26 17:11:48 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/11/27 16:18:52 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.jsp.JspException;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.1.12
  */
@@ -110,7 +110,12 @@ public class CmsMSDHtmlEditor extends CmsEditor {
                     setParamTempfile(createTempFile());
 
                     CmsDefaultPage page = (CmsDefaultPage)CmsXmlPage.newInstance(getCms(), getCms().readFile(this.getParamTempfile()));
-                    setParamContent(new String(page.getElementData("body", "en")));
+                    byte[] elementData = page.getElementData("body", "en");
+                    if (elementData != null) {
+                        setParamContent(new String(elementData));
+                    } else {
+                        setParamContent("");
+                    }
  
                     //setParamPagetemplate("/system/modules/com.lgt.intranet.modules.frontend/templates/lgt_intranet_main");
                     setParamPagetemplate(getJsp().property(I_CmsConstants.C_PROPERTY_TEMPLATE, getParamTempfile(), ""));                    
@@ -279,7 +284,13 @@ public class CmsMSDHtmlEditor extends CmsEditor {
             prepareContent(true);
             
             CmsDefaultPage page = (CmsDefaultPage)CmsXmlPage.newInstance(getCms(), getCms().readFile(this.getParamTempfile()));
+            
+            if (!page.hasElement("body", "en")) {
+                page.addElement("body", "en");
+            }
+            
             page.setElementData("body", "en", Encoder.unescape(getParamContent(),Encoder.C_UTF8_ENCODING).getBytes());
+            
             getCms().writeFile(page.marshal());
             commitTempFile();
         } catch (CmsException e) {

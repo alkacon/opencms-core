@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeXmlPage.java,v $
- * Date   : $Date: 2003/11/21 16:40:39 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/11/27 16:25:44 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.1
  */
 public class CmsResourceTypeXmlPage extends A_CmsResourceType {
@@ -86,10 +86,10 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType {
         cms.doLockResource(resourcename, false);
 
         // linkmanagement: create the links of the new page (for the case that the content was not empty
-        if (contents.length > 1) {
-            CmsPageLinks linkObject = cms.getPageLinks(resourcename);
-            cms.createLinkEntrys(linkObject.getResourceId(), linkObject.getLinkTargets());
-        }
+        // if (contents.length > 1) {
+        //    CmsPageLinks linkObject = cms.getPageLinks(resourcename);
+        //    cms.createLinkEntrys(linkObject.getResourceId(), linkObject.getLinkTargets());
+        // }
         contents = null;
         return file;
     }  

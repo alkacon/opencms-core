@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsDefaultPage.java,v $
- * Date   : $Date: 2003/11/26 17:11:48 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/11/27 16:20:36 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,21 +39,25 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.apache.html.dom.HTMLBuilder;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.Node;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
+import org.xml.sax.XMLReader;
 
 /**
  * Simple DOM based implementation of CmsDefaultPage.<p>
  * 
- * @version $Revision: 1.2 $ $Date: 2003/11/26 17:11:48 $
+ * @version $Revision: 1.3 $ $Date: 2003/11/27 16:20:36 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsDefaultPage extends CmsXmlPage implements Serializable  {
@@ -123,19 +127,14 @@ public class CmsDefaultPage extends CmsXmlPage implements Serializable  {
         
         Element element = (Element)m_elements.get(language+"_"+name);
         Element editdata = element.element("editdata");
-        Node node = (editdata.hasContent()) ? editdata.node(0) : null;
+        Element displaydata = element.element("displaydata");
         String cdata = new String(data);
-
-        if (node != null && node.getNodeType() == Node.CDATA_SECTION_NODE) {
-            
-            node.setText(cdata);
-            return;
-            
-        } else if (node != null) {
-            editdata.remove(node);
-        }
         
+        editdata.setContent(null);
         editdata.addCDATA(cdata);
+        
+        displaydata.setContent(null);
+        displaydata.addCDATA(cdata);
     }
     
     /**
@@ -148,9 +147,26 @@ public class CmsDefaultPage extends CmsXmlPage implements Serializable  {
     public byte[] getElementData(String name, String language) {
 
         Element element = (Element)m_elements.get(language+"_"+name);
-        Element editdata = element.element("editdata");
         
-        return editdata.getText().getBytes();
+        if (element != null) {
+            
+            Element editdata = element.element("editdata");
+            return editdata.getText().getBytes();
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Returns if the page object contains a name specified by name and language.<p>
+     * 
+     * @param name the name of the element
+     * @param language the language of the element
+     * @return true if this element exists
+     */
+    public boolean hasElement(String name, String language) {
+    
+        return m_elements.containsKey(language+"_"+name);
     }
     
     /**
@@ -166,6 +182,20 @@ public class CmsDefaultPage extends CmsXmlPage implements Serializable  {
             }
         }
         return names;
+    }
+
+    /**
+     * @see org.opencms.page.CmsXmlPage#getLanguages()
+     */
+    public Set getLanguages() {
+    
+        Set languages = new HashSet();
+        for (Iterator i = m_elements.keySet().iterator(); i.hasNext();) {
+            String name = (String)i.next();
+            String language = name.substring(0, name.indexOf("_"));
+            languages.add(language);
+        }
+        return languages;
     }
     
     /**
@@ -185,33 +215,37 @@ public class CmsDefaultPage extends CmsXmlPage implements Serializable  {
     public CmsXmlPage unmarshal(CmsObject cms) 
         throws CmsPageException {
 
-        InputStream in = new ByteArrayInputStream(getContents());
-
-        try {
-            SAXReader reader = new SAXReader();
-            reader.setEntityResolver(new CmsEntityResolver(cms));
-            m_document = reader.read(in);
-
-            m_elements = new HashMap();
-            for (Iterator i = m_document.getRootElement().element("elements").elementIterator("element"); i.hasNext();) {
-               
-                Element elem = (Element)i.next();
-                String elementName = elem.attribute("name").getValue();
-                String elementLang = elem.attribute("language").getValue();
-                
-                m_elements.put(elementLang+"_"+elementName, elem);
-            }
-            
-        } catch (Exception exc) {
-            throw new CmsPageException("Unmarshalling xml page failed", exc);
-        } finally {
-            try {
-                in.close();
-            } catch (Exception exc) {
-                // noop
-            }
-        }
+        byte[] content = getContents();
+        m_elements = new HashMap();
         
+        if (content.length > 0) { 
+            InputStream in = new ByteArrayInputStream(content);
+    
+            try {
+                SAXReader reader = new SAXReader();
+                reader.setEntityResolver(new CmsEntityResolver(cms));
+                m_document = reader.read(in);
+    
+                
+                for (Iterator i = m_document.getRootElement().element("elements").elementIterator("element"); i.hasNext();) {
+                   
+                    Element elem = (Element)i.next();
+                    String elementName = elem.attribute("name").getValue();
+                    String elementLang = elem.attribute("language").getValue();
+                    
+                    m_elements.put(elementLang+"_"+elementName, elem);
+                }
+                
+            } catch (Exception exc) {
+                throw new CmsPageException("Unmarshalling xml page failed", exc);
+            } finally {
+                try {
+                    in.close();
+                } catch (Exception exc) {
+                    // noop
+                }
+            }
+        }         
         return this;
     }
     

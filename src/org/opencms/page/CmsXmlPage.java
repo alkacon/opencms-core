@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsXmlPage.java,v $
- * Date   : $Date: 2003/11/26 15:59:47 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/11/27 16:25:12 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,9 +33,10 @@ package org.opencms.page;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
 import java.util.List;
+import java.util.Set;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/11/26 15:59:47 $
+ * @version $Revision: 1.3 $ $Date: 2003/11/27 16:25:12 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public abstract class CmsXmlPage extends CmsFile {
@@ -57,6 +58,14 @@ public abstract class CmsXmlPage extends CmsFile {
      * @return list of available elements
      */
     public abstract List getNames(String language);
+    
+    
+    /**
+     * Returns all languages with available elements.<p>
+     * 
+     * @return list of languages with available elements
+     */
+    public abstract Set getLanguages();
     
     /**
      * Returns the display content (processed data) of an element.<p>
