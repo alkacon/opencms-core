@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceFolder.java,v $
-* Date   : $Date: 2001/04/06 16:28:43 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2001/04/06 16:48:01 $
+* Version: $Revision: 1.23 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -45,7 +45,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.22 $ $Date: 2001/04/06 16:28:43 $
+ * @version $Revision: 1.23 $ $Date: 2001/04/06 16:48:01 $
  */
 
 public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -200,7 +200,8 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
                     // fast forward
                     try {
                         // first check if everything is ok
-                        int propError = checkProperties(cms, allProperties);
+                        boolean checkFileLogo = ! cms.rootFolder().getAbsolutePath().equals(currentFilelist);
+                        int propError = checkProperties(cms, allProperties, checkFileLogo);
                         if (propError > 0){
                             // error by user get the correct error template
                             template = "error_" + propError;
@@ -598,9 +599,10 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
      *
      * @param cms The cmsObject
      * @param properties The Hashtable with the properties to be checked.
+     * @param checkFolderLogo Indicates if the FolderLogo should be checked too.
      * @return int the error nummber.
      */
-    private int checkProperties (CmsObject cms, Hashtable properties){
+    private int checkProperties (CmsObject cms, Hashtable properties, boolean checkFolderLogo){
 
         // serch for error 1 (the Hauptlogo must be a OpenCms resource from type image)
         try{
@@ -611,6 +613,18 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
             }
         }catch(CmsException e){
             return 1;
+        }
+        if(checkFolderLogo){
+            // serch for error 1 (the Folderlogo must be a OpenCms resource from type image)
+            try{
+                String logo = (String)properties.get("Verzeichnislogo_img");
+                CmsResource pic = cms.readFileHeader(logo);
+                if(!(cms.getResourceType(pic.getType()).getResourceName()).equals(cms.C_TYPE_IMAGE_NAME)){
+                   return 1;
+                }
+            }catch(CmsException e){
+                return 1;
+            }
         }
 
         // serch for error 2 (FreierLink_navtext and FreierLink_target: both or none)
