@@ -267,7 +267,9 @@ private Object getContentDefinition(CmsObject cms, Class cdClass, Integer id) {
 		if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 			A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: Other exception!");
 		}
-		e.printStackTrace();
+        if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+            A_OpenCms.log(C_OPENCMS_INFO, e.getMessage() );
+        }
 	}
 	return o;
 }
@@ -298,7 +300,9 @@ private Object getContentDefinition(CmsObject cms, Class cdClass, String id) {
 		if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 			A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: Other exception!");
 		}
-		e.printStackTrace();
+        if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+            A_OpenCms.log(C_OPENCMS_INFO, e.getMessage() );
+        }
 	}
 	return o;
 }
@@ -884,14 +888,18 @@ private byte[] getContentLock(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 			try {
         ls = ((A_CmsContentDefinition) o).getLockstate();
 			} catch (Exception e) {
-				e.printStackTrace();
+                 if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+                    A_OpenCms.log(C_OPENCMS_INFO, e.getMessage() );
+                }
 			}
 		} else {
 			o = getContentDefinition(cms, cdClass, id);
 			try {
-        ls = ((A_CmsContentDefinition) o).getLockstate();
+                ls = ((A_CmsContentDefinition) o).getLockstate();
 			} catch (Exception e) {
-				e.printStackTrace();
+				 if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+                    A_OpenCms.log(C_OPENCMS_INFO, e.getMessage() );
+                }
 			}
 		}
 		//create appropriate class name with underscores for labels
@@ -937,16 +945,18 @@ private byte[] getContentLock(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 		try {
 			idInteger = Integer.valueOf(id);
 		} catch (Exception e) {
-      ls = C_NOT_LOCKED;
+        ls = C_NOT_LOCKED;
 
 			//access content definition object specified by id through reflection
 			String title = "no title";
 			Object o = null;
 			o = getContentDefinition(cms, cdClass, id);
 			try {
-        ls = ((A_CmsContentDefinition) o).getLockstate();
-			} catch (Exception exce) {
-				exce.printStackTrace();
+                ls = ((A_CmsContentDefinition) o).getLockstate();
+			} catch (Exception ex) {
+				 if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+                    A_OpenCms.log(C_OPENCMS_INFO, ex.getMessage() );
+                }
 			}
 		}
 
@@ -955,20 +965,24 @@ private byte[] getContentLock(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 		if (idInteger != null) {
 			o = getContentDefinition(cms, cdClass, idInteger);
 			try {
-        ls = ((A_CmsContentDefinition) o).getLockstate();
+                ls = ((A_CmsContentDefinition) o).getLockstate();
 			} catch (Exception e) {
-				e.printStackTrace();
+				 if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+                    A_OpenCms.log(C_OPENCMS_INFO, e.getMessage() );
+                }
 			}
 		} else {
 			o = getContentDefinition(cms, cdClass, id);
 			try {
-        ls = ((A_CmsContentDefinition) o).getLockstate();
+                ls = ((A_CmsContentDefinition) o).getLockstate();
 			} catch (Exception e) {
-				e.printStackTrace();
+				 if((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
+                    A_OpenCms.log(C_OPENCMS_INFO, e.getMessage() );
+                }
 			}
 		}
 		try {
-      ls = ((A_CmsContentDefinition) o).getLockstate();
+            ls = ((A_CmsContentDefinition) o).getLockstate();
 		} catch (Exception e) {
 			if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 				A_OpenCms.log(C_OPENCMS_INFO, getClassName() + " Backoffice getContentLock: Method getLockstate throwed an exception!");
@@ -980,7 +994,7 @@ private byte[] getContentLock(CmsObject cms, CmsXmlWpTemplateFile template, Stri
 		if (ls == actUserId) {
 			//steal lock (userlock -> nolock)
 			try {
-        ((A_CmsContentDefinition) o).setLockstate(C_NOT_LOCKED);
+                ((A_CmsContentDefinition) o).setLockstate(C_NOT_LOCKED);
 			} catch (Exception e) {
 				if ((A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING)) {
 					A_OpenCms.log(C_OPENCMS_INFO, getClassName() + " Backoffice getContentLock: Method setLockstate throwed an exception!");
