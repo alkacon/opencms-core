@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2002/10/15 14:28:07 $
- * Version: $Revision: 1.408 $
+ * Date   : $Date: 2002/10/16 08:08:19 $
+ * Version: $Revision: 1.409 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,8 @@ OpenCms 5.0 (next version)
 * Problems with XML export or registry with special characters (like umlauts) have been resolved
 * Fixed ElementCache for DumpLauncher. For DUMP-Elements no file.encoding translation is allowed.
 * Fixed ElementCache for MethodElements. Switched handling from byte[] to String.
+- Changed the workplace stylesheet to fix problems displaying german umlauts. Thanks to www.gridnine.com
+  for this contribution.
 
 OpenCms 5.0 beta 1 Kaitain - 23 August 2002
 - This is the first public beta of the new 5.0 OpenCms version
