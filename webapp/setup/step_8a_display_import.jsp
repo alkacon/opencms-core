@@ -46,7 +46,7 @@ OpenCms Setup Wizard
 
 		/* Displays a message and enables the continue button */
 		function finish() {
-			replaceInfo("Finished. Please check the output below to ensure that the workplace has been imported without major errors.", "ok");
+			replaceInfo("Finished. Please check the output to see if the workplace has been imported without errors.", "ok");
 			document.forms[0].ctn.disabled = false;
 			document.forms[0].bck.disabled = false;
 			finished = true;
@@ -103,7 +103,7 @@ OpenCms Setup Wizard - Import workplace
 </tr>
 <tr>
 	<td style="vertical-align: top;">
-			<textarea style="width:99%; height:260px; font-size: 12px;" cols="60" rows="16" wrap="off" name="output" id="output"></textarea>
+			<textarea style="width:99%; height:260px; font-size: 11px;" cols="60" rows="16" wrap="off" name="output" id="output"></textarea>
 	</td>
 </tr>
 </table>
@@ -112,7 +112,7 @@ OpenCms Setup Wizard - Import workplace
 <%= Bean.getHtmlPart("C_BUTTONS_START") %>
 <input name="bck" id="bck" type="button" value="&#060;&#060; Back" class="dialogbutton" onclick="lastpage();">
 <input name="ctn" id="ctn" type="button" value="Continue &#062;&#062;" class="dialogbutton" onclick="nextpage();">
-<input name="cancel" type="button" value="Cancel" class="dialogbutton" onclick="location.href='cancel.jsp';" style="margin-left: 50px;">
+<input name="cancel" type="button" value="Cancel" class="dialogbutton" onclick="location.href='index.jsp';" style="margin-left: 50px;">
 </form>
 <%= Bean.getHtmlPart("C_BUTTONS_END") %>
 <script type="text/javascript">

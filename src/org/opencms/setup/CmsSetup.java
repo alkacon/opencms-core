@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetup.java,v $
- * Date   : $Date: 2004/02/19 10:22:28 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/02/19 11:58:51 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,14 +43,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.StringTokenizer;
-import java.util.Vector;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -61,7 +54,7 @@ import org.dom4j.io.SAXReader;
 
 /**
  * A java bean as a controller for the OpenCms setup wizard.<p>
- * 
+ *
  * It is not allowed to customize this bean with methods for a specific database server setup!<p>
  * 
  * Database server specific settings should be set/read using get/setDbProperty, as for example like:
@@ -72,7 +65,7 @@ import org.dom4j.io.SAXReader;
  *
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  */
 public class CmsSetup extends Object implements Serializable, Cloneable {
 
@@ -106,6 +99,9 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
 
     /** List of keys of all available database server setups (e.g. "mysql", "generic" or "oracle").<p> */
     private List m_databaseKeys;
+    
+    /** List of sorted keys by ranking of all available database server setups (e.g. "mysql", "generic" or "oracle").<p> */
+    private List m_sortedDatabaseKeys;
     
     /** List of clear text names of all available database server setups (e.g. "MySQL", "Generic (ANSI) SQL").<p> */
     private List m_databaseNames;
@@ -172,6 +168,7 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
      * @return boolean true if all properties are set correctly
      */
     public boolean checkProperties() {
+
         // check if properties available
         if (getProperties() == null) {
             return false;
@@ -219,7 +216,7 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
      * @param value The value of the property
      */
     public void setDbProperty(String key, String value) {
-        // extract tthe database key out of the entire key
+        // extract the database key out of the entire key
         String databaseKey = key.substring(0, key.indexOf("."));
         Map databaseProperties = (Map) getDatabaseProperties().get(databaseKey);
         databaseProperties.put(key, value);
@@ -234,7 +231,7 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
     public String getDbProperty(String key) {
         Object value = null;
         
-        // extract tthe database key out of the entire key
+        // extract the database key out of the entire key
         String databaseKey = key.substring(0, key.indexOf("."));
         Map databaseProperties = (Map) getDatabaseProperties().get(databaseKey);
 
@@ -320,7 +317,7 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
         }
         
         if (m_databaseKey == null || "".equals(m_databaseKey)) {
-            m_databaseKey = (String) getDatabases().get(0);
+            m_databaseKey = (String) getSortedDatabases().get(0);
         }
         
         return m_databaseKey;
@@ -329,7 +326,7 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
     /** 
      * Returns a list with they keys (e.g. "mysql", "generic" or "oracle") of all available
      * database server setups found in "/setup/database/".<p>
-     * 
+     *
      * @return a list with they keys (e.g. "mysql", "generic" or "oracle") of all available database server setups
      */
     public List getDatabases() {
@@ -348,30 +345,30 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
             databaseSetupFolder = new File(m_basePath + File.separator + "setup" + File.separator + "database");
 
             if (databaseSetupFolder.exists()) {
-                childResources = databaseSetupFolder.listFiles();
+            childResources = databaseSetupFolder.listFiles();
 
-                if (childResources != null) {
-                    for (int i = 0; i < childResources.length; i++) {
-                        childResource = childResources[i];
-                        hasMissingSetupFiles = false;
+            if (childResources != null) {
+                for (int i = 0; i < childResources.length; i++) {
+                    childResource = childResources[i];
+                    hasMissingSetupFiles = false;
 
-                        if (childResource.exists() && childResource.isDirectory() && childResource.canRead()) {
-                            for (int j = 0; j < requiredDbSetupFiles.length; j++) {
-                                setupFile = new File(childResource.getPath() + File.separator + requiredDbSetupFiles[j]);
+                    if (childResource.exists() && childResource.isDirectory() && childResource.canRead()) {
+                        for (int j = 0; j < requiredDbSetupFiles.length; j++) {
+                            setupFile = new File(childResource.getPath() + File.separator + requiredDbSetupFiles[j]);
 
-                                if (!setupFile.exists() || !setupFile.isFile() || !setupFile.canRead()) {
-                                    hasMissingSetupFiles = true;
-                                    System.err.println("[" + getClass().getName() + "] missing or unreadable database setup file: " + setupFile.getPath());
-                                    break;
-                                }
-                            }
+                            if (!setupFile.exists() || !setupFile.isFile() || !setupFile.canRead()) {
+                                hasMissingSetupFiles = true;
+                                System.err.println("[" + getClass().getName() + "] missing or unreadable database setup file: " + setupFile.getPath());
+                                break;
+    }
+                        }
 
-                            if (!hasMissingSetupFiles) {
-                                m_databaseKeys.add(childResource.getName().trim());
-                            }
+                        if (!hasMissingSetupFiles) {
+                            m_databaseKeys.add(childResource.getName().trim());
                         }
                     }
                 }
+            }
             }
         } catch (Exception e) {
             System.err.println(e.toString());
@@ -402,11 +399,11 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
         if (m_databaseNames != null) {
             return m_databaseNames;
         }
-
+        
         m_databaseNames = (List) new ArrayList();
         m_databaseProperties = (Map) new HashMap();
         databaseKeys = getDatabases();
-
+        
         for (int i = 0; i < databaseKeys.size(); i++) {
             databaseKey = (String) databaseKeys.get(i);
             configPath = m_basePath + "setup" + File.separator + "database" + File.separator + databaseKey + File.separator + "database.properties";
@@ -415,8 +412,8 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
                 input = new FileInputStream(new File(configPath));
                 databaseProperties = new Properties();
                 databaseProperties.load(input);
-
-                databaseName = databaseProperties.getProperty(databaseKey + ".name");
+                
+                databaseName = databaseProperties.getProperty(databaseKey + ".name");                
                 m_databaseNames.add(databaseName);
                 m_databaseProperties.put(databaseKey, databaseProperties);
             } catch (Exception e) {
@@ -427,14 +424,49 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
                 try {
                     if (input != null) {
                         input.close();
-                    }
+    }
                 } catch (Exception e) {
                     // noop
                 }
             }
-        }
+        }                      
 
         return m_databaseNames;
+    }
+    
+    /** 
+     * Returns a sorted list with they keys (e.g. "mysql", "generic" or "oracle") of all available
+     * database server setups found in "/setup/database/" sorted by their ranking property.<p>
+     *
+     * @return a sorted list with they keys (e.g. "mysql", "generic" or "oracle") of all available database server setups
+     */
+    public List getSortedDatabases() {
+        if (m_sortedDatabaseKeys == null) {
+            List databases = getDatabases();
+            List sortedDatabases = new ArrayList(databases.size());
+            SortedMap mappedDatabases = new TreeMap();
+            for (int i=0; i<databases.size(); i++) {
+                String key = (String)databases.get(i);
+                Integer ranking = new Integer(0);
+                try {
+                    ranking = Integer.valueOf(getDbProperty(key + ".ranking"));
+                } catch (Exception e) {
+                    // ignore
+                }
+                mappedDatabases.put(ranking, key);
+            }
+           
+            while (mappedDatabases.size() > 0) {
+                // get database with highest ranking 
+                Integer key = (Integer)mappedDatabases.lastKey();           
+                String database = (String)mappedDatabases.get(key);
+                sortedDatabases.add(database);
+                mappedDatabases.remove(key);
+            }
+            m_sortedDatabaseKeys = new ArrayList(databases.size());
+            m_sortedDatabaseKeys = sortedDatabases;
+        }     
+        return m_sortedDatabaseKeys;
     }
     
     /** 
@@ -495,6 +527,7 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
      * @param dbWorkUser the database user used by the opencms core 
      */
     public void setDbWorkUser(String dbWorkUser) {
+
         setExtProperty("db.pool." + getPool() + ".user", dbWorkUser);
     }
 
@@ -513,6 +546,7 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
      * @param dbWorkPwd the password for the OpenCms database user  
      */
     public void setDbWorkPwd(String dbWorkPwd) {
+
         setExtProperty("db.pool." + getPool() + ".password", dbWorkPwd);
     }
 
@@ -793,7 +827,7 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
         m_dbCreatePwd = dbCreatePwd;
     }
 
-    /**
+    /** 
      * Checks if the setup wizard is enabled.<p>
      * 
      * @return true if the setup wizard is enables, false otherwise
@@ -969,7 +1003,7 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
     public String getAppName() {
         return getExtProperty("app.name");
     }
-    
+
     /**
      * Returns the replacer.<p>
      * 
@@ -995,8 +1029,8 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
      * @return the clear text name for a database server setup
      */
     public String getDatabaseName(String databaseKey) {
-        return (String) ((Map) getDatabaseProperties().get(getDatabase())).get(databaseKey + ".name");
-    }
+        return (String) ((Map) getDatabaseProperties().get(databaseKey)).get(databaseKey + ".name");
+    }    
     
     /**
      * Returns a map with lists of dependent module package names keyed by module package names.<p>
@@ -1006,12 +1040,11 @@ public class CmsSetup extends Object implements Serializable, Cloneable {
     public Map getModuleDependencies() {
         getAvailableModules();
         return m_moduleDependencies;
-    }
-
+}
     /**
      * Returns a map with all available modules.<p>
      * 
-     * The map conatains maps keyed by module package names. Each of these maps contains various
+     * The map contains maps keyed by module package names. Each of these maps contains various
      * information about the module such as the module name, version, description, and a list of 
      * it's dependencies. You should refer to the source code of this method to understand the data 
      * structure of the map returned by this method!<p>

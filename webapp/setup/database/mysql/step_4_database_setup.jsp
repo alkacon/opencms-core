@@ -91,13 +91,12 @@ OpenCms Setup Wizard - <%= Bean.getDatabaseName(Bean.getDatabase()) %> database 
 			<!-- --------------------- JSP CODE --------------------------- -->
 			<%
 				/* get all available databases */
-				List databases = Bean.getDatabases();
-				List databaseNames = Bean.getDatabaseNames();
+				List databases = Bean.getSortedDatabases();
 				/* 	List all databases found in the dbsetup.properties */
 				if (databases !=null && databases.size() > 0)	{
 					for(int i=0;i<databases.size();i++)	{
 						String db = (String) databases.get(i);
-						String dn = (String) databaseNames.get(i);
+						String dn = Bean.getDatabaseName(db);
 						String selected = "";
 						if(Bean.getDatabase().equals(db))	{
 							selected = "selected";
@@ -126,7 +125,7 @@ OpenCms Setup Wizard - <%= Bean.getDatabaseName(Bean.getDatabase()) %> database 
 </td></tr>
 <tr><td style="vertical-align: bottom;">
 
-<%= Bean.getHtmlPart("C_BLOCK_START", "Settings") %>
+<%= Bean.getHtmlPart("C_BLOCK_START", "Database specific settings") %>
 
 <table border="0" cellpadding="2" cellspacing="0">
 	<tr>
@@ -165,7 +164,7 @@ OpenCms Setup Wizard - <%= Bean.getDatabaseName(Bean.getDatabase()) %> database 
 <%= Bean.getHtmlPart("C_BUTTONS_START") %>
 <input name="back" type="button" value="&#060;&#060; Back" class="dialogbutton" onclick="history.go(-2);">
 <input name="submit" type="submit" value="Continue &#062;&#062;" class="dialogbutton">
-<input name="cancel" type="button" value="Cancel" class="dialogbutton" onclick="location.href='../../cancel.jsp';" style="margin-left: 50px;">
+<input name="cancel" type="button" value="Cancel" class="dialogbutton" onclick="location.href='../../index.jsp';" style="margin-left: 50px;">
 </form>
 <%= Bean.getHtmlPart("C_BUTTONS_END") %>
 <% } else	{ %>

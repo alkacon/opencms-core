@@ -47,7 +47,7 @@ OpenCms Setup Wizard - Browser configuration
 				<td style="width: 25px;"><input type="radio" name="understood" value="true" onclick="toggleButton(false);"></td>
 				<td> yes</td>
 				<td>&nbsp;&nbsp;</td>
-				<td style="width: 25px;"><input type="radio" name="understood" value="no" onclick="toggleButton(true);"></td>
+				<td style="width: 25px;"><input type="radio" name="understood" value="no" onclick="toggleButton(true);" checked="checked"></td>
 				<td> no</td>
 			</tr>
 	
@@ -61,7 +61,7 @@ OpenCms Setup Wizard - Browser configuration
 <%= Bean.getHtmlPart("C_BUTTONS_START") %>
 <input name="back" type="button" value="&#060;&#060; Back" class="dialogbutton" onclick="history.back();">
 <input name="continue" id="continue" type="submit" value="Finish" class="dialogbutton" disabled="disabled">
-<input name="cancel" type="button" value="Cancel" class="dialogbutton" onclick="location.href='cancel.jsp';" style="margin-left: 50px;">
+<input name="cancel" type="button" value="Cancel" class="dialogbutton" onclick="location.href='index.jsp';" style="margin-left: 50px;">
 </form>
 <%= Bean.getHtmlPart("C_BUTTONS_END") %>
 <% } else { %>

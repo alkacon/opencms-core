@@ -89,9 +89,9 @@ OpenCms Setup Wizard - Wrong content encoding!
 
 <%= Bean.getHtmlPart("C_BUTTONS_START") %>
 <form action="" method="post" class="nomargin">
-<input name="back" type="button" value="&#060;&#060; Back" class="dialogbutton" onclick="history.back();">
+<input name="back" type="button" value="&#060;&#060; Back" class="dialogbutton" onclick="location.href='index.jsp';">
 <input name="submit" type="submit" value="Continue &#062;&#062;" class="dialogbutton" disabled="disabled">
-<input name="cancel" type="button" value="Cancel" class="dialogbutton" onclick="location.href='cancel.jsp';" style="margin-left: 50px;">
+<input name="cancel" type="button" value="Cancel" class="dialogbutton" onclick="location.href='index.jsp';" style="margin-left: 50px;">
 </form>
 <%= Bean.getHtmlPart("C_BUTTONS_END") %>
 <%= Bean.getHtmlPart("C_HTML_END") %>
