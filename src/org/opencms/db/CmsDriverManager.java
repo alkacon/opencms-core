@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/04/16 08:30:16 $
- * Version: $Revision: 1.354 $
+ * Date   : $Date: 2004/04/20 12:43:20 $
+ * Version: $Revision: 1.355 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.354 $ $Date: 2004/04/16 08:30:16 $
+ * @version $Revision: 1.355 $ $Date: 2004/04/20 12:43:20 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -7672,6 +7672,19 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         CmsUUID userLastModified = resource.getUserLastModified();
 
         checkPermissions(context, resource, I_CmsConstants.C_CONTROL_ACCESS);
+        
+        // if we try to allow/deny direct publish permission the current user has to be either
+        // an administrator or project manager
+        /*
+        if ((((acEntry.getAllowedPermissions() & I_CmsConstants.C_PERMISSION_DIRECT_PUBLISH) > 0) || ((acEntry
+            .getDeniedPermissions() & I_CmsConstants.C_PERMISSION_DIRECT_PUBLISH) > 0))
+            && !(isAdmin(context) || isManagerOfProject(context))) {
+
+            throw new CmsSecurityException(
+                "[" + getClass().getName() + "] user is not allowed to set direct publish permissions",
+                CmsSecurityException.C_SECURITY_PROJECTMANAGER_PRIVILEGES_REQUIRED);
+        }   
+        */     
 
         m_userDriver.writeAccessControlEntry(context.currentProject(), acEntry);
         clearAccessControlListCache();
