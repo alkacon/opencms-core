@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2003/08/15 18:36:52 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/08/18 13:50:17 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -387,12 +387,12 @@ public class CmsImportVersion4 extends A_CmsImport {
                    m_report.println(translatedName);
                }
            }
-           if (!m_importingChannelData) {
-               // at last we have to get the links from all new imported pages for the  linkmanagement
-               m_report.println(m_report.key("report.check_links_begin"), I_CmsReport.C_FORMAT_HEADLINE);
-               updatePageLinks();
-               m_report.println(m_report.key("report.check_links_end"), I_CmsReport.C_FORMAT_HEADLINE);
-           }
+//           if (!m_importingChannelData) {
+//               // at last we have to get the links from all new imported pages for the  linkmanagement
+//               m_report.println(m_report.key("report.check_links_begin"), I_CmsReport.C_FORMAT_HEADLINE);
+//               updatePageLinks();
+//               m_report.println(m_report.key("report.check_links_end"), I_CmsReport.C_FORMAT_HEADLINE);
+//           }
 
        } catch (Exception exc) {
            m_report.println(exc);
