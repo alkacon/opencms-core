@@ -40,5 +40,29 @@
 		<runtimeclasses>
 			<runtimeinfo class="org.opencms.db.CmsRuntimeInfoFactory" />
 		</runtimeclasses>	
+		<defaultusers>
+			<user-admin>Admin</user-admin>
+			<user-guest>Guest</user-guest>
+			<user-export>Export</user-export>
+			<group-administrators>Administrators</group-administrators>
+			<group-projectmanagers>Projectmanagers</group-projectmanagers>
+			<group-users>Users</group-users>
+			<group-guests>Guests</group-guests>
+		</defaultusers>	
+		<defaultcontentencoding>UTF-8</defaultcontentencoding>
+		<memorymonitor>
+			<maxusagepercent>90</maxusagepercent>
+			<log-interval>15</log-interval>
+			<email-interval>720</email-interval>
+			<warning-interval>720</warning-interval>
+		</memorymonitor>
+		<flexcache>
+			<cache-enabled>true</cache-enabled>
+			<cache-offline>false</cache-offline>
+			<maxcachebytes>8000000</maxcachebytes>
+			<avgcachebytes>6000000</avgcachebytes>
+			<maxentrybytes>400000</maxentrybytes>
+			<maxkeys>2000</maxkeys>
+		</flexcache>
 	</system>
 </opencms>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2004/08/10 15:46:18 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2004/11/05 18:15:11 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,15 +54,7 @@ import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.util.PrintfFormat;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.ConcurrentModificationException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.mail.internet.InternetAddress;
 
@@ -72,7 +64,7 @@ import org.apache.commons.collections.map.LRUMap;
 /**
  * Monitors OpenCms memory consumtion.<p>
  * 
- * @version $Revision: 1.33 $ $Date: 2004/08/10 15:46:18 $
+ * @version $Revision: 1.34 $ $Date: 2004/11/05 18:15:11 $
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -89,21 +81,6 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     /** Flag indicating if monitor is currently running. */
     private static boolean m_currentlyRunning;
     
-    /** Receivers for status emails. */
-    private String[] m_emailReceiver;
-
-    /** Sender for status emails. */
-    private String m_emailSender;
-
-    /** The interval to use for sending emails. */
-    private int m_intervalEmail;
-
-    /** The interval to use for the logging. */
-    private int m_intervalLog;
-
-    /** The interval to use for warnings if status is disabled. */
-    private int m_intervalWarning;
-    
     /** The time the caches were last cleared. */
     private long m_lastClearCache;    
     
@@ -119,9 +96,6 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     /** The time the last warning log was written. */
     private long m_lastLogWarning;    
 
-    /** Memory limit that triggers a warning. */
-    private int m_maxUsagePercent;
-
     /** Contains the object to be monitored. */
     private Map m_monitoredObjects;
 
@@ -131,19 +105,34 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     /** Flag for memory warning mail send. */
     private boolean m_warningLoggedSinceLastStatus;
     
+    private CmsMemoryMonitorConfiguration m_configuration;
+    
+    /**
+     * Defalt declaration.<p>
+     * 
+     * this members are used in several methods
+     */
+    private int m_emailInterval;
+    private int m_logInterval;
+    private int m_warningInterval = 360;
+    private int m_maxUsagePercent = 90;
+    
+    
     /**
      * Empty constructor, required by OpenCms scheduler.<p>
      */
     public CmsMemoryMonitor() {
-        // empty
+        
+        m_monitoredObjects = new HashMap();
     }
     
     /**
-     * Creates a new monitor with the provided configuration.<p>
+     * Initializes the monitor with the provided configuration.<p>
      * 
      * @param configuration the configuration to use
      */
-    public CmsMemoryMonitor(ExtendedProperties configuration) {
+    public void initialize(CmsMemoryMonitorConfiguration configuration) {
+        
         m_warningSendSinceLastStatus = false;
         m_warningLoggedSinceLastStatus = false;
         m_lastEmailWarning = 0;
@@ -151,26 +140,35 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         m_lastLogStatus = 0;
         m_lastLogWarning = 0;        
         m_lastClearCache = 0;
-        m_monitoredObjects = new HashMap();
+        m_configuration = configuration;
         
-        m_emailSender = configuration.getString("memorymonitor.email.sender", null);
-        m_emailReceiver = configuration.getStringArray("memorymonitor.email.receiver");
-        m_intervalEmail = configuration.getInteger("memorymonitor.email.interval", 0) * 60000;
-        m_intervalLog = configuration.getInteger("memorymonitor.log.interval", 0) * 60000;
-        m_intervalWarning = configuration.getInteger("memorymonitor.warning.interval", 360) * 60000;
-        m_maxUsagePercent = configuration.getInteger("memorymonitor.maxUsagePercent", 90);
+        m_emailInterval = m_configuration.getEmailInterval() * 60000;
+        m_logInterval = m_configuration.getLogInterval() * 60000;
+        
+        if (m_configuration.getWarningInterval() > 0) {
+            m_warningInterval = m_configuration.getWarningInterval();
+        }
+        m_warningInterval *= 60000;
+        
+        if (m_configuration.getMaxUsagePercent() > 0) {
+            m_maxUsagePercent = m_configuration.getMaxUsagePercent();
+        }
+        
         
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". MM interval log      : " + (m_intervalLog / 60000) + " min");
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". MM interval email    : " + (m_intervalEmail / 60000) + " min");
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". MM interval warning  : " + (m_intervalWarning / 60000) + " min");
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". MM interval log      : " + (m_logInterval / 60000) + " min");
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". MM interval email    : " + (m_emailInterval / 60000) + " min");
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". MM interval warning  : " + (m_warningInterval / 60000) + " min");
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". MM max usage         : " + m_maxUsagePercent + "%");
-            if ((m_emailReceiver == null) || (m_emailSender == null)) {
+            if ((m_configuration.getEmailReceiver() == null) || (m_configuration.getEmailSender() == null)) {
                 OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". MM email             : disabled");
             } else {
-                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". MM email sender      : " + m_emailSender);
-                for (int i=0, s=m_emailReceiver.length; i < s; i++) {
-                    OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". MM email receiver    : " + (i+1) + " - " + m_emailReceiver[i]);                    
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". MM email sender      : " + m_configuration.getEmailSender());
+                Iterator i = m_configuration.getEmailReceiver().iterator();
+                int n = 0;
+                while (i.hasNext()) {                    
+                    OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". MM email receiver    : " + (n+1) + " - " + i.next());
+                    n++;
                 }
             }
         }  
@@ -182,16 +180,6 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         
     }
 
-    /**
-     * Initalizes the Memory Monitor.<p>
-     * 
-     * @param configuration the OpenCms configurations
-     * @return the initialized CmsMemoryMonitor 
-     */
-    public static CmsMemoryMonitor initialize(ExtendedProperties configuration) {
-        return new CmsMemoryMonitor(configuration);
-    }
-    
     /**
      * Clears the OpenCms caches.<p> 
      */
@@ -529,7 +517,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         CmsMemoryMonitor monitor = OpenCms.getMemoryMonitor();
 
         if (m_currentlyRunning) {
-            return "";
+            return null;
         } else {
             m_currentlyRunning = true;
         }
@@ -545,17 +533,17 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         }
         
         // check if regular a log entry must be written
-        if ((System.currentTimeMillis() - monitor.m_lastLogStatus) > monitor.m_intervalLog) {
+        if ((System.currentTimeMillis() - monitor.m_lastLogStatus) > monitor.m_logInterval) {
             monitor.monitorWriteLog(false);
         }
         
         // check if the memory status email must be send
-        if ((System.currentTimeMillis() - monitor.m_lastEmailStatus) > monitor.m_intervalEmail) {
+        if ((System.currentTimeMillis() - monitor.m_lastEmailStatus) > monitor.m_emailInterval) {
             monitor.monitorSendEmail(false);
         }
 
         m_currentlyRunning = false;
-        return "";
+        return null;
     }
     
     /**
@@ -575,14 +563,14 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * @param warning if true, send a memory warning email 
      */
     private void monitorSendEmail(boolean warning) {
-        if ((m_emailSender == null) || (m_emailReceiver == null)) {
+        if ((m_configuration.getEmailSender() == null) || (m_configuration.getEmailReceiver() == null)) {
             // send no mails if not fully configured
             return;
-        } else if (warning && (m_warningSendSinceLastStatus && !((m_intervalEmail <= 0) && (System.currentTimeMillis() < (m_lastEmailWarning + m_intervalWarning))))) {
+        } else if (warning && (m_warningSendSinceLastStatus && !((m_emailInterval <= 0) && (System.currentTimeMillis() < (m_lastEmailWarning + m_warningInterval))))) {
             // send no warning email if no status email has been send since the last warning
             // if status is disabled, send no warn email if warn interval has not passed
             return;
-        } else if ((! warning) && (m_intervalEmail <= 0)) {
+        } else if ((! warning) && (m_emailInterval <= 0)) {
             // if email iterval is <= 0 status email is disabled
             return;
         }
@@ -651,13 +639,14 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         }
         content += "\nTotal size of cache memory monitored: " + totalSize + " (" + totalSize / 1048576 + ")\n\n";
         
-        String from = m_emailSender;
-        String[] to = m_emailReceiver;   
+        String from = m_configuration.getEmailSender();
+        List receivers = new ArrayList();
+        List receiverEmails = m_configuration.getEmailReceiver();   
         try {
-            if (from != null && to != null) {
-                List receivers = new ArrayList(to.length);
-                for (int i=0; i<to.length; i++) {
-                    receivers.add(new InternetAddress(to[i]));    
+            if (from != null && receiverEmails != null && !receiverEmails.isEmpty()) {
+                Iterator i = receiverEmails.iterator();
+                while (i.hasNext()) {
+                    receivers.add(new InternetAddress((String)i.next()));    
                 }               
                 CmsSimpleMail email =  new CmsSimpleMail();
                 email.setFrom(from);
@@ -686,11 +675,11 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         } else if ((! warning) && (! OpenCms.getLog(this).isDebugEnabled())) {
             // if not warning we need debug level
             return;
-        } else if (warning && (m_warningLoggedSinceLastStatus && !(((m_intervalLog <= 0) && (System.currentTimeMillis() < (m_lastLogWarning + m_intervalWarning)))))) {
+        } else if (warning && (m_warningLoggedSinceLastStatus && !(((m_logInterval <= 0) && (System.currentTimeMillis() < (m_lastLogWarning + m_warningInterval)))))) {
             // write no warning log if no status log has been written since the last warning
             // if status is disabled, log no warn entry if warn interval has not passed
             return;
-        } else if ((! warning) && (m_intervalLog <= 0)) {
+        } else if ((! warning) && (m_logInterval <= 0)) {
             // if log iterval is <= 0 status log is disabled
             return;
         }
@@ -769,5 +758,15 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public void register(String objectName, Object object) {
         m_monitoredObjects.put(objectName, object);
+    }
+    
+    /**
+     * Returns the configuration.<p>
+     *
+     * @return the configuration
+     */
+    public CmsMemoryMonitorConfiguration getConfiguration() {
+
+        return m_configuration;
     }
 }

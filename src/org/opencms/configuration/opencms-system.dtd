@@ -18,7 +18,11 @@
 	passwordhandler,
 	sites,
 	runtimeproperties?,
-	runtimeclasses )>
+	runtimeclasses,
+	defaultusers,
+	defaultcontentencoding,
+	memorymonitor?,
+	flexcache )>
 
 <!--
 # Version history settings.
@@ -179,4 +183,79 @@ Each job can have an optional list of parameters.
 <!ELEMENT runtimeclasses (runtimeinfo)>
 <!ELEMENT runtimeinfo EMPTY>
 <!ATTLIST runtimeinfo class CDATA #REQUIRED>
+
+<!--
+# Default user/group names:
+# These names can not be changed after the initial OpenCms setup
+# Provides access to the names of the OpenCms default users and groups. 
+-->
+
+<!ELEMENT defaultusers (user-admin, user-guest, user-export, group-administrators, group-projectmanagers, group-users, group-guests)>
+
+<!ELEMENT user-admin (#PCDATA)>
+<!ELEMENT user-guest (#PCDATA)>
+<!ELEMENT user-export (#PCDATA)>
+<!ELEMENT group-administrators (#PCDATA)>
+<!ELEMENT group-projectmanagers (#PCDATA)>
+<!ELEMENT group-users (#PCDATA)>
+<!ELEMENT group-guests (#PCDATA)>
+
+<!--
+#
+# Default encoding to use for generating HTTP responses.
+# It is recommended to change this only in special environments.
+# The default is "UTF-8", but in case you require only western european
+# char support you can e.g. change this to "ISO-8859-1".
+-->
+<!ELEMENT defaultcontentencoding (#PCDATA)>
+
+
+<!--
+#
+# MemoryMonitor configuration
+-->
+<!ELEMENT memorymonitor (maxusagepercent, log-interval, email-interval, warning-interval, email-sender?, email-receiver?)>
+
+<!ELEMENT maxusagepercent (#PCDATA)>
+<!ELEMENT log-interval (#PCDATA)>
+<!ELEMENT email-interval (#PCDATA)>
+<!ELEMENT warning-interval (#PCDATA)>
+<!ELEMENT email-sender (#PCDATA)>
+<!ELEMENT email-receiver (receiver+)>
+<!ELEMENT receiver (#PCDATA)>
+
+
+<!--
+#
+# FlexCache configuration
+-->
+<!ELEMENT flexcache (cache-enabled, cache-offline, maxcachebytes, avgcachebytes, maxentrybytes, maxkeys)>
+
+<!--
+# Enable or disable the FlexCache here with the "cache-enabled" node.
+# In case you disable the FlexCache, you do not need to bother 
+# about the settings of the other Flex cache values.
+-->
+<!ELEMENT cache-enabled (#PCDATA)>
+
+<!--
+# In a development environment, we recommend to set the value of 
+# the "cache-offline" node to "true" so that you can test out the caching
+# behaviour of the application without publishing.
+# In a production environment you should set "cache-offline" node 
+# to "false".
+-->
+<!ELEMENT cache-offline (#PCDATA)>
+
+<!--
+# Sizing parameters for the cached "entries" (ie. pages) in the FlexCache. 
+# The amount of server memory available obviously is the 
+# critical factor here. The values below are set in byte size.
+# The default is 2mb memory for the cached pages _or_ a maximum of 4000
+# cached page variations in total.
+-->
+<!ELEMENT maxcachebytes (#PCDATA)>
+<!ELEMENT avgcachebytes (#PCDATA)>
+<!ELEMENT maxentrybytes (#PCDATA)>
+<!ELEMENT maxkeys (#PCDATA)>
 

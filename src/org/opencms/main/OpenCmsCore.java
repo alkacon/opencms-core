@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/10/31 21:30:17 $
- * Version: $Revision: 1.150 $
+ * Date   : $Date: 2004/11/05 18:15:11 $
+ * Version: $Revision: 1.151 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,6 +48,7 @@ import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.flex.CmsFlexCache;
+import org.opencms.flex.CmsFlexCacheConfiguration;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsI18nInfo;
@@ -55,8 +56,10 @@ import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.importexport.CmsImportExportManager;
 import org.opencms.loader.CmsResourceManager;
+import org.opencms.loader.I_CmsFlexCacheEnabledLoader;
 import org.opencms.lock.CmsLockManager;
 import org.opencms.module.CmsModuleManager;
+import org.opencms.monitor.CmsMemoryMonitorConfiguration;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.scheduler.CmsScheduleManager;
 import org.opencms.search.CmsSearchManager;
@@ -107,7 +110,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.150 $
+ * @version $Revision: 1.151 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -868,18 +871,7 @@ public final class OpenCmsCore {
      * @throws Exception in case of problems initializing OpenCms, this is usually fatal 
      */
     protected synchronized void initConfiguration(ExtendedProperties configuration) throws Exception {
-        
-        // check the opencms.properties for the encoding setting
-        String setEncoding = configuration.getString("defaultContentEncoding", OpenCms.getSystemInfo().getDefaultEncoding());
-        String defaultEncoding = CmsEncoder.lookupEncoding(setEncoding, null);
-        if (defaultEncoding == null) {
-            String msg = "OpenCms startup failure: Configured encoding '" + setEncoding + "' not supported by the Java VM";
-            getLog(this).fatal(OpenCmsCore.C_MSG_CRITICAL_ERROR + "1: " + msg);
-            throw new Exception(msg);            
-        }
-        if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            getLog(CmsLog.CHANNEL_INIT).info(". OpenCms encoding     : " + defaultEncoding);
-        }
+                
         String systemEncoding = null;
         try {
             systemEncoding = System.getProperty("file.encoding");
@@ -889,8 +881,7 @@ public final class OpenCmsCore {
         if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             getLog(CmsLog.CHANNEL_INIT).info(". System file.encoding : " + systemEncoding);
         }
-        getSystemInfo().setDefaultEncoding(defaultEncoding);
-
+        
         // read server ethernet address (MAC) and init UUID generator
         String ethernetAddress = configuration.getString("server.ethernet.address", CmsUUID.getDummyEthernetAddress());
         if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
@@ -904,9 +895,6 @@ public final class OpenCmsCore {
 
         // initialize the lock manager
         m_lockManager = CmsLockManager.getInstance();
-
-        // initialize the memory monitor
-        m_memoryMonitor = CmsMemoryMonitor.initialize(configuration);
 
         // check the installed Java SDK
         try {
@@ -927,26 +915,10 @@ public final class OpenCmsCore {
             }
             // any exception here is fatal and will cause a stop in processing
             throw e;
-        }
-
-        // read the default user configuration
-        m_defaultUsers = CmsDefaultUsers.initialize(configuration);
-
-        // try to initialize the flex cache
-        try {
-            if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).info(". Flex cache init      : starting");
-            }
-            // pass configuration to flex cache for initialization
-            new CmsFlexCache(configuration);
-            if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).info(". Flex cache init      : finished");
-            }
-        } catch (Exception e) {
-            if (getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).warn(". Flex cache init      : non-critical error " + e.toString());
-            }
-        }        
+        }           
+        
+        // initialize the memory monitor
+        m_memoryMonitor = new CmsMemoryMonitor();
         
         // create the configuration manager instance    
         m_configurationManager = new CmsConfigurationManager(getSystemInfo().getAbsoluteRfsPathRelativeToWebInf("config/"));
@@ -957,6 +929,24 @@ public final class OpenCmsCore {
         
         // get the system configuration
         CmsSystemConfiguration systemConfiguration = (CmsSystemConfiguration)m_configurationManager.getConfiguration(CmsSystemConfiguration.class);
+        
+        // check the opencms.properties for the encoding setting
+        String setEncoding = systemConfiguration.getDefaultContentEncoding();
+        String defaultEncoding = CmsEncoder.lookupEncoding(setEncoding, null);
+        if (defaultEncoding == null) {
+            String msg = "OpenCms startup failure: Configured encoding '" + setEncoding + "' not supported by the Java VM";
+            getLog(this).fatal(OpenCmsCore.C_MSG_CRITICAL_ERROR + "1: " + msg);
+            throw new Exception(msg);            
+        }
+        if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            getLog(CmsLog.CHANNEL_INIT).info(". OpenCms encoding     : " + defaultEncoding);
+        }
+        getSystemInfo().setDefaultEncoding(defaultEncoding);
+        
+        // initialize the memory monitor
+        CmsMemoryMonitorConfiguration memoryMonitorConfiguration = systemConfiguration.getCmsMemoryMonitorConfiguration(); 
+        m_memoryMonitor.initialize(memoryMonitorConfiguration);
+                
         // set version history information        
         getSystemInfo().setVersionHistorySettings(systemConfiguration.isVersionHistoryEnabled(), systemConfiguration.getVersionHistoryMaxCount());
         // set mail configuration
@@ -975,16 +965,51 @@ public final class OpenCmsCore {
             if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
                 getLog(CmsLog.CHANNEL_INIT).warn(". Request handler class: " + handler.getClass().getName() + " activated");
             }                    
-        }        
+        }    
+        
+        // read the default user configuration
+        m_defaultUsers = systemConfiguration.getCmsDefaultUsers();
+        
         // get Site Manager
         m_siteManager = systemConfiguration.getSiteManager();        
         
-        // get the VFS configuration
+        // get the VFS / resource configuration
         CmsVfsConfiguration vfsConfiguation = (CmsVfsConfiguration)m_configurationManager.getConfiguration(CmsVfsConfiguration.class);
         m_resourceManager = vfsConfiguation.getResourceManager();        
         m_xmlContentTypeManager = vfsConfiguation.getXmlContentTypeManager();
         m_defaultFiles = vfsConfiguation.getDefaultFiles();
 
+        // try to initialize the flex cache
+        CmsFlexCache flexCache = null;
+        try {
+            if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                getLog(CmsLog.CHANNEL_INIT).info(". Flex cache init      : starting");
+            }
+            // get the flex cache configuration from the SystemConfiguration
+            CmsFlexCacheConfiguration flexCacheConfiguration = systemConfiguration.getCmsFlexCacheConfiguration();
+            // pass configuration to flex cache for initialization
+            flexCache = new CmsFlexCache(flexCacheConfiguration);
+            if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                getLog(CmsLog.CHANNEL_INIT).info(". Flex cache init      : finished");
+            }
+        } catch (Exception e) {
+            if (getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
+                getLog(CmsLog.CHANNEL_INIT).warn(". Flex cache init      : non-critical error " + e.toString());
+            }
+        }   
+        
+        if (flexCache != null) {
+            // check all reasource loaders if they require the Flex cache
+            Iterator i = m_resourceManager.getLoaders().iterator();
+            while (i.hasNext()) {
+                Object o = i.next();
+                if (o instanceof I_CmsFlexCacheEnabledLoader) {
+                    // this resource loader requires the Flex cache
+                    ((I_CmsFlexCacheEnabledLoader)o).setFlexCache(flexCache);                    
+                }
+            }
+        }        
+        
         // get the import/export configuration
         CmsImportExportConfiguration importExportConfiguration = (CmsImportExportConfiguration)m_configurationManager.getConfiguration(CmsImportExportConfiguration.class);
         m_importExportManager = importExportConfiguration.getImportExportManager();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cache/CmsLruCache.java,v $
- * Date   : $Date: 2004/07/18 16:28:44 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/11/05 18:15:11 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.opencms.main.OpenCms;
  *
  * @see org.opencms.cache.I_CmsLruCacheObject
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class CmsLruCache extends java.lang.Object {
     
@@ -62,9 +62,6 @@ public class CmsLruCache extends java.lang.Object {
     
     /** The tail of the list of double linked LRU cache objects. */
     private I_CmsLruCacheObject m_listTail;
-    
-    /** Force a finalization after down-sizing the cache? */
-    private boolean m_forceFinalization;
     
     /** The max. sum of costs the cached objects might reach. */
     private int m_maxCacheCosts;
@@ -88,10 +85,9 @@ public class CmsLruCache extends java.lang.Object {
      * @param theMaxCacheCosts the max. cache costs of all cached objects
      * @param theAvgCacheCosts the avg. cache costs of all cached objects
      * @param theMaxObjectCosts the max. allowed cache costs per object. Set theMaxObjectCosts to -1 if you don't want to limit the max. allowed cache costs per object
-     * @param forceFinalization should be true if a system wide garbage collection/finalization is forced after objects were removed from the cache
      */
-    public CmsLruCache(int theMaxCacheCosts, int theAvgCacheCosts, int theMaxObjectCosts, boolean forceFinalization) {
-        this.m_forceFinalization = forceFinalization;
+    public CmsLruCache(int theMaxCacheCosts, int theAvgCacheCosts, int theMaxObjectCosts) {
+        
         this.m_maxCacheCosts = theMaxCacheCosts;
         this.m_avgCacheCosts = theAvgCacheCosts;
         this.m_maxObjectCosts = theMaxObjectCosts;
@@ -115,9 +111,6 @@ public class CmsLruCache extends java.lang.Object {
         objectInfo += "costs of all cached objects: " + this.m_objectCosts + "\n";
         objectInfo += "sum of all cached objects: " + this.m_objectCount + "\n";
         
-        if (!this.m_forceFinalization) {
-            objectInfo += "no ";
-        }
         objectInfo += "system garbage collection is forced during clean up\n";
         
         return objectInfo;
@@ -392,15 +385,8 @@ public class CmsLruCache extends java.lang.Object {
             }
             currentObject = currentObject.getNextLruObject();
             this.removeTail();
-        }
+        }        
         
-        if (m_forceFinalization) {
-            // force a finalization/system garbage collection optionally
-            System.runFinalization();
-            Runtime.getRuntime().runFinalization();
-            System.gc();
-            Runtime.getRuntime().gc();            
-        }
     }
     
     /**
@@ -441,12 +427,7 @@ public class CmsLruCache extends java.lang.Object {
         this.m_objectCount = 0;
         this.m_listHead = null; 
         this.m_listTail = null;
-        
-        if (m_forceFinalization) {
-            // force a finalization/system garbage collection optionally
-            Runtime.getRuntime().runFinalization();
-            System.gc();
-        }        
+                       
     }
     
     /**

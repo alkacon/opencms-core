@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsScheduleManager.java,v $
- * Date   : $Date: 2004/07/08 15:24:16 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/11/05 18:15:11 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
+import org.opencms.util.CmsStringUtil;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -69,7 +70,7 @@ import org.quartz.impl.StdSchedulerFactory;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  *  
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.3.6
  * 
  * @see org.opencms.scheduler.CmsScheduledJobInfo
@@ -161,7 +162,7 @@ public class CmsScheduleManager implements Job {
                 }
 
                 String result = job.launch(cms, jobInfo.getParameters());
-                if ((result != null) && OpenCms.getLog(this).isInfoEnabled()) {
+                if (CmsStringUtil.isNotEmpty(result) && OpenCms.getLog(this).isInfoEnabled()) {
                     OpenCms.getLog(this).info(jobInfo.getJobName() + ": " + result);
                 }
             } catch (Throwable t) {

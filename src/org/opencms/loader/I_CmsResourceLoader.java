@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/I_CmsResourceLoader.java,v $
- * Date   : $Date: 2004/08/04 13:47:55 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2004/11/05 18:15:11 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * @since FLEX alpha 1
  * 
  * @see org.opencms.flex.CmsFlexRequest
@@ -70,18 +70,18 @@ import javax.servlet.http.HttpServletResponse;
  * @see org.opencms.flex.CmsFlexRequestDispatcher
  */
 public interface I_CmsResourceLoader extends I_CmsConfigurationParameterHandler {
-    
+
     /** The name of the VFS property that controls the caching. */
     String C_LOADER_CACHEPROPERTY = "cache";
-    
+
     /** The name of the VFS property that controls the streaming. */
     String C_LOADER_STREAMPROPERTY = "stream";
-    
+
     /** 
      * Destroys this ResourceLoder.<p>
      */
     void destroy();
-     
+
     /**
      * Dumps the processed content of the the requested file (and it's sub-elements) to a String.<p>
      * 
@@ -106,9 +106,14 @@ public interface I_CmsResourceLoader extends I_CmsConfigurationParameterHandler 
      * @throws IOException might be thrown by the servlet environment
      * @throws CmsException in case of errors acessing OpenCms functions
      */
-    byte[] dump(CmsObject cms, CmsResource resource, String element, Locale locale, HttpServletRequest req, HttpServletResponse res) 
-    throws  ServletException, IOException, CmsException;
-    
+    byte[] dump(
+        CmsObject cms,
+        CmsResource resource,
+        String element,
+        Locale locale,
+        HttpServletRequest req,
+        HttpServletResponse res) throws ServletException, IOException, CmsException;
+
     /**
      * Static exports the contents of the requested file and it's sub-elements.<p>
      *
@@ -129,23 +134,23 @@ public interface I_CmsResourceLoader extends I_CmsConfigurationParameterHandler 
      * @throws IOException might be thrown in the process of including the sub element
      * @throws CmsException in case something goes wrong
      * @return the contents to export, or <code>null</code> if no export is required
-     */    
-    byte[] export(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res) 
+     */
+    byte[] export(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res)
     throws ServletException, IOException, CmsException;
-    
+
     /**
      * Returns the id of the ResourceLoader.<p>
      * 
      * @return the id of the ResourceLoader
      */
     int getLoaderId();
-        
+
     /** 
      * Returns a String describing the ResourceLoader.<p>
      * 
      * @return a String describing the ResourceLoader
      */
-    String getResourceLoaderInfo();    
+    String getResourceLoaderInfo();
     
     /**
      * Signals if the loader implementation supports static export of resources.<p>
@@ -160,14 +165,14 @@ public interface I_CmsResourceLoader extends I_CmsConfigurationParameterHandler 
      * @return true if static export processing is required, false otherwise
      */
     boolean isStaticExportProcessable();
-    
+
     /**
      * Signals if the loader implementation is usable for creating templates.<p>
      * 
      * @return true  if the loader implementation is usable for creating templates, false otherwise
      */
     boolean isUsableForTemplates();
-    
+
     /**
      * Signals if a loader that supports templates must be invoked on the 
      * template URI or the resource URI.<p>
@@ -175,7 +180,7 @@ public interface I_CmsResourceLoader extends I_CmsConfigurationParameterHandler 
      * @return true if the resource URI is to be used, false if the template URI is to be used
      */
     boolean isUsingUriWhenLoadingTemplate();
-      
+
     /**
      * Basic top-page processing method for a I_CmsResourceLoader,
      * this method is called if the page is called as a sub-element 
@@ -192,9 +197,9 @@ public interface I_CmsResourceLoader extends I_CmsConfigurationParameterHandler 
      * 
      * @see #service(CmsObject, CmsResource, ServletRequest, ServletResponse)
      */
-    void load(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res) 
+    void load(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res)
     throws ServletException, IOException, CmsException;
-        
+
     /**
      * Does the job of including the requested resource, 
      * this method is called directly if the element is 
@@ -210,7 +215,7 @@ public interface I_CmsResourceLoader extends I_CmsConfigurationParameterHandler 
      * @throws CmsException in case of errors acessing OpenCms functions
      * 
      * @see org.opencms.flex.CmsFlexRequestDispatcher
-     */   
-    void service(CmsObject cms, CmsResource resource, ServletRequest req, ServletResponse res) 
+     */
+    void service(CmsObject cms, CmsResource resource, ServletRequest req, ServletResponse res)
     throws ServletException, IOException, CmsException;
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2004/10/22 14:37:40 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/11/05 18:15:11 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,9 @@
 
 package org.opencms.configuration;
 
+import org.opencms.db.CmsDefaultUsers;
 import org.opencms.db.I_CmsRuntimeInfoFactory;
+import org.opencms.flex.CmsFlexCacheConfiguration;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.mail.CmsMailHost;
 import org.opencms.mail.CmsMailSettings;
@@ -40,6 +42,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsRequestHandler;
 import org.opencms.main.I_CmsResourceInit;
 import org.opencms.main.OpenCms;
+import org.opencms.monitor.CmsMemoryMonitorConfiguration;
 import org.opencms.scheduler.CmsScheduleManager;
 import org.opencms.scheduler.CmsScheduledJobInfo;
 import org.opencms.security.I_CmsPasswordHandler;
@@ -66,6 +69,24 @@ import org.dom4j.Element;
  * @since 5.3
  */
 public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
+    
+    /** The "server" attribute. */
+    protected static final String A_SERVER = "server";   
+    
+    /** The name of the DTD for this configuration. */
+    protected static final String C_CONFIGURATION_DTD_NAME = "opencms-system.dtd";
+    
+    /** The name of the default XML file for this configuration. */
+    protected static final String C_DEFAULT_XML_FILE_NAME = "opencms-system.xml";  
+    
+    /** The node name for the avgcachebytes node. */
+    protected static final String N_AVGCACHEBYTES = "avgcachebytes";
+    
+    /** The node name for the cache-enabled node. */
+    protected static final String N_CACHE_ENABLED = "cache-enabled";
+    
+    /** The node name for the cache-offline node. */
+    protected static final String N_CACHE_OFFLINE = "cache-offline";
 
     /** The node name for a job class. */
     protected static final String N_CLASS = "class";   
@@ -76,8 +97,44 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     /** The node name for the job cron expression. */
     protected static final String N_CRONEXPRESSION = "cronexpression"; 
     
+    /** The node name for the defaultcontentencoding node. */
+    protected static final String N_DEFAULT_CONTENT_ENCODING = "defaultcontentencoding";
+    
+    /** The node name for the default-uri node. */
+    protected static final String N_DEFAULT_URI = "default-uri";
+    
+    /** The node name for the defaultusers expression. */
+    protected static final String N_DEFAULTUSERS = "defaultusers";
+    
+    /** The node name for the digest type. */
+    protected static final String N_DIGESTTYPE = "digest-type";
+    
+    /** The node name for the email-interval node. */
+    protected static final String N_EMAIL_INTERVAL = "email-interval";
+    
+    /** The node name for the email-receiver node. */
+    protected static final String N_EMAIL_RECEIVER = "email-receiver";
+    
+    /** The node name for the email-sender node. */
+    protected static final String N_EMAIL_SENDER = "email-sender";
+    
     /** The node name for the context encoding. */
     protected static final String N_ENCODING = "encoding";     
+    
+    /** The node name for the flexcache node. */
+    protected static final String N_FLEXCACHE = "flexcache";
+    
+    /** The node name for the group-administrators node. */
+    protected static final String N_GROUP_ADMINISTRATORS = "group-administrators";
+    
+    /** The node name for the group-guests node. */
+    protected static final String N_GROUP_GUESTS = "group-guests";
+    
+    /** The node name for the group-projectmanagers node. */
+    protected static final String N_GROUP_PROJECTMANAGERS = "group-projectmanagers";
+    
+    /** The node name for the group-users node. */
+    protected static final String N_GROUP_USERS = "group-users";
     
     /** The node name for the internationalization node. */
     protected static final String N_I18N = "internationalization";
@@ -97,6 +154,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     /** The node name for the default locale(s). */
     protected static final String N_LOCALESDEFAULT = "localesdefault";    
     
+    /** The node name for the log-interval node. */
+    protected static final String N_LOG_INTERVAL = "log-interval";
+    
     /** The node name for the mail configuration. */
     protected static final String N_MAIL = "mail";
     
@@ -106,14 +166,38 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     /** The node name for the "mail host" node. */
     protected static final String N_MAILHOST = "mailhost";
     
+    /** The node name for the maxcachebytes node. */
+    protected static final String N_MAXCACHEBYTES = "maxcachebytes";
+    
+    /** The node name for the maxentrybytes node. */
+    protected static final String N_MAXENTRYBYTES = "maxentrybytes";
+    
+    /** The node name for the maxkeys node. */
+    protected static final String N_MAXKEYS = "maxkeys";
+    
+    /** The node name for the maxusagepercent node. */
+    protected static final String N_MAXUSAGE_PERCENT = "maxusagepercent";
+    
+    /** The node name for the memorymonitor node. */
+    protected static final String N_MEMORYMONITOR = "memorymonitor";
+    
     /** The node name for a job name. */
     protected static final String N_NAME = "name";
     
     /** The node name for the job parameters. */
     protected static final String N_PARAMETERS = "parameters";     
+
+    /** The node name for the password encoding. */
+    protected static final String N_PASSWORDENCODING = "encoding";
+
+    /** The node name for the password handler. */
+    protected static final String N_PASSWORDHANDLER = "passwordhandler";
     
     /** The node name for the context project name. */
     protected static final String N_PROJECT = "project";         
+    
+    /** The node name for the memory email receiver. */
+    protected static final String N_RECEIVER = "receiver";
     
     /** The node name for the context remote addr. */
     protected static final String N_REMOTEADDR = "remoteaddr";     
@@ -142,14 +226,29 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     /** The node name for the runtime info factory. */
     protected static final String N_RUNTIMEINFO = "runtimeinfo";       
     
+    /** The node name for the runtime properties node. */
+    protected static final String N_RUNTIMEPROPERTIES = "runtimeproperties"; 
+    
     /** The node name for the scheduler. */
     protected static final String N_SCHEDULER = "scheduler";
 
     /** The node name for the context site root. */
     protected static final String N_SITEROOT = "siteroot"; 
     
+    /** The node name for the sites node. */
+    protected static final String N_SITES = "sites";
+    
     /** The main system configuration node name. */
     protected static final String N_SYSTEM = "system";
+    
+    /** The node name for the user-admin node. */
+    protected static final String N_USER_ADMIN = "user-admin";
+    
+    /** The node name for the user-export node. */
+    protected static final String N_USER_EXPORT = "user-export";
+    
+    /** The node name for the user-guest node. */
+    protected static final String N_USER_GUEST = "user-guest";
     
     /** The node name for the context user name. */
     protected static final String N_USERNAME = "user";     
@@ -157,44 +256,34 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     /** The node name for the version history. */
     protected static final String N_VERSIONHISTORY = "versionhistory";
     
-    /** The node name for the sites node. */
-    protected static final String N_SITES = "sites";
+    /** The node name for the warning-interval node. */
+    protected static final String N_WARNING_INTERVAL = "warning-interval";
     
     /** The node name for the workplace-server node. */
     protected static final String N_WORKPLACE_SERVER = "workplace-server";
     
-    /** The node name for the default-uri node. */
-    protected static final String N_DEFAULT_URI = "default-uri";
+    /** The configured OpenCms default users and groups. */
+    private CmsDefaultUsers m_cmsDefaultUsers;
     
-    /** The node name for the runtime properties node. */
-    private static final String N_RUNTIMEPROPERTIES = "runtimeproperties";   
+    /** The flex cache configuration object. */
+    private CmsFlexCacheConfiguration m_cmsFlexCacheConfiguration;
     
-    /** The name of the DTD for this configuration. */
-    private static final String C_CONFIGURATION_DTD_NAME = "opencms-system.dtd";
-    
-    /** The name of the default XML file for this configuration. */
-    private static final String C_DEFAULT_XML_FILE_NAME = "opencms-system.xml";  
-    
-    /** The "server" attribute. */
-    protected static final String A_SERVER = "server";   
-
-    /** The node name for the password handler. */
-    protected static final String N_PASSWORDHANDLER = "passwordhandler";
-
-    /** The node name for the password encoding. */
-    protected static final String N_PASSWORDENCODING = "encoding";
-    
-    /** The node name for the digest type. */
-    protected static final String N_DIGESTTYPE = "digest-type";
+    /** The memory monitor configuration. */
+    private CmsMemoryMonitorConfiguration m_cmsMemoryMonitorConfiguration;
     
     /** The list of jobs for the scheduler. */
     private List m_configuredJobs;
+    
+    private String m_defaultContentEncoding;
     
     /** The configured locale manager for multi language support. */
     private CmsLocaleManager m_localeManager;
     
     /** The mail settings. */
     private CmsMailSettings m_mailSettings;
+
+    /** The password handler. */
+    private I_CmsPasswordHandler m_passwordHandler;
     
     /** A list of instanciated request handler classes. */
     private List m_requestHandlers;        
@@ -202,8 +291,17 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     /** A list of instanciated resource init handler classes. */
     private List m_resourceInitHandlers;
     
+    /** The runtime info factory. */
+    private I_CmsRuntimeInfoFactory m_runtimeInfoFactory;
+    
+    /** The runtime properties. */
+    private Map m_runtimeProperties;
+    
     /** The configured schedule manager. */
     private CmsScheduleManager m_scheduleManager;
+    
+    /** The configured site manager. */
+    private CmsSiteManager m_siteManager;
     
     /** The temporary file project id. */
     private int m_tempFileProjectId;
@@ -214,18 +312,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     /** The maximum number of entries in the version history (per resource). */
     private int m_versionHistoryMaxCount;
     
-    /** The configured site manager. */
-    private CmsSiteManager m_siteManager;
-    
-    /** The runtime properties. */
-    private Map m_runtimeProperties;
-    
-    /** The runtime info factory. */
-    private I_CmsRuntimeInfoFactory m_runtimeInfoFactory;
-
-    /** The password handler. */
-    private I_CmsPasswordHandler m_passwordHandler;
-     
     /**
      * Public constructor, will be called by configuration manager.<p> 
      */
@@ -240,6 +326,14 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". System configuration : initialized");
         }          
+    }
+    
+    /**
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
+     */
+    public void addConfigurationParameter(String paramName, String paramValue) {
+        
+        m_runtimeProperties.put(paramName, paramValue);        
     }
         
     /**
@@ -419,6 +513,45 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_RUNTIMECLASSES + "/" + N_RUNTIMEINFO, "setRuntimeInfoFactory", 1);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_RUNTIMECLASSES + "/" + N_RUNTIMEINFO, 0, A_CLASS);          
         
+        // add default users rule
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS, "setCmsDefaultUsers", 7);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS + "/" + N_USER_ADMIN, 0);    
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS + "/" + N_USER_GUEST, 1);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS + "/" + N_USER_EXPORT, 2);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS + "/" + N_GROUP_ADMINISTRATORS, 3);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS + "/" + N_GROUP_PROJECTMANAGERS, 4);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS + "/" + N_GROUP_USERS, 5);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS + "/" + N_GROUP_GUESTS, 6);
+        
+        // add defaultContentEncoding rule
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_DEFAULT_CONTENT_ENCODING, "setDefaultContentEncoding", 1);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_DEFAULT_CONTENT_ENCODING, 0);
+        
+        // add memorymonitor configuration rule        
+        digester.addObjectCreate("*/" + N_SYSTEM + "/" + N_MEMORYMONITOR, CmsMemoryMonitorConfiguration.class);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_MEMORYMONITOR, "initialize", 4);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_MEMORYMONITOR + "/" + N_MAXUSAGE_PERCENT, 0);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_MEMORYMONITOR + "/" + N_LOG_INTERVAL, 1);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_MEMORYMONITOR + "/" + N_EMAIL_INTERVAL, 2);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_MEMORYMONITOR + "/" + N_WARNING_INTERVAL, 3);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_MEMORYMONITOR + "/" + N_EMAIL_SENDER, "setEmailSender", 0);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_MEMORYMONITOR + "/" + N_EMAIL_RECEIVER + "/" + N_RECEIVER, "addEmailReceiver", 0);        
+        
+        // set the MemoryMonitorConfiguration initialized once before
+        digester.addSetNext("*/" + N_SYSTEM + "/" + N_MEMORYMONITOR, "setCmsMemoryMonitorConfiguration");
+        
+        // add flexcache configuration rule        
+        digester.addObjectCreate("*/" + N_SYSTEM + "/" + N_FLEXCACHE, CmsFlexCacheConfiguration.class);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_FLEXCACHE, "initialize", 6);        
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_FLEXCACHE + "/" + N_CACHE_ENABLED, 0);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_FLEXCACHE + "/" + N_CACHE_OFFLINE, 1);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_FLEXCACHE + "/" + N_MAXCACHEBYTES, 2);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_FLEXCACHE + "/" + N_AVGCACHEBYTES, 3);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_FLEXCACHE + "/" + N_MAXENTRYBYTES, 4);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_FLEXCACHE + "/" + N_MAXKEYS, 5);
+        
+        // set the FlexCacheConfiguration initialized once before
+        digester.addSetNext("*/" + N_SYSTEM + "/" + N_FLEXCACHE, "setCmsFlexCacheConfiguration");
     }
     
     /**
@@ -438,7 +571,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             m_versionHistoryMaxCount = OpenCms.getSystemInfo().getVersionHistoryMaxCount();
             // m_resourceInitHandlers instance must be the one from configuration
             // m_requestHandlers instance must be the one from configuration
-            m_siteManager = OpenCms.getSiteManager();
+            m_siteManager = OpenCms.getSiteManager();            
         }
         
         // i18n nodes
@@ -569,9 +702,105 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         Element runtimeinfoElement = systemElement.addElement(N_RUNTIMECLASSES);  
         Element runtimeinfofactoryElement = runtimeinfoElement.addElement(N_RUNTIMEINFO);
         runtimeinfofactoryElement.addAttribute(A_CLASS, getRuntimeInfoFactory().getClass().getName());        
+               
+        // create <defaultusers> node
+        Element defaultusersElement = systemElement.addElement(N_DEFAULTUSERS);
+        // create <user-admin> subnode
+        defaultusersElement.addElement(N_USER_ADMIN).addText(m_cmsDefaultUsers.getUserAdmin());
+        // create <user-guest> subnode
+        defaultusersElement.addElement(N_USER_GUEST).addText(m_cmsDefaultUsers.getUserGuest());
+        // create <user-export> subnode
+        defaultusersElement.addElement(N_USER_EXPORT).addText(m_cmsDefaultUsers.getUserExport());
+        // create <group-administrators> subnode
+        defaultusersElement.addElement(N_GROUP_ADMINISTRATORS).addText(m_cmsDefaultUsers.getGroupAdministrators());
+        // create <group-projectmanagers> subnode
+        defaultusersElement.addElement(N_GROUP_PROJECTMANAGERS).addText(m_cmsDefaultUsers.getGroupProjectmanagers());
+        // create <group-users> subnode
+        defaultusersElement.addElement(N_GROUP_USERS).addText(m_cmsDefaultUsers.getGroupUsers());
+        // create <group-guests> subnode
+        defaultusersElement.addElement(N_GROUP_GUESTS).addText(m_cmsDefaultUsers.getGroupGuests());
+        
+        // create <defaultcontentencoding> node
+        systemElement.addElement(N_DEFAULT_CONTENT_ENCODING).addText(getDefaultContentEncoding());
+        
+        // create <memorymonitor> node
+        if (m_cmsMemoryMonitorConfiguration != null) {
+            Element memorymonitorElement = systemElement.addElement(N_MEMORYMONITOR);
+            if (m_cmsMemoryMonitorConfiguration.getMaxUsagePercent() > 0) {
+                memorymonitorElement.addElement(N_MAXUSAGE_PERCENT).addText(String.valueOf(m_cmsMemoryMonitorConfiguration.getMaxUsagePercent()));
+            }
+            if (m_cmsMemoryMonitorConfiguration.getLogInterval() > 0) {
+                memorymonitorElement.addElement(N_LOG_INTERVAL).addText(String.valueOf(m_cmsMemoryMonitorConfiguration.getLogInterval()));
+            }
+            if (m_cmsMemoryMonitorConfiguration.getEmailInterval() > 0) {
+                memorymonitorElement.addElement(N_EMAIL_INTERVAL).addText(String.valueOf(m_cmsMemoryMonitorConfiguration.getEmailInterval()));
+            }
+            if (m_cmsMemoryMonitorConfiguration.getWarningInterval() > 0) {
+                memorymonitorElement.addElement(N_WARNING_INTERVAL).addText(String.valueOf(m_cmsMemoryMonitorConfiguration.getWarningInterval()));
+            }
+            if (m_cmsMemoryMonitorConfiguration.getEmailSender() != null) {
+                memorymonitorElement.addElement(N_EMAIL_SENDER).addText(m_cmsMemoryMonitorConfiguration.getEmailSender());
+            }
+            List emailReceiver = m_cmsMemoryMonitorConfiguration.getEmailReceiver();
+            if (!emailReceiver.isEmpty()) {
+                Element emailreceiverElement = memorymonitorElement.addElement(N_EMAIL_RECEIVER);
+                Iterator iter = emailReceiver.iterator();
+                while (iter.hasNext()) {
+                    emailreceiverElement.addElement(N_RECEIVER).addText((String)iter.next());
+                }
+            }
+        }
+        
+        // create <flexcache> node
+        Element flexcacheElement = systemElement.addElement(N_FLEXCACHE);
+        flexcacheElement.addElement(N_CACHE_ENABLED).addText(String.valueOf(m_cmsFlexCacheConfiguration.isCacheEnabled()).toString());
+        flexcacheElement.addElement(N_CACHE_OFFLINE).addText(String.valueOf(m_cmsFlexCacheConfiguration.isCacheOffline()).toString());
+        flexcacheElement.addElement(N_MAXCACHEBYTES).addText(String.valueOf(m_cmsFlexCacheConfiguration.getMaxCacheBytes()).toString());
+        flexcacheElement.addElement(N_AVGCACHEBYTES).addText(String.valueOf(m_cmsFlexCacheConfiguration.getAvgCacheBytes()).toString());
+        flexcacheElement.addElement(N_MAXENTRYBYTES).addText(String.valueOf(m_cmsFlexCacheConfiguration.getMaxEntryBytes()).toString());
+        flexcacheElement.addElement(N_MAXKEYS).addText(String.valueOf(m_cmsFlexCacheConfiguration.getMaxKeys()).toString());
         
         // return the vfs node
         return systemElement;
+    }
+    
+    /**
+     * Returns the default users.<p>
+     *
+     * @return the default users
+     */
+    public CmsDefaultUsers getCmsDefaultUsers() {
+
+        return m_cmsDefaultUsers;
+    }
+    /**
+     * Returns the flexCacheConfiguration.<p>
+     *
+     * @return the flexCacheConfiguration
+     */
+    public CmsFlexCacheConfiguration getCmsFlexCacheConfiguration() {
+
+        return m_cmsFlexCacheConfiguration;
+    }
+    
+    /**
+     * Returns the memory monitor configuration.<p>
+     *
+     * @return the memory monitor configuration
+     */
+    public CmsMemoryMonitorConfiguration getCmsMemoryMonitorConfiguration() {
+
+        return m_cmsMemoryMonitorConfiguration;        
+    }
+     
+    /**
+     * Returns the defaultContentEncoding.<p>
+     *
+     * @return the defaultContentEncoding
+     */
+    public String getDefaultContentEncoding() {
+
+        return m_defaultContentEncoding;
     }
 
     /**
@@ -598,6 +827,15 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     public CmsMailSettings getMailSettings() {
         return m_mailSettings;
     }
+
+    /**
+     * Returns the configured password handler.<p>
+     * 
+     * @return the configured password handler
+     */
+    public I_CmsPasswordHandler getPasswordHandler() {
+        return m_passwordHandler;
+    }
     
     /**
      * Returns the list of instanciated request handler classes.<p>
@@ -616,14 +854,25 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     public List getResourceInitHandlers() {
         return m_resourceInitHandlers;
     }
-
+    
     /**
-     * Returns the configured password handler.<p>
+     * Returns the runtime info factory instance.<p>
      * 
-     * @return the configured password handler
+     * @return the runtime info factory instance
      */
-    public I_CmsPasswordHandler getPasswordHandler() {
-        return m_passwordHandler;
+    public I_CmsRuntimeInfoFactory getRuntimeInfoFactory() {
+        
+        return m_runtimeInfoFactory;
+    }
+        
+    /**
+     * Returns the runtime Properties.<p>
+     *
+     * @return the runtime Properties
+     */
+    public Map getRuntimeProperties() {
+
+        return m_runtimeProperties;
     }
     
     /**
@@ -634,6 +883,15 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     public CmsScheduleManager getScheduleManager() {
 
         return m_scheduleManager;
+    }
+    /**
+     * Returns the site manager.<p>
+     *
+     * @return the site manager
+     */
+    public CmsSiteManager getSiteManager() {
+
+        return m_siteManager;
     }
     
     /**
@@ -674,7 +932,66 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
      */
     public boolean isVersionHistoryEnabled() {
         return m_versionHistoryEnabled;
-    }    
+    }  
+    
+    /**
+     * Sets the CmsDefaultUsers.<p>
+     * 
+     * @param userAdmin the name of the default admin user
+     * @param userGuest the name of the guest user
+     * @param userExport the name of the export user
+     * @param groupAdministrators the name of the administrators group
+     * @param groupProjectmanagers the name of the project managers group
+     * @param groupUsers the name of the users group
+     * @param groupGuests the name of the guests group
+     */
+    public void setCmsDefaultUsers(
+
+        String userAdmin,
+        String userGuest,
+        String userExport,
+        String groupAdministrators,
+        String groupProjectmanagers,
+        String groupUsers,
+        String groupGuests) {
+
+        m_cmsDefaultUsers = new CmsDefaultUsers(
+            userAdmin,
+            userGuest,
+            userExport,
+            groupAdministrators,
+            groupProjectmanagers,
+            groupUsers,
+            groupGuests);
+    }
+    /**
+     * Sets the flexCacheConfiguration.<p>
+     *
+     * @param flexCacheConfiguration the flexCacheConfiguration to set
+     */
+    public void setCmsFlexCacheConfiguration(CmsFlexCacheConfiguration flexCacheConfiguration) {
+
+        m_cmsFlexCacheConfiguration = flexCacheConfiguration;
+    }
+    /**
+     * Sets the cmsMemoryMonitorConfiguration.<p>
+     *
+     * @param cmsMemoryMonitorConfiguration the cmsMemoryMonitorConfiguration to set
+     */
+    public void setCmsMemoryMonitorConfiguration(CmsMemoryMonitorConfiguration cmsMemoryMonitorConfiguration) {
+
+        m_cmsMemoryMonitorConfiguration = cmsMemoryMonitorConfiguration;
+    }
+    
+    /**
+     * Sets the defaultContentEncoding.<p>
+     *
+     * @param defaultContentEncoding the defaultContentEncoding to set
+     */
+    public void setDefaultContentEncoding(String defaultContentEncoding) {
+
+        m_defaultContentEncoding = defaultContentEncoding;
+    }
     
     /**
      * Sets the locale manager for multi language support.<p>
@@ -711,76 +1028,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Password handler     : " + passwordHandler.getClass().getName() + " instanciated");
         }
     }    
-
-    /**
-     * Sets the temporary file project id.<p>
-     * 
-     * @param tempFileProjectId the temporary file project id to set
-     */
-    public void setTempFileProjectId(String tempFileProjectId) {
-        try {
-            m_tempFileProjectId = Integer.valueOf(tempFileProjectId).intValue();
-        } catch (Throwable t) {
-            m_tempFileProjectId = -1;
-        }
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". System configuration : temporary file project id is " + m_tempFileProjectId);
-        }             
-    }
-        
-    /**
-     * VFS version history settings are set here.<p>
-     * 
-     * @param historyEnabled if true the history is enabled
-     * @param historyMaxCount the maximum number of versions that are kept per VFS resource
-     */
-    public void setVersionHistorySettings(String historyEnabled, String historyMaxCount) {
-        m_versionHistoryEnabled = Boolean.valueOf(historyEnabled).booleanValue();
-        m_versionHistoryMaxCount = Integer.valueOf(historyMaxCount).intValue();
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". History settings     : enabled=" + m_versionHistoryEnabled + " count=" + m_versionHistoryMaxCount);
-        }             
-    }
-    /**
-     * Returns the site manager.<p>
-     *
-     * @return the site manager
-     */
-    public CmsSiteManager getSiteManager() {
-
-        return m_siteManager;
-    }
-    
-    /**
-     * Sets the site manager.<p>
-     *
-     * @param siteManager the site manager to set
-     */
-    public void setSiteManager(CmsSiteManager siteManager) {
-
-        m_siteManager = siteManager;
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". site configuration   : finished");
-        }          
-    }    
-    
-    /**
-     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
-     */
-    public void addConfigurationParameter(String paramName, String paramValue) {
-        
-        m_runtimeProperties.put(paramName, paramValue);        
-    }
-        
-    /**
-     * Returns the runtime Properties.<p>
-     *
-     * @return the runtime Properties
-     */
-    public Map getRuntimeProperties() {
-
-        return m_runtimeProperties;
-    }
     
     /**
      * Sets the runtime info factory.<p>
@@ -812,13 +1059,45 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     }
     
     /**
-     * Returns the runtime info factory instance.<p>
-     * 
-     * @return the runtime info factory instance
+     * Sets the site manager.<p>
+     *
+     * @param siteManager the site manager to set
      */
-    public I_CmsRuntimeInfoFactory getRuntimeInfoFactory() {
-        
-        return m_runtimeInfoFactory;
+    public void setSiteManager(CmsSiteManager siteManager) {
+
+        m_siteManager = siteManager;
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". site configuration   : finished");
+        }          
+    }    
+
+    /**
+     * Sets the temporary file project id.<p>
+     * 
+     * @param tempFileProjectId the temporary file project id to set
+     */
+    public void setTempFileProjectId(String tempFileProjectId) {
+        try {
+            m_tempFileProjectId = Integer.valueOf(tempFileProjectId).intValue();
+        } catch (Throwable t) {
+            m_tempFileProjectId = -1;
+        }
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". System configuration : temporary file project id is " + m_tempFileProjectId);
+        }             
     }
-    
+        
+    /**
+     * VFS version history settings are set here.<p>
+     * 
+     * @param historyEnabled if true the history is enabled
+     * @param historyMaxCount the maximum number of versions that are kept per VFS resource
+     */
+    public void setVersionHistorySettings(String historyEnabled, String historyMaxCount) {
+        m_versionHistoryEnabled = Boolean.valueOf(historyEnabled).booleanValue();
+        m_versionHistoryMaxCount = Integer.valueOf(historyMaxCount).intValue();
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". History settings     : enabled=" + m_versionHistoryEnabled + " count=" + m_versionHistoryMaxCount);
+        }             
+    }       
 }

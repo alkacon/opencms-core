@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCache.java,v $
- * Date   : $Date: 2004/08/27 13:59:02 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2004/11/05 18:15:11 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.collections.map.LRUMap;
 
 /**
@@ -91,7 +90,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.39 $
+ * @version $Revision: 1.40 $
  * 
  * @see org.opencms.flex.CmsFlexCacheKey
  * @see org.opencms.flex.CmsFlexCacheEntry
@@ -202,9 +201,6 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
     /** Initial size for variation lists, should be a power of 2. */
     public static final int C_INITIAL_CAPACITY_VARIATIONS = 8;
 
-    /** Name of FlexCache runtime property. */
-    public static final String C_LOADER_CACHENAME = "flex.cache";
-
     /** Debug switch. */
     private static final int DEBUG = 0;
 
@@ -232,20 +228,20 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      * This is because you need some of the FlexCache data structures
      * for JSP inclusion buffering.<p>
      *
-     * @param configuration the OpenCms configuration
+     * @param configuration the flex cache configuration
      */
-    public CmsFlexCache(ExtendedProperties configuration) {
+    public CmsFlexCache(CmsFlexCacheConfiguration configuration) {
+        
+        m_enabled = configuration.isCacheEnabled();
+        m_cacheOffline = configuration.isCacheOffline();
+        
+        int maxCacheBytes = configuration.getMaxCacheBytes();
+        int avgCacheBytes = configuration.getAvgCacheBytes();
+        int maxEntryBytes = configuration.getMaxEntryBytes();
+        int maxKeys = configuration.getMaxKeys();
+        
 
-        m_enabled = configuration.getBoolean("flex.cache.enabled", true);
-        m_cacheOffline = configuration.getBoolean("flex.cache.offline", true);
-
-        boolean forceGC = configuration.getBoolean("flex.cache.forceGC", false);
-        int maxCacheBytes = configuration.getInteger("flex.cache.maxCacheBytes", 2000000);
-        int avgCacheBytes = configuration.getInteger("flex.cache.avgCacheBytes", 1500000);
-        int maxEntryBytes = configuration.getInteger("flex.cache.maxEntryBytes", 400000);
-        int maxKeys = configuration.getInteger("flex.cache.maxKeys", 4000);
-
-        this.m_variationCache = new CmsLruCache(maxCacheBytes, avgCacheBytes, maxEntryBytes, forceGC);
+        this.m_variationCache = new CmsLruCache(maxCacheBytes, avgCacheBytes, maxEntryBytes);
 
         if (OpenCms.getMemoryMonitor().enabled()) {
             OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_entryLruCache", m_variationCache);
@@ -265,9 +261,6 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
                 I_CmsEventListener.EVENT_FLEX_PURGE_JSP_REPOSITORY,
                 I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR});
         }
-
-        // HACK: make the flex cache available to other classes through the runtime properties
-        OpenCms.setRuntimeProperty(CmsFlexCache.C_LOADER_CACHENAME, this);
 
         if (OpenCms.getLog(CmsFlexCache.class).isInfoEnabled()) {
             OpenCms.getLog(CmsFlexCache.class).info(

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2004/10/15 12:22:00 $
- * Version: $Revision: 1.71 $
+ * Date   : $Date: 2004/11/05 18:15:11 $
+ * Version: $Revision: 1.72 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -101,12 +101,12 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.71 $
+ * @version $Revision: 1.72 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
  */
-public class CmsJspLoader implements I_CmsResourceLoader {
+public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledLoader {
 
     /** Encoding to write JSP files to disk (<code>ISO-8859-1</code>). */
     public static final String C_DEFAULT_JSP_ENCODING = "ISO-8859-1";
@@ -298,8 +298,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
         }
         // get the "error pages are commited or not" flag from the configuration
         m_errorPagesAreNotCommited = m_configuration.getBoolean("jsp.errorpage.committed", true);
-        // get the cache from the runtime properties
-        m_cache = (CmsFlexCache)OpenCms.getRuntimeProperty(CmsFlexCache.C_LOADER_CACHENAME);
+
         // output setup information
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) { 
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader init          : JSP repository (absolute path): " + m_jspRepository);        
@@ -411,6 +410,18 @@ public class CmsJspLoader implements I_CmsResourceLoader {
         controller.getCurrentRequest().getRequestDispatcherToExternal(cms.getSitePath(resource), target).include(
             req,
             res);
+    }
+
+    /**
+     * @see org.opencms.loader.I_CmsFlexCacheEnabledLoader#setFlexCache(org.opencms.flex.CmsFlexCache)
+     */
+    public void setFlexCache(CmsFlexCache cache) {
+
+        m_cache = cache;
+        // output setup information
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) { 
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader init          : Flex cache added to JSP loader");        
+        }        
     }
 
     /**
