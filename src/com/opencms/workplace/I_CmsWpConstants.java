@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
-* Date   : $Date: 2001/03/14 14:55:19 $
-* Version: $Revision: 1.103 $
+* Date   : $Date: 2001/04/06 10:13:56 $
+* Version: $Revision: 1.104 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -35,7 +35,7 @@ package com.opencms.workplace;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.103 $ $Date: 2001/03/14 14:55:19 $
+ * @version $Revision: 1.104 $ $Date: 2001/04/06 10:13:56 $
  */
 
 public interface I_CmsWpConstants {
@@ -50,7 +50,7 @@ public interface I_CmsWpConstants {
 
 
     /** Parameter for the default language */
-    public static final String C_DEFAULT_LANGUAGE = "de";
+    public static final String C_DEFAULT_LANGUAGE = "en";
 
 
     /** Parameter for content templates folder */
