@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/06/08 16:00:43 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2000/06/08 16:44:16 $
+ * Version: $Revision: 1.24 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -32,7 +32,7 @@ package com.opencms.file.genericSql;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.23 $ $Date: 2000/06/08 16:00:43 $
+ * @version $Revision: 1.24 $ $Date: 2000/06/08 16:44:16 $
  */
 public interface I_CmsQuerys {
     
@@ -72,6 +72,7 @@ public interface I_CmsQuerys {
   
     public static final Integer C_RESOURCES_WRITE_KEY = new Integer(103);
 	public static final String C_RESOURCES_WRITE = "INSERT INTO " + C_DATABASE_PREFIX + "RESOURCES VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+
     
 	
 	// Constants for files
