@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2004/01/19 08:19:58 $
-* Version: $Revision: 1.438 $
+* Date   : $Date: 2004/01/19 09:13:45 $
+* Version: $Revision: 1.439 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.438 $
+ * @version $Revision: 1.439 $
  */
 public class CmsObject {
 
@@ -4531,21 +4531,6 @@ public class CmsObject {
         }
         
         return language;
-    }
-    
-    /**
-     * Returns the default language for a resource given by name.<p>
-     * The default language is defined with the <code>defaultLocale</code> property
-     * that is set at the resource or at one of the parent folders of the resource.
-     * If the property is not set, the opencms default language is returned.
-     * 
-     * @param resourcename the resource name
-     * @return the default language as ISO language code
-     * @throws CmsException if something goes wrong
-     */
-    public String getDefaultLanguage(String resourcename) throws CmsException {
-
-        return readProperty(resourcename, I_CmsConstants.C_PROPERTY_DEFAULT_LOCALE, true, OpenCms.getDefaultLanguage());
     }
 
     /**

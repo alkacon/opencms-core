@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2004/01/19 08:20:43 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2004/01/19 09:13:45 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -756,7 +756,7 @@ public class CmsImportVersion2 extends A_CmsImport {
             
             if (m_convertToXmlPage) {
 
-                String language = m_cms.getDefaultLanguage(CmsResource.getParentFolder(resname));;
+                String language = m_cms.getLanguage(CmsResource.getParentFolder(resname));
                 CmsXmlPage xmlPage = CmsXmlPageConverter.convertToXmlPage(m_cms, new String(bodyfile.getContents()), "body", language); 
                 
                 if (xmlPage != null) {

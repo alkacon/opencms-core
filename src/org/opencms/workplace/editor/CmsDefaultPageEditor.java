@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2004/01/19 08:22:32 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2004/01/19 09:13:45 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 5.1.12
  */
@@ -201,7 +201,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
         String defaultLanguage;
         
         try {
-            defaultLanguage = getCms().getDefaultLanguage(getCms().readAbsolutePath(m_file));
+            defaultLanguage = getCms().getLanguage(getCms().readAbsolutePath(m_file));
         } catch (CmsException exc) {
             defaultLanguage = OpenCms.getDefaultLanguage();
         }
@@ -589,7 +589,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
         // check if there is already a default element for this body,
         // if not, set this body as default if it has the default language
         if (!m_page.hasElement(body, null)) {
-            if (language.equals(getCms().getDefaultLanguage(getCms().readAbsolutePath(m_file)))) {
+            if (language.equals(getCms().getLanguage(getCms().readAbsolutePath(m_file)))) {
                 m_page.setDefault(body, language);
             }
         }
