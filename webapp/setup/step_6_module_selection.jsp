@@ -160,34 +160,6 @@ function checkBackwardDependencies(modulePackageName, recursionCounter) {
 	}
 }
 
-function compareModules(modulepackageName_A, modulepackageName_B) {
-	var indexA = getPackageNameIndex(modulepackageName_A);
-	var indexB = getPackageNameIndex(modulepackageName_B);
-	var dependencies = null;
-	
-	if (modulepackageName_A == modulepackageName_B) {
-		return 0;
-	}
-	
-	dependencies = moduleDependencies[indexA];
-	for (var i=0;i<dependencies.length;i++) {
-		if (dependencies[i] == modulepackageName_B) {
-			// module A will appear before module B
-			return -1;
-		}
-	}
-	
-	dependencies = moduleDependencies[indexB];
-	for (var i=0;i<dependencies.length;i++) {
-		if (dependencies[i] == modulepackageName_A) {
-			// module B will appear before moduel A
-			return 1;
-		}
-	}
-	
-	return 0;
-}
-
 function sortAvailableModules() {
 	var form = document.modules;	
 	var installModules = new Array();
@@ -199,18 +171,7 @@ function sortAvailableModules() {
 			}
 		}
 	
-		sort(installModules, compareModules);
-
-		var moduleList = "";
-		for (var j=0;j<installModules.length;j++) {
-			moduleList += installModules[j];
-		
-			if (j<installModules.length-1) {
-				moduleList += "|";
-			}
-		}
-	
-		form.installModules.value = moduleList;
+		form.installModules.value = topoSort(installModules).join("|");
 	} else {
 		if (form.availableModules != null) {
 			form.installModules.value = form.availableModules.value;
@@ -220,20 +181,49 @@ function sortAvailableModules() {
 	return false;
 }
 
-// insert sort
-function sort(list, comparator) {
-    for (var i=0; i<list.length; i++) {
-   		for (var j=i; j>0 && comparator(list[j-1], list[j])>0; j--) {
-    	    swap(list, j, j-1);
+function topoSort(list) {
+    var retList = new Array();
+	var finished = false;
+	while(!finished) {
+	    finished = true;
+        for (var i=0; i<list.length; i++) {   
+		    if (list[i]=="_visited_") {
+				continue;
+			}
+			if (moduleDependencies[getPackageNameIndex(list[i])].length==0) {
+			   retList.push(list[i]);
+			   removeDependencies(list[i]);
+			   finished = false;
+			   list[i]="_visited_";
+			}
 		}
 	}
-    return;
+	var cycle = new Array();
+    for (var i=0; i<list.length; i++) {   
+	    if (list[i]!="_visited_") {
+			cycle.push(list[i]);
+		}
+	}
+	if (cycle.length>0) {
+	   alert("One or more dependency cycles has been detected.\n\nInvolved modules are:\n"+cycle.join("\n"));
+	   retList = retList.concat(cycle);
+	}
+	retList.reverse();
+	return retList;
 }
 
-function swap(list, a, b) {
-	var t = list[a];
-	list[a] = list[b];
-	list[b] = t;
+function removeDependencies(module) {
+    for (var i=0; i<moduleDependencies.length; i++) {
+		var newDeps = new Array();
+		var deps = moduleDependencies[i];
+		for (var j=0; j<deps.length; j++) {
+		   if (deps[j]==module) {
+			   continue;
+		   }
+		   newDeps.push(deps[j]);
+		}
+		moduleDependencies[i] = newDeps;
+    }
 }
 
 //-->
