@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/31 17:02:45 $
- * Version: $Revision: 1.71 $
+ * Date   : $Date: 2003/07/31 17:21:25 $
+ * Version: $Revision: 1.72 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.71 $ $Date: 2003/07/31 17:02:45 $
+ * @version $Revision: 1.72 $ $Date: 2003/07/31 17:21:25 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -1147,6 +1147,34 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }        
+    }
+    
+    /**
+     * @see org.opencms.db.I_CmsVfsDriver#resetProjectId(com.opencms.file.CmsProject, java.util.List)
+     */
+    public void resetProjectId(CmsProject currentProject, List resources) throws CmsException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        CmsResource currentResource = null;
+        
+        try {
+            conn = m_sqlManager.getConnection(currentProject);            
+            stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_RESOURCES_UPDATE_PROJECT_ID");
+            
+            Iterator i = resources.iterator();
+            while (i.hasNext()) {
+                currentResource = (CmsResource) i.next();
+                stmt.setInt(1, 0);
+                stmt.setString(2, currentResource.getResourceId().toString());
+                stmt.addBatch();
+            }
+
+            stmt.executeBatch();
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, null);
+        }         
     }
 
     /**

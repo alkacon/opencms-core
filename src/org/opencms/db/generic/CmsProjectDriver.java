@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/07/31 17:02:45 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2003/07/31 17:21:25 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.40 $ $Date: 2003/07/31 17:02:45 $
+ * @version $Revision: 1.41 $ $Date: 2003/07/31 17:21:25 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1303,6 +1303,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
             }
         }
         
+        m_driverManager.getVfsDriver().resetProjectId(context.currentProject(), offlineFolders);
         offlineFolders.clear();
         offlineFolders = null;
 
@@ -1537,6 +1538,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
             }
         }
         
+        m_driverManager.getVfsDriver().resetProjectId(context.currentProject(), offlineFiles);
         offlineFiles.clear();
         offlineFiles = null;
         

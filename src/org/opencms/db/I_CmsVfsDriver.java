@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/31 16:37:22 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2003/07/31 17:21:25 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import source.org.apache.java.util.Configurations;
  * Definitions of all required VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.26 $ $Date: 2003/07/31 16:37:22 $
+ * @version $Revision: 1.27 $ $Date: 2003/07/31 17:21:25 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -458,5 +458,14 @@ public interface I_CmsVfsDriver {
      * @throws CmsException if something goes wrong
      */
     void updateProjectId(CmsProject project, CmsResource resource) throws CmsException;
+    
+    /**
+     * Sets the project ID for a list of resources back to 0 after a project was published.<p>
+     * 
+     * @param currentProject the current project
+     * @param resources the project ID of these resources get set back
+     * @throws CmsException if somethong goes wrong
+     */
+    void resetProjectId(CmsProject currentProject, List resources) throws CmsException;
      
 }
