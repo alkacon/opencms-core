@@ -9,7 +9,15 @@
 <!-- für Kalender -->
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="js/opencms_timer.js"></SCRIPT>
 
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript">
 
+function updateCal() {	//sets calender field to selected date
+	var toDo = "window.opener.top.body."+ window.opener.parent.frames[1].name;
+	toDo += ".document.NEWTASK.DATE.value=userDay+'.'+userMonth+'.'+userYear;window.close();"
+	eval(toDo);
+}
+
+</SCRIPT>
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 <title>OpenCms - Kalender</title>
 </head>
@@ -95,7 +103,7 @@
 <table border=0 cellspacing=0 cellpadding=5>
 <tr><td colspan=2><img src="pics/empty.gif" border=0 width=1 height=165></td></tr>
 <tr>
-	<td align=right width=50%><INPUT class=button width=100 type="button" value="Übernehmen" id=OK name=OK onClick="window.opener.top.body.tasks_body.document.NEWTASK.DATE.value=userDay+'.'+userMonth+'.'+userYear;window.close();"></td>
+	<td align=right width=50%><INPUT class=button width=100 type="button" value="Übernehmen" id=OK name=OK onClick="updateCal()"></td>
 	<td align=left width=50%><INPUT class=button width=100 type="button" value="Abbrechen" id=CANCEL name=CANCEL onClick="window.close();"></td>
 </tr>
 </table>

@@ -48,7 +48,7 @@ function fillDate()
 <tr><td><table cellspacing=0 cellpadding=3 border=0 width=100% height=100%>
 
 	<!-- Beginn Überschrift blau-->
-	<tr><td colspan=5 class=head>Neue Aufgabe erstellen in Prjekt "Relaunch Sozial"</td></tr>
+	<tr><td colspan=5 class=head>Neue Aufgabe erstellen in Projekt "Relaunch Sozial"</td></tr>
 	<!-- Ende Überschrift blau-->
 	
 	<!-- Beginn Leerzele-->
@@ -60,10 +60,11 @@ function fillDate()
 		<td class=formular>Aufgabe für:</td>
 		<td class=dialogtxt colspan=2>
 			<select name="TEAM" width=150 style="width:150px" onchange="if(this.selectedIndex)setUser(document.NEWTASK.USER, this.options[this.selectedIndex].value);">
-				<option selected>Bitte Rolle wählen ...
+				<option selected>Bitte Rolle wählen ...			
 				<option value="it">IT
 				<option value="html">HTML
 				<option value="graf">Grafik
+				<option value="undef">alle
 			</select>
 		</td>
 		<td class=dialogtxt colspan=2 align=left>

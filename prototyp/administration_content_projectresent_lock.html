@@ -65,9 +65,12 @@ function show_help()
 
 <!-- Layer für Plaindateien -->
 <DIV ID="plain" class=kontextmenu>
-<table class=filekontext>
+<table CELLPADDING=1 CELLSPACING=0 BORDER=0 bgcolor="#000000">
+<tr>
+<td>
+<table class=filekontext CELLPADDING=1 CELLSPACING=0 BORDER=0>
 <tr><td>
-	<table CELLPADDING=1 CELLSPACING=1 border=0 bgcolor="#c0c0c0" width=100%>
+<table width="150" CELLPADDING=1 CELLSPACING=1 BORDER=0>
 	<TR><TD>
 		<A class=kontextlink href="javascript:doAction(DO_LOCK);">Sperren</A> 
 	</TD></TR>
@@ -119,15 +122,24 @@ function show_help()
 	</table>
 </td></tr>
 </table>
+</td></tr>
+</table>
 </DIV>
 <!-- Ende Layer Plain -->
 
 
 <!-- Layer für Plaindateien gelockt -->
 <DIV ID="plainlock" class=kontextmenu>
-<table class=filekontext>
+<table CELLPADDING=1 CELLSPACING=0 BORDER=0 bgcolor="#000000">
+<tr>
+<td>
+<table class=filekontext CELLPADDING=1 CELLSPACING=0 BORDER=0>
 <tr><td>
-	<table CELLPADDING=1 CELLSPACING=1 border=0 bgcolor="#c0c0c0" width=100%>
+<table width="150" CELLPADDING=1 CELLSPACING=1 BORDER=0>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doPAction(DO_TASK);">Aufgabe erstellen</A> 
+	</TD></TR>
+	<tr><td><hr></td></tr>
 	<TR><TD>
 		<A class=kontextlink href="javascript:doAction(DO_LOCKUSER);">Sperrung übernehmen</A> 
 	</TD></TR>
@@ -176,10 +188,9 @@ function show_help()
 	<TR><TD>
 		<A class=kontextlink href="javascript:doAction(DO_METAVIEW);">Eigenschaften<!--#=POP_METAVIEW#--></A> 
 	</TD></TR>
-	
-	
-
 	</table>
+</td></tr>
+</table>
 </td></tr>
 </table>
 </DIV>
@@ -187,9 +198,16 @@ function show_help()
 
 <!-- Layer für Plaindateien auf User gelockt -->
 <DIV ID="plainlockuser" class=kontextmenu>
-<table class=filekontext>
+<table CELLPADDING=1 CELLSPACING=0 BORDER=0 bgcolor="#000000">
+<tr>
+<td>
+<table class=filekontext CELLPADDING=1 CELLSPACING=0 BORDER=0>
 <tr><td>
-	<table CELLPADDING=1 CELLSPACING=1 border=0 bgcolor="#c0c0c0" width=100%>
+<table width="150" CELLPADDING=1 CELLSPACING=1 BORDER=0>
+	<TR><TD>
+		<A class=kontextlink href="javascript:doPAction(DO_TASK);">Aufgabe erstellen</A> 
+	</TD></TR>
+	<tr><td><hr></td></tr>
 	<TR><TD>
 		<A class=kontextlink href="javascript:doAction(DO_UNLOCK);">Frei geben</A> 
 	</TD></TR>
@@ -241,14 +259,19 @@ function show_help()
 	</table>
 </td></tr>
 </table>
+</td></tr>
+</table>
 </DIV>
 <!-- Ende Layer Plain auf User gelockt -->
 
 <!-- Layer für Pic -->
 <DIV ID="pic" class=kontextmenu>
-<table class=filekontext>
+<table CELLPADDING=1 CELLSPACING=0 BORDER=0 bgcolor="#000000">
+<tr>
+<td>
+<table class=filekontext CELLPADDING=1 CELLSPACING=0 BORDER=0>
 <tr><td>
-	<table CELLPADDING=1 CELLSPACING=1 border=0 bgcolor="#c0c0c0" width=100%>
+<table width="150" CELLPADDING=1 CELLSPACING=1 BORDER=0>
 	<TR><TD>
 		<A class=kontextlink href="javascript:doAction(DO_COPY);">Kopieren<!--#=POP_COPY#--></A> 
 	</TD></TR>
@@ -283,14 +306,19 @@ function show_help()
 	</table>
 </td></tr>
 </table>
+</td></tr>
+</table>
 </DIV>
 <!-- Ende Layer Pic -->
 
 <!-- Layer für Folder -->
 <DIV ID="folder" class=kontextmenu>
-<table width=150 class=filekontext>
+<table CELLPADDING=1 CELLSPACING=0 BORDER=0 bgcolor="#000000">
+<tr>
+<td>
+<table class=filekontext CELLPADDING=1 CELLSPACING=0 BORDER=0>
 <tr><td>
-	<table CELLPADDING=1 CELLSPACING=1 border=0 bgcolor="#c0c0c0" width=100%>
+<table width="150" CELLPADDING=1 CELLSPACING=1 BORDER=0>
 	<TR><TD>
 		<A class=kontextlink href="javascript:doAction(DO_LOCKF);">Sperren</A> 
 	</TD></TR>
@@ -327,14 +355,19 @@ function show_help()
 	</table>
 </td></tr>
 </table>
+</td></tr>
+</table>
 </DIV>
 <!-- Ende Layer folder -->
 
 <!-- Layer für Folder gesperrt -->
 <DIV ID="folderlock" class=kontextmenu>
-<table width=150 class=filekontext>
+<table CELLPADDING=1 CELLSPACING=0 BORDER=0 bgcolor="#000000">
+<tr>
+<td>
+<table class=filekontext CELLPADDING=1 CELLSPACING=0 BORDER=0>
 <tr><td>
-	<table CELLPADDING=1 CELLSPACING=1 border=0 bgcolor="#c0c0c0" width=100%>
+<table width="150" CELLPADDING=1 CELLSPACING=1 BORDER=0>
 	<TR><TD>
 		<A class=kontextlink href="javascript:doAction(DO_LOCKUSERF);">Sperrung übernehmen</A> 
 	</TD></TR>
@@ -371,14 +404,19 @@ function show_help()
 	</table>
 </td></tr>
 </table>
+</td></tr>
+</table>
 </DIV>
 <!-- Ende Layer folder -->
 
 <!-- Layer für Folder Lock user -->
 <DIV ID="folderlockuser" class=kontextmenu>
-<table width=150 class=filekontext>
+<table CELLPADDING=1 CELLSPACING=0 BORDER=0 bgcolor="#000000">
+<tr>
+<td>
+<table class=filekontext CELLPADDING=1 CELLSPACING=0 BORDER=0>
 <tr><td>
-	<table CELLPADDING=1 CELLSPACING=1 border=0 bgcolor="#c0c0c0" width=100%>
+<table width="150" CELLPADDING=1 CELLSPACING=1 BORDER=0>
 	<TR><TD>
 		<A class=kontextlink href="javascript:doAction(DO_UNLOCKF);">Frei geben</A> 
 	</TD></TR>
@@ -415,14 +453,19 @@ function show_help()
 	</table>
 </td></tr>
 </table>
+</td></tr>
+</table>
 </DIV>
 <!-- Ende Layer folder -->
 
 <!-- Beginn Layer nicht in Projekt -->
 <div id="ntprojekt_p" class="kontextmenu">
-<table class=filekontext>
+<table CELLPADDING=1 CELLSPACING=0 BORDER=0 bgcolor="#000000">
+<tr>
+<td>
+<table class=filekontext CELLPADDING=1 CELLSPACING=0 BORDER=0>
 <tr><td>
-<table CELLPADDING=1 CELLSPACING=1 border=0 bgcolor="#c0c0c0" width=100%>
+<table width="150" CELLPADDING=1 CELLSPACING=1 BORDER=0>
 <TR><TD>
 <A class=kontextlink href="javascript:doAction(DO_COPY);">Kopieren<!--#=POP_COPY#--></A> 
 </TD></TR>
@@ -435,6 +478,8 @@ function show_help()
 <A class=kontextlink href="javascript:doAction(DO_METAVIEW);">Eigenschaften<!--#=POP_META#--></A> 
 </TD></TR>
 
+</table>
+</td></tr>
 </table>
 </td></tr>
 </table>

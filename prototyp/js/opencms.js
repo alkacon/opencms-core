@@ -4,6 +4,9 @@
 //------------------------------------------
 
 var admincontenturl="administration_content_top.html";
+//var taskcontenturl="tasks_content_nafm.html";
+var selectedTask=0;
+var lastVisited="tasks_content_nafm.html";
 
 // Formularfelder (Textfelder) auf Inhalt überprüfen
 function check_textfeld(formular, feld)

@@ -21,97 +21,98 @@ function show_help()
 
 </head>
 
-<body bgcolor="#ffffff" background="pics/bg_weiss.gif"  bgproperties=fixed>
+<body bgcolor="#ffffff" background="pics/bg_weiss.gif" onLoad="window.top.body.tasks_head.location.href='tasks_head_2.html';" bgproperties=fixed>
 
 <!-- Tabelle um vertikal und horizontal zu zentrieren-->
-<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
-<tr><td align=middle>
+<table width=100% height=100% border=0 cellspacing=3 cellpadding=0>
+<tr><td align=center>
 <form id=TASKVIEW name=TASKVIEW>
 
 <!-- Tabellenaufbau Dokumentation Aufgabe-->
-<table cellspacing=0 cellpadding=3 border=0 width=500px>
+<table cellspacing=1 cellpadding=3 border=0 width=500px>
 	
 	<!-- Beginn Leerzele-->
 	<tr>
-		<td class=taskviewleerzeile width=20%>&nbsp;</td>
-		<td class=taskviewleerzeile width=3%>&nbsp;</td>
-		<td class=taskviewleerzeile width=37%>&nbsp;</td>
-		<td class=taskviewleerzeile width=40%>&nbsp;</td>
+		<td class=taskviewleerzeile width=33%>&nbsp;</td>
+		<td class=taskviewleerzeile width=34%>&nbsp;</td>
+		<td class=taskviewleerzeile width=33%>&nbsp;</td>
 	</tr>
 	<!-- Ende Leerzeile-->
 
 	<!-- Beginn Überschrift Task-->
-	<tr><td colspan=4 class=taskviewhead background="pics/gr_task_01.gif" align=right valign=bottom height=40px>Überarbeitung des Bereiches Kontakt</td></tr>
+	<tr><td colspan=3 class=taskviewheadblue>&Uuml;berarbeitung des Bereiches Kontakt</td></tr>
 	<!-- Ende Überschrift blau-->
-	<tr><td class=taskviewleerzeile colspan=4>&nbsp;</td></tr>
+	<!--<tr><td class=taskviewleerzeile colspan=3>&nbsp;</td></tr>-->
 	<!-- Beginn Inhalt -->
 	<tr>
-		<td class=taskviewbold width=30% nowrap>Projekt:</td>
-		<td class=taskviewtxt colspan=2>Relaunch Sozial</td>
+		<td class=taskviewbold width=33% nowrap>Projekt:</td>
+		<td class=taskviewtxt>Relaunch Sozial</td>
 		<td class=taskviewtxt align=right><INPUT class=taskviewbutton width = 100 type="button" value="R&uuml;ckfragen" id=QUESTION name=QUESTION onClick="location='tasks_content_dialogquestion.html';"></td>
 	</tr>
 	<tr>
 		<td class=taskviewbold nowrap>Aufgabensteller:</td>
-		<td class=taskviewtxt colspan=2>a.spee</td>
+		<td class=taskviewtxt>a.spee</td>
 		<td class=taskviewtxt align=right><INPUT class=taskviewbutton width = 100 type="button" value="Annehmen" id=TAKE name=TAKE onClick="location='tasks_content_dialogaccept.html';"></td>
 	</tr>
 	<tr>
 		<td class=taskviewbold nowrap>Bearbeiter:</td>
-		<td class=taskviewtxt colspan=3>m.schleich</td>
-		
+		<td class=taskviewtxt>m.schleich</td>
+		<td class=taskviewtxt nowrap>&nbsp;</td>
 	</tr>
 	<tr>
 		<td class=taskviewbold nowrap>F&auml;llig am:</td>
-		<td class=taskviewtxt colspan=2>21.02.2000</td>
+		<td class=taskviewtxt>21.02.2000</td>
 		<td class=taskviewtxt align=right><INPUT disabled class=taskviewbutton width = 100 type="button" value="F&auml;lligkeit" id=DATE name=DATE></td>
 	</tr>
 	<tr>
 		<td class=taskviewbold nowrap>Priorit&auml;t:</td>
-		<td class=taskviewtxt><IMG border=0 width=16 height=16 src="pics/ic_task_priohigh.gif"></td>
-		<td class=taskviewtxt>hoch</td>
+		<td class=taskviewtxt><IMG border=0 width=16 height=16 src="pics/ic_task_priohigh.gif">&nbsp;hoch</td>
 		<td class=taskviewtxt align=right><INPUT disabled class=taskviewbutton width = 100 type="button" value="Priorit&auml;t" id=PRIO name=PRIO></td>
 	</tr>
 	<tr>
-		<td class=taskviewbold nowrap colspan=3>&nbsp;</td>
+		<td class=taskviewbold>&nbsp;</td>
+		<td class=taskviewtxt>&nbsp;</td>
 		<td class=taskviewtxt align=right><INPUT disabled class=taskviewbutton width = 100 type="button" value="Abhaken" id=OK name=OK></td>
 	</tr>
-
+	<tr>
+		<td class=taskviewbold>&nbsp;</td>
+		<td class=taskviewtxt>&nbsp;</td>
+		<td class=taskviewtxt align=right><INPUT class=taskviewbutton width=100 type ="button" value="Neuer Kommentar" id=COMMENT name=COMMENT onClick="location='tasks_content_dialogcomment.html';"></td>
+	</tr>
 	<!-- Beginn Leerzele-->
-	<tr><td colspan=4 class=taskviewleerzeile>&nbsp;</td></tr>
+	<!-- <tr><td colspan=4 class=taskviewleerzeile>&nbsp;</td></tr> -->
 	<!-- Ende Leerzeile-->
 
-	<tr>
-		<td class=taskviewbold nowrap colspan=3>&nbsp;</td>
-		<td class=taskviewtxt align=right><INPUT class=taskviewbutton width = 100 type="button" value="Zur&uuml;ck" id=BACK name=BACK onClick="location='tasks_content_nafm.html';"></td>
-	</tr>
+
 	<!-- Ende Inhalt -->
 	
 	<!-- Beginn Leerzele-->
-	<tr><td colspan=4 class=taskviewleerzeile>&nbsp;</td></tr>
+	<!-- <tr><td colspan=4 class=taskviewleerzeile>&nbsp;</td></tr> -->
 	<!-- Ende Leerzeile-->
-	<tr><td colspan=4 background="pics/gr_task_02.gif"height=40px>&nbsp</td></tr>
+	<tr><td colspan=3 class=taskviewheadblue>&nbsp</td></tr>
 	</table>
 
 <!--Beginn Doku -->
 <br><br>
-<table cellspacing=0 cellpadding=3 border=0 width=500>
+<table cellspacing=1 cellpadding=3 border=0 width="90%">
+<tr>
+	<td width=3%><img src="pics/empty.gif" border=0 width=16 height=2></td>
+	<td width=94%>&nbsp;</td>
+	<td width=3%><img src="pics/empty.gif" border=0 width=16 height=2></td>
+</tr>
 <!--Beginn Doku Kopf -->
 <tr>
-	<td width=3%></td>
-	<td width=37%></td>
-	<td width=60%></td>
-<tr>
-	<td valign=bottom colspan=2 class=taskviewhead2>Dokumentation:</td>
-	<td align=right><INPUT class=taskviewbutton width=100 type ="button" value="Neuer Kommentar" id=COMMENT name=COMMENT onClick="location='tasks_content_dialogcomment.html';"></td>
+	<td valign=bottom colspan=3 class=taskviewhead2>Dokumentation:</td>
 </tr>
 <!--Ende Doku Kopf-->
-<tr>
-	<td colspan=3>&nbsp;</td>
-<tr>
 <!--Beginn Trennlinie -->
 <tr>
-	<td colspan=2><img src="pics/gr_taskline.gif" border=0 width=200 height=5></td>
-	<td></td>
+	<td colspan=3>
+	<table cellspacing=0 cellpadding=0 border=0 width="100%">
+	<tr>
+	<td height="2" bgcolor="blue"><img src="pics/empty.gif" width="20" height="2" alt="" border="0"></td>
+	</tr>
+	</table>
 </tr>
 <!--Ende Trennlinie -->
 
@@ -120,11 +121,11 @@ function show_help()
 	<td colspan=3>12.01.2000 13:15 / a.spee</td>
 </tr>
 <tr>
-	<td><img src="pics/ic_task_auto.gif" border=0 width=16 height=16></td>
+	<td><img src="pics/ic_taskdoku_start.gif" border=0 width=16 height=16></td>
 	<td colspan=2>Aufgabe angelegt!</td>
 </tr>
 <tr>
-	<td valign=top><img src="pics/ic_task_item.gif" border=0 width=16 height=16></td>
+	<td valign=top>&nbsp;</td>
 	<td colspan=2>Aufgabenbeschreibung Blindtext Blindtext Blindtext
 		Blindtext BlindtextBlindtext Blindtext Blindtext Blindtext BlindtextBlindtextBlindtext
 		BlindtextBlindtextBlindtext Blindtext
@@ -134,8 +135,9 @@ function show_help()
 </table>
 <!--Ende Doku -->
 </FORM>
-</tr></td></table>
-
+</tr>
+</td></table>
+<center><a href="tasks_content_usecases.html">[Alle Symbole und deren Bedeutung = Use Cases]</a></center>
 <!-- Ende Zentrierung -->
 </body>
 </html>

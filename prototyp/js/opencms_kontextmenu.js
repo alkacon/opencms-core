@@ -56,6 +56,7 @@ var DO_PONLINELOCK=2;
 var DO_PONLINE=3;
 
 var DO_PTASK=10;
+var DO_TASK=99;
 
 var DO_PREACT=20;
 
@@ -309,7 +310,7 @@ function doPAction(action) // which action on layer Project is clicked
 	{
 		case 1:
 		{
-			confirm('Sind Sie sicher, \ndass Sie alle Dateisperrungen aufheben wollen?');
+			location.href='administration_content_lockchange.html';
 			break;
 		}
 		case 2:
@@ -319,7 +320,7 @@ function doPAction(action) // which action on layer Project is clicked
 		}
 		case 3:
 		{
-			confirm('Projekt wirklich veröffentlichen?');
+			location.href='administration_content_publish_project.html';
 			break;
 		}
 		case 10:
@@ -330,6 +331,11 @@ function doPAction(action) // which action on layer Project is clicked
 		case 20:
 		{
 			location.href='administration_content_projecthistory_react.html';
+			break;
+		}
+		case 99:
+		{
+			location.href='tasks_content_new_forfile.html';
 			break;
 		}
 	}
