@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.16 $ $Date: 2000/01/04 18:12:52 $ 
+ * @version $Revision: 1.17 $ $Date: 2000/01/05 17:03:09 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -69,8 +69,10 @@ public abstract class A_CmsObject {
 	 * (or guest) user will see the rersources of this project.
 	 * 
 	 * @return the onlineproject object.
+	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract public A_CmsProject onlineProject();
+	abstract public A_CmsProject onlineProject() 
+		throws CmsException;
 
 	/**
 	 * Returns a Vector with all I_CmsResourceTypes.
@@ -79,6 +81,16 @@ public abstract class A_CmsObject {
 	 */
 	abstract public Vector getAllResourceTypes();
 	
+	/**
+	 * Tests if the user can access the project.
+	 * 
+	 * @param projectname the name of the project.
+	 * 
+	 * @return true, if the user has access, else returns false.
+	 */
+	abstract public boolean accessProject(String projectname) 
+		throws CmsException;
+
 	/**
 	 * Reads a project from the Cms.
 	 * 
@@ -116,11 +128,10 @@ public abstract class A_CmsObject {
 	/**
 	 * Returns all projects, which the user may access.
 	 * 
-	 * @param projectname the name of the project.
-	 * 
 	 * @return a Vector of projects.
 	 */
-	abstract public Vector getAllAccessibleProjects(String projectname);
+	abstract public Vector getAllAccessibleProjects()
+		throws CmsException;
 	
 	/**
 	 * Declines a resource. The resource can be copied to the onlineproject.

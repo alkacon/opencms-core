@@ -9,7 +9,7 @@ import com.opencms.core.*;
  * anonymous user.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 1999/12/23 16:49:21 $
+ * @version $Revision: 1.2 $ $Date: 2000/01/05 17:03:09 $
  */
 public class CmsInitMySqlFillDefaults extends A_CmsInit implements I_CmsConstants {
 	
@@ -46,8 +46,17 @@ public class CmsInitMySqlFillDefaults extends A_CmsInit implements I_CmsConstant
 			
 			projectRb.createProject(C_PROJECT_ONLINE, "the online-project", new CmsTask(),
 									userRb.readUser(C_USER_ADMIN), 
-									userRb.readGroup(C_GROUP_ADMIN), C_FLAG_ENABLED);
+									userRb.readGroup(C_GROUP_GUEST), C_FLAG_ENABLED);
 			
+			I_CmsRbProperty propertyRb = new CmsRbProperty(
+				new CmsAccessPropertyMySql(propertyDriver, propertyConnectString));
+			
+			Hashtable mount = new Hashtable(1);
+			mount.put("/", new CmsMountPoint("/", propertyDriver, 
+											 propertyConnectString,
+											 "The root-mountpoint"));
+			
+			propertyRb.addProperty( C_PROPERTY_MOUNTPOINT, mount );
 			return null;
 	}
 }

@@ -11,7 +11,7 @@ import java.lang.reflect.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 2000/01/04 18:12:53 $
+ * @version $Revision: 1.3 $ $Date: 2000/01/05 17:03:09 $
  */
 public class CmsShell implements I_CmsConstants {
 	
@@ -582,12 +582,63 @@ public class CmsShell implements I_CmsConstants {
 	 * Reads a project from the Cms.
 	 * 
 	 * @param name The name of the project to read.
-	 * 
-	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	public void readProject(String name) {
 		try {
 			System.out.println( m_cms.readProject(name) );
+		} catch( Exception exc ) {
+			System.err.println(exc);
+		}		
+	}
+
+	/**
+	 * Reads a the online-project from the Cms.
+	 */
+	public void onlineProject() {
+		try {
+			System.out.println( m_cms.onlineProject() );
+		} catch( Exception exc ) {
+			System.err.println(exc);
+		}		
+	}
+
+	/**
+	 * Tests if the user can access the project.
+	 * 
+	 * @param projectname the name of the project.
+	 */
+	public void accessProject(String projectname) {
+		try {
+			System.out.println( m_cms.accessProject(projectname) );
+		} catch( Exception exc ) {
+			System.err.println(exc);
+		}		
+	}
+
+	/**
+	 * Returns a user object.<P/>
+	 * 
+	 * @param username The name of the user that is to be read.
+	 */
+	public void readUser(String username) {
+		try {
+			System.out.println( m_cms.readUser(username) );
+		} catch( Exception exc ) {
+			System.err.println(exc);
+		}		
+	}
+
+	/**
+	 * Returns all projects, which the user may access.
+	 * 
+	 * @return a Vector of projects.
+	 */
+	public void getAllAccessibleProjects() {
+		try {
+			Vector projects = m_cms.getAllAccessibleProjects();
+			for( int i = 0; i < projects.size(); i++ ) {
+				System.out.println( (A_CmsProject)projects.elementAt(i) );
+			}
 		} catch( Exception exc ) {
 			System.err.println(exc);
 		}		

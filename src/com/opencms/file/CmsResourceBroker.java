@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.10 $ $Date: 2000/01/04 18:12:52 $
+ * @version $Revision: 1.11 $ $Date: 2000/01/05 17:03:09 $
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -74,11 +74,12 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
 	 * @return the onlineproject object.
+	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	public A_CmsProject onlineProject(A_CmsUser currentUser, 
-										A_CmsProject currentProject){
-		// TODO: implement this!
-		return null;
+									  A_CmsProject currentProject)
+		throws CmsException {
+		return( readProject(currentUser, currentProject, C_PROJECT_ONLINE) );
 	}
 
 	/**
@@ -94,9 +95,29 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @return true, if the user has access, else returns false.
 	 */
 	public boolean accessProject(A_CmsUser currentUser, A_CmsProject currentProject,
-								   String projectname){
-		// TODO: implement this!
-		return false;
+								 String projectname) 
+		throws CmsException {
+		
+		A_CmsProject testProject = readProject(currentUser, currentProject, projectname);
+		
+		// is the current-user admin, or the owner of the project?
+		if( (currentProject.getOwnerId() == currentUser.getId()) || 
+			isAdmin(currentUser, currentProject) ) {
+			return(true);
+		}
+		
+		// get all groups of the user
+		Vector groups = getGroupsOfUser(currentUser, currentProject, 
+										currentUser.getName());
+		
+		// test, if the user is in the same groups like the project.
+		for(int i = 0; i < groups.size(); i++) {
+			if( ((A_CmsGroup) groups.elementAt(i)).getId() == testProject.getGroupId() ) {
+				return( true );
+			}
+		}
+		
+		return( false );
 	}
 
 	/**
@@ -169,8 +190,31 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 public Vector getAllAccessibleProjects(A_CmsUser currentUser, 
 											A_CmsProject currentProject)
 		 throws CmsException {
-		// TODO: implement this!
-		 return null;
+		 
+		// get all groups of the user
+		Vector groups = getGroupsOfUser(currentUser, currentProject, 
+										currentUser.getName());
+		
+		// get all projects which are owned by the user.
+		Vector projects = m_projectRb.getAllAccessibleProjectsByUser(currentUser);
+		
+		// get all projects, that the user can access with his groups.
+		for(int i = 0; i < groups.size(); i++) {
+			// get all projects, which can be accessed by the current group
+			Vector projectsByGroup = 
+				m_projectRb.getAllAccessibleProjectsByGroup((A_CmsGroup)
+															 groups.elementAt(i));
+			// merge the projects to the vector
+			for(int j = 0; j < projectsByGroup.size(); j++) {
+				// add only projects, which are new
+				if(!groups.contains(projectsByGroup.elementAt(j))) {
+					groups.addElement(projectsByGroup.elementAt(j));
+				}
+			}
+		}
+		
+		// return the vector of projects
+		return(projects);
 	 }	
 	
 	/**
@@ -186,8 +230,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	public A_CmsProject publishProject(A_CmsUser currentUser, 
-												A_CmsProject currentProject,
-												String name)
+									   A_CmsProject currentProject,
+									   String name)
 		throws CmsException {
 		// TODO: implement this!
 		return null;
@@ -548,7 +592,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * Returns a list of groups of a user.<P/>
 	 * 
 	 * <B>Security:</B>
-	 * All users are granted, except the anonymous user.
+	 * All users are granted.
 	 * 
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
@@ -559,13 +603,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public Vector getGroupsOfUser(A_CmsUser currentUser, A_CmsProject currentProject, 
 								  String username)
 		throws CmsException {
-		// check the security
-		if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) ) {
-			return m_userRb.getGroupsOfUser(username);
-		} else {
-			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
-				CmsException.C_NO_ACCESS);
-		}
+		return(m_userRb.getGroupsOfUser(username));
 	}
 
 	/**

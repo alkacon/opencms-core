@@ -8,9 +8,9 @@ import java.util.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 1999/12/21 14:23:14 $
+ * @version $Revision: 1.3 $ $Date: 2000/01/05 17:03:09 $
  */
-abstract class A_CmsResourceType {	
+abstract public class A_CmsResourceType {	
 	
 	/**
 	 * Returns the type of this resource-type.

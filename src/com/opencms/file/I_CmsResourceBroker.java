@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.11 $ $Date: 2000/01/04 18:12:53 $
+ * @version $Revision: 1.12 $ $Date: 2000/01/05 17:03:09 $
  */
 interface I_CmsResourceBroker {
 
@@ -28,9 +28,11 @@ interface I_CmsResourceBroker {
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
 	 * @return the onlineproject object.
+	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	public A_CmsProject onlineProject(A_CmsUser currentUser, 
-										A_CmsProject currentProject);
+									  A_CmsProject currentProject)
+		throws CmsException;
 
 	/**
 	 * Tests if the user can access the project.
@@ -45,7 +47,8 @@ interface I_CmsResourceBroker {
 	 * @return true, if the user has access, else returns false.
 	 */
 	public boolean accessProject(A_CmsUser currentUser, A_CmsProject currentProject,
-								   String projectname);
+								 String projectname) 
+		throws CmsException;
 
 	/**
 	 * Reads a project from the Cms.
@@ -425,7 +428,7 @@ interface I_CmsResourceBroker {
 	 * Returns a list of groups of a user.<P/>
 	 * 
 	 * <B>Security:</B>
-	 * All users are granted, except the anonymous user.
+	 * All users are granted.
 	 * 
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
