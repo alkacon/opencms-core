@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/04/05 15:13:51 $
- * Version: $Revision: 1.160 $
+ * Date   : $Date: 2004/04/20 12:42:27 $
+ * Version: $Revision: 1.161 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
@@ -83,7 +84,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.160 $ $Date: 2004/04/05 15:13:51 $
+ * @version $Revision: 1.161 $ $Date: 2004/04/20 12:42:27 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -855,6 +856,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 try {
                     // write the properties online
                     offlineProperties = m_driverManager.getVfsDriver().readPropertyObjects(context.currentProject(), offlineFileHeader);
+                    CmsProperty.setAutoCreatePropertyDefinitions(offlineProperties, true);
                     m_driverManager.getVfsDriver().writePropertyObjects(onlineProject, newFile, offlineProperties);
                 } catch (CmsException e) {
                     if (OpenCms.getLog(this).isErrorEnabled()) {
@@ -946,6 +948,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 try {
                     // write the properties online
                     offlineProperties = m_driverManager.getVfsDriver().readPropertyObjects(context.currentProject(), offlineFileHeader);
+                    CmsProperty.setAutoCreatePropertyDefinitions(offlineProperties, true);
                     m_driverManager.getVfsDriver().writePropertyObjects(onlineProject, newFile, offlineProperties);
                 } catch (CmsException e) {
                     if (OpenCms.getLog(this).isErrorEnabled()) {
@@ -1149,6 +1152,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 // write the properties online
                 m_driverManager.getVfsDriver().deleteProperties(onlineProject.getId(), onlineFolder);
                 offlineProperties = m_driverManager.getVfsDriver().readPropertyObjects(context.currentProject(), offlineFolder);
+                CmsProperty.setAutoCreatePropertyDefinitions(offlineProperties, true);
                 m_driverManager.getVfsDriver().writePropertyObjects(onlineProject, onlineFolder, offlineProperties);
             } catch (CmsException e) {
                 if (OpenCms.getLog(this).isErrorEnabled()) {
