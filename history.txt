@@ -8,6 +8,16 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.1.56 Arakis - 06 February 2001
+
+- ATTENTION! You will need JSDK 2.2 in order to compile the complete source tree.
+! Added streaming mode for HTTP response. (Sub-)templates can now write
+  directly into the output stream. This might increase displaying speed in the browser.
+! Introduced caching hierarchy. The system now differs between several levels
+  of cacheability (still rudimentary, will be improved).
+! JSDK 2.2 support added.
+- Removed obsolete CmsMultipartRequest
+
 OpenCms 4.1.55 Arakis - 02 February 2001
 
 ! Added documentation of OpenCms in tex-format.
