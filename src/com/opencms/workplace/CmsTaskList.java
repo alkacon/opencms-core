@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskList.java,v $
-* Date   : $Date: 2005/02/18 15:18:51 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2005/02/21 11:31:42 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,7 +29,6 @@
 
 package com.opencms.workplace;
 
-import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.util.CmsDateUtil;
@@ -45,11 +44,12 @@ import com.opencms.template.A_CmsXmlContent;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
 import org.w3c.dom.Element;
 
@@ -59,7 +59,7 @@ import org.w3c.dom.Element;
  * 
  * @author Andreas Schouten
  * @author Mario Stanke
- * @version $Revision: 1.29 $ $Date: 2005/02/18 15:18:51 $
+ * @version $Revision: 1.30 $ $Date: 2005/02/21 11:31:42 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -95,12 +95,12 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement {
         
         // call the method for generating projectlist elements
         Method callingMethod = null;
-        Vector list = new Vector();
+        List list = new ArrayList();
         try {
             callingMethod = callingObject.getClass().getMethod(listMethod, new Class[] {
                 CmsObject.class, CmsXmlLanguageFile.class
             });
-            list = (Vector)callingMethod.invoke(callingObject, new Object[] {
+            list = (List)callingMethod.invoke(callingObject, new Object[] {
                 cms, lang
             });
         }
@@ -155,7 +155,7 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement {
         for(int i = 0;i < list.size();i++) {
             
             // get the actual project
-            CmsTask task = (CmsTask)list.elementAt(i);
+            CmsTask task = (CmsTask)list.get(i);
             CmsProject project = null;
             projectname = "?";
             try {
