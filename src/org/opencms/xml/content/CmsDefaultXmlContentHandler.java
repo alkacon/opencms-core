@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2004/12/07 15:13:07 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/12/08 13:17:34 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * @since 5.5.4
  */
 public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
@@ -453,7 +453,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         if (widget == null) {
             throw new CmsXmlException("Unregistered XML widget '"
                 + className
-                + "' configureed as GUI for element "
+                + "' configured as GUI for element "
                 + elementName
                 + " in content definition "
                 + contentDefinition.getSchemaLocation());
@@ -481,6 +481,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         boolean matchResult,
         boolean isWarning) {
 
+        
         String message = null;
         if (isWarning) {
             message = (String)m_validationWarningMessages.get(value.getElementName());
@@ -495,12 +496,16 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
         StringBuffer result = new StringBuffer(64);
         if (isWarning) {
-            result.append("Bad value ");
+            result.append("${editor.xmlcontent.validation.warning.1}");
+            result.append(valueStr);
+            result.append("${editor.xmlcontent.validation.warning.2}");
         } else {
-            result.append("Invalid value \"");
+            result.append("${editor.xmlcontent.validation.error.1}");
+            result.append(valueStr);
+            result.append("${editor.xmlcontent.validation.error.2}");
         }
-        result.append(valueStr);
-        result.append("\" according to rule [");
+        
+        result.append('[');
         if (!matchResult) {
             result.append('!');
         }
@@ -750,4 +755,5 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
         return errorHandler;
     }
+    
 }

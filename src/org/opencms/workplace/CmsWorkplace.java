@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/12/08 13:17:34 $
- * Version: $Revision: 1.93 $
+ * Date   : $Date: 2004/12/08 13:18:28 $
+ * Version: $Revision: 1.94 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import org.apache.commons.fileupload.FileUploadException;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.93 $
+ * @version $Revision: 1.94 $
  * 
  * @since 5.1
  */
@@ -1316,6 +1316,8 @@ public abstract class CmsWorkplace {
     
     /**
      * Resolves the macros in the given String and replaces them by their localized keys.<p>
+     * 
+     * Macros start with "${" and end with "}".<p>
      * 
      * @param input the input String containing the macros
      * @return the resolved String
