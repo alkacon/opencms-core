@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2000/08/30 12:54:22 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/08/31 07:31:15 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import com.opencms.core.*;
  * This class implements the registry for OpenCms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.5 $ $Date: 2000/08/30 12:54:22 $
+ * @version $Revision: 1.6 $ $Date: 2000/08/31 07:31:15 $
  * 
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
@@ -963,6 +963,7 @@ public synchronized void importModule(String moduleZip, Vector exclusion) throws
 	}
 	Element newModule = getModuleElementFromImport(moduleZip);
 	String newModuleName = newModule.getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
+	String newModuleVersion = newModule.getElementsByTagName("version").item(0).getFirstChild().getNodeValue();
 
 	// exists the module already?
 	if (moduleExists(newModuleName)) {
@@ -974,12 +975,10 @@ public synchronized void importModule(String moduleZip, Vector exclusion) throws
 	if (dependencies.size() != 0) {
 		throw new CmsException("the dependencies for the module are not fulfilled.", CmsException.C_REGISTRY_ERROR);
 	}
-
 	Vector resourceNames = new Vector();
 	Vector resourceCodes = new Vector();
 	CmsImport cmsImport = new CmsImport(moduleZip, "/", m_cms);
-	cmsImport.importResources(exclusion, resourceNames, resourceCodes, "module", newModuleName);
-
+	cmsImport.importResources(exclusion, resourceNames, resourceCodes, "module", newModuleName + "_" + newModuleVersion);
 	// import the module data into the registry
 	Element regModules = (Element) (m_xmlReg.getElementsByTagName("modules").item(0));
 	// set the import-date
@@ -1004,7 +1003,7 @@ public synchronized void importModule(String moduleZip, Vector exclusion) throws
 		Node checksum = newModule.getOwnerDocument().createElement("checksum");
 		file.appendChild(checksum);
 		name.appendChild(newModule.getOwnerDocument().createTextNode((String) resourceNames.elementAt(i)));
-		checksum.appendChild(newModule.getOwnerDocument().createTextNode((String) resourceCodes.elementAt(i)));
+		checksum.appendChild(newModule.getOwnerDocument().createCDATASection((String) resourceCodes.elementAt(i)));
 	}
 
 	// append the files to the module-entry

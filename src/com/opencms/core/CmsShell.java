@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/08/30 12:54:22 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2000/08/31 07:31:15 $
+ * Version: $Revision: 1.21 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import source.org.apache.java.util.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.20 $ $Date: 2000/08/30 12:54:22 $
+ * @version $Revision: 1.21 $ $Date: 2000/08/31 07:31:15 $
  */
 public class CmsShell implements I_CmsConstants {
 
@@ -978,7 +978,7 @@ public class CmsShell implements I_CmsConstants {
 			printException(exc);
 		}
 	}
- /**
+/**
  * Imports a module (zipfile) to the cms.
  * 
  * @param importFile java.lang.String the name (complete Path) of the import module
@@ -986,7 +986,8 @@ public class CmsShell implements I_CmsConstants {
 public void importModule(String importFile) {
 	// import the module
 	try {
-		m_cms.importModule(importFile);
+		I_CmsRegistry reg = m_cms.getRegistry();
+		reg.importModule(importFile, new Vector());
 	} catch (Exception exc) {
 		printException(exc);
 	}

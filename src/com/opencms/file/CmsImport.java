@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
- * Date   : $Date: 2000/08/29 16:02:57 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2000/08/31 07:31:15 $
+ * Version: $Revision: 1.19 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import source.org.apache.java.util.*;
  * into the cms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.18 $ $Date: 2000/08/29 16:02:57 $
+ * @version $Revision: 1.19 $ $Date: 2000/08/31 07:31:15 $
  */
 public class CmsImport implements I_CmsConstants {
 
@@ -374,7 +374,7 @@ private void importFile(String source, String destination, String type, String u
 			writtenFilenames.addElement(m_importPath + destination);
 		}
 		if (fileCodes != null) {
-			fileCodes.addElement(digestContent);
+			fileCodes.addElement(digestContent.toString());
 		}
 	}
 }
