@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChannelTree.java,v $
-* Date   : $Date: 2001/10/26 13:54:01 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2001/11/02 16:20:12 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.*;
  *
  *
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2001/10/26 13:54:01 $
+ * @version $Revision: 1.3 $ $Date: 2001/11/02 16:20:12 $
  */
 
 public class CmsChannelTree extends CmsWorkplaceDefault implements I_CmsWpConstants {
@@ -172,7 +172,9 @@ public class CmsChannelTree extends CmsWorkplaceDefault implements I_CmsWpConsta
                 || (cms.readOwner(res).equals(cms.getRequestContext().currentUser()) && (accessflags & C_ACCESS_OWNER_VISIBLE) > 0)
                 || (groupAccess && (accessflags & C_ACCESS_GROUP_VISIBLE) > 0)
                 || (cms.getRequestContext().isAdmin())) {
-            access = true;
+            if (res.getProjectId() == cms.getRequestContext().currentProject().getId()) {
+                access = true;
+            }
         }
         return access;
     }
