@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2004/02/13 13:41:46 $
-* Version: $Revision: 1.70 $
+* Date   : $Date: 2004/04/13 16:43:03 $
+* Version: $Revision: 1.71 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -132,15 +132,17 @@ public class CmsDbAccess {
             // this is the onlineproject - don't write into this project directly
             throw new CmsSecurityException("Can't write to the online project", CmsSecurityException.C_SECURITY_NO_MODIFY_IN_ONLINE_PROJECT);
         }
-        //int newMasterId = CmsIdGenerator.nextId(m_poolName, "CMS_MODULE_MASTER");
-        CmsUUID newMasterId = new CmsUUID();
+       
+        if (dataset.m_masterId == null || CmsUUID.getNullUUID().equals(dataset.m_masterId)) {
+            // create a new master ID
+            dataset.m_masterId = new CmsUUID();
+        }
+        
         int projectId = cms.getRequestContext().currentProject().getId();
-        CmsUUID currentUserId = cms.getRequestContext().currentUser().getId();
         long currentTime = new java.util.Date().getTime();
-        // filling some default-values for new dataset's
-        dataset.m_masterId = newMasterId;
+        
+        CmsUUID currentUserId = cms.getRequestContext().currentUser().getId();        
         dataset.m_userId = currentUserId;
-        // dataset.m_groupId = cms.getRequestContext().currentGroup().getId();
 
         CmsUUID groupId = CmsUUID.getNullUUID();
         try {
