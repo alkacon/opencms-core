@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
- * Date   : $Date: 2000/05/10 16:00:33 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2000/05/18 12:43:23 $
+ * Version: $Revision: 1.35 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.34 $ $Date: 2000/05/10 16:00:33 $
+ * @version $Revision: 1.35 $ $Date: 2000/05/18 12:43:23 $
  */
 public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLogChannels {
     
@@ -569,7 +569,7 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
     public Object getFrameQueryString(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
             throws CmsException {
         String query = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getQueryString();
-        
+		
         StringBuffer encQuery = new StringBuffer();
         boolean notfirst = false;
         if(query != null) {
@@ -612,33 +612,41 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
             }
         }
         
-		if (query==null) {
-			query="";
-		}
-                
+		query=(query==null?"":query);
+		                
         if(!query.equals("")) {
 			if (query.indexOf("cmsframe=")!=-1) {
 				int start=query.indexOf("cmsframe=");
 				int end=query.indexOf("&",start);
-				if (!tagcontent.equals("")){
-					if (end!=-1) {
-						query=query.substring(0,start+9)+tagcontent+query.substring(end);
-					} else {
-						query=query.substring(0,start+9)+tagcontent;
-					}
+				String cmsframe="";
+				if (end!=-1) {
+					cmsframe=query.substring(start+9,end);
 				} else {
-					if (end!=-1) {
-						query=query.substring(0,start)+query.substring(end+1);
+					cmsframe=query.substring(start+9);
+				}
+				if (!cmsframe.equals("plain")) {
+					if (!tagcontent.equals("")){
+						if (end!=-1) {
+							query=query.substring(0,start+9)+tagcontent+query.substring(end);
+						} else {
+							query=query.substring(0,start+9)+tagcontent;
+						}
 					} else {
-						query=query.substring(0,start);
+						if (end!=-1) {
+							query=query.substring(0,start)+query.substring(end+1);
+						} else {
+							query=query.substring(0,start);
+						}
 					}
 				}
-			} else {
+			} else {				
 				if (!tagcontent.equals("")){
 					query=query+"&cmsframe="+tagcontent;
 				}
 			}
-            query = "?" + query;			
+			if (!query.equals("")) {
+				query = "?" + query;
+			}
 		} else {
 			if (!tagcontent.equals("")){
 				query = "?cmsframe="+tagcontent;
@@ -647,6 +655,38 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
         return query;
     }  
 
+	
+	/**
+     * Gets the target for a link.
+     * <P>
+     * This method can be called using <code>&lt;METHOD name="getCmsFrame"&gt;</code>
+     * in the template file.
+     * 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param tagcontent Unused in this special case of a user method. Can be ignored.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
+     * @param userObj Hashtable with parameters.
+     * @return String or byte[] with the content of this subelement.
+     * @exception CmsException
+     */
+    public Object getFrameTarget(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
+            throws CmsException {
+		
+		String target="";
+		String cmsframe=(String)((Hashtable)userObject).get("cmsframe");
+		cmsframe=(cmsframe==null?"":cmsframe);
+		if (cmsframe.equals("plain")) {
+			target="";
+		} else {
+			if (tagcontent.equals("")) {
+				target="target=_top";
+			} else {
+				target="target="+tagcontent;
+			}
+		}
+		return target;
+	}
+	
     
     /**
      * For debugging purposes only.
