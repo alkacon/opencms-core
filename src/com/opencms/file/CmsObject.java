@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/06/13 16:17:05 $
-* Version: $Revision: 1.285 $
+* Date   : $Date: 2003/06/16 13:36:25 $
+* Version: $Revision: 1.286 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import com.opencms.util.Utils;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.285 $
+ * @version $Revision: 1.286 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -2487,10 +2487,10 @@ public void publishProject(int id) throws CmsException {
                     System.err.println(stamp2);
                     System.err.println(stamp3);
                 }
-                if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, stamp1);
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, stamp2);
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, stamp3);
+                if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_DEBUG)) {
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, stamp1);
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, stamp2);
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, stamp3);
                 }
                 success = false;
             }
