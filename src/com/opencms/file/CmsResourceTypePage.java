@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
- * Date   : $Date: 2003/07/23 07:54:10 $
- * Version: $Revision: 1.90 $
+ * Date   : $Date: 2003/07/23 08:22:53 $
+ * Version: $Revision: 1.91 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.StringTokenizer;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.90 $
+ * @version $Revision: 1.91 $
  * @since 5.1
  */
 public class CmsResourceTypePage implements I_CmsResourceType {
@@ -121,17 +121,17 @@ public class CmsResourceTypePage implements I_CmsResourceType {
     /**
      * @see com.opencms.file.I_CmsResourceType#touch(com.opencms.file.CmsObject, java.lang.String, long, boolean)
      */
-    public void touch(CmsObject cms, String resourcename, long timestamp, boolean touchRecursive) throws CmsException {
+    public void touch(CmsObject cms, String resourcename, long timestamp, boolean touchRecursive, CmsUUID user) throws CmsException {
         // create a valid resource
         CmsFile file = cms.readFile(resourcename);
 
         // touch the page itself
-        cms.doTouch(resourcename, timestamp);
+        cms.doTouch(resourcename, timestamp,user);
 
         // touch its counterpart under content/bodies
         String bodyPath = this.checkBodyPath(cms, file);
         if (bodyPath != null) {
-            cms.doTouch(bodyPath, timestamp);
+            cms.doTouch(bodyPath, timestamp,user);
         }
     }
 
@@ -546,6 +546,7 @@ public class CmsResourceTypePage implements I_CmsResourceType {
             lockResource(cms, destination, true);
             cms.doWriteResource(destination, properties, null, null, -1, getResourceType(), content);
             importedResource = cms.readFileHeader(destination);
+            cms.touch(destination,resource.getDateLastModified(),false,resource.getUserLastModified());
         }
         return importedResource;
     }

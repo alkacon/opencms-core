@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsResourceType.java,v $
- * Date   : $Date: 2003/07/23 07:54:10 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2003/07/23 08:22:53 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package com.opencms.file;
 
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
+import com.opencms.flex.util.CmsUUID;
 
 import java.util.Map;
 
@@ -41,7 +42,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * @since 5.1
  */
 public abstract class A_CmsResourceType implements I_CmsResourceType {
@@ -120,8 +121,8 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     /**
      * @see com.opencms.file.I_CmsResourceType#touch(com.opencms.file.CmsObject, java.lang.String, long, boolean)
      */
-    public void touch(CmsObject cms, String resourcename, long timestamp, boolean recursive) throws CmsException {
-        cms.doTouch(resourcename, timestamp);
+    public void touch(CmsObject cms, String resourcename, long timestamp, boolean recursive, CmsUUID user) throws CmsException {
+        cms.doTouch(resourcename, timestamp,user);
     }
 
     /**
@@ -205,6 +206,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
             lockResource(cms, destination, true);
             cms.doWriteResource(destination, properties, null, null, -1, getResourceType(), content);
             importedResource = cms.readFileHeader(destination);
+            cms.touch(destination,resource.getDateLastModified(),false,resource.getUserLastModified());
         }
 
         return importedResource;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/07/04 16:00:24 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/07/23 08:22:53 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.11 $ $Date: 2003/07/04 16:00:24 $
+ * @version $Revision: 1.12 $ $Date: 2003/07/23 08:22:53 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -149,6 +149,76 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
         }
 
         return readUser(id);
+    }
+
+
+    /**
+     * Adds a user to the database.
+     *
+     * @param id user id
+     * @param name username
+     * @param password user-password
+     * @param description user-description
+     * @param firstname user-firstname
+     * @param lastname user-lastname
+     * @param email user-email
+     * @param lastlogin user-lastlogin
+     * @param lastused user-lastused
+     * @param flags user-flags
+     * @param additionalInfos user-additional-infos
+     * @param defaultGroup user-defaultGroup
+     * @param address user-defauladdress
+     * @param section user-section
+     * @param type user-type
+     *
+     * @return the created user.
+     * @throws CmsException if something goes wrong.
+     */
+    public CmsUser addUser(CmsUUID id,String name, String password, String description, String firstname, String lastname, String email, long lastlogin, long lastused, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException {
+        byte[] value = null;
+        //int id = m_sqlManager.nextPkId("C_TABLE_USERS");
+        //CmsUUID id = new CmsUUID();
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        try {
+            value = serializeAdditionalUserInfo(additionalInfos);
+
+            // write data to database
+            
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_ADD");
+
+            stmt.setString(1, id.toString());
+            stmt.setString(2, name);
+            // crypt the password with MD5
+            stmt.setString(3, digest(password));
+            stmt.setString(4, digest(""));
+            stmt.setString(5, m_sqlManager.validateNull(description));
+            stmt.setString(6, m_sqlManager.validateNull(firstname));
+            stmt.setString(7, m_sqlManager.validateNull(lastname));
+            stmt.setString(8, m_sqlManager.validateNull(email));
+            stmt.setTimestamp(9, new Timestamp(lastlogin));
+            stmt.setTimestamp(10, new Timestamp(lastused));
+            stmt.setInt(11, flags);
+            m_sqlManager.setBytes(stmt, 12, value);
+            stmt.setString(13, defaultGroup.getId().toString());
+            stmt.setString(14, m_sqlManager.validateNull(address));
+            stmt.setString(15, m_sqlManager.validateNull(section));
+            stmt.setInt(16, type);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } catch (IOException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, null);
+        }
+
+        // cw 20.06.2003 avoid calling upper level methods
+        // return readUser(id);
+        return this.readUser(id);
     }
 
     /**

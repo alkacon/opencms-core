@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/07/23 07:54:11 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2003/07/23 08:22:53 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.31 $ $Date: 2003/07/23 07:54:11 $
+ * @version $Revision: 1.32 $ $Date: 2003/07/23 08:22:53 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -696,8 +696,8 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         CmsGroup projectleader = m_driverManager.getUserDriver().createGroup(CmsUUID.getConstantUUID(I_CmsConstants.C_GROUP_PROJECTLEADER), I_CmsConstants.C_GROUP_PROJECTLEADER, "the projectmanager-group", I_CmsConstants.C_FLAG_ENABLED | I_CmsConstants.C_FLAG_GROUP_PROJECTMANAGER | I_CmsConstants.C_FLAG_GROUP_PROJECTCOWORKER | I_CmsConstants.C_FLAG_GROUP_ROLE, users.getName());
 
         // add the users
-        CmsUser guest = m_driverManager.getUserDriver().addUser(I_CmsConstants.C_USER_GUEST, "", "the guest-user", " ", " ", " ", 0, 0, I_CmsConstants.C_FLAG_ENABLED, new Hashtable(), guests, " ", " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
-        CmsUser admin = m_driverManager.getUserDriver().addUser(I_CmsConstants.C_USER_ADMIN, "admin", "the admin-user", " ", " ", " ", 0, 0, I_CmsConstants.C_FLAG_ENABLED, new Hashtable(), administrators, " ", " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
+        CmsUser guest = m_driverManager.getUserDriver().addImportUser(CmsUUID.getConstantUUID(I_CmsConstants.C_USER_GUEST),I_CmsConstants.C_USER_GUEST,  m_driverManager.getUserDriver().digest(""), m_driverManager.getUserDriver().digest(""), "the guest-user", " ", " ", " ", 0, 0, I_CmsConstants.C_FLAG_ENABLED, new Hashtable(), guests, " ", " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
+        CmsUser admin = m_driverManager.getUserDriver().addImportUser(CmsUUID.getConstantUUID(I_CmsConstants.C_USER_ADMIN),I_CmsConstants.C_USER_ADMIN,  m_driverManager.getUserDriver().digest("admin"), m_driverManager.getUserDriver().digest(""), "the admin-user", " ", " ", " ", 0, 0, I_CmsConstants.C_FLAG_ENABLED, new Hashtable(), administrators, " ", " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
         m_driverManager.getUserDriver().addUserToGroup(guest.getId(), guests.getId());
         m_driverManager.getUserDriver().addUserToGroup(admin.getId(), administrators.getId());
         m_driverManager.getWorkflowDriver().writeTaskType(1, 0, "../taskforms/adhoc.asp", "Ad-Hoc", "30308", 1, 1);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/23 07:54:11 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2003/07/23 08:22:53 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.50 $ $Date: 2003/07/23 07:54:11 $
+ * @version $Revision: 1.51 $ $Date: 2003/07/23 08:22:53 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -831,6 +831,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
    * @throws CmsException Throws CmsException if operation was not succesful
    */
   public CmsResource importResource(CmsProject project, CmsUUID parentId, CmsResource newResource, byte[] filecontent, CmsUUID userId, boolean isFolder) throws CmsException {
+    
       Connection conn = null;
       PreparedStatement stmt = null;
         
@@ -3583,7 +3584,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
-        }       
+        } 
     }
     
     /**
@@ -3769,8 +3770,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 stmt.setString(4, currentUser.getId().toString());
                 stmt.setString(5, softLink.getId().toString());
                 stmt.executeUpdate();
-            }
-
+}
             if (hardLink != null) {
                 m_sqlManager.closeAll(null, stmt, null);
                 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceType.java,v $
- * Date   : $Date: 2003/07/22 17:13:33 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2003/07/23 08:22:53 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package com.opencms.file;
 
 import com.opencms.core.CmsException;
+import com.opencms.flex.util.CmsUUID;
 
 import java.util.Map;
 
@@ -155,9 +156,10 @@ public interface I_CmsResourceType {
      * @param resourcename the name of the resource to apply this operation to
      * @param timestamp the new timestamp of the changed resource
      * @param recursive if this operation is to be applied recursivly to all resources in a folder
+     * @param user the user who is inserted as userladtmodified 
      * @throws CmsException if something goes wrong
      */
-    void touch(CmsObject cms, String resourcename, long timestamp, boolean recursive) throws CmsException;
+    void touch(CmsObject cms, String resourcename, long timestamp, boolean recursive, CmsUUID user) throws CmsException;
 
     /**
      * Changes the resource type of a resource.<p>

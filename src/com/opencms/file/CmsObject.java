@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/23 07:54:10 $
-* Version: $Revision: 1.349 $
+* Date   : $Date: 2003/07/23 08:22:53 $
+* Version: $Revision: 1.350 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.349 $
+ * @version $Revision: 1.350 $
  */
 public class CmsObject extends Object {
 
@@ -1021,7 +1021,7 @@ public class CmsObject extends Object {
 
     /**
      * Deletes a resource.<p>
-     * 
+     *
      * @param filename the filename of the resource exlucing the site root
      * @param deleteOption signals how VFS links pointing to this resource should be handled 
      * @throws CmsException if the user has insufficient acces right to delete the resource
@@ -1032,7 +1032,6 @@ public class CmsObject extends Object {
     public void deleteResource(String filename, int deleteOption) throws CmsException {
         getResourceType(readFileHeader(filename).getType()).deleteResource(this, filename, deleteOption);
     }
-    
     /**
      * Deletes a user from the Cms.
      * <p>
@@ -1402,9 +1401,10 @@ public class CmsObject extends Object {
      * 
      * @param resourceName the name of the resource to change
      * @param timestamp timestamp the new timestamp of the changed resource
+     * @param user the user who is inserted as userladtmodified 
      */
-    protected void doTouch(String resourceName, long timestamp) throws CmsException {
-        m_driverManager.touch(m_context, addSiteRoot(resourceName), timestamp);
+    protected void doTouch(String resourceName, long timestamp, CmsUUID user) throws CmsException {
+        m_driverManager.touch(m_context, addSiteRoot(resourceName), timestamp, user);
     }
 
     /**
@@ -1615,7 +1615,7 @@ public class CmsObject extends Object {
     public List getAllVfsLinks(String resourcename) throws CmsException {       
         return m_driverManager.getAllVfsLinks( m_context, addSiteRoot(resourcename) );
     }
-    
+
     /**
      * Gets all soft links pointing to a specified resource, excluding the
      * resource itself if it is a soft link and its hard link.<p>
@@ -4085,6 +4085,19 @@ public class CmsObject extends Object {
         new CmsSynchronize(this, resourceName);
     }
 
+
+    /**
+     * Change the timestamp of a resource.
+     * 
+     * @param resourceName the name of the resource to change
+     * @param timestamp timestamp the new timestamp of the changed resource
+     * @param boolean flag to touch recursively all sub-resources in case of a folder
+     * @param user the user who is inserted as userladtmodified 
+     */
+    public void touch(String resourceName, long timestamp, boolean touchRecursive, CmsUUID user) throws CmsException {
+        getResourceType(readFileHeader(resourceName).getType()).touch(this, resourceName, timestamp, touchRecursive, user);
+    }
+
     /**
      * Change the timestamp of a resource.
      * 
@@ -4093,7 +4106,7 @@ public class CmsObject extends Object {
      * @param boolean flag to touch recursively all sub-resources in case of a folder
      */
     public void touch(String resourceName, long timestamp, boolean touchRecursive) throws CmsException {
-        getResourceType(readFileHeader(resourceName).getType()).touch(this, resourceName, timestamp, touchRecursive);
+        touch(resourceName,timestamp,touchRecursive,getRequestContext().currentUser().getId());
     }
 
     /**

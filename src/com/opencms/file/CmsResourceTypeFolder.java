@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2003/07/23 07:54:10 $
-* Version: $Revision: 1.78 $
+* Date   : $Date: 2003/07/23 08:22:53 $
+* Version: $Revision: 1.79 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@ package com.opencms.file;
 
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
+import com.opencms.flex.util.CmsUUID;
 import com.opencms.workplace.I_CmsWpConstants;
 
 import java.util.ArrayList;
@@ -44,7 +45,7 @@ import java.util.Vector;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.78 $
+ * @version $Revision: 1.79 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType {
 
@@ -98,7 +99,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
     /**
      * @see com.opencms.file.I_CmsResourceType#touch(com.opencms.file.CmsObject, java.lang.String, long, boolean)
      */
-    public void touch(CmsObject cms, String resourceName, long timestamp, boolean touchRecursive) throws CmsException {
+    public void touch(CmsObject cms, String resourceName, long timestamp, boolean touchRecursive, CmsUUID user) throws CmsException {
         Vector allFolders = new Vector();
         Vector allFiles = new Vector();
         Vector unvisited = new Vector();
@@ -137,23 +138,23 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
             allFolders.add(currentFolder);
         }
 
+        
         // touch the folders that we collected before
         Enumeration touchFolders = allFolders.elements();
         while (touchFolders.hasMoreElements()) {
-            currentFolder = (CmsFolder)touchFolders.nextElement();
-
+            currentFolder = (CmsFolder)touchFolders.nextElement();           
             if (DEBUG > 0)
                 System.err.println("touching: " + cms.readAbsolutePath(currentFolder));
 
             // touch the folder itself
-            cms.doTouch(cms.readAbsolutePath(currentFolder), timestamp);
+            cms.doTouch(cms.readAbsolutePath(currentFolder), timestamp,user);
 
             if (C_BODY_MIRROR) {
                 // touch its counterpart under content/bodies
                 String bodyFolder = I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/")) + cms.readAbsolutePath(currentFolder);
                 try {
                     cms.readFolder(bodyFolder);
-                    cms.doTouch(bodyFolder, timestamp);
+                    cms.doTouch(bodyFolder, timestamp,user);
                 } catch (CmsException e) { }
             }
         }
@@ -415,9 +416,11 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
             if (changed) {
                 lockResource(cms, cms.readAbsolutePath(importedResource), true);
                 cms.doWriteResource(cms.readAbsolutePath(importedResource), properties, cms.getRequestContext().currentUser().getName(), cms.getRequestContext().currentGroup().getName(), resaccess, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, new byte[0]);
-            }
+            } 
+            //cms.touch(destination,resource.getDateLastModified(),false,resource.getUserLastModified());
         }
-
+        // get the updated folder
+        //importedResource = cms.readFolder(destination);
         return importedResource;
     }
 

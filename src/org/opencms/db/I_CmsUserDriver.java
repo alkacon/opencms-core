@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2003/07/03 14:35:41 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/07/23 08:22:53 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import source.org.apache.java.util.Configurations;
  * Definitions of all required user driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5 $ $Date: 2003/07/03 14:35:41 $
+ * @version $Revision: 1.6 $ $Date: 2003/07/23 08:22:53 $
  * @since 5.1
  */
 public interface I_CmsUserDriver {
@@ -108,6 +108,7 @@ public interface I_CmsUserDriver {
      * @throws CmsException if something goes wrong.
      */    
     CmsUser addUser(String name, String password, String description, String firstname, String lastname, String email, long lastlogin, long lastused, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException;
+
 
 	/**
 	 * Adds a user to a group.<BR/>

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/07/23 07:54:10 $
-* Version: $Revision: 1.121 $
+* Date   : $Date: 2003/07/23 08:22:53 $
+* Version: $Revision: 1.122 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.w3c.dom.NodeList;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.121 $ $Date: 2003/07/23 07:54:10 $
+ * @version $Revision: 1.122 $ $Date: 2003/07/23 08:22:53 $
  */
 public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
 
@@ -643,7 +643,8 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                                                  lastmodified,curUser,lastmodified,
                                                  curUser,size,m_cms.getRequestContext().currentProject().getId(),
                                                  I_CmsConstants.C_VFS_LINK_TYPE_MASTER);
-            // import this resource in the VFS              
+            // import this resource in the VFS     
+                     
             res = m_cms.importResource(resource, content, properties, m_importPath+destination);   
          
             if (res != null) {
@@ -740,6 +741,15 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
             CmsUUID curUser=m_cms.getRequestContext().currentUser().getId();    
             CmsUUID newUserlastmodified= new CmsUUID(userlastmodified);
             CmsUUID newUsercreated= new CmsUUID(usercreated);         
+            // check if user created and user lastmodified are valid users in this system.
+            // if not, set them to the current.
+            if (m_cms.readUser(newUserlastmodified).getId().equals(CmsUUID.getNullUUID())) {       
+                newUserlastmodified=curUser;
+            }
+            if (m_cms.readUser(newUsercreated).getId().equals(CmsUUID.getNullUUID())) {       
+                newUsercreated=curUser;
+            }    
+            // get all UUIDs for the structure, resource and content        
             CmsUUID newUuidstructure= new CmsUUID();
             CmsUUID newUuidcontent = new CmsUUID();
             CmsUUID newUuidresource = new CmsUUID();             
@@ -771,7 +781,8 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                                                  datelastmodified,newUserlastmodified,datecreated,
                                                  newUsercreated,size,m_cms.getRequestContext().currentProject().getId(),
                                                  I_CmsConstants.C_VFS_LINK_TYPE_MASTER);
-            // import this resource in the VFS              
+            // import this resource in the VFS   
+                      
             res = m_cms.importResource(resource, content, properties, m_importPath+destination);             
             
             if (res != null) {
@@ -1317,6 +1328,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                     // add the template property to the controlfile
                     m_cms.writeProperty(resname, C_XML_CONTROL_TEMPLATE_PROPERTY, mastertemplate);
                     m_cms.writeProperties(resname, properties);
+                    m_cms.touch(resname,pagefile.getDateLastModified(),false,pagefile.getUserLastModified());
                     // don, ulock the resource                   
                     m_cms.unlockResource(resname, false);
                     // finally delete the old body file, it is not needed anymore
