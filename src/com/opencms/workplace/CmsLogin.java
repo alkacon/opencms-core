@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLogin.java,v $
- * Date   : $Date: 2000/02/15 17:44:01 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/02/17 16:18:39 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.10 $ $Date: 2000/02/15 17:44:01 $
+ * @version $Revision: 1.11 $ $Date: 2000/02/17 16:18:39 $
  */
 public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -119,8 +119,19 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
                 }
                 session.putValue(C_ADDITIONAL_INFO_PREFERENCES,preferences);
             }
+        } else {
+            // This is a new login!
+            // If there is an old session, remove all user variables from this session
+            HttpSession session = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(false);
+            if(session != null) {
+                String[] valueNames = session.getValueNames();
+                int numValues = valueNames.length;
+                for(int i=0; i<numValues; i++) {
+                    session.removeValue(valueNames[i]);
+                }
+            }
         }
-       CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);          
+        CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);          
         // this is the first time the dockument is selected, so reade the page forwarding
         if (username == null) {
             xmlTemplateDocument.clearStartup();
