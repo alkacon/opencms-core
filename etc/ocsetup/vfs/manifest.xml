@@ -4816,30 +4816,6 @@
             </properties>
         </file>
         <file>
-            <destination>system/workplace/help/de/begriffsdefinitionen</destination>
-            <type>folder</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties>
-                <property>
-                    <name>NavPos</name>
-                    <type>0</type>
-                    <value><![CDATA[74.0]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>0</type>
-                    <value><![CDATA[Begriffsdefinitionen]]></value>
-                </property>
-                <property>
-                    <name>NavText</name>
-                    <type>0</type>
-                    <value><![CDATA[BEGRIFFSDEFINITIONEN]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
             <destination>system/workplace/help/de/DialogEinstellungen</destination>
             <type>folder</type>
             <user>Admin</user>
@@ -4985,30 +4961,6 @@
                     <name>NavText</name>
                     <type>3</type>
                     <value><![CDATA[Starteinstellungen]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
-            <destination>system/workplace/help/de/Ergebniskontrolle</destination>
-            <type>folder</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties>
-                <property>
-                    <name>NavPos</name>
-                    <type>0</type>
-                    <value><![CDATA[28.0]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>0</type>
-                    <value><![CDATA[Ergebniskontrolle]]></value>
-                </property>
-                <property>
-                    <name>NavText</name>
-                    <type>0</type>
-                    <value><![CDATA[ERGEBNISKONTROLLE]]></value>
                 </property>
             </properties>
         </file>
@@ -5707,30 +5659,6 @@
             </properties>
         </file>
         <file>
-            <destination>system/workplace/help/de/FunkUebersicht</destination>
-            <type>folder</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties>
-                <property>
-                    <name>NavPos</name>
-                    <type>0</type>
-                    <value><![CDATA[80.0]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>0</type>
-                    <value><![CDATA[Übersicht der Funktionen]]></value>
-                </property>
-                <property>
-                    <name>NavText</name>
-                    <type>0</type>
-                    <value><![CDATA[ÜBERSICHT DER FUNKTIONEN]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
             <destination>system/workplace/help/de/Merkmale</destination>
             <type>folder</type>
             <user>Admin</user>
@@ -5815,30 +5743,6 @@
                     <name>Title</name>
                     <type>3</type>
                     <value><![CDATA[Was ist Open Source ?]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
-            <destination>system/workplace/help/de/projektveroeffentlichen</destination>
-            <type>folder</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties>
-                <property>
-                    <name>NavPos</name>
-                    <type>0</type>
-                    <value><![CDATA[26.0]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>0</type>
-                    <value><![CDATA[Veröffentlichung des Projekts]]></value>
-                </property>
-                <property>
-                    <name>NavText</name>
-                    <type>0</type>
-                    <value><![CDATA[VERÖFFENTLICHUNG DES PROJEKTS]]></value>
                 </property>
             </properties>
         </file>
@@ -5963,30 +5867,6 @@
                     <name>NavText</name>
                     <type>3</type>
                     <value><![CDATA[Template-Optionen]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
-            <destination>system/workplace/help/de/Seiteneditor/Datei-BearbeitungsOpt</destination>
-            <type>folder</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>79</access>
-            <properties>
-                <property>
-                    <name>NavPos</name>
-                    <type>0</type>
-                    <value><![CDATA[8.0]]></value>
-                </property>
-                <property>
-                    <name>Title</name>
-                    <type>0</type>
-                    <value><![CDATA[Datei- und Bearbeitungsoptionen]]></value>
-                </property>
-                <property>
-                    <name>NavText</name>
-                    <type>0</type>
-                    <value><![CDATA[Datei- und Bearbeitungsoptionen]]></value>
                 </property>
             </properties>
         </file>
