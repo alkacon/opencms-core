@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestResourceStorage.java,v $
- * Date   : $Date: 2004/06/29 14:38:56 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/07/03 10:21:56 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Map;
  * Storage object for storing all attributes of vfs resources.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class OpenCmsTestResourceStorage {
 
@@ -126,6 +126,7 @@ public class OpenCmsTestResourceStorage {
      * @return the name of the storage
      */
     public String getName() {
+        
         return m_name;
     }
     
@@ -137,6 +138,7 @@ public class OpenCmsTestResourceStorage {
      * @throws CmsException in case something goes wrong
      */
     public int getPreCalculatedState(String resourceName) throws CmsException {
+        
          String mappedResourceName = mapResourcename(resourceName);
          
          Integer state = null;
@@ -184,6 +186,15 @@ public class OpenCmsTestResourceStorage {
     }
     
     /**
+     * Resets the mapping for resourcenames.<p>
+     */
+    public void resetMapping() {
+
+        m_sourceNameMapping = null;
+        m_targetNameMapping = null;
+    }
+    
+    /**
      * Does the name mapping of a resourceName.<p>
      * 
      * This is required to find resources in the resource storage afer their path in the vfs
@@ -193,6 +204,7 @@ public class OpenCmsTestResourceStorage {
      * @return mapped resource name
      */
     public String mapResourcename(String resourceName) {
+        
         // only modify the name if we have set some kind of mapping
         if (m_sourceNameMapping != null && m_targetNameMapping != null) {
             // check if the resourcename starts with the source map name
@@ -220,6 +232,7 @@ public class OpenCmsTestResourceStorage {
      * @return new precalculated state
      */
     private Integer preCalculateState(CmsResource res) {
+        
         int newState = I_CmsConstants.C_STATE_UNCHANGED;
         int state = res.getState();
         switch (state) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestResourceFilter.java,v $
- * Date   : $Date: 2004/07/02 09:37:04 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/07/03 10:21:56 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.List;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public abstract class OpenCmsTestResourceFilter {
 
@@ -74,6 +74,9 @@ public abstract class OpenCmsTestResourceFilter {
     
     /** Definition of a filter used for the copy method. */
     public static final OpenCmsTestResourceFilter FILTER_COPY_AS_NEW = getFilterCopyAsNew();    
+    
+    /** Definition of a filter used for the copy method. */
+    public static final OpenCmsTestResourceFilter FILTER_COPY_SOURCE_DESTINATION_AS_SIBLING = getFilterCopySourceDestinationAsSibling();  
     
     /** Definition of a filter used for the move/reanme method. */
     public static final OpenCmsTestResourceFilter FILTER_MOVE_DESTINATION = getFilterMoveDestination();  
@@ -322,6 +325,24 @@ public abstract class OpenCmsTestResourceFilter {
     }    
     
     /**
+     * Creates a new filter used for the "copy as sibling" method.<p>
+     * 
+     * @return the created filter
+     */
+    private static OpenCmsTestResourceConfigurableFilter getFilterCopySourceDestinationAsSibling() {
+
+        OpenCmsTestResourceConfigurableFilter filter = new OpenCmsTestResourceConfigurableFilter();
+
+        filter.disableProjectLastModifiedTest();
+        filter.disableStateTest();
+        filter.disableStructureIdTest();
+        filter.disableLockTest();
+        filter.disableNameTest();
+        filter.disableParentIdTest();
+        return filter; 
+    }   
+    
+    /**
      * Creates a new filter used for the "move/rename" method.<p>
      * 
      * @return the created filter
@@ -367,6 +388,7 @@ public abstract class OpenCmsTestResourceFilter {
         OpenCmsTestResourceConfigurableFilter filter = new OpenCmsTestResourceConfigurableFilter();
 
         filter.disableProjectLastModifiedTest();
+        filter.disableLockTest();
         return filter; 
     }
     
