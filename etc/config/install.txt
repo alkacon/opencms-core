@@ -119,9 +119,8 @@ entering
 java -mx64M -classpath opencms.jar:xerces.jar:mysql_uncomp.jar 
    com.opencms.core.CmsShell config/opencms.properties
    
-(This command is similar to the one above. Note that CmsInitMySqlFillDefaults
-changed to CmsInitMySql and the pipe "< config/cmssetup.txt"
-is missing now.)
+(This command is similar to the one above. Note that the pipe 
+"< config/cmssetup.txt" is missing now.)
    
 Log in as Admin and check the accessibility of a workplace file in your
 database:
