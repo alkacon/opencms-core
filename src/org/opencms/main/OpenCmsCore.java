@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2003/10/09 15:31:27 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2003/10/09 16:58:57 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  * @since 5.1
  */
 public class OpenCmsCore {
@@ -1977,7 +1977,7 @@ public class OpenCmsCore {
         String copy[] = I_CmsConstants.C_COPYRIGHT;
 
         // log to error-stream
-        System.err.println("\n\nStarting OpenCms, version " + OpenCms.getVersionName());
+        System.err.println("\n\nStarting OpenCms, version " + OpenCms.getVersionName() + " in context " + CmsBase.getWebAppName());
         for (int i = 0; i<copy.length; i++) {
             System.err.println(copy[i]);
         }
