@@ -1,5 +1,4 @@
-CREATE OR REPLACE
-PACKAGE BODY opencmsresource IS
+CREATE OR REPLACE PACKAGE BODY opencmsresource IS
 --------------------------------------------------------------------------------------------------------------
 -- declare variables/procedures/functions which are used in this package
 --------------------------------------------------------------------------------------------------------------
@@ -958,7 +957,6 @@ PACKAGE BODY opencmsresource IS
     curResource userTypes.anyCursor;
     recResource cms_resources%ROWTYPE;
     recFiles    cms_resources%ROWTYPE;
-    vQueryString VARCHAR2(32767) := '';
     retResources userTypes.resourceTable;
     newIndex NUMBER;
     vOnlineProject NUMBER := opencmsconstants.C_PROJECT_ONLINE_ID;
@@ -1241,8 +1239,12 @@ PACKAGE BODY opencmsresource IS
         RAISE;
     END;
     vNewFileId := getNextId('CMS_BACKUP_FILES');
-    insert into cms_backup_files (file_id, file_content) values(vNewFileId, pFile.file_content);
-    vNewResourceId := getNextId('CMS_BACKUP_RESOURCES');
+	IF pFile.file_content IS NULL THEN
+	  insert into cms_backup_files (file_id, file_content) values(vNewFileId, empty_blob());
+	ELSE
+      insert into cms_backup_files (file_id, file_content) values(vNewFileId, pFile.file_content);
+    END IF;
+	vNewResourceId := getNextId('CMS_BACKUP_RESOURCES');
     insert into cms_backup_resources
            (resource_id, parent_id, resource_name, resource_type, resource_flags, user_id, user_name,
             group_id, group_name, project_id, file_id, access_flags, state, launcher_type,
@@ -1333,7 +1335,7 @@ PACKAGE BODY opencmsresource IS
 ---------------------------------------------------------------------------------------
   PROCEDURE removeTemporaryFiles(pFilename IN VARCHAR2) IS
   	CURSOR cTempfiles(cFilename VARCHAR2) IS
-  		select resource_id, file_id 
+  		select resource_id, file_id
   			from cms_resources
   			where resource_name like cFilename;
   	vPath VARCHAR2(250);
@@ -1366,3 +1368,4 @@ PACKAGE BODY opencmsresource IS
 -------------------------------------------------------------------------
 END;
 /
+

@@ -1,5 +1,4 @@
-CREATE OR REPLACE 
-PACKAGE BODY OpenCmsProject IS
+CREATE OR REPLACE PACKAGE BODY OpenCmsProject IS
    -- variable/funktions/procedures which are used only in this package
    bList userTypes.numberTable;
    FUNCTION addInList(pId NUMBER) RETURN BOOLEAN;
@@ -191,10 +190,17 @@ PACKAGE BODY OpenCmsProject IS
     vFileId cms_resources.file_id%TYPE;
     vDeletedFolders userTypes.numberTable;
     element NUMBER;
-    vCurDelFolders VARCHAR2(100) := '';
-    vCurDelFiles VARCHAR2(100) := '';
-    vCurWriteFolders VARCHAR2(100) := '';
-    vCurWriteFiles VARCHAR2(100) := '';
+
+    vTableDelFolders plsqltable_folderinfo;
+    vTableDelFiles plsqltable_folderinfo;
+    vTableWriteFolders plsqltable_folderinfo;
+    vTableWriteFiles plsqltable_fileinfo;
+
+    vIdDelFolders NUMBER := 0;
+    vIdDelFiles NUMBER := 0;
+    vIdWriteFolders NUMBER := 0;
+    vIdWriteFiles NUMBER := 0;
+
     vVersionId NUMBER := 1;
     vResVersionId NUMBER := 1;
   BEGIN
@@ -226,6 +232,14 @@ PACKAGE BODY OpenCmsProject IS
       ELSIF recFolders.state = opencmsConstants.C_STATE_DELETED THEN
         -- add to list with deleted folders
         vDeletedFolders(vDeletedFolders.COUNT + 1) := recFolders.resource_id;
+		IF vIdDelFolders = 0 THEN
+		  vIdDelFolders := 1;
+		  vTableDelFolders := plsqltable_folderinfo(type_folderinfo(recFolders.resource_name));
+		ELSE
+		  vTableDelFolders.extend;
+		  vTableDelFolders(vIdDelFolders) := type_folderinfo(recFolders.resource_name);
+		END IF;
+		vIdDelFolders := vIdDelFolders + 1;
         IF pEnableHistory = 1 THEN
           -- backup the resource
           opencmsResource.backupFolder(pProjectId, recFolders, vVersionId, pPublishDate);
@@ -281,12 +295,20 @@ PACKAGE BODY OpenCmsProject IS
         -- copy properties
         opencmsProperty.writeProperties(pOnlineProjectId, opencmsProperty.readAllProperties(pUserId, pProjectId, recFolders.resource_name),
                                         recNewFolder.resource_id, recFolders.resource_type);
-        -- remember only one id for mark
-        vCurWriteFolders := recNewFolder.resource_id;
+        -- put the resourcename into the PLSQL-table
+		IF vIdWriteFolders = 0 THEN
+		  vIdWriteFolders := 1;
+		  vTableWriteFolders := plsqltable_folderinfo(type_folderinfo(recFolders.resource_name));
+		ELSE
+		  vTableWriteFolders.extend;
+		  vTableWriteFolders(vIdWriteFolders) := type_folderinfo(recFolders.resource_name);
+		END IF;
+		vIdWriteFolders := vIdWriteFolders + 1;
         IF pEnableHistory = 1 THEN
         	-- backup the resource
         	opencmsResource.backupFolder(pProjectId, recFolders, vVersionId, pPublishDate);
         END IF;
+		update cms_resources set state = opencmsConstants.C_STATE_UNCHANGED where resource_id = recFolders.resource_id;
       -- is the resource marked as changed?
       ELSIF recFolders.state = opencmsConstants.C_STATE_CHANGED THEN
         -- checkExport ???
@@ -335,13 +357,22 @@ PACKAGE BODY OpenCmsProject IS
         delete from cms_online_properties where resource_id = recNewFolder.resource_id;
         opencmsProperty.writeProperties(pOnlineProjectId, opencmsProperty.readAllProperties(pUserId, pProjectId, recFolders.resource_name),
                                         recNewFolder.resource_id, recNewFolder.resource_type);
-        -- remember only one id for mark
-        vCurWriteFolders := recNewFolder.resource_id;
+        -- put the resourcename into the PLSQL-table
+		IF vIdWriteFolders = 0 THEN
+		  vIdWriteFolders := 1;
+		  vTableWriteFolders := plsqltable_folderinfo(type_folderinfo(recFolders.resource_name));
+		ELSE
+		  vTableWriteFolders.extend;
+		  vTableWriteFolders(vIdWriteFolders) := type_folderinfo(recFolders.resource_name);
+		END IF;
+		vIdWriteFolders := vIdWriteFolders + 1;
         IF pEnableHistory = 1 THEN
           -- backup the resource
           opencmsResource.backupFolder(pProjectId, recFolders, vVersionId, pPublishDate);
         END IF;
+		update cms_resources set state = opencmsConstants.C_STATE_UNCHANGED where resource_id = recFolders.resource_id;
       END IF;
+	  commit;
     END LOOP;
     CLOSE curFolders;
     ---------------------------------
@@ -379,9 +410,18 @@ PACKAGE BODY OpenCmsProject IS
         -- delete file and properties of offline resource
         delete from cms_files where file_id = recFiles.file_id;
         delete from cms_properties where resource_id = recFiles.resource_id;
+		delete from cms_resources where resource_id = recFiles.resource_id;
         commit;
-        -- remember only one id for mark
-        vCurDelFiles := recNewFile.resource_id;
+        -- put the resourcename into the PLSQL-table
+		IF vIdDelFiles = 0 THEN
+		  vIdDelFiles := 1;
+		  vTableDelFiles := plsqltable_folderinfo(type_folderinfo(recFiles.resource_name));
+		ELSE
+		  vTableDelFiles.extend;
+		  vTableDelFiles(vIdDelFiles) := type_folderinfo(recFiles.resource_name);
+		END IF;
+		vIdDelFiles := vIdDelFiles + 1;
+
       -- resource is new
       ELSIF recFiles.state = opencmsConstants.C_STATE_NEW THEN
         -- checkExport ???
@@ -437,12 +477,20 @@ PACKAGE BODY OpenCmsProject IS
         delete from cms_online_properties where resource_id = recNewFile.resource_id;
         opencmsProperty.writeProperties(pOnlineProjectId, opencmsProperty.readAllProperties(pUserId, pProjectId, recFiles.resource_name),
                                         recNewFile.resource_id, recFiles.resource_type);
-        -- remember only one id for mark
-        vCurWriteFiles := recNewFile.resource_id;
+        -- put the resourcename into the PLSQL-table
+		IF vIdWriteFiles = 0 THEN
+		  vIdWriteFiles := 1;
+		  vTableWriteFiles := plsqltable_fileinfo(type_fileinfo(recFiles.resource_name, recFiles.file_id));
+		ELSE
+		  vTableWriteFiles.extend;
+		  vTableWriteFiles(vIdWriteFiles) := type_fileinfo(recFiles.resource_name, recFiles.file_id);
+		END IF;
+		vIdWriteFiles := vIdWriteFiles + 1;
         IF pEnableHistory = 1 THEN
           -- backup the resource
           opencmsResource.backupFile(pProjectId, recFiles, vVersionId, pPublishDate);
         END IF;
+		update cms_resources set state = opencmsConstants.C_STATE_UNCHANGED where resource_id = recFiles.resource_id;
       -- resource is changed
       ELSIF recFiles.state = opencmsConstants.C_STATE_CHANGED THEN
       	recNewFile := NULL;
@@ -491,24 +539,33 @@ PACKAGE BODY OpenCmsProject IS
         delete from cms_online_properties where resource_id = recNewFile.resource_id;
         opencmsProperty.writeProperties(pOnlineProjectId, opencmsProperty.readAllProperties(pUserId, pProjectId, recFiles.resource_name),
                                         recNewFile.resource_id, recNewFile.resource_type);
-        -- remember only one id for mark
-        vCurWriteFiles := recNewFile.resource_id;
+        -- put the resourcename into the PLSQL-table
+		IF vIdWriteFiles = 0 THEN
+		  vIdWriteFiles := 1;
+		  vTableWriteFiles := plsqltable_fileinfo(type_fileinfo(recFiles.resource_name, recFiles.file_id));
+		ELSE
+		  vTableWriteFiles.extend;
+		  vTableWriteFiles(vIdWriteFiles) := type_fileinfo(recFiles.resource_name, recFiles.file_id);
+		END IF;
+		vIdWriteFiles := vIdWriteFiles + 1;
         IF pEnableHistory = 1 THEN
           -- backup the resource
           opencmsResource.backupFile(pProjectId, recFiles, vVersionId, pPublishDate);
         END IF;
+		update cms_resources set state = opencmsConstants.C_STATE_UNCHANGED where resource_id = recFiles.resource_id;
       END IF;
+	  commit;
     END LOOP;
     CLOSE curFiles;
     -- now remove the folders
     IF vDeletedFolders.COUNT > 0 THEN
       -- get the string for the cursor of
-      vCurDelFolders := vDeletedFolders.COUNT;
       FOR element IN 1..vDeletedFolders.COUNT
       LOOP
         vOfflineResourceId := vDeletedFolders(element);
         BEGIN
           delete from cms_properties where resource_id = vOfflineResourceId;
+		  delete from cms_resources where resource_id = vOfflineResourceId;
           select resource_id into vResourceId
                  from cms_online_resources
           		 where resource_name = (select resource_name from cms_resources where resource_id = vOfflineResourceId);
@@ -524,28 +581,20 @@ PACKAGE BODY OpenCmsProject IS
     END IF;
     -- build the cursors which are used in java for the discAccess
     BEGIN
-      IF length(vCurDelFolders) > 0 THEN
-        OPEN pCurDelFolders FOR 'select r.resource_name from cms_resources r, cms_projectresources p'||
-                                ' where p.project_id = '||pProjectId||
-                                ' and r.resource_name like concat(p.resource_name,''%'')'||
-                                ' and resource_type = '||opencmsConstants.C_TYPE_FOLDER||
-          						' and state = '||opencmsConstants.C_STATE_DELETED;
+      IF vIdDelFolders > 0 THEN
+        OPEN pCurDelFolders FOR select t.resource_name from table(cast(vTableDelFolders as plsqltable_folderinfo)) t;
       ELSE
         -- return a cursor that contains no rows
         OPEN pCurDelFolders FOR 'select resource_name from cms_resources where 1=2';
       END IF;
     EXCEPTION
       WHEN OTHERS THEN
-        raise_application_error(-20999, 'error open cursor pCurDelFolders: '||substr(vCurDelFolders,1,200));
+	  raise;
+        --raise_application_error(-20999, 'error open cursor pCurDelFolders');
     END;
     BEGIN
-      IF length(vCurWriteFolders) > 0 THEN
-        OPEN pCurWriteFolders FOR 'select r.resource_name from cms_resources r, cms_projectresources p'||
-                                  ' where p.project_id = '||pProjectId||
-                                  ' and r.resource_name like concat(p.resource_name,''%'')'||
-        					      ' and resource_type = '||opencmsConstants.C_TYPE_FOLDER||
-        						  ' and state in ('||opencmsConstants.C_STATE_NEW||', '||
-        						                     opencmsConstants.C_STATE_CHANGED||')';
+      IF vIdWriteFolders > 0 THEN
+        OPEN pCurWriteFolders FOR select t.resource_name from table(cast(vTableWriteFolders as plsqltable_folderinfo)) t;
 
       ELSE
         -- return a cursor that contains no rows
@@ -553,38 +602,32 @@ PACKAGE BODY OpenCmsProject IS
       END IF;
     EXCEPTION
       WHEN OTHERS THEN
-        raise_application_error(-20999, 'error open cursor pCurWriteFolders: '||substr(vCurWriteFolders,2,200));
+        raise;
+		--raise_application_error(-20999, 'error open cursor pCurWriteFolders');
     END;
     BEGIN
-      IF length(vCurDelFiles) > 0 THEN
-        OPEN pCurDelFiles FOR 'select r.resource_name from cms_resources r, cms_projectresources p'||
-                              ' where p.project_id = '||pProjectId||
-                              ' and r.resource_name like concat(p.resource_name,''%'')'||
-                              ' and resource_type != '||opencmsConstants.C_TYPE_FOLDER||
-          					  ' and state = '||opencmsConstants.C_STATE_DELETED;
+      IF vIdDelFiles > 0 THEN
+        OPEN pCurDelFiles FOR select t.resource_name from table(cast(vTableDelFiles as plsqltable_folderinfo)) t;
       ELSE
         -- return a cursor that contains no rows
         OPEN pCurDelFiles FOR 'select resource_name from cms_resources where 1=2';
       END IF;
     EXCEPTION
       WHEN OTHERS THEN
-        raise_application_error(-20999, 'error open cursor pCurDelFiles: '||substr(vCurDelFiles,2,200));
+        raise;
+		--raise_application_error(-20999, 'error open cursor pCurDelFiles');
     END;
     BEGIN
-      IF length(vCurWriteFiles) > 0 THEN
-        OPEN pCurWriteFiles FOR 'select r.resource_name, file_id from cms_resources r, cms_projectresources p'||
-                                ' where p.project_id = '||pProjectId||
-                                ' and r.resource_name like concat(p.resource_name,''%'')'||
-                                ' and resource_type != '||opencmsConstants.C_TYPE_FOLDER||
-          					    ' and state in ('||opencmsConstants.C_STATE_NEW||', '||
-        						                   opencmsConstants.C_STATE_CHANGED||')';
+      IF vIdWriteFiles > 0 THEN
+        OPEN pCurWriteFiles FOR select t.resource_name, t.file_id from table(cast(vTableWriteFiles as plsqltable_fileinfo)) t;
       ELSE
         -- return a cursor that contains no rows
         OPEN pCurWriteFiles FOR 'select resource_name, file_id from cms_resources where 1=2';
       END IF;
     EXCEPTION
       WHEN OTHERS THEN
-        raise_application_error(-20999, 'error open cursor pCurWriteFiles: '||substr(vCurWriteFiles,2,200));
+        raise;
+		--raise_application_error(-20999, 'error open cursor pCurWriteFiles');
     END;
   EXCEPTION
     WHEN OTHERS THEN
