@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/11/05 10:33:21 $
- * Version: $Revision: 1.286 $
+ * Date   : $Date: 2003/11/05 17:19:04 $
+ * Version: $Revision: 1.287 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -87,7 +87,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.286 $ $Date: 2003/11/05 10:33:21 $
+ * @version $Revision: 1.287 $ $Date: 2003/11/05 17:19:04 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -8355,7 +8355,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
         try {
             // read the export points and return immediately if there are no export points at all         
-            exportPoints = m_registry.getExportpoints();            
+            exportPoints = m_registry.getExportpoints(true);            
             if (exportPoints.size() == 0) {
                 if (OpenCms.getLog(this).isWarnEnabled()) {
                     OpenCms.getLog(this).warn("No export points configured at all.");

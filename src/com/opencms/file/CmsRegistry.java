@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2003/11/05 10:33:21 $
- * Version: $Revision: 1.107 $
+ * Date   : $Date: 2003/11/05 17:19:04 $
+ * Version: $Revision: 1.108 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.107 $
+ * @version $Revision: 1.108 $
  */
 public class CmsRegistry extends A_CmsXmlContent {
 
@@ -807,15 +807,25 @@ public class CmsRegistry extends A_CmsXmlContent {
         String versions = ((String)histproperties.get(I_CmsConstants.C_REGISTRY_HISTORY_VERSIONS));          
         return new Integer(versions).intValue();
     }
+    
+    /**
+     * This method returns the exportpoints and the destination paths in the RFS.<p>
+     *
+     * @return Hashtable with the exportpoints and the destination paths in the RFS
+     */
+    public Hashtable getExportpoints() {
+        return getExportpoints(false);
+    }
 
 
     /**
-     * This method returns the author of the module.
+     * This method returns the exportpoints and the destination paths in the RFS.<p>
      *
-     * @return Hashtable the exportpoints and the paths
+     * @param refresh if true, the Hashtable of export points will be rebuilt
+     * @return Hashtable with the exportpoints and the destination paths in the RFS
      */
-    public Hashtable getExportpoints() {
-        if ((m_exportpoints == null) || (m_exportpoints.size() == 0)) {
+    public Hashtable getExportpoints(boolean refresh) {
+        if (refresh || (m_exportpoints == null) || (m_exportpoints.size() == 0)) {
             m_exportpoints = new Hashtable();
             try {
                 NodeList exportpointsList = m_xmlReg.getElementsByTagName("exportpoint");
