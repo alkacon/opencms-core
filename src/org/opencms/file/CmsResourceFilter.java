@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResourceFilter.java,v $
- * Date   : $Date: 2004/10/31 21:30:18 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/12/16 14:09:20 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.opencms.main.I_CmsConstants;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkaconc.om)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.3.5
  */
 public final class CmsResourceFilter {
@@ -607,6 +607,9 @@ public final class CmsResourceFilter {
         StringBuffer result = new StringBuffer(32);
         if (m_filterVisible) {
             result.append(" Vi");
+        }
+        if (m_filterTimerange) {
+            result.append(" Ti");
         }
         switch (m_filterState) {
             case REQUIRED:
