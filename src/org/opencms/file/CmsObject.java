@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/04/02 16:59:28 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2004/04/05 05:33:46 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  */
 public class CmsObject {
 
@@ -3104,7 +3104,7 @@ public class CmsObject {
      * Returns a list of all template resources which must be processed during a static export.<p>
      * 
      * @param parameterResources flag for reading resources with parameters (1) or without (0)
-     * @param a timestamp for reading the data from the db
+     * @param timestamp a timestamp for reading the data from the db
      * @return List of template resources
      * @throws CmsException if something goes wrong
      */
@@ -4046,13 +4046,13 @@ public class CmsObject {
      * Returns {@link CmsProperty#getNullProperty()} if the property is not found.<p>
      * 
      * @param resourceName the name of resource where the property is mapped to
-     * @param key the property key name
+     * @param propertyName the property key name
      * @param search true, if the property should be searched on all parent folders  if not found on the resource
      * @return a CmsProperty object containing the structure and/or resource value
      * @throws CmsException if something goes wrong
      */    
-    public CmsProperty readPropertyObject(String key, String resourceName, boolean search) throws CmsException {
-        return m_driverManager.readPropertyObject(m_context, m_context.addSiteRoot(resourceName), m_context.getAdjustedSiteRoot(resourceName), key, search);
+    public CmsProperty readPropertyObject(String resourceName, String propertyName, boolean search) throws CmsException {
+        return m_driverManager.readPropertyObject(m_context, m_context.addSiteRoot(resourceName), m_context.getAdjustedSiteRoot(resourceName), propertyName, search);
     }
     
     /**
@@ -4127,11 +4127,11 @@ public class CmsObject {
      * @return the value of the property found, <code>null</code> if nothing was found
      * @throws CmsException in case there where problems reading the property
      * @see CmsProperty#getValue()
-     * @deprecated use new Object base methods
+     * @deprecated use new Object based methods
      */
     public String readProperty(String resource, String property) throws CmsException {
         CmsProperty value = m_driverManager.readPropertyObject(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), property, false);
-        return (value != null) ? value.getValue() : null;
+        return value.isNullProperty() ? null : value.getValue();
     }
 
     /**
@@ -4144,11 +4144,11 @@ public class CmsObject {
      * @return the value of the property found, <code>null</code> if nothing was found
      * @throws CmsException in case there where problems reading the property
      * @see CmsProperty#getValue()
-     * @deprecated use new Object base methods
+     * @deprecated use new Object based methods
      */
     public String readProperty(String resource, String property, boolean search) throws CmsException {
         CmsProperty value = m_driverManager.readPropertyObject(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), property, search);
-        return (value != null) ? value.getValue() : null;
+        return value.isNullProperty() ? null : value.getValue();
     }
 
     /**
@@ -4163,11 +4163,10 @@ public class CmsObject {
      * @return the value of the property found, if nothing was found the value of the <code>propertyDefault</code> parameter is returned
      * @throws CmsException in case there where problems reading the property
      * @see CmsProperty#getValue()
-     * @deprecated use new Object base methods
+     * @deprecated use new Object based methods
      */
     public String readProperty(String resource, String property, boolean search, String propertyDefault) throws CmsException {
         CmsProperty value = m_driverManager.readPropertyObject(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), property, search);
-        return (value != null) ? value.getValue() : propertyDefault;        
+        return value.isNullProperty() ? propertyDefault : value.getValue();
     }    
-
 }
