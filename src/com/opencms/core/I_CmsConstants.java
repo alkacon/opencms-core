@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2002/04/30 09:33:23 $
-* Version: $Revision: 1.198 $
+* Date   : $Date: 2002/07/10 08:05:37 $
+* Version: $Revision: 1.199 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  *
- * @version $Revision: 1.198 $ $Date: 2002/04/30 09:33:23 $
+ * @version $Revision: 1.199 $ $Date: 2002/07/10 08:05:37 $
  */
 public interface I_CmsConstants {
 
@@ -1255,6 +1255,26 @@ public interface I_CmsConstants {
      * The key for the date of the last linkcheck in the linkchecktable
      */
     static final String C_LINKCHECKTABLE_DATE = "linkcheckdate";
+    
+    /**
+     * The name of the tag in registry for history properties.
+     */ 
+    static final String C_REGISTRY_HISTORY = "history";
+    
+    /**
+     * The name of the tag in registry if versions of the history should be deleted 
+     */     
+    static final String C_DELETE_HISTORY = "deleteversions";
+    
+    /**
+     * The name of the tag in registry for the number of weeks the versions should remain in the history.
+     */ 
+    static final String C_WEEKS_HISTORY = "weeks";
+    
+    /**
+     * The name of the tag in registry if history is enabled.
+     */     
+    static final String C_ENABLE_HISTORY = "enabled";
 }
 
 
