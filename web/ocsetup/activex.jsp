@@ -42,43 +42,60 @@
 			<% if(setupOk)	{ %>
 			<tr>
 				<td align="center" valign="top" height="375">	
-				<textarea style="width:600px;height:300px" cols="40" rows="20" wrap>
-------------------------------Attention--------------------------------
-OpenCms uses ActiveX components for user editors.
-The controls (there are 2, one for the WYSIWYG editor and one for the source code editor) are freely available, i.e. are shareware. 
-This, however, currently restricts the WYSIWYG editor to Microsoft’s Internet Explorer (Version 4 or higher).
-A thin version of Netscape Navigator is only available as source code editor. 
-It would be possible to replace the ActiveX controls with Java applets. 
-However, the OpenCms Team is currently not aware of an open source applet that could be plugged in. 
-Should anyone know of an open source applet or have even written one that can be used as a WYSIWYG or source text editor, we would, of course, be more than happy to hear about it.
+<textarea style="width:600px;height:300px" cols="40" rows="20" wrap>
+-----------------------OpenCms 5.0.x client setup----------------------
+The configuration instructions on this page apply when you set up a
+workstation to access the backoffice part of OpenCms. This is the part
+where you can edit pages, create new pages, manage users etc. In
+OpenCms this is called "the Workplace".
 -----------------------------------------------------------------------
 
---------------Configuring Microsoft Internet Explorer 5.x Clients------
-First step is the installation of the neccessary controls. The are two ActiveX controls needed by OpenCms: 
-
-1. For the WYSIWYG editor, the "Dynamic HTML Edit Control" is used. This control is part of all MS IE installations since version 5.0, which means you must make sure the IE you use is version 5.0 or later. 
-2. The code editor is a component developed by AY Software and it's called LeEdit OCX Control. You can download the shareware version of this control at http://www.aysoft.com/ledit.htm. This control must be installed on all clients that need access to the code editor functionality. 
-
-The second step is configuring the ActiveX settings so that the controls work properly. 
-Open IEs "Internet options." Then do the following: 
-
-1. On the tab "Security", select "Trusted site zones" from the drop-down menu and click on "Add Sites" to add the URL (e.g. http://opencms.mycompany.com - ask your system administrator for the exact URL) of the zone's OpenCms server. Deactivate the radio button "Require server verification (https:) for all sites in this zone." 
-2. On the tab "Security", select "Trusted site zones" from the drop-down menu and click on "Settings". All ActiveX control elements must be set to "Enable." A note on security: It is safe to use ActiveX controls with these settings since their use is allowed only for the "Trusted sites", and ActiveX remains disabled for all other web sites. 
-
-This setup must be repeated for all clients / workstations that use the OpenCms workplace. Cookies must be enabled on this machines. 
+----------Configuring MS Internet Explorer 5.x and 6.x Clients---------
+To access the OpenCms Workplace using Internet Explorer, simply ensure
+that Cookies and JavaScript are enabled - that's all.
 -----------------------------------------------------------------------
 
------------------------Configuring Netscape Navigator------------------
-Ok, honestly we try our best to keep the workplace compatible with Netscape versions 4.x. We so far do not support Netscape 6.0 or other browsers that use the new Mozilla HTML rendering engine. That's a pity since Mozilla is open source as well. If anyone of you feels compelled to help boosting Netscape compatibility for 4.x or 6.0 (at last for the HTML parts of the workplace), please send an Email to contributions@opencms.com. 
+----------Configuring Mozilla / Netscape Navigator 7.x Clients---------
+* With Mozilla / Netscape Navigator, you also have to ensure that
+Cookies and JavaScript are enabled.
+* Also ensure that pop-up windows are enabled in Mozilla because the
+OpenCms Workplace needs this feature.
+* A WYSIWYG editor is currently not available for Mozilla / Netscape
+Navigator Clients - OpenCms switches automatically to an HTML text
+area in which the end user can edit the content as HTML source code.
+-----------------------------------------------------------------------
 
-Settings for Netscape 4.x: 
+--------Optional installation of the advanced source code editor-------
+If you use MS Internet Explorer on Windows, there is an optional
+source code editor component available that offers some advanced
+features. The installation of this editor is only neccessary if you
+need a source code editor with functions like search and replace in
+the source code editing mode. If you do not install this optional
+component, you will work with a HTML textarea for source code editing.
+In this case, you do not have to change any extra browser settings. If
+you want to use the advanced editor, please follow the instructions
+provided below.
 
-1. On the menu bar, click on the menu item "Edit" and select "Settings." Then do the following: 
-2. On the tab "Settings" go to the section "Extended" and enable the options "Java" and "Java Script." 
-3. On the tab "Settings" go to the section "Extended/Cache" and enable "Compare cache and network document: always." 
-
-This setup must be repeated for all clients / workstations that use the OpenCms workplace. Cookies must be enabled on this machines.
-
+* The source code editor is a component developed by AY Software and
+it’s called LeEdit OCX Control. You can download the shareware version
+of this control from the site: http://www.aysoft.com/ledit.htm. This
+control must be installed on all clients that need access to the source 
+code editor functionality. If you do not install this component,
+OpenCms will provide a HTML textarea for the source code input, whic 
+is less convenient but also usable in general.
+* In order to configure your Internet Explorer for the source code
+editor to work properly, open IEs "Internet options". Then do the
+following:
+* On the tab "Security", select "Trusted site zones" from the
+drop-down menu and click on "Add Sites" to add the URL (e.g.
+http://opencms.mycompany.com - ask your system administrator for the
+exact URL) of the zone’s OpenCms server. Deactivate the radio button
+"Require server verification (https:) for all sites in this zone".
+* On the tab "Security", select "Trusted site zones" from the
+drop-down menu and click on "Settings". All control elements must be
+set to "Enable". A note on security: It is safe to use such controls
+with these settings since their use is allowed only for the "Trusted
+sites", and they remain disabled for all other web sites.
 -----------------------------------------------------------------------
 </textarea>
 <p><input type="checkbox" name="understood" value="true"><b> I have understood how to enable the ActiveX Editors</b></p>
