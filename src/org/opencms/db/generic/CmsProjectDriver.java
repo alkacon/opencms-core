@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/10/31 21:30:17 $
- * Version: $Revision: 1.195 $
+ * Date   : $Date: 2004/11/02 12:41:56 $
+ * Version: $Revision: 1.196 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -73,7 +72,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.195 $ $Date: 2004/10/31 21:30:17 $
+ * @version $Revision: 1.196 $ $Date: 2004/11/02 12:41:56 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -343,7 +342,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Database init        : filling default values");
         }
-
+        
+        /* CW/02.11 moved to generic user driver initialization
         // set the groups
         String guestGroup = OpenCms.getDefaultUsers().getGroupGuests();
         CmsGroup guests = m_driverManager.getUserDriver().createGroup(null, CmsUUID.getConstantUUID(guestGroup), guestGroup, "The guest group", I_CmsConstants.C_FLAG_ENABLED, null, null);
@@ -367,7 +367,20 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             String exportUser = OpenCms.getDefaultUsers().getUserExport();
             CmsUser export = m_driverManager.getUserDriver().importUser(null, CmsUUID.getConstantUUID(exportUser), exportUser, m_driverManager.digest((new CmsUUID()).toString()), "The static export user", " ", " ", " ", 0, I_CmsConstants.C_FLAG_ENABLED, new Hashtable(), " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER, null);
             m_driverManager.getUserDriver().createUserInGroup(null, export.getId(), guests.getId(), null);
-        }
+        }*/
+        
+        String adminUser = OpenCms.getDefaultUsers().getUserAdmin();
+        CmsUser admin = m_driverManager.readUser((I_CmsRuntimeInfo)null, adminUser);
+
+        String administratorsGroup = OpenCms.getDefaultUsers().getGroupAdministrators();
+        CmsGroup administrators = m_driverManager.readGroup((I_CmsRuntimeInfo)null, administratorsGroup);
+            
+        String usersGroup = OpenCms.getDefaultUsers().getGroupUsers();
+        CmsGroup users = m_driverManager.readGroup((I_CmsRuntimeInfo)null, usersGroup);
+        
+        String projectmanagersGroup = OpenCms.getDefaultUsers().getGroupProjectmanagers();
+        CmsGroup projectmanager = m_driverManager.readGroup((I_CmsRuntimeInfo)null, projectmanagersGroup);        
+            
         m_driverManager.getWorkflowDriver().writeTaskType(1, 0, "../taskforms/adhoc.asp", "Ad-Hoc", "30308", 1, 1);
 
         ////////////////////////////////////////////////////////////////////////////////////////////

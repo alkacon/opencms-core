@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2004/10/29 17:26:24 $
- * Version: $Revision: 1.67 $
+ * Date   : $Date: 2004/11/02 12:41:56 $
+ * Version: $Revision: 1.68 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.67 $ $Date: 2004/10/29 17:26:24 $
+ * @version $Revision: 1.68 $ $Date: 2004/11/02 12:41:56 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -449,7 +449,18 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
                 OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Error setting digest : using clear passwords - " + e.getMessage());
             }
         }
-
+        
+        try {
+            if (!existsGroup((I_CmsRuntimeInfo)null, OpenCms.getDefaultUsers().getGroupAdministrators(), null)) {
+                internalCreateDefaultUsersAndGroups();
+            }
+        } catch (CmsException e) {
+            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isErrorEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).error("Initialization of default users and groups failed", e);
+            }
+            throw new RuntimeException(e);            
+        }
+        
         if (successiveDrivers != null && !successiveDrivers.isEmpty()) {
             if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
                 OpenCms.getLog(CmsLog.CHANNEL_INIT).warn(this.getClass().toString() + " does not support successive drivers");
@@ -465,6 +476,56 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         return CmsSqlManager.getInstance(classname);
     }
 
+    /**
+     * Initializes the default users and groups.<p>
+     * 
+     * @throw CmsException if something goes wrong
+     */
+    private void internalCreateDefaultUsersAndGroups () throws CmsException {
+        
+        String guestGroup = OpenCms.getDefaultUsers().getGroupGuests();
+        String administratorsGroup = OpenCms.getDefaultUsers().getGroupAdministrators();
+        String usersGroup = OpenCms.getDefaultUsers().getGroupUsers();
+        String projectmanagersGroup = OpenCms.getDefaultUsers().getGroupProjectmanagers();
+        String guestUser = OpenCms.getDefaultUsers().getUserGuest();
+        String adminUser = OpenCms.getDefaultUsers().getUserAdmin();
+        String exportUser = OpenCms.getDefaultUsers().getUserExport();
+        
+        CmsGroup guests, administrators, users, projectmanager;
+        CmsUser guest, admin, export;
+
+        guests = createGroup(null, CmsUUID.getConstantUUID(guestGroup), guestGroup, 
+            "The guest group", I_CmsConstants.C_FLAG_ENABLED, null, null);            
+        administrators = createGroup(null, CmsUUID.getConstantUUID(administratorsGroup), administratorsGroup, 
+            "The administrators group", I_CmsConstants.C_FLAG_ENABLED | I_CmsConstants.C_FLAG_GROUP_PROJECTMANAGER, null, null);
+        users = createGroup(null, CmsUUID.getConstantUUID(usersGroup), usersGroup, 
+            "The users group", I_CmsConstants.C_FLAG_ENABLED | I_CmsConstants.C_FLAG_GROUP_ROLE | I_CmsConstants.C_FLAG_GROUP_PROJECTCOWORKER, null, null);
+        projectmanager = createGroup(null, CmsUUID.getConstantUUID(projectmanagersGroup), projectmanagersGroup, 
+            "The projectmanager group", I_CmsConstants.C_FLAG_ENABLED | I_CmsConstants.C_FLAG_GROUP_PROJECTMANAGER | I_CmsConstants.C_FLAG_GROUP_PROJECTCOWORKER | I_CmsConstants.C_FLAG_GROUP_ROLE, users.getName(), null);
+
+        guest = importUser(null, CmsUUID.getConstantUUID(guestUser), guestUser, m_driverManager.digest(""), 
+            "The guest user", " ", " ", " ", 0, I_CmsConstants.C_FLAG_ENABLED, new Hashtable(), " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER, null);
+        admin = importUser(null, CmsUUID.getConstantUUID(adminUser), adminUser, m_driverManager.digest("admin"), 
+            "The admin user", " ", " ", " ", 0, I_CmsConstants.C_FLAG_ENABLED, new Hashtable(), " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER, null);
+
+        createUserInGroup(null, guest.getId(), guests.getId(), null);
+        createUserInGroup(null, admin.getId(), administrators.getId(), null);
+        
+        if (!exportUser.equals(OpenCms.getDefaultUsers().getUserAdmin()) 
+            && !exportUser.equals(OpenCms.getDefaultUsers().getUserGuest())) { 
+            
+            export = importUser(null, CmsUUID.getConstantUUID(exportUser), exportUser, m_driverManager.digest((new CmsUUID()).toString()), "The static export user", " ", " ", " ", 0, I_CmsConstants.C_FLAG_ENABLED, new Hashtable(), " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER, null);            
+            createUserInGroup(null, export.getId(), guests.getId(), null);
+        }
+        
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Users and groups     : defaults initialized");
+        }
+        
+        // avoid warning
+        projectmanager.setEnabled();
+    }    
+           
     /**
      * Internal helper method to create an access control entry from a database record.<p>
      * 
