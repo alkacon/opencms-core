@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/12/07 17:25:33 $
- * Version: $Revision: 1.209 $
+ * Date   : $Date: 2000/12/12 09:05:49 $
+ * Version: $Revision: 1.210 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.209 $ $Date: 2000/12/07 17:25:33 $
+ * @version $Revision: 1.210 $ $Date: 2000/12/12 09:05:49 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -4126,16 +4126,16 @@ public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, int proj
 	// read the resource from the projectId, 
 	try
 	{
-		cmsFile=(CmsFile)m_resourceCache.get(C_FILECONTENT+projectId+filename);
+		//cmsFile=(CmsFile)m_resourceCache.get(C_FILECONTENT+projectId+filename);
 		if (cmsFile == null) {
 			
 			cmsFile = m_dbAccess.readFile(projectId, onlineProject(currentUser, currentProject).getId(), filename);
 			// only put it in thecache until the size is below the max site
-			if (cmsFile.getContents().length <m_cachelimit) {
+			/*if (cmsFile.getContents().length <m_cachelimit) {
 				m_resourceCache.put(C_FILECONTENT+projectId+filename,cmsFile);
 			} else {
 			
-			}
+			}*/
 		}
 		if (accessRead(currentUser, currentProject, (CmsResource) cmsFile))
 		{
@@ -4177,16 +4177,16 @@ public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, String f
 	// read the resource from the currentProject, or the online-project
 	try
 	{
-		cmsFile=(CmsFile)m_resourceCache.get(C_FILECONTENT+currentProject.getId()+filename);
+		//cmsFile=(CmsFile)m_resourceCache.get(C_FILECONTENT+currentProject.getId()+filename);
 		if (cmsFile == null) {
 			
 			cmsFile = m_dbAccess.readFile(currentProject.getId(), onlineProject(currentUser, currentProject).getId(), filename);
 			// only put it in thecache until the size is below the max site
-			if (cmsFile.getContents().length <m_cachelimit) {
+			/*if (cmsFile.getContents().length <m_cachelimit) {
 				m_resourceCache.put(C_FILECONTENT+currentProject.getId()+filename,cmsFile);
 			} else {
 			
-			}
+			}*/
 		}
 		
 		}
@@ -5892,7 +5892,7 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
 			}	
 			// update the cache
 			m_resourceCache.put(C_FILE+currentProject.getId()+file.getAbsolutePath(),file);
-			m_resourceCache.put(C_FILECONTENT+currentProject.getId()+file.getAbsolutePath(),file);
+			//m_resourceCache.put(C_FILECONTENT+currentProject.getId()+file.getAbsolutePath(),file);
 			m_subresCache.clear();
 			m_accessCache.clear();
 			// inform about the file-system-change
