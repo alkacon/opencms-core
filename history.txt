@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/06/12 16:32:26 $
- * Version: $Revision: 1.477 $
+ * Date   : $Date: 2003/06/13 12:25:34 $
+ * Version: $Revision: 1.478 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,7 +19,18 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms (5.1.1)
+OpenCms (next version) Salusa Secundus
+- This is a development version.
+  The OpenCms core is currently undergoing heavy changes. 
+  This development version is known as unstable.
+  Users looking for updates or improvements of OpenCms 5.0.0 should use the 
+  "branch_5_0_x" CVS branch until further notice. 
+- Added external JARs to the CVS tree for easier upgrading and installing 
+! Split resource table in structure and resource table
+- Refactored database access and security packages to org.opencms.* name
+- Improved source code quality in some classes with Checkstyle
+
+OpenCms 5.1.1 Salusa Secundus - June 13, 2003
 - OpenCms 5.1.1 is a development version.
   The core is currently undergoing heavy changes. 
   This development version is known as unstable.
@@ -41,7 +52,7 @@ OpenCms (5.1.1)
 ! Added "getNavigationBreadCrumb()" methods to com.opencms.flex.jsp.CmsJspNavBuilder
 - Refactored JSP integration to be more standards compliant
 
-OpenCms 5.1.0
+OpenCms 5.1.0 Salusa Secundus
 * Applied fix to bug #15 contributed by ulrich.rueth@gmx.de
 ! Inroduced first version of I_CmsUserAccess 
 ! Splitted VFS and user management code from CmsDbAccess classes 
@@ -49,7 +60,7 @@ OpenCms 5.1.0
   Users looking for updates or improvements of OpenCms should use the 
   "branch_5_0_x" CVS branch until further notice. 
 
-OpenCms 5.0.0 (5.0 final)
+OpenCms 5.0.0 (5.0 final) Kaitain - May 05, 2003
 ! Added "import.immutable.resources" setting to opencms.properties, all resources
   listed there will be igored during an import if they already exist
 ! The size of the file upload can now be limited with the opencms.properties setting "workplace.file.maxuploadsize"
