@@ -15,7 +15,7 @@ import java.lang.reflect.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;tasklist&gt;</code>.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 2000/02/15 17:53:49 $
+ * @version $Revision: 1.2 $ $Date: 2000/02/17 15:51:01 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants {
@@ -70,44 +70,30 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
             throwException("User method " + listMethod + " in calling class " + callingObject.getClass().getName() + " was found but could not be invoked. " + exc2, CmsException.C_XML_NO_USER_METHOD);
         }
 		
-		try {
-System.err.println(">>>" + 1);
         /** StringBuffer for the generated output */
         StringBuffer result = new StringBuffer();
-System.err.println(">>>" + 2);
+		String priority;
+		String projectname;
 		
 		for(int i = 0; i < list.size(); i++) {
-System.err.println(">>>" + 3);
 			// get the actual project
 			A_CmsTask task = (A_CmsTask) list.elementAt(i);
-System.err.println(">>>" + 31 + " " + task);
-System.err.println(">>>" + 311 + " " + task.getName());
-System.err.println(">>>" + 312 + " " + listdef);
+			projectname = cms.readTask(task.getRoot()).getName();
+			priority = listdef.getProcessedXmlDataValue("priority" + task.getPriority(), callingObject);
 			  
 			// get the processed list.
+			listdef.setXmlData("priority", priority);
 			listdef.setXmlData("task", task.getName());
-System.err.println(">>>" + 32 + " " + task.getAgentUser());
-			listdef.setXmlData("foruser", task.getAgentUser() + "");
-System.err.println(">>>" + 33);
-			listdef.setXmlData("forrole", task.getRole() + "");
-System.err.println(">>>" + 34);
-			listdef.setXmlData("actuator", task.getInitiatorUser() + "");
-System.err.println(">>>" + 35);
+			listdef.setXmlData("foruser", cms.readAgent(task).getName());
+			listdef.setXmlData("forrole", cms.readGroup(task).getName());
+			listdef.setXmlData("actuator", cms.readOwner(task).getName());
 			listdef.setXmlData("due", task.getTimeOut().toLocaleString());
-System.err.println(">>>" + 36);
 			listdef.setXmlData("from", task.getStartTime().toLocaleString());
-System.err.println(">>>" + 37);
-			listdef.setXmlData("project", task.getParent() + "");
+			listdef.setXmlData("project", projectname);
 			
-System.err.println(">>>" + 4);
 			result.append(listdef.getProcessedXmlDataValue("defaulttasklist", callingObject, parameters));
-System.err.println(">>>" + 5);
 
 		}		
 		return result.toString();
-			} catch(Exception exc) {
-				exc.printStackTrace();
-				return "";
-			}
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsInitMySqlFillDefaults.java,v $
- * Date   : $Date: 2000/02/15 17:43:59 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/02/17 15:51:01 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -38,7 +38,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.15 $ $Date: 2000/02/15 17:43:59 $
+ * @version $Revision: 1.16 $ $Date: 2000/02/17 15:51:01 $
  */
 public class CmsInitMySqlFillDefaults extends A_CmsInit implements I_CmsConstants {
 	
@@ -68,7 +68,7 @@ public class CmsInitMySqlFillDefaults extends A_CmsInit implements I_CmsConstant
 				new CmsAccessTask(propertyDriver, propertyConnectString ) );
 
 			userRb.addGroup(C_GROUP_GUEST, "the guest-group", C_FLAG_ENABLED, null);
-			userRb.addGroup(C_GROUP_ADMIN, "the admin-group", C_FLAG_ENABLED, null);
+			A_CmsGroup adminGroup = userRb.addGroup(C_GROUP_ADMIN, "the admin-group", C_FLAG_ENABLED, null);
 			userRb.addGroup(C_GROUP_PROJECTLEADER, "the projectmanager-group", C_FLAG_ENABLED, null);
 			userRb.addGroup(C_GROUP_USERS, "the users-group to access the workplace", C_FLAG_ENABLED, C_GROUP_GUEST);
 			
@@ -82,11 +82,16 @@ public class CmsInitMySqlFillDefaults extends A_CmsInit implements I_CmsConstant
 			I_CmsRbProject projectRb = new CmsRbProject(
 				new CmsAccessProjectMySql(propertyDriver, propertyConnectString));
 			
-			A_CmsProject project = projectRb.createProject(C_PROJECT_ONLINE, "the online-project", new CmsTask(),
+			A_CmsTask task = taskRb.createProject(admin, C_PROJECT_ONLINE, adminGroup, 
+												  new java.sql.Timestamp(new Date().getTime()), 
+												  C_TASK_PRIORITY_NORMAL);
+
+			A_CmsProject project = projectRb.createProject(C_PROJECT_ONLINE, "the online-project", task,
 														   userRb.readUser(C_USER_ADMIN), 
 														   userRb.readGroup(C_GROUP_GUEST), 
 														   userRb.readGroup(C_GROUP_PROJECTLEADER),
 														   C_FLAG_ENABLED);
+			
 			
 			I_CmsRbProperty propertyRb = new CmsRbProperty(
 				new CmsAccessPropertyMySql(propertyDriver, propertyConnectString));

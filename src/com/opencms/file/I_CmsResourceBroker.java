@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/02/16 18:06:28 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2000/02/17 15:51:01 $
+ * Version: $Revision: 1.41 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michaela Schleich
- * @version $Revision: 1.40 $ $Date: 2000/02/16 18:06:28 $
+ * @version $Revision: 1.41 $ $Date: 2000/02/17 15:51:01 $
  * 
  */
 interface I_CmsResourceBroker {
@@ -434,6 +434,57 @@ interface I_CmsResourceBroker {
 		throws CmsException ;
 	
 	/**
+	 * Reads the owner (initiator) of a task from the OpenCms.
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param task The task to read the owner from.
+	 * @return The owner of a task.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public A_CmsUser readOwner(A_CmsUser currentUser, A_CmsProject currentProject, 
+							   A_CmsTask task) 
+		throws CmsException;
+	
+	/**
+	 * Reads the agent of a task from the OpenCms.
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param task The task to read the agent from.
+	 * @return The owner of a task.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public A_CmsUser readAgent(A_CmsUser currentUser, A_CmsProject currentProject, 
+							   A_CmsTask task) 
+		throws CmsException ;
+
+	/**
+	 * Reads the original agent of a task from the OpenCms.
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param task The task to read the original agent from.
+	 * @return The owner of a task.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public A_CmsUser readOriginalAgent(A_CmsUser currentUser, A_CmsProject currentProject, 
+									   A_CmsTask task) 
+		throws CmsException ;
+							
+	/**
 	 * Reads the group of a resource from the OpenCms.
 	 * 
 	 * <B>Security:</B>
@@ -449,6 +500,23 @@ interface I_CmsResourceBroker {
 							   A_CmsResource resource) 
 		throws CmsException ;
 							
+	/**
+	 * Reads the group (role) of a task from the OpenCms.
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param task The task to read from.
+	 * @return The group of a resource.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public A_CmsGroup readGroup(A_CmsUser currentUser, A_CmsProject currentProject, 
+							   A_CmsTask task) 
+		throws CmsException ;
+								
 	/**
 	 * Reads the owner of a project from the OpenCms.
 	 * 
@@ -1830,5 +1898,21 @@ interface I_CmsResourceBroker {
 	 public Vector readTasks(A_CmsUser currentUser, A_CmsProject currentProject,
 							 String projectName, String userName, int tasktype, 
 							 String orderBy, String sort) 
+		 throws CmsException;
+
+	 /**
+	  * Read a task by id.
+	  * 
+	  * <B>Security:</B>
+	  * All users are granted.
+	  * 
+	  * @param currentUser The user who requested this method.
+	  * @param currentProject The current project of the user.
+	  * @param id The id for the task to read.
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public A_CmsTask readTask(A_CmsUser currentUser, A_CmsProject currentProject, 
+							   int id)
 		 throws CmsException;
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/setup/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/02/16 10:56:43 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2000/02/17 15:51:01 $
+ * Version: $Revision: 1.29 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import java.lang.reflect.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.28 $ $Date: 2000/02/16 10:56:43 $
+ * @version $Revision: 1.29 $ $Date: 2000/02/17 15:51:01 $
  */
 public class CmsShell implements I_CmsConstants {
 	
@@ -1455,7 +1455,7 @@ public class CmsShell implements I_CmsConstants {
 	 */
 	public void importDb(String importFile, String importPath ){
 		try {
-			m_cms.importDb(importPath, importFile);
+			m_cms.importDb(importFile, importPath);
 		} catch( Exception exc ) {
 			printException(exc);
 		}

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsObject.java,v $
- * Date   : $Date: 2000/02/16 18:06:27 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2000/02/17 15:51:01 $
+ * Version: $Revision: 1.45 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.core.*;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.44 $ $Date: 2000/02/16 18:06:27 $ 
+ * @version $Revision: 1.45 $ $Date: 2000/02/17 15:51:01 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -815,6 +815,39 @@ public abstract class A_CmsObject {
 		throws CmsException ;
 	
 	/**
+	 * Reads the owner (initiator) of a task from the OpenCms.
+	 * 
+	 * @param task The task to read the owner from.
+	 * @return The owner of a task.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public abstract A_CmsUser readOwner(A_CmsTask task) 
+		throws CmsException;
+		
+	/**
+	 * Reads the agent of a task from the OpenCms.
+	 * 
+	 * @param task The task to read the agent from.
+	 * @return The owner of a task.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public abstract A_CmsUser readAgent(A_CmsTask task) 
+		throws CmsException ;
+
+	/**
+	 * Reads the original agent of a task from the OpenCms.
+	 * 
+	 * @param task The task to read the original agent from.
+	 * @return The owner of a task.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public abstract A_CmsUser readOriginalAgent(A_CmsTask task) 
+		throws CmsException ;
+	
+	/**
 	 * Reads the group of a resource from the OpenCms.
 	 * 
 	 * @return The group of a resource.
@@ -822,6 +855,17 @@ public abstract class A_CmsObject {
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
 	public abstract A_CmsGroup readGroup(A_CmsResource resource) 
+		throws CmsException ;
+	
+	/**
+	 * Reads the group (role) of a task from the OpenCms.
+	 * 
+	 * @param task The task to read from.
+	 * @return The group of a resource.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public abstract A_CmsGroup readGroup(A_CmsTask task) 
 		throws CmsException ;
 	
 	/**
@@ -1354,5 +1398,15 @@ public abstract class A_CmsObject {
 	  */
 	 abstract public Vector readTasks(String projectName, String userName, int tasktype, 
 									  String orderBy, String sort) 
+		 throws CmsException;
+
+	 /**
+	  * Read a task by id.
+	  * 
+	  * @param id The id for the task to read.
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 abstract public A_CmsTask readTask(int id)
 		 throws CmsException;
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/02/17 15:48:49 $
- * Version: $Revision: 1.62 $
+ * Date   : $Date: 2000/02/17 15:51:01 $
+ * Version: $Revision: 1.63 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michaela Schleich
- * @version $Revision: 1.62 $ $Date: 2000/02/17 15:48:49 $
+ * @version $Revision: 1.63 $ $Date: 2000/02/17 15:51:01 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -848,6 +848,63 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	}
 	
 	/**
+	 * Reads the owner (initiator) of a task from the OpenCms.
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param task The task to read the owner from.
+	 * @return The owner of a task.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public A_CmsUser readOwner(A_CmsUser currentUser, A_CmsProject currentProject, 
+							   A_CmsTask task) 
+		throws CmsException {
+		return( m_userRb.readUser(task.getInitiatorUser()) );
+	}
+	
+	/**
+	 * Reads the agent of a task from the OpenCms.
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param task The task to read the agent from.
+	 * @return The owner of a task.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public A_CmsUser readAgent(A_CmsUser currentUser, A_CmsProject currentProject, 
+							   A_CmsTask task) 
+		throws CmsException {
+		return( m_userRb.readUser(task.getAgentUser()) );
+	}
+
+	/**
+	 * Reads the original agent of a task from the OpenCms.
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param task The task to read the original agent from.
+	 * @return The owner of a task.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public A_CmsUser readOriginalAgent(A_CmsUser currentUser, A_CmsProject currentProject, 
+									   A_CmsTask task) 
+		throws CmsException {
+		return( m_userRb.readUser(task.getOriginalUser()) );
+	}
+	
+	/**
 	 * Reads the group of a resource from the OpenCms.
 	 * 
 	 * <B>Security:</B>
@@ -863,6 +920,25 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 							   A_CmsResource resource) 
 		throws CmsException {
 		return( m_userRb.readGroup(resource.getGroupId()) );
+	}
+	
+	/**
+	 * Reads the group (role) of a task from the OpenCms.
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param task The task to read from.
+	 * @return The group of a resource.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public A_CmsGroup readGroup(A_CmsUser currentUser, A_CmsProject currentProject, 
+							   A_CmsTask task) 
+		throws CmsException {
+		return( m_userRb.readGroup(task.getRole()) );
 	}
 	
 	/**
@@ -2240,7 +2316,7 @@ System.err.println(">>> readFile(2) error for\n" +
 		validFilename(newFolderName);
 		
 		CmsFolder cmsFolder = m_fileRb.readFolder(currentProject, 
-													folder);
+												  folder);
 		if( accessCreate(currentUser, currentProject, (A_CmsResource)cmsFolder) ) {
 				
 			// write-acces  was granted - create the folder.
@@ -3816,5 +3892,23 @@ System.err.println(">>> readFile(2) error for\n" +
 		 }
 		 
 		 return m_taskRb.readTasks(project, user, tasktype, orderBy, sort);
+	 }
+
+	 /**
+	  * Read a task by id.
+	  * 
+	  * <B>Security:</B>
+	  * All users are granted.
+	  * 
+	  * @param currentUser The user who requested this method.
+	  * @param currentProject The current project of the user.
+	  * @param id The id for the task to read.
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public A_CmsTask readTask(A_CmsUser currentUser, A_CmsProject currentProject, 
+							   int id)
+		 throws CmsException {
+		 return m_taskRb.readTask(id);
 	 }
 }

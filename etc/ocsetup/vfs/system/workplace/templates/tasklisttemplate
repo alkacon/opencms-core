@@ -3,8 +3,8 @@
 	<defaulttasklist>
 	<![CDATA[
 	<tr>
-		<td nowrap><img src="pics/ic_task_new.gif" border=0 width=16 height=16 alt="Neue Aufgabe"></td>
-		<td nowrap></td>
+		<td nowrap><img src="]]><METHOD name="picsUrl">ic_task_new.gif</METHOD><![CDATA[" border=0 width=16 height=16 alt="Aufgabe"></td>
+		<td nowrap>]]><PROCESS>priority</PROCESS><![CDATA[</td>
 		<td nowrap><p class=einzug>]]><PROCESS>task</PROCESS><![CDATA[</td>
 		<td nowrap><p class=einzug>]]><PROCESS>foruser</PROCESS><![CDATA[</td>
 		<td nowrap><p class=einzug>]]><PROCESS>forrole</PROCESS><![CDATA[</td>
@@ -15,5 +15,11 @@
 	</tr>
 	]]>
 	</defaulttasklist>
+	
+	<priority1><![CDATA[<img src="]]><METHOD name="picsUrl">ic_task_priohigh.gif</METHOD><![CDATA[" border=0 width=16 height=16 alt="]]><LABEL value="task.label.prioritylevel.high" /><![CDATA[">]]></priority1>
+
+	<priority2></priority2>
+
+	<priority3><![CDATA[<img src="]]><METHOD name="picsUrl">ic_task_priolow.gif</METHOD><![CDATA[" border=0 width=16 height=16 alt="]]><LABEL value="task.label.prioritylevel.low" /><![CDATA[">]]></priority3>
 
 </WORKPLACE>

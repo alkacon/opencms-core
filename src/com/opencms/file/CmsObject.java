@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/02/16 18:06:27 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2000/02/17 15:51:01 $
+ * Version: $Revision: 1.46 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  *  
- * @version $Revision: 1.45 $ $Date: 2000/02/16 18:06:27 $ 
+ * @version $Revision: 1.46 $ $Date: 2000/02/17 15:51:01 $ 
  * 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
@@ -941,6 +941,49 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	}
 	
 	/**
+	 * Reads the owner (initiator) of a task from the OpenCms.
+	 * 
+	 * @param task The task to read the owner from.
+	 * @return The owner of a task.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public A_CmsUser readOwner(A_CmsTask task) 
+		throws CmsException {
+		return( c_rb.readOwner(m_context.currentUser(), m_context.currentProject(), 
+							   task ) );
+	}
+	
+	/**
+	 * Reads the agent of a task from the OpenCms.
+	 * 
+	 * @param task The task to read the agent from.
+	 * @return The owner of a task.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public A_CmsUser readAgent(A_CmsTask task) 
+		throws CmsException {
+		return( c_rb.readAgent(m_context.currentUser(), m_context.currentProject(), 
+							   task ) );
+	}
+
+	/**
+	 * Reads the original agent of a task from the OpenCms.
+	 * 
+	 * @param task The task to read the original agent from.
+	 * @return The owner of a task.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public A_CmsUser readOriginalAgent(A_CmsTask task) 
+		throws CmsException {
+		return( c_rb.readOriginalAgent(m_context.currentUser(), 
+									   m_context.currentProject(), 
+									   task ) );
+	}
+	
+	/**
 	 * Reads the group of a resource from the OpenCms.
 	 * 
 	 * @return The group of a resource.
@@ -951,6 +994,20 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 		throws CmsException {
 		return( c_rb.readGroup(m_context.currentUser(), m_context.currentProject(), 
 							   resource ) );
+	}
+	
+	/**
+	 * Reads the group (role) of a task from the OpenCms.
+	 * 
+	 * @param task The task to read from.
+	 * @return The group of a resource.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public A_CmsGroup readGroup(A_CmsTask task) 
+		throws CmsException {
+		return( c_rb.readGroup(m_context.currentUser(), m_context.currentProject(), 
+							   task ) );
 	}
 	
 	/**
@@ -1647,7 +1704,6 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */
 	public void exportDb(String exportFile, String exportPath, int exportType) 
 		throws Exception {
-		
 		c_rb.exportDb(m_context.currentUser(), m_context.currentProject(), exportFile, exportPath, exportType);
 	}
 	
@@ -1660,7 +1716,6 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */
 	public void importDb(String importFile, String importPath)
 		throws Exception {
-		
 		c_rb.importDb(m_context.currentUser(), m_context.currentProject(), importFile, importPath);
 	}
 
@@ -1679,5 +1734,18 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 		 throws CmsException {
 		 return( c_rb.readTasks(m_context.currentUser(), m_context.currentProject(), 
 								projectName, userName, tasktype, orderBy, sort) );
+	 }
+
+	 /**
+	  * Read a task by id.
+	  * 
+	  * @param id The id for the task to read.
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public A_CmsTask readTask(int id)
+		 throws CmsException {
+		 return( c_rb.readTask(m_context.currentUser(), m_context.currentProject(), 
+							   id) );
 	 }
 }

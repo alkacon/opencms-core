@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskNew.java,v $
- * Date   : $Date: 2000/02/15 17:53:49 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/02/17 15:51:01 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.4 $ $Date: 2000/02/15 17:53:49 $
+ * @version $Revision: 1.5 $ $Date: 2000/02/17 15:51:01 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskNew extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -139,7 +139,7 @@ public class CmsTaskNew extends CmsWorkplaceDefault implements I_CmsConstants {
 			String agentName = (String)parameters.get("USER");
 			String roleName = (String)parameters.get("TEAM");
 			if( roleName.equals(C_ALL_ROLES) ) {
-				roleName = null;
+				roleName = cms.readUser(agentName).getDefaultGroup().getName();
 			}
 			String taskName = (String)parameters.get("TASKNAME");
 			String taskcomment = (String)parameters.get("DESCRIPTION");
