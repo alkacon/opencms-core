@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/03/25 16:35:50 $
- * Version: $Revision: 1.156 $
+ * Date   : $Date: 2004/03/31 08:11:07 $
+ * Version: $Revision: 1.157 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.156 $ $Date: 2004/03/25 16:35:50 $
+ * @version $Revision: 1.157 $ $Date: 2004/03/31 08:11:07 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -410,6 +410,26 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         }
     }
 
+    /**
+     * @see org.opencms.db.I_CmsProjectDriver#deleteAllStaticExportPublishedResources(org.opencms.file.CmsProject, int)
+     */
+    public void deleteAllStaticExportPublishedResources(CmsProject currentProject, int linkType) throws CmsException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        
+        try {
+            conn = m_sqlManager.getConnection(currentProject);
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_STATICEXPORT_DELETE_ALL_PUBLISHED_RESOURCES");
+            stmt.setInt(1, linkType);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, null);
+        }
+    }
+
+    
     /**
      * @see org.opencms.db.I_CmsProjectDriver#destroy()
      */

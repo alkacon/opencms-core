@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsExportFolderMatcher.java,v $
- * Date   : $Date: 2004/03/29 09:56:41 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/03/31 08:11:08 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,55 +30,40 @@
  */
 package org.opencms.staticexport;
 
-import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringSubstitution;
 
-import org.apache.oro.text.PatternCache;
-import org.apache.oro.text.PatternCacheFIFO;
-import org.apache.oro.text.perl.Perl5Util;
-import org.apache.oro.text.regex.MalformedPatternException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * This class provides a file name matcher to find out those resources which must be part of 
  * a static export.<p> 
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsExportFolderMatcher {
 
     /** Internal array containing the vfs folders that should be exported*/
-    private String[] m_vfsFolders = null;
-    
-    /** Perl5 utility class */
-    private Perl5Util m_perlUtil = null;
-    
-    /** Perl5 patter cache to avoid unecessary re-parsing of properties */
-    private PatternCache m_perlPatternCache = null;   
-    
+    private List m_vfsFolders;
     
     /**
      * Creates a new CmsExportFolderMatcher.<p>
      * 
      * @param vfsFolders array of vfsFolder used for static export 
+     * @param checkResource additional resource name to be added to the static export
      */
-    public CmsExportFolderMatcher(String[] vfsFolders) {
-        m_vfsFolders = vfsFolders;
-        // Pre-cache the patterns 
-        m_perlPatternCache = new PatternCacheFIFO(m_vfsFolders.length+1);
-        for (int i=0; i<m_vfsFolders.length; i++) {
-            try {
-                m_perlPatternCache.addPattern(m_vfsFolders[i]);
-            } catch (MalformedPatternException e) {
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error("Malformed resource translation rule: \"" + m_vfsFolders[i] + "\"");
-                }
-            }
-        }        
-        // Initialize the Perl5Util
-        m_perlUtil = new Perl5Util(m_perlPatternCache);
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug(". Static Export folder matches : " + vfsFolders.length + " rules initialized");
-        }          
+    public CmsExportFolderMatcher(String[] vfsFolders, String checkResource) {
+        
+        m_vfsFolders = new ArrayList();
+        
+        for (int i = 0; i < vfsFolders.length; i++) {
+            m_vfsFolders.add(Pattern.compile(vfsFolders[i]));
+        }
+                    
+        m_vfsFolders.add(Pattern.compile(CmsStringSubstitution.escapePattern(checkResource)));     
+        
     }    
     
     /**
@@ -89,10 +74,13 @@ public class CmsExportFolderMatcher {
      */
     public boolean match(String vfsName) {
         boolean match = false;
-        for (int i=0; i<m_vfsFolders.length; i++) {
-            if (m_perlUtil.match(m_vfsFolders[i], vfsName)) {
-                match = true;
-            }
+       
+        for (int j = 0; j < m_vfsFolders.size(); j++) {
+            Pattern pattern = (Pattern)m_vfsFolders.get(j);
+             match = pattern.matcher(vfsName).matches();
+             if (match) {
+                break;
+             }
         }        
         return match;        
     }

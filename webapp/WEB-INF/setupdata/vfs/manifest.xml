@@ -317,7 +317,13 @@
 			<datecreated>1069852729000</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+                    <name>export</name>
+                    <type>3</type>
+                    <value><![CDATA[true]]></value>
+                </property>
+             </properties>   
 			<accesscontrol/>
 		</file>
         <file>
@@ -4999,46 +5005,13 @@
                     <type>0</type>
                     <value><![CDATA[ic_admin_staticexport]]></value>
                 </property>
-                <property>
-                    <name>activemethod</name>
-                    <type>0</type>
-                    <value><![CDATA[com.opencms.workplace.CmsAdminStaticExport.isOnlineProject]]></value>
-                </property>
             </properties>
-            <accesscontrol/>
-        </file>
-        <file>
-            <source>system/workplace/administration/staticexport/empty.html</source>
-            <destination>system/workplace/administration/staticexport/empty.html</destination>
-            <type>plain</type>
-            <uuidresource>205a7db8-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-            <uuidcontent>205a7db7-c0f9-11d7-8d80-80884c2772a5</uuidcontent>
-            <datelastmodified>1046214000000</datelastmodified>
-            <userlastmodified>Admin</userlastmodified>
-            <datecreated>1046214000000</datecreated>
-            <usercreated>Admin</usercreated>
-            <flags>0</flags>
-            <properties/>
-            <accesscontrol/>
-        </file>
-        <file>
-            <source>system/workplace/administration/staticexport/index</source>
-            <destination>system/workplace/administration/staticexport/index</destination>
-            <type>plain</type>
-            <uuidresource>2061a9ae-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-            <uuidcontent>2061a9ad-c0f9-11d7-8d80-80884c2772a5</uuidcontent>
-            <datelastmodified>1046214000000</datelastmodified>
-            <userlastmodified>Admin</userlastmodified>
-            <datecreated>1046214000000</datecreated>
-            <usercreated>Admin</usercreated>
-            <flags>0</flags>
-            <properties/>
             <accesscontrol/>
         </file>
         <file>
             <source>system/workplace/administration/staticexport/index.html</source>
             <destination>system/workplace/administration/staticexport/index.html</destination>
-            <type>XMLTemplate</type>
+            <type>jsp</type>
             <uuidresource>2068d5a4-c0f9-11d7-8d80-80884c2772a5</uuidresource>
             <uuidcontent>2068d5a3-c0f9-11d7-8d80-80884c2772a5</uuidcontent>
             <datelastmodified>1046214000000</datelastmodified>

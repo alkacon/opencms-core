@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/03/25 16:35:50 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/03/31 08:11:07 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 public class CmsObject {
 
@@ -928,6 +928,17 @@ public class CmsObject {
         m_driverManager.deleteStaticExportPublishedResource(m_context, resourceName, linkType, linkParameter);
     }
 
+    /**
+     * Deletes all entries in the published resource table.<p>
+     * 
+     * @param linkType the type of resource deleted (0= non-paramter, 1=parameter)
+     * @throws CmsException if something goes wrong
+     */
+    public void deleteAllStaticExportPublishedResources(int linkType) throws CmsException {
+        m_driverManager.deleteAllStaticExportPublishedResources(m_context, linkType);
+    }
+    
+    
     /**
      * Deletes a user from the Cms.<p>
      * 

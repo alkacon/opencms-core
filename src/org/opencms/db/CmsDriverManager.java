@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/03/29 10:39:54 $
- * Version: $Revision: 1.342 $
+ * Date   : $Date: 2004/03/31 08:11:07 $
+ * Version: $Revision: 1.343 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.342 $ $Date: 2004/03/29 10:39:54 $
+ * @version $Revision: 1.343 $ $Date: 2004/03/31 08:11:07 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -2676,6 +2676,18 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     public void deleteStaticExportPublishedResource(CmsRequestContext context, String resourceName, int linkType, String linkParameter) throws CmsException {
         // TODO: any security restrictions nescessary?
         m_projectDriver.deleteStaticExportPublishedResource(context.currentProject(), resourceName, linkType, linkParameter);
+    }
+ 
+    /**
+     * Deletes all entries in the published resource table.<p>
+     * 
+     * @param context the current request context
+     * @param linkType the type of resource deleted (0= non-paramter, 1=parameter)
+     * @throws CmsException if something goes wrong
+     */
+    public void deleteAllStaticExportPublishedResources(CmsRequestContext context, int linkType) throws CmsException {
+        // TODO: any security restrictions nescessary?
+        m_projectDriver.deleteAllStaticExportPublishedResources(context.currentProject(), linkType);
     }
  
     

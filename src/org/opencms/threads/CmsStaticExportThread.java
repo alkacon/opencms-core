@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/CmsStaticExportThread.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/03/31 08:11:08 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,20 +31,28 @@
 
 package org.opencms.threads;
 
-import org.opencms.report.A_CmsReportThread;
-
 import org.opencms.file.CmsObject;
+import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
+import org.opencms.report.A_CmsReportThread;
+import org.opencms.report.I_CmsReport;
+
+import java.io.IOException;
+
+import javax.servlet.ServletException;
 
 /**
  * Does a full static export of all system resources in the current site.<p>
  * 
- * @author  Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author  Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.1.10
  */
 public class CmsStaticExportThread extends A_CmsReportThread {
 
+    private Throwable m_error;
+    
     /**
      * Creates a static export Thread.<p>
      * 
@@ -52,21 +60,38 @@ public class CmsStaticExportThread extends A_CmsReportThread {
      */
     public CmsStaticExportThread(CmsObject cms) {
         super(cms, "OpenCms: Static export");
-        // NYI
+        initHtmlReport(cms.getRequestContext().getLocale());
+        start();
+    }
+
+    /**
+     * @see org.opencms.report.A_CmsReportThread#getError()
+     */
+    public Throwable getError() {
+        return m_error;
     }
 
     /**
      * @see org.opencms.report.A_CmsReportThread#getReportUpdate()
      */
     public String getReportUpdate() {
-        // NYI
-        return "";
+        return getReport().getReportUpdate();
     }
 
     /**
      * @see java.lang.Runnable#run()
      */
     public void run() {
-        // NYI
+         getReport().println(getReport().key("report.staticexport_begin"), I_CmsReport.C_FORMAT_HEADLINE);
+        try {
+            OpenCms.getStaticExportManager().exportAll(getCms(), true, getReport());
+        } catch (CmsException e) {
+            getReport().println(e);
+        } catch (IOException e) {
+            getReport().println(e);            
+        } catch (ServletException e) {
+            getReport().println(e);
+        }    
+        getReport().println(getReport().key("report.staticexport_end"), I_CmsReport.C_FORMAT_HEADLINE);
     }
 }

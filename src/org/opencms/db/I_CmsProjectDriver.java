@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2004/03/25 16:35:50 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2004/03/31 08:11:07 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.45 $ $Date: 2004/03/25 16:35:50 $
+ * @version $Revision: 1.46 $ $Date: 2004/03/31 08:11:07 $
  * @since 5.1
  */
 public interface I_CmsProjectDriver {
@@ -152,6 +152,16 @@ public interface I_CmsProjectDriver {
      */
     void deleteStaticExportPublishedResource(CmsProject currentProject, String resourceName, int linkType, String linkParameter) throws CmsException;
 
+    /**
+     * Deletes all entries in the published resource table.<p>
+     * 
+     * @param currentProject the current project
+     * @param linkType the type of resource deleted (0= non-paramter, 1=parameter)
+     * @throws CmsException if something goes wrong
+     */
+    void deleteAllStaticExportPublishedResources(CmsProject currentProject, int linkType) throws CmsException;
+   
+    
     /**
      * Destroys this driver.<p>
      * 

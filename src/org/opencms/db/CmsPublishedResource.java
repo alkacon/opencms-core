@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishedResource.java,v $
- * Date   : $Date: 2004/02/13 13:41:44 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/03/31 08:11:07 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,10 +31,10 @@
 
 package org.opencms.db;
 
-import org.opencms.util.CmsUUID;
-
+import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceTypeFolder;
 import org.opencms.main.I_CmsConstants;
+import org.opencms.util.CmsUUID;
 
 import java.io.Serializable;
 
@@ -48,7 +48,7 @@ import java.io.Serializable;
  * that is written during each publishing process.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.9 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.10 $ $Date: 2004/03/31 08:11:07 $
  * @since 5.1.11
  * @see org.opencms.db.I_CmsProjectDriver#readPublishedResources(int, CmsUUID)
  */
@@ -108,6 +108,25 @@ public class CmsPublishedResource extends Object implements Serializable, Clonea
         m_masterId = CmsUUID.getNullUUID();
         m_contentDefinitionName = "";
     }
+    
+    /**
+     * Creates an object for published VFS resources.<p>
+     * 
+     * @param resource an CmsResource object to create a CmsPublishedResource from
+     */
+    public CmsPublishedResource(CmsResource resource) {
+        m_structureId = resource.getStructureId();
+        m_resourceId = resource.getResourceId();
+        m_contentId = CmsUUID.getNullUUID();
+        m_backupTagId = -1;
+        m_rootPath = resource.getRootPath();
+        m_resourceType = resource.getType();
+        m_resourceState = resource.getState();
+        m_siblingCount = resource.getLinkCount();
+        m_masterId = CmsUUID.getNullUUID();
+        m_contentDefinitionName = "";
+    }
+    
     
     /**
      * Creates an object for published COS resources.<p>
