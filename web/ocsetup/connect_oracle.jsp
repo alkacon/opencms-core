@@ -199,7 +199,7 @@
 										<td>OpenCms Connection</td><td><input type="text" name="dbWorkUser" size="8" style="width:120px;" value='<%= user %>'></td><td><input type="text" name="dbWorkPwd" size="8" style="width:120px;" value='<%= Bean.getDbWorkPwd() %>'></td>
 									</tr>
 									<tr>
-									    <td colspan="3" align="center"><input type="checkbox" name="createDb" value="true" checked onChange="toggleTablespaceInput()"> Create new OpenCms user</td>
+									    <td colspan="3" align="center"><input type="checkbox" name="createDb" value="true" checked> Create new OpenCms user</td>
 									</tr>
 									<tr><td colspan="3"><hr></td></tr>
 									<tr>
