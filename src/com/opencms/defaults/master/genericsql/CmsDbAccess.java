@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2004/09/27 15:22:10 $
-* Version: $Revision: 1.79 $
+* Date   : $Date: 2004/09/28 15:17:38 $
+* Version: $Revision: 1.80 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -203,13 +203,28 @@ public class CmsDbAccess {
         CmsUUID currentUserId = cms.getRequestContext().currentUser().getId();        
         dataset.m_userId = currentUserId;
 
-        CmsUUID groupId = CmsUUID.getNullUUID();
+        CmsUUID defaultGroupId = CmsUUID.getNullUUID();
         String defaultGroupName = null;
+        
         try {
             defaultGroupName = (String)cms.getRequestContext().currentUser().getAdditionalInfo(
                 I_CmsConstants.C_ADDITIONAL_INFO_DEFAULTGROUP);
+            
+            if (defaultGroupName == null || "".equalsIgnoreCase(defaultGroupName)) {
+                if (OpenCms.getLog(this).isWarnEnabled()) {
+                    OpenCms.getLog(this).warn(
+                        "Error reading default group of user "
+                        + cms.getRequestContext().currentUser().getName()
+                        + ", using group "
+                        + OpenCms.getDefaultUsers().getGroupUsers()
+                        + " instead");
+                }
+                
+                defaultGroupName = OpenCms.getDefaultUsers().getGroupUsers();
+            }
+            
             CmsGroup defaultGroup = cms.readGroup(defaultGroupName);
-            groupId = defaultGroup.getId();
+            defaultGroupId = defaultGroup.getId();
         } catch (CmsException e) {
             if (OpenCms.getLog(this).isErrorEnabled()) {
                 OpenCms.getLog(this).error(
@@ -220,9 +235,10 @@ public class CmsDbAccess {
                     e);
             }
 
-            groupId = CmsUUID.getNullUUID();
+            defaultGroupId = CmsUUID.getNullUUID();
         }
-        dataset.m_groupId = groupId;
+        
+        dataset.m_groupId = defaultGroupId;
 
         dataset.m_projectId = projectId;
         dataset.m_lockedInProject = projectId;

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2004/09/27 15:21:38 $
-* Version: $Revision: 1.67 $
+* Date   : $Date: 2004/09/28 15:17:38 $
+* Version: $Revision: 1.68 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -59,8 +59,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.67 $
- * $Date: 2004/09/27 15:21:38 $
+ * $Revision: 1.68 $
+ * $Date: 2004/09/28 15:17:38 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -419,11 +419,13 @@ public abstract class CmsMasterContent
      * Gets the ownername
      */
     public String getOwnerName() {
+
         String retValue = m_dataSet.m_userId + "";
-        if(m_dataSet.m_userName == null || "".equals(m_dataSet.m_userName.trim())) {
+        if ((m_dataSet.m_userName == null || "".equals(m_dataSet.m_userName.trim()))
+            && !CmsUUID.getNullUUID().equals(m_dataSet.m_userId)) {
             try { // to read the real name of this user
                 retValue = m_cms.readUser(m_dataSet.m_userId).getName();
-            } catch(CmsException exc) {
+            } catch (CmsException exc) {
                 // ignore the exception - it was not possible to read the group
                 // instead return the groupid
             }
@@ -445,14 +447,18 @@ public abstract class CmsMasterContent
      * Gets the groupname
      */
     public String getGroup() {
+
         String retValue = "";
+
         if (m_dataSet.m_groupId != null) {
             retValue = m_dataSet.m_groupId + "";
         }
-        if(m_dataSet.m_groupName == null || "".equals(m_dataSet.m_groupName.trim())) {
-            try { // to read the real name of this group
+
+        if ((m_dataSet.m_groupName == null || "".equals(m_dataSet.m_groupName.trim()))
+            && (m_dataSet.m_groupId != null && !CmsUUID.getNullUUID().equals(m_dataSet.m_groupId))) {
+            try {
                 retValue = m_cms.readGroup(m_dataSet.m_groupId).getName();
-            } catch(CmsException exc) {
+            } catch (CmsException exc) {
                 // ignore the exception - it was not possible to read the group
                 // instead return the groupid
             }
@@ -460,6 +466,7 @@ public abstract class CmsMasterContent
             // this is historical data - return it
             retValue = m_dataSet.m_groupName;
         }
+
         return retValue;
     }
 
@@ -774,14 +781,15 @@ public abstract class CmsMasterContent
      * @return String The name of the user who has modified the cd
      */
     public String getLastModifiedByName() {
+
         String retValue = "";
         if (m_dataSet.m_lastModifiedBy != null) {
             retValue = m_dataSet.m_lastModifiedBy + "";
         }
-        if(m_dataSet.m_lastModifiedByName == null) {
+        if (m_dataSet.m_lastModifiedByName == null && m_dataSet.m_lastModifiedBy != null) {
             try {
                 retValue = m_cms.readUser(m_dataSet.m_lastModifiedBy).getName();
-            } catch(CmsException exc) {
+            } catch (CmsException exc) {
                 // ignore this exception, return the id instead
             }
         } else {
