@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2003/11/14 10:09:15 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2003/11/17 07:45:11 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -279,6 +279,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
         }
         
         result = null;
+        CmsFlexController.removeController(req);
         
         if (exportStream != null) {
             exportStream.write(file.getContents());
@@ -661,6 +662,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
             System.err.println("========== JspLoader time delivering JSP for " + cms.readAbsolutePath(file) + ": " + timer2 + "ms");
         }
 
+        CmsFlexController.removeController(req);
         exportResetMode(cms, oldMode);
     }
         
