@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/A_OpenCms.java,v $
-* Date   : $Date: 2003/02/11 17:54:21 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2003/02/15 10:46:47 $
+* Version: $Revision: 1.32 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michael Emmerich
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.31 $ $Date: 2003/02/11 17:54:21 $
+ * @version $Revision: 1.32 $ $Date: 2003/02/15 10:46:47 $
  */
 public abstract class A_OpenCms implements I_CmsLogChannels {
 
@@ -79,6 +79,13 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
     
     /** The OpenCms context and servlet path, e.g. <code>/opencms/opencms</code> */   
 	private static String m_openCmsContext = null;
+    
+    /** The default setting for the user language */
+    private static String m_userDefaultLanguage=null;
+
+    /** The default setting for the user access flags */
+    private static int m_userDefaultaccessFlags = I_CmsConstants.C_ACCESS_DEFAULT_FLAGS;
+       
 	 
     /**
      * Destructor, should be called when the the class instance is shut down.
@@ -373,5 +380,41 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
     		throw new RuntimeException ("OpenCmsContext not initialised!");
     	}
     	return m_openCmsContext;
-    }        
+    }
+    
+    /**
+     * Returns the value of the user default language.<p>
+     * 
+     * @return the value of the user default language
+     */
+    public static String getUserDefaultLanguage() {
+        return m_userDefaultLanguage;
+    }
+    
+    /**
+     * Sets the value of the user default language.<p>
+     * 
+     * @param language the new value of the user default language
+     */
+    protected static void setUserDefaultLanguage(String language) {
+        m_userDefaultLanguage = language;
+    }
+    
+    /**
+     * Returns the value for the default user access flags.<p>
+     * 
+     * @return the value for the default user access flags
+     */
+    public static int getUserDefaultAccessFlags() {
+        return m_userDefaultaccessFlags;
+    }
+    
+    /**
+     * Seats the value of the user default access flags.
+     * 
+     * @param flags the new value of the user default access flags
+     */
+    protected static void setUserDefaultAccessFlags(int flags) {
+        m_userDefaultaccessFlags = flags;
+    }
 }

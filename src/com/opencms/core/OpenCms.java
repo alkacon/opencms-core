@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2003/02/11 18:27:02 $
-* Version: $Revision: 1.110 $
+* Date   : $Date: 2003/02/15 10:46:47 $
+* Version: $Revision: 1.111 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import com.opencms.launcher.CmsLauncherManager;
 import com.opencms.launcher.I_CmsLauncher;
 import com.opencms.template.cache.CmsElementCache;
 import com.opencms.util.Utils;
+import com.opencms.workplace.I_CmsWpConstants;
 
 import java.util.Hashtable;
 import java.util.Vector;
@@ -78,14 +79,9 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Lucas
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.110 $ $Date: 2003/02/11 18:27:02 $
+ * @version $Revision: 1.111 $ $Date: 2003/02/15 10:46:47 $
  */
-public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
-
-    /**
-     * Define the default file.encoding that should be used by OpenCms
-     */
-    private static final String C_PREFERED_FILE_ENCODING = "ISO8859_1";
+public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels {
 
     /**
      * The default mimetype
@@ -361,14 +357,25 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
             if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Launcher init        : starting");
             m_launcherManager = new CmsLauncherManager(this);
             if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Launcher init        : finished");
-        }
-        catch(Exception e) {
+        } catch(Exception e) {
             if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Launcher init        : non-critical error " + e.toString());
         }
 
         // get the password validating class
         c_passwordValidatingClass = conf.getString("passwordvalidatingclass", "com.opencms.util.PasswordValidtation");
         if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Password validation  : " + c_passwordValidatingClass);
+        
+        // read the default user settings
+        try {
+            int userDefaultAccessFlags = conf.getInteger("user.default.flags", C_ACCESS_DEFAULT_FLAGS);
+            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". User permission init : Default access flags are " + userDefaultAccessFlags);
+            setUserDefaultAccessFlags(userDefaultAccessFlags);
+            String userDefaultLanguage = conf.getString("user.default.language", I_CmsWpConstants.C_DEFAULT_LANGUAGE);
+            setUserDefaultLanguage(userDefaultLanguage);
+            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". User permission init : Default language is '" + userDefaultLanguage + "'");
+        } catch(Exception e) {
+            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". User permission init : non-critical error " + e.toString());
+        }
 
         // Check, if the element cache should be enabled
         m_enableElementCache = conf.getBoolean("elementcache.enabled", false);

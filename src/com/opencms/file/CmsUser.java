@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsUser.java,v $
-* Date   : $Date: 2002/04/05 06:37:48 $
-* Version: $Revision: 1.30 $
+* Date   : $Date: 2003/02/15 10:47:04 $
+* Version: $Revision: 1.31 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import com.opencms.core.*;
  * This class describes the Cms user object and the methods to access it.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.30 $ $Date: 2002/04/05 06:37:48 $
+ * @version $Revision: 1.31 $ $Date: 2003/02/15 10:47:04 $
  */
 
 public class CmsUser implements I_CmsConstants, Cloneable {
@@ -214,24 +214,31 @@ public class CmsUser implements I_CmsConstants, Cloneable {
     public Hashtable getAdditionalInfo() {
         return  m_additionalInfo;
     }
+    
     /**
-     * Returns additional information about the user. <BR/>
-     * Additional infos are for example emailadress, adress or surname...<BR/><BR/>
-     *
-     * The additional infos must be requested via the CmsObject.
-     *
+     * Returns additional information about the user which are usually set 
+     * in the users preferences.<p>
      *
      * @param key the key to the additional information.
-     *
-     * Returns additional information about the user. If the additional info
-     * does not exists, it returns null.
-     *
+     * @return additional information Object about the user, if the additional info
+     * does not exists, it returns <code>null</code>
      */
     public Object getAdditionalInfo(String key) {
-        Object value=null;
-        value =m_additionalInfo.get(key);
+        Object value = m_additionalInfo.get(key);
+        if(value == null && C_ADDITIONAL_INFO_STARTSETTINGS.equals(key)){
+            Hashtable startSettings = new Hashtable();
+            startSettings.put(C_START_LANGUAGE, A_OpenCms.getUserDefaultLanguage());
+            startSettings.put(C_START_PROJECT, new Integer(C_PROJECT_ONLINE_ID));
+            startSettings.put(C_START_VIEW, "/system/workplace/action/explorer.html");
+            startSettings.put(C_START_DEFAULTGROUP, this.getDefaultGroup().getName());
+            startSettings.put(C_START_LOCKDIALOG, "");
+            startSettings.put(C_START_ACCESSFLAGS, new Integer(A_OpenCms.getUserDefaultAccessFlags()));
+            m_additionalInfo.put(key, startSettings);
+            value = startSettings;
+       }        
         return value;
     }
+    
     /**
      * Gets the address.
      *
