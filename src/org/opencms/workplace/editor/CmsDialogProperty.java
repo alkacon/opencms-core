@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDialogProperty.java,v $
- * Date   : $Date: 2004/04/07 07:41:36 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2004/04/11 16:49:49 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.workplace.editor;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
+import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsNewResourceXmlPage;
 import org.opencms.workplace.CmsPropertyAdvanced;
 import org.opencms.workplace.CmsPropertyCustom;
@@ -58,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 5.3.0
  */
@@ -159,22 +160,18 @@ public class CmsDialogProperty extends CmsPropertyCustom {
             templates = CmsNewResourceXmlPage.getTemplates(getCms());
         } catch (CmsException e) {
             // ignore this exception
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info("Could not read template", e);
+            }
         }
         if (currentTemplate == null) {
             currentTemplate = "";
         }        
         if (templates == null) {
-            // no templates found -> use the given one
-            String name = currentTemplate;
-            try { 
-                // read the title of this template
-                name = getCms().readPropertyObject(name, I_CmsConstants.C_PROPERTY_TITLE, false).getValue();
-            } catch (CmsException exc) {
-                // ignore this exception - the title for this template was not readable
-            }
-            options.add(name);
-            values.add(currentTemplate);
+            // no valid templated found, use only current one
+            addCurrentTemplate(currentTemplate, options, values);
         } else {
+            boolean found = false;
             // templates found, create option and value lists
             Iterator i = templates.keySet().iterator();
             int counter = 0;
@@ -184,10 +181,16 @@ public class CmsDialogProperty extends CmsPropertyCustom {
                 if (currentTemplate.equals(path)) {
                     // mark the currently selected template
                     selectedValue = counter;
+                    found = true;
                 }
                 options.add(key);
                 values.add(path);
                 counter++;
+            }
+            if (! found) {
+                // current template was not found among valid templates, add current template as option
+                addCurrentTemplate(currentTemplate, options, values);
+                selectedValue = counter;                
             }
         }
 
@@ -195,7 +198,31 @@ public class CmsDialogProperty extends CmsPropertyCustom {
         return buildSelect(attributes, options, values, selectedValue, false) + hiddenField;
     }
     
-    
+    /**
+     * Adds the currently selected template value to the option and value list.<p>
+     * 
+     * @param currentTemplate the currently selected template to add
+     * @param options the option list
+     * @param values the value list
+     */
+    private void addCurrentTemplate(String currentTemplate, List options, List values) {
+        // template was not found in regular template folders, add current template value
+        String name = null;
+        try { 
+            // read the title of the current template
+            name = getCms().readPropertyObject(currentTemplate, I_CmsConstants.C_PROPERTY_TITLE, false).getValue();
+        } catch (CmsException e) {
+            // ignore this exception - the title for this template was not readable
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info("Could not read title property on template", e);
+            }
+        }
+        if (name == null) {
+            name = currentTemplate;
+        }
+        options.add("* " + name);
+        values.add(currentTemplate);           
+    }
 
     /**
      * Performs the editing of the resources properties.<p>
