@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Utils.java,v $
-* Date   : $Date: 2001/05/17 14:10:32 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2001/07/09 08:39:11 $
+* Version: $Revision: 1.23 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -100,9 +100,9 @@ public class Utils implements I_CmsConstants,I_CmsLogChannels {
             cmp = (lastModifiedA < lastModifiedB);
             break;
 
-        case C_SORT_PUBLISHED_DOWN:
-            cmp = (projectA.getPublishingDate() < projectB.getPublishingDate());
-            break;
+        //case C_SORT_PUBLISHED_DOWN:
+        //    cmp = (projectA.getPublishingDate() < projectB.getPublishingDate());
+        //    break;
 
         default:
             cmp = false;
