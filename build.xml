@@ -42,6 +42,7 @@
     <property name="opencms.inputlib.beanutils"   		location="${opencms.input.libs}/commons-beanutils-1.6.1.jar" />
     <property name="opencms.inputlib.log4j"     		location="${opencms.input.libs}/log4j-1.2.8.jar" /> 
     <property name="opencms.inputlib.dom4j"     		location="${opencms.input.libs}/dom4j-1.5-beta-2.jar" />
+    <property name="opencms.inputlib.quartz"     		location="${opencms.input.libs}/quartz-1.4.1mod.jar" />
     <property name="opencms.inputlib.jaxen"     		location="${opencms.input.libs}/jaxen-1.1-beta-4.jar" />
     <property name="opencms.inputlib.htmlparser"		location="${opencms.input.libs}/htmlparser-1.41.jar" />
     <property name="opencms.inputlib.lucene"			location="${opencms.input.libs}/lucene-1.3-final.jar" />
@@ -86,6 +87,7 @@
                 <available file="${opencms.inputlib.fileupload}"/>
                 <available file="${opencms.inputlib.httpclient}"/>
                 <available file="${opencms.inputlib.dom4j}"/> 
+                <available file="${opencms.inputlib.quartz}"/> 
                 <available file="${opencms.inputlib.log4j}"/> 
                 <available file="${opencms.inputlib.htmlparser}"/>
                 <available file="${opencms.inputlib.lucene}"/>
@@ -155,6 +157,7 @@ ${opencms.inputlib.collections}
 ${opencms.inputlib.fileupload}
 ${opencms.inputlib.httpclient}
 ${opencms.inputlib.dom4j}
+${opencms.inputlib.quartz}
 ${opencms.inputlib.log4j}
 ${opencms.inputlib.htmlparser}
 ${opencms.inputlib.lucene}
@@ -208,6 +211,7 @@ ${opencms.inputlib.pdfbox}
                        ${opencms.inputlib.fileupload}:
                        ${opencms.inputlib.httpclient}:
                        ${opencms.inputlib.dom4j}:
+                       ${opencms.inputlib.quartz}:
                        ${opencms.inputlib.log4j}:
                        ${opencms.inputlib.htmlparser}:
                        ${opencms.inputlib.uuid}:
@@ -506,6 +510,7 @@ ${opencms.inputlib.pdfbox}
                        ${opencms.inputlib.fileupload}:
                        ${opencms.inputlib.httpclient}:
                        ${opencms.inputlib.dom4j}:
+                       ${opencms.inputlib.quartz}:
                        ${opencms.inputlib.log4j}:
                        ${opencms.inputlib.htmlparser}:
                        ${opencms.inputlib.uuid}:
@@ -559,6 +564,7 @@ ${opencms.inputlib.pdfbox}
 				<pathelement location="${opencms.inputlib.collections}"/>
 				<pathelement location="${opencms.inputlib.httpclient}"/>
 				<pathelement location="${opencms.inputlib.dom4j}"/>
+				<pathelement location="${opencms.inputlib.quartz}"/>
 				<pathelement location="${opencms.inputlib.log4j}"/>
 				<pathelement location="${opencms.inputlib.htmlparser}"/>
 				<pathelement location="${opencms.inputlib.uuid}"/>
