@@ -2,7 +2,7 @@
 
 <project name="OpenCms" default="compile" basedir=".">
 
-    <property name="version.number"             		value="6.0 alpha 2" />    
+    <property name="version.number"             		value="6.0 alpha 3" />    
     <property name="version.name"               		value="Caladan" />
     
 	<property name="app.name" 							value="opencms" />
@@ -30,6 +30,7 @@
     <property name="opencms.inputlib.xerces"      		location="${opencms.input.libs}/xercesImpl-2.6.2.jar" />
     <property name="opencms.inputlib.xml-apis"      	location="${opencms.input.libs}/xml-apis-2.6.2.jar" />
     <property name="opencms.inputlib.mysql"       		location="${opencms.input.libs}/mysql-connector-java-3.0.15-ga-bin.jar" />
+    <property name="opencms.inputlib.postgresql"       		location="${opencms.input.libs}/pg74.215.jdbc3.jar" />
     <property name="opencms.inputlib.oro"         		location="${opencms.input.libs}/jakarta-oro-2.0.8.jar" />
     <property name="opencms.inputlib.tidy"        		location="${opencms.input.libs}/jtidy-r8-05102004.jar" />
     <property name="opencms.inputlib.uuid"        		location="${opencms.input.libs}/jug-1.1.2.jar" />   
@@ -80,6 +81,7 @@
                 <available file="${opencms.inputlib.xerces}"/>
                 <available file="${opencms.inputlib.xml-apis}"/>
                 <available file="${opencms.inputlib.mysql}"/>
+                <available file="${opencms.inputlib.postgresql}"/>
                 <available file="${opencms.inputlib.oro}"/>
                 <available file="${opencms.inputlib.tidy}"/>
                 <available file="${opencms.inputlib.uuid}"/>                
@@ -153,6 +155,7 @@ ${opencms.inputlib.mail}
 ${opencms.inputlib.xerces}
 ${opencms.inputlib.xml-apis}
 ${opencms.inputlib.mysql}
+${opencms.inputlib.postgresql}
 ${opencms.inputlib.oro}
 ${opencms.inputlib.tidy}
 ${opencms.inputlib.uuid}
@@ -210,6 +213,7 @@ ${opencms.inputlib.pdfbox}
                        ${opencms.inputlib.xml-apis}:
                        ${opencms.inputlib.oracle}:
                        ${opencms.inputlib.mysql}:
+                       ${opencms.inputlib.postgresql}:
                        ${opencms.inputlib.oro}:
                        ${opencms.inputlib.tidy}:
                        ${opencms.inputlib.codec}:
@@ -514,6 +518,7 @@ ${opencms.inputlib.pdfbox}
                        ${opencms.inputlib.xml-apis}:
                        ${opencms.inputlib.oracle}:
                        ${opencms.inputlib.mysql}:
+                       ${opencms.inputlib.postgresql}:
                        ${opencms.inputlib.oro}:
                        ${opencms.inputlib.tidy}:
                        ${opencms.inputlib.codec}:
@@ -570,6 +575,7 @@ ${opencms.inputlib.pdfbox}
 				<pathelement location="${opencms.inputlib.xml-apis}"/>
 				<pathelement location="${opencms.inputlib.oracle}"/>
 				<pathelement location="${opencms.inputlib.mysql}"/>
+				<pathelement location="${opencms.inputlib.postgresql}"/>
 				<pathelement location="${opencms.inputlib.oro}"/>
 				<pathelement location="${opencms.inputlib.tidy}"/>
 				<pathelement location="${opencms.inputlib.codec}"/>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/12/09 13:49:43 $
- * Version: $Revision: 1.599 $
+ * Date   : $Date: 2004/12/22 09:42:07 $
+ * Version: $Revision: 1.600 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 5.x.x Caladan - xxx, 2004
+OpenCms 5.5.4 Caladan (aka 6.0 alpha 4) - December 22, 2004
 * Fixed issue with search engine not correctly indexing pages based on non-ISO encoding
 ! Source code for the 'templateone' default module is now available in the src-modules CVS subfolder
 * Fixed issue with password change being broken in the user administration 
