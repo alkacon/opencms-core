@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/04/01 13:17:07 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2004/04/01 13:34:31 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  */
 public class CmsObject {
 
@@ -3723,7 +3723,7 @@ public class CmsObject {
      * @deprecated use {@link #writePropertyObjects(String, List)} instead
      */
     public void writeProperties(String name, Map properties, boolean addDefinition) throws CmsException {
-        m_driverManager.writePropertyObjects(m_context, addSiteRoot(name), CmsProperty.setCreatePropertyDefinitions(CmsProperty.toList(properties), addDefinition));
+        m_driverManager.writePropertyObjects(m_context, addSiteRoot(name), CmsProperty.setAutoCreatePropertyDefinitions(CmsProperty.toList(properties), addDefinition));
     }
     
     /**
@@ -3757,7 +3757,7 @@ public class CmsObject {
         CmsProperty property = new CmsProperty();
         property.setKey(key);
         property.setStructureValue(value);
-        property.setCreatePropertyDefinition(addDefinition);
+        property.setAutoCreatePropertyDefinition(addDefinition);
         
         m_driverManager.writePropertyObject(m_context, addSiteRoot(name), property); 
     }

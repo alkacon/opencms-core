@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProperty.java,v $
- * Date   : $Date: 2004/04/01 13:30:11 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/04/01 13:34:31 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,16 +71,16 @@ import java.util.RandomAccess;
  * structure and/or resource record values set to {@link #C_DELETE_VALUE} to indicate that a
  * property value should be deleted in the database.<p>
  * 
- * Use {@link #setCreatePropertyDefinition(boolean)} to set a boolean flag whether a missing property
+ * Use {@link #setAutoCreatePropertyDefinition(boolean)} to set a boolean flag whether a missing property
  * definition should be created implicitly for a resource type when a property is written to the database.
  * The default value for this flag is <code>false</code>. Thus, you receive a CmsException if you try
  * to write a property of a resource with a resource type which lacks a property definition for
- * this resource type. It is not a good style to set {@link #setCreatePropertyDefinition(boolean)}
+ * this resource type. It is not a good style to set {@link #setAutoCreatePropertyDefinition(boolean)}
  * on true to make writing properties to the database work in any case, because then you will loose
  * control about which resource types support which property definitions.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $ $Date: 2004/04/01 13:30:11 $
+ * @version $Revision: 1.4 $ $Date: 2004/04/01 13:34:31 $
  * @since build_5_1_14
  */
 public class CmsProperty extends Object implements Serializable, Cloneable, Comparable {
@@ -112,7 +112,7 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
      * Boolean flag to decide if the property definition for this property should be created 
      * implicitly on any write operation if doesn't exist already.<p>
      */
-    private boolean m_createPropertyDefinition;
+    private boolean m_autoCreatePropertyDefinition;
 
     /**
      * The key name of this property.<p>
@@ -140,7 +140,7 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
         m_key = null;
         m_structureValue = null;
         m_resourceValue = null;
-        m_createPropertyDefinition = false;
+        m_autoCreatePropertyDefinition = false;
     }
 
     /**
@@ -229,9 +229,9 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
      * 
      * @return true, if the property definition for this property should be created implicitly on any write operation
      */
-    public boolean createPropertyDefinition() {
+    public boolean autoCreatePropertyDefinition() {
 
-        return m_createPropertyDefinition;
+        return m_autoCreatePropertyDefinition;
     }
 
     /**
@@ -240,9 +240,9 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
      * 
      * @param value true, if the property definition for this property should be created implicitly on any write operation
      */
-    public void setCreatePropertyDefinition(boolean value) {
+    public void setAutoCreatePropertyDefinition(boolean value) {
 
-        m_createPropertyDefinition = value;
+        m_autoCreatePropertyDefinition = value;
     }
 
     /**
@@ -253,9 +253,9 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
      * @param list a list of property objects
      * @param value boolean value
      * @return the list which each property object set that missing property definitions should be created implicitly
-     * @see #setCreatePropertyDefinition(boolean)
+     * @see #setAutoCreatePropertyDefinition(boolean)
      */
-    public static final List setCreatePropertyDefinitions(List list, boolean value) {
+    public static final List setAutoCreatePropertyDefinitions(List list, boolean value) {
 
         CmsProperty property = null;
 
@@ -263,13 +263,13 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
         if (list instanceof RandomAccess) {
             for (int i = 0, n = list.size(); i < n; i++) {
                 property = (CmsProperty)list.get(i);
-                property.m_createPropertyDefinition = value;
+                property.m_autoCreatePropertyDefinition = value;
             }
         } else {
             Iterator i = list.iterator();
             while (i.hasNext()) {
                 property = (CmsProperty)i.next();
-                property.m_createPropertyDefinition = value;
+                property.m_autoCreatePropertyDefinition = value;
             }
         }
 
