@@ -2,11 +2,11 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2001/01/19 16:54:37 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2001/02/12 08:52:13 $
+ * Version: $Revision: 1.26 $
  *
- * Copyright (C) 2000  The OpenCms Group 
- * 
+ * Copyright (C) 2000  The OpenCms Group
+ *
  * This File is part of OpenCms -
  * the Open Source Content Mananagement System
  *
@@ -14,15 +14,15 @@ package com.opencms.file;
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * For further information about OpenCms, please see the
  * OpenCms Website: http://www.opencms.com
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * long with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
@@ -40,10 +40,10 @@ import com.opencms.core.*;
 
 /**
  * This class implements the registry for OpenCms.
- * 
+ *
  * @author Andreas Schouten
- * @version $Revision: 1.25 $ $Date: 2001/01/19 16:54:37 $
- * 
+ * @version $Revision: 1.26 $ $Date: 2001/02/12 08:52:13 $
+ *
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
 
@@ -103,7 +103,7 @@ public CmsRegistry(CmsRegistry reg, CmsObject cms) {
 	// store the cms-object for this instance.
 	m_cms = cms;
 	try {
-		m_digest = MessageDigest.getInstance(CmsImport.C_IMPORT_DIGEST); 
+		m_digest = MessageDigest.getInstance(CmsImport.C_IMPORT_DIGEST);
 	} catch (NoSuchAlgorithmException e) {
 		m_digest = null;
 	}
@@ -186,7 +186,7 @@ private Vector checkDependencies(Element module) throws CmsException {
 					return true;
 				} else {
 					return false;
-				}				
+				}
 			} else if("int".equals(type) || "integer".equals(type)) {
 				Integer.parseInt(value);
 				return true;
@@ -275,7 +275,7 @@ public void createModule(String modulename, String niceModulename, String descri
 	saveRegistry();
 }
 /**
- * This method checks which modules need this module. If a module depends on this the name 
+ * This method checks which modules need this module. If a module depends on this the name
  * will be returned in the vector.
  * @param modulename The name of the module to check.
  * @returns a Vector with modulenames that depends on the overgiven module.
@@ -393,7 +393,7 @@ public void deleteGetConflictingFileNames(String modulename, Vector filesWithPro
 				}
 			}
 		}
-		
+
 	}
 }
 /**
@@ -405,9 +405,9 @@ public void deleteGetConflictingFileNames(String modulename, Vector filesWithPro
 public synchronized void deleteModule(String module, Vector exclusion) throws CmsException {
 	// check if the module exists
 	if (!moduleExists(module)) {
-		throw new CmsException("Module '"+module+"' does not exist", CmsException.C_REGISTRY_ERROR);	
-	}	
-	
+		throw new CmsException("Module '"+module+"' does not exist", CmsException.C_REGISTRY_ERROR);
+	}
+
 	// check if the user is allowed to perform this action
 	if (!hasAccess()) {
 		throw new CmsException("No access to perform the action 'deleteModule'", CmsException.C_REGISTRY_ERROR);
@@ -438,13 +438,13 @@ public synchronized void deleteModule(String module, Vector exclusion) throws Cm
 	Vector wrongChecksum = new Vector();
 	Vector filesInUse = new Vector();
 	Vector resourceCodes = new Vector();
-	
+
 	// get files by property
 	deleteGetConflictingFileNames(module, resourceNames, missingFiles, wrongChecksum, filesInUse, new Vector());
 
 	// get files by registry
 	getModuleFiles(module, resourceNames, resourceCodes);
-	
+
 	// move through all resource-names and try to delete them
 	for (int i = resourceNames.size() - 1; i >= 0; i--) {
 		try {
@@ -477,7 +477,7 @@ public synchronized void deleteModule(String module, Vector exclusion) throws Cm
 }
 /**
  * Deletes the view for a module.
- * 
+ *
  * @param String the name of the module.
  */
 public void deleteModuleView(String modulename) throws CmsException {
@@ -511,7 +511,7 @@ public void exportModule(String moduleName, String[] resources, String fileName)
 	if (!hasAccess()) {
 		throw new CmsException("No access to perform the action 'exportModule'", CmsException.C_REGISTRY_ERROR);
 	}
-	
+
 	CmsExport exp = new CmsExport(fileName, resources, m_cms, getModuleElement(moduleName));
 }
 	/**
@@ -608,7 +608,7 @@ public String getModuleDescription(String module) {
 }
 /**
  * Gets the url to the documentation of the module.
- * 
+ *
  * @parameter String the name of the module.
  * @return java.lang.String the url to the documentation of the module.
  */
@@ -677,7 +677,7 @@ public int getModuleFiles(String modulename, Vector retNames, Vector retCodes) {
 }
 /**
  * Returns the class, that receives all maintenance-events for the module.
- * 
+ *
  * @parameter String the name of the module.
  * @return java.lang.Class that receives all maintenance-events for the module.
  */
@@ -689,22 +689,23 @@ public Class getModuleMaintenanceEventClass(String modulname) {
 		for (int i=0; i<reposNoVector.length; i++){
 			repositories.addElement(reposNoVector[i]);
 		}
-		CmsClassLoader loader = new CmsClassLoader(m_cms, repositories, null);
-		
-		return loader.loadClass(getModuleData(modulname, "maintenance_class")); 
-		
+		//CmsClassLoader loader = new CmsClassLoader(m_cms, repositories, null);
+		CmsClassLoader loader = new CmsClassLoader();
+
+		return loader.loadClass(getModuleData(modulname, "maintenance_class"));
+
 	} catch(Exception exc) {
 		return null;
 	}
 }
 /**
  * Returns the name of the class, that receives all maintenance-events for the module.
- * 
+ *
  * @parameter String the name of the module.
  * @return java.lang.Class that receives all maintenance-events for the module.
  */
  public String getModuleMaintenanceEventName(String modulname) {
-	return getModuleData(modulname, "maintenance_class"); 
+	return getModuleData(modulname, "maintenance_class");
 }
 /**
  * Returns the names of all available modules.
@@ -725,7 +726,7 @@ public String getModuleNiceName(String module) {
 }
 /**
  * Gets a parameter for a module.
- * 
+ *
  * @param modulename java.lang.String the name of the module.
  * @param parameter java.lang.String the name of the parameter to set.
  * @return value java.lang.String the value to set for the parameter.
@@ -742,7 +743,7 @@ public String getModuleParameter(String modulename, String parameter) {
 }
 /**
  * Returns a parameter for a module.
- * 
+ *
  * @param modulname String the name of the module.
  * @param parameter String the name of the parameter.
  * @return boolean the value for the parameter in the module.
@@ -756,7 +757,7 @@ public boolean getModuleParameterBoolean(String modulname, String parameter) {
 }
 /**
  * Returns a parameter for a module.
- * 
+ *
  * @param modulname String the name of the module.
  * @param parameter String the name of the parameter.
  * @param default the default value.
@@ -767,7 +768,7 @@ public Boolean getModuleParameterBoolean(String modulname, String parameter, Boo
 }
 /**
  * Returns a parameter for a module.
- * 
+ *
  * @param modulname String the name of the module.
  * @param parameter String the name of the parameter.
  * @param default the default value.
@@ -782,7 +783,7 @@ public boolean getModuleParameterBoolean(String modulname, String parameter, boo
 }
 /**
  * Returns a parameter for a module.
- * 
+ *
  * @param modulname String the name of the module.
  * @param parameter String the name of the parameter.
  * @param default the default value.
@@ -793,7 +794,7 @@ public byte getModuleParameterByte(String modulname, String parameter) {
 }
 /**
  * Returns a parameter for a module.
- * 
+ *
  * @param modulname String the name of the module.
  * @param parameter String the name of the parameter.
  * @param default the default value.
@@ -808,7 +809,7 @@ public byte getModuleParameterByte(String modulname, String parameter, byte defa
 }
 /**
  * Returns a parameter for a module.
- * 
+ *
  * @param modulname String the name of the module.
  * @param parameter String the name of the parameter.
  * @param default the default value.
@@ -819,7 +820,7 @@ public Byte getModuleParameterByte(String modulname, String parameter, Byte defa
 }
 /**
  * Returns a description for parameter in a module.
- * 
+ *
  * @param modulname String the name of the module.
  * @param parameter String the name of the parameter.
  * @return String the description for the parameter in the module.
@@ -836,7 +837,7 @@ public String getModuleParameterDescription(String modulname, String parameter) 
 }
 /**
  * Returns a parameter for a module.
- * 
+ *
  * @param modulname String the name of the module.
  * @param parameter String the name of the parameter.
  * @return boolean the value for the parameter in the module.
@@ -846,7 +847,7 @@ public double getModuleParameterDouble(String modulname, String parameter) {
 }
 /**
  * Returns a parameter for a module.
- * 
+ *
  * @param modulname String the name of the module.
  * @param parameter String the name of the parameter.
  * @param default the default value.
@@ -861,7 +862,7 @@ public double getModuleParameterDouble(String modulname, String parameter, doubl
 }
 /**
  * Returns a parameter for a module.
- * 
+ *
  * @param modulname String the name of the module.
  * @param parameter String the name of the parameter.
  * @param default the default value.
@@ -872,7 +873,7 @@ public Double getModuleParameterDouble(String modulname, String parameter, Doubl
 }
 /**
  * Private method to get them XML-Element for a parameter in a module.
- * 
+ *
  * @param modulename String the name of the module.
  * @param parameter String the name of the parameter.
  * @return Element the XML-Element corresponding to the parameter.
@@ -898,7 +899,7 @@ private Element getModuleParameterElement(String modulename, String parameter) {
 }
 /**
  * Returns a parameter for a module.
- * 
+ *
  * @param modulname String the name of the module.
  * @param parameter String the name of the parameter.
  * @param default the default value.
@@ -909,7 +910,7 @@ public float getModuleParameterFloat(String modulname, String parameter) {
 }
 /**
  * Returns a parameter for a module.
- * 
+ *
  * @param modulname String the name of the module.
  * @param parameter String the name of the parameter.
  * @param default the default value.
@@ -924,7 +925,7 @@ public float getModuleParameterFloat(String modulname, String parameter, float d
 }
 /**
  * Returns a parameter for a module.
- * 
+ *
  * @param modulname String the name of the module.
  * @param parameter String the name of the parameter.
  * @param default the default value.
@@ -935,7 +936,7 @@ public Float getModuleParameterFloat(String modulname, String parameter, Float d
 }
 /**
  * Returns a parameter for a module.
- * 
+ *
  * @param modulname String the name of the module.
  * @param parameter String the name of the parameter.
  * @return boolean the value for the parameter in the module.
@@ -945,7 +946,7 @@ public int getModuleParameterInteger(String modulname, String parameter) {
 }
 /**
  * Returns a parameter for a module.
- * 
+ *
  * @param modulname String the name of the module.
  * @param parameter String the name of the parameter.
  * @param default the default value.
@@ -960,7 +961,7 @@ public int getModuleParameterInteger(String modulname, String parameter, int def
 }
 /**
  * Returns a parameter for a module.
- * 
+ *
  * @param modulname String the name of the module.
  * @param parameter String the name of the parameter.
  * @param default the default value.
@@ -971,7 +972,7 @@ public Integer getModuleParameterInteger(String modulname, String parameter, Int
 }
 /**
  * Returns a parameter for a module.
- * 
+ *
  * @param modulname String the name of the module.
  * @param parameter String the name of the parameter.
  * @param default the default value.
@@ -982,7 +983,7 @@ public long getModuleParameterLong(String modulname, String parameter) {
 }
 /**
  * Returns a parameter for a module.
- * 
+ *
  * @param modulname String the name of the module.
  * @param parameter String the name of the parameter.
  * @param default the default value.
@@ -997,7 +998,7 @@ public long getModuleParameterLong(String modulname, String parameter, long defa
 }
 /**
  * Returns a parameter for a module.
- * 
+ *
  * @param modulname String the name of the module.
  * @param parameter String the name of the parameter.
  * @param default the default value.
@@ -1008,7 +1009,7 @@ public Long getModuleParameterLong(String modulname, String parameter, Long defa
 }
 /**
  * Gets all parameter-names for a module.
- * 
+ *
  * @param modulename String the name of the module.
  * @return value String[] the names of the parameters for a module.
  */
@@ -1029,7 +1030,7 @@ public String[] getModuleParameterNames(String modulename) {
 }
 /**
  * Returns a parameter for a module.
- * 
+ *
  * @param modulname String the name of the module.
  * @param parameter String the name of the parameter.
  * @return boolean the value for the parameter in the module.
@@ -1039,7 +1040,7 @@ public String getModuleParameterString(String modulname, String parameter) {
 }
 /**
  * Returns a parameter for a module.
- * 
+ *
  * @param modulname String the name of the module.
  * @param parameter String the name of the parameter.
  * @param default the default value.
@@ -1108,7 +1109,7 @@ public long getModuleUploadDate(String modulname) {
 }
 /**
  * Returns the user-name of the user who had uploaded the module.
- * 
+ *
  * @parameter String the name of the module.
  * @return java.lang.String the user-name of the user who had uploaded the module.
  */
@@ -1125,14 +1126,14 @@ public int getModuleVersion(String modulename) {
 	int retValue = -1;
 	try {
 		retValue = Integer.parseInt(getModuleData(modulename, "version"));
-	} catch (Exception exc) { 
+	} catch (Exception exc) {
 		// ignore the exception - reg is not welformed
 	}
 	return retValue;
 }
 /**
  * Returns the name of the view, that is implemented by the module.
- * 
+ *
  * @parameter String the name of the module.
  * @return java.lang.String the name of the view, that is implemented by the module.
  */
@@ -1148,8 +1149,8 @@ public String getModuleViewName(String modulename) {
 	return retValue;
 }
 /**
- * Returns the url to the view-url for the module within the system. 
- * 
+ * Returns the url to the view-url for the module within the system.
+ *
  * @parameter String the name of the module.
  * @return java.lang.String the view-url to the module.
  */
@@ -1166,7 +1167,7 @@ public String getModuleViewUrl(String modulname) {
 }
 /**
  * Returns all repositories for all modules.
- * 
+ *
  * @return java.lang.String[] the reprositories of all modules.
  */
 public java.lang.String[] getRepositories() {
@@ -1215,7 +1216,7 @@ public Hashtable getSystemValues(String key) {
 		Element systemElement = (Element)m_xmlReg.getElementsByTagName("system").item(0);
 		NodeList list = systemElement.getElementsByTagName(key).item(0).getChildNodes();
 		for(int i=0; i < list.getLength(); i++) {
-			retValue.put(list.item(i).getNodeName(), 
+			retValue.put(list.item(i).getNodeName(),
 						 list.item(i).getFirstChild().getNodeValue());
 		}
 	} catch (Exception exc) {
@@ -1422,7 +1423,7 @@ private void init() throws Exception {
 }
 /**
  * Checks if the module exists already in the repository.
- * 
+ *
  * @parameter String the name of the module.
  * @return true if the module exists, else false.
  */
@@ -1526,7 +1527,7 @@ public void setModuleDependencies(String modulename, Vector modules, Vector minV
 		while(dependencies.hasChildNodes()) {
 			dependencies.removeChild(dependencies.getFirstChild());
 		}
-		
+
 		// create the new dependencies
 		for (int i = 0; i < modules.size(); i++) {
 			Element dependency = m_xmlReg.createElement("dependency");
@@ -1542,7 +1543,7 @@ public void setModuleDependencies(String modulename, Vector modules, Vector minV
 			dependency.appendChild(max);
 		}
 
-		// save the registry	
+		// save the registry
 		saveRegistry();
 	} catch (Exception exc) {
 		// ignore the exception - reg is not welformed
@@ -1559,7 +1560,7 @@ public void setModuleDescription(String module, String description) throws CmsEx
 }
 /**
  * Sets the url to the documentation of the module.
- * 
+ *
  * @param String the name of the module.
  * @param java.lang.String the url to the documentation of the module.
  */
@@ -1568,7 +1569,7 @@ public void setModuleDocumentPath(String modulename, String url) throws CmsExcep
 }
 /**
  * Sets the classname, that receives all maintenance-events for the module.
- * 
+ *
  * @param String the name of the module.
  * @param String the name of the class that receives all maintenance-events for the module.
  */
@@ -1586,7 +1587,7 @@ public void setModuleNiceName(String module, String nicename) throws CmsExceptio
 }
 	/**
 	 * Sets a parameter for a module.
-	 * 
+	 *
 	 * @param modulename java.lang.String the name of the module.
 	 * @param parameter java.lang.String the name of the parameter to set.
 	 * @param the value to set for the parameter.
@@ -1596,7 +1597,7 @@ public void setModuleNiceName(String module, String nicename) throws CmsExceptio
 	}
 	/**
 	 * Sets a parameter for a module.
-	 * 
+	 *
 	 * @param modulename java.lang.String the name of the module.
 	 * @param parameter java.lang.String the name of the parameter to set.
 	 * @param the value to set for the parameter.
@@ -1606,7 +1607,7 @@ public void setModuleNiceName(String module, String nicename) throws CmsExceptio
 	}
 	/**
 	 * Sets a parameter for a module.
-	 * 
+	 *
 	 * @param modulename java.lang.String the name of the module.
 	 * @param parameter java.lang.String the name of the parameter to set.
 	 * @param the value to set for the parameter.
@@ -1616,7 +1617,7 @@ public void setModuleNiceName(String module, String nicename) throws CmsExceptio
 	}
 	/**
 	 * Sets a parameter for a module.
-	 * 
+	 *
 	 * @param modulename java.lang.String the name of the module.
 	 * @param parameter java.lang.String the name of the parameter to set.
 	 * @param the value to set for the parameter.
@@ -1626,7 +1627,7 @@ public void setModuleNiceName(String module, String nicename) throws CmsExceptio
 	}
 	/**
 	 * Sets a parameter for a module.
-	 * 
+	 *
 	 * @param modulename java.lang.String the name of the module.
 	 * @param parameter java.lang.String the name of the parameter to set.
 	 * @param the value to set for the parameter.
@@ -1636,7 +1637,7 @@ public void setModuleNiceName(String module, String nicename) throws CmsExceptio
 	}
 	/**
 	 * Sets a parameter for a module.
-	 * 
+	 *
 	 * @param modulename java.lang.String the name of the module.
 	 * @param parameter java.lang.String the name of the parameter to set.
 	 * @param the value to set for the parameter.
@@ -1646,7 +1647,7 @@ public void setModuleNiceName(String module, String nicename) throws CmsExceptio
 	}
 	/**
 	 * Sets a parameter for a module.
-	 * 
+	 *
 	 * @param modulename java.lang.String the name of the module.
 	 * @param parameter java.lang.String the name of the parameter to set.
 	 * @param the value to set for the parameter.
@@ -1656,7 +1657,7 @@ public void setModuleNiceName(String module, String nicename) throws CmsExceptio
 	}
 	/**
 	 * Sets a parameter for a module.
-	 * 
+	 *
 	 * @param modulename java.lang.String the name of the module.
 	 * @param parameter java.lang.String the name of the parameter to set.
 	 * @param the value to set for the parameter.
@@ -1666,7 +1667,7 @@ public void setModuleNiceName(String module, String nicename) throws CmsExceptio
 	}
 	/**
 	 * Sets a parameter for a module.
-	 * 
+	 *
 	 * @param modulename java.lang.String the name of the module.
 	 * @param parameter java.lang.String the name of the parameter to set.
 	 * @param the value to set for the parameter.
@@ -1676,7 +1677,7 @@ public void setModuleNiceName(String module, String nicename) throws CmsExceptio
 	}
 	/**
 	 * Sets a parameter for a module.
-	 * 
+	 *
 	 * @param modulename java.lang.String the name of the module.
 	 * @param parameter java.lang.String the name of the parameter to set.
 	 * @param the value to set for the parameter.
@@ -1686,7 +1687,7 @@ public void setModuleNiceName(String module, String nicename) throws CmsExceptio
 	}
 	/**
 	 * Sets a parameter for a module.
-	 * 
+	 *
 	 * @param modulename java.lang.String the name of the module.
 	 * @param parameter java.lang.String the name of the parameter to set.
 	 * @param the value to set for the parameter.
@@ -1696,7 +1697,7 @@ public void setModuleNiceName(String module, String nicename) throws CmsExceptio
 	}
 /**
  * Sets a parameter for a module.
- * 
+ *
  * @param modulename java.lang.String the name of the module.
  * @param parameter java.lang.String the name of the parameter to set.
  * @param value java.lang.String the value to set for the parameter.
@@ -1726,7 +1727,7 @@ public void setModuleParameter(String modulename, String parameter, String value
 			// ignore the exception.
 		}
 
-		
+
 	} catch (CmsException exc) {
 		throw exc;
 	} catch (Exception exc) {
@@ -1735,7 +1736,7 @@ public void setModuleParameter(String modulename, String parameter, String value
 }
 /**
  * Sets a parameter for a module.
- * 
+ *
  * @param modulename java.lang.String the name of the module.
  * @param parameter java.lang.String the name of the parameter to set.
  * @param the value to set for the parameter.
@@ -1783,7 +1784,7 @@ public void setModuleParameterdef(String modulename, Vector names, Vector descri
 			para.appendChild(value);
 		}
 
-		// save the registry	
+		// save the registry
 		saveRegistry();
 	} catch (Exception exc) {
 		// ignore the exception - reg is not welformed
@@ -1816,7 +1817,7 @@ public void setModuleRepositories(String modulename, String[] repositories) thro
 			repository .appendChild(path);
 		}
 
-		// save the registry	
+		// save the registry
 		saveRegistry();
 	} catch (Exception exc) {
 		exc.printStackTrace();
@@ -1834,7 +1835,7 @@ public void setModuleVersion(String modulename, int version) throws CmsException
 }
 /**
  * Sets a view for a module
- * 
+ *
  * @param String the name of the module.
  * @param String the name of the view, that is implemented by the module.
  * @param String the url of the view, that is implemented by the module.
