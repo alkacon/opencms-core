@@ -20,21 +20,21 @@
     <property name="build.metainf"              value="${build.web}/META-INF"/>
     <property name="build.lib"                  value="${build.webinf}/lib"/>
     <property name="build.oclib"                value="${build.webinf}/oclib"/>
-    <property name="build.excludes"				value=""/>
+    <property name="build.excludes"             value=""/>
 
-	<property name="build.inputlib.servlet"    	value="${build.inputlib}/servlet.jar"/>
-	<property name="build.inputlib.activation" 	value="${build.inputlib}/activation.jar"/>
-	<property name="build.inputlib.mail"       	value="${build.inputlib}/mail.jar"/>
-	<property name="build.inputlib.xerces"     	value="${build.inputlib}/xerces.jar"/>
-	<property name="build.inputlib.mysql"      	value="${build.inputlib}/mm.mysql-2.0.4-bin.jar"/>
-	<property name="build.inputlib.fesi"       	value="${build.inputlib}/fesi.jar"/>			
-	<property name="build.inputlib.oracle"     	value="${build.inputlib}/classes12.zip"/>
-	<property name="build.inputlib.fop" 		value="${build.inputlib}/fop_bin.jar"/>    	
+    <property name="build.inputlib.servlet"     value="${build.inputlib}/servlet.jar"/>
+    <property name="build.inputlib.activation"  value="${build.inputlib}/activation.jar"/>
+    <property name="build.inputlib.mail"        value="${build.inputlib}/mail.jar"/>
+    <property name="build.inputlib.xerces"      value="${build.inputlib}/xerces.jar"/>
+    <property name="build.inputlib.mysql"       value="${build.inputlib}/mm.mysql-2.0.4-bin.jar"/>
+    <property name="build.inputlib.fesi"        value="${build.inputlib}/fesi.jar"/>            
+    <property name="build.inputlib.oracle"      value="${build.inputlib}/classes12.zip"/>
+    <property name="build.inputlib.fop"         value="${build.inputlib}/fop_bin.jar"/>     
     
     <property name="build.version.propertyfile" value="${build.classes}/com/opencms/core/version.properties"/>
     <property name="build.version.jsfile"       value="${build.webinf}/ocsetup/vfs/system/workplace/templates/js/version.js"/>
     <property name="build.version.setupfile"    value="${build.web}/ocsetup/versions.txt"/>
-	
+    
     <property name="db.url"                     value="jdbc:mysql://localhost:3306/opencms"/>
     <property name="db.setupurl"                value="jdbc:mysql://localhost:3306/mysql"/>
     <property name="db.user"                    value="root"/>
@@ -42,42 +42,42 @@
     <property name="db.driver"                  value="org.gjt.mm.mysql.Driver"/>
 
 
-	<target name="init" description="Checks if all needed libaries are available">
-    	<condition property="libsAvailable">
-    		<and>
-				<available file="${build.inputlib.servlet}"/>
-				<available file="${build.inputlib.activation}"/>
-				<available file="${build.inputlib.mail}"/>
-				<available file="${build.inputlib.xerces}"/>
-				<available file="${build.inputlib.mysql}"/>
-				<available file="${build.inputlib.fesi}"/>
-			</and>
-		</condition>
+    <target name="init" description="Checks if all needed libaries are available">
+        <condition property="libsAvailable">
+            <and>
+                <available file="${build.inputlib.servlet}"/>
+                <available file="${build.inputlib.activation}"/>
+                <available file="${build.inputlib.mail}"/>
+                <available file="${build.inputlib.xerces}"/>
+                <available file="${build.inputlib.mysql}"/>
+                <available file="${build.inputlib.fesi}"/>
+            </and>
+        </condition>
 
-		<property name="ex.oracle" 		value="com/opencms/file/oracleplsql/**"/>
-		<property name="ex.pdflaunch"	value="com/opencms/launcher/CmsPdfLauncher.java"/>
-				
-    	<condition property="build.excludes" value="${build.excludes},${ex.oracle}">
-    		<not><available file="${build.inputlib.oracle}"/></not>
-		</condition>		
-		
-    	<condition property="build.excludes" value="${build.excludes},${ex.pdflaunch}">
-    		<not><available file="${build.inputlib.fop}"/></not>
-		</condition>		
-		
-		<condition property="tomcat.home" value="${env.TOMCAT_HOME}">
-			<available file="${env.TOMCAT_HOME}" type="dir"/>
-		</condition>
-		
-		<condition property="tomcat.home" value="${env.CATALINA_HOME}">
-			<available file="${env.CATALINA_HOME}" type="dir"/>
-		</condition>
-	</target>
-	
-	
-	<target name="initmsg" depends="init" unless="libsAvailable" description="Stop target if required libaries are missing">
-		<fail>
-		
+        <property name="ex.oracle"      value="com/opencms/file/oracleplsql/**"/>
+        <property name="ex.pdflaunch"   value="com/opencms/launcher/CmsPdfLauncher.java"/>
+                
+        <condition property="build.excludes" value="${build.excludes},${ex.oracle}">
+            <not><available file="${build.inputlib.oracle}"/></not>
+        </condition>        
+        
+        <condition property="build.excludes" value="${build.excludes},${ex.pdflaunch}">
+            <not><available file="${build.inputlib.fop}"/></not>
+        </condition>        
+        
+        <condition property="tomcat.home" value="${env.TOMCAT_HOME}">
+            <available file="${env.TOMCAT_HOME}" type="dir"/>
+        </condition>
+        
+        <condition property="tomcat.home" value="${env.CATALINA_HOME}">
+            <available file="${env.CATALINA_HOME}" type="dir"/>
+        </condition>
+    </target>
+    
+    
+    <target name="initmsg" depends="init" unless="libsAvailable" description="Stop target if required libaries are missing">
+        <fail>
+        
 Error: Some of the required libaries are not available.
 
 To comile OpenCms, you need the following libaries:
@@ -88,8 +88,8 @@ ${build.inputlib.xerces}
 ${build.inputlib.mysql}
 ${build.inputlib.fesi}
 
-		</fail>
-	</target>
+        </fail>
+    </target>
 
 
     <target name="prepare" depends="initmsg" description="Create output directories">
@@ -120,7 +120,7 @@ ${build.inputlib.fesi}
                         ${build.inputlib.mysql}:
                         ${build.inputlib.fop}:
                         ${build.inputlib.fesi}"
-            debug="off"
+            debug="on"
             optimize="on"
             deprecation="off"
             />
@@ -209,7 +209,7 @@ ${build.inputlib.fesi}
     <target name="compile" depends="copy" description="Default compile target"/>
 
 
-    <target name="tomcat.clean" description="Delete existing Tomcat webapps directory and opencms.war">
+    <target name="tomcat.clean" depends="prepare" description="Delete existing Tomcat webapps directory and opencms.war">
         <delete file="${tomcat.home}/webapps/${app.name}.war"/>
         <delete dir= "${tomcat.home}/webapps/${app.name}"/>
     </target>
@@ -221,8 +221,8 @@ ${build.inputlib.fesi}
         </copy>
         <copy file="etc/web.xml" todir="${tomcat.home}/webapps/${app.name}/WEB-INF"/>
 
-		<property name="copy.files" value="${build.inputlib.activation}"/>
-    	<available property="copy.files" file="${build.inputlib.oracle}" value="${build.inputlib.oracle}"/>		
+        <property name="copy.files" value="${build.inputlib.activation}"/>
+        <available property="copy.files" file="${build.inputlib.oracle}" value="${build.inputlib.oracle}"/>     
         
         <copy file="${copy.files}" todir="${tomcat.home}/webapps/${app.name}/WEB-INF/oclib"/>
         
@@ -301,48 +301,48 @@ ${build.inputlib.fesi}
     
     
     <target name="srcdist" depends="clean" description="Creates a source distribution ZIP including the required libaries">
-	    <property name="build.srcdist"				value="${build.home}/srcdist"/>
-	    <property name="build.srcdist.main"			value="${build.srcdist}/opencms"/>
-	    <property name="build.srcdist.src"			value="${build.srcdist.main}/src"/>
-	    <property name="build.srcdist.etc"			value="${build.srcdist.main}/etc"/>
-	    <property name="build.srcdist.web"			value="${build.srcdist.main}/web"/>
-	    <property name="build.srcdist.libs"			value="${build.srcdist}/ExternalComponents"/>
-	    
-    	<mkdir dir="${build.srcdist}"/>     
-    	<mkdir dir="${build.srcdist.main}"/>     
-    	<mkdir dir="${build.srcdist.src}"/>     
-    	<mkdir dir="${build.srcdist.libs}"/>        
-    	<mkdir dir="${build.srcdist.etc}"/>     
-    	<mkdir dir="${build.srcdist.web}"/>        
+        <property name="build.srcdist"              value="${build.home}/srcdist"/>
+        <property name="build.srcdist.main"         value="${build.srcdist}/opencms"/>
+        <property name="build.srcdist.src"          value="${build.srcdist.main}/src"/>
+        <property name="build.srcdist.etc"          value="${build.srcdist.main}/etc"/>
+        <property name="build.srcdist.web"          value="${build.srcdist.main}/web"/>
+        <property name="build.srcdist.libs"         value="${build.srcdist}/ExternalComponents"/>
+        
+        <mkdir dir="${build.srcdist}"/>     
+        <mkdir dir="${build.srcdist.main}"/>     
+        <mkdir dir="${build.srcdist.src}"/>     
+        <mkdir dir="${build.srcdist.libs}"/>        
+        <mkdir dir="${build.srcdist.etc}"/>     
+        <mkdir dir="${build.srcdist.web}"/>        
 
-       	<copy file="${build.inputlib.servlet}"		todir="${build.srcdist.libs}"/>
-       	<copy file="${build.inputlib.xerces}" 		todir="${build.srcdist.libs}"/>
-       	<copy file="${build.inputlib.mysql}" 		todir="${build.srcdist.libs}"/>
-       	<copy file="${build.inputlib.activation}" 	todir="${build.srcdist.libs}"/>
-       	<copy file="${build.inputlib.mail}" 		todir="${build.srcdist.libs}"/>
-       	<copy file="${build.inputlib.fesi}" 		todir="${build.srcdist.libs}"/>
+        <copy file="${build.inputlib.servlet}"      todir="${build.srcdist.libs}"/>
+        <copy file="${build.inputlib.xerces}"       todir="${build.srcdist.libs}"/>
+        <copy file="${build.inputlib.mysql}"        todir="${build.srcdist.libs}"/>
+        <copy file="${build.inputlib.activation}"   todir="${build.srcdist.libs}"/>
+        <copy file="${build.inputlib.mail}"         todir="${build.srcdist.libs}"/>
+        <copy file="${build.inputlib.fesi}"         todir="${build.srcdist.libs}"/>
 
-       	<copy todir="${build.srcdist.src}">
-        	<fileset dir="src" excludes="*/CVS/*"/>
-       	</copy>
-       	
-       	<copy todir="${build.srcdist.etc}">
-        	<fileset dir="etc" excludes="*/CVS/*"/>
-       	</copy>
+        <copy todir="${build.srcdist.src}">
+            <fileset dir="src" excludes="*/CVS/*"/>
+        </copy>
+        
+        <copy todir="${build.srcdist.etc}">
+            <fileset dir="etc" excludes="*/CVS/*"/>
+        </copy>
 
-       	<copy todir="${build.srcdist.web}">
+        <copy todir="${build.srcdist.web}">
             <fileset dir="web" excludes="*/CVS/*"/>
-       	</copy>       	
+        </copy>         
 
-    	<copy todir="${build.srcdist.main}">
-    		<fileset dir="." includes="*.*" excludes="*/CVS/*"/>
-       	</copy>
+        <copy todir="${build.srcdist.main}">
+            <fileset dir="." includes="*.*" excludes="*/CVS/*"/>
+        </copy>
 
         <tstamp>
             <format property="timestamp" pattern="yyyy-MM-dd-HH-mm"/>
         </tstamp>
         <property name="version.number" value="${env.USERNAME}_${timestamp}"/>
-       	
+        
         <zip
             zipfile="${zip.home}/opencms_src_${version.number}.zip"
             basedir="${build.srcdist}"/>
