@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
-* Date   : $Date: 2003/05/21 14:34:28 $
-* Version: $Revision: 1.68 $
+* Date   : $Date: 2003/05/28 16:47:17 $
+* Version: $Revision: 1.69 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,6 +39,8 @@ import com.opencms.core.I_CmsResponse;
 import com.opencms.core.I_CmsSession;
 import com.opencms.db.CmsDriverManager;
 import com.opencms.flex.util.CmsResourceTranslator;
+import com.opencms.repository.CmsCredentials;
+import com.opencms.repository.CmsRepository;
 import com.opencms.template.cache.CmsElementCache;
 import com.opencms.workplace.I_CmsWpConstants;
 
@@ -46,6 +48,10 @@ import java.util.HashMap;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import javax.jcr.Credentials;
+import javax.jcr.LoginException;
+import javax.jcr.Repository;
+import javax.jcr.Ticket;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -61,7 +67,7 @@ import javax.servlet.http.HttpSession;
  * @author Anders Fugmann
  * @author Alexander Lucas
  *
- * @version $Revision: 1.68 $ $Date: 2003/05/21 14:34:28 $
+ * @version $Revision: 1.69 $ $Date: 2003/05/28 16:47:17 $
  *
  */
 public class CmsRequestContext implements I_CmsConstants {
@@ -130,6 +136,8 @@ public class CmsRequestContext implements I_CmsConstants {
     /** A map for storing (optional) request context attributes */
     private HashMap m_attributeMap = null;
     
+    private Ticket m_ticket;    
+    
     /**
      * The default constructor.
      */
@@ -169,6 +177,8 @@ public class CmsRequestContext implements I_CmsConstants {
         m_links = new Vector();
         m_dependencies = new Vector();
         
+        CmsProject project = null;
+        
         try {
             m_user = m_driverManager.readUser(null, null, user);
         } catch (CmsException ex) {
@@ -185,16 +195,26 @@ public class CmsRequestContext implements I_CmsConstants {
 
         // set current project, group and streaming proerties for this request
         try {
-            setCurrentProject(currentProjectId);
+            project = setCurrentProject(currentProjectId);
         } catch (CmsException exc) {
             // there was a problem to set the needed project - using the online one
-            setCurrentProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
+            project = setCurrentProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
         }
+        
         m_currentGroup = m_driverManager.readGroup(m_user, m_currentProject, currentGroup);
         m_streaming = streaming;
         m_elementCache = elementCache;
         m_directoryTranslator = directoryTranslator;
         m_fileTranslator = fileTranslator;
+        
+        try {
+            Credentials credentials = (Credentials) new CmsCredentials(m_user, m_currentGroup, project);
+            Repository repository = (Repository) new CmsRepository(m_driverManager);
+            m_ticket = repository.connect(credentials);
+        } catch (LoginException e) {
+            // TODO: implement repository.connect(Credentials) with authentication/authorization
+            m_ticket = null;
+        }
 
         // Analyze the user's preferred languages coming with the request
         if (req != null) {
@@ -223,6 +243,7 @@ public class CmsRequestContext implements I_CmsConstants {
                     }
                 }
             } catch (UnsupportedOperationException e) {
+                // noop
             }
 
             // Initialize encoding 
@@ -696,4 +717,16 @@ public class CmsRequestContext implements I_CmsConstants {
         if (m_attributeMap == null) m_attributeMap = new HashMap();
         m_attributeMap.put(key, value);
     } 
+    
+    /**
+     * Returns the JCR ticket to access the repository.
+     * 
+     * @return the JCR ticket to access the repository
+     * @see javax.jcr.Ticket
+     * @since 5.1.2
+     */
+    public Ticket getTicket() {
+        return m_ticket;
+    }
+
 }
