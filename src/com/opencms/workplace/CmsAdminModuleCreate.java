@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleCreate.java,v $
-* Date   : $Date: 2002/09/03 11:57:06 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2002/10/16 10:43:50 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,6 +55,7 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
     private final String C_EMAIL = "email";
     private final String C_DATE = "date";
     private final String C_SESSION_DATA = "module_create_data";
+    private final String C_MODULE_TYPE = "moduletype";
 
     /**
      *  Checks if the name is correct.
@@ -106,6 +107,7 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
             templateDocument.setData(C_MAINTENANCE, "");
             templateDocument.setData(C_AUTHOR, "");
             templateDocument.setData(C_EMAIL, "");
+            templateDocument.setData(C_MODULE_TYPE, "checked");
 
             //  set the current date:
             templateDocument.setData(C_DATE, dateFormat.format(new Date()));
@@ -121,6 +123,8 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
                 String author = (String)parameters.get(C_AUTHOR);
                 String email = (String)parameters.get(C_EMAIL);
                 String createDate = (String)parameters.get(C_DATE);
+                String moduleType = (String)parameters.get(C_MODULE_TYPE);
+                
                 boolean moduleExists = reg.moduleExists(packetname);
                 int v = -1;
                 try {
@@ -138,6 +142,7 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
                     sessionData.put(C_AUTHOR, getStringValue(author));
                     sessionData.put(C_EMAIL, getStringValue(email));
                     sessionData.put(C_DATE, getStringValue(createDate));
+                    sessionData.put(C_MODULE_TYPE, getStringValue(moduleType));
                     session.putValue(C_SESSION_DATA, sessionData);
                     if(moduleExists) {
                         templateSelector = "errorexists";
@@ -175,6 +180,13 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
                     reg.createModule(packetname, getStringValue(modulename), getStringValue(description), getStringValue(author), createDateLong, v);
                     reg.setModuleAuthorEmail(packetname, getStringValue(email));
                     reg.setModuleMaintenanceEventClass(packetname, getStringValue(maintenance));
+                    
+                    if (moduleType!=null && moduleType.equals("checked")) {
+                        reg.setModuleType( packetname, CmsRegistry.C_MODULE_TYPE_SIMPLE );
+                    }
+                    else {
+                        reg.setModuleType( packetname, CmsRegistry.C_MODULE_TYPE_TRADITIONAL );
+                    }
 
                     tryToCreateFolder(cms, "/", "moduledemos");
                     tryToCreateFolder(cms, "/moduledemos/", packetname);
@@ -236,6 +248,7 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
                     templateDocument.setData(C_AUTHOR, (String)sessionData.get(C_AUTHOR));
                     templateDocument.setData(C_EMAIL, (String)sessionData.get(C_EMAIL));
                     templateDocument.setData(C_DATE, (String)sessionData.get(C_DATE));
+                    templateDocument.setData(C_MODULE_TYPE, (String)sessionData.get(C_MODULE_TYPE));
                     templateSelector = "";
                 }
             }

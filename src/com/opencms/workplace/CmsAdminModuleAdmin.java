@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleAdmin.java,v $
-* Date   : $Date: 2002/10/11 15:13:44 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2002/10/16 10:43:42 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -60,6 +60,7 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
     private final String C_ONEDEP = "dependentry";
     private final String C_OPTIONENTRY = "optionentry";
     private final String C_NAME_PARAMETER = "module";
+    private final String C_MODULE_TYPE = "moduletype";
 
     /**
      * fills the data from the module in the hashtable.
@@ -121,6 +122,14 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
         table.put(C_SESSION_MODULE_ADMIN_PROP_DESCR, paraDescr);
         table.put(C_SESSION_MODULE_ADMIN_PROP_TYP, paraTyp);
         table.put(C_SESSION_MODULE_ADMIN_PROP_VAL, paraVal);
+        
+        String moduleType = reg.getModuleType(module);
+        if (moduleType!=null && moduleType.equals(CmsRegistry.C_MODULE_TYPE_SIMPLE)) {
+            table.put( C_MODULE_TYPE, "checked" );
+        }
+        else {
+            table.put( C_MODULE_TYPE, "" );
+        }
     }
 
     /**
@@ -170,6 +179,8 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
                 sessionData.put(C_AUTHOR, getStringValue((String)parameters.get(C_AUTHOR)));
                 sessionData.put(C_EMAIL, getStringValue((String)parameters.get(C_EMAIL)));
                 sessionData.put(C_DATE, getStringValue((String)parameters.get(C_DATE)));
+                sessionData.put(C_MODULE_TYPE, getStringValue((String)parameters.get(C_MODULE_TYPE)));
+    
                 session.putValue(C_SESSION_MODULE_ADMIN_DATA, sessionData);
                 stepTo = "deps";
             }
@@ -219,6 +230,8 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
             templateDocument.setData(C_AUTHOR, (String)sessionData.get(C_AUTHOR));
             templateDocument.setData(C_EMAIL, (String)sessionData.get(C_EMAIL));
             templateDocument.setData(C_DATE, (String)sessionData.get(C_DATE));
+            
+            templateDocument.setData(C_MODULE_TYPE, (String)sessionData.get(C_MODULE_TYPE));
             templateSelector = "";
         }
         if("deps".equals(stepTo)) {
@@ -407,13 +420,13 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
             // there is no GUI element to select the module type yet. as a quick-n-dirty hack, we can
             // determine it's type by checking whether we have a module property "additionalresources"    
             
-            String moduleType = CmsRegistry.C_MODULE_TYPE_TRADITIONAL;
-            String additionalResources = reg.getModuleParameterString( name, I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES );
-            if (additionalResources!=null && !additionalResources.equals("")) {
-                moduleType = CmsRegistry.C_MODULE_TYPE_ADVANCED;
-            }  
-            reg.setModuleType( name, moduleType );            
-
+            String moduleType = (String)table.get(C_MODULE_TYPE);
+            if (moduleType!=null && moduleType.equals("checked")) {
+                reg.setModuleType( name, CmsRegistry.C_MODULE_TYPE_SIMPLE );
+            }
+            else {
+                reg.setModuleType( name, CmsRegistry.C_MODULE_TYPE_TRADITIONAL );
+            }               
         }catch(CmsException e) {
              if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                  A_OpenCms.log(I_CmsLogChannels.C_MODULE_DEBUG,
