@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2004/01/14 12:55:57 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2004/01/22 18:06:18 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.50 $ $Date: 2004/01/14 12:55:57 $
+ * @version $Revision: 1.51 $ $Date: 2004/01/22 18:06:18 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -1502,6 +1502,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             // create statement
             conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_GETGROUPS_LIKE");
+            stmt.setString(1, namePattern);
 
             res = stmt.executeQuery();
 
