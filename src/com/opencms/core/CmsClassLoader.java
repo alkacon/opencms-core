@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsClassLoader.java,v $
-* Date   : $Date: 2001/02/12 08:52:12 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2001/02/20 08:52:16 $
+* Version: $Revision: 1.19 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -90,7 +90,7 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 import java.util.zip.*;
-import com.opencms.file.*;
+import java.lang.reflect.*;
 
 /**
  * This class loader loads classes from the opencms system using
@@ -100,18 +100,14 @@ import com.opencms.file.*;
  * be packed in jar or zip files.
  * <P>
  * When the classloader finds a class, it will be cached for
- * the next request. The only way to delete the cache is
- * to restart the servlet-zone! There are no methods
- * to clean up the cache and restart the classloader.
- * We can do this since in opencms production environments
- * no classes will be updated.
+ * the next request.
  * Autoload features are not implemented.
  * <P>
  * The classloader first tries to load classes and resources
  * with a parent classloader. Normally this should be the classloader
  * that loaded this loader.
  * @author Alexander Lucas
- * @version $Revision: 1.18 $ $Date: 2001/02/12 08:52:12 $
+ * @version $Revision: 1.19 $ $Date: 2001/02/20 08:52:16 $
  * @see java.lang.ClassLoader
  */
 public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
@@ -142,69 +138,23 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
      * Each element of the vector should be a String that desribes a cms folder.
      */
     private Vector repository;
-    private CmsObject m_cms;
+    private Object m_cms;
+    private Class m_cmsObjectClass;
+    private Class m_cmsFileClass;
+    private Method m_readFile;
+    private Method m_getContent;
 
     /**
      * Clears the cache.
      */
     public static void clearCache() {
-        if(A_OpenCms.isLogging()) {
+        if(C_DEBUG && A_OpenCms.isLogging()) {
             A_OpenCms.log(C_OPENCMS_INFO, "[CmsClassLoader] clearing class instance cache.");
         }
         if (cache != null){
             cache.clear();
         }
     }
-    /**
-     * Creates a new class loader that will load classes from specified
-     * class repositories.
-     *
-     * @param cms CmsObject Object to get access to system resources
-     * @param classRepository An set of Strings indicating directories.
-     * @param parent Parent classloader that should be called first before
-     *        trying to load classes from the opencms system.
-     * @throw java.lang.IllegalArgumentException if the objects contained
-     *        in the vector are not valid cms folders.
-     *  >>>>>out of order<<<<<< /
-    public CmsClassLoader(CmsObject cms, Vector classRepository, ClassLoader parent) throws IllegalArgumentException {
-
-        // Create the cache of loaded classes
-        cache = new Hashtable();
-
-        // Verify that all the repository are valid.
-        if(classRepository == null) {
-            classRepository = new Vector();
-        }
-        Enumeration e = classRepository.elements();
-        while(e.hasMoreElements()) {
-            Object o = e.nextElement();
-            String file;
-
-            // Check to see if element is a File instance.
-            try {
-                file = (String)o;
-            }
-            catch(ClassCastException objectIsNotFile) {
-                throw new IllegalArgumentException("Object " + o
-                        + " is not a valid \"String\" instance");
-            }
-
-            // Check to see if we have proper access.
-            try {
-                cms.readFolder(file);
-            }
-            catch(Exception exc) {
-                throw new IllegalArgumentException("Repository "
-                        + file + " could not be accessed while initializing class loader.");
-            }
-        }
-
-        // Store the class repository for use
-        this.repository = classRepository;
-        // Increment and store generation counter
-        this.generation = generationCounter++;
-        this.m_cms = cms;
-    }
 
     /**
      * Creates a new class loader that will load classes from specified
@@ -215,7 +165,8 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
      * @throw java.lang.IllegalArgumentException if the objects contained
      *        in the vector are not valid cms folders.
      */
-    void init(CmsObject cms, Vector classRepository) throws IllegalArgumentException {
+    public void init(Object cms, Vector classRepository) throws IllegalArgumentException {
+        m_cms = cms;
 
         // Verify that all the repository are valid.
         if(classRepository == null) {
@@ -234,22 +185,20 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
                 throw new IllegalArgumentException("Object " + o
                         + " is not a valid \"String\" instance");
             }
-
-            // Check to see if we have proper access.
-            try {
-                cms.readFolder(file);
-            }
-            catch(Exception exc) {
-                throw new IllegalArgumentException("Repository "
-                        + file + " could not be accessed while initializing class loader.");
-            }
+        }
+        try{
+            m_cmsObjectClass = Class.forName("com.opencms.file.CmsObject", true, this);
+            m_cmsFileClass = Class.forName("com.opencms.file.CmsFile", true, this);
+            m_readFile = m_cmsObjectClass.getMethod("readFile", new Class[] {String.class});
+            m_getContent = m_cmsFileClass.getMethod("getContents", new Class[0]);
+        } catch (Exception exc){
+            throw new IllegalArgumentException("Error in CmsClassloader.init() "+exc.toString() );
         }
 
         // Store the class repository for use
-        this.repository = classRepository;
+        repository = classRepository;
         // Increment and store generation counter
-        this.generation = generationCounter++;
-        this.m_cms = cms;
+        generation = generationCounter++;
     }
 
     /**
@@ -346,7 +295,6 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
             A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsClassLoader] Class " + name + " requested.");
         }
         Class c = null;
-        CmsFile classFile = null;
         // first try to load the class using the systemClassloader
         try{
             ClassLoader sysClassLoader = this.getSystemClassLoader();
@@ -358,6 +306,15 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
         if(c != null) {
             return c;
         }
+        // I shall not load myself, I shall not load myself
+        String heyItsMe = "com.opencms.core.CmsClassLoader";
+        if (heyItsMe.equals(name)  ){
+            c = Class.forName(name);
+            if (c != null){
+                return c;
+            }
+        }
+
         // try to load the class using the parent class loader.
         try {
             ClassLoader apClassLoader = this.getClass().getClassLoader();
@@ -383,7 +340,7 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
                 if(resolve) {
                     resolveClass(c);
                 }
-                if(A_OpenCms.isLogging()) {
+                if(C_DEBUG && A_OpenCms.isLogging()) {
                     A_OpenCms.log(C_OPENCMS_DEBUG, "Classloader returned class "
                             + name + " successfully!");
                 }
@@ -406,7 +363,7 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
         // Let's have a look in our own class cache
         c = (Class)cache.get(name);
         if(c != null) {
-            if(A_OpenCms.isLogging()) {
+            if(C_DEBUG && A_OpenCms.isLogging()) {
                 A_OpenCms.log(C_OPENCMS_DEBUG, "BINGO! Class " + name + "was found in cache.");
             }
 
@@ -417,7 +374,7 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
             }
             return c;
         }
-        if(A_OpenCms.isLogging()) {
+        if(C_DEBUG && A_OpenCms.isLogging()) {
             A_OpenCms.log(C_OPENCMS_DEBUG, "Class " + name + "was NOT found in cache.");
         }
 
@@ -426,20 +383,21 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
         Enumeration allRepositories = repository.elements();
         String filename = null;
         byte[] myClassData = null;
-        while((allRepositories.hasMoreElements()) && (classFile == null)) {
+        while((allRepositories.hasMoreElements()) && (myClassData == null)) {
             filename = (String)allRepositories.nextElement();
-            if(isZipOrJarArchive(filename)) {
+
+/*            if(isZipOrJarArchive(filename)) {
                 try {
                     if(A_OpenCms.isLogging()) {
                         A_OpenCms.log(C_OPENCMS_DEBUG, "Try to load archive file " + filename + ".");
                     }
-                    myClassData = loadClassFromZipFile(m_cms.readFile(filename), name);
+                    myClassData = loadClassFromZipFile(readFile(filename), name);
                 }
                 catch(Exception e) {
                     myClassData = null;
                 }
             }
-            else {
+            else */ {
 
                 //filename = filename + className;
                 // check if the repository name is just a path.
@@ -449,17 +407,15 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
                     filename = filename + classname + ".class";
                 }
                 try {
-                   classFile = m_cms.readFile(filename);
-                    myClassData = classFile.getContents();
+                   myClassData = readFileContent(filename);
                 }
                 catch(Exception e) {
                     // File could not be read for any reason
-                    classFile = null;
                     myClassData = null;
                 }
             }
         }
-        if(classFile == null) {
+        if(myClassData == null) {
             throw new ClassNotFoundException(name);
         }
 
@@ -481,7 +437,7 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
             if(resolve) {
                 resolveClass(c);
             }
-            if(A_OpenCms.isLogging()) {
+            if(C_DEBUG && A_OpenCms.isLogging()) {
                 A_OpenCms.log(C_OPENCMS_DEBUG, "Classloader returned class "
                         + name + " successfully!");
             }
@@ -497,7 +453,7 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
      * @param name The classname
      * @param cache The cache entry to set the file if successful.
      */
-    private byte[] loadClassFromZipFile(CmsFile file, String name) throws IOException {
+/*    private byte[] loadClassFromZipFile(CmsFile file, String name) throws IOException {
         String className = name.replace('.', '/') + ".class";
         InputStream in = new ByteArrayInputStream(file.getContents());
         ZipInputStream zipStream = new ZipInputStream(in);
@@ -518,5 +474,20 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
         finally {
             zipStream.close();
         }
+    } */
+
+    private byte[] readFileContent(String filename) {
+        try {
+
+            Object file = m_readFile.invoke(m_cms, new Object[] {filename});
+            byte[] content = (byte[])m_getContent.invoke(file, new Object[0]);
+            return content;
+
+        } catch(Exception exc) {
+            System.err.println("Exception in CmsClassLoader readFileContent() while reading "+filename);
+            exc.printStackTrace();
+            return null;
+        }
+
     }
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
-* Date   : $Date: 2001/02/12 08:52:13 $
-* Version: $Revision: 1.75 $
+* Date   : $Date: 2001/02/20 08:52:16 $
+* Version: $Revision: 1.76 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -59,41 +59,11 @@ public class OpenCmsServlet extends HttpServlet {
         try {
             ClassLoader loader = new CmsClassLoader();
             Class c = loader.loadClass(classname);
-            //Class c = CmsTemplateClassManager.class.getClassLoader().loadClass(classname);
             // Now we have to look for the constructor
             m_servlet = (HttpServlet)c.newInstance();
         } catch(Exception e) {
-            String errorMessage = null;
-
-            // Construct error message for the different exceptions
-            if(e instanceof ClassNotFoundException) {
-                errorMessage = "XXXCould not load template class " + classname + ". " + e.getMessage();
-            }
-            else {
-                if(e instanceof InstantiationException) {
-                    errorMessage = "XXXCould not instantiate template class " + classname;
-                }
-                else {
-                    if(e instanceof NoSuchMethodException) {
-                        errorMessage = "XXXCould not find constructor of template class " + classname;
-                    }
-                    else {
-                        errorMessage = "XXXUnknown error while getting instance of template class " + classname;
-                    }
-                }
-            }
-            /*if(A_OpenCms.isLogging()) {
-                A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsTemplateClassManager] " + errorMessage);
-            }*/
             throw new ServletException(e);
-            //throw new CmsException(errorMessage, CmsException.C_CLASSLOADER_ERROR, e);
         }
-        /*
-        try{
-            m_servlet = (HttpServlet) com.opencms.template.CmsTemplateClassManager.getClassInstance(null, "com.opencms.core.OpenCmsHttpServlet" );
-        }catch(Exception e){
-            throw new ServletException(e);
-        }*/
         m_servlet.init(config);
     }
 

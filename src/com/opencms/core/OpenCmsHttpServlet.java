@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
-* Date   : $Date: 2001/02/12 10:58:36 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2001/02/20 08:52:16 $
+* Version: $Revision: 1.2 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -62,7 +62,7 @@ import com.opencms.util.*;
  * Http requests.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 2001/02/12 10:58:36 $
+ * @version $Revision: 1.2 $ $Date: 2001/02/20 08:52:16 $
  *
  * */
 public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_CmsLogChannels {
@@ -701,7 +701,8 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
             }
         }
         // give the guest-loggedin cms-object and the repositories to the classloader
-        CmsClassLoader loader = new CmsClassLoader();
+        // CmsClassLoader loader = new CmsClassLoader();
+        CmsClassLoader loader = (CmsClassLoader) (getClass().getClassLoader());
         loader.init(cms, repositories);
         if(A_OpenCms.isLogging()) {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] initializing CmsClassLoader... DONE");
