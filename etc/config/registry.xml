@@ -54,13 +54,7 @@
             <launcherType>6</launcherType>
             <launcherClass/>
             <resourceClass>com.opencms.file.CmsResourceTypeJsp</resourceClass>
-        </restype>
-        <restype>
-            <name>velocity</name>
-            <launcherType>6</launcherType>
-            <launcherClass/>
-            <resourceClass>com.opencms.file.CmsResourceTypePlain</resourceClass>
-        </restype>        
+        </restype>   
         <view>
             <name>select.explorer</name>
             <url>/system/workplace/action/explorer_new.html</url>
@@ -74,12 +68,8 @@
             <url>/system/workplace/action/tasks.html</url>
         </view>
         <exportpoint>
-            <source>/pics/system/</source>
+            <source>/system/pics/</source>
             <destination>pics/system/</destination>
-        </exportpoint>
-        <exportpoint>
-            <source>/system/classes/</source>
-            <destination>WEB-INF/classes/</destination>
         </exportpoint>
         <smtpserver>my.smtp.server</smtpserver>
         <smtpserver2>alternative.smtp.server</smtpserver2>
@@ -93,7 +83,7 @@
             <launcher1>com.opencms.flex.CmsXmlTemplateLoader</launcher1>
             <launcher2>com.opencms.flex.CmsDumpLoader</launcher2>
             <launcher3>com.opencms.launcher.CmsLinkLauncher</launcher3>
-            <launcher4>com.opencms.flex.CmsJspLoader</launcher4>        
+            <launcher4>com.opencms.flex.CmsJspLoader</launcher4>     
         </launchers>
         <tempfileproject></tempfileproject>
         <UseWpPicturesFromVFS>false</UseWpPicturesFromVFS>
