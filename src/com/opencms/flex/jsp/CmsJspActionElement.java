@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspActionElement.java,v $
- * Date   : $Date: 2003/03/18 17:48:23 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2003/03/27 16:48:29 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,12 +31,22 @@
 
 package com.opencms.flex.jsp;
 
+import com.opencms.core.CmsException;
+import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
+import com.opencms.file.CmsResource;
+import com.opencms.flex.CmsJspLoader;
+import com.opencms.flex.CmsJspTemplate;
 import com.opencms.flex.cache.CmsFlexRequest;
 import com.opencms.flex.cache.CmsFlexResponse;
 import com.opencms.flex.util.CmsMessages;
+import com.opencms.launcher.CmsDumpLauncher;
+import com.opencms.launcher.CmsXmlLauncher;
+import com.opencms.launcher.I_CmsLauncher;
+import com.opencms.template.CmsXmlTemplate;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -66,7 +76,7 @@ import javax.servlet.jsp.PageContext;
  * working at last in some elements.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 5.0 beta 2
  */
@@ -570,6 +580,54 @@ public class CmsJspActionElement {
         }
         return null;
     }    
+    
+    /**
+     * Returns the processed output of an OpenCms resource in a String.<p>
+     * 
+     * @param target the target to process
+     * @return the processed output of an OpenCms resource in a String
+     */
+    public String getContent(String target) {
+        try {
+            I_CmsLauncher launcher = null;
+            target = m_request.toAbsolute(target);
+            try {
+                CmsResource resource = getCmsObject().readFileHeader(target);
+                launcher = getCmsObject().getLauncherManager().getLauncher(resource.getLauncherType());
+            } catch (java.lang.ClassCastException e) {
+                // no loader omplementation found
+                return "??? " + e.getMessage() + " ???";
+            } catch (com.opencms.core.CmsException e) {
+                // file might not exist or no read permissions
+                return "??? " + e.getMessage() + " ???";
+            }
+            try {
+                if (launcher instanceof CmsJspLoader) {
+                    // jsp page
+                    CmsJspTemplate template = new CmsJspTemplate();
+                    byte[] res = template.getContent(getCmsObject(), target, null, null);
+                    return new String(res, getRequestContext().getEncoding());
+                } else if (launcher instanceof CmsXmlLauncher) {
+                    // XmlTemplate page (will not work if file does not use the standard XmlTemplate class)
+                    CmsXmlTemplate template = new CmsXmlTemplate();
+                    byte[] res = template.getContent(getCmsObject(), target, null, null);
+                    return new String(res, getRequestContext().getEncoding());
+                } else if (launcher instanceof CmsDumpLauncher) {
+                    // static page
+                    CmsFile file = getCmsObject().readFile(target);
+                    return new String(file.getContents(), getRequestContext().getEncoding());
+                }
+            } catch (CmsException ce) {
+                return "??? " + ce.getMessage() + " ???";
+            } catch (UnsupportedEncodingException uee) {
+                return "??? " + uee.getMessage() + " ???";
+            }
+        } catch (Throwable t) {
+            handleException(t);
+            return "??? " + t.getMessage() + " ???";
+        }
+        return "";
+    }
     
     /**
      * Handles any exception that might occur in the context of this element to 
