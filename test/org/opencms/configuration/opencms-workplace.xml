@@ -212,7 +212,10 @@
 					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
 				</accesscontrol>
 				<editoptions>
-					<defaultproperties enabled="false" shownavigation="false"/>
+					<defaultproperties enabled="true" shownavigation="false">
+						<property name="Title"/>
+						<property name="Description"/>
+					</defaultproperties>
 					<contextmenu>
 						<entry key="explorer.context.lock" uri="commons/lock.jsp" rules="d d aaaa dddd dddd" order="10"/>
 						<entry key="explorer.context.overridelock" uri="commons/lockchange.jsp" rules="d d dddd dddd aaaa" order="20"/>
