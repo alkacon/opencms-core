@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetup.java,v $
-* Date   : $Date: 2003/05/23 16:26:46 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2003/05/28 16:47:55 $
+* Version: $Revision: 1.32 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -78,9 +78,6 @@ public class CmsSetup {
 	 * name of the database system
 	 */
 	private String m_database;
-	
-	// name of the database
-	private String m_db;
 	
 	/**
 	 * database password used to drop and create database
