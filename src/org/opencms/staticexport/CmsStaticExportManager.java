@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2004/04/05 11:05:21 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2004/04/05 12:18:11 $
+ * Version: $Revision: 1.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.collections.map.LRUMap;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.54 $
+ * @version $Revision: 1.55 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
 
@@ -1352,7 +1352,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         CmsStaticExportData data = null;
 
         // get the rfs base string without the parameter hashcode
-        String rfsBaseName = rfsName.substring(0, rfsName.lastIndexOf("_"));
+        String rfsBaseName = rfsName.substring(0, rfsName.lastIndexOf('_'));
 
         // get the vfs base name, which is later used to read the resoruce in the vfs
         String vfsBaseName = getVfsName(cms, rfsBaseName);

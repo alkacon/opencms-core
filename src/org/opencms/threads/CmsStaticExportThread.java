@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/CmsStaticExportThread.java,v $
- * Date   : $Date: 2004/04/05 11:05:21 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/04/05 12:18:11 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import javax.servlet.ServletException;
  * 
  * @author  Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.1.10
  */
 public class CmsStaticExportThread extends A_CmsReportThread {
@@ -82,7 +82,7 @@ public class CmsStaticExportThread extends A_CmsReportThread {
      * @see java.lang.Runnable#run()
      */
     public void run() {
-         getReport().println(getReport().key("report.staticexport_begin"), I_CmsReport.C_FORMAT_HEADLINE);
+        getReport().println(getReport().key("report.staticexport_begin"), I_CmsReport.C_FORMAT_HEADLINE);
         try {
             OpenCms.getStaticExportManager().exportFullStaticRender(getCms(), true, getReport());
         } catch (CmsException e) {
@@ -92,6 +92,13 @@ public class CmsStaticExportThread extends A_CmsReportThread {
         } catch (ServletException e) {
             getReport().println(e);
         }    
+     
+        // append runtime statistics to report
+        StringBuffer stats = new StringBuffer();
+        stats.append(getReport().key("report.publish_stats"));
+        stats.append(getReport().key("report.publish_stats_duration"));
+        stats.append(getReport().formatRuntime());
+        getReport().println(stats.toString());        
         getReport().println(getReport().key("report.staticexport_end"), I_CmsReport.C_FORMAT_HEADLINE);
     }
 }

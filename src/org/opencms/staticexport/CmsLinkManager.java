@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2004/04/05 05:44:19 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2004/04/05 12:18:11 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.net.URL;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  */
 public class CmsLinkManager {
     
@@ -343,8 +343,8 @@ public class CmsLinkManager {
      */
     public String substituteLink(CmsObject cms, String link) {     
         
-        if (link == null || "".equals(link)) {
-            // not a valid parameter, return an empty String
+        if (CmsStringSubstitution.isEmpty(link)) {
+            // not a valid link parameter, return an empty String
             return "";
         }      
         
@@ -362,12 +362,7 @@ public class CmsLinkManager {
             vfsName = absoluteLink;
             parameters = null;
         }
-        
-        // check if the link has already the opencms context, if so remove it
-        // if (vfsName.startsWith(OpenCms.getStaticExportManager().getVfsPrefix())) {
-        //    vfsName = vfsName.substring(OpenCms.getStaticExportManager().getVfsPrefix().length());
-        //}
-        
+
         String resultLink = null;
         String uriBaseName = null;
         boolean useRelativeLinks = false;   
@@ -395,9 +390,8 @@ public class CmsLinkManager {
             }
 
             // check if we have the absolute vfs name for the link target cached
-            resultLink = OpenCms.getStaticExportManager().getCachedOnlineLink(link);
-            if (resultLink == null) {
-              
+            resultLink = OpenCms.getStaticExportManager().getCachedOnlineLink(absoluteLink);
+            if (resultLink == null) {              
                 // didn't find the link in the cache
                 if (exportRequired(cms, vfsName)) {
                     // export required, get export name for target link
@@ -411,31 +405,34 @@ public class CmsLinkManager {
                     }                        
                 } else {
                     // no export required for the target link
-                    resultLink = OpenCms.getStaticExportManager().getVfsPrefix() + vfsName;                    
+                    resultLink = OpenCms.getStaticExportManager().getVfsPrefix().concat(vfsName);
+                    // add cut off parameters if required
+                    if (parameters != null) {      
+                        resultLink = resultLink.concat(parameters);
+                    }                     
                 }
-            } else {
-               
-            }
-            // cache the result 
-            OpenCms.getStaticExportManager().cacheOnlineLink(link, resultLink);
-
+                // cache the result 
+                OpenCms.getStaticExportManager().cacheOnlineLink(absoluteLink, resultLink);                            
+            } 
+            
             if (useRelativeLinks) {
                 // we want relative links in export, so make the absolute link relative
                 resultLink = getRelativeUri(uriBaseName, resultLink);
             }
-
-        } else {
-            // offline project, no export required
-            resultLink = OpenCms.getStaticExportManager().getVfsPrefix() + vfsName;
-        }      
-        
-        // add cut off parameters and return the result
-        if (parameters != null) {      
-            return resultLink + parameters;
-        } else {
+            
             return resultLink;
-        }
+        } else {
+            
+            // offline project, no export required
+            resultLink = OpenCms.getStaticExportManager().getVfsPrefix().concat(vfsName);
 
+            // add cut off parameters and return the result
+            if (parameters != null) {      
+                return resultLink.concat(parameters);
+            } else {
+                return resultLink;
+            }            
+        }      
     }
     
     /**

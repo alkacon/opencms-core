@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/CmsPublishThread.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/04/05 12:18:11 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.opencms.file.CmsObject;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * @since 5.1.10
  */
 public class CmsPublishThread extends A_CmsReportThread {
@@ -127,7 +127,7 @@ public class CmsPublishThread extends A_CmsReportThread {
                 getCms().publishProject(getReport(), m_publishList);
                 getReport().println(getReport().key("report.publish_resource_end"), I_CmsReport.C_FORMAT_HEADLINE);                
             } else {
-                // TODO check if the following code can be removed
+                // TODO: check if the following code can be removed
                 
                 if (m_resourceName != null) {
                     // "publish resource directly" case
