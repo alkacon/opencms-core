@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/news/Attic/CmsNewsListDefFile.java,v $
- * Date   : $Date: 2000/03/15 13:52:37 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/03/22 10:35:53 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,9 +39,9 @@ import java.util.*;
  * Sample content definition for news list entry definitions.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.1 $ $Date: 2000/03/15 13:52:37 $
+ * @version $Revision: 1.2 $ $Date: 2000/03/22 10:35:53 $
  */
- public class CmsNewsListDefFile extends CmsXmlTemplateFile {
+ public class CmsNewsListDefFile extends A_CmsXmlContent {
 
     /**
      * Default constructor.
