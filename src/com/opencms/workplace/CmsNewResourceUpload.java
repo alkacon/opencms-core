@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceUpload.java,v $
-* Date   : $Date: 2001/02/05 15:49:19 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2001/02/05 15:51:41 $
+* Version: $Revision: 1.26 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -45,7 +45,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.25 $ $Date: 2001/02/05 15:49:19 $
+ * @version $Revision: 1.26 $ $Date: 2001/02/05 15:51:41 $
  */
 public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
 
@@ -68,14 +68,6 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
      */
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
 
-System.err.println("******");
-        Enumeration enu=parameters.keys();
-        while (enu.hasMoreElements()) {
-            String key=(String)enu.nextElement();
-            String values=(String)parameters.get(key);
-            System.err.println(key+" : "+values);
-        }
-System.err.println("******");
          // the template to be displayed
         String template = null;
         I_CmsSession session = cms.getRequestContext().getSession(true);
