@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2002/01/16 14:54:58 $
-* Version: $Revision: 1.59 $
+* Date   : $Date: 2002/02/19 09:40:01 $
+* Version: $Revision: 1.60 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.59 $ $Date: 2002/01/16 14:54:58 $
+ * @version $Revision: 1.60 $ $Date: 2002/02/19 09:40:01 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -375,7 +375,14 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
 
             // Okay. All values are initialized. Now we can create
             // the temporary files.
-            tempPageFilename = createTemporaryFile(cms, pageFileResource, tempProject, curProject);
+            // if the parameter noactivex is set the temp file was already created,
+            // so read the filename from the session
+            String noactivex = (String)parameters.get("noactivex");
+            if(noactivex == null || "".equals(noactivex.trim())){
+                tempPageFilename = createTemporaryFile(cms, pageFileResource, tempProject, curProject);
+            } else {
+                tempPageFilename = (String)session.getValue("te_temppagefile");
+            }
             cms.getRequestContext().setCurrentProject(curProject);
             tempBodyFilename = "/content/bodys" + tempPageFilename;
 

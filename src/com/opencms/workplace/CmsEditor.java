@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsEditor.java,v $
-* Date   : $Date: 2001/10/12 07:46:09 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2002/02/19 09:40:01 $
+* Version: $Revision: 1.28 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.27 $ $Date: 2001/10/12 07:46:09 $
+ * @version $Revision: 1.28 $ $Date: 2002/02/19 09:40:01 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -59,13 +59,25 @@ public class CmsEditor extends CmsWorkplaceDefault {
      * @return name of the browser specific section in <code>templateFile</code>
      */
 
-    protected String getBrowserSpecificSection(CmsObject cms, CmsXmlTemplateFile templateFile) {
+    protected String getBrowserSpecificSection(CmsObject cms, CmsXmlTemplateFile templateFile, Hashtable parameters) {
         HttpServletRequest orgReq = (HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();
         String browser = orgReq.getHeader("user-agent");
         String result = null;
+        // if the following parameter is given and MSIE is used,
+        // the template "ns" must be selected because there might be no ActiveX control
+        String noactivex = (String)parameters.get("noactivex");
+
+        // check browser and return a valid template selector
         if(browser.indexOf("MSIE") > -1) {
             if(templateFile.hasSection("ie")) {
-                result = "ie";
+                if(!"true".equalsIgnoreCase(noactivex)){
+                    result = "ie";
+                } else {
+                    // there is no ActiveX Control so use the textarea
+                    if(templateFile.hasSection("ns")) {
+                        result = "ns";
+                    }
+                }
             }
         }
         else {
@@ -157,7 +169,7 @@ public class CmsEditor extends CmsWorkplaceDefault {
         // Load the template file and get the browser specific section name
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms,
                 templateFile, elementName, parameters, templateSelector);
-        String sectionName = getBrowserSpecificSection(cms, xmlTemplateDocument);
+        String sectionName = getBrowserSpecificSection(cms, xmlTemplateDocument, parameters);
 
         // show the button for the link list ?
         if (templateFile.equalsIgnoreCase(xmlTemplateDocument.C_TEMPLATEPATH+"edit_html_main")) {
