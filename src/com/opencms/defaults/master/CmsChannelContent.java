@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2003/06/13 10:04:21 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2003/06/13 16:16:41 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,8 +54,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.25 $
- * $Date: 2003/06/13 10:04:21 $
+ * $Revision: 1.26 $
+ * $Date: 2003/06/13 16:16:41 $
  */
 public class CmsChannelContent extends A_CmsContentDefinition
                                implements I_CmsContent, I_CmsLogChannels, I_CmsExtendedContentDefinition{
@@ -729,7 +729,9 @@ public class CmsChannelContent extends A_CmsContentDefinition
     public boolean isReadable() {
         m_cms.setContextToCos();
         try {
-            return m_cms.accessRead(m_channel.getAbsolutePath());
+            return m_cms.checkPermissions(m_channel.getAbsolutePath(), I_CmsConstants.C_READ_ACCESS); 
+            // TODO: remove this later
+            // m_cms.accessRead();
         } catch(CmsException exc) {
             // there was a cms-exception - no read-access!
             return false;
