@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsNewResource.java,v $
- * Date   : $Date: 2004/03/18 16:13:59 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/03/19 16:36:01 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,8 +50,15 @@ import javax.servlet.jsp.PageContext;
 /**
  * The new resource entry dialog which displays the possible "new actions" for the current user.<p>
  * 
+ * It handles the creation of "simple" resource types like plain or JSP resources.<p>
+ * 
+ * The following files use this class:
+ * <ul>
+ * <li>/jsp/dialogs/newresource.html
+ * </ul>
+ * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.3.3
  */
