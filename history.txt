@@ -12,6 +12,7 @@ OpenCms 4.7.5 Ecaz - ?? April 2002
 ! Database import can now upload the zip file from the local client. It will be
   copied to the export path on the server and then imported. An old file with the
   same name on the server will be overwritten. Same like when uploading modules.
+  (workplace templates changed).
 * BUG#7 fixed: ArrayIndexOutOfBoundsException happening during ocsetup (4.6.0)
 * When reading a webuser with password the user must not be read from the cache.
 * Synchronizing: When there is an exception while reading the synchronize list,
