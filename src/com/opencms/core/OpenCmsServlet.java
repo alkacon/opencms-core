@@ -37,7 +37,7 @@ import com.opencms.file.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.12 $ $Date: 2000/01/28 11:38:33 $  
+* @version $Revision: 1.13 $ $Date: 2000/02/04 08:50:41 $  
 * 
 */
 
@@ -361,7 +361,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants
         try{
             switch (errorType) {
             // access denied error - display login dialog
-            case CmsException.C_NO_ACCESS: 
+            case CmsException.C_ACCESS_DENIED: 
                 requestAuthorization(req,res);  
                 //System.err.println(e.toString());
                 e.printStackTrace();

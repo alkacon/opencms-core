@@ -10,7 +10,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.5 $ $Date: 2000/01/28 17:42:31 $
+ * @version $Revision: 1.6 $ $Date: 2000/02/04 08:50:42 $
  */
 interface I_CmsAccessProject {
 
@@ -37,7 +37,8 @@ interface I_CmsAccessProject {
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	 public A_CmsProject createProject(String name, String description, A_CmsTask task, 
-										 A_CmsUser owner, A_CmsGroup group, int flags)
+										 A_CmsUser owner, A_CmsGroup group, 
+										 A_CmsGroup managergroup, int flags)
 		throws CmsException;
 	
 	/**

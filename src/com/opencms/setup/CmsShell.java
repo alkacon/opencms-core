@@ -11,7 +11,7 @@ import java.lang.reflect.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.18 $ $Date: 2000/02/03 15:23:31 $
+ * @version $Revision: 1.19 $ $Date: 2000/02/04 08:50:42 $
  */
 public class CmsShell implements I_CmsConstants {
 	
@@ -648,9 +648,10 @@ public class CmsShell implements I_CmsConstants {
 	 * @param description The description for the new project.
 	 * @param groupname the name of the group to be set.
 	 */
-	public void createProject(String name, String description, String groupname) {
+	public void createProject(String name, String description, String groupname,
+							  String managergroupname) {
 		try {
-			m_cms.createProject(name, description, groupname);
+			m_cms.createProject(name, description, groupname, managergroupname);
 		} catch( Exception exc ) {
 			printException(exc);
 		}		

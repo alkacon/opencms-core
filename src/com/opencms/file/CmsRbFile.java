@@ -11,7 +11,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.10 $ $Date: 2000/01/13 16:11:48 $
+ * @version $Revision: 1.11 $ $Date: 2000/02/04 08:50:42 $
  */
  class CmsRbFile implements I_CmsRbFile, I_CmsConstants {
 	
@@ -736,7 +736,8 @@ import com.opencms.core.*;
                     writeFileHeader(project,onlineProject,(CmsFile)resource);
                 }
             } else {
-                 throw new CmsException(CmsException.C_NO_ACCESS); 
+                 throw new CmsException("[" + this.getClass().getName() + "] " + 
+					resourcename + CmsException.C_NO_ACCESS); 
             }
         }
       }

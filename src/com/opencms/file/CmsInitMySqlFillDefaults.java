@@ -10,7 +10,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.11 $ $Date: 2000/01/31 18:59:50 $
+ * @version $Revision: 1.12 $ $Date: 2000/02/04 08:50:42 $
  */
 public class CmsInitMySqlFillDefaults extends A_CmsInit implements I_CmsConstants {
 	
@@ -55,7 +55,9 @@ public class CmsInitMySqlFillDefaults extends A_CmsInit implements I_CmsConstant
 			
 			A_CmsProject project = projectRb.createProject(C_PROJECT_ONLINE, "the online-project", new CmsTask(),
 														   userRb.readUser(C_USER_ADMIN), 
-														   userRb.readGroup(C_GROUP_GUEST), C_FLAG_ENABLED);
+														   userRb.readGroup(C_GROUP_GUEST), 
+														   userRb.readGroup(C_GROUP_PROJECTLEADER),
+														   C_FLAG_ENABLED);
 			
 			I_CmsRbProperty propertyRb = new CmsRbProperty(
 				new CmsAccessPropertyMySql(propertyDriver, propertyConnectString));

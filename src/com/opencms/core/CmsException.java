@@ -4,7 +4,7 @@ package com.opencms.core;
  * This exception is thrown for security reasons in the Cms.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.18 $ $Date: 2000/02/01 08:29:21 $
+ * @version $Revision: 1.19 $ $Date: 2000/02/04 08:50:41 $
  */
 public class CmsException extends Exception {
 	
@@ -26,7 +26,7 @@ public class CmsException extends Exception {
 	public final static int C_UNKNOWN_EXCEPTION = 0;
     
     /**
-    * Definition of error code for access denied exception.
+    * Definition of error code for access denied exception for non file resources.
     */
 	public final static int C_NO_ACCESS = 1;
     
@@ -175,6 +175,11 @@ public class CmsException extends Exception {
      */
     public final static int C_SHORT_PASSWORD = 30;
 	
+	/**
+	 * Definition of error code for access denied exception for file resources.
+	 */
+	public final static int C_ACCESS_DENIED = 31;
+	
 	public final static String C_EXTXT[] = {
 							"Unknown exception ",
 							"Access denied ",
@@ -207,6 +212,7 @@ public class CmsException extends Exception {
                             "Error while launching template class ",
                             "OpenCms class loader error ",
                             "New password is to short ",
+							"Access denied to resource ",
 };
     
 	/** 

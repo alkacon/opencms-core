@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.34 $ $Date: 2000/01/31 18:59:50 $ 
+ * @version $Revision: 1.35 $ $Date: 2000/02/04 08:50:42 $ 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	
@@ -199,15 +199,16 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * @param name The name of the project to read.
 	 * @param description The description for the new project.
 	 * @param groupname the name of the group to be set.
+	 * @param managergroupname the name of the managergroup to be set.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	 public A_CmsProject createProject(String name, String description, 
-									   String groupname)
+									   String groupname, String managergroupname)
 		 throws CmsException {
 		 return( c_rb.createProject(m_context.currentUser(), 
 									m_context.currentProject(), name, description, 
-									groupname) );
+									groupname, managergroupname) );
 	 }
 	
 	/**

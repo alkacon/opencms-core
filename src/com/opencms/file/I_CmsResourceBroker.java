@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.30 $ $Date: 2000/02/03 15:23:31 $
+ * @version $Revision: 1.31 $ $Date: 2000/02/04 08:50:42 $
  */
 interface I_CmsResourceBroker {
 
@@ -77,11 +77,13 @@ interface I_CmsResourceBroker {
 	 * @param name The name of the project to read.
 	 * @param description The description for the new project.
 	 * @param group the group to be set.
+	 * @param managergroup the managergroup to be set.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	 public A_CmsProject createProject(A_CmsUser currentUser, A_CmsProject currentProject, 
-									   String name, String description, String group)
+									   String name, String description, String group,
+									   String managergroupname)
 		 throws CmsException;
 	
 	/**

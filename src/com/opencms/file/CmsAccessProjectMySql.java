@@ -11,7 +11,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.13 $ $Date: 2000/01/28 17:42:31 $
+ * @version $Revision: 1.14 $ $Date: 2000/02/04 08:50:42 $
  */
 class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 
@@ -34,6 +34,11 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 	 * Column name
 	 */
 	private static final String C_GROUP_ID = "GROUP_ID";
+	
+	/**
+	 * Column name
+	 */
+	private static final String C_MANAGERGROUP_ID = "MANAGERGROUP_ID";
 	
 	/**
 	 * Column name
@@ -61,9 +66,14 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 	private static final String C_PROJECT_PUBLISHDATE = "PROJECT_PUBLISHDATE";
 	
 	/**
+	 * Column name
+	 */
+	private static final String C_PROJECT_CREATEDATE = "PROJECT_CREATEDATE";
+	
+	/**
      * SQL Command for creating projects.
      */    
-    private static final String C_PROJECT_CREATE = "INSERT INTO " + C_DATABASE_PREFIX + "PROJECTS VALUES(null,?,?,?,?,?,?,null)";
+    private static final String C_PROJECT_CREATE = "INSERT INTO " + C_DATABASE_PREFIX + "PROJECTS VALUES(null,?,?,?,?,?,?,?,?,null)";
 
 	/**
      * SQL Command for updating projects.
@@ -71,9 +81,11 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
     private static final String C_PROJECT_UPDATE = "UPDATE " + C_DATABASE_PREFIX + "PROJECTS set " + 
 												   C_USER_ID + " = ?, " +
 												   C_GROUP_ID + " = ?, " +
+												   C_MANAGERGROUP_ID + " = ?, " +
 												   C_TASK_ID + " = ?, " +
 												   C_PROJECT_DESCRIPTION + " = ?, " +
 												   C_PROJECT_FLAGS + " = ?, " +
+												   C_PROJECT_CREATEDATE + " = ?, " +
 												   C_PROJECT_PUBLISHDATE + " = ? " +
 												   "where " + C_PROJECT_NAME + " = ?";
 
@@ -146,7 +158,9 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 										result.getInt(C_TASK_ID),
 										result.getInt(C_USER_ID),
 										result.getInt(C_GROUP_ID),
+										result.getInt(C_MANAGERGROUP_ID),
 										result.getInt(C_PROJECT_FLAGS),
+										result.getTimestamp(C_PROJECT_CREATEDATE),
 										result.getTimestamp(C_PROJECT_PUBLISHDATE)));
 			 } else {
 				 // project not found!
@@ -172,7 +186,8 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	 public A_CmsProject createProject(String name, String description, A_CmsTask task, 
-								A_CmsUser owner, A_CmsGroup group, int flags)
+								A_CmsUser owner, A_CmsGroup group, 
+								A_CmsGroup managergroup, int flags)
 		throws CmsException {
 		 try {
 			 
@@ -182,10 +197,12 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 			 
 			 statementCreateProject.setInt(1,owner.getId());
 			 statementCreateProject.setInt(2,group.getId());
-			 statementCreateProject.setInt(3,task.getId());
-			 statementCreateProject.setString(4,name);
-			 statementCreateProject.setString(5,description);
-			 statementCreateProject.setInt(6,flags);
+			 statementCreateProject.setInt(3,managergroup.getId());
+			 statementCreateProject.setInt(4,task.getId());
+			 statementCreateProject.setString(5,name);
+			 statementCreateProject.setString(6,description);
+			 statementCreateProject.setInt(7,flags);
+			 statementCreateProject.setTimestamp(8,new Timestamp(new java.util.Date().getTime()));
 			 statementCreateProject.executeUpdate();
 		 } catch( SQLException exc ) {
 			 throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(), 
@@ -210,15 +227,17 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 			 
 			 statementUpdateProject.setInt(1,project.getOwnerId());
 			 statementUpdateProject.setInt(2,project.getGroupId());
-			 statementUpdateProject.setInt(3,project.getTaskId());
-			 statementUpdateProject.setString(4,project.getDescription());
-			 statementUpdateProject.setInt(5,project.getFlags());
+			 statementUpdateProject.setInt(3,project.getManagerGroupId());
+			 statementUpdateProject.setInt(4,project.getTaskId());
+			 statementUpdateProject.setString(5,project.getDescription());
+			 statementUpdateProject.setInt(6,project.getFlags());
+			statementUpdateProject.setTimestamp(7,new Timestamp(project.getCreateDate()));
 			 if(project.getPublishingDate() == C_UNKNOWN_LONG) {
-				statementUpdateProject.setNull(6,java.sql.Types.TIMESTAMP);
+				statementUpdateProject.setNull(8,java.sql.Types.TIMESTAMP);
 			 } else {
-				statementUpdateProject.setTimestamp(6,new Timestamp(project.getPublishingDate()));
+				statementUpdateProject.setTimestamp(8,new Timestamp(project.getPublishingDate()));
 			 }
-			 statementUpdateProject.setString(7,project.getName());
+			 statementUpdateProject.setString(9,project.getName());
 			 
 			 statementUpdateProject.executeUpdate();
 		 } catch( SQLException exc ) {
@@ -256,7 +275,9 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 													 result.getInt(C_TASK_ID),
 													 result.getInt(C_USER_ID),
 													 result.getInt(C_GROUP_ID),
+													 result.getInt(C_MANAGERGROUP_ID),
 													 result.getInt(C_PROJECT_FLAGS),
+													 result.getTimestamp(C_PROJECT_CREATEDATE),
 													 result.getTimestamp(C_PROJECT_PUBLISHDATE)));
 			 }
 			 return(projects);
@@ -294,7 +315,9 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 													 result.getInt(C_TASK_ID),
 													 result.getInt(C_USER_ID),
 													 result.getInt(C_GROUP_ID),
+													 result.getInt(C_MANAGERGROUP_ID),
 													 result.getInt(C_PROJECT_FLAGS),
+													 result.getTimestamp(C_PROJECT_CREATEDATE),
 													 result.getTimestamp(C_PROJECT_PUBLISHDATE)));
 			 }
 			 return(projects);
@@ -332,7 +355,9 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 													 result.getInt(C_TASK_ID),
 													 result.getInt(C_USER_ID),
 													 result.getInt(C_GROUP_ID),
+													 result.getInt(C_MANAGERGROUP_ID),
 													 result.getInt(C_PROJECT_FLAGS),
+													 result.getTimestamp(C_PROJECT_CREATEDATE),
 													 result.getTimestamp(C_PROJECT_PUBLISHDATE)));
 			 }
 			 return(projects);

@@ -14,7 +14,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Ruediger Gutfleisch
- * @version $Revision: 1.4 $ $Date: 2000/01/31 09:44:28 $
+ * @version $Revision: 1.5 $ $Date: 2000/02/04 08:50:42 $
  */
 class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 	
@@ -174,8 +174,9 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 	public A_CmsTask createProject(A_CmsUser owner, String projectname, A_CmsGroup role, java.sql.Timestamp timeout, int priority)
 		throws CmsException {
 		
+		// TODO: here is something to cerrect!
 		// Create a dummy root project with task id 0
-		CmsProject root = new CmsProject(0,"","",0/*taskid*/,0,0,0, new java.sql.Timestamp(0));
+		CmsProject root = new CmsProject(0,"","",0/*taskid*/,0,0,0,0, null, null);
 		
 		// Create a dummy parent task just for the id 0
 		CmsTask parent = new CmsTask(0,"",0,1,0,0,0,0,0,0,null,null,null,null,0,"",0,0,"",0,0);

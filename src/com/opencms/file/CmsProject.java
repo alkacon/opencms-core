@@ -8,7 +8,7 @@ import java.sql.*;
  * one resource.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.6 $ $Date: 2000/01/31 11:43:22 $
+ * @version $Revision: 1.7 $ $Date: 2000/02/04 08:50:42 $
  */
 public class CmsProject extends A_CmsProject implements I_CmsConstants {
 	
@@ -28,6 +28,11 @@ public class CmsProject extends A_CmsProject implements I_CmsConstants {
 	private int m_groupId = C_UNKNOWN_ID;
 	
 	/**
+	 * The manager group_id of the group, who may manage the project.
+	 */
+	private int m_managergroupId = C_UNKNOWN_ID;
+	
+	/**
 	 * The task_id for this project.
 	 */
 	private int m_taskId = C_UNKNOWN_ID;
@@ -43,6 +48,11 @@ public class CmsProject extends A_CmsProject implements I_CmsConstants {
 	private String m_description = null;
 	
 	/**
+	 * The creation date of this project.
+	 */
+	private long m_createdate = C_UNKNOWN_LONG;
+	
+	/**
 	 * The publishing date of this project.
 	 */
 	private long m_publishingdate = C_UNKNOWN_LONG;
@@ -53,14 +63,21 @@ public class CmsProject extends A_CmsProject implements I_CmsConstants {
 	private int m_flags = C_PROJECT_STATE_UNLOCKED;
 
 	CmsProject(int projectId, String name, String description, int taskId, 
-			   int ownerId, int groupId, int flags, Timestamp publishingdate) {
+			   int ownerId, int groupId, int managergroupId, int flags, Timestamp createdate, 
+			   Timestamp publishingdate) {
 		m_id = projectId;
 		m_name = name;
 		m_description = description;
 		m_taskId = taskId;
 		m_ownerId = ownerId;
 		m_groupId = groupId;
+		m_managergroupId = managergroupId;
 		m_flags = flags;
+		if( createdate != null) {
+			m_createdate = createdate.getTime();
+		} else {
+			m_createdate = C_UNKNOWN_LONG;
+		}
 		if( publishingdate != null) {
 			m_publishingdate = publishingdate.getTime();
 		} else {
@@ -146,6 +163,15 @@ public class CmsProject extends A_CmsProject implements I_CmsConstants {
 	}
 	
 	/**
+	 * Returns the manager groupid of this project.
+	 * 
+	 * @return the manager groupid of this project.
+	 */
+	int getManagerGroupId() {
+		return( m_managergroupId );
+	}
+	
+	/**
 	 * Returns the taskid of this project.
 	 * 
 	 * @return the taskid of this project.
@@ -161,6 +187,15 @@ public class CmsProject extends A_CmsProject implements I_CmsConstants {
 	 */
 	public long getPublishingDate() {
 		return(m_publishingdate);
+	}
+	
+	/**
+	 * Returns the creation date of this project.
+	 * 
+	 * @return the creation date of this project.
+	 */
+	public long getCreateDate() {
+		return(m_createdate);
 	}
 	
 	/**

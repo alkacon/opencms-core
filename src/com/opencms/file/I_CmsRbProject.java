@@ -10,7 +10,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.5 $ $Date: 2000/01/28 17:42:31 $
+ * @version $Revision: 1.6 $ $Date: 2000/02/04 08:50:42 $
  */
 interface I_CmsRbProject {
 	
@@ -32,12 +32,14 @@ interface I_CmsRbProject {
 	 * @param task The task.
 	 * @param owner The owner to be set.
 	 * @param group the group to be set.
+	 * @param managergroup the managergroup to be set.
 	 * @param flags The flags to be set.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	 public A_CmsProject createProject(String name, String description, A_CmsTask task, 
-										 A_CmsUser owner, A_CmsGroup group, int flags)
+										 A_CmsUser owner, A_CmsGroup group, 
+										 A_CmsGroup managergroup, int flags)
 		 throws CmsException;
 	
 	/**

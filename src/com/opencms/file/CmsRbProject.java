@@ -10,7 +10,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.7 $ $Date: 2000/01/28 17:42:31 $
+ * @version $Revision: 1.8 $ $Date: 2000/02/04 08:50:42 $
  */
 class CmsRbProject implements I_CmsRbProject, I_CmsConstants {
 	
@@ -50,15 +50,17 @@ class CmsRbProject implements I_CmsRbProject, I_CmsConstants {
 	 * @param task The task.
 	 * @param owner The owner to be set.
 	 * @param group the group to be set.
+	 * @param managergroup the managergroup to be set.
 	 * @param flags The flags to be set.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	 public A_CmsProject createProject(String name, String description, A_CmsTask task, 
-								A_CmsUser owner, A_CmsGroup group, int flags)
+								A_CmsUser owner, A_CmsGroup group, 
+								A_CmsGroup managergroup, int flags)
 		 throws CmsException {
 		 return( m_accessProject.createProject(name, description, task, 
-											   owner, group,
+											   owner, group, managergroup,
 											   flags) );
 	 }
 	

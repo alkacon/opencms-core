@@ -14,7 +14,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 2000/02/03 11:04:13 $
+ * @version $Revision: 1.2 $ $Date: 2000/02/04 08:50:42 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -66,7 +66,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 			(newManagerGroup != null) && (newFolder != null) ) {
 			// Yes: create new Project
 			try {
-				cms.createProject(newName, newDescription, newGroup);
+				cms.createProject(newName, newDescription, newGroup, newManagerGroup);
 				// change the current project
 				reqCont.setCurrentProject(newName);
 				// copy the resource the the project

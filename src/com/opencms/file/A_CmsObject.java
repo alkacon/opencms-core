@@ -16,7 +16,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.34 $ $Date: 2000/01/31 18:59:50 $ 
+ * @version $Revision: 1.35 $ $Date: 2000/02/04 08:50:41 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -157,11 +157,12 @@ public abstract class A_CmsObject {
 	 * @param name The name of the project to read.
 	 * @param description The description for the new project.
 	 * @param groupname the name of the group to be set.
+	 * @param managergroupname the name of the managergroup to be set.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	 abstract public A_CmsProject createProject(String name, String description, 
-												String groupname)
+												String groupname, String managergroup)
 		 throws CmsException;
 	
 	/**
