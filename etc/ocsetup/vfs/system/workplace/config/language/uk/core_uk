@@ -332,6 +332,7 @@
         
         <fileicon>
                 <binary>Binary</binary>
+                <compatiblePlain>compatiblePlain</compatiblePlain>
                 <folder>Folder</folder>
                 <image>Image</image>
                 <link>Link</link>

@@ -330,18 +330,19 @@
         </error>
         
         <fileicon>
-                <binary>Binär</binary>
-                <folder>Ordner</folder>
-                <image>Bild</image>
-                <link>Verknüpfung</link>
-                <newspage>News-Artikel</newspage>
-                <othertype>anderer Typ</othertype>
-                <page>Seite</page>
-                <plain>Text</plain>
-                <script>Skript</script>
-                <upload>Neue Datei hochladen</upload>
-                <XMLTemplate>XML Template</XMLTemplate>
-                <pdfpage>PDF-Dokument</pdfpage>
+            <binary>Binär</binary>
+            <compatiblePlain>compatiblePlain</compatiblePlain>
+            <folder>Ordner</folder>
+            <image>Bild</image>
+            <link>Verknüpfung</link>
+            <newspage>News-Artikel</newspage>
+            <othertype>anderer Typ</othertype>
+            <page>Seite</page>
+            <plain>Text</plain>
+            <script>Skript</script>
+            <upload>Neue Datei hochladen</upload>
+            <XMLTemplate>XML Template</XMLTemplate>
+            <pdfpage>PDF-Dokument</pdfpage>
         </fileicon>
         
         <icon>
