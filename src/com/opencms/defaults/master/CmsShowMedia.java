@@ -1,5 +1,29 @@
 package com.opencms.defaults.master;
 
+/**
+* This library is part of OpenCms -
+* the Open Source Content Mananagement System
+*
+* Copyright (C) 2001  The OpenCms Group
+*
+* This library is free software; you can redistribute it and/or
+* modify it under the terms of the GNU Lesser General Public
+* License as published by the Free Software Foundation; either
+* version 2.1 of the License, or (at your option) any later version.
+*
+* This library is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+* Lesser General Public License for more details.
+*
+* For further information about OpenCms, please see the
+* OpenCms Website: http://www.opencms.org
+*
+* You should have received a copy of the GNU Lesser General Public
+* License along with this library; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+
 import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.util.*;
@@ -13,17 +37,11 @@ import java.util.*;
 import java.io.*;
 
 /**
- * Title:
- * Description:
- * Copyright:    Copyright (c) 2000
- * Company:
- * @author
- * @version 1.0
+ * XmlTemplate class to show media objects
  */
-
 public class CmsShowMedia extends CmsXmlTemplate {
 
-   static final String C_EMPTY_PICTURE = "empty.gif";
+    static final String C_EMPTY_PICTURE = "empty.gif";
     static byte[] emptyGIF = new byte[0];
 
     /**
@@ -48,14 +66,24 @@ public class CmsShowMedia extends CmsXmlTemplate {
         byte[] picture = new byte[0];
         CmsMasterContent cd = null;
         CmsMasterMedia media = null;
+        String mType = null;
+        String filename = null;
         String sId = (String) parameters.get("id");
         String sPos = (String) parameters.get("pos");
         String refCD = (String) parameters.get("cd");
+        // media id to fetch exactly this media object
+        String smId = (String) parameters.get("mid");
         int id = -1;
         int pos =-1;  // get first media per default ...
+        int mid = -1;
         try {
             id = Integer.parseInt(sId);
-            pos = Integer.parseInt(sPos);
+            if (sPos != null) {
+                pos = Integer.parseInt(sPos);
+            }
+            if (smId != null) {
+                mid = Integer.parseInt(smId);
+            }
         } catch (NumberFormatException e) {
             // ?
         }
@@ -77,38 +105,44 @@ public class CmsShowMedia extends CmsXmlTemplate {
         // read the media object ...
         if(cd != null){
             Vector vec = cd.getMedia();
-            if (pos == -1 && vec.size() > 0) {
+            if (mid != -1) {
+                // walk through vector until media object with the mid is found
+                for (int i=0; i < vec.size(); i++) {
+                    media = (CmsMasterMedia)vec.get(i);
+                    if (mid == media.getId()) {
+                        picture = media.getMedia();
+                        mType = media.getMimetype();
+                        break;
+                    }
+                }
+            }else if (pos == -1 && vec.size() > 0) {
                 // got no pos info ..
                 media = (CmsMasterMedia)vec.firstElement();
                 picture = media.getMedia();
-                String mType = media.getMimetype();
-                if (mType == null || mType.equals("")) {
-                    mType = "application/octet-stream";
-                }
-                req.getResponse().setContentType( mType );
-                req.getResponse().setHeader("Content-disposition","filename=" + media.getName());
+                mType = media.getMimetype();
             } else {
                 // got pos info ...
                 for (int i=0; i< vec.size(); i++) {
                     if (((CmsMasterMedia)vec.elementAt(i)).getPosition() == pos) {
                         media = (CmsMasterMedia)vec.elementAt(i);
                         picture = media.getMedia();
-                        String mType = media.getMimetype();
-                        if (mType == null || mType.equals("")) {
-                            mType = "application/octet-stream";
-                        }
-                        req.getResponse().setContentType( mType );
-                        req.getResponse().setHeader("Content-disposition","filename=" + media.getName());
+                        mType = media.getMimetype();
                         break;
                     }
                 }
             }
-            if(picture==null){
+            if(picture == null){
                 picture = emptyGIF;
                 // set the mimetype ...
                 req.getResponse().setContentType("images/gif");
+            } else {
+                // set mime type and filename in header
+                if (mType == null || mType.equals("")) {
+                    mType = "application/octet-stream";
+                }
+                req.getResponse().setContentType( mType );
+                req.getResponse().setHeader("Content-disposition","filename=" + media.getName());
             }
-
         } else{
             picture = emptyGIF;
             // set the mimetype ...
@@ -128,7 +162,7 @@ public class CmsShowMedia extends CmsXmlTemplate {
     }
 
 
-    /**
+ /**
   * Gets the content definition class method constructor
   * @returns content definition object
   */
@@ -139,19 +173,19 @@ public class CmsShowMedia extends CmsXmlTemplate {
         o = c.newInstance(new Object[] {cms, id});
       } catch (InvocationTargetException ite) {
         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-            A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: Invocation target exception!");
+            A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": content definitionConstructor: Invocation target exception!");
         }
       } catch (NoSuchMethodException nsm) {
         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-          A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: Requested method was not found!");
+          A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ":  content definitionConstructor: Requested method was not found!");
         }
       } catch (InstantiationException e) {
         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-            A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: the reflected class is abstract!");
+            A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": content definition constructor: the reflected class is abstract!");
         }
       } catch (Exception e) {
         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-            A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: Other exception! "+e);
+            A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": content definitionConstructor: Other exception! " + e);
         }
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
          A_OpenCms.log(C_OPENCMS_INFO, e.getMessage() );
@@ -174,6 +208,7 @@ public class CmsShowMedia extends CmsXmlTemplate {
 
         CmsCacheDirectives ret = new CmsCacheDirectives(true, false, false, true, true);
         Vector params = new Vector();
+        params.addElement("mid");
         params.addElement("id");
         params.addElement("pos");
         params.addElement("cd");
