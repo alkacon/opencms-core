@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/htmlconverter/Attic/CmsHtmlConverter.java,v $
-* Date   : $Date: 2002/06/14 11:54:44 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2002/06/14 12:21:04 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -539,7 +539,9 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
                             m_tempString.append("</");
                             m_tempString.append(node.getNodeName());
                             m_tempString.append(">");
+                            // append a "\n" to output String
                             if (m_configuration.getGlobalAddEveryLine()) {
+                                // check if a "\n" can be added to output
                                 boolean added = false;
                                 for (int i=0;i<m_enterTags.size();i++) {
                                     if (!added && node.getNodeName().equalsIgnoreCase((String)m_enterTags.elementAt(i))) {
@@ -547,20 +549,23 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
                                                 + "\n" + m_configuration.getGlobalPrefix());
                                         added = true;
                                     }
+                                    // if tag was found, return
                                     if (added) {
-                                        i = m_enterTags.size();
+                                        return;
                                     }
                                 }
                             }
                             else {
+                                // check if a "\n" can be added to output
                                 boolean added = false;
                                 for (int i=0;i<m_enterTags.size();i++) {
                                     if (!added && node.getNodeName().equalsIgnoreCase((String)m_enterTags.elementAt(i))) {
                                         m_tempString.append("\n");
                                         added = true;
                                     }
+                                    // if tag was found, return
                                     if (added) {
-                                        i = m_enterTags.size();
+                                        return;
                                     }
                                 }
                             }
