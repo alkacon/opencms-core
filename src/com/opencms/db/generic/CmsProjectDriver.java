@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/generic/Attic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/06/02 10:58:12 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/06/02 16:03:20 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import source.org.apache.java.util.Configurations;
  * This is the generic project driver to execute operations requested by the Cms
  * using the underlying drivers. This code is still messy like a living space.
  *
- * @version $Revision: 1.6 $ $Date: 2003/06/02 10:58:12 $
+ * @version $Revision: 1.7 $ $Date: 2003/06/02 16:03:20 $
  * @since 5.1.2
  */
 public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
@@ -1220,7 +1220,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
 
                 // create the new folder and insert its id in the folderindex
                 try {
-                    newFolder = m_driverManager.getVfsDriver().createFolder(user, onlineProject, onlineProject, currentFolder, parentId, currentFolder.getResourceName());
+                    newFolder = m_driverManager.getVfsDriver().createFolder(user, onlineProject, currentFolder, parentId, currentFolder.getResourceName());
                     newFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
                     m_driverManager.getVfsDriver().updateResourcestate(newFolder);
                 } catch (CmsException e) {
@@ -1307,7 +1307,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                             folderIdIndex.put(currentFolder.getParentId(), parentId);
                         }
                         // create the new folder
-                        onlineFolder = m_driverManager.getVfsDriver().createFolder(user, onlineProject, onlineProject, currentFolder, parentId, currentFolder.getResourceName());
+                        onlineFolder = m_driverManager.getVfsDriver().createFolder(user, onlineProject, currentFolder, parentId, currentFolder.getResourceName());
                         onlineFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
                         m_driverManager.getVfsDriver().updateResourcestate(onlineFolder);
                     } else {
@@ -1391,7 +1391,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                     } catch (Exception ex) {
                     }
                 }
-                CmsFile currentOnlineFile = m_driverManager.getVfsDriver().readFile(onlineProject.getId(), onlineProject.getId(), currentFile.getResourceName());
+                CmsFile currentOnlineFile = m_driverManager.getVfsDriver().readFile(onlineProject.getId(), currentFile.getResourceName());
                 if (enableHistory) {
                     // read the properties for backup
                     Map props = m_driverManager.getVfsDriver().readProperties(projectId, currentFile, currentFile.getType());
@@ -1448,7 +1448,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                         }
                         // create a new File
                         currentFile.setState(I_CmsConstants.C_STATE_UNCHANGED);
-                        onlineFile = m_driverManager.getVfsDriver().createFile(onlineProject, onlineProject, currentFile, user.getId(), parentId, currentFile.getResourceName());
+                        onlineFile = m_driverManager.getVfsDriver().createFile(onlineProject, currentFile, user.getId(), parentId, currentFile.getResourceName());
                     }
                 } // end of catch
                 Connection conn = null;
@@ -1527,7 +1527,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                 }
                 // create the new file
                 try {
-                    newFile = m_driverManager.getVfsDriver().createFile(onlineProject, onlineProject, currentFile, user.getId(), parentId, currentFile.getResourceName());
+                    newFile = m_driverManager.getVfsDriver().createFile(onlineProject, currentFile, user.getId(), parentId, currentFile.getResourceName());
                     newFile.setState(I_CmsConstants.C_STATE_UNCHANGED);
                     m_driverManager.getVfsDriver().updateResourcestate(newFile);
                 } catch (CmsException e) {
@@ -1561,7 +1561,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                             stmt.setString(15, onlineFile.getResourceId().toString());
                             stmt.executeUpdate();
                             m_driverManager.getVfsDriver().writeFileContent(onlineFile.getFileId(), currentFile.getContents(), I_CmsConstants.C_PROJECT_ONLINE_ID, false);
-                            newFile = m_driverManager.getVfsDriver().readFile(onlineProject.getId(), onlineProject.getId(), currentFile.getResourceName());
+                            newFile = m_driverManager.getVfsDriver().readFile(onlineProject.getId(), currentFile.getResourceName());
                         } catch (SQLException exc) {
                             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
                         } finally {

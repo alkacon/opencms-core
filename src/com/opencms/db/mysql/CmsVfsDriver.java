@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/mysql/Attic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/05/23 16:26:46 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/06/02 16:03:20 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Iterator;
  * MySQL implementation of the VFS driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $ $Date: 2003/05/23 16:26:46 $
+ * @version $Revision: 1.4 $ $Date: 2003/06/02 16:03:20 $
  * @since 5.1.2
  */
 public class CmsVfsDriver extends com.opencms.db.generic.CmsVfsDriver {
@@ -101,7 +101,7 @@ public class CmsVfsDriver extends com.opencms.db.generic.CmsVfsDriver {
      *
      * @throws CmsException Throws CmsException if operation was not succesful
      */
-    public CmsFile createFile(CmsUser user, CmsProject project, CmsProject onlineProject, String filename, int flags, CmsUUID parentId, byte[] contents, I_CmsResourceType resourceType) throws CmsException {
+    public CmsFile createFile(CmsUser user, CmsProject project, String filename, int flags, CmsUUID parentId, byte[] contents, I_CmsResourceType resourceType) throws CmsException {
         if (filename.length() > I_CmsConstants.C_MAX_LENGTH_RESOURCE_NAME) {
             throw new CmsException("[" + this.getClass().getName() + "] " + "Resourcename too long(>" + I_CmsConstants.C_MAX_LENGTH_RESOURCE_NAME + ") ", CmsException.C_BAD_NAME);
         }
@@ -164,7 +164,7 @@ public class CmsVfsDriver extends com.opencms.db.generic.CmsVfsDriver {
             m_sqlManager.closeAll(conn, stmt, null);
             m_sqlManager.closeAll(null, stmtFileWrite, null);
         }
-        return readFile(project.getId(), onlineProject.getId(), filename);
+        return readFile(project.getId(), filename);
     }
 
     public com.opencms.db.generic.CmsSqlManager initQueries(String dbPoolUrl) {
@@ -182,7 +182,7 @@ public class CmsVfsDriver extends com.opencms.db.generic.CmsVfsDriver {
      *
      * @throws CmsException Throws CmsException if operation was not succesful
      */
-    public CmsFile readFile(int projectId, int onlineProjectId, String filename) throws CmsException {
+    public CmsFile readFile(int projectId, String filename) throws CmsException {
         CmsFile file = null;
         PreparedStatement stmt = null;
         ResultSet res = null;
@@ -228,7 +228,7 @@ public class CmsVfsDriver extends com.opencms.db.generic.CmsVfsDriver {
      *
      * @throws CmsException Throws CmsException if operation was not succesful
      */
-    public CmsFile readFile(int projectId, int onlineProjectId, String filename, boolean includeDeleted) throws CmsException {
+    public CmsFile readFile(int projectId, String filename, boolean includeDeleted) throws CmsException {
         CmsFile file = null;
         PreparedStatement stmt = null;
         ResultSet res = null;

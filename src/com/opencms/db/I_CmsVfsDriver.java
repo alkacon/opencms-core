@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/Attic/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/05/23 16:26:46 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/06/02 16:03:20 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,23 +55,23 @@ import source.org.apache.java.util.Configurations;
  * Definitions of all required VFS driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2003/05/23 16:26:46 $
+ * @version $Revision: 1.2 $ $Date: 2003/06/02 16:03:20 $
  * @since 5.1.2
  */
 public interface I_CmsVfsDriver {
+    void changeLockedInProject(int newProjectId, String resourcename) throws CmsException;
+    void copyFile(CmsProject project, CmsUUID userId, CmsUUID parentId, String source, String destination) throws CmsException;
+    int countLockedResources(CmsProject project) throws CmsException;
     
     CmsResource createCmsResourceFromResultSet(ResultSet res, int projectId) throws SQLException, CmsException;
-    void changeLockedInProject(int newProjectId, String resourcename) throws CmsException;
-    void copyFile(CmsProject project, CmsProject onlineProject, CmsUUID userId, String source, CmsUUID parentId, String destination) throws CmsException;
-    int countLockedResources(CmsProject project) throws CmsException;
-    CmsFile createFile(CmsProject project, CmsProject onlineProject, CmsFile file, CmsUUID userId, CmsUUID parentId, String filename) throws CmsException;
-    CmsFile createFile(CmsUser user, CmsProject project, CmsProject onlineProject, String filename, int flags, CmsUUID parentId, byte[] contents, I_CmsResourceType resourceType) throws CmsException;
+    CmsFile createFile(CmsProject project, CmsFile file, CmsUUID userId, CmsUUID parentId, String filename) throws CmsException;
+    CmsFile createFile(CmsUser user, CmsProject project, String filename, int flags, CmsUUID parentId, byte[] contents, I_CmsResourceType resourceType) throws CmsException;
     void createFileContent(CmsUUID fileId, byte[] fileContent, int versionId, int projectId, boolean writeBackup) throws CmsException;
-    CmsFolder createFolder(CmsUser user, CmsProject project, CmsProject onlineProject, CmsFolder folder, CmsUUID parentId, String foldername) throws CmsException;
+    CmsFolder createFolder(CmsUser user, CmsProject project, CmsFolder folder, CmsUUID parentId, String foldername) throws CmsException;
     CmsFolder createFolder(CmsUser user, CmsProject project, CmsUUID parentId, CmsUUID fileId, String folderName, int flags) throws CmsException;
     void createProjectResource(int projectId, String resourceName) throws CmsException;
     CmsPropertydefinition createPropertydefinition(String name, int resourcetype) throws CmsException;
-    CmsResource createResource(CmsProject project, CmsProject onlineProject, CmsResource newResource, byte[] filecontent, CmsUUID userId, boolean isFolder) throws CmsException;
+    CmsResource createResource(CmsProject project, CmsResource newResource, byte[] filecontent, CmsUUID userId, boolean isFolder) throws CmsException;
     void deleteAllProjectResources(int projectId) throws CmsException;
     void deleteAllProperties(int projectId, CmsResource resource) throws CmsException;
     void deleteAllProperties(int projectId, CmsUUID resourceId) throws CmsException;
@@ -104,8 +104,8 @@ public interface I_CmsVfsDriver {
     Vector readAllPropertydefinitions(I_CmsResourceType resourcetype) throws CmsException;
     Vector readAllPropertydefinitions(int resourcetype) throws CmsException;
     Vector readBackupProjectResources(int versionId) throws CmsException;
-    CmsFile readFile(int projectId, int onlineProjectId, String filename) throws CmsException;
-    CmsFile readFile(int projectId, int onlineProjectId, String filename, boolean includeDeleted) throws CmsException;
+    CmsFile readFile(int projectId, String filename) throws CmsException;
+    CmsFile readFile(int projectId, String filename, boolean includeDeleted) throws CmsException;
     byte[] readFileContent(int projectId, int fileId) throws CmsException;
     CmsFile readFileHeader(int projectId, CmsResource resource) throws CmsException;
     CmsFile readFileHeader(int projectId, CmsUUID resourceId) throws CmsException;

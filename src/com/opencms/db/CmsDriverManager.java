@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/Attic/CmsDriverManager.java,v $
- * Date   : $Date: 2003/06/02 15:32:16 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/06/02 16:03:20 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -98,13 +98,13 @@ import com.opencms.workplace.CmsAdminVfsLinkManagement;
 
 
 /**
- * @version $Revision: 1.8 $ $Date: 2003/06/02 15:32:16 $
+ * @version $Revision: 1.9 $ $Date: 2003/06/02 16:03:20 $
  * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
  */
 /**
  * This is the driver manager.
  * 
- * @version $Revision: 1.8 $ $Date: 2003/06/02 15:32:16 $
+ * @version $Revision: 1.9 $ $Date: 2003/06/02 16:03:20 $
  */
 public class CmsDriverManager implements I_CmsConstants {
    
@@ -1864,8 +1864,8 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
                 accessOwner(currentUser, currentProject, file, C_ACCESS_OWNER_WRITE) ||
                 accessGroup(currentUser, currentProject, file, C_ACCESS_GROUP_WRITE) )){
                 // write-acces  was granted - copy the file and the metainfos
-                m_vfsDriver.copyFile(currentProject, onlineProject(currentUser, currentProject),
-                              currentUser.getId(),source,cmsFolder.getResourceId(), foldername + filename);
+                m_vfsDriver.copyFile(currentProject, currentUser.getId(),
+                              cmsFolder.getResourceId(),source,foldername + filename);
 
                 this.clearResourceCache(foldername + filename, currentProject, currentUser);
                 // copy the metainfos
@@ -1929,7 +1929,7 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
             if(( accessOther((CmsResource)folder, C_ACCESS_PUBLIC_WRITE) ||
                 accessOwner(currentUser, currentProject, (CmsResource)folder, C_ACCESS_OWNER_WRITE) ||
                 accessGroup(currentUser, currentProject, (CmsResource)folder, C_ACCESS_GROUP_WRITE) )){
-                m_vfsDriver.createFolder(currentUser,currentProject, onlineProject(currentUser, currentProject), folder,cmsFolder.getResourceId(),destination);
+                m_vfsDriver.createFolder(currentUser,currentProject, folder, cmsFolder.getResourceId(),destination);
                 this.clearResourceCache(destination, currentProject, currentUser);
                 // copy the properties
 				CmsResource newResource = lockResource(currentUser, currentProject, destination, true);
@@ -2108,9 +2108,8 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
         if( accessCreate(currentUser, currentProject, (CmsResource)cmsFolder) ) {
             // write-access was granted - create and return the file.
             CmsFile file = m_vfsDriver.createFile(currentUser, currentProject,
-                                               onlineProject(currentUser, currentProject),
-                                               newFileName, 0, cmsFolder.getResourceId(),
-                                               contents,
+                                               newFileName,
+                                               0, cmsFolder.getResourceId(), contents,
                                                getResourceType(currentUser, currentProject, type));
 
             // create the default access control entries
@@ -2306,7 +2305,7 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
             newResource.setDateLastModified(lastmodified);
 
             // write-acces  was granted - create the folder.
-            newResource = m_vfsDriver.createResource(currentProject, onlineProject(currentUser, currentProject), newResource, filecontent, currentUser.getId(), isFolder);
+            newResource = m_vfsDriver.createResource(currentProject, newResource, filecontent, currentUser.getId(), isFolder);
 
             this.clearResourceCache(newResourceName, currentProject, currentUser);
             // write metainfos for the folder
@@ -5568,7 +5567,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
         CmsFile cmsFile = null;
         try {
             if (cmsFile == null) {
-                cmsFile = m_vfsDriver.readFile(currentProject.getId(), onlineProject(currentUser, currentProject).getId(), filename);
+                cmsFile = m_vfsDriver.readFile(currentProject.getId(), filename);
             }
         } catch (CmsException exc) {
             // the resource was not readable
@@ -5604,7 +5603,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
         CmsFile cmsFile = null;
         try {
             if (cmsFile == null) {
-                cmsFile = m_vfsDriver.readFile(currentProject.getId(), onlineProject(currentUser, currentProject).getId(), filename, includeDeleted);
+                cmsFile = m_vfsDriver.readFile(currentProject.getId(), filename, includeDeleted);
             }
         } catch (CmsException exc) {
             // the resource was not readable
