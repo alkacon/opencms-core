@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/util/Attic/CmsStringSubstitution.java,v $
- * Date   : $Date: 2003/02/11 18:37:05 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/02/21 17:17:23 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.apache.oro.text.perl.MalformedPerl5PatternException;
  * with Perl regular expressions.<p>
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.0
  */
 public class CmsStringSubstitution {
@@ -126,6 +126,30 @@ public static String escapePattern(String source) {
 	}
 	if (DEBUG>0) System.err.println("[CmsStringSubstitution]: escaped String to: "+result.toString());
 	return new String(result);
+}
+
+/**
+ * Escapes the occurences of a pattern in a String so it may be used as a Perl5 regular expression.<p>
+ * 
+ * @param source the string to escape
+ * @param pattern the character which has to be escaped
+ * @return the escaped string
+ */
+public static String escapePattern(String source, char pattern) {
+    if (DEBUG>0) System.err.println("[CmsStringSubstitution]: escaping String: "+source);
+    if (source == null) return null;
+    StringBuffer result = new StringBuffer(source.length()*2);
+    for(int i = 0;i < source.length(); ++i) {
+        char ch = source.charAt(i);
+        if (ch == pattern) {
+            result.append("\\"+pattern);
+        }
+        else {
+            result.append(ch);
+        }                     
+    }
+    if (DEBUG>0) System.err.println("[CmsStringSubstitution]: escaped String to: "+result.toString());
+    return new String(result);
 }
 
 }
