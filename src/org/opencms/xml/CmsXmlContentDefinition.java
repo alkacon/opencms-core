@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentDefinition.java,v $
- * Date   : $Date: 2004/12/06 13:20:39 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/12/10 15:24:54 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * @since 5.5.0
  */
 public class CmsXmlContentDefinition implements Cloneable {
@@ -238,7 +238,7 @@ public class CmsXmlContentDefinition implements Cloneable {
         // now analyze the document and generate the XML content type definition        
         Element root = document.getRootElement();
         if (!XSD_NODE_SCHEMA.equals(root.getQName())) {
-            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure");
+            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: schema node expected");
         }
 
         List includes = root.elements(XSD_NODE_INCLUDE);
@@ -258,29 +258,29 @@ public class CmsXmlContentDefinition implements Cloneable {
         Attribute nameAttr = main.attribute(XSD_ATTRIBUTE_NAME);
         Attribute typeAttr = main.attribute(XSD_ATTRIBUTE_TYPE);
         if ((nameAttr == null) || (typeAttr == null)) {
-            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure");
+            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: name and type attribute expected");
         }
 
         String name = nameAttr.getValue();
         if (!name.endsWith("s")) {
-            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure");
+            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: Name attribute value must end with \"s\"");
         }
         name = name.substring(0, name.length() - 1);
         if (name.length() == 0) {
-            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure");
+            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: Name missing");
         }
 
         String listName = createListName(name);
         String typeName = createTypeName(name);
 
         if (!listName.equals(typeAttr.getValue())) {
-            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure");
+            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: Invalid list name");
         }
 
         // OpenCms XML content definitions require exactly 2 complex types
         List complexTypes = root.elements(XSD_NODE_COMPLEXTYPE);
         if (complexTypes.size() != 2) {
-            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure");
+            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: Requires two complex types");
         }
 
         Element complex1 = (Element)complexTypes.get(0);
@@ -290,10 +290,10 @@ public class CmsXmlContentDefinition implements Cloneable {
         String name2 = complex2.attributeValue(XSD_ATTRIBUTE_NAME);
 
         if (!(listName.equals(name1) || listName.equals(name2))) {
-            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure");
+            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: List name must be equal to one of the complex type names");
         }
         if (!(typeName.equals(name1) || typeName.equals(name2))) {
-            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure");
+            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: Type name must be equal to one of the complex type names");
         }
 
         // determine which is the "list" and which is the "type" element
@@ -311,29 +311,29 @@ public class CmsXmlContentDefinition implements Cloneable {
         // check if the list element is defined correctly
         Element listSequence = (Element)listElement.elements().get(0);
         if (!XSD_NODE_SEQUENCE.equals(listSequence.getQName())) {
-            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure");
+            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: sequence node expected");
         }
         Element listSequenceElement = (Element)listSequence.elements().get(0);
         if (!XSD_NODE_ELEMENT.equals(listSequenceElement.getQName())) {
-            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure");
+            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: element node expected");
         }
         if (!name.equals(listSequenceElement.attributeValue(XSD_ATTRIBUTE_NAME))) {
-            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure");
+            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: wrong name");
         }
         if (!typeName.equals(listSequenceElement.attributeValue(XSD_ATTRIBUTE_TYPE))) {
-            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure");
+            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: wrong type name");
         }
         if (!XSD_ATTRIBUTE_VALUE_ZERO.equals(listSequenceElement.attributeValue(XSD_ATTRIBUTE_MIN_OCCURS))) {
-            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure");
+            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: minOccurs must be zero");
         }
         if (!XSD_ATTRIBUTE_VALUE_UNBOUNDED.equals(listSequenceElement.attributeValue(XSD_ATTRIBUTE_MAX_OCCURS))) {
-            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure");
+            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: maxOccurs must be unbounded");
         }
 
         // now check the type definition list
         List typeElements = typeElement.elements();
         if ((typeElements.size() != 2) && (typeElements.size() != 3)) {
-            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure");
+            throw new CmsXmlException("Invalid OpenCms content definition XML schema structure: Expected two type elements");
         }
 
         Element type1 = (Element)typeElements.get(0);

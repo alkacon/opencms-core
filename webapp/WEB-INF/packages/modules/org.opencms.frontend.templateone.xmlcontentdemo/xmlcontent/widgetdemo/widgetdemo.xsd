@@ -1,0 +1,42 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>	
+	<xsd:element name="Widgets" type="OpenCmsWidgets"/>
+	
+	<xsd:complexType name="OpenCmsWidgets">
+		<xsd:sequence>
+			<xsd:element name="Widget" type="OpenCmsWidget" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsWidget">
+		<xsd:sequence>
+
+			<xsd:element name="String" type="OpenCmsString" />
+			<xsd:element name="Html" type="OpenCmsHtml" />
+			<xsd:element name="Locale" type="OpenCmsLocale" />			
+			<xsd:element name="File" type="OpenCmsVfsFile" />
+			<xsd:element name="Image" type="OpenCmsVfsFile" />
+			<xsd:element name="Download" type="OpenCmsVfsFile" />
+			<xsd:element name="Link" type="OpenCmsVfsFile" />
+			<xsd:element name="Color" type="OpenCmsColor" />
+			<xsd:element name="DateTime" type="OpenCmsDateTime" />
+			<xsd:element name="Boolean" type="OpenCmsBoolean" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<defaults>
+				<default element="DateTime" value="${currenttime}" />
+				<default element="Locale" value="${request:locale}" />
+			</defaults>
+			<layouts>
+				<layout element="Image" widget="ImageGalleryWidget" />
+				<layout element="Download" widget="DownloadGalleryWidget" />
+				<layout element="Link" widget="LinkGalleryWidget" />
+			</layouts>	
+		</xsd:appinfo>
+	</xsd:annotation>  
+</xsd:schema>

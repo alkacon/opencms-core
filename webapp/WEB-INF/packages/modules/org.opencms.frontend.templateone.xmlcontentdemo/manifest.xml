@@ -40,12 +40,38 @@
 				<param name="resource.type.id">12</param>
 				<param name="resource.type.name">article</param>
 				<param name="schema">/sites/default/xmlcontent/article.xsd</param>
-			</type>				
+			</type>
+            <type class="org.opencms.file.types.CmsResourceTypeXmlContent">
+				<param name="resource.type.id">13</param>
+                <param name="resource.type.name">widgetdemo</param>
+                <param name="schema">/sites/default/xmlcontent/widgetdemo/widgetdemo.xsd</param>
+            </type>
+            <type class="org.opencms.file.types.CmsResourceTypeXmlContent">
+				<param name="resource.type.id">14</param>
+                <param name="resource.type.name">bookmark</param>
+                <param name="schema">/sites/default/xmlcontent/nestedcontent/bookmark.xsd</param>
+            </type>         				
 		</resourcetypes>
 		<explorertypes>
 			<explorertype name="article" key="fileicon.article" icon="article.gif" reference="xmlcontent">
 				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=article" order="25"/>
 	       	</explorertype>	
+            <explorertype name="widgetdemo" key="fileicon.widgetdemo" icon="xmlcontent.gif" reference="xmlcontent">
+              	<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=widgetdemo" order="26"/>
+                <accesscontrol>
+                    <accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
+                    <accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
+                    <accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
+                </accesscontrol>
+            </explorertype>
+            <explorertype name="bookmark" key="fileicon.bookmark" icon="xmlcontent.gif" reference="xmlcontent">
+                <newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=bookmark" order="27"/>
+                <accesscontrol>
+                    <accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
+                    <accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
+                    <accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
+                </accesscontrol>
+            </explorertype>
         </explorertypes>
 	</module>
 	<files>
@@ -820,6 +846,432 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>xmlcontent/widgetdemo</destination>
+			<type>folder</type>
+			<datelastmodified>Fri, 10 Dec 2004 15:36:25 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Dec 2004 09:36:17 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[4.890625]]></value>
+				</property>
+				<property>
+					<name>default-file</name>
+					<value><![CDATA[list.jsp]]></value>
+				</property>
+				<property>
+					<name>template-elements</name>
+					<value><![CDATA[/xmlcontent/widgetdemo/detail.jsp]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Available Widgets]]></value>
+				</property>
+				<property>
+					<name>xmlcontent-demo</name>
+					<value><![CDATA[/xmlcontent/widgetdemo/]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Demo of widgets for content editing]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>xmlcontent/widgetdemo/detail.jsp</source>
+			<destination>xmlcontent/widgetdemo/detail.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>aec341ca-4ab8-11d9-9252-7f8d39515329</uuidresource>
+			<datelastmodified>Fri, 10 Dec 2004 15:36:46 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Dec 2004 15:35:05 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[XML content article detail view]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>xmlcontent/widgetdemo/list.jsp</source>
+			<destination>xmlcontent/widgetdemo/list.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>c378e48f-4a96-11d9-a9ec-7f8d39515329</uuidresource>
+			<datelastmodified>Fri, 10 Dec 2004 15:34:27 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Dec 2004 11:32:16 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[XML content article demo page]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>xmlcontent/widgetdemo/list_content.html</source>
+			<destination>xmlcontent/widgetdemo/list_content.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>9a6cb4a6-4a98-11d9-a9ec-7f8d39515329</uuidresource>
+			<datelastmodified>Fri, 10 Dec 2004 11:49:14 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Dec 2004 11:45:27 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>512</flags>
+			<properties>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
+				<property type="shared">
+					<name>Title</name>
+					<value><![CDATA[Contents for list view]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>xmlcontent/widgetdemo/widgetdemo.xsd</source>
+			<destination>xmlcontent/widgetdemo/widgetdemo.xsd</destination>
+			<type>plain</type>
+			<uuidresource>23768351-4a87-11d9-b6d0-b12b962e112e</uuidresource>
+			<datelastmodified>Fri, 10 Dec 2004 11:08:33 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Dec 2004 09:40:26 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Schema for Widgetdemo]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>xmlcontent/widgetdemo/widgetdemo_0001</source>
+			<destination>xmlcontent/widgetdemo/widgetdemo_0001</destination>
+			<type>widgetdemo</type>
+			<uuidresource>e58f0260-4a94-11d9-a9ec-7f8d39515329</uuidresource>
+			<datelastmodified>Fri, 10 Dec 2004 15:22:41 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Dec 2004 11:18:55 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Demonstrates all available widgets]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>xmlcontent/widgetdemo/downloads</destination>
+			<type>downloadgallery</type>
+			<datelastmodified>Fri, 10 Dec 2004 11:10:12 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Dec 2004 11:09:52 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Sample Gallery for Downloads]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>xmlcontent/widgetdemo/downloads/download.txt</source>
+			<destination>xmlcontent/widgetdemo/downloads/download.txt</destination>
+			<type>plain</type>
+			<uuidresource>5d5a6321-4a94-11d9-a9ec-7f8d39515329</uuidresource>
+			<datelastmodified>Fri, 10 Dec 2004 11:17:34 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Dec 2004 11:15:06 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Download file for demonstration purposes]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>xmlcontent/widgetdemo/images</destination>
+			<type>imagegallery</type>
+			<datelastmodified>Fri, 10 Dec 2004 11:01:08 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Dec 2004 11:00:41 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Sample Gallery for Images]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>xmlcontent/widgetdemo/images/workplace.gif</source>
+			<destination>xmlcontent/widgetdemo/images/workplace.gif</destination>
+			<type>image</type>
+			<uuidresource>ccde9543-4a92-11d9-a9ec-7f8d39515329</uuidresource>
+			<datelastmodified>Tue, 17 Aug 2004 15:15:49 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Dec 2004 11:03:54 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Workplace logo]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>xmlcontent/widgetdemo/links</destination>
+			<type>linkgallery</type>
+			<datelastmodified>Fri, 10 Dec 2004 11:10:40 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Dec 2004 11:10:32 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Sample Gallery for Links]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>xmlcontent/widgetdemo/links/opencms.org</source>
+			<destination>xmlcontent/widgetdemo/links/opencms.org</destination>
+			<type>pointer</type>
+			<uuidresource>e4ce3fc9-4a93-11d9-a9ec-7f8d39515329</uuidresource>
+			<datelastmodified>Fri, 10 Dec 2004 11:11:58 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Dec 2004 11:11:44 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Link to OpenCms Website]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>xmlcontent/nestedcontent</destination>
+			<type>folder</type>
+			<datelastmodified>Fri, 10 Dec 2004 15:14:38 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Dec 2004 11:58:12 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[5.890625]]></value>
+				</property>
+				<property>
+					<name>default-file</name>
+					<value><![CDATA[list.jsp]]></value>
+				</property>
+				<property>
+					<name>template-elements</name>
+					<value><![CDATA[/xmlcontent/nestedcontent/detail.jsp]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Nested XML contents]]></value>
+				</property>
+				<property>
+					<name>xmlcontent-demo</name>
+					<value><![CDATA[/xmlcontent/nestedcontent/]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Demo of nested XML contents]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>xmlcontent/nestedcontent/address.xsd</source>
+			<destination>xmlcontent/nestedcontent/address.xsd</destination>
+			<type>plain</type>
+			<uuidresource>ca5a9323-4a9b-11d9-a9ec-7f8d39515329</uuidresource>
+			<datelastmodified>Fri, 10 Dec 2004 14:21:00 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Dec 2004 12:08:15 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>xmlcontent/nestedcontent/bookmark.xsd</source>
+			<destination>xmlcontent/nestedcontent/bookmark.xsd</destination>
+			<type>plain</type>
+			<uuidresource>c1bb8b1f-4a9b-11d9-a9ec-7f8d39515329</uuidresource>
+			<datelastmodified>Fri, 10 Dec 2004 14:41:09 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Dec 2004 12:08:01 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>xmlcontent/nestedcontent/bookmark_0001.html</source>
+			<destination>xmlcontent/nestedcontent/bookmark_0001.html</destination>
+			<type>bookmark</type>
+			<uuidresource>8faf73e9-4ab0-11d9-9252-7f8d39515329</uuidresource>
+			<datelastmodified>Fri, 10 Dec 2004 15:29:00 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Dec 2004 14:36:56 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<datereleased>Fri, 10 Dec 2004 15:20:00 CET</datereleased>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>xmlcontent/nestedcontent/bookmark_0002.html</source>
+			<destination>xmlcontent/nestedcontent/bookmark_0002.html</destination>
+			<type>bookmark</type>
+			<uuidresource>ea39c9f7-4ab2-11d9-9252-7f8d39515329</uuidresource>
+			<datelastmodified>Fri, 10 Dec 2004 15:29:00 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Dec 2004 14:53:47 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<datereleased>Fri, 10 Dec 2004 15:21:00 CET</datereleased>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>xmlcontent/nestedcontent/bookmark_0003.html</source>
+			<destination>xmlcontent/nestedcontent/bookmark_0003.html</destination>
+			<type>bookmark</type>
+			<uuidresource>150f392a-4ab7-11d9-9252-7f8d39515329</uuidresource>
+			<datelastmodified>Fri, 10 Dec 2004 15:29:00 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Dec 2004 15:23:37 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<datereleased>Fri, 10 Dec 2004 15:22:00 CET</datereleased>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>xmlcontent/nestedcontent/detail.jsp</source>
+			<destination>xmlcontent/nestedcontent/detail.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>281f2e7b-4aad-11d9-8340-7f8d39515329</uuidresource>
+			<datelastmodified>Fri, 10 Dec 2004 15:09:32 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Dec 2004 14:12:34 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[XML content article detail view]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>xmlcontent/nestedcontent/list.jsp</source>
+			<destination>xmlcontent/nestedcontent/list.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>2924c5ca-4ab2-11d9-9252-7f8d39515329</uuidresource>
+			<datelastmodified>Fri, 10 Dec 2004 15:17:13 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Dec 2004 14:48:23 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[XML content article demo page]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>xmlcontent/nestedcontent/list_content.html</source>
+			<destination>xmlcontent/nestedcontent/list_content.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>9f7b4471-4ab2-11d9-9252-7f8d39515329</uuidresource>
+			<datelastmodified>Fri, 10 Dec 2004 15:20:37 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Dec 2004 14:51:42 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>512</flags>
+			<properties>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
+				<property type="shared">
+					<name>Title</name>
+					<value><![CDATA[Contents for list view]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 	</files>
