@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
- * Date   : $Date: 2001/07/26 14:59:30 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2001/07/26 15:02:14 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -636,6 +636,32 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         } catch (CmsException e) {
             // an exception is thrown if the folder already exists
         }
+        if(fullname == null){
+            //the folder exists, check if properties has to be updated
+            cmsfolder = cms.readFolder(path, name + "/");
+            Hashtable oldProperties = cms.readAllProperties(cmsfolder.getAbsolutePath());
+            if(oldProperties == null){
+                oldProperties = new Hashtable();
+            }
+            if(properties == null){
+                properties = new Hashtable();
+            }
+            if( !oldProperties.equals(properties)){
+                fullname = cmsfolder.getAbsolutePath();
+                lockResource(cms, fullname, true);
+                cms.writeProperties(fullname, properties);
+            }
+            if(fullname == null){
+                // properties are the same but what about the owner, group and access?
+                if(cmsfolder.getFlags() != Integer.parseInt(access) ||
+                        cmsfolder.getOwnerId() != cms.readUser(user).getId() ||
+                        cmsfolder.getGroupId() != cms.readGroup(group).getId() ){
+                    fullname = cmsfolder.getAbsolutePath();
+                    lockResource(cms, fullname, true);
+                }
+            }
+        }
+
         if(fullname != null){
             try{
                 cms.chmod(fullname, Integer.parseInt(access));
