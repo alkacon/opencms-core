@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsFolder.java,v $
- * Date   : $Date: 2004/05/19 16:20:54 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/05/21 15:14:28 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,13 +46,14 @@ import java.io.Serializable;
  * @version $Revision: 1.26 
  */
 public class CmsFolder extends CmsResource implements Cloneable, Serializable, Comparable {
- 
+
     /**
      * Constructor, creates a new CmsFolder Object from the given CmsResource.<p> 
      * 
      * @param resource the base resource object to create a folder from
      */
     public CmsFolder(CmsResource resource) {
+
         this(
             resource.getStructureId(),
             resource.getResourceId(),
@@ -66,47 +67,35 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
             resource.getDateCreated(),
             resource.getUserCreated(),
             resource.getDateLastModified(),
-            resource.getUserLastModified(),       
-            resource.getLinkCount(), 0, 0
-        );
+            resource.getUserLastModified(),
+            resource.getLinkCount(),
+            resource.getDateReleased(),
+            resource.getDateExpired());
         if (resource.hasFullResourceName()) {
             setFullResourceName(resource.getRootPath());
-        }        
-    }
-    
-    /**
-     * Sets the resource name including the path, ensuring that the name ends with a "/".<p>
-     * 
-     * @param fullResourceName the resource name including the path
-     */
-    public void setFullResourceName(String fullResourceName) {
-        if (! CmsResource.isFolder(fullResourceName)) {
-            super.setFullResourceName(fullResourceName + "/");
-        } else {
-            super.setFullResourceName(fullResourceName);
         }
-    }    
+    }
 
-   /**
-    * Constructor, creates a new CmsFolder object.<p>
-    *
-    * @param structureId the id of this resources structure record
- * @param resourceId the id of this resources resource record
- * @param parentId the id of this resources parent folder
- * @param fileId the id of this resources content record
- * @param name the filename of this resouce
- * @param type the type of this resource
- * @param flags the flags of this resource
- * @param projectId the project id this resource was last modified in
- * @param state the state of this resource
- * @param dateCreated the creation date of this resource
- * @param userCreated the id of the user who created this resource
- * @param dateLastModified the date of the last modification of this resource
- * @param userLastModified the id of the user who did the last modification of this resource    * @param size the size of the file content of this resource
- * @param linkCount the count of all siblings of this resource 
- * @param dateReleased TODO
- * @param dateExpired TODO
-    */
+    /**
+     * Constructor, creates a new CmsFolder object.<p>
+     *
+     * @param structureId the id of this resources structure record
+     * @param resourceId the id of this resources resource record
+     * @param parentId the id of this resources parent folder
+     * @param fileId the id of this resources content record
+     * @param name the filename of this resouce
+     * @param type the type of this resource
+     * @param flags the flags of this resource
+     * @param projectId the project id this resource was last modified in
+     * @param state the state of this resource
+     * @param dateCreated the creation date of this resource
+     * @param userCreated the id of the user who created this resource
+     * @param dateLastModified the date of the last modification of this resource
+     * @param userLastModified the id of the user who did the last modification of this resource    * @param size the size of the file content of this resource
+     * @param linkCount the count of all siblings of this resource 
+     * @param dateReleased the release date of this resource
+     * @param dateExpired the expiration date of this resource
+     */
     public CmsFolder(
         CmsUUID structureId,
         CmsUUID resourceId,
@@ -121,10 +110,10 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
         CmsUUID userCreated,
         long dateLastModified,
         CmsUUID userLastModified,
-        int linkCount, 
+        int linkCount,
         long dateReleased,
-        long dateExpired
-    ) {             
+        long dateExpired) {
+
         super(
             structureId,
             resourceId,
@@ -140,18 +129,19 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
             userCreated,
             dateLastModified,
             userLastModified,
-            -1,
-            linkCount,
             dateReleased,
-            dateExpired);
+            dateExpired,
+            linkCount,
+            -1);
     }
-    
+
     /**
      * Returns a clone of this Objects instance.<p>
      * 
      * @return a clone of this instance
      */
     public Object clone() {
+
         return new CmsFolder(
             getStructureId(),
             getResourceId(),
@@ -166,6 +156,22 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
             getUserCreated(),
             getDateLastModified(),
             getUserLastModified(),
-            getLinkCount(), 0, 0);
+            getLinkCount(),
+            getDateReleased(),
+            getDateExpired());
+    }
+
+    /**
+     * Sets the resource name including the path, ensuring that the name ends with a "/".<p>
+     * 
+     * @param fullResourceName the resource name including the path
+     */
+    public void setFullResourceName(String fullResourceName) {
+
+        if (!CmsResource.isFolder(fullResourceName)) {
+            super.setFullResourceName(fullResourceName + "/");
+        } else {
+            super.setFullResourceName(fullResourceName);
+        }
     }
 }

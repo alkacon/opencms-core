@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsRequestContext.java,v $
- * Date   : $Date: 2004/05/19 16:20:54 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/05/21 15:14:28 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Locale;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  *
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class CmsRequestContext {
 
@@ -70,7 +70,7 @@ public class CmsRequestContext {
     private Locale m_locale;
     
     /** The remote ip address */
-    String m_remoteAddr;
+    private String m_remoteAddr;
     
     /** Used to save / restore a site root */
     private String m_savedSiteRoot;
@@ -125,7 +125,6 @@ public class CmsRequestContext {
         m_directoryTranslator = directoryTranslator;
         m_fileTranslator = fileTranslator;
         m_requestTime = System.currentTimeMillis();
-
     }
 
     /**
@@ -426,8 +425,7 @@ public class CmsRequestContext {
     public void setRequestTime(long time) {
         m_requestTime = time;
     }
-    
-    
+        
     /**
      * Sets the current root directory in the virtual file system.<p>
      * 

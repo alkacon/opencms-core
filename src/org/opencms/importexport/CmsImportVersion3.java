@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2004/05/19 16:20:54 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2004/05/21 15:16:44 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -522,9 +522,30 @@ public class CmsImportVersion3 extends A_CmsImport {
             }
             
             // create a new CmsResource                         
-            CmsResource resource = new CmsResource(newUuidstructure, newUuidresource, CmsUUID.getNullUUID(), newUuidcontent, resname, resType, new Integer(flags).intValue(), m_cms.getRequestContext().currentProject().getId(), I_CmsConstants.C_STATE_NEW, m_cms.getResourceType(resType).getLoaderId(), datelastmodified, newUserlastmodified, datecreated, newUsercreated, size, 1, 0, 0);
+            CmsResource resource = new CmsResource(
+                newUuidstructure, 
+                newUuidresource, 
+                CmsUUID.getNullUUID(), 
+                newUuidcontent, 
+                resname, 
+                resType, 
+                new Integer(flags).intValue(), 
+                m_cms.getRequestContext().currentProject().getId(), 
+                I_CmsConstants.C_STATE_NEW, 
+                m_cms.getResourceType(resType).getLoaderId(), 
+                datelastmodified, 
+                newUserlastmodified, 
+                datecreated, 
+                newUsercreated, 
+                CmsResource.DATE_RELEASED_DEFAULT, 
+                CmsResource.DATE_EXPIRED_DEFAULT, 
+                1, 
+                size
+            );
+            // TODO: must read expired / released from manifest
+            int date_warning = 0;
+            
             // import this resource in the VFS   
-
             res = m_cms.importResource(resource, content, properties, m_importPath + destination);
 
             if (res != null) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2004/05/19 16:20:54 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2004/05/21 15:16:44 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -228,10 +228,10 @@ public abstract class A_CmsImport implements I_CmsImport {
     }
 
     /**
-     * Converts old style links to new internal links if possible.<p>
+     * Converts old style pointers to siblings if possible.<p>
      * @throws CmsException if something goes wrong
      */
-    protected void convertPointerToLinks() throws CmsException {
+    protected void convertPointerToSiblings() throws CmsException {
         HashSet checkedProperties = new HashSet();
         Iterator keys = m_linkStorage.keySet().iterator();
         int linksSize = m_linkStorage.size();
@@ -246,9 +246,9 @@ public abstract class A_CmsImport implements I_CmsImport {
             m_report.print(key + " ");
             m_report.print(m_report.key("report.dots"));
 
-            // now check if this is an internal link
+            // check if this is an internal pointer
             if (link.startsWith("/")) {
-                // now check if the link target is existing
+                // check if the pointer target is existing
                 try {
                     CmsResource target = m_cms.readFileHeader(link);
 
@@ -268,14 +268,13 @@ public abstract class A_CmsImport implements I_CmsImport {
                         target.getUserCreated(), 
                         target.getDateLastModified(), 
                         target.getUserLastModified(), 
-                        0, 
+                        CmsResource.DATE_RELEASED_DEFAULT, 
+                        CmsResource.DATE_EXPIRED_DEFAULT,
                         1,
-                        0,
                         0
                     );
                     
                     m_cms.importResource(resource, null, properties, key);
-                    // m_cms.createVfsLink(key, link, properties);
                     m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
                 } catch (CmsException ex) {
                     m_report.println();

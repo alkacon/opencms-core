@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2004/04/23 14:51:07 $
- * Version: $Revision: 1.72 $
+ * Date   : $Date: 2004/05/21 15:12:02 $
+ * Version: $Revision: 1.73 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.72 $ $Date: 2004/04/23 14:51:07 $
+ * @version $Revision: 1.73 $ $Date: 2004/05/21 15:12:02 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -150,23 +150,6 @@ public interface I_CmsVfsDriver {
      * @throws CmsException if operation was not succesful
      */
     CmsFolder createFolder(CmsProject project, CmsFolder folder, CmsUUID parentId) throws CmsException;
-
-    /**
-      * Creates a new folder in the database from a list of arguments.<p>
-      *
-      * @param project the project in which the resource will be used
-      * @param parentId the parentId of the folder
-      * @param fileId the fileId of the folder
-      * @param folderName the complete path to the folder in which the new folder will be created
-      * @param flags the flags of this resource
-      * @param dateLastModified the overwrite modification timestamp
-      * @param userLastModified the overwrite modification user
-      * @param dateCreated the overwrite creation timestamp  
-      * @param userCreated the overwrite creation user         
-      * @return the created folder.
-      * @throws CmsException if operation was not succesful
-      */
-    CmsFolder createFolder(CmsProject project, CmsUUID parentId, CmsUUID fileId, String folderName, int flags, long dateLastModified, CmsUUID userLastModified, long dateCreated, CmsUUID userCreated) throws CmsException;
 
     /**
      * Creates a new property defintion in the databse.<p>

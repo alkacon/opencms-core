@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2004/05/19 16:20:54 $
-* Version: $Revision: 1.67 $
+* Date   : $Date: 2004/05/21 15:10:42 $
+* Version: $Revision: 1.68 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,8 +56,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.67 $
- * $Date: 2004/05/19 16:20:54 $
+ * $Revision: 1.68 $
+ * $Date: 2004/05/21 15:10:42 $
  */
 public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsExtendedContentDefinition{
 
@@ -213,7 +213,7 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
                                      I_CmsConstants.C_UNKNOWN_ID,
                                      System.currentTimeMillis(), m_cms.getRequestContext().currentUser().getId(),
                                      System.currentTimeMillis(), m_cms.getRequestContext().currentUser().getId(),
-                                     0, 1, 0, 0);
+                                     CmsResource.DATE_RELEASED_DEFAULT, CmsResource.DATE_EXPIRED_DEFAULT, 1, 0);
         m_properties = new Hashtable();
     }
 

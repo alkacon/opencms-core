@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsFile.java,v $
- * Date   : $Date: 2004/05/19 16:20:54 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/05/21 15:14:28 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,13 +46,13 @@ import java.io.Serializable;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsFile extends CmsResource implements Cloneable, Serializable, Comparable {
-    
+
     /** The content of this file */
     private byte[] m_fileContent;
-    
+
     /**
      * Constructor, creates a new CmsFile Object from the given CmsResource with 
      * an empty byte array as file content.<p>
@@ -60,6 +60,7 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
      * @param resource the base resource object to create a file from
      */
     public CmsFile(CmsResource resource) {
+
         this(
             resource.getStructureId(),
             resource.getResourceId(),
@@ -75,10 +76,11 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
             resource.getUserCreated(),
             resource.getDateLastModified(),
             resource.getUserLastModified(),
-            0,            
-            resource.getLinkCount(), 
-            0, 0, new byte[0]
-        );
+            resource.getDateReleased(),
+            resource.getDateExpired(),
+            resource.getLinkCount(),
+            0,
+            new byte[0]);
         if (resource.hasFullResourceName()) {
             setFullResourceName(resource.getRootPath());
         }
@@ -90,30 +92,30 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
             }
         }
     }
-    
-   /**
-    * Constructor, creates a new CmsFile object.<p>
-    *
-    * @param structureId the id of this resources structure record
- * @param resourceId the id of this resources resource record
- * @param parentId the id of this resources parent folder
- * @param fileId the id of this resources content record
- * @param name the filename of this resouce
- * @param type the type of this resource
- * @param flags the flags of this resource
- * @param projectId the project id this resource was last modified in
- * @param state the state of this resource
- * @param loaderId the id for the that is used to load this recource
- * @param dateCreated the creation date of this resource
- * @param userCreated the id of the user who created this resource
- * @param dateLastModified the date of the last modification of this resource
- * @param userLastModified the id of the user who did the last modification of this resource
- * @param length the size of the file content of this resource
- * @param linkCount the count of all siblings of this resource 
- * @param dateReleased TODO
- * @param dateExpired TODO
- * @param content the binary content data of this file
-    */
+
+    /**
+     * Constructor, creates a new CmsFile object.<p>
+     *
+     * @param structureId the id of this resources structure record
+     * @param resourceId the id of this resources resource record
+     * @param parentId the id of this resources parent folder
+     * @param fileId the id of this resources content record
+     * @param name the filename of this resouce
+     * @param type the type of this resource
+     * @param flags the flags of this resource
+     * @param projectId the project id this resource was last modified in
+     * @param state the state of this resource
+     * @param loaderId the id for the that is used to load this recource
+     * @param dateCreated the creation date of this resource
+     * @param userCreated the id of the user who created this resource
+     * @param dateLastModified the date of the last modification of this resource
+     * @param userLastModified the id of the user who did the last modification of this resource
+     * @param dateReleased the release date of this resource
+     * @param dateExpired the expiration date of this resource
+     * @param linkCount the count of all siblings of this resource 
+     * @param length the size of the file content of this resource
+     * @param content the binary content data of this file
+     */
     public CmsFile(
         CmsUUID structureId,
         CmsUUID resourceId,
@@ -129,44 +131,44 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
         CmsUUID userCreated,
         long dateLastModified,
         CmsUUID userLastModified,
-        int length,
+        long dateReleased,
+        long dateExpired,
         int linkCount,
-        long dateReleased, 
-        long dateExpired, 
-        byte[] content
-    ) {
+        int length,
+        byte[] content) {
+
         // create the CmsResource.
         super(
-            structureId, 
-            resourceId, 
-            parentId, 
-            fileId, 
-            name, 
-            type, 
-            flags, 
-            projectId, 
-            state, 
-            loaderId, 
-            dateCreated, 
-            userCreated, 
-            dateLastModified, 
-            userLastModified, 
-            length, 
-            linkCount,
+            structureId,
+            resourceId,
+            parentId,
+            fileId,
+            name,
+            type,
+            flags,
+            projectId,
+            state,
+            loaderId,
+            dateCreated,
+            userCreated,
+            dateLastModified,
+            userLastModified,
             dateReleased,
-            dateExpired);
-                
+            dateExpired,
+            linkCount,
+            length);
+
         // set content and length
         m_fileContent = content;
     }
-    
+
     /**
      * Returns a clone of this Objects instance.<p>
      * 
      * @return a clone of this instance
      */
     public Object clone() {
-        
+
         byte[] newContent = new byte[this.getContents().length];
         System.arraycopy(getContents(), 0, newContent, 0, getContents().length);
 
@@ -185,20 +187,22 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
             getUserCreated(),
             getDateLastModified(),
             getUserLastModified(),
-            getLength(),
-            getLinkCount(),
             getDateReleased(),
-            getDateExpired(), newContent);
-            
+            getDateExpired(),
+            getLinkCount(),
+            getLength(),
+            newContent);
+
         return clone;
     }
-    
+
     /**
      * Returns the content of this file.<p>
      *
      * @return the content of this file.
      */
     public byte[] getContents() {
+
         return m_fileContent;
     }
 
@@ -208,14 +212,15 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
      * @param value the content of this file.
      */
     public void setContents(byte[] value) {
+
         m_fileContent = value;
         if (m_fileContent.length > 0) {
             m_length = m_fileContent.length;
         } else {
             m_length = 0;
         }
-    } 
-    
+    }
+
     /**
      * Utility method to upgrade a CmsResource to a CmsFile.<p>
      * 
@@ -230,6 +235,7 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
      * @throws CmsException if something goes wrong
      */
     public static CmsFile upgrade(CmsResource resource, CmsObject cms) throws CmsException {
+
         if (resource instanceof CmsFile) {
             // resource is already a file
             CmsFile file = (CmsFile)resource;

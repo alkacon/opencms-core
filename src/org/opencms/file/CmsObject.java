@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/05/19 16:20:54 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2004/05/21 15:14:28 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  */
 public class CmsObject {
 
@@ -3901,7 +3901,8 @@ public class CmsObject {
     }
         
     /**
-     * Recovers a resource from the online project back to the offline project as an unchanged resource.<p>
+     * Recovers a resource from the online project back to the 
+     * offline project as an unchanged resource.<p>
      * 
      * @param resourcename the name of the resource which is recovered
      * @return the recovered resource in the offline project

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsBackupResource.java,v $
- * Date   : $Date: 2004/05/19 16:20:54 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/05/21 15:14:28 $
+ * Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.io.Serializable;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsBackupResource extends CmsFile implements Cloneable, Serializable, Comparable {
 
@@ -95,6 +95,8 @@ public class CmsBackupResource extends CmsFile implements Cloneable, Serializabl
     * @param dateLastModified the date of the last modification of this resource
     * @param userLastModified the id of the user who did the last modification of this resource
     * @param userLastModifiedName the name of the user who did the last modification of this resource
+    * @param dateReleased the release date of this resource
+    * @param dateExpired the expiration date of this resource
     * @param size the size of the file content of this resource
     * @param content the binary content data of this file
     */
@@ -118,10 +120,12 @@ public class CmsBackupResource extends CmsFile implements Cloneable, Serializabl
         long dateLastModified,
         CmsUUID userLastModified, 
         String userLastModifiedName, 
+        long dateReleased,
+        long dateExpired,
         int size,
         byte[] content
     ) {
-        // create the CmsResource.
+        // create the backup CmsResource.
         super(
             structureId, 
             resourceId, 
@@ -137,11 +141,13 @@ public class CmsBackupResource extends CmsFile implements Cloneable, Serializabl
             userCreated,
             dateLastModified, 
             userLastModified, 
-            size,
-            0,
-            0, 0, content
+            dateReleased,
+            dateExpired,
+            0, 
+            size, 
+            content
         );
-
+        
         m_backupId=backupId;
 
         // set tag id
@@ -185,7 +191,9 @@ public class CmsBackupResource extends CmsFile implements Cloneable, Serializabl
            getCreatedByName(), 
            getDateLastModified(), 
            getUserLastModified(), 
-           getLastModifiedByName(), 
+           getLastModifiedByName(),
+           getDateReleased(),
+           getDateExpired(),
            getLength(), 
            newContent);
    }
@@ -238,4 +246,4 @@ public class CmsBackupResource extends CmsFile implements Cloneable, Serializabl
     public String getLastModifiedByName() {
         return m_lastModifiedByName;
     }
-        }
+}

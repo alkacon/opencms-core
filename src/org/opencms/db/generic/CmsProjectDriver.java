@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/05/19 16:20:54 $
- * Version: $Revision: 1.163 $
+ * Date   : $Date: 2004/05/21 15:12:44 $
+ * Version: $Revision: 1.164 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.163 $ $Date: 2004/05/19 16:20:54 $
+ * @version $Revision: 1.164 $ $Date: 2004/05/21 15:12:44 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -487,7 +487,26 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         , projectmanager, task, I_CmsConstants.C_PROJECT_ONLINE, "The Online Project", I_CmsConstants.C_FLAG_ENABLED, I_CmsConstants.C_PROJECT_TYPE_NORMAL, null);
 
         // create the root-folder for the online project
-        CmsFolder onlineRootFolder = m_driverManager.getVfsDriver().createFolder(online, CmsUUID.getNullUUID(), CmsUUID.getNullUUID(), "/", 0, 0, admin.getId(), 0, admin.getId());
+        CmsFolder onlineRootFolder = new CmsFolder(
+            new CmsUUID(),
+            new CmsUUID(),
+            CmsUUID.getNullUUID(),
+            CmsUUID.getNullUUID(),
+            "/",
+            CmsResourceTypeFolder.C_RESOURCE_TYPE_ID,
+            0,
+            online.getId(),
+            org.opencms.main.I_CmsConstants.C_STATE_NEW,
+            0, 
+            admin.getId(), 
+            0, 
+            admin.getId(),
+            1,
+            CmsResource.DATE_RELEASED_DEFAULT,
+            CmsResource.DATE_EXPIRED_DEFAULT            
+        );
+        m_driverManager.getVfsDriver().createFolder(online, onlineRootFolder, CmsUUID.getNullUUID());
+            
         onlineRootFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
         m_driverManager.getVfsDriver().writeFolder(online, onlineRootFolder, CmsDriverManager.C_UPDATE_ALL, onlineRootFolder.getUserLastModified());
 

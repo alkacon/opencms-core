@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/05/19 16:20:54 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2004/05/21 15:13:14 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
 /** 
  * Oracle/OCI implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.21 $ $Date: 2004/05/19 16:20:54 $
+ * @version $Revision: 1.22 $ $Date: 2004/05/21 15:13:14 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -230,9 +230,11 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
                     offlineFileHeader.getUserCreated(),
                     offlineFileHeader.getDateLastModified(),
                     offlineFileHeader.getUserLastModified(),
-                    offlineFileHeader.getLength(),            
-                    offlineFileHeader.getLinkCount(),
-                    0, 0, new byte[0]
+                    offlineFileHeader.getDateReleased(),            
+                    offlineFileHeader.getDateExpired(),
+                    offlineFileHeader.getLinkCount(), 
+                    offlineFileHeader.getLength(), 
+                    new byte[0]
                 );
                 newFile.setFullResourceName(offlineFileHeader.getRootPath());                
                 m_driverManager.getVfsDriver().createFile(onlineProject, newFile, offlineFileHeader.getUserCreated(), newFile.getParentStructureId(), newFile.getName());

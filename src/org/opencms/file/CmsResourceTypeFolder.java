@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsResourceTypeFolder.java,v $
- * Date   : $Date: 2004/05/19 16:20:54 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/05/21 15:14:28 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType {
     
@@ -217,7 +217,6 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
         }
         CmsFolder res = cms.doCreateFolder(newFolderName, properties);
         cms.lockResource(newFolderName);
-        //res.setLocked(cms.getRequestContext().currentUser().getId());
         return res;
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2004/05/19 16:20:54 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2004/05/21 15:16:44 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -169,7 +169,7 @@ public class CmsImportVersion2 extends A_CmsImport {
             }
             // now import the VFS resources
             importAllResources(excludeList, writtenFilenames, fileCodes, propertyName, propertyValue);
-            convertPointerToLinks();
+            convertPointerToSiblings();
         } catch (CmsException e) {
             throw e;
         } finally {
@@ -566,15 +566,28 @@ public class CmsImportVersion2 extends A_CmsImport {
             }
             
             // create a new CmsResource                         
-            CmsResource resource=new CmsResource(newUuidstructure, newUuidresource,
-                    CmsUUID.getNullUUID(),
-                    newUuidcontent, resname, resourceTypeId,
-                    new Integer(0).intValue(), m_cms.getRequestContext().currentProject().getId(),
-                    I_CmsConstants.C_STATE_NEW, resourceTypeLoaderId, lastmodified,
-                    curUser,
-                    lastmodified, curUser, size,
-                    1, 0, 0);
-            
+            CmsResource resource=new CmsResource(
+                newUuidstructure, 
+                newUuidresource,
+                CmsUUID.getNullUUID(),
+                newUuidcontent, 
+                resname, 
+                resourceTypeId,
+                0, 
+                m_cms.getRequestContext().currentProject().getId(),
+                I_CmsConstants.C_STATE_NEW, 
+                resourceTypeLoaderId, 
+                lastmodified,
+                curUser,
+                lastmodified, curUser, 
+                CmsResource.DATE_RELEASED_DEFAULT,
+                CmsResource.DATE_EXPIRED_DEFAULT,                     
+                1, 
+                size
+            );
+            // TODO: must read expired / released from manifest
+            int date_warning = 0;
+                        
             if (C_RESOURCE_TYPE_LINK_ID == resourceTypeId) {
                 // store links for later conversion
                 m_report.print(m_report.key("report.storing_link"), I_CmsReport.C_FORMAT_NOTE);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2004/05/19 16:20:54 $
- * Version: $Revision: 1.86 $
+ * Date   : $Date: 2004/05/21 15:12:44 $
+ * Version: $Revision: 1.87 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com) 
- * @version $Revision: 1.86 $ $Date: 2004/05/19 16:20:54 $
+ * @version $Revision: 1.87 $ $Date: 2004/05/21 15:12:44 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -115,8 +115,33 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
         } else {
             content = new byte[0];
         }
-        return new CmsBackupResource(backupId, tagId, versionId, structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, projectID, state, loaderId, dateCreated, userCreated, userCreatedName, dateLastModified, userLastModified, userLastModifiedName, resourceSize, content);
+        return new CmsBackupResource(
+            backupId, 
+            tagId, 
+            versionId, 
+            structureId, 
+            resourceId, 
+            parentId, 
+            fileId, 
+            resourceName, 
+            resourceType,
+            resourceFlags, 
+            projectID, 
+            state, 
+            loaderId, 
+            dateCreated, 
+            userCreated, 
+            userCreatedName, 
+            dateLastModified, 
+            userLastModified, 
+            userLastModifiedName, 
+            CmsResource.DATE_RELEASED_DEFAULT,
+            CmsResource.DATE_EXPIRED_DEFAULT,
+            resourceSize, 
+            content);
     }
+    int date_warning = 0;
+    // TODO: read / write expiration and release date from / to backup table
     
     /**
      * @see org.opencms.db.I_CmsBackupDriver#createBackupPropertyDefinition(java.lang.String, int)

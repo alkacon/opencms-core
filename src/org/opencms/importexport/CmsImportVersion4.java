@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2004/05/19 16:20:54 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2004/05/21 15:16:44 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -139,7 +139,7 @@ public class CmsImportVersion4 extends A_CmsImport {
             }
             // now import the VFS resources
             importAllResources(excludeList, propertyName, propertyValue);
-            convertPointerToLinks();
+            convertPointerToSiblings();
         } catch (CmsException e) {
             throw e;
         } finally {
@@ -462,7 +462,8 @@ public class CmsImportVersion4 extends A_CmsImport {
         String userlastmodified, 
         long datecreated, 
         String usercreated, 
-        String flags, Map properties
+        String flags, 
+        Map properties
     ) {
 
         byte[] content = null;
@@ -556,11 +557,13 @@ public class CmsImportVersion4 extends A_CmsImport {
                 newUsercreated, 
                 datelastmodified, 
                 newUserlastmodified, 
-                size, 
-                1,
-                0,
-                0
+                CmsResource.DATE_RELEASED_DEFAULT, 
+                CmsResource.DATE_EXPIRED_DEFAULT,
+                1, 
+                size
             );
+            // TODO: must read expired / released from manifest
+            int date_warning = 0;
              
             if (C_RESOURCE_TYPE_LINK_ID == resType) {
                 // store links for later conversion

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/05/19 16:20:54 $
- * Version: $Revision: 1.357 $
+ * Date   : $Date: 2004/05/21 15:11:42 $
+ * Version: $Revision: 1.358 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.357 $ $Date: 2004/05/19 16:20:54 $
+ * @version $Revision: 1.358 $ $Date: 2004/05/21 15:11:42 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -1392,7 +1392,26 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         }
 
         // create a copy of the folder
-        newResource = m_vfsDriver.createFolder(context.currentProject(), destinationFolder.getStructureId(), CmsUUID.getNullUUID(), destinationResourceName, sourceFolder.getFlags(), dateLastModified, userLastModified, dateCreated, userCreated);
+        CmsFolder copyFolder = new CmsFolder(
+            new CmsUUID(),
+            new CmsUUID(),
+            destinationFolder.getStructureId(),
+            CmsUUID.getNullUUID(),
+            destinationResourceName,
+            CmsResourceTypeFolder.C_RESOURCE_TYPE_ID,
+            sourceFolder.getFlags(),
+            context.currentProject().getId(),
+            org.opencms.main.I_CmsConstants.C_STATE_NEW,
+            dateCreated, 
+            userCreated,
+            dateLastModified, 
+            userLastModified, 
+            1,
+            sourceFolder.getDateReleased(),
+            sourceFolder.getDateExpired()         
+        );
+
+        newResource = m_vfsDriver.createFolder(context.currentProject(), copyFolder, destinationFolder.getStructureId());
         newResource.setFullResourceName(destination);
 
         clearResourceCache();
@@ -1735,18 +1754,37 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         }
 
         // extract folder information
-        String folderName = newFolderName.substring(0, newFolderName.lastIndexOf(I_CmsConstants.C_FOLDER_SEPARATOR, newFolderName.length() - 2) + 1);
-        String resourceName = newFolderName.substring(folderName.length(), newFolderName.length() - 1);
+        String parentFolderName = newFolderName.substring(0, newFolderName.lastIndexOf(I_CmsConstants.C_FOLDER_SEPARATOR, newFolderName.length() - 2) + 1);
+        String newFolderFullName = newFolderName.substring(parentFolderName.length(), newFolderName.length() - 1);
 
         // checks, if the filename is valid, if not it throws a exception
-        validFilename(resourceName);
-        CmsFolder cmsFolder = readFolder(context, folderName);
+        validFilename(newFolderFullName);
+        CmsFolder parentFolder = readFolder(context, parentFolderName);
 
         // check if the user has write access to the destination folder
-        checkPermissions(context, cmsFolder, I_CmsConstants.C_WRITE_ACCESS, CmsResourceFilter.ALL);
+        checkPermissions(context, parentFolder, I_CmsConstants.C_WRITE_ACCESS, CmsResourceFilter.ALL);
 
-        // create the folder.
-        CmsFolder newFolder = m_vfsDriver.createFolder(context.currentProject(), cmsFolder.getStructureId(), CmsUUID.getNullUUID(), resourceName, 0, 0, context.currentUser().getId(), 0, context.currentUser().getId());
+        // create the folder
+        CmsFolder newFolder = new CmsFolder(
+            new CmsUUID(),
+            new CmsUUID(),
+            parentFolder.getStructureId(),
+            CmsUUID.getNullUUID(),
+            newFolderFullName,
+            CmsResourceTypeFolder.C_RESOURCE_TYPE_ID,
+            0,
+            context.currentProject().getId(),
+            org.opencms.main.I_CmsConstants.C_STATE_NEW,
+            0, 
+            context.currentUser().getId(),
+            0, 
+            context.currentUser().getId(), 
+            1,
+            CmsResource.DATE_RELEASED_DEFAULT,
+            CmsResource.DATE_EXPIRED_DEFAULT         
+        );
+        m_vfsDriver.createFolder(context.currentProject(), newFolder, parentFolder.getStructureId());
+        
         newFolder.setFullResourceName(newFolderName);
 
         // write metainfos for the folder
@@ -1797,7 +1835,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         checkPermissions(context, parentFolder, I_CmsConstants.C_WRITE_ACCESS, CmsResourceFilter.ALL);
 
         // construct a dummy that is written to the db
-        linkResource = new CmsResource(new CmsUUID(), targetResource.getResourceId(), parentFolder.getStructureId(), CmsUUID.getNullUUID(), resourceName, targetResource.getType(), targetResource.getFlags(), context.currentProject().getId(), org.opencms.main.I_CmsConstants.C_STATE_NEW, targetResource.getLoaderId(), System.currentTimeMillis(), context.currentUser().getId(), System.currentTimeMillis(), context.currentUser().getId(), 0, targetResource.getLinkCount() + 1, 0, 0);
+        linkResource = new CmsResource(new CmsUUID(), targetResource.getResourceId(), parentFolder.getStructureId(), CmsUUID.getNullUUID(), resourceName, targetResource.getType(), targetResource.getFlags(), context.currentProject().getId(), org.opencms.main.I_CmsConstants.C_STATE_NEW, targetResource.getLoaderId(), System.currentTimeMillis(), context.currentUser().getId(), System.currentTimeMillis(), context.currentUser().getId(), CmsResource.DATE_RELEASED_DEFAULT, CmsResource.DATE_EXPIRED_DEFAULT, targetResource.getLinkCount() + 1, 0);
 
         // check if the resource has to be labeled now
         if (labelResource(context, targetResource, siblingName, 1)) {
@@ -2094,79 +2132,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         } else {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] createTempfileProject() ", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
         }
-    }
-
-    /**
-     * Creates a new sibling of the target resource.<p>
-     * 
-     * @param context the context
-     * @param linkName the name of the link
-     * @param targetName the name of the target
-     * @param linkProperties the properties to attach via the the link
-     * @param lockResource true, if the new created link should be initially locked
-     * @return the new resource
-     * @throws CmsException if something goes wrong
-     */
-    public CmsResource createVfsLink(CmsRequestContext context, String linkName, String targetName, List linkProperties, boolean lockResource) throws CmsException {
-        CmsResource targetResource = null;
-        CmsResource linkResource = null;
-        String parentFolderName = null;
-        CmsFolder parentFolder = null;
-        String resourceName = null;
-
-        parentFolderName = linkName.substring(0, linkName.lastIndexOf(I_CmsConstants.C_FOLDER_SEPARATOR) + 1);
-        resourceName = linkName.substring(linkName.lastIndexOf(I_CmsConstants.C_FOLDER_SEPARATOR) + 1, linkName.length());
-
-        // read the target resource
-        targetResource = this.readFileHeader(context, targetName);
-
-        if (targetResource.isFolder()) {
-            throw new CmsException("Setting links on folders is not supported");
-        }
-
-        // read the parent folder
-        parentFolder = this.readFolder(context, parentFolderName, CmsResourceFilter.DEFAULT);
-
-        // for the parent folder is write access required
-        checkPermissions(context, parentFolder, I_CmsConstants.C_WRITE_ACCESS, CmsResourceFilter.ALL);
-
-        // construct a dummy that is written to the db
-        linkResource = new CmsResource(new CmsUUID(), targetResource.getResourceId(), parentFolder.getStructureId(), CmsUUID.getNullUUID(), resourceName, targetResource.getType(), targetResource.getFlags(), context.currentProject().getId(), org.opencms.main.I_CmsConstants.C_STATE_NEW, targetResource.getLoaderId(), System.currentTimeMillis(), context.currentUser().getId(), System.currentTimeMillis(), context.currentUser().getId(), 0, targetResource.getLinkCount() + 1, 0, 0);
-
-        // check if the resource has to be labeled now
-        if (labelResource(context, targetResource, linkName, 1)) {
-            int flags = linkResource.getFlags();
-            flags |= I_CmsConstants.C_RESOURCEFLAG_LABELLINK;
-            linkResource.setFlags(flags);
-        }
-
-        // setting the full resource name twice here looks crude but is essential!
-        linkResource.setFullResourceName(linkName);
-        linkResource = m_vfsDriver.createSibling(context.currentProject(), linkResource, context.currentUser().getId(), parentFolder.getStructureId(), resourceName);
-        linkResource.setFullResourceName(linkName);
-
-        // mark the new sibling as modified in the current project
-        m_vfsDriver.writeLastModifiedProjectId(context.currentProject(), context.currentProject().getId(), linkResource);
-
-        if (linkProperties == null) {
-            // "empty" properties are represented by an empty property map
-            linkProperties = Collections.EMPTY_LIST;
-        }
-        // write its properties
-        m_vfsDriver.writePropertyObjects(context.currentProject(), linkResource, linkProperties);
-
-        // if the source
-        clearResourceCache();
-        m_propertyCache.clear();
-
-        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", parentFolder)));
-
-        if (lockResource) {
-            // lock the resource
-            lockResource(context, linkName);
-        }
-
-        return linkResource;
     }
 
     /**
@@ -6800,7 +6765,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     }
 
     /**
-     * Recovers a resource from the online project back to the offline project as an unchanged resource.<p>
+     * Recovers a resource from the online project back to the offline project 
+     * as an unchanged resource.<p>
      * 
      * @param context the current request context
      * @param resourcename the name of the resource which is recovered
@@ -6841,12 +6807,55 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
             if (!resourcename.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
                 // create the file in the offline project     
-                newFile = new CmsFile(onlineFile.getStructureId(), onlineFile.getResourceId(), parentFolder.getStructureId(), onlineFile.getFileId(), CmsResource.getName(resourcename), onlineFile.getType(), onlineFile.getFlags(), 0, org.opencms.main.I_CmsConstants.C_STATE_UNCHANGED, getResourceType(onlineFile.getType()).getLoaderId(), 0, context.currentUser().getId(), 0, context.currentUser().getId(), contents.length, 1, 0, 0, contents);
-                newResource = m_vfsDriver.createFile(context.currentProject(), newFile, context.currentUser().getId(), parentFolder.getStructureId(), CmsResource.getName(resourcename));
+                newFile = new CmsFile(
+                    onlineFile.getStructureId(), 
+                    onlineFile.getResourceId(), 
+                    parentFolder.getStructureId(), 
+                    onlineFile.getFileId(), 
+                    CmsResource.getName(resourcename), 
+                    onlineFile.getType(), 
+                    onlineFile.getFlags(), 
+                    0, 
+                    org.opencms.main.I_CmsConstants.C_STATE_UNCHANGED, 
+                    onlineFile.getLoaderId(),
+                    onlineFile.getDateCreated(), 
+                    onlineFile.getUserCreated(), 
+                    onlineFile.getDateLastModified(), 
+                    onlineFile.getUserLastModified(), 
+                    onlineFile.getDateReleased(), 
+                    onlineFile.getDateExpired(), 
+                    1, 
+                    contents.length, 
+                    contents);
+                newResource = m_vfsDriver.createFile(
+                    context.currentProject(), 
+                    newFile, 
+                    context.currentUser().getId(), 
+                    parentFolder.getStructureId(), 
+                    CmsResource.getName(resourcename));
             } else {
                 // create the folder in the offline project  
-                newFolder = new CmsFolder(onlineFolder.getStructureId(), onlineFolder.getResourceId(), parentFolder.getStructureId(), CmsUUID.getNullUUID(), CmsResource.getName(resourcename), CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, onlineFolder.getFlags(), 0, org.opencms.main.I_CmsConstants.C_STATE_UNCHANGED, 0, context.currentUser().getId(), 0, context.currentUser().getId(), 1, 0, 0);
-                newResource = m_vfsDriver.createFolder(context.currentProject(), newFolder, parentFolder.getStructureId());
+                newFolder = new CmsFolder(
+                    onlineFolder.getStructureId(), 
+                    onlineFolder.getResourceId(), 
+                    parentFolder.getStructureId(), 
+                    CmsUUID.getNullUUID(), 
+                    CmsResource.getName(resourcename), 
+                    CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, 
+                    onlineFolder.getFlags(), 
+                    0, 
+                    org.opencms.main.I_CmsConstants.C_STATE_UNCHANGED, 
+                    onlineFolder.getDateCreated(), 
+                    onlineFolder.getUserCreated(), 
+                    onlineFolder.getDateLastModified(), 
+                    onlineFolder.getUserLastModified(), 
+                    1, 
+                    onlineFolder.getDateReleased(), 
+                    onlineFolder.getDateExpired());
+                newResource = m_vfsDriver.createFolder(
+                    context.currentProject(), 
+                    newFolder, 
+                    parentFolder.getStructureId());
             }
 
             // write the properties of the recovered resource
@@ -7071,7 +7080,26 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                 // set the flag for labeled links on the restored file
                 flags |= I_CmsConstants.C_RESOURCEFLAG_LABELLINK;
             }
-            CmsFile newFile = new CmsFile(offlineFile.getStructureId(), offlineFile.getResourceId(), offlineFile.getParentStructureId(), offlineFile.getFileId(), offlineFile.getName(), backupFile.getType(), flags, context.currentProject().getId(), state, backupFile.getLoaderId(), offlineFile.getDateCreated(), backupFile.getUserCreated(), offlineFile.getDateLastModified(), context.currentUser().getId(), backupFile.getLength(), backupFile.getLinkCount(), 0, 0, backupFile.getContents());
+            CmsFile newFile = new CmsFile(
+                offlineFile.getStructureId(), 
+                offlineFile.getResourceId(), 
+                offlineFile.getParentStructureId(), 
+                offlineFile.getFileId(), 
+                offlineFile.getName(), 
+                backupFile.getType(), 
+                flags, 
+                context.currentProject().getId(), 
+                state, 
+                backupFile.getLoaderId(), 
+                offlineFile.getDateCreated(), 
+                backupFile.getUserCreated(), 
+                offlineFile.getDateLastModified(), 
+                context.currentUser().getId(),
+                backupFile.getDateReleased(), 
+                backupFile.getDateExpired(), 
+                backupFile.getLinkCount(), 
+                backupFile.getLength(),
+                backupFile.getContents());
             newFile.setFullResourceName(filename);
             writeFile(context, newFile);
 
@@ -7407,7 +7435,23 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             // property operations
             readPath(context, onlineFolder, CmsResourceFilter.ALL);
 
-            CmsFolder restoredFolder = new CmsFolder(resource.getStructureId(), resource.getResourceId(), resource.getParentStructureId(), resource.getFileId(), resource.getName(), onlineFolder.getType(), onlineFolder.getFlags(), context.currentProject().getId(), I_CmsConstants.C_STATE_UNCHANGED, onlineFolder.getDateCreated(), onlineFolder.getUserCreated(), onlineFolder.getDateLastModified(), onlineFolder.getUserLastModified(), resource.getLinkCount(), 0, 0);
+            CmsFolder restoredFolder = new CmsFolder(
+                resource.getStructureId(), 
+                resource.getResourceId(), 
+                resource.getParentStructureId(), 
+                resource.getFileId(), 
+                resource.getName(), 
+                onlineFolder.getType(), 
+                onlineFolder.getFlags(), 
+                context.currentProject().getId(), 
+                I_CmsConstants.C_STATE_UNCHANGED, 
+                onlineFolder.getDateCreated(), 
+                onlineFolder.getUserCreated(), 
+                onlineFolder.getDateLastModified(), 
+                onlineFolder.getUserLastModified(), 
+                resource.getLinkCount(), 
+                onlineFolder.getDateReleased(), 
+                onlineFolder.getDateExpired());
 
             // write the file in the offline project
             // this sets a flag so that the file date is not set to the current time
@@ -7433,7 +7477,26 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                 flags |= I_CmsConstants.C_RESOURCEFLAG_LABELLINK;
             }
 
-            CmsFile restoredFile = new CmsFile(resource.getStructureId(), resource.getResourceId(), resource.getParentStructureId(), resource.getFileId(), resource.getName(), onlineFile.getType(), flags, context.currentProject().getId(), I_CmsConstants.C_STATE_UNCHANGED, onlineFile.getLoaderId(), onlineFile.getDateCreated(), onlineFile.getUserCreated(), onlineFile.getDateLastModified(), onlineFile.getUserLastModified(), onlineFile.getLength(), resource.getLinkCount(), 0, 0, onlineFile.getContents());
+            CmsFile restoredFile = new CmsFile(
+                resource.getStructureId(), 
+                resource.getResourceId(), 
+                resource.getParentStructureId(), 
+                resource.getFileId(), 
+                resource.getName(), 
+                onlineFile.getType(), 
+                flags, 
+                context.currentProject().getId(), 
+                I_CmsConstants.C_STATE_UNCHANGED, 
+                onlineFile.getLoaderId(), 
+                onlineFile.getDateCreated(), 
+                onlineFile.getUserCreated(), 
+                onlineFile.getDateLastModified(), 
+                onlineFile.getUserLastModified(), 
+                onlineFile.getDateReleased(), 
+                onlineFile.getDateExpired(), 
+                resource.getLinkCount(), 
+                onlineFile.getLength(), 
+                onlineFile.getContents());
 
             // write the file in the offline project
             // this sets a flag so that the file date is not set to the current time
