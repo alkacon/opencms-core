@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlWidgetCollector.java,v $
- * Date   : $Date: 2004/12/07 16:53:59 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/12/16 17:12:46 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.5.4
  */
 public class CmsXmlWidgetCollector implements I_CmsXmlContentValueVisitor {
@@ -65,6 +65,9 @@ public class CmsXmlWidgetCollector implements I_CmsXmlContentValueVisitor {
 
     /** The widgets found in the xml content. */
     private Map m_widgets;
+    
+    /** The values corresponding to the found widgets. */
+    private Map m_values;
     
     /** The unique widgets found in the xml content.  */
     private List m_uniqueWidgets;
@@ -108,7 +111,21 @@ public class CmsXmlWidgetCollector implements I_CmsXmlContentValueVisitor {
     }
     
     /**
+     * Returns all simple values that were found in the content.<p>
+     * 
+     * The map key is the complete xpath of the value.<p>
+     * 
+     * @return all simple values that were found in the content
+     */
+    public Map getValues() {
+        
+        return m_values;
+    }
+    
+    /**
      * Returns all widgets that were found in the content.<p>
+     * 
+     * The map key is the complete xpath of the corresponding value.<p>
      * 
      * @return all widgets that were found in the content
      */
@@ -136,7 +153,11 @@ public class CmsXmlWidgetCollector implements I_CmsXmlContentValueVisitor {
                     if (! m_uniqueWidgets.contains(widget)) {
                         m_uniqueWidgets.add(widget);
                     }
-                    m_widgets.put(value, widget);
+                    m_widgets.put(value.getPath(), widget);
+                    m_values.put(value.getPath(), value);
+                    if (m_log.isDebugEnabled()) {
+                        m_log.debug("Added " + value.getPath() + " to widgets.");
+                    }
                 } catch (CmsXmlException e) {
                     // should usually not happen
                     if (m_log.isErrorEnabled()) {
@@ -157,6 +178,7 @@ public class CmsXmlWidgetCollector implements I_CmsXmlContentValueVisitor {
         // start with a new instance of the widgets and unique widgets
         m_widgets = new HashMap(25);
         m_uniqueWidgets = new ArrayList(12);
+        m_values = new HashMap(25);
         // store Locale to use when collecting the widgets
         m_locale = locale;
     }

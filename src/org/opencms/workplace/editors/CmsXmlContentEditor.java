@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2004/12/16 11:00:49 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2004/12/16 17:12:46 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import javax.servlet.jsp.JspException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  * @since 5.5.0
  */
 public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog {
@@ -578,9 +578,11 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             Iterator i = getWidgetCollector().getWidgets().keySet().iterator();
             while (i.hasNext()) {
                 // get the value of the widget
-                I_CmsXmlContentValue value = (I_CmsXmlContentValue)i.next();
-                I_CmsXmlWidget widget = (I_CmsXmlWidget)getWidgetCollector().getWidgets().get(value);
-                result.append(widget.getDialogHtmlEnd(getCms(), this, value));               
+                String key = (String)i.next();
+                I_CmsXmlContentValue value = (I_CmsXmlContentValue)getWidgetCollector().getValues().get(key);
+                I_CmsXmlWidget widget = (I_CmsXmlWidget)getWidgetCollector().getWidgets().get(key);
+                result.append(widget.getDialogHtmlEnd(getCms(), this, value));    
+                
             }
             return result.toString();
         } catch (CmsXmlException e) {
