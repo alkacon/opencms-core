@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsLink.java,v $
- * Date   : $Date: 2004/10/11 08:12:54 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/10/15 12:22:00 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.staticexport;
 
 import org.opencms.site.CmsSiteManager;
@@ -47,53 +48,40 @@ import org.dom4j.Element;
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  */
 public class CmsLink {
-    
+
     /** The anchor of the uri, if any. */
     private String m_anchor;
-    
+
+    /** The xml element reference. */
+    private Element m_element;
+
     /** Indicates if the link is an internal link within the OpenCms VFS. */
     private boolean m_internal;
 
     /** The internal name of the link. */
     private String m_name;
-    
+
     /** The parameters of the query , if any. */
     private Map m_parameters;
-    
+
     /** The query, if any. */
     private String m_query;
-    
+
+    /** The site root of the (internal) link. */
+    private String m_siteRoot;
+
     /** The link target (destination). */
     private String m_target;
 
     /** The type of the link. */
     private String m_type;
-    
+
     /** The raw uri. */
     private String m_uri;
-    
-    /** The site root of the (internal) link. */
-    private String m_siteRoot;
-    
-    /** The xml element reference. */
-    private Element m_element;
-    
-    /**
-     * Creates a new link object without a reference to the xml page link element.<p>
-     * 
-     * @param name the internal name of this link
-     * @param type the type of this link
-     * @param uri the link uri
-     * @param internal indicates if the link is internal within OpenCms 
-     */
-    public CmsLink(String name, String type, String uri, boolean internal) {
-        
-        this(null, name, type, uri, internal);        
-    }
-    
+
     /**
      * Creates a new link object with a reference to the xml page link element.<p>
      * 
@@ -104,37 +92,16 @@ public class CmsLink {
      * @param internal indicates if the link is internal within OpenCms 
      */
     public CmsLink(Element element, String name, String type, String uri, boolean internal) {
-        
+
         m_element = element;
         m_name = name;
         m_type = type;
-        m_uri = uri;
         m_internal = internal;
-        
-        // set the member fields {m_target, m_anchor, m_query} 
-        // these are components of a the uri: scheme://authority/path#fragment?query
-        setComponents();
 
-        if (m_query != null) {
-            m_parameters = getParameters(m_query);
-        } else {
-            m_parameters = Collections.EMPTY_MAP;
-        }
-    }
-    
-    /**
-     * Creates a new link object without a reference to the xml page link element.<p>
-     * 
-     * @param name the internal name of this link
-     * @param type the type of this link
-     * @param target the link target (without anchor/query)
-     * @param anchor the anchor or null 
-     * @param query the query or null
-     * @param internal indicates if the link is internal within OpenCms 
-     */
-    public CmsLink(String name, String type, String target, String anchor, String query, boolean internal) {        
-          
-        this(null, name, type, target, anchor, query, internal); 
+        m_uri = uri;
+
+        // update component members from the uri
+        setComponents(m_uri);
     }
 
     /**
@@ -148,24 +115,54 @@ public class CmsLink {
      * @param query the query or null
      * @param internal indicates if the link is internal within OpenCms 
      */
-    public CmsLink(Element element, String name, String type, String target, String anchor, String query, boolean internal) {
-        
+    public CmsLink(
+        Element element,
+        String name,
+        String type,
+        String target,
+        String anchor,
+        String query,
+        boolean internal) {
+
         m_element = element;
         m_name = name;
         m_type = type;
+        m_internal = internal;
+
         m_target = target;
         m_anchor = anchor;
         m_query = query;
-        m_internal = internal;
-        
-        if (m_query != null) {
-            m_parameters = getParameters(m_query);
-        } else {
-            m_parameters = Collections.EMPTY_MAP; 
-        }
-        
-        // join the components to the uri
-        joinUri(m_target, m_anchor, m_query);        
+
+        // update the uri from the components
+        m_uri = setUri(m_target, m_anchor, m_query);
+    }
+
+    /**
+     * Creates a new link object without a reference to the xml page link element.<p>
+     * 
+     * @param name the internal name of this link
+     * @param type the type of this link
+     * @param uri the link uri
+     * @param internal indicates if the link is internal within OpenCms 
+     */
+    public CmsLink(String name, String type, String uri, boolean internal) {
+
+        this(null, name, type, uri, internal);
+    }
+
+    /**
+     * Creates a new link object without a reference to the xml page link element.<p>
+     * 
+     * @param name the internal name of this link
+     * @param type the type of this link
+     * @param target the link target (without anchor/query)
+     * @param anchor the anchor or null 
+     * @param query the query or null
+     * @param internal indicates if the link is internal within OpenCms 
+     */
+    public CmsLink(String name, String type, String target, String anchor, String query, boolean internal) {
+
+        this(null, name, type, target, anchor, query, internal);
     }
 
     /**
@@ -175,7 +172,11 @@ public class CmsLink {
      * @return the parameter map
      */
     private static Map getParameters(String query) {
-        
+
+        if (query == null) {
+            return Collections.EMPTY_MAP;
+        }
+
         HashMap parameters = new HashMap();
         String params[] = CmsStringUtil.split(query, "&");
         for (int i = 0; i < params.length; i++) {
@@ -183,23 +184,23 @@ public class CmsLink {
             String[] p = (String[])parameters.get(pair[0]);
             if (p == null) {
                 if (pair.length > 1) {
-                    p = new String[]{pair[1]};
+                    p = new String[] {pair[1]};
                 } else {
                     // TODO: Check what that standard API does here
                     p = new String[0];
                 }
             } else {
-                String[] p2 = new String[p.length+1];
+                String[] p2 = new String[p.length + 1];
                 System.arraycopy(p, 0, p2, 0, p.length);
-                p2[p2.length-1] = pair[1];
+                p2[p2.length - 1] = pair[1];
                 p = p2;
             }
             parameters.put(pair[0], p);
         }
-        
+
         return parameters;
     }
-    
+
     /**
      * Splits the given uri string into its components <code>scheme://authority/path#fragment?query</code>.<p>
      * 
@@ -207,60 +208,37 @@ public class CmsLink {
      * @return array of component strings
      */
     private static String[] split(String targetUri) {
-        
+
         URI uri;
         String components[] = new String[3];
-        
+
         // malformed uri
         try {
             uri = new URI(targetUri);
             components[0] = ((uri.getScheme() != null) ? uri.getScheme() + ":" : "") + uri.getRawSchemeSpecificPart();
             components[1] = uri.getRawFragment();
             components[2] = uri.getRawQuery();
-            
+
             if (components[0] != null) {
                 int i = components[0].indexOf("?");
                 if (i >= 0) {
-                    components[2] = components[0].substring(i+1);
+                    components[2] = components[0].substring(i + 1);
                     components[0] = components[0].substring(0, i);
                 }
             }
-            
+
             if (components[1] != null) {
                 int i = components[1].indexOf("?");
                 if (i >= 0) {
-                    components[2] = components[1].substring(i+1);
+                    components[2] = components[1].substring(i + 1);
                     components[1] = components[1].substring(0, i);
                 }
             }
         } catch (Exception exc) {
             return null;
         }
-        
-        return components; 
-    }
-    
-    /**
-     * Joins the given components to one uri string.<p>
-     * 
-     * @param target the link target (without anchor/query)
-     * @param anchor the anchor or null 
-     * @param query the query or null
-     */
-    private void joinUri(String target, String anchor, String query) {
-        
-        StringBuffer uri = new StringBuffer(64);
-        uri.append(target);
-        if (query != null) {
-            uri.append('?');
-            uri.append(query);
-        }
-        if (anchor != null) {
-            uri.append('#');
-            uri.append(anchor);
-        }
 
-        m_uri = uri.toString();        
+        return components;
     }
 
     /**
@@ -269,20 +247,20 @@ public class CmsLink {
      * @return the anchor or null if undefined
      */
     public String getAnchor() {
-        
+
         return m_anchor;
     }
-    
+
     /**
      * Returns the macro name of this link.<p>
      * 
      * @return the macro name name of this link
      */
-    public String getName() {    
-        
+    public String getName() {
+
         return m_name;
     }
-    
+
     /**
      * Returns the first parameter value for the given parameter name.<p>
      * 
@@ -295,7 +273,7 @@ public class CmsLink {
         if (p != null) {
             return p[0];
         }
-        
+
         return null;
     }
 
@@ -305,20 +283,20 @@ public class CmsLink {
      * @return the map of parameters (<code>Map(String[])</code>)
      */
     public Map getParameterMap() {
-        
+
         return m_parameters;
     }
-    
+
     /**
      * Returns the set of available parameter names for this link.<p>
      * 
      * @return a <code>Set</code> of parameter names
      */
     public Set getParameterNames() {
-        
+
         return m_parameters.keySet();
     }
-    
+
     /**
      * Returns all parameter values for the given name.<p>
      * 
@@ -326,54 +304,54 @@ public class CmsLink {
      * @return a <code>String[]</code> of all parameter values or <code>null</code>
      */
     public String[] getParameterValues(String name) {
-        
+
         return (String[])m_parameters.get(name);
     }
-    
+
     /**
      * Returns the query of this link.<p>
      * 
      * @return the query or null if undefined
      */
     public String getQuery() {
-        
+
         return m_query;
     }
-    
+
     /**
      * Return the site root of the target if it is internal.<p>
      * 
      * @return the site root or null
      */
     public String getSiteRoot() {
-    
+
         if (m_siteRoot != null) {
             return m_siteRoot;
         }
         if (m_internal) {
             m_siteRoot = CmsSiteManager.getSiteRoot(m_target);
             return m_siteRoot;
-        }        
+        }
         return null;
     }
-    
+
     /**
      * Returns the target (destination) of this link.<p>
      * 
      * @return the target the target (destination) of this link
      */
     public String getTarget() {
-        
+
         return m_target;
     }
-    
+
     /**
      * Returns the type of this link.<p>
      * 
      * @return the type of this link
      */
     public String getType() {
-        
+
         return m_type;
     }
 
@@ -383,138 +361,186 @@ public class CmsLink {
      * @return the uri
      */
     public String getUri() {
-        
+
         return m_uri;
     }
-    
+
     /**
      * Returns the vfs link of the target if it is internal.<p>
      * 
      * @return the full link destination or null if the link is not internal.
      */
-    public String getVfsUri() {        
-        
+    public String getVfsUri() {
+
         if (m_internal) {
             String siteRoot = getSiteRoot();
             return m_uri.substring(siteRoot.length());
         }
-        
+
         return null;
-    } 
-    
+    }
+
     /**
      * Returns if the link is internal.<p>
      * 
      * @return true if the link is a local link
      */
-    public boolean isInternal() {  
-        
+    public boolean isInternal() {
+
         return m_internal;
     }
-    
-    
+
     /**
-     * Sets the components by splitting the uri: scheme://authority/path#anchor?query.<p>
+     * Updates the uri of this link with a new value.<p>
      * 
-     */
-    private void setComponents() {
-        
-        // split the uri into its components and store them in an Array 
-        String components[] = split(m_uri);
-        
-        // set components 
-        if (components != null) {
-            m_target = components[0];
-            m_anchor = components[1];
-            m_query  = components[2];
-        } else {
-            m_target = m_uri;
-            m_anchor = null;
-            m_query  = null;
-        }
-    }
-    
-    /**
-     * Update the link subelements in the xml page.<p>
+     * Also updates the structure of the underlying XML page document this link belongs to.<p> 
      * 
-     * The link element has a target subelement and may have the subelements <code>anchor</code> and <code>query</code>. 
-     * The link element to update has to be specified in the constructor.<p> 
+     * Note that you can <b>not</b> update the "internal" or "type" values of the link,
+     * so the new link must be of same type (A, IMG) and also remain either an internal or external link.<p>
      * 
-     * @param uri the uri link: scheme://authority/path#anchor?query
+     * @param uri the uri to update this link with <code>scheme://authority/path#anchor?query</code>
      */
     public void updateLink(String uri) {
-        
+
         // set the uri
         m_uri = uri;
-        
-        // set the components
-        setComponents();
-        
-        // update xml link
+
+        // update the components
+        setComponents(m_uri);
+
+        // update the xml
         updateXml();
     }
-    
+
     /**
-     * Update the link subelements in the xml page.<p>
+     * Updates the uri of this link with a new target, anchor and query.<p>
      * 
-     * The link element has a target subelement and may have the subelements <code>anchor</code> and <code>query</code>. 
-     * The link element is speicified in the constructor.<p> 
+     * If anchor and/or query are <code>null</code>, this features are not used.<p>
+     * 
+     * Note that you can <b>not</b> update the "internal" or "type" values of the link,
+     * so the new link must be of same type (A, IMG) and also remain either an internal or external link.<p>
+     * 
+     * Also updates the structure of the underlying XML page document this link belongs to.<p> 
      * 
      * @param target the target (destination) of this link
      * @param anchor the anchor or null if undefined
      * @param query the query or null if undefined
      */
     public void updateLink(String target, String anchor, String query) {
-        
-        // create m_uri string
-        joinUri(target, anchor, query);        
-        updateLink(m_uri);
+
+        // set the components
+        m_target = target;
+        m_anchor = anchor;
+        m_query = query;
+
+        // create the uri from the components
+        m_uri = setUri(m_target, m_anchor, m_query);
+
+        // update the xml
+        updateXml();
     }
-    
+
     /**
-     * update the xml page link node.<p>
-     *
+     * Sets the component member variables (target, anchor, query) 
+     * by splitting the uri <code>scheme://authority/path#anchor?query</code>.<p>
+     * 
+     * @param uri the uri to update the component members with
+     */
+    private void setComponents(String uri) {
+
+        // split the uri into its components and store them in an Array 
+        String components[] = split(uri);
+
+        // set components 
+        if (components != null) {
+            m_target = components[0];
+            m_anchor = components[1];
+            m_query = components[2];
+        } else {
+            m_target = uri;
+            m_anchor = null;
+            m_query = null;
+        }
+
+        // initialize the parameter map
+        m_parameters = getParameters(m_query);
+    }
+
+    /**
+     * Joins the given components to one uri string.<p>
+     * 
+     * @param target the link target (without anchor/query)
+     * @param anchor the anchor or null 
+     * @param query the query or null
+     */
+    private String setUri(String target, String anchor, String query) {
+
+        StringBuffer uri = new StringBuffer(64);
+        uri.append(target);
+        if (query != null) {
+            uri.append('?');
+            uri.append(query);
+        }
+        if (anchor != null) {
+            uri.append('#');
+            uri.append(anchor);
+        }
+
+        // initialize the parameter map
+        m_parameters = getParameters(query);
+
+        return uri.toString();
+    }
+
+    /**
+     * Update the link node in the underlying XML page document.<p>
      */
     private void updateXml() {
-        
+
+        // check if this link node has a reference to the XML document
         if (m_element != null) {
-            m_element.element(CmsXmlPage.NODE_TARGET).clearContent();
-            m_element.element(CmsXmlPage.NODE_TARGET).addCDATA(m_target);            
+
+            // handle <target> node in XML document
+            Element targetElement = m_element.element(CmsXmlPage.NODE_TARGET);
+            targetElement.clearContent();
+            targetElement.addCDATA(m_target);
+
+            // handle <anchor> node in XML document
             Element anchorElement = m_element.element(CmsXmlPage.NODE_ANCHOR);
-            Element queryElement = m_element.element(CmsXmlPage.NODE_QUERY);
-            // check if anchor member field ist set or null
             if (m_anchor != null) {
                 if (anchorElement == null) {
                     // element wasn't there before, add element and set value
                     m_element.addElement(CmsXmlPage.NODE_ANCHOR).addCDATA(m_anchor);
                 } else {
                     // element is there, update element value
-                    m_element.element(CmsXmlPage.NODE_ANCHOR).clearContent();
-                    m_element.element(CmsXmlPage.NODE_ANCHOR).addCDATA(m_anchor);
-                }                
+                    anchorElement.clearContent();
+                    anchorElement.addCDATA(m_anchor);
+                }
             } else {
                 // use remove method only when element exists
                 if (anchorElement != null) {
                     // remove element
                     m_element.remove(anchorElement);
-                }                                
+                }
             }
-            
+
+            // handle <query> node in XML document
+            Element queryElement = m_element.element(CmsXmlPage.NODE_QUERY);
             if (m_query != null) {
                 if (queryElement == null) {
                     // element wasn't there before, add element and set value 
                     m_element.addElement(CmsXmlPage.NODE_QUERY).addCDATA(m_query);
                 } else {
                     // element is there, update element value
-                    m_element.element(CmsXmlPage.NODE_QUERY).clearContent();
-                    m_element.element(CmsXmlPage.NODE_QUERY).addCDATA(m_query);
-                }                
+                    queryElement.clearContent();
+                    queryElement.addCDATA(m_query);
+                }
             } else {
                 // use remove method only when element exists
                 if (queryElement != null) {
                     // remove element
                     m_element.remove(queryElement);
-                }                                
+                }
             }
         }
     }

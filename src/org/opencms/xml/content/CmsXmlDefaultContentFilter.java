@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/Attic/CmsXmlDefaultContentFilter.java,v $
- * Date   : $Date: 2004/09/27 17:13:31 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/10/15 12:22:00 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,20 +49,28 @@ import java.util.List;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.5.0
  */
-public class CmsXmlDefaultContentFilter implements I_CmsXmlContentFilter {
+public class CmsXmlDefaultContentFilter extends A_CmsXmlContentFilter {
 
-    /** format for create filter. */
+    /** Format for create filter. */
     private static final PrintfFormat C_FORMAT_NUMBER = new PrintfFormat("%0.4d");
 
     /** Static array of the possible filters. */
     private static final String[] m_filterNames = {"allInFolder"};
 
-    /** array list for fast lookup. */
-    private static final List m_filters = Arrays.asList(m_filterNames);
+    /** Array list for fast filter name lookup. */
+    private static final List m_filters = Collections.unmodifiableList(Arrays.asList(m_filterNames));    
+    
+    /**
+     * @see org.opencms.xml.content.I_CmsXmlContentFilter#getFilterNames()
+     */
+    public List getFilterNames() {
 
+        return m_filters;
+    }
+    
     /**
      * @see org.opencms.xml.content.I_CmsXmlContentFilter#getCreateLink(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */

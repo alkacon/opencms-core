@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/10/03 11:37:53 $
- * Version: $Revision: 1.569 $
+ * Date   : $Date: 2004/10/15 12:22:00 $
+ * Version: $Revision: 1.570 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -27,6 +27,13 @@ OpenCms 5.5.2 Caladan (aka 6.0 xxx) - xxx, 2004
 * Fixed issue with old temporary file lock owend by wrong user
 * Fixed issue with cached page element in request attribute not being properly initialized
 ! Made XML content types configurable in opencms-vfs.xml
+! Made XML content type filters configurable in opencms-vfs.xml
+! Added new tags "contentload", "contentcheck", "contentloop", "contentshow" to 
+  OpenCms JSP taglib for display of XML content in templates
+! Added option "clean up after Copy&Paste from Word" to all XML page editors
+! New "content-conversion" property allows automatic conversion of
+  XML page HTML content to XHTML, also optionally corrects HTML errors etc.
+! Added configurable password class encryption handler to opencms-system.xml
 
 OpenCms 5.5.1 Caladan (aka 6.0 alpha 1) - September 20, 2004
 ! Junit test suites now have nice display names

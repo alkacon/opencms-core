@@ -99,11 +99,11 @@
     </tag>
     
     <tag>
-        <name>contentitem</name>
-        <tag-class>org.opencms.jsp.CmsJspTagContentItem</tag-class>
+        <name>contentload</name>
+        <tag-class>org.opencms.jsp.CmsJspTagContentLoad</tag-class>
         <body-content>JSP</body-content>
         <description>
-            This tag provides access to XML content items.
+            This tag loads XML content items from the OpenCms VFS.
         </description>
         <attribute>
             <name>file</name>
@@ -113,14 +113,59 @@
         </attribute>    
         <attribute>
             <name>param</name>
-        </attribute>               
-        <attribute>
-            <name>value</name>
         </attribute>
         <attribute>
             <name>editable</name>
         </attribute>      
-    </tag>        
+    </tag>    
+        
+    <tag>
+        <name>contentshow</name>
+        <tag-class>org.opencms.jsp.CmsJspTagContentShow</tag-class>
+        <body-content>empty</body-content>
+        <description>
+            This tag provides access to individual XML content node element values.
+        </description>              
+        <attribute>
+            <name>element</name>
+        </attribute>
+        <attribute>
+            <name>index</name>
+        </attribute>   
+    </tag>    
+    
+    <tag>
+        <name>contentloop</name>
+        <tag-class>org.opencms.jsp.CmsJspTagContentLoop</tag-class>
+        <body-content>JSP</body-content>
+        <description>
+            This tag allows looping through XML content node element values.
+        </description>              
+        <attribute>
+            <name>element</name>
+        </attribute>  
+    </tag>   
+    
+    <tag>
+        <name>contentcheck</name>
+        <tag-class>org.opencms.jsp.CmsJspTagContentCheck</tag-class>
+        <body-content>JSP</body-content>
+        <description>
+            This tag provides conditional logic for checking the element of a XML content.
+        </description>              
+        <attribute>
+            <name>ifexists</name>
+        </attribute>
+        <attribute>
+            <name>ifexistsone</name>
+        </attribute>
+        <attribute>
+            <name>ifexistsall</name>
+        </attribute>
+        <attribute>
+            <name>ifexistsnone</name>
+        </attribute> 
+    </tag>   
     
     <tag>
         <name>label</name>

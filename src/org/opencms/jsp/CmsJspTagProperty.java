@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagProperty.java,v $
- * Date   : $Date: 2004/06/14 14:25:57 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/10/15 12:22:00 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import org.opencms.staticexport.CmsLinkManager;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.tagext.TagSupport;
 
 /**
  * Provides access to the properties of a resource in the OpenCms VFS .<p>
@@ -87,9 +88,9 @@ import javax.servlet.jsp.JspException;
  * </DL>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
-public class CmsJspTagProperty extends javax.servlet.jsp.tagext.TagSupport {
+public class CmsJspTagProperty extends TagSupport {
     
     // internal member variables
     private String m_propertyName;    

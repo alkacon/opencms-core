@@ -73,6 +73,9 @@
         	</foldertranslations>
         </translations>     
 		<xmlcontents>
+			<filters>
+				<filter class="org.opencms.xml.content.CmsXmlDefaultContentFilter" order="100" />
+			</filters>		
 			<xmlcontent class="org.opencms.xml.types.CmsXmlDateTimeValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlDateTimeWidget" />
 			<xmlcontent class="org.opencms.xml.types.CmsXmlHtmlValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlHtmlWidget" />
 			<xmlcontent class="org.opencms.xml.types.CmsXmlLocaleValue" widget="org.opencms.workplace.xmlwidgets.CmsXmlStringWidget" />

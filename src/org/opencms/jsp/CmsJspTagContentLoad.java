@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Attic/CmsJspTagContentItem.java,v $
- * Date   : $Date: 2004/09/27 17:11:37 $
- * Version: $Revision: 1.4 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentLoad.java,v $
+ * Date   : $Date: 2004/10/15 12:22:00 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,12 +40,10 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.editors.I_CmsEditorActionHandler;
-import org.opencms.xml.CmsXmlException;
-import org.opencms.xml.content.CmsXmlContentFactory;
+import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.content.CmsXmlContent;
-import org.opencms.xml.content.CmsXmlDefaultContentFilter;
+import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.content.I_CmsXmlContentFilter;
 
 import java.io.IOException;
@@ -66,16 +64,10 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.1 $
  * @since 5.5.0
  */
-public class CmsJspTagContentItem extends BodyTagSupport { 
-    
-    /** Reqnest attribute where the XML content base filename is stored. */
-    public static final String ATTRIBUTE_FILENAME = "__xmlContentFilename";
-    
-    /** Request attribute where the XML content object is stored. */
-    public static final String ATTRIBUTE_XMLCONTENT = "__xmlContentObject";
+public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagContentContainer { 
     
     /** The link for creation of a new element, specified by the selected filter. */
     private String m_createLink;
@@ -95,11 +87,17 @@ public class CmsJspTagContentItem extends BodyTagSupport {
     /** Paramter used for filters. */
     private String m_param;
     
-    /** Name of an individual accessed content value. */
-    private String m_value;
-
-    /** Indocates if the last element was ediable (could be page attribute). */
+    /** Indicated if the last element was ediable (could be page attribute). */
     private boolean m_wasEditable;
+    
+    /** Reference to the last loaded content element. */
+    private A_CmsXmlDocument m_content;
+    
+    /** Reference to the resource name the last content element was loaded from. */
+    private String m_resourceName;
+    
+    /** Refenence to the currently selected locale. */
+    private Locale m_locale;
     
     /**
      * Adds parameters to a parameter Map that can be used for a http request.<p>
@@ -146,10 +144,10 @@ public class CmsJspTagContentItem extends BodyTagSupport {
      * 
      * @return true if the element was editable
      */    
-    public static boolean contentItemTagFileAction(PageContext context, String filename, boolean editable, String editOptions, String createLink, ServletRequest req) throws JspException {
+    public boolean contentItemTagFileAction(PageContext context, String filename, boolean editable, String editOptions, String createLink, ServletRequest req) throws JspException {
 
         int todo = 0;
-        // TODO: this methods must be re-written
+        // TODO: this method must be re-written
         
         CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
         CmsObject cms = controller.getCmsObject();
@@ -169,10 +167,11 @@ public class CmsJspTagContentItem extends BodyTagSupport {
             controller.setThrowable(e, filename);
             throw new JspException(e);
         }
-                
-        // store the XML file name and the content object as a request attribute value
-        req.setAttribute(ATTRIBUTE_FILENAME, filename);
-        req.setAttribute(ATTRIBUTE_XMLCONTENT, content);   
+        
+        // store the loaded XML file name and the content object        
+        m_resourceName = filename;
+        m_content = content;
+        m_locale = cms.getRequestContext().getLocale();
         
         // check the "direct edit" mode
         String directEditPermissions = null;
@@ -199,35 +198,6 @@ public class CmsJspTagContentItem extends BodyTagSupport {
         return editable;
     }
     
-    /**
-     * Internal action method to access an XML content item value.<p>
-     * 
-     * @param value the name of the value to access
-     * @param req the current request 
-     * @return the value of the accessed content item
-     */     
-    public static String contentItemTagValueAction(String value, ServletRequest req) {
-        
-        CmsXmlContent content = (CmsXmlContent)req.getAttribute(ATTRIBUTE_XMLCONTENT);
-        CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
-        CmsObject cms = controller.getCmsObject();
-        
-        if (content == null) {
-            return null;
-        }        
-        if ("opencms:filename".equals(value)) {
-            return (String)req.getAttribute(ATTRIBUTE_FILENAME);
-        }
-        Locale locale = cms.getRequestContext().getLocale();
-        try {
-            return content.getStringValue(cms, value, locale);
-        } catch (CmsXmlException e) {
-            int todo = 0;
-            // TODO: Improve exception handling
-            throw new RuntimeException("Error setting value", e);
-        }        
-    }
-
     /**
      * Returns an option String for the direct editor generated from the provided values.<p>
      * 
@@ -325,10 +295,6 @@ public class CmsJspTagContentItem extends BodyTagSupport {
     public int doEndTag() throws JspException {
         
         if (getFile() != null) {            
-            // this is the end of a tag where a content was loaded, remove the attributes 
-            pageContext.getRequest().removeAttribute(ATTRIBUTE_FILENAME);
-            pageContext.getRequest().removeAttribute(ATTRIBUTE_XMLCONTENT);
-            
             // include direct edit "end" element (if enabled)
             if (m_wasEditable) {
                 
@@ -356,23 +322,6 @@ public class CmsJspTagContentItem extends BodyTagSupport {
      */
     public int doStartTag() throws JspException {
         
-        if (CmsStringUtil.isNotEmpty(getValue())) {
-            String value = contentItemTagValueAction(getValue(), pageContext.getRequest());
-            // make sure that no null String is returned
-            if (value == null) {
-                value = "";
-            }
-            try {
-                pageContext.getOut().print(value);
-            } catch (IOException e) {
-                if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error("Error in Jsp 'contentitem' value tag processing", e);
-                }
-                throw new javax.servlet.jsp.JspException(e);
-            }            
-            return EVAL_BODY_INCLUDE;
-        } 
-        
         if (getFilter() != null) {
             
             // check if this is already initialized
@@ -383,7 +332,7 @@ public class CmsJspTagContentItem extends BodyTagSupport {
                 I_CmsXmlContentFilter filter;
     
                 // HACK: Need to improve this
-                filter = new CmsXmlDefaultContentFilter();       
+                filter = OpenCms.getXmlContentTypeManager().getContentFilter(getFilter());        
                 try {
                     m_filterContentList = filter.getFilterResults(controller.getCmsObject(), getFilter(), getParam());
                     m_createLink = CmsEncoder.encode(getFilter() + "|" + getParam());
@@ -427,8 +376,7 @@ public class CmsJspTagContentItem extends BodyTagSupport {
     public String getFile() {
 
         return m_file;
-    }
-    
+    }    
     
     /**
      * Returns the filter.<p>
@@ -439,8 +387,7 @@ public class CmsJspTagContentItem extends BodyTagSupport {
 
         return m_filter;
     }
-    
-    
+        
     /**
      * Returns the filter parameter.<p>
      *
@@ -449,16 +396,49 @@ public class CmsJspTagContentItem extends BodyTagSupport {
     public String getParam() {
 
         return m_param;
-    }    
+    }
         
     /**
-     * Returns the name of the individual content value was accessed.<p>
-     * 
-     * @return the selected value 
+     * @see org.opencms.jsp.I_CmsJspTagContentContainer#getXmlDocument()
      */
-    public String getValue() {
+    public A_CmsXmlDocument getXmlDocument() {
+
+        return m_content;
+    }
         
-        return (m_value != null)?m_value:"";
+    /**
+     * @see org.opencms.jsp.I_CmsJspTagContentContainer#getResourceName()
+     */
+    public String getResourceName() {
+
+        return m_resourceName;
+    }    
+    
+    /**
+     * @see org.opencms.jsp.I_CmsJspTagContentContainer#getXmlDocumentLocale()
+     */
+    public Locale getXmlDocumentLocale() {
+
+        return m_locale;
+    }
+        
+    /**
+     * @see org.opencms.jsp.I_CmsJspTagContentContainer#getXmlDocumentIndex()
+     */
+    public int getXmlDocumentIndex() {
+        
+        // index must be set in "loop" or "show" class
+        return 0;
+    }
+    
+    
+    /**
+     * @see org.opencms.jsp.I_CmsJspTagContentContainer#getXmlDocumentElement()
+     */
+    public String getXmlDocumentElement() {
+
+        // value must be set in "loop" or "show" class
+        return null;
     }
     
     /**
@@ -467,8 +447,13 @@ public class CmsJspTagContentItem extends BodyTagSupport {
     public void release() {
         
         super.release();        
-        m_value = null;
         m_file = null;
+        m_filter = null;
+        m_createLink = null;
+        m_filterContentList = null;
+        m_param = null;
+        m_editable = false;
+        m_wasEditable = false;
     }    
 
     /**
@@ -509,17 +494,7 @@ public class CmsJspTagContentItem extends BodyTagSupport {
     public void setParam(String param) {
 
         m_param = param;
-    }
-    
-    /**
-     * Sets the value of an individual content filed that is to be accessed.<p>
-     * 
-     * @param value the value to set
-     */
-    public void setValue(String value) {
-        
-        m_value = value;
-    }
+    }    
     
     /**
      * Returns the next file name from the filter.<p>

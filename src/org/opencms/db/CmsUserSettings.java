@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2004/06/17 13:33:49 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/10/15 12:22:00 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 package org.opencms.db;
 
 import org.opencms.configuration.CmsWorkplaceConfiguration;
+import org.opencms.configuration.I_CmsXmlConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
@@ -48,7 +49,7 @@ import java.util.Map;
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @author  Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 5.1.12
  */
@@ -504,7 +505,7 @@ public class CmsUserSettings {
         }
         
         // start site
-        m_startSite = ((String)m_user.getAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS + CmsWorkplaceConfiguration.N_SITE));
+        m_startSite = ((String)m_user.getAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS + I_CmsXmlConfiguration.N_SITE));
         if (m_startSite == null) {
             m_startSite = OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartSite();
         }
@@ -667,9 +668,9 @@ public class CmsUserSettings {
         
         // start site
         if (!getStartSite().equals(OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartSite())) {
-            m_user.setAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS + CmsWorkplaceConfiguration.N_SITE, getStartSite());    
+            m_user.setAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS + I_CmsXmlConfiguration.N_SITE, getStartSite());    
         } else if (cms != null) {
-            m_user.deleteAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS + CmsWorkplaceConfiguration.N_SITE);
+            m_user.deleteAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS + I_CmsXmlConfiguration.N_SITE);
         }        
         // start folder
         if (getStartFolder() != null && !"".equals(getStartFolder().trim()) && !getStartFolder().equals(OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartFolder())) {

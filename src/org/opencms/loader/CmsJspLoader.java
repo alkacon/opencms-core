@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2004/08/30 12:38:57 $
- * Version: $Revision: 1.70 $
+ * Date   : $Date: 2004/10/15 12:22:00 $
+ * Version: $Revision: 1.71 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -101,7 +101,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.70 $
+ * @version $Revision: 1.71 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -515,7 +515,8 @@ public class CmsJspLoader implements I_CmsResourceLoader {
      * @param res the current response
      * @param streaming indicates if the response is streaming
      * @param top indicates if the response is the top response
-     * @return
+     * 
+     * @return a Flex controller
      */
     private CmsFlexController getController(
         CmsObject cms,

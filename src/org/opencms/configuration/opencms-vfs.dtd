@@ -81,7 +81,11 @@
 # XML content editor, a widget class must be given that implements the 
 # interface "org.opencms.workplace.xmltypes.I_CmsXmlWidget". 
 -->
-<!ELEMENT xmlcontents (xmlcontent*)>
+<!ELEMENT xmlcontents (filters, xmlcontent*)>
+
+<!ELEMENT filters (filter+)>
+<!ELEMENT filter EMPTY>
+<!ATTLIST filter class CDATA #REQUIRED order CDATA #REQUIRED>
 
 <!ELEMENT xmlcontent EMPTY>
 <!ATTLIST xmlcontent class CDATA #REQUIRED widget CDATA #REQUIRED>

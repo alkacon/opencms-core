@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/10/14 08:19:36 $
- * Version: $Revision: 1.421 $
+ * Date   : $Date: 2004/10/15 12:22:00 $
+ * Version: $Revision: 1.422 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.421 $ $Date: 2004/10/14 08:19:36 $
+ * @version $Revision: 1.422 $ $Date: 2004/10/15 12:22:00 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -4440,14 +4440,15 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
     /**
      * Returns a filtered list of sibling resources for publishing.<p>
+     * 
      * Contains all other siblings of the given resources, which are not locked
-     * and which have a parent folder that is already published or will be published, too.
+     * and which have a parent folder that is already published or will be published, too.<p>
      * 
      * @param context the current request context
      * @param currentResource the resource to lookup siblings 
      * @param folderList the list of folders that will be published
      * @param resourceList 
-     * @return
+     * @return a filtered list of sibling resources for publishing
      */
     private List filterSiblings(CmsRequestContext context, CmsResource currentResource, List folderList, List resourceList) {
         
@@ -4478,10 +4479,13 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     }   
     
     /**
+     * Checks the parent of a resource during publishing.<p> 
+     * 
      * @param context the current request context
-     * @param folderList
-     * @param res
-     * @return
+     * @param folderList a list of folders
+     * @param res a resource to check the parent for
+     * 
+     * @return true if the resource should be published
      */
     private boolean checkParentResource(CmsRequestContext context, List folderList, CmsResource res) {
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsVfsConfiguration.java,v $
- * Date   : $Date: 2004/10/03 11:37:53 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/10/15 12:22:00 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsResourceTranslator;
 import org.opencms.workplace.xmlwidgets.I_CmsXmlWidget;
 import org.opencms.xml.CmsXmlContentTypeManager;
+import org.opencms.xml.content.I_CmsXmlContentFilter;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.util.ArrayList;
@@ -106,6 +107,12 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
     /** The xmlcontents node name. */
     protected static final String N_XMLCONTENTS = "xmlcontents";
 
+    /** The filters node name. */
+    protected static final String N_FILTERS = "filters";
+    
+    /** The filter node name. */
+    protected static final String N_FILTER = "filter";
+    
     /** The name of the DTD for this configuration. */
     private static final String C_CONFIGURATION_DTD_NAME = "opencms-vfs.dtd";
 
@@ -215,6 +222,11 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         digester.addObjectCreate("*/" + N_VFS + "/" + N_XMLCONTENTS, CmsXmlContentTypeManager.class);
         digester.addSetNext("*/" + N_VFS + "/" + N_XMLCONTENTS, "setXmlContentTypeManager");
 
+        // XML content filter add rules
+        digester.addCallMethod("*/" + N_VFS + "/" + N_XMLCONTENTS + "/" + N_FILTERS + "/" + N_FILTER, "addXmlContentFilter", 2);
+        digester.addCallParam("*/" + N_VFS + "/" + N_XMLCONTENTS + "/" + N_FILTERS + "/" + N_FILTER, 0, A_CLASS);
+        digester.addCallParam("*/" + N_VFS + "/" + N_XMLCONTENTS + "/" + N_FILTERS + "/" + N_FILTER, 1, A_ORDER);        
+        
         // XML content type add rules
         digester.addCallMethod("*/" + N_VFS + "/" + N_XMLCONTENTS + "/" + N_XMLCONTENT, "addXmlContent", 2);
         digester.addCallParam("*/" + N_VFS + "/" + N_XMLCONTENTS + "/" + N_XMLCONTENT, 0, A_CLASS);
@@ -293,6 +305,18 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         
         // XML content configuration
         Element xmlContentsElement = vfs.addElement(N_XMLCONTENTS);
+        
+        // XML content filters
+        Element filtersElement = xmlContentsElement.addElement(N_FILTERS);
+        it = m_xmlContentTypeManager.getRegisteredContentFilters().iterator();
+        while (it.hasNext()) {
+            I_CmsXmlContentFilter filter = (I_CmsXmlContentFilter)it.next();
+            filtersElement.addElement(N_FILTER)
+                .addAttribute(A_CLASS, filter.getClass().getName())
+                .addAttribute(A_ORDER, String.valueOf(filter.getOrder()));
+        }
+        
+        // XML content types 
         it = m_xmlContentTypeManager.getRegisteredContentTypes().iterator();
         while (it.hasNext()) {
             I_CmsXmlSchemaType type = (I_CmsXmlSchemaType)it.next();
