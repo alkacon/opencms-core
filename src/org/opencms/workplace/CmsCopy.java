@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsCopy.java,v $
- * Date   : $Date: 2003/07/04 13:55:05 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/07/06 13:47:44 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,9 @@ import com.opencms.file.CmsResource;
 import com.opencms.flex.jsp.CmsJspActionElement;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.PageContext;
 
 /**
  * Provides methods for the copy resources dialog.<p> 
@@ -45,14 +48,23 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.1
  */
 public class CmsCopy extends CmsDialog {
 
+    // always start individual action id's with 100 to leave enough room for more default actions
+    public static final int ACTION_COPY = 100;
+    
+    public static final String DIALOG_TYPE = "copy";
+    public static final String PARAM_KEEPRIGHTS = "keeprights";    
+
+    private String m_paramTarget;
+    private String m_paramKeeprights;    
+    
     /**
-     * Public constructor.<p>
+     * Public constructor with JSP action element.<p>
      * 
      * @param jsp an initialized JSP action element
      */
@@ -61,92 +73,145 @@ public class CmsCopy extends CmsDialog {
     }
     
     /**
+     * Public constructor with JSP variables.<p>
+     * 
+     * @param context the JSP page context
+     * @param req the JSP request
+     * @param res the JSP response
+     */
+    public CmsCopy(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+        this(new CmsJspActionElement(context, req, res));
+    }        
+
+    /**
+     * Returns the value of the target parameter, 
+     * or null if this parameter was not provided.<p>
+     * 
+     * The target parameter selects the target name 
+     * of the operation.<p>
+     * 
+     * @return the value of the target parameter
+     */    
+    public String getParamTarget() {
+        return m_paramTarget;
+    }
+    
+    /**
+     * Sets the value of the target parameter.<p>
+     * 
+     * @param value the value to set
+     */
+    public void setParamTarget(String value) {
+        m_paramTarget = value;
+    }    
+
+    /**
+     * Returns the value of the keeprights parameter.<p>
+     * 
+     * @return the value of the keeprights parameter
+     */    
+    public String getParamKeeprights() {
+        return m_paramKeeprights;
+    }
+    
+    /**
+     * Sets the value of the "keeprights" parameter.<p>
+     * 
+     * @param value the value of the "keeprights" parameter
+     */
+    public void setParamKeeprights(String value) {
+        m_paramKeeprights = value;
+    }    
+
+    /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
-        // the file/folder which is copied
-        String fileUri = (String)request.getParameter("file");
-        if (fileUri != null) {
-            settings.setFileUri(fileUri);
+        // fill the parameter values in the get/set methods
+        fillParamValues(request);
+        // set the dialog type
+        setParamDialogtype(DIALOG_TYPE);
+        // set the action for the JSP switch 
+        if (DIALOG_TYPE.equals(getParamAction())) {
+            setAction(ACTION_COPY);                            
+        } else if (DIALOG_CONFIRMED.equals(getParamAction())) {
+            setAction(ACTION_CONFIRMED);
+        } else if (DIALOG_WAIT.equals(getParamAction())) {
+            setAction(ACTION_WAIT);
+        } else {                        
+            setAction(ACTION_DEFAULT);
+            // build title for copy dialog     
+            setParamTitle(key("title.copy") + ": " + CmsResource.getName(getParamFile()));
+        }      
+    } 
+
+    /**
+     * Performs the copy action, will be called by the JSP page.<p>
+     * 
+     * @throws JspException if problems including sub-elements occur
+     */
+    public void actionCopy() throws JspException {
+        // save initialized instance of this class in request attribute for included sub-elements
+        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
+        try {
+            if (performCopyOperation())  {
+                // if no exception is caused and "true" is returned copy operation was successful
+                getJsp().include(CmsWorkplaceAction.C_JSP_WORKPLACE_FILELIST);
+            } else  {
+                // "false" returned, display "please wait" screen
+                getJsp().include(CmsWorkplaceAction.C_JSP_WORKPLACE_COMMONS_PATH + "wait.jsp");
+            }    
+        } catch (CmsException e) {
+            if ((e.getType() == CmsException.C_FILE_EXISTS) 
+            && !(CmsResource.isFolder(getParamFile()))) {
+                // file copy but file already exists, show confirmation dialog
+                setParamMessage(getParamTarget() + "<br>" + key("confirm.message." + getParamDialogtype()));
+                getJsp().include(CmsWorkplaceAction.C_JSP_WORKPLACE_COMMONS_PATH + "confirmation.jsp");        
+            } else {                
+                // error during copy, show error dialog
+                setParamErrorstack(e.getStackTraceAsString());
+                getJsp().include(CmsWorkplaceAction.C_JSP_WORKPLACE_COMMONS_PATH + "error.html");
+            }
         }
     }
-        
+    
     /**
      * Performs the resource copying.<p>
      * 
-     * @param request the http servlet request
      * @return true, if the resource was copied, otherwise false
-     * 
      * @throws CmsException if copying is not successful
      */
-    public boolean actionCopy(HttpServletRequest request) throws CmsException {
-        String filename = getSettings().getFileUri();
+    private boolean performCopyOperation() throws CmsException {
+
+        boolean isFolder = CmsResource.isFolder(getParamFile());
+        if (isFolder && ! DIALOG_WAIT.equals(getParamAction())) {
+            // return false, this will trigger the "please wait" screen
+            return false;
+        }
+
+        String target = getParamTarget();
+        if (target == null) target = "";
+        if ((! isFolder) && CmsResource.isFolder(target)) {
+            // if the target name is a folder, add the current file name
+            target = target + CmsResource.getName(getParamFile());
+        }
+        if (! target.startsWith("/")) {
+            // target is not an absolute path, add the current folder
+            if (isFolder) {
+                target = CmsResource.getParent(getParamFile()) + target; 
+            } else {
+                target = CmsResource.getPath(getParamFile()) + target; 
+            }
+        }
+        setParamTarget(target);
         
-        // read the file header
-        CmsResource file = null;
-        file = (CmsResource)getCms().readFileHeader(filename);          
-             
-        // read all request parameters
-        String wholePath = (String)request.getParameter("folder");
-        String flags = (String)request.getParameter("keeprights");
-        String action = (String)request.getParameter("action");
-        
-        // the wholePath includes the folder and/or the filename
-        String newFolder = getNewFolder(wholePath, file);
-        String newFile = getNewFile(wholePath, file);
-        
-        // first delete the target resource when confirmed by the user
-        if ("confirmoverwrite".equals(action)) {
-            getCms().deleteResource(newFolder+newFile);
+        // delete existing target resource if confirmed by the user
+        if (DIALOG_CONFIRMED.equals(getParamAction())) {
+            getCms().deleteResource(target);
         }
             
         // copy the resource       
-        getCms().copyResource(filename, newFolder+newFile, "true".equals(flags));
-      
+        getCms().copyResource(getParamFile(), target, "true".equals(getParamKeeprights()));
         return true;
     }
-    
-    /**
-     * Creates the path to the destination of the copy process.<p>
-     * 
-     * @param wholePath the uri of the destination
-     * @param file the source resource to be copied
-     * @return the destination path
-     */
-    private String getNewFolder(String wholePath, CmsResource file) {
-        if(wholePath != null && !("".equals(wholePath))){
-            if(wholePath.startsWith("/")){
-                // get the foldername
-                return wholePath.substring(0, wholePath.lastIndexOf("/")+1);
-            
-            } else {
-                return file.getParent();
-            }
-        }
-        return new String();
-    }
-    
-    /**
-     * Creates the name of the destination resource of the copy process.<p>
-     * 
-     * @param wholePath the uri of the destination
-     * @param file the source resource to be copied
-     * @return the destination resource name
-     */
-    private String getNewFile(String wholePath, CmsResource file) {   
-        String newFile = new String();
-        if(wholePath != null && !("".equals(wholePath))){
-            if(wholePath.startsWith("/")){
-                // get the foldername
-                newFile = wholePath.substring(wholePath.lastIndexOf("/")+1);
-                if (newFile == null || "".equals(newFile)){
-                    newFile = file.getName();
-                }
-            } else {
-                newFile = wholePath;
-            }
-        }
-        return newFile;
-    }
-
 }

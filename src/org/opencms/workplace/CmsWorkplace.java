@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2003/06/30 14:28:59 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/07/06 13:47:44 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,28 +36,38 @@ import com.opencms.core.OpenCms;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
 import com.opencms.flex.jsp.CmsJspActionElement;
+import com.opencms.util.Encoder;
 import com.opencms.util.LinkSubstitution;
 import com.opencms.workplace.I_CmsWpConstants;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.jsp.PageContext;
 
 /**
  * Master class for the JSP based workplace which provides default methods and
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.1
  */
 public abstract class CmsWorkplace {
     
-    protected static final String C_SESSION_WORKPLACE_SETTINGS = "__org.opencms.workplace.CmsWorkplaceSettings";
+    protected static final String C_SESSION_WORKPLACE_SETTINGS = "__CmsWorkplace.WORKPLACE_SETTINGS";
+    protected static final String C_SESSION_WORKPLACE_CLASS    = "__CmsWorkplace.WORKPLACE_CLASS";
     
     private CmsJspActionElement m_jsp;
     private CmsObject m_cms;
@@ -67,6 +77,8 @@ public abstract class CmsWorkplace {
     
     public static final int HTML_START = 0;
     public static final int HTML_END = 1;
+    
+    public static final boolean DEBUG = false;
         
     /**
      * Public constructor.<p>
@@ -93,6 +105,17 @@ public abstract class CmsWorkplace {
         // set cms context accordingly
         initWorkplaceCmsContext(m_settings, m_cms);
     }    
+    
+    /**
+     * Public constructor with JSP variables.<p>
+     * 
+     * @param context the JSP page context
+     * @param req the JSP request
+     * @param res the JSP response
+     */    
+    public CmsWorkplace(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+        this(new CmsJspActionElement(context, req, res));
+    }
     
     /**
      * Get a localized key value for the workplace.<p>
@@ -347,5 +370,282 @@ public abstract class CmsWorkplace {
         result.append("</select>\n");                
         return result.toString();
     }
+    
+    /**
+     * Builds the start html of the page, including setting of DOCTYPE and 
+     * inserting a header with the content-type.<p>
+     * 
+     * @param title the content for the title tag
+     * @return the start html of the page
+     */
+    public String htmlStart(String title) {
+        return pageHtml(HTML_START, title);
+    } 
+    
+    /**
+     * Builds the end html of the page.<p>
+     * 
+     * @return the end html of the page
+     */
+    public String htmlEnd() {
+        return pageHtml(HTML_END, null);
+    } 
+                    
+    /**
+     * Returns the default html for a workplace page, including setting of DOCTYPE and 
+     * inserting a header with the content-type.<p>
+     * 
+     * @param segment the HTML segment (START / END)
+     * @param title the title of the page, if null no title tag is inserted
+     * @return the default html for a workplace page
+     */
+    public String pageHtml(int segment, String title) {
+        if (segment == HTML_START) {
+            StringBuffer result = new StringBuffer(512);
+            result.append("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\">\n");
+            result.append("<html>\n<head>\n");
+            if (title != null) {
+                result.append("<title>");
+                result.append(title);
+                result.append("</title>\n");
+            }
+            result.append("<meta HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=");
+            result.append(getEncoding());
+            result.append("\">\n");
+            result.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
+            result.append(getSkinUri());
+            result.append("files/css_workplace.css\">\n");
+            return result.toString();
+        } else {
+            return "</html>";
+        }
+    }   
+    
+    /**
+     * Builds the start html of the body.<p>
+     * 
+     * @param className optional class attribute to add to the body tag
+     * @return the start html of the body
+     */    
+    public String bodyStart(String className) {
+        return pageBody(HTML_START, className, null);
+    }
+    
+    /**
+     * Builds the start html of the body.<p>
+     * 
+     * @param className optional class attribute to add to the body tag
+     * @param parameters optional parameters to add to the body tag
+     * @return the start html of the body
+     */    
+    public String bodyStart(String className, String parameters) {
+        return pageBody(HTML_START, className, parameters);
+    }        
+    
+    /**
+     * Builds the end html of the body.<p>
+     * 
+     * @return the end html of the body
+     */
+    public String bodyEnd() {
+        return pageBody(HTML_END, null, null);
+    }
+    
+    /**
+     * Builds the html of the body.<p>
+     * 
+     * @param segment the HTML segment (START / END)
+     * @param className optional class attribute to add to the body tag
+     * @param parameters optional parameters to add to the body tag
+     * @return the html of the body
+     */
+    public String pageBody(int segment, String className, String parameters) {
+        if (segment == HTML_START) {
+            StringBuffer result = new StringBuffer(128);
+            result.append("</head>\n<body unselectable=\"on\"");
+            if (className != null) {
+                result.append(" class=\"");
+                result.append(className);
+                result.append("\"");
+            }
+            if (parameters != null) {
+                result.append(" ");
+                result.append(parameters);
+            }
+            result.append(">\n");            
+            return result.toString();
+        } else {
+            return "</body>";
+        }        
+    }  
+    
+    /**
+     * Returns a list of all methods of the current class instance that 
+     * start with "getParam" and have no parameters.<p> 
+     * 
+     * @return a list of all methods of the current class instance that 
+     * start with "getParam" and have no parameters
+     */
+    private List paramGetMethods() {
+        List list = new ArrayList();
+        Method methods[] = this.getClass().getMethods();
+        int length = methods.length;
+        for (int i=0; i<length; i++) {
+            Method method = methods[i];
+            if (method.getName().startsWith("getParam") && (method.getParameterTypes().length == 0)) {
+                if (DEBUG) System.err.println("getMethod: " + method.getName());
+                list.add(method);
+            }
+        }        
+        return list;
+    }
 
+    /**
+     * Returns a list of all methods of the current class instance that 
+     * start with "setParam" and have exactle on String parameter.<p> 
+     * 
+     * @return a list of all methods of the current class instance that 
+     * start with "setParam" and have exactle on String parameter
+     */
+    private List paramSetMethods() {
+        List list = new ArrayList();
+        Method methods[] = this.getClass().getMethods();
+        int length = methods.length;
+        for (int i=0; i<length; i++) {
+            Method method = methods[i];
+            if (method.getName().startsWith("setParam") 
+            && (method.getParameterTypes().length == 1)
+            && (method.getParameterTypes()[0].equals(java.lang.String.class))) {
+                if (DEBUG) System.err.println("setMethod: " + method.getName());
+                list.add(method);
+            }
+        }        
+        return list;
+    }
+    
+    /**
+     * Fills all class parameter values from the data provided in the current request.<p>
+     *  
+     * All methods that start with "setParam" are possible candidates to be
+     * automatically filled. The remaining part of the method name is converted
+     * to lower case. Then a parameter of this name is searched in the request parameters.
+     * If the parameter is found, the "setParam" method is automatically invoked 
+     * by reflection with the value of the parameter.<p>
+     * 
+     * @param request the current JSP request
+     */
+    public void fillParamValues(HttpServletRequest request)  {
+        List methods = paramSetMethods();
+        Iterator i = methods.iterator();
+        while (i.hasNext()) {
+            Method m = (Method)i.next();
+            String name = m.getName().substring(8).toLowerCase();
+            String value = request.getParameter(name);
+            if ("".equals(value)) value = null;
+            if (value != null) value = Encoder.decode(value);
+            try {
+                if (DEBUG && (value != null)) System.err.println("setting " + m.getName() + " with value '" + value + "'");
+                m.invoke(this, new Object[] {value});
+            } catch (InvocationTargetException ite) {
+            } catch (IllegalAccessException eae) {
+            }
+        }        
+    }
+    
+    /**
+     * Returns the values of all parameter methods of this workplace class instance.<p>
+     * 
+     * @return the values of all parameter methods of this workplace class instance
+     */
+    private Map paramValues() {
+        List methods = paramGetMethods();
+        Map map = new HashMap(methods.size());
+        Iterator i = methods.iterator();
+        while (i.hasNext()) {
+            Method m = (Method)i.next();
+            Object o = null;
+            try {
+                o = m.invoke(this, new Object[0]);
+            } catch (InvocationTargetException ite) {
+            } catch (IllegalAccessException eae) {
+            }
+            if (o != null) {
+                map.put(m.getName().substring(8).toLowerCase(), o);            
+            }
+        }
+        return map;
+    }
+        
+    /**
+     * Returns all initialized parameters of the current workplace class in the
+     * form of a parameter map, i.e. the values are arrays.<p>
+     * 
+     * @return all initialized parameters of the current workplace class in the
+     * form of a parameter map
+     */
+    public Map paramsAsParameterMap() {
+        Map params = paramValues();
+        Map result = new HashMap(params.size());
+        Iterator i = params.keySet().iterator();
+        while (i.hasNext()) {
+            String param = (String)i.next();
+            String value = params.get(param).toString();
+            result.put(param, new String[] {value});
+        }
+        return result;
+    }  
+    
+    /**
+     * Returns all initialized parameters of the current workplace class 
+     * as hidden field tags that can be inserted in a form.<p>
+     * 
+     * @return all initialized parameters of the current workplace class
+     * as hidden field tags that can be inserted in a html form
+     */
+    public String paramsAsHidden() {
+        StringBuffer result = new StringBuffer(512);
+        Map params = paramValues();
+        Iterator i = params.keySet().iterator();
+        while (i.hasNext()) {
+            String param = (String)i.next();
+            Object value = params.get(param);
+            result.append("<input type=\"hidden\" name=\"");
+            result.append(param);
+            result.append("\" value=\"");
+            result.append(Encoder.encode(value.toString()));
+            result.append("\">\n");
+        }        
+        return result.toString();
+    }
+    
+    /**
+     * Returns all initialized parameters of the current workplace class 
+     * as request parameters, i.e. in the form <code>key1=value1&key2=value2</code> etc.
+     * 
+     * @return all initialized parameters of the current workplace class 
+     * as request parameters
+     */
+    public String paramsAsRequest() {
+        StringBuffer result = new StringBuffer(512);
+        Map params = paramValues();
+        Iterator i = params.keySet().iterator();
+        while (i.hasNext()) {
+            String param = (String)i.next();
+            Object value = params.get(param);
+            result.append(param);
+            result.append("=");
+            result.append(Encoder.encode(value.toString()));
+            if (i.hasNext()) result.append("&");
+        }        
+        return result.toString();
+    }    
+    
+    /**
+     * Returns true if the currently processed element is an included sub element.<p>
+     * 
+     * @return true if the currently processed element is an included sub element
+     */
+    public boolean isSubElement() {
+        return !getJsp().getRequestContext().getUri().equals(getJsp().info("opencms.request.element.uri"));
+    }    
 }

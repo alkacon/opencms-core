@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2003/07/04 07:25:16 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/07/06 13:47:44 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import com.opencms.file.CmsUser;
  * will be stored in the session of a user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.1
  */
@@ -58,12 +58,6 @@ public class CmsWorkplaceSettings {
     private String m_explorerFlaturl;
     private String m_fileUri;
     private String m_detailView;
-    
-    private String m_errorTitle;
-    private String m_errorMessage;
-    private String m_errorReason;
-    private String m_errorSuggestion;
-    private String m_errorDetails;
         
     /**
      * Constructor, only package visible.<p>
@@ -321,96 +315,6 @@ public class CmsWorkplaceSettings {
      */
     public void setDetailView(String value) {
         m_detailView = value;
-    }
-    
-    /**
-     * Returns the current title for the error page.<p>
-     *  
-     * @return value of the title.
-     */
-    public String getErrorTitle() {
-        return m_errorTitle;
-    }
-
-    /**
-     * Sets the current title for the error page.<p>
-     * 
-     * @param value the current title.
-     */
-    public void setErrorTitle(String value) {
-        m_errorTitle = value;
-    }
-    
-    /**
-     * Returns the current message for the error page.<p>
-     *  
-     * @return value of the message.
-     */
-    public String getErrorMessage() {
-        return m_errorMessage;
-    }
-
-    /**
-     * Sets the current message for the error page.<p>
-     * 
-     * @param value the current message.
-     */
-    public void setErrorMessage(String value) {
-        m_errorMessage = value;
-    }
-    
-    /**
-     * Returns the current reason for the error page.<p>
-     *  
-     * @return value of the reason.
-     */
-    public String getErrorReason() {
-        return m_errorReason;
-    }
-
-    /**
-     * Sets the current reason for the error page.<p>
-     * 
-     * @param value the current reason.
-     */
-    public void setErrorReason(String value) {
-        m_errorReason = value;
-    }
-    
-    /**
-     * Returns the current suggestion for the error page.<p>
-     *  
-     * @return value of the suggestion.
-     */
-    public String getErrorSuggestion() {
-        return m_errorSuggestion;
-    }
-
-    /**
-     * Sets the current suggestion for the error page.<p>
-     * 
-     * @param value the current suggestion.
-     */
-    public void setErrorSuggestion(String value) {
-        m_errorSuggestion = value;
-    }
-
-    /**
-     * Returns the current details for the error page.<p>
-     *  
-     * @return value of the details.
-     */
-    public String getErrorDetails() {
-        return m_errorDetails;
-    }
-
-    /**
-     * Sets the current details for the error page.<p>
-     * 
-     * @param value the current details.
-     */
-    public void setErrorDetails(String value) {
-        m_errorDetails = value;
     }
         
 }
