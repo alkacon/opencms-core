@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleManager.java,v $
- * Date   : $Date: 2004/02/14 22:56:30 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/02/16 15:43:17 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class CmsLocaleManager {
     
@@ -115,31 +115,44 @@ public class CmsLocaleManager {
         // set default m_locale 
         m_defaultLocale = (Locale)m_defaultLocales.get(0);        
     }
-    
+
     /**
-     * Returns a m_locale created from the given full name.<p>
+     * Returns a locale created from the given full name.<p>
      * 
      * The full name must consist of language code, 
      * country code(optional), variant(optional) separated by "_".<p>
      * 
-     * @param localeName the full m_locale name
-     * @return the m_locale or <code>null</code> if not available
+     * This method will always return a valid Locale!
+     * If the provided locale name is not valid (i.e. leads to an Exception
+     * when trying to create the Locale, then the configured default Locale is returned.<p> 
+     * 
+     * @param localeName the full locale name
+     * @return the locale or <code>null</code> if not available
      */
     public static Locale getLocale(String localeName) {
+        if (localeName == null) {
+            return OpenCms.getLocaleManager().getDefaultLocale();
+        }
         Locale locale;
         synchronized (m_localeCache) {
             locale = (Locale)m_localeCache.get(localeName);
-                if (locale == null) {
-                String localeNames[] = CmsStringSubstitution.split(localeName, "_");
-                locale = new Locale(localeNames[0],
-                        (localeNames.length > 1) ? localeNames[1] : "",
-                        (localeNames.length > 2) ? localeNames[2] : ""                        
-                );
+            if (locale == null) {
+                try {
+                    String localeNames[] = CmsStringSubstitution.split(localeName, "_");
+                    locale = new Locale(localeNames[0],
+                            (localeNames.length > 1) ? localeNames[1] : "",
+                            (localeNames.length > 2) ? localeNames[2] : ""                        
+                    );                
+                } catch (Throwable t) {
+                    OpenCms.getLog(OpenCms.getLocaleManager()).debug("Could not create a Locale out of '" + localeName + "'", t);
+                    // map this error to the default locale
+                    locale = OpenCms.getLocaleManager().getDefaultLocale();
+                }
                 m_localeCache.put(localeName, locale);
             }
         }
         return locale;
-    }    
+    }
     
     /**
      * Returns a List of locales from a comma-separated string of m_locale names.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsRequestContext.java,v $
- * Date   : $Date: 2004/02/14 21:25:41 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/02/16 15:43:17 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,10 +57,13 @@ import javax.servlet.http.HttpSession;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  *
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsRequestContext {
 
+    /** Request parameter to force locale selection */
+    public static final String C_PARAMETER_LOCALE = "_locale";    
+    
     /** A map for storing (optional) request context attributes */
     private HashMap m_attributeMap; 
 
@@ -453,12 +456,16 @@ public class CmsRequestContext {
     /**
      * Initializes the locale name for this request context.<p>
      */
-    public void initLocale() {        
+    public void initLocale() {
         CmsLocaleManager localeManager = OpenCms.getLocaleManager();
         if (localeManager != null) {
             // locale manager is initialized
-            if (getUri().startsWith(I_CmsWpConstants.C_VFS_PATH_WORKPLACE)
-             || getUri().startsWith(I_CmsWpConstants.C_VFS_PATH_LOGIN)) {
+            String locale;
+            if ((m_req != null) && ((locale = m_req.getParameter(C_PARAMETER_LOCALE)) != null)) {  
+                // "_locale" parameter found in request
+                m_locale = CmsLocaleManager.getLocale(locale);
+            } else if (getUri().startsWith(I_CmsWpConstants.C_VFS_PATH_WORKPLACE)
+                    || getUri().startsWith(I_CmsWpConstants.C_VFS_PATH_LOGIN)) {
                 // the workplace/login requires a special locale handler
                 m_locale = OpenCms.getWorkplaceManager().getLocale(this);
             } else {
@@ -469,7 +476,7 @@ public class CmsRequestContext {
             if (m_locale == null) {
                 m_locale = OpenCms.getLocaleManager().getDefaultLocale();
                 if (OpenCms.getLog(this).isDebugEnabled()) {
-                    OpenCms.getLog(this).debug("No locale name found - using default: " + m_locale);
+                    OpenCms.getLog(this).debug("No locale found - using default: " + m_locale);
                 }
             }
         } else {
