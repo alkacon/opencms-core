@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/04/28 22:30:58 $
- * Version: $Revision: 1.69 $
+ * Date   : $Date: 2004/04/30 19:07:43 $
+ * Version: $Revision: 1.70 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.fileupload.FileUploadException;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.69 $
+ * @version $Revision: 1.70 $
  * 
  * @since 5.1
  */
@@ -872,6 +872,26 @@ public abstract class CmsWorkplace {
     }
     
     /**
+     * Decodes an individual parameter value.<p>
+     * 
+     * In special cases some parameters might require a different-from-default
+     * encoding. This is the case if the content of the parameter was 
+     * encoded using the JavaScript encodeURIComponent() method on the client,
+     * which always encodes in UTF-8.<p> 
+     * 
+     * @param paramName the name of the parameter 
+     * @param paramValue the unencoded value of the parameter
+     * @return the encoded value of the parameter
+     */
+    protected String fillParamValuesDecode(String paramName, String paramValue) {
+        if ((paramName != null) && (paramValue != null)) {
+            return CmsEncoder.decode(paramValue, getCms().getRequestContext().getEncoding());
+        } else {
+            return null;
+        }
+    }
+    
+    /**
      * Fills all class parameter values from the data provided in the current request.<p>
      *  
      * All methods that start with "setParam" are possible candidates to be
@@ -905,9 +925,7 @@ public abstract class CmsWorkplace {
             if ("".equals(value)) {
                 value = null;
             }
-            if (value != null) {
-                value = CmsEncoder.decode(value, getCms().getRequestContext().getEncoding());
-            }
+            value = fillParamValuesDecode(name, value);
             try {
                 if (DEBUG && (value != null)) {
                     System.err.println("setting " + m.getName() + " with value '" + value + "'");

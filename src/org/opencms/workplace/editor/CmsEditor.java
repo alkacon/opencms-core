@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditor.java,v $
- * Date   : $Date: 2004/04/28 22:34:06 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2004/04/30 19:07:43 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ package org.opencms.workplace.editor;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsResource;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
@@ -51,7 +52,7 @@ import javax.servlet.jsp.JspException;
  * The editor classes have to extend this class and implement action methods for common editor actions.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  * 
  * @since 5.1.12
  */
@@ -197,6 +198,174 @@ public abstract class CmsEditor extends CmsDialog {
         String target = OpenCms.getLinkManager().substituteLink(getCms(), CmsWorkplaceAction.C_JSP_WORKPLACE_URI);
         return "onClick=\"top.location.href='" + target + "';\"";
     }
+    
+    /**
+     * Returns the URI to the editor resource folder where button images and javascripts are located.<p>
+     * 
+     * @return the URI to the editor resource folder
+     */
+    public abstract String getEditorResourceUri();
+    
+    /**
+     * Returns the back link when closing the editor.<p>
+     * 
+     * @return the back link
+     */
+    public String getParamBacklink() {
+        if (m_paramBackLink == null) {
+            m_paramBackLink = "";
+        }
+        return m_paramBackLink;
+    }
+    
+    /**
+     * Returns the content of the editor.<p>
+     * @return the content of the editor
+     */
+    public String getParamContent() {
+        if (m_paramContent == null) {
+            m_paramContent = "";
+        }
+        return m_paramContent;
+    }
+
+    /**
+     * Returns the direct edit flag parameter.<p>
+     *  
+     * @return the direct edit flag parameter
+     */
+    public String getParamDirectedit() {
+        return m_paramDirectedit;
+    }
+    
+    /**
+     * Returns the edit as text parameter.<p>
+     * 
+     * @return the edit as text parameter
+     */
+    public String getParamEditastext() {
+        return m_paramEditAsText;
+    }
+    
+    /**
+     * Returns the editor mode parameter.<p>
+     *  
+     * @return the editor mode parameter
+     */
+    public String getParamEditormode() {
+        return m_paramEditormode;
+    }
+    
+    /**
+     * Returns the "loaddefault" parameter to determine if the default editor should be loaded.<p>
+     * 
+     * @return the "loaddefault" parameter
+     */
+    public String getParamLoaddefault() {
+        return m_paramLoadDefault;
+    }
+    
+    /**
+     * Returns the name of the temporary file.<p>
+     * 
+     * @return the name of the temporary file
+     */
+    public String getParamTempfile() {
+        return m_paramTempFile;
+    }
+    
+    /**
+     * Returns the path to the images used by this editor.<p>
+     * 
+     * @return the path to the images used by this editor
+     */
+    public String getPicsUri() {
+        if (m_picsUri == null) {
+            m_picsUri = getEditorResourceUri() + "pics/";
+        }
+        return m_picsUri;
+    }
+    
+    /**
+     * Determines if the online help is available in the currently selected user language.<p>
+     * 
+     * @return true if the online help is found, otherwise false
+     */
+    public boolean isHelpEnabled() {
+        try {
+            getCms().readFolder(I_CmsWpConstants.C_VFS_PATH_HELP + getLocale() + "/");
+            return true;
+        } catch (CmsException e) {
+            // help folder is not available
+            return false;         
+        }
+    }
+    
+    /**
+     * Sets the back link when closing the editor.<p>
+     * 
+     * @param backLink the back link
+     */
+    public void setParamBacklink(String backLink) {
+        m_paramBackLink = backLink;
+    } 
+    
+    /**
+     * Sets the content of the editor.<p>
+     * 
+     * @param content the content of the editor
+     */
+    public void setParamContent(String content) {
+        if (content == null) {
+            content = "";
+        }
+        m_paramContent = content;
+    }
+
+    /**
+     * Sets the direct edit flag parameter.<p>
+     * 
+     * @param direct the direct edit flag parameter
+     */
+    public void setParamDirectedit(String direct) {
+        m_paramDirectedit = direct;
+    }
+    
+    /**
+     * Sets the  edit as text parameter.<p>
+     * 
+     * @param editAsText "true" if the resource should be handled like a text file
+     */
+    public void setParamEditastext(String editAsText) {
+        m_paramEditAsText = editAsText;
+    }
+
+    /**
+     * Sets the editor mode parameter.<p>
+     * 
+     * @param mode the editor mode parameter
+     */
+    public void setParamEditormode(String mode) {
+        m_paramEditormode = mode;
+    }
+    
+    /**
+     * Sets the "loaddefault" parameter to determine if the default editor should be loaded.<p>
+     * 
+     * @param loadDefault the "loaddefault" parameter
+     */
+    public void setParamLoaddefault(String loadDefault) {
+        m_paramLoadDefault = loadDefault;
+    }
+    
+    /**
+     * Sets the name of the temporary file.<p>
+     * 
+     * @param fileName the name of the temporary file
+     */
+    public void setParamTempfile(String fileName) {
+        m_paramTempFile = fileName;
+    }
        
     /**
      * Writes the content of a temporary file back to the original file.<p>
@@ -301,177 +470,32 @@ public abstract class CmsEditor extends CmsDialog {
     }
     
     /**
-     * Returns the URI to the editor resource folder where button images and javascripts are located.<p>
+     * Decodes an individual parameter value, ensuring the content is always decoded in UTF-8.<p>
      * 
-     * @return the URI to the editor resource folder
-     */
-    public abstract String getEditorResourceUri();
-    
-    /**
-     * Returns the back link when closing the editor.<p>
+     * For editors the content is always encoded using the 
+     * JavaScript encodeURIComponent() method on the client,
+     * which always encodes in UTF-8.<p> 
      * 
-     * @return the back link
+     * @param paramName the name of the parameter 
+     * @param paramValue the unencoded value of the parameter
+     * @return the encoded value of the parameter
      */
-    public String getParamBacklink() {
-        if (m_paramBackLink == null) {
-            m_paramBackLink = "";
+    protected String fillParamValuesDecode(String paramName, String paramValue) {
+        if ((paramName != null) && (paramValue != null)) {
+            if (PARAM_CONTENT.equals(paramName)) {                
+                return CmsEncoder.decode(paramValue, CmsEncoder.C_UTF8_ENCODING);
+            } else {
+                return CmsEncoder.decode(paramValue, getCms().getRequestContext().getEncoding());
+            }
+        } else {
+            return null;
         }
-        return m_paramBackLink;
-    }
-    
-    /**
-     * Returns the content of the editor.<p>
-     * @return the content of the editor
-     */
-    public String getParamContent() {
-        if (m_paramContent == null) {
-            m_paramContent = "";
-        }
-        return m_paramContent;
-    }
-
-    /**
-     * Returns the direct edit flag parameter.<p>
-     *  
-     * @return the direct edit flag parameter
-     */
-    public String getParamDirectedit() {
-        return m_paramDirectedit;
-    }
-    
-    /**
-     * Returns the edit as text parameter.<p>
-     * 
-     * @return the edit as text parameter
-     */
-    public String getParamEditastext() {
-        return m_paramEditAsText;
-    }
-    
-    /**
-     * Returns the editor mode parameter.<p>
-     *  
-     * @return the editor mode parameter
-     */
-    public String getParamEditormode() {
-        return m_paramEditormode;
-    }
-    
-    /**
-     * Returns the "loaddefault" parameter to determine if the default editor should be loaded.<p>
-     * 
-     * @return the "loaddefault" parameter
-     */
-    public String getParamLoaddefault() {
-        return m_paramLoadDefault;
-    }
-    
-    /**
-     * Returns the name of the temporary file.<p>
-     * 
-     * @return the name of the temporary file
-     */
-    public String getParamTempfile() {
-        return m_paramTempFile;
-    }
-    
-    /**
-     * Returns the path to the images used by this editor.<p>
-     * 
-     * @return the path to the images used by this editor
-     */
-    public String getPicsUri() {
-        if (m_picsUri == null) {
-            m_picsUri = getEditorResourceUri() + "pics/";
-        }
-        return m_picsUri;
-    }
+    }    
     
     /**
      * Initializes the editor content when openening the editor for the first time.<p>
      */
     protected abstract void initContent();
-    
-    /**
-     * Determines if the online help is available in the currently selected user language.<p>
-     * 
-     * @return true if the online help is found, otherwise false
-     */
-    public boolean isHelpEnabled() {
-        try {
-            getCms().readFolder(I_CmsWpConstants.C_VFS_PATH_HELP + getLocale() + "/");
-            return true;
-        } catch (CmsException e) {
-            // help folder is not available
-            return false;         
-        }
-    }
-    
-    /**
-     * Sets the back link when closing the editor.<p>
-     * 
-     * @param backLink the back link
-     */
-    public void setParamBacklink(String backLink) {
-        m_paramBackLink = backLink;
-    } 
-    
-    /**
-     * Sets the content of the editor.<p>
-     * 
-     * @param content the content of the editor
-     */
-    public void setParamContent(String content) {
-        if (content == null) {
-            content = "";
-        }
-        m_paramContent = content;
-    }
-
-    /**
-     * Sets the direct edit flag parameter.<p>
-     * 
-     * @param direct the direct edit flag parameter
-     */
-    public void setParamDirectedit(String direct) {
-        m_paramDirectedit = direct;
-    }
-    
-    /**
-     * Sets the  edit as text parameter.<p>
-     * 
-     * @param editAsText "true" if the resource should be handled like a text file
-     */
-    public void setParamEditastext(String editAsText) {
-        m_paramEditAsText = editAsText;
-    }
-
-    /**
-     * Sets the editor mode parameter.<p>
-     * 
-     * @param mode the editor mode parameter
-     */
-    public void setParamEditormode(String mode) {
-        m_paramEditormode = mode;
-    }
-    
-    /**
-     * Sets the "loaddefault" parameter to determine if the default editor should be loaded.<p>
-     * 
-     * @param loadDefault the "loaddefault" parameter
-     */
-    public void setParamLoaddefault(String loadDefault) {
-        m_paramLoadDefault = loadDefault;
-    }
-    
-    /**
-     * Sets the name of the temporary file.<p>
-     * 
-     * @param fileName the name of the temporary file
-     */
-    public void setParamTempfile(String fileName) {
-        m_paramTempFile = fileName;
-    }
     
     /**
      * Shows the common error page in case of an exception.<p>
@@ -499,5 +523,4 @@ public abstract class CmsEditor extends CmsDialog {
         // include the common error dialog
         getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
     }
-
 }
