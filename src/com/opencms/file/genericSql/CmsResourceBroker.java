@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/09 12:21:25 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2000/06/09 12:31:45 $
+ * Version: $Revision: 1.38 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.37 $ $Date: 2000/06/09 12:21:25 $
+ * @version $Revision: 1.38 $ $Date: 2000/06/09 12:31:45 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2391,8 +2391,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		}
      }
 
-	
-      /**
+     /**
 	 * Reads a file header a previous project of the Cms.<BR/>
 	 * The reading excludes the filecontent. <br>
 	 * 
@@ -2418,11 +2417,26 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 									   CmsProject currentProject,
                                        int projectId,
                                        String filename)
-         throws CmsException {
-      return null;
+		 throws CmsException  {
+         CmsResource cmsFile;
+		 // read the resource from the currentProject, or the online-project
+		 try {
+			 cmsFile = m_dbAccess.readFileHeader(projectId, filename);
+             if( accessRead(currentUser, currentProject, cmsFile) ) {
+				
+			    // acces to all subfolders was granted - return the file-header.
+			    return cmsFile;
+            } else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + filename, 
+				 CmsException.C_ACCESS_DENIED);
+		   }
+		 } catch(CmsException exc) {
+			 throw exc;
+		 }
+
      }
-     
-    /**
+	
+     /**
      * Copies a resource from the online project to a new, specified project.<br>
      * Copying a resource will copy the file header or folder into the specified 
      * offline project and set its state to UNCHANGED.
