@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceUpload.java,v $
-* Date   : $Date: 2001/01/25 15:53:04 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2001/01/25 16:22:57 $
+* Version: $Revision: 1.24 $
 *
 * Copyright (C) 2000  The OpenCms Group 
 * 
@@ -45,7 +45,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.23 $ $Date: 2001/01/25 15:53:04 $
+ * @version $Revision: 1.24 $ $Date: 2001/01/25 16:22:57 $
  */
 public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
     
@@ -269,7 +269,7 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
         if(resType == null) {
             resType = "";
         }
-        int ret = -1;
+        int ret = 0;
         
         // Check if the list of available resources is not yet loaded from the workplace.ini
         if(m_names == null || m_values == null) {
