@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequestDispatcher.java,v $
- * Date   : $Date: 2004/02/20 12:45:54 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/02/27 10:27:06 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.http.HttpServletResponse;
  * </ol>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class CmsFlexRequestDispatcher implements RequestDispatcher {
         
@@ -164,12 +164,12 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
         
         CmsResource resource = null;                
         if ((m_extTarget == null) && (controller != null)) {
-            // Check if the file exists in the VFS, if not set external target
+            // check if the file exists in the VFS, if not set external target
             try {
                 resource = cms.readFileHeader(m_vfsTarget);
             } catch (CmsException e) {
                 if (e.getType() == CmsException.C_NOT_FOUND) {
-                    // File not found in VFS, treat it as external file
+                    // file not found in VFS, treat it as external file
                     m_extTarget = m_vfsTarget;
                 }
             }
@@ -187,148 +187,154 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
         CmsFlexResponse f_res = controller.getCurrentResponse();
         
         if (f_req.containsIncludeCall(m_vfsTarget)) {
-            // This resource was already included earlier, so we have a (probably endless) inclusion loop
+            // this resource was already included earlier, so we have a (probably endless) inclusion loop
             throw new ServletException("FlexDispatcher: Dectected inclusion loop for target " + m_vfsTarget);
         } else {     
             f_req.addInlucdeCall(m_vfsTarget);
         }
        
-        // Do nothing if response is already finished (probably as a result of an earlier redirect)
-        if (f_res.isSuspended()) {
+        // do nothing if response is already finished (probably as a result of an earlier redirect)
+        if (f_res.isSuspended()) {    
+            // remove this include call if response is suspended (e.g. because of redirect)
+            f_req.removeIncludeCall(m_vfsTarget);    
             return;
         }
         
-        // Indicate to response that all further output or headers are result of include calls
+        // indicate to response that all further output or headers are result of include calls
         f_res.setCmsIncludeMode(true);
                 
-        // Create wrapper for request & response
+        // create wrapper for request & response
         CmsFlexRequest w_req = new CmsFlexRequest((HttpServletRequest)req, controller, m_vfsTarget);
         CmsFlexResponse w_res = new CmsFlexResponse((HttpServletResponse)res, controller); 
         
-        // Push req/res to controller queue
+        // push req/res to controller queue
         controller.pushRequest(w_req);
         controller.pushResponse(w_res);             
         
-        CmsFlexCacheEntry entry = null;
-        if (f_req.isCacheable()) {
-            // Caching is on, check if requested resource is already in cache            
-            entry = cache.get(w_req.getCmsCacheKey());
-            if (entry != null) {
-                // The target is already in the cache
-                try {
-                    if (DEBUG > 0) {
-                        System.err.println("FlexDispatcher: Loading file from cache for " + m_vfsTarget);
-                    }
-                    entry.service(w_req, w_res);
-                } catch (CmsException e) {
-                    Throwable t;
-                    if (e.getRootCause() != null) {
-                        t = e.getRootCause();
-                    } else {
-                        t = e;
-                    }
-                    t = controller.setThrowable(e, m_vfsTarget);
-                    throw new ServletException("FlexDispatcher: Error while loading file from cache for " + m_vfsTarget + "\n" + t, t);
-                }                       
-            } else { 
-                // Cache is on and resource is not yet cached, so we need to read the cache key for the response
-                CmsFlexCacheKey res_key = cache.getKey(CmsFlexCacheKey.getKeyName(m_vfsTarget, w_req.isOnline(), w_req.isWorkplace()));            
-                if (res_key != null) {
-                    // Key already in cache, reuse it
-                    w_res.setCmsCacheKey(res_key);                                             
-                } else {                                
-                    // Cache key is unknown, read key from properties
-                    String cacheProperty = null;
+        // now that the req/res are on the stack, we need to make sure that they are removed later
+        // that's why we have this try { ... } finaly { ... } clause here
+        try {                     
+            CmsFlexCacheEntry entry = null;
+            if (f_req.isCacheable()) {
+                // caching is on, check if requested resource is already in cache            
+                entry = cache.get(w_req.getCmsCacheKey());
+                if (entry != null) {
+                    // the target is already in the cache
                     try {
-                        // Read caching property from requested VFS resource                                     
-                        cacheProperty = cms.readProperty(m_vfsTarget, org.opencms.loader.I_CmsResourceLoader.C_LOADER_CACHEPROPERTY);                    
-                        cache.putKey(w_res.setCmsCacheKey(cms.getRequestContext().addSiteRoot(m_vfsTarget), cacheProperty, f_req.isOnline(), f_req.isWorkplace()));                                            
-                    } catch (CmsException e) {
-                        if (e.getType() == CmsException.C_FLEX_CACHE) {
-                            // Invalid key is ignored but logged, used key is cache=never
-                            if (OpenCms.getLog(this).isWarnEnabled()) {
-                                OpenCms.getLog(this).warn("Invalid FlexCache key for external resource \"" + m_vfsTarget + "\": " + cacheProperty);
-                            }
-                            // There will be a vaild key in the response ("cache=never") even after an exception
-                            cache.putKey(w_res.getCmsCacheKey());
-                        } else {
-                            // All other errors are not handled here
-                            controller.setThrowable(e, m_vfsTarget);
-                            throw new ServletException("FlexDispatcher: Error while loading cache properties for " + m_vfsTarget + "\n" + e, e);
+                        if (DEBUG > 0) {
+                            System.err.println("FlexDispatcher: Loading file from cache for " + m_vfsTarget);
                         }
-                    }                
-                    if (DEBUG > 1) {
-                        System.err.println("FlexDispatcher: Cache properties for file " + m_vfsTarget + " are: " + cacheProperty);
+                        entry.service(w_req, w_res);
+                    } catch (CmsException e) {
+                        Throwable t;
+                        if (e.getRootCause() != null) {
+                            t = e.getRootCause();
+                        } else {
+                            t = e;
+                        }
+                        t = controller.setThrowable(e, m_vfsTarget);
+                        throw new ServletException("FlexDispatcher: Error while loading file from cache for " + m_vfsTarget + "\n" + t, t);
+                    }                       
+                } else { 
+                    // cache is on and resource is not yet cached, so we need to read the cache key for the response
+                    CmsFlexCacheKey res_key = cache.getKey(CmsFlexCacheKey.getKeyName(m_vfsTarget, w_req.isOnline(), w_req.isWorkplace()));            
+                    if (res_key != null) {
+                        // key already in cache, reuse it
+                        w_res.setCmsCacheKey(res_key);                                             
+                    } else {                                
+                        // cache key is unknown, read key from properties
+                        String cacheProperty = null;
+                        try {
+                            // read caching property from requested VFS resource                                     
+                            cacheProperty = cms.readProperty(m_vfsTarget, org.opencms.loader.I_CmsResourceLoader.C_LOADER_CACHEPROPERTY);                    
+                            cache.putKey(w_res.setCmsCacheKey(cms.getRequestContext().addSiteRoot(m_vfsTarget), cacheProperty, f_req.isOnline(), f_req.isWorkplace()));                                            
+                        } catch (CmsException e) {
+                            if (e.getType() == CmsException.C_FLEX_CACHE) {
+                                // invalid key is ignored but logged, used key is cache=never
+                                if (OpenCms.getLog(this).isWarnEnabled()) {
+                                    OpenCms.getLog(this).warn("Invalid FlexCache key for external resource \"" + m_vfsTarget + "\": " + cacheProperty);
+                                }
+                                // there will be a vaild key in the response ("cache=never") even after an exception
+                                cache.putKey(w_res.getCmsCacheKey());
+                            } else {
+                                // all other errors are not handled here
+                                controller.setThrowable(e, m_vfsTarget);
+                                throw new ServletException("FlexDispatcher: Error while loading cache properties for " + m_vfsTarget + "\n" + e, e);
+                            }
+                        }                
+                        if (DEBUG > 1) {
+                            System.err.println("FlexDispatcher: Cache properties for file " + m_vfsTarget + " are: " + cacheProperty);
+                        }
                     }
                 }
             }
-        }
-
-        if (entry == null) {
-            // The target is not cached (or caching off), so load it with the internal resource loader
-            org.opencms.loader.I_CmsResourceLoader loader = null;
-
-            String variation = null;
-            // Check cache keys to see if the result can be cached 
-            if (w_req.isCacheable()) {
-                variation = w_res.getCmsCacheKey().matchRequestKey(w_req.getCmsCacheKey());
-            }
-            // Indicate to the response if caching is not required
-            w_res.setCmsCachingRequired(variation != null);
-                        
-            try {
-                if (resource == null) {
-                    resource = cms.readFileHeader(m_vfsTarget);
+    
+            if (entry == null) {
+                // the target is not cached (or caching off), so load it with the internal resource loader
+                org.opencms.loader.I_CmsResourceLoader loader = null;
+    
+                String variation = null;
+                // check cache keys to see if the result can be cached 
+                if (w_req.isCacheable()) {
+                    variation = w_res.getCmsCacheKey().matchRequestKey(w_req.getCmsCacheKey());
                 }
-                int type = resource.getLoaderId();
+                // indicate to the response if caching is not required
+                w_res.setCmsCachingRequired(variation != null);
+                            
+                try {
+                    if (resource == null) {
+                        resource = cms.readFileHeader(m_vfsTarget);
+                    }
+                    int type = resource.getLoaderId();
+                    if (DEBUG > 0) {
+                        System.err.println("FlexDispatcher: Loading resource type " + type);
+                    }
+                    loader = OpenCms.getLoaderManager().getLoader(type);
+                } catch (ClassCastException e) {
+                    controller.setThrowable(e, m_vfsTarget);
+                    throw new ServletException("FlexDispatcher: CmsResourceLoader interface not implemented for cms resource " + m_vfsTarget + "\n" + e, e);
+                } catch (CmsException e) {
+                    // file might not exist or no read permissions
+                    controller.setThrowable(e, m_vfsTarget);
+                    throw new ServletException("FlexDispatcher: Error while reading header for cms resource " + m_vfsTarget + "\n" + e, e);
+                }
+                         
                 if (DEBUG > 0) {
-                    System.err.println("FlexDispatcher: Loading resource type " + type);
+                    System.err.println("FlexDispatcher: Internal call, loading file using loader.service() for " + m_vfsTarget);
                 }
-                loader = OpenCms.getLoaderManager().getLoader(type);
-            } catch (ClassCastException e) {
-                controller.setThrowable(e, m_vfsTarget);
-                throw new ServletException("FlexDispatcher: CmsResourceLoader interface not implemented for cms resource " + m_vfsTarget + "\n" + e, e);
-            } catch (CmsException e) {
-                // File might not exist or no read permissions
-                controller.setThrowable(e, m_vfsTarget);
-                throw new ServletException("FlexDispatcher: Error while reading header for cms resource " + m_vfsTarget + "\n" + e, e);
-            }
-                     
-            if (DEBUG > 0) {
-                System.err.println("FlexDispatcher: Internal call, loading file using loader.service() for " + m_vfsTarget);
-            }
-            try {
-                loader.service(cms, resource, w_req, w_res);
-            } catch (CmsException e) {
-                // an error occured durion access to OpenCms
-                controller.setThrowable(e, m_vfsTarget);
-                throw new ServletException(e);
-            }
-
-            entry = w_res.processCacheEntry(); 
-            if ((entry != null) && (variation != null) && w_req.isCacheable()) {                                      
-                cache.put(w_res.getCmsCacheKey(), entry, variation);                        
-            }                
-        }          
-        
-        if (f_res.hasIncludeList()) {
-            // Special case: This indicates that the output was not yet displayed
-            java.util.Map headers = w_res.getHeaders();
-            byte[] result = w_res.getWriterBytes();
-            if (DEBUG > 3) {
-                System.err.println("Non-display include call - Result of include is:\n" + new String(result));
-            }
-            CmsFlexResponse.processHeaders(headers, f_res);
-            f_res.addToIncludeResults(result); 
-            result = null;
-        }              
-
-        // Indicate to response that include is finished
-        f_res.setCmsIncludeMode(false);
-        f_req.removeIncludeCall(m_vfsTarget);      
-          
-        // Pop req/res from controller queue
-        controller.popRequest();
-        controller.popResponse();            
+                try {
+                    loader.service(cms, resource, w_req, w_res);
+                } catch (CmsException e) {
+                    // an error occured durion access to OpenCms
+                    controller.setThrowable(e, m_vfsTarget);
+                    throw new ServletException(e);
+                }
+    
+                entry = w_res.processCacheEntry(); 
+                if ((entry != null) && (variation != null) && w_req.isCacheable()) {                                      
+                    cache.put(w_res.getCmsCacheKey(), entry, variation);                        
+                }                
+            }          
+            
+            if (f_res.hasIncludeList()) {
+                // Special case: This indicates that the output was not yet displayed
+                java.util.Map headers = w_res.getHeaders();
+                byte[] result = w_res.getWriterBytes();
+                if (DEBUG > 3) {
+                    System.err.println("Non-display include call - Result of include is:\n" + new String(result));
+                }
+                CmsFlexResponse.processHeaders(headers, f_res);
+                f_res.addToIncludeResults(result); 
+                result = null;
+            }                    
+        } finally {             
+            // indicate to response that include is finished
+            f_res.setCmsIncludeMode(false);
+            f_req.removeIncludeCall(m_vfsTarget);      
+              
+            // pop req/res from controller queue
+            controller.popRequest();
+            controller.popResponse();                
+        } 
     }
 }
