@@ -5,7 +5,7 @@ package com.opencms.file;
  * one resource.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 1999/12/13 16:29:59 $
+ * @version $Revision: 1.2 $ $Date: 1999/12/14 11:59:30 $
  */
 abstract public class A_CmsProject
 {
@@ -67,10 +67,4 @@ abstract public class A_CmsProject
 	 */
     abstract public boolean equals(Object obj);
 
-	/**
-	 * Returns the hashcode for this object.
-	 * 
-	 * @return the hashcode for this object.
-	 */
-    abstract public int hashCode();    
 }

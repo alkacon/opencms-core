@@ -7,7 +7,7 @@ import java.util.*;
  * This resource can be a A_CmsFile or a A_CmsFolder.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 1999/12/13 16:34:38 $
+ * @version $Revision: 1.3 $ $Date: 1999/12/14 11:59:30 $
  */
 abstract class A_CmsResource {
 	/**
@@ -80,13 +80,6 @@ abstract class A_CmsResource {
 	 * @return true, if the object is identically else it returns false.
 	 */
     abstract public boolean equals(Object obj);
-
-	/**
-	 * Returns the hashcode for this object.
-	 * 
-	 * @return the hashcode for this object.
-	 */
-    abstract public int hashCode();    
 
 	/**
 	 * Returns the resource-header without any file or folder specific stuff.

@@ -4,7 +4,7 @@ package com.opencms.file;
  * This abstract class describes a task in the Cms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 1999/12/13 16:29:59 $
+ * @version $Revision: 1.2 $ $Date: 1999/12/14 11:59:30 $
  */
 public abstract class A_CmsTask
 {
@@ -26,10 +26,4 @@ public abstract class A_CmsTask
 	 */
     abstract public boolean equals(Object obj);
 
-	/**
-	 * Returns the hashcode for this object.
-	 * 
-	 * @return the hashcode for this object.
-	 */
-    abstract public int hashCode();    
 }
