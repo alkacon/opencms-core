@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2004/06/04 10:48:52 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2004/06/04 15:42:07 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -837,7 +837,7 @@ public class CmsImportVersion2 extends A_CmsImport {
             
             // write all changes                     
             m_cms.writeFile(pagefile);
-            // add the template property to the controlfile
+            // add the template property to the controlfile                      
             m_cms.writePropertyObject(resname, new CmsProperty(I_CmsConstants.C_PROPERTY_TEMPLATE, mastertemplate, null));
             // if set, add the bodyclass as property
             if (bodyclass != null && !"".equals(bodyclass)) {
@@ -852,7 +852,7 @@ public class CmsImportVersion2 extends A_CmsImport {
             }
             CmsProperty.setAutoCreatePropertyDefinitions(properties, true);
             m_cms.writePropertyObjects(resname, properties);
-            m_cms.touch(resname, pagefile.getDateLastModified(), false, pagefile.getUserLastModified());
+            m_cms.touch(resname, pagefile.getDateLastModified(), I_CmsConstants.C_DATE_UNCHANGED, I_CmsConstants.C_DATE_UNCHANGED, false, pagefile.getUserLastModified());
             // done, ulock the resource                   
             m_cms.unlockResource(resname, false);
             // finally delete the old body file, it is not needed anymore

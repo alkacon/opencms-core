@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/06/04 15:11:04 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2004/06/04 15:42:06 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.39 $
+ * @version $Revision: 1.40 $
  */
 public class CmsObject {
 
@@ -1287,11 +1287,13 @@ public class CmsObject {
      * 
      * @param resourceName the name of the resource to change
      * @param timestamp timestamp the new timestamp of the changed resource
+     * @param releasedate the new releasedate of the changed resource. Set it to I_CmsConstants.C_DATE_UNCHANGED to keep it unchanged.
+     * @param expiredate the new expiredate of the changed resource. Set it to I_CmsConstants.C_DATE_UNCHANGED to keep it unchanged.
      * @param user the user who is inserted as userladtmodified
      * @throws CmsException if something goes wrong
      */
-    protected void doTouch(String resourceName, long timestamp, CmsUUID user) throws CmsException {
-        m_driverManager.touch(m_context, addSiteRoot(resourceName), timestamp, user);
+    protected void doTouch(String resourceName, long timestamp, long releasedate, long expiredate, CmsUUID user) throws CmsException {
+        m_driverManager.touch(m_context, addSiteRoot(resourceName), timestamp, releasedate, expiredate, user);
     }
 
     /**
@@ -1766,7 +1768,7 @@ public class CmsObject {
      */
     public CmsPermissionSet getPermissions(String resourceName) throws CmsException {
         // reading permissions is allowed even if the resource is marked as deleted
-        CmsResource resource = readFileHeader(resourceName, CmsResourceFilter.IGNORE_EXPIRATION);
+        CmsResource resource = readFileHeader(resourceName, CmsResourceFilter.ALL);
         CmsUser user = m_context.currentUser();
 
         return m_driverManager.getPermissions(m_context, resource, user);
@@ -1808,11 +1810,12 @@ public class CmsObject {
      * Returns a Vector with the sub resources for a folder.<br>
      *
      * @param folder the name of the folder to get the subresources from.
+     * @param filter the resource filter
      * @return subfolders a Vector with resources
      * @throws CmsException  if operation was not succesful
      */
-    public Vector getResourcesInFolder(String folder) throws CmsException {
-        return m_driverManager.getResourcesInFolder(m_context, addSiteRoot(folder));
+    public Vector getResourcesInFolder(String folder, CmsResourceFilter filter) throws CmsException {
+        return m_driverManager.getResourcesInFolder(m_context, addSiteRoot(folder), filter);
     }
 
     /**
@@ -3516,12 +3519,14 @@ public class CmsObject {
      * 
      * @param resourceName the name of the resource to change
      * @param timestamp timestamp the new timestamp of the changed resource
+     * @param releasedate the new releasedate of the changed resource. Set it to I_CmsConstants.C_DATE_UNCHANGED to keep it unchanged.
+     * @param expiredate the new expiredate of the changed resource. Set it to I_CmsConstants.C_DATE_UNCHANGED to keep it unchanged.
      * @param touchRecursive if true, touch recursively all sub-resources (only for folders)
      * @param user the user who is inserted as userladtmodified 
      * @throws CmsException if something goes wrong
      */
-    public void touch(String resourceName, long timestamp, boolean touchRecursive, CmsUUID user) throws CmsException {
-        getResourceType(readFileHeader(resourceName, CmsResourceFilter.IGNORE_EXPIRATION).getType()).touch(this, resourceName, timestamp, touchRecursive, user);
+    public void touch(String resourceName, long timestamp, long releasedate, long expiredate, boolean touchRecursive, CmsUUID user) throws CmsException {
+        getResourceType(readFileHeader(resourceName, CmsResourceFilter.IGNORE_EXPIRATION).getType()).touch(this, resourceName, timestamp, releasedate, expiredate, touchRecursive, user);
     }
 
     /**
@@ -3529,11 +3534,13 @@ public class CmsObject {
      * 
      * @param resourceName the name of the resource to change
      * @param timestamp timestamp the new timestamp of the changed resource
+     * @param releasedate the new releasedate of the changed resource. Set it to I_CmsConstants.C_DATE_UNCHANGED to keep it unchanged.
+     * @param expiredate the new expiredate of the changed resource. Set it to I_CmsConstants.C_DATE_UNCHANGED to keep it unchanged.
      * @param touchRecursive if true, touch recursively all sub-resources (only for folders)
      * @throws CmsException if something goes wrong
      */
-    public void touch(String resourceName, long timestamp, boolean touchRecursive) throws CmsException {
-        touch(resourceName, timestamp, touchRecursive, getRequestContext().currentUser().getId());
+    public void touch(String resourceName, long timestamp, long releasedate, long expiredate, boolean touchRecursive) throws CmsException {
+        touch(resourceName, timestamp, releasedate, expiredate, touchRecursive, getRequestContext().currentUser().getId());
     }
 
     /**
@@ -3546,7 +3553,7 @@ public class CmsObject {
      */
     public void undeleteResource(String filename) throws CmsException {
         //read the file header including deleted
-        getResourceType(readFileHeader(filename, CmsResourceFilter.IGNORE_EXPIRATION).getType()).undeleteResource(this, filename);
+        getResourceType(readFileHeader(filename, CmsResourceFilter.ALL).getType()).undeleteResource(this, filename);
     }
 
     /**

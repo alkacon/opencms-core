@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/A_CmsResourceType.java,v $
- * Date   : $Date: 2004/06/04 15:11:04 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/06/04 15:42:06 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.file;
 
 import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 
@@ -44,7 +45,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since 5.1
  */
 public abstract class A_CmsResourceType implements I_CmsResourceType {
@@ -169,7 +170,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
                     cms.lockResource(destination);
                     cms.doImportUpdateResource(destination, properties, content);
                     importedResource = cms.readFileHeader(destination);
-                    cms.touch(destination, resource.getDateLastModified(), false, resource.getUserLastModified());
+                    cms.touch(destination, resource.getDateLastModified(), I_CmsConstants.C_DATE_UNCHANGED, I_CmsConstants.C_DATE_UNCHANGED, false, resource.getUserLastModified());
                 } else {
                     // a resource with the same name but different uuid does exist,
                     // copy the new resource to the lost+found folder 
@@ -255,11 +256,12 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         return output.toString();
     }
 
+
     /**
-     * @see org.opencms.file.I_CmsResourceType#touch(CmsObject, String, long, boolean, CmsUUID)
+     * @see org.opencms.file.I_CmsResourceType#touch(org.opencms.file.CmsObject, java.lang.String, long, long, long, boolean, org.opencms.util.CmsUUID)
      */
-    public void touch(CmsObject cms, String resourcename, long timestamp, boolean recursive, CmsUUID user) throws CmsException {
-        cms.doTouch(resourcename, timestamp, user);
+    public void touch(CmsObject cms, String resourcename, long timestamp, long releasedate, long expiredate, boolean recursive, CmsUUID user) throws CmsException {
+        cms.doTouch(resourcename, timestamp, releasedate, expiredate, user);
     }
 
     /**

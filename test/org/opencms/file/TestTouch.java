@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestTouch.java,v $
- * Date   : $Date: 2004/06/01 15:46:53 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/06/04 15:42:06 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,9 +31,6 @@
  
 package org.opencms.file;
 
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestResourceFilter;
-
 import java.util.Iterator;
 import java.util.List;
 
@@ -41,11 +38,15 @@ import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import org.opencms.main.I_CmsConstants;
+import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestResourceFilter;
+
 /**
  * Unit test for the "touch" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class TestTouch extends OpenCmsTestCase {
   
@@ -97,7 +98,7 @@ public class TestTouch extends OpenCmsTestCase {
         tc.storeResources(cms, resource1);
 
         long timestamp = System.currentTimeMillis();
-        cms.touch(resource1, timestamp, false);
+        cms.touch(resource1, timestamp, I_CmsConstants.C_DATE_UNCHANGED, I_CmsConstants.C_DATE_UNCHANGED, false);
 
         // now evaluate the result
         tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_TOUCH);
@@ -123,7 +124,7 @@ public class TestTouch extends OpenCmsTestCase {
         tc.storeResources(cms, resource1);
          
         long timestamp = System.currentTimeMillis();
-        cms.touch(resource1, timestamp, false);
+        cms.touch(resource1, timestamp, I_CmsConstants.C_DATE_UNCHANGED, I_CmsConstants.C_DATE_UNCHANGED, false);
 
         // now evaluate the result
         tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_TOUCH);
@@ -161,7 +162,7 @@ public class TestTouch extends OpenCmsTestCase {
         tc.storeResources(cms, resource1);
         
         long timestamp = System.currentTimeMillis();
-        cms.touch(resource1, timestamp, true);
+        cms.touch(resource1, timestamp, I_CmsConstants.C_DATE_UNCHANGED, I_CmsConstants.C_DATE_UNCHANGED, true);
 
         // now evaluate the result
         tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_TOUCH);

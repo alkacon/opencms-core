@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTouch.java,v $
- * Date   : $Date: 2004/02/22 13:52:27 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2004/06/04 15:42:06 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Hashtable;
  * This class is invoked for the workplace "touch" function in the context menu.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  */
 public final class CmsTouch extends CmsWorkplaceDefault {
 
@@ -68,7 +68,7 @@ public final class CmsTouch extends CmsWorkplaceDefault {
 
 		if (m_NewTimestamp != -1) {
 			// this, is a re-submission, process the input
-			cms.touch(m_ResourceName, m_NewTimestamp, m_TouchRecursive);
+			cms.touch(m_ResourceName, m_NewTimestamp, I_CmsConstants.C_DATE_UNCHANGED, I_CmsConstants.C_DATE_UNCHANGED, m_TouchRecursive);
 
 			// leave the session clean
 			this.clearSessionValues(CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true));

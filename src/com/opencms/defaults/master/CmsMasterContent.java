@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2004/03/08 12:32:47 $
-* Version: $Revision: 1.55 $
+* Date   : $Date: 2004/06/04 15:42:07 $
+* Version: $Revision: 1.56 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,7 +28,15 @@
 
 package com.opencms.defaults.master;
 
+import java.util.HashMap;
+import java.util.StringTokenizer;
+import java.util.Vector;
+
 import org.opencms.db.CmsPublishedResource;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
@@ -39,14 +47,6 @@ import com.opencms.defaults.I_CmsExtendedContentDefinition;
 import com.opencms.defaults.master.genericsql.CmsDbAccess;
 import com.opencms.legacy.CmsXmlTemplateLoader;
 
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
-import org.opencms.file.CmsUser;
-
-import java.util.HashMap;
-import java.util.StringTokenizer;
-import java.util.Vector;
-
 /**
  * This class is the master of several Modules. It carries a lot of generic
  * data-fileds which can be used for a special Module.
@@ -55,8 +55,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.55 $
- * $Date: 2004/03/08 12:32:47 $
+ * $Revision: 1.56 $
+ * $Date: 2004/06/04 15:42:07 $
  */
 public abstract class CmsMasterContent
     extends A_CmsContentDefinition
@@ -914,7 +914,7 @@ public abstract class CmsMasterContent
         String siteRoot = cms.getRequestContext().getSiteRoot();
         try {
             cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_COS);
-            subChannels = cms.getResourcesInFolder(channel);
+            subChannels = cms.getResourcesInFolder(channel, CmsResourceFilter.DEFAULT);
 
             for (int i=0; i < subChannels.size(); i++) {
                 CmsResource resource = (CmsResource)subChannels.get(i);
@@ -961,7 +961,7 @@ public abstract class CmsMasterContent
             String rootChannel = getDbAccessObject(this.getSubId()).getRootChannel();           
             cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_COS);        
             //Vector subChannels = cms.getResourcesInFolder(I_CmsConstants.VFS_FOLDER_COS + rootChannel);
-            Vector subChannels = cms.getResourcesInFolder(rootChannel);
+            Vector subChannels = cms.getResourcesInFolder(rootChannel, CmsResourceFilter.DEFAULT);
             int offset = rootChannel.length()-1;
             for (int i=0; i < subChannels.size(); i++) {
                 CmsResource resource = (CmsResource)subChannels.get(i);

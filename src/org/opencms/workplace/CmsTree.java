@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsTree.java,v $
- * Date   : $Date: 2004/04/10 23:12:14 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2004/06/04 15:42:06 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,20 +30,6 @@
  */
 package org.opencms.workplace;
 
-import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
-import org.opencms.main.OpenCms;
-import org.opencms.site.CmsSite;
-import org.opencms.site.CmsSiteManager;
-import org.opencms.util.CmsUUID;
-
-import org.opencms.file.CmsFolder;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProject;
-import org.opencms.file.CmsResource;
-import org.opencms.file.I_CmsResourceType;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -51,6 +37,20 @@ import java.util.Locale;
 import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.opencms.file.CmsFolder;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.I_CmsResourceType;
+import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
+import org.opencms.main.OpenCms;
+import org.opencms.site.CmsSite;
+import org.opencms.site.CmsSiteManager;
+import org.opencms.util.CmsUUID;
 
 /**
  * Generates the tree view for the OpenCms Workplace.<p> 
@@ -62,7 +62,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * 
  * @since 5.1
  */
@@ -335,7 +335,7 @@ public class CmsTree extends CmsWorkplace {
                 // read the selected folder
                 
                 try {
-                    folder = getCms().readFolder(currentTargetFolder);
+                    folder = getCms().readFolder(currentTargetFolder, CmsResourceFilter.IGNORE_EXPIRATION);
                 } catch (CmsException e) {
                     // return with error
                     return printError(e);
@@ -347,9 +347,9 @@ public class CmsTree extends CmsWorkplace {
                     // no (valid) start folder given, just load current folder        
                     try {             
                         if (includeFiles()) {                       
-                            resources.addAll(getCms().getResourcesInFolder(currentTargetFolder));
+                            resources.addAll(getCms().getResourcesInFolder(currentTargetFolder, CmsResourceFilter.IGNORE_EXPIRATION));
                         } else {
-                            resources.addAll(getCms().getSubFolders(currentTargetFolder));
+                            resources.addAll(getCms().getSubFolders(currentTargetFolder, CmsResourceFilter.IGNORE_EXPIRATION));
                         }              
                     } catch (CmsException e) {
                         // return with error
@@ -359,7 +359,7 @@ public class CmsTree extends CmsWorkplace {
                     // valid start folder given, load all folders between start and current folder
                     try {
                         if (includeFiles()) {
-                            resources.addAll(getCms().getResourcesInFolder(startFolder));
+                            resources.addAll(getCms().getResourcesInFolder(startFolder, CmsResourceFilter.IGNORE_EXPIRATION));
                         } else {
                             resources.addAll(getCms().getSubFolders(startFolder));
                         }                     
@@ -367,7 +367,7 @@ public class CmsTree extends CmsWorkplace {
                         while (tok.hasMoreTokens()) {
                             startFolder += tok.nextToken() + "/";
                             if (includeFiles()) {
-                                resources.addAll(getCms().getResourcesInFolder(startFolder));
+                                resources.addAll(getCms().getResourcesInFolder(startFolder, CmsResourceFilter.IGNORE_EXPIRATION));
                             } else {
                                 resources.addAll(getCms().getSubFolders(startFolder));
                             }                      

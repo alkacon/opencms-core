@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/I_CmsResourceType.java,v $
- * Date   : $Date: 2004/06/04 15:11:04 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/06/04 15:42:06 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -266,11 +266,13 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @param cms the current cms context
      * @param resourcename the name of the resource to apply this operation to
      * @param timestamp the new timestamp of the changed resource
+     * @param releasedate the new releasedate of the changed resource. Set it to I_CmsConstants.C_DATE_UNCHANGED to keep it unchanged.
+     * @param expiredate the new expiredate of the changed resource. Set it to I_CmsConstants.C_DATE_UNCHANGED to keep it unchanged.
      * @param recursive if this operation is to be applied recursivly to all resources in a folder
      * @param user the user who is inserted as userladtmodified 
      * @throws CmsException if something goes wrong
      */
-    void touch(CmsObject cms, String resourcename, long timestamp, boolean recursive, CmsUUID user) throws CmsException;
+    void touch(CmsObject cms, String resourcename, long timestamp, long releasedate, long expiredate, boolean recursive, CmsUUID user) throws CmsException;
 
     /**
      * Undeletes a resource.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsTouch.java,v $
- * Date   : $Date: 2004/06/03 13:14:28 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/06/04 15:42:06 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,17 +30,18 @@
  */
 package org.opencms.workplace;
 
-import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceFilter;
-import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.main.CmsException;
-
 import java.text.ParseException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
+
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
+import org.opencms.i18n.CmsMessages;
+import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsException;
 
 /**
  * Provides methods for the touch resource(s) dialog.<p> 
@@ -51,7 +52,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 5.1
  */
@@ -67,9 +68,17 @@ public class CmsTouch extends CmsDialog {
     public static final String PARAM_NEWTIMESTAMP = "newtimestamp";
     /** Request parameter name for the recursive flag.<p> */
     public static final String PARAM_RECURSIVE = "recursive";
+    /** Request parameter name for the releasedate.<p> */
+    public static final String PARAM_RELEASEDATE = "releasedate";
+    /** Request parameter name for the expiredate.<p> */
+    public static final String PARAM_EXPIREDATE  = "expiredate";
     
     private String m_paramRecursive;
     private String m_paramNewtimestamp;
+    private String m_paramReleasedate;
+    private String m_paramExpiredate;
+    private String m_releaseDefault;
+    private String m_expireDefault;
     
     /**
      * Public constructor.<p>
@@ -78,6 +87,10 @@ public class CmsTouch extends CmsDialog {
      */
     public CmsTouch(CmsJspActionElement jsp) {
         super(jsp);
+        // get the localized default messages
+        CmsMessages messages = jsp.getMessages("org.opencms.workplace.workplace", getLocale().getLanguage());
+        m_releaseDefault = messages.getString("message.release.default");
+        m_expireDefault = messages.getString("message.expire.default"); 
     }
     
     /**
@@ -88,7 +101,7 @@ public class CmsTouch extends CmsDialog {
      * @param res the JSP response
      */
     public CmsTouch(PageContext context, HttpServletRequest req, HttpServletResponse res) {
-        this(new CmsJspActionElement(context, req, res));
+        this(new CmsJspActionElement(context, req, res));       
     }        
     
     
@@ -115,6 +128,49 @@ public class CmsTouch extends CmsDialog {
     }  
     
     /**
+     * Returns the value of the new releasedate parameter, 
+     * or null if this parameter was not provided.<p>
+     * 
+     * The releasedate parameter stores the new releasedate as String.<p>
+     * 
+     * @return the value of the new releasedate parameter
+     */    
+    public String getParamReleasedate() {
+        return m_paramReleasedate;
+    }
+
+    /**
+     * Sets the value of the releasedate parameter.<p>
+     * 
+     * @param value the value to set
+     */
+    public void setParamReleasedate(String value) {
+        m_paramReleasedate = value;
+    }  
+    
+    /**
+     * Returns the value of the new expiredate parameter, 
+     * or null if this parameter was not provided.<p>
+     * 
+     * The releasedate parameter stores the new expiredate as String.<p>
+     * 
+     * @return the value of the new expiredate parameter
+     */    
+    public String getParamExpiredate() {
+        return m_paramExpiredate;
+    }
+
+    /**
+     * Sets the value of the releasedate expiredate.<p>
+     * 
+     * @param value the value to set
+     */
+    public void setParamExpiredate(String value) {
+        m_paramExpiredate = value;
+    }  
+    
+    
+    /**
      * Returns the value of the new timestamp parameter, 
      * or null if this parameter was not provided.<p>
      * 
@@ -125,7 +181,9 @@ public class CmsTouch extends CmsDialog {
     public String getParamNewtimestamp() {
         return m_paramNewtimestamp;
     }
-
+    
+    
+    
     /**
      * Sets the value of the new timestamp parameter.<p>
      * 
@@ -191,6 +249,44 @@ public class CmsTouch extends CmsDialog {
         // get the current date & time 
         return getCalendarLocalizedTime(System.currentTimeMillis());
     }
+    
+    /**
+     * Returns the current releasedate as String formatted in localized pattern.<p>
+     * 
+     * @return the current releasedate as String formatted in localized pattern
+     */
+    public String getCurrentReleaseDate()  {
+        // get the releasedate
+        try {         
+            CmsResource res = getCms().readFileHeader(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION);
+            if (res.getDateReleased() == CmsResource.DATE_RELEASED_DEFAULT) {
+                return m_releaseDefault;
+            } else {
+                return getCalendarLocalizedTime(res.getDateReleased());    
+            }            
+        } catch (CmsException e) {
+            return getCalendarLocalizedTime(System.currentTimeMillis());
+        }
+    }
+    
+    /**
+     * Returns the current expiredate as String formatted in localized pattern.<p>
+     * 
+     * @return the current expiredate as String formatted in localized pattern
+     */
+    public String getCurrentExpireDate() {
+        // get the expirationdate
+        try {
+            CmsResource res = getCms().readFileHeader(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION);
+            if (res.getDateExpired() == CmsResource.DATE_EXPIRED_DEFAULT) {
+                return m_expireDefault;
+            } else {
+                return getCalendarLocalizedTime(res.getDateExpired());  
+            } 
+        } catch (CmsException e) {
+            return getCalendarLocalizedTime(System.currentTimeMillis());
+        }
+    }
         
     /**
      * Performs the resource touching, will be called by the JSP page.<p>
@@ -248,6 +344,26 @@ public class CmsTouch extends CmsDialog {
             throw new CmsException("Error in date/time String \"" + getParamNewtimestamp() + "\", cannot parse correct date value", CmsException.C_BAD_NAME, e);
         }
         
+        // get the new releasedate for the resource(s) from request parameter
+        long releasedate = CmsResource.DATE_RELEASED_DEFAULT;
+        try {
+            if (!getParamReleasedate().equals(m_releaseDefault)) {
+                releasedate = getCalendarDate(getParamReleasedate(), true);
+            }
+        } catch (ParseException e) {
+            throw new CmsException("Error in date/time String \"" + getParamReleasedate() + "\", cannot parse correct date value", CmsException.C_BAD_NAME, e);
+        }
+        
+        // get the new expire for the resource(s) from request parameter
+        long expiredate = CmsResource.DATE_EXPIRED_DEFAULT;
+        try {
+            if (!getParamExpiredate().equals(m_expireDefault)) {
+                expiredate = getCalendarDate(getParamExpiredate(), true);
+            }
+        } catch (ParseException e) {
+            throw new CmsException("Error in date/time String \"" + getParamExpiredate() + "\", cannot parse correct date value", CmsException.C_BAD_NAME, e);
+        }
+        
         // get the flag if the touch is recursive from request parameter
         boolean touchRecursive = "true".equalsIgnoreCase(getParamRecursive());     
   
@@ -255,7 +371,7 @@ public class CmsTouch extends CmsDialog {
         if (timeStamp != -1) {
             // lock resource if autolock is enabled
             checkLock(getParamResource());
-            getCms().touch(filename, timeStamp, touchRecursive);      
+            getCms().touch(filename, timeStamp, releasedate, expiredate, touchRecursive);      
         }
         return true;
     }

@@ -1,9 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2004/06/04 10:48:53 $
- * Version: $Revision: 1.29 $
- * Date   : $Date: 2004/06/04 10:48:53 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2004/06/04 15:42:06 $
+ * Version: $Revision: 1.30 $
+ * Date   : $Date: 2004/06/04 15:42:06 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,15 +33,6 @@
 
 package org.opencms.synchronize;
 
-import org.opencms.file.CmsFile;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceTypeFolder;
-import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
-import org.opencms.main.OpenCms;
-import org.opencms.report.I_CmsReport;
-
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -58,11 +49,22 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsResourceTypeFolder;
+import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
+import org.opencms.main.OpenCms;
+import org.opencms.report.I_CmsReport;
+
+
 /**
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.29 $ $Date: 2004/06/04 10:48:53 $
+ * @version $Revision: 1.30 $ $Date: 2004/06/04 15:42:06 $
  */
 public class CmsSynchronize {
 
@@ -177,7 +179,7 @@ public class CmsSynchronize {
     private void syncVfsFs(String folder) throws CmsException {
         int action = 0;
         //get all resources in the given folder
-        Vector resources = m_cms.getResourcesInFolder(folder);
+        Vector resources = m_cms.getResourcesInFolder(folder, CmsResourceFilter.IGNORE_EXPIRATION);
         // now look through all resources in the folder
         for (int i = 0; i < resources.size(); i++) {            
             CmsResource res = (CmsResource)resources.elementAt(i);
@@ -471,7 +473,7 @@ public class CmsSynchronize {
                 }
             }
             // we have to read the new resource again, to get the correct timestamp
-            m_cms.touch(m_cms.readAbsolutePath(newFile), fsFile.lastModified(), false);
+            m_cms.touch(m_cms.readAbsolutePath(newFile), fsFile.lastModified(), I_CmsConstants.C_DATE_UNCHANGED, I_CmsConstants.C_DATE_UNCHANGED, false);
             CmsResource newRes = m_cms.readFileHeader(m_cms.readAbsolutePath(newFile));
             // add resource to synchronisation list
             CmsSynchronizeList syncList = new CmsSynchronizeList(resName, translate(resName), newRes.getDateLastModified(), fsFile.lastModified());
@@ -625,7 +627,7 @@ public class CmsSynchronize {
             // everything is done now, so unlock the resource
             //m_cms.unlockResource(resourcename, false);
             //read the resource again, nescessary to get the actual timestamps
-            m_cms.touch(resourcename, fsFile.lastModified(), false);            
+            m_cms.touch(resourcename, fsFile.lastModified(), I_CmsConstants.C_DATE_UNCHANGED, I_CmsConstants.C_DATE_UNCHANGED, false);            
             res = m_cms.readFileHeader(resourcename);
             
             //add resource to synchronisation list

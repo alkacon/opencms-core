@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2004/06/04 10:48:52 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/06/04 15:42:06 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  *
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public interface I_CmsConstants {
 
@@ -1201,6 +1201,12 @@ public interface I_CmsConstants {
 
     /** default class for templates */
     String C_XML_CONTROL_DEFAULT_CLASS = "com.opencms.template.CmsXmlTemplate";
+
+    
+    /** 
+     * Flag for leaving a date unchanged during a tough operation
+     */
+    long C_DATE_UNCHANGED = -1;
     
     /** 
      * Signals that siblings of this resource should not be 

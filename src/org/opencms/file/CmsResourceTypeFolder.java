@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsResourceTypeFolder.java,v $
- * Date   : $Date: 2004/06/04 15:11:04 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/06/04 15:42:06 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType {
     
@@ -474,14 +474,14 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
     }
 
     /**
-     * @see org.opencms.file.I_CmsResourceType#touch(CmsObject, String, long, boolean, CmsUUID)
+     * @see org.opencms.file.I_CmsResourceType#touch(org.opencms.file.CmsObject, java.lang.String, long, long, long, boolean, org.opencms.util.CmsUUID)
      */
-    public void touch(CmsObject cms, String resourceName, long timestamp, boolean touchRecursive, CmsUUID user) throws CmsException {
+    public void touch(CmsObject cms, String resourceName, long timestamp,  long releasedate, long expiredate, boolean touchRecursive, CmsUUID user) throws CmsException {
         List allFolders = new ArrayList();
         List allFiles = new ArrayList();
 
         // create a valid resource
-        CmsFolder currentFolder = cms.readFolder(resourceName);
+        CmsFolder currentFolder = cms.readFolder(resourceName, CmsResourceFilter.IGNORE_EXPIRATION);
         CmsFile currentFile;
         
         // check the access rights
@@ -504,14 +504,14 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
                 System.err.println("touching: " + cms.readAbsolutePath(currentFolder));
             }
             // touch the folder itself
-            cms.doTouch(cms.readAbsolutePath(currentFolder), timestamp, user);
+            cms.doTouch(cms.readAbsolutePath(currentFolder), timestamp, releasedate, expiredate, user);
 
             if (C_BODY_MIRROR) {
                 // touch its counterpart under content/bodies
                 String bodyFolder = I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/")) + cms.readAbsolutePath(currentFolder);
                 try {
                     cms.readFolder(bodyFolder);
-                    cms.doTouch(bodyFolder, timestamp, user);
+                    cms.doTouch(bodyFolder, timestamp, releasedate, expiredate, user);
                 } catch (CmsException e) {
                     // ignore
                 }
@@ -528,7 +528,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
             }
             if (currentFile.getState() != I_CmsConstants.C_STATE_DELETED) {
                 // touch the file itself
-                cms.touch(cms.readAbsolutePath(currentFile), timestamp, false);
+                cms.touch(cms.readAbsolutePath(currentFile), timestamp, releasedate, expiredate, false);
             }
         }
     }
@@ -583,7 +583,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
         List allFiles = new ArrayList();
 
         // create a valid resource
-        CmsFolder currentFolder = cms.readFolder(resource);
+        CmsFolder currentFolder = cms.readFolder(resource, CmsResourceFilter.IGNORE_EXPIRATION);
         CmsFile currentFile;
         
         // check the access rights

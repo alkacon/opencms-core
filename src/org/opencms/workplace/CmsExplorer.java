@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2004/05/19 16:20:53 $
- * Version: $Revision: 1.67 $
+ * Date   : $Date: 2004/06/04 15:42:06 $
+ * Version: $Revision: 1.68 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.67 $
+ * @version $Revision: 1.68 $
  * 
  * @since 5.1
  */
@@ -159,7 +159,7 @@ public class CmsExplorer extends CmsWorkplace {
      */
     private boolean folderExists(CmsObject cms, String folder) {
         try {
-            CmsFolder test = cms.readFolder(folder);
+            CmsFolder test = cms.readFolder(folder, CmsResourceFilter.IGNORE_EXPIRATION);
             if (test.isFile()) {
                 return false;
             }
@@ -603,7 +603,7 @@ public class CmsExplorer extends CmsWorkplace {
             }
         } else {
             try {
-                return getCms().getResourcesInFolder(resource);
+                return getCms().getResourcesInFolder(resource, CmsResourceFilter.IGNORE_EXPIRATION);
             } catch (CmsException e) {
                 return new Vector();
             }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2004/06/04 10:48:53 $
-* Version: $Revision: 1.69 $
+* Date   : $Date: 2004/06/04 15:42:07 $
+* Version: $Revision: 1.70 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -57,8 +57,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.69 $
- * $Date: 2004/06/04 10:48:53 $
+ * $Revision: 1.70 $
+ * $Date: 2004/06/04 15:42:07 $
  */
 public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsExtendedContentDefinition{
 
@@ -924,7 +924,7 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
         // get folders of this rootFolder
         Vector subFolders = new Vector();
         try{
-            subFolders = cms.getResourcesInFolder(rootFolder);
+            subFolders = cms.getResourcesInFolder(rootFolder, CmsResourceFilter.DEFAULT);
         } catch (CmsException e){
             // if the folder could not be found it might be deleted, so don't throw this exception
             if(e.getType() != CmsException.C_NOT_FOUND){

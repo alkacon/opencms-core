@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/06/04 15:11:05 $
- * Version: $Revision: 1.368 $
+ * Date   : $Date: 2004/06/04 15:42:06 $
+ * Version: $Revision: 1.369 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.368 $ $Date: 2004/06/04 15:11:05 $
+ * @version $Revision: 1.369 $ $Date: 2004/06/04 15:42:06 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -1223,7 +1223,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             writeAccessControlEntry(context, dest, (CmsAccessControlEntry)acEntries.next());
         }
 
-        touchResource(context, dest, System.currentTimeMillis(), context.currentUser().getId());
+        touchResource(context, dest, System.currentTimeMillis(), I_CmsConstants.C_DATE_UNCHANGED, I_CmsConstants.C_DATE_UNCHANGED, context.currentUser().getId());
     }
 
     /**
@@ -1270,8 +1270,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         destinationFileName = destination.substring(destination.lastIndexOf("/") + 1, destination.length());
 
         // read the source file and destination parent folder
-        CmsFile sourceFile = readFile(context, source, CmsResourceFilter.ALL);
-        CmsFolder destinationFolder = readFolder(context, destinationFolderName);
+        CmsFile sourceFile = readFile(context, source, CmsResourceFilter.IGNORE_EXPIRATION);
+        CmsFolder destinationFolder = readFolder(context, destinationFolderName, CmsResourceFilter.IGNORE_EXPIRATION);
 
         // check the link mode to see if this resource has to be copied as a link.
         // only check this if the override flag "copyAsLink" is not set.
@@ -1332,7 +1332,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
             m_vfsDriver.writeResourceState(context.currentProject(), newResource, C_UPDATE_ALL);
 
-            touch(context, destination, sourceFile.getDateLastModified(), sourceFile.getUserLastModified());
+            touch(context, destination, sourceFile.getDateLastModified(), I_CmsConstants.C_DATE_UNCHANGED, I_CmsConstants.C_DATE_UNCHANGED, sourceFile.getUserLastModified());
 
             if (lockCopy) {
                 lockResource(context, destination);
@@ -1386,8 +1386,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             destinationResourceName = destinationResourceName.substring(0, destinationResourceName.length() - 1);
         }
 
-        CmsFolder destinationFolder = readFolder(context, destinationFoldername);
-        CmsFolder sourceFolder = readFolder(context, source);
+        CmsFolder destinationFolder = readFolder(context, destinationFoldername, CmsResourceFilter.IGNORE_EXPIRATION);
+        CmsFolder sourceFolder = readFolder(context, source, CmsResourceFilter.IGNORE_EXPIRATION);
 
         // check if the user has write access to the destination folder (checking read access to the source is done implicitly by read folder)
         checkPermissions(context, destinationFolder, I_CmsConstants.C_WRITE_ACCESS, CmsResourceFilter.ALL);
@@ -1436,7 +1436,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         m_propertyCache.clear();
 
         if (preserveTimestamps) {
-            touch(context, destination, dateLastModified, userLastModified);
+            touch(context, destination, dateLastModified, I_CmsConstants.C_DATE_UNCHANGED, I_CmsConstants.C_DATE_UNCHANGED, userLastModified);
         }
 
         // copy the access control entries of this resource
@@ -1836,14 +1836,14 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         resourceName = siblingName.substring(siblingName.lastIndexOf(I_CmsConstants.C_FOLDER_SEPARATOR) + 1, siblingName.length());
 
         // read the target resource
-        targetResource = this.readFileHeader(context, targetName, CmsResourceFilter.ALL);
+        targetResource = this.readFileHeader(context, targetName, CmsResourceFilter.IGNORE_EXPIRATION);
 
         if (targetResource.isFolder()) {
             throw new CmsException("Creating siblings of folders is not supported");
         }
 
         // read the parent folder
-        parentFolder = this.readFolder(context, parentFolderName, CmsResourceFilter.DEFAULT);
+        parentFolder = this.readFolder(context, parentFolderName, CmsResourceFilter.IGNORE_EXPIRATION);
 
         // for the parent folder is write access required
         checkPermissions(context, parentFolder, I_CmsConstants.C_WRITE_ACCESS, CmsResourceFilter.ALL);
@@ -2453,7 +2453,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         }
 
         // read the folder, that should be deleted
-        CmsFolder cmsFolder = readFolder(context, foldername);
+        CmsFolder cmsFolder = readFolder(context, foldername, CmsResourceFilter.IGNORE_EXPIRATION);
         try {
             onlineFolder = readFolderInProject(I_CmsConstants.C_PROJECT_ONLINE_ID, foldername);
         } catch (CmsException exc) {
@@ -3538,17 +3538,18 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      *
      * @param context the current request context
      * @param folder the name of the folder to get the subresources from
+     * @param filter the resourcefilter to use
      * @return a Vector with resources.
      *
      * @throws CmsException if operation was not successful
      */
-    public Vector getResourcesInFolder(CmsRequestContext context, String folder) throws CmsException {
+    public Vector getResourcesInFolder(CmsRequestContext context, String folder, CmsResourceFilter filter) throws CmsException {
         CmsFolder folderRes = null;
         Vector resources = new Vector();
         Vector retValue = new Vector();
 
         try {
-            folderRes = readFolder(context, folder);
+            folderRes = readFolder(context, folder, filter);
             if (folderRes.getState() == I_CmsConstants.C_STATE_DELETED) {
                 folderRes = null;
             }
@@ -6894,7 +6895,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         m_userDriver.removeAccessControlEntry(context.currentProject(), resource.getResourceId(), principal);
         clearAccessControlListCache();
 
-        touchResource(context, resource, dateLastModified, userLastModified);
+        touchResource(context, resource, dateLastModified, I_CmsConstants.C_DATE_UNCHANGED, I_CmsConstants.C_DATE_UNCHANGED, userLastModified);
     }
 
     /**
@@ -7026,7 +7027,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         }
         resource.setUserLastModified(context.currentUser().getId());
 
-        touch(context, resourceName, System.currentTimeMillis(), context.currentUser().getId());
+        touch(context, resourceName, System.currentTimeMillis(), I_CmsConstants.C_DATE_UNCHANGED, I_CmsConstants.C_DATE_UNCHANGED, context.currentUser().getId());
 
         m_vfsDriver.writeResourceState(context.currentProject(), resource, C_UPDATE_RESOURCE);
 
@@ -7337,12 +7338,14 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @param context the current request context
      * @param resourceName the name of the resource to change
      * @param timestamp timestamp the new timestamp of the changed resource
+     * @param releasedate the new releasedate of the changed resource. Set it to I_CmsConstants.C_DATE_UNCHANGED to keep it unchanged.
+     * @param expiredate the new expiredate of the changed resource. Set it to I_CmsConstants.C_DATE_UNCHANGED to keep it unchanged.
      * @param user the user who is inserted as userladtmodified 
      * @throws CmsException if something goes wrong
      */
-    public void touch(CmsRequestContext context, String resourceName, long timestamp, CmsUUID user) throws CmsException {
+    public void touch(CmsRequestContext context, String resourceName, long timestamp, long releasedate, long expiredate, CmsUUID user) throws CmsException {
         CmsResource resource = readFileHeader(context, resourceName, CmsResourceFilter.IGNORE_EXPIRATION);
-        touchResource(context, resource, timestamp, user);
+        touchResource(context, resource, timestamp, releasedate, expiredate, user);
     }
 
     /**
@@ -7351,10 +7354,12 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @param context the current request context
      * @param res the resource to change
      * @param timestamp timestamp the new timestamp of the changed resource
+     * @param releasedate the new releasedate of the changed resource. Set it to I_CmsConstants.C_DATE_UNCHANGED to keep it unchanged.
+     * @param expiredate the new expiredate of the changed resource. Set it to I_CmsConstants.C_DATE_UNCHANGED to keep it unchanged.
      * @param user the user who is inserted as userladtmodified
      * @throws CmsException if something goes wrong
      */
-    private void touchResource(CmsRequestContext context, CmsResource res, long timestamp, CmsUUID user) throws CmsException {
+    private void touchResource(CmsRequestContext context, CmsResource res, long timestamp, long releasedate, long expiredate, CmsUUID user) throws CmsException {
 
         // NOTE: this is the new way to update the state !
         // if (res.getState() < I_CmsConstants.C_STATE_CHANGED)
@@ -7364,6 +7369,16 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         res.setState(I_CmsConstants.C_STATE_CHANGED);
         res.setDateLastModified(timestamp);
         res.setUserLastModified(user);
+        
+        // modify the releasedate if its not set to C_DATE_UNCHANGED
+        if (releasedate != I_CmsConstants.C_DATE_UNCHANGED) {
+            res.setDateReleased(releasedate);
+        }         
+       // modify the expiredate if its not set to C_DATE_UNCHANGED
+        if (expiredate != I_CmsConstants.C_DATE_UNCHANGED) {
+            res.setDateExpired(expiredate);
+        } 
+        
         m_vfsDriver.writeResourceState(context.currentProject(), res, C_UPDATE_RESOURCE);
 
         clearResourceCache();
@@ -7705,7 +7720,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
         m_userDriver.writeAccessControlEntry(context.currentProject(), acEntry);
         clearAccessControlListCache();
-        touchResource(context, resource, dateLastModified, userLastModified);
+        touchResource(context, resource, dateLastModified, I_CmsConstants.C_DATE_UNCHANGED, I_CmsConstants.C_DATE_UNCHANGED, userLastModified);
     }
 
     /**
