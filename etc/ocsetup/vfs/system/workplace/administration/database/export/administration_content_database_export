@@ -79,7 +79,7 @@ function checkFormData()
         }
     }
     if(document.DBEXPORT.ALLRES.value.length < 1){
-        alert(']]><LABEL value="error.reason.projectdatamissing" /><![CDATA[');
+        alert(']]><LABEL value="error.message.datamissing" /><![CDATA[');
         return false;
     }
     return result;
