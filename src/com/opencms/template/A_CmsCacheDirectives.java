@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsCacheDirectives.java,v $
-* Date   : $Date: 2001/07/31 15:50:16 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2001/08/15 13:04:26 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -199,6 +199,20 @@ public abstract class A_CmsCacheDirectives implements I_CmsLogChannels{
         if(key.equals("")){
             return null;
         }
+        // now add the elementdefinition-parameters
+        String elementName = (String)parameters.get("_ELEMENT_");
+        if(elementName == null) {
+            // this is the root-template
+            elementName = I_CmsConstants.C_ROOT_TEMPLATE_NAME;
+        }
+        Enumeration paramKeys = parameters.keys();
+        while(paramKeys.hasMoreElements()) {
+            String paramKey = (String) paramKeys.nextElement();
+            if(paramKey.startsWith(elementName)) {
+                key += paramKey + "=" + parameters.get(paramKey) + ";";
+            }
+        }
+        System.out.println("KEY for element " + elementName + " = " + key);
         return key;
     }
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/A_CmsElement.java,v $
-* Date   : $Date: 2001/08/03 10:29:40 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2001/08/15 13:04:26 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -337,6 +337,7 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             for(int i=0; i<len; i++) {
+                // put the name of the element into the params
                 if(resolveDebug) System.err.print("= Part " + i + " is a ");
                 Object o = variant.get(i);
                 // Decide what to do with the current part.
@@ -360,6 +361,8 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
                         // We have successfully found an element definition.
                         // first add the parameter from the elementdefinition to the parameters
                         elDef.joinParameters(parameters);
+                        // put the name of the element into the params
+                        parameters.put("_ELEMENT_", elDef.getName());
                         // Try to get the corresponding element using the element locator
                         A_CmsElement subEl = elementCache.getElementLocator().get(cms, elDef.getDescriptor(), parameters);
                         if(resolveDebug) System.err.println("= Element defintion for \"" + lookupName +"\" says: ");
