@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsCronScheduleJobStarter.java,v $
-* Date   : $Date: 2001/11/15 16:41:21 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2001/11/16 09:36:34 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ class CmsCronScheduleJobStarter extends Thread {
             if(m_table.get(i).check(m_lastRun, m_thisRun)) {
                 // we have to start the job for this entry
                 if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && CmsBase.isLogging()) {
-                    CmsBase.log(I_CmsLogChannels.C_OPENCMS_CRONSCHEDULER, "Starting job for " + m_table);
+                    CmsBase.log(I_CmsLogChannels.C_OPENCMS_CRONSCHEDULER, "Starting job for " + m_table.get(i));
                 }
                 m_opencms.startScheduleJob(m_table.get(i));
             }

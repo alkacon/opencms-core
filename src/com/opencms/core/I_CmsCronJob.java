@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsCronJob.java,v $
-* Date   : $Date: 2001/11/15 16:41:21 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2001/11/16 09:36:34 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,8 +39,10 @@ public interface I_CmsCronJob {
      * The CmsCronScheduler launchs this method to do the job on the specified
      * class.
      * @param cmsobject the CmsObject to get access to the cms.
+     * @param parameter a String parameter that was defined in the cron entry.
      * @returns a string or null - if a string is returned, this will be
      * written to the logfile.
+     * @throws an exception that occures while launching the job.
      */
-    public String launch(CmsObject cms);
+    public String launch(CmsObject cms, String parameter) throws Exception;
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsCronScheduler.java,v $
-* Date   : $Date: 2001/11/15 16:41:21 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2001/11/16 09:36:34 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ class CmsCronScheduler extends Thread {
     }
 
     /**
-     * The run-method of this thread awaiks every minute to launch jobs at issue.
+     * The run-method of this thread awakes every minute to launch jobs at issue.
      */
     public void run() {
         Calendar lastRun = new GregorianCalendar();
@@ -78,8 +78,8 @@ class CmsCronScheduler extends Thread {
                                                      0);
                 long sleeptime = tmp.getTime().getTime() - new GregorianCalendar().getTime().getTime();
                 if(sleeptime > 0) {
-                    // sleep til next minute
-                    sleep(sleeptime);
+                    // sleep til next minute plus ten seconds to get to the next minute
+                    sleep(sleeptime + 10000);
                 }
             } catch(InterruptedException exc) {
                 // ignore this exception - we are interrupted

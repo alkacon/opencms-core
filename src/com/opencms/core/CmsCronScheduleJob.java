@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsCronScheduleJob.java,v $
-* Date   : $Date: 2001/11/15 16:41:21 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2001/11/16 09:36:34 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ class CmsCronScheduleJob extends Thread {
             // create an instance
             I_CmsCronJob job = (I_CmsCronJob) module.newInstance();
             // invoke method launch
-            String retValue = job.launch(m_cms);
+            String retValue = job.launch(m_cms, m_entry.getModuleParameter());
             // log the returnvalue to the logfile
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && CmsBase.isLogging()) {
                 CmsBase.log(I_CmsLogChannels.C_OPENCMS_CRONSCHEDULER, "Successful launch of job " + m_entry +  (retValue != null ? " Message: " + retValue : "") );

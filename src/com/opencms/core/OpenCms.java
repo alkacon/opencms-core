@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2001/11/15 16:41:21 $
-* Version: $Revision: 1.67 $
+* Date   : $Date: 2001/11/16 09:36:34 $
+* Version: $Revision: 1.68 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import com.opencms.template.cache.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.67 $ $Date: 2001/11/15 16:41:21 $
+ * @version $Revision: 1.68 $ $Date: 2001/11/16 09:36:34 $
  *
  * */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
@@ -191,11 +191,10 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] HTTP streaming " + (m_streaming?"en":"dis") + "abled. ");
             }
 
-            // now initialise the OpenCms scheduler to launch cronjobs
-            m_table = new CmsCronTable(c_rb.readCronTable(null, null));
-
             // if the System property opencms.disableScheduler is set to true, don't start scheduling
             if(!new Boolean(System.getProperty("opencms.disableScheduler")).booleanValue()) {
+                // now initialise the OpenCms scheduler to launch cronjobs
+                m_table = new CmsCronTable(c_rb.readCronTable(null, null));
                 m_scheduler = new CmsCronScheduler(this, m_table);
                 if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                     A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] initializing CmsCronScheduler... DONE");
@@ -604,7 +603,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
         // create a valid cms-object
         CmsObject cms = new CmsObject();
         try {
-            initUser(cms, null, null, entry.getUserName(), C_GROUP_GUEST, C_PROJECT_ONLINE_ID, null);
+            initUser(cms, null, null, entry.getUserName(), entry.getGroupName(), C_PROJECT_ONLINE_ID, null);
             // create a new ScheduleJob and start it
             CmsCronScheduleJob job = new CmsCronScheduleJob(cms, entry);
             job.start();

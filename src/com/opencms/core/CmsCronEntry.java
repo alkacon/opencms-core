@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsCronEntry.java,v $
-* Date   : $Date: 2001/11/15 16:41:21 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2001/11/16 09:36:34 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -64,9 +64,19 @@ class CmsCronEntry {
 	private String m_moduleToLaunch;
 
 	/**
+	 * The parameter fot the module to lauch.
+	 */
+	private String m_moduleParameter;
+
+	/**
 	 * The user with its rights to lauch the module.
 	 */
 	private String m_user;
+
+	/**
+	 * The group with its rights to lauch the module.
+	 */
+	private String m_group;
 
 	/**
 	 * The asterix-Value this value is set where no check has to be performed.
@@ -96,26 +106,17 @@ class CmsCronEntry {
 			m_dayOfMonth =		Integer.parseInt(params[2]);
 			m_month =			Integer.parseInt(params[3]);
 			m_dayOfWeek =		Integer.parseInt(params[4]);
-			m_moduleToLaunch =	new String(params[5]);
-			m_user =			new String(params[6]);
+			m_user =			new String(params[5]);
+			m_group =			new String(params[6]);
+			m_moduleToLaunch =	new String(params[7]);
+            if(params.length > 8) {
+    			m_moduleParameter =	new String(params[8]);
+            } else {
+                m_moduleParameter = null;
+            }
 		} catch(Exception exc) {
 			throw new CmsException("Invalid parameterstring. Exception: " + exc.toString());
 		}
-	}
-
-	/**
-	 * A constructor for this Table-Entry.
-	 *
-	 */
-	CmsCronEntry(int min, int hour, int dayOfMonth, int month,
-        int dayOfWeek, String moduleToLaunch, String user) {
-		m_minute =			min;
-		m_hour =			hour;
-		m_dayOfMonth =		dayOfMonth;
-		m_month =			month;
-		m_dayOfWeek =		dayOfWeek;
-		m_moduleToLaunch =	moduleToLaunch;
-		m_user =			user;
 	}
 
 	/**
@@ -130,8 +131,10 @@ class CmsCronEntry {
 						   ((m_dayOfMonth == C_ASTERIX) ? "*" : m_dayOfMonth + "") + C_SPLITSTRING +
 						   ((m_month == C_ASTERIX) ? "*" : m_month + "") + C_SPLITSTRING +
 						   ((m_dayOfWeek == C_ASTERIX) ? "*" : m_dayOfWeek + "")+ C_SPLITSTRING +
-						   m_moduleToLaunch + C_SPLITSTRING +
-						   m_user + C_SPLITSTRING );
+                           m_user + C_SPLITSTRING +
+                           m_group + C_SPLITSTRING +
+						   m_moduleToLaunch +
+						   (m_moduleParameter == null ? "" : C_SPLITSTRING + m_moduleParameter));
 	}
 
 	/**
@@ -191,12 +194,30 @@ class CmsCronEntry {
 	}
 
 	/**
+	 * Gets the parameter for the module.
+	 *
+	 * @return the module-parameter for this entry.
+	 */
+	public String getModuleParameter() {
+		return m_moduleParameter;
+	}
+
+	/**
 	 * Gets the name of the user.
 	 *
 	 * @return the user-name for this entry.
 	 */
 	public String getUserName() {
 		return m_user;
+	}
+
+	/**
+	 * Gets the name of the group.
+	 *
+	 * @return the group-name for this entry.
+	 */
+	public String getGroupName() {
+		return m_group;
 	}
 
 	public int getMinute() {
