@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2004/08/25 07:47:21 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2004/11/12 18:17:34 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.49 $ $Date: 2004/08/25 07:47:21 $
+ * @version $Revision: 1.50 $ $Date: 2004/11/12 18:17:34 $
  */
 public class CmsExport implements Serializable {
 
@@ -725,6 +725,17 @@ public class CmsExport implements Serializable {
             getReport().print(getCms().getSitePath(resource));
             getReport().print(getReport().key("report.dots"));
             getReport().println(getReport().key("report.ok"), I_CmsReport.C_FORMAT_OK);
+            
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(
+                    "( " 
+                    + m_exportCount
+                    + " ) "
+                    + m_report.key("report.exporting")
+                    + getCms().getSitePath(resource)
+                    + m_report.key("report.dots")
+                    + m_report.key("report.ok"));
+            }      
         }
 
         // <destination>
@@ -841,6 +852,18 @@ public class CmsExport implements Serializable {
         getReport().print(getReport().key("report.exporting"), I_CmsReport.C_FORMAT_NOTE);
         getReport().print(getCms().getSitePath(file));
         getReport().print(getReport().key("report.dots"));
+        
+        if (OpenCms.getLog(this).isInfoEnabled()) {
+            OpenCms.getLog(this).info(
+                "( " 
+                + m_exportCount
+                + " ) "
+                + m_report.key("report.exporting")
+                + source
+                + m_report.key("report.dots")
+                + m_report.key("report.ok"));
+        }      
+        
         try {
             // store content in zip-file
             // check if the content of this resource was not already exported
