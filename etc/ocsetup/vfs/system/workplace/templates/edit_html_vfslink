@@ -29,7 +29,7 @@
 				}
 				//if text was selected
 				if(sel != null) {
-				  if(sel.type == "Text"){
+				  if(sel.type == "Text" || sel.type == "None"){
 					var rng = sel.createRange();
 					if(rng != null){
 					  var thelink = "<a ";
@@ -55,7 +55,7 @@
 
 					}
 				  }
-				  // if anything else was selected, e.g. an image
+				  // if a control was selected, e.g. an image
 				  else if(sel.type == "Control") {
 					var rng = sel.createRange();
 					var el = rng.item(0);
@@ -87,7 +87,7 @@
  				      }
 					}
 				  }				  
-				}	
+				}
 			}
 			
 			function checkforchars(whichform){
