@@ -86,6 +86,7 @@ function mouseClicked(e)
 function showkontext(welche, parameter, id)
 {
 	// set the kontextparameter
+	//kontextparam = parameter.replace(/\//g, "%2F");
 	kontextparam = parameter;
 	
 	if(welche!='')
@@ -182,43 +183,45 @@ function checklyrheight(welche)
 // which action on layer is clicked
 function doAction(action) {
 	hidemenu(letztelyr);
+	//var encLasturl = escape(simpleEscape(location.href));
+	encLasturl = location.href;
 	
 	switch(action)	{
 		case 1: {
-			location.href='lock.html?lasturl=' + location.href + '&file='+ kontextparam;
+			location.href='lock.html?lasturl=' + encLasturl + '&file='+ kontextparam;
 			break;
 		} case 2:	{
-			location.href='lockchange.html?lasturl=' + location.href + '&file='+ kontextparam;
+			location.href='lockchange.html?lasturl=' + encLasturl + '&file='+ kontextparam;
 			break;
 		} case 3: {
-			location.href='unlock.html?lasturl=' + location.href + '&file='+ kontextparam;
+			location.href='unlock.html?lasturl=' + encLasturl + '&file='+ kontextparam;
 			break;
 		} case 4: {
-			location.href='copy.html?file='+ kontextparam;
+			location.href='lasturl=' + encLasturl + '&copy.html?file='+ kontextparam;
 			break;
 		} case 5: {
-			location.href='move.html?file='+ kontextparam;
+			location.href='lasturl=' + encLasturl + '&move.html?file='+ kontextparam;
 			break;
 		} case 6: {
-			location.href='rename.html?file='+ kontextparam;
+			location.href='lasturl=' + encLasturl + '&rename.html?file='+ kontextparam;
 			break;
 		} case 7: {
-			location.href='delete.html?lasturl=' + location.href + '&file='+ kontextparam;
+			location.href='delete.html?lasturl=' + encLasturl + '&file='+ kontextparam;
 			break;
 		} case 8: {
-			location.href='chown.html?file='+ kontextparam;
+			location.href='chown.html?lasturl=' + encLasturl + '&file='+ kontextparam;
 			break;
 		} case 9: {
-			location.href='chgrp.html?file='+ kontextparam;
+			location.href='chgrp.html?lasturl=' + encLasturl + '&file='+ kontextparam;
 			break;
 		} case 10: {
-			location.href='chmod.html?file='+ kontextparam;
+			location.href='chmod.html?lasturl=' + encLasturl + '&file='+ kontextparam;
 			break;
 		} case 11: {
-			location.href='chtype.html?file='+ kontextparam;
+			location.href='chtype.html?lasturl=' + encLasturl + '&file='+ kontextparam;
 			break;
 		} case 12: {
-		    location.href='property.html?lasturl=' + location.href + '&file='+ kontextparam;
+		    location.href='property.html?lasturl=' + encLasturl + '&file='+ kontextparam;
 			break;
 		}
 		case 13:
@@ -271,7 +274,7 @@ function doAction(action) {
 			location.href='explorer_files_deletef.html';
 			break;
 		} case 40:{
-		    location.href='history.html?lasturl=' + location.href + '&file='+ kontextparam;
+		    location.href='history.html?lasturl=' + encLasturl + '&file='+ kontextparam;
 			break;
 		}
 		case 41:
