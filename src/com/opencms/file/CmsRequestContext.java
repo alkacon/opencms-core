@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
- * Date   : $Date: 2001/05/10 12:31:01 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2001/07/18 13:33:06 $
+ * Version: $Revision: 1.38 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -46,7 +46,7 @@ import com.opencms.template.cache.*;
  * @author Anders Fugmann
  * @author Alexander Lucas
  *
- * @version $Revision: 1.37 $ $Date: 2001/05/10 12:31:01 $
+ * @version $Revision: 1.38 $ $Date: 2001/07/18 13:33:06 $
  *
  */
 public class CmsRequestContext implements I_CmsConstants {
@@ -349,7 +349,7 @@ public class CmsRequestContext implements I_CmsConstants {
      * @return <code>true</code> if element cache is active, <code>false</code> otherwise.
      */
     public boolean isElementCacheEnabled() {
-        return ((m_elementCache != null) && (currentProject().getId() == C_PROJECT_ONLINE_ID));
+        return (m_elementCache != null);
     }
 
     /**

@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2001/07/18 11:49:13 $
- * Version: $Revision: 1.169 $
+ * Date   : $Date: 2001/07/18 13:33:06 $
+ * Version: $Revision: 1.170 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -49,7 +49,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.169 $ $Date: 2001/07/18 11:49:13 $
+ * @version $Revision: 1.170 $ $Date: 2001/07/18 13:33:06 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -1742,6 +1742,14 @@ public Vector getGroupsOfUser(String username) throws CmsException {
 public com.opencms.launcher.CmsLauncherManager getLauncherManager() {
     return m_launcherManager;
 }
+
+    /**
+     * Gets the ElementCache used for the online project.
+     * @return CmsElementCache
+     */
+    public CmsElementCache getOnlineElementCache(){
+        return OpenCms.getOnlineElementCache();
+    }
 
     /**
      * Checks which Group can read the resource and all the parent folders.

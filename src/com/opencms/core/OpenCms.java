@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2001/07/05 07:30:49 $
-* Version: $Revision: 1.57 $
+* Date   : $Date: 2001/07/18 13:32:41 $
+* Version: $Revision: 1.58 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -52,7 +52,7 @@ import com.opencms.template.cache.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.57 $ $Date: 2001/07/05 07:30:49 $
+ * @version $Revision: 1.58 $ $Date: 2001/07/18 13:32:41 $
  *
  * */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
@@ -210,6 +210,14 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
     }
 
     /**
+     * Gets the ElementCache used for the online project.
+     * @return CmsElementCache
+     */
+    public static CmsElementCache getOnlineElementCache(){
+        return c_elementCache;
+    }
+
+    /**
      * This method gets the requested document from the OpenCms and returns it to the
      * calling module.
      *
@@ -287,7 +295,11 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
      */
     public void initUser(CmsObject cms, I_CmsRequest cmsReq, I_CmsResponse cmsRes, String user,
             String group, int project) throws CmsException {
-        cms.init(c_rb, cmsReq, cmsRes, user, group, project, m_streaming, c_elementCache);
+        if((!m_enableElementCache) || (project == C_PROJECT_ONLINE_ID)){
+            cms.init(c_rb, cmsReq, cmsRes, user, group, project, m_streaming, c_elementCache);
+        }else{
+            cms.init(c_rb, cmsReq, cmsRes, user, group, project, m_streaming, new CmsElementCache(10,200,10));
+        }
     }
 
     /**

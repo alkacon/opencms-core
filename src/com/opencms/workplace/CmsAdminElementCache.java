@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminElementCache.java,v $
-* Date   : $Date: 2001/05/31 12:04:56 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2001/07/18 13:34:01 $
+* Version: $Revision: 1.2 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <P>
  *
  * @author Hanjo Riege
- * @version $Revision: 1.1 $ $Date: 2001/05/31 12:04:56 $
+ * @version $Revision: 1.2 $ $Date: 2001/07/18 13:34:01 $
  */
 public class CmsAdminElementCache extends CmsWorkplaceDefault {
 
@@ -74,7 +74,7 @@ public class CmsAdminElementCache extends CmsWorkplaceDefault {
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
 
         // need the element cache
-        CmsElementCache cache = cms.getRequestContext().getElementCache() ;
+        CmsElementCache cache = cms.getOnlineElementCache();
         // get the parameter
         String action = (String)parameters.get("action");
         if((action == null) || ("".equals(action))){
