@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementXml.java,v $
-* Date   : $Date: 2001/10/26 12:43:45 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2001/11/05 18:34:30 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -111,9 +111,7 @@ public class CmsElementXml extends A_CmsElement implements com.opencms.boot.I_Cm
                                      && variant.getNextTimeout() < System.currentTimeMillis()){
                     // the variant is not longer valid, remove it from the extern dependencies
                     cms.getOnlineElementCache().getElementLocator().removeVariantFromDependencies(
-                                        mergedElDefs.get(elementName).getClassName()+"|"
-                                        + mergedElDefs.get(elementName).getTemplateName()+"|"
-                                        + cd.getCacheKey(cms, parameters), variant);
+                                        m_className +"|" + m_templateName +"|" + cd.getCacheKey(cms, parameters), variant);
                     variant = null;
                 }
             }
