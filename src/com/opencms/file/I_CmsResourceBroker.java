@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/14 14:20:45 $
- * Version: $Revision: 1.84 $
+ * Date   : $Date: 2000/06/17 13:07:47 $
+ * Version: $Revision: 1.85 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.84 $ $Date: 2000/06/14 14:20:45 $
+ * @version $Revision: 1.85 $ $Date: 2000/06/17 13:07:47 $
  * 
  */
 public interface I_CmsResourceBroker {
@@ -1555,6 +1555,30 @@ public interface I_CmsResourceBroker {
 	 */
 	public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject,
 								String folder, String folderName)
+		throws CmsException ;
+
+      /**
+	 * Reads a folder from the Cms.<BR/>
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can read the resource</li>
+	 * </ul>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param foldername The complete path of the folder to be read.
+	 * 
+	 * @return folder The read folder.
+	 * 
+	 * @exception CmsException will be thrown, if the folder couldn't be read. 
+	 * The CmsException will also be thrown, if the user has not the rights 
+	 * for this resource.
+	 */
+	public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject,
+								String folder)
 		throws CmsException ;
 	
 	/**
