@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsQueries.java,v $
- * Date   : $Date: 2000/10/09 13:12:46 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2000/10/09 15:18:13 $
+ * Version: $Revision: 1.26 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.25 $ $Date: 2000/10/09 13:12:46 $
+ * @version $Revision: 1.26 $ $Date: 2000/10/09 15:18:13 $
  */
 public class CmsQueries
 {
@@ -281,9 +281,9 @@ public class CmsQueries
 	public Integer C_PROJECTS_WRITE_KEY = new Integer(409);
 	public String C_PROJECTS_WRITE = "UPDATE " + C_DATABASE_PREFIX + "PROJECTS " + "SET USER_ID = ?, " + "GROUP_ID = ?, " + "MANAGERGROUP_ID = ?, " + "PROJECT_FLAGS = ?, " + "PROJECT_PUBLISHDATE = ?, " + "PROJECT_PUBLISHED_BY = ? " + "where PROJECT_ID = ?";
 
- 	public String C_PROJECTS_PARENT_PROJECT =	"SELECT " + "pp." + C_PROJECTS_PROJECT_ID+", pp."+C_PROJECTS_USER_ID+", pp."+C_PROJECTS_GROUP_ID+", pp."+C_PROJECTS_MANAGERGROUP_ID+", pp."+C_PROJECTS_TASK_ID+", pp."+C_PROJECTS_PROJECT_NAME+", pp."+C_PROJECTS_PROJECT_DESCRIPTION+", pp."+C_PROJECTS_PROJECT_FLAGS+", pp."+C_PROJECTS_PROJECT_CREATEDATE+", pp."+C_PROJECTS_PROJECT_PUBLISHDATE+", pp."+C_PROJECTS_PROJECT_PUBLISHED_BY+", pp."+C_PROJECTS_PROJECT_TYPE+", pp."+C_PROJECTS_PARENT_ID + 
+ 	public String C_PROJECTS_PARENT_PROJECT =	"SELECT " + "pp." + C_PROJECTS_PROJECT_ID+", pp."+C_PROJECTS_USER_ID+", pp."+C_PROJECTS_GROUP_ID+", pp."+C_PROJECTS_MANAGERGROUP_ID+", pp."+C_PROJECTS_TASK_ID+", pp."+C_PROJECTS_PROJECT_NAME+", pp."+C_PROJECTS_PROJECT_DESCRIPTION+", pp."+C_PROJECTS_PROJECT_FLAGS+", pp."+C_PROJECTS_PROJECT_CREATEDATE+", pp."+C_PROJECTS_PROJECT_PUBLISHDATE+", pp."+C_PROJECTS_PROJECT_PUBLISHED_BY+", pp."+C_PROJECTS_PROJECT_TYPE+", pp."+C_PROJECTS_PARENT_ID + " "+
  																						"FROM " + C_DATABASE_PREFIX + "PROJECTS AS pp, " + C_DATABASE_PREFIX + "PROJECTS AS cp " + 
- 																						"WHERE cp." + C_PROJECTS_PARENT_ID + " = pp." + C_PROJECTS_PROJECT_ID;
+ 																						"WHERE cp." + C_PROJECTS_PARENT_ID + " = pp." + C_PROJECTS_PROJECT_ID + " AND cp." + C_PROJECTS_PROJECT_ID+ "= ?";
 	public Integer C_PROJECTS_PARENT_PROJECT_KEY =	new Integer(410);
 
  	public String C_PROJECTS_ONLINE_PROJECT =	"SELECT " + "p." + C_PROJECTS_PROJECT_ID+", p."+C_PROJECTS_USER_ID+", p."+C_PROJECTS_GROUP_ID+", p."+C_PROJECTS_MANAGERGROUP_ID+", p."+C_PROJECTS_TASK_ID+", p."+C_PROJECTS_PROJECT_NAME+", p."+C_PROJECTS_PROJECT_DESCRIPTION+", p."+C_PROJECTS_PROJECT_FLAGS+", p."+C_PROJECTS_PROJECT_CREATEDATE+", p."+C_PROJECTS_PROJECT_PUBLISHDATE+", p."+C_PROJECTS_PROJECT_PUBLISHED_BY+", p."+C_PROJECTS_PROJECT_TYPE+", p."+C_PROJECTS_PARENT_ID + " "+
