@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsDefaultLocaleHandler.java,v $
- * Date   : $Date: 2004/04/10 12:56:15 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/04/10 23:11:46 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Locale;
 
@@ -47,7 +48,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com) 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  */
 public class CmsDefaultLocaleHandler implements I_CmsLocaleHandler {
 
@@ -90,6 +91,15 @@ public class CmsDefaultLocaleHandler implements I_CmsLocaleHandler {
                     OpenCms.getLog(this).info("Could not read encoding property for resource " + resourceName, e);
                 } 
                 encoding = OpenCms.getSystemInfo().getDefaultEncoding();
+            }
+        }
+        
+        // set the request character encoding
+        if (req != null) {
+            try {
+                req.setCharacterEncoding(encoding);
+            } catch (UnsupportedEncodingException e) {
+                OpenCms.getLog(this).error("Unsupported encoding set for request '" + encoding + "'", e);
             }
         }
         

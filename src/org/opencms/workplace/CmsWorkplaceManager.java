@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2004/04/07 09:22:13 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/04/10 23:11:46 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,6 +49,7 @@ import org.opencms.workplace.editor.CmsWorkplaceEditorManager;
 import org.opencms.workplace.editor.I_CmsEditorActionHandler;
 import org.opencms.workplace.editor.I_CmsEditorHandler;
 
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -61,7 +62,7 @@ import javax.servlet.http.HttpSession;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 5.3.1
  */
@@ -356,6 +357,13 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
      * @see org.opencms.i18n.I_CmsLocaleHandler#getI18nInfo(javax.servlet.http.HttpServletRequest, org.opencms.file.CmsUser, org.opencms.file.CmsProject, java.lang.String)
      */
     public CmsI18nInfo getI18nInfo(HttpServletRequest req, CmsUser user, CmsProject project, String resource) {
+        
+        // set the request character encoding
+        try {
+            req.setCharacterEncoding(m_defaultEncoding);
+        } catch (UnsupportedEncodingException e) {
+            OpenCms.getLog(this).error("Unsupported encoding set for workplace '" + m_defaultEncoding + "'", e);
+        }
         
         Locale locale = null;
         // try to read locale from session

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/04/10 12:47:25 $
- * Version: $Revision: 1.111 $
+ * Date   : $Date: 2004/04/10 23:11:46 $
+ * Version: $Revision: 1.112 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -102,7 +102,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.111 $
+ * @version $Revision: 1.112 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -855,16 +855,6 @@ public final class OpenCmsCore {
         CmsI18nInfo i18nInfo;
         if (getLocaleManager() != null) {
             // locale manager is initialized
-            String localeParam;
-            if (req != null) {
-                // check request for parameters
-                if ((localeParam = req.getParameter(I_CmsConstants.C_PARAMETER_LOCALE)) != null) {
-                    // "__locale" parameter found in request
-                    locale = CmsLocaleManager.getLocale(localeParam);
-                }
-                // check for "__encoding" parameter in request
-                encoding = req.getParameter(I_CmsConstants.C_PARAMETER_ENCODING);
-            }             
             if (requestedResource.startsWith(I_CmsWpConstants.C_VFS_PATH_WORKPLACE) 
             || requestedResource.startsWith(I_CmsWpConstants.C_VFS_PATH_MODULES) 
             || requestedResource.startsWith(I_CmsWpConstants.C_VFS_PATH_LOGIN)) {
@@ -873,7 +863,17 @@ public final class OpenCmsCore {
             } else {
                 // request for resource outside of workplace, use default handler
                 i18nInfo = getLocaleManager().getLocaleHandler().getI18nInfo(req, user, project, currentSite.concat(requestedResource));
-            }
+            }            
+            if (req != null) {
+                String localeParam;
+                // check request for parameters
+                if ((localeParam = req.getParameter(I_CmsConstants.C_PARAMETER_LOCALE)) != null) {
+                    // "__locale" parameter found in request
+                    locale = CmsLocaleManager.getLocale(localeParam);
+                }
+                // check for "__encoding" parameter in request
+                encoding = req.getParameter(I_CmsConstants.C_PARAMETER_ENCODING);
+            }            
             // merge values from request with values from locale handler
             if (locale == null) {
                 locale = i18nInfo.getLocale();
