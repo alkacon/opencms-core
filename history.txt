@@ -10,8 +10,9 @@ Legend:
 
 OpenCms 4.3.4 Bela Tegeuse - 06 April 2001
 
-! Redesign of OpenCms classloader
-- Worked on Tomcat compatibility
+! Workplace-Language is based on the webbrowser language.
+! Redesign of OpenCms classloader.
+- Worked on Tomcat compatibility.
 
 OpenCms 4.3.3 Bela Tegeuse - 02 April 2001
 
