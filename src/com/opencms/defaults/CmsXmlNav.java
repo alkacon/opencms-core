@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlNav.java,v $
-* Date   : $Date: 2002/05/14 13:38:03 $
-* Version: $Revision: 1.39 $
+* Date   : $Date: 2002/05/15 14:47:35 $
+* Version: $Revision: 1.40 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.*;
  *
  * @author Alexander Kandzior
  * @author Waruschan Babachan
- * @version $Revision: 1.39 $ $Date: 2002/05/14 13:38:03 $
+ * @version $Revision: 1.40 $ $Date: 2002/05/15 14:47:35 $
  */
 public class CmsXmlNav extends A_CmsNavBase {
 
@@ -569,8 +569,42 @@ public class CmsXmlNav extends A_CmsNavBase {
         if (!template.hasData("naventry")) {
             return "".getBytes();
         }
-        // current folder
         String currentFolder=cms.getRequestContext().currentFolder().getAbsolutePath();
+        int level=extractLevel(cms,currentFolder)+1;
+        String exact="false";
+        // tagcontent determines the folder starting from root folder.
+        // if tagcontent is null, then the navigation of root folder must be showed.
+        if (!tagcontent.equals("")) {
+            try {
+                if (tagcontent.indexOf(",")!=-1) {
+                    level=Integer.parseInt(tagcontent.substring(0,tagcontent.indexOf(",")));
+                    exact=tagcontent.substring(tagcontent.indexOf(",")+1).toLowerCase();
+                } else {
+                    level=Integer.parseInt(tagcontent);
+                }
+            } catch(NumberFormatException e) {
+                level=extractLevel(cms,currentFolder)+1;
+                exact=tagcontent.toLowerCase();
+                if (!exact.equals("true")) {
+                    exact="false";
+                }
+            }
+        }
+        // get the folder of level
+        currentFolder="/";
+        StringTokenizer st = new StringTokenizer(cms.getRequestContext().currentFolder().getAbsolutePath(),"/");
+        int count=st.countTokens()+1;
+        if (exact.equals("true") && level!=count) {
+            return "".getBytes();
+        }
+		while (st.hasMoreTokens()) {
+            if (level>1) {
+                currentFolder=currentFolder+st.nextToken()+"/";
+                level--;
+            } else {
+                break;
+            }
+        }
         // register this folder for changes
         Vector vfsDeps = new Vector();
         vfsDeps.add(cms.readFolder(currentFolder));
