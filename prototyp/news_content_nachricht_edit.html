@@ -107,19 +107,10 @@ function show_help()
 								</tr>
 								<tr>
 									<td class="formular" height="25">
-										&nbsp;&nbsp;Status:
+										&nbsp;&nbsp;Nachrichtentyp:
 									</td>
-									<td class="dialogtxt">
-										<table border="0" width="100%" cellpadding="0" cellspacing="0">
-											<tr>
-												<td class="dialogtxt" align="center">
-													<input type="radio" name="STATUS" checked value="AKTIV" onfocus="NACHRICHT.FERTIG.disabled=false;">aktiv
-												</td>
-												<td class="dialogtxt" align="center">
-													<input type="radio" name="STATUS" value="NAKTIV" onfocus="NACHRICHT.FERTIG.disabled=false;">nicht aktiv
-												</td>
-											</tr>
-										</table>
+									<td class="dialogtxt">							
+										<input type="text" name="TYP" id="TYP" maxlength="2" size="2" value="00" onfocus="NACHRICHT.FERTIG.disabled=false;">										
 									</td>
 								</tr>
 								<tr>
