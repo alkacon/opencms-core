@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentValueSequence.java,v $
- * Date   : $Date: 2004/11/30 14:23:51 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/11/30 16:04:21 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.xml.content;
 
-import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
@@ -43,7 +42,7 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.5.0
  */
 public class CmsXmlContentValueSequence {
@@ -159,6 +158,8 @@ public class CmsXmlContentValueSequence {
      * Returns the list of XML content values for the selected schema type and locale in the XML content.<p>
      * 
      * @return the list of XML content values for the selected schema type and locale in the XML content
+     * 
+     * @see CmsXmlContentValueSequence#getValue(int)
      */
     public List getValues() {
 
@@ -211,11 +212,11 @@ public class CmsXmlContentValueSequence {
      * Returns <code>true</code> if this is a simple type, or <code>false</code>
      * if this type is a nested schema.<p>
      * 
-     * If a value is a nested schema, it must be an instance of {@link CmsXmlNestedContentDefinition}.<p> 
+     * If a value is a nested schema, it must be an instance of {@link org.opencms.xml.types.CmsXmlNestedContentDefinition}.<p> 
      * 
      * @return true if this is  a simple type, or false if this type is a nested schema
      * 
-     * @see CmsXmlNestedContentDefinition
+     * @see org.opencms.xml.types.CmsXmlNestedContentDefinition
      */
     public boolean isSimpleType() {
 

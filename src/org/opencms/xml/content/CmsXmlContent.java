@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2004/11/30 14:23:51 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/11/30 16:04:21 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.5.0
  */
 public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument {
@@ -408,7 +408,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
         List parentContent = parent.content();
         parentContent.add(insertIndex, element);
 
-        I_CmsXmlContentValue value = type.createValue(element, type.getElementName(), locale);
+        I_CmsXmlContentValue value = type.createValue(element, locale);
         if (type.getDefault(locale) != null) {
             try {
                 value.setStringValue(type.getDefault(locale));
@@ -474,7 +474,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
             I_CmsXmlSchemaType schemaType = definition.getSchemaType(name);
                        
             // directly add simple type to schema
-            I_CmsXmlContentValue value = schemaType.createValue(element, name, locale);
+            I_CmsXmlContentValue value = schemaType.createValue(element, locale);
             addBookmark(path, locale, true, value);
             
             if (! schemaType.isSimpleType()) {

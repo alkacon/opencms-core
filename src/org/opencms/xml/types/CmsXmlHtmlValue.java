@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlHtmlValue.java,v $
- * Date   : $Date: 2004/11/30 14:23:51 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/11/30 16:04:21 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.htmlparser.util.ParserException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * @since 5.5.0
  */
 public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlContentValue {
@@ -82,12 +82,11 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
      * Creates a new XML content value of type "OpenCmsHtml".<p>
      * 
      * @param element the XML element that contains this value
-     * @param name the node name of this value in the source XML document
      * @param locale the locale this value is created for
      */
-    public CmsXmlHtmlValue(Element element, String name, Locale locale) {
+    public CmsXmlHtmlValue(Element element, Locale locale) {
 
-        super(element, name, locale);
+        super(element, locale);
     }
 
     /**
@@ -115,7 +114,7 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
 
         if (m_defaultValue != null) {
             try {
-                I_CmsXmlContentValue value = createValue(element, getElementName(), locale);
+                I_CmsXmlContentValue value = createValue(element, locale);
                 value.setStringValue(m_defaultValue);
             } catch (CmsXmlException e) {
                 // should not happen if default value is correct
@@ -126,11 +125,11 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
     }
 
     /**
-     * @see org.opencms.xml.types.A_CmsXmlContentValue#createValue(org.dom4j.Element, java.lang.String, Locale)
+     * @see org.opencms.xml.types.A_CmsXmlContentValue#createValue(org.dom4j.Element, Locale)
      */
-    public I_CmsXmlContentValue createValue(Element element, String name, Locale locale) {
+    public I_CmsXmlContentValue createValue(Element element, Locale locale) {
 
-        return new CmsXmlHtmlValue(element, name, locale);
+        return new CmsXmlHtmlValue(element, locale);
     }
 
     /**

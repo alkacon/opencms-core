@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentWithVfs.java,v $
- * Date   : $Date: 2004/11/30 14:23:51 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/11/30 16:04:21 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import junit.framework.TestSuite;
  * Tests the link resolver for XML contents.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
@@ -275,13 +275,13 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertEquals(5, titleSequence.getMaxOccurs());
         assertEquals(
             "This is just a modification test", 
-            ((CmsXmlStringValue)titleSequence.getValues().get(0)).getStringValue(cms, xmlcontent));
+            titleSequence.getValue(0).getStringValue(cms, xmlcontent));
 
         CmsXmlStringValue newValue;
 
         newValue = (CmsXmlStringValue)titleSequence.addValue(0);
         assertEquals(2, titleSequence.getElementCount());
-        assertEquals(newValue, titleSequence.getValues().get(0));
+        assertEquals(newValue, titleSequence.getValue(0));
         newValue.setStringValue("This is another Value!");
 
         // now re-create the XML content from the XML document
@@ -297,19 +297,19 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertEquals(5, titleSequence.getMaxOccurs());
         assertEquals(
             "This is another Value!", 
-            ((CmsXmlStringValue)titleSequence.getValues().get(0)).getStringValue(cms, xmlcontent));
+            titleSequence.getValue(0).getStringValue(cms, xmlcontent));
         assertEquals(
             "This is just a modification test", 
-            ((CmsXmlStringValue)titleSequence.getValues().get(1)).getStringValue(cms, xmlcontent));
+            titleSequence.getValue(1).getStringValue(cms, xmlcontent));
 
         // add an element at the last position
         newValue = (CmsXmlStringValue)titleSequence.addValue(2);
         newValue.setStringValue("This is the last value.");
-        assertEquals(newValue, titleSequence.getValues().get(2));
+        assertEquals(newValue, titleSequence.getValue(2));
         // add another element at the 2nd position
         newValue = (CmsXmlStringValue)titleSequence.addValue(1);
         newValue.setStringValue("This is the 2nd value.");
-        assertEquals(newValue, titleSequence.getValues().get(1));
+        assertEquals(newValue, titleSequence.getValue(1));
         assertEquals(4, titleSequence.getElementCount());
 
         // now re-create the XML content from the XML document
@@ -323,17 +323,10 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertEquals(4, titleSequence.getElementCount());
         assertEquals(1, titleSequence.getMinOccurs());
         assertEquals(5, titleSequence.getMaxOccurs());
-        assertEquals("This is another Value!", ((CmsXmlStringValue)titleSequence.getValues().get(0)).getStringValue(
-            cms,
-            xmlcontent));
-        assertEquals("This is the 2nd value.", ((CmsXmlStringValue)titleSequence.getValues().get(1)).getStringValue(
-            cms,
-            xmlcontent));
-        assertEquals("This is just a modification test", ((CmsXmlStringValue)titleSequence.getValues().get(2))
-            .getStringValue(cms, xmlcontent));
-        assertEquals("This is the last value.", ((CmsXmlStringValue)titleSequence.getValues().get(3)).getStringValue(
-            cms,
-            xmlcontent));
+        assertEquals("This is another Value!", titleSequence.getValue(0).getStringValue(cms, xmlcontent));
+        assertEquals("This is the 2nd value.", titleSequence.getValue(1).getStringValue(cms, xmlcontent));
+        assertEquals("This is just a modification test", titleSequence.getValue(2).getStringValue(cms, xmlcontent));
+        assertEquals("This is the last value.", titleSequence.getValue(3).getStringValue(cms, xmlcontent));
 
         // now the optional element
         CmsXmlContentValueSequence optionSequence;
@@ -347,11 +340,11 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         // add an element for the optional element
         newValue = (CmsXmlStringValue)optionSequence.addValue(0);
         newValue.setStringValue("Optional value 1");
-        assertEquals(newValue, optionSequence.getValues().get(0));
+        assertEquals(newValue, optionSequence.getValue(0));
         // add another element
         newValue = (CmsXmlStringValue)optionSequence.addValue(0);
         newValue.setStringValue("Optional value 0");
-        assertEquals(newValue, optionSequence.getValues().get(0));
+        assertEquals(newValue, optionSequence.getValue(0));
         assertEquals(2, optionSequence.getElementCount());
 
         // now re-create the XML content from the XML document
@@ -365,18 +358,12 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertEquals(0, optionSequence.getMinOccurs());
         assertEquals(2, optionSequence.getMaxOccurs());
 
-        assertEquals("Optional value 0", ((CmsXmlStringValue)optionSequence.getValues().get(0)).getStringValue(
-            cms,
-            xmlcontent));
-        assertEquals("Optional value 1", ((CmsXmlStringValue)optionSequence.getValues().get(1)).getStringValue(
-            cms,
-            xmlcontent));
+        assertEquals("Optional value 0", optionSequence.getValue(0).getStringValue(cms, xmlcontent));
+        assertEquals("Optional value 1", optionSequence.getValue(1).getStringValue(cms, xmlcontent));
         
         optionSequence.removeValue(1);
         assertEquals(1, optionSequence.getElementCount());
-        assertEquals("Optional value 0", ((CmsXmlStringValue)optionSequence.getValues().get(0)).getStringValue(
-            cms,
-            xmlcontent));
+        assertEquals("Optional value 0", optionSequence.getValue(0).getStringValue(cms, xmlcontent));
         
         optionSequence.removeValue(0);
         assertEquals(0, optionSequence.getElementCount());
@@ -392,11 +379,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         titleSequence.removeValue(0);
         titleSequence.removeValue(2);
         assertEquals(2, titleSequence.getElementCount());
-        assertEquals("This is the 2nd value.", ((CmsXmlStringValue)titleSequence.getValues().get(0)).getStringValue(
-            cms,
-            xmlcontent));
-        assertEquals("This is just a modification test", ((CmsXmlStringValue)titleSequence.getValues().get(1))
-            .getStringValue(cms, xmlcontent));
+        assertEquals("This is the 2nd value.", titleSequence.getValue(0).getStringValue(cms, xmlcontent));
+        assertEquals("This is just a modification test", titleSequence.getValue(1).getStringValue(cms, xmlcontent));
 
         // now re-create the XML content from the XML document
         content = xmlcontent.toString();

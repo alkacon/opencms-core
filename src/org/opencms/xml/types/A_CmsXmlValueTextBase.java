@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlLocaleValue.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/A_CmsXmlValueTextBase.java,v $
  * Date   : $Date: 2004/11/30 16:04:21 $
- * Version: $Revision: 1.6 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,86 +28,79 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-
+ 
 package org.opencms.xml.types;
+
+import org.opencms.file.CmsObject;
+import org.opencms.util.CmsStringUtil;
+import org.opencms.xml.I_CmsXmlDocument;
 
 import java.util.Locale;
 
 import org.dom4j.Element;
 
 /**
- * Describes the XML content type "OpenCmsLocale".<p>
+ * Base class for XML content value implementations that require only a simple XML plain text node.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
- * @since 5.5.0
+ * @version $Revision: 1.1 $
  */
-public class CmsXmlLocaleValue extends A_CmsXmlValueTextBase {
+public abstract class A_CmsXmlValueTextBase extends A_CmsXmlContentValue {
 
-    /** The name of this type as used in the XML schema. */
-    public static final String C_TYPE_NAME = "OpenCmsLocale";
+    /** The String value of the element node. */
+    protected String m_stringValue;
     
     /**
-     * Creates a new, empty schema type descriptor of type "OpenCmsLocale".<p>
+     * Default constructor for a xml content type 
+     * that initializes some internal values.<p> 
      */
-    public CmsXmlLocaleValue() {
+    protected A_CmsXmlValueTextBase() {
 
-        // empty constructor is required for class registration
+        super();
     }
-
+    
     /**
-     * Creates a new XML content value of type "OpenCmsLocale".<p>
+     * Initializes the required members for this XML content value.<p>
      * 
      * @param element the XML element that contains this value
      * @param locale the locale this value is created for
      */
-    public CmsXmlLocaleValue(Element element, Locale locale) {
+    protected A_CmsXmlValueTextBase(Element element, Locale locale) {
 
         super(element, locale);
+        m_stringValue = element.getText();
     }
 
     /**
-     * Creates a new schema type descriptor for the type "OpenCmsLocale".<p>
+     * Initializes the schema type descriptor values for this type descriptor.<p>
      * 
      * @param name the name of the XML node containing the value according to the XML schema
      * @param minOccurs minimum number of occurences of this type according to the XML schema
      * @param maxOccurs maximum number of occurences of this type according to the XML schema
      */
-    public CmsXmlLocaleValue(String name, String minOccurs, String maxOccurs) {
+    protected A_CmsXmlValueTextBase(String name, String minOccurs, String maxOccurs) {
 
         super(name, minOccurs, maxOccurs);
     }
-
+    
     /**
-     * @see org.opencms.xml.types.A_CmsXmlContentValue#createValue(org.dom4j.Element, Locale)
+     * @see org.opencms.xml.types.I_CmsXmlContentValue#setStringValue(java.lang.String)
      */
-    public I_CmsXmlContentValue createValue(Element element, Locale locale) {
+    public void setStringValue(String value) {
 
-        return new CmsXmlLocaleValue(element, locale);
+        m_element.clearContent();
+        if (CmsStringUtil.isNotEmpty(value)) {
+            m_element.addText(value);
+        }  
+        m_stringValue = value;
     }
 
     /**
-     * @see org.opencms.xml.types.I_CmsXmlSchemaType#getSchemaDefinition()
+     * @see org.opencms.xml.types.I_CmsXmlContentValue#getStringValue(CmsObject, I_CmsXmlDocument)
      */
-    public String getSchemaDefinition() {
+    public String getStringValue(CmsObject cms, I_CmsXmlDocument document) {
 
-        return "<xsd:simpleType name=\"" + C_TYPE_NAME + "\"><xsd:restriction base=\"xsd:string\" /></xsd:simpleType>";
-    }
-
-    /**
-     * @see org.opencms.xml.types.A_CmsXmlContentValue#getTypeName()
-     */
-    public String getTypeName() {
-
-        return C_TYPE_NAME;
-    }
-
-    /**
-     * @see org.opencms.xml.types.A_CmsXmlContentValue#newInstance(java.lang.String, java.lang.String, java.lang.String)
-     */
-    public I_CmsXmlSchemaType newInstance(String name, String minOccurs, String maxOccurs) {
-
-        return new CmsXmlLocaleValue(name, minOccurs, maxOccurs);
-    }
+        return m_stringValue;
+    }    
 }

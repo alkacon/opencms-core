@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlNestedContentDefinition.java,v $
- * Date   : $Date: 2004/11/30 14:23:51 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/11/30 16:04:21 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.xml.types;
 
 import org.opencms.file.CmsObject;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.I_CmsXmlDocument;
 
@@ -46,21 +45,34 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.5.4
  */
 public class CmsXmlNestedContentDefinition extends A_CmsXmlContentValue implements I_CmsXmlSchemaType {
 
     /** The nested content definition. */
-    CmsXmlContentDefinition m_contentDefinition;
+    private CmsXmlContentDefinition m_contentDefinition;
+
+    /**
+     * Creates a new XML content value for the nested content definition.<p> 
+     * 
+     * @param contentDefinition the nested XML content definition
+     * @param element the XML element that contains this value
+     * @param locale the locale this value is created for
+     */
+    public CmsXmlNestedContentDefinition(CmsXmlContentDefinition contentDefinition, Element element, Locale locale) {
+
+        super(element, locale);
+        m_contentDefinition = contentDefinition;
+    }
 
     /**
      * Creates a new nested content definition.<p>
      * 
      * @param contentDefinition the content definition to nest
-     * @param name the type name of the content definition in the containing document
-     * @param minOccurs the minimum occurences
-     * @param maxOccurs the maximum occurences
+     * @param name the name of the XML node containing the value according to the XML schema
+     * @param minOccurs minimum number of occurences of this type according to the XML schema
+     * @param maxOccurs maximum number of occurences of this type according to the XML schema
      */
     public CmsXmlNestedContentDefinition(
         CmsXmlContentDefinition contentDefinition,
@@ -68,42 +80,7 @@ public class CmsXmlNestedContentDefinition extends A_CmsXmlContentValue implemen
         String minOccurs,
         String maxOccurs) {
 
-        m_contentDefinition = contentDefinition;
-
-        m_name = name;
-        m_minOccurs = 1;
-        if (CmsStringUtil.isNotEmpty(minOccurs)) {
-            try {
-                m_minOccurs = Integer.valueOf(minOccurs).intValue();
-            } catch (NumberFormatException e) {
-                // ignore
-            }
-        }
-        m_maxOccurs = 1;
-        if (CmsStringUtil.isNotEmpty(maxOccurs)) {
-            if (CmsXmlContentDefinition.XSD_ATTRIBUTE_VALUE_UNBOUNDED.equals(maxOccurs)) {
-                m_maxOccurs = Integer.MAX_VALUE;
-            } else {
-                try {
-                    m_maxOccurs = Integer.valueOf(maxOccurs).intValue();
-                } catch (NumberFormatException e) {
-                    // ignore
-                }
-            }
-        }
-    }
-
-    /**
-     * Creates a new XML content value for the nested content definition.<p> 
-     * 
-     * @param element the parent element of the value
-     * @param contentDefinition the nested XML content definition
-     * @param name the node name of this value in the source XML document
-     */
-    public CmsXmlNestedContentDefinition(Element element, CmsXmlContentDefinition contentDefinition, String name) {
-
-        m_element = element;
-        m_name = name;
+        super(name, minOccurs, maxOccurs);
         m_contentDefinition = contentDefinition;
     }
 
@@ -122,16 +99,16 @@ public class CmsXmlNestedContentDefinition extends A_CmsXmlContentValue implemen
         element.attributes().clear();
         // set the name of the main element node (otherwise it would be the default according to the nested schema) 
         element.setName(getElementName());
-        // append XML to parent node
+        // append the XML to the parent node
         root.add(element);
     }
 
     /**
-     * @see org.opencms.xml.types.I_CmsXmlSchemaType#createValue(org.dom4j.Element, java.lang.String, Locale)
+     * @see org.opencms.xml.types.I_CmsXmlSchemaType#createValue(org.dom4j.Element, Locale)
      */
-    public I_CmsXmlContentValue createValue(Element element, String name, Locale locale) {
+    public I_CmsXmlContentValue createValue(Element element, Locale locale) {
 
-        return new CmsXmlNestedContentDefinition(element, m_contentDefinition, name);
+        return new CmsXmlNestedContentDefinition(m_contentDefinition, element, locale);
     }
 
     /**
@@ -169,11 +146,12 @@ public class CmsXmlNestedContentDefinition extends A_CmsXmlContentValue implemen
     }
 
     /**
+     * Returns <code>false</code>, since nested content definitions are never simple.<p>
+     *  
      * @see org.opencms.xml.types.I_CmsXmlSchemaType#isSimpleType()
      */
     public boolean isSimpleType() {
 
-        // nested content definitions are never simple
         return false;
     }
 

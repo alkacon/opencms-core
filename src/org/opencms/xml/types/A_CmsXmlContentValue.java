@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/A_CmsXmlContentValue.java,v $
- * Date   : $Date: 2004/11/30 14:23:51 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/11/30 16:04:21 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.5.0
  */
 public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
@@ -86,13 +86,12 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
      * Initializes the required members for this XML content value.<p>
      * 
      * @param element the XML element that contains this value
-     * @param name the node name of this value in the source XML document
      * @param locale the locale this value is created for
      */
-    protected A_CmsXmlContentValue(Element element, String name, Locale locale) {
+    protected A_CmsXmlContentValue(Element element, Locale locale) {
 
         m_element = element;
-        m_name = name;
+        m_name = element.getName();
         m_locale = locale;
     }
 
@@ -136,7 +135,7 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue {
         Element element = root.addElement(getElementName());
         if (getDefault(locale) != null) {
             try {
-                I_CmsXmlContentValue value = createValue(element, getElementName(), locale);
+                I_CmsXmlContentValue value = createValue(element, locale);
                 value.setStringValue(getDefault(locale));
             } catch (CmsXmlException e) {
                 // should not happen if default value is correct

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlVfsFileValue.java,v $
- * Date   : $Date: 2004/11/30 14:23:51 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/11/30 16:04:21 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.dom4j.Element;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.5.2
  */
 public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
@@ -73,12 +73,11 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
      * Creates a new XML content value of type "OpenCmsVfsFile".<p>
      * 
      * @param element the XML element that contains this value
-     * @param name the node name of this value in the source XML document
      * @param locale the locale this value is created for
      */
-    public CmsXmlVfsFileValue(Element element, String name, Locale locale) {
+    public CmsXmlVfsFileValue(Element element, Locale locale) {
 
-        super(element, name, locale);
+        super(element, locale);
         m_stringValue = element.getText();
     }
 
@@ -95,11 +94,11 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
     }
 
     /**
-     * @see org.opencms.xml.types.A_CmsXmlContentValue#createValue(org.dom4j.Element, java.lang.String, Locale)
+     * @see org.opencms.xml.types.A_CmsXmlContentValue#createValue(org.dom4j.Element, Locale)
      */
-    public I_CmsXmlContentValue createValue(Element element, String name, Locale locale) {
+    public I_CmsXmlContentValue createValue(Element element, Locale locale) {
 
-        return new CmsXmlVfsFileValue(element, name, locale);
+        return new CmsXmlVfsFileValue(element, locale);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlColorValue.java,v $
- * Date   : $Date: 2004/11/30 14:23:51 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/11/30 16:04:21 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,10 +31,6 @@
 
 package org.opencms.xml.types;
 
-import org.opencms.file.CmsObject;
-import org.opencms.util.CmsStringUtil;
-import org.opencms.xml.I_CmsXmlDocument;
-
 import java.util.Locale;
 
 import org.dom4j.Element;
@@ -44,16 +40,13 @@ import org.dom4j.Element;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.5.2
  */
-public class CmsXmlColorValue extends A_CmsXmlContentValue {
+public class CmsXmlColorValue extends A_CmsXmlValueTextBase {
 
     /** The name of this type as used in the XML schema. */
     public static final String C_TYPE_NAME = "OpenCmsColor";
-
-    /** The String value of the element node. */
-    private String m_stringValue;
 
     /**
      * Creates a new, empty schema type descriptor of type "OpenCmsColor".<p>
@@ -67,13 +60,11 @@ public class CmsXmlColorValue extends A_CmsXmlContentValue {
      * Creates a new XML content value of type "OpenCmsColor".<p>
      * 
      * @param element the XML element that contains this value
-     * @param name the node name of this value in the source XML document
      * @param locale the locale this value is created for
      */
-    public CmsXmlColorValue(Element element, String name, Locale locale) {
+    public CmsXmlColorValue(Element element, Locale locale) {
 
-        super(element, name, locale);
-        m_stringValue = element.getText();
+        super(element, locale);
     }
 
     /**
@@ -89,11 +80,11 @@ public class CmsXmlColorValue extends A_CmsXmlContentValue {
     }
 
     /**
-     * @see org.opencms.xml.types.A_CmsXmlContentValue#createValue(org.dom4j.Element, java.lang.String, Locale)
+     * @see org.opencms.xml.types.A_CmsXmlContentValue#createValue(org.dom4j.Element, Locale)
      */
-    public I_CmsXmlContentValue createValue(Element element, String name, Locale locale) {
+    public I_CmsXmlContentValue createValue(Element element, Locale locale) {
 
-        return new CmsXmlColorValue(element, name, locale);
+        return new CmsXmlColorValue(element, locale);
     }
 
     /**
@@ -121,14 +112,6 @@ public class CmsXmlColorValue extends A_CmsXmlContentValue {
     }
 
     /**
-     * @see org.opencms.xml.types.I_CmsXmlContentValue#getStringValue(CmsObject, I_CmsXmlDocument)
-     */
-    public String getStringValue(CmsObject cms, I_CmsXmlDocument document) {
-
-        return m_stringValue;
-    }
-
-    /**
      * @see org.opencms.xml.types.A_CmsXmlContentValue#getTypeName()
      */
     public String getTypeName() {
@@ -142,16 +125,5 @@ public class CmsXmlColorValue extends A_CmsXmlContentValue {
     public I_CmsXmlSchemaType newInstance(String name, String minOccurs, String maxOccurs) {
 
         return new CmsXmlColorValue(name, minOccurs, maxOccurs);
-    }
-
-    /**
-     * @see org.opencms.xml.types.I_CmsXmlContentValue#setStringValue(java.lang.String)
-     */
-    public void setStringValue(String value) {
-
-        m_element.clearContent();
-        if (CmsStringUtil.isNotEmpty(value)) {
-            m_element.addText(value);
-        }
     }
 }

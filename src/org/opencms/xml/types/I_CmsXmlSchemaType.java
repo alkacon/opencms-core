@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/I_CmsXmlSchemaType.java,v $
- * Date   : $Date: 2004/11/30 14:23:51 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/11/30 16:04:21 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.dom4j.QName;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.5.0
  * 
  * @see org.opencms.xml.types.I_CmsXmlContentValue
@@ -97,12 +97,11 @@ public interface I_CmsXmlSchemaType extends Comparable {
      * Creates a XML content value object for this type.<p>
      * 
      * @param element the XML element to create the value from
-     * @param name the node name of the XML element in the source document
      * @param locale the locale to create the value for
      * 
      * @return the created XML content value object
      */
-    I_CmsXmlContentValue createValue(Element element, String name, Locale locale);
+    I_CmsXmlContentValue createValue(Element element, Locale locale);
 
     /**
      * Returns the default value for a node of this type in the current schema.<p>

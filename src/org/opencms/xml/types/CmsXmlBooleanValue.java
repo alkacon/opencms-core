@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlBooleanValue.java,v $
- * Date   : $Date: 2004/11/30 14:23:51 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/11/30 16:04:21 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.xml.types;
 
 import org.opencms.file.CmsObject;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.I_CmsXmlDocument;
 
@@ -45,19 +44,16 @@ import org.dom4j.Element;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.5.2
  */
-public class CmsXmlBooleanValue extends A_CmsXmlContentValue {
+public class CmsXmlBooleanValue extends A_CmsXmlValueTextBase {
 
     /** The name of this type as used in the XML schema. */
     public static final String C_TYPE_NAME = "OpenCmsBoolean";
 
     /** The boolean value of the element node. */
     private boolean m_boolean;
-
-    /** The String value of the element node. */
-    private String m_stringValue;
 
     /**
      * Creates a new, empty schema type descriptor of type "OpenCmsBoolean".<p>
@@ -71,13 +67,11 @@ public class CmsXmlBooleanValue extends A_CmsXmlContentValue {
      * Creates a new XML content value of type "OpenCmsBoolean".<p>
      * 
      * @param element the XML element that contains this value
-     * @param name the node name of this value in the source XML document
      * @param locale the locale this value is created for
      */
-    public CmsXmlBooleanValue(Element element, String name, Locale locale) {
+    public CmsXmlBooleanValue(Element element, Locale locale) {
 
-        super(element, name, locale);
-        m_stringValue = element.getText();
+        super(element, locale);
         m_boolean = Boolean.valueOf(m_stringValue).booleanValue();
     }
 
@@ -118,11 +112,11 @@ public class CmsXmlBooleanValue extends A_CmsXmlContentValue {
     }
 
     /**
-     * @see org.opencms.xml.types.A_CmsXmlContentValue#createValue(org.dom4j.Element, java.lang.String, Locale)
+     * @see org.opencms.xml.types.A_CmsXmlContentValue#createValue(org.dom4j.Element, Locale)
      */
-    public I_CmsXmlContentValue createValue(Element element, String name, Locale locale) {
+    public I_CmsXmlContentValue createValue(Element element, Locale locale) {
 
-        return new CmsXmlBooleanValue(element, name, locale);
+        return new CmsXmlBooleanValue(element, locale);
     }
 
     /**
@@ -153,15 +147,7 @@ public class CmsXmlBooleanValue extends A_CmsXmlContentValue {
 
         return "<xsd:simpleType name=\"" + C_TYPE_NAME + "\"><xsd:restriction base=\"xsd:boolean\" /></xsd:simpleType>";
     }
-
-    /**
-     * @see org.opencms.xml.types.I_CmsXmlContentValue#getStringValue(CmsObject, I_CmsXmlDocument)
-     */
-    public String getStringValue(CmsObject cms, I_CmsXmlDocument document) {
-
-        return m_stringValue;
-    }
-
+    
     /**
      * @see org.opencms.xml.types.A_CmsXmlContentValue#getTypeName()
      */
@@ -176,16 +162,5 @@ public class CmsXmlBooleanValue extends A_CmsXmlContentValue {
     public I_CmsXmlSchemaType newInstance(String name, String minOccurs, String maxOccurs) {
 
         return new CmsXmlBooleanValue(name, minOccurs, maxOccurs);
-    }
-
-    /**
-     * @see org.opencms.xml.types.I_CmsXmlContentValue#setStringValue(java.lang.String)
-     */
-    public void setStringValue(String value) {
-
-        m_element.clearContent();
-        if (CmsStringUtil.isNotEmpty(value)) {
-            m_element.addText(value);
-        }
     }
 }
