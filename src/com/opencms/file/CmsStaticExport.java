@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsStaticExport.java,v $
-* Date   : $Date: 2002/12/06 23:16:45 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2002/12/12 19:04:15 $
+* Version: $Revision: 1.34 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.apache.oro.text.perl.*;
  * to the filesystem.
  *
  * @author Hanjo Riege
- * @version $Revision: 1.33 $ $Date: 2002/12/06 23:16:45 $
+ * @version $Revision: 1.34 $ $Date: 2002/12/12 19:04:15 $
  */
 public class CmsStaticExport implements I_CmsConstants{
 
@@ -205,7 +205,7 @@ public class CmsStaticExport implements I_CmsConstants{
 
         if(!doTheExport){
             // this is just to generate the dynamic rulesets
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+            if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_STATICEXPORT)) {
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT,
                                 "[CmsStaticExport] Generating the dynamic rulesets.");
             }
@@ -214,7 +214,7 @@ public class CmsStaticExport implements I_CmsConstants{
             try{
                 m_servletUrl = cms.getRequestContext().getRequest().getServletUrl();
                 m_webAppUrl = cms.getRequestContext().getRequest().getWebAppUrl();
-                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_STATICEXPORT)) {
                     A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT,
                                         "[CmsStaticExport] Starting the static export.");
                 }
@@ -226,34 +226,36 @@ public class CmsStaticExport implements I_CmsConstants{
 
                 }else{
                     exportLinks = getStartLinks();
-
                 }
 
-
-
-                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_STATICEXPORT)) {
                     A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT,
                             "[CmsStaticExport] got "+exportLinks.size()+" links to start with.");
                 }
-                m_report.addSeperator(4);
-                m_report.addString(" "+exportLinks.size());
-                m_report.addSeperator(0);
-                m_report.addSeperator(0);
-
-                for(int i=0; i < exportLinks.size(); i++){
-                    m_report.addString(" "+i+" ");
-                    String aktLink = (String)exportLinks.elementAt(i);
-                    exportLink(aktLink, exportLinks, true);
+                
+                boolean doExport = (exportLinks.size() > 0);
+                if (doExport) {
+                    m_report.addSeperator(I_CmsReport.C_STATIC_EXPORT_BEGIN, " " + exportLinks.size());
+                                
+                    for(int i=0; i < exportLinks.size(); i++) {
+                        String aktLink = (String)exportLinks.elementAt(i);
+                        exportLink(aktLink, exportLinks, true);
+                    }
                 }
                 setChangedLinkVector(exportLinks);
-                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_STATICEXPORT)) {
                     A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT,
                             "[CmsStaticExport] all done.");
+                }   
+                if (doExport) {             
+                    m_report.addSeperator(I_CmsReport.C_STATIC_EXPORT_END);
+                } else {
+                    m_report.addSeperator(I_CmsReport.C_STATIC_EXPORT_NONE);                    
                 }
-                m_report.addSeperator(0);
             }catch(NullPointerException e){
+                m_report.println(e);
                 // no original request
-                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_STATICEXPORT)) {
                     A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT,
                                         "[CmsStaticExport] Nothing found to export.");
                 }
@@ -613,7 +615,6 @@ public class CmsStaticExport implements I_CmsConstants{
         CmsExportLink dbLink = new CmsExportLink(link, System.currentTimeMillis(), null);
         // remember the original link for later
         String remLink = link;
-        m_report.addString("exporting "+link+" ");
 
         try{
             // first lets create our request and response objects for the export
@@ -628,8 +629,9 @@ public class CmsStaticExport implements I_CmsConstants{
                 writeFile = false;
             }
             if(C_EXPORT_FALSE.equals(externLink)){
-                // this should not be exported and has no links on it that must be exported
-                m_report.addSeperator(0);
+                // this resource must not be exported and has no links on it that must be exported
+                m_report.print(m_report.key("report.skipping"), I_CmsReport.C_FORMAT_NOTE);
+                m_report.println(link);
                 return;
             }
             if(paraStart >= 0){
@@ -640,6 +642,9 @@ public class CmsStaticExport implements I_CmsConstants{
             CmsExportResponse dRes = new CmsExportResponse();
 
             if(writeFile){
+                // update the report
+                m_report.print(m_report.key("report.exporting"), I_CmsReport.C_FORMAT_NOTE);
+                m_report.println(link);
                 // now create the necesary folders
                 String folder = "";
                 int folderIndex = externLink.lastIndexOf('/');
@@ -659,7 +664,7 @@ public class CmsStaticExport implements I_CmsConstants{
                         linkIsExtern = false;
                     }
                     if(linkIsExtern){
-                        throw new CmsException(" This is a extern link.");
+                        throw new CmsException(" This is an external link.");
                     }
                 }
                 File discFolder = new File(m_exportPath + correctur + folder);
@@ -677,10 +682,13 @@ public class CmsStaticExport implements I_CmsConstants{
                     outStream = new FileOutputStream(discFile);
                     dRes.putOutputStream(outStream);
                 }catch(Exception e){
-                    throw new CmsException("["+this.getClass().getName() + "] " + "could't open file "
+                    throw new CmsException("["+this.getClass().getName() + "] " + "couldn't open file "
                                 + m_exportPath + correctur + externLink + ": " + e.getMessage());
                 }
             }else{
+                // update the report
+                m_report.print(m_report.key("report.following_links_on"), I_CmsReport.C_FORMAT_NOTE);
+                m_report.println(link);
                 // we dont want to write this file but we have to generate it to get links in it.
                 dRes.putOutputStream(new ByteArrayOutputStream());
             }
@@ -688,7 +696,9 @@ public class CmsStaticExport implements I_CmsConstants{
             // everthing is prepared now start the template mechanism
             CmsObject cmsForStaticExport = m_cms.getCmsObjectForStaticExport(dReq, dRes);
             cmsForStaticExport.setMode(C_MODUS_EXPORT);
+            
             CmsFile file = m_cms.readFile(link);
+            
             int launcherId = file.getLauncherType();
             String startTemplateClass = file.getLauncherClassname();
             I_CmsLauncher launcher = cmsForStaticExport.getLauncherManager().getLauncher(launcherId);
@@ -725,10 +735,10 @@ public class CmsStaticExport implements I_CmsConstants{
                     dbLink.setProcessedState(true);
                     m_cms.writeExportLink(dbLink);
                 }catch(CmsException e){
+                    m_report.println(e);
                     if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                         A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT, "[CmsStaticExport] write ExportLink "+dbLink.getLink()+" failed: "+e.toString());
                     }
-                    m_report.addString(" write ExportLink "+dbLink.getLink()+" failed: "+e.toString());
                 }
             }
 
@@ -736,19 +746,21 @@ public class CmsStaticExport implements I_CmsConstants{
             if(outStream != null){
                 outStream.close();
             }
-            m_report.addSeperator(0);
         }catch(CmsException exc){
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT, "[CmsStaticExport] "+deleteFileOnError+" export "+link+" failed: "+exc.toString());
+            if (exc.getType() == CmsException.C_NOT_FOUND) {
+                // resource was not found in VFS, probably the link does not exist, do 
+                // not display an exception but a warning message
+                m_report.println(m_report.key("report.file_does_not_exist_skipping_export"), I_CmsReport.C_FORMAT_WARNING);
+            } else {
+                m_report.println(exc);
+                if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_STATICEXPORT)) {
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT, "[CmsStaticExport] "+deleteFileOnError+" export "+link+" failed: "+exc.toString());
+                }
             }
-            m_report.addSeperator(0);
-            m_report.addSeperator(5);
-            m_report.addString("  "+deleteFileOnError+" export "+link+" failed: "+exc.toString());
-            m_report.addSeperator(6);
             if(deleteFileOnError != null){
                 try{
                     File deleteMe = new File(deleteFileOnError);
-                    if(deleteMe.exists() ){//&& deleteMe.length() == 0){
+                    if(deleteMe.exists() ){
                         if(outStream != null){
                             outStream.close();
                         }
@@ -759,12 +771,10 @@ public class CmsStaticExport implements I_CmsConstants{
                 }
             }
         }catch(Exception e){
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+            m_report.println(e);
+            if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_STATICEXPORT)) {
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT, "[CmsStaticExport]  export "+link+" failed : "+Utils.getStackTrace(e));
             }
-            m_report.addSeperator(5);
-            m_report.addString("  export "+link+" failed : "+Utils.getStackTrace(e));
-            m_report.addSeperator(6);
         }
     }
 
@@ -824,30 +834,17 @@ public class CmsStaticExport implements I_CmsConstants{
      * @return the links (vector of strings).
      */
     private Vector getChangedLinks(CmsPublishedResources changedResources) throws CmsException{
+        if(changedResources == null) return new Vector();
 
         Vector resToCheck = new Vector();
-        if(changedResources == null){
-            return new Vector();
-        }
+        
         Vector addVector = changedResources.getChangedModuleMasters();
-        if(addVector != null){
-            for(int i=0; i<addVector.size(); i++){
-                resToCheck.add(addVector.elementAt(i));
-            }
-        }
-
+        if(addVector != null) resToCheck.addAll(addVector);
 
         addVector = changedResources.getChangedResources();
-        if(addVector != null){
-            for(int i=0; i<addVector.size(); i++){
-                resToCheck.add(addVector.elementAt(i));
-            }
-        }
-
+        if(addVector != null) resToCheck.addAll(addVector);
 
         Vector returnValue = m_cms.getDependingExportLinks(resToCheck);
-
-
 
         // we also need all "new" files
         if(addVector != null){
@@ -855,7 +852,6 @@ public class CmsStaticExport implements I_CmsConstants{
                 String res = Utils.getAbsolutePathForResource((String)addVector.elementAt(i));
                 if((!res.endsWith("/")) && (!returnValue.contains(res))){
                     returnValue.add(res);
-
                 }
             }
         }

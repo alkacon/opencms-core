@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
-* Date   : $Date: 2002/12/07 11:13:49 $
-* Version: $Revision: 1.39 $
+* Date   : $Date: 2002/12/12 19:01:47 $
+* Version: $Revision: 1.40 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.w3c.dom.Text;
  * to the filesystem.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.39 $ $Date: 2002/12/07 11:13:49 $
+ * @version $Revision: 1.40 $ $Date: 2002/12/12 19:01:47 $
  */
 public class CmsExport implements I_CmsConstants, Serializable {
 
@@ -298,6 +298,7 @@ public class CmsExport implements I_CmsConstants, Serializable {
             exportGroups();
             exportUsers();
         }
+        
         // write the document to the zip-file
         writeXmlConfigFile();
 
@@ -489,8 +490,9 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
         throws CmsException {
         String source = getSourceFilename(file.getAbsolutePath());
 
-        m_report.addString("Exporting " + source + " ...");
-
+        m_report.print(m_report.key("report.exporting"), I_CmsReport.C_FORMAT_NOTE);
+        m_report.print(file.getAbsolutePath());
+        m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);        
         try {
             // create the manifest-entrys
             writeXmlEntrys((CmsResource) file);
@@ -500,8 +502,7 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
             m_exportZipStream.write(file.getContents());
             m_exportZipStream.closeEntry();
         } catch(Exception exc) {
-            m_report.addString("Error:"+exc.getMessage());
-            m_report.addSeperator(0);
+            m_report.println(exc);
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         }
 
@@ -509,8 +510,7 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
             m_exportedPageFiles.add(file.getAbsolutePath());
         }
 
-        m_report.addString("OK");
-        m_report.addSeperator(0);
+        m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
     }
     /**
      * Exports all needed sub-resources to the zip-file.
@@ -555,7 +555,7 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
                     // option "exclude system folder" selected AND
                     !(m_excludeSystem && 
                         // export folder is a system folder 
-                        (export.startsWith("/system/") ||            
+                        (export.startsWith(I_CmsWpConstants.C_VFS_PATH_SYSTEM) ||            
                         // if new VFS, ignore old system folders (are below "/system" in new VFS)
                         ((! I_CmsWpConstants.C_VFS_NEW_STRUCTURE) && export.startsWith("/pics/system/")) ||
                         ((! I_CmsWpConstants.C_VFS_NEW_STRUCTURE) && export.startsWith("/moduledemos/")))                                           
@@ -690,6 +690,12 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
         // only write source if resource is a file
         if(resource.isFile()) {
             addElement(file, C_EXPORT_TAG_SOURCE, source);
+        } else {
+            // output something to the report for the folder
+            m_report.print(m_report.key("report.exporting"), I_CmsReport.C_FORMAT_NOTE);
+            m_report.print(resource.getAbsolutePath());
+            m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
+            m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
         }
         addElement(file, C_EXPORT_TAG_DESTINATION, source);
         addElement(file, C_EXPORT_TAG_TYPE, type);
@@ -759,17 +765,17 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
      */
     private void exportGroup(CmsGroup group)
         throws CmsException {
-        m_report.addString("Exporting group "+group.getName()+" ...");
+        m_report.print(m_report.key("report.exporting_group"), I_CmsReport.C_FORMAT_NOTE);
+        m_report.print(group.getName());
+        m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);            
         try {
             // create the manifest entries
             writeXmlGroupEntrys(group);
         } catch(Exception e) {
-            m_report.addString("Error:"+e.getMessage());
-            m_report.addSeperator(0);
+            m_report.println(e);
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
         }
-        m_report.addString("OK");
-        m_report.addSeperator(0);
+        m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
     }
 
     /**
@@ -780,17 +786,17 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
      */
     private void exportUser(CmsUser user)
         throws CmsException {
-        m_report.addString("Exporting user "+user.getName()+" ...");
+        m_report.print(m_report.key("report.exporting_user"), I_CmsReport.C_FORMAT_NOTE);
+        m_report.print(user.getName());
+        m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);            
         try {
             // create the manifest entries
             writeXmlUserEntrys(user);
         } catch(Exception e) {
-            m_report.addString("Error:"+e.getMessage());
-            m_report.addSeperator(0);
+            m_report.println(e);
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
         }
-            m_report.addString("OK");
-            m_report.addSeperator(0);
+        m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
     }
 
     /**
@@ -891,8 +897,7 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
             m_exportZipStream.write(serializedInfo);
             m_exportZipStream.closeEntry();
         } catch (IOException ioex){
-            m_report.addString("IOException: "+ioex.getMessage());
-            m_report.addSeperator(0);
+            m_report.println(ioex);
         }
         // create tag for userinfo
         addCdataElement(userdata, C_EXPORT_TAG_USERINFO, datfileName);

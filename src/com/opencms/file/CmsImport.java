@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2002/12/06 23:16:45 $
-* Version: $Revision: 1.60 $
+* Date   : $Date: 2002/12/12 19:02:07 $
+* Version: $Revision: 1.61 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import com.opencms.linkmanagement.CmsPageLinks;
 import com.opencms.linkmanagement.LinkChecker;
 import com.opencms.report.I_CmsReport;
 import com.opencms.template.A_CmsXmlContent;
-import com.opencms.util.Utils;
 
 import java.io.*;
 import java.security.MessageDigest;
@@ -56,7 +55,7 @@ import org.w3c.dom.NodeList;
  * into the cms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.60 $ $Date: 2002/12/06 23:16:45 $
+ * @version $Revision: 1.61 $ $Date: 2002/12/12 19:02:07 $
  */
 public class CmsImport implements I_CmsConstants, Serializable {
 
@@ -216,7 +215,7 @@ private void createDigest() throws CmsException {
             // ok, an old system exported this, check if the file is ok
             if(!(new CmsCompatibleCheck()).isTemplateCompatible(name, content, type)){
                 type = C_TYPE_COMPATIBLEPLAIN_NAME;
-                m_report.addString(" must set to "+C_TYPE_COMPATIBLEPLAIN_NAME+" ");
+                m_report.print(m_report.key("report.must_set_to") + C_TYPE_COMPATIBLEPLAIN_NAME + " ", I_CmsReport.C_FORMAT_WARNING);
             }
         }
         return type;
@@ -475,7 +474,8 @@ public Vector getResourcesForProject() throws CmsException {
  */
 private void importResource(String source, String destination, String type, String user, String group, String access, Hashtable properties, String launcherStartClass, Vector writtenFilenames, Vector fileCodes) {
     // print out the information for shell-users
-    m_report.addString("Importing " + destination + " ");
+    m_report.print(m_report.key("report.importing"), I_CmsReport.C_FORMAT_NOTE);
+    m_report.print(destination + " ");
     boolean success = true;
     byte[] content = null;
     String fullname = null;
@@ -500,13 +500,11 @@ private void importResource(String source, String destination, String type, Stri
                 m_importedPages.add(fullname);
             }
         }
-        m_report.addString("OK");
-        m_report.addSeperator(0);
+        m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
     } catch (Exception exc) {
         // an error while importing the file
         success = false;
-        m_report.addString("Error: " + exc.toString() + Utils.getStackTrace(exc));
-        m_report.addSeperator(0); 
+        m_report.println(exc);
         try {
             // Sleep some time after an error so that the report output has a chance to keep up
             Thread.sleep(1000);   
@@ -569,7 +567,7 @@ public void importResources(Vector excludeList, Vector writtenFilenames, Vector 
         // walk through all files in manifest
         for (int i = 0; i < fileNodes.getLength(); i++) {
 
-            m_report.addString(" ( "+(i+1)+" / "+importSize+" )  ");
+            m_report.print(" ( " + (i+1) + " / " + importSize + " ) ");
             currentElement = (Element) fileNodes.item(i);
 
             // get all information for a file-import
@@ -618,12 +616,14 @@ public void importResources(Vector excludeList, Vector writtenFilenames, Vector 
                 // import the specified file and write maybe put it on the lists writtenFilenames,fileCodes
                 importResource(source, destination, type, user, group, access, properties, launcherStartClass, writtenFilenames, fileCodes);
             } else {
-                m_report.addString("skipping " + destination);
+                m_report.print(m_report.key("report.skipping"), I_CmsReport.C_FORMAT_NOTE);
+                m_report.println(destination);
             }
         }
         // at last we have to get the links from all new imported pages for the  linkmanagement
-        m_report.addSeperator(1);
+        m_report.addSeperator(I_CmsReport.C_LINK_CHECK_BEGIN);
         updatePageLinks();
+        m_report.addSeperator(I_CmsReport.C_LINK_CHECK_END);
     } catch (Exception exc) {
         throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
     }
@@ -746,8 +746,7 @@ private boolean inExcludeList(Vector excludeList, String path) {
                     ObjectInputStream oin = new ObjectInputStream(bin);
                     userInfo = (Hashtable)oin.readObject();
                 } catch (IOException ioex){
-                    m_report.addString(ioex.getMessage());
-                    m_report.addSeperator(0);
+                    m_report.println(ioex);
                 }
 
                 // get the groups of the user and put them into the vector
@@ -792,13 +791,13 @@ private boolean inExcludeList(Vector excludeList, String path) {
                 m_groupsToCreate.push(groupData);
             } else {
                 try{
-                    m_report.addString("Importing Group: "+name+" ...");
+                    m_report.print(m_report.key("report.importing_group"), I_CmsReport.C_FORMAT_NOTE);
+                    m_report.print(name);     
+                    m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);                                   
                     m_cms.addGroup(name, description, Integer.parseInt(flags), parentgroupName);
-                    m_report.addString("OK");
-                    m_report.addSeperator(0);
+                    m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
                 } catch (CmsException exc){
-                    m_report.addString("not created");
-                    m_report.addSeperator(0);
+                    m_report.println(m_report.key("report.not_created"), I_CmsReport.C_FORMAT_OK);
                 }
             }
         } catch (Exception exc){
@@ -817,7 +816,9 @@ private boolean inExcludeList(Vector excludeList, String path) {
         int defGroupId = C_UNKNOWN_ID;
         try{
             try{
-                m_report.addString("Importing User: "+name+" ...");
+                m_report.print(m_report.key("report.importing_user"), I_CmsReport.C_FORMAT_NOTE);
+                m_report.print(name);
+                m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);                
                 newUser = m_cms.addImportUser(name, password, recoveryPassword, description, firstname,
                                     lastname, email, Integer.parseInt(flags), userInfo, defaultGroup, address,
                                     section, Integer.parseInt(type));
@@ -828,11 +829,9 @@ private boolean inExcludeList(Vector excludeList, String path) {
                     } catch (CmsException exc){
                     }
                 }
-                m_report.addString("OK");
-                m_report.addSeperator(0);
+                m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
             } catch (CmsException exc){
-                m_report.addString("not created");
-                m_report.addSeperator(0);
+                m_report.println(m_report.key("report.not_created"), I_CmsReport.C_FORMAT_OK);
             }
         } catch (Exception exc){
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
@@ -847,17 +846,17 @@ private boolean inExcludeList(Vector excludeList, String path) {
         LinkChecker checker = new LinkChecker();
         int importPagesSize = m_importedPages.size();
         for(int i=0; i<importPagesSize; i++){
-            m_report.addString(" ( "+(i+1)+" / "+importPagesSize+" )  ");
+            m_report.print(" ( " + (i+1) + " / " + importPagesSize + " ) ");
             try{
                 // first parse the page
                 CmsPageLinks links = m_cms.getPageLinks((String)m_importedPages.elementAt(i));
-                m_report.addString(" checking page "+(String)m_importedPages.elementAt(i));
-                m_report.addSeperator(0);
+                m_report.print(m_report.key("report.checking_page"), I_CmsReport.C_FORMAT_NOTE);
+                m_report.println((String)m_importedPages.elementAt(i));
                 // now save the result in the database
                 m_cms.createLinkEntrys(links.getResourceId(), links.getLinkTargets());
             }catch(CmsException e){
-                m_report.addString("problems with "+(String)m_importedPages.elementAt(i)+":"+e.getMessage());
-                m_report.addSeperator(0);
+                m_report.println(e);
+                // m_report.println(m_report.key("report.problems_with") + m_importedPages.elementAt(i) + ": " + e.getMessage());
             }
         }
     }
