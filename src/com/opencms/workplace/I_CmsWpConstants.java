@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
- * Date   : $Date: 2000/03/15 09:46:13 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2000/03/15 10:32:57 $
+ * Version: $Revision: 1.61 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.60 $ $Date: 2000/03/15 09:46:13 $
+ * @version $Revision: 1.61 $ $Date: 2000/03/15 10:32:57 $
  */
 public interface I_CmsWpConstants {
 
@@ -142,6 +142,15 @@ public interface I_CmsWpConstants {
     /** Parameter for the previous panel*/
     public static final String C_PARA_OLDPANEL = "oldpanel";  
 
+    /** Parameter for the old password */
+    public static final String C_PARA_OLDPWD = "oldpwd";  
+    
+    /** Parameter for the new password */
+    public static final String C_PARA_NEWPWD = "newpwd";
+    
+    /** Parameter for the password repead */
+    public static final String C_PARA_NEWPWDREPEAT = "newpwdrepeat";
+    
     // Filenames of workplace files
         
 	/** The filename to the icontemplate */
@@ -171,6 +180,8 @@ public interface I_CmsWpConstants {
     /** The workplace */
     public static final String C_WP_RELOAD="workplace_reload.html";
     
+    /** The preferences user panel */
+    public static final String C_WP_EXPLORER_PREFERENCES="preferences.html?panel=user";
     
     // Filenames of special templates
     

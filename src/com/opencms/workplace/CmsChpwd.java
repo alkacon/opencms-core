@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLock.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChpwd.java,v $
  * Date   : $Date: 2000/03/15 10:32:57 $
- * Version: $Revision: 1.11 $
+ * Version: $Revision: 1.1 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -38,18 +38,17 @@ import javax.servlet.http.*;
 import java.util.*;
 
 /**
- * Template class for displaying the lock screen of the OpenCms workplace.<P>
+ * Template class for displaying the chpwd screen of the OpenCms workplace.<P>
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @author Michaela Schleich
- * @version $Revision: 1.11 $ $Date: 2000/03/15 10:32:57 $
+ * @version $Revision: 1.1 $ $Date: 2000/03/15 10:32:57 $
  */
-public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,
+public class CmsChpwd extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
            
 
-      /**
+     /**
      * Indicates if the results of this class are cacheable.
      * 
      * @param cms A_CmsObject Object for accessing system resources
@@ -65,9 +64,9 @@ public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,
     
     /**
      * Overwrites the getContent method of the CmsWorkplaceDefault.<br>
-     * Gets the content of the lock template and processed the data input.
+     * Gets the content of the chpwd template and processed the data input.
      * @param cms The CmsObject.
-     * @param templateFile The lock template file
+     * @param templateFile The chpwd template file
      * @param elementName not used
      * @param parameters Parameters of the request and the template.
      * @param templateSelector Selector of the template tag to be displayed.
@@ -77,73 +76,47 @@ public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,
     public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, 
                              Hashtable parameters, String templateSelector)
         throws CmsException {
-        HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
-        
+          
         // the template to be displayed
         String template=null;
         
-        String lock=(String)parameters.get(C_PARA_LOCK);
-        String filename=(String)parameters.get(C_PARA_FILE);
-        if (filename != null) {
-            session.putValue(C_PARA_FILE,filename);        
-        }
-        
-        //check if the lock parameter was included in the request
-        // if not, the lock page is shown for the first time
-        filename=(String)session.getValue(C_PARA_FILE);
-		CmsFile file=(CmsFile)cms.readFileHeader(filename);
-		boolean hlock=true;
-        if (lock != null) {
-            if (lock.equals("true")) {
-				if( (cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_PAGE_NAME) ){
-					String bodyPath = getBodyPath(cms, file);
-					try {
-						CmsFile bodyFile=(CmsFile)cms.readFileHeader(bodyPath);
-						if(bodyFile.isLocked()&& (bodyFile.isLockedBy()!=cms.getRequestContext().currentUser().getId()) ){
-							hlock =false;
-						}else {
-							cms.lockResource(bodyPath);
-						}
-					}catch (CmsException e){
-						//TODO: ErrorHandling
-					}
-				}
-				
-				session.removeValue(C_PARA_FILE);
-				if(hlock){
-					cms.lockResource(filename);
-				    // TODO: ErrorHandling
-				    // return to filelist
-					try {
-						cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);
-					} catch (Exception e) {
-						throw new CmsException("Redirect fails :"+ getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST,CmsException.C_UNKNOWN_EXCEPTION,e);
-					}
-				}else{
-					template="error";
-				}
-            }
-    
-        }
+        String oldpwd=(String)parameters.get(C_PARA_OLDPWD);
+        String newpwd=(String)parameters.get(C_PARA_NEWPWD);
+        String newpwdrepeat=(String)parameters.get(C_PARA_NEWPWDREPEAT);
+             
+        // a  password was given in the request so try to change it
+        if ((oldpwd != null) && (newpwd != null) && (newpwdrepeat != null) ) {
+       
+            // check if the new password and its repetition are identical
+            if (newpwd.equals(newpwdrepeat)) {  
+                // change the password
+                try {
+                    cms.setPassword(cms.getRequestContext().currentUser().getName(),oldpwd,newpwd);
+                    // return to the parameter dialog
+                    try {
+		                cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_PREFERENCES);
+			        } catch (Exception e) {
+			            throw new CmsException("Redirect fails :"+ getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_PREFERENCES,CmsException.C_UNKNOWN_EXCEPTION,e);
+			        }
+                // an error was thrown while setting the new password
+                } catch (CmsException exp) {
+                    // check if the old password was not correct
+                    if (exp.getType() == 1) {
+                        template="error2";
+                    } else {
+                        throw exp;
+                    }
+                }
 
+            } else {
+                // the new passwords do not match
+                template="error";
+            }
+         } 
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);
-		xmlTemplateDocument.setXmlData("FILENAME",file.getName());
-        
+
         // process the selected template 
         return startProcessing(cms,xmlTemplateDocument,"",parameters,template);
-    }
-	
-	/**
-	 * method to check get the real body path from the content file
-	 * 
-	 * @param cms The CmsObject, to access the XML read file.
-	 * @param file File in which the body path is stored.
-	 */
-	private String getBodyPath(A_CmsObject cms, CmsFile file)
-		throws CmsException{
-		file=cms.readFile(file.getAbsolutePath());
-		CmsXmlControlFile hXml=new CmsXmlControlFile(cms, file);
-		return hXml.getElementTemplate("body");
-	}
 
+    }
 }

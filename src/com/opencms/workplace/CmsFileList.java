@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
- * Date   : $Date: 2000/03/13 15:54:50 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2000/03/15 10:32:57 $
+ * Version: $Revision: 1.27 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;FILELIST&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.26 $ $Date: 2000/03/13 15:54:50 $
+ * @version $Revision: 1.27 $ $Date: 2000/03/15 10:32:57 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants,
@@ -265,7 +265,6 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                                 Hashtable parameters,Object callingObject,
                                 CmsXmlWpConfigFile config) 
             throws CmsException {
-            Hashtable preferences=new Hashtable();
             StringBuffer output=new StringBuffer();  
             String foldername;
             String currentFolder;
@@ -284,8 +283,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
             CmsFolder folder;
             CmsResource res;
             
-            HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);
-                  
+                    
             // show the tablehead with all required columns.
             // Check which flags in the user preferences are NOT set and delete those columns in 
             // the table generating the file list.                      

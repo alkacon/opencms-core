@@ -29,10 +29,13 @@ function show_help()
 ]]><FILELIST method="getFiles" template="explorerFilelistTemplate"/><![CDATA[
 </table>
 </body>
+]]>
+<INCLUDE>/system/workplace/templates/explorer_files_contextmenu</INCLUDE>
+<![CDATA[
 </html>
 ]]>
 
-<INCLUDE>/system/workplace/templates/explorer_files_contextmenu</INCLUDE>
+
 
 </TEMPLATE>
 </WORKPLACE>

@@ -90,4 +90,44 @@ Other Preference input forms will be added here
 ]]>
 </TEMPLATE>
 
+<TEMPLATE name="user">
+<![CDATA[
+<table border=0 cellspacing=0 cellpadding=5 width=100% height=200>
+<tr>
+	<td colspan=4 class=formular>]]><LABEL value="label.preferencesuser" /><![CDATA[</td>
+</tr>
+<tr>
+	<td class=dialogtxt width=25%>]]><LABEL value="input.user" /><![CDATA[:</td>
+	<td class=dialogtxt width=25%>]]><PROCESS>USER</PROCESS><![CDATA[</td>
+	<td class=dialogtxt width=10%>]]><LABEL value="input.email" /><![CDATA[</td>
+	<td class=dialogtxt width=40%>]]><PROCESS>EMAIL</PROCESS><![CDATA[</td>
+</tr>
+<tr>
+	<td class=dialogtxt>]]><LABEL value="input.lastname" /><![CDATA[:</td>
+	<td class=dialogtxt>]]><PROCESS>LASTNAME</PROCESS><![CDATA[</td>
+	<td class=dialogtxt rowspan=2 valign=top>]]><LABEL value="input.adress" /><![CDATA[:</td>
+	<td class=dialogtxt rowspan=2 valign=top>]]><PROCESS>ADRESS</PROCESS><![CDATA[</td>
+</tr>
+<tr>
+	<td class=dialogtxt>]]><LABEL value="input.firstname" /><![CDATA[:</td>
+	<td class=dialogtxt>]]><PROCESS>FIRSTNAME</PROCESS><![CDATA[</td>
+</tr>
+<tr>
+	<td class=dialogtxt>]]><LABEL value="input.description" /><![CDATA[:</td>
+	<td class=dialogtxt colspan=3>]]><PROCESS>DESCRIPTION</PROCESS><![CDATA[</td>
+</tr>
+<tr>
+	<td colspan=4 class=formular>]]><LABEL value="input.settings" /><![CDATA[</td>
+</tr>
+<tr>
+	<td class=formular>]]><LABEL value="input.currentgroup" /><![CDATA[:</td>
+	<td class=dialogtxt>
+	]]><SELECT class="textfeld" name="group" width="150" method="getGroups" /><![CDATA[
+	</td>
+	<td class=dialogtxt colspan=2><INPUT type="button" class=button width = 100 value="]]><LABEL value="button.changepasswd" /><![CDATA[" id=PWD name=PWD onclick="location.href='chpwd.html';"></td>
+</tr>
+</table>
+]]>
+</TEMPLATE>
+
 </WORKPLACE>

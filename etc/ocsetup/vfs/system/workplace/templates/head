@@ -8,18 +8,22 @@
 <link rel=stylesheet type="text/css" href="../css/format.css">
 <SCRIPT LANGUAGE="JavaScript">
 	var pfad="]]><METHOD name="picsUrl"/><![CDATA[";
-	function loadBody() 
-	{
+	function loadBody() {
 		var link = document.form1.view.options[document.form1.view.selectedIndex].value;
 		window.top.body.location.href=link;
+    }
+	
+	function loadFoot(){
+	    window.top.foot.location.href="foot.html"
 	}
+	
 </SCRIPT>
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
 
 
 </head>
 
-<body bgcolor="#C0C0C0" onload="loadBody();">
+<body bgcolor="#C0C0C0" onload="loadBody();loadFoot();">
 <form 
 	name="form1"
 	id="form1"
