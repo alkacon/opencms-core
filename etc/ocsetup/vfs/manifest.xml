@@ -3391,6 +3391,15 @@
             <properties/>
         </file>
         <file>
+            <source>system/workplace/action/copy_to_project.html</source>
+            <destination>system/workplace/action/copy_to_project.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>
+        <file>
             <source>system/workplace/action/delete.html</source>
             <destination>system/workplace/action/delete.html</destination>
             <type>XMLTemplate</type>
@@ -9805,6 +9814,15 @@
         <file>
             <source>system/workplace/templates/copy</source>
             <destination>system/workplace/templates/copy</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
+            <source>system/workplace/templates/copy_to_project</source>
+            <destination>system/workplace/templates/copy_to_project</destination>
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
