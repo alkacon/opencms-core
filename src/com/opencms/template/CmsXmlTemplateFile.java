@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
- * Date   : $Date: 2000/06/09 18:20:14 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2000/07/18 13:25:09 $
+ * Version: $Revision: 1.23 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import java.io.*;
  * Content definition for XML template files.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.22 $ $Date: 2000/06/09 18:20:14 $
+ * @version $Revision: 1.23 $ $Date: 2000/07/18 13:25:09 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
@@ -119,6 +119,15 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
     }        
     
     /**
+     * Check if there is the template class of a given subelement defined.
+     * @param elementName Name of the subelement.
+     * @return <code>true</code>, if defined, <code>false</code> otherwise
+     */
+    public boolean hasSubtemplateClass(String name) throws CmsException {
+        return hasData("ELEMENTDEF." + name + ".CLASS");
+    }
+
+    /**
      * Gets the template class of a given subelement definition.
      * @param elementName Name of the subelement.
      * @return Name of the template class.
@@ -126,6 +135,15 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
     public String getSubtemplateClass(String name) throws CmsException {
         String className = getDataValue("ELEMENTDEF." + name + ".CLASS");
         return className;
+    }
+
+    /**
+     * Check if there is the template filename of a given subelement defined.
+     * @param elementName Name of the subelement.
+     * @return <code>true</code>, if defined, <code>false</code> otherwise
+     */
+    public boolean hasSubtemplateFilename(String name) throws CmsException {
+        return hasData("ELEMENTDEF." + name + ".TEMPLATE");
     }
 
     /**
@@ -250,9 +268,13 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
      * @exception CmsException
      */
     public Vector getParameterNames(String elementName) throws CmsException {
-        Element elementDefinition = getData("elementdef." + elementName);
-        NodeList parameterTags = elementDefinition.getChildNodes();
-        return getNamesFromNodeList(parameterTags, "PARAMETER", false);            
+        if(hasData("elementdef." + elementName)) {
+            Element elementDefinition = getData("elementdef." + elementName);
+            NodeList parameterTags = elementDefinition.getChildNodes();
+            return getNamesFromNodeList(parameterTags, "PARAMETER", false);            
+        } else {
+            return null;
+        }
     }
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
- * Date   : $Date: 2000/06/05 13:37:57 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2000/07/18 13:25:09 $
+ * Version: $Revision: 1.41 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.40 $ $Date: 2000/06/05 13:37:57 $
+ * @version $Revision: 1.41 $ $Date: 2000/07/18 13:25:09 $
  */
 public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLogChannels {
     
@@ -325,11 +325,7 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
 
         // Template class is now loaded. Next try to read the parameters        
         Vector parameterTags = null;
-        try {
-            parameterTags = templateFile.getParameterNames(tagcontent);
-        } catch(CmsException e) {
-            // ignore
-        }
+        parameterTags = templateFile.getParameterNames(tagcontent);
         if(parameterTags != null) {
             int numParameterTags = parameterTags.size();
             for(int i=0; i< numParameterTags; i++) {
@@ -384,6 +380,42 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
 
         return result;
     }
+
+    /**
+     * Get the session id. If no session exists, a new one will be created.
+     * <P>
+     * This method can be called using <code>&lt;METHOD name="getSessionId"&gt;</code>
+     * in the template file.
+     * 
+     * @param cms CmsObject Object for accessing system resources.
+     * @param tagcontent Unused in this special case of a user method. Can be ignored.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
+     * @param userObj Hashtable with parameters.
+     * @return String or byte[] with the content of this subelement.
+     * @exception CmsException
+     */
+    public String getSessionId(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
+            throws CmsException {
+        return ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true).getId();
+    }  
+
+    /**
+     * Get the IP address of the current request.
+     * <P>
+     * This method can be called using <code>&lt;METHOD name="getRequestIp"&gt;</code>
+     * in the template file.
+     * 
+     * @param cms CmsObject Object for accessing system resources.
+     * @param tagcontent Unused in this special case of a user method. Can be ignored.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
+     * @param userObj Hashtable with parameters.
+     * @return String or byte[] with the content of this subelement.
+     * @exception CmsException
+     */
+    public String getRequestIp(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
+            throws CmsException {
+        return ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getRemoteAddr();
+    }      
     
     /**
      * Inserts the correct stylesheet into the layout template.
@@ -417,28 +449,22 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
         // Get the styles from the parameter hashtable        
         String styleIE = null;
         String styleNS = null;
-        try {
+        if(templateFile.hasData("stylesheet-ie")) {
             styleIE = templateFile.getDataValue("stylesheet-ie");
-        } catch(Exception e1) {
-            try {
-                styleIE = templateFile.getDataValue("stylesheet");
-            } catch(Exception e2) {
-                styleIE = "";
-            }
+        } else if(templateFile.hasData("stylesheet")) {
+            styleIE = templateFile.getDataValue("stylesheet");
+        } else {
+            styleIE = "";
         }
 
-        try {
+        if(templateFile.hasData("stylesheet-ns")) {
             styleNS = templateFile.getDataValue("stylesheet-ns");
-        } catch(Exception e1) {
-            try {
-                styleNS = templateFile.getDataValue("stylesheet");
-            } catch(Exception e2) {
-                styleNS = "";
-            }
+        } else if(templateFile.hasData("stylesheet")) {
+            styleNS = templateFile.getDataValue("stylesheet");
+        } else {
+            styleNS = "";
         }
-            
-        // TODO: Check if the parameters really exist
-        
+                    
         HttpServletRequest orgReq = (HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();
         String servletPath = orgReq.getServletPath() + "/";
 
@@ -946,9 +972,9 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
         if(parameters.containsKey(elementName + "._TEMPLATE_")) {
             result = (String)parameters.get(elementName + "._TEMPLATE_");
         } else {
-            try {
+            if(doc.hasSubtemplateFilename(elementName)) {
                 result = doc.getSubtemplateFilename(elementName);
-            } catch(Exception e) {
+            } else {
                 // Fallback to "body" element
                 if(parameters.containsKey("body._TEMPLATE_")) {
                     result = (String)parameters.get("body._TEMPLATE_");
@@ -976,9 +1002,9 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
         if(parameters.containsKey(elementName + "._CLASS_")) {
             result = (String)parameters.get(elementName + "._CLASS_");
         } else {
-            try {
+            if(doc.hasSubtemplateClass(elementName)) {
                 result = doc.getSubtemplateClass(elementName);
-            } catch(Exception e) {
+            } else {
                 // Fallback to "body" element
                 if(parameters.containsKey("body._CLASS_")) {
                     result = (String)parameters.get("body._CLASS_");
