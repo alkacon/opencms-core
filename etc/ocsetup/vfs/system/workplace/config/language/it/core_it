@@ -67,9 +67,11 @@
             <send>Invia</send>
             <submit>Imposta</submit>
             <showdetails>Mostra dettagli</showdetails>
+            <specialchars>Caratteri speciali</specialchars>
             <syncfolder>Sincronizza cartelle</syncfolder>
             <table>Tabella</table>
             <test>Prova</test>
+            <toggledetails>Mostra/nascondi dettagli</toggledetails>
             <ul>Elenco Puntato</ul>
             <underline>Sottolineato</underline>
             <undo>Annulla</undo>
@@ -148,7 +150,7 @@
         <flex>
             <cache>
                 <label>
-                    <title>Flex Cache Administration</title>
+                    <title>Amministrazione Cache Flex</title>
                 </label>
             </cache>
         </flex>
@@ -189,8 +191,8 @@
                 <addgroup>Spiacente, il gruppo non ha potuto essere creato.</addgroup>
                 <database>Spiacente, il database non ha potuto essere importato / esportato.</database>
                 <linkcheckerror>The url could not be connected. You can store the link now or you can change it.</linkcheckerror>
-				<linkbrowser>Sorry, you can't use the link browser yet.</linkbrowser>
-				<linkgallery>You don't have permission to create a new gallery in this project.</linkgallery>
+                <linkbrowser>Sorry, you can't use the link browser yet.</linkbrowser>
+                <linkgallery>You don't have permission to create a new gallery in this project.</linkgallery>
                 <lock>Spiacente, il file non ha potuto essere bloccato.</lock>
                 <lockchange>Spiacente, il blocco sul file non ha potuto essere rubato.</lockchange>
                 <login>Spiacente, l'utente non ha potuto accedere al sistema.</login>
@@ -211,7 +213,7 @@
                 <rmdefault>Spiacente, non tutti gli utenti hanno potuto essere rimossi.</rmdefault>
                 <deleteproject>Spiacente, il progetto non ha potuto essere cancellato.</deleteproject>
                 <search>Please fill in all fields for the current search.</search>
-                <staticexport>Spiacente, le Risorse non hanno potuto essere esportate.</staticexport>
+                <staticexport>Spiacente, le risorse non hanno potuto essere esportate.</staticexport>
                 <syncfolder>Spiacente, le cartelle non hanno potuto essere sincronizzate.</syncfolder>
                 <syncproperties>Spiacente, le proprietà per la sincronizzazione non hanno potuto essere salvate.</syncproperties>
                 <undelete>Spiacente, la risorsa non ha potuto essere recuperata.</undelete>
@@ -250,7 +252,7 @@
                 <foldercreate>Forse non hai i permessi necessari o questa cartella esiste già.</foldercreate>
                 <gallerynoright>Non hai i diritti per creare questa nuova galleria in questo progetto.</gallerynoright>
                 <linknogallery>There is no link gallery yet.</linknogallery>
-				<linkbrowser>The folder for the link galleries doesn't exist.</linkbrowser>
+                <linkbrowser>The folder for the link galleries doesn't exist.</linkbrowser>
                 <lock>O non hai i permessi necessari, o i contenuti di questo file sono bloccati da qualcun'altro.</lock>
                 <lockchange>Il file è bloccato da un altro utente.</lockchange>
                 <login>I dati introdotti non sono corretti.</login>
@@ -310,7 +312,7 @@
                 <downnogallery>Per favore crea prima una galleria con la voce di menu Amministrazione/Gallerie di Download.</downnogallery>
                 <editorsave>Salva il contenuto del file in un editor locale, chiudi il file e controlla lo stato di blocco.</editorsave>
                 <linkbrowser>Create the folder for the link galleries or contact your system administrator.</linkbrowser>
-				<linknogallery>Please first create a gallery with the menu item Administration/External Link Management.</linknogallery>
+                <linknogallery>Please first create a gallery with the menu item Administration/External Link Management.</linknogallery>
                 <lock></lock>
                 <lockchange>Per favore riprova più tardi, o contatta il tuo amministratore di sistema.</lockchange>
                 <login>Per favore controlla i dati introdotti o contatta il tuo amministratore di sistema.</login>
@@ -359,7 +361,7 @@
                 <downgallery>Creazione nuova Galleria di Download</downgallery>
                 <editorsave>Salva File</editorsave>
                 <foldercreate>Crea Cartella</foldercreate>
-				<linkbrowser>Link Browser</linkbrowser>
+                <linkbrowser>Link Browser</linkbrowser>
                 <linkgallery>Creating new Link Gallery</linkgallery>
                 <lock>Blocca File</lock>
                 <lockchange>Ruba Blocco</lockchange>
@@ -395,7 +397,7 @@
                 <newspage>Notizia</newspage>
                 <othertype>Altro Tipo</othertype>
                 <page>Pagina</page>
-                <plain>Testo</plain>
+                <plain>Testo semplice</plain>
                 <jsp>JSP</jsp>
                 <velocity>Template Velocity</velocity>
                 <script>Script</script>
@@ -548,7 +550,15 @@
             <lastelement>in ultima posizione</lastelement>
             <lastname>Cognome</lastname>
             <left>Sinistra</left>
-            <linkto>Collegamento</linkto>
+            <linkname>Nome</linkname>
+            <linkto>Collegamento a</linkto>
+            <linktarget>Destinazione</linktarget>
+            <linktargetself>Stessa finestra</linktargetself>
+            <linktargetblank>Nuova finestra</linktargetblank>
+            <linktargettop>Finestra principale</linktargettop>
+            <linkanchor>Ancora</linkanchor>
+            <linkstyle>Definizioni di stile</linkstyle>
+            <linkstyleclass>Classe stile</linkstyleclass>
             <lockedby>Bloccato da</lockedby>
             <lockuser>Disabilita Utente</lockuser>
             <messageaccept>Messaggio quando accettato</messageaccept>
@@ -586,7 +596,7 @@
             <rows>Righe</rows>
             <search>Cerca</search>
             <settings>Impostazioni</settings>
-            <showlockdialog>Mostra richiesta di blocco</showlockdialog>
+            <showlockdialog>Mostra richiesta blocco</showlockdialog>
             <size>Dimensioni</size>
             <spacing>Spaziatura</spacing>
             <spacinginfo>Punti tra le Celle</spacinginfo>
@@ -617,12 +627,12 @@
             <allfolders>Cartelle</allfolders>
             <allchannels>Canali</allchannels>
             <author>Autore</author>
-            <byproperty>by property</byproperty>
-            <byresourcename>by resourcename</byresourcename>
-            <byfilecontent>by filecontent</byfilecontent>
+            <byproperty>per proprietà</byproperty>
+            <byresourcename>per nome risorsa</byresourcename>
+            <byfilecontent>per contenuto file</byfilecontent>
             <changegroup>Modifica Gruppo</changegroup>
             <close>Chiudi</close>
-            <content>Filecontent</content>
+            <content>Contenuto file</content>
             <createdby>Agente Compiti</createdby>
             <createnewproject>Crea nuovo Progetto</createnewproject>
             <createnewuser>Crea nuovo Utente</createnewuser>
@@ -686,10 +696,11 @@
             <publishedat>Pubblicato</publishedat>
             <publishedby>Pubblicato da</publishedby>
             <readrights>permesso di lettura per altri</readrights>
-            <resourcetype>Resourcetype</resourcetype>
+            <resourcetype>Tipo risorsa</resourcetype>
             <search>Cerca</search>
             <selectfolder>Seleziona cartella...</selectfolder>
             <size>Dimensione</size>
+            <specialchar>Inserisci il carattere speciale</specialchar>
             <state>Stato</state>
             <suredeletingproject1>Sei certo di voler cancellare il progetto</suredeletingproject1>
             <suredeletingproject2>e perdere tutte le modifiche che sono state fatte in questo progetto?</suredeletingproject2>
