@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2004/12/03 17:08:21 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2004/12/09 13:53:44 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,33 +45,29 @@ import java.util.Map;
  * will be stored in the session of a user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.39 $
  * @since 5.1
  */
 public class CmsWorkplaceSettings {
-
+    
     private String m_currentSite;
     private String m_explorerFlaturl;
     private String m_explorerMode;
     private int m_explorerPage;
-    
     private String m_explorerProjectFilter;
     private int m_explorerProjectId;
     private Map m_explorerResource;
     private boolean m_explorerShowLinks;
-
+    private Map m_frameUris;    
+    private String m_galleryType;
+    private Map m_lastUsedGalleries;
     private CmsWorkplaceMessages m_messages;
     private String m_permissionDetailView;
     private int m_project;
-
     private CmsPublishList m_publishList;
     private Map m_resourceTypes;
     private Map m_treeSite;
-    private Map m_treeType;
-    private Map m_frameUris;
-    
-    private Map m_lastUsedGalleries;
-    
+    private Map m_treeType;    
     private CmsUser m_user;
     private CmsUserSettings m_userSettings;
     private String m_viewUri;
@@ -180,6 +176,27 @@ public class CmsWorkplaceSettings {
      */
     public Map getFrameUris() {
         return m_frameUris;
+    }
+        
+    /**
+     * Returns the current gallery type name.<p>
+     *
+     * @return the current gallery type name
+     */
+    public String getGalleryType() {
+
+        return m_galleryType;
+    }    
+
+    /**
+     * Returns the last saved gallery for the given gallery type id.<p>
+     * 
+     * @param galleryTypeId the type id of the gallery
+     * @return the last saved gallery for the given gallery type id
+     */
+    public String getLastUsedGallery(int galleryTypeId) {
+
+        return (String)m_lastUsedGalleries.get(String.valueOf(galleryTypeId));
     }
 
     /**
@@ -396,6 +413,27 @@ public class CmsWorkplaceSettings {
     public synchronized void setFrameUris(Map frameUris) {
         m_frameUris = frameUris;
     }
+    
+    /**
+     * Sets the current gallery type name.<p>
+     *
+     * @param currentGallery the current gallery type name to set
+     */
+    public void setGalleryType(String currentGallery) {
+
+        m_galleryType = currentGallery;
+    }
+    
+    /**
+     * Saves the last gallery.<p>
+     * 
+     * @param galleryTypeId the type id of the gallery as key
+     * @param gallerypath the resourcepath of the gallery
+     */
+    public void setLastUsedGallery(int galleryTypeId, String gallerypath) {
+
+        m_lastUsedGalleries.put(String.valueOf(galleryTypeId), gallerypath);
+    }
 
     /**
      * Sets the workplace messages for the current user.<p>
@@ -509,27 +547,5 @@ public class CmsWorkplaceSettings {
      */
     public synchronized void setViewUri(String string) {
         m_viewUri = string;
-    }
-
-    /**
-     * Returns the last saved gallery for the given gallery type id.<p>
-     * 
-     * @param galleryTypeId the type id of the gallery
-     * @return the last saved gallery for the given gallery type id
-     */
-    public String getLastUsedGallery(int galleryTypeId) {
-
-        return (String)m_lastUsedGalleries.get(String.valueOf(galleryTypeId));
-    }
-    
-    /**
-     * Saves the last gallery.<p>
-     * 
-     * @param galleryTypeId the type id of the gallery as key
-     * @param gallerypath the resourcepath of the gallery
-     */
-    public void setLastUsedGallery(int galleryTypeId, String gallerypath) {
-
-        m_lastUsedGalleries.put(String.valueOf(galleryTypeId), gallerypath);
     }
 }

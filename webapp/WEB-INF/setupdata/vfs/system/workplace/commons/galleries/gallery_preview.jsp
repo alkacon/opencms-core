@@ -2,22 +2,23 @@
 <%	
 	// initialize action element for link substitution
 	CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
-	// initialize the workplace class
-	CmsGalleryDownloads wp = new CmsGalleryDownloads(pageContext, request, response);	
+	
+	// get gallery instance
+	CmsGallery wp = CmsGallery.createInstance(cms);
 %>
 <%= wp.htmlStart(null) %>
-	<link rel="stylesheet" type="text/css" href="gallery.css">
-
+	<link rel="stylesheet" type="text/css" href="<%=wp.getCssPath()%>">
+	
 <script language="javascript">
 <!--
 	function reload() {
 		self.location.href="<%=wp.getJsp().link(wp.getJsp().getRequestContext().getUri()+"?"+wp.paramsAsRequest())%>";
 	}
 //-->
-</script>
+</script>	
 </head>
-<body class="dialog" style="background-color: ThreeDFace;" height="100%" unselectable="on">
-<div style="text-align: center; width: 100%; margin-top: 5px">
+<body<%=wp.getPreviewBodyStyle()%>>
+<div <%=wp.getPreviewDivStyle()%>>
 <%= wp.buildGalleryItemPreview() %>
 </div>
 </body>

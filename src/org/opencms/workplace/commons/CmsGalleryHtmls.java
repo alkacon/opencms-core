@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsGalleryHtmls.java,v $
- * Date   : $Date: 2004/12/08 14:30:29 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/12/09 13:53:44 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,13 +44,8 @@ import javax.servlet.jsp.PageContext;
 /**
  * Generates the html gallery popup window which can be used in editors or as a dialog widget.<p>
  * 
- * The following files use this class:
- * <ul>
- * <li>/commons/galeries/download_fs.jsp
- * </ul>
- * 
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.5.2
  */
@@ -90,6 +85,17 @@ public class CmsGalleryHtmls extends CmsGallery {
     }
     
     /**
+     * @see org.opencms.workplace.commons.CmsGallery#applyButton()
+     */
+    public String applyButton() {
+        if (MODE_VIEW.equals(getParamDialogMode())) {
+            return button(null, null, "apply_in", "button.paste", 0); 
+        } else {
+            return button("javascript:pasteContent()", null, "apply", "button.paste", 0);
+        }
+    }
+    
+    /**
      * Builds the html String for the preview frame.<p>
      * 
      * @return the html String for the preview frame
@@ -113,14 +119,27 @@ public class CmsGalleryHtmls extends CmsGallery {
     }   
     
     /**
-     * @see org.opencms.workplace.commons.CmsGallery#applyButton()
+     * @see org.opencms.workplace.commons.CmsGallery#getGalleryItemsTypeId()
      */
-    public String applyButton() {
-        if (MODE_VIEW.equals(getParamDialogMode())) {
-            return button(null, null, "apply_in", "button.paste", 0); 
-        } else {
-            return button("javascript:pasteContent()", null, "apply", "button.paste", 0);
-        }
+    public int getGalleryItemsTypeId() {
+        
+        return CmsResourceTypePlain.C_RESOURCE_TYPE_ID;
+    }
+    
+    /**
+     * @see org.opencms.workplace.commons.CmsGallery#getPreviewBodyStyle()
+     */
+    public String getPreviewBodyStyle() {
+        
+        return new String(" class=\"dialog\" unselectable=\"on\"");
+    }
+    
+    /**
+     * @see org.opencms.workplace.commons.CmsGallery#getPreviewDivStyle()
+     */
+    public String getPreviewDivStyle() {
+        
+        return new String("style=\"width: 100%; margin-top: 5px\"");
     }
     
     /**
@@ -136,12 +155,4 @@ public class CmsGalleryHtmls extends CmsGallery {
     public String targetSelectBox() {
         return "";
     }       
-    
-    /**
-     * @see org.opencms.workplace.commons.CmsGallery#getGalleryItemsTypeId()
-     */
-    public int getGalleryItemsTypeId() {
-        
-        return CmsResourceTypePlain.C_RESOURCE_TYPE_ID;
-    }
 }

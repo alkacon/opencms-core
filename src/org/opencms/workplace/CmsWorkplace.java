@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/12/08 15:25:07 $
- * Version: $Revision: 1.96 $
+ * Date   : $Date: 2004/12/09 13:53:44 $
+ * Version: $Revision: 1.97 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.fileupload.FileUploadException;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.96 $
+ * @version $Revision: 1.97 $
  * 
  * @since 5.1
  */
@@ -1560,7 +1560,7 @@ public abstract class CmsWorkplace {
             initWorkplaceCmsContext(m_settings, m_cms);
         }
     }
-
+    
     /**
      * Analyzes the request for workplace parameters and adjusts the workplace
      * settings accordingly.<p> 

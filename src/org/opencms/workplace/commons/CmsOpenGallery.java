@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsOpenGallery.java,v $
- * Date   : $Date: 2004/12/07 17:19:35 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/12/09 13:53:44 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,21 +50,14 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1
  */
 public class CmsOpenGallery extends CmsDialog {
     
     /** The dialog type. */
-    public static final String DIALOG_TYPE = "opengallery";
-    
-    /**
-     * Default constructor needed for dialog handler implementation.<p>
-     */
-    public CmsOpenGallery() {
-        super(null);
-    }
+    public static final String DIALOG_TYPE = "opengallery";        
     
     /**
      * Public constructor with JSP action element.<p>
@@ -94,15 +87,19 @@ public class CmsOpenGallery extends CmsDialog {
     public String openGallery() {
         
         StringBuffer jsOpener = new StringBuffer();
+        String galleryType = null;
         try {
             CmsResource res = getCms().readResource(getParamResource());
             if (res != null) {
-                String galleryPath = getParamResource() + "/";
-                String galleryType = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName();
-                String galleryUri = getGalleryUri(galleryType);
+                String galleryPath = getParamResource();                
+                if (!galleryPath.endsWith("/")) {
+                    galleryPath += "/";
+                }
+                galleryType = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName();
+                String galleryUri = CmsGallery.C_PATH_GALLERIES + CmsGallery.C_OPEN_URI_SUFFIX + "?" + CmsGallery.PARAM_GALLERY_TYPENAME + "=" + galleryType;
                 jsOpener.append("window.open('");
                 jsOpener.append(getJsp().link(galleryUri));
-                jsOpener.append("?");
+                jsOpener.append("&");
                 jsOpener.append(CmsGallery.PARAM_DIALOGMODE);
                 jsOpener.append("=");
                 jsOpener.append(CmsGallery.MODE_VIEW);
@@ -110,35 +107,22 @@ public class CmsOpenGallery extends CmsDialog {
                 jsOpener.append(CmsGallery.PARAM_GALLERYPATH);
                 jsOpener.append("=");
                 jsOpener.append(galleryPath);
-                jsOpener.append("', 'gallery','width=550, height=700, resizable=yes, top=100, left=270');");
+                jsOpener.append("', '");
+                jsOpener.append(galleryType);
+                jsOpener.append("','width=650, height=700, resizable=yes, top=100, left=270, status=yes');");
             }
         } catch (CmsException e) {
-            // ignore
+            // requested type is not configured
+            String message = "Unable to open gallery for gallery type '"
+                + galleryType
+                + "'";                
+            OpenCms.getLog(CmsOpenGallery.class).error(message);
+            throw new RuntimeException(message, e);
         }
         
         return jsOpener.toString();
     }
-    
-    /**
-     * Returns the gallery uri for the given gallery type.<p>
-     * 
-     * @param galleryType the type name of the gallery
-     * @return the gallery uri for the given gallery type
-     */
-    protected String getGalleryUri(String galleryType) {
         
-        if (galleryType.equalsIgnoreCase(CmsGallery.C_IMAGEGALLERY)) {
-            return CmsGalleryImages.C_URI_GALLERY;
-        } else if (galleryType.equalsIgnoreCase(CmsGallery.C_DOWNLOADGALLERY)) {
-            return CmsGalleryDownloads.C_URI_GALLERY;
-        } else if (galleryType.equalsIgnoreCase(CmsGallery.C_LINKGALLERY)) {
-            return CmsGalleryLinks.C_URI_GALLERY;
-        } else {
-            return CmsGalleryHtmls.C_URI_GALLERY;
-        }
-    }
-    
-    
     
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)

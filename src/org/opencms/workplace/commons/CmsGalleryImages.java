@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsGalleryImages.java,v $
- * Date   : $Date: 2004/12/08 14:30:29 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/12/09 13:53:44 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,14 +44,9 @@ import javax.servlet.jsp.PageContext;
 /**
  * Generates the image gallery popup window which can be used in editors or as a dialog widget.<p>
  * 
- * The following files use this class:
- * <ul>
- * <li>/commons/galeries/img_fs.jsp
- * </ul>
- * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.5.2
  */
@@ -91,6 +86,21 @@ public class CmsGalleryImages extends CmsGallery {
     }
     
     /**
+     * @see org.opencms.workplace.commons.CmsGallery#applyButton()
+     */
+    public String applyButton() {
+        if (MODE_VIEW.equals(getParamDialogMode())) {
+            return button(null, null, "apply_in", "button.paste", 0); 
+        } else {
+            String uri = getParamResourcePath();
+            if (CmsStringUtil.isEmpty(getParamDialogMode())) {
+                uri = getJsp().link(uri);
+            }
+            return button("javascript:pasteResource('"+uri+"',document.form.title.value, document.form.title.value);", null, "apply", "button.paste", 0);
+        }
+    }
+    
+    /**
      * Builds the html String for the preview frame.<p>
      * 
      * @return the html String for the preview frame
@@ -113,20 +123,21 @@ public class CmsGalleryImages extends CmsGallery {
         
         return html.toString();
     }  
+        
+    /**
+     * @see org.opencms.workplace.commons.CmsGallery#getGalleryItemsTypeId()
+     */
+    public int getGalleryItemsTypeId() {
+        
+        return CmsResourceTypeImage.C_RESOURCE_TYPE_ID;
+    }     
     
     /**
-     * @see org.opencms.workplace.commons.CmsGallery#applyButton()
+     * @see org.opencms.workplace.commons.CmsGallery#getPreviewBodyStyle()
      */
-    public String applyButton() {
-        if (MODE_VIEW.equals(getParamDialogMode())) {
-            return button(null, null, "apply_in", "button.paste", 0); 
-        } else {
-            String uri = getParamResourcePath();
-            if (CmsStringUtil.isEmpty(getParamDialogMode())) {
-                uri = getJsp().link(uri);
-            }
-            return button("javascript:pasteResource('"+uri+"',document.form.title.value, document.form.title.value);", null, "apply", "button.paste", 0);
-        }
+    public String getPreviewBodyStyle() {
+        
+        return "";
     }
     
     /**
@@ -142,12 +153,4 @@ public class CmsGalleryImages extends CmsGallery {
     public String targetSelectBox() {
         return "";
     }
-        
-    /**
-     * @see org.opencms.workplace.commons.CmsGallery#getGalleryItemsTypeId()
-     */
-    public int getGalleryItemsTypeId() {
-        
-        return CmsResourceTypeImage.C_RESOURCE_TYPE_ID;
-    }      
 }

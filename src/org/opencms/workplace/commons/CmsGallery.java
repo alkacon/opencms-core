@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsGallery.java,v $
- * Date   : $Date: 2004/12/08 14:30:29 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/12/09 13:53:44 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,12 +46,15 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.I_CmsWpConstants;
+import org.opencms.workplace.explorer.CmsNewResource;
+import org.opencms.workplace.explorer.CmsNewResourceUpload;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 /**
  * Provides constants, members and methods to generate a gallery popup window usable in editors or as widget.<p>
@@ -60,7 +63,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.5.2
  */
@@ -76,14 +79,10 @@ public abstract class CmsGallery extends CmsDialog {
     public static final int ACTION_SEARCH = 103;
     /** Value for the action: upload a new gallery item. */
     public static final int ACTION_UPLOAD = 104;
-    /** resource type name of the download gallery. */
-    public static final String C_DOWNLOADGALLERY = "downloadgallery";
-    /** resource type name of the html gallery. */
-    public static final String C_HTMLGALLERY = "htmlgallery";
-    /** resource type name of the image gallery. */    
-    public static final String C_IMAGEGALLERY = "imagegallery";
-    /** resource type name of the external link gallery. */
-    public static final String C_LINKGALLERY = "linkgallery";    
+    /** A constant representing the css filename used in the galleries. */
+    public static final String C_CSS_FILENAME = "gallery.css";    
+    /** The uri suffix for the gallery start page. */
+    public static final String C_OPEN_URI_SUFFIX = "gallery_fs.jsp";
     /** Constant for the galleries path in the Workplace. */
     public static final String C_PATH_GALLERIES = C_PATH_DIALOGS + "galleries/";    
     /** Request parameter value for the action: delete the gallery item. */
@@ -103,13 +102,14 @@ public abstract class CmsGallery extends CmsDialog {
     /** Request parameter value for the dialog mode: view. */
     public static final String MODE_VIEW = "view";
     /** Request parameter value for the dialog mode: widget. */
-    public static final String MODE_WIDGET = "widget";
-    
+    public static final String MODE_WIDGET = "widget";    
     
     /** Request parameter name for the dialog mode (widget or editor). */
     public static final String PARAM_DIALOGMODE = "dialogmode";
     /** Request parameter name for the input field id. */
     public static final String PARAM_FIELDID = "fieldid";
+    /** Request parameter name for the gallery type. */
+    public static final String PARAM_GALLERY_TYPENAME = "gallerytypename";
     /** Request parameter name for the gallery path. */
     public static final String PARAM_GALLERYPATH = "gallerypath";
     /** Request parameter name for the gallery list page. */
@@ -120,42 +120,53 @@ public abstract class CmsGallery extends CmsDialog {
     public static final String PARAM_RESOURCEPATH = "resourcepath";
     /** Request parameter name for the search word. */
     public static final String PARAM_SEARCHWORD = "searchword";
-    
-    private CmsResource m_currentResource;           
+        
+    private CmsResource m_currentResource;          
+    /** The resource type id of this gallery instance. */
+    private int m_galleryTypeId;    
+    /** The resource type name of this gallery instance. */
+    private String m_galleryTypeName;
     private String m_paramDialogMode;
     private String m_paramFieldId;
     private String m_paramGalleryPath;
     private String m_paramPage;
+    /** The value of the property (current propertydefinition == title). */
     private String m_paramPropertyValue;
     private String m_paramResourcePath;
     private String m_paramSearchWord;
+
+    /**
+     * Public empty constructor, required for {@link CmsGallery#createInstance(String, CmsJspActionElement)}.<p>
+     */
+    public CmsGallery() {
+        this(null);
+    }
     
-    /** The resource type name of this gallery instance. */
-    private String m_galleryTypeName;
-
-    /** The resource type id of this gallery instance. */
-    private int m_galleryTypeId;
-
     /**
-     * Returns the resource type name of this gallery instance.<p>
+     * Public constructor with JSP action element.<p>
      * 
-     * @return the resource type name of this gallery instance
+     * @param jsp an initialized JSP action element
      */
-    public String getGalleryTypeName() {
-
-        return m_galleryTypeName;
+    public CmsGallery(CmsJspActionElement jsp) {
+        super(jsp);
     }
 
     /**
-     * Returns the resource type id of this gallery instance.<p>
-     *
-     * @return the resource type id of this gallery instance
+     * Creates a new gallery instance.<p>
+     * 
+     * @param jsp an initialized JSP action element
+     * 
+     * @return a new gallery instance
      */
-    public int getGalleryTypeId() {
-
-        return m_galleryTypeId;
+    public static CmsGallery createInstance(CmsJspActionElement jsp) {
+        String galleryTypeName = null;
+        if (jsp != null) {
+            galleryTypeName = jsp.getRequest().getParameter(PARAM_GALLERY_TYPENAME);
+        }
+        
+        return CmsGallery.createInstance(galleryTypeName, jsp);
     }
-
+    
     /**
      * Creates a new gallery instance of the given gallery type name.<p>
      * 
@@ -166,6 +177,21 @@ public abstract class CmsGallery extends CmsDialog {
      */
     public static CmsGallery createInstance(String galleryTypeName, CmsJspActionElement jsp) {
 
+        if (jsp != null) {
+            
+            // must have a valid JSP in order to read from the user session
+            HttpSession session = jsp.getRequest().getSession();
+            // lookup the workplace settings 
+            CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(C_SESSION_WORKPLACE_SETTINGS);
+            if (CmsStringUtil.isEmpty(galleryTypeName)) {
+                // look up the gallery type from the settings
+                galleryTypeName = settings.getGalleryType();
+            } else {
+                // store the last used gallery type name
+                settings.setGalleryType(galleryTypeName);            
+            }
+        }
+                
         String className = OpenCms.getWorkplaceManager().getGalleryClassName(galleryTypeName);
 
         if (className == null) {
@@ -183,11 +209,11 @@ public abstract class CmsGallery extends CmsDialog {
             Class galleryClass = Class.forName(className);
             // create a new instance and cast to a gallery
             CmsGallery galleryInstance = (CmsGallery)galleryClass.newInstance();
-            // initialize the members
-            galleryInstance.initWorkplaceMembers(jsp);
             // set the type name and id
             galleryInstance.m_galleryTypeName = galleryTypeName;
             galleryInstance.m_galleryTypeId = OpenCms.getResourceManager().getResourceType(galleryTypeName).getTypeId();
+            // initialize the members
+            galleryInstance.initWorkplaceMembers(jsp);
             // return the resulz
             return galleryInstance;
         } catch (Exception e) {
@@ -201,23 +227,6 @@ public abstract class CmsGallery extends CmsDialog {
             OpenCms.getLog(CmsGallery.class).error(message);
             throw new RuntimeException(message, e);
         }
-    }
-
-    /**
-     * Public empty constructor, required for {@link CmsGallery#createInstance(String, CmsJspActionElement)}.<p>
-     */
-    public CmsGallery() {
-        this(null);
-    }
-    
-    /**
-     * Public constructor with JSP action element.<p>
-     * 
-     * @param jsp an initialized JSP action element
-     */
-    public CmsGallery(CmsJspActionElement jsp) {
-
-        super(jsp);
     }
     
     /**
@@ -240,46 +249,6 @@ public abstract class CmsGallery extends CmsDialog {
             return button("javascript:link('"+uri+"',document.form.title.value, document.form.title.value);", null, "apply", "button.paste", 0);
         }
     }
-    
-    /**
-     * Generates an publish button for the gallery button bar.<p>
-     * 
-     * This button is disabled if the urrent user has no publish rights.<p>
-     * 
-     * @return an publish button for the gallery button bar
-     */
-    public String publishButton() {
-       
-        if (getCms().hasPublishPermissions(getParamResourcePath())) {
-            return button("javascript:publishResource(\'" + getParamResourcePath() + "\');", null, "publish", "messagebox.title.publishresource", 0);
-        }                        
-            
-        return button(null, null, "publish_in", "", 0);
-    }
-    
-    /**
-     * Generates a preview button for the gallery button bar.<p>
-     * 
-     * Overwrite this method if neccessary in the specified gallery class.<p>
-     * 
-     * @return a preview button for the gallery button bar
-     */
-    public String previewButton() {
-        
-        StringBuffer previewButton = new StringBuffer();
-        previewButton.append(buttonBarSeparator(5, 5));        
-        previewButton.append(button(getJsp().link(getCms().getSitePath(getCurrentResource())), "_preview", "preview", "button.preview", 0));
-        
-        return previewButton.toString();        
-    }
-    
-      
-    /**
-     * Builds the html String for the preview frame.<p>
-     * 
-     * @return the html String for the preview frame
-     */
-    public abstract String buildGalleryItemPreview();
     
     /**
      * Builds the html String for the buttonbar frame.<p>
@@ -309,10 +278,10 @@ public abstract class CmsGallery extends CmsDialog {
                     // delete button
                     buttonBar.append(deleteButton());
                     buttonBar.append(buttonBarSeparator(5, 5));                    
-                    buttonBar.append("<td nowrap><b>");
+                    buttonBar.append("<td class=\"nowrap\"><b>");
                     buttonBar.append(key("input.title"));
                     buttonBar.append("</b>&nbsp;</td>");
-                    buttonBar.append("<td width=\"95%\">");
+                    buttonBar.append("<td class=\"maxwidth\">");
                     buttonBar.append("<input name=\"title\" value=\"");
                     buttonBar.append(title);
                     buttonBar.append("\" style=\"width: 95%\">");
@@ -341,6 +310,14 @@ public abstract class CmsGallery extends CmsDialog {
         return buttonBar.toString();
     }
     
+      
+    /**
+     * Builds the html String for the preview frame.<p>
+     * 
+     * @return the html String for the preview frame
+     */
+    public abstract String buildGalleryItemPreview();
+    
     /**
      * Builds the html for the gallery items list.<p>
      * 
@@ -348,6 +325,8 @@ public abstract class CmsGallery extends CmsDialog {
      */
     public String buildGalleryItems() {
         StringBuffer result = new StringBuffer(64);
+        result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"maxwidth\">");               
+        result.append(buildGalleryItemListHeadline());                    
         List items = getGalleryItems();
         String pageno = getParamPage();        
         if (pageno == null) {
@@ -384,7 +363,7 @@ public abstract class CmsGallery extends CmsDialog {
                     String title = getPropertyValue(res, I_CmsConstants.C_PROPERTY_TITLE);
                     // String description = getCms().readPropertyObject(resPath, I_CmsConstants.C_PROPERTY_DESCRIPTION, false).getValue("");
                     String resType = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName();
-                                   
+                    
                     result.append("<tr>\n");
                     // file type
                     result.append("\t<td>");
@@ -419,12 +398,13 @@ public abstract class CmsGallery extends CmsDialog {
                         result.append(key("label.kilobytes"));                                               
                     }
                     result.append("</td>\n");
-                    result.append("</tr>\n");
+                    result.append("</tr>\n");                    
                 } catch (CmsException e) {
                     // ignore this exception
                 }                
-            }
+            }            
         }
+        result.append("</table>");
         return result.toString();
     }
     
@@ -483,6 +463,7 @@ public abstract class CmsGallery extends CmsDialog {
         } else {
             // no gallery present, create hidden input field to avoid JS errors
             StringBuffer result = new StringBuffer(4);
+            result.append(key("error.reason.no."+getGalleryTypeName()));
             result.append("\r\n<input type=\"hidden\" name=\"");
             result.append(PARAM_GALLERYPATH);
             result.append("\">");
@@ -599,6 +580,32 @@ public abstract class CmsGallery extends CmsDialog {
     }
     
     /**
+     * Returns the javascript body onload call for the head frame.<p>
+     * 
+     * @return the javascript body onload call for the head frame
+     */
+    public String getBodyOnload() {
+        
+        StringBuffer onload = new StringBuffer();
+        onload.append("self.focus();");
+        if (CmsStringUtil.isEmpty(getParamGalleryPath())) {
+            onload.append("displayGallery();");
+        }
+        
+        return onload.toString();
+    }
+    
+    /**
+     * Return the path of the css file used in the galleries.<p>
+     * 
+     * @return the path of the css file used in the galleries
+     */
+    public String getCssPath() {
+        
+        return getJsp().link(C_PATH_GALLERIES + C_CSS_FILENAME);
+    }
+    
+    /**
      * Returns the current resource in the gallery.<p>
      *  
      * @return the current resource in the gallery
@@ -666,6 +673,56 @@ public abstract class CmsGallery extends CmsDialog {
      * @return the type id of the gallery items that should be listed
      */
     public abstract int getGalleryItemsTypeId();
+
+    /**
+     * Returns the resource type id of this gallery instance.<p>
+     *
+     * @return the resource type id of this gallery instance
+     */
+    public int getGalleryTypeId() {
+
+        return m_galleryTypeId;
+    }
+
+    /**
+     * Returns the resource type name of this gallery instance.<p>
+     * 
+     * @return the resource type name of this gallery instance
+     */
+    public String getGalleryTypeName() {
+
+        return m_galleryTypeName;
+    }
+    
+    /**
+     * returns the height of the head frameset.<p>
+     * 
+     * @return the height of the head frameset
+     */
+    public String getHeadFrameSetHeight() {
+        
+        return "280";
+    }
+    
+    /**
+     * Returns the key title of the current gallery view.<p>
+     * 
+     * @return the key title of the current gallery view
+     */
+    public String getKeyTitle() {
+        
+        return key("button."+getGalleryTypeName());
+    }
+    
+    /**
+     * Returns the error message if no gallery could be found.<p>
+     * 
+     * @return the error message if no gallery could be found
+     */
+    public String getNoGalleryErrorMsg() {
+        
+        return key("error.reason.no."+getGalleryTypeName());
+    }
     
     /**
      * Returns the current mode of the dialog.<p>
@@ -746,6 +803,116 @@ public abstract class CmsGallery extends CmsDialog {
             m_paramSearchWord = "";    
         }
         return m_paramSearchWord;    
+    }
+    
+    /**
+     * Returns the style for the body tag of the preview frame.<p> 
+     * 
+     * @return the style for the body tag of the preview frame
+     */
+    public String getPreviewBodyStyle() {
+        
+        return new String(" class=\"dialog\" style=\"background-color: ThreeDFace;\" unselectable=\"on\"");
+    }
+    
+    /**
+     * Returns the style for the div tag of the preview frame.<p>
+     * 
+     * @return the style for the div tag of the preview frame
+     */
+    public String getPreviewDivStyle() {
+        
+        return new String("style=\"text-align: center; width: 100%; margin-top: 5px\"");
+    }
+    
+    /**
+     * Returns the url for the upload applet/dialog.<p>
+     * 
+     * @return the url for the upload applet/dialog
+     */
+    public String getWizardUrl() {
+        
+        StringBuffer wizardUrl = new StringBuffer();
+        wizardUrl.append(getJsp().link(C_PATH_DIALOGS+OpenCms.getWorkplaceManager().getExplorerTypeSetting("upload").getNewResourceUri()));
+        wizardUrl.append("?");
+        wizardUrl.append(CmsNewResourceUpload.PARAM_REDIRECTURL);
+        wizardUrl.append("=");
+        wizardUrl.append(C_PATH_GALLERIES);
+        wizardUrl.append("gallery_list.jsp&");
+        wizardUrl.append(CmsNewResourceUpload.PARAM_TARGETFRAME);
+        wizardUrl.append("=gallery_list&");
+        wizardUrl.append(CmsNewResource.PARAM_CURRENTFOLDER);
+        wizardUrl.append("=");
+        
+        return wizardUrl.toString();        
+    }
+    
+    /**
+     * Generates a preview button for the gallery button bar.<p>
+     * 
+     * Overwrite this method if neccessary in the specified gallery class.<p>
+     * 
+     * @return a preview button for the gallery button bar
+     */
+    public String previewButton() {
+        
+        StringBuffer previewButton = new StringBuffer();
+        previewButton.append(buttonBarSeparator(5, 5));        
+        previewButton.append(button(getJsp().link(getCms().getSitePath(getCurrentResource())), "_preview", "preview", "button.preview", 0));
+        
+        return previewButton.toString();        
+    }
+    
+    /**
+     * Generates a HTML table row with two columns.<p>
+     * 
+     * The first column includes the given key as localized string, the second column
+     * includes the value of th given property
+     *  
+     * @param column1 the string value for the first column
+     * @param column2 the string value for the second column 
+     * @return a HTML table row with two columns
+     */
+    public String previewRow(String column1, String column2) {        
+        
+        StringBuffer previewRow = new StringBuffer();
+        previewRow.append("<tr align=\"left\">");
+        previewRow.append("<td><b>");
+        previewRow.append(column1);
+        previewRow.append("</b></td>");
+        previewRow.append("<td>");
+        previewRow.append(column2);
+        previewRow.append("</td>");
+        previewRow.append("</tr>");
+        
+        return previewRow.toString();
+        
+    }
+    
+    /**
+     * Generates an publish button for the gallery button bar.<p>
+     * 
+     * This button is disabled if the urrent user has no publish rights.<p>
+     * 
+     * @return an publish button for the gallery button bar
+     */
+    public String publishButton() {
+       
+        if (getCms().hasPublishPermissions(getParamResourcePath())) {
+            return button("javascript:publishResource(\'" + getParamResourcePath() + "\');", null, "publish", "messagebox.title.publishresource", 0);
+        }                        
+            
+        return button(null, null, "publish_in", "", 0);
+    }
+    
+    /**
+     * Builds the HTML for the search button.<p>
+     * 
+     * @return the HTML for the search button
+     */
+    public String searchButton() {
+        
+        return button("javascript:displayGallery();", null, "search", "input.search", 0);
     }
     
     /**
@@ -830,25 +997,88 @@ public abstract class CmsGallery extends CmsDialog {
     }
     
     /**
-     * Returns a HTML String representing the options of the target select box.<p>
+     * Generates a HTML String representing a target select box.<p>
      * 
-     * @return a HTML String representing the options of the target select box
+     * @return a HTML String representing a target select box
      */
-    protected String getTargetOptions() {
+    public String targetSelectBox() {
         
-        StringBuffer options = new StringBuffer();
-        options.append("<option value=\"_self\">");
-        options.append(key("input.linktargetself"));
-        options.append("</option>\r\n");
-        options.append("<option value=\"_blank\">");
-        options.append(key("input.linktargetblank"));
-        options.append("</option>\r\n");
-        options.append("<option value=\"_top\">");
-        options.append(key("input.linktargettop"));
-        options.append("</option>\r\n");                    
+        StringBuffer targetSelectBox = new StringBuffer();
+        targetSelectBox.append(buttonBarSpacer(5));
+        targetSelectBox.append("<td nowrap><b>");
+        targetSelectBox.append(key("target"));
+        targetSelectBox.append("</b>&nbsp;</td>");
+        targetSelectBox.append("<td>\r\n");    
+        targetSelectBox.append("<select name=\"linktarget\" id=\"linktarget\" size=\"1\" style=\"width:150px\"");
+        if (MODE_VIEW.equals(getParamDialogMode())) {
+            targetSelectBox.append(" disabled");
+        }
+        targetSelectBox.append(">");        
+        targetSelectBox.append(getTargetOptions());
+        targetSelectBox.append("</select>");        
+        targetSelectBox.append("</td>");
         
-        return options.toString();
+        return targetSelectBox.toString();
     }
+    
+    /**
+     * Builds the HTML for the wizard button.<p>
+     * 
+     * @return the HTML for the wizard button
+     */
+    public String wizardButton() {
+        
+        return button("javascript:wizard();", null, "wizard", OpenCms.getWorkplaceManager().getExplorerTypeSetting("upload").getKey(), 0);
+    }
+    
+    /**
+     * Generates the HTML for the gallery item list headline.<p>
+     * 
+     * @return the HTML for the gallery item list headline
+     */
+    protected String buildGalleryItemListHeadline() {
+        
+        StringBuffer headline = new StringBuffer();
+        headline.append("<tr>");
+        headline.append("<td class=\"headline\">&nbsp;</td>");
+        headline.append("<td class=\"headline\" width=\"35%\">");
+        headline.append(key("label.name"));
+        headline.append("</td>");
+        headline.append("<td class=\"headline\" width=\"55%\">");
+        headline.append(key("label.title"));
+        headline.append("</td>");
+        headline.append("<td class=\"headline\" style=\"text-align: right;\" width=\"10%\">");
+        headline.append(key("label.size"));
+        headline.append("</td>");
+        headline.append("</tr>");
+        
+        return headline.toString();
+    }
+    
+    /**
+     * Returns the value of the given propertydefinition of the specified resource.<p>
+     * 
+     * if the property value is null, '[resourcename]' will be returned.<p>
+     *  
+     * @param resource the cms resource
+     * @param propertydefinition the property definition
+     * @return the value of the title property or '[resourcename]' if property value was null 
+     */
+    protected String getPropertyValue(CmsResource resource, String propertydefinition) {
+        
+        String title = "";
+        if (resource != null) {
+            String resPath = getCms().getSitePath(resource);
+            String resName = CmsResource.getName(resPath);
+            try {
+                CmsProperty titleProperty = getCms().readPropertyObject(resPath, propertydefinition, false);
+                title = titleProperty.getValue("["+resName+"]");
+            } catch (CmsException e) {
+                // ignore
+            }            
+        }
+        return title;
+    }  
     
     /**
      * Returns a list of hit items.<p>
@@ -879,29 +1109,25 @@ public abstract class CmsGallery extends CmsDialog {
     }
     
     /**
-     * Returns the value of the given propertydefinition of the specified resource.<p>
+     * Returns a HTML String representing the options of the target select box.<p>
      * 
-     * if the property value is null, '[resourcename]' will be returned.<p>
-     *  
-     * @param resource the cms resource
-     * @param propertydefinition the property definition
-     * @return the value of the title property or '[resourcename]' if property value was null 
+     * @return a HTML String representing the options of the target select box
      */
-    protected String getPropertyValue(CmsResource resource, String propertydefinition) {
+    protected String getTargetOptions() {
         
-        String title = "";
-        if (resource != null) {
-            String resPath = getCms().getSitePath(resource);
-            String resName = CmsResource.getName(resPath);
-            try {
-                CmsProperty titleProperty = getCms().readPropertyObject(resPath, propertydefinition, false);
-                title = titleProperty.getValue("["+resName+"]");
-            } catch (CmsException e) {
-                // ignore
-            }            
-        }
-        return title;
-    }  
+        StringBuffer options = new StringBuffer();
+        options.append("<option value=\"_self\">");
+        options.append(key("input.linktargetself"));
+        options.append("</option>\r\n");
+        options.append("<option value=\"_blank\">");
+        options.append(key("input.linktargetblank"));
+        options.append("</option>\r\n");
+        options.append("<option value=\"_top\">");
+        options.append(key("input.linktargettop"));
+        options.append("</option>\r\n");                    
+        
+        return options.toString();
+    }
     
     /**
      * Checks if the current user has required permissions to edit the current resource.<p>
@@ -911,6 +1137,28 @@ public abstract class CmsGallery extends CmsDialog {
      */
     protected boolean hasWritePermissions() throws CmsException {
         return getCms().hasPermissions(getCurrentResource(), CmsPermissionSet.ACCESS_WRITE, false, CmsResourceFilter.ALL);
+    }
+    
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
+     */
+    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+        // fill the parameter values in the get/set methods
+        fillParamValues(request);
+        // set the dialog type
+        setParamDialogtype(DIALOG_TYPE);
+        if (CmsStringUtil.isEmpty(getParamGalleryPath())) {
+            String lastUsedGallery = getSettings().getLastUsedGallery(getGalleryTypeId());
+            if (CmsStringUtil.isNotEmpty(lastUsedGallery)) {
+                // set the resourcepath of the last used gallery even the resource is not deleted
+                try {
+                    getCms().readResource(lastUsedGallery, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
+                    setParamGalleryPath(lastUsedGallery);
+                } catch (CmsException e) {
+                    //
+                }                
+            }
+        }          
     }
     
     /**
@@ -957,77 +1205,4 @@ public abstract class CmsGallery extends CmsDialog {
             // ignore this exception
         }                     
     }   
-    
-    /**
-     * Generates a HTML String representing a target select box.<p>
-     * 
-     * @return a HTML String representing a target select box
-     */
-    public String targetSelectBox() {
-        
-        StringBuffer targetSelectBox = new StringBuffer();
-        targetSelectBox.append(buttonBarSpacer(5));
-        targetSelectBox.append("<td nowrap><b>");
-        targetSelectBox.append(key("target"));
-        targetSelectBox.append("</b>&nbsp;</td>");
-        targetSelectBox.append("<td>\r\n");    
-        targetSelectBox.append("<select name=\"linktarget\" id=\"linktarget\" size=\"1\" style=\"width:150px\"");
-        if (MODE_VIEW.equals(getParamDialogMode())) {
-            targetSelectBox.append(" disabled");
-        }
-        targetSelectBox.append(">");        
-        targetSelectBox.append(getTargetOptions());
-        targetSelectBox.append("</select>");        
-        targetSelectBox.append("</td>");
-        
-        return targetSelectBox.toString();
-    }
-    
-    /**
-     * Generates a HTML table row with two columns.<p>
-     * 
-     * The first column includes the given key as localized string, the second column
-     * includes the value of th given property
-     *  
-     * @param column1 the string value for the first column
-     * @param column2 the string value for the second column 
-     * @return a HTML table row with two columns
-     */
-    public String previewRow(String column1, String column2) {        
-        
-        StringBuffer previewRow = new StringBuffer();
-        previewRow.append("<tr align=\"left\">");
-        previewRow.append("<td><b>");
-        previewRow.append(column1);
-        previewRow.append("</b></td>");
-        previewRow.append("<td>");
-        previewRow.append(column2);
-        previewRow.append("</td>");
-        previewRow.append("</tr>");
-        
-        return previewRow.toString();
-        
-    }
-    
-    /**
-     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
-     */
-    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
-        // fill the parameter values in the get/set methods
-        fillParamValues(request);
-        // set the dialog type
-        setParamDialogtype(DIALOG_TYPE);
-        if (CmsStringUtil.isEmpty(getParamGalleryPath())) {
-            String lastUsedGallery = getSettings().getLastUsedGallery(getGalleryTypeId());
-            if (CmsStringUtil.isNotEmpty(lastUsedGallery)) {
-                // set the resourcepath of the last used gallery even the resource is not deleted
-                try {
-                    getCms().readResource(lastUsedGallery, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
-                    setParamGalleryPath(lastUsedGallery);
-                } catch (CmsException e) {
-                    //
-                }                
-            }
-        }          
-    }
 }

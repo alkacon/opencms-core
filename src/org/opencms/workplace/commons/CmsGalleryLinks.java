@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsGalleryLinks.java,v $
- * Date   : $Date: 2004/12/08 14:30:29 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/12/09 13:53:44 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,10 @@ import org.opencms.file.types.CmsResourceTypePointer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.explorer.CmsNewResource;
+import org.opencms.workplace.explorer.CmsNewResourceUpload;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -52,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.5.2
  */
@@ -150,4 +153,64 @@ public class CmsGalleryLinks extends CmsGallery {
         
         return CmsResourceTypePointer.C_RESOURCE_TYPE_ID;
     } 
+    
+    /**
+     * @see org.opencms.workplace.commons.CmsGallery#wizardButton()
+     */
+    public String wizardButton() {
+        
+        return button("javascript:wizard();", null, "wizard", "title.new", 0);
+    }
+    
+    /**
+     * Returns the url for the new CmsResourceTypePointer dialog.<p>
+     * 
+     * @return the url for the wizard dialog
+     */
+    public String getWizardUrl() {
+        
+        StringBuffer wizardUrl = new StringBuffer();
+        wizardUrl.append(getJsp().link(C_PATH_DIALOGS+OpenCms.getWorkplaceManager().getExplorerTypeSetting(CmsResourceTypePointer.C_RESOURCE_TYPE_NAME).getNewResourceUri()));
+        wizardUrl.append("?action=newform&");
+        wizardUrl.append(CmsNewResourceUpload.PARAM_REDIRECTURL);
+        wizardUrl.append("=");
+        wizardUrl.append(C_PATH_GALLERIES);
+        wizardUrl.append("gallery_list.jsp&");
+        wizardUrl.append(CmsNewResourceUpload.PARAM_TARGETFRAME);
+        wizardUrl.append("=gallery_list&");
+        wizardUrl.append(CmsNewResource.PARAM_CURRENTFOLDER);
+        wizardUrl.append("=");
+                
+        return wizardUrl.toString();        
+    }
+    
+    /**
+     * @see org.opencms.workplace.commons.CmsGallery#buildGalleryItemListHeadline()
+     */
+    protected String buildGalleryItemListHeadline() {
+        
+        StringBuffer headline = new StringBuffer();
+        headline.append("<tr>");
+        headline.append("<td class=\"headline\">&nbsp;</td>");
+        headline.append("<td class=\"headline\" width=\"25%\">");
+        headline.append(key("label.name"));
+        headline.append("</td>");
+        headline.append("<td class=\"headline\" width=\"45%\">");
+        headline.append(key("label.title"));
+        headline.append("</td>");
+        headline.append("<td class=\"headline\" width=\"30%\">");
+        headline.append(key("input.linkto"));
+        headline.append("</td>");
+        headline.append("</tr>");
+        
+        return headline.toString();
+    }
+    
+    /**
+     * @see org.opencms.workplace.commons.CmsGallery#getHeadFrameSetHeight()
+     */
+    public String getHeadFrameSetHeight() {
+        
+        return "450";
+    }
 }

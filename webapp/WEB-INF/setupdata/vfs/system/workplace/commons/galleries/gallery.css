@@ -4,15 +4,17 @@ a:hover { text-decoration: underline; }
 a.list { text-decoration: none; color: #000;}
 a:hover.list { text-decoration: underline; color: #0000AA;}
 		
-td.fc{ color: #b40000; } 
+td.fc{ color: #b40000; white-space: nowrap; padding-left: 2px; } 
 a.fc{ color: #b40000; } 
 a:visited.fc { color: #b40000; }
 a:hover.fc { text-decoration: underline; color: #000088; } 
 	
-td.fn { color: #0000aa; } 
+td.fn { color: #0000aa; white-space: nowrap; padding-left: 2px; } 
 a.fn { color: #0000aa; } 
 a:visited.fn { color: #0000aa; } 
 a:hover.fn { text-decoration: underline; color: #000088; } 
+
+.nowrap { white-space: nowrap; }
 		
 td.list { white-space: nowrap; padding-left: 2px; }
 		

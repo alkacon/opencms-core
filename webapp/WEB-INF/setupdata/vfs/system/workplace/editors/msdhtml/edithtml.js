@@ -622,12 +622,12 @@ function doEditHTML(para) {
 		makeImageLinks();
 		break;
 	case 43:
-		openWindow = window.open(workplacePath + "commons/galleries/img_fs.jsp", "PicBrowser", "width=550, height=700, resizable=yes, top=20, left=100");
+		openWindow = window.open(workplacePath + "commons/galleries/gallery_fs.jsp?gallerytypename=imagegallery", "PicBrowser", "width=650, height=700, resizable=yes, top=20, left=100");
 		focusCount = 1;
 		openWindow.focus();
 		break;
 	case 44:
-		openWindow = window.open(workplacePath + "commons/galleries/download_fs.jsp", "DowloadBrowser", "width=550, height=700, resizable=yes, top=20, left=100");
+		openWindow = window.open(workplacePath + "commons/galleries/gallery_fs.jsp?gallerytypename=downloadgallery", "DowloadBrowser", "width=650, height=700, resizable=yes, top=20, left=100");
 		focusCount = 1;
 		openWindow.focus();
 		break;
@@ -695,12 +695,12 @@ function doEditHTML(para) {
 		}
 		break;
 	case 56:
-		openWindow = window.open(workplacePath + "commons/galleries/link_fs.jsp", "LinkBrowser", "width=550, height=700, resizable=yes, top=20, left=100");
+		openWindow = window.open(workplacePath + "commons/galleries/gallery_fs.jsp?gallerytypename=linkgallery", "LinkBrowser", "width=650, height=700, resizable=yes, top=20, left=100");
 		focusCount = 1;
 		openWindow.focus();
 		break;
 	case 57:
-		openWindow = window.open(workplacePath + "commons/galleries/html_fs.jsp", "PicBrowser", "width=550, height=700, resizable=yes, top=20, left=100");
+		openWindow = window.open(workplacePath + "commons/galleries/gallery_fs.jsp?gallerytypename=htmlgallery", "HtmlBrowser", "width=650, height=700, resizable=yes, top=20, left=100");
 		focusCount = 1;
 		openWindow.focus();
 		break;

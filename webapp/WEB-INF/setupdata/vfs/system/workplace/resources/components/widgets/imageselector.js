@@ -42,7 +42,7 @@ var imgGalleryPath;
 
 // opens the image gallery popup window, dialog mode has to be "widget" (as defined in CmsGallery.MODE_WIDGET)
 function openImageSelector(dialogMode, fieldId) {
-	var paramString = "?dialogmode=" + dialogMode;
+	var paramString = "&dialogmode=" + dialogMode;
 	paramString += "&fieldid=" + fieldId;
 	var treewin = window.open(imgContextPrefix + imgGalleryPath + paramString, "opencms", 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=20,left=150,width=550,height=700');
 }

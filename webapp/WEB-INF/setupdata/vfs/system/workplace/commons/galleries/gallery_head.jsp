@@ -1,18 +1,14 @@
-<%@ page import="org.opencms.jsp.*,
+<%@ page import="org.opencms.jsp.*, 
 					  org.opencms.workplace.CmsWorkplaceManager,
-					  org.opencms.main.OpenCms, 
 					  org.opencms.util.CmsStringUtil,
-					  org.opencms.workplace.commons.*,
-					  org.opencms.workplace.explorer.CmsExplorerTypeSettings,
-					  org.opencms.workplace.explorer.CmsNewResource,
-					  org.opencms.workplace.explorer.CmsNewResourceUpload,
-					  org.opencms.file.types.CmsResourceTypePointer" buffer="none" session="false" %>
+					  org.opencms.workplace.commons.*" buffer="none" session="false" %>
 
 <%	
 	// initialize action element for link substitution
 	CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
-	// initialize the workplace class
-	CmsGalleryDownloads wp = new CmsGalleryDownloads(pageContext, request, response);
+	
+	// get gallery instance
+	CmsGallery wp = CmsGallery.createInstance(cms);
 	
 %><%= wp.htmlStart(null) %>
 
@@ -30,7 +26,7 @@
 			}
 			mainForm.submit();
 		<% } else { %>
-			alert("<%=wp.key("error.reason.downnogallery")%>");
+			alert("<%=wp.getNoGalleryErrorMsg()%>");
 			top.window.close();			
 		<% } %>
 	}
@@ -45,33 +41,32 @@
 		}
 	}
 	
-	function upload() {
+	function wizard() {
 		var currentfolder = document.main.gallerypath.value;
-		top.gallery_fs.gallery_list.location.href="<%=wp.getJsp().link(wp.C_PATH_DIALOGS+OpenCms.getWorkplaceManager().getExplorerTypeSetting("upload").getNewResourceUri())%>?<%=CmsNewResourceUpload.PARAM_REDIRECTURL%>=<%=wp.C_PATH_DIALOGS%>galleries/download_list.jsp&<%=CmsNewResourceUpload.PARAM_TARGETFRAME%>=gallery_list&<%=CmsNewResource.PARAM_CURRENTFOLDER%>="+currentfolder;
+		top.gallery_fs.gallery_list.location.href="<%= wp.getWizardUrl()%>"+currentfolder;		
 	}
 //-->
 </script>
 
 </head>
 
-<body onload="self.focus();" style="background-color: ThreeDFace; margin: 0; padding: 2px;" <%= CmsStringUtil.isEmpty(wp.getParamGalleryPath())==true?"onload=\"displayGallery();\"":"" %>>
+<body onload="<%=wp.getBodyOnload()%>" style="background-color: ThreeDFace; margin: 0; padding: 2px;">
 
-<form name="main" action="<%= cms.link("download_fs_head.jsp") %>" target="gallery_fs" method="post" class="nomargin">
+<form name="main" action="<%= cms.link("gallery_fs_head.jsp") %>" target="gallery_fs" method="post" class="nomargin">
 <input type="hidden" name="<%= wp.PARAM_DIALOGMODE %>" value="<%= wp.getParamDialogMode() %>">
 <input type="hidden" name="<%= wp.PARAM_FIELDID %>" value="<%= wp.getParamFieldId() %>">
-
 <table border="0" cellpadding="1" cellspacing="0" width="100%">
 <tr>
-	<td colspan="2"><%= wp.galleriesExists()==true?"":wp.key("error.reason.downnogallery") %><%= wp.buildGallerySelectBox() %></td>
+	<td colspan="2"><%= wp.buildGallerySelectBox() %></td>
 </tr>
 <tr>
 	<td class="maxwidth">
 		<table class="maxwidth" border="0" cellpadding="0" cellspacing="0">
 		<tr>
-			<%= wp.button("javascript:upload();", null, "wizard", OpenCms.getWorkplaceManager().getExplorerTypeSetting("upload").getKey(), 0) %>
+			<%= wp.wizardButton() %>
 			<%= wp.buttonBarSpacer(5) %>
 			<td class="maxwidth"><input type="text" style="width: 98%" name="<%= wp.PARAM_SEARCHWORD %>" id="<%= wp.PARAM_SEARCHWORD %>" value="<%= wp.getParamSearchWord() %>"></td>			
-			<%= wp.button("javascript:displayGallery();", null, "search", "input.search", 0) %>
+			<%= wp.searchButton() %>			
 		</tr>
 		</table>
 	</td>
@@ -87,7 +82,7 @@
 
 </form>
 
-<form name="list" action="<%= cms.link("download_list.jsp") %>" method="post" class="nomargin" target="gallery_list">
+<form name="list" action="<%= cms.link("gallery_list.jsp") %>" method="post" class="nomargin" target="gallery_list">
 	<input type="hidden" name="<%= wp.PARAM_GALLERYPATH %>" value="<%= wp.getParamGalleryPath() %>">
 	<input type="hidden" name="<%= wp.PARAM_PAGE %>">
 	<input type="hidden" name="<%= wp.PARAM_SEARCHWORD %>">
