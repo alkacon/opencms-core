@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/Attic/CmsLockDispatcher.java,v $
- * Date   : $Date: 2003/08/26 10:01:42 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2003/08/29 10:12:32 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Map;
  * are instances of CmsLock objects.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.38 $ $Date: 2003/08/26 10:01:42 $
+ * @version $Revision: 1.39 $ $Date: 2003/08/29 10:12:32 $
  * @since 5.1.4
  * @see com.opencms.file.CmsObject#getLock(CmsResource)
  * @see org.opencms.lock.CmsLock
@@ -178,7 +178,6 @@ public final class CmsLockDispatcher extends Object {
 
         if (context.currentProject().getId() == I_CmsConstants.C_PROJECT_ONLINE_ID) {
             // resources are never locked in the online project
-
             return CmsLock.getNullLock();
         }
 
@@ -186,7 +185,6 @@ public final class CmsLockDispatcher extends Object {
 
         if (resource == null || resource.getState() == I_CmsConstants.C_STATE_DELETED) {
             // deleted, removed or non-existent resources are never locked
-
             return CmsLock.getNullLock();
         }
 
@@ -194,7 +192,6 @@ public final class CmsLockDispatcher extends Object {
 
         if (m_exclusiveLocks.containsKey(resourcename)) {
             // the resource is exclusive locked
-
             return (CmsLock) m_exclusiveLocks.get(resourcename);
         }
 
@@ -212,13 +209,11 @@ public final class CmsLockDispatcher extends Object {
 
                 if (siblingLock != null) {
                     // a sibling is already exclusive locked
-
                     return new CmsLock(resourcename, siblingLock.getUserId(), siblingLock.getProjectId(), CmsLock.C_TYPE_SHARED_EXCLUSIVE);
                 }
             }
 
             // no locked siblings found
-
             return CmsLock.getNullLock();
         } else {
             // a parent folder is locked
@@ -228,13 +223,11 @@ public final class CmsLockDispatcher extends Object {
 
                 if (m_exclusiveLocks.containsKey(sibling.getFullResourceName())) {
                     // a sibling is already exclusive locked
-
                     return new CmsLock(resourcename, parentFolderLock.getUserId(), parentFolderLock.getProjectId(), CmsLock.C_TYPE_SHARED_INHERITED);
                 }
             }
 
             // no locked siblings found
-
             return new CmsLock(resourcename, parentFolderLock.getUserId(), parentFolderLock.getProjectId(), CmsLock.C_TYPE_INHERITED);
         }
     }
@@ -372,7 +365,6 @@ public final class CmsLockDispatcher extends Object {
         }
 
         // remove the lock and clean-up stuff
-
         if (lock.getType() == CmsLock.C_TYPE_EXCLUSIVE) {
             if (resourcename.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
                 // in case of a folder, remove any exclusive locks on sub-resources that probably have
