@@ -380,7 +380,7 @@
 			<editor>Editor</editor>
 			<email>EMail</email>
 			<exportadd>hinzufügen</exportadd>
-			<exportresources>zu exportierende Resourcen</exportresources>
+			<exportresources>zu exportierende Ressourcen</exportresources>
 			<exportfilename>Name der Exportdatei</exportfilename>
 			<filter>Filter</filter>
 			<firstelement>an erster Position</firstelement>
