@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2001/10/04 15:13:30 $
-* Version: $Revision: 1.66 $
+* Date   : $Date: 2001/10/16 09:09:45 $
+* Version: $Revision: 1.67 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import com.opencms.util.*;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.66 $ $Date: 2001/10/04 15:13:30 $ *
+ * @version $Revision: 1.67 $ $Date: 2001/10/16 09:09:45 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     /**
@@ -426,16 +426,6 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
      * Private method to init all default-resources
      */
     protected void fillDefaults() throws CmsException {
-        // the resourceType "folder" is needed always - so adding it
-        //Hashtable resourceTypes = new Hashtable(1);
-        //resourceTypes.put(C_TYPE_FOLDER_NAME, new I_CmsResourceType(C_TYPE_FOLDER, 0, C_TYPE_FOLDER_NAME, ""));
-
-        // sets the last used index of resource types.
-        //resourceTypes.put(C_TYPE_LAST_INDEX, new Integer(C_TYPE_FOLDER));
-
-        // add the resource-types to the database
-        //addSystemProperty(C_SYSTEMPROPERTY_RESOURCE_TYPE, resourceTypes);
-
         // set the groups
         CmsGroup guests = createGroup(C_GROUP_GUEST, "the guest-group", C_FLAG_ENABLED, null);
         CmsGroup administrators = createGroup(C_GROUP_ADMIN, "the admin-group", C_FLAG_ENABLED | C_FLAG_GROUP_PROJECTMANAGER, null);
@@ -454,11 +444,24 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
         CmsProject online = createProject(admin, guests, projectleader, task, C_PROJECT_ONLINE, "the online-project", C_FLAG_ENABLED, C_PROJECT_TYPE_NORMAL);
 
         // create the root-folder for the online project
-
+        int siteRootId = 0;
         CmsFolder rootFolder = createFolder(admin, online, C_UNKNOWN_ID, C_UNKNOWN_ID, C_ROOT, 0);
         rootFolder.setGroupId(users.getId());
+        rootFolder.setState(C_STATE_UNCHANGED);
         writeFolder(online, rootFolder, false);
-
+        rootFolder = createFolder(admin, online, rootFolder.getResourceId(), C_UNKNOWN_ID, C_DEFAULT_SITE+C_ROOT, 0);
+        rootFolder.setGroupId(users.getId());
+        rootFolder.setState(C_STATE_UNCHANGED);
+        writeFolder(online, rootFolder, false);
+        siteRootId = rootFolder.getResourceId();
+        rootFolder = createFolder(admin, online, siteRootId, C_UNKNOWN_ID, C_DEFAULT_SITE+C_ROOTNAME_VFS+C_ROOT, 0);
+        rootFolder.setGroupId(users.getId());
+        rootFolder.setState(C_STATE_UNCHANGED);
+        writeFolder(online, rootFolder, false);
+        rootFolder = createFolder(admin, online, siteRootId, C_UNKNOWN_ID, C_DEFAULT_SITE+C_ROOTNAME_COS+C_ROOT, 0);
+        rootFolder.setGroupId(users.getId());
+        rootFolder.setState(C_STATE_UNCHANGED);
+        writeFolder(online, rootFolder, false);
         // create the setup project
         task = createTask(0, 0, 1, admin.getId(), admin.getId(), administrators.getId(),
                                     "_setupProject", new java.sql.Timestamp(new java.util.Date().getTime()),
@@ -470,6 +473,19 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 
         // create the root-folder for the offline project
         rootFolder = createFolder(admin, setup, C_UNKNOWN_ID, C_UNKNOWN_ID, C_ROOT, 0);
+        rootFolder.setGroupId(users.getId());
+        rootFolder.setState(C_STATE_UNCHANGED);
+        writeFolder(setup, rootFolder, false);
+        rootFolder = createFolder(admin, setup, rootFolder.getResourceId(), C_UNKNOWN_ID, C_DEFAULT_SITE+C_ROOT, 0);
+        rootFolder.setGroupId(users.getId());
+        rootFolder.setState(C_STATE_UNCHANGED);
+        writeFolder(setup, rootFolder, false);
+        siteRootId = rootFolder.getResourceId();
+        rootFolder = createFolder(admin, setup, siteRootId, C_UNKNOWN_ID, C_DEFAULT_SITE+C_ROOTNAME_VFS+C_ROOT, 0);
+        rootFolder.setGroupId(users.getId());
+        rootFolder.setState(C_STATE_UNCHANGED);
+        writeFolder(setup, rootFolder, false);
+        rootFolder = createFolder(admin, setup, siteRootId, C_UNKNOWN_ID, C_DEFAULT_SITE+C_ROOTNAME_COS+C_ROOT, 0);
         rootFolder.setGroupId(users.getId());
         rootFolder.setState(C_STATE_UNCHANGED);
         writeFolder(setup, rootFolder, false);
@@ -542,7 +558,7 @@ public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProje
         } else if (currentFolder.getState() == C_STATE_DELETED)
         {
             deletedFolders.addElement(currentFolder);
-            changedResources.addElement(currentFolder.getAbsolutePath());
+            changedResources.addElement(currentFolder.getResourceName());
             // C_STATE_NEW
         }
         else
@@ -559,13 +575,13 @@ public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProje
                 Integer parentId = (Integer) folderIdIndex.get(new Integer(currentFolder.getParentId()));
                 if (parentId == null)
                 {
-                    CmsFolder currentOnlineParent = readFolder(onlineProject.getId(), currentFolder.getParent());
+                    CmsFolder currentOnlineParent = readFolder(onlineProject.getId(), currentFolder.getRootName()+currentFolder.getParent());
                     parentId = new Integer(currentOnlineParent.getResourceId());
                     folderIdIndex.put(new Integer(currentFolder.getParentId()), parentId);
                 }
                 // create the new folder and insert its id in the folderindex
                 try {
-                    newFolder = createFolder(user, onlineProject, onlineProject, currentFolder, parentId.intValue(), currentFolder.getAbsolutePath());
+                    newFolder = createFolder(user, onlineProject, onlineProject, currentFolder, parentId.intValue(), currentFolder.getResourceName());
                     newFolder.setState(C_STATE_UNCHANGED);
                     updateResourcestate(newFolder);
                 } catch (CmsException e) {
@@ -573,7 +589,7 @@ public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProje
                         // the folder already exists
                         CmsFolder onlineFolder = null;
                         try {
-                            onlineFolder = readFolder(onlineProject.getId(), currentFolder.getAbsolutePath());
+                            onlineFolder = readFolder(onlineProject.getId(), currentFolder.getResourceName());
                         } catch (CmsException exc) {
                             throw exc;
                         } // end of catch
@@ -599,7 +615,7 @@ public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProje
                             statement.setInt(14, onlineFolder.getFileId());
                             statement.setInt(15, onlineFolder.getResourceId());
                             statement.executeUpdate();
-                            newFolder = readFolder(onlineProject.getId(), currentFolder.getAbsolutePath());
+                            newFolder = readFolder(onlineProject.getId(), currentFolder.getResourceName());
                         } catch (SQLException sqle) {
                             throw new CmsException("[" + this.getClass().getName() + "] " + sqle.getMessage(), CmsException.C_SQL_ERROR, sqle);
                         } finally {
@@ -650,7 +666,7 @@ public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProje
             else
                 if (currentFolder.getState() == C_STATE_CHANGED)
                 {
-                    changedResources.addElement(currentFolder.getAbsolutePath());
+                    changedResources.addElement(currentFolder.getResourceName());
                     // export to filesystem if necessary
                     String exportKey = checkExport(currentFolder.getAbsolutePath());
                     if (exportKey != null)
@@ -660,7 +676,7 @@ public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProje
                     CmsFolder onlineFolder = null;
                     try
                     {
-                        onlineFolder = readFolder(onlineProject.getId(), currentFolder.getAbsolutePath());
+                        onlineFolder = readFolder(onlineProject.getId(), currentFolder.getResourceName());
                     }
                     catch (CmsException exc)
                     {
@@ -673,12 +689,12 @@ public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProje
                             Integer parentId = (Integer) folderIdIndex.get(new Integer(currentFolder.getParentId()));
                             if (parentId == null)
                             {
-                                CmsFolder currentOnlineParent = readFolder(onlineProject.getId(), currentFolder.getParent());
+                                CmsFolder currentOnlineParent = readFolder(onlineProject.getId(), currentFolder.getRootName()+currentFolder.getParent());
                                 parentId = new Integer(currentOnlineParent.getResourceId());
                                 folderIdIndex.put(new Integer(currentFolder.getParentId()), parentId);
                             }
                             // create the new folder
-                            onlineFolder = createFolder(user, onlineProject, onlineProject, currentFolder, parentId.intValue(), currentFolder.getAbsolutePath());
+                            onlineFolder = createFolder(user, onlineProject, onlineProject, currentFolder, parentId.intValue(), currentFolder.getResourceName());
                             onlineFolder.setState(C_STATE_UNCHANGED);
                             updateResourcestate(onlineFolder);
                         }
@@ -775,13 +791,13 @@ public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProje
         } else if (currentFile.getName().startsWith(C_TEMP_PREFIX))
         {
             deleteAllProperties(projectId, currentFile.getResourceId());
-            removeFile(projectId, currentFile.getAbsolutePath());
+            removeFile(projectId, currentFile.getResourceName());
             // C_STATE_DELETE
         }
         else
             if (currentFile.getState() == C_STATE_DELETED)
             {
-                changedResources.addElement(currentFile.getAbsolutePath());
+                changedResources.addElement(currentFile.getResourceName());
                 // delete in filesystem if necessary
                 String exportKey = checkExport(currentFile.getAbsolutePath());
                 if (exportKey != null)
@@ -802,7 +818,7 @@ public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProje
                 }
                 try
                 {
-                    CmsFile currentOnlineFile = readFile(onlineProject.getId(), onlineProject.getId(), currentFile.getAbsolutePath());
+                    CmsFile currentOnlineFile = readFile(onlineProject.getId(), onlineProject.getId(), currentFile.getResourceName());
                     try
                     {
                         deleteAllProperties(onlineProject.getId(), currentOnlineFile);
@@ -840,7 +856,7 @@ public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProje
             else
                 if (currentFile.getState() == C_STATE_CHANGED)
                 {
-                    changedResources.addElement(currentFile.getAbsolutePath());
+                    changedResources.addElement(currentFile.getResourceName());
                     // export to filesystem if necessary
                     String exportKey = checkExport(currentFile.getAbsolutePath());
                     if (exportKey != null)
@@ -850,7 +866,7 @@ public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProje
                     CmsFile onlineFile = null;
                     try
                     {
-                        onlineFile = readFileHeader(onlineProject.getId(), currentFile.getAbsolutePath());
+                        onlineFile = readFileHeader(onlineProject.getId(), currentFile.getResourceName());
                     }
                     catch (CmsException exc)
                     {
@@ -860,13 +876,13 @@ public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProje
                             Integer parentId = (Integer) folderIdIndex.get(new Integer(currentFile.getParentId()));
                             if (parentId == null)
                             {
-                                CmsFolder currentOnlineParent = readFolder(onlineProject.getId(), currentFolder.getParent());
+                                CmsFolder currentOnlineParent = readFolder(onlineProject.getId(), currentFolder.getRootName()+currentFolder.getParent());
                                 parentId = new Integer(currentOnlineParent.getResourceId());
                                 folderIdIndex.put(new Integer(currentFile.getParentId()), parentId);
                             }
                             // create a new File
                             currentFile.setState(C_STATE_UNCHANGED);
-                            onlineFile = createFile(onlineProject, onlineProject, currentFile, user.getId(), parentId.intValue(), currentFile.getAbsolutePath(), false);
+                            onlineFile = createFile(onlineProject, onlineProject, currentFile, user.getId(), parentId.intValue(), currentFile.getResourceName(), false);
                         }
                     } // end of catch
                     PreparedStatement statement = null;
@@ -958,22 +974,22 @@ public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProje
                         Integer parentId = (Integer) folderIdIndex.get(new Integer(currentFile.getParentId()));
                         if (parentId == null)
                         {
-                            CmsFolder currentOnlineParent = readFolder(onlineProject.getId(), currentFile.getParent());
+                            CmsFolder currentOnlineParent = readFolder(onlineProject.getId(), currentFile.getRootName()+currentFile.getParent());
                             parentId = new Integer(currentOnlineParent.getResourceId());
                             folderIdIndex.put(new Integer(currentFile.getParentId()), parentId);
                         }
                         //first remove the file if it already exists in online project
-                        //removeFile(onlineProject.getId(), currentFile.getAbsolutePath());
+                        //removeFile(onlineProject.getId(), currentFile.getResourceName());
                         try{
                             // create the new file
-                            newFile = createFile(onlineProject, onlineProject, currentFile, user.getId(), parentId.intValue(), currentFile.getAbsolutePath(), false);
+                            newFile = createFile(onlineProject, onlineProject, currentFile, user.getId(), parentId.intValue(), currentFile.getResourceName(), false);
                             newFile.setState(C_STATE_UNCHANGED);
                             updateResourcestate(newFile);
                         } catch(CmsException e){
                             if (e.getType() == CmsException.C_FILE_EXISTS) {
                                 CmsFile onlineFile = null;
                                 try {
-                                    onlineFile = readFileHeader(onlineProject.getId(), currentFile.getAbsolutePath());
+                                    onlineFile = readFileHeader(onlineProject.getId(), currentFile.getResourceName());
                                 } catch (CmsException exc) {
                                     throw exc;
                                 } // end of catch
@@ -1004,7 +1020,7 @@ public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProje
                                     statement.setInt(2, onlineFile.getFileId());
                                     statement.executeUpdate();
                                     statement.close();
-                                    newFile = readFile(onlineProject.getId(), onlineProject.getId(), currentFile.getAbsolutePath());
+                                    newFile = readFile(onlineProject.getId(), onlineProject.getId(), currentFile.getResourceName());
                                 } catch (SQLException sqle) {
                                     throw new CmsException("[" + this.getClass().getName() + "] " + sqle.getMessage(), CmsException.C_SQL_ERROR, sqle);
                                 } finally {
@@ -1065,7 +1081,7 @@ public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProje
             // backup the offline resource
             backupResource(projectId, currentFolder, new byte[0], props, versionId, publishDate);
         }
-        CmsResource delOnlineFolder = readFolder(onlineProject.getId(), currentFolder.getAbsolutePath());
+        CmsResource delOnlineFolder = readFolder(onlineProject.getId(), currentFolder.getResourceName());
         try{
             deleteAllProperties(onlineProject.getId(), delOnlineFolder);
             deleteAllProperties(projectId,currentFolder);
@@ -1077,8 +1093,8 @@ public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProje
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] error publishing, deleting properties for " + currentFolder.toString() + " Message= " + exc.getMessage());
             }
         }
-        removeFolderForPublish(onlineProject.getId(), currentFolder.getAbsolutePath());
-        removeFolderForPublish(projectId, currentFolder.getAbsolutePath());
+        removeFolderForPublish(onlineProject.getId(), currentFolder.getResourceName());
+        removeFolderForPublish(projectId, currentFolder.getResourceName());
     } // end of for
     //clearFilesTable();
     return changedResources;

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2001/10/02 13:05:09 $
-* Version: $Revision: 1.41 $
+* Date   : $Date: 2001/10/16 09:10:01 $
+* Version: $Revision: 1.42 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import com.opencms.util.*;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.41 $ $Date: 2001/10/02 13:05:09 $ *
+ * @version $Revision: 1.42 $ $Date: 2001/10/16 09:10:01 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -236,7 +236,7 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
             statement.registerOutParameter(1, Types.INTEGER);
             statement.setInt(2, currentUser.getId());
             statement.setInt(3, currentProject.getId());
-            statement.setString(4, resource.getAbsolutePath());
+            statement.setString(4, resource.getResourceName());
             statement.execute();
             if (statement.getInt(1) == 1) {
                 return true;

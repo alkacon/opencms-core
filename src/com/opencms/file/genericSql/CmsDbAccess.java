@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2001/10/05 06:59:18 $
-* Version: $Revision: 1.220 $
+* Date   : $Date: 2001/10/16 09:09:33 $
+* Version: $Revision: 1.221 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import com.opencms.launcher.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.220 $ $Date: 2001/10/05 06:59:18 $ *
+ * @version $Revision: 1.221 $ $Date: 2001/10/16 09:09:33 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -1901,7 +1901,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                     statement=con.prepareStatement(m_cq.get("C_RESOURCES_REMOVE"+usedStatement));
                     statement.setInt(1,C_STATE_DELETED);
                     statement.setInt(2,C_UNKNOWN_ID);
-                    statement.setString(3, orgFolder.getAbsolutePath());
+                    statement.setString(3, orgFolder.getResourceName());
                     statement.executeUpdate();
                 } catch (SQLException e){
                     throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
@@ -2599,7 +2599,7 @@ public void exportStaticResources(String exportTo, String res, int projectId, in
                 exportStaticResources(exportTo, readFileHeader(projectId, resource));
             }else{
                 // it is a folder so call this again
-                exportStaticResources(exportTo, resource.getAbsolutePath(), projectId, onlineId);
+                exportStaticResources(exportTo, resource.getResourceName(), projectId, onlineId);
             }
         }
     }
@@ -2617,7 +2617,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
     if(exportTo.endsWith("/")){
         exportTo = exportTo.substring(0, exportTo.length()-1);
     }
-    String path = file.getAbsolutePath();
+    String path = file.getResourceName();
 
     // is the exportfoleder present?
     File discFolder = new File(exportTo + "/");
@@ -2657,7 +2657,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
     }
 
     // set the filename in the dummy request
-    ((CmsDummyRequest)m_cmsForStaticExport.getRequestContext().getRequest()).setRequestedResource(file.getAbsolutePath());
+    ((CmsDummyRequest)m_cmsForStaticExport.getRequestContext().getRequest()).setRequestedResource(file.getResourceName());
     launcher.initlaunch(m_cmsForStaticExport, file, startTemplateClass, null);
 
 }
@@ -2670,16 +2670,6 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] fillDefaults() starting NOW!");
         }
-
-        // the resourceType "folder" is needed always - so adding it
-        //Hashtable resourceTypes = new Hashtable(1);
-        //resourceTypes.put(C_TYPE_FOLDER_NAME, new CmsResourceType(C_TYPE_FOLDER, 0, C_TYPE_FOLDER_NAME, ""));
-
-        // sets the last used index of resource types.
-        //resourceTypes.put(C_TYPE_LAST_INDEX, new Integer(C_TYPE_FOLDER));
-
-        // add the resource-types to the database
-        //addSystemProperty(C_SYSTEMPROPERTY_RESOURCE_TYPE, resourceTypes);
 
         // set the groups
         CmsGroup guests = createGroup(C_GROUP_GUEST, "the guest-group", C_FLAG_ENABLED, null);
@@ -2699,8 +2689,26 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
         CmsProject online = createProject(admin, guests, projectleader, task, C_PROJECT_ONLINE, "the online-project", C_FLAG_ENABLED, C_PROJECT_TYPE_NORMAL);
 
         // create the root-folder for the online project
+        int siteRootId = 0;
         CmsFolder rootFolder = createFolder(admin, online, C_UNKNOWN_ID, C_UNKNOWN_ID, C_ROOT, 0);
         rootFolder.setGroupId(users.getId());
+        rootFolder.setState(C_STATE_UNCHANGED);
+        writeFolder(online, rootFolder, false);
+        // create the folder for the default site
+        rootFolder = createFolder(admin, online, rootFolder.getResourceId(), C_UNKNOWN_ID, C_DEFAULT_SITE+C_ROOT, 0);
+        rootFolder.setGroupId(users.getId());
+        rootFolder.setState(C_STATE_UNCHANGED);
+        writeFolder(online, rootFolder, false);
+        siteRootId = rootFolder.getResourceId();
+        // create the folder for the virtual file system
+        rootFolder = createFolder(admin, online, siteRootId, C_UNKNOWN_ID, C_DEFAULT_SITE+C_ROOTNAME_VFS+C_ROOT, 0);
+        rootFolder.setGroupId(users.getId());
+        rootFolder.setState(C_STATE_UNCHANGED);
+        writeFolder(online, rootFolder, false);
+        // create the folder for the context objects system
+        rootFolder = createFolder(admin, online, siteRootId, C_UNKNOWN_ID, C_DEFAULT_SITE+C_ROOTNAME_COS+C_ROOT, 0);
+        rootFolder.setGroupId(users.getId());
+        rootFolder.setState(C_STATE_UNCHANGED);
         writeFolder(online, rootFolder, false);
         // create the task for the setup project
         task = createTask(0, 0, 1, admin.getId(), admin.getId(), administrators.getId(),
@@ -2713,6 +2721,22 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 
         // create the root-folder for the offline project
         rootFolder = createFolder(admin, setup, C_UNKNOWN_ID, C_UNKNOWN_ID, C_ROOT, 0);
+        rootFolder.setGroupId(users.getId());
+        rootFolder.setState(C_STATE_UNCHANGED);
+        writeFolder(setup, rootFolder, false);
+        // create the folder for the default site
+        rootFolder = createFolder(admin, setup, rootFolder.getResourceId(), C_UNKNOWN_ID, C_DEFAULT_SITE+C_ROOT, 0);
+        rootFolder.setGroupId(users.getId());
+        rootFolder.setState(C_STATE_UNCHANGED);
+        writeFolder(setup, rootFolder, false);
+        siteRootId = rootFolder.getResourceId();
+        // create the folder for the virtual file system
+        rootFolder = createFolder(admin, setup, siteRootId, C_UNKNOWN_ID, C_DEFAULT_SITE+C_ROOTNAME_VFS+C_ROOT, 0);
+        rootFolder.setGroupId(users.getId());
+        rootFolder.setState(C_STATE_UNCHANGED);
+        writeFolder(setup, rootFolder, false);
+        // create the folder for the context objects system
+        rootFolder = createFolder(admin, setup, siteRootId, C_UNKNOWN_ID, C_DEFAULT_SITE+C_ROOTNAME_COS+C_ROOT, 0);
         rootFolder.setGroupId(users.getId());
         rootFolder.setState(C_STATE_UNCHANGED);
         writeFolder(setup, rootFolder, false);
@@ -3353,12 +3377,13 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
      * Reads the complete folder-tree for this project.<BR>
      *
      * @param project The project in which the folders are.
+     * @param rootName The name of the root, e.g. /default/vfs
      *
      * @return A Vecor of folders.
      *
      * @exception CmsException Throws CmsException if operation was not succesful
      */
-    public Vector getFolderTree(int projectId) throws CmsException {
+    public Vector getFolderTree(int projectId, String rootName) throws CmsException {
         Vector folders = new Vector();
         CmsFolder folder;
         ResultSet res = null;
@@ -3380,6 +3405,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
             con = DriverManager.getConnection(usedPool);
             statement = con.prepareStatement(m_cq.get("C_RESOURCES_GET_FOLDERTREE"+usedStatement));
             statement.setInt(1, projectId);
+            statement.setString(2, rootName+"%");
             res = statement.executeQuery();
 
             // create new file
@@ -4551,7 +4577,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
             // C_STATE_DELETE
             } else if (currentFolder.getState() == C_STATE_DELETED){
                 deletedFolders.addElement(currentFolder);
-                changedResources.addElement(currentFolder.getAbsolutePath());
+                changedResources.addElement(currentFolder.getResourceName());
                 // C_STATE_NEW
             } else if (currentFolder.getState() == C_STATE_NEW){
                 // export to filesystem if necessary
@@ -4562,13 +4588,13 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
                 // get parentId for onlineFolder either from folderIdIndex or from the database
                 Integer parentId = (Integer) folderIdIndex.get(new Integer(currentFolder.getParentId()));
                 if (parentId == null){
-                    CmsFolder currentOnlineParent = readFolder(onlineProject.getId(), currentFolder.getParent());
+                    CmsFolder currentOnlineParent = readFolder(onlineProject.getId(), currentFolder.getRootName()+currentFolder.getParent());
                     parentId = new Integer(currentOnlineParent.getResourceId());
                     folderIdIndex.put(new Integer(currentFolder.getParentId()), parentId);
                 }
                 // create the new folder and insert its id in the folderindex
                 try {
-                    newFolder = createFolder(user, onlineProject, onlineProject, currentFolder, parentId.intValue(), currentFolder.getAbsolutePath());
+                    newFolder = createFolder(user, onlineProject, onlineProject, currentFolder, parentId.intValue(), currentFolder.getResourceName());
                     newFolder.setState(C_STATE_UNCHANGED);
                     updateResourcestate(newFolder);
                 } catch (CmsException e) {
@@ -4576,7 +4602,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
                     if (e.getType() == CmsException.C_FILE_EXISTS) {
                         CmsFolder onlineFolder = null;
                         try {
-                            onlineFolder = readFolder(onlineProject.getId(), currentFolder.getAbsolutePath());
+                            onlineFolder = readFolder(onlineProject.getId(), currentFolder.getResourceName());
                         } catch (CmsException exc) {
                             throw exc;
                         } // end of catch
@@ -4602,7 +4628,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
                             statement.setInt(14, onlineFolder.getFileId());
                             statement.setInt(15, onlineFolder.getResourceId());
                             statement.executeUpdate();
-                            newFolder = readFolder(onlineProject.getId(), currentFolder.getAbsolutePath());
+                            newFolder = readFolder(onlineProject.getId(), currentFolder.getResourceName());
                         } catch (SQLException sqle) {
                             throw new CmsException("[" + this.getClass().getName() + "] " + sqle.getMessage(), CmsException.C_SQL_ERROR, sqle);
                         } finally {
@@ -4645,7 +4671,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
                 updateResourcestate(currentFolder);
                 // C_STATE_CHANGED
             } else if (currentFolder.getState() == C_STATE_CHANGED){
-                changedResources.addElement(currentFolder.getAbsolutePath());
+                changedResources.addElement(currentFolder.getResourceName());
                 // export to filesystem if necessary
                 String exportKey = checkExport(currentFolder.getAbsolutePath());
                 if (exportKey != null){
@@ -4653,19 +4679,19 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
                 }
                 CmsFolder onlineFolder = null;
                 try {
-                    onlineFolder = readFolder(onlineProject.getId(), currentFolder.getAbsolutePath());
+                    onlineFolder = readFolder(onlineProject.getId(), currentFolder.getResourceName());
                 } catch (CmsException exc){
                     // if folder does not exist create it
                     if (exc.getType() == CmsException.C_NOT_FOUND){
                         // get parentId for onlineFolder either from folderIdIndex or from the database
                         Integer parentId = (Integer) folderIdIndex.get(new Integer(currentFolder.getParentId()));
                         if (parentId == null){
-                            CmsFolder currentOnlineParent = readFolder(onlineProject.getId(), currentFolder.getParent());
+                            CmsFolder currentOnlineParent = readFolder(onlineProject.getId(), currentFolder.getRootName()+currentFolder.getParent());
                             parentId = new Integer(currentOnlineParent.getResourceId());
                             folderIdIndex.put(new Integer(currentFolder.getParentId()), parentId);
                         }
                         // create the new folder
-                        onlineFolder = createFolder(user, onlineProject, onlineProject, currentFolder, parentId.intValue(), currentFolder.getAbsolutePath());
+                        onlineFolder = createFolder(user, onlineProject, onlineProject, currentFolder, parentId.intValue(), currentFolder.getResourceName());
                         onlineFolder.setState(C_STATE_UNCHANGED);
                         updateResourcestate(onlineFolder);
                     } else {
@@ -4747,10 +4773,10 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
                 //in this case do nothing
             } else if (currentFile.getName().startsWith(C_TEMP_PREFIX)){
                 deleteAllProperties(projectId, currentFile);
-                removeFile(projectId, currentFile.getAbsolutePath());
+                removeFile(projectId, currentFile.getResourceName());
                 // C_STATE_DELETE
             } else if (currentFile.getState() == C_STATE_DELETED){
-                changedResources.addElement(currentFile.getAbsolutePath());
+                changedResources.addElement(currentFile.getResourceName());
                 // delete in filesystem if necessary
                 String exportKey = checkExport(currentFile.getAbsolutePath());
                 if (exportKey != null){
@@ -4759,7 +4785,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
                     }catch (Exception ex){
                     }
                 }
-                CmsFile currentOnlineFile = readFile(onlineProject.getId(), onlineProject.getId(), currentFile.getAbsolutePath());
+                CmsFile currentOnlineFile = readFile(onlineProject.getId(), onlineProject.getId(), currentFile.getResourceName());
                 if (enableHistory){
                     // read the properties for backup
                     Hashtable props = readAllProperties(projectId, currentFile, currentFile.getType());
@@ -4783,7 +4809,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
                 }
             // C_STATE_CHANGED
             }else if (currentFile.getState() == C_STATE_CHANGED){
-                changedResources.addElement(currentFile.getAbsolutePath());
+                changedResources.addElement(currentFile.getResourceName());
                 // export to filesystem if necessary
                 String exportKey = checkExport(currentFile.getAbsolutePath());
                 if (exportKey != null){
@@ -4791,19 +4817,19 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
                 }
                 CmsFile onlineFile = null;
                 try{
-                    onlineFile = readFileHeader(onlineProject.getId(), currentFile.getAbsolutePath());
+                    onlineFile = readFileHeader(onlineProject.getId(), currentFile.getResourceName());
                 }catch (CmsException exc){
                     if (exc.getType() == CmsException.C_NOT_FOUND){
                         // get parentId for onlineFolder either from folderIdIndex or from the database
                         Integer parentId = (Integer) folderIdIndex.get(new Integer(currentFile.getParentId()));
                         if (parentId == null){
-                            CmsFolder currentOnlineParent = readFolder(onlineProject.getId(), currentFolder.getParent());
+                            CmsFolder currentOnlineParent = readFolder(onlineProject.getId(), currentFolder.getRootName()+currentFolder.getParent());
                             parentId = new Integer(currentOnlineParent.getResourceId());
                             folderIdIndex.put(new Integer(currentFile.getParentId()), parentId);
                         }
                         // create a new File
                         currentFile.setState(C_STATE_UNCHANGED);
-                        onlineFile = createFile(onlineProject, onlineProject, currentFile, user.getId(), parentId.intValue(), currentFile.getAbsolutePath(), false);
+                        onlineFile = createFile(onlineProject, onlineProject, currentFile, user.getId(), parentId.intValue(), currentFile.getResourceName(), false);
                     }
                 } // end of catch
                 Connection con = null;
@@ -4880,20 +4906,20 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
                 // get parentId for onlineFile either from folderIdIndex or from the database
                 Integer parentId = (Integer) folderIdIndex.get(new Integer(currentFile.getParentId()));
                 if (parentId == null){
-                    CmsFolder currentOnlineParent = readFolder(onlineProject.getId(), currentFile.getParent());
+                    CmsFolder currentOnlineParent = readFolder(onlineProject.getId(), currentFile.getRootName()+currentFile.getParent());
                     parentId = new Integer(currentOnlineParent.getResourceId());
                     folderIdIndex.put(new Integer(currentFile.getParentId()), parentId);
                 }
                 // create the new file
                 try {
-                    newFile = createFile(onlineProject, onlineProject, currentFile, user.getId(), parentId.intValue(), currentFile.getAbsolutePath(), false);
+                    newFile = createFile(onlineProject, onlineProject, currentFile, user.getId(), parentId.intValue(), currentFile.getResourceName(), false);
                     newFile.setState(C_STATE_UNCHANGED);
                     updateResourcestate(newFile);
                 } catch (CmsException e) {
                     if (e.getType() == CmsException.C_FILE_EXISTS) {
                         CmsFile onlineFile = null;
                         try {
-                            onlineFile = readFileHeader(onlineProject.getId(), currentFile.getAbsolutePath());
+                            onlineFile = readFileHeader(onlineProject.getId(), currentFile.getResourceName());
                         } catch (CmsException exc) {
                             throw exc;
                         } // end of catch
@@ -4924,7 +4950,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
                             statement.setInt(2, onlineFile.getFileId());
                             statement.executeUpdate();
                             statement.close();
-                            newFile = readFile(onlineProject.getId(), onlineProject.getId(), currentFile.getAbsolutePath());
+                            newFile = readFile(onlineProject.getId(), onlineProject.getId(), currentFile.getResourceName());
                         } catch (SQLException sqle) {
                             throw new CmsException("[" + this.getClass().getName() + "] " + sqle.getMessage(), CmsException.C_SQL_ERROR, sqle);
                         } finally {
@@ -4978,7 +5004,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
                 // backup the offline resource
                 backupResource(projectId, currentFolder, new byte[0], props, versionId, publishDate);
             }
-            CmsResource delOnlineFolder = readFolder(onlineProject.getId(),currentFolder.getAbsolutePath());
+            CmsResource delOnlineFolder = readFolder(onlineProject.getId(),currentFolder.getResourceName());
             try{
                 deleteAllProperties(onlineProject.getId(), delOnlineFolder);
                 deleteAllProperties(projectId, currentFolder);
@@ -4987,8 +5013,8 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
                     A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] error publishing, deleting properties for " + currentFolder.toString() + " Message= " + exc.getMessage());
                 }
             }
-            removeFolderForPublish(onlineProject.getId(), currentFolder.getAbsolutePath());
-            removeFolderForPublish(projectId, currentFolder.getAbsolutePath());
+            removeFolderForPublish(onlineProject.getId(), currentFolder.getResourceName());
+            removeFolderForPublish(projectId, currentFolder.getResourceName());
         } // end of for
         //clearFilesTable();
         return changedResources;
@@ -5159,7 +5185,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
             statement = con.prepareStatement(m_cq.get("C_RESOURCES_WRITE_BACKUP"));
             statement.setInt(1, resourceId);
             statement.setInt(2, C_UNKNOWN_ID);
-            statement.setString(3, resource.getAbsolutePath());
+            statement.setString(3, resource.getResourceName());
             statement.setInt(4, resource.getType());
             statement.setInt(5, resource.getFlags());
             statement.setInt(6, resource.getOwnerId());
@@ -9224,7 +9250,7 @@ public CmsTask readTask(int id) throws CmsException {
         {
             CmsResource temp = unsortedList[out];
             in = out;
-            while (in > 0 && unsortedList[in - 1].getAbsolutePath().compareTo(temp.getAbsolutePath()) >= 0)
+            while (in > 0 && unsortedList[in - 1].getResourceName().compareTo(temp.getResourceName()) >= 0)
             {
                 unsortedList[in] = unsortedList[in - 1];
                 --in;
