@@ -4,7 +4,7 @@ All Packages  Class Hierarchy  This Package  Previous  Next  Index
 
 \htmlHR
 
-\section{  Class com.opencms.file.CmsUser }
+\section*{  Class com.opencms.file.CmsUser }
 
 \begin{PRE}
 com.opencms.file.CmsUser
@@ -19,7 +19,72 @@ com.opencms.file.CmsUser
 
 This class describes the Cms user object and the methods to access it. 
 
+\begin{description}
+\item {\bf Version:}  
+
+\$Revision: 1.3 $ \$Date: 2002/03/07 15:58:17 $  
+\item {\bf Author:}  
+
+Michael Emmerich 
+\end{description}
+
 \htmlHR
+
+\subsection*{  Variable Index }
+
+\begin{description}
+\item o {\bf m\_additionalInfo}  
+
+A storage for additional user information.  
+\item o {\bf m\_address}  
+
+The address of the user.  
+\item o {\bf m\_defaultGroup}  
+
+The default group of this user.  
+\item o {\bf m\_defaultGroupId}  
+
+The default group ID of this user.  
+\item o {\bf m\_description}  
+
+The description of the user.  
+\item o {\bf m\_email}  
+
+The email of the user.  
+\item o {\bf m\_firstname}  
+
+The firstname of the user.  
+\item o {\bf m\_flags}  
+
+The flags of the user.  
+\item o {\bf m\_id}  
+
+The Id of this user.  
+\item o {\bf m\_lastlogin}  
+
+The last login of the user.  
+\item o {\bf m\_lastname}  
+
+The lastname of the user.  
+\item o {\bf m\_lastused}  
+
+The lastused date.  
+\item o {\bf m\_name}  
+
+The login-name of the user.  
+\item o {\bf m\_password}  
+
+The password of the user.  
+\item o {\bf m\_recoveryPassword}  
+
+The password of the user.  
+\item o {\bf m\_section}  
+
+The section of the user.  
+\item o {\bf m\_type}  
+
+Defines if the user is a webuser or a systemuser. 
+\end{description}
 
 \subsection*{  Constructor Index }
 
@@ -98,7 +163,10 @@ Gets the recovery password.
 Gets the section of the user.  
 \item o {\bf getType}()  
 
-Gets the type.  
+Gets the type of the user (webuser or a systemuser).  
+\item o {\bf setAdditionalInfo}(Hashtable)  
+
+Sets the complete Hashtable with additional information about the user.  
 \item o {\bf setAdditionalInfo}(String, Object)  
 
 Sets additional information about the user.  
@@ -123,21 +191,221 @@ Enables the user flags by setting them to C\_FLAG\_ENABLED.
 \item o {\bf setFirstname}(String)  
 
 Sets the firstname.  
+\item o {\bf setFlags}(int)  
+
+Sets the flags.  
 \item o {\bf setLastlogin}(long)  
 
 Sets the lastlogin.  
 \item o {\bf setLastname}(String)  
 
 Gets the lastname.  
+\item o {\bf setLastUsed}(long)  
+
+Sets the lastlogin.  
 \item o {\bf setPassword}(String)  
 
 Sets the password.  
 \item o {\bf setSection}(String)  
 
 Sets the section of the user.  
+\item o {\bf setType}(int)  
+
+Sets the typ.  
 \item o {\bf toString}()  
 
 Returns a string-representation for this object. 
+\end{description}
+
+\subsection*{  Variables }
+
+o {\bf m\_name} 
+
+\begin{PRE}
+ private String m\_name
+\end{PRE}
+
+\begin{description}
+\htmlDD The login-name of the user.
+
+\end{description}
+
+o {\bf m\_id} 
+
+\begin{PRE}
+ private int m\_id
+\end{PRE}
+
+\begin{description}
+\htmlDD The Id of this user.
+
+\end{description}
+
+o {\bf m\_password} 
+
+\begin{PRE}
+ private String m\_password
+\end{PRE}
+
+\begin{description}
+\htmlDD The password of the user.
+
+\end{description}
+
+o {\bf m\_recoveryPassword} 
+
+\begin{PRE}
+ private String m\_recoveryPassword
+\end{PRE}
+
+\begin{description}
+\htmlDD The password of the user.
+
+\end{description}
+
+o {\bf m\_description} 
+
+\begin{PRE}
+ private String m\_description
+\end{PRE}
+
+\begin{description}
+\htmlDD The description of the user.
+
+\end{description}
+
+o {\bf m\_additionalInfo} 
+
+\begin{PRE}
+ private Hashtable m\_additionalInfo
+\end{PRE}
+
+\begin{description}
+\htmlDD A storage for additional user information.
+
+\end{description}
+
+o {\bf m\_defaultGroup} 
+
+\begin{PRE}
+ private CmsGroup m\_defaultGroup
+\end{PRE}
+
+\begin{description}
+\htmlDD The default group of this user.
+
+\end{description}
+
+o {\bf m\_defaultGroupId} 
+
+\begin{PRE}
+ private int m\_defaultGroupId
+\end{PRE}
+
+\begin{description}
+\htmlDD The default group ID of this user.
+
+\end{description}
+
+o {\bf m\_section} 
+
+\begin{PRE}
+ private String m\_section
+\end{PRE}
+
+\begin{description}
+\htmlDD The section of the user.
+
+\end{description}
+
+o {\bf m\_flags} 
+
+\begin{PRE}
+ private int m\_flags
+\end{PRE}
+
+\begin{description}
+\htmlDD The flags of the user.
+
+\end{description}
+
+o {\bf m\_email} 
+
+\begin{PRE}
+ private String m\_email
+\end{PRE}
+
+\begin{description}
+\htmlDD The email of the user.
+
+\end{description}
+
+o {\bf m\_lastused} 
+
+\begin{PRE}
+ private long m\_lastused
+\end{PRE}
+
+\begin{description}
+\htmlDD The lastused date.
+
+\end{description}
+
+o {\bf m\_firstname} 
+
+\begin{PRE}
+ private String m\_firstname
+\end{PRE}
+
+\begin{description}
+\htmlDD The firstname of the user.
+
+\end{description}
+
+o {\bf m\_lastname} 
+
+\begin{PRE}
+ private String m\_lastname
+\end{PRE}
+
+\begin{description}
+\htmlDD The lastname of the user.
+
+\end{description}
+
+o {\bf m\_address} 
+
+\begin{PRE}
+ private String m\_address
+\end{PRE}
+
+\begin{description}
+\htmlDD The address of the user.
+
+\end{description}
+
+o {\bf m\_lastlogin} 
+
+\begin{PRE}
+ private long m\_lastlogin
+\end{PRE}
+
+\begin{description}
+\htmlDD The last login of the user.
+
+\end{description}
+
+o {\bf m\_type} 
+
+\begin{PRE}
+ private int m\_type
+\end{PRE}
+
+\begin{description}
+\htmlDD Defines if the user is a webuser or a systemuser.
+C\_USER\_TYPE\_SYSTEMUSER for systemuser (incl. guest). C\_USER\_TYPE\_WEBUSER
+for webuser.
+
 \end{description}
 
 \subsection*{  Constructors }
@@ -550,7 +818,9 @@ o {\bf getType}
 \end{PRE}
 
 \begin{description}
-\htmlDD Gets the type. 
+\htmlDD Gets the type of the user (webuser or a systemuser).
+C\_USER\_TYPE\_SYSTEMUSER for systemuser (incl. guest). C\_USER\_TYPE\_WEBUSER
+for webuser. 
 
 \begin{description}
 \item {\bf Returns:}  
@@ -578,6 +848,20 @@ key - The key to the additional information.
 
 obj - The additinoal information value.  
 \end{description}
+
+\end{description}
+
+o {\bf setAdditionalInfo} 
+
+\begin{PRE}
+ void setAdditionalInfo(Hashtable additionalInfo)
+\end{PRE}
+
+\begin{description}
+\htmlDD Sets the complete Hashtable with additional information about the
+user. Additional infos are for example emailadress, adress or surname... This
+method has package-visibility for security-reasons. It is required to because
+of the use of two seprate databases for user data and additional user data. 
 
 \end{description}
 
@@ -688,6 +972,23 @@ the - USER\_FIRSTNAME.
 
 \end{description}
 
+o {\bf setFlags} 
+
+\begin{PRE}
+ void setFlags(int value)
+\end{PRE}
+
+\begin{description}
+\htmlDD Sets the flags. 
+
+\begin{description}
+\item {\bf Parameters:}  
+
+value - The new user flags.  
+\end{description}
+
+\end{description}
+
 o {\bf setLastlogin} 
 
 \begin{PRE}
@@ -722,6 +1023,23 @@ the USER\_SURNAME, or null.
 
 \end{description}
 
+o {\bf setLastUsed} 
+
+\begin{PRE}
+ void setLastUsed(long value)
+\end{PRE}
+
+\begin{description}
+\htmlDD Sets the lastlogin. 
+
+\begin{description}
+\item {\bf Parameters:}  
+
+value - The new user section.  
+\end{description}
+
+\end{description}
+
 o {\bf setPassword} 
 
 \begin{PRE}
@@ -752,6 +1070,23 @@ o {\bf setSection}
 \item {\bf Parameters:}  
 
 value - The new user section.  
+\end{description}
+
+\end{description}
+
+o {\bf setType} 
+
+\begin{PRE}
+ void setType(int value)
+\end{PRE}
+
+\begin{description}
+\htmlDD Sets the typ. 
+
+\begin{description}
+\item {\bf Parameters:}  
+
+value - The new user typ.  
 \end{description}
 
 \end{description}

@@ -4,7 +4,7 @@ All Packages  Class Hierarchy  This Package  Previous  Next  Index
 
 \htmlHR
 
-\section{  Class com.opencms.file.CmsRequestContext }
+\section*{  Class com.opencms.file.CmsRequestContext }
 
 \begin{PRE}
 com.opencms.file.CmsRequestContext
@@ -21,7 +21,59 @@ This class provides access to the CmsRequestContext. \htmlBR
 In the CmsRequestContext class are all methods bundled, which can inform about
 the current request properties, like the url or uri of the request. 
 
+\begin{description}
+\item {\bf Version:}  
+
+\$Revision: 1.3 $ \$Date: 2002/03/07 15:58:17 $  
+\item {\bf Author:}  
+
+Andreas Schouten, Michael Emmerich, Anders Fugmann, Alexander Lucas 
+\end{description}
+
 \htmlHR
+
+\subsection*{  Variable Index }
+
+\begin{description}
+\item o {\bf m\_currentGroup}  
+
+The current group of the user.  
+\item o {\bf m\_currentProject}  
+
+The current project.  
+\item o {\bf m\_dependencies}  
+
+In export mode this vector is used to store all dependencies this request may
+have.  
+\item o {\bf m\_elementCache}  
+
+Starting point for element cache  
+\item o {\bf m\_language}  
+
+Current languages  
+\item o {\bf m\_links}  
+
+In export mode the links in pages will be stored in this vector for further
+processing.  
+\item o {\bf m\_rb}  
+
+The rb to get access to the OpenCms.  
+\item o {\bf m\_req}  
+
+The current CmsRequest.  
+\item o {\bf m\_resp}  
+
+The current CmsResponse.  
+\item o {\bf m\_siteRoot}  
+
+The name of the root, e.g.  
+\item o {\bf m\_streaming}  
+
+Is this response streaming?  
+\item o {\bf m\_user}  
+
+The current user. 
+\end{description}
 
 \subsection*{  Constructor Index }
 
@@ -34,6 +86,12 @@ The default constructor.
 \subsection*{  Method Index }
 
 \begin{description}
+\item o {\bf addDependency}(String)  
+
+adds a dependency.  
+\item o {\bf addLink}(String)  
+
+adds a link for the static export.  
 \item o {\bf currentFolder}()  
 
 Returns the current folder object.  
@@ -49,12 +107,18 @@ Returns the current user object.
 \item o {\bf getAcceptedLanguages}()  
 
 Get a Vector of all accepted languages for this request.  
+\item o {\bf getDependencies}()  
+
+returns all dependencies the templatemechanism has registered.  
 \item o {\bf getElementCache}()  
 
 Get the CmsElementCache object.  
 \item o {\bf getFileUri}()  
 
 Gets the name of the requested file without any path-information.  
+\item o {\bf getLinkVector}()  
+
+returns all links that the templatemechanism has registered.  
 \item o {\bf getRequest}()  
 
 Gets the current request, if availaible.  
@@ -64,9 +128,19 @@ Gets the current response, if availaible.
 \item o {\bf getSession}(boolean)  
 
 Gets the Session for this request.  
+\item o {\bf getSiteName}()  
+
+Returns the name of the current site, e.g.  
+\item o {\bf getSiteRoot}(String)  
+
+Returns the name of the current site root, e.g.  
 \item o {\bf getUri}()  
 
 Gets the uri for the requested resource.  
+\item o {\bf init}(I\_CmsResourceBroker, I\_CmsRequest, I\_CmsResponse,
+String, String, int, boolean, CmsElementCache)  
+
+Initializes this RequestContext.  
 \item o {\bf isAdmin}()  
 
 Determines if the users is in the admin-group.  
@@ -79,6 +153,9 @@ Determines if the users current group is the projectmanager-group.
 \item o {\bf isStreaming}()  
 
 Get the current mode for HTTP streaming.  
+\item o {\bf setContextTo}(String)  
+
+Sets the name of the current site root of the virtual file system  
 \item o {\bf setCurrentGroup}(String)  
 
 Sets the current group of the current user.  
@@ -91,6 +168,143 @@ Set the current mode for HTTP streaming.
 
 Calling this method is only allowed, if the response output stream was not
 used before. 
+\end{description}
+
+\subsection*{  Variables }
+
+o {\bf m\_rb} 
+
+\begin{PRE}
+ private I\_CmsResourceBroker m\_rb
+\end{PRE}
+
+\begin{description}
+\htmlDD The rb to get access to the OpenCms.
+
+\end{description}
+
+o {\bf m\_req} 
+
+\begin{PRE}
+ private I\_CmsRequest m\_req
+\end{PRE}
+
+\begin{description}
+\htmlDD The current CmsRequest.
+
+\end{description}
+
+o {\bf m\_resp} 
+
+\begin{PRE}
+ private I\_CmsResponse m\_resp
+\end{PRE}
+
+\begin{description}
+\htmlDD The current CmsResponse.
+
+\end{description}
+
+o {\bf m\_user} 
+
+\begin{PRE}
+ private CmsUser m\_user
+\end{PRE}
+
+\begin{description}
+\htmlDD The current user.
+
+\end{description}
+
+o {\bf m\_currentGroup} 
+
+\begin{PRE}
+ private CmsGroup m\_currentGroup
+\end{PRE}
+
+\begin{description}
+\htmlDD The current group of the user.
+
+\end{description}
+
+o {\bf m\_currentProject} 
+
+\begin{PRE}
+ private CmsProject m\_currentProject
+\end{PRE}
+
+\begin{description}
+\htmlDD The current project.
+
+\end{description}
+
+o {\bf m\_streaming} 
+
+\begin{PRE}
+ private boolean m\_streaming
+\end{PRE}
+
+\begin{description}
+\htmlDD Is this response streaming?
+
+\end{description}
+
+o {\bf m\_links} 
+
+\begin{PRE}
+ private Vector m\_links
+\end{PRE}
+
+\begin{description}
+\htmlDD In export mode the links in pages will be stored in this vector for
+further processing.
+
+\end{description}
+
+o {\bf m\_dependencies} 
+
+\begin{PRE}
+ private Vector m\_dependencies
+\end{PRE}
+
+\begin{description}
+\htmlDD In export mode this vector is used to store all dependencies this
+request may have. It is saved to the database and if one of the dependencies
+changes the request will be exported again.
+
+\end{description}
+
+o {\bf m\_elementCache} 
+
+\begin{PRE}
+ private CmsElementCache m\_elementCache
+\end{PRE}
+
+\begin{description}
+\htmlDD Starting point for element cache
+
+\end{description}
+
+o {\bf m\_language} 
+
+\begin{PRE}
+ private Vector m\_language
+\end{PRE}
+
+\begin{description}
+\htmlDD Current languages
+
+\end{description}
+
+o {\bf m\_siteRoot} 
+
+\begin{PRE}
+ private String m\_siteRoot
+\end{PRE}
+
+\begin{description}
+\htmlDD The name of the root, e.g. /site\_a/vfs
+
 \end{description}
 
 \subsection*{  Constructors }
@@ -107,6 +321,56 @@ o {\bf CmsRequestContext}
 \end{description}
 
 \subsection*{  Methods }
+
+o {\bf addLink} 
+
+\begin{PRE}
+ public void addLink(String link)
+\end{PRE}
+
+\begin{description}
+\htmlDD adds a link for the static export. 
+
+\end{description}
+
+o {\bf getLinkVector} 
+
+\begin{PRE}
+ public Vector getLinkVector()
+\end{PRE}
+
+\begin{description}
+\htmlDD returns all links that the templatemechanism has registered. 
+
+\end{description}
+
+o {\bf addDependency} 
+
+\begin{PRE}
+ public void addDependency(String rootName)
+\end{PRE}
+
+\begin{description}
+\htmlDD adds a dependency. 
+
+\begin{description}
+\item {\bf Parameters:}  
+
+dependency. - The rootpath of the resource.  
+\end{description}
+
+\end{description}
+
+o {\bf getDependencies} 
+
+\begin{PRE}
+ public Vector getDependencies()
+\end{PRE}
+
+\begin{description}
+\htmlDD returns all dependencies the templatemechanism has registered. 
+
+\end{description}
 
 o {\bf currentFolder} 
 
@@ -274,6 +538,47 @@ the requested resource is {\tt /system/def/explorer}.
 \item {\bf Returns:}  
 
 the path to the requested resource.  
+\end{description}
+
+\end{description}
+
+o {\bf init} 
+
+\begin{PRE}
+ void init(I\_CmsResourceBroker rb,
+           I\_CmsRequest req,
+           I\_CmsResponse resp,
+           String user,
+           String currentGroup,
+           int currentProjectId,
+           boolean streaming,
+           CmsElementCache elementCache) throws CmsException
+\end{PRE}
+
+\begin{description}
+\htmlDD Initializes this RequestContext. 
+
+\begin{description}
+\item {\bf Parameters:}  
+
+req - the CmsRequest.  
+
+resp - the CmsResponse.  
+
+user - the current user for this request.  
+
+currentGroup - the current group for this request.  
+
+currentProjectId - the id of the current project for this request.  
+
+streaming - {\tt true} if streaming should be enabled for this response, {\tt
+false} otherwise.  
+
+elementCache - Starting point for the element cache or {\tt null} if the
+element cache should be disabled.  
+\item {\bf Throws:} CmsException  
+
+if operation was not successful.  
 \end{description}
 
 \end{description}
@@ -457,6 +762,51 @@ extensions will be cut off.
 Vector of Strings with language codes or {\tt null} if no request object is
 available.  
 \end{description}
+
+\end{description}
+
+o {\bf getSiteRoot} 
+
+\begin{PRE}
+ public String getSiteRoot(String resourcename)
+\end{PRE}
+
+\begin{description}
+\htmlDD Returns the name of the current site root, e.g. /default/vfs 
+
+\begin{description}
+\item {\bf Returns:}  
+
+String The resourcename with its site root  
+\end{description}
+
+\end{description}
+
+o {\bf getSiteName} 
+
+\begin{PRE}
+ public String getSiteName()
+\end{PRE}
+
+\begin{description}
+\htmlDD Returns the name of the current site, e.g. /default 
+
+\begin{description}
+\item {\bf Returns:}  
+
+String The site name  
+\end{description}
+
+\end{description}
+
+o {\bf setContextTo} 
+
+\begin{PRE}
+ public void setContextTo(String name)
+\end{PRE}
+
+\begin{description}
+\htmlDD Sets the name of the current site root of the virtual file system 
 
 \end{description}
 

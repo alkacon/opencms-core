@@ -4,13 +4,22 @@ All Packages  Class Hierarchy  This Package  Previous  Next  Index
 
 \htmlHR
 
-\section{  Interface com.opencms.file.I\_CmsRegistry }
+\section*{  Interface com.opencms.file.I\_CmsRegistry }
 
 \begin{description}
 \item public interface {\bf I\_CmsRegistry} 
 \end{description}
 
 This interface describes the registry for OpenCms. 
+
+\begin{description}
+\item {\bf Version:}  
+
+\$Revision: 1.3 $ \$Date: 2002/03/07 15:58:17 $  
+\item {\bf Author:}  
+
+Andreas Schouten 
+\end{description}
 
 \htmlHR
 
@@ -70,6 +79,9 @@ Returns the description of the module.
 \item o {\bf getModuleDocumentPath}(String)  
 
 Gets the url to the documentation of the module.  
+\item o {\bf getModuleExportables}(Hashtable)  
+
+Returns all exportable classes for all modules.  
 \item o {\bf getModuleFiles}(String, Vector, Vector)  
 
 Returns all filenames and hashcodes belonging to the module.  
@@ -92,10 +104,10 @@ Gets a parameter for a module.
 \item o {\bf getModuleParameterBoolean}(String, String)  
 
 Returns a parameter for a module.  
-\item o {\bf getModuleParameterBoolean}(String, String, boolean)  
+\item o {\bf getModuleParameterBoolean}(String, String, Boolean)  
 
 Returns a parameter for a module.  
-\item o {\bf getModuleParameterBoolean}(String, String, Boolean)  
+\item o {\bf getModuleParameterBoolean}(String, String, boolean)  
 
 Returns a parameter for a module.  
 \item o {\bf getModuleParameterByte}(String, String)  
@@ -113,10 +125,10 @@ Returns a description for parameter in a module.
 \item o {\bf getModuleParameterDouble}(String, String)  
 
 Returns a parameter for a module.  
-\item o {\bf getModuleParameterDouble}(String, String, Double)  
+\item o {\bf getModuleParameterDouble}(String, String, double)  
 
 Returns a parameter for a module.  
-\item o {\bf getModuleParameterDouble}(String, String, double)  
+\item o {\bf getModuleParameterDouble}(String, String, Double)  
 
 Returns a parameter for a module.  
 \item o {\bf getModuleParameterFloat}(String, String)  
@@ -140,10 +152,10 @@ Returns a parameter for a module.
 \item o {\bf getModuleParameterLong}(String, String)  
 
 Returns a parameter for a module.  
-\item o {\bf getModuleParameterLong}(String, String, Long)  
+\item o {\bf getModuleParameterLong}(String, String, long)  
 
 Returns a parameter for a module.  
-\item o {\bf getModuleParameterLong}(String, String, long)  
+\item o {\bf getModuleParameterLong}(String, String, Long)  
 
 Returns a parameter for a module.  
 \item o {\bf getModuleParameterNames}(String)  
@@ -158,6 +170,9 @@ Returns a parameter for a module.
 \item o {\bf getModuleParameterType}(String, String)  
 
 This method returns the type of a parameter in a module.  
+\item o {\bf getModulePublishables}(Vector, String)  
+
+Returns all publishable classes for all modules.  
 \item o {\bf getModuleRepositories}(String)  
 
 Returns all repositories for a module.  
@@ -1470,6 +1485,52 @@ eter - String the name of the module.
 \item {\bf Returns:}  
 
 java.lang.String the view-url to the module.  
+\end{description}
+
+\end{description}
+
+o {\bf getModulePublishables} 
+
+\begin{PRE}
+ public abstract int getModulePublishables(Vector classes,
+                                           String requiredMethod)
+\end{PRE}
+
+\begin{description}
+\htmlDD Returns all publishable classes for all modules. 
+
+\begin{description}
+\item {\bf Parameters:}  
+
+eter - Vector classes in this parameter the classess will be returned.  
+
+eter - String requiredMethod The value of the methodTag for the different 
+methods useable after publish.  null means the standard publish method 
+``linkpublish'' means the method that needs the changed links as parameter
+(i.e. search)  
+\item {\bf Returns:}  
+
+int the amount of classess.  
+\end{description}
+
+\end{description}
+
+o {\bf getModuleExportables} 
+
+\begin{PRE}
+ public abstract int getModuleExportables(Hashtable classes)
+\end{PRE}
+
+\begin{description}
+\htmlDD Returns all exportable classes for all modules. 
+
+\begin{description}
+\item {\bf Parameters:}  
+
+eter - Hashtable classes in this parameter the classes will be returned.  
+\item {\bf Returns:}  
+
+int the amount of classes.  
 \end{description}
 
 \end{description}
