@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceLink.java,v $
-* Date   : $Date: 2002/05/17 11:15:29 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2002/10/23 15:13:14 $
+* Version: $Revision: 1.23 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,10 +41,13 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.22 $ $Date: 2002/05/17 11:15:29 $
+ * @version $Revision: 1.23 $ $Date: 2002/10/23 15:13:14 $
  */
 
 public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
+    
+    private static final String C_PARA_KEEP_PROPERTIES = "keepproperties";
+    private static final int DEBUG = 0;
 
     /**
      * Overwrites the getContent method of the CmsWorkplaceDefault.<br>
@@ -105,6 +108,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
             // try to get the value from the session, e.g. after an error
             link = (String)session.getValue(C_PARA_LINK)!=null?(String)session.getValue(C_PARA_LINK):"";
         }
+        
         // get the parameters
         String navtitle = (String)parameters.get(C_PARA_NAVTEXT);
         if(navtitle != null) {
@@ -113,6 +117,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
             // try to get the value from the session, e.g. after an error
             navtitle = (String)session.getValue(C_PARA_NAVTEXT)!=null?(String)session.getValue(C_PARA_NAVTEXT):"";
         }
+        
         String navpos = (String)parameters.get(C_PARA_NAVPOS);
         if(navpos != null) {
             session.putValue(C_PARA_NAVPOS, navpos);
@@ -120,7 +125,13 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
             // try to get the value from the session, e.g. after an error
             navpos = (String)session.getValue(C_PARA_NAVPOS)!=null?(String)session.getValue(C_PARA_NAVPOS):"";
         }
+        
+        String dummy = (String)parameters.get(CmsNewResourceLink.C_PARA_KEEP_PROPERTIES);
+        if (DEBUG>0) System.out.println( "parameter " + CmsNewResourceLink.C_PARA_KEEP_PROPERTIES + ": " + dummy );
+        boolean keepTargetProperties = dummy!=null ? dummy.trim().equalsIgnoreCase("true") : false;
+        
         String notChange = (String)parameters.get("newlink");
+        
         CmsResource linkResource = null;
         String step = cms.getRequestContext().getRequest().getParameter("step");
 
@@ -128,6 +139,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
         xmlTemplateDocument.setData("LINKNAME", filename);
         xmlTemplateDocument.setData("LINKVALUE", link);
         xmlTemplateDocument.setData("NAVTITLE", navtitle);
+        xmlTemplateDocument.setData("KEEPPROPERTIES", keepTargetProperties==true ? "true" : "false" );
 
         // if an existing link should be edited show the change page
         if(notChange != null && notChange.equals("false") && step == null) {
@@ -184,7 +196,16 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
                             }
                         }
                         if(checkurl){
-                            linkResource = cms.createResource(foldername, filename, type, prop, link.getBytes());
+                            HashMap targetProperties = null;
+                            
+                            if (keepTargetProperties) {
+                                try {
+                                    targetProperties = new HashMap( cms.readAllProperties(link) );
+                                } 
+                                catch (Exception e) {}
+                            }
+                            
+                            linkResource = cms.createResource( foldername + filename, type, prop, link.getBytes(), targetProperties );
                         }
                     }
                     // now check if navigation informations have to be added to the new page.

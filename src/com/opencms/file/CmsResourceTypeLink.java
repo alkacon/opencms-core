@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeLink.java,v $
-* Date   : $Date: 2002/10/18 16:54:59 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2002/10/23 15:12:46 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,11 +41,48 @@ import java.util.*;
 public class CmsResourceTypeLink extends CmsResourceTypePlain {
 
     public static final String C_TYPE_RESOURCE_NAME = "link";
+    private static final int DEBUG = 0;
 
-    public CmsResource createResource(CmsObject cms, String newResourceName, Hashtable properties, byte[] contents) throws CmsException{
+    public CmsResource createResource(CmsObject cms, String newResourceName, Hashtable properties, byte[] contents, Object parameter) throws CmsException{
+        HashMap targetProperties = null;
+        Vector linkPropertyDefs = null;
+                
+        // create the new link
         CmsResource res = cms.doCreateFile(newResourceName, contents, C_TYPE_RESOURCE_NAME, properties);
+        
         // lock the new file
         cms.lockResource(newResourceName);
+        
+        if (parameter!=null) {
+            targetProperties = (HashMap)parameter;
+            
+            // read all existing properties defined for links
+            Vector propertyDefs = cms.readAllPropertydefinitions( CmsResourceTypeLink.C_TYPE_RESOURCE_NAME );
+            Enumeration allPropertyDefs = propertyDefs.elements();
+            linkPropertyDefs = new Vector( propertyDefs.size() );
+                        
+            while (allPropertyDefs.hasMoreElements()) {
+                CmsPropertydefinition currentPropertyDefinition = (CmsPropertydefinition)allPropertyDefs.nextElement();
+                linkPropertyDefs.add( (String)currentPropertyDefinition.getName() );
+            }
+            
+            // copy all properties of the target to the link
+            Iterator i = targetProperties.keySet().iterator();
+            while (i.hasNext()) {
+                String currentProperty = (String)i.next();
+                
+                if (!linkPropertyDefs.contains((String)currentProperty)) {
+                    // add the property definition if the property is not yet defined for links
+                    if (DEBUG>0) System.out.println( "adding property definition " + currentProperty + " for resource type " + CmsResourceTypeLink.C_TYPE_RESOURCE_NAME );
+                    CmsPropertydefinition newPropertyDef = cms.createPropertydefinition( currentProperty, CmsResourceTypeLink.C_TYPE_RESOURCE_NAME );
+                }
+                
+                // write the target property on the link
+                if (DEBUG>0) System.out.println( "writing property " + currentProperty + " with value " + (String)targetProperties.get(currentProperty) );
+                cms.writeProperty( newResourceName, currentProperty, (String)targetProperties.get(currentProperty) );
+            }
+        }        
+        
         return res;
     }
 }

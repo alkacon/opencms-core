@@ -570,6 +570,7 @@
             <insert>Inserisci dopo</insert>
             <intern>Interno</intern>
             <keeprights>mantiene i Permessi attuali</keeprights>
+						<keepproperties>keep current Properties</keepproperties>
             <keywords>Parole Chiave</keywords>
             <lang>Lingua</lang>
             <lastelement>in ultima posizione</lastelement>

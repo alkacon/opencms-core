@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2002/10/23 14:07:05 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2002/10/23 15:12:46 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -595,7 +595,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
     * @exception CmsException or if the resourcetype is set to folder. The CmsException is also thrown, if the
     * filename is not valid or if the user has not the appropriate rights to create a new file.
     */
-    public CmsResource createResource(CmsObject cms, String newFolderName, Hashtable properties, byte[] contents) throws CmsException{
+    public CmsResource createResource(CmsObject cms, String newFolderName, Hashtable properties, byte[] contents, Object parameter) throws CmsException{
         if (! newFolderName.endsWith(C_FOLDER_SEPERATOR)) newFolderName += C_FOLDER_SEPERATOR;
         CmsFolder res = cms.doCreateFolder(newFolderName, properties);        
         cms.lockResource(newFolderName);

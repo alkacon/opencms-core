@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePlain.java,v $
-* Date   : $Date: 2002/10/23 14:07:04 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2002/10/23 15:12:46 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -288,10 +288,11 @@ public class CmsResourceTypePlain implements I_CmsResourceType, I_CmsConstants, 
      * @param name The name of the file
      * @param properties The properties of the file
      * @param contents The file content
+     * @param parameter an object (e.g. a HashMap) holding parameters (e.g. key/value coded) to create the new resource
      *
      * @exception CmsException if operation was not successful.
      */
-    public CmsResource createResource(CmsObject cms, String newFileName, Hashtable properties, byte[] contents) throws CmsException{
+    public CmsResource createResource(CmsObject cms, String newFileName, Hashtable properties, byte[] contents, Object parameter) throws CmsException{
         CmsResource res;
         if (m_resourceTypeName == null) {
             res = cms.doCreateFile(newFileName, contents, I_CmsConstants.C_TYPE_PLAIN_NAME, properties); 

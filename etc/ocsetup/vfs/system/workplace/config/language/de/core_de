@@ -573,6 +573,7 @@
             <insert>Einfügen nach</insert>
             <intern>Intern</intern>
             <keeprights>aktuelle Rechte beibehalten</keeprights>
+						<keepproperties>aktuelle Eigenschaften beibehalten</keepproperties>
             <keywords>Schlüsselwörter</keywords>
             <lang>Sprache</lang>
             <lastelement>an letzter Position</lastelement>

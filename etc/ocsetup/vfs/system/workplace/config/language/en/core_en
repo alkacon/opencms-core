@@ -573,6 +573,7 @@
             <insert>Insert after</insert>
             <intern>Internal</intern>
             <keeprights>keep current Permissions</keeprights>
+						<keepproperties>keep current Properties</keepproperties>
             <keywords>Key Words</keywords>
             <lang>Language</lang>
             <lastelement>at the last position</lastelement>

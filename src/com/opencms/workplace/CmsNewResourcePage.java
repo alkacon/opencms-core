@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePage.java,v $
-* Date   : $Date: 2002/10/18 16:54:03 $
-* Version: $Revision: 1.50 $
+* Date   : $Date: 2002/10/23 15:13:14 $
+* Version: $Revision: 1.51 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.50 $ $Date: 2002/10/18 16:54:03 $
+ * @version $Revision: 1.51 $ $Date: 2002/10/23 15:13:14 $
  */
 
 public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -194,7 +194,7 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
                     session.removeValue("resourctype_for_new_page");
                     if (! currentFilelist.endsWith(C_FOLDER_SEPERATOR)) currentFilelist += C_FOLDER_SEPERATOR;
                     if(resourceType != null && "gemadipage".equals(resourceType)){
-                        file = ((CmsResourceTypePage)cms.getResourceType(resourceType)).createResource(cms, currentFilelist + newFile, prop, "".getBytes(), templatefile) ;
+                        file = ((CmsResourceTypePage)cms.getResourceType(resourceType)).createResourceForTemplate(cms, currentFilelist + newFile, prop, "".getBytes(), templatefile) ;
                     }else{
                         file = ((CmsResourceTypePage)cms.getResourceType("page")).createResource(cms, currentFilelist + newFile, prop, "".getBytes(), templatefile) ;
                     }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2002/10/23 14:07:05 $
-* Version: $Revision: 1.246 $
+* Date   : $Date: 2002/10/23 15:12:46 $
+* Version: $Revision: 1.247 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import com.opencms.report.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.246 $ $Date: 2002/10/23 14:07:05 $
+ * @version $Revision: 1.247 $ $Date: 2002/10/23 15:12:46 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -890,24 +890,24 @@ public CmsFolder createChannel(String parentChannel, String newChannelName) thro
  * @deprecated Use createResource instead.
  */
 public CmsFolder createFolder(String folder, String newFolderName, Hashtable properties) throws CmsException {
-    return (CmsFolder)createResource(folder, newFolderName, C_TYPE_FOLDER_NAME, properties);
+    return (CmsFolder)this.createResource(folder, newFolderName, C_TYPE_FOLDER_NAME, properties, null);
 }
 
 public CmsResource createResource(String folder, String name, String type) throws CmsException {
-    return createResource(folder, name, type, new Hashtable());
+    return this.createResource(folder + name, type, new Hashtable(), new byte[0], null );
 }
 
 public CmsResource createResource(String folder, String name, String type, Hashtable properties) throws CmsException {
-    return createResource(folder, name, type, properties, new byte[0]);
+    return this.createResource(folder + name, type, properties, new byte[0], null);
 }
 
 public CmsResource createResource(String folder, String name, String type, Hashtable properties, byte[] contents) throws CmsException {
-    return createResource(folder + name, type, properties, contents);
+    return this.createResource(folder + name, type, properties, contents, null);
 }
 
-public CmsResource createResource(String newResourceName, String type, Hashtable properties, byte[] contents) throws CmsException {
+public CmsResource createResource(String newResourceName, String type, Hashtable properties, byte[] contents, Object parameter) throws CmsException {
     I_CmsResourceType rt = getResourceType(type);
-    return rt.createResource(this, newResourceName, properties, contents);
+    return rt.createResource(this, newResourceName, properties, contents, parameter);
 }
 
 /**

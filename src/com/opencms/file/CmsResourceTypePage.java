@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2002/10/23 14:07:04 $
-* Version: $Revision: 1.34 $
+* Date   : $Date: 2002/10/23 15:12:46 $
+* Version: $Revision: 1.35 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import com.opencms.file.genericSql.*;
  * Access class for resources of the type "Page".
  *
  * @author Alexander Lucas
- * @version $Revision: 1.34 $ $Date: 2002/10/23 14:07:04 $
+ * @version $Revision: 1.35 $ $Date: 2002/10/23 15:12:46 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, com.opencms.workplace.I_CmsWpConstants {
 
@@ -416,10 +416,11 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
      * @param name The name of the file
      * @param properties The properties of the file
      * @param contents The file content
+     * @param parameter an object (e.g. a HashMap) holding parameters (e.g. key/value coded) to create the new resource
      *
      * @exception CmsException if operation was not successful.
      */
-    public CmsResource createResource(CmsObject cms, String newPageName, Hashtable properties, byte[] contents) throws CmsException{
+    public CmsResource createResource(CmsObject cms, String newPageName, Hashtable properties, byte[] contents, Object parameter) throws CmsException{
 
         String folderName = newPageName.substring(0, newPageName.lastIndexOf(C_FOLDER_SEPERATOR, newPageName.length())+1);
         String pageName = newPageName.substring(folderName.length(), newPageName.length());
@@ -465,8 +466,8 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         return file;
     }
 
-    public CmsResource createResource(CmsObject cms, String newPageName, Hashtable properties, byte[] contents, String masterTemplate) throws CmsException{
-        CmsFile resource = (CmsFile)createResource(cms, newPageName, properties, contents);
+    public CmsResource createResourceForTemplate(CmsObject cms, String newPageName, Hashtable properties, byte[] contents, String masterTemplate) throws CmsException{
+        CmsFile resource = (CmsFile)this.createResource(cms, newPageName, properties, contents, null);
         CmsXmlControlFile pageXml = new CmsXmlControlFile(cms, resource);
         pageXml.setMasterTemplate(masterTemplate);
         pageXml.write();
