@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/I_CmsStaticExportHandler.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/02/20 18:33:03 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,22 +35,28 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsUUID;
 
 /**
- * The <code>I_CmsStaticExportHandler</code> interface provides a single method 
+ * Provides a method 
  * for scrubbing files from the export folder that might have been changed,
  * so that the export is newly created after the next request to the resource.<p>
  * 
  * @author <a href="mailto:m.moossen@alkacon.com">Michael Moossen</a> 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 6.0
  */
 public interface I_CmsStaticExportHandler {
 
     /**
-     * This method scrubs files from the export folder that might have been changed.
+     * Returns <code>true</code> if this static export handler is currently performing a static export operation.<p> 
+     * 
+     * @return true if this static export handler is currently performing a static export operation
+     */
+    boolean isBusy();
+
+    /**
+     * Scrubs files from the export folder that might have been changed.
      * 
      * @param publishHistoryId the <code>{@link CmsUUID}</code> of the published project
      * @param report an <code>{@link I_CmsReport}</code> instance to print output message, or <code>null</code> to write messages to the log file
      */
     void performEventPublishProject(CmsUUID publishHistoryId, I_CmsReport report);
-
 }

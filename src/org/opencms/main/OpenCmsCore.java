@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.160 $
+ * Date   : $Date: 2005/02/20 18:33:03 $
+ * Version: $Revision: 1.161 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -112,7 +112,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.160 $
+ * @version $Revision: 1.161 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -450,6 +450,15 @@ public final class OpenCmsCore {
                     getLog(CmsLog.CHANNEL_INIT).info(". Performing shutdown  : OpenCms version " + getSystemInfo().getVersionName());
                     getLog(CmsLog.CHANNEL_INIT).info(". Shutdown time        : " + (new Date(System.currentTimeMillis())));
                 }
+                // reset the runlevel
+                m_runLevel = 0;
+                try {
+                    if (m_staticExportManager != null) {
+                        m_staticExportManager.shutDown();
+                    }
+                } catch (Throwable e) {
+                    getLog(CmsLog.CHANNEL_INIT).error(". Error during static export manager shutdown: " + e.toString(), e);
+                }
                 try {
                     if (m_moduleManager != null) {
                         m_moduleManager.shutDown();
@@ -477,7 +486,7 @@ public final class OpenCmsCore {
                     }
                 } catch (Throwable e) {
                     getLog(CmsLog.CHANNEL_INIT).error(". Error during thread store shutdown: " + e.toString(), e);
-                }        
+                }
                 String runtime = CmsStringUtil.formatRuntime(getSystemInfo().getRuntime());
                 if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
                     getLog(CmsLog.CHANNEL_INIT).info(". OpenCms stopped!     : Total uptime was " + runtime);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsAfterPublishStaticExportHandler.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/02/20 18:33:03 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,11 +59,14 @@ import javax.servlet.ServletException;
  * This handler exports all changes immediately after something is published.<p>
  * 
  * @author <a href="mailto:m.moossen@alkacon.com">Michael Moossen</a> 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 6.0
  * @see I_CmsStaticExportHandler
  */
 public class CmsAfterPublishStaticExportHandler implements I_CmsStaticExportHandler {
+
+    /** Indicates if this content handler is busy. */
+    protected boolean m_busy;
 
     /**
      * Does the actual static export.<p>
@@ -114,20 +117,30 @@ public class CmsAfterPublishStaticExportHandler implements I_CmsStaticExportHand
             } while (newTemplateLinksFound);
         }
     }
+    
+    /**
+     * @see org.opencms.staticexport.I_CmsStaticExportHandler#isBusy()
+     */
+    public boolean isBusy() {
 
+        return m_busy;
+    }
+    
     /**
      * @see org.opencms.staticexport.I_CmsStaticExportHandler#performEventPublishProject(org.opencms.util.CmsUUID, org.opencms.report.I_CmsReport)
      */
     public void performEventPublishProject(CmsUUID publishHistoryId, I_CmsReport report) {
 
         try {
+            m_busy = true;
             exportAfterPublish(publishHistoryId, report);
         } catch (Throwable t) {
             if (OpenCms.getLog(this).isErrorEnabled()) {
                 OpenCms.getLog(this).error("Error during static export:", t);
             }
+        } finally {
+            m_busy = false;
         }
-
     }
 
     /**

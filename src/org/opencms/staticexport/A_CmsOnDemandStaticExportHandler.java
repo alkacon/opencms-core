@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/A_CmsOnDemandStaticExportHandler.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/02/20 18:33:03 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,9 +35,11 @@ import org.opencms.db.CmsPublishedResource;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
+import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -57,28 +59,79 @@ import java.util.Set;
  * as optimization for non-dynamic content.<p>
  * 
  * @author <a href="mailto:m.moossen@alkacon.com">Michael Moossen</a> 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 6.0
  * @see I_CmsStaticExportHandler
  */
 public abstract class A_CmsOnDemandStaticExportHandler implements I_CmsStaticExportHandler {
 
+    /** Indicates if this content handler is busy. */
+    protected boolean m_busy;
+        
+    /**
+     * @see org.opencms.staticexport.I_CmsStaticExportHandler#isBusy()
+     */
+    public boolean isBusy() {
+
+        return m_busy;
+    }
+    
     /**
      * @see org.opencms.staticexport.I_CmsStaticExportHandler#performEventPublishProject(org.opencms.util.CmsUUID, org.opencms.report.I_CmsReport)
      */
     public void performEventPublishProject(CmsUUID publishHistoryId, I_CmsReport report) {
-
-        final CmsUUID id = publishHistoryId;
-
-        Thread t = new Thread(new Runnable() {
-
-            public void run() {
-
-                scrubExportFolders(id);
+             
+        int count = 0;
+        // if the handler is still running, we must wait up to 30 secounds until it is finished
+        while ((count < CmsStaticExportManager.C_HANDLER_FINISH_TIME) && isBusy()) {
+            count++;
+            try {
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info(
+                        ". Waiting for static export handler "
+                            + getClass().getName()
+                            + " to finish ("
+                            + count
+                            + "/"
+                            + CmsStaticExportManager.C_HANDLER_FINISH_TIME
+                            + ")");
+                }
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                // if interrupted we ignore the handler, this will produce some log messages but should be ok 
+                count = CmsStaticExportManager.C_HANDLER_FINISH_TIME;
             }
-        });
-        t.start();
+        }
+        
+        if (isBusy()) {
+            // if the handler is still busy write a warning to the log and exit
+            OpenCms.getLog(this).error(
+                "Unable to perform scrubbing of export folder for publish history id " 
+                    + publishHistoryId 
+                    + " since previous handler call would not terminate after "
+                    + CmsStaticExportManager.C_HANDLER_FINISH_TIME
+                    + " seconds.");
+            return;
+        }
+        
+        final CmsUUID id = publishHistoryId;
+        
+        if (OpenCms.getRunLevel() > 0) {
+            // only perform scrubbing if OpenCms is still running
+            m_busy = true;
+            Thread t = new Thread(new Runnable() {
 
+                public void run() {
+
+                    try {
+                        scrubExportFolders(id);
+                    } finally {
+                        m_busy = false;
+                    }
+                }
+            });
+            t.start();
+        }
     }
 
     /**
@@ -120,16 +173,17 @@ public abstract class A_CmsOnDemandStaticExportHandler implements I_CmsStaticExp
             return;
         }
 
-        Iterator itPubRes = publishedResources.iterator();
+        Iterator itPubRes = publishedResources.iterator();               
         while (itPubRes.hasNext()) {
             CmsPublishedResource res = (CmsPublishedResource)itPubRes.next();
             if (res.isUnChanged() || !res.isVfsResource()) {
                 // unchanged resources and non vfs resources don't need to be deleted
                 continue;
             }
-
+            
             // ensure all siblings are scrubbed if the resource has one
-            List siblings = getSiblingsList(cms, res.getRootPath());
+            String resPath = cms.getRequestContext().removeSiteRoot(res.getRootPath());
+            List siblings = getSiblingsList(cms, resPath);
 
             Iterator itSibs = siblings.iterator();
             while (itSibs.hasNext()) {
@@ -221,27 +275,43 @@ public abstract class A_CmsOnDemandStaticExportHandler implements I_CmsStaticExp
      */
     protected abstract List getRelatedFilesToPurge(String exportFileName);
 
-    private List getSiblingsList(CmsObject cms, String resRootPath) {
+    /**
+     * Returns a list containing the root paths of all siblings of a resource.<p> 
+     * 
+     * @param cms the export user context
+     * @param resPath the path of the resource to get the siblings for
+     * @return a list containing the root paths of all siblings of a resource
+     */
+    private List getSiblingsList(CmsObject cms, String resPath) {
 
         List siblings = new ArrayList();
 
         try {
-            List li = cms.readSiblings(resRootPath, CmsResourceFilter.ALL);
+            List li = cms.readSiblings(resPath, CmsResourceFilter.ALL);
             for (int i = 0, l = li.size(); i < l; i++) {
                 String vfsName = ((CmsResource)li.get(i)).getRootPath();
                 siblings.add(vfsName);
             }
+        } catch (CmsVfsResourceNotFoundException e) {
+            // resource not found, probably because the export user has no read permission on the resource, ignore
+        } catch (CmsSecurityException e) {
+            // security exception, probably because the export user has no read permission on the resource, ignore
         } catch (CmsException e) {
             // ignore, nothing to do about this
             if (OpenCms.getLog(this).isWarnEnabled()) {
                 OpenCms.getLog(this).warn(
-                    "Error while getting the siblings for resource vfsName='" + resRootPath + "'",
+                    "Error while getting the siblings for resource vfsName='" + resPath + "'",
                     e);
             }
         }
         return siblings;
     }
 
+    /**
+     * Deletes the given file from the RFS if it exists.<p>
+     * 
+     * @param exportFileName the file to delete
+     */
     private void purgeFile(String exportFileName) {
 
         String rfsName = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getRfsPrefix()
@@ -265,6 +335,5 @@ public abstract class A_CmsOnDemandStaticExportHandler implements I_CmsStaticExp
                 OpenCms.getLog(this).warn("Error deleting static export file rfsName='" + rfsName + "'", t);
             }
         }
-
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.87 $
+ * Date   : $Date: 2005/02/20 18:33:03 $
+ * Version: $Revision: 1.88 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import org.apache.commons.collections.map.LRUMap;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Moossen (a.moossen@alkacon.com)
- * @version $Revision: 1.87 $
+ * @version $Revision: 1.88 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
 
@@ -107,6 +107,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
     /** Marker for externally redirected 404 uri's. */
     public static final String C_EXPORT_MARKER = "exporturi";
+    
+    /** Time given (in seconds) to the static export handler to finish a publish task. */
+    public static final int C_HANDLER_FINISH_TIME = 60;
 
     /** Cache value to indicate a true 404 error. */
     private static final String C_CACHEVALUE_404 = "?404";
@@ -957,7 +960,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     public I_CmsStaticExportHandler getHandler() {
 
         if (m_handler == null) {
-            m_handler = new CmsOnDemandStaticExportHandler();
+            setHandler(CmsOnDemandStaticExportHandler.class.getName());
         }
         return m_handler;
     }
@@ -1465,6 +1468,41 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
         m_vfsPrefix = insertContextStrings(vfsPrefix);
         m_vfsPrefixUnsubstituted = vfsPrefix;
+    }
+
+    /**
+     * Shuts down all this static export manager.<p>
+     * 
+     * This is required since there may still be a thread running when the system is being shut down.<p>
+     */
+    public synchronized void shutDown() {
+
+        int count = 0;
+        // if the handler is still running, we must wait up to 30 secounds until it is finished
+        while ((count < C_HANDLER_FINISH_TIME) && m_handler.isBusy()) {
+            count++;
+            try {
+                if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                    OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
+                        ". Shutting down        : Waiting for static export handler "
+                            + m_handler.getClass().getName()
+                            + " to finish ("
+                            + count
+                            + "/"
+                            + C_HANDLER_FINISH_TIME
+                            + ")");
+                }
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                // if interrupted we ignore the handler, this will produce some log messages but should be ok 
+                count = C_HANDLER_FINISH_TIME;
+            }
+        }
+        
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
+                ". Shutting down        : " + this.getClass().getName() + " ... ok!");
+        }   
     }
 
     /**

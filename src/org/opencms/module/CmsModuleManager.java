@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleManager.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/02/20 18:33:03 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -479,6 +479,11 @@ public class CmsModuleManager {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
                 ". Module configuration : " + m_moduleActionInstances.size() + " module classes have been shut down");
         }
+        
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
+                ". Shutting down        : " + this.getClass().getName() + " ... ok!");
+        }        
     }
 
     /**
