@@ -3,8 +3,8 @@ package com.opencms.modules.search.lucene;
 /*
  *  $RCSfile: IndexFiles.java,v $
  *  $Author: g.huhn $
- *  $Date: 2002/02/26 14:02:46 $
- *  $Revision: 1.3 $
+ *  $Date: 2002/02/28 09:31:59 $
+ *  $Revision: 1.4 $
  *
  *  Copyright (c) 2002 FRAMFAB Deutschland AG. All Rights Reserved.
  *
@@ -56,6 +56,7 @@ public class IndexFiles extends Thread {
     private String m_contentType="";
 
     private HtmlParser convHtml = null;
+
   // usage: IndexFiles <index-path> <file> ...
     /**
      *  Constructor for the IndexFiles object
@@ -100,7 +101,8 @@ public class IndexFiles extends Thread {
 
         try {
             writer = new IndexWriter(m_indexPath, new GermanAnalyzer(), m_newIndex);
-            String completeContent = "", keywords="",description="",title="",parsedContent="";
+            String completeContent = "", keywords="",description="",title="",
+                    parsedContent="", published="";
             InputStream is = null;
             I_ContentParser parser= null;
 
@@ -117,7 +119,6 @@ public class IndexFiles extends Thread {
                 }else continue;
 
                 //the html-Parsing and Indexing
-                //if (((String)m_files.elementAt(i)).toLowerCase().indexOf(".htm")!=-1){
                 parser.parse(con);
                 completeContent = parser.getContents();
                 if (completeContent.indexOf("Not Found (404)") != -1 ||
@@ -130,40 +131,20 @@ public class IndexFiles extends Thread {
                 if (parser.getDescription()!=null)description=parser.getDescription();
                 if (parser.getTitle()!=null)title=parser.getTitle();
                 if (parser.getContents()!=null) parsedContent=parser.getContents();
+                if (parser.getPublished()!=null) published=parser.getPublished();
                 doc.add(Field.Keyword("path", (String) m_files.elementAt(i)));
                 doc.add(Field.Keyword("keywords", keywords));
                 doc.add(Field.Keyword("description", description));
+                doc.add(Field.Keyword("modified", published));
                 doc.add(Field.Keyword("title", title));
                 is = new ByteArrayInputStream(parsedContent.getBytes());
-                //}
-                //the PDF-Parsing and Indexing
-                /*else {
-                    doc.add(Field.Keyword("path", (String) m_files.elementAt(i)));
-                    convPdf.parse(con);
-                    completeContent=convPdf.getContents();
-                    if (completeContent.indexOf("Not Found (404)") != -1 ||
-                            completeContent.indexOf("HTTP Status 404") != -1 ||
-                            completeContent.indexOf("Error 404") != -1) {
-                        if (debug) System.out.println("Servermessage: Not Found (404)");
-                        continue;
-                    }
-                    if (convPdf.getKeywords()!=null) keywords=convPdf.getKeywords();
-                    if (convPdf.getDescription()!=null)description=convPdf.getDescription();
-                    if (convPdf.getTitle()!=null)title=convPdf.getTitle();
-                    */
-                    if (debug){
-                        File output=new File("D:/Programme/Apache Group/Apache/htdocs/lucineTest/"+((String)m_files.elementAt(i)).substring(((String)m_files.elementAt(i)).lastIndexOf("/"),((String)m_files.elementAt(i)).lastIndexOf("."))+".txt");
-                        FileOutputStream os=new FileOutputStream(output);
-                        os.write(completeContent.getBytes());
-                        os.close();
-                    }
-                    /*
-                    doc.add(Field.Keyword("path", (String) m_files.elementAt(i)));
-                    doc.add(Field.Keyword("keywords", keywords));
-                    doc.add(Field.Keyword("description", description));
-                    doc.add(Field.Keyword("title", title));
-                    is = new ByteArrayInputStream(completeContent.getBytes());
-                }*/
+
+                if (debug){
+                    File output=new File("D:/Programme/Apache Group/Apache/htdocs/lucineTest/"+((String)m_files.elementAt(i)).substring(((String)m_files.elementAt(i)).lastIndexOf("/"),((String)m_files.elementAt(i)).lastIndexOf("."))+".txt");
+                    FileOutputStream os=new FileOutputStream(output);
+                    os.write(completeContent.getBytes());
+                    os.close();
+                }
 
                 doc.add(Field.Text("body", (Reader) new InputStreamReader(is)));
                 writer.addDocument(doc);

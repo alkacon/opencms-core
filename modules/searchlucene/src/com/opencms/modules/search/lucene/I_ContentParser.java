@@ -3,8 +3,8 @@ package com.opencms.modules.search.lucene;
 /*
  *  $RCSfile: I_ContentParser.java,v $
  *  $Author: g.huhn $
- *  $Date: 2002/02/26 14:02:46 $
- *  $Revision: 1.1 $
+ *  $Date: 2002/02/28 09:31:59 $
+ *  $Revision: 1.2 $
  *
  *  Copyright (c) 2002 FRAMFAB Deutschland AG. All Rights Reserved.
  *
@@ -39,4 +39,5 @@ public interface I_ContentParser {
     String getContents();
     String getTitle();
     void parse(InputStream is);
+    String getPublished();
 }

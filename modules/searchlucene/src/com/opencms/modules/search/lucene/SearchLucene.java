@@ -3,8 +3,8 @@ package com.opencms.modules.search.lucene;
 /*
  *  $RCSfile: SearchLucene.java,v $
  *  $Author: g.huhn $
- *  $Date: 2002/02/26 16:17:38 $
- *  $Revision: 1.3 $
+ *  $Date: 2002/02/28 09:31:59 $
+ *  $Revision: 1.4 $
  *
  *  Copyright (c) 2002 FRAMFAB Deutschland AG. All Rights Reserved.
  *
@@ -80,6 +80,7 @@ public class SearchLucene {
             oneHit.put("keywords", hits.doc(i).get("keywords"));
             oneHit.put("url", hits.doc(i).get("path"));
             oneHit.put("score", Math.round(hits.score(i) * 100) + " %");
+            oneHit.put("modified", hits.doc(i).get("modified"));
             res.add(oneHit);
         }
         return res;

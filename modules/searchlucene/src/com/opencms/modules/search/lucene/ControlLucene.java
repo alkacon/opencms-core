@@ -3,8 +3,8 @@ package com.opencms.modules.search.lucene;
 /*
  *  $RCSfile: ControlLucene.java,v $
  *  $Author: g.huhn $
- *  $Date: 2002/02/26 16:16:48 $
- *  $Revision: 1.4 $
+ *  $Date: 2002/02/28 09:31:59 $
+ *  $Revision: 1.5 $
  *
  *  Copyright (c) 2002 FRAMFAB Deutschland AG. All Rights Reserved.
  *
@@ -122,12 +122,13 @@ public class ControlLucene implements com.opencms.core.I_CmsConstants, com.openc
      *@param  size     Description of the Parameter
      *@param  percent  Description of the Parameter
      */
-    public ControlLucene(String url, String title, String excerpt, int size, int percent) {
+    public ControlLucene(String url, String title, String excerpt, int size, int percent,String modified) {
         m_link = url;
         m_title = title;
         m_excerpt = excerpt;
         m_size = size;
         m_percent = percent;
+        m_modified=modified;
     }
 
 
@@ -408,6 +409,7 @@ public class ControlLucene implements com.opencms.core.I_CmsConstants, com.openc
         String url;
         String title;
         String description;
+        String modified;
         m_searchword = word;
 
         //start the search for m_searchword
@@ -451,9 +453,10 @@ public class ControlLucene implements com.opencms.core.I_CmsConstants, com.openc
                 url = (String) oneHit.get("url");
                 title = (String) oneHit.get("title");
                 description = (String) oneHit.get("description");
+                modified = (String) oneHit.get("modified");
                 size = 77;
                 score = Integer.valueOf((((String) oneHit.get("score")).substring(0, ((String) oneHit.get("score")).length() - 2)).trim()).intValue();
-                cdh = new ControlLucene(url, title, description, size, score);
+                cdh = new ControlLucene(url, title, description, size, score, modified);
                 result.addElement(cdh);
             }
         }
@@ -473,13 +476,13 @@ public class ControlLucene implements com.opencms.core.I_CmsConstants, com.openc
         ControlLucene cl = new ControlLucene();
         C_INDEX_FILES = new Vector();
         //C_INDEX_FILES.add("http://localhost/lucineTest/Thinking_in_Java.pdf");
-        //C_INDEX_FILES.add("http://localhost/lucineTest/Urlaubsantrag3_02.pdf");
+        C_INDEX_FILES.add("http://localhost/lucineTest/Urlaubsantrag3_02.pdf");
         //C_INDEX_FILES.add("http://localhost/lucineTest/OpenCMS_de.pdf");
         //C_INDEX_FILES.add("http://localhost/lucineTest/test4.pdf");
         //C_INDEX_FILES.add("http://localhost/lucineTest/Java_ist_auch_eine_Insel_20010426.PDF");
         //C_INDEX_FILES.add("http://localhost/lucineTest/XXVI.pdf");
         //C_INDEX_FILES.add("http://localhost/lucineTest/OpenCmsDoc300102.pdf");
-        C_INDEX_FILES.add("http://localhost/lucineTest/Java-17.pdf");
+        //C_INDEX_FILES.add("http://localhost/lucineTest/Java-17.pdf");
 
 
         //C_INDEX_FILES.add("http://www.dkv.com/ernaehrung_naehrstoffe.phtml?typ=content");
@@ -494,8 +497,8 @@ public class ControlLucene implements com.opencms.core.I_CmsConstants, com.openc
         /*
          *  "http://intranet.ff.de/framfab/opencms/bla.html"
          */
-        //cl.publishLinks(new CmsObject(), C_INDEX_FILES);
-        cl.searchIndex();
+        cl.publishLinks(new CmsObject(), C_INDEX_FILES);
+        //cl.searchIndex();
         //cl.createIndexDirectory();
     }
 

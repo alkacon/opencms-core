@@ -3,8 +3,8 @@ package com.opencms.modules.search.lucene;
 /*
  *  $RCSfile: HtmlParser.java,v $
  *  $Author: g.huhn $
- *  $Date: 2002/02/26 16:16:48 $
- *  $Revision: 1.3 $
+ *  $Date: 2002/02/28 09:31:59 $
+ *  $Revision: 1.4 $
  *
  *  Copyright (c) 2002 FRAMFAB Deutschland AG. All Rights Reserved.
  *
@@ -33,6 +33,8 @@ package com.opencms.modules.search.lucene;
  */
 import com.opencms.htmlconverter.*;
 import java.io.*;
+import java.util.*;
+import java.text.*;
 
 public class HtmlParser implements I_ContentParser{
 
@@ -44,6 +46,7 @@ public class HtmlParser implements I_ContentParser{
     private String m_description="";
     private String m_content="";
     private String m_completeContent="";
+    private String m_published = "";
 
     private CmsHtmlConverter conv = null;
 
@@ -118,6 +121,7 @@ public class HtmlParser implements I_ContentParser{
 
     public HtmlParser() {
         conv = new CmsHtmlConverter();
+        actualDate();
     }
 
     public String getContents() {
@@ -194,5 +198,14 @@ public class HtmlParser implements I_ContentParser{
         return content.toString();
     }
 
+    private void actualDate(){
+        Calendar cal = new GregorianCalendar();
+        cal.setTimeZone(TimeZone.getTimeZone("ECT"));
+        DateFormat format= new SimpleDateFormat("dd.MM.yyyy" );
+		m_published = format.format(cal.getTime());
+    }
+    public String getPublished() {
+        return m_published;
+    }
 
 }

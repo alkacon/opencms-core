@@ -1,69 +1,45 @@
 package com.opencms.modules.search.lucene;
 
 /*
- *  $RCSfile: PdfParser.java,v $
- *  $Author: g.huhn $
- *  $Date: 2002/02/26 16:16:48 $
- *  $Revision: 1.3 $
- *
- *  Copyright (c) 2002 FRAMFAB Deutschland AG. All Rights Reserved.
- *
- *  THIS SOFTWARE IS NEITHER FREEWARE NOR PUBLIC DOMAIN!
- *
- *  To use this software you must purchease a licencse from Framfab.
- *  In order to use this source code, you need written permission from
- *  Framfab. Redistribution of this source code, in modified or
- *  unmodified form, is not allowed.
- *
- *  FRAMFAB MAKES NO REPRESENTATIONS OR WARRANTIES ABOUT THE SUITABILITY
- *  OF THIS SOFTWARE, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
- *  TO THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
- *  PURPOSE, OR NON-INFRINGEMENT. FRAMFAB SHALL NOT BE LIABLE FOR ANY
- *  DAMAGES SUFFERED BY LICENSEE AS A RESULT OF USING, MODIFYING OR
- *  DISTRIBUTING THIS SOFTWARE OR ITS DERIVATIVES.
- */
-
-
-/**
- * <p><code>PdfParser</code>
- *	Content Parser for PDF documents.
- * </p>
- *
- * @author
- * @version 1.0
- */
+    $RCSfile: PdfParser.java,v $
+    $Author: g.huhn $
+    $Date: 2002/02/28 09:31:59 $
+    $Revision: 1.4 $
+    Bases on the PDFHandler from David Duddleston but serves some problems with
+    serveral PDF-formats and the german Sonderzeichen.
+  */
 import java.util.zip.InflaterInputStream;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.io.*;
-/**
- * Insert the type's description here.
- * Creation date: (2/21/2001 7:19:20 PM)
- * @author:
- */
+import java.util.*;
+import java.text.*;
 
 import java.util.List;
 
-
-public class PdfParser implements I_ContentParser{
+/**
+ *  Description of the Class
+ *
+ *@author     grehuh
+ *@created    28. Februar 2002
+ */
+public class PdfParser implements I_ContentParser {
 
     private InputStream in;
-    private static final boolean debug=false;
+    private final static boolean debug = false;
 
     /*
-     * Input cache.  This is much faster than calling down to a synchronized
-     * method of BufferedReader for each byte.  Measurements done 5/30/97
-     * show that there's no point in having a bigger buffer:  Increasing
-     * the buffer to 8192 had no measurable impact for a program discarding
-     * one character at a time (reading from an http URL to a local machine).
-     */
+        Input cache.  This is much faster than calling down to a synchronized
+        method of BufferedReader for each byte.  Measurements done 5/30/97
+        show that there's no point in having a bigger buffer:  Increasing
+        the buffer to 8192 had no measurable impact for a program discarding
+        one character at a time (reading from an http URL to a local machine).
+      */
     private byte buf[] = new byte[256];
     private int pos;
     private int len;
     /*
-    tracks position relative to the beginning of the
-    document.
-     */
+        tracks position relative to the beginning of the
+        document.
+      */
     private int currentPosition;
 
     // 1996.07.10 15:08:56 PST
@@ -72,6 +48,7 @@ public class PdfParser implements I_ContentParser{
     // Content Data
     private String author;
     private long published;
+    private String m_published;
     private String keywords;
     private String description;
     private String title;
@@ -82,49 +59,53 @@ public class PdfParser implements I_ContentParser{
     private boolean parseNextStream = false;
 
     // Compression
-    private static final int NONE = 0;
-    private static final int FLATE = 1;
-    private static final int LZW = 2;
+    private final static int NONE = 0;
+    private final static int FLATE = 1;
+    private final static int LZW = 2;
     private int compression = NONE;
 
-
     // TOKENS
-    private static final char[] AUTHOR = "/Author".toCharArray();
-    private static final char[] CREATIONDATE = "/CreationDate".toCharArray();
-    private static final char[] ENDSTREAM = "endstream".toCharArray();
-    private static final char[] KEYWORDS = "/Keywords".toCharArray();
-    private static final char[] STREAM = "stream".toCharArray();
-    private static final char[] SUBJECT = "/Subject".toCharArray();
-    private static final char[] TITLE = "/Title".toCharArray();
-    private static final char[] NEWLINE = {'\n'};
-    private static final char[] RETURN = {'\r'};
-    private static final char[] PARAMSTART = {'<','<'};
+    private final static char[] AUTHOR = "/Author".toCharArray();
+    private final static char[] CREATIONDATE = "/CreationDate".toCharArray();
+    private final static char[] ENDSTREAM = "endstream".toCharArray();
+    private final static char[] KEYWORDS = "/Keywords".toCharArray();
+    private final static char[] STREAM = "stream".toCharArray();
+    private final static char[] SUBJECT = "/Subject".toCharArray();
+    private final static char[] TITLE = "/Title".toCharArray();
+    private final static char[] NEWLINE = {'\n'};
+    private final static char[] RETURN = {'\r'};
+    private final static char[] PARAMSTART = {'<', '<'};
 
-    private static final char[][] tokens = {
-        AUTHOR, CREATIONDATE, ENDSTREAM, KEYWORDS, STREAM, SUBJECT,
-        TITLE, PARAMSTART
-    };
+    private final static char[][] tokens = {
+            AUTHOR, CREATIONDATE, ENDSTREAM, KEYWORDS, STREAM, SUBJECT,
+            TITLE, PARAMSTART
+            };
+
 
     /**
-     * PdfParser constructor comment.
+     *  PdfParser constructor comment.
      */
     public PdfParser() {
         contents = new StringBuffer();
         published = -1;
 
         // 19960710150856
-        dateFormatter = new SimpleDateFormat("yyyyMMddHHmmss");
+        dateFormatter = new SimpleDateFormat("yyyyMMdd");
     }
+
+
     /**
-     * Look for tokens.  This is not effiecent.
-     * Should use low, hi method with ordered array. NEED TO RECODE
+     *  Look for tokens. This is not effiecent. Should use low, hi method with
+     *  ordered array. NEED TO RECODE
+     *
+     *@return                  Description of the Return Value
+     *@exception  IOException  Description of the Exception
      */
     private char[] findToken() throws IOException {
 
-
         // flags if token still matches.
         boolean[] match = new boolean[tokens.length];
-        for (int i = 0; i < match.length; i++) {
+        for(int i = 0; i < match.length; i++) {
             match[i] = true;
         }
 
@@ -135,23 +116,24 @@ public class PdfParser implements I_ContentParser{
         int charPosition = 0;
 
         // look for matching tokens.
-        while (true) {
+        while(true) {
             int b = read();
-            if (b == -1 ) break;
-            char ch = (char)b;
-
+            if(b == -1) {
+                break;
+            }
+            char ch = (char) b;
 
             // loop through all tokens
-            for (int i = 0; i < tokens.length; i++) {
+            for(int i = 0; i < tokens.length; i++) {
                 // check to see if match flag is true for this token
 
-                if (match[i] == true) {
+                if(match[i] == true) {
                     // get the token
                     char[] token = tokens[i];
                     // check if char array of token is in bounds
-                    if (charPosition >= token.length) {
+                    if(charPosition >= token.length) {
                         // out of bounds, check to see if other tokens still match
-                        if (matchCount >= 2) {
+                        if(matchCount >= 2) {
                             // other tokens still match, set this one to false.
                             match[i] = false;
                             matchCount--;
@@ -161,7 +143,7 @@ public class PdfParser implements I_ContentParser{
                         }
                         // token is in bounds, check for match on char at charPosition.
                     } else {
-                        if (token[charPosition] != ch) {
+                        if(token[charPosition] != ch) {
                             // did not match, set match to false;
                             match[i] = false;
                             matchCount--;
@@ -169,85 +151,129 @@ public class PdfParser implements I_ContentParser{
                     }
                 }
             }
-            if (matchCount <= 0 ) break;
+            if(matchCount <= 0) {
+                break;
+            }
             charPosition++;
         }
 
         return null;
     }
+
+
     /**
-     * Parse Content.
+     *  Parse Content.
+     *
+     *@return    The author value
      */
     public String getAuthor() {
         return author;
     }
+
+
     /**
-     * Return categories (from META tags)
+     *  Return categories (from META tags)
+     *
+     *@return    The categories value
      */
     public String getCategories() {
         return null;
     }
+
+
     /**
-     * Parse Content.
+     *  Parse Content.
+     *
+     *@return    The contents value
      */
     public String getContents() {
         return contents.toString();
     }
+
+
     /**
-     * Parse Content.
+     *  Parse Content.
+     *
+     *@return    The description value
      */
     public String getDescription() {
         return description;
     }
+
+
     /**
-     *	Return META HREF
+     *  Return META HREF
+     *
+     *@return    The hREF value
      */
     public String getHREF() {
         return null;
     }
+
+
     /**
-     * Parse Content.
+     *  Parse Content.
+     *
+     *@return    The keywords value
      */
     public String getKeywords() {
         return keywords;
     }
+
+
     /**
-     * Return links
+     *  Return links
+     *
+     *@return    The links value
      */
     public List getLinks() {
         return null;
     }
-    /**
-     * Parse Content.
-     */
-    public long getPublished() {
-        return published;
-    }
+
 
     /**
+     *  Parse Content.
      *
+     *@return    The published value
+     */
+    public String getPublished() {
+
+        return m_published;
+    }
+
+
+    /**
+     *@return    The title value
      */
     public String getTitle() {
         return title;
     }
+
+
     /**
-     * Check for new line chars
+     *  Check for new line chars
+     *
+     *@param  ch  true for new Line
+     *@return     The newLineChar value
      */
     private boolean isNewLineChar(char ch) {
         switch (ch) {
-            case '\n' :
+            case '\n':
                 return true;
-            case '\r' :
+            case '\r':
                 return true;
-            default :
+            default:
                 return false;
         }
 
     }
+
+
     /**
-     * Insert the method's description here.
-     * Creation date: (2/21/2001 7:50:24 PM)
-     * @param args java.lang.String[]
+     *  Insert the method's description here. Creation date: (2/21/2001 7:50:24
+     *  PM)
+     *
+     *@param  args  java.lang.String[]
      */
     public static void main(String[] args) {
 
@@ -263,25 +289,39 @@ public class PdfParser implements I_ContentParser{
             System.out.println("Keywords: " + p.getKeywords());
             System.out.println("Description: " + p.getDescription());
             System.out.println("Content: " + p.getContents());
-        } catch (Exception e) {e.printStackTrace();}
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
     }
+
+
     /**
-     * Parse Content. [24] 320:1
+     *  Looks for new line.
+     *
+     *@return                  Description of the Return Value
+     *@exception  IOException  Description of the Exception
      */
     private boolean nextLine() throws IOException {
         //System.out.println("look for new line");
-        while (true) {
+        while(true) {
             int b = read();
-            if (b == -1 ) return false;
-            if (isNewLineChar((char)b)) return true;
+            if(b == -1) {
+                return false;
+            }
+            if(isNewLineChar((char) b)) {
+                return true;
+            }
         }
 
     }
+
+
     /**
-     * Parse Content.
+     *  Starts ParseContent.
+     *
+     *@param  in  Description of the Parameter
      */
     public void parse(InputStream in) {
-
 
         //System.out.println("mark supported" + in.markSupported());
 
@@ -289,7 +329,7 @@ public class PdfParser implements I_ContentParser{
             this.in = new BufferedInputStream(in);
             reset();
             parseContent();
-            if (debug){
+            if(debug) {
                 System.out.println("Title: " + getTitle());
                 System.out.println("Author: " + getAuthor());
                 System.out.println("Published " + getPublished());
@@ -297,46 +337,46 @@ public class PdfParser implements I_ContentParser{
                 System.out.println("Description: " + getDescription());
                 System.out.println("Content: " + getContents());
             }
-
-            /*int b;
-            while ((b = in.read()) != -1) {
-                System.out.print((byte)b + ".");
-                System.out.print((char)b + "*");
-            }*/
-
-        } catch (Exception e) {e.printStackTrace();}
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
     }
+
+
     /**
-     * Parse Content. [24] 320:1
+     *  Starts the Parsers for every Token.
+     *
+     *@exception  IOException  Description of the Exception
      */
     private void parseContent() throws IOException {
         Thread curThread = Thread.currentThread();
-        while (true) {
-            if (curThread.isInterrupted()) {
-                curThread.interrupt(); // resignal the interrupt
+        while(true) {
+            if(curThread.isInterrupted()) {
+                curThread.interrupt();
+                // resignal the interrupt
                 break;
             }
             char[] token;
-            while (true) {
+            while(true) {
                 token = findToken();
-                if (token != null) {
+                if(token != null) {
                     //System.out.println("found a token : " + token);
-                    if (token == AUTHOR) {
+                    if(token == AUTHOR) {
                         author = parseData();
-                    } else if (token == CREATIONDATE) {
-                        published = parseDate();
-                    } else if (token == KEYWORDS) {
+                    } else if(token == CREATIONDATE) {
+                        m_published = parseDate();
+                    } else if(token == KEYWORDS) {
                         keywords = parseData();
-                    } else if (token == SUBJECT) {
+                    } else if(token == SUBJECT) {
                         description = parseData();
-                    } else if (token == TITLE) {
+                    } else if(token == TITLE) {
                         title = parseData();
-                    } else if (token == PARAMSTART) {
+                    } else if(token == PARAMSTART) {
                         //System.out.println("param set mark");
                         in.mark(10000);
                         //parseDataParams();
-                    } else if (token == STREAM) {
-                        if (!streamHit) {
+                    } else if(token == STREAM) {
+                        if(!streamHit) {
                             //System.out.println("new stream hit");
                             // first time this stream has been hit
                             // go back and parseDataParams.
@@ -345,7 +385,7 @@ public class PdfParser implements I_ContentParser{
                             parseDataParams();
                         } else {
                             //System.out.println("second stream hit");
-                            if (parseNextStream) {
+                            if(parseNextStream) {
                                 //System.out.println("parseDataStream");
                                 contents.append(parseDataStream());
                                 parseNextStream = false;
@@ -354,7 +394,7 @@ public class PdfParser implements I_ContentParser{
                         }
                     }
                 }
-                if (!nextLine()) {
+                if(!nextLine()) {
                     //System.out.println("new line");
                     break;
                 }
@@ -363,38 +403,55 @@ public class PdfParser implements I_ContentParser{
 
             //System.out.println("hello");
             break;
-
         }
         replaceSpChars();
     }
+
+
     /**
-     * Look for tokens.  This is not effiecent.
-     * Should use low, hi method with ordered array. NEED TO RECODE
+     *  Look for tokens. This is not effiecent. Should use low, hi method with
+     *  ordered array. NEED TO RECODE
+     *
+     *@return                  Description of the Return Value
+     *@exception  IOException  IOException
      */
     private String parseData() throws IOException {
 
         ByteArrayOutputStream temp = new ByteArrayOutputStream();
 
         // look for start '('
-        while (true) {
+        while(true) {
             int b = read();
-            if (b == -1 ) break;
-            char ch = (char)b;
-            if (ch == '(') break;
+            if(b == -1) {
+                break;
+            }
+            char ch = (char) b;
+            if(ch == '(') {
+                break;
+            }
         }
-        while (true) {
+        while(true) {
             int b = read();
-            if (b == -1 ) break;
-            char ch = (char)b;
-            if (ch == ')') break;
+            if(b == -1) {
+                break;
+            }
+            char ch = (char) b;
+            if(ch == ')') {
+                break;
+            }
             temp.write(b);
         }
 
         return new String(temp.toByteArray());
     }
+
+
     /**
-     * Look for tokens.  This is not effiecent.
-     * Should use low, hi method with ordered array. NEED TO RECODE
+     *  Look for tokens. This is not effiecent. Should use low, hi method with
+     *  ordered array. NEED TO RECODE
+     *
+     *@return                  Description of the Return Value
+     *@exception  IOException  Description of the Exception
      */
     private String parseDataParams() throws IOException {
 
@@ -403,11 +460,11 @@ public class PdfParser implements I_ContentParser{
         boolean end = false;
         int b = read();
 
-        while (true) {
+        while(true) {
             // check to see if new line;
-            if ((char)b == '>') {
+            if((char) b == '>') {
                 b = read();
-                if ((char)b == '>') {
+                if((char) b == '>') {
                     end = true;
                     break;
                 } else {
@@ -416,17 +473,25 @@ public class PdfParser implements I_ContentParser{
             } else {
                 temp.write(b);
             }
-            if (end) break;
+            if(end) {
+                break;
+            }
             b = read();
         }
         String params = new String(temp.toByteArray());
         //System.out.println(params.length());
         //System.out.println(params);
-        if (params.length() < 38
-        /*&& params.indexOf("0 R") != -1*/
-        && params.indexOf("/Length ") != -1)  {
-            if (params.indexOf("/FlateDecode") != -1) compression = FLATE;
-            if (params.indexOf("/LZWDecode") != -1) compression = LZW;
+        if(params.length() < 38
+        /*
+            && params.indexOf("0 R") != -1
+          */
+                 && params.indexOf("/Length ") != -1) {
+            if(params.indexOf("/FlateDecode") != -1) {
+                compression = FLATE;
+            }
+            if(params.indexOf("/LZWDecode") != -1) {
+                compression = LZW;
+            }
             parseNextStream = true;
             //System.out.println();
             //System.out.println(params);
@@ -434,9 +499,14 @@ public class PdfParser implements I_ContentParser{
 
         return new String(temp.toByteArray());
     }
+
+
     /**
-     * Look for tokens.  This is not effiecent.
-     * Should use low, hi method with ordered array. NEED TO RECODE
+     *  Look for tokens. This is not effiecent. Should use low, hi method with
+     *  ordered array. NEED TO RECODE
+     *
+     *@return                  The content as a String
+     *@exception  IOException  Description of the Exception
      */
     private String parseDataStream() throws IOException {
 
@@ -445,40 +515,45 @@ public class PdfParser implements I_ContentParser{
         boolean endstream = false;
 
         int b = read();
-        char ch = (char)b;
-        while (true) {
+        char ch = (char) b;
+        while(true) {
             // check to see if new line;
-            if (isNewLineChar(ch)) {
+            if(isNewLineChar(ch)) {
                 // check to see if it is endstream
                 tmp.reset();
                 boolean notMatch = false;
-                for (int i = 0; i < ENDSTREAM.length; i++) {
+                for(int i = 0; i < ENDSTREAM.length; i++) {
                     b = read();
                     tmp.write(b);
-                    if ((char)b != ENDSTREAM[i]) {
+                    if((char) b != ENDSTREAM[i]) {
                         // not endsteam break..
                         notMatch = true;
                         tmp.writeTo(temp);
                         break;
                     }
                 }
-                if (!notMatch) endstream = true;
+                if(!notMatch) {
+                    endstream = true;
+                }
             } else {
                 // not new line append byte
                 temp.write(b);
                 b = read();
-                ch = (char)b;
+                ch = (char) b;
             }
-            if (endstream) break; // endstream found
+            if(endstream) {
+                break;
+            }
+            // endstream found
         }
 
         // Uncompress if flateDecode is used
-        if (compression == FLATE) {
+        if(compression == FLATE) {
             //System.out.println("FlateDecode = " +flateDecode);
             ByteArrayInputStream bis = new ByteArrayInputStream(temp.toByteArray());
             InflaterInputStream iin = new InflaterInputStream(bis);
             temp.reset();
-            while ((b = iin.read()) != -1) {
+            while((b = iin.read()) != -1) {
                 temp.write(b);
             }
         }
@@ -493,19 +568,28 @@ public class PdfParser implements I_ContentParser{
         ByteArrayInputStream bis = new ByteArrayInputStream(temp.toByteArray());
         tmp.reset();
         boolean end = false;
-        while (true) {
+        while(true) {
             b = bis.read();
-            if (b == -1 ) break;
-            if ((char)b == '(') {
-                while (true) {
+            if(b == -1) {
+                break;
+            }
+            if((char) b == '(') {
+                while(true) {
                     b = bis.read();
-                    if (b == -1 ) {end = true; break;}
+                    if(b == -1) {
+                        end = true;
+                        break;
+                    }
                     // look for end ')'
-                    if ((char)b == ')') break;
+                    if((char) b == ')') {
+                        break;
+                    }
                     tmp.write(b);
                 }
             }
-            if (end) break;
+            if(end) {
+                break;
+            }
         }
 
         // reset flateDecode flag
@@ -514,134 +598,162 @@ public class PdfParser implements I_ContentParser{
         //System.out.println(new String(tmp.toByteArray()));
         return new String(tmp.toByteArray());
     }
-    /**
-     * To replace the german Sonderzeichen.
-     */
-    private void replaceSpChars(){
 
-        int index=0;
-        int length=contents.length();
+
+    /**
+     *  To replace the german Sonderzeichen.
+     */
+    private void replaceSpChars() {
+
+        int index = 0;
+        int length = contents.length();
         boolean weiter;
-        while(true){
-            weiter=false;
-            if (index+4<length) {
-                index=contents.toString().indexOf("\\237");
-                if (index!=-1) {
-                    contents=contents.replace(index,index+4,"ue");
-                    weiter=true;
+        while(true) {
+            weiter = false;
+            if(index + 4 < length) {
+                index = contents.toString().indexOf("\\237");
+                if(index != -1) {
+                    contents = contents.replace(index, index + 4, "ue");
+                    weiter = true;
                 }
-                index=contents.toString().indexOf("\\212");
-                if (index!=-1) {
-                    contents=contents.replace(index,index+4,"ae");
-                    weiter=true;
+                index = contents.toString().indexOf("\\212");
+                if(index != -1) {
+                    contents = contents.replace(index, index + 4, "ae");
+                    weiter = true;
                 }
-                index=contents.toString().indexOf("\\232");
-                if (index!=-1) {
-                    contents=contents.replace(index,index+4,"oe");
-                    weiter=true;
+                index = contents.toString().indexOf("\\232");
+                if(index != -1) {
+                    contents = contents.replace(index, index + 4, "oe");
+                    weiter = true;
                 }
-                index=contents.toString().indexOf("\\206");
-                if (index!=-1) {
-                    contents=contents.replace(index,index+4,"Ue");
-                    weiter=true;
+                index = contents.toString().indexOf("\\206");
+                if(index != -1) {
+                    contents = contents.replace(index, index + 4, "Ue");
+                    weiter = true;
                 }
-                index=contents.toString().indexOf("\\312");
-                if (index!=-1) {
-                    contents=contents.replace(index,index+4," ");
-                    weiter=true;
+                index = contents.toString().indexOf("\\312");
+                if(index != -1) {
+                    contents = contents.replace(index, index + 4, " ");
+                    weiter = true;
                 }
-                index=contents.toString().indexOf("\\320");
-                if (index!=-1) {
-                    contents=contents.replace(index,index+4,"-");
-                    weiter=true;
-                }/*
-                index=contents.toString().indexOf("\\237");
-                if (index!=-1) {
+                index = contents.toString().indexOf("\\320");
+                if(index != -1) {
+                    contents = contents.replace(index, index + 4, "-");
+                    weiter = true;
+                }
+                /*
+                    index=contents.toString().indexOf("\\237");
+                    if (index!=-1) {
                     contents=contents.replace(index,index+4,"Ae");
                     weiter=true;
-                }
-                index=contents.toString().indexOf("\\237");
-                if (index!=-1) {
+                    }
+                    index=contents.toString().indexOf("\\237");
+                    if (index!=-1) {
                     contents=contents.replace(index,index+4,"Oe");
                     weiter=true;
-                }*/
-                index=contents.toString().indexOf("\\321");
-                if (index!=-1) {
-                    contents=contents.replace(index,index+4," ");
-                    weiter=true;
+                    }
+                  */
+                index = contents.toString().indexOf("\\321");
+                if(index != -1) {
+                    contents = contents.replace(index, index + 4, " ");
+                    weiter = true;
                 }
-                index=contents.toString().indexOf("\\247");
-                if (index!=-1) {
-                    contents=contents.replace(index,index+4,"ss");
-                    weiter=true;
+                index = contents.toString().indexOf("\\247");
+                if(index != -1) {
+                    contents = contents.replace(index, index + 4, "ss");
+                    weiter = true;
                 }
                 //next codeset
-                index=contents.toString().indexOf("\\344");
-                if (index!=-1) {
-                    contents=contents.replace(index,index+4,"ae");
-                    weiter=true;
+                index = contents.toString().indexOf("\\344");
+                if(index != -1) {
+                    contents = contents.replace(index, index + 4, "ae");
+                    weiter = true;
                 }
-                index=contents.toString().indexOf("\\304");
-                if (index!=-1) {
-                    contents=contents.replace(index,index+4,"Ae");
-                    weiter=true;
+                index = contents.toString().indexOf("\\304");
+                if(index != -1) {
+                    contents = contents.replace(index, index + 4, "Ae");
+                    weiter = true;
                 }
-                index=contents.toString().indexOf("\\374");
-                if (index!=-1) {
-                    contents=contents.replace(index,index+4,"ue");
-                    weiter=true;
+                index = contents.toString().indexOf("\\374");
+                if(index != -1) {
+                    contents = contents.replace(index, index + 4, "ue");
+                    weiter = true;
                 }
-                index=contents.toString().indexOf("\\334");
-                if (index!=-1) {
-                    contents=contents.replace(index,index+4,"Ue");
-                    weiter=true;
+                index = contents.toString().indexOf("\\334");
+                if(index != -1) {
+                    contents = contents.replace(index, index + 4, "Ue");
+                    weiter = true;
                 }
-                index=contents.toString().indexOf("\\366");
-                if (index!=-1) {
-                    contents=contents.replace(index,index+4,"oe");
-                    weiter=true;
+                index = contents.toString().indexOf("\\366");
+                if(index != -1) {
+                    contents = contents.replace(index, index + 4, "oe");
+                    weiter = true;
                 }
-                index=contents.toString().indexOf("\\326");
-                if (index!=-1) {
-                    contents=contents.replace(index,index+4,"Oe");
-                    weiter=true;
+                index = contents.toString().indexOf("\\326");
+                if(index != -1) {
+                    contents = contents.replace(index, index + 4, "Oe");
+                    weiter = true;
                 }
-                index=contents.toString().indexOf("\\337");
-                if (index!=-1) {
-                    contents=contents.replace(index,index+4,"ss");
-                    weiter=true;
+                index = contents.toString().indexOf("\\337");
+                if(index != -1) {
+                    contents = contents.replace(index, index + 4, "ss");
+                    weiter = true;
                 }
             }
-            if (!weiter) break;
+            if(!weiter) {
+                break;
+            }
         }
     }
 
+
     /**
-     * Look for tokens.  This is not effiecent.
-     * Should use low, hi method with ordered array. NEED TO RECODE
+     * Format the parsed date.
+     *
+     *@return                  the publishing date in format dd.MM.yyyy
+     *@exception  IOException  Description of the Exception
      */
-    private long parseDate() throws IOException {
+    private String parseDate() throws IOException {
 
         try {
             String date = parseData();
-            return dateFormatter.parse(date.substring(2, date.length())).getTime();
+            SimpleDateFormat sd = new SimpleDateFormat("dd.MM.yyyy");
+            return sd.format(dateFormatter.parse(date.substring(2, 10)));
         } catch(ParseException e) {
             e.printStackTrace();
-            return -1;
+            return "";
         }
     }
+
+
+    /**
+     * Read a character from the input-stream
+     *
+     *@return                  the read character as int
+     *@exception  IOException  Description of the Exception
+     */
     private final int read() throws IOException {
 
         ++currentPosition;
         return in.read();
     }
+
+
+    /**
+     *  Read a character from the input-stream
+     *
+     *@return                  the read character
+     *@exception  IOException  Description of the Exception
+     */
     private final char readCh() throws IOException {
 
         ++currentPosition;
-        return (char)in.read();
+        return (char) in.read();
     }
+
+
     /**
-     *	Return contents
+     *  Return contents
      */
     private void reset() {
 
@@ -653,7 +765,6 @@ public class PdfParser implements I_ContentParser{
 
         contents.setLength(0);
         published = -1;
-
 
         // Flags
         streamHit = false;
