@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsXmlLauncher.java,v $
-* Date   : $Date: 2002/03/25 13:18:42 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2002/04/10 15:51:53 $
+* Version: $Revision: 1.36 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.http.*;
  * be used to create output.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.35 $ $Date: 2002/03/25 13:18:42 $
+ * @version $Revision: 1.36 $ $Date: 2002/04/10 15:51:53 $
  */
 public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_CmsConstants {
 
@@ -217,7 +217,9 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_
                     if(cmsUri.isHttpsResource() != httpsReq){
                         if(httpsReq){
                             //throw new CmsException(" "+file.getAbsolutePath()+" needs a http request", CmsException.C_HTTPS_PAGE_ERROR);
-                        }else{
+                        }else if(cms.getStaticExportProperties().isStaticExportEnabled()
+                                || "false_ssl".equals(cms.getStaticExportProperties().getStaticExportEnabledValue())){
+                            // check if static export is enabled and value is not false_ssl
                             throw new CmsException(" "+file.getAbsolutePath()+" needs a https request", CmsException.C_HTTPS_REQUEST_ERROR);
                         }
                     }
