@@ -9,7 +9,7 @@ import com.opencms.file.*;
 
 import java.util.*;
 
-public class CmsButtonSeparator implements I_CmsWpElement {    
+public class CmsButtonSeparator extends A_CmsWpElement implements I_CmsWpElement {    
         
     public Object handleSpecialWorkplaceTag(A_CmsObject cms, Element n, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
 
