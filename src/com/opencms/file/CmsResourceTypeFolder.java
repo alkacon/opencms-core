@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
- * Date   : $Date: 2001/07/10 15:44:47 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2001/07/13 10:14:52 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -772,7 +772,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
      * @exception CmsException  Throws CmsException if operation was not succesful.
      */
     public void restoreResource(CmsObject cms, int versionId, String filename) throws CmsException{
-        // cannot restore a folder
+        throw new CmsException("[" + this.getClass().getName() + "] Cannot restore folders.",CmsException.C_ACCESS_DENIED);
     }
 
 	/**
@@ -785,7 +785,36 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
 	* to write this resource.
 	*/
 	public void undoChanges(CmsObject cms, String resource) throws CmsException{
-        // folders are not unchanged
+        // we have to undo changes of the folder and all resources in the folder
+        Vector allSubFolders = new Vector();
+        Vector allSubFiles   = new Vector();
+        getAllResources(cms, resource, allSubFiles, allSubFolders);
+        String parent = ((CmsResource)cms.readFileHeader(resource)).getParent();
+        if(!cms.accessWrite(resource)){
+            throw new CmsException("[" + this.getClass().getName() + "]"+resource, CmsException.C_NO_ACCESS);
+        }
+        // first undo changes of the folder
+        cms.doUndoChanges(resource);
+        // now undo changes of the subfolders
+        for (int i=0; i<allSubFolders.size(); i++){
+            CmsFolder curFolder = (CmsFolder) allSubFolders.elementAt(i);
+            if(curFolder.getState() != C_STATE_NEW){
+                undoChanges(cms, curFolder.getAbsolutePath());
+            } else {
+                // if it is a new folder then delete the folder
+                deleteResource(cms, curFolder.getAbsolutePath());
+            }
+        }
+        // now undo changes in the files
+        for (int i=0; i<allSubFiles.size(); i++){
+            CmsFile curFile = (CmsFile)allSubFiles.elementAt(i);
+            if(curFile.getState() != C_STATE_NEW){
+                cms.undoChanges(curFile.getAbsolutePath());
+            } else {
+                // if it is a new file then delete the file
+                cms.deleteResource(curFile.getAbsolutePath());
+            }
+        }
 	}
 
 	/**

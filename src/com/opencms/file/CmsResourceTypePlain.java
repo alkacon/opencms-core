@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePlain.java,v $
- * Date   : $Date: 2001/07/10 15:44:15 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2001/07/13 10:14:52 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -438,7 +438,10 @@ public class CmsResourceTypePlain implements I_CmsResourceType, I_CmsConstants, 
      * @exception CmsException  Throws CmsException if operation was not succesful.
      */
     public void restoreResource(CmsObject cms, int versionId, String filename) throws CmsException{
-	    cms.doRestoreResource(versionId, filename);
+        if(!cms.accessWrite(filename)){
+            throw new CmsException(filename, CmsException.C_NO_ACCESS);
+        }
+        cms.doRestoreResource(versionId, filename);
     }
 
 	/**
@@ -451,7 +454,10 @@ public class CmsResourceTypePlain implements I_CmsResourceType, I_CmsConstants, 
 	* to write this resource.
 	*/
 	public void undoChanges(CmsObject cms, String resource) throws CmsException{
-		cms.doUndoChanges(resource);
+        if(!cms.accessWrite(resource)){
+            throw new CmsException(resource, CmsException.C_NO_ACCESS);
+        }
+        cms.doUndoChanges(resource);
 	}
 
 	/**

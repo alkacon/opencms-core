@@ -3,8 +3,8 @@ import java.util.zip.*;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
- * Date   : $Date: 2001/07/09 08:10:22 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2001/07/13 10:14:52 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -43,7 +43,7 @@ import com.opencms.file.genericSql.*;
  * Access class for resources of the type "Page".
  *
  * @author Alexander Lucas
- * @version $Revision: 1.3 $ $Date: 2001/07/09 08:10:22 $
+ * @version $Revision: 1.4 $ $Date: 2001/07/13 10:14:52 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, com.opencms.workplace.I_CmsWpConstants {
 
@@ -678,6 +678,9 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
      * @exception CmsException  Throws CmsException if operation was not succesful.
      */
     public void restoreResource(CmsObject cms, int versionId, String filename) throws CmsException{
+        if(!cms.accessWrite(filename)){
+            throw new CmsException(filename, CmsException.C_NO_ACCESS);
+        }
         CmsFile file = cms.readFile(filename);
 		cms.doRestoreResource(versionId, filename);
 		String bodyPath = checkBodyPath(cms, (CmsFile)file);
@@ -696,12 +699,15 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
 	* to write this resource.
 	*/
 	public void undoChanges(CmsObject cms, String resource) throws CmsException{
+        if(!cms.accessWrite(resource)){
+            throw new CmsException(resource, CmsException.C_NO_ACCESS);
+        }
         CmsFile file = cms.readFile(resource);
-		cms.doUndoChanges(resource);
-		String bodyPath = checkBodyPath(cms, (CmsFile)file);
-		if (bodyPath != null){
-		    cms.doUndoChanges(bodyPath);
-		}
+        cms.doUndoChanges(resource);
+        String bodyPath = checkBodyPath(cms, (CmsFile)file);
+        if (bodyPath != null){
+            cms.doUndoChanges(bodyPath);
+        }
 	}
 
 	/**
