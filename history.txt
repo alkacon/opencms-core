@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/02/21 15:16:38 $
- * Version: $Revision: 1.459 $
+ * Date   : $Date: 2003/02/21 23:36:42 $
+ * Version: $Revision: 1.460 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,7 +20,9 @@ Legend:
 - General comment
 
 OpenCms 5.0 (next version)
-! Updated the TeX sources for the PDF documentation for the 5.0 release
+! Added feature to convert content from old export format (4.x) to 5.0 version,
+  set "compatibility.support.import.4.x.contents=true" in opencms.properties
+! Updated the TeX sources of the PDF documentation for the 5.0 release
 ! Implemented "module replacement", if a module is uploaded that already exists in the system,
   the existing module is updated (simple type modules only)
 ! Default user preferences can now be set in opencms.properties
