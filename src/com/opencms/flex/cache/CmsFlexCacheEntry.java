@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexCacheEntry.java,v $
- * Date   : $Date: 2002/09/16 10:30:39 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2002/09/16 11:53:42 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,10 @@
 
 package com.opencms.flex.cache;
 
-import java.util.*;
 import com.opencms.flex.util.I_CmsFlexLruCacheObject;
+
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * A CmsFlexCacheEntry describes a cached resource.
@@ -54,12 +56,12 @@ import com.opencms.flex.util.I_CmsFlexLruCacheObject;
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @see com.opencms.flex.util.I_CmsFlexLruCacheObject
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsFlexCacheEntry extends Object implements I_CmsFlexLruCacheObject {
     
     /** Initial size for lists */
-    public static final int C_INITIAL_CAPACITY_LISTS = 7;
+    public static final int C_INITIAL_CAPACITY_LISTS = 11;
     // Alternatives: 2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71    
     
     /** The list of items for this resource */
@@ -139,11 +141,12 @@ public class CmsFlexCacheEntry extends Object implements I_CmsFlexLruCacheObject
      * @param resource A name of a resource in the OpenCms VFS.
      * @param parameters A map of parameters specific to this include call.
      */    
-    public void add(String resource, java.util.HashMap paramters) {
+    public void add(String resource, java.util.Map paramters) {
         if (m_completed) return;
         if (m_redirectTarget == null) {
             // Add only if not already redirected
             m_elements.add(resource);
+            if (paramters == null) paramters = java.util.Collections.EMPTY_MAP;
             m_elements.add(paramters);
             m_byteSize += resource.getBytes().length;
         }
@@ -225,14 +228,17 @@ public class CmsFlexCacheEntry extends Object implements I_CmsFlexLruCacheObject
             java.util.Iterator i = m_elements.iterator();
             while (i.hasNext()) {
                 Object o = i.next();
-                if (o instanceof String) {
-                    java.util.HashMap map = (java.util.HashMap)i.next();
+                if (o instanceof String) {                    
+                    // Handle cached parameters
+                    java.util.Map map = (java.util.Map)i.next();                    
                     java.util.Map oldMap = null;
-                    if (map != null) {
+                    if (map.size() > 0) {
                         oldMap = req.getParameterMap();
                         req.addParameterMap(map);
                     }
+                    // Do the include call
                     req.getCmsRequestDispatcher((String)o).include(req, res);
+                    // Reset parameters if neccessary
                     if (oldMap != null) req.setParameterMap(oldMap);
                 } else {
                     try {

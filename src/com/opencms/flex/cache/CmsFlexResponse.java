@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexResponse.java,v $
-* Date   : $Date: 2002/09/16 10:31:34 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2002/09/16 11:53:42 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.io.PrintWriter;
  * A wrapper class for a HttpServletRequest that controls the Flex cache.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsFlexResponse extends javax.servlet.http.HttpServletResponseWrapper {
     
@@ -379,6 +379,8 @@ public class CmsFlexResponse extends javax.servlet.http.HttpServletResponseWrapp
                         res.getOutputStream().write((byte[])m_includeResults.get(count));
                         count++;
                     }
+                    // Skip next entry, which is the parameter list for this incluce call
+                    o = i.next();
                 }
             }
         }
