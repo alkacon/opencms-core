@@ -2,8 +2,8 @@ package com.opencms.template;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsTemplateClassManager.java,v $
- * Date   : $Date: 2000/08/24 09:25:39 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2000/09/01 08:29:29 $
+ * Version: $Revision: 1.18 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * be cached and re-used. 
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.17 $ $Date: 2000/08/24 09:25:39 $
+ * @version $Revision: 1.18 $ $Date: 2000/09/01 08:29:29 $
  */
 public class CmsTemplateClassManager implements I_CmsLogChannels { 
 	
@@ -62,6 +62,7 @@ public class CmsTemplateClassManager implements I_CmsLogChannels {
 			A_OpenCms.log(C_OPENCMS_INFO, "[CmsClassManager] clearing class instance cache.");
 		}
 		instanceCache.clear();
+		m_loader=null;
 	}
 	/**
 	 * Gets the instance of the class with the given classname.
@@ -127,10 +128,10 @@ public class CmsTemplateClassManager implements I_CmsLogChannels {
 		}
 		
 		if(instanceCache.containsKey(classname)) {
-			//System.err.println("---- GOT FROM INSTANCE CACHE:"+classname);
+
 			o = instanceCache.get(classname);
 		} else {
-			System.err.println("---- REQUEST FROM CLASSLOADER:"+classname);
+			
 			Vector repositories = new Vector();
 			String[] repositoriesFromConfigFile = null;
 			String[] repositoriesFromRegistry = null;
@@ -151,7 +152,14 @@ public class CmsTemplateClassManager implements I_CmsLogChannels {
 				repositoriesFromRegistry = reg.getRepositories();
 				
 				for (int i=0; i < repositoriesFromRegistry.length; i++)
-					repositories.addElement(repositoriesFromRegistry[i]);
+			        try {
+				        cms.readFileHeader(repositoriesFromRegistry[i]);	
+				        repositories.addElement(repositoriesFromRegistry[i]); 
+			        } catch (CmsException e) {
+				        // this repository was not found, do do not add it to the repository list
+				        // no exception handling is nescessary here.
+			        }
+					
 			}
 						
 			try {
@@ -161,10 +169,7 @@ public class CmsTemplateClassManager implements I_CmsLogChannels {
 
 				Class c=m_loader.loadClass(classname);
 
-				/*
-				CmsClassLoader loader = new CmsClassLoader(cms, repositories, null);
-				Class c = loader.loadClass(classname);        
-				*/
+		
 				
 				// Now we have to look for the constructor
 				Constructor con = c.getConstructor(parameterTypes); 

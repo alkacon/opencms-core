@@ -2,9 +2,9 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsSession.java,v $
- * Date   : $Date: 2000/08/28 14:02:39 $
- * Version: $Revision: 1.13 $
- *
+ * Date   : $Date: 2000/09/01 08:29:29 $
+ * Version: $Revision: 1.14 $
+ * 
  * Copyright (C) 2000  The OpenCms Group 
  * 
  * This File is part of OpenCms -
@@ -38,7 +38,7 @@ import javax.servlet.http.*;
  * session-failover in distributed-server environments.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.13 $ $Date: 2000/08/28 14:02:39 $  
+ * @version $Revision: 1.14 $ $Date: 2000/09/01 08:29:29 $  
  */
 
 public class CmsSession implements I_CmsSession, I_CmsConstants {
