@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsReplace.java,v $
- * Date   : $Date: 2004/08/20 09:52:01 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/10/20 13:36:34 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,14 +56,14 @@ import org.apache.commons.fileupload.FileItem;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.5.0
  */
 public class CmsReplace extends CmsDialog {
     
     /** The dialog type.<p> */
-    public static final String DIALOG_TYPE = "move";
+    public static final String DIALOG_TYPE = "replace";
     
     /** Request parameter name for the upload file name.<p> */
     public static final String PARAM_UPLOADFILE = "uploadfile";
