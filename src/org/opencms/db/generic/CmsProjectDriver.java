@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/06/16 16:20:48 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/06/16 17:20:30 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.4 $ $Date: 2003/06/16 16:20:48 $
+ * @version $Revision: 1.5 $ $Date: 2003/06/16 17:20:30 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1842,15 +1842,15 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
             res = stmt.executeQuery();
             // read the id
             if (res.next()) {
-                resourceId = new CmsUUID(res.getString(m_sqlManager.get("C_RESOURCES_RESOURCE_ID")));
+                resourceId = new CmsUUID(res.getString(m_sqlManager.get("C_RESOURCES_STRUCTURE_ID")));
                 while (res.next()) {
                     // do nothing only move through all rows because of mssql odbc driver
                 }
             }
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "readOnlineId(String)", CmsException.C_SQL_ERROR, e, false);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (Exception exc) {
-            throw m_sqlManager.getCmsException(this, "readOnlineId(String)", CmsException.C_UNKNOWN_EXCEPTION, exc, false);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }

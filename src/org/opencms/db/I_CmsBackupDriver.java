@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsBackupDriver.java,v $
- * Date   : $Date: 2003/06/13 10:03:10 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/06/16 17:20:30 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,12 +49,12 @@ import source.org.apache.java.util.Configurations;
  * Definitions of all required backup driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2003/06/13 10:03:10 $
+ * @version $Revision: 1.2 $ $Date: 2003/06/16 17:20:30 $
  * @since 5.1
  */
 public interface I_CmsBackupDriver {
     
-    public CmsBackupResource createCmsBackupResourceFromResultSet(ResultSet res) throws SQLException;
+    public CmsBackupResource createCmsBackupResourceFromResultSet(ResultSet res, boolean hasContent) throws SQLException;
     void backupProject(CmsProject project, int versionId, long publishDate, CmsUser currentUser) throws CmsException;
     void backupResource(int projectId, CmsResource resource, byte[] content, Map properties, int versionId, long publishDate) throws CmsException;
     int deleteBackups(long maxdate) throws CmsException;

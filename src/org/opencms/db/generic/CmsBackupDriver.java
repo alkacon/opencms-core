@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/06/13 14:48:16 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/06/16 17:20:30 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the backup driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2003/06/13 14:48:16 $
+ * @version $Revision: 1.3 $ $Date: 2003/06/16 17:20:30 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
@@ -276,7 +276,9 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
      * @return CmsBackupResource the new CmsBackupResource object
      * @throws SQLException in case the result set does not include a requested table attribute
      */
-    public CmsBackupResource createCmsBackupResourceFromResultSet(ResultSet res) throws SQLException {
+    public CmsBackupResource createCmsBackupResourceFromResultSet(ResultSet res, boolean hasContent) throws SQLException {
+        byte[] content = null;
+        
         int versionId = res.getInt(m_sqlManager.get("C_RESOURCES_VERSION_ID"));
         CmsUUID structureId = new CmsUUID(res.getString(m_sqlManager.get("C_RESOURCES_STRUCTURE_ID")));
         CmsUUID resourceId = new CmsUUID(res.getString(m_sqlManager.get("C_RESOURCES_RESOURCE_ID")));
@@ -300,8 +302,14 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
         CmsUUID modifiedBy = new CmsUUID(res.getString(m_sqlManager.get("C_RESOURCES_LASTMODIFIED_BY")));
         String modifiedByName = res.getString(m_sqlManager.get("C_RESOURCES_LASTMODIFIED_BY_NAME"));
         int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
+        
+        if (hasContent) {
+            content = m_sqlManager.getBytes(res,m_sqlManager.get("C_RESOURCES_FILE_CONTENT"));
+        } else {
+            content = new byte[0];
+        }
 
-        return new CmsBackupResource(versionId, structureId, resourceId, parentId, fileId, resName, resType, resFlags, userId, userName, groupId, groupName, projectID, accessFlags, state, launcherType, launcherClass, created, modified, modifiedBy, modifiedByName, new byte[0], resSize, lockedInProject);
+        return new CmsBackupResource(versionId, structureId, resourceId, parentId, fileId, resName, resType, resFlags, userId, userName, groupId, groupName, projectID, accessFlags, state, launcherType, launcherClass, created, modified, modifiedBy, modifiedByName, content, resSize, lockedInProject);
     }
     
     /**
@@ -494,7 +502,7 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
             res = stmt.executeQuery();
             // create new file headers
             while (res.next()) {
-                allHeaders.addElement(createCmsBackupResourceFromResultSet(res));
+                allHeaders.addElement(createCmsBackupResourceFromResultSet(res, false));
             }
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
@@ -613,7 +621,7 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
             stmt.setInt(2, versionId);
             res = stmt.executeQuery();
             if (res.next()) {
-                file = createCmsBackupResourceFromResultSet(res);
+                file = createCmsBackupResourceFromResultSet(res, true);
                 while (res.next()) {
                     // do nothing only move through all rows because of mssql odbc driver
                 }
@@ -658,7 +666,7 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
             res = stmt.executeQuery();
             // create new file
             if (res.next()) {
-                file = createCmsBackupResourceFromResultSet(res);
+                file = createCmsBackupResourceFromResultSet(res, false);
                 while (res.next()) {
                     // do nothing only move through all rows because of mssql odbc driver
                 }
