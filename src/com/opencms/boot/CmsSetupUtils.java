@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetupUtils.java,v $
-* Date   : $Date: 2001/08/01 15:21:24 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2001/08/02 07:25:10 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -602,30 +602,25 @@ public class CmsSetupUtils {
      * @param usedJDK The JDK version in use
      */
     public static void writeVersionInfo(String thisEngine, String usedJDK, String basePath){
-        FileOutputStream fOut = null;
-        DataOutputStream dOut = null;
-        byte[] content = null;
-        FileInputStream fileStream = null;
-        int charsRead;
-        String newEntry = new String();
-        newEntry = "\n############### currently used configuration ################\n"+
-                   "Date:                "+DateFormat.getDateTimeInstance().format(new java.util.Date(System.currentTimeMillis()))+'\n'+
-                   "Used JDK:            "+usedJDK+'\n'+
-                   "Used Servlet Engine: "+thisEngine+'\n';
-        content = newEntry.getBytes();
+        FileWriter fOut = null;
+        PrintWriter dOut = null;
         String filename = basePath+"ocsetup/versions.txt";
         try {
             File file = new File(filename);
             if(file.exists()){
                 // new FileOutputStream of the existing file with parameter append=true
-                fOut = new FileOutputStream(filename, true);
+                fOut = new FileWriter(filename, true);
             } else {
-                fOut = new FileOutputStream(file);
+                fOut = new FileWriter(file);
             }
             // write the content to the file in server filesystem
-            dOut = new DataOutputStream(fOut);
-            dOut.write(content);
-            dOut.flush();
+            dOut = new PrintWriter((Writer)fOut);
+            dOut.println();
+            dOut.println("############### currently used configuration ################");
+            dOut.println("Date:                "+DateFormat.getDateTimeInstance().format(new java.util.Date(System.currentTimeMillis())));
+            dOut.println("Used JDK:            "+usedJDK);
+            dOut.println("Used Servlet Engine: "+thisEngine);
+            dOut.close();
         } catch (IOException e) {
         } finally {
             try {
