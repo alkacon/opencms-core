@@ -198,6 +198,20 @@ CREATE INDEX PROJECT_NAME ON
 CREATE INDEX PROJECT_TASKID ON 
   CMS_PROJECTS(TASK_ID);
 
+create index projects_flags on 
+cms_projects (project_flags);
+
+create index resources_type on 
+cms_resources (resource_type);
+
+create index resources_state on 
+cms_resources (state);
+
+create index resources_project_type on 
+cms_resources (project_id, resource_type);
+
+create index resources_resourceid_project on 
+cms_resources (resource_id, project_id);
 
 CREATE INDEX RESOURCE_FILEID ON 
   CMS_RESOURCES(FILE_ID);
