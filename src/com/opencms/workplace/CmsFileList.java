@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
- * Date   : $Date: 2000/06/05 13:37:59 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2000/06/19 08:45:45 $
+ * Version: $Revision: 1.43 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import javax.servlet.http.*;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.42 $ $Date: 2000/06/05 13:37:59 $
+ * @version $Revision: 1.43 $ $Date: 2000/06/19 08:45:45 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants,
@@ -140,12 +140,12 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
     public Object handleSpecialWorkplaceTag(CmsObject cms, Element n, A_CmsXmlContent doc,
                                             Object callingObject, Hashtable parameters, 
                                             CmsXmlLanguageFile lang) throws CmsException { 
-		        
+
         String template = n.getAttribute(C_FILELIST_TEMPLATE);
         String customizedTemplate = n.getAttribute(C_FILELIST_CUSTOMTEMPLATE);
 
         CmsXmlWpTemplateFile filelistTemplate = new CmsXmlWpTemplateFile(cms,template); 
-		
+	
         filelistTemplate.setData(C_FILELIST_COLUMN_CUSTOMIZED, "");
         filelistTemplate.setData(C_FILELIST_COLUMN_CUSTOMIZED_VALUE, "");
         
@@ -165,7 +165,9 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
         
         I_CmsFileListUsers filelistUser = (I_CmsFileListUsers)callingObject;
         Vector filelist = filelistUser.getFiles(cms);  
-		return getFilelist(cms, filelist, filelistTemplate, lang, parameters, filelistUser, configFile); 
+        
+         return getFilelist(cms, filelist, filelistTemplate, lang, parameters, filelistUser, configFile); 
+      
     }          
     
      /**

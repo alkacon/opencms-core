@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2000/06/18 14:50:33 $
- * Version: $Revision: 1.86 $
+ * Date   : $Date: 2000/06/19 08:45:44 $
+ * Version: $Revision: 1.87 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.86 $ $Date: 2000/06/18 14:50:33 $
+ * @version $Revision: 1.87 $ $Date: 2000/06/19 08:45:44 $
  */
 public interface I_CmsConstants
 {
@@ -821,6 +821,11 @@ public interface I_CmsConstants
 	 */
 	public static String C_CONFIGURATION_RESOURCEBROKER = "resourcebroker";
 
+    /**
+	 * A string in the configuration-file.
+	 */
+	public static String C_CONFIGURATION_CACHE = "cache";
+    
 	/**
 	 * A string in the configuration-file.
 	 */

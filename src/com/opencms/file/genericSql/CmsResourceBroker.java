@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/18 14:50:34 $
- * Version: $Revision: 1.59 $
+ * Date   : $Date: 2000/06/19 08:45:45 $
+ * Version: $Revision: 1.60 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.59 $ $Date: 2000/06/18 14:50:34 $
+ * @version $Revision: 1.60 $ $Date: 2000/06/19 08:45:45 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -83,8 +83,8 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
     private CmsCache m_resourceCache=null;
     private CmsCache m_subresCache = null;
     private CmsCache m_projectCache=null;
-
- 
+    private CmsCache m_propertyCache=null;
+    private CmsCache m_propertyDefCache=null;
     
     // Internal ResourceBroker methods   
     
@@ -106,14 +106,15 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		m_dbAccess = new CmsDbAccess(config);		
         
         // initalize the caches
-        // todo: define cache sizes in opencms.property file
-        m_userCache=new CmsCache(50);
-        m_groupCache = new CmsCache(50);
-        m_usergroupsCache = new CmsCache(50);
-        m_projectCache = new CmsCache(50);
-        m_resourceCache=new CmsCache(1000);
-        m_subresCache = new CmsCache(100);
-        
+        System.out.println("[CmsRbManager] Setting up DB-Caches");
+        m_userCache=new CmsCache(config.getInteger(C_CONFIGURATION_CACHE + ".user", 50));
+        m_groupCache = new CmsCache(config.getInteger(C_CONFIGURATION_CACHE + ".group", 50));
+        m_usergroupsCache = new CmsCache(config.getInteger(C_CONFIGURATION_CACHE + ".usergroups", 50));
+        m_projectCache = new CmsCache(config.getInteger(C_CONFIGURATION_CACHE + ".project", 50));
+        m_resourceCache=new CmsCache(config.getInteger(C_CONFIGURATION_CACHE + ".resource", 1000));
+        m_subresCache = new CmsCache(config.getInteger(C_CONFIGURATION_CACHE + ".subres", 100));
+        m_propertyCache = new CmsCache(config.getInteger(C_CONFIGURATION_CACHE + ".property", 1000));
+        m_propertyDefCache = new CmsCache(config.getInteger(C_CONFIGURATION_CACHE + ".propertydef", 100));                  
         
     }
 	
@@ -138,6 +139,8 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
         m_projectCache.clear();
         m_resourceCache.clear();
         m_subresCache.clear();
+        m_propertyCache.clear();
+        m_propertyDefCache.clear();
     }
    
     

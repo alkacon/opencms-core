@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsHistory.java,v $
- * Date   : $Date: 2000/06/05 13:37:59 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/06/19 08:45:45 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.11 $ $Date: 2000/06/05 13:37:59 $
+ * @version $Revision: 1.12 $ $Date: 2000/06/19 08:45:45 $
  */
 public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -162,7 +162,7 @@ public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,
         String filename=(String)session.getValue(C_PARA_FILE);
         if (filename != null) {
             Vector allFiles=cms.readAllFileHeaders(filename);
-            System.err.println(allFiles);
+         
             if (allFiles.size() >0) {
                 allFiles=Utils.sort(cms,allFiles,Utils.C_SORT_PUBLISHED_DOWN);                              
             }
