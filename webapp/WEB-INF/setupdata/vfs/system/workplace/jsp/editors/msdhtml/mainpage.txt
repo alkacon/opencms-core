@@ -52,6 +52,12 @@ var USE_LINKSTYLEINPUTS = <%= options.showElement("linkstyleinputs") %>;
 var USE_FONTFACE = <%= options.showElement("font.face") %>;
 var USE_FONTSIZE = <%= options.showElement("font.size") %>; 
 
+// action parameters of the form
+var actionExit = "<%= wp.EDITOR_EXIT %>";
+var actionSaveExit = "<%= wp.EDITOR_SAVEEXIT %>";
+var actionSave = "<%= wp.EDITOR_SAVE %>";
+var actionSaveAction = "<%= wp.EDITOR_SAVEACTION %>";
+
 // OpenCms context prefix, required for page editor because no link replacement is done here
 var linkEditorPrefix = "<%= org.opencms.main.OpenCms.getSystemInfo().getOpenCmsContext() %>";
 
@@ -101,21 +107,21 @@ function buttonAction(para) {
 	case 1:
 		// reload the editor
 		saveContent();
-		_form.action.value = "show";
+		_form.action.value = "<%= wp.EDITOR_SHOW %>";
 		_form.target = "_self";
 		_form.submit();
 		break;
 	case 2:
 		// preview selected	
 		saveContent();		
-		_form.action.value = "preview";
+		_form.action.value = "<%= wp.EDITOR_PREVIEW %>";
 		_form.target = "PREVIEW";
 		_form.submit();
 		break;
 	case 3:
-		// change body;
+		// change element;
 		saveContent();
-		_form.action.value = "<%= wp.EDITOR_CHANGE_BODY %>";
+		_form.action.value = "<%= wp.EDITOR_CHANGE_ELEMENT %>";
 		_form.target = "_self";
 		_form.submit();
 		break;

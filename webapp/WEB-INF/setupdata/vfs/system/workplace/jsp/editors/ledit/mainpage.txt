@@ -12,6 +12,11 @@
 	// Workplacepath needed in included javascript files
 	var workplacePath="<%= cms.link("/system/workplace/") %>";
 	
+	// action parameters of the form
+	var actionExit = "<%= wp.EDITOR_EXIT %>";
+	var actionSaveExit = "<%= wp.EDITOR_SAVEEXIT %>";
+	var actionSave = "<%= wp.EDITOR_SAVE %>";
+	
 	// Ask user whether he really wants to leave Texteditor without saving
 	function confirmExit()
 	{

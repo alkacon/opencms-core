@@ -56,7 +56,7 @@ function setContentDelayed() {
 }
 
 
-// function action on button click for Netscape Navigator
+// function action on button click
 function buttonAction(para) {
 	// We have to do a blur on the textarea here. Otherwise Netscape may have problems with reading the value
 	var _form = document.EDITOR;
@@ -66,21 +66,21 @@ function buttonAction(para) {
 	switch (para) {
 	case 1:
 	{
-		_form.action.value = "exit";
+		_form.action.value = actionExit;
 		_form.target = "_top";
 		_form.submit();
 		break;
 	}
 	case 2:
 	{
-		_form.action.value = "saveexit";
+		_form.action.value = actionSaveExit;
 		_form.target = "_top";
 		_form.submit();
 		break;
 	}
 	case 3:
 	{
-		_form.action.value = "save";
+		_form.action.value = actionSave;
 		_form.submit();
 		break;
 	}
@@ -101,4 +101,78 @@ function opensmallwin(url, name, w, h) {
 		}
 	}
 	return smallwindow;
+}
+
+// EVENT: all browsers have to check the keydown event
+if(document.captureEvents) {
+	//non IE
+	if (Event.KEYDOWN) {
+		//NS 4, NS 6+, Mozilla 0.9+
+		document.captureEvents(Event.KEYDOWN);
+	}
+}
+/* this next line tells the browser to detect a keydown
+event over the whole document and when it detects it,
+it should run the event handler function 'keyDownHandler' */
+document.onkeydown = keyDownHandler;
+
+function keyDownHandler(e) {
+	// EVENT HANDLER: handle tab key in text edit mode
+	if (!e) {
+		// if the browser did not pass the event information to the
+		// function, we will have to obtain it from the event register
+		if (window.event) {
+			//DOM
+			e = window.event;
+		} else {
+			// total failure, we have no way of referencing the event
+			return;
+		}
+	}
+
+	if (typeof(e.which) == 'number') {
+		//NS 4, NS 6+, Mozilla 0.9+, Opera
+		key = e.which;
+	} else if (typeof(E.keyCode) == 'number') {
+		//IE, NS 6+, Mozilla 0.9+
+		key = e.keyCode;
+	} else if (typeof(e.charCode) == 'number') {
+		//also NS 6+, Mozilla 0.9+
+		key = e.charCode;
+	} else {
+		// total failure, we have no way of obtaining the key code
+		return;
+	}
+
+	switch (key) {
+		case 9:
+		// prevent switching focus if tabulator key is pressed
+		checkTab();
+		break;
+	}
+}
+
+function addText(input, insText) {
+	input.focus();
+	if (input.createTextRange) {
+		document.selection.createRange().text += insText;
+	} else if (Input.setSelectionRange) {
+		var len = input.selectionEnd;
+		input.value = input.value.substr(0, len)
+			+ insText + input.value.substr(len);
+		input.setSelectionRange(len + insText.length, len + insText.length);
+	} else {
+		input.value += insText;
+	}
+}
+
+function checkTab() {
+	input = document.getElementById("edit1");
+	if (input.createTextRange || input.setSelectionRange) {
+		input = document.getElementById("edit1");
+		if (input.createTextRange) {
+			document.getElementById("edit1").selection = document.selection.createRange();
+		}
+		setTimeout("addText(input, String.fromCharCode(9))", 0);
+	}
 }

@@ -13,6 +13,32 @@
 // sets the Document Source-Code for later including into the editor
 var __content = "<%= wp.getParamContent() %>";
 
+// action parameters of the form
+var actionPreview = "<%= wp.EDITOR_PREVIEW %>";
+var actionShow = "<%= wp.EDITOR_SHOW %>";
+var actionChangeElement = "<%= wp.EDITOR_CHANGE_ELEMENT %>";
+var actionExit = "<%= wp.EDITOR_EXIT %>";
+var actionSaveExit = "<%= wp.EDITOR_SAVEEXIT %>";
+var actionSave = "<%= wp.EDITOR_SAVE %>";
+var actionSaveAction = "<%= wp.EDITOR_SAVEACTION %>";
+
+// deletes the content of the current element
+function deleteEditorContent(elementName, language) {
+	if (elementName == document.EDITOR.<%= wp.PARAM_ELEMENTNAME %>.value && language == document.EDITOR.<%= wp.PARAM_ELEMENTLANGUAGE %>.value) {
+		document.EDITOR.edit1.value = "";
+	}
+}
+
+// changes the displayed element in case the current element is deactivated
+function changeElement(elementName, language) {
+	if (elementName != document.EDITOR.<%= wp.PARAM_ELEMENTNAME %>.value && language == document.EDITOR.<%= wp.PARAM_ELEMENTLANGUAGE %>.value) {
+		document.EDITOR.<%= wp.PARAM_ELEMENTNAME %>.value = elementName;
+		buttonAction(3);
+	} else {
+		buttonAction(1);
+	}
+}
+
 // ask user whether he really wants to leave editor without saving
 function confirmExit()
 {
@@ -96,18 +122,12 @@ if (wp.isHelpEnabled()) {%>
 <%= wp.buttonBar(wp.HTML_END) %>
 
 </td>
-<tr>
-<tr>
+</tr>
 
-	<td valign="top" class="texteditor" height="100%" width="100%">
-	<!-- write the text area -->
-	<script type="text/javascript">
-	<!--
-		str = '<textarea wrap="off" name="edit1" onfocus="initContentDelayed();" style="width:100%; height:100%; font-family: Fixedsys, monospace;"></textarea>';
-		document.write(str);
-	//-->
-	</script>
-	</td>
+<tr>
+<td valign="top" class="texteditor" height="100%" width="100%">
+<textarea wrap="off" name="edit1" id ="edit1" onfocus="initContentDelayed();" style="width:100%; height:100%; font-family: Fixedsys, monospace;"></textarea>
+</td>
 </tr>
 		
 </form>

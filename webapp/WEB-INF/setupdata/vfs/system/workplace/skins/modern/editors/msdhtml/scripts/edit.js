@@ -47,25 +47,25 @@ function doEdit(para) {
 	switch(para) {
 	case 1:
 		saveContent();
-		_form.action.value = "exit";
+		_form.action.value = actionExit;
 		_form.target = "_top";
 		_form.submit();
 		break;
 	case 2:
 		saveContent();
-		_form.action.value = "saveexit";
+		_form.action.value = actionSaveExit;
 		_form.target = "_top";
 		_form.submit();
 		break;
 	case 3:
 		saveContent();
-		_form.action.value = "save";
+		_form.action.value = actionSave;
 		_form.target = "_self";
 		_form.submit();
 		break;
 	case 4:
 		saveContent();
-		_form.action.value = "saveaction";
+		_form.action.value = actionSaveAction;
 		_form.target = "_top";
 		_form.submit();
 		break;

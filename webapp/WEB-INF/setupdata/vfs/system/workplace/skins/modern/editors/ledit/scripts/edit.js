@@ -71,7 +71,7 @@ function buttonAction(para)
 	case 1:
 	{
 		saveContent();
-		_form.action.value = "exit";
+		_form.action.value = actionExit;
 		_form.target = "_top";
 		_form.submit();
 		break;
@@ -79,7 +79,7 @@ function buttonAction(para)
 	case 2:
 	{
 		saveContent();
-		_form.action.value = "saveexit";
+		_form.action.value = actionSaveExit;
 		_form.target = "_top";
 		_form.submit();
 		break;
@@ -87,7 +87,7 @@ function buttonAction(para)
 	case 3:
 	{
 		saveContent();
-		_form.action.value = "save";
+		_form.action.value = actionSave;
 		_form.submit();
 		break;
 	}

@@ -4,6 +4,7 @@
 <title>(<%= wp.getSettings().getUser().getName() %>) - <%= wp.getParamResource() %></title>
 
 <link rel=stylesheet type="text/css" href="<%= wp.getSkinUri() %>files/css_workplace.css">
+
 <script type="text/javascript">
 <!--
 	// Sets the Document Source-Code for later including into the editor
@@ -11,6 +12,11 @@
 
 	// Workplacepath needed in included javascript files
 	var workplacePath="<%= cms.link("/system/workplace/") %>";
+	
+	// action parameters of the form
+	var actionExit = "<%= wp.EDITOR_EXIT %>";
+	var actionSaveExit = "<%= wp.EDITOR_SAVEEXIT %>";
+	var actionSave = "<%= wp.EDITOR_SAVE %>";
 	
 	// Ask user whether he really wants to leave Texteditor without saving
 	function confirmExit()
@@ -55,16 +61,10 @@ if (wp.isHelpEnabled()) {%>
 	</td>
 </tr>
 <tr>
-	<td class="texteditor" height="100%" width="100%">
-	<!-- write the text area -->
-	<script type="text/javascript">
-	<!--
-		str = '<textarea wrap="off" name="edit1" onfocus="setContentDelayed();" style="width:100%; height:100%; font-family:Fixedsys, monospace"></textarea>';
-		document.write(str);
-	//-->
-	</script>
-	</td>
-	</tr>
+<td class="texteditor" height="100%" width="100%">
+	<textarea wrap="off" name="edit1" id="edit1" onfocus="setContentDelayed();" style="width:100%; height:100%; font-family:Fixedsys, monospace"></textarea>
+</td>
+</tr>
 </form>
 </table>
 </body>

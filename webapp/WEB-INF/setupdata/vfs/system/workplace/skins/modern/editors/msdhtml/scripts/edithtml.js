@@ -245,28 +245,28 @@ function doEditHTML(para) {
 	switch (para) {	
 	case 1:
 		// exit
-		_form.action.value = "exit";
+		_form.action.value = actionExit;
 		_form.target = "_top";
 		saveContent();
 		_form.submit();
 		break;
 	case 2:
 		// save & exit
-	    _form.action.value = "saveexit";
+	    _form.action.value = actionSaveExit;
 	    _form.target = "_top";
 	    saveContent();
 	    _form.submit();
 		break;
 	case 3:
 		// exit
-	    _form.action.value = "save";
+	    _form.action.value = actionSave;
 	    _form.target = "_self";
 	    saveContent();
 	    _form.submit();
 		break;
 	case 55:
 		// save and reload top
-	    _form.action.value = "saveaction";
+	    _form.action.value = actionSaveAction;
 	    _form.target = "_top";
 	    saveContent();
 	    _form.submit();

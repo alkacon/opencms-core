@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditor.java,v $
- * Date   : $Date: 2004/02/16 12:05:58 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2004/02/16 14:42:48 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import javax.servlet.jsp.JspException;
  * The editor classes have to extend this class and implement action methods for common editor actions.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * 
  * @since 5.1.12
  */
@@ -83,8 +83,8 @@ public abstract class CmsEditor extends CmsDialog {
     /** Stores the VFS editor path */
     public static final String C_PATH_EDITORS = C_PATH_WORKPLACE + "editors/";
 
-    /** Value for the action parameter: change the body */
-    public static final String EDITOR_CHANGE_BODY = "changeelement";
+    /** Value for the action parameter: change the element */
+    public static final String EDITOR_CHANGE_ELEMENT = "changeelement";
 
     /** Value for the action parameter: exit editor */
     public static final String EDITOR_EXIT = "exit";
