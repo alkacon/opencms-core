@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2005/01/04 17:34:08 $
- * Version: $Revision: 1.204 $
+ * Date   : $Date: 2005/01/06 10:12:12 $
+ * Version: $Revision: 1.205 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Vector;
 
 import org.apache.commons.collections.ExtendedProperties;
 
@@ -82,7 +81,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.204 $ $Date: 2005/01/04 17:34:08 $
+ * @version $Revision: 1.205 $ $Date: 2005/01/06 10:12:12 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1666,7 +1665,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
      * @see org.opencms.db.I_CmsProjectDriver#readProjectsForGroup(org.opencms.db.CmsDbContext, org.opencms.file.CmsGroup)
      */
     public List readProjectsForGroup(CmsDbContext dbc, CmsGroup group) throws CmsDataAccessException {
-        List projects = new Vector();
+        List projects = new ArrayList();
         ResultSet res = null;
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -1695,7 +1694,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
      * @see org.opencms.db.I_CmsProjectDriver#readProjectsForManagerGroup(org.opencms.db.CmsDbContext, org.opencms.file.CmsGroup)
      */
     public List readProjectsForManagerGroup(CmsDbContext dbc, CmsGroup group) throws CmsDataAccessException {
-        List projects = new Vector();
+        List projects = new ArrayList();
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -1723,7 +1722,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
      * @see org.opencms.db.I_CmsProjectDriver#readProjectsForUser(org.opencms.db.CmsDbContext, org.opencms.file.CmsUser)
      */
     public List readProjectsForUser(CmsDbContext dbc, CmsUser user) throws CmsDataAccessException {
-        Vector projects = new Vector();
+        List projects = new ArrayList();
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -1737,7 +1736,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             res = stmt.executeQuery();
 
             while (res.next()) {
-                projects.addElement(new CmsProject(res, m_sqlManager));
+                projects.add(new CmsProject(res, m_sqlManager));
             }
         } catch (SQLException exc) {
             throw new CmsSqlException(this, stmt, exc);

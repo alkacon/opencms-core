@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2005/01/04 17:34:08 $
- * Version: $Revision: 1.78 $
+ * Date   : $Date: 2005/01/06 10:12:13 $
+ * Version: $Revision: 1.79 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,11 +62,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 import org.apache.commons.collections.ExtendedProperties;
 
@@ -74,7 +74,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.78 $ $Date: 2005/01/04 17:34:08 $
+ * @version $Revision: 1.79 $ $Date: 2005/01/06 10:12:13 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -593,7 +593,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
      */
     public List readAccessControlEntries(CmsDbContext dbc, CmsProject project, CmsUUID resource, boolean inheritedOnly) throws CmsDataAccessException {
 
-        List aceList = new Vector();
+        List aceList = new ArrayList();
         PreparedStatement stmt = null;
         Connection conn = null;
         ResultSet res = null;
@@ -676,7 +676,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
      */
     public List readChildGroups(CmsDbContext dbc, String groupname) throws CmsException {
 
-        List childs = new Vector();
+        List childs = new ArrayList();
         CmsGroup group;
         CmsGroup parent;
         ResultSet res = null;
@@ -781,7 +781,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
      * @see org.opencms.db.I_CmsUserDriver#readGroups(org.opencms.db.CmsDbContext)
      */
     public List readGroups(CmsDbContext dbc) throws CmsDataAccessException {
-        List groups = new Vector();
+        List groups = new ArrayList();
         //CmsGroup group = null;
         ResultSet res = null;
         PreparedStatement stmt = null;
@@ -811,7 +811,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
      */
     public List readGroupsOfUser(CmsDbContext dbc, CmsUUID userId, String paramStr) throws CmsDataAccessException {
         //CmsGroup group;
-        List groups = new Vector();
+        List groups = new ArrayList();
 
         PreparedStatement stmt = null;
         ResultSet res = null;
@@ -958,7 +958,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
      * @see org.opencms.db.I_CmsUserDriver#readUsers(org.opencms.db.CmsDbContext, int)
      */
     public List readUsers(CmsDbContext dbc, int type) throws CmsDataAccessException {
-        List users = new Vector();
+        List users = new ArrayList();
         PreparedStatement stmt = null;
         ResultSet res = null;
         Connection conn = null;
@@ -986,7 +986,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
      * @see org.opencms.db.I_CmsUserDriver#readUsersOfGroup(org.opencms.db.CmsDbContext, java.lang.String, int)
      */
     public List readUsersOfGroup(CmsDbContext dbc, String name, int type) throws CmsDataAccessException {
-        List users = new Vector();
+        List users = new ArrayList();
 
         PreparedStatement stmt = null;
         ResultSet res = null;

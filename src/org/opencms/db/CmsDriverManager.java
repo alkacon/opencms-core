@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/01/04 17:34:07 $
- * Version: $Revision: 1.468 $
+ * Date   : $Date: 2005/01/06 10:12:13 $
+ * Version: $Revision: 1.469 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 import java.util.StringTokenizer;
-import java.util.Vector;
 
 import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.collections.map.LRUMap;
@@ -95,7 +94,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.468 $ $Date: 2005/01/04 17:34:07 $
+ * @version $Revision: 1.469 $ $Date: 2005/01/06 10:12:13 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -3196,8 +3195,8 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         // check security
         if (!dbc.currentUser().isGuestUser()) {
             List childs = null;
-            List allChilds = new Vector();
-            List subchilds = new Vector();
+            List allChilds = new ArrayList();
+            List subchilds = new ArrayList();
             CmsGroup group = null;
 
             // get all child groups if the user group
@@ -3316,7 +3315,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             CmsGroup group;
             // get all groups of the user
             List groups = m_userDriver.readGroupsOfUser(dbc, user.getId(), remoteAddress);
-            allGroups = new Vector();
+            allGroups = new ArrayList();
             // now get all childs of the groups
             Iterator it = groups.iterator();
             while (it.hasNext()) {
@@ -5682,7 +5681,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      */
     public List readPublishProjectView(CmsDbContext dbc, int projectId, String criteria) throws CmsException {
 
-        List retValue = new Vector();
+        List retValue = new ArrayList();
         List resources = m_projectDriver.readProjectView(dbc, projectId, criteria);
         boolean onlyLocked = false;
 

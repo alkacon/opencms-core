@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Attic/CmsWorkflowDriver.java,v $
- * Date   : $Date: 2005/01/04 17:34:08 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2005/01/06 10:12:13 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 import org.apache.commons.collections.ExtendedProperties;
 
@@ -68,7 +67,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.39 $ $Date: 2005/01/04 17:34:08 $
+ * @version $Revision: 1.40 $ $Date: 2005/01/06 10:12:13 $
  * @since 5.1
  */
 public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkflowDriver {
@@ -382,7 +381,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
         Connection conn = null;
         ResultSet res = null;
         CmsTaskLog tasklog = null;
-        List logs = new Vector();
+        List logs = new ArrayList();
         PreparedStatement stmt = null;
         String comment = null;
         java.sql.Timestamp starttime = null;
@@ -448,7 +447,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
      */
     public List readTasks(CmsDbContext dbc, CmsProject project, CmsUser agent, CmsUser owner, CmsGroup role, int tasktype, String orderBy, String sort) throws CmsDataAccessException {
         boolean first = true;
-        List tasks = new Vector(); // vector for the return result
+        List tasks = new ArrayList(); // vector for the return result
         CmsTask task = null; // tmp task for adding to vector
         ResultSet res = null;
         Connection conn = null;

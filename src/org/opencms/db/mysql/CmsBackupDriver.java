@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsBackupDriver.java,v $
- * Date   : $Date: 2005/01/04 17:34:14 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/01/06 10:12:13 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,8 +43,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 
 /**
@@ -52,7 +52,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.20 $ $Date: 2005/01/04 17:34:14 $
+ * @version $Revision: 1.21 $ $Date: 2005/01/06 10:12:13 $
  * @since 5.1
  */
 public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
@@ -69,7 +69,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
      * @see org.opencms.db.I_CmsBackupDriver#readBackupProjects(org.opencms.db.CmsDbContext)
      */
     public List readBackupProjects(CmsDbContext dbc) throws CmsException {
-        List projects = new Vector();
+        List projects = new ArrayList();
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;

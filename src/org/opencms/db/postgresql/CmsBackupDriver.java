@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/postgresql/CmsBackupDriver.java,v $
- * Date   : $Date: 2005/01/04 17:34:14 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/01/06 10:12:13 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,15 +46,15 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 
 /**
  * PostgreSql implementation of the backup driver methods.<p>
  * 
  * @author Antonio Core (antonio@starsolutions.it)
- * @version $Revision: 1.4 $ $Date: 2005/01/04 17:34:14 $
+ * @version $Revision: 1.5 $ $Date: 2005/01/06 10:12:13 $
  * @since 6.0
  */
 public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
@@ -134,7 +134,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
      * @see org.opencms.db.I_CmsBackupDriver#readBackupProjects(org.opencms.db.CmsDbContext)
      */
     public List readBackupProjects(CmsDbContext dbc) throws CmsException {
-        List projects = new Vector();
+        List projects = new ArrayList();
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
