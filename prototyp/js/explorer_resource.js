@@ -25,13 +25,15 @@ function initialize_resources() {
     );
 */
 
-    vi.resource[0]=new res("image","pics/ic_file_image.gif");
-    vi.resource[1]=new res("text","pics/ic_file_plain.gif");
-    vi.resource[2]=new res("script","pics/ic_file_script.gif");
-    vi.resource[3]=new res("binary","pics/ic_file_binary.gif");
-    vi.resource[4]=new res("page","pics/ic_file_page.gif");
-    vi.resource[5]=new res("folder","pics/ic_file_folder.gif");
-    vi.resource[6]=new res("newspage","pics/ic_file_newspage.gif");
+    vi.iconPath="pics/";
+
+    vi.resource[0]=new res("image",vi.iconPath+"ic_file_image.gif");
+    vi.resource[1]=new res("text",vi.iconPath+"ic_file_plain.gif");
+    vi.resource[2]=new res("script",vi.iconPath+"ic_file_script.gif");
+    vi.resource[3]=new res("binary",vi.iconPath+"ic_file_binary.gif");
+    vi.resource[4]=new res("page",vi.iconPath+"ic_file_page.gif");
+    vi.resource[5]=new res("folder",vi.iconPath+"ic_file_folder.gif");
+    vi.resource[6]=new res("newspage",vi.iconPath+"ic_file_newspage.gif");
 
 /*
     addMenuEntry(

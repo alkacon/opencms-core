@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/prototyp/js/Attic/explorer.js,v $
- * Date   : $Date: 2000/11/14 08:44:00 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/11/15 08:58:54 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -77,6 +77,7 @@ function vars_index() {
     this.liste = new Array();
     this.lockIcons = new Array();
     this.lockStatus = new Array();
+    this.iconPath = new Array();
     this.check_title;
     this.check_date;
     this.check_size;
@@ -289,17 +290,17 @@ function addIcon(w,h,source){
  *  adds icons for the treeview
  */
 function addTreeIcons(){
-    addIcon(16 ,16 ,"pics/empty.gif");
-    addIcon(16 ,16 ,"pics/ic_tree_end.gif");
-    addIcon(16 ,16 ,"pics/ic_tree_folder.gif");
-    addIcon(16 ,16 ,"pics/ic_tree_folderopen.gif");
-    addIcon(16 ,16 ,"pics/ic_tree_kreuz.gif");
-    addIcon(16 ,16 ,"pics/ic_tree_mend.gif");
-    addIcon(16 ,16 ,"pics/ic_tree_mkreuz.gif");
-    addIcon(16 ,16 ,"pics/ic_tree_pend.gif");
-    addIcon(16 ,16 ,"pics/ic_tree_pkreuz.gif");
-    addIcon(16 ,16 ,"pics/ic_tree_start.gif");
-    addIcon(16 ,16 ,"pics/ic_tree_vert.gif");
+    addIcon(16 ,16 ,vi.iconPath+"empty.gif");
+    addIcon(16 ,16 ,vi.iconPath+"ic_tree_end.gif");
+    addIcon(16 ,16 ,vi.iconPath+"ic_tree_folder.gif");
+    addIcon(16 ,16 ,vi.iconPath+"ic_tree_folderopen.gif");
+    addIcon(16 ,16 ,vi.iconPath+"ic_tree_kreuz.gif");
+    addIcon(16 ,16 ,vi.iconPath+"ic_tree_mend.gif");
+    addIcon(16 ,16 ,vi.iconPath+"ic_tree_mkreuz.gif");
+    addIcon(16 ,16 ,vi.iconPath+"ic_tree_pend.gif");
+    addIcon(16 ,16 ,vi.iconPath+"ic_tree_pkreuz.gif");
+    addIcon(16 ,16 ,vi.iconPath+"ic_tree_start.gif");
+    addIcon(16 ,16 ,vi.iconPath+"ic_tree_vert.gif");
 }
 
 /**
@@ -492,8 +493,7 @@ function updateFrame(which, frameurl){
 function chon(doc, imgID, div){
     var imgEndOn = "_on.gif";
     var imgEndOff = "_off.gif";
-    var pfad="pics/";
-    doc.images[imgID].src = pfad + imgID + imgEndOn;
+    doc.images[imgID].src = vi.iconPath+ imgID + imgEndOn;
 }
 
 /**
@@ -502,8 +502,7 @@ function chon(doc, imgID, div){
 function choff(doc, imgID, div){ 
     var imgEndOn = "_on.gif";
     var imgEndOff = "_off.gif";
-    var pfad = "pics/";
-    doc.images[imgID].src = pfad + imgID + imgEndOff;
+    doc.images[imgID].src = vi.iconPath + imgID + imgEndOff;
 }
 
 /**
@@ -541,17 +540,17 @@ function dirUp(){
  */
 function displayHeadPics(doc){
     bt_back = new Image(16,16);
-    bt_back.src = 'pics/bt_back_off.gif';
+    bt_back.src = vi.iconPath+'bt_back_off.gif';
     
     bt_folder = new Image(32,32);
-    bt_folder.src = 'pics/ic_file_folder.gif';
+    bt_folder.src = vi.iconPath+'ic_file_folder.gif';
     
     bt_new = new Image(32,32);
-    if(vr.actProject!=vr.onlineProject) bt_new.src = 'pics/bt_new_in.gif';
-    else bt_new.src = 'pics/bt_new_off.gif';
+    if(vr.actProject!=vr.onlineProject) bt_new.src = vi.iconPath+'bt_new_in.gif';
+    else bt_new.src = vi.iconPath+'bt_new_off.gif';
     
     bt_up = new Image(32,32);
-    bt_up.src = 'pics/bt_up_off.gif';
+    bt_up.src = vi.iconPath+'bt_up_off.gif';
     
     eval("doc.images[0].src=bt_back.src;");
     eval("doc.images[1].src=bt_up.src;");
@@ -569,19 +568,19 @@ function displayHead(doc){
             "<!"+"--"+
             "body { margin-left:3px; margin-right:0px; margin-top:4px; margin-bottom:0px; margin-height:0px; marginspace=0; margin-top:3px;}"+
             "/"+"/"+"--></style>"+
-            "</head><body bgcolor=#c0c0c0 background=pics/bg_grau.gif>"+
+            "</head><body bgcolor=#c0c0c0 background="+vi.iconPath+"bg_grau.gif>"+
             "<form name=urlform>"+
             "<table cellspacing=0 cellpadding=0 border=0 valign=top>"+
             "<tr valign=center>"+
             "<td class=menu nowrap width=32px>"+
             "<a href=javascript:top.histGoBack(); onmouseover=\"top.chon(document,'bt_back');\" onmouseout=\"top.choff(document,'bt_back');\" >"+
-            "<img alt='back' width=32 height=32  border=0 name='bt_back' ></a></td>"+ //src=pics/bt_back_off.gif 
+            "<img alt='back' width=32 height=32  border=0 name='bt_back' ></a></td>"+ 
             "<td class=menu nowrap width=32px>"+
             "<a href=javascript:top.dirUp(); onmouseover=\"top.chon(document,'bt_up');\" onmouseout=\"top.choff(document,'bt_up');\">"+
             "<img alt=up width=32 height=32 border=0 name=bt_up ></a></td>";
 
     var headFoot="<td class=menu width=30px nowrap align=right>&nbsp;</td>"+
-            "<td class=menubold nowrap align=right valign=middle><img border=0 id='bt_folder' name='bt_folder' width=16 height=16></td>"+ // src='pics/ic_file_folder.gif'
+            "<td class=menubold nowrap align=right valign=middle><img border=0 id='bt_folder' name='bt_folder' width=16 height=16></td>"+ 
             "<td class=menubold nowrap align=right valign=middle><p class=einzug><font face=arial size=2> adress: </td>"+
             "<td class=menu nowrap align=left valign=middle><p class=einzug>"+
             "<input class=textfeld2 value="+vr.actDirectory+" size=50 maxlength=255 name=url id=url>"+
@@ -618,13 +617,13 @@ function preloadPics(doc){
 
         vi.lockIcons[i] = new Image(16,16);
         if(vi.liste[i].lockedBy == ''){
-            vi.lockIcons[i].src = 'pics/empty.gif';
+            vi.lockIcons[i].src = vi.iconPath+'empty.gif';
         } else {
             if(vr.userName != vi.liste[i].lockedBy){
-                vi.lockIcons[i].src='pics/ic_lock.gif';
+                vi.lockIcons[i].src=vi.iconPath+'ic_lock.gif';
             }
             if(vr.userName == vi.liste[i].lockedBy){
-                vi.lockIcons[i].src='pics/ic_lockuser.gif';
+                vi.lockIcons[i].src=vi.iconPath+'ic_lockuser.gif';
             }
         }
     }
@@ -876,13 +875,8 @@ function printList(wo){
                 if(vi.menus[vi.liste[i].type].items[a].rules.charAt(0)=='1'){
                     wo.writeln("<TR><TD class=inactive>"+vi.menus[vi.liste[i].type].items[a].name+"</TD></TR>");
                 }
-                if(vi.menus[vi.liste[i].type].items[a].rules.charAt(0)=='2'){ //doc, filename, title, question1,question2
-
-                wo.writeln("<tr><td><a class=kontextlink href=javascript:top.confirm("+
-                        "window.top.body.document"+
-                        ");>"+
-                    vi.menus[vi.liste[i].type].items[a].name+
-                    "</a></td></tr>");
+                if(vi.menus[vi.liste[i].type].items[a].rules.charAt(0)=='2'){
+                    wo.writeln("<TR><TD><A class=kontextlink href='"+vi.menus[vi.liste[i].type].items[a].link+"'>"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
                 }
             }else{
                 /* if not locked */
@@ -901,16 +895,7 @@ function printList(wo){
                     wo.writeln("<TR><TD class=inactive>"+vi.menus[vi.liste[i].type].items[a].name+"</TD></TR>");
                 }
                 if(display == 2){
-                    //wo.writeln("<TR><TD><A class=kontextlink href=javascript:top.confirm(window.top.body.document,'blah.txt','das ist der titel!','soll die datei','wirklich gelöscht werden?','"+vi.menus[vi.liste[i].type].items[a].link+"')>"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
-                wo.writeln("<tr><td><a class=kontextlink href=javascript:top.confirm("+
-                        "window.top.body.document"+
-                        ",'blah.txt'"+
-                        ",'title'"+
-                        ",'soll die datei'"+
-                        ",'geloescht werden?');>"+
-                    vi.menus[vi.liste[i].type].items[a].name+
-                    "</a></td></tr>");
-
+                    wo.writeln("<TR><TD><A class=kontextlink href='"+vi.menus[vi.liste[i].type].items[a].link+"'>"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
                 }
             }
         }
@@ -1002,51 +987,6 @@ function showKontext(doc, welche, id,x,y){
 	vi.lastLayer=welche;
 	vi.oldId=id;
     vi.dokument=doc;
-}
-
-
-/**
- *  confirmation for a file operation...
- */
-function confirm(doc, filename, title, question1,question2){
-
-    temp= "<html>"+
-            "<head>"+
-            "<title>confirm</title>"+
-            "<link rel=stylesheet type='text/css' href='css/format.css'>"+
-            "</head>"+
-            "<body bgcolor='#ffffff' marginwidth=0 marginheight=0 topmargin=0 leftmargin=0>"+
-            "<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>"+
-                "<tr><td align=middle valign=center>"+
-                "<form id=DELETE name=DELETE>"+
-                "<table cellspacing=0 cellpadding=0 border=2 width=300>"+
-        	        "<tr><td>"+
-        		    "<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>"+
-            			"<tr><td colspan=2 class='head'>"+title+" "+filename+"</td></tr>"+
-            			"<tr><td class=dialogtxt colspan=2><br><br>"+
-            			question1+" "+filename+" "+question2+
-            			"</td></tr>"+
-            			"<tr><td colspan=2 class='leerzeile'>&nbsp;</td></tr>"+
-            			"<tr><td class=dialogtxt colspan=2>"+
-            			"<table cellspacing=0 cellpadding=5 width=100%><tr>"+
-            			"<td class=formular align=right width=50%><INPUT class=button width=100 type='button' value='OK' id=OK name=OK onClick=javascript:top.display_ex()></td>"+
-                        "<td class=formular align=left width=50%><INPUT class=button width=100 type=button value=Abbrechen id=CANCEL name=CANCEL onClick=javascript:top.display_ex()>"+
-       				"</td></tr></table>"+
-        			"</td>"+
-        			"</tr>"+
-            		"</table>"+
-            	"</td></tr>"+
-            "</table>"+
-            "</form>"+
-            "</td></tr>"+
-            "</table>"+
-            "</BODY>"+
-            "</html>";
-
-//doc=window.top.body.document;
-doc.open();
-doc.write(temp);
-doc.close();
 }
 
 /**
