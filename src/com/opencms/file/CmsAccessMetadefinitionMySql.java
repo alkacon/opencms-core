@@ -241,12 +241,10 @@ class CmsAccessMetadefinitionMySql extends A_CmsAccessMetadefinition {
 	 * @param type The type of the metadefinition (normal|mandatory|optional)
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
-	 * @exception CmsDuplicateKeyException Throws CmsDuplicateKeyException if
-	 * a metadefinition with the same name for this resource-type exists already.
 	 */
 	A_CmsMetadefinition createMetadefinition(String name, int resourcetype, 
 											 int type)
-		throws CmsDuplicateKeyException, CmsException {
+		throws CmsException {
 		try {
 			 m_statementCreateMetadef.setString(1,name);
 			 m_statementCreateMetadef.setInt(2,resourcetype);

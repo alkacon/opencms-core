@@ -10,7 +10,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ $Date: 1999/12/17 14:35:31 $
+ * @version $Revision: 1.4 $ $Date: 1999/12/17 17:29:16 $
  */
 abstract class A_CmsAccessMetadefinition {
 
@@ -65,12 +65,10 @@ abstract class A_CmsAccessMetadefinition {
 	 * @param type The type of the metadefinition (normal|mandatory|optional)
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
-	 * @exception CmsDuplicateKeyException Throws CmsDuplicateKeyException if
-	 * a metadefinition with the same name for this resource-type exists already.
 	 */
 	abstract A_CmsMetadefinition createMetadefinition(String name, int resourcetype, 
 													  int type)
-		throws CmsDuplicateKeyException, CmsException;
+		throws CmsException;
 		
 	/**
 	 * Delete the metadefinition for the resource type.<BR/>

@@ -7,7 +7,7 @@ import com.opencms.core.*;
  * one resource.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 1999/12/17 14:35:31 $
+ * @version $Revision: 1.3 $ $Date: 1999/12/17 17:25:36 $
  */
 public class CmsProject extends A_CmsProject implements I_CmsConstants {
 	
@@ -76,6 +76,15 @@ public class CmsProject extends A_CmsProject implements I_CmsConstants {
 	}
 
 	/**
+	 * Sets the description of this project.
+	 * 
+	 * @param description The description of this project.
+	 */
+	public void setDescription(String description) {
+		m_description = description;
+	}
+
+	/**
 	 * Returns the state of this project.<BR/>
 	 * This may be C_PROJECT_STATE_UNLOCKED, C_PROJECT_STATE_LOCKED, 
 	 * C_PROJECT_STATE_ARCHIVE.
@@ -114,6 +123,15 @@ public class CmsProject extends A_CmsProject implements I_CmsConstants {
 		return(m_groupId);
 	}
 	
+	/**
+	 * Returns the taskid of this project.
+	 * 
+	 * @return the taskid of this project.
+	 */
+    int getTaskId() {
+		return(this.m_globetaskId);
+	}
+
 	/**
 	 * Returns a string-representation for this object.
 	 * This can be used for debugging.

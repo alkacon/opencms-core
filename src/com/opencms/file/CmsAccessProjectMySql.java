@@ -11,7 +11,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 1999/12/16 18:55:53 $
+ * @version $Revision: 1.2 $ $Date: 1999/12/17 17:25:36 $
  */
 class CmsAccessProjectMySql extends A_CmsAccessProject {
 
@@ -164,22 +164,20 @@ class CmsAccessProjectMySql extends A_CmsAccessProject {
 	 * 
 	 * @param name The name of the project to read.
 	 * @param description The description for the new project.
-	 * @param globetaskId The id of the globe task.
-	 * @param ownerId The id of the owner to be set.
-	 * @param groupId the id of the group to be set.
+	 * @param task The globe task.
+	 * @param owner The owner of this project.
+	 * @param group The group for this project.
 	 * @param flags The flags for the project (e.g. archive).
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
-	 * @exception CmsDuplicateKeyException Throws CmsDuplicateKeyException if
-	 * a project with the same name for this resource-type exists already.
 	 */
-	 A_CmsProject createProject(String name, String description, int globetaskId, 
-								int ownerId, int groupId, int flags)
-		throws CmsException, CmsDuplicateKeyException {		 
+	 A_CmsProject createProject(String name, String description, A_CmsTask task, 
+								A_CmsUser owner, A_CmsGroup group, int flags)
+		throws CmsException {
 		 try {
-			 m_statementCreateProject.setInt(1,ownerId);
-			 m_statementCreateProject.setInt(2,groupId);
-			 m_statementCreateProject.setInt(3,globetaskId);
+			 m_statementCreateProject.setInt(1,owner.getId());
+			 m_statementCreateProject.setInt(2,group.getId());
+			 m_statementCreateProject.setInt(3,task.getId());
 			 m_statementCreateProject.setString(4,name);
 			 m_statementCreateProject.setString(5,description);
 			 m_statementCreateProject.setInt(6,flags);
@@ -193,47 +191,39 @@ class CmsAccessProjectMySql extends A_CmsAccessProject {
 	/**
 	 * Updates a project.
 	 * 
-	 * @param name The name of the project to update.
-	 * @param description The description for the project.
-	 * @param globetaskId The id of the globe task.
-	 * @param ownerId The id of the owner to be set.
-	 * @param groupId the id of the group to be set.
-	 * @param flags The flags for the project (e.g. archive).
+	 * @param project The project that will be written.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
-	 * @exception CmsDuplicateKeyException Throws CmsDuplicateKeyException if
-	 * a project with the same name for this resource-type exists already.
 	 */
-	 A_CmsProject updateProject(String name, String description, int globetaskId, 
-								int ownerId, int groupId, int flags)
-		 throws CmsException, CmsDuplicateKeyException {
+	 A_CmsProject writeProject(A_CmsProject project)
+		 throws CmsException {
 		 try {    
-			 m_statementUpdateProject.setInt(1,ownerId);
-			 m_statementUpdateProject.setInt(2,groupId);
-			 m_statementUpdateProject.setInt(3,globetaskId);
-			 m_statementUpdateProject.setString(4,description);
-			 m_statementUpdateProject.setInt(5,flags);
-			 m_statementUpdateProject.setString(6,name);
+			 m_statementUpdateProject.setInt(1,project.getOwnerId());
+			 m_statementUpdateProject.setInt(2,project.getGroupId());
+			 m_statementUpdateProject.setInt(3,project.getTaskId());
+			 m_statementUpdateProject.setString(4,project.getDescription());
+			 m_statementUpdateProject.setInt(5,project.getFlags());
+			 m_statementUpdateProject.setString(6,project.getName());
 			 m_statementUpdateProject.executeUpdate();
 		 } catch( SQLException exc ) {
 			 throw new CmsException(CmsException.C_SQL_ERROR, exc);
 		 }
-		 return(readProject(name));
+		 return(readProject(project.getName()));
 	 }
 	 
 	/**
 	 * Returns all projects, which are owned by a user.
 	 * 
-	 * @param userId the id of the user to test.
+	 * @param user The requesting user.
 	 * 
 	 * @return a Vector of projects.
 	 */
-	 Vector getAllAccessibleProjectsByUser(int userId)
+	 Vector getAllAccessibleProjectsByUser(A_CmsUser user)
 		 throws CmsException {
  		 Vector projects = new Vector();
 
 		 try {
-			 m_statementGetProjectsByUser.setInt(1,userId);
+			 m_statementGetProjectsByUser.setInt(1,user.getId());
 			 ResultSet result = m_statementGetProjectsByUser.executeQuery();
 			 
 			 while(result.next()) {
@@ -254,16 +244,16 @@ class CmsAccessProjectMySql extends A_CmsAccessProject {
 	/**
 	 * Returns all projects, which the group may access.
 	 * 
-	 * @param groupId the id of the group to test.
+	 * @param group The group to test.
 	 * 
 	 * @return a Vector of projects.
 	 */
-	 Vector getAllAccessibleProjectsByGroup(int groupId)
+	 Vector getAllAccessibleProjectsByGroup(A_CmsGroup group)
 		 throws CmsException {		 
  		 Vector projects = new Vector();
 
 		 try {
-			 m_statementGetProjectsByGroup.setInt(1,groupId);
+			 m_statementGetProjectsByGroup.setInt(1,group.getId());
 			 ResultSet result = m_statementGetProjectsByGroup.executeQuery();
 			 
 			 while(result.next()) {
