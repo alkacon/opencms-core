@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2001/02/19 13:01:16 $
- * Version: $Revision: 1.153 $
+ * Date   : $Date: 2001/03/01 13:43:10 $
+ * Version: $Revision: 1.154 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -48,7 +48,7 @@ import com.opencms.launcher.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.153 $ $Date: 2001/02/19 13:01:16 $
+ * @version $Revision: 1.154 $ $Date: 2001/03/01 13:43:10 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -1133,6 +1133,36 @@ public Vector getUsers(int type, String namefilter) throws CmsException {
 public Vector getUsersOfGroup(String groupname) throws CmsException {
 	return (m_rb.getUsersOfGroup(m_context.currentUser(), m_context.currentProject(), groupname));
 }
+
+/**
+ * Gets all users with a certain Lastname.
+ *
+ * @param Lastname      the start of the users lastname
+ * @param UserType      webuser or systemuser
+ * @param UserStatus    enabled, disabled
+ * @param wasLoggedIn   was the user ever locked in?
+ * @param nMax          max number of results
+ *
+ * @return the users.
+ *
+ * @exception CmsException if operation was not successful.
+ *
+ */
+public Vector getUsersByLastname(String Lastname,
+                                 int UserType,
+                                 int UserStatus,
+                                 int wasLoggedIn,
+                                 int nMax) throws CmsException {
+
+    return m_rb.getUsersByLastname(m_context.currentUser(),
+                                   m_context.currentProject(),
+                                   Lastname,
+                                   UserType,
+                                   UserStatus,
+                                   wasLoggedIn,
+                                   nMax);
+}
+
 /**
  * Imports a import-resource (folder or zipfile) to the cms.
  *

@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2001/02/21 12:35:28 $
- * Version: $Revision: 1.232 $
+ * Date   : $Date: 2001/03/01 13:43:24 $
+ * Version: $Revision: 1.233 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.232 $ $Date: 2001/02/21 12:35:28 $
+ * @version $Revision: 1.233 $ $Date: 2001/03/01 13:43:24 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -3366,6 +3366,38 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
 				CmsException.C_NO_ACCESS);
 		}
 	}
+
+    /**
+     * Gets all users with a certain Lastname.
+     *
+     * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+     * @param Lastname      the start of the users lastname
+     * @param UserType      webuser or systemuser
+     * @param UserStatus    enabled, disabled
+     * @param wasLoggedIn   was the user ever locked in?
+     * @param nMax          max number of results
+     *
+     * @return the users.
+     *
+     * @exception CmsException if operation was not successful.
+     */
+    public Vector getUsersByLastname(CmsUser currentUser,
+                                     CmsProject currentProject, String Lastname,
+                                     int UserType, int UserStatus,
+                                     int wasLoggedIn, int nMax)
+		throws CmsException {
+		// check security
+		if( ! anonymousUser(currentUser, currentProject).equals( currentUser )){
+			return m_dbAccess.getUsersByLastname(Lastname, UserType, UserStatus,
+                                                 wasLoggedIn, nMax);
+		} else {
+			throw new CmsException(
+                "[" + this.getClass().getName() + "] " + currentUser.getName(),
+				CmsException.C_NO_ACCESS);
+		}
+	}
+
 	 /**
 	 * A helper to copy a resource from the online project to a new, specified project.<br>
 	 *

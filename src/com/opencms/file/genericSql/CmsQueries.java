@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsQueries.java,v $
- * Date   : $Date: 2001/02/09 12:30:26 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2001/03/01 13:43:24 $
+ * Version: $Revision: 1.40 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.
  * @author Michael Emmerich
  *
- * @version $Revision: 1.39 $ $Date: 2001/02/09 12:30:26 $
+ * @version $Revision: 1.40 $ $Date: 2001/03/01 13:43:24 $
  */
 public class CmsQueries
 {
@@ -243,6 +243,22 @@ public class CmsQueries
 	public String C_USERS_GETUSERS_FILTER1 = "SELECT * FROM " + C_DATABASE_PREFIX + "USERS, " + C_DATABASE_PREFIX + "GROUPS where USER_TYPE = ";
 	public String C_USERS_GETUSERS_FILTER2 = " and USER_DEFAULT_GROUP_ID = GROUP_ID and USER_NAME like '";
 	public String C_USERS_GETUSERS_FILTER3 = "%' ORDER BY USER_NAME";
+
+    public String C_USERS_GETUSERS_BY_LASTNAME =
+        "SELECT * FROM " + C_DATABASE_PREFIX + "USERS, " + C_DATABASE_PREFIX +
+        "GROUPS WHERE LOWER(USER_LASTNAME) LIKE LOWER(?) AND " +
+        "USER_DEFAULT_GROUP_ID = GROUP_ID AND USER_TYPE = ? AND USER_FLAGS = ?";
+    public String C_USERS_GETUSERS_BY_LASTNAME_TAIL = "ORDER BY USER_LASTNAME";
+    public String C_USERS_GETUSERS_BY_LASTNAME_NEVER =
+        C_USERS_GETUSERS_BY_LASTNAME +
+        "AND to_char(USER_LASTLOGIN,'dd.mm.yyyy') = '01.01.1970'" +
+        C_USERS_GETUSERS_BY_LASTNAME_TAIL;
+    public String C_USERS_GETUSERS_BY_LASTNAME_ONCE =
+        C_USERS_GETUSERS_BY_LASTNAME +
+        "AND to_char(USER_LASTLOGIN,'dd.mm.yyyy') > '01.01.1970'" +
+        C_USERS_GETUSERS_BY_LASTNAME_TAIL;
+    public String C_USERS_GETUSERS_BY_LASTNAME_WHATEVER =
+        C_USERS_GETUSERS_BY_LASTNAME + C_USERS_GETUSERS_BY_LASTNAME_TAIL;
 
 	// Constants for Task table
 	public String C_TABLENAME_TASK = C_DATABASE_PREFIX + "Task";

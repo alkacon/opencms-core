@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2001/02/19 13:00:31 $
- * Version: $Revision: 1.140 $
+ * Date   : $Date: 2001/03/01 13:43:11 $
+ * Version: $Revision: 1.141 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.140 $ $Date: 2001/02/19 13:00:31 $
+ * @version $Revision: 1.141 $ $Date: 2001/03/01 13:43:11 $
  *
  */
 
@@ -1404,6 +1404,27 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
 	public Vector getUsersOfGroup(CmsUser currentUser, CmsProject currentProject,
 								  String groupname)
 		throws CmsException;
+
+    /**
+     * Gets all users with a certain Lastname.
+     *
+     * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+     * @param Lastname      the start of the users lastname
+     * @param UserType      webuser or systemuser
+     * @param UserStatus    enabled, disabled
+     * @param wasLoggedIn   was the user ever locked in?
+     * @param nMax          max number of results
+     *
+     * @return the users.
+     *
+     * @exception CmsException if operation was not successful.
+     */
+    public Vector getUsersByLastname(CmsUser currentUser,
+                                     CmsProject currentProject, String Lastname,
+                                     int UserType, int UserStatus,
+                                     int wasLoggedIn, int nMax)
+        throws CmsException;
 	/**
 	 * Imports a import-resource (folder or zipfile) to the cms.
 	 *

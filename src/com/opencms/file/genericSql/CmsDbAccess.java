@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/02/22 12:59:04 $
- * Version: $Revision: 1.191 $
+ * Date   : $Date: 2001/03/01 13:43:22 $
+ * Version: $Revision: 1.192 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -51,7 +51,7 @@ import com.opencms.util.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.191 $ $Date: 2001/02/22 12:59:04 $ *
+ * @version $Revision: 1.192 $ $Date: 2001/03/01 13:43:22 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -3771,6 +3771,115 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 		return users;
 	}
 
+    /**
+     * Gets all users with a certain Lastname.
+     *
+     * @param Lastname      the start of the users lastname
+     * @param UserType      webuser or systemuser
+     * @param UserStatus    enabled, disabled
+     * @param wasLoggedIn   was the user ever locked in?
+     * @param nMax          max number of results
+     *
+     * @return the users.
+     *
+     * @exception CmsException if operation was not successful.
+     */
+    public Vector getUsersByLastname(String lastname, int userType,
+                                     int userStatus, int wasLoggedIn, int nMax)
+                                     throws CmsException {
+        Vector users = new Vector();
+	    PreparedStatement statement = null;
+		ResultSet res = null;
+		Connection con = null;
+        int i = 0;
+        // "" =  return (nearly) all users
+        if(lastname == null) lastname = "";
+
+		try	{
+			con = DriverManager.getConnection(m_poolName);
+            //con = DriverManager.getConnection("jdbc:opencmspool:oracle");
+
+            if(wasLoggedIn == C_AT_LEAST_ONCE)
+			    statement = con.prepareStatement(
+                        m_cq.C_USERS_GETUSERS_BY_LASTNAME_ONCE);
+            else if(wasLoggedIn == C_NEVER)
+                statement = con.prepareStatement(
+                        m_cq.C_USERS_GETUSERS_BY_LASTNAME_NEVER);
+            else // C_WHATEVER or whatever else
+                statement = con.prepareStatement(
+                        m_cq.C_USERS_GETUSERS_BY_LASTNAME_WHATEVER);
+
+            statement.setString(1, lastname + "%");
+            statement.setInt(2, userType);
+            statement.setInt(3, userStatus);
+
+			res = statement.executeQuery();
+			// create new Cms user objects
+			while( res.next() && (i++ < nMax)) {
+				// read the additional infos.
+				byte[] value = res.getBytes(m_cq.C_USERS_USER_INFO);
+				// now deserialize the object
+				ByteArrayInputStream bin= new ByteArrayInputStream(value);
+				ObjectInputStream oin = new ObjectInputStream(bin);
+				Hashtable info=(Hashtable)oin.readObject();
+				CmsUser user = new CmsUser(
+                        res.getInt(m_cq.C_USERS_USER_ID),
+                        res.getString(m_cq.C_USERS_USER_NAME),
+                        res.getString(m_cq.C_USERS_USER_PASSWORD),
+                        res.getString(m_cq.C_USERS_USER_RECOVERY_PASSWORD),
+                        res.getString(m_cq.C_USERS_USER_DESCRIPTION),
+                        res.getString(m_cq.C_USERS_USER_FIRSTNAME),
+                        res.getString(m_cq.C_USERS_USER_LASTNAME),
+                        res.getString(m_cq.C_USERS_USER_EMAIL),
+                        SqlHelper.getTimestamp(res,
+                                m_cq.C_USERS_USER_LASTLOGIN).getTime(),
+                        SqlHelper.getTimestamp(res,
+                                m_cq.C_USERS_USER_LASTUSED).getTime(),
+                        res.getInt(m_cq.C_USERS_USER_FLAGS),
+                        info,
+                        new CmsGroup(res.getInt(m_cq.C_GROUPS_GROUP_ID),
+                            res.getInt(m_cq.C_GROUPS_PARENT_GROUP_ID),
+                            res.getString(m_cq.C_GROUPS_GROUP_NAME),
+                            res.getString(m_cq.C_GROUPS_GROUP_DESCRIPTION),
+                            res.getInt(m_cq.C_GROUPS_GROUP_FLAGS)),
+                            res.getString(m_cq.C_USERS_USER_ADDRESS),
+                            res.getString(m_cq.C_USERS_USER_SECTION),
+                            res.getInt(m_cq.C_USERS_USER_TYPE));
+
+				users.addElement(user);
+			}
+
+		} catch (SQLException e){
+			throw new CmsException("["+this.getClass().getName()+"]"+
+                    e.getMessage(),CmsException.C_SQL_ERROR, e);
+		} catch (Exception e) {
+			throw new CmsException("["+this.getClass().getName()+"]", e);
+		} finally {
+			// close all db-resources
+			if(res != null) {
+				 try {
+					 res.close();
+				 } catch(SQLException exc) {
+					 // nothing to do here
+				 }
+			}
+			if(statement != null) {
+				 try {
+					 statement.close();
+				 } catch(SQLException exc) {
+					 // nothing to do here
+				 }
+			}
+			if(con != null) {
+				 try {
+					 con.close();
+				 } catch(SQLException exc) {
+					 // nothing to do here
+				 }
+			}
+		}
+		return users;
+    }
 
 	 /**
 	 * Inits all mimetypes.

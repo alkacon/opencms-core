@@ -2,11 +2,11 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsQueries.java,v $
- * Date   : $Date: 2001/01/29 15:13:28 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2001/03/01 13:43:31 $
+ * Version: $Revision: 1.5 $
  *
- * Copyright (C) 2000  The OpenCms Group 
- * 
+ * Copyright (C) 2000  The OpenCms Group
+ *
  * This File is part of OpenCms -
  * the Open Source Content Mananagement System
  *
@@ -14,15 +14,15 @@ package com.opencms.file.mySql;
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * For further information about OpenCms, please see the
  * OpenCms Website: http://www.opencms.com
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * long with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
@@ -42,5 +42,22 @@ public class CmsQueries extends com.opencms.file.genericSql.CmsQueries
 		C_TASK_FIND_AGENT = "SELECT * " + "FROM " + C_DATABASE_PREFIX + "GROUPUSERS, " + C_DATABASE_PREFIX + "USERS " + "WHERE GROUP_ID=? AND " + C_DATABASE_PREFIX + "GROUPUSERS.USER_ID=" + C_DATABASE_PREFIX + "USERS.USER_ID " + "ORDER BY USER_LASTUSED ASC";
 		C_SYSTEMID_LOCK = "LOCK TABLES " + C_DATABASE_PREFIX + "SYSTEMID WRITE";
 		C_SYSTEMID_UNLOCK = "UNLOCK TABLES ";
+
+        // mySQL specific because of the date format ...
+        C_USERS_GETUSERS_BY_LASTNAME = "SELECT * FROM " +
+            C_DATABASE_PREFIX + "USERS, " + C_DATABASE_PREFIX +
+            "GROUPS WHERE LOWER(USER_LASTNAME) LIKE LOWER(?) AND " +
+            "USER_DEFAULT_GROUP_ID = GROUP_ID AND USER_TYPE = ? " +
+            "AND USER_FLAGS = ? ";
+        C_USERS_GETUSERS_BY_LASTNAME_TAIL = "ORDER BY USER_LASTNAME";
+        C_USERS_GETUSERS_BY_LASTNAME_NEVER = C_USERS_GETUSERS_BY_LASTNAME +
+            "AND USER_LASTLOGIN = '1970.01.01 01:00:00'" +
+            C_USERS_GETUSERS_BY_LASTNAME_TAIL;
+        C_USERS_GETUSERS_BY_LASTNAME_ONCE = C_USERS_GETUSERS_BY_LASTNAME +
+            "AND USER_LASTLOGIN > '1970.01.01 01:00:00'" +
+            C_USERS_GETUSERS_BY_LASTNAME_TAIL;
+        C_USERS_GETUSERS_BY_LASTNAME_WHATEVER = C_USERS_GETUSERS_BY_LASTNAME +
+            C_USERS_GETUSERS_BY_LASTNAME_TAIL;
+
 	}
 }

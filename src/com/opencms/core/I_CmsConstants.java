@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2001/02/23 08:16:30 $
-* Version: $Revision: 1.140 $
+* Date   : $Date: 2001/03/01 13:42:50 $
+* Version: $Revision: 1.141 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -37,7 +37,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  *
- * @version $Revision: 1.140 $ $Date: 2001/02/23 08:16:30 $
+ * @version $Revision: 1.141 $ $Date: 2001/03/01 13:42:50 $
  */
 public interface I_CmsConstants {
 
@@ -1019,4 +1019,21 @@ public interface I_CmsConstants {
      * A string in the configuration-file.
      */
     public static String C_CLUSTERURL = "clusterurl";
+
+    /**
+     * wasLoggedIn
+     */
+    static final int C_NEVER = 1;
+
+    /**
+     * wasLoggedIn
+     */
+    static final int C_AT_LEAST_ONCE = 2;
+
+    /**
+     * wasLoggedIn
+     */
+    static final int C_WHATEVER = 3;
 }
+
+
