@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLock.java,v $
- * Date   : $Date: 2004/01/07 16:53:39 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/01/08 13:15:29 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,8 @@ import com.opencms.core.I_CmsConstants;
  * CmsLock object that represents the current lock state of a resource.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.15 $ $Date: 2004/01/07 16:53:39 $
+ * @author Andreas Zahner (a.zahner@alkacon.com)
+ * @version $Revision: 1.16 $ $Date: 2004/01/08 13:15:29 $
  * @since 5.1.4
  * @see com.opencms.file.CmsObject#getLock(com.opencms.file.CmsResource)
  * @see org.opencms.lock.CmsLockManager
@@ -92,6 +93,16 @@ public class CmsLock extends Object implements Cloneable {
      * Reserved for the Null CmsLock.
      */    
     public static final int C_TYPE_UNLOCKED = 0;
+    
+    /**
+     * Indicates that the lock is a temporary lock that expires is the user was logged out.
+     */
+    public static final int C_MODE_TEMP = 1;
+    
+    /**
+     * Indicates that the lock is a common lock and doesn't expire.
+     */
+    public static final int C_MODE_COMMON =0;
 
     /** The ID of the project where the resource is locked */
     private int m_projectId;
@@ -104,6 +115,9 @@ public class CmsLock extends Object implements Cloneable {
 
     /** The ID of the user who locked the resource */
     private CmsUUID m_userId;
+    
+    /** Flag to indicate if the lock is a temporary lock */
+    private int m_mode;
 
     /**
      * Constructor for a new Cms lock.<p>
@@ -118,6 +132,24 @@ public class CmsLock extends Object implements Cloneable {
         m_userId = userId;
         m_projectId = projectId;
         m_type = type;
+        m_mode = C_MODE_COMMON;
+    }
+    
+    /**
+     * Constructor for a new Cms lock.<p>
+     * 
+     * @param resourceName the full resource name including the site root
+     * @param userId the ID of the user who locked the resource
+     * @param projectId the ID of the project where the resource is locked
+     * @param type flag indicating how the resource is locked
+     * @param mode flag indicating the mode (temporary or common) of a lock
+     */
+    public CmsLock(String resourceName, CmsUUID userId, int projectId, int type, int mode) {
+        m_resourceName = resourceName;
+        m_userId = userId;
+        m_projectId = projectId;
+        m_type = type;
+        m_mode = mode;
     }
 
     /**
@@ -164,6 +196,15 @@ public class CmsLock extends Object implements Cloneable {
      */
     public String getResourceName() {
         return m_resourceName;
+    }
+    
+    /**
+     * Returns the mode of the lock to indicate if the lock is a temporary lock.<p>
+     * 
+     * @return the temporary mode of the lock
+     */
+    public int getMode() {
+        return m_mode;
     }
 
     /**

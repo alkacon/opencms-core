@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2004/01/07 16:53:39 $
-* Version: $Revision: 1.434 $
+* Date   : $Date: 2004/01/08 13:15:30 $
+* Version: $Revision: 1.435 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -81,7 +81,8 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.434 $
+ * @author Andreas Zahner (a.zahner@alkacon.com)
+ * @version $Revision: 1.435 $
  */
 public class CmsObject {
 
@@ -1404,12 +1405,13 @@ public class CmsObject {
      *
      * @param resource the complete path to the resource to lock.
      * @param force if force is <code>true</code>, a existing locking will be overwritten.
+     * @param mode flag indicating the mode (temporary or common) of a lock.
      *
      * @throws CmsException if the user has not the rights to lock this resource.
      * It will also be thrown, if there is a existing lock and force was set to false.
      */
-    protected void doLockResource(String resource, boolean force) throws CmsException {
-        m_driverManager.lockResource(m_context, addSiteRoot(resource));
+    protected void doLockResource(String resource, boolean force, int mode) throws CmsException {
+        m_driverManager.lockResource(m_context, addSiteRoot(resource), mode);
     }
 
     /**
@@ -2604,7 +2606,7 @@ public class CmsObject {
      */
     public void lockResource(String resource) throws CmsException {
         // try to lock the resource, prevent from overwriting an existing lock
-        lockResource(resource, false);
+        lockResource(resource, false, CmsLock.C_MODE_COMMON);
     }
 
     /**
@@ -2620,7 +2622,24 @@ public class CmsObject {
      * It will also be thrown, if there is a existing lock and force was set to false.
      */
     public void lockResource(String resource, boolean force) throws CmsException {
-        getResourceType(readFileHeader(resource).getType()).lockResource(this, resource, force);
+        lockResource(resource, force, CmsLock.C_MODE_COMMON);
+    }
+    
+    /**
+     * Locks a given resource.
+     * <br>
+     * A user can lock a resource, so he is the only one who can write this
+     * resource.
+     *
+     * @param resource the complete path to the resource to lock.
+     * @param force if force is <code>true</code>, a existing locking will be overwritten.
+     * @param mode flag indicating the mode (temporary or common) of a lock
+     *
+     * @throws CmsException if the user has not the rights to lock this resource.
+     * It will also be thrown, if there is a existing lock and force was set to false.
+     */
+    public void lockResource(String resource, boolean force, int mode) throws CmsException {
+        getResourceType(readFileHeader(resource).getType()).lockResource(this, resource, force, mode);
     }
     
     /**

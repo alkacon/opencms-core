@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2004/01/06 09:46:26 $
-* Version: $Revision: 1.98 $
+* Date   : $Date: 2004/01/08 13:15:30 $
+* Version: $Revision: 1.99 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,12 +28,13 @@
 
 package com.opencms.file;
 
-import org.opencms.db.CmsNotImplementedException;
-import org.opencms.util.CmsUUID;
-
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.workplace.I_CmsWpConstants;
+
+import org.opencms.db.CmsNotImplementedException;
+import org.opencms.lock.CmsLock;
+import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -47,7 +48,7 @@ import java.util.Vector;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.98 $
+ * @version $Revision: 1.99 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType {
 
@@ -431,7 +432,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
             }
             // update the folder if something has changed
             if (changed) {
-                lockResource(cms, cms.readAbsolutePath(importedResource), true);
+                lockResource(cms, cms.readAbsolutePath(importedResource), true, CmsLock.C_MODE_COMMON);
                 cms.doWriteResource(cms.readAbsolutePath(importedResource), properties, cms.getRequestContext().currentUser().getName(), CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, null/* new byte[0] */);
             } 
         }
@@ -440,19 +441,19 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
     }
 
     /**
-     * @see com.opencms.file.I_CmsResourceType#lockResource(com.opencms.file.CmsObject, java.lang.String, boolean)
+     * @see com.opencms.file.I_CmsResourceType#lockResource(com.opencms.file.CmsObject, java.lang.String, boolean, int)
      */
-    public void lockResource(CmsObject cms, String resource, boolean force) throws CmsException {        
+    public void lockResource(CmsObject cms, String resource, boolean force, int mode) throws CmsException {        
         if (C_BODY_MIRROR) {
             // first lock the folder in the C_VFS_PATH_BODIES path if it exists.
             try {
-                cms.doLockResource(I_CmsWpConstants.C_VFS_PATH_BODIES + resource.substring(1), force);
+                cms.doLockResource(I_CmsWpConstants.C_VFS_PATH_BODIES + resource.substring(1), force, mode);
             } catch (CmsException e) {
                 // ignore the error. this folder doesent exist.
             }
         }
         // now lock the folder
-        cms.doLockResource(resource, force);
+        cms.doLockResource(resource, force, mode);
     }
 
     /**

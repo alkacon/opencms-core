@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeImage.java,v $
- * Date   : $Date: 2003/11/14 10:09:09 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/01/08 13:15:30 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package com.opencms.file;
 
 import org.opencms.loader.CmsDumpLoader;
+import org.opencms.lock.CmsLock;
 
 import com.opencms.core.CmsException;
 
@@ -41,7 +42,7 @@ import java.util.Map;
  * Describes the resource type "image".<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class CmsResourceTypeImage extends A_CmsResourceType {
 
@@ -79,7 +80,7 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
         CmsResource res = cms.doCreateFile(resourcename, contents, getResourceTypeName(), properties);
         contents = null;
         // TODO: Move locking of resource to CmsObject or CmsDriverManager
-        cms.doLockResource(cms.readAbsolutePath(res), false);
+        cms.doLockResource(cms.readAbsolutePath(res), false, CmsLock.C_MODE_COMMON);
         return res;
     }  
 }

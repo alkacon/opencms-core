@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/01/07 16:53:39 $
- * Version: $Revision: 1.302 $
+ * Date   : $Date: 2004/01/08 13:15:30 $
+ * Version: $Revision: 1.303 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.w3c.dom.Document;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.302 $ $Date: 2004/01/07 16:53:39 $
+ * @version $Revision: 1.303 $ $Date: 2004/01/08 13:15:30 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -933,7 +933,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         } catch (CmsSecurityException e) {
             // restore the lock of the exclusive locked sibling in case a lock gets stolen by 
             // a new user with insufficient permissions on the resource
-            m_lockManager.addResource(this, context, exclusiveLock.getResourceName(), exclusiveLock.getUserId(), exclusiveLock.getProjectId());
+            m_lockManager.addResource(this, context, exclusiveLock.getResourceName(), exclusiveLock.getUserId(), exclusiveLock.getProjectId(), CmsLock.C_MODE_COMMON);
 
             throw e;
         }
@@ -943,7 +943,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             m_vfsDriver.writeLastModifiedProjectId(context.currentProject(), context.currentProject().getId(), resource);
         }
 
-        m_lockManager.addResource(this, context, resource.getRootPath(), context.currentUser().getId(), context.currentProject().getId());
+        m_lockManager.addResource(this, context, resource.getRootPath(), context.currentUser().getId(), context.currentProject().getId(), CmsLock.C_MODE_COMMON);
 
         clearResourceCache();
         m_permissionCache.clear();
@@ -4675,7 +4675,15 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     }
 
     /**
-     * @see org.opencms.lock.CmsLockManager#isLocked(CmsDriverManager, CmsRequestContext, String)
+     * 
+     * Proves if a resource is locked.<p>
+     * 
+     * @see org.opencms.lock.CmsLockManager#isLocked(org.opencms.db.CmsDriverManager, com.opencms.file.CmsRequestContext, java.lang.String)
+     * 
+     * @param context the current request context
+     * @param resourcename the full resource name including the site root
+     * @return true, if and only if the resource is currently locked
+     * @throws CmsException if something goes wrong
      */
     public boolean isLocked(CmsRequestContext context, String resourcename) throws CmsException {
         return m_lockManager.isLocked(this, context, resourcename);
@@ -4911,6 +4919,18 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @throws CmsException if something goes wrong
      */
     public void lockResource(CmsRequestContext context, String resourcename) throws CmsException {
+        lockResource(context, resourcename, CmsLock.C_MODE_COMMON);
+    }
+    
+    /**
+     * Locks a resource exclusively.<p>
+     *
+     * @param context the current request context
+     * @param resourcename the resource name that gets locked
+     * @param mode flag indicating the mode (temporary or common) of a lock
+     * @throws CmsException if something goes wrong
+     */
+    public void lockResource(CmsRequestContext context, String resourcename, int mode) throws CmsException {
         CmsResource resource = readFileHeader(context, resourcename);
 
         // check if the user has write access to the resource
@@ -4922,7 +4942,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         }
 
         // add the resource to the lock dispatcher
-        m_lockManager.addResource(this, context, resource.getRootPath(), context.currentUser().getId(), context.currentProject().getId());
+        m_lockManager.addResource(this, context, resource.getRootPath(), context.currentUser().getId(), context.currentProject().getId(), mode);
 
         // update the resource cache
         clearResourceCache();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceType.java,v $
- * Date   : $Date: 2003/09/23 07:50:25 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2004/01/08 13:15:30 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,9 +86,10 @@ public interface I_CmsResourceType {
      * @param cms the current cms context
      * @param resourcename the name of the resource to apply this operation to
      * @param force if true, locking is forced even if resource is already locked by someone else
+     * @param mode flag indicating the mode (temporary or common) of a lock
      * @throws CmsException if something goes wrong
      */
-    void lockResource(CmsObject cms, String resourcename, boolean force) throws CmsException;
+    void lockResource(CmsObject cms, String resourcename, boolean force, int mode) throws CmsException;
 
     /**
      * Unlocks a resource.<p>

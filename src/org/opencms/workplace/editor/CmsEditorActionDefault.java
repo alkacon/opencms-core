@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorActionDefault.java,v $
- * Date   : $Date: 2004/01/07 13:09:03 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/01/08 13:15:30 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import javax.servlet.jsp.JspException;
  * Provides a method to perform a user defined action when editing a page.<p> 
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.3.0
  */
@@ -127,6 +127,10 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
             int lockType = lock.getType();
             if (lockType == CmsLock.C_TYPE_INHERITED || lockType == CmsLock.C_TYPE_SHARED_INHERITED) {
                 //lock is inherited, unlocking & publishing not possible, so disable button 
+                return false;
+            }
+            if (!jsp.getCmsObject().isManagerOfProject()) {
+                // user has no right to publish the resource, so disable the button
                 return false;
             }
         } catch (CmsException e) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/01/06 17:06:05 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2004/01/08 13:15:30 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import javax.servlet.jsp.PageContext;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  * 
  * @since 5.1
  */
@@ -615,12 +615,23 @@ public abstract class CmsWorkplace {
      * @throws CmsException if reading or locking the resource fails
      */
     public void checkLock(String resource) throws CmsException {
+        checkLock(resource, org.opencms.lock.CmsLock.C_MODE_COMMON);
+    }
+    
+    /**
+     * Checks the lock state of the resource and locks it if the autolock feature is enabled.<p>
+     * 
+     * @param resource the resource name which is checked
+     * @param mode flag indicating the mode (temporary or common) of a lock
+     * @throws CmsException if reading or locking the resource fails
+     */
+    public void checkLock(String resource, int mode) throws CmsException {
         if (getSettings().getAutoLockResources()) {
             // Autolock is enabled, check the lock state of the resource
             CmsResource res = getCms().readFileHeader(resource);
             if (getCms().getLock(res).isNullLock()) {
                 // resource is not locked, lock it automatically
-                getCms().lockResource(resource);
+                getCms().lockResource(resource, false, mode);
             }           
         }
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2004/01/07 16:53:39 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/01/08 13:15:29 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import java.util.Map;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com) 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1.4
  * 
@@ -103,16 +103,17 @@ public final class CmsLockManager extends Object {
      * @param resourcename the full resource name including the site root
      * @param userId the ID of the user who locked the resource
      * @param projectId the ID of the project where the resource is locked
+     * @param mode flag indicating the mode (temporary or common) of a lock
      * @throws CmsException if somethong goes wrong
      */
-    public void addResource(CmsDriverManager driverManager, CmsRequestContext context, String resourcename, CmsUUID userId, int projectId) throws CmsException {
+    public void addResource(CmsDriverManager driverManager, CmsRequestContext context, String resourcename, CmsUUID userId, int projectId, int mode) throws CmsException {
         CmsLock lock = getLock(driverManager, context, resourcename);
 
         if (!lock.isNullLock() && !lock.getUserId().equals(context.currentUser().getId())) {
             throw new CmsLockException("Resource is already locked by the current user", CmsLockException.C_RESOURCE_LOCKED_BY_CURRENT_USER);
         }
 
-        CmsLock newLock = new CmsLock(resourcename, userId, projectId, CmsLock.C_TYPE_EXCLUSIVE);
+        CmsLock newLock = new CmsLock(resourcename, userId, projectId, CmsLock.C_TYPE_EXCLUSIVE, mode);
         m_exclusiveLocks.put(resourcename, newLock);
 
         // handle collisions with exclusive locked sub-resources in case of a folder
@@ -390,25 +391,6 @@ public final class CmsLockManager extends Object {
         CmsLock lock = getLock(driverManager, context, resourcename);
         return !lock.isNullLock();
     }
-    
-    /**
-     * Removes all exclusive temporary locks of a user.<p>
-     * 
-     * @param userId the ID of the user whose locks are removed
-     */
-    public void removeTempLocks(CmsUUID userId) {
-        Iterator i = m_exclusiveLocks.keySet().iterator();
-        CmsLock currentLock = null;
-
-        while (i.hasNext()) {
-            currentLock = (CmsLock)m_exclusiveLocks.get(i.next());
-
-            if (currentLock.getUserId().equals(userId)) {
-                // iterators are fail-fast!
-                i.remove();
-            }
-        }
-    }
 
     /**
      * Removes a resource from the lock manager.<p>
@@ -498,6 +480,25 @@ public final class CmsLockManager extends Object {
             currentLock = (CmsLock)m_exclusiveLocks.get(i.next());
 
             if (currentLock.getProjectId() == projectId) {
+                // iterators are fail-fast!
+                i.remove();
+            }
+        }
+    }
+    
+    /**
+     * Removes all exclusive temporary locks of a user.<p>
+     * 
+     * @param userId the ID of the user whose locks are removed
+     */
+    public void removeTempLocks(CmsUUID userId) {
+        Iterator i = m_exclusiveLocks.keySet().iterator();
+        CmsLock currentLock = null;
+
+        while (i.hasNext()) {
+            currentLock = (CmsLock)m_exclusiveLocks.get(i.next());
+
+            if (currentLock.getUserId().equals(userId) && currentLock.getMode() == CmsLock.C_MODE_TEMP) {
                 // iterators are fail-fast!
                 i.remove();
             }

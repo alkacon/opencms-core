@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeXmlPage.java,v $
- * Date   : $Date: 2004/01/06 09:46:26 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/01/08 13:15:30 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,10 +31,11 @@
 
 package com.opencms.file;
 
-import org.opencms.loader.CmsXmlPageLoader;
-
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
+
+import org.opencms.loader.CmsXmlPageLoader;
+import org.opencms.lock.CmsLock;
 
 import java.util.Hashtable;
 import java.util.Map;
@@ -44,7 +45,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.1
  */
 public class CmsResourceTypeXmlPage extends A_CmsResourceType {
@@ -82,7 +83,7 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType {
     public CmsResource createResource(CmsObject cms, String resourcename, Map properties, byte[] contents, Object parameter) throws CmsException {
 
         CmsFile file = cms.doCreateFile(resourcename, contents, C_RESOURCE_TYPE_NAME, properties);
-        cms.doLockResource(resourcename, false);
+        cms.doLockResource(resourcename, false, CmsLock.C_MODE_COMMON);
 
         // linkmanagement: create the links of the new page (for the case that the content was not empty
         // if (contents.length > 1) {
