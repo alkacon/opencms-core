@@ -67,14 +67,95 @@ default:
 <style type="text/css">
 <!--
 .xmlTable { width:100%; }
-.xmlTd    { width:100%; }
-.xmlLabel { font-family:verdana, sans-serif; font-size:11px; font-weight:bold;  }
-.xmlInput { font-family:verdana, sans-serif; font-size:11px; font-weight:normal; width:100%; }
+.xmlTd    { width:100%; height: 22px; }
+.xmlLabel { font-family:verdana, sans-serif; font-size:11px; font-weight:bold; height: 22px; white-space: nowrap; }
+.xmlInput { font-family:verdana, sans-serif; font-size:11px; font-weight:normal; width: 100%; }
 -->
 </style>
 
 <script type="text/javascript">
 <!--
+
+
+// COLORPICKER START
+
+var colorPicker = new Object();
+colorPicker.title = "<%= wp.key("dialog.color.title") %>";
+colorPicker.color = "000000";
+
+var currField;
+
+function showColorPicker(fieldName) {
+	var theField = document.getElementsByName(fieldName)[0];
+	var fieldValue = theField.value;
+	fieldValue = cutHexChar(fieldValue, "000000");
+	if (document.all) {		
+		colorPicker.color = fieldValue;
+		var selColor = -1;
+		selColor = showModalDialog("<%= wp.getSkinUri() %>components/js_colorpicker/index.html", colorPicker, "resizable: no; help: no; status: no; scroll: no;");
+		if (selColor != null) {
+			theField.value = "#" + selColor;
+			previewColor(fieldName);
+		}
+	} else {
+		currField = theField;
+		window.open("<%= wp.getSkinUri() %>components/js_colorpicker/index.html?" + fieldValue, "colorpicker",
+				      "toolbar=no,menubar=no,personalbar=no,width=10,height=10," +
+				      "scrollbars=no,resizable=yes"); 
+	}
+}
+
+function setColor(color) {
+	if (currField != null) {
+		currField.value = "#" + color;
+		previewColor(currField.name);
+	}
+}
+
+function cutHexChar(fieldValue, defaultValue) {
+	if (fieldValue != null && fieldValue.charAt(0) == "#") {
+		return fieldValue.slice(1);
+	} else {
+		return defaultValue;
+	}
+}
+
+function previewColor(fieldName) {
+	var theField = document.getElementsByName(fieldName)[0];
+	var colorValue = validateColor(cutHexChar(theField.value, "FFFFFF"));
+	if (colorValue == null) {
+		theField.style.color = '#000000';
+		theField.style.backgroundColor = '#FFFFFF';
+	} else if (colorValue < 50000) {
+		theField.style.color = '#FFFFFF';
+		theField.style.backgroundColor = "#" + colorValue;
+	} else {
+		theField.style.color = '#000000';
+		theField.style.backgroundColor = "#" + colorValue;
+	}
+}
+
+function validateColor(string) {                // return valid color code
+	string = string || '';
+	string = string + "";
+	string = string.toUpperCase();
+	chars = '0123456789ABCDEF';
+	out   = '';
+
+	for (i=0; i<string.length; i++) {             // remove invalid color chars
+		schar = string.charAt(i);
+		if (chars.indexOf(schar) != -1) {
+			out += schar;
+		}
+	}
+
+	if (out.length != 6 && out.length != 3) {
+		return null;
+	}
+	return out;
+}
+
+// COLORPICKER END
 
 // Workplacepath needed in included javascript files
 var workplacePath="<%= cms.link("/system/workplace/") %>";
@@ -207,8 +288,7 @@ for (var i=0; i<textAreas.length; i++) {
 
 </head>
 <body class="buttons-head" unselectable="on" onload="init();">
- 
-<table cellspacing="0" cellpadding="0" border="0" width="100%" height="100%">
+
 <form name="EDITOR" id="EDITOR" method="post" action="<%= wp.getDialogUri() %>">
 <input type="hidden" name="<%= wp.PARAM_CONTENT %>" value="<%= wp.getParamContent() %>">
 <input type="hidden" name="<%= wp.PARAM_ACTION %>" value="<%= wp.getParamAction() %>">
@@ -217,7 +297,8 @@ for (var i=0; i<textAreas.length; i++) {
 <input type="hidden" name="<%= wp.PARAM_EDITASTEXT %>" value="<%= wp.getParamEditastext() %>">
 <input type="hidden" name="<%= wp.PARAM_DIRECTEDIT %>" value="<%= wp.getParamDirectedit() %>">
 <input type="hidden" name="<%= wp.PARAM_BACKLINK %>" value="<%= wp.getParamBacklink() %>">
-	
+ 
+<table cellspacing="0" cellpadding="0" border="0" style="width: 100%;">	
 <tr>
 	<td>
 
@@ -226,27 +307,25 @@ for (var i=0; i<textAreas.length; i++) {
 <%= wp.button("javascript:buttonAction(2);", null, "save_exit", "button.saveclose", buttonStyle) %>
 <%= wp.button("javascript:buttonAction(3);", null, "save", "button.save", buttonStyle) %>
 
-	</td>
 	<td class="maxwidth">&nbsp;</td>
 		
 <%= wp.button("javascript:confirmExit();", null, "exit", "button.close", buttonStyle) %>
 <%= wp.buttonBarSpacer(5) %>
 <%= wp.buttonBar(wp.HTML_END) %>
+<%= wp.buttonBarHorizontalLine() %>
 
 	</td>
 </tr>
+</table>
 
-<tr><td width="100%">
-<%= wp.getXmlEditor() %>
-</td></tr>
 
-<tr><td height="100%" width="100%">&nbsp;</td></tr>
+		<div style="width: 100%; height: 100%; overflow: auto;">
+		<%= wp.getXmlEditor() %>
+		</div>
+	
 
 </form>
-</table>
 </body>
-</html>
-	
-<%
+</html><%
 }
 %>
