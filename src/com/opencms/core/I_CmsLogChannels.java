@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsLogChannels.java,v $
-* Date   : $Date: 2001/01/29 15:13:25 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2001/02/06 13:49:45 $
+* Version: $Revision: 1.9 $
 *
 * Copyright (C) 2000  The OpenCms Group 
 * 
@@ -35,7 +35,7 @@ package com.opencms.core;
  * Constants used for logging purposes are defined here.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.8 $ $Date: 2001/01/29 15:13:25 $
+ * @version $Revision: 1.9 $ $Date: 2001/02/06 13:49:45 $
  */
 public interface I_CmsLogChannels { 
 	/** Debugging messages */
@@ -46,7 +46,10 @@ public interface I_CmsLogChannels {
 
 	/** Cache messages */
 	public static final String C_OPENCMS_CACHE = "opencms_cache";
-	
+
+	/** Debugging messages for the streaming mode */
+	public static final String C_OPENCMS_STREAMING = "opencms_streaming";
+    
 	/** Informational messages */
 	public static final String C_OPENCMS_INFO = "opencms_info";    
 	
