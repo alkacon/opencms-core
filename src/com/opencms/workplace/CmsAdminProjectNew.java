@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
-* Date   : $Date: 2001/09/28 11:28:54 $
-* Version: $Revision: 1.58 $
+* Date   : $Date: 2001/10/16 13:54:10 $
+* Version: $Revision: 1.59 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.58 $ $Date: 2001/09/28 11:28:54 $
+ * @version $Revision: 1.59 $ $Date: 2001/10/16 13:54:10 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -76,6 +76,9 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 
     /** Session key */
     private static String C_NEWRESOURCES = "ALLRES";
+
+    /** Session key */
+    private static String C_NEWCHANNELS = "ALLCHAN";
 
     private static String C_PROJECTNEW_THREAD = "project_new_thread";
 
@@ -132,11 +135,19 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
      * @exception CmsException if something goes wrong.
      */
 
-    private boolean checkWriteable(CmsObject cms, String resPath) {
+    private boolean checkWriteable(CmsObject cms, String resPath, boolean isChannel) {
         boolean access = false;
         int accessflags;
+        CmsResource res = null;
         try {
-            CmsResource res = cms.readFolder(resPath);
+            if(isChannel){
+                // must change the context to cos for reading channel
+                cms.setContextToCos();
+                res = cms.readFolder(resPath);
+                cms.setContextToVfs();
+            } else {
+                res = cms.readFolder(resPath);
+            }
             accessflags = res.getAccessFlags();
             boolean groupAccess = false;
             Enumeration allGroups = cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()).elements();
@@ -196,6 +207,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
             session.removeValue(C_NEWMANAGERGROUP);
             session.removeValue(C_NEWFOLDER);
             session.removeValue(C_NEWRESOURCES);
+            session.removeValue(C_NEWCHANNELS);
             session.removeValue(C_NEWTYPE);
             session.removeValue("lasturl");
             session.removeValue("newProjectCallingFrom");
@@ -254,6 +266,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
         newDescription = (String)parameters.get(C_PROJECTNEW_DESCRIPTION);
         newManagerGroup = (String)parameters.get(C_PROJECTNEW_MANAGERGROUP);
         String allResources = (String)parameters.get(C_NEWRESOURCES);
+        String allChannels = (String)parameters.get(C_NEWCHANNELS);
         newType = (String)parameters.get(C_NEWTYPE);
 
         // if there are still values in the session (like after an error), use them
@@ -268,6 +281,9 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
         }
         if(allResources == null) {
             allResources = (String)session.getValue(C_NEWRESOURCES);
+        }
+        if(allChannels == null) {
+            allChannels = (String)session.getValue(C_NEWCHANNELS);
         }
         if(newType == null) {
             newType = (String)session.getValue(C_NEWTYPE);
@@ -287,6 +303,9 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
         if(allResources == null) {
             allResources = "";
         }
+        if(allChannels == null) {
+            allChannels = "";
+        }
         if(newType == null || "".equals(newType)) {
             projectType = I_CmsConstants.C_PROJECT_TYPE_NORMAL;
             newType = "";
@@ -301,6 +320,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
             session.putValue(C_NEWDESCRIPTION, newDescription);
             session.putValue(C_NEWMANAGERGROUP, newManagerGroup);
             session.putValue(C_NEWTYPE, newType);
+            session.putValue(C_NEWCHANNELS, allChannels);
             if(newName.equals("") || newGroup.equals("") || newManagerGroup.equals("")
                     || allResources.equals("")) {
                 templateSelector = "datamissing"+errorTemplateAddOn;
@@ -338,7 +358,18 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
                 }
                 checkRedundancies(folders);
                 numRes = folders.size(); // could have been changed
-
+                // now get the vector for the channels
+                Vector channels = parseResources(allChannels);
+                int numChan = channels.size();
+                for(int j = 0;j < numChan;j++) {
+                    // modify the channelname if nescessary (the root folder is always given
+                    // as a nice name)
+                    if(lang.getLanguageValue("title.rootfolder").equals(channels.elementAt(j))) {
+                        channels.setElementAt("/", j);
+                    }
+                }
+                checkRedundancies(channels);
+                numChan = channels.size();
                 // finally create the project
                 CmsProject project = cms.createProject(newName, newDescription, newGroup,
                         newManagerGroup, projectType);
@@ -349,7 +380,14 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
                     for(int i = 0;i < folders.size();i++) {
                         cms.copyResourceToProject((String)folders.elementAt(i));
                     }
+                    //now copy the channels to the project
+                    cms.setContextToCos();
+                    for(int j = 0; j < channels.size(); j++){
+                        cms.copyResourceToProject((String)channels.elementAt(j));
+                    }
+                    cms.setContextToVfs();
                 } catch(CmsException e) {
+                    cms.setContextToVfs();
                     // if there are no projectresources in the project delete the project
                     Vector projectResources = cms.readAllProjectResources(project.getId());
                     if((projectResources == null) || (projectResources.size() == 0)){
@@ -368,7 +406,8 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
                 session.removeValue(C_NEWMANAGERGROUP);
                 session.removeValue(C_NEWFOLDER);
                 session.removeValue(C_NEWTYPE);
-                session.removeValue(C_NEWTYPE);
+                session.removeValue(C_NEWRESOURCES);
+                session.removeValue(C_NEWCHANNELS);
                 session.removeValue("lasturl");
                 session.removeValue("newProjectCallingFrom");
                 return startProcessing(cms, xmlTemplateDocument, elementName, parameters, "done");
