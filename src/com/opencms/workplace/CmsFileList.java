@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
- * Date   : $Date: 2000/03/15 10:32:57 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2000/03/27 10:01:13 $
+ * Version: $Revision: 1.28 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;FILELIST&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.27 $ $Date: 2000/03/15 10:32:57 $
+ * @version $Revision: 1.28 $ $Date: 2000/03/27 10:01:13 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants,
@@ -214,17 +214,39 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                                             CmsXmlLanguageFile lang) throws CmsException {
               
         String method= n.getAttribute(C_FILELIST_METHOD);
+        String displayMethod= n.getAttribute(C_FILELIST_DISPLAYMETHOD);
         String template=n.getAttribute(C_FILELIST_TEMPLATE);
-        
+        String columnsMethodName = n.getAttribute("columnsmethod");
+
         CmsXmlWpTemplateFile filelistTemplate = new CmsXmlWpTemplateFile(cms,template);
               
         CmsXmlWpConfigFile configFile = this.getConfigFile(cms);
         
         Vector filelist=new Vector();
         
+        Method nameDisplayMethod = null;
+        Method columnsMethod = null;
         Method groupsMethod=null;
          try {
-            groupsMethod = callingObject.getClass().getMethod(method, new Class[] {A_CmsObject.class});
+             if(displayMethod != null && !"".equals(displayMethod)) {
+                nameDisplayMethod = callingObject.getClass().getMethod(displayMethod, new Class[] {A_CmsObject.class, A_CmsResource.class});                                        
+             }
+         } catch(NoSuchMethodException exc) {
+            // The requested method was not found.
+            throwException("Could not find method " + displayMethod + " in calling class " + callingObject.getClass().getName() + " for generating select box content.", CmsException.C_NOT_FOUND);
+         }
+
+         try {
+             if(columnsMethodName != null && !"".equals(columnsMethodName)) {
+                columnsMethod = callingObject.getClass().getMethod(columnsMethodName, new Class[] {A_CmsObject.class, Integer.class});                                        
+             }
+         } catch(NoSuchMethodException exc) {
+            // The requested method was not found.
+            throwException("Could not find method " + columnsMethodName + " in calling class " + callingObject.getClass().getName() + " for generating select box content.", CmsException.C_NOT_FOUND);
+         }
+                  
+         try {
+             groupsMethod = callingObject.getClass().getMethod(method, new Class[] {A_CmsObject.class});
             filelist = ((Vector)groupsMethod.invoke(callingObject, new Object[] {cms}));
         } catch(NoSuchMethodException exc) {
             // The requested method was not found.
@@ -246,7 +268,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
             throwException("User method " + method + " in calling class " + callingObject.getClass().getName() + " was found but could not be invoked. " + exc2, CmsException.C_XML_NO_USER_METHOD);
         }
         return getFilelist(cms,filelist,filelistTemplate,lang,parameters,callingObject,
-                          configFile);
+                          configFile, nameDisplayMethod, columnsMethod);
     }          
     
      /**
@@ -258,12 +280,14 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
       * @param parameters  Hashtable containing all user parameters.
       * @param callingObject The object calling this class.
       * @param config The config file.
+      * @param nameDisplayMethod method that should be called for getting the name to be displayed for the file.
+      * @param columnsMethod.
       * @return HTML-Code of the file list. 
       */
      private Object getFilelist(A_CmsObject cms, Vector list,
                                 A_CmsXmlContent doc, CmsXmlLanguageFile lang,
                                 Hashtable parameters,Object callingObject,
-                                CmsXmlWpConfigFile config) 
+                                CmsXmlWpConfigFile config, Method nameDisplayMethod, Method columnsMethod) 
             throws CmsException {
             StringBuffer output=new StringBuffer();  
             String foldername;
@@ -288,7 +312,8 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
             // Check which flags in the user preferences are NOT set and delete those columns in 
             // the table generating the file list.                      
             int filelist=getDefaultPreferences(cms);
-        
+            filelist = modifyPreferences(cms, filelist, columnsMethod, callingObject);
+            
             template=checkDisplayedColumns(filelist,template,"");
             
             // add the list header to the output.
@@ -301,6 +326,33 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                 
                 if (checkAccess(cms,res)) {
                 
+                String displayedName = null;
+                if(nameDisplayMethod != null) {
+                    try {
+                        displayedName = ((String)nameDisplayMethod.invoke(callingObject, new Object[] {cms, res}));
+                    } catch(InvocationTargetException targetEx) {
+                        // the method could be invoked, but throwed a exception
+                        // itself. Get this exception and throw it again.              
+                        Throwable e = targetEx.getTargetException();
+                        if(!(e instanceof CmsException)) {
+                            // Only print an error if this is NO CmsException
+                            e.printStackTrace();
+                            throwException("User method " + nameDisplayMethod.getName() + " in calling class " + callingObject.getClass().getName() + " throwed an exception. " + e, CmsException.C_UNKNOWN_EXCEPTION);
+                        } else {
+                            // This is a CmsException
+                            // Error printing should be done previously.
+                            throw (CmsException)e;
+                        }
+                    } catch(Exception exc2) {
+                        throwException("User method " + nameDisplayMethod.getName() + " in calling class " + callingObject.getClass().getName() + " was found but could not be invoked. " + exc2, CmsException.C_XML_NO_USER_METHOD);
+                    }
+                } else {
+                    // there is no method given for filling the name field.
+                    // we choose the file name instead.
+                    displayedName = res.getName();
+                }
+                    
+
                 if (res.isFolder()) {
                     folder=(CmsFolder)res; 
             
@@ -324,7 +376,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                     template.setXmlData(C_LOCK_VALUE,template.getProcessedXmlDataValue(getLock(cms,folder,template,lang),callingObject));  
                     // set the folder name
            
-                    template.setXmlData(C_NAME_VALUE,folder.getName());
+                    template.setXmlData(C_NAME_VALUE, displayedName);
                     template.setXmlData(C_NAME_FILEFOLDER,template.getProcessedXmlDataValue(getName(cms,folder),this));     
                     // set the folder title
                     title="";
@@ -388,7 +440,9 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                     // set the lock icon if nescessary
                     template.setXmlData(C_LOCK_VALUE,template.getProcessedXmlDataValue(getLock(cms,file,template,lang),callingObject));                      
                      // set the filename
-                    template.setXmlData(C_NAME_VALUE,file.getName());     
+                    
+                    
+                    template.setXmlData(C_NAME_VALUE,displayedName);     
                     template.setXmlData(C_NAME_FILEFOLDER,template.getProcessedXmlDataValue(getName(cms,file),this));     
                       // set the file title
                     title="";
@@ -787,5 +841,30 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
         }
    
         return filelist;
+    }
+    
+    private int modifyPreferences(A_CmsObject cms, int prefs, Method columnsMethod, Object callingObject ) throws CmsException {
+        Integer result = new Integer(prefs);
+        if(columnsMethod != null) {
+            try {
+                result = ((Integer)columnsMethod.invoke(callingObject, new Object[] {cms, new Integer(prefs)}));
+            } catch(InvocationTargetException targetEx) {
+                // the method could be invoked, but throwed a exception
+                // itself. Get this exception and throw it again.                              
+                Throwable e = targetEx.getTargetException();
+                if(!(e instanceof CmsException)) {
+                    // Only print an error if this is NO CmsException
+                    e.printStackTrace();
+                    throwException("User method " + columnsMethod.getName() + " in calling class " + callingObject.getClass().getName() + " throwed an exception. " + e, CmsException.C_UNKNOWN_EXCEPTION);
+                } else {
+                    // This is a CmsException
+                    // Error printing should be done previously.
+                    throw (CmsException)e;
+                }
+            } catch(Exception exc2) {
+                throwException("User method " + columnsMethod.getName() + " in calling class " + callingObject.getClass().getName() + " was found but could not be invoked. " + exc2, CmsException.C_XML_NO_USER_METHOD);
+            }
+        }
+        return result.intValue();
     }
 }
