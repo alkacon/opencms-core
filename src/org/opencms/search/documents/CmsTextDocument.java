@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsTextDocument.java,v $
- * Date   : $Date: 2005/03/04 13:42:45 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/03/09 11:59:13 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,11 +31,14 @@
 package org.opencms.search.documents;
 
 import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
+import org.opencms.main.OpenCms;
 import org.opencms.search.CmsIndexException;
 import org.opencms.search.A_CmsIndexResource;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 
@@ -46,7 +49,7 @@ import org.apache.lucene.document.Field;
  * Lucene document factory class to extract index data from a cms resource 
  * containing plain text data.<p>
  * 
- * @version $Revision: 1.8 $ $Date: 2005/03/04 13:42:45 $
+ * @version $Revision: 1.9 $ $Date: 2005/03/09 11:59:13 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsTextDocument extends CmsVfsDocument {
@@ -70,9 +73,11 @@ public class CmsTextDocument extends CmsVfsDocument {
         CmsResource resource = (CmsResource)indexResource.getData();
         String rawContent = null;
         
-        try {        
-            CmsFile file = cms.readFile(cms.getRequestContext().removeSiteRoot(resource.getRootPath()), CmsResourceFilter.IGNORE_EXPIRATION);
-            rawContent = new String(file.getContents());
+        try {
+            String path = cms.getRequestContext().removeSiteRoot(resource.getRootPath());
+            CmsFile file = cms.readFile(path, CmsResourceFilter.IGNORE_EXPIRATION);
+            CmsProperty encoding = cms.readPropertyObject(path, I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, true);
+            rawContent = new String(file.getContents(), encoding.getValue(OpenCms.getSystemInfo().getDefaultEncoding()));
         } catch (Exception exc) {
             throw new CmsIndexException("Reading resource " + resource.getRootPath() + " failed", exc);
         }

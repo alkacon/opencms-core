@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2005/03/08 10:50:32 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2005/03/09 11:59:13 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.configuration.I_CmsConfigurationParameterHandler;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsRequestContext;
+import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.search.documents.CmsHighlightExtractor;
@@ -55,19 +56,17 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.PhraseQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Searcher;
 
 /**
  * Implements the search within an index and the management of the index configuration.<p>
  *   
- * @version $Revision: 1.37 $ $Date: 2005/03/08 10:50:32 $
+ * @version $Revision: 1.38 $ $Date: 2005/03/09 11:59:13 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -88,6 +87,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
     /** Contsnat for additional param to set the thread priority during search. */
     public static final String C_PRIORITY = CmsSearchIndex.class.getName() + ".priority";
+
+    /** Special root path append token for optimized path queries. */
+    public static final String C_ROOT_PATH_REPLACEMENT = "@oc ";
 
     /** Special root path start token for optimized path queries. */
     public static final String C_ROOT_PATH_TOKEN = "root";
@@ -143,6 +145,43 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         m_createExcerpt = true;
         m_checkPermissions = true;
         m_priority = -1;
+    }
+
+    /**
+     * Rewrites the a resource path for use in the {@link I_CmsDocumentFactory#DOC_ROOT} field.<p>
+     * 
+     * All "/" chars in the path are replaced with the  {@link #C_ROOT_PATH_REPLACEMENT} token.
+     * This is required in order to use a Lucene "phrase query" on the resource path.
+     * Using a phrase query is much, much better for the search performance then using a straightforward 
+     * "prefix query" since Lucene will interally generate a huge list of boolean queries.<p>  
+     * 
+     * This implementation replaces the "/" of a path with "@oc ". 
+     * This is a trick so that the Lucene analyzer leaves the
+     * directory names untouched, since it treats them like literal email addresses. 
+     * Otherwise the language analyzer might modify the directory names, leading to potential
+     * duplicates (e.g. <code>members/</code> and <code>member/</code> may both be trimmed to <code>member</code>),
+     * so that the prefix search returns more results then expected.<p>
+     * 
+     * @param path the path to rewrite
+     * @param isFolder must be set to true if the resource is a folder
+     * 
+     * @return the re-written path
+     */
+    public static final String rewriteResourcePath(String path, boolean isFolder) {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(path)) {
+            return C_ROOT_PATH_TOKEN + C_ROOT_PATH_REPLACEMENT.trim();
+        }
+
+        if (isFolder && !CmsResource.isFolder(path)) {
+            // if this is a folder we must make sure to append a "/" in order to correctly append the suffix
+            path += "/";
+        }
+
+        StringBuffer result = new StringBuffer(128);
+        result.append(C_ROOT_PATH_TOKEN);
+        result.append(CmsStringUtil.substitute(path, "/", C_ROOT_PATH_REPLACEMENT).trim());
+        return result.toString();
     }
 
     /**
@@ -398,9 +437,10 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         double score = -1;
         String excerpt = null;
 
-        long totalSearchDuration = -System.currentTimeMillis();
-        long luceneSearchDuration = 0;
-
+        long timeTotal = -System.currentTimeMillis();
+        long timeLucene;
+        long timeResultProcessing;
+        
         if (OpenCms.getLog(this).isDebugEnabled()) {
             OpenCms.getLog(this).debug(
                 "Searching for \"" + searchQuery + "\" in fields \"" + fields + "\" of index " + m_name);
@@ -431,15 +471,15 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             context.setCurrentProject(cms.readProject(m_project));
 
             // complete the search root
-            if (searchRoot != null && !"".equals(searchRoot)) {
+            if (CmsStringUtil.isNotEmpty(searchRoot)) {
                 // add the site root to the search root
-                searchRoot = cms.getRequestContext().getSiteRoot() + searchRoot;
+                searchRoot = cms.getRequestContext().addSiteRoot(searchRoot);
             } else {
                 // just use the site root as the search root
                 searchRoot = cms.getRequestContext().getSiteRoot();
             }
 
-            luceneSearchDuration = -System.currentTimeMillis();
+            timeLucene = -System.currentTimeMillis();
 
             // the language analyzer to use for creating the queries
             Analyzer languageAnalyzer = OpenCms.getSearchManager().getAnalyzer(m_locale);
@@ -454,24 +494,18 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 // implementation note: 
                 // initially this was a simple PrefixQuery based on the DOC_PATH
                 // however, internally Lucene rewrote that to literally hundreds of BooleanQuery parts
-                // the following implementation will lead to just one Lucene query and is thus much better
-//                String[] path = CmsStringUtil.splitAsArray(searchRoot, '/');
-//                if (path.length > 0) {                            
-//                    PhraseQuery pathQuery = new PhraseQuery();
-//                    // add root term
-//                    pathQuery.add(new Term(I_CmsDocumentFactory.DOC_ROOT, C_ROOT_PATH_TOKEN));
-//                    for (int i = 0; i < path.length; i++) {
-//                        if (CmsStringUtil.isEmpty(path[i])) {
-//                            continue;
-//                        }
-//                        // add term for the folder
-//                        pathQuery.add(new Term(I_CmsDocumentFactory.DOC_ROOT, path[i]));
-//                    }
-//                    query.add(pathQuery, true, false);
-//                }
-                String phrase = "\"" + C_ROOT_PATH_TOKEN + " " + searchRoot.replace('/', ' ').trim() + "\""; 
-                Query phraseQuery = QueryParser.parse(phrase, I_CmsDocumentFactory.DOC_ROOT, languageAnalyzer);
-                query.add(phraseQuery, true, false);                
+                // the following implementation will lead to just one Lucene query and is thus much better                
+                StringBuffer phrase = new StringBuffer();
+                phrase.append("\"");
+                phrase.append(rewriteResourcePath(searchRoot, true));
+                phrase.append("\"");
+                // it's important to parse the query and not construct it from terms in order to 
+                // ensure the words are processed with the same analyzer that also created the index
+                Query phraseQuery = QueryParser.parse(
+                    phrase.toString(),
+                    I_CmsDocumentFactory.DOC_ROOT,
+                    languageAnalyzer);
+                query.add(phraseQuery, true, false);
             }
 
             if (!C_SEARCH_QUERY_RETURN_ALL.equals(searchQuery) && (fields != null) && (fields.length > 0)) {
@@ -494,15 +528,20 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             // create the index searcher
             searcher = new IndexSearcher(m_path);
 
-            // uncomment the next to lines for debugging query generation
-            // IndexReader reader = IndexReader.open(m_path);            
-            // Query finalQuery = query.rewrite(reader);
+            if (OpenCms.getLog(this).isDebugEnabled()) {
+                // allows to check the query is problems arise in the search
+                IndexReader reader = IndexReader.open(m_path);
+                Query rewrittenQuery = query.rewrite(reader);
+                OpenCms.getLog(this).debug("Base query: " + query);
+                OpenCms.getLog(this).debug("Rewritten query: " + rewrittenQuery);
+            }
 
             // perform the search operation
             hits = searcher.search(query);
 
-            luceneSearchDuration += System.currentTimeMillis();
-
+            timeLucene += System.currentTimeMillis();
+            timeResultProcessing = -System.currentTimeMillis();
+            
             if (hits != null) {
                 maxScore = (hits.length() > 0) ? hits.score(0) : 0.0;
 
@@ -525,10 +564,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                     for (int i = 0, cnt = 0; i < hits.length() && cnt < end; i++) {
                         try {
                             luceneDocument = hits.doc(i);
-                            score = (hits.score(i) / maxScore) * 100.0;
-
                             if (getIndexResource(cms, luceneDocument) != null) {
                                 // user has read permission
+                                score = (hits.score(i) / maxScore) * 100.0;
                                 if (cnt >= start) {
                                     // do not use the resource to obtain the raw content, read it from the lucene document !
                                     if (m_createExcerpt) {
@@ -539,6 +577,11 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                                     searchResults.add(searchResult);
                                 }
                                 cnt++;
+                            } else {
+                                // document removed due to permissions, adjust max score
+                                if ((hits.score(i) == maxScore) && (i < (hits.length()-1))) {
+                                    maxScore = hits.score(i + 1);
+                                }
                             }
                         } catch (Exception exc) {
                             // happens if resource was deleted or current user has not the permission to view the current resource at least
@@ -569,6 +612,8 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 searchResults.add(new Integer(0));
             }
 
+            timeResultProcessing += System.currentTimeMillis();
+            
         } catch (Exception exc) {
             throw new CmsException("[" + this.getClass().getName() + "] " + "Search on " + m_path + " failed. ", exc);
         } finally {
@@ -588,16 +633,18 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             context.setCurrentProject(currentProject);
         }
 
-        totalSearchDuration += System.currentTimeMillis();
+        timeTotal += System.currentTimeMillis();
 
         if (OpenCms.getLog(this).isDebugEnabled()) {
             OpenCms.getLog(this).debug(
                 hits.length()
                     + " results found in "
-                    + totalSearchDuration
+                    + timeTotal
                     + " ms"
                     + " (Lucene: "
-                    + luceneSearchDuration
+                    + timeLucene
+                    + " ms OpenCms: "
+                    + timeResultProcessing
                     + " ms)");
         }
 

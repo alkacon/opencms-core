@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearch.java,v $
- * Date   : $Date: 2005/03/08 06:21:01 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/03/09 11:59:13 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import java.util.TreeMap;
  * <li>contentdefinition - the name of the content definition class of a resource</li>
  * </ul>
  * 
- * @version $Revision: 1.20 $ $Date: 2005/03/08 06:21:01 $
+ * @version $Revision: 1.21 $ $Date: 2005/03/09 11:59:13 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -69,14 +69,35 @@ public class CmsSearch implements Serializable, Cloneable {
     /** The cms object. */
     protected transient CmsObject m_cms;
 
+    /** The number of displayed pages returned by getPageLinks(). */
+    protected int m_displayPages;
+
     /** The list of fields to search. */
     protected String[] m_fields;
-    
+
     /** The index to search. */
     protected CmsSearchIndex m_index;
 
     /** The name of the search index. */
     protected String m_indexName;
+
+    /** The latest exception. */
+    protected Exception m_lastException;
+
+    /** The number of matches per page. */
+    protected int m_matchesPerPage;
+
+    /** The URL which leads to the next result page. */
+    protected String m_nextUrl;
+
+    /** The current result page. */
+    protected int m_page;
+
+    /** The number of pages for the result list. */
+    protected int m_pageCount;
+
+    /** The URL which leads to the previous result page. */
+    protected String m_prevUrl;
 
     /** The current query. */
     protected String m_query;
@@ -87,35 +108,14 @@ public class CmsSearch implements Serializable, Cloneable {
     /** The current search result. */
     protected List m_result;
 
-    /** The latest exception. */
-    protected Exception m_lastException;
-
-    /** The current result page. */
-    protected int m_page;
-
-    /** The number of matches per page. */
-    protected int m_matchesPerPage;
-
-    /** The number of pages for the result list. */
-    protected int m_pageCount;
-
-    /** The number of displayed pages returned by getPageLinks(). */
-    protected int m_displayPages;
-
-    /** The URL which leads to the previous result page. */
-    protected String m_prevUrl;
-
-    /** The URL which leads to the next result page. */
-    protected String m_nextUrl;
-
     /** The search parameter String. */
     protected String m_searchParameters;
 
-    /** The search root. */
-    protected String m_searchRoot;
-    
     /** The total number of search results matching the query. */
     protected int m_searchResultCount;
+
+    /** The search root. */
+    protected String m_searchRoot;
 
     /**
      * Default constructor, used to instanciate the search facility as a bean.<p>
@@ -123,7 +123,7 @@ public class CmsSearch implements Serializable, Cloneable {
     public CmsSearch() {
 
         super();
-        
+
         m_searchRoot = "";
         m_page = 1;
         m_searchResultCount = 0;
@@ -140,18 +140,6 @@ public class CmsSearch implements Serializable, Cloneable {
     public int getDisplayPages() {
 
         return m_displayPages;
-    }
-
-    /**
-     * Sets the maximum number of pages which should be shown.<p>
-     * 
-     * Enter an odd value to achieve a nice, "symmetric" output.<p> 
-     * 
-     * @param value the maximum number of pages which should be shown
-     */
-    public void setDisplayPages(int value) {
-
-        m_displayPages = value;
     }
 
     /**
@@ -326,7 +314,7 @@ public class CmsSearch implements Serializable, Cloneable {
             params.append("&index=");
             params.append(CmsEncoder.encode(m_indexName));
             params.append("&searchRoot=");
-            params.append(CmsEncoder.encode(m_searchRoot));            
+            params.append(CmsEncoder.encode(m_searchRoot));
             m_searchParameters = params.toString();
             return m_searchParameters;
         } else {
@@ -341,7 +329,7 @@ public class CmsSearch implements Serializable, Cloneable {
      */
     public List getSearchResult() {
 
-        if (m_cms != null && m_result == null && m_index != null && m_query != null && !"".equals(m_query.trim())) {
+        if (m_cms != null && m_result == null && m_index != null && CmsStringUtil.isNotEmpty(m_query)) {
 
             if ((this.getQueryLength() > 0) && (m_query.trim().length() < this.getQueryLength())) {
 
@@ -354,13 +342,13 @@ public class CmsSearch implements Serializable, Cloneable {
 
             try {
                 List result;
-                
+
                 if (m_fields != null) {
                     result = m_index.search(m_cms, m_searchRoot, m_query, m_fields, m_page, m_matchesPerPage);
                 } else {
                     result = m_index.search(m_cms, m_searchRoot, m_query, m_page, m_matchesPerPage);
                 }
-                
+
                 if (result.size() > 1) {
                     // the total number of search results matching the query is saved at the last index in the result 
                     // list. the search result list contains just m_matchesPerPage search results instead of all search 
@@ -399,12 +387,37 @@ public class CmsSearch implements Serializable, Cloneable {
                 m_result = null;
                 m_searchResultCount = 0;
                 m_pageCount = 0;
-                
+
                 m_lastException = exc;
             }
         }
 
         return m_result;
+    }
+
+    /**
+     * Returns the total number of search results matching the query.<p>
+     * 
+     * @return the total number of search results matching the query
+     */
+    public int getSearchResultCount() {
+
+        return m_searchResultCount;
+    }
+
+    /**
+     * Returns the search root.<p>
+     * 
+     * Only resource that are sub-resource of the search root
+     * are included in the search result.<p>
+     * 
+     * Per default, the search root is an empty string.<p>
+     *
+     * @return the search root
+     */
+    public String getSearchRoot() {
+
+        return m_searchRoot;
     }
 
     /**
@@ -428,6 +441,18 @@ public class CmsSearch implements Serializable, Cloneable {
     }
 
     /**
+     * Sets the maximum number of pages which should be shown.<p>
+     * 
+     * Enter an odd value to achieve a nice, "symmetric" output.<p> 
+     * 
+     * @param value the maximum number of pages which should be shown
+     */
+    public void setDisplayPages(int value) {
+
+        m_displayPages = value;
+    }
+
+    /**
      * Sets the fields to search.<p>
      * 
      * If the fields are set to <code>null</code>, 
@@ -441,8 +466,7 @@ public class CmsSearch implements Serializable, Cloneable {
     public void setField(String[] fields) {
 
         m_fields = fields;
-        m_result = null;
-        m_lastException = null;
+        resetLastResult();
     }
 
     /**
@@ -455,11 +479,10 @@ public class CmsSearch implements Serializable, Cloneable {
     public void setIndex(String indexName) {
 
         m_indexName = indexName;
-        m_result = null;
         m_index = null;
-        m_lastException = null;
+        resetLastResult();
 
-        if (m_cms != null && indexName != null && !"".equals(indexName)) {
+        if (m_cms != null && CmsStringUtil.isNotEmpty(indexName)) {
             try {
                 m_index = OpenCms.getSearchManager().getIndex(indexName);
                 if (m_index == null) {
@@ -484,6 +507,7 @@ public class CmsSearch implements Serializable, Cloneable {
     public void setMatchesPerPage(int matches) {
 
         m_matchesPerPage = matches;
+        resetLastResult();
     }
 
     /**
@@ -494,8 +518,7 @@ public class CmsSearch implements Serializable, Cloneable {
     public void setPage(int page) {
 
         m_page = page;
-        m_result = null;
-        m_lastException = null;
+        resetLastResult();
     }
 
     /**
@@ -509,8 +532,7 @@ public class CmsSearch implements Serializable, Cloneable {
     public void setQuery(String query) {
 
         m_query = CmsEncoder.decode(query, OpenCms.getSystemInfo().getDefaultEncoding());
-        m_result = null;
-        m_lastException = null;
+        resetLastResult();
     }
 
     /**
@@ -524,25 +546,13 @@ public class CmsSearch implements Serializable, Cloneable {
     }
 
     /**
-     * Returns the search root.<p>
-     * 
-     * Only resource that are sub-resource of the search root
-     * are included in the search result.<p>
-     * 
-     * Per default, the search root is an empty string.<p>
-     *
-     * @return the search root
-     */
-    public String getSearchRoot() {
-
-        return m_searchRoot;
-    }
-
-    /**
      * Sets the search root.<p>
      * 
      * Only resource that are sub-resource of the search root
      * are included in the search result.<p>
+     * 
+     * The search root set here is used <i>in addition to</i> the current site root
+     * of the user performing the search.<p>
      * 
      * Per default, the search root is an empty string.<p>
      *
@@ -551,16 +561,16 @@ public class CmsSearch implements Serializable, Cloneable {
     public void setSearchRoot(String searchRoot) {
 
         m_searchRoot = searchRoot;
+        resetLastResult();
     }
-    
+
     /**
-     * Returns the total number of search results matching the query.<p>
-     * 
-     * @return the total number of search results matching the query
+     * Resets the last seach result.<p>
      */
-    public int getSearchResultCount() {
-        
-        return m_searchResultCount;
+    private void resetLastResult() {
+
+        m_result = null;
+        m_lastException = null;
     }
-    
+
 }

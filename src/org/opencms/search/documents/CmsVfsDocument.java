@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsVfsDocument.java,v $
- * Date   : $Date: 2005/03/08 06:21:01 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/03/09 11:59:13 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.apache.lucene.document.Field;
  * Lucene document factory class to extract index data from a vfs resource 
  * of any type derived from <code>CmsResource</code>.<p>
  * 
- * @version $Revision: 1.15 $ $Date: 2005/03/08 06:21:01 $
+ * @version $Revision: 1.16 $ $Date: 2005/03/09 11:59:13 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsVfsDocument implements I_CmsDocumentFactory {
@@ -166,6 +166,9 @@ public class CmsVfsDocument implements I_CmsDocumentFactory {
             document.add(Field.Text(I_CmsDocumentFactory.DOC_TITLE, value));
             meta.append(value);
             meta.append(" ");
+            // title is appended twice to meta, effectifly booting the relevance
+            meta.append(value);
+            meta.append(" ");
         }
         if ((value = cms.readPropertyObject(path, I_CmsConstants.C_PROPERTY_KEYWORDS, false).getValue()) != null) {
             document.add(Field.Text(I_CmsDocumentFactory.DOC_KEYWORDS, value));
@@ -178,13 +181,11 @@ public class CmsVfsDocument implements I_CmsDocumentFactory {
             meta.append(" ");
         }
 
-        String rootPath = resource.getRootPath();
-        rootPath = rootPath.replace('/', ' ').trim();
-        rootPath = CmsSearchIndex.C_ROOT_PATH_TOKEN + " " + rootPath;
-        document.add(Field.Text(I_CmsDocumentFactory.DOC_ROOT, rootPath));
+        String rootPath = CmsSearchIndex.rewriteResourcePath(resource.getRootPath(), false);
+        document.add(Field.UnStored(I_CmsDocumentFactory.DOC_ROOT, rootPath));
         
-        meta.append(rootPath);
-        document.add(Field.Text(I_CmsDocumentFactory.DOC_META, meta.toString()));
+        meta.append(CmsResource.getName(resource.getRootPath()));
+        document.add(Field.UnStored(I_CmsDocumentFactory.DOC_META, meta.toString()));
 
         document.add(
             Field.Keyword(I_CmsDocumentFactory.DOC_DATE_CREATED, DateField.timeToString(res.getDateCreated())));

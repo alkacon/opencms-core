@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentWithVfs.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/03/09 11:59:13 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import junit.framework.TestSuite;
  * Tests the link resolver for XML contents.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
@@ -173,7 +173,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         
         CmsMessages messages = contentHandler.getMessages(Locale.ENGLISH);
         assertNotNull(messages);
-        assertEquals("The following errors occured when validating the form:", messages.key("editor.xmlcontent.validation.error.title"));
+        assertEquals("The following errors occurred when validating the form:", messages.key("editor.xmlcontent.validation.error.title"));
         assertEquals("Invalid value \"", messages.key("editor.xmlcontent.validation.error.1"));                
     }
 

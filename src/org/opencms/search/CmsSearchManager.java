@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2005/03/07 15:30:50 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2005/03/09 11:59:13 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.lucene.index.IndexWriter;
  * Implements the general management and configuration of the search and 
  * indexing facilities in OpenCms.<p>
  * 
- * @version $Revision: 1.30 $ $Date: 2005/03/07 15:30:50 $
+ * @version $Revision: 1.31 $ $Date: 2005/03/09 11:59:13 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -458,7 +458,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     }
 
     /**
-     * Updates all indexes that are configured in the registry.<p>
+     * Updates all configured indexes.<p>
      * An index will be updated only if rebuild mode is set to auto.
      * 
      * @param report the report object to write messages or null
@@ -470,7 +470,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     }
 
     /**
-     * Updates all indexes that are configured in the registry.<p>
+     * Updates all configured indexes..<p>
      * An index will be updated only if rebuild mode is set to auto.
      * 
      * @param report the report object to write messages or null
@@ -489,14 +489,10 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     }
 
     /**
-     * Updates the index belonging to the passed name.<p>
-     * If the index is not already created, it will be created, too.
-     * If the rebuild flag is set to true, it will be rebuild ignoring 
-     * the value of the rebuild configuration entry in the registry
-     * Further configuration information about this index must be available 
-     * in the registry.
+     * Updates (if required creates) the index with the given name.<p>
      * 
-     * @param indexName the name of the index
+     * @param indexName the name of the index to update
+     * 
      * @throws CmsException if something goes wrong
      */
     public void updateIndex(String indexName) throws CmsException {
@@ -505,15 +501,11 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     }
 
     /**
-     * Updates the index belonging to the passed name.<p>
-     * If the index is not already created, it will be created, too.
-     * If the rebuild flag is set to true, it will be rebuild ignoring 
-     * the value of the rebuild configuration entry in the registry
-     * Further configuration information about this index must be available 
-     * in the registry.
+     * Updates (if required creates) the index with the given name.<p>
      * 
-     * @param indexName the name of the index
+     * @param indexName the name of the index to update
      * @param report the report object to write messages or null
+     * 
      * @throws CmsException if something goes wrong
      */
     public void updateIndex(String indexName, I_CmsReport report) throws CmsException {
@@ -522,16 +514,12 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     }
 
     /**
-     * Updates the index belonging to the passed name.<p>
-     * If the index is not already created, it will be created, too.
-     * If the rebuild flag is set to true, it will be rebuild ignoring 
-     * the value of the rebuild configuration entry in the registry
-     * Further configuration information about this index must be available 
-     * in the registry.
+     * Updates (if required creates) the index with the given name.<p>
      * 
-     * @param indexName the name of the index
+     * @param indexName the name of the index to update
      * @param report the report object to write messages or null
-     * @param wait flag signals to wait until the indexing threads are finished
+     * @param wait flag signals to wait until the indexing threads are finished or not
+     * 
      * @throws CmsException is something goes wrong
      */
     public void updateIndex(String indexName, I_CmsReport report, boolean wait) throws CmsException {
@@ -603,6 +591,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     Thread.sleep(1000);
                 }
 
+                // optimize the generated index
+                writer.optimize();
+                
                 threadManager.reportStatistics();
             } catch (Exception e) {
                 if (report != null) {

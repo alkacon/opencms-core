@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.62 $
+ * Date   : $Date: 2005/03/09 11:59:13 $
+ * Version: $Revision: 1.63 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import org.dom4j.util.NodeComparator;
  * values in the provided <code>${test.data.path}/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.62 $
+ * @version $Revision: 1.63 $
  * 
  * @since 5.3.5
  */
@@ -269,7 +269,7 @@ public class OpenCmsTestCase extends TestCase {
         String configFolder = getTestDataPath("WEB-INF" + File.separator + "config." + m_dbProduct + File.separator);
         copyConfiguration(configFolder);
 
-        // remove potentially created "classes, "lib" and "backup" folder
+        // remove potentially created "classes, "lib", "backup" etc. folder
         String path;
         path = getTestDataPath("WEB-INF/classes/");
         if (path != null) {
@@ -280,6 +280,10 @@ public class OpenCmsTestCase extends TestCase {
             CmsFileUtil.purgeDirectory(new File(path));
         }
         path = getTestDataPath("WEB-INF/config/backup/");
+        if (path != null) {
+            CmsFileUtil.purgeDirectory(new File(path));
+        }
+        path = getTestDataPath("WEB-INF/index/");
         if (path != null) {
             CmsFileUtil.purgeDirectory(new File(path));
         }

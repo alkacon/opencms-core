@@ -24,6 +24,7 @@
 				<class>org.opencms.search.documents.CmsTextDocument</class>
 				<mimetypes>
 					<mimetype>text/html</mimetype>
+					<mimetype>text/plain</mimetype>
 				</mimetypes>
 				<resourcetypes>
 					<resourcetype>plain</resourcetype>
