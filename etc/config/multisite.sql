@@ -47,6 +47,29 @@ INSERT INTO CMS_SITES (SITE_ID, NAME, DESCRIPTION, CATEGORY_ID, LANGUAGE_ID, COU
 
 
 ####################################################################################
+#
+# Table structure for table 'CMS_SITE_PROJECTS'
+#
+
+DROP TABLE IF EXISTS CMS_SITE_PROJECTS;
+CREATE TABLE CMS_SITE_PROJECTS (
+   SITE_ID int(11) DEFAULT '0' NOT NULL,
+   PROJECT_ID int(11) DEFAULT '0' NOT NULL,
+   PRIMARY KEY (SITE_ID, PROJECT_ID)
+);
+
+#
+# Dumping data for table 'CMS_SITE_PROJECTS'
+#
+
+INSERT INTO CMS_SITE_PROJECTS (SITE_ID, PROJECT_ID) VALUES ( '0', '1');
+INSERT INTO CMS_SITE_PROJECTS (SITE_ID, PROJECT_ID) VALUES ( '0', '2');
+INSERT INTO CMS_SITE_PROJECTS (SITE_ID, PROJECT_ID) VALUES ( '1', '4');
+INSERT INTO CMS_SITE_PROJECTS (SITE_ID, PROJECT_ID) VALUES ( '2', '5');
+
+
+
+####################################################################################
 # Table structure for table 'CMS_SITE_URLS'
 #
 
