@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleImportThread.java,v $
- * Date   : $Date: 2003/03/06 17:17:15 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/03/06 17:37:18 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Vector;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.0 rc 1
  */
 public class CmsAdminModuleImportThread extends A_CmsReportThread {
@@ -91,7 +91,6 @@ public class CmsAdminModuleImportThread extends A_CmsReportThread {
         try {            
             if (DEBUG) System.err.println("CmsAdminModuleImportThread() started");            
             String moduleName = m_moduleName.replace('\\', '/');
-            CmsProject currentProject = m_cms.getRequestContext().currentProject();
 
             // create a Project to import the module.
             CmsProject project = m_cms.createProject("ImportModule", "A System generated project to import the module " + moduleName, 
@@ -118,9 +117,7 @@ public class CmsAdminModuleImportThread extends A_CmsReportThread {
             m_report.println(m_report.key("report.publish_project_end"), I_CmsReport.C_FORMAT_HEADLINE);
             m_report.println(m_report.key("report.import_module_end"), I_CmsReport.C_FORMAT_HEADLINE);
             
-            if (DEBUG) System.err.println("CmsAdminModuleImportThread() finished");
-            
-            m_cms.joinLinksToTargets(currentProject,m_report);            
+            if (DEBUG) System.err.println("CmsAdminModuleImportThread() finished");          
         }
         catch(CmsException e) {
             m_report.println(e);

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/03/06 17:17:15 $
-* Version: $Revision: 1.265 $
+* Date   : $Date: 2003/03/06 17:37:18 $
+* Version: $Revision: 1.266 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.265 $
+ * @version $Revision: 1.266 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -2161,15 +2161,11 @@ public void importResources(String importFile, String importPath) throws CmsExce
  * @throws CmsException if operation was not successful.
  */
 public void importResources(String importFile, String importPath, I_CmsReport report) throws CmsException {
-    // import the resources
     clearcache();
     
     // import the resources
     m_rb.importResources(m_context.currentUser(), m_context.currentProject(), importFile, importPath, this, report);
     
-    // update the link management in the Online project
-    m_rb.joinLinksToTargets( this, m_context.currentUser(), m_context.currentProject(), report );
-        
     clearcache();
 }
 /**
