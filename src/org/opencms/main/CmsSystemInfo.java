@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2004/11/02 11:33:15 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2004/11/04 13:58:22 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * @since 5.3
  */
 public class CmsSystemInfo {
@@ -138,7 +138,8 @@ public class CmsSystemInfo {
      * Returns an absolute path (to a directory or a file in the "real" file system) from a path relative to 
      * the web application folder of OpenCms.<p> 
      * 
-     * If the provided path is already absolute, then it is returned unchanged.<p>
+     * If the provided path is already absolute, then it is returned unchanged.
+     * If the provided path is a folder, the result will always end with a folder separator.<p>
      * 
      * @param path the path (relative) to generate an absolute path from
      * @return an absolute path (to a directory or a file) from a path relative to the web application folder of OpenCms
@@ -151,7 +152,11 @@ public class CmsSystemInfo {
         File f = new File(path);
         if (f.isAbsolute()) {
             // apparently this is an absolute path already
-            //return f.getAbsolutePath();
+            path =  f.getAbsolutePath();
+            if (f.isDirectory() && !path.endsWith(File.separator)) {
+                // make sure all folder paths end with a separator
+                path = path.concat(File.separator);
+            }
             return path;
         }
         return CmsFileUtil.normalizePath(getWebApplicationRfsPath() + path);
