@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsHelperMastertemplates.java,v $
-* Date   : $Date: 2001/10/12 07:46:09 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2001/12/10 14:33:43 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import java.util.*;
 
 /**
  * Helper class to receive all mastertemplates that are currently in the system.
- * @version $Revision: 1.3 $ $Date: 2001/10/12 07:46:09 $
+ * @version $Revision: 1.4 $ $Date: 2001/12/10 14:33:43 $
  */
 
 public class CmsHelperMastertemplates {
@@ -50,6 +50,20 @@ public class CmsHelperMastertemplates {
      * @exception Throws CmsException if something goes wrong.
      */
     public static Integer getTemplates(CmsObject cms, Vector names, Vector values, String currentTemplate) throws CmsException {
+        return getTemplates(cms, names, values, currentTemplate, 0);
+    }
+
+    /**
+     * Gets the templates displayed in the template select box.
+     * @param cms The CmsObject.
+     * @param names The names of the new rescources.
+     * @param values The links that are connected with each resource.
+     * @param defaultReturnValue the default-returnvalue for this methos. It is used, if no currentTemplate was found.
+     * @returns The vectors names and values are filled with the information found in the
+     * workplace.ini.
+     * @exception Throws CmsException if something goes wrong.
+     */
+    public static Integer getTemplates(CmsObject cms, Vector names, Vector values, String currentTemplate, int defaultReturnValue) throws CmsException {
 
         Vector files = cms.getFilesInFolder(I_CmsWpConstants.C_CONTENTTEMPLATEPATH);
 
@@ -89,7 +103,7 @@ public class CmsHelperMastertemplates {
             }
         }
 
-        return new Integer(0);
+        return new Integer(defaultReturnValue);
     }
 
 

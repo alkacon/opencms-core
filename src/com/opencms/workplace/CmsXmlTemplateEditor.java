@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2001/11/23 15:04:56 $
-* Version: $Revision: 1.57 $
+* Date   : $Date: 2001/12/10 14:33:43 $
+* Version: $Revision: 1.58 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.57 $ $Date: 2001/11/23 15:04:56 $
+ * @version $Revision: 1.58 $ $Date: 2001/12/10 14:33:43 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -153,8 +153,27 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         String filetype = (String)parameters.get("root.pagetype");
         if("gemadipage".equals(filetype)){
             return CmsNewResourceGemadipage.getRelativeTemplates(cms, names, values, (String)parameters.get("template"), currentFile);
+        } else {
+            Integer retValue = CmsHelperMastertemplates.getTemplates(cms, names, values, (String)parameters.get("template"), -1);
+            if(retValue.intValue() != -1) {
+                return retValue;
+            } else {
+                // no template found -> use the given one
+                // first clean the vectors
+                names.removeAllElements();
+                values.removeAllElements();
+                // now add the current template
+                String name = (String)parameters.get("template");
+                try { // to read the title of this template
+                    name = cms.readProperty(name, C_PROPERTY_TITLE);
+                } catch(CmsException exc) {
+                    // ignore this exception - the title for this template was not readable
+                }
+                names.add(name);
+                values.add((String)parameters.get("template"));
+                return new Integer(0);
+            }
         }
-        return CmsHelperMastertemplates.getTemplates(cms, names, values, (String)parameters.get("template"));
     }
 
     /**
