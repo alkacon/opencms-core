@@ -44,7 +44,7 @@ import org.apache.xerces.parsers.*;
  * getXmlDocumentTagName() and getContentDescription().
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.10 $ $Date: 2000/02/10 14:11:28 $
+ * @version $Revision: 1.11 $ $Date: 2000/02/11 18:47:39 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChannels { 
     
@@ -393,14 +393,21 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
      * @exception CmsException  
      */
     public void write() throws CmsException {
-
-        CmsFile file = m_cms.readFile(getAbsoluteFilename());
+        // Get the XML content as String
         StringWriter writer = new StringWriter();
         getXmlText(writer);
-
         byte[] xmlContent = writer.toString().getBytes();
+        
+        // Get the CmsFile object to write to
+        String filename = getAbsoluteFilename();                
+        CmsFile file = m_cms.readFile(filename);
+        
+        // Set the new content and write the file
         file.setContents(xmlContent);
         m_cms.writeFile(file);        
+        
+        // update the internal parsed content cache with the new file data.
+        m_filecache.put(filename, m_content.cloneNode(true));        
     }
 
     /**
@@ -909,40 +916,40 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
         // to create a new text node.
         if(data==null) {
             setData(tag, "");
-        }
-        
-        // Now we can be sure to have a correct Element
-        tag = tag.toLowerCase();
-           
-        Element newElement = (Element)data.cloneNode(true);        
-    
-        if(C_DEBUG && A_OpenCms.isLogging()) {
-            A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "Putting datablock " + tag + " into internal Hashtable.");
-        }
-                   
-        if (! (m_blocks.containsKey(tag))) {
-            // This is a brand new datablock. It can be inserted directly.
-            m_blocks.put(tag, newElement);
         } else {        
-            // datablock existed before, so the childs of the old 
-            // one can be replaced.
-            if(C_DEBUG && A_OpenCms.isLogging()) {
-                A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "Datablock existed before. Replacing.");               
-            }
+            // Now we can be sure to have a correct Element
+            tag = tag.toLowerCase();
            
-            // Look up the old datablock and remove all its childs.
-            Element originalBlock = (Element)(m_blocks.get(tag));
-            while(originalBlock.hasChildNodes()) {
-               originalBlock.removeChild(originalBlock.getFirstChild());
+            Element newElement = (Element)data.cloneNode(true);        
+    
+            if(C_DEBUG && A_OpenCms.isLogging()) {
+                A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "Putting datablock " + tag + " into internal Hashtable.");
             }
+                   
+            if (! (m_blocks.containsKey(tag))) {
+                // This is a brand new datablock. It can be inserted directly.
+                m_blocks.put(tag, newElement);
+            } else {        
+                // datablock existed before, so the childs of the old 
+                // one can be replaced.
+                if(C_DEBUG && A_OpenCms.isLogging()) {
+                   A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "Datablock existed before. Replacing.");               
+                }
+           
+                // Look up the old datablock and remove all its childs.
+                Element originalBlock = (Element)(m_blocks.get(tag));
+                while(originalBlock.hasChildNodes()) {
+                    originalBlock.removeChild(originalBlock.getFirstChild());
+                }
                
-            // And now add all childs of the new node
-            NodeList newNodes = data.getChildNodes();
-            int len = newNodes.getLength();
-            for(int i=0; i<len; i++) {
-                Node newElement2 = (Node)newNodes.item(i).cloneNode(true);
-                originalBlock.appendChild(parser.importNode(originalBlock.getOwnerDocument(), newElement2));
-            }            
+                // And now add all childs of the new node
+                NodeList newNodes = data.getChildNodes();
+                int len = newNodes.getLength();
+                for(int i=0; i<len; i++) {
+                    Node newElement2 = (Node)newNodes.item(i).cloneNode(true);
+                    originalBlock.appendChild(parser.importNode(originalBlock.getOwnerDocument(), newElement2));
+                }            
+            }
         } 
     }
 
@@ -1086,7 +1093,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
      * @return parsed XML document in DOM format.
      * @exception CmsException
      */
-    private Document readTemplateFile(A_CmsObject cms, String filename) throws CmsException {
+    /*private Document readTemplateFile(A_CmsObject cms, String filename) throws CmsException {
         Document retValue = null;
         retValue = loadCachedDocument(filename);
         if(retValue == null) {
@@ -1105,7 +1112,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
             }    
         }        
         return retValue;
-    }
+    }*/
     
     /**
 	 * Starts the XML parser with the content of the given CmsFile object.
