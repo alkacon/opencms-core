@@ -59,14 +59,14 @@
 					</contextmenu>
 				</editoptions>
 			</explorertype>
-			<explorertype name="gallery" key="fileicon.gallery" icon="gallery.gif" reference="folder">
-				<newresource uri="newresource.jsp?page=gallery" order="10"/>
+			<explorertype name="extendedfolder" key="fileicon.extendedfolder" icon="gallery.gif" reference="folder">
+				<newresource uri="newresource.jsp?page=extendedfolder" order="10"/>
 			</explorertype>						
 			<explorertype name="structurecontent" key="fileicon.structurecontent" icon="xmlcontent.gif" reference="xmlcontent">
 				<newresource uri="newresource.jsp?page=structurecontent" order="15"/>
 			</explorertype>								
 			<explorertype name="imagegallery" key="fileicon.imagegallery" icon="imagegallery.gif">
-				<newresource page="gallery" uri="newresource.jsp?newresourcetype=imagegallery" order="10"/>
+				<newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=imagegallery" order="10"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
@@ -102,13 +102,13 @@
 				</editoptions>	
 			</explorertype>
 			<explorertype name="downloadgallery" key="fileicon.downloadgallery" icon="downloadgallery.gif" reference="imagegallery">
-				<newresource page="gallery" uri="newresource.jsp?newresourcetype=downloadgallery" order="20"/>
+				<newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=downloadgallery" order="20"/>
 			</explorertype>
 			<explorertype name="linkgallery" key="fileicon.linkgallery" icon="linkgallery.gif" reference="imagegallery">
-				<newresource page="gallery" uri="newresource.jsp?newresourcetype=linkgallery" order="30"/>
+				<newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=linkgallery" order="30"/>
 			</explorertype>
 			<explorertype name="htmlgallery" key="fileicon.htmlgallery" icon="htmlgallery.gif" reference="imagegallery">
-				<newresource page="gallery" uri="newresource.jsp?newresourcetype=htmlgallery" order="40"/>
+				<newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=htmlgallery" order="40"/>
 			</explorertype>
 			<explorertype name="xmlcontent" key="fileicon.xmlcontent" icon="xmlcontent.gif">
 				<newresource page="structurecontent" uri="newresource.jsp?newresourcetype=xmlcontent" order="500"/>

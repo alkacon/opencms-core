@@ -38,7 +38,7 @@
 		</resourcetypes>
 		<explorertypes>
 			<explorertype name="microsite" key="fileicon.microsite" icon="microsite.gif" reference="folder">
-				<newresource uri="newresource.jsp?newresourcetype=microsite" order="12"/>
+				<newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=microsite" order="50"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
