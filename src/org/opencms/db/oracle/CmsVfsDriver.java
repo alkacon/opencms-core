@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/09/22 09:27:12 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/09/22 12:34:33 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.12 $ $Date: 2003/09/22 09:27:12 $
+ * @version $Revision: 1.13 $ $Date: 2003/09/22 12:34:33 $
  * @since 5.1
  */
 public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {     
@@ -172,6 +172,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
             if (conn != null) {
                 try {
                     conn.setAutoCommit(true);
+                    conn.close();
                 } catch (SQLException se) {
                 }                   
             }
