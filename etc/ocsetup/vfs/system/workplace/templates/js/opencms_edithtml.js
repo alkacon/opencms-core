@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/opencms_edithtml.js,v $
- * Date   : $Date: 2000/03/28 14:46:50 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/03/29 07:29:48 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,7 +26,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
  
- //------------------------------------------------------//
+//------------------------------------------------------//
 // Script for  html editcontrol
 //------------------------------------------------------//
 
@@ -395,7 +395,13 @@ function setText()
 // Submitts the Document to the OpenCms System
 function doSubmit() 
 {
-   document.EDITOR.content.value = escape(getChars(document.EDITOR.EDIT_HTML.filterSourceCode(document.EDITOR.EDIT_HTML.DOM.documentElement.outerHTML)));
+	if(document.EDITOR.EDIT_HTML.DOM.documentElement) {
+		// IE5
+		document.EDITOR.content.value = escape(getChars(document.EDITOR.EDIT_HTML.filterSourceCode(document.EDITOR.EDIT_HTML.DOM.documentElement.outerHTML)));
+	} else {
+		// IE4
+		document.EDITOR.content.value = escape(document.EDITOR.EDIT_HTML.DocumentHTML);
+	}
 }
 
 
