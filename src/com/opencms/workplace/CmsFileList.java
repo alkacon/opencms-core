@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
- * Date   : $Date: 2000/02/17 16:17:03 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2000/02/17 18:41:47 $
+ * Version: $Revision: 1.19 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;FILELIST&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.18 $ $Date: 2000/02/17 16:17:03 $
+ * @version $Revision: 1.19 $ $Date: 2000/02/17 18:41:47 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants,
@@ -694,7 +694,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
      private String getIcon(A_CmsObject cms,A_CmsResourceType type, CmsXmlWpConfigFile config)
      throws CmsException {
         String icon=null;
-        String filename=config.getPicturePath()+C_ICON_PREFIX+type.getResourceName().toLowerCase()+C_ICON_EXTENSION;
+        String filename=config.getWpPicturePath()+C_ICON_PREFIX+type.getResourceName().toLowerCase()+C_ICON_EXTENSION;
         A_CmsResource iconFile;
         
         // check if this icon is in the cache already

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpConfigFile.java,v $
- * Date   : $Date: 2000/02/17 16:15:41 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/02/17 18:41:47 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.13 $ $Date: 2000/02/17 16:15:41 $
+ * @version $Revision: 1.14 $ $Date: 2000/02/17 18:41:47 $
  */
 public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChannels, I_CmsConstants {
 
@@ -170,12 +170,21 @@ public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChann
     }
     
     /**
-     * Gets the path for picture files.
+     * Gets the path for system picture files.
      * @return Path for picture files.
      * @exception CmsException if the corresponding XML tag doesn't exist in the workplace definition file.
      */
-    public String getPicturePath() throws CmsException {
-        return getDataValue("path.pictures");
+    public String getWpPicturePath() throws CmsException {
+        return getDataValue("path.wppictures");
+    }
+
+    /**
+     * Gets the path for common picture files.
+     * @return Path for picture files.
+     * @exception CmsException if the corresponding XML tag doesn't exist in the workplace definition file.
+     */
+    public String getCommonPicturePath() throws CmsException {
+        return getDataValue("path.commonpictures");
     }
     
     /**
