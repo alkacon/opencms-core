@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/06/16 07:31:19 $
- * Version: $Revision: 1.79 $
+ * Date   : $Date: 2004/06/16 14:20:11 $
+ * Version: $Revision: 1.80 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.fileupload.FileUploadException;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.79 $
+ * @version $Revision: 1.80 $
  * 
  * @since 5.1
  */
@@ -265,13 +265,26 @@ public abstract class CmsWorkplace {
   
         // initialize messages and also store them in settings
         CmsWorkplaceMessages messages = new CmsWorkplaceMessages(cms, settings.getUserSettings().getLocale());
-        settings.setMessages(messages);    
+        settings.setMessages(messages);
                         
-        // save current site
-        String siteRoot = cms.getRequestContext().getSiteRoot();
+        // switch to users preferred site      
+        String siteRoot = settings.getUserSettings().getStartSite();
+        if (siteRoot.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
+            // remove trailing slash
+            siteRoot = siteRoot.substring(0, siteRoot.length() - 1);    
+        }
+        if (!"".equals(siteRoot) && CmsSiteManager.getSite(siteRoot) == null) {
+            // this is not the root site and the site is not in the list
+            siteRoot = OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartSite();
+            if (siteRoot.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
+                // remove trailing slash
+                siteRoot = siteRoot.substring(0, siteRoot.length() - 1);    
+            }
+        }
         boolean access = false;
         CmsResource res = null;
         try {
+            // check access to the site
             res = cms.readFileHeader("/");   
             access = cms.hasPermissions(res, I_CmsConstants.C_VIEW_ACCESS);
         } catch (CmsException e) {
@@ -283,8 +296,11 @@ public abstract class CmsWorkplace {
                 siteRoot = ((CmsSite)sites.get(0)).getSiteRoot();
                 cms.getRequestContext().setSiteRoot(siteRoot);
             }
-        }            
+        }
+        // set the current site
         settings.setSite(siteRoot);
+        // set the preferred folder to display
+        settings.setExplorerResource(settings.getUserSettings().getStartFolder());
         
         // get the default view from the user settings
         settings.setViewUri(OpenCms.getLinkManager().substituteLink(cms, settings.getUserSettings().getStartView()));

@@ -365,6 +365,8 @@
 					<locale>en</locale>
 					<project>Offline</project>
 					<workplaceview>/system/workplace/jsp/explorer_fs.html</workplaceview>
+					<folder>/</folder>
+					<site>/sites/default/</site>
 				</workplace-startupsettings>
 			</workplace-preferences>
 			<explorer-preferences>

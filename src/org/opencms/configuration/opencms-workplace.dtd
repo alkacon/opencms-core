@@ -397,7 +397,7 @@
 <!ELEMENT folder (#PCDATA)>
 
 <!--
-# The name of the start site (e.g. "" or "/sites/default/").
+# The name of the start site (e.g. "/" or "/sites/default/").
 -->									
 <!ELEMENT site (#PCDATA)>									 
 						

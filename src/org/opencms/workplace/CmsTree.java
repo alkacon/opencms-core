@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsTree.java,v $
- * Date   : $Date: 2004/06/16 07:31:19 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2004/06/16 14:20:11 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.opencms.util.CmsUUID;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  * 
  * @since 5.1
  */
@@ -83,14 +83,17 @@ public class CmsTree extends CmsWorkplace {
     /** The type of the tree (e.g. "copy", "project" etc.). */
     private String m_treeType;
     
-    /** type name for showing the tree when creating links. */
+    /** Type name for showing the tree when creating links. */
     private static final String C_TYPE_VFSLINK = "vfslink"; 
     
-    /** type name for showing the tree when copying resources. */
+    /** Type name for showing the tree when copying resources. */
     private static final String C_TYPE_COPY = "copy";
     
-    /** type name for showing the tree when creating page links in the editor. */
+    /** Type name for showing the tree when creating page links in the editor. */
     private static final String C_TYPE_PAGELINK = "pagelink";
+    
+    /** Type name for showing the tree in preferences dialog. */
+    private static final String C_TYPE_PREFERENCES = "preferences";
 
     /**
      * Public constructor.<p>
@@ -555,7 +558,9 @@ public class CmsTree extends CmsWorkplace {
             if (storedSiteRoot.equals(prefix)) {
                 prefix = "";
             }
-        }
+        } else if (C_TYPE_PREFERENCES.equals(getTreeType())) {
+            prefix = "";
+        } 
         
         return prefix;
     }
@@ -637,7 +642,7 @@ public class CmsTree extends CmsWorkplace {
      * @return true if site selector should be shown, otherwise false
      */
     public boolean showSiteSelector() {
-        if (C_TYPE_VFSLINK.equals(getTreeType()) || C_TYPE_COPY.equals(getTreeType()) || C_TYPE_PAGELINK.equals(getTreeType())) {
+        if (C_TYPE_VFSLINK.equals(getTreeType()) || C_TYPE_COPY.equals(getTreeType()) || C_TYPE_PAGELINK.equals(getTreeType()) || C_TYPE_PREFERENCES.equals(getTreeType())) {
             int siteCount = CmsSiteManager.getAvailableSites(getCms(), true).size();
             return (siteCount > 1);
         }

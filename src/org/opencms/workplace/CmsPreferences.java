@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPreferences.java,v $
- * Date   : $Date: 2004/06/15 10:23:41 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2004/06/16 14:20:11 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,8 @@ import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
+import org.opencms.site.CmsSite;
+import org.opencms.site.CmsSiteManager;
 import org.opencms.workplace.editor.CmsWorkplaceEditorConfiguration;
 
 import java.io.IOException;
@@ -60,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 5.1.12
  */
@@ -194,6 +196,12 @@ public class CmsPreferences extends CmsTabDialog {
     
     /** Request parameter name for the workplace use upload applet. */
     public static final String PARAM_WORKPLACE_USEUPLOADAPPLET = "tabwpuseuploadapplet";
+    
+    /** Request parameter name for the workplace start folder. */
+    public static final String PARAM_WORKPLACE_FOLDER = "tabwpfolder";
+    
+    /** Request parameter name for the workplace start site. */
+    public static final String PARAM_WORKPLACE_SITE = "tabwpsite";
     
     /** Request parameter name for the workplace view. */
     public static final String PARAM_WORKPLACE_VIEW = "tabwpview";
@@ -636,6 +644,39 @@ public class CmsPreferences extends CmsTabDialog {
     }
     
     /**
+     * Builds the html for the workplace start site select box.<p>
+     * 
+     * @param htmlAttributes optional html attributes for the &lgt;select&gt; tag
+     * @return the html for the workplace start site select box
+     */
+    public String buildSelectSite(String htmlAttributes) {
+        List options = new ArrayList();
+        List values = new ArrayList();    
+        int selectedIndex = 0;
+
+        List sites = CmsSiteManager.getAvailableSites(getCms(), true);
+ 
+        Iterator i = sites.iterator();
+        int pos = 0;
+        while (i.hasNext()) {
+            CmsSite site = (CmsSite)i.next();
+            String siteRoot = site.getSiteRoot();
+            if (!siteRoot.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
+                siteRoot += I_CmsConstants.C_FOLDER_SEPARATOR;    
+            }
+            values.add(siteRoot);
+            options.add(site.getTitle());
+            if (siteRoot.equals(getParamTabWpSite())) { 
+                // this is the user's currently chosen site
+                selectedIndex = pos;
+            }
+            pos++;
+        }
+        
+        return buildSelect(htmlAttributes, options, values, selectedIndex);    
+    }
+    
+    /**
      * Returns a html select box filled with the views accessible by the current user.<p>
      * 
      * @param htmlAttributes attributes that will be inserted into the generated html 
@@ -1055,6 +1096,24 @@ public class CmsPreferences extends CmsTabDialog {
      */
     public String getParamTabDiShowLock() {
         return isParamEnabled(m_userSettings.getDialogShowLock());
+    }
+    
+    /**
+     * Returns the "start folder" setting.<p>
+     * 
+     * @return the "start folder" setting
+     */
+    public String getParamTabWpFolder() {
+        return m_userSettings.getStartFolder();    
+    }
+    
+    /**
+     * Returns the "start site" setting.<p>
+     * 
+     * @return the "start site" setting
+     */
+    public String getParamTabWpSite() {
+        return m_userSettings.getStartSite();    
     }
     
     /**
@@ -1523,6 +1582,24 @@ public class CmsPreferences extends CmsTabDialog {
      */
     public void setParamTabDiShowLock(String value) {
         m_userSettings.setDialogShowLock("true".equals(value));
+    }
+    
+    /**
+     * Sets the "start folder" setting.<p>
+     * 
+     * @param value the start folder to show in the explorer view
+     */
+    public void setParamTabWpFolder(String value) {
+        m_userSettings.setStartFolder(value);
+    }
+    
+    /**
+     * Sets the "start site" setting.<p>
+     * 
+     * @param value the start site to show in the explorer view
+     */
+    public void setParamTabWpSite(String value) {
+        m_userSettings.setStartSite(value);    
     }
 
     /**

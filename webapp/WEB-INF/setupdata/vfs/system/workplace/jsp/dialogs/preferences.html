@@ -49,7 +49,7 @@ default:
 	wp.setParamAction(wp.DIALOG_OK);
 
 %><%= wp.htmlStart() %>
-<%= wp.bodyStart("dialog", "") %>
+<%= wp.bodyStart("dialog", "onunload=\"top.closeTreeWin();\"") %>
 <%= wp.dialogStart() %>
 
 <form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
@@ -65,13 +65,20 @@ case 1:
 		<table border="0" cellpadding="4" cellspacing="0">
 		<tr>
 			<td style="white-space: nowrap;"><%= wp.key("input.lang") %></td><td><%= wp.buildSelectLanguage("name=\"" + wp.PARAM_WORKPLACE_LANGUAGE + "\" style=\"width: 200px;\"") %></td>
+			<td>&nbsp;</td>
+			<td style="white-space: nowrap;"><%= wp.key("input.startupsite") %></td><td><%= wp.buildSelectSite("name=\"" + wp.PARAM_WORKPLACE_SITE + "\" style=\"width: 200px;\"") %></td>
+			<td>&nbsp;</td>
 		</tr>
 		<tr>
 			<td style="white-space: nowrap;"><%= wp.key("input.startupproject") %></td><td><%= wp.buildSelectProject("name=\"" + wp.PARAM_WORKPLACE_PROJECT + "\" style=\"width: 200px;\"") %></td>
+			<td>&nbsp;</td>
+			<td style="white-space: nowrap;"><%= wp.key("input.startupfolder") %></td><td><input type="text" name="<%= wp.PARAM_WORKPLACE_FOLDER %>" id="<%= wp.PARAM_WORKPLACE_FOLDER %>" value="<%= wp.getParamTabWpFolder() %>" style="width: 200px;"></td>
+			<td><input name="selectfolder" type="button" value="<%= wp.key("button.search") %>" onClick="top.openTreeWin('preferences', false, 'main', '<%= wp.PARAM_WORKPLACE_FOLDER %>', document);" class="dialogbutton" style="width: 60px;">
 		</tr>
 		<tr>
 			<td style="white-space: nowrap;"><%= wp.key("input.startupview") %></td><td><%= wp.buildSelectView("name=\"" + wp.PARAM_WORKPLACE_VIEW + "\" style=\"width: 200px;\"") %></td>
-		</tr>
+			<td colspan="4">&nbsp;</td>
+		</tr>		
 		</table>
 		<%= wp.dialogBlockEnd() %>
 		<%= wp.dialogSpacer() %>

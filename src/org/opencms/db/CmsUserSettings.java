@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2004/06/14 12:19:33 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/06/16 14:20:11 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Map;
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @author  Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 5.1.12
  */
@@ -85,6 +85,8 @@ public class CmsUserSettings {
     private Locale m_locale;
     private String m_project;
     private boolean m_showLock;
+    private String m_startFolder;
+    private String m_startSite;
     private int m_taskMessages;
     private boolean m_taskShowProjects;
     private String m_taskStartupfilter;
@@ -234,6 +236,15 @@ public class CmsUserSettings {
         return (String)m_editorSettings.get(resourceType);
     }
     
+    /**
+     * Returns the start folder of the user.<p>
+     * 
+     * @return the start folder of the user
+     */
+    public String getStartFolder() {
+        return m_startFolder;    
+    }
+    
     /** 
      * Returns the start project of the user.<p>
      * 
@@ -241,6 +252,15 @@ public class CmsUserSettings {
      */
     public String getStartProject() {
         return m_project;
+    }
+    
+    /**
+     * Returns the start site of the user.<p>
+     * 
+     * @return the start site of the user
+     */
+    public String getStartSite() {
+        return m_startSite;
     }
     
     /**
@@ -299,6 +319,7 @@ public class CmsUserSettings {
     
     /**
      * Determines if all projects should be shown in tasks view.<p>
+     * 
      * @return true if all projects should be shown in tasks view, otherwise false
      */
     public boolean getTaskShowAllProjects() {
@@ -350,7 +371,7 @@ public class CmsUserSettings {
     public void init(CmsUser user) {
         m_user = user; 
 
-        // try to initaliaze the User Settings with the values stored in the user object.
+        // try to initialize the User Settings with the values stored in the user object.
         // if no values are found, the default user settings will be used.
         
         // workplace button style
@@ -471,7 +492,18 @@ public class CmsUserSettings {
         } catch (Throwable t) {
             m_taskMessages = OpenCms.getWorkplaceManager().getDefaultUserSettings().getTaskMessageValue();
         }
- 
+        
+        // start site
+        m_startSite = ((String)m_user.getAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS + CmsWorkplaceConfiguration.N_SITE));
+        if (m_startSite == null) {
+            m_startSite = OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartSite();
+        }
+        // start folder
+        m_startFolder = ((String)m_user.getAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS + CmsWorkplaceConfiguration.N_FOLDER));
+        if (m_startFolder == null) {
+            m_startFolder = OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartFolder();
+        }
+        
         try {
             save(null);
         } catch (CmsException e) {
@@ -520,7 +552,7 @@ public class CmsUserSettings {
             m_user.deleteAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS + CmsWorkplaceConfiguration.N_LOCALE);
         }
         // startproject       
-        if (getStartProject() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartProject()) { 
+        if (!getStartProject().equals(OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartProject())) { 
             m_user.setAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS + CmsWorkplaceConfiguration.N_PROJECT, getStartProject());
         } else if (cms != null) {
             m_user.deleteAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS + CmsWorkplaceConfiguration.N_PROJECT);
@@ -614,9 +646,23 @@ public class CmsUserSettings {
               m_user.setAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKFLOWDEFAULTSETTINGS, new Integer(m_taskMessages));
         } else if (cms != null) {
             m_user.deleteAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKFLOWDEFAULTSETTINGS);
-        }     
+        }   
+        
+        // start site
+        if (!getStartSite().equals(OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartSite())) {
+            m_user.setAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS + CmsWorkplaceConfiguration.N_SITE, getStartSite());    
+        } else if (cms != null) {
+            m_user.deleteAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS + CmsWorkplaceConfiguration.N_SITE);
+        }
+        
+        // start folder
+        if (getStartFolder() != null && !"".equals(getStartFolder().trim()) && !getStartFolder().equals(OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartFolder())) {
+            m_user.setAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS + CmsWorkplaceConfiguration.N_FOLDER, getStartFolder());    
+        } else if (cms != null) {
+            m_user.deleteAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS + CmsWorkplaceConfiguration.N_FOLDER);
+        }
       
-        // only write the updated date to the DB if we have the cms object
+        // only write the updated user to the DB if we have the cms object
         if (cms != null) {           
             cms.writeUser(m_user);
         }
@@ -842,14 +888,23 @@ public class CmsUserSettings {
         setExplorerSetting(show, I_CmsWpConstants.C_FILELIST_USER_CREATED);
     }
 
-   /**
+       /**
     * Sets if the file last modified by should be shown in explorer view.<p>
     * 
     * @param show true if the file last modified by should be shown, otherwise false
     */
-   public void setShowExplorerFileUserLastModified(boolean show) {
-       setExplorerSetting(show, I_CmsWpConstants.C_FILELIST_USER_LASTMODIFIED);
-   }
+    public void setShowExplorerFileUserLastModified(boolean show) {
+        setExplorerSetting(show, I_CmsWpConstants.C_FILELIST_USER_LASTMODIFIED);
+    }
+   
+    /**
+     * Sets the start folder of the user.<p>
+     * 
+     * @param folder the start folder of the user
+     */
+    public void setStartFolder(String folder) {
+         m_startFolder = folder;
+    }
 
     /**
      * Sets the start project of the user.<p>
@@ -858,6 +913,15 @@ public class CmsUserSettings {
      */
     public void setStartProject(String project) {
         m_project = project;
+    }
+    
+    /**
+     * Sets the start site of the user.<p>
+     * 
+     * @param site the start site of the user
+     */
+    public void setStartSite(String site) {
+        m_startSite = site;    
     }
     
     /**
