@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsTree.java,v $
- * Date   : $Date: 2003/10/01 12:25:02 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/10/06 13:57:30 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.1
  */
@@ -109,6 +109,7 @@ public class CmsTree extends CmsWorkplace {
         retValue.append("\taddResourceType(6, \"image\",\t\"Image\",\t\"filetypes/image.gif\");\n");
         retValue.append("\taddResourceType(8, \"jsp\",\t\"JSP\",\t\"filetypes/jsp.gif\");\n");
         retValue.append("\taddResourceType(9, \"page\",\t\"Page\",\t\"filetypes/page.gif\");\n");
+        retValue.append("\taddResourceType(99, \"pointer\",\t\"Pointer\",\t\"filetypes/pointer.gif\");\n");
         retValue.append("}\n\n");
         
         retValue.append("initTreeResources();\n");
