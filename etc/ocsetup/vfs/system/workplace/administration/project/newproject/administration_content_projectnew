@@ -9,24 +9,20 @@
 
 <script language=JavaScript>
 <!--
-
-if(top.frames[0].document.projectchange.project.options[top.frames[0].document.projectchange.project.selectedIndex].value !=]]><PROCESS>onlineId</PROCESS><![CDATA[){
-	window.top.head.location.href='../../../action/head.html';
-}
-
 function show_help()
 {
 	return '5_2_2_1.html';
 }
 
 function deleteAnItem(theList,itemNo) {
- var n=theList.length;
- if ((n > 0) && (itemNo > -1)) {
-	 for (i=itemNo; i<n-1; i++) {
-		 theList.options[i]=theList.options[i+1];
-	 }
-	 theList.options[n-1]=null; 
- }
+// var n=theList.length;
+// if ((n > 0) && (itemNo > -1)) {
+//	 for (i=itemNo; i<n-1; i++) {
+//		 theList.options[i]=theList.options[i+1];
+//	 }
+//	 theList.options[n-1]=null; 
+ 	 theList.options[itemNo]=null; 
+// }
 }
 
 function addFolder(theList, item) { 
