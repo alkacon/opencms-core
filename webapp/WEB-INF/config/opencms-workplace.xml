@@ -25,8 +25,42 @@
 		<maxfileuploadsize>-1</maxfileuploadsize>
 		<labeledfolders/>
 		<explorertypes>
+			<explorertype name="folder" key="fileicon.folder" icon="folder.gif">
+				<newresource uri="newresource_folder.html" order="10"/>
+				<accesscontrol>
+					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.ProjectManagers" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
+				</accesscontrol>
+				<editoptions>
+					<defaultproperties enabled="true" shownavigation="true">
+						<property name="Title"/>
+					</defaultproperties>
+					<contextmenu>
+						<entry key="explorer.context.lock" uri="dialogs/lock.html" rules="d d aaai dddd dddd" order="10"/>
+						<entry key="explorer.context.overridelock" uri="dialogs/lockchange.html" rules="d d dddd dddd aaai" order="20"/>
+						<entry key="explorer.context.unlock" uri="dialogs/unlock.html" rules="d d dddd aaai dddd" order="30"/>
+						<separator order="40"/>
+						<entry key="explorer.context.copytoproject" uri="copy_to_project.html" isxml="true" rules="d a dddd dddd dddd" order="50"/>
+						<entry key="explorer.context.publish" uri="dialogs/publishresource.html" rules="d d aaaa aaaa dddd" order="60"/>
+						<separator order="70"/>
+						<entry key="explorer.context.copy" uri="dialogs/copy.html" rules="d d iiii aaai dddd" order="150"/>
+						<entry key="explorer.context.rename" uri="dialogs/rename.html" rules="d d iiii aaai dddd" order="160"/>
+						<entry key="explorer.context.move" uri="dialogs/move.html" rules="d d iiii aaai dddd" order="170"/>
+						<entry key="explorer.context.delete" uri="dialogs/delete.html" rules="d d iiii aaai dddd" order="180"/>
+						<entry key="explorer.context.touch" uri="dialogs/touch.html" rules="d d iiii aaai dddd" order="190"/>
+						<entry key="explorer.context.undochanges" uri="dialogs/undochanges.html" rules="d d iiid aaid dddd" order="200"/>
+						<entry key="explorer.context.undelete" uri="dialogs/undelete.html" rules="d d ddda ddda dddd" order="210"/>
+						<separator order="240"/>
+						<entry key="explorer.context.access" uri="dialogs/chacc.html" rules="d d iiii aaai dddd" order="300"/>
+						<entry key="explorer.context.chnav" uri="dialogs/chnav.html" rules="d d iiii aaai dddd" order="310"/>
+						<separator order="340"/>
+						<entry key="explorer.context.property" uri="dialogs/property.html" rules="a a aaai aaai aaai" order="360"/>
+					</contextmenu>
+				</editoptions>
+			</explorertype>
 			<explorertype name="xmlpage" key="fileicon.xmlpage" icon="page.gif">
-				<newresource uri="newresource_xmlpage.html" order="10"/>
+				<newresource uri="newresource_xmlpage.html" order="20"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.ProjectManagers" permissions="+r+v+w+c"/>
@@ -65,40 +99,6 @@
 						<entry key="explorer.context.editcontrolfile" uri="editors/editor.html?editastext=true" target="_top" rules="d d iiii aaai dddd" order="335"/>
 						<separator order="340"/>
 						<entry key="explorer.context.history" uri="history.html" isxml="true" rules="a a aaaa aaaa aaaa" order="350"/>
-						<entry key="explorer.context.property" uri="dialogs/property.html" rules="a a aaai aaai aaai" order="360"/>
-					</contextmenu>
-				</editoptions>
-			</explorertype>
-			<explorertype name="folder" key="fileicon.folder" icon="folder.gif">
-				<newresource uri="newresource_folder.html" order="20"/>
-				<accesscontrol>
-					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.ProjectManagers" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
-				</accesscontrol>
-				<editoptions>
-					<defaultproperties enabled="true" shownavigation="true">
-						<property name="Title"/>
-					</defaultproperties>
-					<contextmenu>
-						<entry key="explorer.context.lock" uri="dialogs/lock.html" rules="d d aaai dddd dddd" order="10"/>
-						<entry key="explorer.context.overridelock" uri="dialogs/lockchange.html" rules="d d dddd dddd aaai" order="20"/>
-						<entry key="explorer.context.unlock" uri="dialogs/unlock.html" rules="d d dddd aaai dddd" order="30"/>
-						<separator order="40"/>
-						<entry key="explorer.context.copytoproject" uri="copy_to_project.html" isxml="true" rules="d a dddd dddd dddd" order="50"/>
-						<entry key="explorer.context.publish" uri="dialogs/publishresource.html" rules="d d aaaa aaaa dddd" order="60"/>
-						<separator order="70"/>
-						<entry key="explorer.context.copy" uri="dialogs/copy.html" rules="d d iiii aaai dddd" order="150"/>
-						<entry key="explorer.context.rename" uri="dialogs/rename.html" rules="d d iiii aaai dddd" order="160"/>
-						<entry key="explorer.context.move" uri="dialogs/move.html" rules="d d iiii aaai dddd" order="170"/>
-						<entry key="explorer.context.delete" uri="dialogs/delete.html" rules="d d iiii aaai dddd" order="180"/>
-						<entry key="explorer.context.touch" uri="dialogs/touch.html" rules="d d iiii aaai dddd" order="190"/>
-						<entry key="explorer.context.undochanges" uri="dialogs/undochanges.html" rules="d d iiid aaid dddd" order="200"/>
-						<entry key="explorer.context.undelete" uri="dialogs/undelete.html" rules="d d ddda ddda dddd" order="210"/>
-						<separator order="240"/>
-						<entry key="explorer.context.access" uri="dialogs/chacc.html" rules="d d iiii aaai dddd" order="300"/>
-						<entry key="explorer.context.chnav" uri="dialogs/chnav.html" rules="d d iiii aaai dddd" order="310"/>
-						<separator order="340"/>
 						<entry key="explorer.context.property" uri="dialogs/property.html" rules="a a aaai aaai aaai" order="360"/>
 					</contextmenu>
 				</editoptions>
