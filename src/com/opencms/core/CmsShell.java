@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/11/03 16:03:56 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2000/11/07 16:17:45 $
+ * Version: $Revision: 1.59 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  * 
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.58 $ $Date: 2000/11/03 16:03:56 $
+ * @version $Revision: 1.59 $ $Date: 2000/11/07 16:17:45 $
  */
 public class CmsShell implements I_CmsConstants {
 
@@ -212,8 +212,8 @@ public static void main(String[] args)
  * @param exc The exception to print.
  */
 protected static void printException(Exception exc) {
-	if (((CmsException) exc).getType() != 0 && CmsShell.m_shortException) {
-		System.out.println(((CmsException) exc).m_Type + " " + CmsException.C_EXTXT[ ((CmsException) exc).m_Type]);
+	if (CmsShell.m_shortException) {
+		System.out.println(exc.getMessage());
 	} else {
 		exc.printStackTrace();
 	}

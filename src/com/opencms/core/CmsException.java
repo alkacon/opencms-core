@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsException.java,v $
- * Date   : $Date: 2000/11/03 16:03:56 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2000/11/07 16:17:45 $
+ * Version: $Revision: 1.33 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ import java.util.*;
  * This exception is thrown for security reasons in the Cms.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.32 $ $Date: 2000/11/03 16:03:56 $
+ * @version $Revision: 1.33 $ $Date: 2000/11/07 16:17:45 $
  */
 public class CmsException extends Exception {
 	
@@ -353,7 +353,7 @@ public class CmsException extends Exception {
 	 * @return Exception messge.
 	 */
 	public String getMessage()	{
-		return m_message;
+		return "[CmsException]: " + getType() + " " + C_EXTXT[getType()] + ". Detailed Error: " + m_message + ".";
 	}
 /**
  * Return a string with the stacktrace. for this exception
