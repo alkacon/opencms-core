@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/Attic/todo.txt,v $
- * Date   : $Date: 2002/09/05 13:07:19 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2002/10/07 09:30:44 $
+ * Version: $Revision: 1.6 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@ As a small rule, there can be only a decision to implement a feature if there is
 also a volunteer to do the work!
 
 
-[ ? ] Consolidate top-level directories
+[ + ] Consolidate top-level directories
 ================================================================================
 Suggested by:
   Alexander Kandzior (a.kandzior@alkacon.com)
@@ -105,7 +105,7 @@ Updates:
   will make it to the final release.
 
 
-[ ? ] Logfile rotation
+[ d ] Logfile rotation
 ================================================================================
 Suggested by:
   Andreas Schouten (andreas.schouten@framfab.de)
@@ -121,7 +121,7 @@ Volunteers:
   (No volunteer yet)
 
 
-[ ? ] Native support for Velocity templates
+[ d ] Native support for Velocity templates
 ================================================================================
 Suggested by:
   Alexander Kandzior (a.kandzior@alkacon.com)
@@ -141,7 +141,7 @@ Volunteers:
   (No volunteer yet)
 
 
-[ ? ] Check for old, unused template files in "/system/workplace" folders
+[ d ] Check for old, unused template files in "/system/workplace" folders
 ================================================================================
 Suggested by:
   Alexander Kandzior (a.kandzior@alkacon.com)
@@ -157,7 +157,7 @@ Volunteers:
   (No volunteer yet)
 
 
-[ ? ] Support for MS-SQL Server in setup wizard
+[ + ] Support for MS-SQL Server in setup wizard
 ================================================================================
 Suggested by:
   Alexander Kandzior (a.kandzior@alkacon.com)
@@ -173,7 +173,7 @@ Issues:
   None known. Someone has to do the work.
 
 Volunteers:
-  (No volunteer yet)
+  Edna Falkenhahn (edna.falkenhahn@framfab.de)
 
 
 [ # ] Create a default "Offline" project during installation
@@ -191,6 +191,7 @@ Description:
 
 Issues:
   None known.
+  Todo: Include all Channels (Root Channel) when generating default "Offline" project
 
 Volunteers:
   Alexander Kandzior (a.kandzior@alkacon.com)
@@ -238,7 +239,7 @@ Updates:
   which also is "en". Create other directories manually if needed.
 
 
-[ + ] Add i18n changes to release version
+[ # ] Add i18n changes to release version
 ================================================================================
 Suggested by:
   Alexander Kandzior (a.kandzior@alkacon.com)
@@ -305,7 +306,7 @@ Updates:
 
   Spechial characters (Umlaute etc.) still cause problems in the registry.xml
   (when used e.g. in module parameters). Also importing content of a previous
-  version might cause problems with special characters in the YWSIWYG.
+  version might cause problems with special characters in the WYSIWYG.
 
   To overcome this import issues, a translation tool will be written that
   changes imported files from the old to the new standard.
