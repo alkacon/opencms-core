@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskAction.java,v $
- * Date   : $Date: 2000/03/17 11:17:29 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/03/21 11:39:41 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 2000/03/17 11:17:29 $
+ * @version $Revision: 1.3 $ $Date: 2000/03/21 11:39:41 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants {
@@ -217,7 +217,6 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants {
 		cms.setTaskPar(taskid,C_TASKPARA_ALL, paraAll);
 		cms.setTaskPar(taskid,C_TASKPARA_COMPLETION, paraCompletion);
 		cms.setTaskPar(taskid,C_TASKPARA_DELIVERY, paraDelivery);
-		cms.setTaskPar(taskid,C_TASKPARA_COMMENT, taskcomment);
 				
 		cms.forwardTask(taskid, roleName, agentName);
 				
@@ -325,10 +324,42 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants {
 		cms.setTaskPar(task.getId(),C_TASKPARA_ALL, paraAll);
 		cms.setTaskPar(task.getId(),C_TASKPARA_COMPLETION, paraCompletion);
 		cms.setTaskPar(task.getId(),C_TASKPARA_DELIVERY, paraDelivery);
-		cms.setTaskPar(task.getId(),C_TASKPARA_COMMENT, taskcomment);
 		String comment = lang.getLanguageValue("task.label.forrole") + ": " + roleName + "\n";
 		comment += lang.getLanguageValue("task.label.editor") + ": " +  Utils.getFullName(cms.readUser(agentName)) + "\n";
 		comment += taskcomment;
 		cms.writeTaskLog(task.getId(), comment, C_TASKLOGTYPE_CREATED);
+	}
+
+	/**
+	 * Gets the description of a task.
+	 * The description is stored in the task-log.
+	 * @param cms The cms-object.
+	 * @param int taskid The id of the task.
+	 * @return String the comment-string.
+	 * @exception CmsException Throws CmsExceptions, that are be 
+	 * thrown in calling methods.
+	 */
+	public static String getDescription(A_CmsObject cms, int taskid)
+		throws CmsException {
+		StringBuffer retValue = new StringBuffer("");
+		CmsTaskLog tasklog;
+		
+		Vector taskdocs=cms.readTaskLogs(taskid);
+        
+        // go through all tasklogs to find the comment
+        for (int i=1;i<=taskdocs.size();i++) {
+            tasklog = (CmsTaskLog)taskdocs.elementAt(taskdocs.size()-i);
+            int type=tasklog.getType();
+            // check if this is a type "created" or "new"
+            if ( (type == C_TASKLOGTYPE_CREATED) || (type == C_TASKLOGTYPE_REACTIVATED)) {
+				String comment[] = Utils.split(tasklog.getComment(), "\n");
+				for(int j = 2; j < comment.length; j++) {
+					retValue.append(comment[j] + "\n");
+				}
+				break;
+	        }     
+        }
+		
+		return retValue.toString();
 	}
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
- * Date   : $Date: 2000/03/17 13:29:01 $
- * Version: $Revision: 1.66 $
+ * Date   : $Date: 2000/03/21 11:39:41 $
+ * Version: $Revision: 1.67 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.66 $ $Date: 2000/03/17 13:29:01 $
+ * @version $Revision: 1.67 $ $Date: 2000/03/21 11:39:41 $
  */
 public interface I_CmsWpConstants {
 
@@ -653,9 +653,6 @@ public interface I_CmsWpConstants {
 
 	/**	Taskparameter */
 	public static final String C_TASKPARA_DELIVERY = "delivery";
-
-	/**	Taskparameter */
-	public static final String C_TASKPARA_COMMENT = "comment";
 
 	/** Constant for session-key */
 	public static final String C_SESSION_TASK_ALLPROJECTS = "task_allprojects";

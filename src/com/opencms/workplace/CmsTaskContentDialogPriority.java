@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContentDialogPriority.java,v $
- * Date   : $Date: 2000/03/15 09:46:13 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/03/21 11:39:41 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 2000/03/15 09:46:13 $
+ * @version $Revision: 1.3 $ $Date: 2000/03/21 11:39:41 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskContentDialogPriority extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsWpConstants {
@@ -148,7 +148,7 @@ public class CmsTaskContentDialogPriority extends CmsWorkplaceDefault implements
 			int taskid = sessionTaskid.intValue();
 			A_CmsTask task = cms.readTask(taskid);
 			taskName = task.getName();
-			taskDescription = cms.getTaskPar(task.getId(), C_TASKPARA_COMMENT);
+			taskDescription = CmsTaskAction.getDescription( cms, task.getId());
 			paraAcceptation = cms.getTaskPar(task.getId(), C_TASKPARA_ACCEPTATION);
 			paraAll = cms.getTaskPar(task.getId(), C_TASKPARA_ALL);
 			paraCompletion = cms.getTaskPar(task.getId(), C_TASKPARA_COMPLETION);
