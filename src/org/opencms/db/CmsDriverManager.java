@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/01/28 11:53:52 $
- * Version: $Revision: 1.313 $
+ * Date   : $Date: 2004/01/28 13:13:15 $
+ * Version: $Revision: 1.314 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.w3c.dom.Document;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.313 $ $Date: 2004/01/28 11:53:52 $
+ * @version $Revision: 1.314 $ $Date: 2004/01/28 13:13:15 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -8813,6 +8813,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         List deletedFolders = null;
         
         try {
+            report.println(report.key("report.publish_prepare_resources"), I_CmsReport.C_FORMAT_HEADLINE);
+            
             ////////////////////////////////////////////////////////////////////////////////////////
             
             // read the project resources of the project that gets published
@@ -9094,6 +9096,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             report.println(report.key("report.publish_prepare_files_finished"), I_CmsReport.C_FORMAT_HEADLINE);
 
             ////////////////////////////////////////////////////////////////////////////////////////////
+            
+            report.println(report.key("report.publish_prepare_resources_finished"), I_CmsReport.C_FORMAT_HEADLINE);
         } catch (OutOfMemoryError o) {
             if (OpenCms.getLog(this).isFatalEnabled()) {
                 OpenCms.getLog(this).fatal("Out of memory error while publish list is built", o);
