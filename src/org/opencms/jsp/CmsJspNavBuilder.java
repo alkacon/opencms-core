@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspNavBuilder.java,v $
- * Date   : $Date: 2004/07/18 16:32:33 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/01/28 09:25:34 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,10 +35,13 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
+import org.opencms.main.OpenCms;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -46,7 +49,7 @@ import java.util.List;
  * {@link org.opencms.jsp.CmsJspNavElement}.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @see org.opencms.jsp.CmsJspNavElement
  * 
@@ -150,7 +153,45 @@ public class CmsJspNavBuilder {
     public List getNavigationForFolder(String folder) {
         return getNavigationForFolder(m_cms, folder);
     }
+
+    /**
+     * Returns the full name (including vfs path) of the default file for this nav element 
+     * or <code>null</code> if the nav element is not a folder.<p>
+     * 
+     * The default file of a folder is determined by the value of the property 
+     * <code>default-file</code> or the systemwide property setting.
+     * 
+     * @param cms the cms object
+     * @param folder full name of the folder
+     * 
+     * @return the name of the default file
+     */
+    public static String getDefaultFile(CmsObject cms, String folder) {
         
+        if (folder.endsWith("/")) {
+            List defaultFolders = new ArrayList();
+            try {
+                CmsProperty p = cms.readPropertyObject(folder, I_CmsConstants.C_PROPERTY_DEFAULT_FILE, false);
+                defaultFolders.add(p.getValue());
+            } catch (CmsException exc) {
+                // noop
+            }
+                
+            defaultFolders.addAll(OpenCms.getDefaultFiles());
+            
+            for (Iterator i = defaultFolders.iterator(); i.hasNext();) {
+                String defaultName = (String)i.next();
+                if (cms.existsResource(folder + defaultName)) {
+                    return folder + defaultName;
+                }
+            }
+            
+            return folder;
+        }
+    
+        return null;
+    }
+    
     /**
      * Collect all navigation elements from the files in the given folder,
      * navigation elements are of class CmsJspNavElement.<p>
