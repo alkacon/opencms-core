@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/10/22 14:37:39 $
- * Version: $Revision: 1.426 $
+ * Date   : $Date: 2004/10/22 16:44:56 $
+ * Version: $Revision: 1.427 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.426 $ $Date: 2004/10/22 14:37:39 $
+ * @version $Revision: 1.427 $ $Date: 2004/10/22 16:44:56 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -459,7 +459,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * 
      * @see CmsObject#createResource(String, int, byte[], List)
      * @see CmsObject#createResource(String, int)
-     * @see I_CmsResourceType#createResource(CmsObject, CmsDriverManager, String, byte[], List)
+     * @see I_CmsResourceType#createResource(CmsObject, CmsSecurityManager, String, byte[], List)
      */    
     public CmsResource createResource(CmsRequestContext context, I_CmsRuntimeInfo runtimeInfo, String resourcename, int type, byte[] content, List properties) throws CmsException {
         
@@ -744,7 +744,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#createSibling(String, String, List)
-     * @see I_CmsResourceType#createSibling(CmsObject, CmsDriverManager, CmsResource, String, List)
+     * @see I_CmsResourceType#createSibling(CmsObject, CmsSecurityManager, CmsResource, String, List)
      */
     public void createSibling(CmsRequestContext context, I_CmsRuntimeInfo runtimeInfo, CmsResource source, String destination, List properties) throws CmsException {
         
@@ -831,7 +831,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#copyResource(String, String, int)
-     * @see I_CmsResourceType#copyResource(CmsObject, CmsDriverManager, CmsResource, String, int)
+     * @see I_CmsResourceType#copyResource(CmsObject, CmsSecurityManager, CmsResource, String, int)
      */    
     public void copyResource(CmsRequestContext context, I_CmsRuntimeInfo runtimeInfo, CmsResource source, String destination, int siblingMode) throws CmsException {
 
@@ -956,7 +956,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#writePropertyObject(String, CmsProperty)
-     * @see I_CmsResourceType#writePropertyObject(CmsObject, CmsDriverManager, CmsResource, CmsProperty)
+     * @see I_CmsResourceType#writePropertyObject(CmsObject, CmsSecurityManager, CmsResource, CmsProperty)
      */
     public void writePropertyObject(CmsRequestContext context, I_CmsRuntimeInfo runtimeInfo, CmsResource resource, CmsProperty property) throws CmsException {
 
@@ -1003,7 +1003,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#writePropertyObjects(String, List)
-     * @see I_CmsResourceType#writePropertyObjects(CmsObject, CmsDriverManager, CmsResource, List)
+     * @see I_CmsResourceType#writePropertyObjects(CmsObject, CmsSecurityManager, CmsResource, List)
      */
     public void writePropertyObjects(CmsRequestContext context, I_CmsRuntimeInfo runtimeInfo, CmsResource resource, List properties) throws CmsException {
 
@@ -1058,7 +1058,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#lockResource(String, int)
-     * @see I_CmsResourceType#lockResource(CmsObject, CmsDriverManager, CmsResource, int)
+     * @see I_CmsResourceType#lockResource(CmsObject, CmsSecurityManager, CmsResource, int)
      */
     public void lockResource(CmsRequestContext context, I_CmsRuntimeInfo runtimeInfo, CmsResource resource, int mode)
     throws CmsException {
@@ -1088,20 +1088,21 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * Unlocks a resource.<p>
      * 
      * @param context the current request context
+     * @param runtimeInfo the current runtime info
      * @param resource the resource to unlock
-     *
+     * 
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#unlockResource(String)
-     * @see I_CmsResourceType#unlockResource(CmsObject, CmsDriverManager, CmsResource)
+     * @see I_CmsResourceType#unlockResource(CmsObject, CmsSecurityManager, CmsResource)
      */
-    public void unlockResource(CmsRequestContext context, CmsResource resource) throws CmsException {
+    public void unlockResource(CmsRequestContext context, I_CmsRuntimeInfo runtimeInfo, CmsResource resource) throws CmsException {
 
         // update the resource cache
         clearResourceCache();
         
         // now update lock status
-        m_lockManager.removeResource(this, context, null, resource.getRootPath(), false);
+        m_lockManager.removeResource(this, context, runtimeInfo, resource.getRootPath(), false);
         
         // we must also clear the permission cache
         m_permissionCache.clear();
@@ -1247,7 +1248,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#chflags(String, int)
-     * @see I_CmsResourceType#chflags(CmsObject, CmsDriverManager, CmsResource, int)
+     * @see I_CmsResourceType#chflags(CmsObject, CmsSecurityManager, CmsResource, int)
      */
     public void chflags(CmsRequestContext context, I_CmsRuntimeInfo runtimeInfo, CmsResource resource, int flags) throws CmsException {
 
@@ -1267,7 +1268,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#chtype(String, int)
-     * @see I_CmsResourceType#chtype(CmsObject, CmsDriverManager, CmsResource, int)
+     * @see I_CmsResourceType#chtype(CmsObject, CmsSecurityManager, CmsResource, int)
      */
     public void chtype(CmsRequestContext context, I_CmsRuntimeInfo runtimeInfo, CmsResource resource, int type) throws CmsException {
 
@@ -1292,7 +1293,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         resource.setUserLastModified(context.currentUser().getId());
         
         m_vfsDriver.writeResource(
-            null, 
+            runtimeInfo, 
             context.currentProject(),
             resource, C_UPDATE_ALL);
 
@@ -1326,7 +1327,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#deleteResource(String, int)
-     * @see I_CmsResourceType#deleteResource(CmsObject, CmsDriverManager, CmsResource, int)
+     * @see I_CmsResourceType#deleteResource(CmsObject, CmsSecurityManager, CmsResource, int)
      */    
     public void deleteResource(CmsRequestContext context, I_CmsRuntimeInfo runtimeInfo, CmsResource resource, int siblingMode) throws CmsException {
        
@@ -1473,7 +1474,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#copyResourceToProject(String)
-     * @see I_CmsResourceType#copyResourceToProject(CmsObject, CmsDriverManager, CmsResource)
+     * @see I_CmsResourceType#copyResourceToProject(CmsObject, CmsSecurityManager, CmsResource)
      */
     public void copyResourceToProject(CmsRequestContext context, CmsResource resource) throws CmsException {
 
@@ -1522,7 +1523,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#undoChanges(String, boolean)
-     * @see I_CmsResourceType#undoChanges(CmsObject, CmsDriverManager, CmsResource, boolean)
+     * @see I_CmsResourceType#undoChanges(CmsObject, CmsSecurityManager, CmsResource, boolean)
      */    
     public void undoChanges(CmsRequestContext context, I_CmsRuntimeInfo runtimeInfo, CmsResource resource) throws CmsException {
 
@@ -1665,7 +1666,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#touch(String, long, long, long, boolean)
-     * @see I_CmsResourceType#touch(CmsObject, CmsDriverManager, CmsResource, long, long, long, boolean)
+     * @see I_CmsResourceType#touch(CmsObject, CmsSecurityManager, CmsResource, long, long, long, boolean)
      */
     public void touch(CmsRequestContext context, I_CmsRuntimeInfo runtimeInfo, CmsResource resource, long dateLastModified, long dateReleased, long dateExpired) throws CmsException {
         
@@ -1708,7 +1709,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#restoreResourceBackup(String, int)
-     * @see I_CmsResourceType#restoreResourceBackup(CmsObject, CmsDriverManager, CmsResource, int)
+     * @see I_CmsResourceType#restoreResourceBackup(CmsObject, CmsSecurityManager, CmsResource, int)
      */
     public void restoreResource(CmsRequestContext context, I_CmsRuntimeInfo runtimeInfo, CmsResource resource, int tag) throws CmsException {
 
@@ -1776,7 +1777,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#replaceResource(String, int, byte[], List)
-     * @see I_CmsResourceType#replaceResource(CmsObject, CmsDriverManager, CmsResource, int, byte[], List)
+     * @see I_CmsResourceType#replaceResource(CmsObject, CmsSecurityManager, CmsResource, int, byte[], List)
      */
     public void replaceResource(CmsRequestContext context, I_CmsRuntimeInfo runtimeInfo, CmsResource resource, int type, byte[] content, List properties) throws CmsException {
 
@@ -1830,7 +1831,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#writeFile(CmsFile)
-     * @see I_CmsResourceType#writeFile(CmsObject, CmsDriverManager, CmsFile)
+     * @see I_CmsResourceType#writeFile(CmsObject, CmsSecurityManager, CmsFile)
      */
     public CmsFile writeFile(CmsRequestContext context, I_CmsRuntimeInfo runtimeInfo, CmsFile resource) throws CmsException {
 
@@ -2726,7 +2727,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * Only users, which are in the group "administrators" are granted.
      * 
      * @param runtimeInfo the current runtime info
-     * @param context the current request context
      * @param id the id of the user
      * @param name the name for the user
      * @param password the password for the user
@@ -2739,10 +2739,11 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      *        Infos may be stored into the Usertables (depending on the implementation)
      * @param address the address of the user
      * @param type the type of the user
+     * 
      * @return the new user will be returned.
      * @throws CmsException if operation was not succesfull
      */
-    public CmsUser addImportUser(I_CmsRuntimeInfo runtimeInfo, CmsRequestContext context, String id, String name, String password, String description, String firstname, String lastname, String email, int flags, Hashtable additionalInfos, String address, int type) throws CmsException {
+    public CmsUser addImportUser(I_CmsRuntimeInfo runtimeInfo, String id, String name, String password, String description, String firstname, String lastname, String email, int flags, Hashtable additionalInfos, String address, int type) throws CmsException {
         // no space before or after the name
         name = name.trim();
         // check the username
@@ -2998,16 +2999,15 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     /**
      * Changes the user type of the user.<p>
 
-     * Only the administrator can change the type.
+     * Only the administrator can change the type.<p>
      * 
-     * @param context the current request context
      * @param runtimeInfo the current runtime info
      * @param user the user to change
      * @param userType the new usertype of the user
-     *
+     * 
      * @throws CmsException if something goes wrong
      */
-    public void changeUserType(CmsRequestContext context, I_CmsRuntimeInfo runtimeInfo, CmsUser user, int userType)
+    public void changeUserType(I_CmsRuntimeInfo runtimeInfo, CmsUser user, int userType)
     throws CmsException {
 
         // try to remove user from cache
@@ -3017,34 +3017,32 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
     /**
      * Changes the user type of the user.<p>
-
-     * Only the administrator can change the type.
      * 
-     * @param context the current request context
+     * Only the administrator can change the type.<p>
+     * 
      * @param runtimeInfo the current runtime info
      * @param userId the id of the user to change
      * @param userType the new usertype of the user
-     *
+     * 
      * @throws CmsException if something goes wrong
      */
-    public void changeUserType(CmsRequestContext context, I_CmsRuntimeInfo runtimeInfo, CmsUUID userId, int userType) throws CmsException {
+    public void changeUserType(I_CmsRuntimeInfo runtimeInfo, CmsUUID userId, int userType) throws CmsException {
         CmsUser theUser = m_userDriver.readUser(runtimeInfo, userId);
-        changeUserType(context, runtimeInfo, theUser, userType);
+        changeUserType(runtimeInfo, theUser, userType);
     }
 
     /**
      * Changes the user type of the user.<p>
 
-     * Only the administrator can change the type.
+     * Only the administrator can change the type.<p>
      * 
-     * @param context the current request context
      * @param runtimeInfo the current runtime info
      * @param username the name of the user to change
      * @param userType the new usertype of the user
-     *
+     * 
      * @throws CmsException if something goes wrong
      */
-    public void changeUserType(CmsRequestContext context, I_CmsRuntimeInfo runtimeInfo, String username, int userType) throws CmsException {
+    public void changeUserType(I_CmsRuntimeInfo runtimeInfo, String username, int userType) throws CmsException {
         CmsUser theUser = null;
         try {
             // try to read the webuser
@@ -3057,7 +3055,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                 throw e;
             }
         }
-        changeUserType(context, runtimeInfo, theUser, userType);
+        changeUserType(runtimeInfo, theUser, userType);
     }
 
     /**
@@ -3157,26 +3155,25 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * Add a new group to the Cms.<p>
      *
      * Only the admin can do this.
-     * Only users, which are in the group "administrators" are granted.
+     * Only users, which are in the group "administrators" are granted.<p>
      * 
-     * @param context the current request context
      * @param runtimeInfo the current runtime info
      * @param id the id of the new group
      * @param name the name of the new group
      * @param description the description for the new group
      * @param flags the flags for the new group
      * @param parent the name of the parent group (or null)
-     *
+     * 
      * @return new created group
      * @throws CmsException if operation was not successfull.
      */
     public CmsGroup createGroup(
-        CmsRequestContext context,
         I_CmsRuntimeInfo runtimeInfo,
         CmsUUID id,
         String name,
         String description,
-        int flags, String parent) throws CmsException {
+        int flags,
+        String parent) throws CmsException {
 
         name = name.trim();
         validFilename(name);
@@ -3195,19 +3192,18 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      *
      * Only the admin can do this.<p>
      * 
-     * @param context the current request context
      * @param runtimeInfo the current runtime info
      * @param name the name of the new group
      * @param description the description for the new group
      * @param flags the flags for the new group
      * @param parent the name of the parent group (or null)
-     *
+     * 
      * @return new created group
      * @throws CmsException if operation was not successfull.
      */
-    public CmsGroup createGroup(CmsRequestContext context, I_CmsRuntimeInfo runtimeInfo, String name, String description, int flags, String parent) throws CmsException {
+    public CmsGroup createGroup(I_CmsRuntimeInfo runtimeInfo, String name, String description, int flags, String parent) throws CmsException {
 
-        return createGroup(context, runtimeInfo, new CmsUUID(), name, description, flags, parent);
+        return createGroup(runtimeInfo, new CmsUUID(), name, description, flags, parent);
     }
 
     /**
@@ -3775,31 +3771,28 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      *
      * Only a adminstrator can do this.
      * 
-     * Only users, which are in the group "administrators" are granted.
+     * Only users, which are in the group "administrators" are granted.<p>
      * 
-     * @param context the current request context
      * @param runtimeInfo the current runtime info
      * @param userId the Id of the user to be deleted
-     *
+     * 
      * @throws CmsException if operation was not succesfull
      */
-    public void deleteUser(CmsRequestContext context, I_CmsRuntimeInfo runtimeInfo, CmsUUID userId) throws CmsException {
+    public void deleteUser(I_CmsRuntimeInfo runtimeInfo, CmsUUID userId) throws CmsException {
         CmsUser user = readUser(runtimeInfo, userId);
-        deleteUser(context, runtimeInfo, user.getName());
+        deleteUser(runtimeInfo, user.getName());
     }
 
     /**
      * Deletes a user from the Cms.<p>
      *
      * Only users, which are in the group "administrators" are granted.
-     * 
-     * @param context the current request context
      * @param runtimeInfo the current runtime info
      * @param username the name of the user to be deleted
-     *
+     * 
      * @throws CmsException if operation was not succesfull
      */
-    public void deleteUser(CmsRequestContext context, I_CmsRuntimeInfo runtimeInfo, String username)
+    public void deleteUser(I_CmsRuntimeInfo runtimeInfo, String username)
     throws CmsException {
 
         // Test is this user is existing

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2004/10/22 14:36:02 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/10/22 16:44:56 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.db;
 
 import org.opencms.file.*;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -62,7 +63,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * are granted, the security manager invokes a method on the OpenCms driver manager to access the database.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.5.2
  */
 public class CmsSecurityManager {
@@ -101,7 +102,14 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#acceptTask(org.opencms.file.CmsRequestContext, int)
+     * Accept a task from the Cms.<p>
+     * 
+     * All users are granted.<p>
+     *
+     * @param context the current request context
+     * @param taskId the Id of the task to accept.
+     *
+     * @throws CmsException if something goes wrong
      */
     public void acceptTask(CmsRequestContext context, int taskId) throws CmsException {
 
@@ -109,7 +117,14 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#accessProject(org.opencms.file.CmsRequestContext, int)
+     * Tests if the user can access the project.<p>
+     *
+     * All users are granted.<p>
+     *
+     * @param context the current request context
+     * @param projectId the id of the project
+     * @return true, if the user has access, else returns false
+     * @throws CmsException if something goes wrong
      */
     public boolean accessProject(CmsRequestContext context, int projectId) throws CmsException {
 
@@ -117,7 +132,24 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#addImportUser(I_CmsRuntimeInfo, org.opencms.file.CmsRequestContext, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, int, java.util.Hashtable, java.lang.String, int)
+     * Adds a user to the Cms.<p>
+     *
+     * Only users, which are in the group "administrators" are granted.<p>
+     * 
+     * @param context the current request context
+     * @param id the id of the user
+     * @param name the name for the user
+     * @param password the password for the user
+     * @param description the description for the user
+     * @param firstname the firstname of the user
+     * @param lastname the lastname of the user
+     * @param email the email of the user
+     * @param flags the flags for a user (e.g. I_CmsConstants.C_FLAG_ENABLED)
+     * @param additionalInfos a Hashtable with additional infos for the user, these infos may be stored into the Usertables (depending on the implementation)
+     * @param address the address of the user
+     * @param type the type of the user
+     * @return the new user will be returned.
+     * @throws CmsException if operation was not succesfull
      */
     public CmsUser addImportUser(
         CmsRequestContext context,
@@ -144,7 +176,6 @@ public class CmsSecurityManager {
             try {
                 newUser = m_driverManager.addImportUser(
                     runtimeInfo,
-                    context,
                     id,
                     name,
                     password,
@@ -159,11 +190,11 @@ public class CmsSecurityManager {
 
                 runtimeInfo.pop();
             } catch (CmsException e) {
-                
+
                 if (e.getType() != CmsException.C_USER_ALREADY_EXISTS) {
                     runtimeInfo.report(null, "Error importing user " + name, e);
                 }
-                
+
                 throw e;
             } finally {
                 runtimeInfo.clear();
@@ -179,7 +210,19 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#addUser(org.opencms.file.CmsRequestContext, I_CmsRuntimeInfo, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.util.Hashtable)
+     * Adds a user to the Cms.<p>
+     *
+     * Only a adminstrator can add users to the cms.
+     * Only users, which are in the group "administrators" are granted.
+     * 
+     * @param context the current request context
+     * @param name the new name for the user
+     * @param password the new password for the user
+     * @param group the default groupname for the user
+     * @param description the description for the user
+     * @param additionalInfos a Hashtable with additional infos for the user, these infos may be stored into the Usertables (depending on the implementation)
+     * @return the new user will be returned
+     * @throws CmsException if operation was not succesfull
      */
     public CmsUser addUser(
         CmsRequestContext context,
@@ -223,15 +266,47 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#addUserToGroup(org.opencms.file.CmsRequestContext, I_CmsRuntimeInfo, java.lang.String, java.lang.String)
+     * Adds a user to a group.<p>
+     *
+     * Only users, which are in the group "administrators" are granted.<p>
+     * 
+     * @param context the current request context
+     * @param username the name of the user that is to be added to the group
+     * @param groupname the name of the group
+     *
+     * @throws CmsException if operation was not succesfull
      */
     public void addUserToGroup(CmsRequestContext context, String username, String groupname) throws CmsException {
 
-        m_driverManager.addUserToGroup(context, null, username, groupname);
+        I_CmsRuntimeInfo runtimeInfo = m_runtimeInfoFactory.getRuntimeInfo(
+            m_driverManager,
+            I_CmsRuntimeInfo.C_RUNTIMEINFO_USER);
+
+        try {
+            m_driverManager.addUserToGroup(context, runtimeInfo, username, groupname);
+            runtimeInfo.pop();
+        } catch (CmsException e) {
+            runtimeInfo.report(null, "Error adding user " + username + " to group " + groupname, e);
+            throw e;
+        } finally {
+            runtimeInfo.clear();
+        }
+
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#addWebUser(I_CmsRuntimeInfo, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.util.Hashtable)
+     * Adds a web user to the Cms.<p>
+     *
+     * A web user has no access to the workplace but is able to access personalized
+     * functions controlled by the OpenCms.<p>
+     * 
+     * @param name the new name for the user
+     * @param password the new password for the user
+     * @param group the default groupname for the user
+     * @param description the description for the user
+     * @param additionalInfos a Hashtable with additional infos for the user, these infos may be stored into the Usertables (depending on the implementation)
+     * @return the new user will be returned.
+     * @throws CmsException if operation was not succesfull.
      */
     public CmsUser addWebUser(String name, String password, String group, String description, Hashtable additionalInfos)
     throws CmsException {
@@ -256,7 +331,20 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#addWebUser(I_CmsRuntimeInfo, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.util.Hashtable)
+     * Adds a web user to the Cms.<p>
+     * 
+     * A web user has no access to the workplace but is able to access personalized
+     * functions controlled by the OpenCms.<p>
+     * 
+     * @param name the new name for the user
+     * @param password the new password for the user
+     * @param group the default groupname for the user
+     * @param additionalGroup an additional group for the user
+     * @param description the description for the user
+     * @param additionalInfos a Hashtable with additional infos for the user, these infos may be stored into the Usertables (depending on the implementation)
+     *
+     * @return the new user will be returned.
+     * @throws CmsException if operation was not succesfull.
      */
     public CmsUser addWebUser(
         String name,
@@ -293,7 +381,13 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#backupProject(org.opencms.file.CmsRequestContext, org.opencms.file.CmsProject, int, long)
+     * Creates a backup of the published project.<p>
+     *
+     * @param context the current request context
+     * @param backupProject the project to be backuped
+     * @param tagId the version of the backup
+     * @param publishDate the date of publishing
+     * @throws CmsException if operation was not succesful
      */
     public void backupProject(CmsRequestContext context, CmsProject backupProject, int tagId, long publishDate)
     throws CmsException {
@@ -302,7 +396,13 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#changeLastModifiedProjectId(org.opencms.file.CmsRequestContext, I_CmsRuntimeInfo, org.opencms.file.CmsResource)
+     * Changes the project id of the resource to the current project, indicating that 
+     * the resource was last modified in this project.<p>
+     * 
+     * @param context the current request context
+     * @param resource theresource to apply this operation to
+     * @throws CmsException if something goes wrong
+     * @see I_CmsResourceType#changeLastModifiedProjectId(CmsObject, CmsSecurityManager, CmsResource)
      */
     public void changeLastModifiedProjectId(CmsRequestContext context, CmsResource resource) throws CmsException {
 
@@ -329,15 +429,40 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#changeLock(org.opencms.file.CmsRequestContext, I_CmsRuntimeInfo, org.opencms.file.CmsResource)
+     * Changes the lock of a resource to the current user, that is "steals" the lock from another user.<p>
+     * 
+     * @param context the current request context
+     * @param resource the resource to change the lock for
+     * @throws CmsException if something goes wrong
+     * @see I_CmsResourceType#changeLock(CmsObject, CmsSecurityManager, CmsResource)
      */
     public void changeLock(CmsRequestContext context, CmsResource resource) throws CmsException {
 
-        m_driverManager.changeLock(context, null, resource);
+        I_CmsRuntimeInfo runtimeInfo = m_runtimeInfoFactory.getRuntimeInfo(
+            m_driverManager,
+            I_CmsRuntimeInfo.C_RUNTIMEINFO_VFS);
+
+        try {
+            m_driverManager.changeLock(context, runtimeInfo, resource);
+            runtimeInfo.pop();
+        } catch (CmsException e) {
+            runtimeInfo.report(null, "Error changing lock of resource " + resource.getRootPath(), e);
+            throw e;
+        } finally {
+            runtimeInfo.clear();
+        }
+
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#changeUserType(org.opencms.file.CmsRequestContext, I_CmsRuntimeInfo, org.opencms.util.CmsUUID, int)
+     * Changes the user type of the user.<p>
+
+     * Only the administrator can change the type.<p>
+     * 
+     * @param context the current request context
+     * @param userId the id of the user to change
+     * @param userType the new usertype of the user
+     * @throws CmsException if something goes wrong
      */
     public void changeUserType(CmsRequestContext context, CmsUUID userId, int userType) throws CmsException {
 
@@ -348,7 +473,7 @@ public class CmsSecurityManager {
                 I_CmsRuntimeInfo.C_RUNTIMEINFO_USER);
 
             try {
-                m_driverManager.changeUserType(context, runtimeInfo, userId, userType);
+                m_driverManager.changeUserType(runtimeInfo, userId, userType);
                 runtimeInfo.pop();
             } catch (CmsException e) {
                 runtimeInfo.report(null, "Error changing type of user ID " + userId.toString(), e);
@@ -366,7 +491,14 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#changeUserType(org.opencms.file.CmsRequestContext, I_CmsRuntimeInfo, java.lang.String, int)
+     * Changes the user type of the user.<p>
+
+     * Only the administrator can change the type.<p>
+     * 
+     * @param context the current request context
+     * @param username the name of the user to change
+     * @param userType the new usertype of the user
+     * @throws CmsException if something goes wrong
      */
     public void changeUserType(CmsRequestContext context, String username, int userType) throws CmsException {
 
@@ -377,7 +509,7 @@ public class CmsSecurityManager {
                 I_CmsRuntimeInfo.C_RUNTIMEINFO_USER);
 
             try {
-                m_driverManager.changeUserType(context, runtimeInfo, username, userType);
+                m_driverManager.changeUserType(runtimeInfo, username, userType);
                 runtimeInfo.pop();
             } catch (CmsException e) {
                 runtimeInfo.report(null, "Error changing type of user " + username, e);
@@ -395,7 +527,22 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#checkPermissions(org.opencms.file.CmsRequestContext, org.opencms.file.CmsResource, org.opencms.security.CmsPermissionSet, boolean, org.opencms.file.CmsResourceFilter)
+     * Performs a blocking permission check on a resource.<p>
+     *
+     * If the required permissions are not satisfied by the permissions the user has on the resource,
+     * an exception is thrown.<p>
+     * 
+     * @param context the current request context
+     * @param resource the resource on which permissions are required
+     * @param requiredPermissions the set of permissions required to access the resource
+     * @param checkLock if true, the lock status of the resource is also checked 
+     * @param filter the filter for the resource
+     * 
+     * @throws CmsException in case of any i/o error
+     * @throws CmsSecurityException if the required permissions are not satisfied
+     * @throws CmsVfsResourceNotFoundException if the required resource is not readable
+     * 
+     * @see #hasPermissions(CmsRequestContext, CmsResource, CmsPermissionSet, boolean, CmsResourceFilter)
      */
     public void checkPermissions(
         CmsRequestContext context,
@@ -408,7 +555,13 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#chflags(org.opencms.file.CmsRequestContext, I_CmsRuntimeInfo, org.opencms.file.CmsResource, int)
+     * Changes the resource flags of a resource.<p>
+     * 
+     * @param context the current request context
+     * @param resource the resource to change the flags for
+     * @param flags the new resource flags for this resource
+     * @throws CmsException if something goes wrong
+     * @see I_CmsResourceType#chflags(CmsObject, CmsSecurityManager, CmsResource, int)
      */
     public void chflags(CmsRequestContext context, CmsResource resource, int flags) throws CmsException {
 
@@ -432,7 +585,13 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#chtype(org.opencms.file.CmsRequestContext, I_CmsRuntimeInfo, org.opencms.file.CmsResource, int)
+     * Changes the resource type of a resource.<p>
+     * 
+     * @param context the current request context
+     * @param resource the resource to change the type for
+     * @param type the new resource type for this resource
+     * @throws CmsException if something goes wrong
+     * @see I_CmsResourceType#chtype(CmsObject, CmsSecurityManager, CmsResource, int)
      */
     public void chtype(CmsRequestContext context, CmsResource resource, int type) throws CmsException {
 
@@ -456,7 +615,7 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see CmsDriverManager#clearcache()
+     * Clears all internal chaches of the driver manager.<p>
      */
     public void clearcache() {
 
@@ -464,7 +623,13 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#copyAccessControlEntries(org.opencms.file.CmsRequestContext, I_CmsRuntimeInfo, org.opencms.file.CmsResource, org.opencms.file.CmsResource)
+     * Copies the access control entries of a given resource to a destination resorce.<p>
+     *
+     * Already existing access control entries of the destination resource are removed.<p>
+     * @param context the current request context
+     * @param source the resource to copy the access control entries from
+     * @param destination the resource to which the access control entries are copied
+     * @throws CmsException if something goes wrong
      */
     public void copyAccessControlEntries(CmsRequestContext context, CmsResource source, CmsResource destination)
     throws CmsException {
@@ -492,8 +657,33 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#copyResource(org.opencms.file.CmsRequestContext, I_CmsRuntimeInfo, org.opencms.file.CmsResource, java.lang.String, int)
-     */
+     * Copies a resource.<p>
+     * 
+     * You must ensure that the destination path is anabsolute, vaild and
+     * existing VFS path. Relative paths from the source are currently not supported.<p>
+     * 
+     * In case the target resource already exists, it is overwritten with the 
+     * source resource.<p>
+     * 
+     * The <code>siblingMode</code> parameter controls how to handle siblings 
+     * during the copy operation.
+     * Possible values for this parameter are: 
+     * <ul>
+     * <li><code>{@link org.opencms.main.I_CmsConstants#C_COPY_AS_NEW}</code></li>
+     * <li><code>{@link org.opencms.main.I_CmsConstants#C_COPY_AS_SIBLING}</code></li>
+     * <li><code>{@link org.opencms.main.I_CmsConstants#C_COPY_PRESERVE_SIBLING}</code></li>
+     * </ul><p>
+     * 
+     * @param context the current request context
+     * @param source the resource to copy
+     * @param destination the name of the copy destination with complete path
+     * @param siblingMode indicates how to handle siblings during copy
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#copyResource(String, String, int)
+     * @see I_CmsResourceType#copyResource(CmsObject, CmsSecurityManager, CmsResource, String, int)
+     */  
     public void copyResource(CmsRequestContext context, CmsResource source, String destination, int siblingMode)
     throws CmsException {
 
@@ -514,7 +704,12 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#copyResourceToProject(org.opencms.file.CmsRequestContext, org.opencms.file.CmsResource)
+     * Copies a resource to the current project of the user.<p>
+     * 
+     * @param context the current request context
+     * @param resource the resource to apply this operation to
+     * @throws CmsException if something goes wrong
+     * @see I_CmsResourceType#copyResourceToProject(CmsObject, CmsSecurityManager, CmsResource)
      */
     public void copyResourceToProject(CmsRequestContext context, CmsResource resource) throws CmsException {
 
@@ -522,7 +717,14 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#countLockedResources(org.opencms.file.CmsRequestContext, int)
+     * Counts the locked resources in this project.<p>
+     *
+     * Only the admin or the owner of the project can do this.<p>
+     *
+     * @param context the current request context
+     * @param id the id of the project
+     * @return the amount of locked resources in this project.
+     * @throws CmsException if something goes wrong
      */
     public int countLockedResources(CmsRequestContext context, int id) throws CmsException {
 
@@ -530,7 +732,14 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#countLockedResources(org.opencms.file.CmsRequestContext, java.lang.String)
+     * Counts the locked resources in a given folder.<p>
+     *
+     * Only the admin or the owner of the project can do this.<p>
+     * 
+     * @param context the current request context
+     * @param foldername the folder to search in
+     * @return the amount of locked resources in this project
+     * @throws CmsException if something goes wrong
      */
     public int countLockedResources(CmsRequestContext context, String foldername) throws CmsException {
 
@@ -538,7 +747,18 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#createGroup(org.opencms.file.CmsRequestContext, I_CmsRuntimeInfo, org.opencms.util.CmsUUID, java.lang.String, java.lang.String, int, java.lang.String)
+     * Add a new group to the Cms.<p>
+     *
+     * Only the admin can do this.<p>
+     * 
+     * @param context the current request context
+     * @param id the id of the new group
+     * @param name the name of the new group
+     * @param description the description for the new group
+     * @param flags the flags for the new group
+     * @param parent the name of the parent group (or null)
+     * @return new created group
+     * @throws CmsException if operation was not successfull.
      */
     public CmsGroup createGroup(
         CmsRequestContext context,
@@ -557,7 +777,7 @@ public class CmsSecurityManager {
                 I_CmsRuntimeInfo.C_RUNTIMEINFO_USER);
 
             try {
-                newGroup = m_driverManager.createGroup(context, runtimeInfo, id, name, description, flags, parent);
+                newGroup = m_driverManager.createGroup(runtimeInfo, id, name, description, flags, parent);
                 runtimeInfo.pop();
             } catch (CmsException e) {
 
@@ -579,7 +799,17 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#createGroup(org.opencms.file.CmsRequestContext, I_CmsRuntimeInfo, java.lang.String, java.lang.String, int, java.lang.String)
+     * Add a new group to the Cms.<p>
+     *
+     * Only the admin can do this.<p>
+     * 
+     * @param context the current request context
+     * @param name the name of the new group
+     * @param description the description for the new group
+     * @param flags the flags for the new group
+     * @param parent the name of the parent group (or null)
+     * @return new created group
+     * @throws CmsException if operation was not successfull.
      */
     public CmsGroup createGroup(CmsRequestContext context, String name, String description, int flags, String parent)
     throws CmsException {
@@ -593,7 +823,7 @@ public class CmsSecurityManager {
                 I_CmsRuntimeInfo.C_RUNTIMEINFO_USER);
 
             try {
-                newGroup = m_driverManager.createGroup(context, runtimeInfo, name, description, flags, parent);
+                newGroup = m_driverManager.createGroup(runtimeInfo, name, description, flags, parent);
                 runtimeInfo.pop();
             } catch (CmsException e) {
 
@@ -615,7 +845,18 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#createProject(org.opencms.file.CmsRequestContext, java.lang.String, java.lang.String, java.lang.String, java.lang.String, int)
+     * Creates a project.<p>
+     *
+     * Only the users which are in the admin or projectmanager groups are granted.<p>
+     *
+     * @param context the current request context
+     * @param name the name of the project to create
+     * @param description the description of the project
+     * @param groupname the project user group to be set
+     * @param managergroupname the project manager group to be set
+     * @param projecttype type the type of the project
+     * @return the created project
+     * @throws CmsException if something goes wrong
      */
     public CmsProject createProject(
         CmsRequestContext context,
@@ -629,7 +870,14 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#createPropertydefinition(org.opencms.file.CmsRequestContext, I_CmsRuntimeInfo, java.lang.String, int)
+     * Creates the propertydefinition for the resource type.<p>
+     *
+     * Only the admin can do this.
+     * @param context the current request context
+     * @param name the name of the propertydefinition to overwrite
+     * @param mappingtype the mapping type of the propertydefinition. Currently only the mapping type C_PROPERYDEFINITION_RESOURCE is supported
+     * @return the created propertydefinition
+     * @throws CmsException if something goes wrong.
      */
     public CmsPropertydefinition createPropertydefinition(CmsRequestContext context, String name, int mappingtype)
     throws CmsException {
@@ -660,7 +908,28 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#createResource(org.opencms.file.CmsRequestContext, I_CmsRuntimeInfo, java.lang.String, org.opencms.file.CmsResource, byte[], java.util.List, boolean)
+     * Creates a new resource with the provided content and properties.<p>
+     * 
+     * The <code>content</code> parameter may be null if the resource id already exists.
+     * If so, the created resource will be made a sibling of the existing resource,
+     * the existing content will remain unchanged.
+     * This is used during file import for import of siblings as the 
+     * <code>manifest.xml</code> only contains one binary copy per file. 
+     * If the resource id exists but the <code>content</code> is not null,
+     * the created resource will be made a sibling of the existing resource,
+     * and both will share the new content.<p>
+     * 
+     * Note: the id used to identify the content record (pk of the record) is generated
+     * on each call of this method (with valid content) !
+     * 
+     * @param context the current request context
+     * @param resourcePath the name of the resource to create (full path)
+     * @param resource the new resource to create
+     * @param content the content for the new resource
+     * @param properties the properties for the new resource
+     * @param importCase if true, signals that this operation is done while importing resource, causing different lock behaviour and potential "lost and found" usage
+     * @return the created resource
+     * @throws CmsException if something goes wrong
      */
     public CmsResource createResource(
         CmsRequestContext context,
@@ -697,7 +966,18 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#createResource(org.opencms.file.CmsRequestContext, I_CmsRuntimeInfo, java.lang.String, int, byte[], java.util.List)
+     * Creates a new resource of the given resource type with the provided content and properties.<p>
+     * 
+     * If the provided content is null and the resource is not a folder, the content will be set to an empty byte array.<p>  
+     * 
+     * @param context the current request context
+     * @param resourcename the name of the resource to create (full path)
+     * @param type the type of the resource to create
+     * @param content the content for the new resource
+     * @param properties the properties for the new resource
+     * @return the created resource
+     * @throws CmsException if something goes wrong
+     * @see I_CmsResourceType#createResource(CmsObject, CmsSecurityManager, String, byte[], List)
      */
     public CmsResource createResource(
         CmsRequestContext context,
@@ -726,7 +1006,14 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#createSibling(org.opencms.file.CmsRequestContext, I_CmsRuntimeInfo, org.opencms.file.CmsResource, java.lang.String, java.util.List)
+     * Creates a new sibling of the source resource.<p>
+     * 
+     * @param context the current request context
+     * @param source the resource to create a sibling for
+     * @param destination the name of the sibling to create with complete path
+     * @param properties the individual properties for the new sibling
+     * @throws CmsException if something goes wrong
+     * @see I_CmsResourceType#createSibling(CmsObject, CmsSecurityManager, CmsResource, String, List)
      */
     public void createSibling(CmsRequestContext context, CmsResource source, String destination, List properties)
     throws CmsException {
@@ -748,7 +1035,18 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#createTask(org.opencms.file.CmsRequestContext, java.lang.String, java.lang.String, java.lang.String, long, int)
+     * Creates a new task.<p>
+     *
+     * All users are granted.<p>
+     *
+     * @param context the current request context
+     * @param agentName username who will edit the task
+     * @param roleName usergroupname for the task
+     * @param taskname name of the task
+     * @param timeout time when the task must finished
+     * @param priority Id for the priority
+     * @return A new Task Object
+     * @throws CmsException if something goes wrong
      */
     public CmsTask createTask(
         CmsRequestContext context,
@@ -762,7 +1060,21 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#createTask(org.opencms.file.CmsUser, int, java.lang.String, java.lang.String, java.lang.String, java.lang.String, int, long, int)
+     * Creates a new task.<p>
+     *
+     * All users are granted.<p>
+     *
+     * @param currentUser the current user
+     * @param projectid the current project id
+     * @param agentName user who will edit the task
+     * @param roleName usergroup for the task
+     * @param taskName name of the task
+     * @param taskType type of the task
+     * @param taskComment description of the task
+     * @param timeout time when the task must finished
+     * @param priority Id for the priority
+     * @return a new task object
+     * @throws CmsException if something goes wrong.
      */
     public CmsTask createTask(
         CmsUser currentUser,
@@ -788,7 +1100,13 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#createTempfileProject(org.opencms.file.CmsRequestContext)
+     * Creates the project for the temporary files.<p>
+     *
+     * Only the users which are in the admin or projectleader-group are granted.<p>
+     *
+     * @param context the current request context
+     * @return the new tempfile project
+     * @throws CmsException if something goes wrong
      */
     public CmsProject createTempfileProject(CmsRequestContext context) throws CmsException {
 
@@ -796,7 +1114,11 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#deleteAllStaticExportPublishedResources(org.opencms.file.CmsRequestContext, int)
+     * Deletes all entries in the published resource table.<p>
+     * 
+     * @param context the current request context
+     * @param linkType the type of resource deleted (0= non-paramter, 1=parameter)
+     * @throws CmsException if something goes wrong
      */
     public void deleteAllStaticExportPublishedResources(CmsRequestContext context, int linkType) throws CmsException {
 
@@ -804,7 +1126,17 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#deleteBackups(org.opencms.file.CmsRequestContext, long, int, org.opencms.report.I_CmsReport)
+     * Deletes the versions from the backup tables that are older then the given timestamp  and/or number of 
+     * remaining versions.<p>
+     * 
+     * The number of verions always wins, i.e. if the given timestamp would delete more versions than given in the
+     * versions parameter, the timestamp will be ignored. Deletion will delete file header, content and properties.<p>
+     * 
+     * @param context the current request context
+     * @param timestamp the max age of backup resources
+     * @param versions the number of remaining backup versions for each resource
+     * @param report the report for output logging
+     * @throws CmsException if operation was not succesful
      */
     public void deleteBackups(CmsRequestContext context, long timestamp, int versions, I_CmsReport report)
     throws CmsException {
@@ -813,7 +1145,15 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#deleteGroup(org.opencms.file.CmsRequestContext, I_CmsRuntimeInfo, java.lang.String)
+     * Delete a group from the Cms.<p>
+     *
+     * Only groups that contain no subgroups can be deleted. Only the admin can do this.
+     * Only users, which are in the group "administrators" are granted.<p>
+     * 
+     * @param context the current request context
+     * @param name the name of the group that is to be deleted
+     *
+     * @throws CmsException if operation was not succesfull
      */
     public void deleteGroup(CmsRequestContext context, String name) throws CmsException {
 
@@ -841,7 +1181,13 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#deleteProject(org.opencms.file.CmsRequestContext, I_CmsRuntimeInfo, CmsProject)
+     * Deletes a project.<p>
+     *
+     * Only the admin or the owner of the project can do this.<p>
+     * 
+     * @param context the current request context
+     * @param projectId the ID of the project to be deleted
+     * @throws CmsException if something goes wrong
      */
     public void deleteProject(CmsRequestContext context, int projectId) throws CmsException {
 
@@ -878,7 +1224,15 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#deletePropertydefinition(org.opencms.file.CmsRequestContext, I_CmsRuntimeInfo, java.lang.String, int)
+     * Delete the propertydefinition for the resource type.<p>
+     *
+     * Only the admin can do this.<p>
+     * 
+     * @param context the current request context
+     * @param name the name of the propertydefinition to read
+     * @param mappingtype the name of the resource type for which the propertydefinition is valid
+     *
+     * @throws CmsException if something goes wrong
      */
     public void deletePropertydefinition(CmsRequestContext context, String name, int mappingtype) throws CmsException {
 
@@ -905,7 +1259,22 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#deleteResource(I_CmsRuntimeInfo, org.opencms.file.CmsRequestContext, org.opencms.file.CmsResource, int)
+     * Deletes a resource.<p>
+     * 
+     * The <code>siblingMode</code> parameter controls how to handle siblings 
+     * during the delete operation.<p>
+     * 
+     * Possible values for this parameter are: 
+     * <ul>
+     * <li><code>{@link org.opencms.main.I_CmsConstants#C_DELETE_OPTION_DELETE_SIBLINGS}</code></li>
+     * <li><code>{@link org.opencms.main.I_CmsConstants#C_DELETE_OPTION_PRESERVE_SIBLINGS}</code></li>
+     * </ul><p>
+     * 
+     * @param context the current request context
+     * @param resource the name of the resource to delete (full path)
+     * @param siblingMode indicates how to handle siblings of the deleted resource
+     * @throws CmsException if something goes wrong
+     * @see I_CmsResourceType#deleteResource(CmsObject, CmsSecurityManager, CmsResource, int)
      */
     public void deleteResource(CmsRequestContext context, CmsResource resource, int siblingMode) throws CmsException {
 
@@ -929,7 +1298,13 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#deleteStaticExportPublishedResource(org.opencms.file.CmsRequestContext, java.lang.String, int, java.lang.String)
+     * Deletes an entry in the published resource table.<p>
+     * 
+     * @param context the current request context
+     * @param resourceName The name of the resource to be deleted in the static export
+     * @param linkType the type of resource deleted (0= non-paramter, 1=parameter)
+     * @param linkParameter the parameters ofthe resource
+     * @throws CmsException if something goes wrong
      */
     public void deleteStaticExportPublishedResource(
         CmsRequestContext context,
@@ -941,7 +1316,13 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#deleteUser(org.opencms.file.CmsRequestContext, I_CmsRuntimeInfo, org.opencms.util.CmsUUID)
+     * Deletes a user from the Cms.<p>
+     *
+     * Only a adminstrator can do this. Only users, which are in the group "administrators" are granted.<p>
+     * 
+     * @param context the current request context
+     * @param userId the Id of the user to be deleted
+     * @throws CmsException if operation was not succesfull
      */
     public void deleteUser(CmsRequestContext context, CmsUUID userId) throws CmsException {
 
@@ -957,7 +1338,7 @@ public class CmsSecurityManager {
                 I_CmsRuntimeInfo.C_RUNTIMEINFO_USER);
 
             try {
-                m_driverManager.deleteUser(context, runtimeInfo, userId);
+                m_driverManager.deleteUser(runtimeInfo, userId);
                 runtimeInfo.pop();
             } catch (CmsException e) {
                 runtimeInfo.report(null, "Error deleting user " + username, e);
@@ -982,7 +1363,13 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#deleteUser(org.opencms.file.CmsRequestContext, I_CmsRuntimeInfo, java.lang.String)
+     * Deletes a user from the Cms.<p>
+     *
+     * Only users, which are in the group "administrators" are granted.<p>
+     * 
+     * @param context the current request context
+     * @param username the name of the user to be deleted
+     * @throws CmsException if operation was not succesfull
      */
     public void deleteUser(CmsRequestContext context, String username) throws CmsException {
 
@@ -995,7 +1382,7 @@ public class CmsSecurityManager {
                 I_CmsRuntimeInfo.C_RUNTIMEINFO_USER);
 
             try {
-                m_driverManager.deleteUser(context, runtimeInfo, username);
+                m_driverManager.deleteUser(runtimeInfo, username);
                 runtimeInfo.pop();
             } catch (CmsException e) {
                 runtimeInfo.report(null, "Error deleting user " + username, e);
@@ -1020,7 +1407,10 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#deleteWebUser(I_CmsRuntimeInfo, org.opencms.util.CmsUUID)
+     * Deletes a web user from the Cms.<p>
+     * 
+     * @param userId the Id of the user to be deleted
+     * @throws CmsException if operation was not succesfull
      */
     public void deleteWebUser(CmsUUID userId) throws CmsException {
 
@@ -1057,15 +1447,26 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#digest(java.lang.String)
+     * Encrypts the given password with the default encryption method/encoding.<p>
+     * 
+     * @param password the password to encrypt
+     * @return the encrypted password
+     * @throws CmsException if something goes wrong
      */
-    public String digest(String value) throws CmsException {
+    public String digest(String password) throws CmsException {
 
-        return m_driverManager.digest(value);
+        return m_driverManager.digest(password);
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#endTask(org.opencms.file.CmsRequestContext, int)
+     * Ends a task from the Cms.<p>
+     *
+     * All users are granted.<p>
+     *
+     * @param context the current request context
+     * @param taskid the ID of the task to end
+     *
+     * @throws CmsException if something goes wrong
      */
     public void endTask(CmsRequestContext context, int taskid) throws CmsException {
 
@@ -1073,7 +1474,15 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#forwardTask(org.opencms.file.CmsRequestContext, int, java.lang.String, java.lang.String)
+     * Forwards a task to a new user.<p>
+     *
+     * All users are granted.<p>
+     *
+     * @param context the current request context
+     * @param taskid the Id of the task to forward
+     * @param newRoleName the new group name for the task
+     * @param newUserName the new user who gets the task. if its "" the a new agent will automatic selected
+     * @throws CmsException if something goes wrong
      */
     public void forwardTask(CmsRequestContext context, int taskid, String newRoleName, String newUserName)
     throws CmsException {
@@ -1082,7 +1491,13 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#getAccessControlEntries(org.opencms.file.CmsRequestContext, org.opencms.file.CmsResource, boolean)
+     * Reads all access control entries for a given resource.<p>
+     * 
+     * @param context the current request context
+     * @param resource the resource to read the access control entries for
+     * @param getInherited true if the result should include all access control entries inherited by parent folders
+     * @return a vector of access control entries defining all permissions for the given resource
+     * @throws CmsException if something goes wrong
      */
     public Vector getAccessControlEntries(CmsRequestContext context, CmsResource resource, boolean getInherited)
     throws CmsException {
@@ -1091,7 +1506,15 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#getAccessControlList(org.opencms.file.CmsRequestContext, org.opencms.file.CmsResource, boolean)
+     * Returns the access control list of a given resource.<p>
+     *
+     * If <code>inheritedOnly</code> is set, only inherited access control entries are returned.<p>
+     * 
+     * @param context the current request context
+     * @param resource the resource
+     * @param inheritedOnly skip non-inherited entries if set
+     * @return the access control list of the resource
+     * @throws CmsException if something goes wrong
      */
     public CmsAccessControlList getAccessControlList(
         CmsRequestContext context,
@@ -1102,7 +1525,14 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#getAllAccessibleProjects(org.opencms.file.CmsRequestContext)
+     * Returns all projects which are owned by the current user or which are 
+     * accessible for the group of the user.<p>
+     *
+     * All users are granted.<p>
+     *
+     * @param context the current request context
+     * @return a list of Cms projects
+     * @throws CmsException if something goes wrong
      */
     public List getAllAccessibleProjects(CmsRequestContext context) throws CmsException {
 
@@ -1110,7 +1540,10 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#getAllBackupProjects()
+     * Returns a Vector with all projects from history.<p>
+     *
+     * @return Vector with all projects from history.
+     * @throws CmsException if operation was not succesful.
      */
     public Vector getAllBackupProjects() throws CmsException {
 
@@ -1118,7 +1551,13 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#getAllManageableProjects(org.opencms.file.CmsRequestContext)
+     * Returns all projects which are owned by the user or which are manageable for the group of the user.<p>
+     *
+     * All users are granted.<p>
+     *
+     * @param context the current request context
+     * @return a list of Cms projects
+     * @throws CmsException if operation was not succesful
      */
     public List getAllManageableProjects(CmsRequestContext context) throws CmsException {
 
@@ -1126,7 +1565,9 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#getBackupTagId()
+     * Get the next version id for the published backup resources.<p>
+     *
+     * @return the new version id
      */
     public int getBackupTagId() {
 
@@ -1134,7 +1575,14 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#getChild(org.opencms.file.CmsRequestContext, java.lang.String)
+     * Returns all child groups of a group.<p>
+     *
+     * All users are granted, except the anonymous user.<p>
+     *
+     * @param context the current request context
+     * @param groupname the name of the group
+     * @return groups a Vector of all child groups or null
+     * @throws CmsException if operation was not succesful.
      */
     public Vector getChild(CmsRequestContext context, String groupname) throws CmsException {
 
@@ -1142,7 +1590,16 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#getChilds(org.opencms.file.CmsRequestContext, java.lang.String)
+     * Returns all child groups of a group.<p>
+     * 
+     * This method also returns all sub-child groups of the current group.<p>
+     *
+     * All users are granted, except the anonymous user.<p>
+     *
+     * @param context the current request context
+     * @param groupname the name of the group
+     * @return a Vector of all child groups or null
+     * @throws CmsException if operation was not succesful
      */
     public Vector getChilds(CmsRequestContext context, String groupname) throws CmsException {
 
@@ -1150,7 +1607,11 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#getConfigurations()
+     * Method to access the configurations of the properties-file.<p>
+     *
+     * All users are granted.<p>
+     *
+     * @return the Configurations of the properties-file
      */
     public ExtendedProperties getConfigurations() {
 
@@ -1158,7 +1619,14 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#getDirectGroupsOfUser(org.opencms.file.CmsRequestContext, java.lang.String)
+     * Returns the list of groups to which the user directly belongs to<P/>
+     *
+     * All users are granted.<p>
+     *
+     * @param context the current request context
+     * @param username The name of the user.
+     * @return Vector of groups
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public Vector getDirectGroupsOfUser(CmsRequestContext context, String username) throws CmsException {
 
@@ -1166,7 +1634,13 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#getGroups(org.opencms.file.CmsRequestContext)
+     * Returns all groups.<p>
+     *
+     * All users are granted, except the anonymous user.<p>
+     *
+     * @param context the current request context
+     * @return users a Vector of all existing groups
+     * @throws CmsException if operation was not succesful
      */
     public Vector getGroups(CmsRequestContext context) throws CmsException {
 
@@ -1174,7 +1648,12 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#getGroupsOfUser(org.opencms.file.CmsRequestContext, I_CmsRuntimeInfo, java.lang.String)
+     * Returns the groups of a Cms user.<p>
+     * 
+     * @param context the current request context
+     * @param username the name of the user
+     * @return a vector of Cms groups filtered by the specified IP address
+     * @throws CmsException if operation was not succesful
      */
     public Vector getGroupsOfUser(CmsRequestContext context, String username) throws CmsException {
 
@@ -1182,7 +1661,13 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#getGroupsOfUser(org.opencms.file.CmsRequestContext, I_CmsRuntimeInfo, java.lang.String, java.lang.String)
+     * Returns the groups of a Cms user filtered by the specified IP address.<p>
+     * 
+     * @param context the current request context
+     * @param username the name of the user
+     * @param remoteAddress the IP address to filter the groups in the result vector
+     * @return a vector of Cms groups
+     * @throws CmsException if operation was not succesful
      */
     public Vector getGroupsOfUser(CmsRequestContext context, String username, String remoteAddress) throws CmsException {
 
@@ -1190,7 +1675,12 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#getLock(org.opencms.file.CmsRequestContext, I_CmsRuntimeInfo, org.opencms.file.CmsResource)
+     * Returns the lock state of a resource.<p>
+     * 
+     * @param context the current request context
+     * @param resource the resource to return the lock state for
+     * @return the lock state of the resource
+     * @throws CmsException if something goes wrong
      */
     public CmsLock getLock(CmsRequestContext context, CmsResource resource) throws CmsException {
 
@@ -1198,7 +1688,12 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#getLock(org.opencms.file.CmsRequestContext, I_CmsRuntimeInfo, java.lang.String)
+     * Returns the lock state of a resource.<p>
+     * 
+     * @param context the current request context
+     * @param resourcename the name of the resource to return the lock state for (full path)
+     * @return the lock state of the resource 
+     * @throws CmsException if something goes wrong
      */
     public CmsLock getLock(CmsRequestContext context, String resourcename) throws CmsException {
 
@@ -1206,7 +1701,11 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#getParent(java.lang.String)
+     * Returns the parent group of a group.<p>
+     *
+     * @param groupname the name of the group
+     * @return group the parent group or null
+     * @throws CmsException if operation was not succesful
      */
     public CmsGroup getParent(String groupname) throws CmsException {
 
@@ -1214,7 +1713,13 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#getPermissions(org.opencms.file.CmsRequestContext, org.opencms.file.CmsResource, org.opencms.file.CmsUser)
+     * Returns a users the permissions on a given resource.<p>
+     * 
+     * @param context the current request context
+     * @param resource the resource
+     * @param user the user
+     * @return bitset with allowed permissions
+     * @throws CmsException if something goes wrong
      */
     public CmsPermissionSetCustom getPermissions(CmsRequestContext context, CmsResource resource, CmsUser user)
     throws CmsException {
@@ -1223,8 +1728,33 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#getPublishList(org.opencms.file.CmsRequestContext, org.opencms.file.CmsResource, boolean)
-     */
+     * Returns a Cms publish list object containing the Cms resources that actually get published.<p>
+     * 
+     * <ul>
+     * <li>
+     * <b>Case 1 (publish project)</b>: all new/changed/deleted Cms file resources in the current (offline)
+     * project are inspected whether they would get published or not.
+     * </li> 
+     * <li>
+     * <b>Case 2 (direct publish a resource)</b>: a specified Cms file resource and optionally it's siblings 
+     * are inspected whether they get published.
+     * </li>
+     * </ul>
+     * 
+     * All Cms resources inside the publish ist are equipped with their full resource name including
+     * the site root.<p>
+     * 
+     * Please refer to the source code of this method for the rules on how to decide whether a
+     * new/changed/deleted Cms resource can be published or not.<p>
+     * 
+     * @param context the current request context
+     * @param directPublishResource a Cms resource to be published directly (in case 2), or null (in case 1)
+     * @param publishSiblings true, if all eventual siblings of the direct published resource should also get published (in case 2)
+     * 
+     * @return a publish list with all new/changed/deleted files from the current (offline) project that will be published actually
+     * @throws CmsException if something goes wrong
+     * @see org.opencms.db.CmsPublishList
+     */  
     public synchronized CmsPublishList getPublishList(
         CmsRequestContext context,
         CmsResource directPublishResource,
@@ -1234,7 +1764,17 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#getResourcesInTimeRange(org.opencms.file.CmsRequestContext, java.lang.String, long, long)
+     * Returns a list with all sub resources of a given folder that have benn modified in a given time range.<p>
+     *
+     * All users are granted.<p>
+     *
+     * @param context the current request context
+     * @param folder the folder to get the subresources from
+     * @param starttime the begin of the time range
+     * @param endtime the end of the time range
+     * @return list with all resources
+     *
+     * @throws CmsException if operation was not succesful
      */
     public List getResourcesInTimeRange(CmsRequestContext context, String folder, long starttime, long endtime)
     throws CmsException {
@@ -1243,7 +1783,16 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#getResourcesWithProperty(org.opencms.file.CmsRequestContext, java.lang.String, java.lang.String)
+     * Returns a list with all sub resources of a given folder that have set the given property.<p>
+     *
+     * All users are granted.<p>
+     *
+     * @param context the current request context
+     * @param path the folder to get the subresources from
+     * @param propertyDefinition the name of the propertydefinition to check
+     * @return list with all resources
+     *
+     * @throws CmsException if operation was not succesful
      */
     public List getResourcesWithProperty(CmsRequestContext context, String path, String propertyDefinition)
     throws CmsException {
@@ -1252,7 +1801,14 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#getResourcesWithPropertyDefinition(org.opencms.file.CmsRequestContext, java.lang.String)
+     * Reads all resources that have set the specified property.<p>
+     * 
+     * A property definition is the "key name" of a property.<p>
+     *
+     * @param context the current request context
+     * @param propertyDefinition the name of the property definition
+     * @return list of Cms resources having set the specified property definition
+     * @throws CmsException if operation was not successful
      */
     public List getResourcesWithPropertyDefinition(CmsRequestContext context, String propertyDefinition)
     throws CmsException {
@@ -1261,7 +1817,14 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#getTaskPar(int, java.lang.String)
+     * Get a parameter value for a task.<p>
+     *
+     * All users are granted.<p>
+     *
+     * @param taskId the Id of the task
+     * @param parName name of the parameter
+     * @return task parameter value
+     * @throws CmsException if something goes wrong
      */
     public String getTaskPar(int taskId, String parName) throws CmsException {
 
@@ -1269,7 +1832,11 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#getTaskType(java.lang.String)
+     * Get the template task id for a given taskname.<p>
+     *
+     * @param taskName name of the task
+     * @return id from the task template
+     * @throws CmsException if something goes wrong
      */
     public int getTaskType(String taskName) throws CmsException {
 
@@ -1277,7 +1844,13 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#getUsers(org.opencms.file.CmsRequestContext)
+     * Returns all users.<p>
+     *
+     * All users are granted, except the anonymous user.<p>
+     *
+     * @param context the current request context
+     * @return a Vector of all existing users
+     * @throws CmsException if operation was not succesful.
      */
     public Vector getUsers(CmsRequestContext context) throws CmsException {
 
@@ -1285,7 +1858,14 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#getUsers(org.opencms.file.CmsRequestContext, int)
+     * Returns all users from a given type.<p>
+     *
+     * All users are granted, except the anonymous user.<p>
+     *
+     * @param context the current request context
+     * @param type the type of the users
+     * @return a Vector of all existing users
+     * @throws CmsException if operation was not succesful
      */
     public Vector getUsers(CmsRequestContext context, int type) throws CmsException {
 
@@ -1293,7 +1873,14 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#getUsersOfGroup(org.opencms.file.CmsRequestContext, java.lang.String)
+     * Returns a list of users in a group.<p>
+     *
+     * All users are granted, except the anonymous user.<p>
+     *
+     * @param context the current request context
+     * @param groupname the name of the group to list users from
+     * @return vector of users
+     * @throws CmsException if operation was not succesful
      */
     public Vector getUsersOfGroup(CmsRequestContext context, String groupname) throws CmsException {
 
@@ -1301,7 +1888,32 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#hasPermissions(org.opencms.file.CmsRequestContext, org.opencms.file.CmsResource, org.opencms.security.CmsPermissionSet, boolean, org.opencms.file.CmsResourceFilter)
+     * Performs a non-blocking permission check on a resource.<p>
+     * 
+     * This test will not throw an exception in case the required permissions are not
+     * available for the requested operation. Instead, it will return one of the 
+     * following values:<p>
+     * 
+     * <ul>
+     * <li><code>{@link CmsDriverManager#PERM_ALLOWED}</code></li>
+     * <li><code>{@link CmsDriverManager#PERM_FILTERED}</code></li>
+     * <li><code>{@link CmsDriverManager#PERM_DENIED}</code></li>
+     * </ul><p>
+     * 
+     * @param context the current request context
+     * @param resource the resource on which permissions are required
+     * @param requiredPermissions the set of permissions required for the operation
+     * @param checkLock if true, a lock for the current user is required for 
+     *      all write operations, if false it's ok to write as long as the resource
+     *      is not locked by another user
+     * @param filter the resource filter to use
+     * 
+     * @return <code>PERM_ALLOWED</code> if the user has sufficient permissions on the resource
+     *      for the requested operation
+     * 
+     * @throws CmsException in case of i/o errors (NOT because of insufficient permissions)
+     * 
+     * @see #checkPermissions(CmsRequestContext, CmsResource, CmsPermissionSet, boolean, CmsResourceFilter)
      */
     public int hasPermissions(
         CmsRequestContext context,
@@ -1314,7 +1926,20 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#importAccessControlEntries(org.opencms.file.CmsRequestContext, org.opencms.file.CmsResource, java.util.Vector)
+     * Writes a vector of access control entries as new access control entries of a given resource.<p>
+     * 
+     * Already existing access control entries of this resource are removed before.<p>
+     * 
+     * Access is granted, if:<p>
+     * 
+     * <ul>
+     * <li>the current user has control permission on the resource
+     * </ul>
+     * 
+     * @param context the current request context
+     * @param resource the resource
+     * @param acEntries vector of access control entries applied to the resource
+     * @throws CmsException if something goes wrong
      */
     public void importAccessControlEntries(CmsRequestContext context, CmsResource resource, Vector acEntries)
     throws CmsException {
@@ -1323,7 +1948,15 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#importFolder(org.opencms.file.CmsObject, org.opencms.file.CmsRequestContext, java.lang.String, java.lang.String)
+     * Imports a import-resource (folder or zipfile) to the cms.<p>
+     *
+     * Only Administrators can do this.<p>
+     *
+     * @param cms the cms-object to use for the export
+     * @param context the current request context
+     * @param importFile the name (absolute Path) of the import resource (zip or folder)
+     * @param importPath the name (absolute Path) of folder in which should be imported
+     * @throws CmsException if something goes wrong
      */
     public void importFolder(CmsObject cms, CmsRequestContext context, String importFile, String importPath)
     throws CmsException {
@@ -1332,7 +1965,7 @@ public class CmsSecurityManager {
     }
 
     /**
-     * Initializes this security manager with a given driver manager.<p>
+     * Initializes this security manager with a given runtime info factory.<p>
      * 
      * @param configuration the opencms.properties configuration file
      * @param runtimeInfoFactory the initialized OpenCms runtime info factory
@@ -1358,7 +1991,13 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#isAdmin(org.opencms.file.CmsRequestContext)
+     * Checks if the current user has "Administrator" permissions.<p>
+     * 
+     * Administrator permissions means that the user is a member of the 
+     * administrators group, which per default is called "Administrators".<p>
+     *
+     * @param context the current request context
+     * @return true, if the current user has "Administrator" permissions
      */
     public boolean isAdmin(CmsRequestContext context) {
 
@@ -1366,7 +2005,16 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#isInsideCurrentProject(org.opencms.file.CmsRequestContext, java.lang.String)
+     * Checks if the specified resource is inside the current project.<p>
+     * 
+     * The project "view" is determined by a set of path prefixes. 
+     * If the resource starts with any one of this prefixes, it is considered to 
+     * be "inside" the project.<p>
+     * 
+     * @param context the current request context
+     * @param resourcename the specified resource name (full path)
+     * 
+     * @return true, if the specified resource is inside the current project
      */
     public boolean isInsideCurrentProject(CmsRequestContext context, String resourcename) {
 
@@ -1374,7 +2022,16 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#isManagerOfProject(org.opencms.file.CmsRequestContext)
+     * Checks if the current user has management access to the project.<p>
+     *
+     * Please note: This is NOT the same as the {@link #isProjectManager(CmsRequestContext)} 
+     * check. If the user has management access to a project depends on the
+     * project settings.<p>
+     * 
+     * @param context the current request context
+     * @return true if the user has management access to the project
+     * @see CmsObject#isManagerOfProject()
+     * @see #isProjectManager(CmsRequestContext)
      */
     public boolean isManagerOfProject(CmsRequestContext context) {
 
@@ -1382,15 +2039,40 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#isProjectManager(org.opencms.file.CmsRequestContext)
-     */
+     * Checks if the current user is a member of the project manager group.<p>
+     *
+     * Please note: This is NOT the same as the {@link #isManagerOfProject(CmsRequestContext)} 
+     * check. If the user is a member of the project manager group, 
+     * he can create new projects.<p>
+     *
+     * @param context the current request context
+     * @return true if the user is a member of the project manager group
+     * @see CmsObject#isProjectManager()
+     * @see #isManagerOfProject(CmsRequestContext)
+     */  
     public boolean isProjectManager(CmsRequestContext context) {
 
         return m_driverManager.isProjectManager(context);
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#lockResource(org.opencms.file.CmsRequestContext, I_CmsRuntimeInfo, org.opencms.file.CmsResource, int)
+     * Locks a resource.<p>
+     *
+     * The <code>mode</code> parameter controls what kind of lock is used.
+     * Possible values for this parameter are: 
+     * <ul>
+     * <li><code>{@link org.opencms.lock.CmsLock#C_MODE_COMMON}</code></li>
+     * <li><code>{@link org.opencms.lock.CmsLock#C_MODE_TEMP}</code></li>
+     * </ul><p>
+     * 
+     * @param context the current request context
+     * @param resource the resource to lock
+     * @param mode flag indicating the mode for the lock
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#lockResource(String, int)
+     * @see I_CmsResourceType#lockResource(CmsObject, CmsSecurityManager, CmsResource, int)
      */
     public void lockResource(CmsRequestContext context, CmsResource resource, int mode) throws CmsException {
 
@@ -1414,7 +2096,18 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#loginUser(java.lang.String, java.lang.String, java.lang.String, int)
+     * Attempts to authenticate a user into OpenCms with the given password.<p>
+     * 
+     * For security reasons, all error / exceptions that occur here are "blocked" and 
+     * a simple security exception is thrown.<p>
+     * 
+     * @param username the name of the user to be logged in
+     * @param password the password of the user
+     * @param remoteAddress the ip address of the request
+     * @param userType the user type to log in (System user or Web user)
+     * @return the logged in users name
+     *
+     * @throws CmsSecurityException if login was not succesful
      */
     public CmsUser loginUser(String username, String password, String remoteAddress, int userType)
     throws CmsSecurityException {
@@ -1423,7 +2116,10 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#lookupPrincipal(org.opencms.util.CmsUUID)
+     * Lookup and read the user or group with the given UUID.<p>
+     * 
+     * @param principalId the UUID of the principal to lookup
+     * @return the principal (group or user) if found, otherwise null
      */
     public I_CmsPrincipal lookupPrincipal(CmsUUID principalId) {
 
@@ -1431,7 +2127,10 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#lookupPrincipal(java.lang.String)
+     * Lookup and read the user or group with the given name.<p>
+     * 
+     * @param principalName the name of the principal to lookup
+     * @return the principal (group or user) if found, otherwise null
      */
     public I_CmsPrincipal lookupPrincipal(String principalName) {
 
@@ -1439,7 +2138,24 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#moveToLostAndFound(org.opencms.file.CmsRequestContext, I_CmsRuntimeInfo, java.lang.String, boolean)
+     * Moves a resource to the "lost and found" folder.<p>
+     * 
+     * The method can also be used to check get the name of a resource
+     * in the "lost and found" folder only without actually moving the
+     * the resource. To do this, the <code>returnNameOnly</code> flag
+     * must be set to <code>true</code>.<p>
+     * 
+     * @param context the current request context
+     * @param resourcename the name of the resource to apply this operation to
+     * @param returnNameOnly if <code>true</code>, only the name of the resource in the "lost and found" 
+     *        folder is returned, the move operation is not really performed
+     * 
+     * @return the name of the resource inside the "lost and found" folder
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#moveToLostAndFound(String)
+     * @see CmsObject#getLostAndFoundName(String)
      */
     public String moveToLostAndFound(CmsRequestContext context, String resourcename, boolean returnNameOnly)
     throws CmsException {
@@ -1464,16 +2180,13 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#newDriverInstance(org.apache.commons.collections.ExtendedProperties, java.lang.String, java.lang.String)
-     */
-    public Object newDriverInstance(ExtendedProperties configuration, String driverName, String driverPoolUrl)
-    throws CmsException {
-
-        return m_driverManager.newDriverInstance(configuration, driverName, driverPoolUrl);
-    }
-
-    /**
-     * @see org.opencms.db.CmsDriverManager#postPublishBoResource(org.opencms.file.CmsRequestContext, org.opencms.db.CmsPublishedResource, org.opencms.util.CmsUUID, int)
+     * Completes all post-publishing tasks for a "directly" published COS resource.<p>
+     * 
+     * @param context the current request context
+     * @param publishedBoResource the CmsPublishedResource onject representing the published COS resource
+     * @param publishId unique int ID to identify each publish task in the publish history
+     * @param tagId the backup tag revision
+     * @throws CmsException if something goes wrong
      */
     public void postPublishBoResource(
         CmsRequestContext context,
@@ -1485,7 +2198,16 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#publishProject(org.opencms.file.CmsObject, I_CmsRuntimeInfo, org.opencms.db.CmsPublishList, org.opencms.report.I_CmsReport)
+     * Publishes a project.<p>
+     *
+     * Only the admin or the owner of the project can do this.<p>
+     * 
+     * @param cms the current CmsObject
+     * @param publishList a Cms publish list
+     * @param report a report object to provide the loggin messages
+     * 
+     * @throws Exception if something goes wrong
+     * @see #getPublishList(CmsRequestContext, CmsResource, boolean)
      */
     public synchronized void publishProject(CmsObject cms, CmsPublishList publishList, I_CmsReport report)
     throws Exception {
@@ -1555,7 +2277,11 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#readAgent(org.opencms.workflow.CmsTask)
+     * Reads the agent of a task from the OpenCms.<p>
+     *
+     * @param task the task to read the agent from
+     * @return the owner of a task
+     * @throws CmsException if something goes wrong
      */
     public CmsUser readAgent(CmsTask task) throws CmsException {
 
@@ -1563,7 +2289,22 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#readAllBackupFileHeaders(org.opencms.file.CmsRequestContext, java.lang.String)
+     * Reads all file headers of a file in the OpenCms.<p>
+     * 
+     * This method returns a vector with the histroy of all file headers, i.e.
+     * the file headers of a file, independent of the project they were attached to.
+     * The reading excludes the filecontent.<p>
+     * 
+     * Access is granted, if:<p>
+     * 
+     * <ul>
+     * <li>the user can read the resource</li>
+     * </ul>
+     *
+     * @param context the current request context
+     * @param filename the name of the file to be read
+     * @return vector of file headers read from the Cms
+     * @throws CmsException if operation was not succesful
      */
     public List readAllBackupFileHeaders(CmsRequestContext context, String filename) throws CmsException {
 
@@ -1571,7 +2312,12 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#readAllProjectResources(org.opencms.file.CmsRequestContext, int)
+     * Returns a list with all project resources for a given project.<p>
+     *
+     * @param context the current request context
+     * @param projectId the ID of the project
+     * @return a list of all project resources
+     * @throws CmsException if operation was not succesful
      */
     public List readAllProjectResources(CmsRequestContext context, int projectId) throws CmsException {
 
@@ -1579,7 +2325,14 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#readAllPropertydefinitions(org.opencms.file.CmsRequestContext, int)
+     * Reads all propertydefinitions for the given mapping type.<p>
+     *
+     * All users are granted.<p>
+     *
+     * @param context the current request context
+     * @param mappingtype the mapping type to read the propertydefinitions for
+     * @return propertydefinitions a Vector with propertydefefinitions for the mapping type. The Vector is maybe empty.
+     * @throws CmsException if something goes wrong
      */
     public List readAllPropertydefinitions(CmsRequestContext context, int mappingtype) throws CmsException {
 
@@ -1587,7 +2340,15 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#readBackupFile(org.opencms.file.CmsRequestContext, int, java.lang.String)
+     * Reads a file from the history of the Cms.<p>
+     * 
+     * The reading includes the filecontent. A file is read from the backup resources.<p>
+     *
+     * @param context the current request context
+     * @param tagId the id of the tag of the file
+     * @param filename the name of the file to be read
+     * @return the file read from the Cms.
+     * @throws CmsException if operation was not succesful
      */
     public CmsBackupResource readBackupFile(CmsRequestContext context, int tagId, String filename) throws CmsException {
 
@@ -1595,7 +2356,15 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#readBackupFileHeader(org.opencms.file.CmsRequestContext, int, java.lang.String)
+     * Reads a file header from the history of the Cms.<p>
+     * 
+     * The reading excludes the filecontent. A file header is read from the backup resources.<p>
+     *
+     * @param context the current request context
+     * @param tagId the id of the tag revisiton of the file
+     * @param filename the name of the file to be read
+     * @return the file read from the Cms.
+     * @throws CmsException if operation was not succesful
      */
     public CmsBackupResource readBackupFileHeader(CmsRequestContext context, int tagId, String filename)
     throws CmsException {
@@ -1604,7 +2373,11 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#readBackupProject(int)
+     * Reads the backupinformation of a project from the Cms.<p>
+     *
+     * @param tagId the tagId of the project
+     * @return the backup project
+     * @throws CmsException if something goes wrong
      */
     public CmsBackupProject readBackupProject(int tagId) throws CmsException {
 
@@ -1612,7 +2385,22 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#readChildResources(org.opencms.file.CmsRequestContext, org.opencms.file.CmsResource, org.opencms.file.CmsResourceFilter, boolean, boolean)
+     * Returns the child resources of a resource, that is the resources
+     * contained in a folder.<p>
+     * 
+     * With the parameters <code>getFolders</code> and <code>getFiles</code>
+     * you can control what type of resources you want in the result list:
+     * files, folders, or both.<p>
+     * 
+     * @param context the current request context
+     * @param resource the resource to return the child resources for
+     * @param filter the resource filter to use
+     * @param getFolders if true the child folders are included in the result
+     * @param getFiles if true the child files are included in the result
+     * 
+     * @return a list of all child resources
+     * 
+     * @throws CmsException if something goes wrong
      */
     public List readChildResources(
         CmsRequestContext context,
@@ -1625,7 +2413,20 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#readFile(org.opencms.file.CmsRequestContext, java.lang.String, org.opencms.file.CmsResourceFilter)
+     * Reads a file from the Cms.<p>
+     *
+     * Access is granted, if:<p>
+     * 
+     * <ul>
+     * <li>the user has access to the project</li>
+     * <li>the user can read the resource</li>
+     * </ul>
+     *
+     * @param context the current request context
+     * @param filename the name of the file to be read
+     * @param filter the filter object
+     * @return the file read from the VFS
+     * @throws CmsException if operation was not succesful
      */
     public CmsFile readFile(CmsRequestContext context, String filename, CmsResourceFilter filter) throws CmsException {
 
@@ -1633,7 +2434,15 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#readFilesByType(org.opencms.file.CmsRequestContext, int, int)
+     * Reads all modified files of a given resource type that are either new, changed or deleted.<p>
+     * 
+     * The files in the result list include the file content.<p>
+     * 
+     * @param context the context (user/project) of this request
+     * @param projectId a project id for reading online or offline resources
+     * @param resourcetype the resourcetype of the files
+     * @return a list of Cms files
+     * @throws CmsException if operation was not successful
      */
     public List readFilesByType(CmsRequestContext context, int projectId, int resourcetype) throws CmsException {
 
@@ -1641,7 +2450,19 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#readFolder(org.opencms.file.CmsRequestContext, I_CmsRuntimeInfo, java.lang.String, org.opencms.file.CmsResourceFilter)
+     * Reads a folder from the VFS, using the specified resource filter.<p>
+     * 
+     * @param context the current request context
+     * @param resourcename the name of the folder to read (full path)
+     * @param filter the resource filter to use while reading
+     *
+     * @return the folder that was read
+     *
+     * @throws CmsException if something goes wrong
+     *
+     * @see #readResource(CmsRequestContext, String, CmsResourceFilter)
+     * @see CmsObject#readFolder(String)
+     * @see CmsObject#readFolder(String, CmsResourceFilter)
      */
     public CmsFolder readFolder(CmsRequestContext context, String resourcename, CmsResourceFilter filter)
     throws CmsException {
@@ -1650,7 +2471,15 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#readGivenTasks(int, java.lang.String, int, java.lang.String, java.lang.String)
+     * Reads all given tasks from a user for a project.<p>
+     *
+     * @param projectId the id of the Project in which the tasks are defined
+     * @param ownerName owner of the task
+     * @param taskType task type you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
+     * @param orderBy chooses, how to order the tasks
+     * @param sort sorting of the tasks
+     * @return vector of tasks
+     * @throws CmsException if something goes wrong
      */
     public Vector readGivenTasks(int projectId, String ownerName, int taskType, String orderBy, String sort)
     throws CmsException {
@@ -1659,7 +2488,10 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#readGroup(org.opencms.file.CmsProject)
+     * Reads the group of a project from the OpenCms.<p>
+     *
+     * @param project the project to read from
+     * @return the group of a resource
      */
     public CmsGroup readGroup(CmsProject project) {
 
@@ -1667,7 +2499,11 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#readGroup(org.opencms.workflow.CmsTask)
+     * Reads the group (role) of a task from the OpenCms.<p>
+     *
+     * @param task the task to read from
+     * @return the group of a resource
+     * @throws CmsException if operation was not succesful
      */
     public CmsGroup readGroup(CmsTask task) throws CmsException {
 
@@ -1675,7 +2511,13 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#readGroup(org.opencms.util.CmsUUID)
+     * Returns a group object.<p>
+     *
+     * All users are granted.<p>
+     *
+     * @param groupId the id of the group that is to be read
+     * @return the requested group
+     * @throws CmsException if operation was not succesful
      */
     public CmsGroup readGroup(CmsUUID groupId) throws CmsException {
 
@@ -1683,7 +2525,12 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#readGroup(I_CmsRuntimeInfo, java.lang.String)
+     * Returns a group object.<p>
+     * 
+     * @param groupname the name of the group that is to be read
+     *
+     * @return the requested group
+     * @throws CmsException if operation was not succesful
      */
     public CmsGroup readGroup(String groupname) throws CmsException {
 
@@ -1691,7 +2538,12 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#readManagerGroup(org.opencms.file.CmsProject)
+     * Reads the manager group of a project from the OpenCms.<p>
+     *
+     * All users are granted.
+     *
+     * @param project the project to read from
+     * @return the group of a resource
      */
     public CmsGroup readManagerGroup(CmsProject project) {
 
@@ -1699,7 +2551,11 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#readOriginalAgent(org.opencms.workflow.CmsTask)
+     * Reads the original agent of a task from the OpenCms.<p>
+     *
+     * @param task the task to read the original agent from
+     * @return the owner of a task
+     * @throws CmsException if something goes wrong
      */
     public CmsUser readOriginalAgent(CmsTask task) throws CmsException {
 
@@ -1707,7 +2563,11 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#readOwner(org.opencms.file.CmsProject)
+     * Reads the owner of a project from the OpenCms.<p>
+     *
+     * @param project the project to get the owner from
+     * @return the owner of a resource
+     * @throws CmsException if something goes wrong
      */
     public CmsUser readOwner(CmsProject project) throws CmsException {
 
@@ -1715,7 +2575,11 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#readOwner(org.opencms.workflow.CmsTask)
+     * Reads the owner (initiator) of a task from the OpenCms.<p>
+     *
+     * @param task the task to read the owner from
+     * @return the owner of a task
+     * @throws CmsException if something goes wrong
      */
     public CmsUser readOwner(CmsTask task) throws CmsException {
 
@@ -1723,7 +2587,11 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#readOwner(org.opencms.workflow.CmsTaskLog)
+     * Reads the owner of a tasklog from the OpenCms.<p>
+     *
+     * @param log the tasklog
+     * @return the owner of a resource
+     * @throws CmsException if something goes wrong
      */
     public CmsUser readOwner(CmsTaskLog log) throws CmsException {
 
@@ -1731,7 +2599,13 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#readPath(int, java.lang.String, org.opencms.file.CmsResourceFilter)
+     * Builds a list of resources for a given path.<p>
+     * 
+     * @param projectId the project to lookup the resource
+     * @param path the requested path
+     * @param filter a filter object (only "includeDeleted" information is used!)
+     * @return List of CmsResource's
+     * @throws CmsException if something goes wrong
      */
     public List readPath(int projectId, String path, CmsResourceFilter filter) throws CmsException {
 
@@ -1739,7 +2613,11 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#readProject(org.opencms.workflow.CmsTask)
+     * Reads a project from the Cms.<p>
+     *
+     * @param task the task to read the project of
+     * @return the project read from the cms
+     * @throws CmsException if something goes wrong
      */
     public CmsProject readProject(CmsTask task) throws CmsException {
 
@@ -1747,7 +2625,11 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#readProject(int)
+     * Reads a project from the Cms given the projects name.<p>
+     *
+     * @param id the id of the project
+     * @return the project read from the cms
+     * @throws CmsException if something goes wrong.
      */
     public CmsProject readProject(int id) throws CmsException {
 
@@ -1755,7 +2637,16 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#readProject(java.lang.String)
+     * Reads a project from the Cms.<p>
+     *
+     * Important: Since a project name can be used multiple times, this is NOT the most efficient 
+     * way to read the project. This is only a convenience for front end developing.
+     * Reading a project by name will return the first project with that name. 
+     * All core classes must use the id version {@link #readProject(int)} to ensure the right project is read.<p>
+     * 
+     * @param name the name of the project
+     * @return the project read from the cms
+     * @throws CmsException if something goes wrong.
      */
     public CmsProject readProject(String name) throws CmsException {
 
@@ -1763,7 +2654,11 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#readProjectLogs(int)
+     * Reads log entries for a project.<p>
+     *
+     * @param projectId the id of the projec for tasklog to read
+     * @return a list of new TaskLog objects
+     * @throws CmsException if something goes wrong.
      */
     public List readProjectLogs(int projectId) throws CmsException {
 
@@ -1771,7 +2666,11 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#readProjectResources(org.opencms.file.CmsProject)
+     * Returns the list of all resource names that define the "view" of the given project.<p>
+     *
+     * @param project the project to get the project resources for
+     * @return the list of all resource names that define the "view" of the given project
+     * @throws CmsException if something goes wrong
      */
     public List readProjectResources(CmsProject project) throws CmsException {
 
@@ -1779,7 +2678,17 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#readProjectView(org.opencms.file.CmsRequestContext, int, int)
+     * Reads all resources of a project that match a given state from the VFS.<p>
+     *
+     * @param context the current request context
+     * @param projectId the id of the project to read the file resources for
+     * @param state the resource state to match 
+     *
+     * @return all resources of a project that match a given criteria from the VFS
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#readProjectView(int, int)
      */
     public List readProjectView(CmsRequestContext context, int projectId, int state) throws CmsException {
 
@@ -1787,7 +2696,15 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#readPropertydefinition(org.opencms.file.CmsRequestContext, java.lang.String, int)
+     * Reads a definition for the given resource type.<p>
+     *
+     * All users are granted.<p>
+     *
+     * @param context the current request context
+     * @param name the name of the propertydefinition to read
+     * @param mappingtype the mapping type of this propery definition
+     * @return the propertydefinition that corresponds to the overgiven arguments - or null if there is no valid propertydefinition.
+     * @throws CmsException if something goes wrong
      */
     public CmsPropertydefinition readPropertydefinition(CmsRequestContext context, String name, int mappingtype)
     throws CmsException {
@@ -1796,7 +2713,17 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#readPropertyObject(org.opencms.file.CmsRequestContext, java.lang.String, java.lang.String, java.lang.String, boolean)
+     * Reads a property object from the database specified by it's key name mapped to a resource.<p>
+     * 
+     * Returns null if the property is not found.<p>
+     * 
+     * @param context the context of the current request
+     * @param resourceName the name of resource where the property is mapped to
+     * @param siteRoot the current site root
+     * @param key the property key name
+     * @param search true, if the property should be searched on all parent folders  if not found on the resource
+     * @return a CmsProperty object containing the structure and/or resource value
+     * @throws CmsException if something goes wrong
      */
     public CmsProperty readPropertyObject(
         CmsRequestContext context,
@@ -1809,7 +2736,16 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#readPropertyObjects(org.opencms.file.CmsRequestContext, java.lang.String, java.lang.String, boolean)
+     * Reads all property objects mapped to a specified resource from the database.<p>
+     * 
+     * Returns an empty list if no properties are found at all.<p>
+     * 
+     * @param context the context of the current request
+     * @param resourceName the name of resource where the property is mapped to
+     * @param siteRoot the current site root
+     * @param search true, if the properties should be searched on all parent folders  if not found on the resource
+     * @return a list of CmsProperty objects containing the structure and/or resource value
+     * @throws CmsException if something goes wrong
      */
     public List readPropertyObjects(CmsRequestContext context, String resourceName, String siteRoot, boolean search)
     throws CmsException {
@@ -1818,7 +2754,12 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#readPublishedResources(org.opencms.file.CmsRequestContext, org.opencms.util.CmsUUID)
+     * Reads the resources that were published in a publish task for a given publish history ID.<p>
+     * 
+     * @param context the current request context
+     * @param publishHistoryId unique int ID to identify each publish task in the publish history
+     * @return a List of CmsPublishedResource objects
+     * @throws CmsException if something goes wrong
      */
     public List readPublishedResources(CmsRequestContext context, CmsUUID publishHistoryId) throws CmsException {
 
@@ -1826,7 +2767,19 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#readResource(org.opencms.file.CmsRequestContext, I_CmsRuntimeInfo, java.lang.String, org.opencms.file.CmsResourceFilter)
+     * Reads a resource from the VFS, using the specified resource filter.<p>
+     * 
+     * @param context the current request context
+     * @param resourcePath the name of the resource to read (full path)
+     * @param filter the resource filter to use while reading
+     *
+     * @return the resource that was read
+     *
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#readResource(String, CmsResourceFilter)
+     * @see CmsObject#readResource(String)
+     * @see CmsFile#upgrade(CmsResource, CmsObject)
      */
     public CmsResource readResource(CmsRequestContext context, String resourcePath, CmsResourceFilter filter)
     throws CmsException {
@@ -1835,7 +2788,15 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#readResources(org.opencms.file.CmsRequestContext, org.opencms.file.CmsResource, org.opencms.file.CmsResourceFilter, boolean)
+     * Reads all resources below the given parent matching the filter criteria.<p>
+     * 
+     * @param context the current request context
+     * @param parent the parent to read the resources from
+     * @param filter the filter criteria to apply
+     * @param readTree true to indicate to read all subresources, false to read immediate children only
+     * @return a list with resources below parentPath matchin the filter criteria
+     *  
+     * @throws CmsException if something goes wrong
      */
     public List readResources(CmsRequestContext context, CmsResource parent, CmsResourceFilter filter, boolean readTree)
     throws CmsException {
@@ -1844,7 +2805,15 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#readSiblings(org.opencms.file.CmsRequestContext, I_CmsRuntimeInfo, java.lang.String, org.opencms.file.CmsResourceFilter)
+     * Returns a List of all siblings of the specified resource,
+     * the specified resource being always part of the result set.<p>
+     * 
+     * @param context the request context
+     * @param resourcename the name of the specified resource
+     * @param filter a filter object
+     * 
+     * @return a List of CmsResources that are siblings to the specified resource, including the specified resource itself 
+     * @throws CmsException if something goes wrong
      */
     public List readSiblings(CmsRequestContext context, String resourcename, CmsResourceFilter filter)
     throws CmsException {
@@ -1853,7 +2822,12 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#readStaticExportPublishedResourceParameters(org.opencms.file.CmsRequestContext, java.lang.String)
+     * Returns the parameters of a resource in the table of all published template resources.<p>
+     *
+     * @param context the current request context
+     * @param rfsName the rfs name of the resource
+     * @return the paramter string of the requested resource
+     * @throws CmsException if something goes wrong
      */
     public String readStaticExportPublishedResourceParameters(CmsRequestContext context, String rfsName)
     throws CmsException {
@@ -1862,7 +2836,13 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#readStaticExportResources(org.opencms.file.CmsRequestContext, int, long)
+     * Returns a list of all template resources which must be processed during a static export.<p>
+     * 
+     * @param context the current request context
+     * @param parameterResources flag for reading resources with parameters (1) or without (0)
+     * @param timestamp for reading the data from the db
+     * @return List of template resources
+     * @throws CmsException if something goes wrong
      */
     public List readStaticExportResources(CmsRequestContext context, int parameterResources, long timestamp)
     throws CmsException {
@@ -1871,7 +2851,11 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#readTask(int)
+     * Read a task by id.<p>
+     *
+     * @param id the id for the task to read
+     * @return a task
+     * @throws CmsException if something goes wrong
      */
     public CmsTask readTask(int id) throws CmsException {
 
@@ -1879,7 +2863,11 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#readTaskLogs(int)
+     * Reads log entries for a task.<p>
+     *
+     * @param taskid the task for the tasklog to read
+     * @return a Vector of new TaskLog objects
+     * @throws CmsException if something goes wrong
      */
     public Vector readTaskLogs(int taskid) throws CmsException {
 
@@ -1887,7 +2875,16 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#readTasksForProject(int, int, java.lang.String, java.lang.String)
+     * Reads all tasks for a project.<p>
+     *
+     * All users are granted.<p>
+     *
+     * @param projectId the id of the Project in which the tasks are defined. Can be null for all tasks
+     * @param tasktype task type you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW
+     * @param orderBy chooses, how to order the tasks
+     * @param sort sort order C_SORT_ASC, C_SORT_DESC, or null
+     * @return a vector of tasks
+     * @throws CmsException  if something goes wrong
      */
     public Vector readTasksForProject(int projectId, int tasktype, String orderBy, String sort) throws CmsException {
 
@@ -1895,7 +2892,15 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#readTasksForRole(int, java.lang.String, int, java.lang.String, java.lang.String)
+     * Reads all tasks for a role in a project.<p>
+     *
+     * @param projectId the id of the Project in which the tasks are defined
+     * @param roleName the user who has to process the task
+     * @param tasktype task type you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW
+     * @param orderBy chooses, how to order the tasks
+     * @param sort Sort order C_SORT_ASC, C_SORT_DESC, or null
+     * @return a vector of tasks
+     * @throws CmsException if something goes wrong
      */
     public Vector readTasksForRole(int projectId, String roleName, int tasktype, String orderBy, String sort)
     throws CmsException {
@@ -1904,7 +2909,15 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#readTasksForUser(int, java.lang.String, int, java.lang.String, java.lang.String)
+     * Reads all tasks for a user in a project.<p>
+     *
+     * @param projectId the id of the Project in which the tasks are defined
+     * @param userName the user who has to process the task
+     * @param taskType task type you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW
+     * @param orderBy chooses, how to order the tasks
+     * @param sort sort order C_SORT_ASC, C_SORT_DESC, or null
+     * @return a vector of tasks
+     * @throws CmsException if something goes wrong
      */
     public Vector readTasksForUser(int projectId, String userName, int taskType, String orderBy, String sort)
     throws CmsException {
@@ -1913,7 +2926,14 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#readUser(I_CmsRuntimeInfo, org.opencms.util.CmsUUID)
+     * Returns a user object based on the id of a user.<p>
+     *
+     * All users are granted.<p>
+     * 
+     * @param id the id of the user to read
+     *
+     * @return the user read 
+     * @throws CmsException if something goes wrong
      */
     public CmsUser readUser(CmsUUID id) throws CmsException {
 
@@ -1921,7 +2941,14 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#readUser(I_CmsRuntimeInfo, java.lang.String)
+     * Returns a user object.<p>
+     *
+     * All users are granted.<p>
+     * 
+     * @param username the name of the user that is to be read
+     *
+     * @return user read form the cms
+     * @throws CmsException if operation was not succesful
      */
     public CmsUser readUser(String username) throws CmsException {
 
@@ -1929,7 +2956,15 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#readUser(I_CmsRuntimeInfo, java.lang.String, int)
+     * Returns a user object.<p>
+     *
+     * All users are granted.<p>
+     * 
+     * @param username the name of the user that is to be read
+     * @param type the type of the user
+     *
+     * @return user read form the cms
+     * @throws CmsException if operation was not succesful
      */
     public CmsUser readUser(String username, int type) throws CmsException {
 
@@ -1937,7 +2972,14 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#readUser(java.lang.String, java.lang.String)
+     * Returns a user object if the password for the user is correct.<p>
+     *
+     * All users are granted.<p>
+     *
+     * @param username the username of the user that is to be read
+     * @param password the password of the user that is to be read
+     * @return user read form the cms
+     * @throws CmsException if operation was not succesful
      */
     public CmsUser readUser(String username, String password) throws CmsException {
 
@@ -1945,7 +2987,11 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#readWebUser(java.lang.String)
+     * Read a web user from the database.<p>
+     * 
+     * @param username the web user to read
+     * @return the read web user
+     * @throws CmsException if the user could not be read 
      */
     public CmsUser readWebUser(String username) throws CmsException {
 
@@ -1953,7 +2999,14 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#readWebUser(java.lang.String, java.lang.String)
+     * Returns a user object if the password for the user is correct.<p>
+     *
+     * All users are granted.<p>
+     *
+     * @param username the username of the user that is to be read
+     * @param password the password of the user that is to be read
+     * @return user read form the cms
+     * @throws CmsException if operation was not succesful
      */
     public CmsUser readWebUser(String username, String password) throws CmsException {
 
@@ -1961,7 +3014,13 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#reactivateTask(org.opencms.file.CmsRequestContext, int)
+     * Reaktivates a task from the Cms.<p>
+     *
+     * All users are granted.<p>
+     *
+     * @param context the current request context
+     * @param taskId the Id of the task to accept
+     * @throws CmsException if something goes wrong
      */
     public void reactivateTask(CmsRequestContext context, int taskId) throws CmsException {
 
@@ -1969,7 +3028,13 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#removeAccessControlEntry(org.opencms.file.CmsRequestContext, I_CmsRuntimeInfo, org.opencms.file.CmsResource, org.opencms.util.CmsUUID)
+     * Removes an access control entry for a given resource and principal.<p>
+     * 
+     * @param context the current request context
+     * @param resource the resource
+     * @param principal the id of the principal to remove the the access control entry for
+     * 
+     * @throws CmsException if something goes wrong
      */
     public void removeAccessControlEntry(CmsRequestContext context, CmsResource resource, CmsUUID principal)
     throws CmsException {
@@ -1994,7 +3059,15 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#removeUserFromGroup(org.opencms.file.CmsRequestContext, I_CmsRuntimeInfo, java.lang.String, java.lang.String)
+     * Removes a user from a group.<p>
+     *
+     * Only users, which are in the group "administrators" are granted.
+     * 
+     * @param context the current request context
+     * @param username the name of the user that is to be removed from the group
+     * @param groupname the name of the group
+     *
+     * @throws CmsException if operation was not succesful
      */
     public void removeUserFromGroup(CmsRequestContext context, String username, String groupname) throws CmsException {
 
@@ -2023,7 +3096,18 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#replaceResource(org.opencms.file.CmsRequestContext, I_CmsRuntimeInfo, org.opencms.file.CmsResource, int, byte[], java.util.List)
+     * Replaces the content, type and properties of a resource.<p>
+     * 
+     * @param context the current request context
+     * @param resource the name of the resource to apply this operation to
+     * @param type the new type of the resource
+     * @param content the new content of the resource
+     * @param properties the new properties of the resource
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#replaceResource(String, int, byte[], List)
+     * @see I_CmsResourceType#replaceResource(CmsObject, CmsSecurityManager, CmsResource, int, byte[], List)
      */
     public void replaceResource(
         CmsRequestContext context,
@@ -2052,7 +3136,13 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#resetPassword(java.lang.String, java.lang.String, java.lang.String)
+     * Resets the password for a specified user.<p>
+     *
+     * @param username the name of the user
+     * @param oldPassword the old password
+     * @param newPassword the new password
+     * @throws CmsException if the user data could not be read from the database
+     * @throws CmsSecurityException if the specified username and old password could not be verified
      */
     public void resetPassword(String username, String oldPassword, String newPassword)
     throws CmsException, CmsSecurityException {
@@ -2061,7 +3151,16 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#restoreResource(org.opencms.file.CmsRequestContext, I_CmsRuntimeInfo, org.opencms.file.CmsResource, int)
+     * Restores a file in the current project with a version from the backup archive.<p>
+     * 
+     * @param context the current request context
+     * @param resource the resource to restore from the archive
+     * @param tag the tag (version) id to resource form the archive
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#restoreResourceBackup(String, int)
+     * @see I_CmsResourceType#restoreResourceBackup(CmsObject, CmsSecurityManager, CmsResource, int)
      */
     public void restoreResource(CmsRequestContext context, CmsResource resource, int tag) throws CmsException {
 
@@ -2085,7 +3184,14 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#setName(org.opencms.file.CmsRequestContext, int, java.lang.String)
+     * Set a new name for a task.<p>
+     *
+     * All users are granted.<p>
+     *
+     * @param context the current request context
+     * @param taskId the Id of the task to set the percentage
+     * @param name the new name value
+     * @throws CmsException if something goes wrong
      */
     public void setName(CmsRequestContext context, int taskId, String name) throws CmsException {
 
@@ -2093,7 +3199,15 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#setParentGroup(org.opencms.file.CmsRequestContext, I_CmsRuntimeInfo, java.lang.String, java.lang.String)
+     * Sets a new parent-group for an already existing group in the Cms.<p>
+     *
+     * Only the admin can do this.<p>
+     * 
+     * @param context the current request context
+     * @param groupName the name of the group that should be written to the Cms
+     * @param parentGroupName the name of the parentGroup to set, or null if the parent group should be deleted
+     *
+     * @throws CmsException if operation was not succesfull
      */
     public void setParentGroup(CmsRequestContext context, String groupName, String parentGroupName) throws CmsException {
 
@@ -2125,7 +3239,14 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#setPassword(org.opencms.file.CmsRequestContext, java.lang.String, java.lang.String)
+     * Sets the password for a user.<p>
+     *
+     * Only users in the group "Administrators" are granted.<p>
+     * 
+     * @param context the current request context
+     * @param username the name of the user
+     * @param newPassword the new password
+     * @throws CmsException if operation was not succesfull.
      */
     public void setPassword(CmsRequestContext context, String username, String newPassword) throws CmsException {
 
@@ -2133,7 +3254,14 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#setPriority(org.opencms.file.CmsRequestContext, int, int)
+     * Set priority of a task.<p>
+     *
+     * All users are granted.<p>
+     *
+     * @param context the current request context
+     * @param taskId the Id of the task to set the percentage
+     * @param priority the priority value
+     * @throws CmsException if something goes wrong
      */
     public void setPriority(CmsRequestContext context, int taskId, int priority) throws CmsException {
 
@@ -2141,7 +3269,12 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#setTaskPar(int, java.lang.String, java.lang.String)
+     * Set a Parameter for a task.<p>
+     *
+     * @param taskId the Id of the task
+     * @param parName name of the parameter
+     * @param parValue value if the parameter
+     * @throws CmsException if something goes wrong.
      */
     public void setTaskPar(int taskId, String parName, String parValue) throws CmsException {
 
@@ -2149,7 +3282,12 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#setTimeout(org.opencms.file.CmsRequestContext, int, long)
+     * Set timeout of a task.<p>
+     *
+     * @param context the current request context
+     * @param taskId the Id of the task to set the percentage
+     * @param timeout new timeout value
+     * @throws CmsException if something goes wrong
      */
     public void setTimeout(CmsRequestContext context, int taskId, long timeout) throws CmsException {
 
@@ -2157,7 +3295,24 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#touch(org.opencms.file.CmsRequestContext, I_CmsRuntimeInfo, org.opencms.file.CmsResource, long, long, long)
+     * Change the timestamp information of a resource.<p>
+     * 
+     * This method is used to set the "last modified" date
+     * of a resource, the "release" date of a resource, 
+     * and also the "expires" date of a resource.<p>
+     * 
+     * @param context the current request context
+     * @param resource the resource to touch
+     * @param dateLastModified the new last modified date of the resource
+     * @param dateReleased the new release date of the resource, 
+     *      use <code>{@link org.opencms.main.I_CmsConstants#C_DATE_UNCHANGED}</code> to keep it unchanged
+     * @param dateExpired the new expire date of the resource, 
+     *      use <code>{@link org.opencms.main.I_CmsConstants#C_DATE_UNCHANGED}</code> to keep it unchanged
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#touch(String, long, long, long, boolean)
+     * @see I_CmsResourceType#touch(CmsObject, CmsSecurityManager, CmsResource, long, long, long, boolean)
      */
     public void touch(
         CmsRequestContext context,
@@ -2186,8 +3341,17 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#undoChanges(org.opencms.file.CmsRequestContext, I_CmsRuntimeInfo, org.opencms.file.CmsResource)
-     */
+     * Undos all changes in the resource by restoring the version from the 
+     * online project to the current offline project.<p>
+     * 
+     * @param context the current request context
+     * @param resource the name of the resource to apply this operation to
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#undoChanges(String, boolean)
+     * @see I_CmsResourceType#undoChanges(CmsObject, CmsSecurityManager, CmsResource, boolean)
+     */ 
     public void undoChanges(CmsRequestContext context, CmsResource resource) throws CmsException {
 
         // check if the user has write access
@@ -2210,7 +3374,13 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#unlockProject(org.opencms.file.CmsRequestContext, int)
+     * Unlocks all resources in this project.<p>
+     *
+     * Only the admin or the owner of the project can do this.<p>
+     *
+     * @param context the current request context
+     * @param projectId the id of the project to be published
+     * @throws CmsException if something goes wrong
      */
     public void unlockProject(CmsRequestContext context, int projectId) throws CmsException {
 
@@ -2218,19 +3388,48 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#unlockResource(org.opencms.file.CmsRequestContext, org.opencms.file.CmsResource)
+     * Unlocks a resource.<p>
+     * 
+     * @param context the current request context
+     * @param resource the resource to unlock
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#unlockResource(String)
+     * @see I_CmsResourceType#unlockResource(CmsObject, CmsSecurityManager, CmsResource)
      */
     public void unlockResource(CmsRequestContext context, CmsResource resource) throws CmsException {
 
         // check if the user has write access to the resource
         checkPermissions(context, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
 
-        m_driverManager.unlockResource(context, resource);
+        I_CmsRuntimeInfo runtimeInfo = m_runtimeInfoFactory.getRuntimeInfo(
+            m_driverManager,
+            I_CmsRuntimeInfo.C_RUNTIMEINFO_VFS_AND_USER);
+
+        try {
+            m_driverManager.unlockResource(context, runtimeInfo, resource);
+            runtimeInfo.pop();
+        } catch (CmsException e) {
+            runtimeInfo.report(null, "Error undoing changes of resource " + resource.getRootPath(), e);
+            throw e;
+        } finally {
+            runtimeInfo.clear();
+        }
 
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#userInGroup(org.opencms.file.CmsRequestContext, I_CmsRuntimeInfo, java.lang.String, java.lang.String)
+     * Checks if a user is member of a group.<p>
+     *
+     * All users are granted, except the anonymous user.<p>
+     * 
+     * @param context the current request context
+     * @param username the name of the user to check
+     * @param groupname the name of the group to check
+     *
+     * @return true or false
+     * @throws CmsException if operation was not succesful
      */
     public boolean userInGroup(CmsRequestContext context, String username, String groupname) throws CmsException {
 
@@ -2238,7 +3437,14 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#validateHtmlLinks(org.opencms.file.CmsObject, org.opencms.db.CmsPublishList, org.opencms.report.I_CmsReport)
+     * Validates the Cms resources in a Cms publish list.<p>
+     * 
+     * @param cms the current user's Cms object
+     * @param publishList a Cms publish list
+     * @param report an instance of I_CmsReport to print messages
+     * @return a map with lists of invalid links keyed by resource names
+     * @throws Exception if something goes wrong
+     * @see #getPublishList(CmsRequestContext, CmsResource, boolean)
      */
     public Map validateHtmlLinks(CmsObject cms, CmsPublishList publishList, I_CmsReport report) throws Exception {
 
@@ -2246,7 +3452,13 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#validatePassword(java.lang.String)
+     * This method checks if a new password follows the rules for
+     * new passwords, which are defined by a Class configured in opencms.properties.<p>
+     * 
+     * If this method throws no exception the password is valid.<p>
+     *
+     * @param password the new password that has to be checked
+     * @throws CmsSecurityException if the password is not valid
      */
     public void validatePassword(String password) throws CmsSecurityException {
 
@@ -2254,7 +3466,13 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#writeAccessControlEntry(org.opencms.file.CmsRequestContext, I_CmsRuntimeInfo, org.opencms.file.CmsResource, org.opencms.security.CmsAccessControlEntry)
+     * Writes an access control entries to a given resource.<p>
+     * 
+     * @param context the current request context
+     * @param resource the resource
+     * @param ace the entry to write
+     * 
+     * @throws CmsException if something goes wrong
      */
     public void writeAccessControlEntry(CmsRequestContext context, CmsResource resource, CmsAccessControlEntry ace)
     throws CmsException {
@@ -2279,7 +3497,24 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#writeFile(org.opencms.file.CmsRequestContext, I_CmsRuntimeInfo, org.opencms.file.CmsFile)
+     * Writes a resource to the OpenCms VFS, including it's content.<p>
+     * 
+     * Applies only to resources of type <code>{@link CmsFile}</code>
+     * i.e. resources that have a binary content attached.<p>
+     * 
+     * Certain resource types might apply content validation or transformation rules 
+     * before the resource is actually written to the VFS. The returned result
+     * might therefore be a modified version from the provided original.<p>
+     * 
+     * @param context the current request context
+     * @param resource the resource to apply this operation to
+     * 
+     * @return the written resource (may have been modified)
+     *
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#writeFile(CmsFile)
+     * @see I_CmsResourceType#writeFile(CmsObject, CmsSecurityManager, CmsFile)
      */
     public CmsFile writeFile(CmsRequestContext context, CmsFile resource) throws CmsException {
 
@@ -2306,7 +3541,14 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#writeGroup(org.opencms.file.CmsRequestContext, I_CmsRuntimeInfo, org.opencms.file.CmsGroup)
+     * Writes an already existing group in the Cms.<p>
+     *
+     * Only the admin can do this.
+     * 
+     * @param context the current request context
+     * @param group the group that should be written to the Cms
+     *
+     * @throws CmsException if operation was not succesfull
      */
     public void writeGroup(CmsRequestContext context, CmsGroup group) throws CmsException {
 
@@ -2315,7 +3557,7 @@ public class CmsSecurityManager {
             I_CmsRuntimeInfo runtimeInfo = m_runtimeInfoFactory.getRuntimeInfo(
                 m_driverManager,
                 I_CmsRuntimeInfo.C_RUNTIMEINFO_USER);
-            
+
             try {
                 m_driverManager.writeGroup(context, runtimeInfo, group);
                 runtimeInfo.pop();
@@ -2325,15 +3567,26 @@ public class CmsSecurityManager {
             } finally {
                 runtimeInfo.clear();
             }
-            
+
         } else {
-            throw new CmsSecurityException("[" + this.getClass().getName() + "] writeGroup() " + group.getName(), CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
+            throw new CmsSecurityException(
+                "[" + this.getClass().getName() + "] writeGroup() " + group.getName(),
+                CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
         }
-        
+
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#writePropertyObject(org.opencms.file.CmsRequestContext, I_CmsRuntimeInfo, org.opencms.file.CmsResource, org.opencms.file.CmsProperty)
+     * Writes a property for a specified resource.<p>
+     * 
+     * @param context the current request context
+     * @param resource the resource to write the property for
+     * @param property the property to write
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#writePropertyObject(String, CmsProperty)
+     * @see I_CmsResourceType#writePropertyObject(CmsObject, CmsSecurityManager, CmsResource, CmsProperty)
      */
     public void writePropertyObject(CmsRequestContext context, CmsResource resource, CmsProperty property)
     throws CmsException {
@@ -2361,7 +3614,20 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#writePropertyObjects(org.opencms.file.CmsRequestContext, I_CmsRuntimeInfo, org.opencms.file.CmsResource, java.util.List)
+     * Writes a list of properties for a specified resource.<p>
+     * 
+     * Code calling this method has to ensure that the no properties 
+     * <code>a, b</code> are contained in the specified list so that <code>a.equals(b)</code>, 
+     * otherwise an exception is thrown.<p>
+     * 
+     * @param context the current request context
+     * @param resource the resource to write the properties for
+     * @param properties the list of properties to write
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#writePropertyObjects(String, List)
+     * @see I_CmsResourceType#writePropertyObjects(CmsObject, CmsSecurityManager, CmsResource, List)
      */
     public void writePropertyObjects(CmsRequestContext context, CmsResource resource, List properties)
     throws CmsException {
@@ -2396,7 +3662,12 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#writeResource(org.opencms.file.CmsRequestContext, I_CmsRuntimeInfo, org.opencms.file.CmsResource)
+     * Writes a resource to the OpenCms VFS.<p>
+     * 
+     * @param context the current request context
+     * @param resource the resource to write
+     *
+     * @throws CmsException if something goes wrong
      */
     public void writeResource(CmsRequestContext context, CmsResource resource) throws CmsException {
 
@@ -2420,7 +3691,16 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#writeStaticExportPublishedResource(org.opencms.file.CmsRequestContext, java.lang.String, int, java.lang.String, long)
+     * Inserts an entry in the published resource table.<p>
+     * 
+     * This is done during static export.<p>
+     * 
+     * @param context the current request context
+     * @param resourceName The name of the resource to be added to the static export
+     * @param linkType the type of resource exported (0= non-paramter, 1=parameter)
+     * @param linkParameter the parameters added to the resource
+     * @param timestamp a timestamp for writing the data into the db
+     * @throws CmsException if something goes wrong
      */
     public void writeStaticExportPublishedResource(
         CmsRequestContext context,
@@ -2433,7 +3713,14 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#writeTaskLog(org.opencms.file.CmsRequestContext, int, java.lang.String)
+     * Writes a new user tasklog for a task.<p>
+     *
+     * All users are granted.<p>
+     *
+     * @param context the current request context
+     * @param taskid the Id of the task
+     * @param comment description for the log
+     * @throws CmsException if something goes wrong
      */
     public void writeTaskLog(CmsRequestContext context, int taskid, String comment) throws CmsException {
 
@@ -2441,7 +3728,15 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#writeTaskLog(org.opencms.file.CmsRequestContext, int, java.lang.String, int)
+     * Writes a new user tasklog for a task.<p>
+     *
+     * All users are granted.<p>
+     *
+     * @param context the current request context
+     * @param taskId the Id of the task
+     * @param comment description for the log
+     * @param type type of the tasklog. User tasktypes must be greater then 100
+     * @throws CmsException something goes wrong
      */
     public void writeTaskLog(CmsRequestContext context, int taskId, String comment, int type) throws CmsException {
 
@@ -2449,7 +3744,14 @@ public class CmsSecurityManager {
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#writeUser(org.opencms.file.CmsRequestContext, I_CmsRuntimeInfo, org.opencms.file.CmsUser)
+     * Updates the user information.<p>
+     *
+     * Only users, which are in the group "administrators" are granted.<p>
+     * 
+     * @param context the current request context
+     * @param user The  user to be updated
+     *
+     * @throws CmsException if operation was not succesful
      */
     public void writeUser(CmsRequestContext context, CmsUser user) throws CmsException {
 
@@ -2458,7 +3760,7 @@ public class CmsSecurityManager {
             I_CmsRuntimeInfo runtimeInfo = m_runtimeInfoFactory.getRuntimeInfo(
                 m_driverManager,
                 I_CmsRuntimeInfo.C_RUNTIMEINFO_USER);
-            
+
             try {
                 m_driverManager.writeUser(context, runtimeInfo, user);
                 runtimeInfo.pop();
@@ -2468,24 +3770,32 @@ public class CmsSecurityManager {
             } finally {
                 runtimeInfo.clear();
             }
-            
+
         } else {
-            throw new CmsSecurityException("[" + this.getClass().getName() + "] writeUser() " + user.getName(), CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
+            throw new CmsSecurityException(
+                "[" + this.getClass().getName() + "] writeUser() " + user.getName(),
+                CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
         }
-        
+
     }
 
     /**
-     * @see org.opencms.db.CmsDriverManager#writeWebUser(I_CmsRuntimeInfo, org.opencms.file.CmsUser)
+     * Updates the user information of a web user.<p>
+     *
+     * Only users of the user type webuser can be updated this way.<p>
+     * 
+     * @param user the user to be updated
+     *
+     * @throws CmsException if operation was not succesful
      */
     public void writeWebUser(CmsUser user) throws CmsException {
 
         if (user.isWebUser()) {
-            
+
             I_CmsRuntimeInfo runtimeInfo = m_runtimeInfoFactory.getRuntimeInfo(
                 m_driverManager,
                 I_CmsRuntimeInfo.C_RUNTIMEINFO_USER);
-            
+
             try {
                 m_driverManager.writeWebUser(runtimeInfo, user);
                 runtimeInfo.pop();
@@ -2494,12 +3804,14 @@ public class CmsSecurityManager {
                 throw e;
             } finally {
                 runtimeInfo.clear();
-            }            
+            }
 
         } else {
-            throw new CmsSecurityException("[" + this.getClass().getName() + "] writeWebUser() " + user.getName(), CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
+            throw new CmsSecurityException(
+                "[" + this.getClass().getName() + "] writeWebUser() " + user.getName(),
+                CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
-       
+
     }
 
     /**
