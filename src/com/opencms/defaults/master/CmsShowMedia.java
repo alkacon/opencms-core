@@ -45,7 +45,6 @@ public class CmsShowMedia extends CmsXmlTemplate {
         Hashtable parameters, String templateSelector) throws CmsException {
 		// session will be created or fetched
 		CmsRequestContext req = cms.getRequestContext();
-		I_CmsSession session = (I_CmsSession) req.getSession(true);
 		byte[] picture = new byte[0];
         CmsMasterContent cd = null;
         CmsMasterMedia media = null;
