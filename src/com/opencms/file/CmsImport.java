@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/07/23 08:22:53 $
-* Version: $Revision: 1.122 $
+* Date   : $Date: 2003/07/23 10:25:55 $
+* Version: $Revision: 1.123 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.w3c.dom.NodeList;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.122 $ $Date: 2003/07/23 08:22:53 $
+ * @version $Revision: 1.123 $ $Date: 2003/07/23 10:25:55 $
  */
 public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
 
@@ -1334,7 +1334,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                     // finally delete the old body file, it is not needed anymore
                     m_cms.lockResource(bodyname);
                     m_cms.deleteResource(bodyname, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
-                    m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+                    m_report.println(" " + m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
                 }
 
             } catch (Exception e) {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsException.java,v $
-* Date   : $Date: 2003/06/17 16:23:46 $
-* Version: $Revision: 1.50 $
+* Date   : $Date: 2003/07/23 10:25:55 $
+* Version: $Revision: 1.51 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.util.*;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.50 $ $Date: 2003/06/17 16:23:46 $
+ * @version $Revision: 1.51 $ $Date: 2003/07/23 10:25:55 $
  */
 public class CmsException extends Exception {
 
@@ -392,8 +392,16 @@ public class CmsException extends Exception {
      * @return Exception messge.
      */
     public String getShortException() {
-        return C_CMS_EXCEPTION_PREFIX + ": " + getType() + " " + C_EXTXT[getType()]
+        return C_CMS_EXCEPTION_PREFIX + ": " + getType() + " " + getErrorDescription(getType())
                 + ". Detailed Error: " + m_message + ".";
+    }
+    
+    protected String getErrorDescription(int errCodeIndex) {
+        if (CmsException.C_EXTXT.length >= errCodeIndex) {
+            return CmsException.C_EXTXT[errCodeIndex];
+        }
+
+        return this.getClass().getName();
     }
 
     /**
@@ -462,7 +470,7 @@ public class CmsException extends Exception {
      * @return Exception type in a text-version.
      */
     public String getTypeText() {
-        return C_CMS_EXCEPTION_PREFIX + ": " + getType() + " " + C_EXTXT[getType()];
+        return C_CMS_EXCEPTION_PREFIX + ": " + getType() + " " + getErrorDescription(getType());
     }
 
     /**
@@ -495,7 +503,7 @@ public class CmsException extends Exception {
         StringBuffer output = new StringBuffer();
         output.append(C_CMS_EXCEPTION_PREFIX + ": ");
         output.append(m_type + " ");
-        output.append(CmsException.C_EXTXT[m_type] + ". ");
+        output.append(getErrorDescription(m_type) + ". ");
         if (m_message != null && (!"".equals(m_message))) {
             output.append("Detailed error: ");
             output.append(m_message + ". ");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/Attic/CmsLockDispatcher.java,v $
- * Date   : $Date: 2003/07/22 17:13:33 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/07/23 10:25:55 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,14 +61,12 @@ import java.util.Map;
  * re-initialize itself while the app. with a clear cache event.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.10 $ $Date: 2003/07/22 17:13:33 $
+ * @version $Revision: 1.11 $ $Date: 2003/07/23 10:25:55 $
  * @since 5.1.4
  * @see com.opencms.file.CmsObject#getLock(CmsResource)
  * @see org.opencms.lock.CmsLock
  */
 public final class CmsLockDispatcher extends Object implements I_CmsEventListener {
-
-    // TODO add support for unlocking resources with locked parent folders
 
     /** The shared lock dispatcher instance */
     private static CmsLockDispatcher sharedInstance;

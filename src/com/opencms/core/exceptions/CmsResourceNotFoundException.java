@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/exceptions/Attic/CmsResourceNotFoundException.java,v $
- * Date   : $Date: 2003/06/13 10:04:21 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/07/23 10:25:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,13 +39,13 @@ import com.opencms.core.CmsException;
  * in the org.opencms.db package and its sub-packages.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2003/06/13 10:04:21 $
+ * @version $Revision: 1.3 $ $Date: 2003/07/23 10:25:55 $
  * @since 5.1.2
  */
 public class CmsResourceNotFoundException extends CmsException {
 
     /**
-     * Constructs a CmsResourceNotFoundException with the specified detail message.
+     * Constructs a CmsResourceNotFoundException with the specified detail message.<p>
      * 
      * @param message the detail message
      */
@@ -55,7 +55,7 @@ public class CmsResourceNotFoundException extends CmsException {
 
     /**
      * Constructs a CmsResourceNotFoundException with the specified detail message
-     * and adds the original exception as a delegated root cause.
+     * and adds the original exception as a delegated root cause.<p>
      * 
      * @param message the detail message
      * @param rootCause the delegated exception

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsPrimaryKeyException.java,v $
- * Date   : $Date: 2003/07/16 13:45:49 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/07/23 10:25:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,31 +38,33 @@ import com.opencms.core.CmsException;
  * invalid or empty.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2003/07/16 13:45:49 $
+ * @version $Revision: 1.3 $ $Date: 2003/07/23 10:25:55 $
  * @since 5.1.4
  */
 public class CmsPrimaryKeyException extends CmsException {
     
+    // the allowed type range for this exception is >=100 and <200
+    
     /** An entry in the STRUCTURE table has an invalid parent ID */
-    public static final int C_INVALID_PARENT_ID = 1;
+    public static final int C_INVALID_PARENT_ID = 100;
     
     /** An entry in the STRUCTURE table has an invalid resource ID */
-    public static final int C_INVALID_RESOURCE_ID = 2;
+    public static final int C_INVALID_RESOURCE_ID = 101;
     
     /** An entry in the RESOURCES table has an invalid file ID */
-    public static final int C_INVALID_FILE_ID = 3;
+    public static final int C_INVALID_FILE_ID = 102;
     
     /** An entry in the STRUCTURE table has no parent ID */
-    public static final int C_PARENT_ID_EMPTY = 4;
+    public static final int C_PARENT_ID_EMPTY = 103;
     
     /** An entry in the STRUCTURE table has no resource ID */
-    public static final int C_RESOURCE_ID_EMPTY = 16;
+    public static final int C_RESOURCE_ID_EMPTY = 104;
     
     /** An entry in the RESOURCES table has no file ID */
-    public static final int C_FILE_ID_EMPTY = 32;    
+    public static final int C_FILE_ID_EMPTY = 105;    
     
     /**
-     * Constructs a CmsPrimaryKeyException with the specified detail message and type.
+     * Constructs a CmsPrimaryKeyException with the specified detail message and type.<p>
      * 
      * @param message the detail message
      * @param type the type of the exception

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/23 08:22:53 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2003/07/23 10:25:55 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.51 $ $Date: 2003/07/23 08:22:53 $
+ * @version $Revision: 1.52 $ $Date: 2003/07/23 10:25:55 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -963,6 +963,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             m_sqlManager.closeAll(conn, stmt, null);
         }
     }
+    
     /**
      * Deletes all properties for a file or folder.
      *
@@ -985,6 +986,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             m_sqlManager.closeAll(conn, stmt, null);
         }
     }
+    
     /**
      * Deletes all properties for a file or folder.
      *
@@ -1010,24 +1012,27 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
     }
 
     /**
-     * Deletes the file.
-     *
-     * @param project The project in which the resource will be used.
-     * @param filename The complete path of the file.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful.
+     * @see org.opencms.db.I_CmsVfsDriver#deleteFile(com.opencms.file.CmsProject, com.opencms.file.CmsResource)
      */
-    public void deleteFile(CmsProject project, CmsResource resource) throws CmsException {
+    public void deleteFile(CmsProject currentProject, CmsResource resource) throws CmsException {
         Connection conn = null;
         PreparedStatement stmt = null;
         
         try {
-            conn = m_sqlManager.getConnection(project);
-            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_REMOVE");
-
-            stmt.setInt(1, com.opencms.core.I_CmsConstants.C_STATE_DELETED);
-            stmt.setString(2, CmsUUID.getNullUUID().toString());
-            stmt.setString(3, resource.getResourceId().toString());
+            conn = m_sqlManager.getConnection(currentProject);
+            
+            if (resource.isHardLink()) {
+                stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_RESOURCES_DELETE_RESOURCE");
+                stmt.setInt(1, I_CmsConstants.C_STATE_DELETED);
+                stmt.setString(2, resource.getResourceId().toString());
+                stmt.executeUpdate();
+                
+                m_sqlManager.closeAll(null, stmt, null);
+            }
+            
+            stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_RESOURCES_DELETE_STRUCTURE");
+            stmt.setInt(1, I_CmsConstants.C_STATE_DELETED);
+            stmt.setString(2, resource.getId().toString());
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
@@ -1142,6 +1147,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             m_sqlManager.closeAll(conn, stmt, null);
         }
     }
+    
     /**
      * Deletes a property for a file or folder.
      *
@@ -1176,6 +1182,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             }
         }
     }
+    
     /**
      * Delete the propertydefinitions for the resource type.<BR/>
      *
@@ -1219,38 +1226,6 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             m_sqlManager.closeAll(conn, stmt, null);
         }
     }
-
-    /**
-     * Private helper method to delete a resource.
-     *
-     * @param id the id of the resource to delete.
-     * @throws CmsException  Throws CmsException if operation was not succesful.
-     */
-//    public void deleteResource(CmsResource resource) throws CmsException {
-//        Connection conn = null;
-//        PreparedStatement stmt = null;
-//
-//        try {
-//            // delete resource data from database
-//            conn = m_sqlManager.getConnection(resource.getProjectId());            
-//            stmt = m_sqlManager.getPreparedStatement(conn, resource.getProjectId(), "C_RESOURCES_ID_DELETE");
-//            stmt.setString(1, resource.getId().toString());
-//            stmt.executeUpdate();
-//            
-//            if (resource.isHardLink()) {
-//                m_sqlManager.closeAll(null, stmt, null);
-//    
-//                // delete the file content
-//                stmt = m_sqlManager.getPreparedStatement(conn, resource.getProjectId(), "C_FILE_CONTENT_DELETE");
-//                stmt.setString(1, resource.getFileId().toString());
-//                stmt.executeUpdate();
-//            }
-//        } catch (SQLException e) {
-//            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-//        } finally {
-//            m_sqlManager.closeAll(conn, stmt, null);
-//        }
-//    }
     
     /**
      * @see org.opencms.db.I_CmsVfsDriver#destroy()
@@ -1392,6 +1367,9 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         return vfsLinks;
     }    
     
+    /**
+     * @see java.lang.Object#finalize()
+     */
     protected void finalize() throws Throwable {
         if (m_sqlManager!=null) {
             m_sqlManager.finalize();
@@ -3753,6 +3731,9 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         return lockedFileHeaders;
     }
     
+    /**
+     * @see org.opencms.db.I_CmsVfsDriver#switchLinkType(com.opencms.file.CmsUser, com.opencms.file.CmsProject, com.opencms.file.CmsResource, com.opencms.file.CmsResource)
+     */
     public void switchLinkType(CmsUser currentUser, CmsProject currentProject, CmsResource softLink, CmsResource hardLink) throws CmsException {
         PreparedStatement stmt = null;
         Connection conn = null;

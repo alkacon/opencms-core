@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/23 07:54:11 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2003/07/23 10:25:55 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import source.org.apache.java.util.Configurations;
  * Definitions of all required VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.18 $ $Date: 2003/07/23 07:54:11 $
+ * @version $Revision: 1.19 $ $Date: 2003/07/23 10:25:55 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -83,32 +83,8 @@ public interface I_CmsVfsDriver {
      * @return CmsFolder the new CmsFolder
      * @throws SQLException in case the result set does not include a requested table attribute
      */
-    CmsFolder createCmsFolderFromResultSet(ResultSet res, int projectId, boolean hasProjectIdInResultSet) throws SQLException;
-    
-    /**
-     * Semi-constructor to create a CmsFile instance from a JDBC result set.<p>
-     * 
-     * @param res the JDBC ResultSet
-     * @param projectId the ID of the current project to adjust the modification date in case the file is a VFS link
-     * @return CmsFile the new CmsFile object
-     * @throws SQLException in case the result set does not include a requested table attribute
-     * @throws CmsException if the CmsFile object cannot be created by its constructor
-     */    
-    // CmsFile createCmsFileFromResultSet(ResultSet res, int projectId) throws SQLException, CmsException;
-    
-    /**
-     * Semi-constructor to create a CmsFile instance from a JDBC result set.
-     * 
-     * @param res the JDBC ResultSet
-     * @param projectId ID of the current project
-     * @param hasFileContentInResultSet true if the SQL select query includes the FILE_CONTENT attribute
-     * @return CmsFile the new CmsFile object
-     * @throws SQLException in case the result set does not include a requested table attribute
-     * @throws CmsException if the CmsFile object cannot be created by its constructor
-     */    
-    // CmsFile createCmsFileFromResultSet(ResultSet res, int projectId, boolean hasProjectIdInResultSet, boolean hasFileContentInResultSet) throws SQLException, CmsException;
-    
-    CmsFile createFile(CmsProject project, CmsFile file, CmsUUID userId, CmsUUID parentId, String filename, int vfsLinkType /* boolean isVfsLink */) throws CmsException;
+    CmsFolder createCmsFolderFromResultSet(ResultSet res, int projectId, boolean hasProjectIdInResultSet) throws SQLException;    
+    CmsFile createFile(CmsProject project, CmsFile file, CmsUUID userId, CmsUUID parentId, String filename, int vfsLinkType) throws CmsException;
     
     /**
      * Creates a new file with the given content and resourcetype.<p>
@@ -145,7 +121,16 @@ public interface I_CmsVfsDriver {
     void deleteAllProjectResources(int projectId) throws CmsException;
     void deleteAllProperties(int projectId, CmsResource resource) throws CmsException;
     void deleteAllProperties(int projectId, CmsUUID resourceId) throws CmsException;
-    void deleteFile(CmsProject project, CmsResource resource) throws CmsException;
+    
+    /**
+     * Tags a resource as deleted without removing it physically in the database.<p>
+     * 
+     * @param currentProject the current project
+     * @param resource the resource
+     * @throws CmsException if something goes wrong
+     */
+    void deleteFile(CmsProject currentProject, CmsResource resource) throws CmsException;
+    
     void deleteFolder(CmsProject currentProject, CmsFolder folder) throws CmsException;
     void deleteProjectResource(int projectId, String resourceName) throws CmsException;
     void deleteProjectResources(CmsProject project) throws CmsException;
@@ -164,7 +149,7 @@ public interface I_CmsVfsDriver {
     int fetchResourceFlags(CmsProject theProject, String theResourceName) throws CmsException;
     
     /**
-     * Returns a List with the fileheaders of all VFS links pointing to the specified resource.<p> 
+     * Gets a list of all hard and soft links pointing to the content of a resource.<p>
      * 
      * @param currentProject the current project
      * @param resource the specified resource
@@ -173,6 +158,15 @@ public interface I_CmsVfsDriver {
      */
     List getAllVfsLinks(CmsProject currentProject, CmsResource resource) throws CmsException;
     
+    /**
+     * Gets a list of all soft links pointing to the content of a resource, excluding it's
+     * hard link, and excluding the resource itself in case it is a soft link.<p>
+     * 
+     * @param currentProject
+     * @param resource
+     * @return
+     * @throws CmsException
+     */    
     List getAllVfsSoftLinks(CmsProject currentProject, CmsResource resource) throws CmsException;
     
     void getBrokenLinks(I_CmsReport report, Vector changed, Vector deleted, Vector newRes) throws CmsException;
@@ -285,13 +279,22 @@ public interface I_CmsVfsDriver {
     Vector readResourcesLikeName(CmsProject project, String resourcename) throws CmsException;
     
     /**
-     * Deletes a resource.<p>
+     * Removes a resource physically in the database.<p>
      * 
-     * @param projectId the ID of the current project
-     * @param resourceId the ID of the resource
+     * @param currentProject the current project
+     * @param resource the resource
      * @throws CmsException if something goes wrong
      */
     void removeFile(CmsProject currentProject, CmsResource resource) throws CmsException;
+    
+    /**
+     * Removes a resource physically in the database.<p>
+     * 
+     * @param currentProject currentProject the current project
+     * @param parentId the ID of the parent resource
+     * @param filename the filename of the resource
+     * @throws CmsException if something goes wrong
+     */
     void removeFile(CmsProject currentProject, CmsUUID parentId, String filename) throws CmsException;
 
 	/**
@@ -432,6 +435,18 @@ public interface I_CmsVfsDriver {
      */
     List readLockedFileHeaders() throws CmsException;
         
+    /**
+     * Switches the link type between a specified VFS soft link and hard link.<p>
+     * 
+     * Either one of the two CmsResource arguments may be null (passing null for both
+     * resources won't make much sense) to change the link-type of a single resource.
+     * 
+     * @param currentUser the current user
+     * @param currentProject the current project
+     * @param softLink a soft-link resource, which will become a hard-link
+     * @param hardLink a hard-link resource, which will become a soft-link
+     * @throws CmsException if something goes wrong
+     */
     void switchLinkType(CmsUser currentUser, CmsProject currentProject, CmsResource softLink, CmsResource hardLink) throws CmsException;
      
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/23 09:04:58 $
- * Version: $Revision: 1.85 $
+ * Date   : $Date: 2003/07/23 10:25:55 $
+ * Version: $Revision: 1.86 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.85 $ $Date: 2003/07/23 09:04:58 $
+ * @version $Revision: 1.86 $ $Date: 2003/07/23 10:25:55 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -366,8 +366,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param taskid The Id of the task to accept.
      *
      * @throws CmsException Throws CmsException if something goes wrong.
@@ -385,8 +384,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param projectId the id of the project.
      * @return true, if the user has access, else returns false.
      * @throws CmsException Throws CmsException if something goes wrong.
@@ -427,8 +425,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * Users, which are in the group "administrators" are granted.<BR/>
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param extension a file extension like 'html'
      * @param resTypeName name of the resource type associated to the extension
      */
@@ -458,8 +455,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * Only users, which are in the group "administrators" are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param id the id of the user.
      * @param name The name for the user.
      * @param password The password for the user.
@@ -485,7 +481,7 @@ public class CmsDriverManager extends Object {
         if (isAdmin(context)) {
             // no space before or after the name
             name = name.trim();
-            // check the username           
+            // check the username
             validFilename(name);
             CmsGroup group = readGroup(context, defaultGroup);
             CmsUser newUser = m_userDriver.addImportUser(new CmsUUID(id), name, password, recoveryPassword, description, firstname, lastname, email, 0, 0, flags, additionalInfos, group, address, section, type);
@@ -504,8 +500,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * Only users, which are in the group "administrators" are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param name The new name for the user.
      * @param password The new password for the user.
      * @param group The default groupname for the user.
@@ -548,8 +543,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * Only users, which are in the group "administrators" are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param username The name of the user that is to be added to the group.
      * @param groupname The name of the group.
      * @throws CmsException Throws CmsException if operation was not succesfull.
@@ -653,8 +647,7 @@ public class CmsDriverManager extends Object {
      * A web user has no access to the workplace but is able to access personalized
      * functions controlled by the OpenCms.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param name The new name for the user.
      * @param password The new password for the user.
      * @param group The default groupname for the user.
@@ -723,8 +716,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @return the anonymous user object.
      * @throws CmsException Throws CmsException if operation was not succesful
      */
@@ -753,7 +745,7 @@ public class CmsDriverManager extends Object {
      *
      * @param projectId The new project-id
      * @param resourcename The name of the resource to change
-     * @param context.currentUser() the current user
+     * @param context the current request context
      * @throws CmsException if something goes wrong
      */
     public void changeLockedInProject(CmsRequestContext context, int projectId, String resourcename) throws CmsException {
@@ -770,8 +762,7 @@ public class CmsDriverManager extends Object {
      * Changes the user type of the user
      * Only the administrator can change the type
      *
-     * @param context.currentUser() The current user
-     * @param context.currentProject() The current project
+     * @param context the current request context
      * @param userId The id of the user to change
      * @param userType The new usertype of the user
      */
@@ -789,8 +780,7 @@ public class CmsDriverManager extends Object {
      * Changes the user type of the user
      * Only the administrator can change the type
      *
-     * @param context.currentUser() The current user
-     * @param context.currentProject() The current project
+     * @param context the current request context
      * @param userId The id of the user to change
      * @param userType The new usertype of the user
      */
@@ -803,8 +793,7 @@ public class CmsDriverManager extends Object {
      * Changes the user type of the user
      * Only the administrator can change the type
      *
-     * @param context.currentUser() The current user
-     * @param context.currentProject() The current project
+     * @param context the current request context
      * @param username The name of the user to change
      * @param userType The new usertype of the user
      */
@@ -829,8 +818,7 @@ public class CmsDriverManager extends Object {
      * If the required permissions are not satisfied by the permissions the user has on the resource,
      * an no access exception is thrown.
      *
-     * @param context.currentUser() 			the user who requested this method
-     * @param context.currentProject() 		the current project of the user
+     * @param context the current request context
      * @param resource				the resource on which permissions are required
      * @param requiredPermissions	the set of permissions required to access the resource
      * @param strongCheck			if set to true, all required permission have to be granted, otherwise only one
@@ -911,8 +899,7 @@ public class CmsDriverManager extends Object {
      * <li>the resource is locked by the callingUser</li>
      * </ul>
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param filename The complete m_path to the resource.
      * @param newType The name of the new resourcetype for this resource.
      *
@@ -1012,8 +999,7 @@ public class CmsDriverManager extends Object {
      * <li>the current user has control permission on the destination resource
      * </ul>
      * 
-     * @param context.currentUser()		the user requesting the action
-     * @param context.currentProject()	the project in which the action is performed
+     * @param context the current request context
      * @param source			the resource which access control entries are copied
      * @param dest				the resource to which the access control entries are applied
      * @throws CmsException		if something goes wrong
@@ -1046,8 +1032,7 @@ public class CmsDriverManager extends Object {
      * <li>the destinationresource doesn't exist</li>
      * </ul>
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param source The complete m_path of the sourcefile.
      * @param destination The complete m_path to the destination.
      *
@@ -1123,8 +1108,7 @@ public class CmsDriverManager extends Object {
      * <li>the destinationresource doesn't exist</li>
      * </ul>
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param source The complete m_path of the sourcefolder.
      * @param destination The complete m_path to the destination.
      *
@@ -1190,8 +1174,7 @@ public class CmsDriverManager extends Object {
      * <li>the user is the owner of the project</li>
      * </ul>
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param resource The name of the resource.
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
@@ -1243,8 +1226,7 @@ public class CmsDriverManager extends Object {
      * <B>Security</B>
      * Only the admin or the owner of the project can do this.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param id The id of the project
      * @return the amount of locked resources in this project.
      *
@@ -1309,8 +1291,7 @@ public class CmsDriverManager extends Object {
      * <li>the file doesn't exist</li>
      * </ul>
      *
-     * @param context.currentUser() The user who owns this file.
-     * @param currentGroup The group who owns this file.
+     * @param context the current request context
      * @param context.currentProject() The project in which the resource will be used.
      * @param newFileName The name of the new file
      * @param contents The contents of the new file.
@@ -1370,8 +1351,7 @@ public class CmsDriverManager extends Object {
      * <li>the resource is not locked by another user</li>
      * </ul>
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param currentGroup The group who requested this method.
+     * @param context the current request context
      * @param context.currentProject() The current project of the user.
      * @param folder The complete m_path to the folder in which the new folder will
      * be created.
@@ -1428,8 +1408,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * Only users, which are in the group "administrators" are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param id The id of the new group.
      * @param name The name of the new group.
      * @param description The description for the new group.
@@ -1495,7 +1474,7 @@ public class CmsDriverManager extends Object {
     /**
      * Creates a new project for task handling.
      *
-     * @param context.currentUser() User who creates the project
+     * @param context the current request context
      * @param projectName Name of the project
      * @param projectType Type of the Project
      * @param role Usergroup for the project
@@ -1528,9 +1507,7 @@ public class CmsDriverManager extends Object {
      * <B>Security</B>
      * Only the users which are in the admin or projectleader-group are granted.
      *
-     * Changed: added the parent id
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param name The name of the project to read.
      * @param description The description for the new project.
      * @param group the group to be set.
@@ -1562,8 +1539,7 @@ public class CmsDriverManager extends Object {
      * Only the users which are in the admin or projectleader-group are granted.
      *
      * Changed: added the project type
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param name The name of the project to read.
      * @param description The description for the new project.
      * @param group the group to be set.
@@ -1594,8 +1570,7 @@ public class CmsDriverManager extends Object {
      * <B>Security</B>
      * Only the admin can do this.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param name The name of the propertydefinition to overwrite.
      * @param resourcetype The name of the resource-type for the propertydefinition.
      *
@@ -1621,8 +1596,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param agent Username who will edit the task
      * @param role Usergroupname for the task
      * @param taskname Name of the task
@@ -1655,8 +1629,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param projectid The Id of the current project task of the user.
+     * @param context the current request context
      * @param agentName User who will edit the task
      * @param roleName Usergroup for the task
      * @param taskName Name of the task
@@ -1691,8 +1664,7 @@ public class CmsDriverManager extends Object {
      * Only the users which are in the admin or projectleader-group are granted.
      *
      * Changed: added the project type
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @throws CmsException Throws CmsException if something goes wrong.
      */
     public CmsProject createTempfileProject(CmsObject cms, CmsRequestContext context) throws CmsException {
@@ -1794,8 +1766,7 @@ public class CmsDriverManager extends Object {
      * <li>the current user has write permission on the resource
      * </ul>
      * 
-     * @param context.currentUser()	 	the user requesting the action
-     * @param context.currentProject() 	the project in which the action is performed	
+     * @param context the current request context	
      * @param resource			the resource
      * @throws CmsException		if something goes wrong
      */
@@ -1816,8 +1787,7 @@ public class CmsDriverManager extends Object {
      * <B>Security</B>
      * Only the user is granted, who has the right to write the resource.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param resource The name of the resource of which the propertyinformations
      * have to be deleted.
      *
@@ -1840,8 +1810,7 @@ public class CmsDriverManager extends Object {
      * Deletes the versions from the backup tables that are older then the given weeks
      *
      * @param cms The CmsObject for reading the registry
-     * @param context.currentUser() The current user
-     * @param context.currentProject() The currently used project
+     * @param context the current request context
      * @param weeks The number of weeks: the max age of the remaining versions
      * @return int The oldest remaining version
      */
@@ -1898,8 +1867,7 @@ public class CmsDriverManager extends Object {
      * <li>the resource is locked by the callinUser</li>
      * </ul>
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param filename The complete m_path of the file.
      *
      * @throws CmsException  Throws CmsException if operation was not succesful.
@@ -1932,7 +1900,7 @@ public class CmsDriverManager extends Object {
                 resource = readFileHeader(context, filename, false);
             }
         } else if (resource.isHardLink() && deleteOption == I_CmsConstants.C_DELETE_OPTION_DELETE_VFS_LINKS) {
-            // add all VFS links pointing to this resource to the list of resources that get deleted/removed            
+            // add all VFS soft links pointing to this resource to the list of resources that get deleted/removed            
             resources.addAll(getAllVfsSoftLinks(context, filename));
 
             // ensure that each VFS link pointing to the resource is unlocked or locked by the current user
@@ -1942,9 +1910,9 @@ public class CmsDriverManager extends Object {
                 currentLock = getLock(context, currentResource);
 
                 if (!currentLock.equals(CmsLock.getNullLock()) && !currentLock.getUserId().equals(context.currentUser().getId())) {
-                    // the resource is locked by another user...
+                    // the resource is locked by a user different from the current user
                     int exceptionType = currentLock.getUserId().equals(context.currentUser().getId()) ? CmsLockException.C_RESOURCE_LOCKED_BY_CURRENT_USER : CmsLockException.C_RESOURCE_LOCKED_BY_OTHER_USER;
-                    throw new CmsLockException("The VFS link " + currentResource.getFullResourceName() + " pointing to " + filename + " is locked!", exceptionType);
+                    throw new CmsLockException("VFS link " + currentResource.getFullResourceName() + " pointing to " + filename + " is locked by another user!", exceptionType);
                 }
             }
         }
@@ -1955,42 +1923,43 @@ public class CmsDriverManager extends Object {
         // delete/remove all collected resources...
         i = resources.iterator();
         while (i.hasNext()) {
+            existsOnline = false;
             currentResource = (CmsResource) i.next();
 
             // check if the user has write access to the resource
             checkPermissions(context, currentResource, I_CmsConstants.C_WRITE_ACCESS);
 
-        try {
+            try {
                 // try to read the corresponding online resource to decide if the resource should be either removed or deleted
                 readFileHeaderInProject(context, I_CmsConstants.C_PROJECT_ONLINE_ID, currentResource.getFullResourceName(), false);
                 existsOnline = true;
-        } catch (CmsException exc) {
+            } catch (CmsException exc) {
                 existsOnline = false;
-        }
+            }
+            
+            unlockResource(context, currentResource.getFullResourceName(), true);
 
             if (!existsOnline) {
-                // the resource doesnt exist online => remove the file
-                m_vfsDriver.removeFile(context.currentProject(), currentResource);
                 // remove the properties                
                 deleteAllProperties(context, currentResource.getFullResourceName());
-            // remove the access control entries
+                // remove the access control entries
                 m_userDriver.removeAllAccessControlEntries(context.currentProject(), currentResource.getResourceAceId());
-        } else {
-                // the resource exists online => delete the file
-                m_vfsDriver.deleteFile(context.currentProject(), currentResource);
-            // delete the access control entries
+                // the resource doesnt exist online => remove the file
+                m_vfsDriver.removeFile(context.currentProject(), currentResource);                
+            } else {
+                // delete the access control entries
                 deleteAllAccessControlEntries(context, currentResource);
+                // the resource exists online => mark the file as deleted
+                m_vfsDriver.deleteFile(context.currentProject(), currentResource);                
+            }
         }
 
-            m_lockDispatcher.removeResource(currentResource.getFullResourceName());
-        }
-
-        // update the cache
+        // flush all caches
         clearAccessControlListCache();
         clearResourceCache();
         m_accessCache.clear();
-        
-        // inform about the file-system-change
+
+        // update the FS checksum
         fileSystemChanged(false);
     }
 
@@ -2010,8 +1979,7 @@ public class CmsDriverManager extends Object {
      * <li>the resource is not locked</li>
      * </ul>
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param foldername The complete m_path of the folder.
      * 
      * @throws CmsException  Throws CmsException if operation was not succesful.
@@ -2070,8 +2038,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * Only users, which are in the group "administrators" are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param delgroup The name of the group that is to be deleted.
      * @throws CmsException  Throws CmsException if operation was not succesfull.
      */
@@ -2111,8 +2078,7 @@ public class CmsDriverManager extends Object {
      * <B>Security</B>
      * Only the admin or the owner of the project can do this.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param id The id of the project to be published.
      *
      * @throws CmsException Throws CmsException if something goes wrong.
@@ -2211,8 +2177,7 @@ public class CmsDriverManager extends Object {
      * <B>Security</B>
      * Only the user is granted, who has the right to write the resource.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param resource The name of the resource of which the propertyinformation
      * has to be read.
      * @param property The propertydefinition-name of which the propertyinformation has to be set.
@@ -2260,8 +2225,7 @@ public class CmsDriverManager extends Object {
      * <B>Security</B>
      * Only the admin can do this.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param name The name of the propertydefinition to read.
      * @param resourcetype The name of the resource type for which the
      * propertydefinition is valid.
@@ -2288,8 +2252,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * Only users, which are in the group "administrators" are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param userId The Id of the user to be deleted.
      *
      * @throws CmsException Throws CmsException if operation was not succesfull.
@@ -2305,8 +2268,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * Only users, which are in the group "administrators" are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param name The name of the user to be deleted.
      *
      * @throws CmsException Throws CmsException if operation was not succesfull.
@@ -2329,8 +2291,7 @@ public class CmsDriverManager extends Object {
     /**
      * Deletes a web user from the Cms.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param userId The Id of the user to be deleted.
      *
      * @throws CmsException Throws CmsException if operation was not succesfull.
@@ -2366,8 +2327,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param taskid The ID of the task to end.
      *
      * @throws CmsException Throws CmsException if something goes wrong.
@@ -2389,8 +2349,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * only Administrators can do this;
      *
-     * @param context.currentUser() user who requestd themethod
-     * @param context.currentProject() current project of the user
+     * @param context the current request context
      * @param exportFile the name (absolute Path) of the export resource (zip)
      * @param exportChannels the names (absolute Path) of channels from which should be exported
      * @param exportModules the names of modules from which should be exported
@@ -2412,8 +2371,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * only Administrators can do this;
      *
-     * @param context.currentUser() user who requestd themethod
-     * @param context.currentProject() current project of the user
+     * @param context the current request context
      * @param exportFile the name (absolute Path) of the export resource (zip)
      * @param exportPath the names (absolute Path) of folders and files which should be exported
      * @param cms the cms-object to use for the export.
@@ -2434,8 +2392,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * only Administrators can do this;
      *
-     * @param context.currentUser() user who requestd themethod
-     * @param context.currentProject() current project of the user
+     * @param context the current request context
      * @param exportFile the name (absolute Path) of the export resource (zip)
      * @param exportPath the name (absolute Path) of folder from which should be exported
      * @param excludeSystem, decides whether to exclude the system
@@ -2458,8 +2415,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * only Administrators can do this;
      *
-     * @param context.currentUser() user who requestd themethod
-     * @param context.currentProject() current project of the user
+     * @param context the current request context
      * @param exportFile the name (absolute Path) of the export resource (zip)
      * @param exportPaths the name (absolute Path) of folders from which should be exported
      * @param cms the cms-object to use for the export.
@@ -2484,8 +2440,7 @@ public class CmsDriverManager extends Object {
      * on the master system (in the Vector allExportdLinks), so in this method the
      * database must not be updated.
      *
-     * @param context.currentUser() user who requestd themethod
-     * @param context.currentProject() current project of the user
+     * @param context the current request context
      * @param cms the cms-object to use for the export.
      * @param linksToExport all links that where exported by the master OpenCms.
      *
@@ -2503,8 +2458,7 @@ public class CmsDriverManager extends Object {
     /**
      * Creates a static export of a Cmsresource in the filesystem
      *
-     * @param context.currentUser() user who requestd themethod
-     * @param context.currentProject() current project of the user
+     * @param context the current request context
      * @param cms the cms-object to use for the export.
      * @param startpoints the startpoints for the export.
      * @param report the cmsReport to handle the log messages.
@@ -2523,8 +2477,7 @@ public class CmsDriverManager extends Object {
     /**
      * Extracts resources from a given resource list which are inside a given folder tree.<p>
      * 
-     * @param context.currentUser() the user who requested this method
-     * @param context.currentProject() the current project of the user
+     * @param context the current request context
      * @param storage ste of CmsUUID of all folders instide the folder tree
      * @param resources list of CmsResources
      * @return filtered list of CsmResources which are inside the folder tree
@@ -2554,7 +2507,7 @@ public class CmsDriverManager extends Object {
     }
 
     /**
-     * Gets all hard and soft links pointing to a specified resource.<p>
+     * Gets a list of all hard and soft links pointing to the content of a resource.<p>
      * 
      * @param theUser the current user
      * @param context.currentProject() the current project
@@ -2570,10 +2523,10 @@ public class CmsDriverManager extends Object {
         CmsResource resource = readFileHeader(context, resourcename);
         return m_vfsDriver.getAllVfsLinks(context.currentProject(), resource);
     }
-
+    
     /**
-     * Gets all soft links pointing to a specified resource, excluding the
-     * resource itself if it is a soft link and its hard link.<p>
+     * Gets a list of all soft links pointing to the content of a resource, excluding it's
+     * hard link, and excluding the resource itself in case it is a soft link.<p>
      * 
      * @param context
      * @param resourcename
@@ -2636,8 +2589,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param taskid The Id of the task to forward.
      * @param newRole The new Group for the task
      * @param newUser The new user who gets the task. if its "" the a new agent will automatic selected
@@ -2664,8 +2616,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * The access control entries of a resource are readable by everyone.
      * 
-     * @param context.currentUser()	 	the user requesting the action
-     * @param context.currentProject() 	the project in which the action is performed	
+     * @param context the current request context	
      * @param resource			the resource
      * @param getInherited		true in order to include access control entries inherited by parent folders
      * @return					a vector of access control entries defining all permissions for the given resource
@@ -2698,8 +2649,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * The access control list of a resource is readable by everyone.
      * 
-     * @param context.currentUser()	 	the user requesting the action
-     * @param context.currentProject() 	the project in which the action is performed	
+     * @param context the current request context	
      * @param resource			the resource 
      * @return					the access control list of the resource
      * @throws CmsException		if something goes wrong
@@ -2713,8 +2663,7 @@ public class CmsDriverManager extends Object {
      * Returns the access control list of a given resource.
      * If inheritedOnly is set, non-inherited entries of the resource are skipped.
      * 
-     * @param context.currentUser()		the user requesting the action
-     * @param context.currentProject()	the project in which the action is performed
+     * @param context the current request context
      * @param resource			the resource
      * @param inheritedOnly		skip non-inherited entries if set
      * @return					the access control list of the resource
@@ -2764,9 +2713,7 @@ public class CmsDriverManager extends Object {
      * <B>Security</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
-     *
+     * @param context the current request context
      * @return a Vector of projects.
      */
     public Vector getAllAccessibleProjects(CmsRequestContext context) throws CmsException {
@@ -2831,9 +2778,7 @@ public class CmsDriverManager extends Object {
      * <B>Security</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
-     *
+     * @param context the current request context
      * @return a Vector of projects.
      */
     public Vector getAllManageableProjects(CmsRequestContext context) throws CmsException {
@@ -3036,8 +2981,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted, except the anonymous user.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param groupname The name of the group.
      * @return groups A Vector of all child groups or null.
      * @throws CmsException Throws CmsException if operation was not succesful.
@@ -3058,8 +3002,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted, except the anonymous user.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param groupname The name of the group.
      * @return groups A Vector of all child groups or null.
      * @throws CmsException Throws CmsException if operation was not succesful.
@@ -3101,8 +3044,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @return The Configurations of the properties-file.
      */
     public Configurations getConfigurations() {
@@ -3125,8 +3067,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param username The name of the user.
      * @return Vector of groups
      * @throws CmsException Throws CmsException if operation was not succesful
@@ -3143,8 +3084,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param foldername the complete m_path to the folder.
      * @param propertydef, the name of the propertydefinition to check.
      * @param property, the value of the property for the resource.
@@ -3165,9 +3105,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
-     *
+     * @param context the current request context
      * @return the number of file-system-changes.
      */
     public long getFileSystemChanges() {
@@ -3182,9 +3120,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
-     *
+     * @param context the current request context
      * @return the number of file-system-changes.
      */
     public long getFileSystemFolderChanges() {
@@ -3310,8 +3246,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted, except the anonymous user.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @return users A Vector of all existing groups.
      * @throws CmsException Throws CmsException if operation was not succesful.
      */
@@ -3330,8 +3265,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param username The name of the user.
      * @return Vector of groups
      * @throws CmsException Throws CmsException if operation was not succesful
@@ -3398,8 +3332,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param groupname The name of the group.
      * @return group The parent group or null.
      * @throws CmsException Throws CmsException if operation was not succesful.
@@ -3425,8 +3358,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() the user who requested this method.
-     * @param context.currentProject() the current project of the user.
+     * @param context the current request context
      * @param resourcename the name of the resource to find the parent for
      *
      * @return The parent resource read from the VFS
@@ -3449,8 +3381,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * Permissions are readable by everyone.
      * 
-     * @param context.currentUser()	 	the user requesting the action
-     * @param context.currentProject() 	the project in which the action is performed	
+     * @param context the current request context	
      * @param resource			the resource
      * @param user				the user
      * @return					bitset with allowed permissions
@@ -3509,8 +3440,7 @@ public class CmsDriverManager extends Object {
      * Gets the Registry.<BR/>
      *
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param cms The actual CmsObject
      * @throws Throws CmsException if access is not allowed.
      */
@@ -3528,8 +3458,7 @@ public class CmsDriverManager extends Object {
      * <li>the user can read and view this resource</li>
      * </ul>
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param folder The name of the folder to get the subresources from.
      *
      * @return subfolders A Vector with resources.
@@ -3615,8 +3544,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param propertyDefinition, the name of the propertydefinition to check.
      *
      * @return Vector with all resources.
@@ -3633,8 +3561,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() the user who requested this method
-     * @param context.currentProject() the current project of the user
+     * @param context the current request context
      * @param folder the folder to get the subresources from
      * @param propertyDefinition the name of the propertydefinition to check
      * @return List with all resources
@@ -3656,8 +3583,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param propertyDefinition, the name of the propertydefinition to check.
      * @param propertyValue, the value of the property for the resource.
      * @param resourceType The resource type of the resource
@@ -3710,8 +3636,7 @@ public class CmsDriverManager extends Object {
     /**
      * Gets the sub files of a folder.<p>
      * 
-     * @param context.currentUser() the current user
-     * @param context.currentProject() the current project
+     * @param context the current request context
      * @param parentFolderName the name of the parent folder
      * @return a List of all sub files
      * @throws CmsException if something goes wrong
@@ -3723,8 +3648,7 @@ public class CmsDriverManager extends Object {
     /**
      * Gets the sub files of a folder.<p>
      * 
-     * @param context.currentUser() the current user
-     * @param context.currentProject() the current project
+     * @param context the current request context
      * @param parentFolderName the name of the parent folder
      * @param includeDeleted true if deleted files should be included in the result
      * @return a List of all sub files
@@ -3737,8 +3661,7 @@ public class CmsDriverManager extends Object {
     /**
      * Gets the sub folders of a folder.<p>
      * 
-     * @param context.currentUser() the current user
-     * @param context.currentProject() the current project
+     * @param context the current request context
      * @param parentFolderName the name of the parent folder
      * @return a List of all sub folders
      * @throws CmsException if something goes wrong
@@ -3750,8 +3673,7 @@ public class CmsDriverManager extends Object {
     /**
      * Gets the sub folder of a folder.<p>
      * 
-     * @param context.currentUser() the current user
-     * @param context.currentProject() the current project
+     * @param context the current request context
      * @param parentFolderName the name of the parent folder
      * @param includeDeleted true if deleted files should be included in the result
      * @return a List of all sub folders
@@ -3765,8 +3687,7 @@ public class CmsDriverManager extends Object {
      * Gets all sub folders or sub files in a folder.<p>
      * Note: the list contains all resources that are readable or visible.
      * 
-     * @param context.currentUser() the current user
-     * @param context.currentProject() the current project
+     * @param context the current request context
      * @param parentFolderName the name of the parent folder
      * @param includeDeleted true if deleted files should be included in the result
      * @param getSubFolders true if the sub folders of the parent folder are requested, false if the sub files are requested
@@ -3835,8 +3756,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param taskId The Id of the task.
      * @param parName Name of the parameter.
      *
@@ -3872,8 +3792,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted, except the anonymous user.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @return users A Vector of all existing users.
      * @throws CmsException Throws CmsException if operation was not succesful.
      */
@@ -3892,8 +3811,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted, except the anonymous user.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param type The type of the users.
      * @return users A Vector of all existing users.
      * @throws CmsException Throws CmsException if operation was not succesful.
@@ -3913,8 +3831,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted, except the anonymous user.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param type The type of the users.
      * @param namestart The filter for the username
      * @return users A Vector of all existing users.
@@ -3932,8 +3849,7 @@ public class CmsDriverManager extends Object {
     /**
      * Gets all users with a certain Lastname.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param Lastname      the start of the users lastname
      * @param UserType      webuser or systemuser
      * @param UserStatus    enabled, disabled
@@ -3959,8 +3875,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted, except the anonymous user.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param groupname The name of the group to list users from.
      * @return Vector of users.
      * @throws CmsException Throws CmsException if operation was not succesful.
@@ -3987,8 +3902,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users that have read and view access are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param propertyDefinition, the name of the propertydefinition to check.
      * @param propertyValue, the value of the property for the resource.
      * @param resourceType The resource type of the resource
@@ -4028,8 +3942,7 @@ public class CmsDriverManager extends Object {
     /**
      * Performs a non-blocking permission check on a resource.<p>
      *
-     * @param context.currentUser() 			the user who requested this method
-     * @param context.currentProject() 		the current project of the user
+     * @param context the current request context
      * @param resource				the resource on which permissions are required
      * @param requiredPermissions	the set of permissions required to access the resource
      * @param strongCheck			if set to true, all required permission have to be granted, otherwise only one
@@ -4082,8 +3995,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * only Administrators can do this;
      *
-     * @param context.currentUser() user who requestd themethod
-     * @param context.currentProject() current project of the user
+     * @param context the current request context
      * @param importFile the name (absolute Path) of the import resource (zip or folder)
      * @param importPath the name (absolute Path) of folder in which should be imported
      * @param cms the cms-object to use for the import.
@@ -4148,7 +4060,8 @@ public class CmsDriverManager extends Object {
              folderName = newResourceName.substring(0, newResourceName.lastIndexOf(I_CmsConstants.C_FOLDER_SEPARATOR, newResourceName.length()) + 1);
              resourceName = newResourceName.substring(folderName.length(), newResourceName.length());
          }
-                 
+         
+         
          // checks, if the filename is valid, if not it throws a exception
          validFilename(resourceName);
 
@@ -4284,8 +4197,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @return true, if the users current group is the admin-group,
      * else it returns false.
      * @throws CmsException Throws CmsException if operation was not succesful.
@@ -4323,8 +4235,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @return true, if the may manage this project.
      * @throws CmsException Throws CmsException if operation was not succesful.
      */
@@ -4359,8 +4270,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @return true, if the users current group is the projectleader-group,
      * else it returns false.
      * @throws CmsException Throws CmsException if operation was not succesful.
@@ -4380,8 +4290,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @return true, if the users current group is the projectleader-group,
      * else it returns false.
      * @throws CmsException Throws CmsException if operation was not succesful.
@@ -4473,8 +4382,7 @@ public class CmsDriverManager extends Object {
      * <li>the resource is not locked by another user</li>
      * </ul>
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param resource The complete m_path to the resource to lock.
      * @param force If force is true, a existing locking will be oberwritten.
      * 
@@ -4512,8 +4420,7 @@ public class CmsDriverManager extends Object {
      * <B>Security</B>
      * All users are granted.
      *
-     * @param context.currentUser() the user who requested this method
-     * @param context.currentProject() the current project of the user
+     * @param context the current request context
      * @param username the name of the user to be returned
      * @param password the password of the user to be returned
      * @param remoteAddress the ip address of the request
@@ -4553,8 +4460,7 @@ public class CmsDriverManager extends Object {
      * <B>Security</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method
-     * @param context.currentProject() The current project of the user
+     * @param context the current request context
      * @param username The name of the user to be returned
      * @param password The password of the user to be returned
      * @param remoteAddress the ip address of the request
@@ -4586,8 +4492,7 @@ public class CmsDriverManager extends Object {
     /**
      * Lookup and read the user or group with the given UUID.
      * 
-     * @param context.currentUser()	 	the user requesting the action
-     * @param context.currentProject() 	the project in which the action is performed	
+     * @param context the current request context	
      * @param principalId		the UUID of the principal to lookup
      * @return					the principal (group or user) if found, otherwise null
      * @throws CmsException		if something goeas wrong
@@ -4618,8 +4523,7 @@ public class CmsDriverManager extends Object {
     /**
      * Lookup and read the user or group with the given name.
      * 
-     * @param context.currentUser()	 	the user requesting the action
-     * @param context.currentProject() 	the project in which the action is performed	
+     * @param context the current request context	
      * @param principalName		the name of the principal to lookup
      * @return					the principal (group or user) if found, otherwise null
      * @throws CmsException		if something goeas wrong	
@@ -4653,8 +4557,7 @@ public class CmsDriverManager extends Object {
      * This operation includes a copy and a delete operation. These operations
      * are done with their security-checks.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param source The complete m_path of the sourcefile.
      * @param destination The complete m_path of the destinationfile.
      *
@@ -4668,32 +4571,17 @@ public class CmsDriverManager extends Object {
         CmsResource source = readFileHeader(context, sourceName);
 
         // read the parent folder of the destination
-        String parentResourceName = CmsResource.getParent(destinationName);
-        String resourceName = destinationName.substring(destinationName.lastIndexOf(I_CmsConstants.C_FOLDER_SEPARATOR) + 1);
-        CmsFolder destinationFolder = readFolder(context, parentResourceName);
+        //String parentResourceName = CmsResource.getParent(destinationName);
+        //String resourceName = destinationName.substring(destinationName.lastIndexOf(I_CmsConstants.C_FOLDER_SEPARATOR) + 1);
+        //CmsFolder destinationFolder = readFolder(context, parentResourceName);
 
         if (source.isFile()) { 
             copyFile(context, sourceName, destinationName, true, true);
-            this.deleteFile(context, sourceName, I_CmsConstants.C_DELETE_OPTION_PRESERVE_VFS_LINKS);
+            deleteFile(context, sourceName, I_CmsConstants.C_DELETE_OPTION_PRESERVE_VFS_LINKS);
         } else {
             copyFolder(context, sourceName, destinationName, true, true);
             deleteFolder(context, sourceName);
         }
-
-        /*
-        // check if the user has write access
-        checkPermissions(context, source, I_CmsConstants.C_WRITE_ACCESS);
-        checkPermissions(context, destinationFolder, I_CmsConstants.C_WRITE_ACCESS);
-
-        // move the resource
-        m_vfsDriver.moveResource(context.currentUser(), context.currentProject(), source, destinationFolder, resourceName);
-
-        // invalidate the cache
-        clearResourceCache();
-
-        // inform about the file-system-change
-        fileSystemChanged(source.isFolder());
-        */
     }
 
     /**
@@ -4778,8 +4666,7 @@ public class CmsDriverManager extends Object {
     /**
      * Returns the online project object.<p>
      *
-     * @param context.currentUser() the current user
-     * @param context.currentProject() the project of the current user
+     * @param context the current request context
      * @return the online project object
      * @throws CmsException if something goes wrong
      *
@@ -4795,8 +4682,7 @@ public class CmsDriverManager extends Object {
      * <B>Security</B>
      * Only the admin or the owner of the project can do this.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param id The id of the project to be published.
      * @param report A report object to provide the loggin messages.
      * @return CmsPublishedResources The object includes the vectors of changed resources.
@@ -4915,8 +4801,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * The access control entries of a resource are readable by everyone.
      * 
-     * @param context.currentUser()	 	the user requesting the action
-     * @param context.currentProject() 	the project in which the action is performed	
+     * @param context the current request context	
      * @param resource			the resource
      * @param principal			the id of a group or a user any other entity
      * @return					an access control entry that defines the permissions of the entity for the given resource
@@ -4933,8 +4818,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param task The task to read the agent from.
      * @return The owner of a task.
      *
@@ -4957,8 +4841,7 @@ public class CmsDriverManager extends Object {
      * <li>the user can read the resource</li>
      * </ul>
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param filename The name of the file to be read.
      *
      * @return Vector of file headers read from the Cms.
@@ -4993,8 +4876,7 @@ public class CmsDriverManager extends Object {
      * <B>Security</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param resourceType The resource type to read the propertydefinitions for.
      *
      * @return propertydefinitions A Vector with propertydefefinitions for the resource type.
@@ -5020,8 +4902,7 @@ public class CmsDriverManager extends Object {
      * <B>Security</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param resourcetype The name of the resource type to read the propertydefinitions for.
      *
      * @return propertydefinitions A Vector with propertydefefinitions for the resource type.
@@ -5049,8 +4930,7 @@ public class CmsDriverManager extends Object {
      * A file is read from the backup resources.
      *
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param versionId The id of the version of the file.
      * @param filename The name of the file to be read.
      *
@@ -5080,8 +4960,7 @@ public class CmsDriverManager extends Object {
      * A file header is read from the backup resources.
      *
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param versionId The id of the version of the file.
      * @param filename The name of the file to be read.
      *
@@ -5108,8 +4987,7 @@ public class CmsDriverManager extends Object {
      * <B>Security</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param versionId The versionId of the project.
      *
      * @throws CmsException Throws CmsException if something goes wrong.
@@ -5124,9 +5002,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are garnted<BR/>
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
-     *
+     * @param context the current request context
      * @return the crontable.
      */
     public String readCronTable() throws CmsException {
@@ -5173,8 +5049,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.<BR/>
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @return the exportpath.
      */
     public String readExportPath() throws CmsException {
@@ -5211,14 +5086,11 @@ public class CmsDriverManager extends Object {
      * <li>the user can read the resource</li>
      * </ul>
      *
-     * @param context.currentUser() the user who requested this method
-     * @param context.currentProject() the current project of the user
+     * @param context the current request context
      * @param filename the name of the file to be read
-     *
      * @return the file read from the VFS
-     *
      * @throws CmsException  if operation was not succesful
-     * */
+     */
     public CmsFile readFile(CmsRequestContext context, String filename) throws CmsException {
         return readFile(context, filename, false);
     }
@@ -5233,8 +5105,7 @@ public class CmsDriverManager extends Object {
      * <li>the user can read the resource</li>
      * </ul>
      *
-     * @param context.currentUser() the user who requested this method
-     * @param context.currentProject() the current project of the user
+     * @param context the current request context
      * @param filename the name of the file to be read
      *
      * @return the file read from the VFS
@@ -5304,9 +5175,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted access<BR/>
      *
-     * @param context.currentUser() The user who requested this method, not used here
-     * @param context.currentProject() The current project of the user, not used here
-     *
+     * @param context the current request context
      * @return Hashtable with file extensions as Strings
      */
     public Hashtable readFileExtensions() throws CmsException {
@@ -5327,8 +5196,7 @@ public class CmsDriverManager extends Object {
      * <li>the user can read the resource</li>
      * </ul>
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param filename The name of the file to be read.
      *
      * @return The file read from the Cms.
@@ -5352,8 +5220,7 @@ public class CmsDriverManager extends Object {
      * <li>the user can read the resource</li>
      * </ul>
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param filename The name of the file to be read.
      *
      * @return The file read from the Cms.
@@ -5389,8 +5256,7 @@ public class CmsDriverManager extends Object {
      * <li>the user can read the resource</li>
      * </ul>
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param projectId The id of the project to read the file from.
      * @param filename The name of the file to be read.
      *
@@ -5419,8 +5285,7 @@ public class CmsDriverManager extends Object {
     /**
      * Reads all file headers for a project from the Cms.<BR/>
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param projectId The id of the project to read the resources for.
      *
      * @return a Vector of resources.
@@ -5480,8 +5345,7 @@ public class CmsDriverManager extends Object {
      * <li>the user can read the resource</li>
      * </ul>
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param folderid The id of the folder to be read.
      * @param includeDeleted Include the folder it it is marked as deleted
      *
@@ -5521,8 +5385,7 @@ public class CmsDriverManager extends Object {
      * <li>the user can read the resource</li>
      * </ul>
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param foldername The complete m_path of the folder to be read.
      *
      * @return folder The read folder.
@@ -5545,8 +5408,7 @@ public class CmsDriverManager extends Object {
      * <li>the user can read the resource</li>
      * </ul>
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param foldername The complete m_path of the folder to be read.
      * @param includeDeleted Include the folder it it is marked as deleted
      *
@@ -5589,8 +5451,7 @@ public class CmsDriverManager extends Object {
      * <li>the user can read the resource</li>
      * </ul>
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param project the project to read the folder from.
      * @param foldername The complete m_path of the folder to be read.
      *
@@ -5628,8 +5489,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param projectId The id of the Project in which the tasks are defined.
      * @param owner Owner of the task.
      * @param tasktype Task type you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
@@ -5659,8 +5519,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @return The group of a resource.
      * @throws CmsException Throws CmsException if operation was not succesful.
      */
@@ -5689,8 +5548,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @return The group of a resource.
      *
      * @throws CmsException Throws CmsException if operation was not succesful.
@@ -5705,8 +5563,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param task The task to read from.
      * @return The group of a resource.
      *
@@ -5722,8 +5579,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param groupname The name of the group that is to be read.
      * @return Group.
      *
@@ -5746,8 +5602,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param groupid The id of the group that is to be read.
      * @return Group.
      *
@@ -5763,9 +5618,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are garnted<BR/>
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
-     *
+     * @param context the current request context
      * @return the linkchecktable.
      */
     public Hashtable readLinkCheckTable() throws CmsException {
@@ -5793,8 +5646,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @return The group of a resource.
      * @throws CmsException Throws CmsException if operation was not succesful.
      */
@@ -5823,9 +5675,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are garnted<BR/>
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
-     *
+     * @param context the current request context
      * @return the mime-types.
      */
     public Hashtable readMimeTypes() throws CmsException {
@@ -5858,8 +5708,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param task The task to read the original agent from.
      * @return The owner of a task.
      *
@@ -5875,8 +5724,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @return The owner of a resource.
      *
      * @throws CmsException Throws CmsException if operation was not succesful.
@@ -5891,8 +5739,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @return The owner of a resource.
      *
      * @throws CmsException Throws CmsException if operation was not succesful.
@@ -5907,8 +5754,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param task The task to read the owner from.
      * @return The owner of a task.
      *
@@ -5924,8 +5770,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @return The owner of a resource.
      *
      * @throws CmsException Throws CmsException if operation was not succesful.
@@ -6084,7 +5929,7 @@ public class CmsDriverManager extends Object {
         String cacheKey = null;
         // the parent resource of the current resource
         CmsResource lastParent = null;
-        
+
         tokens = new StringTokenizer(path, I_CmsConstants.C_FOLDER_SEPARATOR);
 
         // the root folder is no token in the path but a resource which has to be added to the path
@@ -6141,7 +5986,7 @@ public class CmsDriverManager extends Object {
             if (tokens.hasMoreTokens()) {
                 // this will only be false if a resource in the 
                 // top level root folder (e.g. "/index.html") was requested
-            currentResourceName = tokens.nextToken();
+                currentResourceName = tokens.nextToken();
             }
             currentPath += currentResourceName;
 
@@ -6165,8 +6010,7 @@ public class CmsDriverManager extends Object {
      * <B>Security</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param task The task to read the project of.
      *
      * @throws CmsException Throws CmsException if something goes wrong.
@@ -6187,8 +6031,7 @@ public class CmsDriverManager extends Object {
      * <B>Security</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param id The id of the project to read.
      *
      * @throws CmsException Throws CmsException if something goes wrong.
@@ -6209,8 +6052,7 @@ public class CmsDriverManager extends Object {
      * <B>Security</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param res The resource to read the project of.
      *
      * @throws CmsException Throws CmsException if something goes wrong.
@@ -6273,8 +6115,7 @@ public class CmsDriverManager extends Object {
      * Note: view instead of read permission is required intentionally, since the
      * workplace needs properties when displaying file and folder lists.
      * 
-     * @param context.currentUser() the current user
-     * @param context.currentProject() the current project of the user
+     * @param context the current request context
      * @param resource the resource to look up the property for
      * @param siteRoot the current site root
      * @param search if <code>true</code>, the properties will also be looked up on all parent folders
@@ -6330,8 +6171,7 @@ public class CmsDriverManager extends Object {
      * Note: view instead of read permission is required intentionally, since the
      * workplace needs properties when displaying file and folder lists.
      * 
-     * @param context.currentUser() the current user
-     * @param context.currentProject() the current project of the user
+     * @param context the current request context
      * @param resource the resource to look up the property for
      * @param siteRoot the site root where to stop the cascading
      * @param property the name of the property to look up
@@ -6412,8 +6252,7 @@ public class CmsDriverManager extends Object {
      * Note: view instead of read permission is required intentionally, since the
      * workplace needs properties when displaying file and folder lists.
      * 
-     * @param context.currentUser() the current user
-     * @param context.currentProject() the current project of the user
+     * @param context the current request context
      * @param resource the resource to look up the property for
      * @param siteRoot the site root where to stop the cascading
      * @param property the name of the property to look up
@@ -6439,8 +6278,7 @@ public class CmsDriverManager extends Object {
      * <B>Security</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param name The name of the propertydefinition to read.
      * @param resourcetype The name of the resource type for which the propertydefinition
      * is valid.
@@ -6482,8 +6320,7 @@ public class CmsDriverManager extends Object {
      * <li>the user can read and view this resource</li>
      * </ul>
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param resourcename A part of resourcename
      *
      * @return subfolders A Vector with resources.
@@ -6516,8 +6353,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param id The id for the task to read.
      *
      * @throws CmsException Throws CmsException if something goes wrong.
@@ -6532,8 +6368,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param taskid The task for the tasklog to read .
      * @return A Vector of new TaskLog objects
      * @throws CmsException Throws CmsException if something goes wrong.
@@ -6548,8 +6383,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param projectId The id of the Project in which the tasks are defined. Can be null for all tasks
      * @param tasktype Task type you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW
      * @param orderBy Chooses, how to order the tasks.
@@ -6573,8 +6407,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param projectId The id of the Project in which the tasks are defined.
      * @param user The user who has to process the task.
      * @param tasktype Task type you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
@@ -6604,8 +6437,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param projectId The id of the Project in which the tasks are defined.
      * @param userName The user who has to process the task.
      * @param taskType Task type you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
@@ -6630,8 +6462,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param id The id of the user that is to be read.
      * @return User
      * @throws CmsException Throws CmsException if operation was not succesful
@@ -6661,8 +6492,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param username The name of the user that is to be read.
      * @return User
      * @throws CmsException Throws CmsException if operation was not succesful
@@ -6689,8 +6519,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param username The name of the user that is to be read.
      * @param type The type of the user.
      * @return User
@@ -6717,8 +6546,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param username The username of the user that is to be read.
      * @param password The password of the user that is to be read.
      * @return User
@@ -6742,8 +6570,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param username The username of the user that is to be read.
      * @return User
      *
@@ -6769,8 +6596,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param username The username of the user that is to be read.
      * @param password The password of the user that is to be read.
      * @return User
@@ -6791,8 +6617,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param taskid The Id of the task to accept.
      *
      * @throws CmsException Throws CmsException if something goes wrong.
@@ -6814,8 +6639,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users can do this if he knows the recovery-password.<P/>
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param username The name of the user.
      * @param recoveryPassword The recovery password.
      * @param newPassword The new password.
@@ -6844,8 +6668,7 @@ public class CmsDriverManager extends Object {
      * <li>the current user has control permission on the resource
      * </ul>
      * 
-     * @param context.currentUser()	 	the user requesting the action
-     * @param context.currentProject() 	the project in which the action is performed		 
+     * @param context the current request context		 
      * @param resource			the resource
      * @param principal			the id of a group or user to identify the access control entry
      * @throws CmsException		if something goes wrong
@@ -6868,8 +6691,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * Only users, which are in the group "administrators" are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param username The name of the user that is to be removed from the group.
      * @param groupname The name of the group.
      * @throws CmsException Throws CmsException if operation was not succesful.
@@ -6935,8 +6757,7 @@ public class CmsDriverManager extends Object {
      * <li>the resource is locked by the callingUser</li>
      * </ul>
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param oldname The complete m_path to the resource which will be renamed.
      * @param newname The new name of the resource (CmsUser callingUser, No m_path information allowed).
      *
@@ -6959,8 +6780,7 @@ public class CmsDriverManager extends Object {
     /**
      * Replaces the content and properties of an existing resource.<p>
      * 
-     * @param context.currentUser() the current user
-     * @param context.currentProject() the current project
+     * @param context the current request context
      * @param resName the resource name
      * @param newResType the new resource type
      * @param newResProps the new resource properties
@@ -6993,8 +6813,7 @@ public class CmsDriverManager extends Object {
     /**
      * Restores a file in the current project with a version in the backup
      *
-     * @param context.currentUser() The current user
-     * @param context.currentProject() The current project
+     * @param context the current request context
      * @param versionId The version id of the resource
      * @param filename The name of the file to restore
      *
@@ -7072,8 +6891,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param taskid The Id of the task to set the percentage.
      * @param name The new name value
      *
@@ -7094,8 +6912,7 @@ public class CmsDriverManager extends Object {
      *
      * Only the admin can do this.<P/>
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param groupName The name of the group that should be written to the Cms.
      * @param parentGroupName The name of the parentGroup to set, or null if the parent
      * group should be deleted.
@@ -7130,8 +6947,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * Users, which are in the group "administrators" are granted.<BR/>
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param username The name of the user.
      * @param newPassword The new password.
      *
@@ -7157,8 +6973,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * Users, who knows the username and the old password are granted.<BR/>
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param username The name of the user.
      * @param oldPassword The new password.
      * @param newPassword The new password.
@@ -7192,8 +7007,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param taskid The Id of the task to set the percentage.
      * @param new priority value
      *
@@ -7215,8 +7029,7 @@ public class CmsDriverManager extends Object {
      * Users, which are in the group "administrators" are granted.<BR/>
      * Current users can change their own password.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param username The name of the user.
      * @param password The password of the user.
      * @param newPassword The new recoveryPassword to be set.
@@ -7250,8 +7063,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param taskId The Id of the task.
      * @param parName Name of the parameter.
      * @param parValue Value if the parameter.
@@ -7270,8 +7082,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param taskid The Id of the task to set the percentage.
      * @param new timeout value
      *
@@ -7306,45 +7117,12 @@ public class CmsDriverManager extends Object {
     /**
      * Access the driver underneath to change the timestamp of a resource.
      * 
-     * @param context.currentUser() the currentuser who requested this method
-     * @param context.currentProject() the current project of the user 
+     * @param context the current request context
      * @param resourceName the name of the resource to change
      * @param timestamp timestamp the new timestamp of the changed resource
      * @param user the user who is inserted as userladtmodified 
      */
     public void touch(CmsRequestContext context, String resourceName, long timestamp, CmsUUID user) throws CmsException {
-    /*
-        CmsResource resource = null;
-        boolean isFolder = false;
-
-        // read the resource to check the access
-        if (resourceName.endsWith("/")) {
-            resource = (CmsFolder) readFolder(context, resourceName);
-            isFolder = true;
-        } else {
-            resource = (CmsFile) readFileHeader(context, resourceName);
-        }
-
-        // check the access rights
-        checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);
-
-        // touch the resource
-        resource.setDateLastModified(timestamp);
-        if (isFolder) {
-            m_vfsDriver.writeFolder(context.currentProject(), (CmsFolder) resource, C_UPDATE_RESOURCE_STATE, context.currentUser().getId());
-        } else {
-            m_vfsDriver.writeFileHeader(context.currentProject(), (CmsFile) resource, C_UPDATE_RESOURCE_STATE, context.currentUser().getId());
-        }
-
-        if (resource.getState() == I_CmsConstants.C_STATE_UNCHANGED) {
-            resource.setState(I_CmsConstants.C_STATE_CHANGED);
-        }
-        
-        //clearResourceCache(resource.getFullResourceName(), context.currentProject(), context.currentUser());
-        clearResourceCache();
-
-        fileSystemChanged(isFolder);
-    */
         CmsResource res = readFileHeader(context, resourceName);
         if (res.isFile()) {
             touchResource(context, res, timestamp,user);
@@ -7356,8 +7134,7 @@ public class CmsDriverManager extends Object {
     /**
      * Access the driver underneath to change the timestamp of a resource.
      * 
-     * @param context.currentUser() the currentuser who requested this method
-     * @param context.currentProject() the current project of the user 
+     * @param context the current request context
      * @param resourceName the name of the resource to change
      * @param timestamp timestamp the new timestamp of the changed resource
      * @param user the user who is inserted as userladtmodified
@@ -7397,7 +7174,7 @@ public class CmsDriverManager extends Object {
         
         clearResourceCache();
         fileSystemChanged(res.isFolder());        
-    }
+    }   
     
     /**
      * Removes the deleted mark for all access control entries of a given resource
@@ -7408,8 +7185,7 @@ public class CmsDriverManager extends Object {
      * <li>the current user has write permission on the resource
      * </ul>
      * 
-     * @param context.currentUser()	 	the user requesting the action
-     * @param context.currentProject() 	the project in which the action is performed	
+     * @param context the current request context	
      * @param resource			the resource
      * @throws CmsException		if something goes wrong
      */
@@ -7439,8 +7215,7 @@ public class CmsDriverManager extends Object {
      * <li>the resource is locked by the callinUser</li>
      * </ul>
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param filename The complete m_path of the file.
      *
      * @throws CmsException  Throws CmsException if operation was not succesful.
@@ -7463,7 +7238,7 @@ public class CmsDriverManager extends Object {
         resource.setState(I_CmsConstants.C_STATE_CHANGED);
         resource.setLocked(context.currentUser().getId());
 
-        if (resource.isFile())
+        if (resource.isHardLink())
             m_vfsDriver.updateResourcestate(resource, C_UPDATE_RESOURCE_STATE);
         else
             m_vfsDriver.updateResourcestate(resource, C_UPDATE_STRUCTURE_STATE);
@@ -7480,9 +7255,7 @@ public class CmsDriverManager extends Object {
     /**
      * Undo all changes in the resource, restore the online file.
      *
-     *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param resourceName The name of the resource to be restored.
      *
      * @throws CmsException Throws CmsException if something goes wrong.
@@ -7595,8 +7368,7 @@ public class CmsDriverManager extends Object {
      * <B>Security</B>
      * Only the admin or the owner of the project can do this.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param id The id of the project to be published.
      *
      * @throws CmsException Throws CmsException if something goes wrong.
@@ -7633,8 +7405,7 @@ public class CmsDriverManager extends Object {
      * <li>the user had locked the resource before</li>
      * </ul>
      *
-     * @param context.currentUser() 		The user who wants to lock the file.
-     * @param context.currentProject() 	The project in which the resource will be used.
+     * @param context the current request context
      * @param resourcename 		The complete m_path to the resource to lock.
      *
      * @throws CmsException  	if operation was not succesful.
@@ -7702,8 +7473,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted, except the anonymous user.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param callingUser The user who wants to use this method.
      * @param nameuser The name of the user to check.
      * @param groupname The name of the group to check.
@@ -7825,8 +7595,7 @@ public class CmsDriverManager extends Object {
      * <li>the current user has control permission on the resource
      * </ul>
      * 
-     * @param context.currentUser()		the user requesting the action
-     * @param context.currentProject()	the project in which the action is performed
+     * @param context the current request context
      * @param resource			the resource
      * @param acEntries			vector of access control entries applied to the resource
      * @throws CmsException		if something goes wrong
@@ -7855,8 +7624,7 @@ public class CmsDriverManager extends Object {
      * <li>the current user has control permission on the resource
      * </ul>
      * 
-     * @param context.currentUser()	 	the user requesting the action
-     * @param context.currentProject() 	the project in which the action is performed
+     * @param context the current request context
      * @param resource			the resource	 
      * @param acEntry 			the entry to write
      * @throws CmsException		if something goes wrong
@@ -7876,8 +7644,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * Only a administrator can do this<BR/>
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      *
      * @return the crontable.
      */
@@ -7922,8 +7689,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * Users, which are in the group "administrators" are granted.<BR/>
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param mountpoint The mount point in the Cms filesystem.
      */
     public void writeExportPath(CmsRequestContext context, String path) throws CmsException {
@@ -7960,8 +7726,7 @@ public class CmsDriverManager extends Object {
      * <li>the resource is locked by the callingUser</li>
      * </ul>
      *
-     * @param context.currentUser() The user who own this file.
-     * @param context.currentProject() The project in which the resource will be used.
+     * @param context the current request context
      * @param file The name of the file to write.
      *
      * @throws CmsException  Throws CmsException if operation was not succesful.
@@ -7992,8 +7757,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * Users, which are in the group "Administrators" are authorized.<BR/>
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param extensions Holds extensions as keys and resourcetypes (Stings) as values
      */
 
@@ -8034,8 +7798,7 @@ public class CmsDriverManager extends Object {
      * <li>the resource is locked by the callingUser</li>
      * </ul>
      *
-     * @param context.currentUser() The user who own this file.
-     * @param context.currentProject() The project in which the resource will be used.
+     * @param context the current request context
      * @param file The file to write.
      *
      * @throws CmsException  Throws CmsException if operation was not succesful.
@@ -8066,8 +7829,7 @@ public class CmsDriverManager extends Object {
      *
      * Only the admin can do this.<P/>
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param group The group that should be written to the Cms.
      * @throws CmsException  Throws CmsException if operation was not succesfull.
      */
@@ -8088,8 +7850,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * Only a administrator can do this<BR/>
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param linkchecktable The hashtable that contains the links that were not reachable
      *
      * @return the linkchecktable.
@@ -8112,8 +7873,7 @@ public class CmsDriverManager extends Object {
      * <B>Security</B>
      * Only the user is granted, who has the right to write the resource.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param resource The name of the resource of which the propertyinformation
      * has to be read.
      * @param propertyinfos A Hashtable with propertydefinition- propertyinfo-pairs as strings.
@@ -8149,8 +7909,7 @@ public class CmsDriverManager extends Object {
      * <B>Security</B>
      * Only the user is granted, who has the right to write the resource.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param resource The name of the resource of which the propertyinformation has
      * to be read.
      * @param property The propertydefinition-name of which the propertyinformation has to be set.
@@ -8190,8 +7949,7 @@ public class CmsDriverManager extends Object {
      * <B>Security</B>
      * Only the admin can do this.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param propertydef The propertydef to be deleted.
      *
      * @return The propertydefinition, that was written.
@@ -8225,8 +7983,7 @@ public class CmsDriverManager extends Object {
      * <li>the user is the owner of the resource or administrator<li>
      * </ul>
      *
-     * @param context.currentUser() The current user.
-     * @param context.currentProject() The project in which the resource will be used.
+     * @param context the current request context
      * @param resourcename The name of the resource to write.
      * @param properties The properties of the resource.
      * @param username The name of the new owner of the resource
@@ -8267,8 +8024,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param taskid The Id of the task .
      * @param comment Description for the log
      *
@@ -8285,8 +8041,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param taskid The Id of the task .
      * @param comment Description for the log
      * @param tasktype Type of the tasklog. User tasktypes must be greater then 100.
@@ -8304,8 +8059,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * Only users, which are in the group "administrators" are granted.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param user The  user to be updated.
      *
      * @throws CmsException Throws CmsException if operation was not succesful
@@ -8335,8 +8089,7 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * Only users of the user type webuser can be updated this way.
      *
-     * @param context.currentUser() The user who requested this method.
-     * @param context.currentProject() The current project of the user.
+     * @param context the current request context
      * @param user The  user to be updated.
      *
      * @throws CmsException Throws CmsException if operation was not succesful

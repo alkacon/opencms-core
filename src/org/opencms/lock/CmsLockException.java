@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockException.java,v $
- * Date   : $Date: 2003/07/22 17:13:33 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/07/23 10:25:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,26 +37,28 @@ import com.opencms.core.CmsException;
  * Signals that a particular action was invoked on a locked resource.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2003/07/22 17:13:33 $
+ * @version $Revision: 1.3 $ $Date: 2003/07/23 10:25:55 $
  * @since 5.1.4
  */
 public class CmsLockException extends CmsException {
     
+    // the allowed type range for this exception is >=200 and <300
+    
     /** The resource is locked by the current user */
-    public static final int C_RESOURCE_LOCKED_BY_CURRENT_USER = 1;
+    public static final int C_RESOURCE_LOCKED_BY_CURRENT_USER = 200;
     
     /** The resource is locked by a user different from the current user */
-    public static final int C_RESOURCE_LOCKED_BY_OTHER_USER = 2;
+    public static final int C_RESOURCE_LOCKED_BY_OTHER_USER = 201;
     
     /**
-     * Default constructor for a CmsLockException.
+     * Default constructor for a CmsLockException.<p>
      */
     public CmsLockException() {
         super();
     }
     
     /**
-     * Signals that a particular action was invoked on a locked resource.<p>
+     * Constructs a CmsLockException with the specified detail message and type.<p>
      * 
      * @param message the detail message
      * @param type the type of the exception
