@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentDefinition.java,v $
- * Date   : $Date: 2004/10/03 11:37:53 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/10/21 11:31:59 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@
  */
 package org.opencms.xml;
 
+import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.xml.types.CmsXmlLocaleValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
@@ -56,7 +57,7 @@ import org.xml.sax.InputSource;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.5.0
  */
 public class CmsXmlContentDefinition implements Cloneable {
@@ -161,33 +162,6 @@ public class CmsXmlContentDefinition implements Cloneable {
     }
     
     /**
-     * Freezes this content definition, making all internal data structures
-     * unmodifiable.<p>
-     * 
-     * This is required to prevent modification of a cached content definition.<p>
-     */
-    public void freeze() {
-        
-        m_types = Collections.unmodifiableMap(m_types);
-        m_elementMappings = Collections.unmodifiableMap(m_elementMappings);
-        m_typeSequence = Collections.unmodifiableList(m_typeSequence);
-    }
-    
-    /**
-     * Factory method to unmarshal (read) a XML content definition instance from a XML InputSource.<p>
-     * 
-     * @param source the XML InputSource to use
-     * @param schemaLocation the location from which the XML schema was read (system id)
-     * @param resolver the XML entitiy resolver to use
-     * @return a XML content definition instance unmarshalled from the InputSource
-     * @throws CmsXmlException if something goes wrong
-     */ 
-    public static CmsXmlContentDefinition unmarshal(InputSource source, String schemaLocation, EntityResolver resolver) throws CmsXmlException {
-        
-        return unmarshal(CmsXmlUtils.unmarshalHelper(source, resolver), schemaLocation);
-    }
-    
-    /**
      * Factory method to unmarshal (read) a XML content definition instance from a byte array
      * that contains XML data.<p>
      * 
@@ -201,20 +175,24 @@ public class CmsXmlContentDefinition implements Cloneable {
         
         return unmarshal(CmsXmlUtils.unmarshalHelper(xmlData, resolver), schemaLocation);
     }
-        
+    
     /**
-     * Factory method to unmarshal (read) a XML content definition instance from a Stringy
-     * that contains XML data.<p>
+     * Factory method to unmarshal (read) a XML content definition instance from the OpenCms VFS resource name.<p>
      * 
-     * @param xmlData the XML data in a String
-     * @param schemaLocation the location from which the XML schema was read (system id)
-     * @param resolver the XML entitiy resolver to use
-     * @return a XML content definition instance unmarshalled from the byte array
+     * @param cms the current users CmsObject
+     * @param resourcename the resource name to unmarshal the XML content definition from
+     * 
+     * @return a XML content definition instance unmarshalled from the VFS resource
+     * 
      * @throws CmsXmlException if something goes wrong
      */
-    public static CmsXmlContentDefinition unmarshal(String xmlData, String schemaLocation, EntityResolver resolver) throws CmsXmlException {
+    public static CmsXmlContentDefinition unmarshal(CmsObject cms, String resourcename) throws CmsXmlException {
+
+        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
+        String systemId = CmsXmlEntityResolver.C_OPENCMS_SCHEME.concat(resourcename.substring(1));
+        InputSource source = resolver.resolveEntity(null, systemId);
         
-        return unmarshal(CmsXmlUtils.unmarshalHelper(xmlData, resolver), schemaLocation);
+        return CmsXmlContentDefinition.unmarshal(source, systemId, resolver);  
     }
     
     /**
@@ -399,6 +377,35 @@ public class CmsXmlContentDefinition implements Cloneable {
     }    
     
     /**
+     * Factory method to unmarshal (read) a XML content definition instance from a XML InputSource.<p>
+     * 
+     * @param source the XML InputSource to use
+     * @param schemaLocation the location from which the XML schema was read (system id)
+     * @param resolver the XML entitiy resolver to use
+     * @return a XML content definition instance unmarshalled from the InputSource
+     * @throws CmsXmlException if something goes wrong
+     */ 
+    public static CmsXmlContentDefinition unmarshal(InputSource source, String schemaLocation, EntityResolver resolver) throws CmsXmlException {
+        
+        return unmarshal(CmsXmlUtils.unmarshalHelper(source, resolver), schemaLocation);
+    }
+        
+    /**
+     * Factory method to unmarshal (read) a XML content definition instance from a String
+     * that contains XML data.<p>
+     * 
+     * @param xmlData the XML data in a String
+     * @param schemaLocation the location from which the XML schema was read (system id)
+     * @param resolver the XML entitiy resolver to use
+     * @return a XML content definition instance unmarshalled from the byte array
+     * @throws CmsXmlException if something goes wrong
+     */
+    public static CmsXmlContentDefinition unmarshal(String xmlData, String schemaLocation, EntityResolver resolver) throws CmsXmlException {
+        
+        return unmarshal(CmsXmlUtils.unmarshalHelper(xmlData, resolver), schemaLocation);
+    }
+    
+    /**
      * Creates the name of the list attribute from the given content name.<p>
      * 
      * @param name the name to use
@@ -462,6 +469,48 @@ public class CmsXmlContentDefinition implements Cloneable {
         m_typeSequence.add(type);
         m_types.put(type.getNodeName(), type);
     }
+        
+    /**
+     * Creates a clone of this XML content definition.<p> 
+     * 
+     * @return a clone of this XML content definition
+     */
+    public Object clone() {
+
+        CmsXmlContentDefinition result = new CmsXmlContentDefinition(m_name, m_schemaLocation);
+        result.m_typeSequence = m_typeSequence;
+        result.m_elementMappings = m_elementMappings;
+        result.m_types = m_types;
+        return result;
+    }
+    
+    /**
+     * Generates a valid XML document according to the XML schema of this content definition.<p>
+     * 
+     * @param locale the locale to create the default element in the document with
+     * @return a valid XML document according to the XML schema of this content definition
+     */    
+    public Document createDocument(Locale locale) {
+        
+        Document doc = DocumentHelper.createDocument();
+        
+        Element root = doc.addElement(getName() + "s"); 
+        root.add(I_CmsXmlSchemaType.XSI_NAMESPACE);        
+        root.addAttribute(I_CmsXmlSchemaType.XSI_NAMESPACE_ATTRIBUTE_NO_SCHEMA_LOCATION, getSchemaLocation());
+        
+        Element node = root.addElement(getName());
+        node.addAttribute(XSD_ATTRIBUTE_VALUE_LANGUAGE, locale.toString());
+        
+        Iterator i = m_typeSequence.iterator();
+        while (i.hasNext()) {
+            I_CmsXmlSchemaType type = (I_CmsXmlSchemaType)i.next();
+            for (int j=0; j<type.getMinOccurs(); j++) {
+                type.appendDefaultXml(node, j);
+            }
+        }
+        
+        return doc;
+    }
     
     /**
      * @see java.lang.Object#equals(java.lang.Object)
@@ -479,6 +528,19 @@ public class CmsXmlContentDefinition implements Cloneable {
             return false;
         }
         return m_typeSequence.equals(other.m_typeSequence);
+    }
+    
+    /**
+     * Freezes this content definition, making all internal data structures
+     * unmodifiable.<p>
+     * 
+     * This is required to prevent modification of a cached content definition.<p>
+     */
+    public void freeze() {
+        
+        m_types = Collections.unmodifiableMap(m_types);
+        m_elementMappings = Collections.unmodifiableMap(m_elementMappings);
+        m_typeSequence = Collections.unmodifiableList(m_typeSequence);
     }
 
     /**
@@ -589,53 +651,11 @@ public class CmsXmlContentDefinition implements Cloneable {
     }
     
     /**
-     * Generates a valid XML document according to the XML schema of this content definition.<p>
-     * 
-     * @param locale the locale to create the default element in the document with
-     * @return a valid XML document according to the XML schema of this content definition
-     */    
-    public Document createDocument(Locale locale) {
-        
-        Document doc = DocumentHelper.createDocument();
-        
-        Element root = doc.addElement(getName() + "s"); 
-        root.add(I_CmsXmlSchemaType.XSI_NAMESPACE);        
-        root.addAttribute(I_CmsXmlSchemaType.XSI_NAMESPACE_ATTRIBUTE_NO_SCHEMA_LOCATION, getSchemaLocation());
-        
-        Element node = root.addElement(getName());
-        node.addAttribute(XSD_ATTRIBUTE_VALUE_LANGUAGE, locale.toString());
-        
-        Iterator i = m_typeSequence.iterator();
-        while (i.hasNext()) {
-            I_CmsXmlSchemaType type = (I_CmsXmlSchemaType)i.next();
-            for (int j=0; j<type.getMinOccurs(); j++) {
-                type.appendDefaultXml(node, j);
-            }
-        }
-        
-        return doc;
-    }
-    
-    /**
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
         
         return getName().hashCode();
-    }
-        
-    /**
-     * Creates a clone of this XML content definition.<p> 
-     * 
-     * @return a clone of this XML content definition
-     */
-    public Object clone() {
-
-        CmsXmlContentDefinition result = new CmsXmlContentDefinition(m_name, m_schemaLocation);
-        result.m_typeSequence = m_typeSequence;
-        result.m_elementMappings = m_elementMappings;
-        result.m_types = m_types;
-        return result;
     }
 }
 

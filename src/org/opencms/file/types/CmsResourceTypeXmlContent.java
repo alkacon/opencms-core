@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContent.java,v $
- * Date   : $Date: 2004/10/14 15:05:54 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/10/21 11:31:59 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,14 +35,20 @@ import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.loader.CmsXmlContentLoader;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsHtmlConverter;
+import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
+
+import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.collections.ExtendedProperties;
 
@@ -51,7 +57,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.5
  */
@@ -63,11 +69,17 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceType {
     /** Configuration key for the resource type name. */
     public static final String C_CONFIGURATION_RESOURCE_TYPE_NAME = "resource.type.name";
 
+    /** Configuration key for the (optional) schema. */
+    public static final String C_CONFIGURATION_SCHEMA = "schema";
+
     /** The type id of this resource. */
     private int m_resourceType;
 
     /** The name of this resource. */
     private String m_resourceTypeName;
+
+    /** The (optional) schema of this resource. */
+    private String m_schema;
 
     /**
      * @see org.opencms.file.types.A_CmsResourceType#addConfigurationParameter(java.lang.String, java.lang.String)
@@ -78,7 +90,46 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceType {
             m_resourceType = Integer.valueOf(paramValue).intValue();
         } else if (C_CONFIGURATION_RESOURCE_TYPE_NAME.equalsIgnoreCase(paramName)) {
             m_resourceTypeName = paramValue.trim();
+        } else if (C_CONFIGURATION_SCHEMA.equalsIgnoreCase(paramName)) {
+            m_schema = paramValue.trim();
         }
+    }
+
+    /**
+     * @see org.opencms.file.types.A_CmsResourceType#createResource(org.opencms.file.CmsObject, org.opencms.db.CmsDriverManager, java.lang.String, byte[], java.util.List)
+     */
+    public CmsResource createResource(
+        CmsObject cms,
+        CmsDriverManager driverManager,
+        String resourcename,
+        byte[] content,
+        List properties) throws CmsException {
+
+        if ((m_schema != null) && ((content == null) || (content.length == 0))) {
+            // unmarshal the content definition for the new resource
+            CmsXmlContentDefinition contentDefinition = CmsXmlContentDefinition.unmarshal(cms, m_schema);
+
+            // read the default locale for the new resource
+            Locale locale = (Locale)OpenCms.getLocaleManager().getDefaultLocales(
+                cms,
+                CmsResource.getParentFolder(resourcename)
+            ).get(0);
+
+            // create the new content
+            CmsXmlContent newContent = 
+                new CmsXmlContent(contentDefinition, locale, OpenCms.getSystemInfo().getDefaultEncoding());
+            content = newContent.marshal();
+        }
+
+        // create the new XML content resource
+        CmsResource resource = driverManager.createResource(
+            cms.getRequestContext(), 
+            cms.getRequestContext().addSiteRoot(resourcename), 
+            getTypeId(), 
+            content, 
+            properties);
+
+        return resource;
     }
 
     /**
@@ -97,6 +148,9 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceType {
         ExtendedProperties result = new ExtendedProperties();
         result.put(C_CONFIGURATION_RESOURCE_TYPE_ID, new Integer(m_resourceType));
         result.put(C_CONFIGURATION_RESOURCE_TYPE_NAME, m_resourceTypeName);
+        if (m_schema != null) {
+            result.put(C_CONFIGURATION_SCHEMA, m_schema);
+        }
         return result;
     }
 
@@ -150,19 +204,24 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceType {
 
         // check if the user has write access and if resource is locked
         // done here so that all the XML operations are not performed if permissions not granted
-        driverManager.checkPermissions(cms.getRequestContext(), resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
+        driverManager.checkPermissions(
+            cms.getRequestContext(),
+            resource,
+            CmsPermissionSet.ACCESS_WRITE,
+            true,
+            CmsResourceFilter.ALL);
         // read the xml page, use the encoding set in the property       
         CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(cms, resource, false);
         // validate the xml structure before writing the file         
         // an exception will be thrown if the structure is invalid
         xmlContent.validateXmlStructure(new CmsXmlEntityResolver(cms));
         // read the content-conversion property
-        String contentConversion = CmsHtmlConverter.getConversionSettings(cms, resource);               
-        xmlContent.setConversion(contentConversion);   
+        String contentConversion = CmsHtmlConverter.getConversionSettings(cms, resource);
+        xmlContent.setConversion(contentConversion);
         // correct the HTML structure 
-        resource = xmlContent.correctXmlStructure(cms);        
+        resource = xmlContent.correctXmlStructure(cms);
         // resolve the file mappings
-        xmlContent.resolveElementMappings(cms);        
+        xmlContent.resolveElementMappings(cms);
         // now write the file
         return super.writeFile(cms, driverManager, resource);
     }

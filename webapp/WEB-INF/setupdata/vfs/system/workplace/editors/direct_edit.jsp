@@ -3,6 +3,7 @@
 	org.opencms.workplace.*,
 	org.opencms.workplace.editors.*,
 	org.opencms.jsp.*,
+	java.util.*,
 	org.opencms.i18n.*"
 	buffer="none"
 	session="false" %><%
@@ -41,14 +42,14 @@ try {
 String editLink = cms.link("/system/workplace/editors/editor.jsp");
 String deleteLink = cms.link("/system/workplace/commons/delete.jsp");
 
-String editId = "directedit";
+// random direct edit id generation
+Random rnd = (Random)request.getAttribute("__Random");
+if (rnd == null) {
+	rnd = new Random();
+	request.setAttribute("__Random", rnd);
+}
+String editId = "directedit_".concat(String.valueOf(rnd.nextInt()));
 
-if (editTarget != null) {
-	editId += "_" + editTarget.replace('/', '_');
-}
-if (editElement != null) {
-	editId += "_" + editElement;
-}
 %><%--
 
 --%><cms:template element="start_directedit_enabled">
