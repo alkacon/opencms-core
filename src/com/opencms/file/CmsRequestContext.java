@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
-* Date   : $Date: 2002/12/04 18:25:49 $
-* Version: $Revision: 1.58 $
+* Date   : $Date: 2002/12/12 18:54:31 $
+* Version: $Revision: 1.59 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import com.opencms.template.cache.*;
  * @author Anders Fugmann
  * @author Alexander Lucas
  *
- * @version $Revision: 1.58 $ $Date: 2002/12/04 18:25:49 $
+ * @version $Revision: 1.59 $ $Date: 2002/12/12 18:54:31 $
  *
  */
 public class CmsRequestContext implements I_CmsConstants {
@@ -81,7 +81,10 @@ public class CmsRequestContext implements I_CmsConstants {
 
     /** Flag to indicate that this request is event controlled */
     private boolean m_eventControlled = false;
-
+    
+    /** Flag to indicate that this context should not update the user session */
+    private boolean m_updateSession = true;
+    
     /**
      * In export mode this vector is used to store all dependencies this request
      * may have. It is saved to the database and if one of the dependencies changes
@@ -624,20 +627,38 @@ public class CmsRequestContext implements I_CmsConstants {
     }
 
     /**
-     * Mark this request context as event controlled.
+     * Mark this request context as event controlled.<p>
      * 
-     * @param true if the request is event controlled, false otherwise.
+     * @param true if the request is event controlled, false otherwise
      */
     public void setEventControlled(boolean value) {
         m_eventControlled = value;
     }
 
     /**
-     * Check if this request context is event controlled.
+     * Check if this request context is event controlled.<p>
      * 
-     * @return true if the request context is event controlled, false otherwise.
+     * @return true if the request context is event controlled, false otherwise
      */
     public boolean isEventControlled() {
         return m_eventControlled;
     }
+    
+    /**
+     * Mark this request context to update the session or not.<p>
+     *
+     * @param true if this request context will update the session, false otherwise
+     */
+    public void setUpdateSessionEnabled(boolean value) {
+        m_updateSession = value;
+    }
+
+    /**
+     * Check if this request context will update the session.<p>
+     *
+     * @return true if this request context will update the session, false otherwise
+     */
+    public boolean isUpdateSessionEnabled() {
+        return m_updateSession;
+    }    
 }
