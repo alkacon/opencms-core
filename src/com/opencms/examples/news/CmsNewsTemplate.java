@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/news/Attic/CmsNewsTemplate.java,v $
- * Date   : $Date: 2000/04/04 09:59:22 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/05/02 15:58:24 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -56,7 +56,7 @@ import javax.servlet.http.*;
  *
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.6 $ $Date: 2000/04/04 09:59:22 $
+ * @version $Revision: 1.7 $ $Date: 2000/05/02 15:58:24 $
  * @see com.opencms.examples.CmsXmlNewsTemplateFile
  */
 public class CmsNewsTemplate extends CmsXmlTemplate implements I_CmsNewsConstants, I_CmsLogChannels {
@@ -203,6 +203,10 @@ public class CmsNewsTemplate extends CmsXmlTemplate implements I_CmsNewsConstant
      */
     public String newsList(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
             throws CmsException {
+        A_CmsRequestContext reqCont = cms.getRequestContext();
+        HttpServletRequest orgReq = (HttpServletRequest)reqCont.getRequest().getOriginalRequest();
+        String servletPath = orgReq.getServletPath();
+
         Hashtable parameters = (Hashtable)userObj;
         String elementName = (String)parameters.get("_ELEMENT_");
         
@@ -220,7 +224,7 @@ public class CmsNewsTemplate extends CmsXmlTemplate implements I_CmsNewsConstant
             newsTemplateFile.setData("date", Utils.getNiceShortDate(doc2.getNewsDate()));
             newsTemplateFile.setData("headline", doc2.getNewsHeadline());
             newsTemplateFile.setData("shorttext", doc2.getNewsShortText());        
-            newsTemplateFile.setData("link", doc2.getFilename() + "/index.html");
+            newsTemplateFile.setData("link", servletPath + C_NEWS_FOLDER_PAGE + doc2.getFilename() + "/index.html");
             result = result + newsTemplateFile.getProcessedDataValue(C_TAG_NEWSLISTENTRY);        
         }                        
         return result;
