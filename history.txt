@@ -8,6 +8,14 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.7.15 Ecaz - xx January 2003
+- The old class CmsXmlLanguageFile has been renamed to CmsXmlLanguageFileContent. 
+  A new class CmsXmlLanguageFile has been created: if a new instance of this class is created, 
+  the class tries to read a cached CmsXmlLanguageFileContent-object from CmsXmlWpTemplateFile 
+  and stores it into a variable; this variable is used to read (or write) from the languagefile.
+  These changes were made because creating a new CmsXmlLanguageFileContent-object (and merging the
+  language files) takes too much time.
+
 OpenCms 4.7.14 Ecaz - 06 August 2002
 * Now the manager of a project who is not member of the projectmanager-group can publish a resource directly
 * general bugfixes
