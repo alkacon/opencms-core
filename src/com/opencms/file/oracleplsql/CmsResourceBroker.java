@@ -2,11 +2,11 @@ package com.opencms.file.oracleplsql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2001/01/04 12:25:11 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2001/04/17 14:42:03 $
+ * Version: $Revision: 1.21 $
  *
- * Copyright (C) 2000  The OpenCms Group 
- * 
+ * Copyright (C) 2000  The OpenCms Group
+ *
  * This File is part of OpenCms -
  * the Open Source Content Mananagement System
  *
@@ -14,15 +14,15 @@ package com.opencms.file.oracleplsql;
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * For further information about OpenCms, please see the
  * OpenCms Website: http://www.opencms.com
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * long with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
@@ -44,22 +44,22 @@ import com.opencms.template.*;
  * into one public class. The interface is local to package. <B>All</B> methods
  * get additional parameters (callingUser and currentproject) to check the security-
  * police.
- * 
+ *
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.20 $ $Date: 2001/01/04 12:25:11 $
+ * @version $Revision: 1.21 $ $Date: 2001/04/17 14:42:03 $
  */
 public class CmsResourceBroker extends com.opencms.file.genericSql.CmsResourceBroker {
-	
+
 /**
  * Checks, if the user may create this resource.
- * 
+ *
  * @param currentUser The user who requested this method.
  * @param currentProject The current project of the user.
  * @param resource The resource to check.
- * 
+ *
  * @return wether the user has access, or not.
  */
 public boolean accessCreate(CmsUser currentUser, CmsProject currentProject, CmsResource resource) throws CmsException {
@@ -68,11 +68,11 @@ public boolean accessCreate(CmsUser currentUser, CmsProject currentProject, CmsR
 }
 /**
  * Checks, if the user may lock this resource.
- * 
+ *
  * @param currentUser The user who requested this method.
  * @param currentProject The current project of the user.
  * @param resource The resource to check.
- * 
+ *
  * @return wether the user has access, or not.
  */
 public boolean accessLock(CmsUser currentUser, CmsProject currentProject, CmsResource resource) throws CmsException {
@@ -83,10 +83,10 @@ public boolean accessLock(CmsUser currentUser, CmsProject currentProject, CmsRes
 
 /**
  * Tests if the user can access the project.
- * 
+ *
  * <B>Security:</B>
  * All users are granted.
- * 
+ *
  * @param currentUser The user who requested this method.
  * @param currentProject The current project of the user.
  * @param projectId the id of the project.
@@ -99,11 +99,11 @@ public boolean accessProject(CmsUser currentUser, CmsProject currentProject, int
 }
 /**
  * Checks, if the user may read this resource.
- * 
+ *
  * @param currentUser The user who requested this method.
  * @param currentProject The current project of the user.
  * @param resource The resource to check.
- * 
+ *
  * @return wether the user has access, or not.
  */
 public boolean accessRead(CmsUser currentUser, CmsProject currentProject, CmsResource resource) throws CmsException {
@@ -114,18 +114,18 @@ public boolean accessRead(CmsUser currentUser, CmsProject currentProject, CmsRes
 	} else {
 		com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
 		boolean ac=dbAccess.accessRead(currentUser, currentProject, resource);
-		m_accessCache.put(currentUser.getId()+":"+currentProject.getId()+":"+resource.getName(),new Boolean(ac));	
-		
+		m_accessCache.put(currentUser.getId()+":"+currentProject.getId()+":"+resource.getName(),new Boolean(ac));
+
 		return ac;
 	}
 }
 /**
  * Checks, if the user may write this resource.
- * 
+ *
  * @param currentUser The user who requested this method.
  * @param currentProject The current project of the user.
  * @param resource The resource to check.
- * 
+ *
  * @return wether the user has access, or not.
  */
 public boolean accessWrite(CmsUser currentUser, CmsProject currentProject, CmsResource resource) throws CmsException {
@@ -134,7 +134,7 @@ public boolean accessWrite(CmsUser currentUser, CmsProject currentProject, CmsRe
 }
 /**
  * Copies a file in the Cms. <br>
- * 
+ *
  * <B>Security:</B>
  * Access is cranted, if:
  * <ul>
@@ -143,12 +143,12 @@ public boolean accessWrite(CmsUser currentUser, CmsProject currentProject, CmsRe
  * <li>the user can create the destinationresource</li>
  * <li>the destinationresource dosn't exists</li>
  * </ul>
- * 
+ *
  * @param currentUser The user who requested this method.
  * @param currentProject The current project of the user.
  * @param source The complete path of the sourcefile.
  * @param destination The complete path to the destination.
- * 
+ *
  * @exception CmsException  Throws CmsException if operation was not succesful.
  */
 public void copyFile(CmsUser currentUser, CmsProject currentProject, String source, String destination) throws CmsException {
@@ -156,7 +156,7 @@ public void copyFile(CmsUser currentUser, CmsProject currentProject, String sour
 
 	// checks, if the destinateion is valid, if not it throws a exception
 	validFilename(destination.replace('/', 'a'));
-	
+
 	try {
 		dbAccess.copyFile(currentProject, currentUser.getId(), source, destination);
 		// inform about the file-system-change
@@ -167,15 +167,15 @@ public void copyFile(CmsUser currentUser, CmsProject currentProject, String sour
 }
 /**
  * Copies a resource from the online project to a new, specified project.<br>
- * Copying a resource will copy the file header or folder into the specified 
+ * Copying a resource will copy the file header or folder into the specified
  * offline project and set its state to UNCHANGED.
- * 
+ *
  * <B>Security:</B>
  * Access is granted, if:
  * <ul>
  * <li>the user is the owner of the project</li>
  * </ul>
- *	 
+ *
  * @param currentUser The user who requested this method.
  * @param currentProject The current project of the user.
  * @param resource The name of the resource.
@@ -187,11 +187,11 @@ public void copyResourceToProject(CmsUser currentUser, CmsProject currentProject
 }
 /**
  * return the correct DbAccess class.
- * This method should be overloaded by all other Database Drivers 
+ * This method should be overloaded by all other Database Drivers
  * Creation date: (09/15/00 %r)
  * @return com.opencms.file.genericSql.CmsDbAccess
  * @param configurations source.org.apache.java.util.Configurations
- * @exception com.opencms.core.CmsException Thrown if CmsDbAccess class could not be instantiated. 
+ * @exception com.opencms.core.CmsException Thrown if CmsDbAccess class could not be instantiated.
  */
 public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations configurations) throws CmsException
 {
@@ -200,32 +200,32 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
 	/**
 	 * Returns all projects, which are owned by the user or which are accessible
 	 * for the group of the user.
-	 * 
+	 *
 	 * <B>Security</B>
 	 * All users are granted.
-	 * 
+	 *
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
-	 * 
+	 *
 	 * @return a Vector of projects.
 	 */
-	 public Vector getAllAccessibleProjects(CmsUser currentUser, 
+	 public Vector getAllAccessibleProjects(CmsUser currentUser,
 											CmsProject currentProject)
 		 throws CmsException {
 
-	    com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;		
+	    com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
 		// get all projects which are owned by the user.
 		Vector projects = dbAccess.getAllAccessibleProjects(currentUser);
-		
+
 		// return the vector of projects
 		return(projects);
 	 }
 /**
  * Returns a list of groups of a user.<P/>
- * 
+ *
  * <B>Security:</B>
  * All users are granted.
- * 
+ *
  * @param currentUser The user who requested this method.
  * @param currentProject The current project of the user.
  * @param username The name of the user.
@@ -240,16 +240,16 @@ public Vector getGroupsOfUser(CmsUser currentUser, CmsProject currentProject, St
 	if ((allGroups == null) || (allGroups.size() == 0)) {
 		Vector groups = dbAccess.getAllGroupsOfUser(username);
 		m_usergroupsCache.put(C_USER + username, groups);
-		return groups;		
-	}	
+		return groups;
+	}
 	return allGroups;
 }
 /**
  * Returns a list of users in a group.<P/>
- * 
+ *
  * <B>Security:</B>
  * All users are granted, except the anonymous user.
- * 
+ *
  * @param currentUser The user who requested this method.
  * @param currentProject The current project of the user.
  * @param groupname The name of the group to list users from.
@@ -280,10 +280,10 @@ public Vector getUsersOfGroup(CmsUser currentUser, CmsProject currentProject, St
 /**
  * Determines, if the users may manage a project.<BR/>
  * Only the manager of a project may publish it.
- * 
+ *
  * <B>Security:</B>
  * All users are granted.
- * 
+ *
  * @param currentUser The user who requested this method.
  * @param currentProject The current project of the user.
  * @return true, if the may manage this project.
@@ -295,14 +295,14 @@ public boolean isManagerOfProject(CmsUser currentUser, CmsProject currentProject
 }
 /**
  * Locks a resource.<br>
- * 
+ *
  * Only a resource in an offline project can be locked. The state of the resource
  * is set to CHANGED (1).
  * If the content of this resource is not exisiting in the offline project already,
  * it is read from the online project and written into the offline project.
- * A user can lock a resource, so he is the only one who can write this 
+ * A user can lock a resource, so he is the only one who can write this
  * resource. <br>
- * 
+ *
  * <B>Security:</B>
  * Access is granted, if:
  * <ul>
@@ -310,12 +310,12 @@ public boolean isManagerOfProject(CmsUser currentUser, CmsProject currentProject
  * <li>the user can write the resource</li>
  * <li>the resource is not locked by another user</li>
  * </ul>
- * 
+ *
  * @param currentUser The user who requested this method.
  * @param currentProject The current project of the user.
  * @param resource The complete path to the resource to lock.
  * @param force If force is true, a existing locking will be oberwritten.
- * 
+ *
  * @exception CmsException  Throws CmsException if operation was not succesful.
  * It will also be thrown, if there is a existing lock
  * and force was set to false.
@@ -329,75 +329,75 @@ public void lockResource(CmsUser currentUser, CmsProject currentProject, String 
 	//dbAccess.lockResource(currentUser, currentProject, resourcename, force);
 	//m_resourceCache.clear();
 	// update the cache
-	
-	for (int i = 0; i < resources.size(); i++) {		
+
+	for (int i = 0; i < resources.size(); i++) {
 		cmsResource = (CmsResource) resources.elementAt(i);
 		String resourceName = cmsResource.getAbsolutePath();
 		if (resourceName.endsWith("/")) {
-			cmsFolder = new CmsFolder(cmsResource.getResourceId(), cmsResource.getParentId(), 
-									cmsResource.getFileId(), resourceName, cmsResource.getType(), 
-									cmsResource.getFlags(), cmsResource.getOwnerId(), cmsResource.getGroupId(), 
-									cmsResource.getProjectId(), cmsResource.getAccessFlags(), 
-									cmsResource.getState(), cmsResource.isLockedBy(), cmsResource.getDateCreated(), 
+			cmsFolder = new CmsFolder(cmsResource.getResourceId(), cmsResource.getParentId(),
+									cmsResource.getFileId(), resourceName, cmsResource.getType(),
+									cmsResource.getFlags(), cmsResource.getOwnerId(), cmsResource.getGroupId(),
+									cmsResource.getProjectId(), cmsResource.getAccessFlags(),
+									cmsResource.getState(), cmsResource.isLockedBy(), cmsResource.getDateCreated(),
 									cmsResource.getDateLastModified(), cmsResource.getResourceLastModifiedBy());
-				
+
 			m_resourceCache.put(C_FOLDER + currentProject.getId() + resourceName, cmsFolder);
 		} else {
-			cmsFile = new CmsFile(cmsResource.getResourceId(), cmsResource.getParentId(), 
-									cmsResource.getFileId(), resourceName, cmsResource.getType(), 
-									cmsResource.getFlags(), cmsResource.getOwnerId(), cmsResource.getGroupId(), 
-									cmsResource.getProjectId(), cmsResource.getAccessFlags(), 
-									cmsResource.getState(), cmsResource.isLockedBy(), cmsResource.getLauncherType(), 
-									cmsResource.getLauncherClassname(),	cmsResource.getDateCreated(), 
-									cmsResource.getDateLastModified(), cmsResource.getResourceLastModifiedBy(), 
+			cmsFile = new CmsFile(cmsResource.getResourceId(), cmsResource.getParentId(),
+									cmsResource.getFileId(), resourceName, cmsResource.getType(),
+									cmsResource.getFlags(), cmsResource.getOwnerId(), cmsResource.getGroupId(),
+									cmsResource.getProjectId(), cmsResource.getAccessFlags(),
+									cmsResource.getState(), cmsResource.isLockedBy(), cmsResource.getLauncherType(),
+									cmsResource.getLauncherClassname(),	cmsResource.getDateCreated(),
+									cmsResource.getDateLastModified(), cmsResource.getResourceLastModifiedBy(),
 									new byte[0], cmsResource.getLength());
-				
+
 			m_resourceCache.put(C_FILE + currentProject.getId() + resourceName, cmsFile);
 		}
 	}
-	
+
 	m_subresCache.clear();
 }
 /**
  * Reads a file from a previous project of the Cms.<BR/>
- * 
+ *
  * <B>Security:</B>
  * Access is granted, if:
  * <ul>
  * <li>the user has access to the project</li>
  * <li>the user can read the resource</li>
  * </ul>
- * 
+ *
  * @param currentUser The user who requested this method.
  * @param currentProject The current project of the user.
  * @param projectId The id of the project to read the file from.
  * @param filename The name of the file to be read.
- * 
+ *
  * @return The file read from the Cms.
- * 
+ *
  * @exception CmsException  Throws CmsException if operation was not succesful.
  * */
 public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, int projectId, String filename) throws CmsException
 {
 	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
 	CmsFile cmsFile = null;
-	// read the resource from the projectId, 
+	// read the resource from the projectId,
 	try
 	{
 		//cmsFile=(CmsFile)m_resourceCache.get(C_FILECONTENT+projectId+filename);
 		if (cmsFile == null) {
-			
+
 			cmsFile = dbAccess.readFile(currentUser.getId(), projectId, onlineProject(currentUser, currentProject).getId(), filename);
 
 			// only put it in thecache until the size is below the max site
 			/*if (cmsFile.getContents().length <m_cachelimit) {
 				m_resourceCache.put(C_FILECONTENT+projectId+filename,cmsFile);
 			} else {
-			
+
 			}*/
 		}
-		
-		
+
+
 	}
 	catch (CmsException exc)
 	{
@@ -409,20 +409,20 @@ public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, int proj
 
 /**
  * Reads a file from the Cms.<BR/>
- * 
+ *
  * <B>Security:</B>
  * Access is granted, if:
  * <ul>
  * <li>the user has access to the project</li>
  * <li>the user can read the resource</li>
  * </ul>
- * 
+ *
  * @param currentUser The user who requested this method.
  * @param currentProject The current project of the user.
  * @param filename The name of the file to be read.
- * 
+ *
  * @return The file read from the Cms.
- * 
+ *
  * @exception CmsException  Throws CmsException if operation was not succesful.
  * */
 public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, String filename) throws CmsException {
@@ -432,13 +432,13 @@ public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, String f
 	try {
 		//cmsFile=(CmsFile)m_resourceCache.get(C_FILECONTENT+currentProject.getId()+filename);
 		if (cmsFile == null) {
-			
+
 			cmsFile = dbAccess.readFile(currentUser.getId(), currentProject.getId(), onlineProject(currentUser, currentProject).getId(), filename);
 			// only put it in the cache until the size is below the max site
 			/*if (cmsFile.getContents().length <m_cachelimit) {
 				m_resourceCache.put(C_FILECONTENT+currentProject.getId()+filename,cmsFile);
 			} else {
-			
+
 			}*/
 		}
 			} catch (CmsException exc) {
@@ -449,14 +449,14 @@ public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, String f
 }
 /**
  * Locks a resource.<br>
- * 
+ *
  * Only a resource in an offline project can be locked. The state of the resource
  * is set to CHANGED (1).
  * If the content of this resource is not exisiting in the offline project already,
  * it is read from the online project and written into the offline project.
- * A user can lock a resource, so he is the only one who can write this 
+ * A user can lock a resource, so he is the only one who can write this
  * resource. <br>
- * 
+ *
  * <B>Security:</B>
  * Access is granted, if:
  * <ul>
@@ -464,12 +464,12 @@ public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, String f
  * <li>the user can write the resource</li>
  * <li>the resource is not locked by another user</li>
  * </ul>
- * 
+ *
  * @param currentUser The user who requested this method.
  * @param currentProject The current project of the user.
  * @param resource The complete path to the resource to lock.
  * @param force If force is true, a existing locking will be oberwritten.
- * 
+ *
  * @exception CmsException  Throws CmsException if operation was not succesful.
  * It will also be thrown, if there is a existing lock
  * and force was set to false.
@@ -489,43 +489,43 @@ public void unlockResource(CmsUser currentUser, CmsProject currentProject, Strin
 		cmsResource = (CmsResource)resources.elementAt(i);
 		String resourceName = cmsResource.getAbsolutePath();
 		if (resourceName.endsWith("/")) {
-			cmsFolder = new CmsFolder(cmsResource.getResourceId(), cmsResource.getParentId(), 
-									cmsResource.getFileId(), resourceName, cmsResource.getType(), 
-									cmsResource.getFlags(), cmsResource.getOwnerId(), cmsResource.getGroupId(), 
-									cmsResource.getProjectId(), cmsResource.getAccessFlags(), 
-									cmsResource.getState(), cmsResource.isLockedBy(), cmsResource.getDateCreated(), 
+			cmsFolder = new CmsFolder(cmsResource.getResourceId(), cmsResource.getParentId(),
+									cmsResource.getFileId(), resourceName, cmsResource.getType(),
+									cmsResource.getFlags(), cmsResource.getOwnerId(), cmsResource.getGroupId(),
+									cmsResource.getProjectId(), cmsResource.getAccessFlags(),
+									cmsResource.getState(), cmsResource.isLockedBy(), cmsResource.getDateCreated(),
 									cmsResource.getDateLastModified(), cmsResource.getResourceLastModifiedBy());
 
 			m_resourceCache.put(C_FOLDER+currentProject.getId()+resourceName, cmsFolder);
 		} else {
-			cmsFile = new CmsFile(cmsResource.getResourceId(), cmsResource.getParentId(), 
-									cmsResource.getFileId(), resourceName, cmsResource.getType(), 
-									cmsResource.getFlags(), cmsResource.getOwnerId(), cmsResource.getGroupId(), 
-									cmsResource.getProjectId(), cmsResource.getAccessFlags(), 
-									cmsResource.getState(), cmsResource.isLockedBy(), cmsResource.getLauncherType(), 
-									cmsResource.getLauncherClassname(),	cmsResource.getDateCreated(), 
-									cmsResource.getDateLastModified(), cmsResource.getResourceLastModifiedBy(), 
+			cmsFile = new CmsFile(cmsResource.getResourceId(), cmsResource.getParentId(),
+									cmsResource.getFileId(), resourceName, cmsResource.getType(),
+									cmsResource.getFlags(), cmsResource.getOwnerId(), cmsResource.getGroupId(),
+									cmsResource.getProjectId(), cmsResource.getAccessFlags(),
+									cmsResource.getState(), cmsResource.isLockedBy(), cmsResource.getLauncherType(),
+									cmsResource.getLauncherClassname(),	cmsResource.getDateCreated(),
+									cmsResource.getDateLastModified(), cmsResource.getResourceLastModifiedBy(),
 									new byte[0], cmsResource.getLength());
 
-			m_resourceCache.put(C_FILE+currentProject.getId()+resourceName, cmsFile);			
-		}		
+			m_resourceCache.put(C_FILE+currentProject.getId()+resourceName, cmsFile);
+		}
 	}
-	
+
 	m_subresCache.clear();
 }
 /**
  * Checks if a user is member of a group.<P/>
- *  
+ *
  * <B>Security:</B>
  * All users are granted, except the anonymous user.
- * 
+ *
  * @param currentUser The user who requested this method.
  * @param currentProject The current project of the user.
  * @param callingUser The user who wants to use this method.
  * @param nameuser The name of the user to check.
  * @param groupname The name of the group to check.
  * @return True or False
- * 
+ *
  * @exception CmsException Throws CmsException if operation was not succesful
  */
 public boolean userInGroup(CmsUser currentUser, CmsProject currentProject, String username, String groupname) throws CmsException {
@@ -540,12 +540,12 @@ public boolean userInGroup(CmsUser currentUser, CmsProject currentProject, Strin
 }
 /**
  * Writes a file to the Cms.<br>
- * 
+ *
  * A file can only be written to an offline project.<br>
  * The state of the resource is set to  CHANGED (1). The file content of the file
  * is either updated (if it is already existing in the offline project), or created
  * in the offline project (if it is not available there).<br>
- * 
+ *
  * <B>Security:</B>
  * Access is granted, if:
  * <ul>
@@ -553,13 +553,14 @@ public boolean userInGroup(CmsUser currentUser, CmsProject currentProject, Strin
  * <li>the user can write the resource</li>
  * <li>the resource is locked by the callingUser</li>
  * </ul>
- * 
+ *
  * @param currentUser The user who own this file.
  * @param currentProject The project in which the resource will be used.
  * @param file The name of the file to write.
- * 
+ *
  * @exception CmsException  Throws CmsException if operation was not succesful.
  */
+/*
 public void writeFile(CmsUser currentUser, CmsProject currentProject, CmsFile file) throws CmsException {
 	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
 	dbAccess.writeFile(currentProject, onlineProject(currentUser, currentProject), file, true);
@@ -572,14 +573,15 @@ public void writeFile(CmsUser currentUser, CmsProject currentProject, CmsFile fi
 	// inform about the file-system-change
 	fileSystemChanged(false);
 }
+*/
 /**
  * Writes a fileheader to the Cms.<br>
- * 
+ *
  * A file can only be written to an offline project.<br>
  * The state of the resource is set to  CHANGED (1). The file content of the file
  * is either updated (if it is already existing in the offline project), or created
  * in the offline project (if it is not available there).<br>
- * 
+ *
  * <B>Security:</B>
  * Access is granted, if:
  * <ul>
@@ -587,13 +589,14 @@ public void writeFile(CmsUser currentUser, CmsProject currentProject, CmsFile fi
  * <li>the user can write the resource</li>
  * <li>the resource is locked by the callingUser</li>
  * </ul>
- * 
+ *
  * @param currentUser The user who own this file.
  * @param currentProject The project in which the resource will be used.
  * @param file The file to write.
- * 
+ *
  * @exception CmsException  Throws CmsException if operation was not succesful.
  */
+/*
 public void writeFileHeader(CmsUser currentUser, CmsProject currentProject, CmsFile file) throws CmsException {
 	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
 	dbAccess.writeFileHeader(currentProject, file, true);
@@ -605,4 +608,5 @@ public void writeFileHeader(CmsUser currentUser, CmsProject currentProject, CmsF
 	m_accessCache.clear();
 	fileSystemChanged(false);
 }
+*/
 }
