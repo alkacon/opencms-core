@@ -11,6 +11,7 @@
 	// which button is clicked
 	function doTemplSubmit(para)
 	{
+		document.EDITOR.newbody.value = "0";
 		switch (para)
 		{
 		case 1:
@@ -47,9 +48,12 @@
 			document.PREVIEW.preview.value = "1";
 			document.PREVIEW.submit();
 			break;
-	case 6:
-		// New Body;
-		alert("NYI!");
+		case 6:
+			// New Body;
+			doSubmit();
+			document.EDITOR.newbody.value = "1";
+			document.EDITOR.submit();
+			break;
 		}
 	}
 	
@@ -102,15 +106,17 @@ return DisplayChanged()
 	METHOD=POST>
 	<INPUT TYPE=HIDDEN name="bodyclass" value="]]><PROCESS>bodyclass</PROCESS><![CDATA[">
 	<INPUT TYPE=HIDDEN name="bodyfile" value="]]><PROCESS>bodyfile</PROCESS><![CDATA[">
+	<INPUT TYPE=HIDDEN name="newbody">
 <table cellspacing=0 cellpadding=0 border=0 width="100%">
 	<tr>
 		<td class=menubold><p class=einzug>]]><LABEL value="input.title"/>:<![CDATA[&nbsp;&nbsp;&nbsp;</td>
-		<td class=dialogtxt>]]><INPUTFIELD name="title" class="textfeld" size="20" length="255" method="setTitle"/><![CDATA[
+		<td class=dialogtxt>]]><INPUTFIELD name="title" class="textfeld" size="10" length="255" method="setTitle"/><![CDATA[
 		<td class=menubold><p class=tab>]]><LABEL value="input.body"/>:<![CDATA[&nbsp;&nbsp;&nbsp;</td>
 		<td class=dialogtxt>]]><SELECT class="textfeld" name="body" width="80" method="getBodys" onchange="doTemplSubmit(1);"/><![CDATA[
 			<INPUT TYPE=HIDDEN name="bodychanged">		
 		</td>
-		<td class=menu><p class=tab>]]><BUTTON href="#" name="bt_newdoc" action="javascript:doTemplSubmit(6);" alt="newbody"/><![CDATA[</td>
+		<td class=dialogtxt>]]><INPUTFIELD name="bodytitle" class="textfeld" size="10" length="255" method="setBodyTitle"/><![CDATA[
+		<td class=menu><p class=tab>]]><BUTTON href="javascript:doTemplSubmit(6);" name="bt_newdoc" action="" alt="newbody"/><![CDATA[</td>
 		<td class=menubold><p class=tab>]]><LABEL value="input.template"/>:<![CDATA[&nbsp;&nbsp;&nbsp;</td>
 		<td class=dialogtxt>]]><SELECT class="textfeld" name="template" width="150" method="getAvailableTemplates" onchange="doTemplSubmit(4);"/><![CDATA[</td>
 		<td class=menubold><p class=tab>]]><LABEL value="input.editor"/>:<![CDATA[&nbsp;&nbsp;&nbsp;</td>
