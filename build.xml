@@ -194,6 +194,7 @@
             dir="${tomcat.home}/webapps/${app.name}/WEB-INF"
             fork="true">
             <arg value="-script=ocsetup/cmssetup.txt" />
+            <jvmarg value="-Dfile.encoding=ISO8859_1"/> 
         </java>
     </target>
 
