@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
-* Date   : $Date: 2002/09/03 11:57:01 $
-* Version: $Revision: 1.50 $
+* Date   : $Date: 2002/10/11 15:12:07 $
+* Version: $Revision: 1.51 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,15 +38,17 @@ import org.w3c.dom.*;
 import com.opencms.template.*;
 import com.opencms.core.*;
 import com.opencms.report.*;
+import com.opencms.workplace.*;
 
 /**
  * This class implements the registry for OpenCms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.50 $ $Date: 2002/09/03 11:57:01 $
+ * @author Thomas Weckert
+ * @version $Revision: 1.51 $ $Date: 2002/10/11 15:12:07 $
  *
  */
-public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
+public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_CmsConstants, I_CmsWpConstants {
 
     /**
      *  The xml-document representing the registry.
@@ -89,16 +91,31 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
     private static final String C_UPLOAD_EVENT_METHOD_NAME = "moduleWasUploaded";
     private static final String C_UPDATE_PARAMETER_EVENT_METHOD_NAME = "moduleParameterWasUpdated";
     private static final String C_DELETE_EVENT_METHOD_NAME = "moduleWasDeleted";
+    
+    public static final String C_MODULE_TYPE_TRADITIONAL = "traditional";
+    public static final String C_MODULE_TYPE_ADVANCED = "advanced";
 
     /**
      * Declaration of an empty module in the registry.
      */
-    private static final String[] C_EMPTY_MODULE = { "<module><name>", "</name><nicename>", "</nicename><version>", "</version><description>", "</description><author>", "</author><email/><creationdate>", "</creationdate>","<view/><publishclass/><documentation/><dependencies/><maintenance_class/><parameters/><repository/></module>" };
+    private static final String[] C_EMPTY_MODULE = { 
+        "<module><type>", 
+        "</type><name>", 
+        "</name><nicename>", 
+        "</nicename><version>", 
+        "</version><description>", 
+        "</description><author>", 
+        "</author><email/><creationdate>", 
+        "</creationdate>",
+        "<view/><publishclass/><documentation/><dependencies/><maintenance_class/><parameters/><repository/></module>" 
+    };
 
     /**
      *
      */
     private static final String[] C_EXPORTPOINT = { "<exportpoint><source>", "</source><destination>", "</destination></exportpoint>"};
+    
+    private static final int DEBUG = 0;
 
 /**
  * Creates a new CmsRegistry for a user. The cms-object represents the current state of the current user.
@@ -275,22 +292,30 @@ public void createModule(String modulename, String niceModulename, String descri
     if (!hasAccess()) {
         throw new CmsException("No access to perform the action 'createModule'", CmsException.C_REGISTRY_ERROR);
     }
-
+    
+    String moduleType = CmsRegistry.C_MODULE_TYPE_TRADITIONAL;
+    
+    // due to the fact that there is no GUI element to set the module type in
+    // the module creating backoffice dialoge, we module type is currently per
+    // default a "traditional" module. as a hack, the module type is set when
+    // the module is updated....
 
     // create the new module in the registry
     StringBuffer moduleString = new StringBuffer();
-    moduleString.append(C_EMPTY_MODULE[0] + modulename);
-    moduleString.append(C_EMPTY_MODULE[1] + niceModulename);
-    moduleString.append(C_EMPTY_MODULE[2] + version);
-    moduleString.append(C_EMPTY_MODULE[3] + description);
-    moduleString.append(C_EMPTY_MODULE[4] + author);
-    moduleString.append(C_EMPTY_MODULE[5] + createDate);
-    moduleString.append(C_EMPTY_MODULE[6]);
-    moduleString.append(C_EXPORTPOINT[0] + "/system/modules/" + modulename +"/classes/");
-    moduleString.append(C_EXPORTPOINT[1] + "WEB-INF/classes/" + C_EXPORTPOINT[2]);
-    moduleString.append(C_EXPORTPOINT[0] + "/system/modules/" + modulename +"/lib/");
-    moduleString.append(C_EXPORTPOINT[1] + "WEB-INF/lib/" + C_EXPORTPOINT[2]);
-    moduleString.append(C_EMPTY_MODULE[7]);
+    
+    moduleString.append( C_EMPTY_MODULE[0] + moduleType );
+    moduleString.append( C_EMPTY_MODULE[1] + modulename );
+    moduleString.append( C_EMPTY_MODULE[2] + niceModulename );
+    moduleString.append( C_EMPTY_MODULE[3] + version );
+    moduleString.append( C_EMPTY_MODULE[4] + description );
+    moduleString.append( C_EMPTY_MODULE[5] + author );
+    moduleString.append( C_EMPTY_MODULE[6] + createDate );
+    moduleString.append( C_EMPTY_MODULE[7] );
+    moduleString.append( C_EXPORTPOINT[0] + "/system/modules/" + modulename +"/classes/" );
+    moduleString.append( C_EXPORTPOINT[1] + "WEB-INF/classes/" + C_EXPORTPOINT[2] );
+    moduleString.append( C_EXPORTPOINT[0] + "/system/modules/" + modulename +"/lib/" );
+    moduleString.append( C_EXPORTPOINT[1] + "WEB-INF/lib/" + C_EXPORTPOINT[2] );
+    moduleString.append( C_EMPTY_MODULE[8] );
 
     //[removed by Gridnine AB, 2002-06-13] Document doc = parse(moduleString);
     Document doc;
@@ -329,117 +354,156 @@ public Vector deleteCheckDependencies(String modulename) throws CmsException {
     }
     return result;
 }
-/**
- * This method checks for conflicting files before the deletion of a module.
- * It uses several Vectors to return the different conflicting files.
- *
- * @param modulename the name of the module that should be deleted.
- * @param filesWithProperty a return value. The files that are marked with the module-property for this module.
- * @param missingFiles a return value. The files that are missing.
- * @param wrongChecksum a return value. The files that should be deleted but have another checksum as at import-time.
- * @param filesInUse a return value. The files that should be deleted but are in use by other modules.
- * @param resourcesForProject a return value. The files that should be copied to a project to delete.
- */
-public void deleteGetConflictingFileNames(String modulename, Vector filesWithProperty, Vector missingFiles, Vector wrongChecksum, Vector filesInUse, Vector resourcesForProject) throws CmsException {
-    // the files and checksums for this module
-    Vector moduleFiles = new Vector();
-    Vector moduleChecksums = new Vector();
-    getModuleFiles(modulename, moduleFiles, moduleChecksums);
-
-    // the files and checksums for all other modules
-    Vector otherFiles = new Vector();
-    Vector otherChecksums = new Vector();
-    Enumeration modules = getModuleNames();
-    while (modules.hasMoreElements()) {
-        String module = (String) modules.nextElement();
-        // get the files only for modules that are not for the current module.
-        if (!module.equals(modulename)) {
-            // get the files
-            getModuleFiles(module, otherFiles, otherChecksums);
-        }
-    }
-    for (int i = 0; i < moduleFiles.size(); i++) {
-        // get the current file and checksum
-        String currentFile = (String) moduleFiles.elementAt(i);
-        String currentChecksum = (String) moduleChecksums.elementAt(i);
-        CmsFile file = null;
-
-        try {
-            String resource = currentFile.substring(0, currentFile.indexOf("/",1) + 1);
-            if(!resourcesForProject.contains(resource)) {
-                // add the resource, if it dosen't already exist
-                resourcesForProject.addElement(resource);
+    /**
+     * This method checks for conflicting files before the deletion of a module.
+     * It uses several Vectors to return the different conflicting files.
+     *
+     * @param modulename the name of the module that should be deleted.
+     * @param filesWithProperty a return value. The files that are marked with the module-property for this module.
+     * @param missingFiles a return value. The files that are missing.
+     * @param wrongChecksum a return value. The files that should be deleted but have another checksum as at import-time.
+     * @param filesInUse a return value. The files that should be deleted but are in use by other modules.
+     * @param resourcesForProject a return value. The files that should be copied to a project to delete.
+     */
+    public void deleteGetConflictingFileNames(String modulename, Vector filesWithProperty, Vector missingFiles, Vector wrongChecksum, Vector filesInUse, Vector resourcesForProject) throws CmsException {
+        // the files and checksums for this module
+        Vector moduleFiles = new Vector();
+        Vector moduleChecksums = new Vector();
+        getModuleFiles(modulename, moduleFiles, moduleChecksums);
+    
+        // the files and checksums for all other modules
+        Vector otherFiles = new Vector();
+        Vector otherChecksums = new Vector();
+        Enumeration modules = getModuleNames();
+        while (modules.hasMoreElements()) {
+            String module = (String) modules.nextElement();
+            // get the files only for modules that are not for the current module.
+            if (!module.equals(modulename)) {
+                // get the files
+                getModuleFiles(module, otherFiles, otherChecksums);
             }
-        } catch(StringIndexOutOfBoundsException exc) {
-            // this is a resource in root-folder: ignore the excpetion
         }
-
-        // is it a file - then check all the possibilities
-        if (!currentFile.endsWith("/")) {
-            // exists the file in the cms?
+        for (int i = 0; i < moduleFiles.size(); i++) {
+            // get the current file and checksum
+            String currentFile = (String) moduleFiles.elementAt(i);
+            String currentChecksum = (String) moduleChecksums.elementAt(i);
+            CmsFile file = null;
+    
             try {
-                file = m_cms.readFile(currentFile);
-            } catch (CmsException exc) {
-                // the file dosen't exist - mark it as deleted
-                missingFiles.addElement(currentFile);
-            }
-
-            // is the file in use of another module?
-            if (otherFiles.contains(currentFile)) {
-                // yes - mark it as in use
-                filesInUse.addElement(currentFile);
-            }
-
-            // was the file changed?
-            if (file != null) {
-                // create the current digest-content for the file
-                //Gridnine AB Aug 8, 2002
-                String digestContent;
-                try {
-                    digestContent =
-                        com.opencms.util.Encoder.escape(
-                            new String(
-                                m_digest.digest(file.getContents()),
-                                m_cms.getRequestContext().getEncoding()),
-                            m_cms.getRequestContext().getEncoding());
-                } catch (UnsupportedEncodingException e) {
-                    digestContent =
-                        com.opencms.util.Encoder.escape(
-                            new String(
-                                m_digest.digest(file.getContents())),
-                            m_cms.getRequestContext().getEncoding());
+                String resource = currentFile.substring(0, currentFile.indexOf("/",1) + 1);
+                if(!resourcesForProject.contains(resource)) {
+                    // add the resource, if it dosen't already exist
+                    resourcesForProject.addElement(resource);
                 }
-                if (!currentChecksum.equals(digestContent)) {
-                    // the file was changed, the checksums are different
-                    wrongChecksum.addElement(currentFile);
-                }
+            } catch(StringIndexOutOfBoundsException exc) {
+                // this is a resource in root-folder: ignore the excpetion
             }
-        }
-    }
-
-    // determine the files with the property for this module.
-
-    Vector files = m_cms.getFilesWithProperty("module", modulename + "_" + getModuleVersion(modulename));
-    for(int i = 0; i < files.size(); i++) {
-        String currentFile = (String)files.elementAt(i);
-        if(!moduleFiles.contains(currentFile )) {
-            // is the file in use of another module?
-            if (!otherFiles.contains(currentFile)) {
-                filesWithProperty.addElement(currentFile);
+    
+            // is it a file - then check all the possibilities
+            if (!currentFile.endsWith("/")) {
+                // exists the file in the cms?
                 try {
-                    String resource = currentFile.substring(0, currentFile.indexOf("/",1) + 1);
-                    if(!resourcesForProject.contains(resource)) {
-                        // add the resource, if it dosen't already exist
-                        resourcesForProject.addElement(resource);
+                    file = m_cms.readFile(currentFile);
+                } catch (CmsException exc) {
+                    // the file dosen't exist - mark it as deleted
+                    missingFiles.addElement(currentFile);
+                }
+    
+                // is the file in use of another module?
+                if (otherFiles.contains(currentFile)) {
+                    // yes - mark it as in use
+                    filesInUse.addElement(currentFile);
+                }
+    
+                // was the file changed?
+                if (file != null) {
+                    // create the current digest-content for the file
+                    //Gridnine AB Aug 8, 2002
+                    String digestContent;
+                    try {
+                        digestContent =
+                            com.opencms.util.Encoder.escape(
+                                new String(
+                                    m_digest.digest(file.getContents()),
+                                    m_cms.getRequestContext().getEncoding()),
+                                m_cms.getRequestContext().getEncoding());
+                    } catch (UnsupportedEncodingException e) {
+                        digestContent =
+                            com.opencms.util.Encoder.escape(
+                                new String(
+                                    m_digest.digest(file.getContents())),
+                                m_cms.getRequestContext().getEncoding());
                     }
-                } catch(StringIndexOutOfBoundsException exc) {
-                    // this is a resource in root-folder: ignore the excpetion
+                    if (!currentChecksum.equals(digestContent)) {
+                        // the file was changed, the checksums are different
+                        wrongChecksum.addElement(currentFile);
+                    }
                 }
             }
         }
+        
+        Vector files = null;
+        
+        if (this.getModuleType(modulename).equals(CmsRegistry.C_MODULE_TYPE_ADVANCED)) {
+            // ADVANCED MODULE
+            
+            // check if additional resources outside the system/modules/{exportName} folder were 
+            // specified as module resources by reading the module property {C_MODULE_PROPERTY_ADDITIONAL_RESOURCES}
+            // just delete these resources plus the "standard" module paths under system/modules
+                    
+            String additionalResources = this.getModuleParameterString( modulename, I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES );
+                                
+            if (additionalResources!=null && !additionalResources.equals("")) {  
+                files = new Vector();
+                          
+                // add each additonal folder plus its content folder under "content/bodys"
+                StringTokenizer additionalResourceTokens = null;
+                additionalResourceTokens = new StringTokenizer( additionalResources, I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES_SEPARATOR ); 
+                                       
+                while (additionalResourceTokens.hasMoreTokens()) {
+                    String currentResource = additionalResourceTokens.nextToken();
+                    
+                    if (DEBUG>0) {
+                        System.err.println( "Adding resource: " + currentResource );
+                        System.err.println( "Adding resource: " + C_CONTENTBODYPATH.substring(0, C_CONTENTBODYPATH.length()-1) + currentResource );
+                    }
+                                            
+                    files.add( currentResource );
+                    files.add( C_CONTENTBODYPATH.substring(0, C_CONTENTBODYPATH.length()-1) + currentResource );                           
+                }                       
+            }            
+        }      
+        else {        
+            // TRADITIONAL MODULE
+                   
+            files = m_cms.getFilesWithProperty("module", modulename + "_" + getModuleVersion(modulename));                                       
+        } 
+        
+        int fileCount = files.size();
+        
+        for(int i=0;i<fileCount;i++) {
+            String currentFile = (String)files.elementAt(i);
 
+            if(!moduleFiles.contains(currentFile)) {
+                // is the file in use of another module?
+                if (!otherFiles.contains(currentFile)) {
+                filesWithProperty.addElement(currentFile);
+
+                    try {
+                        String resource = currentFile.substring(0, currentFile.indexOf("/",1) + 1);
+
+                        if(!resourcesForProject.contains(resource)) {
+                            // add the resource, if it dosen't already exist
+                            resourcesForProject.addElement(resource);
+                        }
+                    } 
+                    catch(StringIndexOutOfBoundsException exc) {
+                        // this is a resource in root-folder: ignore the excpetion
+                    }
+                }
+            }
+        }           
     }
-}
 /**
  *  Deletes a module. This method is synchronized, so only one module can be deleted at one time.
  *
@@ -1589,8 +1653,27 @@ public synchronized void importModule(String moduleZip, Vector exclusion) throws
     }
     Vector resourceNames = new Vector();
     Vector resourceCodes = new Vector();
+    
+    String propertyName = null;
+    String propertyValue = null;    
+    
+    try {
+        String moduleType = newModule.getElementsByTagName("type").item(0).getFirstChild().getNodeValue();
+        
+        // only in case of a "traditional" module the "module" property is set on all imported files
+        if (moduleType==null || !moduleType.equals(CmsRegistry.C_MODULE_TYPE_ADVANCED)) {
+            propertyName = "module";
+            propertyValue = newModuleName + "_" + newModuleVersion;
+        }
+    }
+    catch (Exception e) {
+        propertyName = "module";
+        propertyValue = newModuleName + "_" + newModuleVersion;        
+    }
+    
     CmsImport cmsImport = new CmsImport(moduleZip, "/", m_cms, new CmsShellReport());
-    cmsImport.importResources(exclusion, resourceNames, resourceCodes, "module", newModuleName + "_" + newModuleVersion);
+    cmsImport.importResources(exclusion, resourceNames, resourceCodes, propertyName, propertyValue );
+    
     // import the module data into the registry
     Element regModules = (Element) (m_xmlReg.getElementsByTagName("modules").item(0));
     // set the import-date
@@ -2230,4 +2313,56 @@ private void setTagValue(Node node, String value) {
         node.appendChild(m_xmlReg.createTextNode(value));
     }
 }
+
+    /**
+     * Returns the value of the "type" node of a module subtree in the registry.
+     * @return the value of the "type" node of a module
+     */
+    public String getModuleType( String theModulename ) {
+        String moduleType = null;
+        
+        try {           
+            if ((moduleType=this.getModuleData(theModulename,"type"))==null) {
+                // the default type is "traditional"
+                moduleType = CmsRegistry.C_MODULE_TYPE_TRADITIONAL;                
+            }
+        }
+        catch (Exception e) {
+            // the default type is "traditional"
+            moduleType = CmsRegistry.C_MODULE_TYPE_TRADITIONAL;
+        }
+        
+        return moduleType;
+    }
+    
+    /**
+     * Sets the type for a given module.
+     * @param theModuleName the name of the module
+     * @param theModuleType the new type of the module
+     */
+    public void setModuleType( String theModulename, String theModuleType ) {
+        if (theModuleType==null || theModuleType.equals("")) {
+            theModuleType = CmsRegistry.C_MODULE_TYPE_TRADITIONAL;
+        }
+        
+        try {
+            // for backward compatibility issues: check if the module has already
+            // a type node or not. add a type node in this case...
+            
+            Element moduleElement = getModuleElement( theModulename );
+            Node typeNode = moduleElement.getElementsByTagName("type").item(0);  
+            
+            if (typeNode==null) {
+                Element newTypeNode = m_xmlReg.createElement( "type" );
+                moduleElement.appendChild( newTypeNode );            
+            }      
+            
+            // now it is save to set the value of the module type node
+                    
+            this.setModuleData( theModulename, "type", theModuleType );
+        }
+        catch (CmsException e) {
+            // we don't have valid rights for this operation
+        }
+    }    
 }
