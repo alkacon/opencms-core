@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/06/20 16:19:14 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/06/23 13:31:09 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * This is the driver manager.
  * 
- * @version $Revision: 1.7 $ $Date: 2003/06/20 16:19:14 $
+ * @version $Revision: 1.8 $ $Date: 2003/06/23 13:31:09 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -109,7 +109,7 @@ public class CmsDriverManager implements I_CmsConstants {
     /**
      * Inner class to define the access policy when checking permissions on vfs operations.
      * 
-	 * @version $Revision: 1.7 $ $Date: 2003/06/20 16:19:14 $
+	 * @version $Revision: 1.8 $ $Date: 2003/06/23 13:31:09 $
 	 * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
 	 */
     class VfsAccessGuard extends CmsAccessGuard {
@@ -202,8 +202,7 @@ public class CmsDriverManager implements I_CmsConstants {
 
 			if (isAdmin(getUser(),getProject())) {
 				// if the current user is administrator, anything is allowed
-				permissions = new CmsPermissionSet(~0);
-				
+				permissions = new CmsPermissionSet(~0);			
 			} else {	
 				// otherwise, get the permissions from the access control list
 				CmsAccessControlList acl = getAccessControlList(getUser(), getProject(), resource);
@@ -219,7 +218,7 @@ public class CmsDriverManager implements I_CmsConstants {
 	/**
 	 * Inner class to define the access policy when checking permissions on user operations.
 	 * 
-	 * @version $Revision: 1.7 $ $Date: 2003/06/20 16:19:14 $
+	 * @version $Revision: 1.8 $ $Date: 2003/06/23 13:31:09 $
 	 * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
 	 */
 	class UserAccessGuard extends CmsAccessGuard {
@@ -4421,6 +4420,7 @@ System.err.println("ReadingpermittedGroup=" + rpgroupName);
             m_accessControlListCache.clear();
             m_groupCache.clear();
             m_userGroupsCache.clear();
+            m_resourceListCache.clear();
             return(newUser);
         } else {
             // No Access!
@@ -8933,7 +8933,7 @@ protected void validName(String name, boolean blank) throws CmsException {
 	public CmsAccessControlList getAccessControlList(CmsUser currentUser, CmsProject currentProject, CmsResource resource) throws CmsException {
         CmsResource res = resource;
         CmsUUID resourceId = res.getResourceAceId();
-        CmsAccessControlList acList = (CmsAccessControlList)m_accessControlListCache.get(new CacheId(resource));
+        CmsAccessControlList acList = (CmsAccessControlList)m_accessControlListCache.get(resource.getAbsolutePath());
 		
 		if (acList != null)
 			return acList;
@@ -8956,7 +8956,7 @@ protected void validName(String name, boolean blank) throws CmsException {
 			}
 		}
 		
-		m_accessControlListCache.put(new CacheId(resource), acList);
+		m_accessControlListCache.put(resource.getAbsolutePath(), acList);
 		
 		return acList;
 	}
