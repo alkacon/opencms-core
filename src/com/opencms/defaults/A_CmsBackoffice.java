@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2001/10/26 10:10:33 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2001/10/29 07:41:37 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -114,6 +114,15 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault implements I_C
     return getBackofficeUrl(cms, tagcontent,doc,userObject);
   }
 
+  /**
+  * Gets the edit url of the module.
+  * @returns A string with the edit url
+  */
+  public String getUndeleteUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
+                             Object userObject) throws Exception {
+
+    return getBackofficeUrl(cms, tagcontent,doc,userObject);
+  }
 
   /**
   * Gets the redirect url of the module. This URL is called, when an entry of the file list is selected
@@ -173,6 +182,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
         String parentId = (String) parameters.get("parentId");
     String ok = (String) parameters.get("ok");
     String setaction = (String) parameters.get("setaction");
+    String idundelete = (String)parameters.get("idundelete");
 
         // debug-code
 /*
@@ -217,6 +227,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 	  session.removeValue("idedit");
 	  session.removeValue("idnew");
 	  session.removeValue("iddelete");
+      session.removeValue("idundelete");
 	}
 	if (idedit != null) {
 	  id = idedit;
@@ -224,10 +235,18 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 	  session.removeValue("idlock");
 	  session.removeValue("idnew");
 	  session.removeValue("iddelete");
+      session.removeValue("idundelete");
 	}
 	if (iddelete != null) {
 	  id = iddelete;
 	  session.putValue("iddelete", iddelete);
+	  session.removeValue("idedit");
+	  session.removeValue("idnew");
+	  session.removeValue("idlock");
+	}
+	if (idundelete != null) {
+	  id = idundelete;
+	  session.putValue("idundelete", idundelete);
 	  session.removeValue("idedit");
 	  session.removeValue("idnew");
 	  session.removeValue("idlock");
@@ -271,7 +290,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
     }
 
     //go to the appropriate getContent methods
-    if ((id == null) && (idsave == null) && (action == null) && (idlock==null) && (iddelete == null) && (idedit == null))  {
+    if ((id == null) && (idsave == null) && (action == null) && (idlock==null) && (iddelete == null) && (idundelete == null) && (idedit == null))  {
       //process the head frame containing the filter
       returnProcess = getContentHead(cms, template, elementName, parameters, templateSelector);
       //finally return processed data
@@ -320,7 +339,12 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
               parameters.put("id", id);
               session.putValue("idsave", id);
         }
-            //get marker for accessing the delete dialog
+        //check if the cd should be undeleted
+        if(idundelete != null){
+            returnProcess = getContentUndelete(cms, template, elementName, parameters, templateSelector);
+            return returnProcess;
+        }
+        //get marker for accessing the delete dialog
         String iddeletesave = (String) session.getValue("iddelete");
         //access delete dialog
         if (((iddelete != null) || (iddeletesave != null)) && (idlock == null)) {
@@ -544,6 +568,77 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
     return processResult;
   }
 
+    /**
+     * Gets the content of a given template file.
+     * <P>
+     * While processing the template file the table entry
+     * <code>entryTitle<code> will be displayed in the delete dialog
+     *
+     * @param cms A_CmsObject Object for accessing system resources
+     * @param templateFile Filename of the template file
+     * @param elementName not used here
+     * @param parameters get the parameters action for the button activity
+     * and id for the used content definition instance object
+     * @param templateSelector template section that should be processed.
+     * @return Processed content of the given template file.
+     * @exception CmsException
+     */
+    public byte[] getContentUndelete(CmsObject cms, CmsXmlWpTemplateFile template, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+        //return var
+        byte[] processResult = null;
+
+        // session will be created or fetched
+        I_CmsSession session = (CmsSession) cms.getRequestContext().getSession(true);
+        //get the class of the content definition
+        Class cdClass = getContentDefinitionClass();
+
+        //get (stored) id parameter
+        String id = (String) parameters.get("id");
+        if (id == null) {
+            id = "";
+        }
+
+        //set template section
+        templateSelector = "done";
+        //remove marker
+        session.removeValue("idsave");
+        //undelete the content definition instance
+        Integer idInteger = null;
+        try {
+            idInteger = Integer.valueOf(id);
+        } catch (Exception e) {
+            //access content definition constructor by reflection
+            Object o = null;
+            o = getContentDefinition(cms, cdClass, id);
+            //get undelete method and delete content definition instance
+            try {
+                ((A_CmsContentDefinition) o).undelete(cms);
+            } catch (Exception e1) {
+                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                    A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: undelete method throwed an exception!");
+                }
+                templateSelector = "undeleteerror";
+                template.setData("undeleteerror", e1.getMessage());
+            }
+            //finally start the processing
+            processResult = startProcessing(cms, template, elementName, parameters, templateSelector);
+            return processResult;
+        }
+        //access content definition constructor by reflection
+        Object o = null;
+        o = getContentDefinition(cms, cdClass, idInteger);
+        //get undelete method and undelete content definition instance
+        try {
+            ((A_CmsContentDefinition) o).undelete(cms);
+        }catch (Exception e) {
+            templateSelector = "undeleteerror";
+            template.setData("undeleteerror", e.getMessage());
+        }
+
+        //finally start the processing
+        processResult = startProcessing(cms, template, elementName, parameters, templateSelector);
+        return processResult;
+    }
 
   /**
   * Gets the content of a given template file.
