@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/07/14 12:27:27 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/07/14 14:53:56 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 2000/07/14 12:27:27 $
+ * @version $Revision: 1.4 $ $Date: 2000/07/14 14:53:56 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1672,8 +1672,8 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public CmsGroup readGroup(CmsUser currentUser, CmsProject currentProject, 
 							   CmsTask task) 
         throws CmsException {
-        // TODO: To be implemented
-     return null;
+       
+     return m_dbAccess.readGroup(task.getRole());
     }
 								
 	/**

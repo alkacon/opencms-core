@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskAction.java,v $
- * Date   : $Date: 2000/06/05 13:38:00 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2000/07/14 14:53:56 $
+ * Version: $Revision: 1.18 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.17 $ $Date: 2000/06/05 13:38:00 $
+ * @version $Revision: 1.18 $ $Date: 2000/07/14 14:53:56 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants, I_CmsLogChannels {
@@ -98,8 +98,8 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants, I_CmsLog
 			CmsUser[] users={cms.readOwner(task)};
 			try {
 				CmsMail mail=new CmsMail(cms,cms.readAgent(task),users,subject,contentBuf.toString(),"text/plain");
-				mail.start();
-			} catch( Exception exc ) {
+                mail.start();
+      		} catch( Exception exc ) {
 				if(A_OpenCms.isLogging()) {
 					A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsTaskAction] error while sending mail " + exc.getMessage());
 				}
@@ -676,18 +676,17 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants, I_CmsLog
 		CmsMail mail = null;
         try {
             mail=new CmsMail(cms,cms.readOwner(task),users,subject,contentBuf.toString(),"text/plain");
-        } catch(CmsException e) {
+         } catch(CmsException e) {
             if(A_OpenCms.isLogging()) {
                 A_OpenCms.log(C_OPENCMS_INFO, "[CmsTaskAction] Could not generate mail while creating task for " + cms.readOwner(task).getName() + ". ");
                 A_OpenCms.log(C_OPENCMS_INFO, "[CmsTaskAction] " + e);                
             }
         }
-		// if "Alle Rollenmitglieder von Aufgabe Benachrichtigen" checkbox is selected.
+ 		// if "Alle Rollenmitglieder von Aufgabe Benachrichtigen" checkbox is selected.
 		if (cms.getTaskPar(task.getId(),C_TASKPARA_ALL)!=null) {
 			// the news deliver always "checked" or ""
 			if (cms.getTaskPar(task.getId(),C_TASKPARA_ALL).equals("checked")) {
                 try {
-					
                     mail=new CmsMail(cms,cms.readOwner(task),cms.readGroup(task),subject,contentBuf.toString(),"text/plain");
                 } catch(CmsException e) {
                     if(A_OpenCms.isLogging()) {
@@ -697,11 +696,9 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants, I_CmsLog
                 }
 			}
 		}
-		
         if(mail != null) {
             mail.start();
         }
-		
 	}
 
 	/**
