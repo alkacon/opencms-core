@@ -1,4 +1,8 @@
 /*
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/I_CmsSyncModification.java,v $
+ * Date   : $Date: 2003/07/09 14:49:46 $
+ * Version: $Revision: 1.1 $
+ *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
@@ -24,11 +28,15 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package com.opencms.file;
+ 
+package org.opencms.file;
+
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsResource;
 
 import java.io.File;
 
-import com.opencms.core.exceptions.CmsSyncModificationException;
+
 
 /**
  * This interface defines methods which can be pluged into the VFS<->FS 
@@ -58,10 +66,10 @@ public interface I_CmsSyncModification {
 	 * @param cms the current CmsObject
 	 * @param vfsRes the resource in the VFS
 	 * @param fsFile the resource in the FS
- 	 * @throws CmsSyncModificationException if something goes wrong
+ 	 * @throws CmsSynchronizeException if something goes wrong
 	 */
 	 void modifyVfs(CmsObject cms, CmsResource vfsRes, File fsFile) 
-	  throws CmsSyncModificationException ;
+	  throws CmsSynchronizeException ;
 	 
 	 /**
 	 * Possibility to modify a resource after it has benn exported or updated 
@@ -70,10 +78,10 @@ public interface I_CmsSyncModification {
 	 * @param cms the current CmsObject
 	 * @param vfsRes the resource in the VFS
 	 * @param fsFile the resource in the FS
- 	 * @throws CmsSyncModificationException if something goes wrong		  
+ 	 * @throws CmsSynchronizeException if something goes wrong		  
 	 */
 	 void modifyFs(CmsObject cms, CmsResource vfsRes, File fsFile) 
-	  throws CmsSyncModificationException ;
+	  throws CmsSynchronizeException ;
 
 	 
 	 /**
@@ -88,10 +96,10 @@ public interface I_CmsSyncModification {
 	 * @param cms the current CmsObject
 	 * @param resName the resource name to be translated
 	 * @return the translated resource name or null
- 	 * @throws CmsSyncModificationException if something goes wrong			  
+ 	 * @throws CmsSynchronizeException if something goes wrong			  
 	 */
 	String translate(CmsObject cms,String resName)
-	 throws CmsSyncModificationException;
+	 throws CmsSynchronizeException;
 	
 		
 

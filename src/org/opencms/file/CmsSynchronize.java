@@ -1,37 +1,35 @@
 /*
-* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsSynchronize.java,v $
-* Date   : $Date: 2003/07/09 08:56:32 $
-* Version: $Revision: 1.19 $
-*
-* This library is part of OpenCms -
-* the Open Source Content Mananagement System
-*
-* Copyright (C) 2001  The OpenCms Group
-* Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
-*
-* This library is free software; you can redistribute it and/or
-* modify it under the terms of the GNU Lesser General Public
-* License as published by the Free Software Foundation; either
-* version 2.1 of the License, or (at your option) any later version.
-*
-* This library is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-* Lesser General Public License for more details.
-*
-* For further information about Alkacon Software, please see the
-* company website: http://www.alkacon.com
-* 
-* * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org
-* 
-*
-* You should have received a copy of the GNU Lesser General Public
-* License along with this library; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsSynchronize.java,v $
+ * Date   : $Date: 2003/07/09 14:49:46 $
+ * Version: $Revision: 1.1 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 
-package com.opencms.file;
+package org.opencms.file;
 
 import java.io.DataOutputStream;
 import java.io.File;
@@ -53,7 +51,9 @@ import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
-import com.opencms.core.exceptions.CmsSyncModificationException;
+import com.opencms.file.CmsFile;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsResource;
 
 /**
  * This class contains the all methods to synchronize the VFS with the server 
@@ -61,7 +61,7 @@ import com.opencms.core.exceptions.CmsSyncModificationException;
  *
  * @author Edna Falkenhan
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.19 $ $Date: 2003/07/09 08:56:32 $
+ * @version $Revision: 1.1 $ $Date: 2003/07/09 14:49:46 $
  */
 public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
 
@@ -138,8 +138,12 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
      		m_checkFile=createSyncModificationImplentations();
      	}     
      
-        File syncpath = null;
         m_synchronizePath = m_cms.getRegistry().getSystemValue(C_SYNCHRONISATION_PATH);
+        //check if the synchronize path in the FS ends with a seperator. If so, remove it
+        if (m_synchronizePath.endsWith(File.separator)){
+            m_synchronizePath=m_synchronizePath.substring(0,m_synchronizePath.length()-1);
+        }
+     
         m_resourcePath=resourcePath;
 		// do the synchronization only if the synchonization folders in the VFS
 		// and the FS are valid 	
@@ -292,7 +296,7 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
 		File fsFile = getFileInFs(folder);	
 		// first of all, test if this folder existis in the VFS. If not, create it
 		try {
-			CmsFolder f=m_cms.readFolder(translate(folder));
+			m_cms.readFolder(translate(folder));
 		} catch (CmsException e){
 			// the folder could not be read, so create it
 			// extract the foldername
@@ -306,7 +310,7 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
 				try{
 					((I_CmsSyncModification) i.next()).modifyVfs(m_cms,newFolder
 													  ,fsFile);
-				} catch (CmsSyncModificationException e1) {
+				} catch (CmsSynchronizeException e1) {
 				  break;
 			  }
 			}			 
@@ -451,7 +455,7 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
 			while (i.hasNext()) {
 				try{
 					((I_CmsSyncModification) i.next()).modifyVfs(m_cms,newFile,fsFile);
-				} catch (CmsSyncModificationException e) {
+				} catch (CmsSynchronizeException e) {
 				  break;
 			  }
 			}			    
@@ -532,7 +536,7 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
 						while (i.hasNext()) {
 							try{
 								((I_CmsSyncModification) i.next()).modifyFs(m_cms,vfsFile,fsFile);
-							} catch (CmsSyncModificationException e) {
+							} catch (CmsSynchronizeException e) {
 							  break;
 						  }
 						}						
@@ -586,7 +590,7 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
 			while (i.hasNext()) {
 				try{
 					((I_CmsSyncModification) i.next()).modifyVfs(m_cms,vfsFile,fsFile);
-				} catch (CmsSyncModificationException e) {
+				} catch (CmsSynchronizeException e) {
 				  break;
 			  }
 			}				
@@ -844,7 +848,7 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
 		while (i.hasNext()) {
 			try{
 				translation = ((I_CmsSyncModification) i.next()).translate(m_cms,name);
-			} catch (CmsSyncModificationException e) {
+			} catch (CmsSynchronizeException e) {
 			  break;
 		  }
 		}	
