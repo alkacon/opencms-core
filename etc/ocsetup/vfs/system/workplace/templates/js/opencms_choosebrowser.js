@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/opencms_choosebrowser.js,v $
- * Date   : $Date: 2000/04/19 14:50:25 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2001/03/14 14:59:55 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -150,17 +150,25 @@ function saveLayerData2(from,to,srcLayer,destLayer) {
 		data1 = document.forms[from].NEUNAME.value;
 		data2 = document.forms[from].NEUTITEL.value;
 		data3 = document.forms[from].TEMPLATE.selectedIndex;
+		data4 = document.forms[from].NEUKEYWORDS.value;
+		data5 = document.forms[from].NEUDESCRIPTION.value;
 		document.forms[to].NEUNAME.value = data1;
 		document.forms[to].NEUTITEL.value = data2;
 		document.forms[to].TEMPLATE.selectedIndex = data3;
+		document.forms[to].NEUKEYWORDS.value = data4;
+		document.forms[to].NEUDESCRIPTION.value = data5;
 	}
 	else if (ns) {
 		data1 = document[srcLayer].document.forms[from].NEUNAME.value;
 		data2 = document[srcLayer].document.forms[from].NEUTITEL.value;
 		data3 = document[srcLayer].document.forms[from].TEMPLATE.selectedIndex;
+		data4 = document[srcLayer].document.forms[from].NEUKEYWORDS.value;
+		data5 = document[srcLayer].document.forms[from].NEUDESCRIPTION.value;
 		document[destLayer].document.forms[to].NEUNAME.value = data1;
 		document[destLayer].document.forms[to].NEUTITEL.value = data2;
 		document[destLayer].document.forms[to].TEMPLATE.selectedIndex = data3;
+		document[destLayer].document.forms[to].NEUKEYWORDS.value = data4;
+		document[destLayer].document.forms[to].NEUDESCRIPTION.value = data5;	
 	}
 }
 

@@ -63,6 +63,8 @@ function checkIt(wasdenn){
 				location='explorer_files_new_page.html?step=1&newfile='+
 					formu.NEUNAME.value+
 					'&title='+formu.NEUTITEL.value+
+					'&keywords='+formu.NEUKEYWORDS.value+
+					'&description='+formu.NEUDESCRIPTION.value+
 					'&template='+simpleEscape(formu.TEMPLATE.value)+
 					'&navtitle='+simpleEscape(formu.LINKNAME.value)+
 					'&navpos='+ formu.LINKPOS.value;
@@ -71,6 +73,8 @@ function checkIt(wasdenn){
 				location='explorer_files_new_page.html?step=1&newfile='+
 					formu.NEUNAME.value+
 					'&title='+formu.NEUTITEL.value+
+					'&keywords='+formu.NEUKEYWORDS.value+
+					'&description='+formu.NEUDESCRIPTION.value+
 					'&template='+simpleEscape(formu.TEMPLATE.options[formu.TEMPLATE.selectedIndex].value)+
 					'&navtitle='+simpleEscape(formu.LINKNAME.value)+
 					'&navpos='+ formu.LINKPOS.value;
@@ -91,8 +95,17 @@ function checkIt(wasdenn){
 			allesok=false;
 		}
 		if(allesok){
-			if(ie)location='explorer_files_new_page.html?step=1&newfile='+formu.NEUNAME.value+'&title='+formu.NEUTITEL.value+'&template='+simpleEscape(formu.TEMPLATE.value);
-			if(ns)location='explorer_files_new_page.html?step=1&newfile='+formu.NEUNAME.value+'&title='+formu.NEUTITEL.value+'&template='+simpleEscape(formu.TEMPLATE.options[formu.TEMPLATE.selectedIndex].value);
+			if(ie)location='explorer_files_new_page.html?step=1&newfile='+
+				formu.NEUNAME.value+
+				'&title='+formu.NEUTITEL.value+
+				'&keywords='+formu.NEUKEYWORDS.value+
+				'&description='+formu.NEUDESCRIPTION.value+
+				'&template='+simpleEscape(formu.TEMPLATE.value);
+			if(ns)location='explorer_files_new_page.html?step=1&newfile='+formu.NEUNAME.value+
+				'&title='+formu.NEUTITEL.value+
+				'&keywords='+formu.NEUKEYWORDS.value+
+				'&description='+formu.NEUDESCRIPTION.value+
+				'&template='+simpleEscape(formu.TEMPLATE.options[formu.TEMPLATE.selectedIndex].value);
 		}
 	}
 }
@@ -157,6 +170,14 @@ allesok=true;
 									<td class=formular>]]><LABEL value="input.template" /><![CDATA[:</td>
 									<td class=dialogtxt>]]><SELECT class="localstyle" name="TEMPLATE" width="370" div="true" method="getTemplates" /><![CDATA[</td>
 								</tr>
+								<tr>
+									<td class=formular>]]><LABEL value="input.keywords" /><![CDATA[:</td>
+									<td class=dialogtxt> ]]><INPUTFIELD name="NEUKEYWORDS" class="textfeld2" size="40" length="100" /><![CDATA[</td>	
+								</tr>
+								<tr>
+									<td class=formular>]]><LABEL value="input.description" /><![CDATA[:</td>
+									<td class=dialogtxt> ]]><INPUTFIELD name="NEUDESCRIPTION" class="textfeld2" size="40" length="100" /><![CDATA[</td>	
+								</tr>
      							<tr>
 									<td class=dialogtxt colspan=2><INPUT type="checkbox" id=SETLINK name=SETLINK onclick="saveLayerData2('NEU','LINK','NEWWITHOUTLINK','NEWLINK');switchlyr('NEWLINK','NEWWITHOUTLINK');this.checked=false;"> ]]><LABEL value="input.addtonav" /><![CDATA[</td>
 								</tr>
@@ -213,6 +234,14 @@ allesok=true;
 										<tr>
 											<td class=formular>]]><LABEL value="input.template" /><![CDATA[:</td>
 											<td class=dialogtxt>]]><SELECT class="localstyle" name="TEMPLATE" width="370" div="true" method="getTemplates" /><![CDATA[</td>
+										</tr>
+										<tr>
+											<td class=formular>]]><LABEL value="input.keywords" /><![CDATA[:</td>
+											<td class=dialogtxt> ]]><INPUTFIELD name="NEUKEYWORDS" class="textfeld2" size="40" length="100" /><![CDATA[</td>	
+										</tr>
+										<tr>
+											<td class=formular>]]><LABEL value="input.description" /><![CDATA[:</td>
+											<td class=dialogtxt> ]]><INPUTFIELD name="NEUDESCRIPTION" class="textfeld2" size="40" length="100" /><![CDATA[</td>	
 										</tr>
 										<tr>
 											<td class=dialogtxt colspan=2><INPUT type="checkbox" id=SETLINK name=SETLINK checked onclick="saveLayerData2('LINK','NEU','NEWLINK','NEWWITHOUTLINK');switchlyr('NEWWITHOUTLINK','NEWLINK');this.checked=true;"> ]]><LABEL value="input.addtonav" /><![CDATA[</td>

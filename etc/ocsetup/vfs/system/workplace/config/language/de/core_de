@@ -2,6 +2,7 @@
 <LANGUAGE>
 		<name>Deutsch</name>
 		<button>
+			<unzip>Zip-File entpacken</unzip>
 			<add><![CDATA[<<]]> Hinzufügen</add>
 			<addnew>Hinzufügen</addnew>
 			<aligncenter>Zentrieren</aligncenter>
@@ -412,6 +413,7 @@
 			<insert>Einfügen nach</insert>
 			<intern>Intern</intern>
 			<keeprights>aktuelle Rechte beibehalten</keeprights>
+			<keywords>Schlüsselwörter</keywords>
 			<lang>Sprache</lang>
 			<lastelement>an letzter Position</lastelement>
 			<lastname>Name</lastname>

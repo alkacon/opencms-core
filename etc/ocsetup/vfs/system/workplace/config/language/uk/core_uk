@@ -2,6 +2,7 @@
 <LANGUAGE>
 		<name>English</name>
 		<button>
+			<unzip>unzip file</unzip>
 			<add><![CDATA[<<]]> Add</add>
 			<addnew>Add New</addnew>
 			<aligncenter>Center</aligncenter>
@@ -29,7 +30,7 @@
 			<goto>Goto</goto>
 			<help>Help</help>
 			<hidedetails>Hide details</hidedetails>
-			<image>Image Parameters</image>
+			<image>Insert Image</image>
 			<imagelist>Image List</imagelist>
 			<indentin>Indent</indentin>
 			<indentout>Unindent</indentout>
@@ -410,6 +411,7 @@
 			<insert>Insert after</insert>
 			<intern>Internal</intern>
 			<keeprights>keep current Permissions</keeprights>
+			<keywords>Key Words</keywords>
 			<lang>Language</lang>
 			<lastelement>at the last position</lastelement>
 			<lastname>Name</lastname>
