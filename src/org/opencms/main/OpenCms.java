@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2003/08/30 11:30:08 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/09/02 12:15:38 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.List;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public final class OpenCms {
     
@@ -107,6 +107,15 @@ public final class OpenCms {
      */
     public static void fireCmsEvent(CmsObject cms, int type, java.util.Map data) {
         OpenCms.fireCmsEvent(new CmsEvent(cms, type, data));
+    }
+    
+    /**
+     * Returns the OpenCms application base path.<p>
+     * 
+     * @return the OpenCms application base path
+     */
+    public static String getBasePath() {
+        return OpenCmsCore.getInstance().getBasePath();
     }
 
     /**
@@ -288,25 +297,6 @@ public final class OpenCms {
     public static String getVersionNumber() {
         return OpenCmsCore.getInstance().getVersionNumber();
     }
-    
-    /**
-     * Returns an initialized CmsObject with "Guest" user permissions.<p>
-     * 
-     * @return an initialized CmsObject with "Guest" user permissions
-     * @throws CmsException in case of errors initializing the CmsObject
-     */    
-    public static CmsObject initGuestUser() throws CmsException {
-        return OpenCmsCore.getInstance().getGuestCmsObject();
-    }
-
-//    /**
-//     * Checks if the system logging is active.<p>
-//     * 
-//     * @return <code>true</code> if the logging is active, <code>false</code> otherwise.
-//     */
-//    public static boolean isLogging() {
-//        return OpenCmsCore.getInstance().isLogging();
-//    }
 
     /**
      * Checks if the system logging is active for the selected channel.<p>

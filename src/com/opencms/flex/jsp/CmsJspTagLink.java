@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagLink.java,v $
- * Date   : $Date: 2003/08/18 10:50:48 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2003/09/02 12:15:38 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package com.opencms.flex.jsp;
 
 import org.opencms.main.OpenCms;
+import org.opencms.staticexport.CmsLinkManager;
 
 import com.opencms.flex.cache.CmsFlexController;
 
@@ -45,7 +46,7 @@ import javax.servlet.jsp.JspException;
  * export to work properly.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 public class CmsJspTagLink extends javax.servlet.jsp.tagext.BodyTagSupport {
  
@@ -95,7 +96,7 @@ public class CmsJspTagLink extends javax.servlet.jsp.tagext.BodyTagSupport {
         if (link.indexOf(':') >= 0) {
             return OpenCms.getLinkManager().substituteLink(controller.getCmsObject(), link);
         } else {
-            return OpenCms.getLinkManager().substituteLink(controller.getCmsObject(), OpenCms.getLinkManager().getAbsoluteUri(link, controller.getCurrentRequest().getElementUri()));
+            return OpenCms.getLinkManager().substituteLink(controller.getCmsObject(), CmsLinkManager.getAbsoluteUri(link, controller.getCurrentRequest().getElementUri()));
         }        
     }
 }

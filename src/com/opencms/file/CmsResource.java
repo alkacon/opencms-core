@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResource.java,v $
- * Date   : $Date: 2003/08/30 11:30:08 $
- * Version: $Revision: 1.82 $
+ * Date   : $Date: 2003/09/02 12:15:38 $
+ * Version: $Revision: 1.83 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.io.Serializable;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.82 $ 
+ * @version $Revision: 1.83 $ 
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
 
@@ -179,7 +179,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         // remove the last char, for a folder this will be "/", for a file it does not matter
         String parent = (resource.substring(0, resource.length() - 1));
         // now as the name does not end with "/", check for the last "/" which is the parent folder name
-        return resource.substring(parent.lastIndexOf("/") + 1);
+        return resource.substring(parent.lastIndexOf('/') + 1);
     }
 
     /**
@@ -201,7 +201,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         // remove the last char, for a folder this will be "/", for a file it does not matter
         String parent = (resource.substring(0, resource.length() - 1));
         // now as the name does not end with "/", check for the last "/" which is the parent folder name
-        return parent.substring(0, parent.lastIndexOf("/") + 1);
+        return parent.substring(0, parent.lastIndexOf('/') + 1);
     }
 
     /**
@@ -221,7 +221,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @return the folder of the given resource
      */
     public static String getPath(String resource) {
-        return resource.substring(0, resource.lastIndexOf("/") + 1);
+        return resource.substring(0, resource.lastIndexOf('/') + 1);
     }
 
     /**
@@ -289,7 +289,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @return true if the resource name is a folder name, i.e. ends with a "/"
      */
     public static boolean isFolder(String resource) {
-        return ((resource != null) && resource.endsWith("/"));
+        return ((resource != null) && (resource.charAt(resource.length()-1) == '/'));
     }
 
     /**

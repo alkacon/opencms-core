@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsSqlManager.java,v $
- * Date   : $Date: 2003/08/14 15:37:25 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/09/02 12:15:38 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import java.util.Properties;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $ $Date: 2003/08/14 15:37:25 $
+ * @version $Revision: 1.7 $ $Date: 2003/09/02 12:15:38 $
  */
 public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
     
@@ -102,8 +102,8 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
             m_queries.load(getClass().getClassLoader().getResourceAsStream(queryFilename));
         } catch(Exception exc) {
             // no query.properties found - write to logstream.
-            if(CmsBase.isLogging()) {
-                CmsBase.log(I_CmsLogChannels.C_MODULE_DEBUG, "[CmsProjectDriver] Couldn't load " + queryFilename + " errormessage: " + exc.getMessage());
+            if(OpenCms.isLogging(I_CmsLogChannels.C_MODULE_DEBUG)) {
+                OpenCms.log(I_CmsLogChannels.C_MODULE_DEBUG, "[CmsProjectDriver] Couldn't load " + queryFilename + " errormessage: " + exc.getMessage());
             }
         }
     }

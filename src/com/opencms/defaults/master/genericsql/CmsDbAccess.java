@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/08/14 15:37:25 $
-* Version: $Revision: 1.53 $
+* Date   : $Date: 2003/09/02 12:15:38 $
+* Version: $Revision: 1.54 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -63,19 +63,18 @@ public class CmsDbAccess {
 
     /** The root channel of the module */
     protected String m_rootChannel = "/";
-    
+
     /** TODO: delete this after successful change of dbpool */
     private String m_poolUrl;
-    
+
     /** 'Constants' file. */
-   protected com.opencms.defaults.master.genericsql.CmsSqlManager m_sqlManager;
+    protected com.opencms.defaults.master.genericsql.CmsSqlManager m_sqlManager;
 
     /**
      * Public empty constructor, call "init(String)" on this class afterwards.
      * This allows more flexible custom module development.<p>
      */
-    public CmsDbAccess() {
-    }
+    public CmsDbAccess() {}
 
     /**
      * Constructs a new DbAccessObject and calls init(String) with the given String.<p>
@@ -84,20 +83,20 @@ public class CmsDbAccess {
     public CmsDbAccess(String dbPool) {
         init(dbPool);
     }
-    
+
     /**
      * Initializes the SqlManager with the used pool.<p>
      */
-    public void init(String dbPool) {      
+    public void init(String dbPool) {
         m_sqlManager = initQueries(dbPool, getClass());
         m_poolUrl = dbPool;
     }
-    
+
     /**
      * Retrieve the correct instance of the queries holder.
      * This method should be overloaded if other query strings should be used.<p>
      */
-    public com.opencms.defaults.master.genericsql.CmsSqlManager initQueries(String dbPoolUrl, Class currentClass) {           
+    public com.opencms.defaults.master.genericsql.CmsSqlManager initQueries(String dbPoolUrl, Class currentClass) {
         return new com.opencms.defaults.master.genericsql.CmsSqlManager(dbPoolUrl, currentClass);
     }
 
@@ -127,10 +126,8 @@ public class CmsDbAccess {
      * @param dataset the set of data for this contentdefinition.
      * @throws CmsException if somethong goes wrong
      */
-    public void insert(CmsObject cms, CmsMasterContent content,
-                       CmsMasterDataSet dataset)
-        throws CmsException {
-        if(isOnlineProject(cms)) {
+    public void insert(CmsObject cms, CmsMasterContent content, CmsMasterDataSet dataset) throws CmsException {
+        if (isOnlineProject(cms)) {
             // this is the onlineproject - don't write into this project directly
             throw new CmsSecurityException("Can't write to the online project", CmsSecurityException.C_SECURITY_NO_MODIFY_IN_ONLINE_PROJECT);
         }
@@ -143,16 +140,16 @@ public class CmsDbAccess {
         dataset.m_masterId = newMasterId;
         dataset.m_userId = currentUserId;
         // dataset.m_groupId = cms.getRequestContext().currentGroup().getId();
-        
-        CmsUUID groupId = CmsUUID.getNullUUID();        
+
+        CmsUUID groupId = CmsUUID.getNullUUID();
         try {
             CmsGroup users = cms.readGroup(OpenCms.getDefaultUsers().getGroupUsers());
             groupId = users.getId();
         } catch (CmsException e) {
             // null UUID will be used 
-        } 
+        }
         dataset.m_groupId = groupId;
-        
+
         dataset.m_projectId = projectId;
         dataset.m_lockedInProject = projectId;
         dataset.m_state = I_CmsConstants.C_STATE_NEW;
@@ -171,7 +168,7 @@ public class CmsDbAccess {
             // after inserting the row, we have to update media and channel tables
             updateMedia(dataset.m_masterId, dataset.m_mediaToAdd, new Vector(), new Vector());
             updateChannels(cms, dataset.m_masterId, dataset.m_channelToAdd, dataset.m_channelToDelete);
-        } catch(SQLException exc) {
+        } catch (SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
@@ -189,9 +186,7 @@ public class CmsDbAccess {
      * @return CmsUUID The uuid of the new content definition
      * @throws CmsException in case something goes wrong
      */
-    public CmsUUID copy(CmsObject cms, CmsMasterContent content,
-                       CmsMasterDataSet dataset, Vector mediaToAdd, Vector channelToAdd)
-        throws CmsException {
+    public CmsUUID copy(CmsObject cms, CmsMasterContent content, CmsMasterDataSet dataset, Vector mediaToAdd, Vector channelToAdd) throws CmsException {
         if (isOnlineProject(cms)) {
             // this is the onlineproject - don't write into this project directly
             throw new CmsSecurityException("Can't write in online project", CmsSecurityException.C_SECURITY_NO_MODIFY_IN_ONLINE_PROJECT);
@@ -229,7 +224,7 @@ public class CmsDbAccess {
             // after inserting the row, we have to update media and channel tables
             updateMedia(dataset.m_masterId, mediaToAdd, new Vector(), new Vector());
             updateChannels(cms, dataset.m_masterId, channelToAdd, new Vector());
-        } catch(SQLException exc) {
+        } catch (SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
@@ -244,8 +239,7 @@ public class CmsDbAccess {
      * @param content the CmsMasterContent to write to the database.
      * @param dataset the set of data for this contentdefinition.
      */
-    public void writeLockstate(CmsObject cms, CmsMasterContent content, CmsMasterDataSet dataset)
-        throws CmsException {
+    public void writeLockstate(CmsObject cms, CmsMasterContent content, CmsMasterDataSet dataset) throws CmsException {
         if (isOnlineProject(cms)) {
             // this is the onlineproject - don't write into this project directly
             throw new CmsSecurityException("Can't lock in the online project", CmsSecurityException.C_SECURITY_NO_MODIFY_IN_ONLINE_PROJECT);
@@ -269,7 +263,7 @@ public class CmsDbAccess {
             stmt.setString(3, dataset.m_masterId.toString());
             stmt.setInt(4, content.getSubId());
             stmt.executeUpdate();
-        } catch(SQLException exc) {
+        } catch (SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
@@ -283,8 +277,7 @@ public class CmsDbAccess {
      * @param content the CmsMasterContent to write to the database.
      * @param dataset the set of data for this contentdefinition.
      */
-    public void write(CmsObject cms, CmsMasterContent content, CmsMasterDataSet dataset)
-        throws CmsException {
+    public void write(CmsObject cms, CmsMasterContent content, CmsMasterDataSet dataset) throws CmsException {
         if (isOnlineProject(cms)) {
             // this is the onlineproject - don't write into this project directly
             throw new CmsSecurityException("Can't write to the online project", CmsSecurityException.C_SECURITY_NO_MODIFY_IN_ONLINE_PROJECT);
@@ -331,7 +324,7 @@ public class CmsDbAccess {
             // after inserting the row, we have to update media and channel tables
             updateMedia(dataset.m_masterId, dataset.m_mediaToAdd, dataset.m_mediaToUpdate, dataset.m_mediaToDelete);
             updateChannels(cms, dataset.m_masterId, dataset.m_channelToAdd, dataset.m_channelToDelete);
-        } catch(SQLException exc) {
+        } catch (SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
@@ -346,14 +339,13 @@ public class CmsDbAccess {
      * @param dataset the set of data for this contentdefinition.
      * @param contentId the UUID of the contentdefinition.
      */
-    public void read(CmsObject cms, CmsMasterContent content, CmsMasterDataSet dataset, CmsUUID contentId)
-        throws CmsException {
+    public void read(CmsObject cms, CmsMasterContent content, CmsMasterDataSet dataset, CmsUUID contentId) throws CmsException {
         if (!content.isReadable()) {
             // no read access
             throw new CmsSecurityException("Not readable", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
         String statement_key = "read_offline";
-        if(isOnlineProject(cms)) {
+        if (isOnlineProject(cms)) {
             statement_key = "read_online";
         }
 
@@ -366,15 +358,15 @@ public class CmsDbAccess {
             stmt.setString(1, contentId.toString());
             stmt.setInt(2, content.getSubId());
             res = stmt.executeQuery();
-            if(res.next()) {
+            if (res.next()) {
                 sqlFillValues(res, cms, dataset);
             } else {
-                throw new CmsException( "[" + this.getClass().getName() + ".read] no content found for CID:" + contentId + ", SID: " + content.getSubId() + ", statement: " + statement_key, CmsException.C_NOT_FOUND);
+                throw new CmsException("[" + this.getClass().getName() + ".read] no content found for CID:" + contentId + ", SID: " + content.getSubId() + ", statement: " + statement_key, CmsException.C_NOT_FOUND);
             }
-            if(!checkAccess(content, false)) {
+            if (!checkAccess(content, false)) {
                 throw new CmsSecurityException("Not readable", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
             }
-        } catch(SQLException exc) {
+        } catch (SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
@@ -398,14 +390,14 @@ public class CmsDbAccess {
             stmt.setString(1, dataset.m_masterId.toString());
             stmt.setInt(2, subId);
             res = stmt.executeQuery();
-            if(res.next()) {
+            if (res.next()) {
                 // update the values
                 dataset.m_lockedInProject = res.getInt(1);
-                dataset.m_lockedBy = new CmsUUID( res.getString(2) );
+                dataset.m_lockedBy = new CmsUUID(res.getString(2));
             } else {
                 // no values found - this is a new row
             }
-        } catch(SQLException exc) {
+        } catch (SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
@@ -419,8 +411,7 @@ public class CmsDbAccess {
      * @param content the CmsMasterContent to write to the database.
      * @return a Vector of media objects.
      */
-    public Vector readMedia(CmsObject cms, CmsMasterContent content)
-        throws CmsException {
+    public Vector readMedia(CmsObject cms, CmsMasterContent content) throws CmsException {
         if (!content.isReadable()) {
             // no read access
             throw new CmsSecurityException("Not readable", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
@@ -441,22 +432,9 @@ public class CmsDbAccess {
             res = stmt.executeQuery();
             while (res.next()) {
                 int i = 1;
-                retValue.add(new CmsMasterMedia (
-                    res.getInt(i++),
-                    new CmsUUID( res.getString(i++) ),
-                    res.getInt(i++),
-                    res.getInt(i++),
-                    res.getInt(i++),
-                    res.getInt(i++),
-                    res.getString(i++),
-                    res.getInt(i++),
-                    res.getString(i++),
-                    res.getString(i++),
-                    res.getString(i++),
-                    res.getBytes(i++)
-                ));
+                retValue.add(new CmsMasterMedia(res.getInt(i++), new CmsUUID(res.getString(i++)), res.getInt(i++), res.getInt(i++), res.getInt(i++), res.getInt(i++), res.getString(i++), res.getInt(i++), res.getString(i++), res.getString(i++), res.getString(i++), res.getBytes(i++)));
             }
-        } catch(SQLException exc) {
+        } catch (SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
@@ -471,15 +449,14 @@ public class CmsDbAccess {
      * @param content the CmsMasterContent to write to the database.
      * @return a Vector of channel names.
      */
-    public Vector readChannels(CmsObject cms, CmsMasterContent content)
-        throws CmsException {
-        if(!content.isReadable()) {
+    public Vector readChannels(CmsObject cms, CmsMasterContent content) throws CmsException {
+        if (!content.isReadable()) {
             // no read access
             throw new CmsSecurityException("Not readable", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
         Vector retValue = new Vector();
         String statement_key = "read_channel_offline";
-        if(isOnlineProject(cms)) {
+        if (isOnlineProject(cms)) {
             statement_key = "read_channel_online";
         }
 
@@ -491,7 +468,7 @@ public class CmsDbAccess {
             stmt = m_sqlManager.getPreparedStatement(conn, statement_key);
             stmt.setString(1, content.getId().toString());
             res = stmt.executeQuery();
-            while(res.next()) {
+            while (res.next()) {
                 // get the channel id
                 int channeldId = res.getInt(1);
                 // read the resource by property "channelid"
@@ -499,12 +476,12 @@ public class CmsDbAccess {
                 cms.setContextToCos();
                 Vector resources = new Vector();
                 try {
-                    resources = cms.getResourcesWithPropertyDefintion(I_CmsConstants.C_PROPERTY_CHANNELID, channeldId+"", CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
-                } catch(CmsException exc) {
+                    resources = cms.getResourcesWithPropertyDefintion(I_CmsConstants.C_PROPERTY_CHANNELID, channeldId + "", CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
+                } catch (CmsException exc) {
                     // ignore the exception - switch to next channel
                 }
                 cms.getRequestContext().restoreSiteRoot();
-                if(resources.size() >= 1) {
+                if (resources.size() >= 1) {
                     // add the name of the channel to the ret-value
                     CmsResource resource = (CmsResource)resources.get(0);
                     if (resource.getState() != I_CmsConstants.C_STATE_DELETED) {
@@ -512,7 +489,7 @@ public class CmsDbAccess {
                     }
                 }
             }
-        } catch(SQLException exc) {
+        } catch (SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
@@ -528,11 +505,10 @@ public class CmsDbAccess {
      * @param suId the sub ID of the contentdefinition.
      * @return Vector the datasets of the contentdefinitions in the channel.
      */
-    public Vector readAllByChannel(CmsObject cms, int channelId, int subId)
-        throws CmsException {
+    public Vector readAllByChannel(CmsObject cms, int channelId, int subId) throws CmsException {
         Vector theDataSets = new Vector();
         String statement_key = "readallbychannel_offline";
-        if(isOnlineProject(cms)) {
+        if (isOnlineProject(cms)) {
             statement_key = "readallbychannel_online";
         }
 
@@ -545,12 +521,12 @@ public class CmsDbAccess {
             stmt.setInt(1, subId);
             stmt.setInt(2, channelId);
             res = stmt.executeQuery();
-            while(res.next()) {
+            while (res.next()) {
                 CmsMasterDataSet dataset = new CmsMasterDataSet();
                 sqlFillValues(res, cms, dataset);
                 theDataSets.add(dataset);
             }
-        } catch(SQLException exc) {
+        } catch (SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
@@ -565,8 +541,7 @@ public class CmsDbAccess {
      * @param content the CmsMasterContent to write to the database.
      * @param dataset the set of data for this contentdefinition.
      */
-    public void delete(CmsObject cms, CmsMasterContent content, CmsMasterDataSet dataset)
-        throws CmsException {
+    public void delete(CmsObject cms, CmsMasterContent content, CmsMasterDataSet dataset) throws CmsException {
         if (isOnlineProject(cms)) {
             // this is the onlineproject - don't write into this project directly
             throw new CmsSecurityException("Can't delete from the online project", CmsSecurityException.C_SECURITY_NO_MODIFY_IN_ONLINE_PROJECT);
@@ -601,14 +576,14 @@ public class CmsDbAccess {
                 stmt = m_sqlManager.getPreparedStatement(conn, statement_key);
                 stmt.setString(1, dataset.m_masterId.toString());
                 stmt.setInt(2, content.getSubId());
-                if(stmt.executeUpdate() != 1) {
+                if (stmt.executeUpdate() != 1) {
                     // no line deleted - row wasn't found
                     throw new CmsException("Row not found: " + dataset.m_masterId + " " + content.getSubId(), CmsException.C_NOT_FOUND);
                 }
                 // after deleting the row, we have to delete media and channel rows
                 deleteAllMedia(dataset.m_masterId);
                 deleteAllChannels(dataset.m_masterId);
-            } catch(SQLException exc) {
+            } catch (SQLException exc) {
                 throw new CmsException(CmsException.C_SQL_ERROR, exc);
             } finally {
                 m_sqlManager.closeAll(conn, stmt, null);
@@ -626,7 +601,7 @@ public class CmsDbAccess {
                 stmt.setString(rowcounter++, dataset.m_masterId.toString());
                 stmt.setInt(rowcounter++, content.getSubId());
                 stmt.executeUpdate();
-            } catch(SQLException exc) {
+            } catch (SQLException exc) {
                 throw new CmsException(CmsException.C_SQL_ERROR, exc);
             } finally {
                 m_sqlManager.closeAll(conn, stmt, null);
@@ -641,8 +616,7 @@ public class CmsDbAccess {
      * @param content the CmsMasterContent to write to the database.
      * @param dataset the set of data for this contentdefinition.
      */
-    public void undelete(CmsObject cms, CmsMasterContent content, CmsMasterDataSet dataset)
-        throws CmsException {
+    public void undelete(CmsObject cms, CmsMasterContent content, CmsMasterDataSet dataset) throws CmsException {
         if (isOnlineProject(cms)) {
             // this is the onlineproject - don't write into this project directly
             throw new CmsSecurityException("Can't undelete from the online project", CmsSecurityException.C_SECURITY_NO_MODIFY_IN_ONLINE_PROJECT);
@@ -650,11 +624,11 @@ public class CmsDbAccess {
         if (dataset.m_versionId != I_CmsConstants.C_UNKNOWN_ID) {
             // this is not the online row - it was read from history
             // don't delete it!
-            throw new CmsSecurityException("Can't undelete a backup cd ", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);            
+            throw new CmsSecurityException("Can't undelete a backup cd ", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
         if (!content.isWriteable()) {
             // no write access
-            throw new CmsSecurityException("Not writeable", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);            
+            throw new CmsSecurityException("Not writeable", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
         // set state to deleted and update the line
         dataset.m_state = I_CmsConstants.C_STATE_CHANGED;
@@ -669,7 +643,7 @@ public class CmsDbAccess {
             stmt.setString(rowcounter++, dataset.m_masterId.toString());
             stmt.setInt(rowcounter++, content.getSubId());
             stmt.executeUpdate();
-        } catch(SQLException exc) {
+        } catch (SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
@@ -727,7 +701,7 @@ public class CmsDbAccess {
             stmt.setString(7, dataset.m_masterId.toString());
             stmt.setInt(8, content.getSubId());
             stmt.executeUpdate();
-        } catch(SQLException exc) {
+        } catch (SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
@@ -743,7 +717,7 @@ public class CmsDbAccess {
     public String toString() {
         StringBuffer returnValue = new StringBuffer();
         returnValue.append(this.getClass().getName() + "{");
-        returnValue.append("Used db pool="+m_poolUrl+";");
+        returnValue.append("Used db pool=" + m_poolUrl + ";");
         returnValue.append("}");
         return returnValue.toString();
     }
@@ -756,37 +730,36 @@ public class CmsDbAccess {
      * @param dataset the set of data for this contentdefinition.
      * @return the current rowcounter.
      */
-    protected int sqlFillValues(PreparedStatement stmt, int subId, CmsMasterDataSet dataset)
-        throws SQLException {
+    protected int sqlFillValues(PreparedStatement stmt, int subId, CmsMasterDataSet dataset) throws SQLException {
         // columncounter
         int i = 1;
         //// COREDATA ////
-        stmt.setString(i++,dataset.m_masterId.toString());
-        stmt.setInt(i++,subId);
-        stmt.setString(i++,dataset.m_userId.toString());
-        stmt.setString(i++,dataset.m_groupId.toString());
-        stmt.setInt(i++,dataset.m_lockedInProject);
-        stmt.setInt(i++,dataset.m_accessFlags);
-        stmt.setInt(i++,dataset.m_state);
-        stmt.setString(i++,dataset.m_lockedBy.toString());
-        stmt.setString(i++,dataset.m_lastModifiedBy.toString());
-        stmt.setTimestamp(i++,new Timestamp(dataset.m_dateCreated));
-        stmt.setTimestamp(i++,new Timestamp(dataset.m_dateLastModified));
+        stmt.setString(i++, dataset.m_masterId.toString());
+        stmt.setInt(i++, subId);
+        stmt.setString(i++, dataset.m_userId.toString());
+        stmt.setString(i++, dataset.m_groupId.toString());
+        stmt.setInt(i++, dataset.m_lockedInProject);
+        stmt.setInt(i++, dataset.m_accessFlags);
+        stmt.setInt(i++, dataset.m_state);
+        stmt.setString(i++, dataset.m_lockedBy.toString());
+        stmt.setString(i++, dataset.m_lastModifiedBy.toString());
+        stmt.setTimestamp(i++, new Timestamp(dataset.m_dateCreated));
+        stmt.setTimestamp(i++, new Timestamp(dataset.m_dateLastModified));
         //// USERDATA ////
-        stmt.setTimestamp(i++,new Timestamp(dataset.m_publicationDate));
-        stmt.setTimestamp(i++,new Timestamp(dataset.m_purgeDate));
-        stmt.setInt(i++,dataset.m_flags);
-        stmt.setInt(i++,dataset.m_feedId);
-        stmt.setInt(i++,dataset.m_feedReference);
-        if(dataset.m_feedFilename == null){
-            stmt.setNull(i++,Types.VARCHAR);
+        stmt.setTimestamp(i++, new Timestamp(dataset.m_publicationDate));
+        stmt.setTimestamp(i++, new Timestamp(dataset.m_purgeDate));
+        stmt.setInt(i++, dataset.m_flags);
+        stmt.setInt(i++, dataset.m_feedId);
+        stmt.setInt(i++, dataset.m_feedReference);
+        if (dataset.m_feedFilename == null) {
+            stmt.setNull(i++, Types.VARCHAR);
         } else {
-            stmt.setString(i++,dataset.m_feedFilename);
+            stmt.setString(i++, dataset.m_feedFilename);
         }
-        if(dataset.m_title == null){
-            stmt.setNull(i++,Types.VARCHAR);
+        if (dataset.m_title == null) {
+            stmt.setNull(i++, Types.VARCHAR);
         } else {
-            stmt.setString(i++,dataset.m_title);
+            stmt.setString(i++, dataset.m_title);
         }
         //// GENERIC DATA ////
         i = sqlSetTextArray(stmt, dataset.m_dataBig, i);
@@ -806,12 +779,11 @@ public class CmsDbAccess {
      * @param dataset the set of data for this contentdefinition.
      * @return the current rowcounter.
      */
-    protected int sqlFillValues(ResultSet res, CmsObject cms, CmsMasterDataSet dataset)
-        throws SQLException {
+    protected int sqlFillValues(ResultSet res, CmsObject cms, CmsMasterDataSet dataset) throws SQLException {
         // columncounter
         int i = 1;
         //// COREDATA ////
-        dataset.m_masterId = new CmsUUID( res.getString(i++) );
+        dataset.m_masterId = new CmsUUID(res.getString(i++));
         res.getInt(i++); // we don't have to store the sub-id
         dataset.m_userId = new CmsUUID(res.getString(i++));
         dataset.m_groupId = new CmsUUID(res.getString(i++));
@@ -850,24 +822,23 @@ public class CmsDbAccess {
      * @return int the project id
      * @throws SQLException
      */
-    protected int computeProjectId(CmsObject cms, CmsMasterDataSet dataset) throws SQLException  {
+    protected int computeProjectId(CmsObject cms, CmsMasterDataSet dataset) throws SQLException {
         int onlineProjectId = I_CmsConstants.C_UNKNOWN_ID;
         int offlineProjectId = I_CmsConstants.C_UNKNOWN_ID;
 
         offlineProjectId = cms.getRequestContext().currentProject().getId();
         onlineProjectId = I_CmsConstants.C_PROJECT_ONLINE_ID;
 
-        if(!isOnlineProject(cms)) {
+        if (!isOnlineProject(cms)) {
             // this is an offline project -> compute if we have to return the
             // online project id or the offline project id
 
             // the owner and the administrtor has always access
             try {
-                if( (cms.getRequestContext().currentUser().getId().equals(dataset.m_userId)) ||
-                     cms.isAdmin()) {
-                     return offlineProjectId;
+                if ((cms.getRequestContext().currentUser().getId().equals(dataset.m_userId)) || cms.isAdmin()) {
+                    return offlineProjectId;
                 }
-            } catch(CmsException exc) {
+            } catch (CmsException exc) {
                 // ignore the exception -> we are not admin
             }
 
@@ -883,19 +854,19 @@ public class CmsDbAccess {
                 stmt = m_sqlManager.getPreparedStatement(conn, statement_key);
                 stmt.setString(1, dataset.m_masterId.toString());
                 res = stmt.executeQuery();
-                while(res.next()) {
+                while (res.next()) {
                     // get the channel id
                     int channeldId = res.getInt(1);
                     // read the resource by property "channelid"
                     Vector resources = new Vector();
                     try {
-                        resources = cms.getResourcesWithPropertyDefintion(I_CmsConstants.C_PROPERTY_CHANNELID, channeldId+"", CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
-                    } catch(CmsException exc) {
+                        resources = cms.getResourcesWithPropertyDefintion(I_CmsConstants.C_PROPERTY_CHANNELID, channeldId + "", CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
+                    } catch (CmsException exc) {
                         // ignore the exception - read the next one
                     }
-                    if(resources.size() >= 1) {
+                    if (resources.size() >= 1) {
                         int resProjectId = ((CmsResource)resources.get(0)).getProjectId();
-                        if(resProjectId == offlineProjectId) {
+                        if (resProjectId == offlineProjectId) {
                             // yes - we have found a chanel that belongs to
                             // the current offlineproject -> we can return the
                             // offline project id as computed project id
@@ -921,13 +892,12 @@ public class CmsDbAccess {
      * @param the columnscounter for the statement.
      * @return the increased columnscounter;
      */
-    protected int sqlSetTextArray(PreparedStatement stmt, String[] array, int columnscounter)
-        throws SQLException {
-        for(int j = 0; j < array.length; j++) {
-            if(array[j] == null) {
-                stmt.setNull(columnscounter++,Types.LONGVARCHAR);
+    protected int sqlSetTextArray(PreparedStatement stmt, String[] array, int columnscounter) throws SQLException {
+        for (int j = 0; j < array.length; j++) {
+            if (array[j] == null) {
+                stmt.setNull(columnscounter++, Types.LONGVARCHAR);
             } else {
-                stmt.setString(columnscounter++,array[j]);
+                stmt.setString(columnscounter++, array[j]);
             }
         }
         return columnscounter;
@@ -941,9 +911,8 @@ public class CmsDbAccess {
      * @param the columnscounter for the res.
      * @return the increased columnscounter;
      */
-    protected int sqlSetTextArray(ResultSet res, String[] array, int columnscounter)
-        throws SQLException {
-        for(int j = 0; j < array.length; j++) {
+    protected int sqlSetTextArray(ResultSet res, String[] array, int columnscounter) throws SQLException {
+        for (int j = 0; j < array.length; j++) {
             array[j] = res.getString(columnscounter++);
         }
         return columnscounter;
@@ -957,10 +926,9 @@ public class CmsDbAccess {
      * @param the columnscounter for the stmnt.
      * @return the increased columnscounter;
      */
-    protected int sqlSetIntArray(PreparedStatement stmt, int[] array, int columnscounter)
-        throws SQLException {
-        for(int j = 0; j < array.length; j++) {
-            stmt.setInt(columnscounter++,array[j]);
+    protected int sqlSetIntArray(PreparedStatement stmt, int[] array, int columnscounter) throws SQLException {
+        for (int j = 0; j < array.length; j++) {
+            stmt.setInt(columnscounter++, array[j]);
         }
         return columnscounter;
     }
@@ -973,9 +941,8 @@ public class CmsDbAccess {
      * @param the columnscounter for the res.
      * @return the increased columnscounter;
      */
-    protected int sqlSetIntArray(ResultSet res, int[] array, int columnscounter)
-        throws SQLException {
-        for(int j = 0; j < array.length; j++) {
+    protected int sqlSetIntArray(ResultSet res, int[] array, int columnscounter) throws SQLException {
+        for (int j = 0; j < array.length; j++) {
             array[j] = res.getInt(columnscounter++);
         }
         return columnscounter;
@@ -989,10 +956,9 @@ public class CmsDbAccess {
      * @param the columnscounter for the stmnt.
      * @return the increased columnscounter;
      */
-    protected int sqlSetDateArray(PreparedStatement stmt, long[] array, int columnscounter)
-        throws SQLException {
-        for(int j = 0; j < array.length; j++) {
-            stmt.setTimestamp(columnscounter++,new Timestamp(array[j]));
+    protected int sqlSetDateArray(PreparedStatement stmt, long[] array, int columnscounter) throws SQLException {
+        for (int j = 0; j < array.length; j++) {
+            stmt.setTimestamp(columnscounter++, new Timestamp(array[j]));
         }
         return columnscounter;
     }
@@ -1005,9 +971,8 @@ public class CmsDbAccess {
      * @param the columnscounter for the res.
      * @return the increased columnscounter;
      */
-    protected int sqlSetDateArray(ResultSet res, long[] array, int columnscounter)
-        throws SQLException {
-        for(int j = 0; j < array.length; j++) {
+    protected int sqlSetDateArray(ResultSet res, long[] array, int columnscounter) throws SQLException {
+        for (int j = 0; j < array.length; j++) {
             array[j] = res.getTimestamp(columnscounter++).getTime();
         }
         return columnscounter;
@@ -1022,8 +987,7 @@ public class CmsDbAccess {
      * @param cms the CmsObject to get access to cms resources.
      * @throws SqlException if nothing could be read from the resultset.
      */
-    protected Vector createVectorOfCd(ResultSet res, Class contentDefinitionClass, CmsObject cms)
-        throws SQLException {
+    protected Vector createVectorOfCd(ResultSet res, Class contentDefinitionClass, CmsObject cms) throws SQLException {
         return createVectorOfCd(res, contentDefinitionClass, cms, false);
     }
 
@@ -1036,32 +1000,31 @@ public class CmsDbAccess {
      * @param viewonly  decides, if only the ones that are visible should be returned
      * @throws SqlException if nothing could be read from the resultset.
      */
-    protected Vector createVectorOfCd(ResultSet res, Class contentDefinitionClass, CmsObject cms, boolean viewonly)
-        throws SQLException {
+    protected Vector createVectorOfCd(ResultSet res, Class contentDefinitionClass, CmsObject cms, boolean viewonly) throws SQLException {
         Constructor constructor;
         Vector retValue = new Vector();
         try { // to get the constructor to create an empty contentDefinition
-            constructor = contentDefinitionClass.getConstructor(new Class[]{CmsObject.class, CmsMasterDataSet.class});
-        } catch(NoSuchMethodException exc) {
-            if(CmsBase.isLogging(I_CmsLogChannels.C_MODULE_DEBUG)) {
-                CmsBase.log(I_CmsLogChannels.C_MODULE_DEBUG, "[CmsProjectDriver] Cannot locate constructor: " + exc.getMessage());
+            constructor = contentDefinitionClass.getConstructor(new Class[] { CmsObject.class, CmsMasterDataSet.class });
+        } catch (NoSuchMethodException exc) {
+            if (OpenCms.isLogging(I_CmsLogChannels.C_MODULE_DEBUG)) {
+                OpenCms.log(I_CmsLogChannels.C_MODULE_DEBUG, "[CmsProjectDriver] Cannot locate constructor: " + exc.getMessage());
             }
             // canno't fill the vector - missing constructor
             return retValue;
         }
-        while(res.next()) { // while there is data in the resultset
+        while (res.next()) { // while there is data in the resultset
             CmsMasterDataSet dataset = new CmsMasterDataSet();
             try { // to invoce the constructor to get a new empty instance
-                CmsMasterContent content = (CmsMasterContent)constructor.newInstance(new Object[]{cms, dataset});
+                CmsMasterContent content = (CmsMasterContent)constructor.newInstance(new Object[] { cms, dataset });
                 sqlFillValues(res, cms, dataset);
                 // add the cd only if read (and visible) permissions are granted.
                 // the visible-permissens will be checked, if viewonly is set to true
                 // viewonly=true is needed for the backoffice
-                if(checkAccess(content, viewonly)) {
+                if (checkAccess(content, viewonly)) {
                     retValue.add(content);
                 }
-            } catch(Exception exc) {
-                if(OpenCms.isLogging(I_CmsLogChannels.C_MODULE_DEBUG)) {
+            } catch (Exception exc) {
+                if (OpenCms.isLogging(I_CmsLogChannels.C_MODULE_DEBUG)) {
                     OpenCms.log(I_CmsLogChannels.C_MODULE_DEBUG, "[CmsProjectDriver] Cannot invoce constructor: " + exc.getMessage());
                 }
             }
@@ -1077,27 +1040,26 @@ public class CmsDbAccess {
      * @param cms the CmsObject to get access to cms-ressources.
      * @throws SqlException if nothing could be read from the resultset.
      */
-    protected Vector createVectorOfCd(Vector datasets, Class contentDefinitionClass, CmsObject cms)
-        throws SQLException {
+    protected Vector createVectorOfCd(Vector datasets, Class contentDefinitionClass, CmsObject cms) throws SQLException {
         Constructor constructor;
         Vector retValue = new Vector();
         try { // to get the constructor to create an empty contentDefinition
-            constructor = contentDefinitionClass.getConstructor(new Class[]{CmsObject.class, CmsMasterDataSet.class});
-        } catch(NoSuchMethodException exc) {
-            if(OpenCms.isLogging(I_CmsLogChannels.C_MODULE_DEBUG)) {
+            constructor = contentDefinitionClass.getConstructor(new Class[] { CmsObject.class, CmsMasterDataSet.class });
+        } catch (NoSuchMethodException exc) {
+            if (OpenCms.isLogging(I_CmsLogChannels.C_MODULE_DEBUG)) {
                 OpenCms.log(I_CmsLogChannels.C_MODULE_DEBUG, "[CmsProjectDriver] Cannot locate constructor: " + exc.getMessage());
             }
             // canno't fill the vector - missing constructor
             return retValue;
         }
         // create content definition for each dataset
-        for(int i=0; i < datasets.size(); i++) {
+        for (int i = 0; i < datasets.size(); i++) {
             CmsMasterDataSet dataset = (CmsMasterDataSet)datasets.elementAt(i);
             try { // to invoce the constructor to get a new empty instance
-                CmsMasterContent content = (CmsMasterContent)constructor.newInstance(new Object[]{cms, dataset});
+                CmsMasterContent content = (CmsMasterContent)constructor.newInstance(new Object[] { cms, dataset });
                 retValue.add(content);
-            } catch(Exception exc) {
-                if(OpenCms.isLogging(I_CmsLogChannels.C_MODULE_DEBUG)) {
+            } catch (Exception exc) {
+                if (OpenCms.isLogging(I_CmsLogChannels.C_MODULE_DEBUG)) {
                     OpenCms.log(I_CmsLogChannels.C_MODULE_DEBUG, "[CmsProjectDriver] Cannot invoce constructor: " + exc.getMessage());
                 }
             }
@@ -1114,10 +1076,10 @@ public class CmsDbAccess {
      * @param viewonly if set to true the v-Flag will be checked, too.
      */
     protected boolean checkAccess(CmsMasterContent content, boolean viewonly) {
-        if(!content.isReadable()) {
+        if (!content.isReadable()) {
             // was not readable
             return false;
-        } else if(viewonly) {
+        } else if (viewonly) {
             // additional check for v-Flags
             return content.isVisible();
         } else {
@@ -1186,17 +1148,15 @@ public class CmsDbAccess {
      * @throws SQLException if an sql error occurs.
      * @throws CmsException if an error occurs.
      */
-    protected void updateMedia(CmsUUID masterId, Vector mediaToAdd,
-                               Vector mediaToUpdate, Vector mediaToDelete)
-        throws SQLException, CmsException {
+    protected void updateMedia(CmsUUID masterId, Vector mediaToAdd, Vector mediaToUpdate, Vector mediaToDelete) throws SQLException, CmsException {
         // add new media
         PreparedStatement stmt = null;
         Connection conn = null;
         try {
             conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "insert_media_offline");
-            for(int i = 0; i < mediaToAdd.size(); i++) {
-                CmsMasterMedia media = (CmsMasterMedia) mediaToAdd.get(i);
+            for (int i = 0; i < mediaToAdd.size(); i++) {
+                CmsMasterMedia media = (CmsMasterMedia)mediaToAdd.get(i);
                 media.setId(CmsIdGenerator.nextId(m_poolUrl, "CMS_MODULE_MEDIA"));
                 media.setMasterId(masterId);
                 sqlFillValues(stmt, media);
@@ -1212,8 +1172,8 @@ public class CmsDbAccess {
         try {
             conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "update_media_offline");
-            for(int i = 0; i < mediaToUpdate.size(); i++) {
-                CmsMasterMedia media = (CmsMasterMedia) mediaToUpdate.get(i);
+            for (int i = 0; i < mediaToUpdate.size(); i++) {
+                CmsMasterMedia media = (CmsMasterMedia)mediaToUpdate.get(i);
                 media.setMasterId(masterId);
                 int rowCounter = sqlFillValues(stmt, media);
                 stmt.setInt(rowCounter++, media.getId());
@@ -1229,8 +1189,8 @@ public class CmsDbAccess {
         try {
             conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "delete_media_offline");
-            for(int i = 0; i < mediaToDelete.size(); i++) {
-                CmsMasterMedia media = (CmsMasterMedia) mediaToDelete.get(i);
+            for (int i = 0; i < mediaToDelete.size(); i++) {
+                CmsMasterMedia media = (CmsMasterMedia)mediaToDelete.get(i);
                 stmt.setInt(1, media.getId());
                 stmt.setString(2, masterId.toString());
                 stmt.executeUpdate();
@@ -1249,29 +1209,27 @@ public class CmsDbAccess {
      * @param channelToDelete vector of channels to delete.
      * @throws SQLException if an sql error occurs.
      */
-    protected void updateChannels(CmsObject cms, CmsUUID masterId, Vector channelToAdd,
-        Vector channelToDelete) throws SQLException {
+    protected void updateChannels(CmsObject cms, CmsUUID masterId, Vector channelToAdd, Vector channelToDelete) throws SQLException {
         // add new channel
         PreparedStatement stmt = null;
         Connection conn = null;
         try {
             conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "insert_channel_offline");
-            for(int i = 0; i < channelToAdd.size(); i++) {
+            for (int i = 0; i < channelToAdd.size(); i++) {
                 try {
                     stmt.setString(1, masterId.toString());
                     cms.getRequestContext().saveSiteRoot();
                     cms.setContextToCos();
-                    stmt.setInt(2, Integer.parseInt(cms.readProperty(channelToAdd.get(i)+"",
-                        I_CmsConstants.C_PROPERTY_CHANNELID)));
+                    stmt.setInt(2, Integer.parseInt(cms.readProperty(channelToAdd.get(i) + "", I_CmsConstants.C_PROPERTY_CHANNELID)));
                     cms.getRequestContext().restoreSiteRoot();
                     // stmnt.setInt(2, Integer.parseInt(cms.readProperty(C_COS_PREFIX + channelToAdd.get(i),
                     //    I_CmsConstants.C_PROPERTY_CHANNELID)));
                     stmt.executeUpdate();
-                } catch(CmsException exc) {
+                } catch (CmsException exc) {
                     // no channel found - write to logfile
-                    if(CmsBase.isLogging()) {
-                        CmsBase.log(I_CmsLogChannels.C_MODULE_DEBUG, "[CmsProjectDriver] Couldn't find channel " + channelToAdd.get(i) + " errormessage: " + exc.getMessage());
+                    if (OpenCms.isLogging(I_CmsLogChannels.C_MODULE_DEBUG)) {
+                        OpenCms.log(I_CmsLogChannels.C_MODULE_DEBUG, "[CmsProjectDriver] Couldn't find channel " + channelToAdd.get(i) + " errormessage: " + exc.getMessage());
                     }
                 }
             }
@@ -1285,21 +1243,20 @@ public class CmsDbAccess {
         try {
             conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "delete_channel_offline");
-            for(int i = 0; i < channelToDelete.size(); i++) {
+            for (int i = 0; i < channelToDelete.size(); i++) {
                 try {
                     stmt.setString(1, masterId.toString());
                     cms.getRequestContext().saveSiteRoot();
                     cms.setContextToCos();
-                    stmt.setInt(2, Integer.parseInt(cms.readProperty(channelToDelete.get(i)+"",
-                         I_CmsConstants.C_PROPERTY_CHANNELID)));
+                    stmt.setInt(2, Integer.parseInt(cms.readProperty(channelToDelete.get(i) + "", I_CmsConstants.C_PROPERTY_CHANNELID)));
                     cms.getRequestContext().restoreSiteRoot();
                     // stmnt.setInt(2, Integer.parseInt(cms.readProperty(C_COS_PREFIX + channelToDelete.get(i),
                     //     I_CmsConstants.C_PROPERTY_CHANNELID)));
                     stmt.executeUpdate();
-                } catch(CmsException exc) {
+                } catch (CmsException exc) {
                     // no channel found - write to logfile
-                    if(CmsBase.isLogging()) {
-                        CmsBase.log(I_CmsLogChannels.C_MODULE_DEBUG, "[CmsProjectDriver] Couldn't find channel " + channelToAdd.get(i) + " errormessage: " + exc.getMessage());
+                    if (OpenCms.isLogging(I_CmsLogChannels.C_MODULE_DEBUG)) {
+                        OpenCms.log(I_CmsLogChannels.C_MODULE_DEBUG, "[CmsProjectDriver] Couldn't find channel " + channelToAdd.get(i) + " errormessage: " + exc.getMessage());
                     }
                 }
             }
@@ -1316,8 +1273,7 @@ public class CmsDbAccess {
      * @return int the number of values set in the statement.
      * @throws SQLException if data could not be set in statement.
      */
-    protected int sqlFillValues(PreparedStatement stmt, CmsMasterMedia media)
-        throws SQLException {
+    protected int sqlFillValues(PreparedStatement stmt, CmsMasterMedia media) throws SQLException {
         int i = 1;
         stmt.setInt(i++, media.getId());
         stmt.setString(i++, media.getMasterId().toString());
@@ -1344,7 +1300,7 @@ public class CmsDbAccess {
      * @param subId the sub id of the master.
      * @return Vector a vector with all versions of the master.
      */
-    public Vector getHistory(CmsObject cms, Class contentDefinitionClass, CmsUUID masterId, int subId) throws CmsException{
+    public Vector getHistory(CmsObject cms, Class contentDefinitionClass, CmsUUID masterId, int subId) throws CmsException {
         Vector retVector = new Vector();
         Vector allBackup = new Vector();
         PreparedStatement stmt = null;
@@ -1357,7 +1313,7 @@ public class CmsDbAccess {
             stmt.setInt(2, subId);
             // gets all versions of the master in the backup table
             res = stmt.executeQuery();
-            while(res.next()) {
+            while (res.next()) {
                 CmsMasterDataSet dataset = new CmsMasterDataSet();
                 sqlFillValues(res, cms, dataset);
                 dataset.m_versionId = res.getInt("VERSION_ID");
@@ -1367,7 +1323,7 @@ public class CmsDbAccess {
                 allBackup.add(dataset);
             }
             retVector = createVectorOfCd(allBackup, contentDefinitionClass, cms);
-        } catch (SQLException e){
+        } catch (SQLException e) {
             throw new CmsException(CmsException.C_SQL_ERROR, e);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
@@ -1385,26 +1341,25 @@ public class CmsDbAccess {
      * @param versionId the version id.
      * @return CmsMasterContent a content definition of the version.
      */
-    public CmsMasterContent getVersionFromHistory(CmsObject cms, Class contentDefinitionClass,
-                                                  CmsUUID masterId, int subId, int versionId) throws CmsException{
+    public CmsMasterContent getVersionFromHistory(CmsObject cms, Class contentDefinitionClass, CmsUUID masterId, int subId, int versionId) throws CmsException {
         CmsMasterContent content = null;
         CmsMasterDataSet dataset = this.getVersionFromHistory(cms, masterId, subId, versionId);
         Constructor constructor;
         try { // to get the constructor to create an empty contentDefinition
-            constructor = contentDefinitionClass.getConstructor(new Class[]{CmsObject.class, CmsMasterDataSet.class});
-        } catch(NoSuchMethodException exc) {
-            if(OpenCms.isLogging(I_CmsLogChannels.C_MODULE_DEBUG)) {
+            constructor = contentDefinitionClass.getConstructor(new Class[] { CmsObject.class, CmsMasterDataSet.class });
+        } catch (NoSuchMethodException exc) {
+            if (OpenCms.isLogging(I_CmsLogChannels.C_MODULE_DEBUG)) {
                 OpenCms.log(I_CmsLogChannels.C_MODULE_DEBUG, "[CmsProjectDriver] Cannot locate constructor: " + exc.getMessage());
             }
             // canno't fill the vector - missing constructor
             return content;
         }
         // create content definition for each dataset
-        if (dataset != null){
+        if (dataset != null) {
             try { // to invoce the constructor to get a new empty instance
-                content = (CmsMasterContent)constructor.newInstance(new Object[]{cms, dataset});
-            } catch(Exception exc) {
-                if(OpenCms.isLogging(I_CmsLogChannels.C_MODULE_DEBUG)) {
+                content = (CmsMasterContent)constructor.newInstance(new Object[] { cms, dataset });
+            } catch (Exception exc) {
+                if (OpenCms.isLogging(I_CmsLogChannels.C_MODULE_DEBUG)) {
                     OpenCms.log(I_CmsLogChannels.C_MODULE_DEBUG, "[CmsProjectDriver] Cannot invoce constructor: " + exc.getMessage());
                 }
             }
@@ -1421,7 +1376,7 @@ public class CmsDbAccess {
      * @param versionId the version id.
      * @return Vector A vector with all versions of the master
      */
-    public CmsMasterDataSet getVersionFromHistory(CmsObject cms, CmsUUID masterId, int subId, int versionId) throws CmsException{
+    public CmsMasterDataSet getVersionFromHistory(CmsObject cms, CmsUUID masterId, int subId, int versionId) throws CmsException {
         CmsMasterDataSet dataset = new CmsMasterDataSet();
         PreparedStatement stmt = null;
         ResultSet res = null;
@@ -1434,7 +1389,7 @@ public class CmsDbAccess {
             stmt.setInt(3, versionId);
             // gets the master in the backup table with the given versionid
             res = stmt.executeQuery();
-            if(res.next()) {
+            if (res.next()) {
                 sqlFillValues(res, cms, dataset);
                 dataset.m_versionId = res.getInt("VERSION_ID");
                 dataset.m_userName = res.getString("USER_NAME");
@@ -1443,7 +1398,7 @@ public class CmsDbAccess {
             } else {
                 throw new CmsException("Row not found: " + masterId + " " + subId + " version " + versionId, CmsException.C_NOT_FOUND);
             }
-        } catch (SQLException e){
+        } catch (SQLException e) {
             throw new CmsException(CmsException.C_SQL_ERROR, e);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
@@ -1459,7 +1414,7 @@ public class CmsDbAccess {
      * @param dataset the dataset of the master.
      * @param versionId the version id of the master and media to restore.
      */
-     public void restore(CmsObject cms, CmsMasterContent content, CmsMasterDataSet dataset, int versionId) throws CmsException{
+    public void restore(CmsObject cms, CmsMasterContent content, CmsMasterDataSet dataset, int versionId) throws CmsException {
         Connection conn = null;
         Connection conn2 = null;
         PreparedStatement stmt = null;
@@ -1490,14 +1445,14 @@ public class CmsDbAccess {
         dataset.m_mediaToUpdate = new Vector();
         dataset.m_mediaToDelete = new Vector();
         dataset.m_lastModifiedBy = cms.getRequestContext().currentUser().getId();
-        if (dataset.m_state != I_CmsConstants.C_STATE_NEW){
+        if (dataset.m_state != I_CmsConstants.C_STATE_NEW) {
             dataset.m_state = I_CmsConstants.C_STATE_CHANGED;
         }
         // check if the group exists
         CmsUUID groupId = CmsUUID.getNullUUID();
         try {
             groupId = cms.readGroup(backup.m_groupId).getId();
-        } catch (CmsException exc){
+        } catch (CmsException exc) {
             groupId = dataset.m_groupId;
         }
         dataset.m_groupId = groupId;
@@ -1505,7 +1460,7 @@ public class CmsDbAccess {
         CmsUUID userId = CmsUUID.getNullUUID();
         try {
             userId = cms.readUser(backup.m_userId).getId();
-        } catch (CmsException exc){
+        } catch (CmsException exc) {
             userId = dataset.m_userId;
         }
         dataset.m_userId = userId;
@@ -1524,21 +1479,9 @@ public class CmsDbAccess {
             stmt.setString(1, dataset.m_masterId.toString());
             stmt.setInt(2, versionId);
             res = stmt.executeQuery();
-            while (res.next()){
+            while (res.next()) {
                 int i = 1;
-                CmsMasterMedia media = new CmsMasterMedia (
-                                            res.getInt(i++),
-                                            new CmsUUID( res.getString(i++) ),
-                                            res.getInt(i++),
-                                            res.getInt(i++),
-                                            res.getInt(i++),
-                                            res.getInt(i++),
-                                            res.getString(i++),
-                                            res.getInt(i++),
-                                            res.getString(i++),
-                                            res.getString(i++),
-                                            res.getString(i++),
-                                            res.getBytes(i++));
+                CmsMasterMedia media = new CmsMasterMedia(res.getInt(i++), new CmsUUID(res.getString(i++)), res.getInt(i++), res.getInt(i++), res.getInt(i++), res.getInt(i++), res.getString(i++), res.getInt(i++), res.getString(i++), res.getString(i++), res.getString(i++), res.getBytes(i++));
                 // store the data in offline table
                 try {
                     stmt2 = null;
@@ -1547,18 +1490,18 @@ public class CmsDbAccess {
                     stmt2 = m_sqlManager.getPreparedStatement(conn2, "insert_media_offline");
                     sqlFillValues(stmt2, media);
                     stmt2.executeUpdate();
-                } catch (SQLException ex){
+                } catch (SQLException ex) {
                     throw new CmsException(CmsException.C_SQL_ERROR, ex);
                 } finally {
                     m_sqlManager.closeAll(conn2, stmt2, null);
                 }
             }
-        } catch (SQLException e){
+        } catch (SQLException e) {
             throw new CmsException(CmsException.C_SQL_ERROR, e);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
-     }
+    }
 
     /**
      * Publishes a single content definition.<p>
@@ -1573,11 +1516,8 @@ public class CmsDbAccess {
      * @param changedResources a Vector of changed resources.
      * @param changedModuleData a Vector of changed moduledata.
      */
-    public void publishResource(CmsObject cms, CmsMasterDataSet dataset, int subId, String contentDefinitionName,
-                                boolean enableHistory, int versionId, long publishingDate, Vector changedResources,
-                                Vector changedModuleData) throws CmsException{
-        this.publishOneLine(cms, dataset, subId, contentDefinitionName, enableHistory, versionId,
-        publishingDate, changedResources,changedModuleData);
+    public void publishResource(CmsObject cms, CmsMasterDataSet dataset, int subId, String contentDefinitionName, boolean enableHistory, int versionId, long publishingDate, Vector changedResources, Vector changedModuleData) throws CmsException {
+        this.publishOneLine(cms, dataset, subId, contentDefinitionName, enableHistory, versionId, publishingDate, changedResources, changedModuleData);
     }
     /**
      * Publishes all resources for this project.
@@ -1594,10 +1534,7 @@ public class CmsDbAccess {
      * @param changedModuleData a Vector of Resources that were changed by this publishing process. 
      * New published data will be added to this Vector to return it.
      */
-    public void publishProject(CmsObject cms, boolean enableHistory,
-        int projectId, int versionId, long publishingDate, int subId,
-        String contentDefinitionName, Vector changedRessources,
-        Vector changedModuleData) throws CmsException {
+    public void publishProject(CmsObject cms, boolean enableHistory, int projectId, int versionId, long publishingDate, int subId, String contentDefinitionName, Vector changedRessources, Vector changedModuleData) throws CmsException {
 
         String statement_key = "read_all_for_publish";
 
@@ -1613,16 +1550,14 @@ public class CmsDbAccess {
             // gets all ressources that are changed int this project
             // and that belongs to this subId
             res = stmt.executeQuery();
-            while(res.next()) {
+            while (res.next()) {
                 // create a new dataset to fill the values
                 CmsMasterDataSet dataset = new CmsMasterDataSet();
                 // fill the values to the dataset
                 sqlFillValues(res, cms, dataset);
-                publishOneLine(cms, dataset, subId, contentDefinitionName,
-                    enableHistory, versionId, publishingDate, changedRessources,
-                    changedModuleData);
+                publishOneLine(cms, dataset, subId, contentDefinitionName, enableHistory, versionId, publishingDate, changedRessources, changedModuleData);
             }
-        } catch(SQLException exc) {
+        } catch (SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
@@ -1643,24 +1578,16 @@ public class CmsDbAccess {
      * @param changedModuleData a Vector of Ressource that were changed by this publishing process. 
      * New published data will be add to this Vector to return it.
      */
-    protected void publishOneLine(CmsObject cms, CmsMasterDataSet dataset,
-        int subId, String contentDefinitionName, boolean enableHistory,
-        int versionId, long publishingDate, Vector changedRessources,
-        Vector changedModuleData) throws CmsException {
-        
+    protected void publishOneLine(CmsObject cms, CmsMasterDataSet dataset, int subId, String contentDefinitionName, boolean enableHistory, int versionId, long publishingDate, Vector changedRessources, Vector changedModuleData) throws CmsException {
+
         try {
-           Class.forName(contentDefinitionName).getMethod("beforePublish",
-                new Class[] {CmsObject.class, Boolean.class, Integer.class, Integer.class,
-                Long.class, Vector.class, Vector.class, CmsMasterDataSet.class}).invoke(null, new Object[] {cms,
-                new Boolean(enableHistory), new Integer(subId), new Integer(versionId), new Long(publishingDate),
-                changedRessources, changedModuleData, dataset});   
-        }
-        catch (Exception e) {
-            CmsBase.log(I_CmsLogChannels.C_MODULE_DEBUG, "[CmsProjectDriver] error calling method beforePublish in class " + contentDefinitionName );
+            Class.forName(contentDefinitionName).getMethod("beforePublish", new Class[] { CmsObject.class, Boolean.class, Integer.class, Integer.class, Long.class, Vector.class, Vector.class, CmsMasterDataSet.class }).invoke(null, new Object[] { cms, new Boolean(enableHistory), new Integer(subId), new Integer(versionId), new Long(publishingDate), changedRessources, changedModuleData, dataset });
+        } catch (Exception e) {
+            OpenCms.log(I_CmsLogChannels.C_MODULE_DEBUG, "[CmsProjectDriver] error calling method beforePublish in class " + contentDefinitionName);
         }
 
         // backup the data
-        if(enableHistory) {
+        if (enableHistory) {
             // store the creationdate, because it will be set to publishingdate
             // with this method.
             long backupCreationDate = dataset.m_dateCreated;
@@ -1672,7 +1599,7 @@ public class CmsDbAccess {
         // delete the online data
         publishDeleteData(dataset.m_masterId, subId, "online");
 
-        if(dataset.m_state == I_CmsConstants.C_STATE_DELETED) {
+        if (dataset.m_state == I_CmsConstants.C_STATE_DELETED) {
             // delete the data from offline
             // the state was DELETED
             publishDeleteData(dataset.m_masterId, subId, "offline");
@@ -1720,7 +1647,7 @@ public class CmsDbAccess {
             stmt = m_sqlManager.getPreparedStatement(conn, deleteChannel);
             stmt.setString(1, masterId.toString());
             stmt.executeUpdate();
-        } catch(SQLException exc) {
+        } catch (SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
@@ -1734,7 +1661,7 @@ public class CmsDbAccess {
             stmt = m_sqlManager.getPreparedStatement(conn, deleteMedia);
             stmt.setString(1, masterId.toString());
             stmt.executeUpdate();
-        } catch(SQLException exc) {
+        } catch (SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
@@ -1749,12 +1676,12 @@ public class CmsDbAccess {
             stmt.setString(1, masterId.toString());
             stmt.setInt(2, subId);
             stmt.executeUpdate();
-        } catch(SQLException exc) {
+        } catch (SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
-   }
+    }
 
     /**
      * Publishes a copied row of a content definition.<p>
@@ -1763,14 +1690,14 @@ public class CmsDbAccess {
      * @param subId the used sub id.
      * @throws CmsException if sql or other errors occur.
      */
-    protected void publishCopyData(CmsMasterDataSet dataset, int subId ) throws CmsException {
+    protected void publishCopyData(CmsMasterDataSet dataset, int subId) throws CmsException {
         PreparedStatement stmt = null;
         PreparedStatement stmt2 = null;
         ResultSet res = null;
         Connection conn = null;
         Connection conn2 = null;
         CmsUUID masterId = dataset.m_masterId;
-        
+
         // copy the row
         try {
             stmt = null;
@@ -1783,7 +1710,7 @@ public class CmsDbAccess {
             dataset.m_lockedBy = CmsUUID.getNullUUID();
             sqlFillValues(stmt, subId, dataset);
             stmt.executeUpdate();
-        } catch(SQLException exc) {
+        } catch (SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
@@ -1798,22 +1725,10 @@ public class CmsDbAccess {
             stmt = m_sqlManager.getPreparedStatement(conn, "read_media_offline");
             stmt.setString(1, masterId.toString());
             res = stmt.executeQuery();
-            while(res.next()) {
+            while (res.next()) {
                 // create a new dataset to fill the values
                 int i = 1;
-                CmsMasterMedia mediaset = new CmsMasterMedia (
-                                                res.getInt(i++),
-                                                new CmsUUID( res.getString(i++) ),
-                                                res.getInt(i++),
-                                                res.getInt(i++),
-                                                res.getInt(i++),
-                                                res.getInt(i++),
-                                                res.getString(i++),
-                                                res.getInt(i++),
-                                                res.getString(i++),
-                                                res.getString(i++),
-                                                res.getString(i++),
-                                                res.getBytes(i++));
+                CmsMasterMedia mediaset = new CmsMasterMedia(res.getInt(i++), new CmsUUID(res.getString(i++)), res.getInt(i++), res.getInt(i++), res.getInt(i++), res.getInt(i++), res.getString(i++), res.getInt(i++), res.getString(i++), res.getString(i++), res.getString(i++), res.getBytes(i++));
                 // insert media of master into online
                 try {
                     stmt2 = null;
@@ -1822,13 +1737,13 @@ public class CmsDbAccess {
                     stmt2 = m_sqlManager.getPreparedStatement(conn2, "insert_media_online");
                     sqlFillValues(stmt2, mediaset);
                     stmt2.executeUpdate();
-                } catch(SQLException ex){
+                } catch (SQLException ex) {
                     throw ex;
                 } finally {
                     m_sqlManager.closeAll(conn2, stmt2, null);
                 }
             }
-        } catch(SQLException exc) {
+        } catch (SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
@@ -1844,7 +1759,7 @@ public class CmsDbAccess {
             stmt = m_sqlManager.getPreparedStatement(conn, "read_channel_offline");
             stmt.setString(1, masterId.toString());
             res = stmt.executeQuery();
-            while (res.next()){
+            while (res.next()) {
                 // insert all channel relations for master into online
                 try {
                     stmt2 = null;
@@ -1854,13 +1769,13 @@ public class CmsDbAccess {
                     stmt2.setString(1, masterId.toString());
                     stmt2.setInt(2, res.getInt(1));
                     stmt2.executeUpdate();
-                } catch (SQLException ex){
+                } catch (SQLException ex) {
                     throw ex;
                 } finally {
                     m_sqlManager.closeAll(conn2, stmt2, null);
                 }
             }
-        } catch(SQLException exc) {
+        } catch (SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
@@ -1876,15 +1791,14 @@ public class CmsDbAccess {
      * @param publishDate the publishing date.
      * @throws CmsException if sql or other errors occur.
      */
-    protected void publishBackupData(CmsObject cms, CmsMasterDataSet dataset, int subId,
-                                     int versionId, long publishDate ) throws CmsException {
+    protected void publishBackupData(CmsObject cms, CmsMasterDataSet dataset, int subId, int versionId, long publishDate) throws CmsException {
         PreparedStatement stmt = null;
         PreparedStatement stmt2 = null;
         ResultSet res = null;
         Connection conn = null;
         Connection conn2 = null;
         CmsUUID masterId = dataset.m_masterId;
-        
+
         // copy the row
         try {
             stmt = null;
@@ -1898,8 +1812,8 @@ public class CmsDbAccess {
             String ownerName = "";
             try {
                 CmsUser owner = cms.readUser(dataset.m_userId);
-                ownerName = owner.getName()+" "+owner.getFirstname()+" "+owner.getLastname();
-            } catch (CmsException ex){
+                ownerName = owner.getName() + " " + owner.getFirstname() + " " + owner.getLastname();
+            } catch (CmsException ex) {
                 ownerName = "";
             }
             // get the name of the group
@@ -1907,15 +1821,15 @@ public class CmsDbAccess {
             try {
                 CmsGroup group = cms.readGroup(dataset.m_groupId);
                 groupName = group.getName();
-            } catch (CmsException ex){
+            } catch (CmsException ex) {
                 groupName = "";
             }
             // get the name of the user who has modified the resource
             String userName = "";
             try {
                 CmsUser user = cms.readUser(dataset.m_lastModifiedBy);
-                userName = user.getName()+" "+user.getFirstname()+" "+user.getLastname();
-            } catch (CmsException ex){
+                userName = user.getName() + " " + user.getFirstname() + " " + user.getLastname();
+            } catch (CmsException ex) {
                 userName = "";
             }
             int lastId = sqlFillValues(stmt, subId, dataset);
@@ -1925,7 +1839,7 @@ public class CmsDbAccess {
             stmt.setString(lastId++, groupName);
             stmt.setString(lastId++, userName);
             stmt.executeUpdate();
-        } catch(SQLException exc) {
+        } catch (SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
@@ -1940,22 +1854,10 @@ public class CmsDbAccess {
             stmt = m_sqlManager.getPreparedStatement(conn, "read_media_offline");
             stmt.setString(1, masterId.toString());
             res = stmt.executeQuery();
-            while(res.next()) {
+            while (res.next()) {
                 // create a new dataset to fill the values
                 int i = 1;
-                CmsMasterMedia mediaset = new CmsMasterMedia (
-                                                res.getInt(i++),
-                                                new CmsUUID( res.getString(i++) ),
-                                                res.getInt(i++),
-                                                res.getInt(i++),
-                                                res.getInt(i++),
-                                                res.getInt(i++),
-                                                res.getString(i++),
-                                                res.getInt(i++),
-                                                res.getString(i++),
-                                                res.getString(i++),
-                                                res.getString(i++),
-                                                res.getBytes(i++));
+                CmsMasterMedia mediaset = new CmsMasterMedia(res.getInt(i++), new CmsUUID(res.getString(i++)), res.getInt(i++), res.getInt(i++), res.getInt(i++), res.getInt(i++), res.getString(i++), res.getInt(i++), res.getString(i++), res.getString(i++), res.getString(i++), res.getBytes(i++));
                 // insert media of master into backup
                 try {
                     conn2 = null;
@@ -1965,13 +1867,13 @@ public class CmsDbAccess {
                     int lastId = sqlFillValues(stmt2, mediaset);
                     stmt2.setInt(lastId, versionId);
                     stmt2.executeUpdate();
-                } catch(SQLException ex){
+                } catch (SQLException ex) {
                     throw ex;
                 } finally {
                     m_sqlManager.closeAll(conn2, stmt2, null);
                 }
             }
-        } catch(SQLException exc) {
+        } catch (SQLException exc) {
             throw new CmsException(CmsException.C_SQL_ERROR, exc);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2003/08/18 15:11:21 $
-* Version: $Revision: 1.118 $
+* Date   : $Date: 2003/09/02 12:15:38 $
+* Version: $Revision: 1.119 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ package com.opencms.workplace;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
+import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.core.CmsException;
@@ -65,7 +66,7 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.118 $ $Date: 2003/08/18 15:11:21 $
+ * @version $Revision: 1.119 $ $Date: 2003/09/02 12:15:38 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -313,7 +314,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
             session.removeValue("template");
         }
         String layoutTemplatFilenameRelative = layoutTemplateFilename;
-        layoutTemplateFilename = OpenCms.getLinkManager().getAbsoluteUri(layoutTemplateFilename, file);
+        layoutTemplateFilename = CmsLinkManager.getAbsoluteUri(layoutTemplateFilename, file);
         String bodyElementClassName = (String)parameters.get("bodyclass");
         if(bodyElementClassName == null){
             // try to get the value from the session because we might come from errorpage
@@ -417,7 +418,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
                 // Now get the currently selected master template file
                 layoutTemplateFilename = originalControlFile.getMasterTemplate();
                 layoutTemplatFilenameRelative = layoutTemplateFilename;
-                layoutTemplateFilename = OpenCms.getLinkManager().getAbsoluteUri(layoutTemplateFilename, originalControlFile.getAbsoluteFilename());
+                layoutTemplateFilename = CmsLinkManager.getAbsoluteUri(layoutTemplateFilename, originalControlFile.getAbsoluteFilename());
                 layoutTemplateClassName = originalControlFile.getTemplateClass();            
             } 
             

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsCronScheduleJobStarter.java,v $
-* Date   : $Date: 2003/08/14 15:37:24 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2003/09/02 12:15:38 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,9 +28,9 @@
 
 package com.opencms.core;
 
-import org.opencms.main.*;
+import org.opencms.main.OpenCms;
+import org.opencms.main.OpenCmsCore;
 
-import com.opencms.boot.CmsBase;
 import com.opencms.boot.I_CmsLogChannels;
 
 import java.util.Calendar;
@@ -71,11 +71,11 @@ public class CmsCronScheduleJobStarter extends Thread {
      * If so it tries to start the entry via A_OpenCms.startScheduleJob()
      */
     public void run() {
-        for(int i = 0; i < m_table.size(); i++) {
-            if(m_table.get(i).check(m_lastRun, m_thisRun)) {
+        for (int i = 0; i < m_table.size(); i++) {
+            if (m_table.get(i).check(m_lastRun, m_thisRun)) {
                 // we have to start the job for this entry
-                if(CmsBase.isLogging()) {
-                    CmsBase.log(I_CmsLogChannels.C_OPENCMS_CRONSCHEDULER, "Starting job for " + m_table.get(i));
+                if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRONSCHEDULER)) {
+                    OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRONSCHEDULER, "Starting job for " + m_table.get(i));
                 }
                 m_opencms.startScheduleJob(m_table.get(i));
             }

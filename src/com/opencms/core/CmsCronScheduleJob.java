@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsCronScheduleJob.java,v $
-* Date   : $Date: 2003/08/14 15:37:24 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2003/09/02 12:15:38 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,7 +28,8 @@
 
 package com.opencms.core;
 
-import com.opencms.boot.CmsBase;
+import org.opencms.main.OpenCms;
+
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.file.CmsObject;
 import com.opencms.util.Utils;
@@ -47,7 +48,7 @@ public class CmsCronScheduleJob extends Thread {
     /**
      * Creates a new CmsCronScheduleJob.
      * @param cms the CmsObject with an logged in user.
-     * @poaram entry the entry to launch.
+     * @param entry the entry to launch.
      */
     public CmsCronScheduleJob(CmsObject cms, CmsCronEntry entry) {
         m_cms = cms;
@@ -63,17 +64,17 @@ public class CmsCronScheduleJob extends Thread {
             // load the job class
             Class module = getClass().getClassLoader().loadClass(m_entry.getModuleName());
             // create an instance
-            I_CmsCronJob job = (I_CmsCronJob) module.newInstance();
+            I_CmsCronJob job = (I_CmsCronJob)module.newInstance();
             // invoke method launch
             String retValue = job.launch(m_cms, m_entry.getModuleParameter());
             // log the returnvalue to the logfile
-            if( CmsBase.isLogging()) {
-                CmsBase.log(I_CmsLogChannels.C_OPENCMS_CRONSCHEDULER, "Successful launch of job " + m_entry +  (retValue != null ? " Message: " + retValue : "") );
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRONSCHEDULER)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRONSCHEDULER, "Successful launch of job " + m_entry + (retValue != null ? " Message: " + retValue : ""));
             }
-        } catch(Exception exc) {
+        } catch (Exception exc) {
             // log the exception
-            if( CmsBase.isLogging()) {
-                CmsBase.log(I_CmsLogChannels.C_OPENCMS_CRONSCHEDULER, "Error running job for " + m_entry + " Error: " + Utils.getStackTrace(exc));
+            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRONSCHEDULER)) {
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRONSCHEDULER, "Error running job for " + m_entry + " Error: " + Utils.getStackTrace(exc));
             }
         }
     }

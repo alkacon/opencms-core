@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2003/08/25 10:28:42 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2003/09/02 12:15:38 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.loader;
 
 import org.opencms.main.OpenCms;
+import org.opencms.staticexport.CmsLinkManager;
 
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.CmsException;
@@ -78,7 +79,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  */
 public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
     
@@ -331,7 +332,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
             }
             templateName = doc.getMasterTemplate();
             if (templateName != null && !"".equals(templateName)) {
-                templateName = OpenCms.getLinkManager().getAbsoluteUri(templateName, cms.readAbsolutePath(file));
+                templateName = CmsLinkManager.getAbsoluteUri(templateName, cms.readAbsolutePath(file));
             }
 
             // Previously, the template class was loaded here.

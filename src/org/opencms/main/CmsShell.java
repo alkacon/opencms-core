@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShell.java,v $
- * Date   : $Date: 2003/09/01 10:24:01 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/09/02 12:15:38 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,6 @@ import java.lang.reflect.Method;
 import java.util.Vector;
 
 import source.org.apache.java.util.Configurations;
-import source.org.apache.java.util.ExtendedProperties;
 
 /**
  * This class is a commad line interface to OpenCms which 
@@ -59,7 +58,7 @@ import source.org.apache.java.util.ExtendedProperties;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $ $Date: 2003/09/01 10:24:01 $
+ * @version $Revision: 1.4 $ $Date: 2003/09/02 12:15:38 $
  */
 public class CmsShell {
 
@@ -92,47 +91,32 @@ public class CmsShell {
 
     /**
      * Creates a new CmsShell.<p>
+     * 
+     * @param basePath the OpenCms base application path
      */
-    public CmsShell() {
+    public CmsShell(String basePath) {
         try {
+            
+            // first initialize runlevel 1 to set all path information
+            m_openCms = new OpenCmsCore();
+            basePath = m_openCms.setBasePath(basePath);
+            
             String propsPath = CmsBase.getPropertiesPath(true);
-            System.out.println("%%% props: " + propsPath);
+            System.out.println("[OpenCms] Property path: " + propsPath);
             Configurations conf = new Configurations(CmsSetupUtils.loadProperties(propsPath));
+            
+            // now upgrade to runlevel 2
             m_openCms = new OpenCmsCore(conf);
 
             m_echo = false;
             m_exitCalled = false;
             m_shortException = false;
-            m_logMemory = conf.getBoolean("log.memory", false);            
-                        
-            // initialize shell instance with values obtained from core protoype
-            CmsShell newShell = m_openCms.getCmsShell();
-            m_openCms = newShell.m_openCms;
-            m_cms = newShell.m_cms;
-            m_shellCommands = newShell.m_shellCommands;
-            m_driverManager = newShell.m_driverManager;
-                        
-        } catch (Exception exc) {
-            printException(exc);
-        }
-    }
-    
-    /**
-     * Creates a new CmsShell.<p>
-     * 
-     * @param openCms the cms core object
-     * @param driverManager the driver manager
-     */
-    public CmsShell(OpenCmsCore openCms, CmsDriverManager driverManager) {
-        try {
-            m_openCms = openCms;
-            m_openCms.initVersion(this);
-            
+            m_logMemory = conf.getBoolean("log.memory", false);
+                    
+            m_driverManager = m_openCms.getDriverManager();
             m_cms = new CmsObject();
-            m_openCms.initUser(m_cms, null, null, OpenCms.getDefaultUsers().getUserGuest(), OpenCms.getSiteManager().getDefaultSite().getSiteRoot(), I_CmsConstants.C_PROJECT_ONLINE_ID, null);
-
-            m_driverManager = driverManager;
-            
+            m_openCms.initUser(m_cms, null, null, m_openCms.getDefaultUsers().getUserGuest(), m_openCms.getSiteManager().getDefaultSite().getSiteRoot(), I_CmsConstants.C_PROJECT_ONLINE_ID, null);
+    
         } catch (Exception exc) {
             printException(exc);
         }

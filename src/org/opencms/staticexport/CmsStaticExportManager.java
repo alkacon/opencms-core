@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2003/09/01 09:09:17 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/09/02 12:15:38 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import javax.servlet.http.HttpServletResponse;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
     
@@ -557,7 +557,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         Vector resources;
         CmsObject cms = null;
         try {
-            cms = OpenCms.initGuestUser();
+            cms = OpenCms.getGuestCmsObject();
             resources = cms.getResourcesWithPropertyDefinition(I_CmsConstants.C_PROPERTY_EXPORTNAME);
         } catch (CmsException e) {
             resources = new Vector(0);

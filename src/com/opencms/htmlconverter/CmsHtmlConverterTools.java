@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/htmlconverter/Attic/CmsHtmlConverterTools.java,v $
-* Date   : $Date: 2003/08/18 10:50:48 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2003/09/02 12:15:38 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
 
 package com.opencms.htmlconverter;
 
-import org.opencms.main.OpenCms;
+import org.opencms.staticexport.CmsLinkManager;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -191,7 +191,7 @@ final class CmsHtmlConverterTools {
             // uri is located in the relative root folder
             String source = orgUrl.getFile();
             if (source.startsWith(prefix)) source = source.substring(prefix.length());
-            parameter = OpenCms.getLinkManager().getRelativeUri(source, parameter);
+            parameter = CmsLinkManager.getRelativeUri(source, parameter);
         }
         return parameter;
     }

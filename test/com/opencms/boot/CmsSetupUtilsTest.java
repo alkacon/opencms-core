@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/com/opencms/boot/Attic/CmsSetupUtilsTest.java,v $
- * Date   : $Date: 2003/09/01 10:24:01 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/09/02 12:15:38 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import source.org.apache.java.util.ExtendedProperties;
 
 /** 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.0
  */
@@ -66,7 +66,7 @@ public class CmsSetupUtilsTest extends TestCase {
         utils.setConfigPath("");
                 
         String inputFile = System.getProperty("user.dir") + PROPERTIES;
-        String outputFile = System.getProperty("java.io.tmpdir") + "output.properties";;
+        String outputFile = System.getProperty("java.io.tmpdir") + "output.properties";
                
         System.err.println("Reading properties from " + inputFile);
         ExtendedProperties oldProperties = CmsSetupUtils.loadProperties(inputFile);

@@ -1,30 +1,33 @@
 /*
-* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsLog.java,v $
-* Date   : $Date: 2003/08/15 13:54:52 $
-* Version: $Revision: 1.6 $
-*
-* This library is part of OpenCms -
-* the Open Source Content Mananagement System
-*
-* Copyright (C) 2001  The OpenCms Group
-*
-* This library is free software; you can redistribute it and/or
-* modify it under the terms of the GNU Lesser General Public
-* License as published by the Free Software Foundation; either
-* version 2.1 of the License, or (at your option) any later version.
-*
-* This library is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-* Lesser General Public License for more details.
-*
-* For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
-*
-* You should have received a copy of the GNU Lesser General Public
-* License along with this library; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsLog.java,v $
+ * Date   : $Date: 2003/09/02 12:15:38 $
+ * Version: $Revision: 1.7 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 
 package com.opencms.boot;
 
@@ -34,11 +37,14 @@ import source.org.apache.java.util.Configurations;
 import java.io.*;
 
 /**
- * This class enables the OpenCms logging feature.
+ * This provides the OpenCms logging mechanism.<p>
+ * 
  * Different logging channels are supported and can be
- * (de)activated by the log settings in the proerty file.
+ * activated by the log settings in the property file.<p>
+ * 
+ * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.6 $ $Date: 2003/08/15 13:54:52 $
+ * @version $Revision: 1.7 $
  */
 public class CmsLog implements I_Logger {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexRequest.java,v $
- * Date   : $Date: 2003/08/18 10:50:48 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2003/09/02 12:15:38 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package com.opencms.flex.cache;
 
 import org.opencms.main.OpenCms;
+import org.opencms.staticexport.CmsLinkManager;
 
 import com.opencms.file.CmsObject;
 import com.opencms.flex.CmsEvent;
@@ -58,7 +59,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
  * the CmsFlexCache.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  */
 public class CmsFlexRequest extends HttpServletRequestWrapper {
            
@@ -173,7 +174,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
     CmsFlexRequest(HttpServletRequest req, CmsFlexController controller, String resource) {
         super(req);
         m_controller = controller;
-        m_resource = OpenCms.getLinkManager().getAbsoluteUri(resource, m_controller.getCurrentRequest().getElementUri());
+        m_resource = CmsLinkManager.getAbsoluteUri(resource, m_controller.getCurrentRequest().getElementUri());
         // must reset request URI/URL buffer here because m_resource has changed
         m_requestUri = null; 
         m_requestUrl = null;
@@ -210,7 +211,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * @return the constructed CmsFlexRequestDispatcher
      */     
     public CmsFlexRequestDispatcher getRequestDispatcherToExternal(String vfs_target, String ext_target) {
-        return new CmsFlexRequestDispatcher(m_controller.getTopRequest().getRequestDispatcher(ext_target), OpenCms.getLinkManager().getAbsoluteUri(vfs_target, m_controller.getCmsObject().getRequestContext().getUri()), ext_target);
+        return new CmsFlexRequestDispatcher(m_controller.getTopRequest().getRequestDispatcher(ext_target), CmsLinkManager.getAbsoluteUri(vfs_target, m_controller.getCmsObject().getRequestContext().getUri()), ext_target);
     }
 
     /** 
@@ -221,7 +222,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * @return the constructed RequestDispatcher
      */    
     public javax.servlet.RequestDispatcher getRequestDispatcher(String target) {
-        String absolutUri = OpenCms.getLinkManager().getAbsoluteUri(target, m_controller.getCurrentRequest().getElementUri());
+        String absolutUri = CmsLinkManager.getAbsoluteUri(target, m_controller.getCurrentRequest().getElementUri());
         return (RequestDispatcher) new CmsFlexRequestDispatcher (m_controller.getTopRequest().getRequestDispatcher(absolutUri), absolutUri, null);
     }
 

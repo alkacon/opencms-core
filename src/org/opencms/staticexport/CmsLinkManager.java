@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2003/08/18 10:50:48 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/09/02 12:15:38 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.net.URL;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsLinkManager {
     
@@ -70,6 +70,63 @@ public class CmsLinkManager {
         } catch (MalformedURLException e) {
             // this won't happen
         }
+    }
+    
+    /**
+     * Calculates an absolute uri from a relative "uri" and the given absolute "baseUri".<p> 
+     * 
+     * If "uri" is already absolute, it is returned unchanged.
+     * This method also returns "uri" unchanged if it is not well-formed.<p>
+     *    
+     * @param relativeUri the relative uri to calculate an absolute uri for
+     * @param baseUri the base uri, this must be an absolute uri
+     * @return an absolute uri calculated from "uri" and "baseUri"
+     */
+    public static String getAbsoluteUri(String relativeUri, String baseUri) {
+        if ((relativeUri == null) || (relativeUri.charAt(0) == '/')) {
+            return relativeUri;
+        }
+        try {
+            URL url = new URL(new URL(m_baseUrl, baseUri), relativeUri);
+            if (url.getQuery() == null) {
+                return url.getPath();
+            } else {
+                return url.getPath() + "?" + url.getQuery();
+            }
+        } catch (MalformedURLException e) {
+            return relativeUri;
+        }
+    }
+    
+    /**
+     * Calculates a realtive uri from "fromUri" to "toUri",
+     * both uri's must be absolute.<p>
+     * 
+     * @param fromUri the uri to start
+     * @param toUri the uri to calculate a relative path to
+     * @return a realtive uri from "fromUri" to "toUri"
+     */
+    public static String getRelativeUri(String fromUri, String toUri) {
+        StringBuffer result = new StringBuffer();
+        int pos = 0;
+
+        while (true) {
+            int i = fromUri.indexOf ('/', pos);
+            int j = toUri.indexOf ('/', pos);
+            if ((i == -1) || (i != j) || !fromUri.regionMatches(pos, toUri, pos, i-pos)) {
+                break;
+            }
+            pos = i+1;
+        }
+
+        // count hops up from here to the common ancestor
+        for (int i = fromUri.indexOf('/', pos); i > 0; i = fromUri.indexOf('/', i+1)) {
+            result.append("../");
+        }
+
+        // append path down from common ancestor to there
+        result.append(toUri.substring(pos));
+        return result.toString();
     }
     
     /**
@@ -104,63 +161,6 @@ public class CmsLinkManager {
         }
         return result;
     }
-    
-    /**
-     * Calculates an absolute uri from a relative "uri" and the given absolute "baseUri".<p> 
-     * 
-     * If "uri" is already absolute, it is returned unchanged.
-     * This method also returns "uri" unchanged if it is not well-formed.<p>
-     *    
-     * @param relativeUri the relative uri to calculate an absolute uri for
-     * @param baseUri the base uri, this must be an absolute uri
-     * @return an absolute uri calculated from "uri" and "baseUri"
-     */
-    public String getAbsoluteUri(String relativeUri, String baseUri) {
-        if ((relativeUri == null) || (relativeUri.charAt(0) == '/')) {
-            return relativeUri;
-        }
-        try {
-            URL url = new URL(new URL(m_baseUrl, baseUri), relativeUri);
-            if (url.getQuery() == null) {
-                return url.getPath();
-            } else {
-                return url.getPath() + "?" + url.getQuery();
-            }
-        } catch (MalformedURLException e) {
-            return relativeUri;
-        }
-    }
-    
-    /**
-     * Calculates a realtive uri from "fromUri" to "toUri",
-     * both uri's must be absolute.<p>
-     * 
-     * @param fromUri the uri to start
-     * @param toUri the uri to calculate a relative path to
-     * @return a realtive uri from "fromUri" to "toUri"
-     */
-    public String getRelativeUri(String fromUri, String toUri) {
-        StringBuffer result = new StringBuffer();
-        int pos = 0;
-
-        while (true) {
-            int i = fromUri.indexOf ('/', pos);
-            int j = toUri.indexOf ('/', pos);
-            if ((i == -1) || (i != j) || !fromUri.regionMatches(pos, toUri, pos, i-pos)) {
-                break;
-            }
-            pos = i+1;
-        }
-
-        // count hops up from here to the common ancestor
-        for (int i = fromUri.indexOf('/', pos); i > 0; i = fromUri.indexOf('/', i+1)) {
-            result.append("../");
-        }
-
-        // append path down from common ancestor to there
-        result.append(toUri.substring(pos));
-        return result.toString();
-    }
 
     /**
      * Substitutes the contents of a link by adding the context path and 
@@ -178,7 +178,7 @@ public class CmsLinkManager {
         }
 
         // make sure we have an absolute link        
-        String absoluteLink = OpenCms.getLinkManager().getAbsoluteUri(link, cms.getRequestContext().getUri());
+        String absoluteLink = CmsLinkManager.getAbsoluteUri(link, cms.getRequestContext().getUri());
         
         String vfsName;
         String parameters;

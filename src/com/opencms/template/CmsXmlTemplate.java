@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2003/08/18 15:11:21 $
-* Version: $Revision: 1.126 $
+* Date   : $Date: 2003/09/02 12:15:38 $
+* Version: $Revision: 1.127 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@ package com.opencms.template;
 
 import org.opencms.loader.CmsXmlTemplateLoader;
 import org.opencms.main.OpenCms;
+import org.opencms.staticexport.CmsLinkManager;
 
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.CmsException;
@@ -60,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.126 $ $Date: 2003/08/18 15:11:21 $
+ * @version $Revision: 1.127 $ $Date: 2003/09/02 12:15:38 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -189,7 +190,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @throws CmsException
      */
     public Object mergeAbsolutePath(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
-        return OpenCms.getLinkManager().getAbsoluteUri(tagcontent, doc.getAbsoluteFilename()).getBytes();
+        return CmsLinkManager.getAbsoluteUri(tagcontent, doc.getAbsoluteFilename()).getBytes();
     }
 
     /**
@@ -1370,7 +1371,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
         String templateClass = getTemplateClassName(tagcontent, templateFile, parameterHashtable);
 
         // Name of the subtemplate file.
-        String templateFilename = OpenCms.getLinkManager().getAbsoluteUri(getTemplateFileName(tagcontent, templateFile, parameterHashtable), doc.getAbsoluteFilename());
+        String templateFilename = CmsLinkManager.getAbsoluteUri(getTemplateFileName(tagcontent, templateFile, parameterHashtable), doc.getAbsoluteFilename());
 
         // Name of the subtemplate template selector
         String templateSelector = getTemplateSelector(tagcontent, templateFile, parameterHashtable);
@@ -1583,7 +1584,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
                         className = I_CmsConstants.C_XML_CONTROL_DEFAULT_CLASS;
                     }
                     if(templateName != null){
-                        templateName = OpenCms.getLinkManager().getAbsoluteUri(templateName, templateFile);
+                        templateName = CmsLinkManager.getAbsoluteUri(templateName, templateFile);
                     }
                     CmsElementDefinition elDef = new CmsElementDefinition(elName, className, templateName, templateSelector, templateParameters);
                     subtemplateDefinitions.add(elDef);
