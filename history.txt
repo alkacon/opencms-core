@@ -8,9 +8,10 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 4.1.55 Arakis - not jet released
+OpenCms 4.1.55 Arakis - 02 February 2001
 
 ! Added documentation of OpenCms in tex-format.
+! Added usage of new pool to the genericSql and oralceplsql resourcebroker.
 
 OpenCms 4.1.54 Arakis - 29 January 2001
 
