@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2002/07/10 08:12:55 $
-* Version: $Revision: 1.49 $
+* Date   : $Date: 2002/07/24 16:03:45 $
+* Version: $Revision: 1.50 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  *
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.49 $ $Date: 2002/07/10 08:12:55 $
+ * @version $Revision: 1.50 $ $Date: 2002/07/24 16:03:45 $
  */
 public class CmsShellCommands implements I_CmsConstants {
 
@@ -1878,6 +1878,28 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
+    
+    /**
+     * Imports an import-resource (folder or zipfile) to the cms,
+     * and generates a special temp project for that import which is published right 
+     * after the file has successfully been imported.
+     * @param importFile java.lang.String the name (absolute Path) of the import resource (zip or folder)
+     */    
+    public void importResourcesWithTempProject(String importFile) {              
+        // import the resources
+        try {
+            CmsProject project = m_cms.createProject("SystemUpdate", "A temporary project for a system update", "Administrators", "Administrators", C_PROJECT_TYPE_TEMPORARY);
+            int id = project.getId();
+            m_cms.getRequestContext().setCurrentProject(id);
+            m_cms.copyResourceToProject(C_ROOT);
+            m_cms.importResources(importFile, C_ROOT);
+            m_cms.unlockProject(id);
+            m_cms.publishProject(id);
+        }
+        catch(Exception exc) {
+            CmsShell.printException(exc);
+        }
+    }    
 
     /**
      * Imports an import-resource (folder or zipfile) to the cms.
