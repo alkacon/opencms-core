@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
-* Date   : $Date: 2003/03/04 17:19:27 $
-* Version: $Revision: 1.60 $
+* Date   : $Date: 2003/03/04 17:30:10 $
+* Version: $Revision: 1.61 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import java.util.Vector;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.60 $ $Date: 2003/03/04 17:19:27 $
+ * @version $Revision: 1.61 $ $Date: 2003/03/04 17:30:10 $
  */
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannels,I_CmsConstants,I_CmsWpConstants {
 
@@ -167,7 +167,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
             String file = (String)parameters.get("file");
             boolean found = true;
             try {
-                CmsResource res = cms.readFileHeader(file);
+                cms.readFileHeader(file);
             } catch (CmsException e) {
                 // file was not readable
                 found = false;

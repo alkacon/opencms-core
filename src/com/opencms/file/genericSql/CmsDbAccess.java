@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/03/04 17:19:27 $
-* Version: $Revision: 1.274 $
+* Date   : $Date: 2003/03/04 17:30:10 $
+* Version: $Revision: 1.275 $
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -75,7 +75,7 @@ import source.org.apache.java.util.Configurations;
  * @author Anders Fugmann
  * @author Finn Nielsen
  * @author Mark Foley
- * @version $Revision: 1.274 $ $Date: 2003/03/04 17:19:27 $ *
+ * @version $Revision: 1.275 $ $Date: 2003/03/04 17:30:10 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     
@@ -12842,7 +12842,6 @@ public CmsTask readTask(int id) throws CmsException {
      */
     public int fetchAllVfsLinks(CmsProject theProject, ArrayList theResourceIDs, ArrayList theLinkContents, ArrayList theLinkResources, int theResourceTypeLinkID) throws CmsException {
         String query = "C_SELECT_VFS_LINK_RESOURCES";
-        String contentColumn = "FILE_CONTENT";
         String pool = m_poolName;
         PreparedStatement stmnt = null;
         Connection con = null;
