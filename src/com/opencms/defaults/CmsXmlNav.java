@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlNav.java,v $
- * Date   : $Date: 2000/04/10 12:51:33 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/04/14 15:41:40 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * 
  * @author Alexander Kandzior
  * @author Waruschan Babachan
- * @version $Revision: 1.8 $ $Date: 2000/04/10 12:51:33 $
+ * @version $Revision: 1.9 $ $Date: 2000/04/14 15:41:40 $
  */
 public class CmsXmlNav extends A_CmsNavBase {
 		
@@ -107,7 +107,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 			resources.addElement(e.nextElement());
 		}
 		
-		return buildNav(cms,doc,resources).getBytes();
+		return buildNav(cms,doc,userObject,resources).getBytes();
 	}
 	
 	/** 
@@ -153,7 +153,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 			resources.addElement(e.nextElement());
 		}
 		
-		return buildNav(cms,doc,resources).getBytes();
+		return buildNav(cms,doc,userObject,resources).getBytes();
 	}
 			
 	
@@ -196,7 +196,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 			resources.addElement(e.nextElement());
 		}
 		
-		return buildNav(cms,doc,resources).getBytes();
+		return buildNav(cms,doc,userObject,resources).getBytes();
 	}
 		
 	
@@ -259,7 +259,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 			if (!xmlDataBlock.hasData("navTreeEnd")) {
 				xmlDataBlock.setData("navTreeEnd", "");
 			}
-			result=buildNavTree(cms,xmlDataBlock,resources,requestedUri,currentFolder,servletPath,depth);
+			result=buildNavTree(cms,xmlDataBlock,userObject,resources,requestedUri,currentFolder,servletPath,depth);
 		}
 		
 		return result.getBytes();
@@ -290,7 +290,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 			resources.addElement(e.nextElement());
 		}
 		
-		return buildNavRedirected(cms,doc,resources).getBytes();
+		return buildNavRedirected(cms,doc,userObject,resources).getBytes();
 	}
 	
 		
@@ -324,6 +324,7 @@ public class CmsXmlNav extends A_CmsNavBase {
     public Object getPageNext(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject)
            throws CmsException {
 		
+		String cmsframe=((((Hashtable)userObject).get("cmsframe")).equals("plain")?"?cmsframe=plain":"");
 		String requestedUri = cms.getRequestContext().getUri();
 		String currentFolder=cms.getRequestContext().currentFolder().getAbsolutePath();
 		String servletPath = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath();
@@ -355,7 +356,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 			}
         }
 		
-		return (servletPath+navLink[pos]);
+		return (servletPath+navLink[pos]+cmsframe);
 	}
 	
 	
@@ -372,6 +373,7 @@ public class CmsXmlNav extends A_CmsNavBase {
     public Object getPagePrevious(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
             throws CmsException {
 		
+		String cmsframe=((((Hashtable)userObject).get("cmsframe")).equals("plain")?"?cmsframe=plain":"");
 		String requestedUri = cms.getRequestContext().getUri();
 		String currentFolder=cms.getRequestContext().currentFolder().getAbsolutePath();
 		String servletPath = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath();
@@ -403,7 +405,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 			}
         }
 		
-		return (servletPath+navLink[pos]);
+		return (servletPath+navLink[pos]+cmsframe);
 	}
 	
 	
@@ -420,6 +422,7 @@ public class CmsXmlNav extends A_CmsNavBase {
     public Object getPageParent(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
             throws CmsException {
 		
+		String cmsframe=((((Hashtable)userObject).get("cmsframe")).equals("plain")?"?cmsframe=plain":"");
 		String servletPath = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath();
 		
 		int level=0;
@@ -437,9 +440,9 @@ public class CmsXmlNav extends A_CmsNavBase {
 			String currentFolder=extractFolder(cms,((-1)*level));			
 			String navIndex=cms.readProperty(currentFolder,C_PROPERTY_NAVINDEX);
 			if (navIndex!=null) {
-				currentFolder=currentFolder + navIndex;
+				currentFolder=currentFolder + navIndex + cmsframe;
 			} else {
-				currentFolder=currentFolder + C_NAVINDEX;
+				currentFolder=currentFolder + C_NAVINDEX + cmsframe;
 			}
 			
 			return (servletPath+currentFolder);
@@ -462,6 +465,7 @@ public class CmsXmlNav extends A_CmsNavBase {
     public Object getPageRoot(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
 			throws CmsException {
 		
+		String cmsframe=((((Hashtable)userObject).get("cmsframe")).equals("plain")?"?cmsframe=plain":"");
 		String servletPath = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath();
 		
 		int level=0;
@@ -480,9 +484,9 @@ public class CmsXmlNav extends A_CmsNavBase {
 			String currentFolder=extractFolder(cms,level);
 			String navIndex=cms.readProperty(currentFolder,C_PROPERTY_NAVINDEX);
 			if (navIndex!=null) {
-				currentFolder=currentFolder + navIndex;
+				currentFolder=currentFolder + navIndex + cmsframe;
 			} else {
-				currentFolder=currentFolder + C_NAVINDEX;
+				currentFolder=currentFolder + C_NAVINDEX + cmsframe;
 			}
 			
 			return (servletPath+currentFolder);
@@ -633,12 +637,13 @@ public class CmsXmlNav extends A_CmsNavBase {
 	 * @param cms A_CmsObject Object for accessing system resources.    
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
 	 * @param resources a vector that contains the elements of navigation.
-	 * @param currentFolder the currenet folder.
+	 * @param userObj Hashtable with parameters.
 	 * @return String that contains the navigation.
 	 */	
-	private String buildNav(A_CmsObject cms, A_CmsXmlContent doc, Vector resources)
+	private String buildNav(A_CmsObject cms, A_CmsXmlContent doc,Object userObject, Vector resources)
 		throws CmsException {
-			
+		
+		String cmsframe=((((Hashtable)userObject).get("cmsframe")).equals("plain")?"?cmsframe=plain":"");
 		String requestedUri = cms.getRequestContext().getUri();
 		String currentFolder=cms.getRequestContext().currentFolder().getAbsolutePath();
 		String servletPath = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath();
@@ -673,14 +678,14 @@ public class CmsXmlNav extends A_CmsNavBase {
 					}
 					try {
 						cms.readFile(navLink[i] + navIndex);
-						xmlDataBlock.setData("navLink", servletPath + navLink[i] + navIndex );
+						xmlDataBlock.setData("navLink", servletPath + navLink[i] + navIndex + cmsframe );
 					} catch (CmsException e) {
 						xmlDataBlock.setData("navLink", servletPath + requestedUri );
 					}
 				} else {
 					try {
 						cms.readFile(navLink[i]);
-						xmlDataBlock.setData("navLink", servletPath + navLink[i] );
+						xmlDataBlock.setData("navLink", servletPath + navLink[i] + cmsframe);
 					} catch (CmsException e) {
 						xmlDataBlock.setData("navLink", servletPath + requestedUri );
 					}					
@@ -705,15 +710,17 @@ public class CmsXmlNav extends A_CmsNavBase {
 	 * @param cms A_CmsObject Object for accessing system resources.    
      * @param doc Reference to the CmsXmTemplateFile object of the initiating XLM document.
 	 * @param resources a vector that contains the elements of navigation.
+	 * @param userObj Hashtable with parameters.
 	 * @param requestedUri The absolute path of current requested file. 
 	 * @param currentFolder The currenet folder.
 	 * @param servletPath The absolute path of servlet
 	 * @param depth An Integer that shows how many folders must be displayed.
 	 * @return String that contains the navigation.
 	 */	
-	private String buildNavTree(A_CmsObject cms, CmsXmlTemplateFile xmlDataBlock, Vector resources, String requestedUri, String currentFolder, String servletPath,int depth)
+	private String buildNavTree(A_CmsObject cms, CmsXmlTemplateFile xmlDataBlock, Object userObject, Vector resources, String requestedUri, String currentFolder, String servletPath,int depth)
 		throws CmsException {
 		
+		String cmsframe=((((Hashtable)userObject).get("cmsframe")).equals("plain")?"?cmsframe=plain":"");
 		StringBuffer result = new StringBuffer();
 		
 		int size = resources.size();		
@@ -737,14 +744,14 @@ public class CmsXmlNav extends A_CmsNavBase {
 					}
 					try {
 						cms.readFile(navLink[i] + navIndex);
-						xmlDataBlock.setData("navLink", servletPath + navLink[i] + navIndex );
+						xmlDataBlock.setData("navLink", servletPath + navLink[i] + navIndex + cmsframe);
 					} catch (CmsException e) {
 						xmlDataBlock.setData("navLink", servletPath + requestedUri );
 					}
 				} else {
 					try {
 						cms.readFile(navLink[i]);
-						xmlDataBlock.setData("navLink", servletPath + navLink[i] );
+						xmlDataBlock.setData("navLink", servletPath + navLink[i] + cmsframe);
 					} catch (CmsException e) {
 						xmlDataBlock.setData("navLink", servletPath + requestedUri );
 					}					
@@ -766,7 +773,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 						while (e.hasMoreElements()) {
 							all.addElement(e.nextElement());
 						}
-						result.append(buildNavTree(cms,xmlDataBlock,all,requestedUri,currentFolder,servletPath,depth));
+						result.append(buildNavTree(cms,xmlDataBlock,userObject,all,requestedUri,currentFolder,servletPath,depth));
 					}
 				}
 			}
@@ -783,12 +790,13 @@ public class CmsXmlNav extends A_CmsNavBase {
 	 * @param cms A_CmsObject Object for accessing system resources.    
      * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
 	 * @param resources a vector that contains the elements of navigation.
-	 * @param currentFolder the currenet folder.
+	 * @param userObj Hashtable with parameters.
 	 * @return String that contains the navigation.
 	 */	
-	private String buildNavRedirected(A_CmsObject cms, A_CmsXmlContent doc, Vector resources)
+	private String buildNavRedirected(A_CmsObject cms, A_CmsXmlContent doc, Object userObject, Vector resources)
 		throws CmsException {
-			
+		
+		String cmsframe=((((Hashtable)userObject).get("cmsframe")).equals("plain")?"?cmsframe=plain":"");
 		String requestedUri = cms.getRequestContext().getUri();
 		String currentFolder=cms.getRequestContext().currentFolder().getAbsolutePath();
 		String servletPath = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath();
@@ -840,14 +848,14 @@ public class CmsXmlNav extends A_CmsNavBase {
 					}
 					try {
 						cms.readFile(navLink[i] + navIndex);
-						xmlDataBlock.setData("navLink", servletPath + navLink[i] + navIndex );
+						xmlDataBlock.setData("navLink", servletPath + navLink[i] + navIndex + cmsframe);
 					} catch (CmsException e) {
 						xmlDataBlock.setData("navLink", servletPath + requestedUri );
 					}
 				} else {
 					try {
 						cms.readFile(navLink[i]);
-						xmlDataBlock.setData("navLink", servletPath + navLink[i] );
+						xmlDataBlock.setData("navLink", servletPath + navLink[i] + cmsframe);
 					} catch (CmsException e) {
 						xmlDataBlock.setData("navLink", servletPath + requestedUri );
 					}					
