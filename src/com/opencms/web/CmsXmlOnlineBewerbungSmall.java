@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/web/Attic/CmsXmlOnlineBewerbungSmall.java,v $ 
  * Author : $Author: w.babachan $
- * Date   : $Date: 2000/02/21 13:47:25 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/02/21 14:12:19 $
+ * Version: $Revision: 1.2 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Mindfact interaktive medien ag.   All Rights Reserved.
@@ -42,7 +42,7 @@ import java.io.*;
  * possible to send the application form as a mail.
  * 
  * @author $Author: w.babachan $
- * @version $Name:  $ $Revision: 1.1 $ $Date: 2000/02/21 13:47:25 $
+ * @version $Name:  $ $Revision: 1.2 $ $Date: 2000/02/21 14:12:19 $
  * @see com.opencms.template.CmsXmlTemplate
  */
 public class CmsXmlOnlineBewerbungSmall extends CmsXmlTemplate {
@@ -181,32 +181,11 @@ public class CmsXmlOnlineBewerbungSmall extends CmsXmlTemplate {
 		
 		// read parameter values		
 		String errorMessage="";
+		String certificates="";
 		String text=destroyCmsXmlTag((String)parameters.get(C_TEXT));
-		String certificates=destroyCmsXmlTag((String)parameters.get(C_FILE1));
-		String certificatesContent=destroyCmsXmlTag((String)parameters.get(C_FILE1_CONTENT));
-		String oldPosition=destroyCmsXmlTag((String)parameters.get(C_OLDPOSITION));
-		String newPosition=destroyCmsXmlTag((String)parameters.get(C_NEWPOSITION));
-		String base=destroyCmsXmlTag((String)parameters.get(C_BASE));	
-		String entry=destroyCmsXmlTag((String)parameters.get(C_ENTRY));		
-		String salary=destroyCmsXmlTag((String)parameters.get(C_SALARY));		
-		String how=destroyCmsXmlTag((String)parameters.get(C_HOW));		
-		String anrede=destroyCmsXmlTag((String)parameters.get(C_ANREDE));		
-		String titel=destroyCmsXmlTag((String)parameters.get(C_TITEL));		
-		String firstname=destroyCmsXmlTag((String)parameters.get(C_FIRSTNAME));		
 		String surname=destroyCmsXmlTag((String)parameters.get(C_SURNAME));		
-		String birthdate=destroyCmsXmlTag((String)parameters.get(C_BIRTHDATE));
-		String citizen=destroyCmsXmlTag((String)parameters.get(C_CITIZEN));
-		String family=destroyCmsXmlTag((String)parameters.get(C_FAMILY));
 		String co=destroyCmsXmlTag((String)parameters.get(C_CO));
-		String street=destroyCmsXmlTag((String)parameters.get(C_STREET));
-		String plz=destroyCmsXmlTag((String)parameters.get(C_PLZ));
-		String city=destroyCmsXmlTag((String)parameters.get(C_CITY));
-		String companyFon=destroyCmsXmlTag((String)parameters.get(C_COMPANYFON));
-		String privateFon=destroyCmsXmlTag((String)parameters.get(C_PRIVATEFON));
-		String mobileFon=destroyCmsXmlTag((String)parameters.get(C_MOBILEFON));
-		String fax=destroyCmsXmlTag((String)parameters.get(C_FAX));
 		String email=destroyCmsXmlTag((String)parameters.get(C_EMAIL));
-		String url=destroyCmsXmlTag((String)parameters.get(C_URL));	
 		// errorNumber is the number of errors that is occured so it contains
 		// the number of site that it have to go back.
 		String errorNumber=destroyCmsXmlTag((String)parameters.get(C_ERRORNUMBER));
@@ -214,64 +193,19 @@ public class CmsXmlOnlineBewerbungSmall extends CmsXmlTemplate {
 		String action=destroyCmsXmlTag((String)parameters.get(C_ACTION));
 		// convert null an ""
 		text=(text==null?"":text);
-		certificates=(certificates==null?"":certificates);
-		certificatesContent=(certificatesContent==null?"":certificatesContent);
-		oldPosition=(oldPosition==null?"":oldPosition);
-		newPosition=(newPosition==null?"":newPosition);
-		base=(base==null?"":base);
-		entry=(entry==null?"":entry);
-		salary=(salary==null?"":salary);
-		how=(how==null?"":how);
-		anrede=(anrede==null?"":anrede);		
-		titel=(titel==null?"":titel);
-		firstname=(firstname==null?"":firstname);
 		surname=(surname==null?"":surname);
-		birthdate=(birthdate==null?"":birthdate);
-		citizen=(citizen==null?"":citizen);
-		family=(family==null?"":family);
 		co=(co==null?"":co);
-		street=(street==null?"":street);
-		plz=(plz==null?"":plz);
-		city=(city==null?"":city);
-		companyFon=(companyFon==null?"":companyFon);
-		privateFon=(privateFon==null?"":privateFon);
-		mobileFon=(mobileFon==null?"":mobileFon);
-		fax=(fax==null?"":fax);
 		email=(email==null?"":email);
-		url=(url==null?"":url);
 		errorNumber=(errorNumber==null?"":errorNumber);
 		action=(action==null?"":action);		
-		if (certificates.equals("unknown")) {
-			 certificates="";
-		}		
+		
 		// CententDefinition		
 		CmsXmlOnlineBewerbungContentDefinition datablock=(CmsXmlOnlineBewerbungContentDefinition)getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);	
 		
 		datablock.setText(text);
-		datablock.setCertificates(certificates);
-		datablock.setOldPosition(oldPosition);	
-		datablock.setNewPosition(datablock.getOption(C_DATA_NEWPOSITION,newPosition));
-		datablock.setBase(datablock.getOption(C_DATA_BASE,base));
-		datablock.setEntry(entry);
-		datablock.setHow(datablock.getOption(C_DATA_HOW,how));
-		datablock.setAnrede(datablock.getOption(C_DATA_ANREDE,anrede));
-		datablock.setSalary(salary);
-		datablock.setTitel(titel);
-		datablock.setFirstname(firstname);
 		datablock.setSurname(surname);
-		datablock.setBirthdate(birthdate);
-		datablock.setCitizen(citizen);
-		datablock.setFamily(datablock.getOption(C_DATA_FAMILY,family));
 		datablock.setCo(co);
-		datablock.setStreet(street);
-		datablock.setPlz(plz);
-		datablock.setCity(city);
-		datablock.setCompanyFon(companyFon);
-		datablock.setPrivateFon(privateFon);
-		datablock.setMobileFon(mobileFon);
-		datablock.setFax(fax);
 		datablock.setEmail(email);
-		datablock.setUrl(url);
 		datablock.setAction(action);
 		datablock.setErrorNumber(errorNumber);
 		datablock.setErrorMessage(errorMessage);
@@ -288,40 +222,37 @@ public class CmsXmlOnlineBewerbungSmall extends CmsXmlTemplate {
 				
 				return startProcessing(cms, datablock, elementName, parameters, null);
 				
-			} else {
-				
-				// save File
-				certificates=saveFile(certificates,certificatesContent);
+			} else {				
 				
 				HttpServletRequest req=(HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();
 				
 				Hashtable mailInfo=new Hashtable();
 				// this is nessesary to build the "BewerbungText" datablock				
 				mailInfo.put(C_HASH_TEXT,(text.equals("")?"nicht angegeben":text));				
-				mailInfo.put(C_HASH_CERTIFICATES,(certificates.equals("")?"nicht angegeben":certificates));
-				mailInfo.put(C_HASH_OLDPOSITION,(oldPosition.equals("")?"nicht angegeben":oldPosition));
-				mailInfo.put(C_HASH_NEWPOSITION,((newPosition.equals("") || newPosition.equals("Bitte auswählen"))?"nicht angegeben":newPosition));	
-	 			mailInfo.put(C_HASH_BASE,((base.equals("") || base.equals("Bitte auswählen"))?"nicht angegeben":base));
-				mailInfo.put(C_HASH_ENTRY,(entry.equals("")?"nicht angegeben":entry));
-				mailInfo.put(C_HASH_SALARY,(salary.equals("")?"nicht angegeben":salary));
-				mailInfo.put(C_HASH_HOW,((how.equals("") || how.equals("Bitte auswählen"))?"nicht angegeben":how));
-				mailInfo.put(C_HASH_ANREDE,((anrede.equals("") || anrede.equals("Bitte auswählen"))?"nicht angegeben":anrede));
-				mailInfo.put(C_HASH_TITEL,(titel.equals("")?"nicht angegeben":titel));
-				mailInfo.put(C_HASH_FIRSTNAME,(firstname.equals("")?"nicht angegeben":firstname));
+				mailInfo.put(C_HASH_CERTIFICATES,"nicht angegeben");
+				mailInfo.put(C_HASH_OLDPOSITION,"nicht angegeben");
+				mailInfo.put(C_HASH_NEWPOSITION,"nicht angegeben");	
+	 			mailInfo.put(C_HASH_BASE,"nicht angegeben");
+				mailInfo.put(C_HASH_ENTRY,"nicht angegeben");
+				mailInfo.put(C_HASH_SALARY,"nicht angegeben");
+				mailInfo.put(C_HASH_HOW,"nicht angegeben");
+				mailInfo.put(C_HASH_ANREDE,"nicht angegeben");
+				mailInfo.put(C_HASH_TITEL,"nicht angegeben");
+				mailInfo.put(C_HASH_FIRSTNAME,"nicht angegeben");
 				mailInfo.put(C_HASH_SURNAME,(surname.equals("")?"nicht angegeben":surname));
-				mailInfo.put(C_HASH_BIRTHDATE,(birthdate.equals("")?"nicht angegeben":birthdate));
-				mailInfo.put(C_HASH_CITIZEN,(citizen.equals("")?"nicht angegeben":citizen));
-				mailInfo.put(C_HASH_FAMILY,((family.equals("") || family.equals("Bitte auswählen"))?"nicht angegeben":family));
+				mailInfo.put(C_HASH_BIRTHDATE,"nicht angegeben");
+				mailInfo.put(C_HASH_CITIZEN,"nicht angegeben");
+				mailInfo.put(C_HASH_FAMILY,"nicht angegeben");
 				mailInfo.put(C_HASH_CO,(co.equals("")?"nicht angegeben":co));
-				mailInfo.put(C_HASH_STREET,(street.equals("")?"nicht angegeben":street));
-				mailInfo.put(C_HASH_PLZ,(plz.equals("")?"nicht angegeben":plz));
-				mailInfo.put(C_HASH_CITY,(city.equals("")?"nicht angegeben":city));
-				mailInfo.put(C_HASH_COMPANYFON,(companyFon.equals("")?"nicht angegeben":companyFon));
-				mailInfo.put(C_HASH_PRIVATEFON,(privateFon.equals("")?"nicht angegeben":privateFon));
-				mailInfo.put(C_HASH_MOBILEFON,(mobileFon.equals("")?"nicht angegeben":mobileFon));
-				mailInfo.put(C_HASH_FAX,(fax.equals("")?"nicht angegeben":fax));
+				mailInfo.put(C_HASH_STREET,"nicht angegeben");
+				mailInfo.put(C_HASH_PLZ,"nicht angegeben");
+				mailInfo.put(C_HASH_CITY,"nicht angegeben");
+				mailInfo.put(C_HASH_COMPANYFON,"nicht angegeben");
+				mailInfo.put(C_HASH_PRIVATEFON,"nicht angegeben");
+				mailInfo.put(C_HASH_MOBILEFON,"nicht angegeben");
+				mailInfo.put(C_HASH_FAX,"nicht angegeben");
 				mailInfo.put(C_HASH_EMAIL,(email.equals("")?"nicht angegeben":email));
-				mailInfo.put(C_HASH_URL,(url.equals("")?"nicht angegeben":url));
+				mailInfo.put(C_HASH_URL,"nicht angegeben");
 				mailInfo.put(C_HASH_IP,req.getRemoteAddr());				
 				// write in database
 				String link=startWorkflow(cms,mailInfo);
@@ -330,30 +261,9 @@ public class CmsXmlOnlineBewerbungSmall extends CmsXmlTemplate {
 				// this is nessesary because of "nicht angegeben" must be send
 				// or displayed if the user has nothing entered.
 				datablock.setText((String)mailInfo.get(C_HASH_TEXT));
-				datablock.setCertificates((String)mailInfo.get(C_HASH_CERTIFICATES));
-				datablock.setOldPosition((String)mailInfo.get(C_HASH_OLDPOSITION));
-				datablock.setNewPosition((String)mailInfo.get(C_HASH_NEWPOSITION));
-				datablock.setBase((String)mailInfo.get(C_HASH_BASE));
-				datablock.setEntry((String)mailInfo.get(C_HASH_ENTRY));
-				datablock.setHow((String)mailInfo.get(C_HASH_HOW));
-				datablock.setSalary((String)mailInfo.get(C_HASH_SALARY));
-				datablock.setAnrede((String)mailInfo.get(C_HASH_ANREDE));
-				datablock.setTitel((String)mailInfo.get(C_HASH_TITEL));
-				datablock.setFirstname((String)mailInfo.get(C_HASH_FIRSTNAME));
 				datablock.setSurname((String)mailInfo.get(C_HASH_SURNAME));
-				datablock.setBirthdate((String)mailInfo.get(C_HASH_BIRTHDATE));
-				datablock.setCitizen((String)mailInfo.get(C_HASH_CITIZEN));
-				datablock.setFamily((String)mailInfo.get(C_HASH_FAMILY));
 				datablock.setCo((String)mailInfo.get(C_HASH_CO));
-				datablock.setStreet((String)mailInfo.get(C_HASH_STREET));
-				datablock.setPlz((String)mailInfo.get(C_HASH_PLZ));
-				datablock.setCity((String)mailInfo.get(C_HASH_CITY));
-				datablock.setCompanyFon((String)mailInfo.get(C_HASH_COMPANYFON));
-				datablock.setPrivateFon((String)mailInfo.get(C_HASH_PRIVATEFON));
-				datablock.setMobileFon((String)mailInfo.get(C_HASH_MOBILEFON));
-				datablock.setFax((String)mailInfo.get(C_HASH_FAX));
 				datablock.setEmail((String)mailInfo.get(C_HASH_EMAIL));
-				datablock.setUrl((String)mailInfo.get(C_HASH_URL));
 				
 				Hashtable mailTable=new Hashtable();
 				
@@ -362,8 +272,8 @@ public class CmsXmlOnlineBewerbungSmall extends CmsXmlTemplate {
 				String cc=(String)datablock.getCc();
 				String bcc=(String)datablock.getBcc();
 				String host=(String)datablock.getMailserver();
-				String subject=(String)datablock.getSubject(firstname,surname);
-				String content=(String)datablock.getBewerbungsText(mailInfo);
+				String subject=(String)datablock.getSubject(surname,"");
+				String content=(String)datablock.getSmallBewerbungsText(mailInfo);
 				
 				mailTable.put(C_HASH_CERTIFICATES,certificates);
 				mailTable.put(C_HASH_FROM,from);

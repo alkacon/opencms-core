@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/web/Attic/CmsXmlOnlineBewerbungContentDefinition.java,v $ 
  * Author : $Author: w.babachan $
- * Date   : $Date: 2000/02/21 09:13:14 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/02/21 14:12:19 $
+ * Version: $Revision: 1.9 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Mindfact interaktive medien ag.   All Rights Reserved.
@@ -36,7 +36,7 @@ import java.io.*;
  * This class is used to access the application form's XML-datablocks.
  * 
  * @author $Author: w.babachan $
- * @version $Name:  $ $Revision: 1.8 $ $Date: 2000/02/21 09:13:14 $
+ * @version $Name:  $ $Revision: 1.9 $ $Date: 2000/02/21 14:12:19 $
  * @see com.opencms.template.CmsXmlTemplateFile
  */
 public class CmsXmlOnlineBewerbungContentDefinition extends CmsXmlTemplateFile{
@@ -179,7 +179,22 @@ public class CmsXmlOnlineBewerbungContentDefinition extends CmsXmlTemplateFile{
 		setData(C_LINK,(String)mailInfo.get(C_HASH_LINK));
         return getProcessedDataValue(C_BEWERBUNGSTEXT);
 	}
+	
+	
+	/**
+     * This method gets the value of bewerbungsText datablock.
+     * @return It returns the value of bewerbungsText datablock.
+     */
+    public String getSmallBewerbungsText(Hashtable mailInfo) throws CmsException {
 		
+		setData(C_TEXT,(String)mailInfo.get(C_HASH_TEXT));
+		setData(C_SURNAME,(String)mailInfo.get(C_HASH_SURNAME));
+		setData(C_CO,(String)mailInfo.get(C_HASH_CO));
+		setData(C_EMAIL,(String)mailInfo.get(C_HASH_EMAIL));
+		setData(C_LINK,(String)mailInfo.get(C_HASH_LINK));
+        return getProcessedDataValue(C_BEWERBUNGSTEXT);
+	}
+	
 	
 	/**
      * This method gets the value of "selected" datablock.
