@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2000/02/16 18:06:27 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2000/02/17 12:23:21 $
+ * Version: $Revision: 1.37 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.36 $ $Date: 2000/02/16 18:06:27 $
+ * @version $Revision: 1.37 $ $Date: 2000/02/17 12:23:21 $
  */
 public interface I_CmsConstants
 {
@@ -123,7 +123,18 @@ public interface I_CmsConstants
 	 * The resource type-id for a docloader file.
 	 */
 	 final static int C_TYPE_DOCLOADER	= 5;
-	
+	 
+	/**
+	 * The resource type-id for a page file.
+	 */ 
+	 final static int C_TYPE_PAGE	= 6;
+	 
+	 /**
+	 * The resource type-name for a page file.
+	 */
+	 final static String C_TYPE_PAGE_NAME		= "page";
+	 
+								
 	/**
 	 * This constant signs a normal "classic" metadefinition.
 	 */
