@@ -2,7 +2,7 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsSiteMatrix.java,v $
- * Date   : $Date: 2000/09/26 13:09:28 $
+ * Date   : $Date: 2000/09/26 15:09:48 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -112,6 +112,14 @@ private static Object[] createMatrix(Vector categories, Vector sites)
  */
 public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException
 {
+	/* Reminder of how a site hashtable was created
+	a.put("siteid", new Integer(res.getInt("SITE_ID")));
+	a.put("categoryid", new Integer(res.getInt("CATEGORY_ID")));
+	a.put("langid", new Integer(res.getInt("LANGUAGE_ID")));
+	a.put("countryid", new Integer(res.getInt("COUNTRY_ID")));
+	a.put("langname", res.getString("LANG_NAME"));
+	a.put("countryname", res.getString("COUNTRY_NAME"));
+	*/
 	CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
 	Vector sitelist = cms.getSiteMatrixInfo();
 	Vector categories = cms.getAllCategories();
@@ -146,6 +154,8 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 			if (matrix[i][j] != null)
 			{
 				// set some data for the site in question
+				Hashtable site = matrix[i][j];
+				xmlTemplateDocument.setData("id", ""+((Integer)site.get("siteid")).intValue());
 				line.append(xmlTemplateDocument.getProcessedDataValue("activedot"));
 			}
 			else
