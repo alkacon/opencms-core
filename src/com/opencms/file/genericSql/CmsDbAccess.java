@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/09/29 08:56:28 $
- * Version: $Revision: 1.146 $
+ * Date   : $Date: 2000/09/29 16:13:21 $
+ * Version: $Revision: 1.147 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import com.opencms.util.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.146 $ $Date: 2000/09/29 08:56:28 $ * 
+ * @version $Revision: 1.147 $ $Date: 2000/09/29 16:13:21 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	
@@ -6888,7 +6888,6 @@ public void updateSite(int siteId, String name, String description, int category
 		
 		// get all metadefs
 		Enumeration keys = propertyinfos.keys();
-		
 		// one metainfo-name:
 		String key;
 		
