@@ -556,36 +556,52 @@
 		<task>
 			<email>
 				<create>
-					<subject>Create a new task.</subject>
-					<content>A new task was created.</content>
+					<subject>OpenCms task management: new task</subject>					
+					<content>Automatic message from OpenCms task management:
+
+A new task was created for you or your role.</content>
 				</create>
 				<accept>
-					<subject>Accept the task.</subject>
-					<content>The task was accepted.</content>
+					<subject>OpenCms task management: task accepted</subject>
+					<content>Automatic message from OpenCms task management:
+
+One of your created tasks was accepted by the editor.</content>
 				</accept>
 				<forward>
-					<subject>Forward the task.</subject>
-					<content>The task was forwarded.</content>
+					<subject>OpenCms task management: task forwarded</subject>
+					<content>Automatic message from OpenCms task management:
+
+One of your tasks was forwarded.</content>
 				</forward>
 				<end>
-					<subject>Check a task.</subject>
-					<content>The task was checked.</content>
+					<subject>OpenCms task management: task completed</subject>
+					<content>Automatic message from OpenCms task management:
+
+One of your created tasks was completed by the editor.</content>
 				</end>
 				<message>
-					<subject>Send a message.</subject>
-					<content>The message was sent.</content>
+					<subject>OpenCms task management: message received</subject>
+					<content>Automatic message from OpenCms task management:
+
+You received a new message concerning one of your tasks.</content>
 				</message>
 				<query>
-					<subject>Stellen einer Frage.</subject>
-					<content>Die Frage wurde gestellt.</content>
+					<subject>OpenCms task management: query received</subject>
+					<content>Automatic message from OpenCms task management:
+
+You received a query concerning one of your created tasks.</content>
 				</query>
 				<take>
-					<subject>Assume the take.</subject>
-					<content>The task was assumed.</content>
+					<subject>OpenCms task management: task take-over</subject>
+					<content>Automatic message from OpenCms task management:
+
+One of your created task was accepted by a third party.</content>
 				</take>
 				<reakt>
-					<subject>Reaktive the task.</subject>
-					<content>The task was reactivated.</content>
+					<subject>OpenCms task management: task reactivated</subject>
+					<content>Automatic message from OpenCms task management:
+
+A new task was reactivated for you or your role.</content>
 				</reakt>
 			</email>
 			<label>

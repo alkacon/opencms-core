@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskAction.java,v $
- * Date   : $Date: 2000/04/13 15:45:06 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/04/13 19:02:24 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.5 $ $Date: 2000/04/13 15:45:06 $
+ * @version $Revision: 1.6 $ $Date: 2000/04/13 19:02:24 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants {
@@ -71,10 +71,24 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants {
 		CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
 		A_CmsTask task = cms.readTask(taskid);
 		if (cms.getTaskPar(task.getId(),C_TASKPARA_ACCEPTATION)!=null) {	
-			String content=lang.getLanguageValue("task.email.accept.content");
+			StringBuffer contentBuf = new StringBuffer(lang.getLanguageValue("task.email.accept.content"));
+            contentBuf.append("\n");
+            contentBuf.append(lang.getLanguageValue("task.label.project"));
+            contentBuf.append(": ");            
+            String projectname = "?";
+			try {
+				projectname = cms.readTask(task.getRoot()).getName();
+			} catch(Exception exc) {
+				// no root?!
+			}
+            contentBuf.append(projectname);
+            contentBuf.append("\n");
+            contentBuf.append(lang.getLanguageValue("task.label.task"));
+            contentBuf.append(": ");            
+            contentBuf.append(task.getName());            
 			String subject=lang.getLanguageValue("task.email.accept.subject");
 			A_CmsUser[] users={cms.readAgent(task)};
-			CmsMail mail=new CmsMail(cms,cms.readOwner(task),users,subject,content);
+			CmsMail mail=new CmsMail(cms,cms.readOwner(task),users,subject,contentBuf.toString());
 			mail.start();
 		}
 		
@@ -103,10 +117,28 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants {
 		}		
 		
 		// send an email		
-		String content=lang.getLanguageValue("task.email.take.content");
+		StringBuffer contentBuf = new StringBuffer(lang.getLanguageValue("task.email.take.content"));
+        contentBuf.append("\n");
+        contentBuf.append(lang.getLanguageValue("task.label.project"));
+        contentBuf.append(": ");            
+        String projectname = "?";
+		try {
+			projectname = cms.readTask(task.getRoot()).getName();
+		} catch(Exception exc) {
+			// no root?!
+		}
+        contentBuf.append(projectname);
+        contentBuf.append("\n");
+        contentBuf.append(lang.getLanguageValue("task.label.task"));
+        contentBuf.append(": ");            
+        contentBuf.append(task.getName());     
+        contentBuf.append("\n");
+        contentBuf.append(lang.getLanguageValue("task.label.taskfor"));
+        contentBuf.append(": ");            
+        contentBuf.append(Utils.getFullName(cms.readAgent(task)));             
 		String subject=lang.getLanguageValue("task.email.take.subject");
 		A_CmsUser[] users={cms.readAgent(task)};
-		CmsMail mail=new CmsMail(cms,cms.readOwner(task),users,subject,content);
+		CmsMail mail=new CmsMail(cms,cms.readOwner(task),users,subject,contentBuf.toString());
 		mail.start();
 	}
 	
@@ -135,20 +167,46 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants {
 		// send an email if "Benachrichtigung bei Weiterleitung" was selected.
 		A_CmsTask task = cms.readTask(taskid);
 		if (cms.getTaskPar(task.getId(),C_TASKPARA_DELIVERY)!=null) {	
-			String content=lang.getLanguageValue("task.email.forward.content");
+	        StringBuffer contentBuf = new StringBuffer(lang.getLanguageValue("task.email.forward.content"));
+            contentBuf.append("\n");
+            contentBuf.append(lang.getLanguageValue("task.label.project"));
+            contentBuf.append(": ");            
+            String projectname = "?";
+	        try {
+	        	projectname = cms.readTask(task.getRoot()).getName();
+	        } catch(Exception exc) {
+	        	// no root?!
+	        }
+            contentBuf.append(projectname);
+            contentBuf.append("\n");
+            contentBuf.append(lang.getLanguageValue("task.label.task"));
+            contentBuf.append(": ");            
+            contentBuf.append(task.getName());     
+            contentBuf.append("\n");
+            contentBuf.append(lang.getLanguageValue("task.label.actuator"));
+            contentBuf.append(": ");            
+            contentBuf.append(Utils.getFullName(cms.readOwner(task)));            		
+            contentBuf.append("\n");
+            contentBuf.append(lang.getLanguageValue("task.label.taskfor"));
+            contentBuf.append(": ");            
+            contentBuf.append(Utils.getFullName(cms.readOriginalAgent(task)));             
+            contentBuf.append("\n");
+            contentBuf.append(lang.getLanguageValue("task.label.editor"));
+            contentBuf.append(": ");            
+            contentBuf.append(Utils.getFullName(cms.readAgent(task)));             
 			String subject=lang.getLanguageValue("task.email.forward.subject");			
 			// if "Alle Rollenmitglieder von Aufgabe Benachrichtigen" checkbox is selected.
 			if (cms.getTaskPar(task.getId(),C_TASKPARA_ALL)!=null) {
-				CmsMail mail=new CmsMail(cms,cms.getRequestContext().currentUser(),cms.readGroup(task),subject,content);
+				CmsMail mail=new CmsMail(cms,cms.getRequestContext().currentUser(),cms.readGroup(task),subject,contentBuf.toString());
 				mail.start();
 			} else {
 				// send a mail to user
 				A_CmsUser[] user={cms.readAgent(task)};
-				CmsMail mail1=new CmsMail(cms,cms.getRequestContext().currentUser(),user,subject,content);
+				CmsMail mail1=new CmsMail(cms,cms.getRequestContext().currentUser(),user,subject,contentBuf.toString());
 				mail1.start();
 				// send a mail to owner
 				A_CmsUser[] owner={cms.readOwner(task)};
-				CmsMail mail2=new CmsMail(cms,cms.getRequestContext().currentUser(),owner,subject,content);
+				CmsMail mail2=new CmsMail(cms,cms.getRequestContext().currentUser(),owner,subject,contentBuf.toString());
 				mail2.start();
 			}
 			
@@ -267,13 +325,27 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants {
 		cms.writeTaskLog(task.getId(), comment, C_TASKLOGTYPE_REACTIVATED);
 		
 		// send an email
-		String content=lang.getLanguageValue("task.email.reakt.content");
+	    StringBuffer contentBuf = new StringBuffer(lang.getLanguageValue("task.email.reakt.content"));
+        contentBuf.append("\n");
+        contentBuf.append(lang.getLanguageValue("task.label.project"));
+        contentBuf.append(": ");            
+        String projectname = "?";
+	    try {
+	    	projectname = cms.readTask(task.getRoot()).getName();
+	    } catch(Exception exc) {
+	    	// no root?!
+	    }
+        contentBuf.append(projectname);
+        contentBuf.append("\n");
+        contentBuf.append(lang.getLanguageValue("task.label.task"));
+        contentBuf.append(": ");            
+        contentBuf.append(task.getName());     
 		String subject=lang.getLanguageValue("task.email.reakt.subject");
 		A_CmsUser[] users={cms.readAgent(task)};
-		CmsMail mail=new CmsMail(cms,cms.readOwner(task),users,subject,content);
+		CmsMail mail=new CmsMail(cms,cms.readOwner(task),users,subject,contentBuf.toString());
 		// if "Alle Rollenmitglieder von Aufgabe Benachrichtigen" checkbox is selected.
 		if (cms.getTaskPar(task.getId(),C_TASKPARA_ALL)!=null) {
-			mail=new CmsMail(cms,cms.readOwner(task),cms.readGroup(task),subject,content);
+			mail=new CmsMail(cms,cms.readOwner(task),cms.readGroup(task),subject,contentBuf.toString());
 		}
 		mail.start();
 	}
@@ -294,10 +366,32 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants {
 		CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
 		A_CmsTask task = cms.readTask(taskid);
 		if (cms.getTaskPar(task.getId(),C_TASKPARA_COMPLETION)!=null) {	
-			String content=lang.getLanguageValue("task.email.end.content");
+	        StringBuffer contentBuf = new StringBuffer(lang.getLanguageValue("task.email.end.content"));
+            contentBuf.append("\n");
+            contentBuf.append(lang.getLanguageValue("task.label.project"));
+            contentBuf.append(": ");            
+            String projectname = "?";
+	        try {
+	        	projectname = cms.readTask(task.getRoot()).getName();
+	        } catch(Exception exc) {
+	        	// no root?!
+	        }
+            contentBuf.append(projectname);
+            contentBuf.append("\n");
+            contentBuf.append(lang.getLanguageValue("task.label.task"));
+            contentBuf.append(": ");            
+            contentBuf.append(task.getName());     
+            contentBuf.append("\n");
+            contentBuf.append(lang.getLanguageValue("task.label.taskfor"));
+            contentBuf.append(": ");            
+            contentBuf.append(Utils.getFullName(cms.readOriginalAgent(task)));             
+            contentBuf.append("\n");
+            contentBuf.append(lang.getLanguageValue("task.label.editor"));
+            contentBuf.append(": ");            
+            contentBuf.append(Utils.getFullName(cms.readAgent(task)));             
 			String subject=lang.getLanguageValue("task.email.end.subject");
 			A_CmsUser[] users={cms.readOwner(task)};
-			CmsMail mail=new CmsMail(cms,cms.readAgent(task),users,subject,content);
+			CmsMail mail=new CmsMail(cms,cms.readAgent(task),users,subject,contentBuf.toString());
 			mail.start();
 		}
 	}
@@ -322,10 +416,28 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants {
 		}
 		
 		// send an email 
-		String content=lang.getLanguageValue("task.email.message.content");
+	    StringBuffer contentBuf = new StringBuffer(lang.getLanguageValue("task.email.message.content"));
+        contentBuf.append("\n");
+        contentBuf.append(lang.getLanguageValue("task.label.project"));
+        contentBuf.append(": ");            
+        String projectname = "?";
+	    try {
+	    	projectname = cms.readTask(task.getRoot()).getName();
+	    } catch(Exception exc) {
+	    	// no root?!
+	    }
+        contentBuf.append(projectname);
+        contentBuf.append("\n");
+        contentBuf.append(lang.getLanguageValue("task.label.task"));
+        contentBuf.append(": ");            
+        contentBuf.append(task.getName());     
+        contentBuf.append("\n");
+        contentBuf.append(lang.getLanguageValue("task.label.actuator"));
+        contentBuf.append(": ");            
+        contentBuf.append(Utils.getFullName(cms.readOwner(task)));             
 		String subject=lang.getLanguageValue("task.email.message.subject");
 		A_CmsUser[] users={cms.readAgent(task)};
-		CmsMail mail=new CmsMail(cms,cms.readOwner(task),users,subject,content);
+		CmsMail mail=new CmsMail(cms,cms.readOwner(task),users,subject,contentBuf.toString());
 		mail.start();
 	}
 	
@@ -349,10 +461,28 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants {
 		}
 		
 		// send an email.
-		String content=lang.getLanguageValue("task.email.query.content");
+	    StringBuffer contentBuf = new StringBuffer(lang.getLanguageValue("task.email.query.content"));
+        contentBuf.append("\n");
+        contentBuf.append(lang.getLanguageValue("task.label.project"));
+        contentBuf.append(": ");            
+        String projectname = "?";
+	    try {
+	    	projectname = cms.readTask(task.getRoot()).getName();
+	    } catch(Exception exc) {
+	    	// no root?!
+	    }
+        contentBuf.append(projectname);
+        contentBuf.append("\n");
+        contentBuf.append(lang.getLanguageValue("task.label.task"));
+        contentBuf.append(": ");            
+        contentBuf.append(task.getName());     
+        contentBuf.append("\n");
+        contentBuf.append(lang.getLanguageValue("task.label.editor"));
+        contentBuf.append(": ");            
+        contentBuf.append(Utils.getFullName(cms.readAgent(task)));             
 		String subject=lang.getLanguageValue("task.email.query.subject");
 		A_CmsUser[] users={cms.readOwner(task)};
-		CmsMail mail=new CmsMail(cms,cms.readAgent(task),users,subject,content);
+		CmsMail mail=new CmsMail(cms,cms.readAgent(task),users,subject,contentBuf.toString());
 		mail.start();
 		
 	}
@@ -410,15 +540,32 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants {
 		// send an email
 		
 		// per default send a mail from task's organizer to task's recipient.
-		
-		String content=lang.getLanguageValue("task.email.create.content");
+		StringBuffer contentBuf = new StringBuffer(lang.getLanguageValue("task.email.create.content"));
+        contentBuf.append("\n");
+        contentBuf.append(lang.getLanguageValue("task.label.project"));
+        contentBuf.append(": ");            
+        String projectname = "?";
+		try {
+			projectname = cms.readTask(task.getRoot()).getName();
+		} catch(Exception exc) {
+			// no root?!
+		}
+        contentBuf.append(projectname);
+        contentBuf.append("\n");
+        contentBuf.append(lang.getLanguageValue("task.label.task"));
+        contentBuf.append(": ");            
+        contentBuf.append(task.getName());            
+        contentBuf.append("\n");
+        contentBuf.append(lang.getLanguageValue("task.label.actuator"));
+        contentBuf.append(": ");            
+        contentBuf.append(Utils.getFullName(cms.readOwner(task)));            		
 		String subject=lang.getLanguageValue("task.email.create.subject");
 		A_CmsUser[] users={cms.readAgent(task)};
-		CmsMail mail=new CmsMail(cms,cms.readOwner(task),users,subject,content);
+		CmsMail mail=new CmsMail(cms,cms.readOwner(task),users,subject,contentBuf.toString());
 		
 		// if "Alle Rollenmitglieder von Aufgabe Benachrichtigen" checkbox is selected.
 		if (cms.getTaskPar(task.getId(),C_TASKPARA_ALL)!=null) {
-			mail=new CmsMail(cms,cms.readOwner(task),cms.readGroup(task),subject,content);
+			mail=new CmsMail(cms,cms.readOwner(task),cms.readGroup(task),subject,contentBuf.toString());
 		}
 		
 		mail.start();
