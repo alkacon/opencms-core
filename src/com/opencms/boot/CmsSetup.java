@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetup.java,v $
- * Date   : $Date: 2003/09/02 12:15:38 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2003/09/02 12:19:27 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ package com.opencms.boot;
 import com.opencms.flex.util.CmsUUID;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Properties;
@@ -99,11 +98,8 @@ public class CmsSetup {
      */
     public void initProperties(String props) {
         String path = getConfigFolder() + props;
-        FileInputStream fis = null;
         try {
-            // fis = new FileInputStream(new File(path));
             m_ExtProperties = CmsSetupUtils.loadProperties(path);
-            // fis.close();
             m_DbProperties = new Properties();
             m_DbProperties.load(getClass().getClassLoader().getResourceAsStream("com/opencms/boot/dbsetup.properties"));
         } catch (Exception e) {
