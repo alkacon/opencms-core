@@ -14,9 +14,10 @@ import java.util.*;
  * Content definition for Workplace template files.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.1 $ $Date: 2000/01/25 13:46:52 $
+ * @version $Revision: 1.2 $ $Date: 2000/01/25 17:19:29 $
  */
-public class CmsXmlWpButtonsDefFile extends A_CmsXmlContent implements I_CmsLogChannels {
+public class CmsXmlWpButtonsDefFile extends A_CmsXmlContent 
+        implements I_CmsLogChannels, I_CmsWpConstants {
 
     /**
      * Default constructor.

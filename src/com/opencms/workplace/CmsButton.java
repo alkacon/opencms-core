@@ -9,8 +9,8 @@ import com.opencms.file.*;
 
 import java.util.*;
 
-public class CmsButton implements I_CmsWpElement {    
-    
+public class CmsButton extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants {    
+            
     /**
      * Handling of the <CODE>&lt;BUTTON&gt;</CODE> tags.
      * Calls the user method <code>elementTag</code> that has to be
@@ -24,14 +24,14 @@ public class CmsButton implements I_CmsWpElement {
      */
     
     public Object handleSpecialWorkplaceTag(A_CmsObject cms, Element n, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
-        String buttonName = n.getAttribute("name");
-        String buttonAction = n.getAttribute("action");
-        String buttonAlt = n.getAttribute("alt");
+        String buttonName = n.getAttribute(C_BUTTON_NAME);
+        String buttonAction = n.getAttribute(C_BUTTON_ACTION);
+        String buttonAlt = n.getAttribute(C_BUTTON_ALT);
         
-        CmsXmlWpButtonsDefFile buttondef = new CmsXmlWpButtonsDefFile(cms, "/system/workplace/templates/ButtonTemplate");
-        buttonAlt = lang.getLanguageValue("button." + buttonAlt);
+        CmsXmlWpButtonsDefFile buttondef = getButtonDefinitions(cms);
+        buttonAlt = lang.getLanguageValue(C_LANG_BUTTON + "." + buttonAlt);
         
         String result = buttondef.getButton(buttonName, buttonAction, buttonAlt);
         return result; 
-    }                    
+    }           
 }

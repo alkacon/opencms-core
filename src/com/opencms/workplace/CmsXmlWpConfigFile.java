@@ -9,7 +9,7 @@ import com.opencms.template.*;
  * Content definition for "/workplace/workplace.ini".
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2000/01/25 16:16:17 $
+ * @version $Revision: 1.3 $ $Date: 2000/01/25 17:19:29 $
  */
 public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChannels, I_CmsConstants {
 
@@ -96,6 +96,16 @@ public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChann
     public String getWorkplaceTemplatePath() throws CmsException {
         return getDataValue("path.wptemplates");
     }
+
+    /**
+     * Gets the path for OpenCms element templates like ButtonTemplate.
+     * @return Path for OpenCms workplaces templates.
+     * @exception CmsException if the corresponding XML tag doesn't exist in the workplace definition file.
+     */
+    public String getWorkplaceElementPath() throws CmsException {
+        return getDataValue("path.wpelements");
+    }
+    
     
     /**
      * Gets the path for OpenCms common templates.
