@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminSyncProperties.java,v $
-* Date   : $Date: 2003/03/02 18:43:54 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2003/03/10 12:07:26 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -320,19 +320,15 @@ public class CmsAdminSyncProperties extends CmsWorkplaceDefault implements I_Cms
      * @throws CmsException
      */
 
-    public Integer getProjects(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
-            Vector values, Hashtable parameters) throws CmsException {
-
+    public Integer getProjects(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) throws CmsException {
         // get all projects
         Vector projects = cms.getAllAccessibleProjects();
         int retValue = -1;
-        String defaultProject = new String();
         CmsProject curProject = cms.getRequestContext().currentProject();
-        if(curProject.isOnlineProject()){
-            defaultProject = curProject.getId()+"";
-        }
+        String defaultProject = curProject.getId()+"";
+        
         I_CmsSession session = cms.getRequestContext().getSession(true);
-        String enteredProject = (String)session.getValue(C_SYNCPROJECT);
+        String enteredProject = (String)session.getValue(C_SYNCPROJECT);        
         if(enteredProject != null && !"".equals(enteredProject)) {
             // if an error has occurred before, take the previous entry of the user
             defaultProject = enteredProject;
@@ -342,18 +338,21 @@ public class CmsAdminSyncProperties extends CmsWorkplaceDefault implements I_Cms
         int n = 0;
         for(int z = 0;z < projects.size();z++) {
             CmsProject loopProject = (CmsProject)projects.elementAt(z);
-            if(loopProject.isOnlineProject()) {
+            if(!loopProject.isOnlineProject()) {
                 String loopProjectName = loopProject.getName();
                 String loopProjectId = loopProject.getId() + "";
+                
                 if(defaultProject.equals(loopProjectId)) {
                     retValue = n;
                     cms.getRequestContext().setCurrentProject(Integer.parseInt(loopProjectId));
                 }
+                
                 names.addElement(loopProjectName);
                 values.addElement(loopProjectId);
                 n++;
             }
         }
+        
        return new Integer(retValue);
     }
 
