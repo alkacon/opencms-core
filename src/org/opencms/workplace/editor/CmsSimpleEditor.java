@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsSimpleEditor.java,v $
- * Date   : $Date: 2003/12/02 16:25:57 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/12/05 16:15:16 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.JspException;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.1.12
  */
@@ -110,6 +110,8 @@ public class CmsSimpleEditor extends CmsEditor {
         String content = "";
         
         try {
+            // lock resource if autolock is enabled
+            checkLock(getParamResource());
             // Read file encoding from the property of the temporary file 
             encoding = getCms().readProperty(getParamResource(), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, true, encoding);
             CmsFile editFile = getCms().readFile(getParamResource());

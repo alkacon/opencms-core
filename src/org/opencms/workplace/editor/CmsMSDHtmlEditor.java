@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsMSDHtmlEditor.java,v $
- * Date   : $Date: 2003/12/02 16:25:57 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2003/12/05 16:15:16 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.JspException;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 5.1.12
  */
@@ -111,7 +111,7 @@ public class CmsMSDHtmlEditor extends CmsDefaultPageEditor {
             setAction(ACTION_SHOW);
             actionChangeTemplate();
         } else if (EDITOR_NEW_BODY.equals(getParamAction())) {
-            setAction(ACTION_SHOW);
+            setAction(ACTION_SHOW);            
             actionNewBody();
         } else if (EDITOR_SHOW.equals(getParamAction())) {
             setAction(ACTION_SHOW);
@@ -121,6 +121,8 @@ public class CmsMSDHtmlEditor extends CmsDefaultPageEditor {
             // initial call of editor, initialize page and page parameters
             setAction(ACTION_DEFAULT);
             try {
+                // lock resource if autolock is enabled
+                checkLock(getParamResource());
                 // create the temporary file
                 setParamTempfile(createTempFile());
                 // initialize a page object from the created temporary file
@@ -145,6 +147,7 @@ public class CmsMSDHtmlEditor extends CmsDefaultPageEditor {
         
         // prepare the content String for the editor
         prepareContent(false);
+        // escape the page title String for other actions than save
         if (!(getAction() == ACTION_SAVE) && !(getAction() == ACTION_SAVEEXIT)) {
             setParamPagetitle(Encoder.escapeXml(getParamPagetitle()));
         }
@@ -159,7 +162,10 @@ public class CmsMSDHtmlEditor extends CmsDefaultPageEditor {
      * @return the prepared content String
      */
     protected String prepareContent(boolean save) {
-        String content = Encoder.unescape(getParamContent(), Encoder.C_UTF8_ENCODING);
+        String content = getParamContent();
+        if (save) {
+            content = Encoder.unescape(content, Encoder.C_UTF8_ENCODING);
+        }
         boolean isBrowserNS = BROWSER_NS.equals(getBrowserType());
         if ("edit".equals(getParamEditormode()) || isBrowserNS || save) {
             // editor is in text mode or content should be saved

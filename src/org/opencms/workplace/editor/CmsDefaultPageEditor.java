@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2003/12/05 11:16:06 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/12/05 16:15:16 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.1.12
  */
@@ -443,9 +443,13 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      * Performs the change body action of the editor.<p>
      */
     public void actionChangeBodyElement() {
-        // save eventually changed content of the editor to the temporary file
         try {
+            // first escape the content, because this method is called within the class
+            setParamContent(Encoder.escapeWBlanks(getParamContent(), Encoder.C_UTF8_ENCODING));
+            // save eventually changed content of the editor to the temporary file
             performSaveContent(getParamOldbodyname(), getParamOldbodylanguage());
+            // now unescape the content
+            setParamContent(Encoder.unescape(getParamContent(), Encoder.C_UTF8_ENCODING));
         } catch (CmsException e) {
             // show error page
             try {
@@ -484,8 +488,12 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      */
     public void actionNewBody() {
         try {
+            // first escape the content, because this method is called within the class
+            setParamContent(Encoder.escapeWBlanks(getParamContent(), Encoder.C_UTF8_ENCODING));
             // save content of the editor to the temporary file
             performSaveContent(getParamBodyname(), getParamBodylanguage());
+            // now unescape the content
+            setParamContent(Encoder.unescape(getParamContent(), Encoder.C_UTF8_ENCODING));
             String newBody = getParamNewbodyname();
             if (newBody != null && !"".equals(newBody.trim()) && !"null".equals(newBody)) {
                 if (!m_page.hasElement(newBody, getParamBodylanguage())) {
@@ -531,8 +539,9 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     public void actionSave() throws JspException { 
         try {
             // write the modified title to the temporary file
-            if (getParamPagetitle() != null && !"null".equals(getParamPagetitle())) {
-                getCms().writeProperty(getParamTempfile(), I_CmsConstants.C_PROPERTY_TITLE, getParamPagetitle());
+            String title = getParamPagetitle();
+            if (title != null && !"null".equals(title)) {
+                getCms().writeProperty(getParamTempfile(), I_CmsConstants.C_PROPERTY_TITLE, title);
             }
             // save content to temporary file
             performSaveContent(getParamBodyname(), getParamBodylanguage());

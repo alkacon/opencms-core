@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorSelector.java,v $
- * Date   : $Date: 2003/12/04 11:21:44 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/12/05 16:15:16 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,9 +47,9 @@ import org.opencms.main.OpenCms;
  * @see org.opencms.workplace.editor.I_CmsEditorHandler
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
- * @since 5.1
+ * @since 5.1.14
  */
 public class CmsEditorSelector {
     
