@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsContentDefinition.java,v $
-* Date   : $Date: 2003/01/20 23:59:23 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2003/04/01 13:29:17 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,8 +39,9 @@ import com.opencms.core.exceptions.*;
 /**
  * Abstract class for the content definition
  * Creation date: (27.10.00 10:04:42)
- * author: Michael Knoll
- * version 1.0
+ * 
+ * @author Michael Knoll
+ * @version $Revision: 1.13 $
  */
 public abstract class A_CmsContentDefinition implements I_CmsContent, I_CmsConstants {
 

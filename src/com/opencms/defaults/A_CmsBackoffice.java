@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2003/03/02 18:43:56 $
-* Version: $Revision: 1.56 $
+* Date   : $Date: 2003/04/01 13:29:17 $
+* Version: $Revision: 1.57 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -71,9 +71,10 @@ import java.util.Vector;
  * this class for any content definition class, that just has
  * to extend the A_CmsContentDefinition class!
  * Creation date: (27.10.00 10:04:42)
- * author: Michael Knoll
- * author: Michael Emmerich
- * version 2.0
+ * 
+ * @author Michael Knoll
+ * @author Michael Emmerich
+ * @version $Revision: 1.57 $
  */
 public abstract class A_CmsBackoffice extends CmsWorkplaceDefault implements I_CmsConstants{
 
