@@ -73,7 +73,7 @@
 								<tr>
 								<tr>
 									<td colspan="4">
-										<table border=0 width="100%">
+										<table border="0" width="100%">
 										<tr>
 											<td class=formular>
 												<input type="checkbox" name="view" id="view" ]]><PROCESS>view</PROCESS><![CDATA[ value="checked">
@@ -83,28 +83,32 @@
 												<input type="checkbox" name="adminpoint" id="adminpoint" ]]><PROCESS>adminpoint</PROCESS><![CDATA[ value="checked">
 												]]><LABEL value="module.lable.adminpoint"/><![CDATA[
 											</td>
+											<td class=formular>
+												<input type="checkbox" name="moduletype" id="moduletype" ]]><PROCESS>moduletype</PROCESS><![CDATA[ value="checked">
+												]]><LABEL value="module.lable.moduletype"/><![CDATA[
+											</td>											
 										</tr>
 										<tr>
 											<td class=formular nowrap>]]><LABEL value="module.lable.maintenance"/><![CDATA[</td>
-											<td class="dialogtxt">
+											<td class="dialogtxt" colspan="2">
 												<input type="text" name="maintenance" id="maintenance" class="textfeld3" style="width=300" width="300" size="30" value="]]><PROCESS>maintenance</PROCESS><![CDATA[" >
 											</td>
 										</tr>
 											<tr>
 												<td class=formular>]]><LABEL value="label.author"/><![CDATA[</td>
-												<td class="dialogtxt">
+												<td class="dialogtxt" colspan="2">
 													<input type="text" name="author" id="author" class="textfeld3" style="width=300" width="300" size="30" value="]]><PROCESS>author</PROCESS><![CDATA[" >
 												</td>
 											</tr>
 											<tr>
 												<td class=formular>]]><LABEL value="input.email"/><![CDATA[</td>
-												<td class="dialogtxt">
+												<td class="dialogtxt" colspan="2">
 													<input type="text" name="email" id="email" class="textfeld3" style="width=300" width="300" size="30" value="]]><PROCESS>email</PROCESS><![CDATA[" >
 												</td>
 											</tr>
 											<tr>
 												<td class=formular>]]><LABEL value="label.modulecreatedate"/><![CDATA[</td>
-												<td class="dialogtxt">
+												<td class="dialogtxt" colspan="2">
 													<input type="text" name="date" id="date" class="textfeld3" style="width=300" width="300" size="30" value="]]><PROCESS>date</PROCESS><![CDATA[" >
 												</td>
 											</tr>
