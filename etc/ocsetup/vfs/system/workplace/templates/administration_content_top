@@ -32,6 +32,7 @@ function show_help()
 		<td><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=120 height=1></td>
 		<td><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=120 height=1></td>
 		<td><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=120 height=1></td>
+		<td><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=120 height=1></td>
 	</tr>
 	<tr valign=top align=center>
 		<td><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=1 height=120></td>
@@ -40,6 +41,7 @@ function show_help()
 		<td>]]><ICON name="ic_computer" label="mountpoint" action="notImplemented('Mountpointverwaltung');" href="#" target=""/><![CDATA[</td>
 		<td>]]><ICON name="ic_clock" label="processmanagement" action="notImplemented('Vorgangsverwaltung');" href="#" target=""/><![CDATA[</td>
 		<td>]]><ICON name="ic_data" label="database" action="location.href='administration_content_database.html';" href="administration_head_2.html" target="admin_head"/><![CDATA[</td>
+		<td>]]><ICON name="ic_news" label="news" action="location.href='administration_content_newsnew.html';" href="administration_head_2.html" target="admin_head"/><![CDATA[</td>
 	</tr>
 </table>
 
