@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/prototyp/js/Attic/explorer.js,v $
- * Date   : $Date: 2000/11/17 15:21:59 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/11/17 15:41:32 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -617,15 +617,16 @@ function displayHead(doc){
     doc.open();
     doc.writeln(headHead);
 
-    if(vr.actProject!=vr.onlineProject){
-        doc.writeln("<td class=menu nowrap width=32px>");
-        doc.writeln("<img alt=new width=32 height=32 border=0 name='bt_new_in'></a></td>"); 
-    } else {
+    if(vr.actProject==vr.onlineProject){
         doc.writeln("<td class=menu nowrap width=32px>"+
             "<a href=\"javascript: top.updateFrame('body.explorer_content.explorer_files','explorer_files_new.html');\""+
             "onmouseout=\"top.choff(document, 'bt_new');\" "+
             "onmouseover=\"top.chon(document, 'bt_new');\">");
         doc.writeln("<img alt=new width=32  height=32 border=0 name='bt_new'></a></td>"); 
+
+    } else {
+        doc.writeln("<td class=menu nowrap width=32px>");
+        doc.writeln("<img alt=new width=32 height=32 border=0 name='bt_new_in'></a></td>"); 
     }
 
     doc.writeln(headFoot);
@@ -793,7 +794,7 @@ function aF(name, path, title, type, dateolc, whoChanged, date, size, status, pr
 
 function openthisfolder(thisdir){
 
-    top.window.frames[1].frames[1].frames[0].document.forms.urlform.url.value +=thisdir;
+    top.window.frames[1].frames[1].frames[0].document.forms.urlform.url.value +=thisdir+'/';
     openurl();
 
 }
