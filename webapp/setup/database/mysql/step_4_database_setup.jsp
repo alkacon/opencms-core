@@ -49,6 +49,7 @@ OpenCms Setup Wizard
 <%= Bean.getHtmlPart("C_HEAD_START") %>
 <%= Bean.getHtmlPart("C_STYLES") %>
 <%= Bean.getHtmlPart("C_STYLES_SETUP") %>
+<%= Bean.getHtmlPart("C_SCRIPT_HELP") %>
 <script type="text/javascript">
 <!--
 	function checkSubmit()	{
@@ -134,27 +135,32 @@ OpenCms Setup Wizard - <%= Bean.getDatabaseName(Bean.getDatabase()) %> database 
 		<td>&nbsp;</td>
 		<td>User</td>
 		<td>Password</td>
+		<td>&nbsp;</td>
 	</tr>
 	<tr>
 		<td>Setup Connection</td>
 		<td><input type="text" name="dbCreateUser" size="8" style="width:150px;" value='<%= Bean.getDbCreateUser() %>'></td>
-		<td><input type="text" name="dbCreatePwd" size="8" style="width:150px;" value='<%= Bean.getDbCreatePwd() %>'></td>
+		<td style="text-align: right;"><input type="text" name="dbCreatePwd" size="8" style="width:150px;" value='<%= Bean.getDbCreatePwd() %>'></td>
+		<td><%= Bean.getHtmlHelpIcon("1", "../../") %></td>
 	</tr>
 	<tr>
 		<td>OpenCms Connection</td>
 		<td><input type="text" name="dbWorkUser" size="8" style="width:150px;" value='<%= Bean.getDbWorkUser() %>'></td>
-		<td><input type="text" name="dbWorkPwd" size="8" style="width:150px;" value='<%= Bean.getDbWorkPwd() %>'></td>
+		<td style="text-align: right;"><input type="text" name="dbWorkPwd" size="8" style="width:150px;" value='<%= Bean.getDbWorkPwd() %>'></td>
+		<td><%= Bean.getHtmlHelpIcon("2", "../../") %></td>
 	</tr>
 	<tr>
 		<td>Connection String</td>
 		<td colspan="2"><input type="text" name="dbCreateConStr" size="22" style="width:315px;" value='<%= Bean.getDbCreateConStr() %>'></td>
+		<td><%= Bean.getHtmlHelpIcon("3", "../../") %></td>
 	</tr>
 	<tr>
 		<td>Database</td>
 		<td colspan="2"><input type="text" name="db" size="22" style="width:315px;" value='<%= Bean.getDb() %>'></td>
+		<td><%= Bean.getHtmlHelpIcon("4", "../../") %></td>
 	</tr>
 	<tr>
-		<td colspan="3"><input type="checkbox" name="createDb" value="true" checked> Create database and tables 
+		<td colspan="4"><input type="checkbox" name="createDb" value="true" checked> Create database and tables 
 		</td>
 	</tr>
 </table>
@@ -169,6 +175,27 @@ OpenCms Setup Wizard - <%= Bean.getDatabaseName(Bean.getDatabase()) %> database 
 <input name="cancel" type="button" value="Cancel" class="dialogbutton" onclick="location.href='../../index.jsp';" style="margin-left: 50px;">
 </form>
 <%= Bean.getHtmlPart("C_BUTTONS_END") %>
+
+<%= Bean.getHtmlPart("C_HELP_START", "1") %>
+The <b>Setup Connection</b> is used <i>only</i> during this setup process.<br>&nbsp;<br>
+The specified user must have database administration permissions in order to create the database and tables.
+This user information is not stored after the setup is finished.
+<%= Bean.getHtmlPart("C_HELP_END") %>
+
+<%= Bean.getHtmlPart("C_HELP_START", "2") %>
+The <b>OpenCms Connection</b> is used when running OpenCms after the installation.<br>&nbsp;<br>
+For security reasons, the specified user should <i>not</i> have database administration permissions.
+This user information is stored in the <code>opencms.properties</code> file after the setup.
+<%= Bean.getHtmlPart("C_HELP_END") %>
+
+<%= Bean.getHtmlPart("C_HELP_START", "3") %>
+Enter the JDBC <b>Connection String</b> to your database.
+<%= Bean.getHtmlPart("C_HELP_END") %>
+
+<%= Bean.getHtmlPart("C_HELP_START", "4") %>
+Enter the name of the MySQL <b>Database</b> which should be used by OpenCms.
+<%= Bean.getHtmlPart("C_HELP_END") %>
+
 <% } else	{ %>
 OpenCms Setup Wizard - Database setup
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>

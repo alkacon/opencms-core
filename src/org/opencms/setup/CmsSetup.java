@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetup.java,v $
- * Date   : $Date: 2004/02/19 15:26:26 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/02/19 17:23:17 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.dom4j.io.SAXReader;
  *
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  */
 public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsShellCommands {
 
@@ -907,6 +907,25 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
             return CmsStringSubstitution.substitute(value, "$replace$", replaceString);
         }
     }
+    
+    /**
+     * Returns a help image icon tag to display a help text in the setup wizard.<p>
+     * 
+     * @param id the id of the desired help div
+     * @param pathPrefix the path prefix to the image 
+     * @return the HTML part for the help icon or an empty String, if the part was not found
+     */
+    public String getHtmlHelpIcon(String id, String pathPrefix) {
+        String value = m_htmlProps.getProperty("C_HELP_IMG");
+        if (value == null) {
+            return "";
+        } else {
+            value = CmsStringSubstitution.substitute(value, "$replace$", id);
+            return CmsStringSubstitution.substitute(value, "$path$", pathPrefix);
+        }
+    }
+    
+    
 
     /**
      * Sets directory translation to enabled / disabled.<p>

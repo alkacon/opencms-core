@@ -62,6 +62,7 @@ OpenCms Setup Wizard
 <%= Bean.getHtmlPart("C_HEAD_START") %>
 <%= Bean.getHtmlPart("C_STYLES") %>
 <%= Bean.getHtmlPart("C_STYLES_SETUP") %>
+<%= Bean.getHtmlPart("C_SCRIPT_HELP") %>
 <script type="text/javascript">
 <!--
 	function checkSubmit()	{
@@ -166,11 +167,13 @@ OpenCms Setup Wizard - <%= Bean.getDatabaseName(Bean.getDatabase()) %> database 
 							<td>User</td>
 							<td>Password</td>
 							<td>&nbsp;</td>
+							<td>&nbsp;</td>
 						</tr>
 						<tr>
 							<td>Setup Connection</td>
 							<td><input type="text" name="dbCreateUser" size="8" style="width:120px;" value='<%= Bean.getDbCreateUser() %>'></td>
 							<td><input type="text" name="dbCreatePwd" size="8" style="width:120px;" value='<%= Bean.getDbCreatePwd() %>'></td>
+							<td><%= Bean.getHtmlHelpIcon("1", "../../") %></td>
 							<td>&nbsp;</td>
 						</tr>
 						<%
@@ -186,10 +189,13 @@ OpenCms Setup Wizard - <%= Bean.getDatabaseName(Bean.getDatabase()) %> database 
 							<td>OpenCms Connection</td>
 							<td><input type="text" name="dbWorkUser" size="8" style="width:120px;" value='<%= user %>'></td>
 							<td><input type="text" name="dbWorkPwd" size="8" style="width:120px;" value='<%= Bean.getDbWorkPwd() %>'></td>
+							<td><%= Bean.getHtmlHelpIcon("2", "../../") %></td>
 							<td>&nbsp;</td>
 						</tr>
 						<tr>
-							<td>Connection String</td><td colspan="2"><input type="text" name="dbCreateConStr" size="22" style="width:250px;" value='<%= Bean.getDbCreateConStr() %>'></td>
+							<td>Connection String</td>
+							<td colspan="2"><input type="text" name="dbCreateConStr" size="22" style="width:250px;" value='<%= Bean.getDbCreateConStr() %>'></td>
+							<td><%= Bean.getHtmlHelpIcon("3", "../../") %></td>
 							<td>&nbsp;</td>
 						</tr>
 						<tr>
@@ -197,17 +203,20 @@ OpenCms Setup Wizard - <%= Bean.getDatabaseName(Bean.getDatabase()) %> database 
 							<td>Default</td>
 							<td>Index</td>
 							<td>Temporary</td>
+							<td>&nbsp;</td>
 						</tr>
 						<tr>
 							<td>Tablespace</td>
 							<td><input type="text" name="dbDefaultTablespace" size="8" style="width:120px;" value='<%= Bean.getDbProperty(Bean.getDatabase() + ".defaultTablespace") %>'></td>
 							<td><input type="text" name="dbIndexTablespace" size="8" style="width:120px;" value='<%= Bean.getDbProperty(Bean.getDatabase() + ".indexTablespace") %>'></td>
 							<td><input type="text" name="dbTemporaryTablespace" size="8" style="width:120px;" value='<%= Bean.getDbProperty(Bean.getDatabase() + ".temporaryTablespace") %>'></td>
+							<td><%= Bean.getHtmlHelpIcon("4", "../../") %></td>
 						</tr>
 						<tr>
 							<td>Create Database</td>
 							<td><input type="checkbox" name="createDb" value="true" checked> User</td>
 							<td><input type="checkbox" name="createTables" value="true" checked> Tables<input type="hidden" name="createTables" value="false"></td>
+							<td>&nbsp;</td>
 							<td>&nbsp;</td>
 						</tr>
 					</table>
@@ -223,6 +232,30 @@ OpenCms Setup Wizard - <%= Bean.getDatabaseName(Bean.getDatabase()) %> database 
 <input name="cancel" type="button" value="Cancel" class="dialogbutton" onclick="location.href='../../index.jsp';" style="margin-left: 50px;">
 </form>
 <%= Bean.getHtmlPart("C_BUTTONS_END") %>
+
+<%= Bean.getHtmlPart("C_HELP_START", "1") %>
+The <b>Setup Connection</b> is used <i>only</i> during this setup process.<br>&nbsp;<br>
+The specified user must have database administration permissions in order to create the database and tables.
+This user information is not stored after the setup is finished.
+<%= Bean.getHtmlPart("C_HELP_END") %>
+
+<%= Bean.getHtmlPart("C_HELP_START", "2") %>
+The <b>OpenCms Connection</b> is used when running OpenCms after the installation.<br>&nbsp;<br>
+For security reasons, the specified user should <i>not</i> have database administration permissions.
+This user information is stored in the <code>opencms.properties</code> file after the setup.
+<%= Bean.getHtmlPart("C_HELP_END") %>
+
+<%= Bean.getHtmlPart("C_HELP_START", "3") %>
+Enter the JDBC <b>Connection String</b> to your database.
+<%= Bean.getHtmlPart("C_HELP_END") %>
+
+<%= Bean.getHtmlPart("C_HELP_START", "4") %>
+The <b>Default</b> tablespace holds all data needed for OpenCms.<br><br>
+The <b>Index</b> tablespace can be the same as the default tablespace,
+but this may result in slower database performance.<br><br>
+The <b>Temporary</b> tablespace is needed from Oracle for temporary data.
+<%= Bean.getHtmlPart("C_HELP_END") %>
+
 <% } else	{ %>
 OpenCms Setup Wizard - Database setup
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
