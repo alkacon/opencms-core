@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/11/17 16:00:13 $
- * Version: $Revision: 1.196 $
+ * Date   : $Date: 2000/11/20 12:59:10 $
+ * Version: $Revision: 1.197 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.196 $ $Date: 2000/11/17 16:00:13 $
+ * @version $Revision: 1.197 $ $Date: 2000/11/20 12:59:10 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -4516,7 +4516,8 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, Stri
 							   CmsTask task) 
 		throws CmsException {
 		// TODO: To be implemented
-	 return null;
+		//return null;
+	 	return m_dbAccess.readGroup(task.getRole());
 	}
 	/**
 	 * Returns a group object.<P/>
