@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsLegacyModuleAction.java,v $
- * Date   : $Date: 2004/08/05 11:18:21 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/08/06 16:12:30 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,6 +71,9 @@ public class CmsLegacyModuleAction extends A_CmsModuleAction {
     /** Name of the "maintananceclasses" parameter. */
     public static final String C_PARAM_MAINTANANCE_CLASSES = "maintananceclasses";
     
+    /** Name of the legacy compatibility module. */
+    public static final String C_LEGACY_MODULE_NAME = "org.opencms.legacy.compatibility";
+    
     /**
      * Splitsa a list of class names with a ";" delimiter.<p>
      * 
@@ -103,7 +106,7 @@ public class CmsLegacyModuleAction extends A_CmsModuleAction {
      */
     public static List getLegacyModulePublishClasses() {
         
-        CmsModule module = OpenCms.getModuleManager().getModule(CmsLegacyModuleAction.class.getName());
+        CmsModule module = OpenCms.getModuleManager().getModule(C_LEGACY_MODULE_NAME);
         if (module == null) {
             // module is not (correctly) configured
             return Collections.EMPTY_LIST;
