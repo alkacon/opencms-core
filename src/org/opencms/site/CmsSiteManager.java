@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManager.java,v $
- * Date   : $Date: 2004/08/23 15:37:02 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2004/10/01 12:11:35 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * @since 5.1
  */
 public final class CmsSiteManager implements Cloneable {
@@ -397,7 +397,7 @@ public final class CmsSiteManager implements Cloneable {
         }
         int pos = siteStr.indexOf('|'); 
 
-        // check if this is a vailid site root entry
+        // check if this is a valid site root entry
         if (pos < 0) {
             // entry must have a "|" in the string
             if (OpenCms.getLog(this).isErrorEnabled()) {
