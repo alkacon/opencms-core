@@ -931,6 +931,17 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
     //return var
     byte[] processResult = null;
 
+    // now check if the "do you really want to lock" dialog should be shown.
+    Hashtable startSettings = (Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);
+    String showLockDialog = "on";
+    if(startSettings!=null){
+      showLockDialog = (String)startSettings.get(C_START_LOCKDIALOG);
+    }
+    if (!showLockDialog.equalsIgnoreCase("on")) {
+      parameters.put("action","go");
+    }
+
+
     // session will be created or fetched
     I_CmsSession session = (CmsSession) cms.getRequestContext().getSession(true);
     //get the class of the content definition
