@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleManager.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/02/14 22:56:30 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsLocaleManager {
     
@@ -184,8 +184,9 @@ public class CmsLocaleManager {
     ) {
         // initialize the m_locale handler 
         I_CmsLocaleHandler localeHandler = null;
-        String localeHandlerClass = OpenCms.getRegistry().getLocaleHandler();
+        String localeHandlerClass = null;
         try {
+            localeHandlerClass = (String)OpenCms.getRegistry().getLocaleHandler().get(0);         
             localeHandler = (I_CmsLocaleHandler)Class.forName(localeHandlerClass).newInstance();
             localeHandler.initHandler(cms);
             if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2004/02/13 13:45:33 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/14 22:56:30 $
+ * Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsRegistry extends A_CmsXmlContent {
 
@@ -1513,8 +1513,8 @@ public class CmsRegistry extends A_CmsXmlContent {
      * 
      * @return the configured locale handler class
      */
-    public String getLocaleHandler() {
-        return getSystemValue("localehandler");
+    public List getLocaleHandler() {
+        return getSystemSubNodes("localehandler");
     }
     
     /**
