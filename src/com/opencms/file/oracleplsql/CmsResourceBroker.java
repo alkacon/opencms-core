@@ -2,8 +2,8 @@ package com.opencms.file.oracleplsql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2001/07/23 11:24:16 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2001/07/25 12:08:36 $
+ * Version: $Revision: 1.28 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -49,7 +49,7 @@ import com.opencms.template.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.27 $ $Date: 2001/07/23 11:24:16 $
+ * @version $Revision: 1.28 $ $Date: 2001/07/25 12:08:36 $
  */
 public class CmsResourceBroker extends com.opencms.file.genericSql.CmsResourceBroker {
 
@@ -215,7 +215,6 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
  */
 public Vector getGroupsOfUser(CmsUser currentUser, CmsProject currentProject, String username) throws CmsException {
 	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
-	//Vector allGroups = dbAccess.getAllGroupsOfUser(username);
 
 	Vector allGroups = (Vector) m_usergroupsCache.get(C_USER + username);
 	if ((allGroups == null) || (allGroups.size() == 0)) {
@@ -253,9 +252,6 @@ public Vector getUsersOfGroup(CmsUser currentUser, CmsProject currentProject, St
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	public void init(Configurations config) throws CmsException {
-//		if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-//			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsResourceBroker] WARNING: this oracleplsql-resource-broker is experimentell and only for developing.");
-//		}
 		super.init(config);
 	}
 /**
@@ -307,9 +303,7 @@ public void lockResource(CmsUser currentUser, CmsProject currentProject, String 
 	CmsFile cmsFile = null;
 	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
 	Vector resources = dbAccess.lockResource(currentUser, currentProject, resourcename, force);
-	//dbAccess.lockResource(currentUser, currentProject, resourcename, force);
-	//m_resourceCache.clear();
-	// update the cache
+
 	for (int i = 0; i < resources.size(); i++) {
 		cmsResource = (CmsResource) resources.elementAt(i);
 		String resourceName = cmsResource.getAbsolutePath();
@@ -322,7 +316,7 @@ public void lockResource(CmsUser currentUser, CmsProject currentProject, String 
 									cmsResource.getDateLastModified(), cmsResource.getResourceLastModifiedBy(),
                                     cmsResource.getProjectId());
 
-			m_resourceCache.put(C_FOLDER + currentProject.getId() + resourceName, cmsFolder);
+			m_resourceCache.remove(resourceName);
 		} else {
 			cmsFile = new CmsFile(cmsResource.getResourceId(), cmsResource.getParentId(),
 									cmsResource.getFileId(), resourceName, cmsResource.getType(),
@@ -333,7 +327,7 @@ public void lockResource(CmsUser currentUser, CmsProject currentProject, String 
 									cmsResource.getDateLastModified(), cmsResource.getResourceLastModifiedBy(),
 									new byte[0], cmsResource.getLength(),cmsResource.getProjectId());
 
-			m_resourceCache.put(C_FILE + currentProject.getId() + resourceName, cmsFile);
+			m_resourceCache.remove(resourceName);
 		}
 	}
 	m_subresCache.clear();
@@ -370,9 +364,6 @@ public void unlockResource(CmsUser currentUser, CmsProject currentProject, Strin
 	CmsFile cmsFile = null;
 	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
 	Vector resources = dbAccess.unlockResource(currentUser, currentProject, resourcename);
-	//dbAccess.unlockResource(currentUser, currentProject, resourcename);
-	//m_resourceCache.clear();
-	// update the cache
 
 	for (int i=0; i < resources.size(); i++) {
 		cmsResource = (CmsResource)resources.elementAt(i);
@@ -386,7 +377,7 @@ public void unlockResource(CmsUser currentUser, CmsProject currentProject, Strin
 									cmsResource.getDateLastModified(), cmsResource.getResourceLastModifiedBy(),
                                     cmsResource.getProjectId());
 
-			m_resourceCache.put(C_FOLDER+currentProject.getId()+resourceName, cmsFolder);
+			m_resourceCache.remove(resourceName);
 		} else {
 			cmsFile = new CmsFile(cmsResource.getResourceId(), cmsResource.getParentId(),
 									cmsResource.getFileId(), resourceName, cmsResource.getType(),
@@ -397,7 +388,7 @@ public void unlockResource(CmsUser currentUser, CmsProject currentProject, Strin
 									cmsResource.getDateLastModified(), cmsResource.getResourceLastModifiedBy(),
 									new byte[0], cmsResource.getLength(),cmsResource.getProjectId());
 
-			m_resourceCache.put(C_FILE+currentProject.getId()+resourceName, cmsFile);
+			m_resourceCache.remove(resourceName);
 		}
 	}
 
@@ -433,75 +424,4 @@ public boolean userInGroup(CmsUser currentUser, CmsProject currentProject, Strin
 		return false;
 	}
 }
-/**
- * Writes a file to the Cms.<br>
- *
- * A file can only be written to an offline project.<br>
- * The state of the resource is set to  CHANGED (1). The file content of the file
- * is either updated (if it is already existing in the offline project), or created
- * in the offline project (if it is not available there).<br>
- *
- * <B>Security:</B>
- * Access is granted, if:
- * <ul>
- * <li>the user has access to the project</li>
- * <li>the user can write the resource</li>
- * <li>the resource is locked by the callingUser</li>
- * </ul>
- *
- * @param currentUser The user who own this file.
- * @param currentProject The project in which the resource will be used.
- * @param file The name of the file to write.
- *
- * @exception CmsException  Throws CmsException if operation was not succesful.
- */
-/*
-public void writeFile(CmsUser currentUser, CmsProject currentProject, CmsFile file) throws CmsException {
-	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
-	dbAccess.writeFile(currentProject, onlineProject(currentUser, currentProject), file, true);
-
-	// update the cache
-	m_resourceCache.put(C_FILE + currentProject.getId() + file.getAbsolutePath(), file);
-	//m_resourceCache.put(C_FILECONTENT+currentProject.getId()+file.getAbsolutePath(),file);
-	m_subresCache.clear();
-	m_accessCache.clear();
-	// inform about the file-system-change
-	fileSystemChanged(false);
-}
-*/
-/**
- * Writes a fileheader to the Cms.<br>
- *
- * A file can only be written to an offline project.<br>
- * The state of the resource is set to  CHANGED (1). The file content of the file
- * is either updated (if it is already existing in the offline project), or created
- * in the offline project (if it is not available there).<br>
- *
- * <B>Security:</B>
- * Access is granted, if:
- * <ul>
- * <li>the user has access to the project</li>
- * <li>the user can write the resource</li>
- * <li>the resource is locked by the callingUser</li>
- * </ul>
- *
- * @param currentUser The user who own this file.
- * @param currentProject The project in which the resource will be used.
- * @param file The file to write.
- *
- * @exception CmsException  Throws CmsException if operation was not succesful.
- */
-/*
-public void writeFileHeader(CmsUser currentUser, CmsProject currentProject, CmsFile file) throws CmsException {
-	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
-	dbAccess.writeFileHeader(currentProject, file, true);
-
-	// update the cache
-	m_resourceCache.put(C_FILE + currentProject.getId() + file.getAbsolutePath(), file);
-	// inform about the file-system-change
-	m_subresCache.clear();
-	m_accessCache.clear();
-	fileSystemChanged(false);
-}
-*/
 }
