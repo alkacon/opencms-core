@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/Attic/CmsLockDispatcher.java,v $
- * Date   : $Date: 2003/07/31 15:18:46 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2003/07/31 16:37:02 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Map;
  * are instances of CmsLock objects.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.24 $ $Date: 2003/07/31 15:18:46 $
+ * @version $Revision: 1.25 $ $Date: 2003/07/31 16:37:02 $
  * @since 5.1.4
  * @see com.opencms.file.CmsObject#getLock(CmsResource)
  * @see org.opencms.lock.CmsLock
@@ -74,7 +74,7 @@ public final class CmsLockDispatcher extends Object {
      */
     private CmsLockDispatcher() {
         super();
-        m_exclusiveLocks = Collections.synchronizedMap(new HashMap());
+        m_exclusiveLocks = Collections.synchronizedMap((Map) new HashMap());
     }
 
     /**
@@ -88,15 +88,6 @@ public final class CmsLockDispatcher extends Object {
         }
 
         return sharedInstance;
-    }
-
-    protected void finalize() throws Throwable {
-        if (m_exclusiveLocks != null) {
-            m_exclusiveLocks.clear();
-
-            m_exclusiveLocks = null;
-            sharedInstance = null;
-        }
     }
 
     /**
@@ -136,7 +127,40 @@ public final class CmsLockDispatcher extends Object {
     }
 
     /**
-     * Returns the lock for a specified resource name.<p>
+     * Counts the exclusive locked resources in a project.<p>
+     * 
+     * @param project the project
+     * @return the number of exclusive locked resources in the specified project
+     */
+    public int countExclusiveLocksInProject(CmsProject project) {
+        Iterator i = m_exclusiveLocks.values().iterator();
+        CmsLock lock = null;
+        int count = 0;
+
+        while (i.hasNext()) {
+            lock = (CmsLock) i.next();
+            if (lock.getProjectId() == project.getId()) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    /**
+     * @see java.lang.Object#finalize()
+     */
+    protected void finalize() throws Throwable {
+        if (m_exclusiveLocks != null) {
+            m_exclusiveLocks.clear();
+
+            m_exclusiveLocks = null;
+            sharedInstance = null;
+        }
+    }
+
+    /**
+     * Returns the lock for a resource name.<p>
      * 
      * @param driverManager the driver manager
      * @param context the current request context
@@ -207,7 +231,7 @@ public final class CmsLockDispatcher extends Object {
     }
 
     /**
-     * Returns the lock of a parent folder, if any are locked.<p>
+     * Returns the lock of a possible locked parent folder of a resource.<p>
      * 
      * @param resourcename the name of the resource
      * @return the lock of a parent folder, or null if no parent folders are locked
@@ -228,24 +252,28 @@ public final class CmsLockDispatcher extends Object {
     }
 
     /**
-     * Counts the exclusive locked resources in a specified project.<p>
+     * Reads a file header of a resource name without checking permissions.<p>
      * 
-     * @param project the project
-     * @return the number of exclusive locked resources in the specified project
+     * @param driverManager the driver manager
+     * @param context the current request context
+     * @param resourcename the full resource name including the site root
+     * @return the CmsResource instance
+     * @throws CmsException
      */
-    public int countExclusiveLocksInProject(CmsProject project) {
-        Iterator i = m_exclusiveLocks.values().iterator();
-        CmsLock lock = null;
-        int count = 0;
+    private CmsResource internalReadFileHeader(CmsDriverManager driverManager, CmsRequestContext context, String resourcename) throws CmsException {
+        CmsResource resource = null;
 
-        while (i.hasNext()) {
-            lock = (CmsLock) i.next();
-            if (lock.getProjectId() == project.getId()) {
-                count++;
-            }
+        // reading a resource using readFileHeader while the lock state is checked would
+        // inevitably result in an infinite loop...
+
+        try {
+            List path = driverManager.readPath(context, resourcename, false);
+            resource = (CmsResource) path.get(path.size() - 1);
+        } catch (CmsException e) {
+            resource = null;
         }
 
-        return count;
+        return resource;
     }
 
     /**
@@ -258,7 +286,7 @@ public final class CmsLockDispatcher extends Object {
      * @param driverManager the driver manager
      * @param context the current request context
      * @param resourcename the full resource name including the site root
-     * @return true, if and only if the resource is currently locked, either direct or indirect
+     * @return true, if and only if the resource is currently locked
      */
     public boolean isLocked(CmsDriverManager driverManager, CmsRequestContext context, String resourcename) throws CmsException {
         CmsLock lock = getLock(driverManager, context, resourcename);
@@ -339,7 +367,7 @@ public final class CmsLockDispatcher extends Object {
     }
 
     /**
-     * Removes all resources that have been previously locked in a specified project.<p>
+     * Removes all resources that are exclusive locked in a project.<p>
      * 
      * @param projectId the ID of the project where the resources have been locked
      */
@@ -357,9 +385,7 @@ public final class CmsLockDispatcher extends Object {
         }
     }
 
-    /**
-     * Builds a string representation of the current state.<p>
-     * 
+    /** 
      * @see java.lang.Object#toString()
      */
     public String toString() {
@@ -379,31 +405,6 @@ public final class CmsLockDispatcher extends Object {
         }
 
         return buf.toString();
-    }
-
-    /**
-     * Reads a file header without checking permissions for a specified resource name.<p>
-     * 
-     * @param driverManager the driver manager
-     * @param context the current request context
-     * @param resourcename the full resource name including the site root
-     * @return the CmsResource instance
-     * @throws CmsException
-     */
-    private CmsResource internalReadFileHeader(CmsDriverManager driverManager, CmsRequestContext context, String resourcename) throws CmsException {
-        CmsResource resource = null;
-
-        // reading a resource using readFileHeader while the lock state is checked would
-        // inevitably result in an infinite loop...
-
-        try {
-            List path = driverManager.readPath(context, resourcename, false);
-            resource = (CmsResource) path.get(path.size() - 1);
-        } catch (CmsException e) {
-            resource = null;
-        }
-
-        return resource;
     }
 
 }

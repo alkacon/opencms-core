@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLock.java,v $
- * Date   : $Date: 2003/07/31 13:07:56 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/07/31 16:37:02 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import com.opencms.flex.util.CmsUUID;
  * CmsLock object that represents the current lock state of a resource.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.9 $ $Date: 2003/07/31 13:07:56 $
+ * @version $Revision: 1.10 $ $Date: 2003/07/31 16:37:02 $
  * @since 5.1.4
  * @see com.opencms.file.CmsObject#getLock(CmsResource)
  * @see org.opencms.lock.CmsLockDispatcher
@@ -120,7 +120,7 @@ public class CmsLock extends Object implements Cloneable {
     }
 
     /**
-     * Returnes the shared Null CmsLock.<p>
+     * Returns the shared Null CmsLock.<p>
      * 
      * @return the shared Null CmsLock
      */
