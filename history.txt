@@ -1,7 +1,7 @@
 /*
- * File   : $Source $
- * Date   : $Date $
- * Version: $Revision $
+ * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
+ * Date   : $Date: 2002/09/03 19:49:20 $
+ * Version: $Revision: 1.404 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -22,9 +22,13 @@ Legend:
 OpenCms 5.0 (next version)
 ! JSP now support nested includes with XMLTemplates
 ! Exception handling in JSP now directly points to the problem (even if it is in an included element)
+! Added extended handling of cms:include tag, the include target can now be set from a property 
+  or an expression in the tag's body
 * The <stylesheet> tag in XMLTemplates (for display in WYSIWYG) can now start with a "/"
 * The locale "uk" has been renamed to "en" (rename your module directories accordingly)
 * Removed usage of deprecated methods where possible
+* Problems with XML export of filenames that use special characters (like umlauts) have been resolved
+* Problems with XML export or registry with special characters (like umlauts) have been resolved
 
 OpenCms 5.0 beta 1 Kaitain - 23 August 2002
 - This is the first public beta of the new 5.0 OpenCms version
@@ -40,12 +44,6 @@ OpenCms 5.0 beta 1 Kaitain - 23 August 2002
 * The WYSIWYG editors "Style Selection" works with international browsers now.
 - The Oracle PL/SQL code has been removed and is no longer supported.
   Instead, there is a new oraclesql-resourcebroker that supports Oracle BLOBs.
-  In opencms.properties this new resourcebroker is already used for the oracleOci-part.
-
-OpenCms 4.7.15 Ecaz - xx August 2002
-* general bugfixes
-- The Oracle PL/SQL code has been removed and is no longer supported. 
-  You can use the the oraclesql-resourcebroker that supports Oracle BLOBs instead. 
   In opencms.properties this new resourcebroker is already used for the oracleOci-part.
 
 OpenCms 4.7.14 Ecaz - 06 August 2002
