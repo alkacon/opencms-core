@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsStringUtil.java,v $
- * Date   : $Date: 2004/12/09 15:59:46 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/12/10 16:17:26 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import junit.framework.TestCase;
  * Test cases for the class "CmsStringSubstitution".<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.0
  */
@@ -76,10 +76,9 @@ public class TestCmsStringUtil extends TestCase {
         test = CmsStringUtil.substitute(content, "i", "u");
         assertEquals(test, result);
     }
-
     
     /**
-     * Tests the macro String substitution
+     * Tests the macro String substitution.<p>
      */
     public void testSubstituteMacros() {
     
@@ -131,8 +130,7 @@ public class TestCmsStringUtil extends TestCase {
         result  = CmsStringUtil.substituteMacros(content, substitution);
         assertEquals("<<This is a prefix >>${test<<This is a suffix>>", result);
     }
-    
-    
+        
     /**
      * Tests for the escape patterns.<p>
      */
