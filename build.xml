@@ -64,11 +64,11 @@
             </and>
         </condition>
         
-        <condition property="build.excludes" value="com/opencms/file/oraclesql/**,com/opencms/file/oracleplsql/**">
+        <condition property="build.excludes" value="com/opencms/file/oraclesql/**,com/opencms/file/oracleplsql/**,com/opencms/test/**">
             <not><available file="${build.inputlib.oracle}"/></not>
         </condition>           
         
-        <condition property="build.excludes" value="">
+        <condition property="build.excludes" value="com/opencms/test/**">
             <available file="${build.inputlib.oracle}"/>
         </condition> 
         
