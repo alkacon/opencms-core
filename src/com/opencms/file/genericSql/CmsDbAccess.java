@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/07/18 16:13:48 $
- * Version: $Revision: 1.99 $
+ * Date   : $Date: 2000/07/19 14:32:34 $
+ * Version: $Revision: 1.100 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.util.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.99 $ $Date: 2000/07/18 16:13:48 $ * 
+ * @version $Revision: 1.100 $ $Date: 2000/07/19 14:32:34 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -355,7 +355,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
             statement.setInt(1,nextId(C_TABLE_GROUPS));
             statement.setInt(2,parentId);
             statement.setString(3,name);
-            statement.setString(4,description);
+            statement.setString(4,checkNull(description));
             statement.setInt(5,flags);
             statement.executeUpdate();
           
@@ -906,17 +906,17 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 			// crypt the password with MD5
 			statement.setString(3, digest(password));
 			statement.setString(4, digest(""));
-			statement.setString(5,description);
-			statement.setString(6,firstname);
-			statement.setString(7,lastname);
-			statement.setString(8,email);
+			statement.setString(5,checkNull(description));
+			statement.setString(6,checkNull(firstname));
+			statement.setString(7,checkNull(lastname));
+			statement.setString(8,checkNull(email));
 			statement.setTimestamp(9, new Timestamp(lastlogin));
 			statement.setTimestamp(10, new Timestamp(lastused));
 			statement.setInt(11,flags);
 			statement.setBytes(12,value);
 			statement.setInt(13,defaultGroup.getId());
-			statement.setString(14,address);
-			statement.setString(15,section);
+			statement.setString(14,checkNull(address));
+			statement.setString(15,checkNull(section));
 			statement.setInt(16,type);
 			statement.executeUpdate();
          }
@@ -3634,6 +3634,12 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 							   byte[] contents, CmsResourceType resourceType)
 							
          throws CmsException {
+		 
+		 // it is not allowed, that there is no content in the file
+		 // TODO: check if this can be done in another way:
+		 if(contents.length == 0) {
+			 contents = " ".getBytes();
+		 }
          
         
 
@@ -6011,5 +6017,20 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		}
 		
 		return result;
+	}
+
+	/**
+	 * Checks, if the String was null or is empty. If this is so it returns " ".
+	 * 
+	 * This is for oracle-issues, because in oracle an empty string is the same as null.
+	 * @param value the String to check.
+	 * @return the value, or " " if needed.
+	 */
+	private String checkNull(String value) {
+		String ret = " ";
+		if( (value != null) && (value.length() != 0) ) {
+			ret = value;
+		}		
+		return ret;
 	}
 }
