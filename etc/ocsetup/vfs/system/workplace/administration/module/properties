@@ -87,10 +87,10 @@ function show_help()
 	
 			<tr>
 				<td class=dialogtxt valign=top>]]><LABEL value="module.lable.dependences"/><![CDATA[:</td>
-				<td class=dialogtxt><textarea rows=4 wrap=off>]]><PROCESS>dependences</PROCESS><![CDATA[</textarea></td>
+				<td class=dialogtxt><textarea rows=4 wrap=off readonly>]]><PROCESS>dependences</PROCESS><![CDATA[</textarea></td>
 
 				<td class=dialogtxt valign=top>]]><LABEL value="module.lable.repository"/><![CDATA[:</td>
-				<td class=dialogtxt><textarea rows=4 wrap=off>]]><PROCESS>repository</PROCESS><![CDATA[</textarea></td>
+				<td class=dialogtxt><textarea rows=4 wrap=off readonly>]]><PROCESS>repository</PROCESS><![CDATA[</textarea></td>
 			</tr>			
 
 			<!-- Beginn Leerzeile-->
