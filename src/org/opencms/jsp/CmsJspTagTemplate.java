@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagTemplate.java,v $
- * Date   : $Date: 2004/06/14 14:25:57 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/06/18 10:45:44 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringSubstitution;
 import org.opencms.xml.page.CmsXmlPage;
 
+import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.ServletRequest;
@@ -51,7 +52,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * is included in another file.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class CmsJspTagTemplate extends BodyTagSupport { 
     
@@ -228,14 +229,18 @@ public class CmsJspTagTemplate extends BodyTagSupport {
             
             if (page != null) {
                 String absolutePath = controller.getCmsObject().readAbsolutePath(page.getFile());
-                Locale locale = OpenCms.getLocaleManager().getBestMatchingLocale(controller.getCmsObject().getRequestContext().getLocale(), OpenCms.getLocaleManager().getDefaultLocales(controller.getCmsObject(), absolutePath), page.getLocales());
-                
                 // check the elements in the elementlist, if the check fails don't render the body
                 String elements[] = CmsStringSubstitution.split(elementlist, ",");
                 boolean found = false;
-                for (int i = 0; i < elements.length; i++) {
+                for (int i = 0; i < elements.length; i++) {                    
                     String el = elements[i].trim();
-                    if (page.hasElement(el, locale) && page.isEnabled(el, locale)) {
+                    List locales = page.getLocales(el);
+                    Locale locale = null;
+                    if ((locales != null) && (locales.size() != 0)) {
+                        locale = OpenCms.getLocaleManager().getBestMatchingLocale(controller.getCmsObject().getRequestContext().getLocale(), OpenCms.getLocaleManager().getDefaultLocales(controller.getCmsObject(), absolutePath), locales);
+                    }                     
+                    if ((locale != null) && page.hasElement(el, locale) && page.isEnabled(el, locale)) {
+                        
                         found = true;
                         if (!checkall) {
                             // found at least an element that is available
