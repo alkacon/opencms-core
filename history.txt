@@ -8,6 +8,9 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.3.40 Bela Tegeuse - 02 August 2001
+- Update of generic backoffice.
+
 OpenCms 4.3.39 Bela Tegeuse - 02 August 2001
 * Fixed bug: when deleting folders all subfolders must be deleted too, starting with the last
   folder in the foldertree
