@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
- * Date   : $Date: 2000/11/01 14:26:29 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2001/01/02 13:09:39 $
+ * Version: $Revision: 1.38 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.37 $ $Date: 2000/11/01 14:26:29 $
+ * @version $Revision: 1.38 $ $Date: 2001/01/02 13:09:39 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -229,7 +229,8 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 		if (allResources == null) {
 			allResources = "";  
 		}  
-
+		reqCont.setCurrentProject(cms.onlineProject().getId());
+		
 		// first we look if the thread is allready running
 		if ((action != null) && ("working".equals(action))){
 			// still working?
@@ -241,8 +242,6 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 				xmlTemplateDocument.setData("time", ""+wert);
 				return startProcessing(cms, xmlTemplateDocument, elementName, parameters, "wait");
 
-		//reqCont.setCurrentProject(cms.onlineProject().getId()); MLA: removed because it should be unnessesary, and can cause problems
-		
 			}else{
 				// thread has come to an end, was there an error?
 				String errordetails = (String)session.getValue(C_SESSION_THREAD_ERROR);
