@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpConfigFile.java,v $
- * Date   : $Date: 2001/01/04 14:05:03 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2001/01/08 14:42:12 $
+ * Version: $Revision: 1.25 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.24 $ $Date: 2001/01/04 14:05:03 $
+ * @version $Revision: 1.25 $ $Date: 2001/01/08 14:42:12 $
  */
 public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChannels, I_CmsConstants {
 	/**
@@ -153,7 +153,7 @@ public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChann
 	/**
 	 * Gets the default mail sender.
 	 * @return Mail address of the default mail sender.
-	 * @deprecated Not used any more. Mail properties are now stored in the registry. Please use <code>CmsRegistry.getSystemValue("defaultmailsender")</code> instead.
+	 * @--deprecated Not used any more. Mail properties are now stored in the registry. Please use <code>CmsRegistry.getSystemValue("defaultmailsender")</code> instead.
 	 * @see com.opencms.file.CmsRegistry#getSystemValue
 	 * @exception CmsException if the corresponding XML tag doesn't exist in the workplace definition file.
 	 */
@@ -187,14 +187,14 @@ public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChann
 	/**
 	 * Gets the mailserver.
 	 * @return The mailserver name.
-	 * @deprecated Not used any more. Mail properties are now stored in the registry. Please use <code>CmsRegistry.getSystemValue("smtpserver")</code> instead.
+	 * @--deprecated Not used any more. Mail properties are now stored in the registry. Please use <code>CmsRegistry.getSystemValue("smtpserver")</code> instead.
 	 * @see com.opencms.file.CmsRegistry#getSystemValue
 	 * @exception CmsException if the corresponding XML tag doesn't exist in the workplace definition file.
 	 */
 	/*public String getMailServer() throws CmsException {
 		return getDataValue("mail.server");
 	}*/
-    /**
+	/**
 	 * Gets the path at which the folders with the picture galleries are
 	 * @return Path for picture galleries.
 	 * @exception CmsException if the corresponding XML tag doesn't exist in the workplace definition file.
