@@ -11,32 +11,25 @@ function show_help()
 {
 	return '2_2_2_2_3_2.html';
 }
-
-function simpleEscape(text) {
-	if(text)return text.replace(/\//g, "%2F");
-}
-
 //-->
-</script>
 
 
-<link rel=stylesheet type="text/css" href="../css/format.css">
+function checkForName(){
 
-<style type="text/css">
-.localstyle
-{
-	WIDTH: 370px
+	if(LINK.NEUNAME.value=="")NEU.WEITER.disabled=true;
+	else NEU.WEITER.disabled=false;
+ 
 }
 
-#NEWLINK{ position: absolute; LEFT: 0px; TOP: 0px; WIDHT: 100%; HEIGHT: 100%; VISIBILITY: visible; Z-INDEX: 100 }
-#NEWWITHOUTLINK{ position: absolute; LEFT: 0px; TOP: 0px; WIDHT: 100%; HEIGHT: 100%; VISIBILITY: hidden; Z-INDEX: 1 }
-</style>
+
+</script>
 
 <head>
 
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 <title>OpenCms</title>
 
+<link rel=stylesheet type="text/css" href="../css/format.css">
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms_choosebrowser.js"></SCRIPT>
 
 </HEAD>
@@ -44,128 +37,147 @@ function simpleEscape(text) {
 <body bgcolor="#ffffff" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0>
 
 <!-- Beginn neue Datei Anlegen -->
-<div id="NEWWITHOUTLINK">
-	<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
-		<tr>
-			<td align=center valign=middle>
-			<form id="NEU" name="NEU">
-				<table border=2 cellspacing=0 cellpadding=0 width=555px>
-					<tr>
-						<td>
-							<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
-								<tr>
-									<td colspan=2 class=head>]]><LABEL value="title.newpage" /><![CDATA[</td>
-								</tr>
-								<tr>
-									<td colspan=2 class=leerzeile>&nbsp;</td>
-								</tr>
-								<tr>
-									<td class=formular width=35%>]]><LABEL value="input.name" /><![CDATA[:</td>
-    								<td class=dialogtxt> ]]><INPUTFIELD name="NEUNAME" class="textfeld2" size="40" length="100" action="onfocus='NEU.WEITER.disabled=false;'"/><![CDATA[</td>	
-								</tr>
-								<tr>
-									<td class=formular>]]><LABEL value="input.title" /><![CDATA[:</td>
-									<td class=dialogtxt> ]]><INPUTFIELD name="NEUTITEL" class="textfeld2" size="40" length="100" /><![CDATA[</td>	
-								</tr>
-								<tr>
-									<td class=formular>]]><LABEL value="input.template" /><![CDATA[:</td>
-									<td class=dialogtxt>]]><SELECT class="localstyle" name="TEMPLATE" width="370" div="true" method="getTemplates" /><![CDATA[</td>
-								</tr>
-     							<tr>
-									<td class=dialogtxt colspan=2><INPUT type="checkbox" id=SETLINK name=SETLINK onclick="saveLayerData2('NEU','LINK','NEWWITHOUTLINK','NEWLINK');this.checked=false;switchlyr('NEWLINK','NEWWITHOUTLINK');"> ]]><LABEL value="input.addtonav" /><![CDATA[</td>
-								</tr>
-								<tr>
-									<td colspan=2 class="leerzeile"><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=1 height=70px></td>
-								</tr>
-								<tr>
-									<td colspan=2 class=formular>
-										<table cellspacing=0 cellpadding=5 width=100%>
-											<tr>
-												<td class=formular align=right width=60%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.previousscreen" /><![CDATA[" id=ZURUECK name=ZURUECK onClick="location='explorer_files_new.html';"></td>
-												<td class=formular align=center width=20%><INPUT disabled class=button width=100 type="button" value="]]><LABEL value="button.endwizard" /><![CDATA[" id=WEITER name=WEITER onClick="location='explorer_files_new_page.html?step=1&newfile='+document.NEU.NEUNAME.value+'&title='+document.NEU.NEUTITEL.value+'&template='+simpleEscape(document.NEU.TEMPLATE.value);"></td>
-												<td class=formular align=center width=20%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="location='explorer_files.html';"></td>
-											</tr>
-										</table>
-									</td>
-								</tr>
-							</table>	
-						</td>
-					</tr>
-				</table>
-			</form>
-			</td>
-		</tr>
+<div id="NEWWITHOUTLINK" style="FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif; FONT-SIZE: 8pt; position: absolute; LEFT: 0px; TOP: 0px; width:100%; height:100%; VISIBILITY: hidden; Z-INDEX: 1;">
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=center valign=middle>
+
+<form id="NEU" name="NEU">
+<table border=2 cellspacing=0 cellpadding=0 width=555px>
+<tr><td><table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+	<tr><td colspan=2 class=head>]]><LABEL value="title.newfolder" /><![CDATA[</td></tr>
+	<tr><td colspan=2 class=leerzeile>&nbsp;</td></tr>
+	<tr>
+		<td class=formular width=35%>]]><LABEL value="input.name" /><![CDATA[:</td>
+    	<td class=dialogtxt> ]]><INPUTFIELD name="NEUNAME" class="textfeld2" size="40" length="100" action="onfocus='NEU.WEITER.disabled=false;'"/><![CDATA[</td>
+	
+	</tr>
+	<tr>
+		<td class=formular>]]><LABEL value="input.title" /><![CDATA[:</td>
+		<td class=dialogtxt> ]]><INPUTFIELD name="NEUTITEL" class="textfeld2" size="40" length="100" /><![CDATA[</td>
+	
+	</tr>
+	<tr>
+		<td class=dialogtxt colspan=2><INPUT type="checkbox" id=SETLINK name=SETLINK onclick="saveLayerData('NEU','LINK','NEWWITHOUTLINK','NEWLINK');this.checked=false;switchlyr('NEWLINK','NEWWITHOUTLINK');"> ]]><LABEL value="input.addtonav" /><![CDATA[</td>
+	</tr>
+	
+	<tr><td colspan=2 class="leerzeile"><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=1 height=70px></td></tr>
+
+	<tr><td colspan=2 class=formular>
+			<table cellspacing=0 cellpadding=5 width=100%>
+			<tr>
+				<td class=formular align=right width=60%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.previousscreen" /><![CDATA[" id=ZURUECK name=ZURUECK onClick="location='explorer_files_new.html';"></td>
+				<td class=formular align=center width=20%><INPUT disabled class=button width=100 type="button" value="]]><LABEL value="button.endwizard" /><![CDATA[" id=WEITER name=WEITER onClick="location='explorer_files_new_folder.html?step=1&newfolder='+document.NEU.NEUNAME.value+'&title='+document.NEU.NEUTITEL.value;"></td>
+				<td class=formular align=center width=20%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="location='explorer_files.html';"></td>
+			</tr>
+			</table>
+		</td>
+	</tr>
 	</table>
+</td>
+</tr>
+</table>
+</form>
+</td></tr>
+</table>
 </div>
 <!-- Ende neue Datei Anlegen -->
 
 
 <!-- Beginn Layer -->
-<div id="NEWLINK">
-	 	<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<div id="NEWLINK" style="FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif; FONT-SIZE: 8pt; position: absolute; LEFT: 0px; TOP: 0px; width:100%; height:100%; VISIBILITY: visible; Z-INDEX: 100;">
+<link rel=stylesheet type="text/css" href="../css/format.css">
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=center valign=middle>
+
+<form id="LINK" name="LINK">
+<table border=2 cellspacing=0 cellpadding=0 width=555px>
+<tr><td><table cellspacing=0 cellpadding=5 border=0 width=100%>
+<tr><td colspan=2 class=head>]]><LABEL value="title.newfolder" /><![CDATA[</td></tr>
+	<tr><td colspan=2 class=leerzeile>&nbsp;</td></tr>
+	<tr>
+		<td class=formular width=35%>]]><LABEL value="input.name" /><![CDATA[:</td>
+		<td class=dialogtxt> ]]><INPUTFIELD name="NEUNAME" class="textfeld2" size="40" length="100"  action="onfocus='LINK.WEITER.disabled=false;'"/><![CDATA[</td>
+	
+	</tr>
+	<tr>
+		<td class=formular>]]><LABEL value="input.title" /><![CDATA[:</td>
+		<td class=dialogtxt> ]]><INPUTFIELD name="NEUTITEL" class="textfeld2" size="40" length="100" /><![CDATA[</td>
+	</tr>
+	<tr>
+		<td class=dialogtxt colspan=2><INPUT type="checkbox" id=SETLINK name=SETLINK checked onclick="saveLayerData('LINK','NEU','NEWLINK','NEWWITHOUTLINK');switchlyr('NEWWITHOUTLINK','NEWLINK');this.checked=true;checkForName();"> ]]><LABEL value="input.addtonav" /><![CDATA[</td>
+	</tr>
+	<tr><td colspan=2 class=leerzeile><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=1 height=10px</td></tr>
+	<tr>
+		<td class=formular>]]><LABEL value="input.navtitle" /><![CDATA[:</td>
+		<td class=dialogtxt>]]><INPUTFIELD name="LINKNAME" class="textfeld2" size="40" length="100" /><![CDATA[</td>
+	</tr>
+	<tr>
+		<td class=formular>]]><LABEL value="input.insert" /><![CDATA[</td>
+		<td class=dialogtxt>
+			]]><SELECT class="textfeld" name="LINKPOS" width="370" method="getNavPos" /><![CDATA[
+		</td>
+	</tr>
+
+	<tr><td colspan=2 class=formular>
+			<table cellspacing=0 cellpadding=5 width=100%>
 			<tr>
-				<td align=center valign=middle>
-					<form id="LINK" name="LINK">
-						<table border=2 cellspacing=0 cellpadding=0 width=555px>
-							<tr>
-								<td>
-									<table cellspacing=0 cellpadding=5 border=0 width=100%>
-										<tr>
-											<td colspan=2 class=head>]]><LABEL value="title.newpage" /><![CDATA[</td>
-										</tr>
-										<tr>
-											<td colspan=2 class=leerzeile>&nbsp;</td>
-										</tr>
-										<tr>
-											<td class=formular width=35%>]]><LABEL value="input.name" /><![CDATA[:</td>
-											<td class=dialogtxt> ]]><INPUTFIELD name="NEUNAME" class="textfeld2" size="40" length="100"  action="onfocus='LINK.WEITER.disabled=false;'"/><![CDATA[</td>
-										</tr>
-										<tr>
-											<td class=formular>]]><LABEL value="input.title" /><![CDATA[:</td>
-											<td class=dialogtxt> ]]><INPUTFIELD name="NEUTITEL" class="textfeld2" size="40" length="100" /><![CDATA[</td>
-										</tr>
-										<tr>
-											<td class=formular>]]><LABEL value="input.template" /><![CDATA[:</td>
-											<td class=dialogtxt>]]><SELECT class="localstyle" name="TEMPLATE" width="370" div="true" method="getTemplates" /><![CDATA[</td>
-										</tr>
-										<tr>
-											<td class=dialogtxt colspan=2><INPUT type="checkbox" id=SETLINK name=SETLINK checked onclick="saveLayerData2('LINK','NEU','NEWLINK','NEWWITHOUTLINK');switchlyr('NEWWITHOUTLINK','NEWLINK');this.checked=true;"> ]]><LABEL value="input.addtonav" /><![CDATA[</td>
-										</tr>
-										<tr>
-											<td colspan=2 class=leerzeile><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=1 height=10px</td>
-										</tr>
-										<tr>
-											<td class=formular>]]><LABEL value="input.navtitle" /><![CDATA[:</td>
-											<td class=dialogtxt>]]><INPUTFIELD name="LINKNAME" class="textfeld2" size="40" length="100" /><![CDATA[</td>
-										</tr>
-										<tr>
-											<td class=formular>]]><LABEL value="input.insert" /><![CDATA[</td>
-											<td class=dialogtxt>]]><SELECT class="localstyle" name="LINKPOS" width="370" div="true" method="getNavPos" /><![CDATA[</td>
-										</tr>
-										<tr>
-											<td colspan=2 class=formular>
-												<table cellspacing=0 cellpadding=5 width=100%>
-													<tr>
-														<td class=formular align=right width=60%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.previousscreen" /><![CDATA[" id=ZURUECK name=ZURUECK onClick="location='explorer_files_new.html';"></td>
-														<td class=formular align=center width=20%><INPUT disabled class=button width=100 type="button" value="]]><LABEL value="button.endwizard" /><![CDATA[" id=WEITER name=WEITER onClick="location='explorer_files_new_page.html?step=1&newfile='+document.LINK.NEUNAME.value+'&title='+document.LINK.NEUTITEL.value+'&template='+simpleEscape(document.LINK.TEMPLATE.value)+'&navtitle='+simpleEscape(document.LINK.LINKNAME.value)+'&navpos='+ document.LINK.LINKPOS.value;"></td>
-														<td class=formular align=center width=20%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="location='explorer_files.html';"></td>
-													</tr>
-												</table>
-											</td>
-										</tr>
-									</table>
-								</td>
-							</tr>
-						</table>
-					</form>
-				</td>
-			</tr>
-		</table>
-	</div>
+				<td class=formular align=right width=60%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.previousscreen" /><![CDATA[" id=ZURUECK name=ZURUECK onClick="location='explorer_files_new.html';"></td>
+				<td class=formular align=center width=20%><INPUT disabled class=button width=100 type="button" value="]]><LABEL value="button.endwizard" /><![CDATA[" id=WEITER name=WEITER onClick="location='explorer_files_new_folder.html?step=1&newfolder='+document.LINK.NEUNAME.value+'&title='+document.LINK.NEUTITEL.value+'&navtitle='+document.LINK.LINKNAME.value+'&navpos='+document.LINK.LINKPOS.value;"></td>
+				<td class=formular align=center width=20%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="location='explorer_files.html';"></td></tr>
+			</table>
+		</td>
+	</tr>
+	</table>
+</td>
+</tr>
+</table>
+</form>
+</td></tr>
+</table>
+</div>
 </body>
 </HTML>
 ]]>
 </TEMPLATE>
 
+<TEMPLATE name="update">
+<![CDATA[
+<HTML>
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+
+<title>OpenCms</title>
+<link rel=stylesheet type="text/css" href="../css/format.css">
+
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
+
+<SCRIPT LANGUAGE=JavaScript FOR=window EVENT=onload>
+	updateFrame('body.explorer_content.explorer_files','explorer_files.html');
+	//updateFrame('body.explorer_tree','explorer_tree.html');
+</SCRIPT>
+
+</HEAD>
+<BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onload>
+<CENTER>
+<!-- Begin Logo opencms -->
+<table border=0 cellspacing=0 cellpadding=0 align=center height=100>
+	<tr>
+		<td><IMG alt=OpenCMS border=0 hspace=0 src="]]><METHOD name="picsUrl">opencms.gif</METHOD><![CDATA["></td>
+	</tr>
+</table>
+<!-- End Logo opencms -->
+
+<!-- Begin please wait text -->
+<table cellspacing=0 cellpadding=0 border=0>
+<tr>
+<td><font size="-1" face="MS Sans Serif,Arial,Helvetica">]]><LABEL value="message.wait"/><![CDATA[</font></td>
+</tr>
+</table>
+<!-- End please wait text -->
+</CENTER>
+</BODY>
+</html>
+]]>
+</TEMPLATE>
 
 </WORKPLACE>

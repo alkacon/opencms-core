@@ -16,7 +16,7 @@ function show_help()
 
 function checkForName(){
 
-	if(LINK.NEUNAME.value!="")NEU.WEITER.disabled=false;
+	if(LINK.NEUNAME.value=="")NEU.WEITER.disabled=true;
 	else NEU.WEITER.disabled=false;
  
 }
