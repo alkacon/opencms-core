@@ -6,7 +6,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.19 $ $Date: 2000/02/02 15:28:57 $
+ * @version $Revision: 1.20 $ $Date: 2000/02/03 09:38:38 $
  */
 public interface I_CmsWpConstants {
 
@@ -206,9 +206,14 @@ public interface I_CmsWpConstants {
     /** Link of the error box */
     public static final String C_ERROR_LINK = "ref";    
 
+    /** Static text in the error box */
+    public static final String C_ERROR_MSG_REASON = "msgreason";    
+   
+    /** Button label of the error box */
+    public static final String C_ERROR_MSG_BUTTON = "msgbutton";    
 
     
-    // Parameters for select boxes and error pages
+    // Parameters for select boxes
     
     /** Name of the select box */
     public static final String C_SELECTBOX_NAME = "name";
@@ -234,11 +239,20 @@ public interface I_CmsWpConstants {
     /** option value of the select box */
     public static final String C_SELECTBOX_OPTIONVALUE = "value";
         
-    /** Static text in the error box */
-    public static final String C_ERROR_MSG_REASON = "msgreason";    
+    /** default values for font select boxes */
+    public static final String[] C_SELECTBOX_FONTS = 
+            { "Arial", "Arial Narrow", "System", "Times New Roman", "Verdana" };
+
+    /** default values for font select boxes */
+    public static final String[] C_SELECTBOX_FONTSTYLES = 
+            { "Normal", "Heading 1", "Heading 2", "Heading 3", "Heading 4", 
+              "Heading 5", "Heading 6", "Address", "Formatted" };
+
+    /** default values for font select boxes */
+    public static final String[] C_SELECTBOX_FONTSIZES = 
+            { "1", "2", "3", "4", "5", "6", "7"};
+    
    
-    /** Button label of the error box */
-    public static final String C_ERROR_MSG_BUTTON = "msgbutton";    
     
     // Parameters for file list
     
@@ -249,6 +263,7 @@ public interface I_CmsWpConstants {
     public static final String C_FILELIST_TEMPLATE="template";
     
     
+
     // Constants for language file control
             
     /** Prefix for button texts in the language file */

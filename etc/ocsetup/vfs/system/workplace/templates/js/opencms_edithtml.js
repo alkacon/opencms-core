@@ -153,10 +153,13 @@ function doEditHTML(para)
 	switch (para)
 	{
 	case 1:
-		history.back();
+		document.EDITHTML.EXIT.value = "cancel";
+		document.EDITHTML.submit();
 		break;
 	case 2:
-		history.back();
+		document.EDITHTML.EXIT.value = "save";
+		doSubmit();
+		document.EDITHTML.submit();
 		break;
 	case 3:
 		//document.all.form1.CONTENT.value = escape(document.all.edit1.DocumentHTML);
@@ -252,7 +255,7 @@ function doEditHTML(para)
 		DECMD_IMAGE_onclick();
 		break;		
     case 43:
-        alert('muß noch geschrieben werden');
+        window.open("picturebrowser.html", "PicBrowser", "width=500, height=500, resizable=yes, top=200, left=100");
         break;
  	default:
 		alert("Sorry, leider kann die Funktion nicht ausgeführt werden.");			

@@ -7,16 +7,19 @@
 <title>OpenCms Arbeitsplatz von Alexander Kandzior</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">
 
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript">	
 	<!-- Includes the Document Source-Code into the HTML-Editor and sets up the contect menue-->
 	function setText()
 	{
-	  //
 	  document.all.EDIT_HTML.DocumentHTML = unescape("]]><METHOD name="setText"/><![CDATA[");
 	  EDITHTML.EDIT_HTML.focus();
 	}
-	// URL for pictures
+	
+	<!-- URL for pictures -->
 	var pfad="]]><METHOD name="picsUrl"/><![CDATA[";
+	
+	<!-- URL for help file -->
+	var help="]]><METHOD name="helpUrl"/><![CDATA[";
 </SCRIPT>
 
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
@@ -39,8 +42,8 @@ return DisplayChanged()
 
 <table cellspacing=0 cellpadding=0 border=0 width="100%" height=32px>
 	<tr>
-		<td class=menu>]]><BUTTON href="#" name="bt_saveclose" action="doEditHTML(2);" alt="saveclose"/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="javascript:doEditHTML(3)" name="bt_save" action="" alt="saveclose"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="javascript:doEditHTML(2);" name="bt_saveclose" action="" alt="saveclose"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="javascript:doEditHTML(3);" name="bt_save" action="" alt="saveclose"/><![CDATA[</td>
 			
 		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
 		<td class=menu>]]><BUTTON href="#" name="bt_undo" action="doEditHTML(4);" alt="undo"/><![CDATA[</td>
@@ -63,9 +66,9 @@ return DisplayChanged()
 		<td class=menu>]]><BUTTON name="bt_print" action="doEditHTML(15);" alt="print"/><![CDATA[</td>
 		
 		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="javascript:openwin('help/standard.html', 'Hilfe', 300, 600);" name="bt_hilfe" action="doEditHTML(16);" alt="help"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="javascript:opensmallwin(help + '3_2.html', 'Hilfe', 300, 600);" name="bt_hilfe" action="" alt="help"/><![CDATA[</td>
 
-		<td class=menu width="100%" align=right>]]><BUTTON href="#" name="bt_close" action="doEditHTML(1);" alt="close"/><![CDATA[</td>
+		<td class=menu width="100%" align=right>]]><BUTTON href="javascript:doEditHTML(1);" name="bt_close" action="" alt="close"/><![CDATA[</td>
 	</tr>
 </table>
 		
@@ -74,40 +77,9 @@ return DisplayChanged()
 		<!-- Schriftformatierung -->
 <table cellspacing=0 cellpadding=0 border=0 width="100%" height=32px>
 	<tr>
-		<td class=menu>
-			<select name=BLOCK ID=BLOCK onchange="return ParagraphStyle_onchange()" TITLE="Paragraph Format">
-				<option value="Normal">Normal
-				<option value="Heading 1">Heading 1
-				<option value="Heading 2">Heading 2
-				<option value="Heading 3">Heading 3
-				<option value="Heading 4">Heading 4
-				<option value="Heading 5">Heading 5
-				<option value="Heading 6">Heading 6
-				<option value="Address">Address
-				<option value="Formatted">Formatted
-			</select>
-		</td>
-		<td class=menu>
-			<select name="FONTFACE" onchange="doEditHTML(22);">
-				<option value="Arial">Arial
-				<option value="Arial Narrow">Arial Narrow
-				<option value="System">System
-				<option value="Times New Roman" selected>Times New Roman
-				<option value="Verdana">Verdana
-			</select>
-		</td>
-		<td class=menu>
-			<select name="FONTSIZE" onchange="doEditHTML(23);">
-				<option value="1">1
-				<option value="2" >2
-				<option value="3" selected>3
-				<option value="4">4
-				<option value="5">5
-				<option value="6">6
-				<option value="7">7
-			</select>
-		</td>
-		
+		<td class=menu>]]><SELECT class="textfeld" name="BLOCK" width="80" method="getFontStyles" onchange="return ParagraphStyle_onchange()"/><![CDATA[</td>
+		<td class=menu>]]><SELECT class="textfeld" name="FONTFACE" width="120" method="getFonts" onchange="doEditHTML(22);"/><![CDATA[</td>
+		<td class=menu>]]><SELECT class="textfeld" name="FONTSIZE" width="40" method="getFontSizes" onchange="doEditHTML(23);"/><![CDATA[</td>		
 		<td class=menu>]]><BUTTON href="#" name="bt_bold" action="doEditHTML(24);" alt="bold"/><![CDATA[</td>
 		<td class=menu>]]><BUTTON href="#" name="bt_italic" action="doEditHTML(25);" alt="italic"/><![CDATA[</td>
 		<td class=menu>]]><BUTTON href="#" name="bt_underline" action="doEditHTML(26);" alt="underline"/><![CDATA[</td>
@@ -161,6 +133,7 @@ return DisplayChanged()
 				<param name=Scrollbars value=true>
 			</OBJECT>
 			<INPUT TYPE=HIDDEN NAME="CONTENT">
+			<INPUT TYPE=HIDDEN NAME="EXIT">
 		</td>
 	</tr>
 </table>

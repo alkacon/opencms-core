@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<WORKPLACE>
+<picstartseq><![CDATA[<TR><TD valign=top class=piclistfiles>
+<P><IMG src="]]></picstartseq>
+<picendseq><![CDATA[">
+</TD></TR>]]>
+</picendseq>
+<textstartseq><![CDATA[<TR><TD valign=top class=piclistfoot>
+<P>]]></textstartseq>
+<textendseq><![CDATA[</TD></TR>]]>
+</textendseq>
+<TEMPLATE>
+<![CDATA[
+<html>
+<head>
+<link rel=stylesheet type="text/css" href="formate.css">
+
+</head>
+<body>
+<TABLE CELLPADDING=3 CELLSPACING=2 WIDTH=100% HEIGTH=100% class="explorertable">
+]]><METHOD name="pictureList"/><![CDATA[
+</Table>
+</body>
+</html>
+]]>
+</TEMPLATE>
+</WORKPLACE>

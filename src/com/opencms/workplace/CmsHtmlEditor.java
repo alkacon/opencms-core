@@ -13,7 +13,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2000/02/02 10:07:16 $
+ * @version $Revision: 1.3 $ $Date: 2000/02/03 09:38:38 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsHtmlEditor extends CmsWorkplaceDefault {
@@ -106,8 +106,7 @@ public class CmsHtmlEditor extends CmsWorkplaceDefault {
                 }
             }*/
             try {
-                System.err.println("**** trying to send redirect");
-                cms.getRequestContext().getResponse().sendCmsRedirect(workplaceUrl(cms));
+                cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceMainPath());
             } catch(IOException e) {
                 throwException("Could not send redirect to workplace main screen.", e);
             }

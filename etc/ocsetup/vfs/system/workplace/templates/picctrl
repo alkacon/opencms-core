@@ -1,0 +1,122 @@
+<?xml version="1.0"?>
+<WORKPLACE>
+<TEMPLATE>
+<![CDATA[
+
+<html>
+<head>
+<link rel=stylesheet type="text/css" href="../css/format.css">
+
+<!-- Presets the value of the Filter Input field when the document is loaded -->
+
+<SCRIPT LANGUAGE=JavaScript FOR=window EVENT=onload>
+FilterInput.value="]]><PROCESS>filter</PROCESS><![CDATA[";
+</SCRIPT>
+
+<script language="JavaScript">
+<!--
+var page=parseInt(]]><PROCESS>page</PROCESS><![CDATA[);  // the actual page
+var filter="]]><PROCESS>filter</PROCESS><![CDATA[";      // the actual filter
+var maxpage=parseInt(]]><PROCESS>maxpage</PROCESS><![CDATA[);  // the maximum page number
+var DO_NEXT=1;
+var DO_PREV=2;
+var DO_UPLOAD=3;
+var DO_UPDATE=4;
+
+<!-- The update flag is set by the upload dialog. When it is set to one, the picture -->
+<!-- list is reloaded (after a new image was added) -->
+
+// if(<#update#> ==1)
+//if (update == 1)
+//{
+//parent.frames[1].location.href="<#=SYSTEM#>piclist?FOLDER=<#=foldername#>&PAGE=1&FILTER="+filter;
+//}
+
+
+<!-- Main processing function, evaluates which button is pressed and activates the -->
+<!-- according action -->
+
+function doEdit(para)
+{
+ switch (para)
+ {
+  case DO_NEXT: // next page
+    if (page < maxpage)  // no more pages available? Get this information from the picture list frame.
+     {
+      page++; // increase page number
+      filter=FilterInput.value;
+      parent.location.href = "picturebrowser.html?folder=]]><PROCESS>folder</PROCESS><![CDATA[&page="+page+"&filter="+filter; //reload complete picture browser
+     }
+    break;
+  case DO_PREV: // next page
+    page--;  //decrease page number
+    if (page<1)  // already on first page?
+     {
+      page=1;
+     }
+    else
+     {
+      filter=FilterInput.value;
+      parent.location.href = "picturebrowser.html?folder=]]><PROCESS>folder</PROCESS><![CDATA[&page="+page+"&filter="+filter; //reload complete picture browser
+     }
+    break;
+   case DO_UPDATE: // update page - nescessary after changing the filer.
+     filter=FilterInput.value;
+     parent.location.href = "picturebrowser.html?folder=]]><PROCESS>folder</PROCESS><![CDATA[&page=1&filter="+filter;
+     break;
+   case DO_UPLOAD: // upload image, open the upload dialog.
+     filter=FilterInput.value;
+     alert("NYI!");
+	 // openwin("upload.html?folder=]]><PROCESS>folder</PROCESS><![CDATA[&browser=1&filter="+filter);
+     break;
+  default:
+    alert("Illegal Function");
+  }
+}
+
+<!-- Opens a new window, only used for the upload dialog -->
+function openwin(url) 
+{
+	action = window.open(url, "actionwin", "width=300,height=200");
+	if (action.opener == null)
+	{
+		action.opener = window;	
+	}
+}
+
+
+-->
+</script>
+
+</head>
+<body>
+<!-- Body, creates all the control buttons -->
+
+<TABLE CELLPADDING=3 CELLSPACING=2 WIDTH=100% HEIGTH=100% class="explorertable">
+<TR>
+<TD COLSPAN=2 class="explorerhead">
+    <H2 class="explorerh2">]]><LABEL value="label.page"/> <PROCESS>page</PROCESS>: <PROCESS>folder</PROCESS><![CDATA[<H2>
+
+</TD>
+</TR>
+<TR>
+<TD COLSPAN=2 class="explorerbuttons">
+ ]]><LABEL value="input.filter"/>: <INPUTFIELD name="FilterInput" class="textfeld" size="20" length="255" /><![CDATA[
+ ]]><TEXTBUTTON class="button" name="upload" value="upload" width="100" action="javascript:doEdit(DO_UPLOAD)"/><![CDATA[
+</td>
+</tr>
+<tr>
+<TD COLSPAN=2 class="explorerfoot">
+ ]]><TEXTBUTTON class="button" name="next" value="next" width="100" action="javascript:doEdit(DO_NEXT)"/><![CDATA[
+ ]]><TEXTBUTTON class="button" name="previous" value="previous" width="100" action="javascript:doEdit(DO_PREV)"/><![CDATA[
+ ]]><TEXTBUTTON class="button" name="reload" value="reload" width="100" action="javascript:doEdit(DO_UPDATE)"/><![CDATA[
+</td>
+</tr>
+
+</table>
+
+</body>
+</html>
+]]>
+</TEMPLATE>
+</WORKPLACE>

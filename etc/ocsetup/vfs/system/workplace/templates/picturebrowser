@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<WORKPLACE>
+<TEMPLATE>
+<![CDATA[
+<html>
+<head>
+<title>]]><LABEL value="title.picbrowser" /><![CDATA[</title>
+</head>
+<frameset rows="150,*" border=0 frameborder=0 framespacing=0>
+<frame src="picctrl.html?folder=]]><PROCESS>folder</PROCESS><![CDATA[&page=]]><PROCESS>page</PROCESS><![CDATA[&filter=]]><PROCESS>filter</PROCESS><![CDATA[" name="Control" scrolling=no noresize>
+<frame src="piclist.html?folder=]]><PROCESS>folder</PROCESS><![CDATA[&page=]]><PROCESS>page</PROCESS><![CDATA[&filter=]]><PROCESS>filter</PROCESS><![CDATA[" name="List" scolling=yes>
+</frameset>
+<body>
+</body>
+</html>
+]]>
+</TEMPLATE>
+</WORKPLACE>
