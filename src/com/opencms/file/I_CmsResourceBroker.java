@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2001/04/20 09:50:26 $
- * Version: $Revision: 1.142 $
+ * Date   : $Date: 2001/05/22 14:54:18 $
+ * Version: $Revision: 1.143 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.142 $ $Date: 2001/04/20 09:50:26 $
+ * @version $Revision: 1.143 $ $Date: 2001/05/22 14:54:18 $
  *
  */
 
@@ -1254,7 +1254,17 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
 	public CmsResource getParentResource(CmsUser currentUser, CmsProject currentProject,
 										 String resourcename)
 		throws CmsException;
-	  /**
+    /**
+     * Checks which Group can read the resource and all the parent folders.
+     *
+     * @param projectid the project to check the permission.
+     * @param res The resource name to be checked.
+     * @return The Group Id of the Group which can read the resource.
+     *          null for all Groups and
+     *          Admingroup for no Group.
+     */
+    public String getReadingpermittedGroup(int projectId, String resource) throws CmsException;
+    /**
 	 * Gets the Registry.<BR/>
 	 *
 	 *

@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/05/17 14:10:31 $
- * Version: $Revision: 1.195 $
+ * Date   : $Date: 2001/05/22 14:54:18 $
+ * Version: $Revision: 1.196 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -52,7 +52,7 @@ import com.opencms.launcher.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.195 $ $Date: 2001/05/17 14:10:31 $ *
+ * @version $Revision: 1.196 $ $Date: 2001/05/22 14:54:18 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -2463,8 +2463,8 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 	 */
 	protected void fillDefaults() throws CmsException
 	{
-		if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {		
-			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] fillDefaults() starting NOW!");	
+		if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] fillDefaults() starting NOW!");
 		}
 
 		// the resourceType "folder" is needed always - so adding it
@@ -3255,6 +3255,94 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 	public CmsProject getOnlineProject(int projectId) throws CmsException {
 		return readProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
 	}
+
+    /**
+     * Checks which Group can read the resource and all the parent folders.
+     *
+     * @param projectid the project to check the permission.
+     * @param res The resource name to be checked.
+     * @return The Group Id of the Group which can read the resource.
+     *          null for all Groups and
+     *          Admingroup for no Group.
+     */
+    public String getReadingpermittedGroup(int projectId, String resource) throws CmsException {
+        CmsResource res = readFileHeader(projectId, resource);
+        int groupId = -1;
+        boolean noGroupCanReadThis = false;
+        do{
+            int flags = res.getAccessFlags();
+            if(!((flags & C_ACCESS_PUBLIC_READ ) == C_ACCESS_PUBLIC_READ)){
+                if((flags & C_ACCESS_GROUP_READ) == C_ACCESS_GROUP_READ){
+                    if((groupId == -1) || (groupId == res.getGroupId())){
+                        groupId = res.getGroupId();
+                    }else{
+                        int result = checkGroupDependence(groupId, res.getGroupId());
+                        if(result == -1){
+                            noGroupCanReadThis = true;
+                        }else{
+                            groupId = result;
+                        }
+                    }
+                }else{
+                    noGroupCanReadThis = true;
+                }
+            }
+            res = readFileHeader(res.getParentId());
+        }while(!(noGroupCanReadThis || C_ROOT.equals(res.getAbsolutePath())));
+        if (noGroupCanReadThis){
+            return C_GROUP_ADMIN;
+        }
+        if(groupId == -1){
+            return null;
+        }else{
+            return readGroup(groupId).getName();
+        }
+    }
+    /**
+     * helper for getReadingpermittedGroup. Returns the id of the group that is in
+     * any way parent for the other group or -1 for no dependencies between the groups.
+     */
+    private int checkGroupDependence(int group1,int group2) throws CmsException {
+
+        int id = group1;
+        do{
+            id = readGroup(id).getParentId();
+            if(id == group2){
+                return group1;
+            }
+        }while (id != C_UNKNOWN_ID);
+
+        id = group2;
+        do{
+            id = readGroup(id).getParentId();
+            if(id == group1){
+                return group2;
+            }
+        }while (id != C_UNKNOWN_ID);
+
+        return -1;
+    }
+
+    /**
+     * checks a Vector of Groupids for the Group which can read all files
+     *
+     * @param groups A Vector with groupids (Integer).
+     * @return The id of the group that is in any way parent of all other
+     *       group or -1 for no dependencies between the groups.
+     */
+    public int checkGroupDependence(Vector groups) throws CmsException{
+        if((groups == null) || (groups.size() == 0)){
+            return -1;
+        }
+        int returnValue = ((Integer)groups.elementAt(0)).intValue();
+        for (int i=1; i < groups.size(); i++){
+            returnValue = checkGroupDependence(returnValue, ((Integer)groups.elementAt(i)).intValue());
+            if (returnValue == -1){
+                return -1;
+            }
+        }
+        return returnValue;
+    }
 
 	/**
 	 * Reads all resources (including the folders) residing in a folder<BR>

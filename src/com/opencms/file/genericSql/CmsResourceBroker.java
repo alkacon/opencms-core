@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2001/05/17 14:10:31 $
- * Version: $Revision: 1.240 $
+ * Date   : $Date: 2001/05/22 14:54:19 $
+ * Version: $Revision: 1.241 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.240 $ $Date: 2001/05/17 14:10:31 $
+ * @version $Revision: 1.241 $ $Date: 2001/05/22 14:54:19 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2995,6 +2995,20 @@ public Vector getFolderTree(CmsUser currentUser, CmsProject currentProject) thro
          }
          return allGroups;
     }
+
+    /**
+     * Checks which Group can read the resource and all the parent folders.
+     *
+     * @param projectid the project to check the permission.
+     * @param res The resource name to be checked.
+     * @return The Group Id of the Group which can read the resource.
+     *          null for all Groups and
+     *          Admingroup for no Group.
+     */
+    public String getReadingpermittedGroup(int projectId, String resource) throws CmsException {
+        return m_dbAccess.getReadingpermittedGroup(projectId, resource);
+    }
+
 /**
  * Returns the parent group of a group<P/>
  *

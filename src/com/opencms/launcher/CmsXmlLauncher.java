@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsXmlLauncher.java,v $
-* Date   : $Date: 2001/05/17 14:10:31 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2001/05/22 14:54:20 $
+* Version: $Revision: 1.28 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -55,7 +55,7 @@ import javax.servlet.http.*;
  * be used to create output.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.27 $ $Date: 2001/05/17 14:10:31 $
+ * @version $Revision: 1.28 $ $Date: 2001/05/22 14:54:20 $
  */
 public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_CmsConstants {
 
@@ -200,7 +200,9 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_
             // So create a new URI object with a start element and store it using the UriLocator
             CmsElementDescriptor elemDesc = new CmsElementDescriptor(templateClass, templateName);
             CmsElementDefinitionCollection eldefs = doc.getElementDefinitionCollection();
-            cmsUri = new CmsUri(elemDesc, null, eldefs);
+            cmsUri = new CmsUri(elemDesc, cms.getReadingpermittedGroup(
+                        cms.getRequestContext().currentProject().getId(),
+                        templateName), eldefs);
             elementCache.getUriLocator().put(uriDesc, cmsUri);
         }
 

@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2001/05/17 14:10:31 $
-* Version: $Revision: 1.61 $
+* Date   : $Date: 2001/05/22 14:54:20 $
+* Version: $Revision: 1.62 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.61 $ $Date: 2001/05/17 14:10:31 $
+ * @version $Revision: 1.62 $ $Date: 2001/05/22 14:54:20 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -777,7 +777,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
 
         // First build our own cache directives.
         CmsCacheDirectives result = new CmsCacheDirectives(true);
-        result.setCacheUri(true);
+        //result.setCacheUri(true);
         Vector para = new Vector();
         para.add("cmsframe");
         result.setCacheParameters(para);
@@ -1140,9 +1140,11 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      * @return New element for the element cache
      */
     public A_CmsElement createElement(CmsObject cms, String templateFile, Hashtable parameters) {
-        CmsElementDefinitionCollection subtemplateDefinitions = new CmsElementDefinitionCollection();
 
+        CmsElementDefinitionCollection subtemplateDefinitions = new CmsElementDefinitionCollection();
+        String readAccessGroup = cms.C_GROUP_ADMIN;
         try {
+            readAccessGroup = cms.getReadingpermittedGroup(cms.getRequestContext().currentProject().getId(),templateFile);
             CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, null, parameters, null);
 
             CmsElementCache elementCache = cms.getRequestContext().getElementCache();
@@ -1180,7 +1182,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
             }
         }
         CmsElementXml result = new CmsElementXml(getClass().getName(),
-                                                 templateFile,
+                                                 templateFile, readAccessGroup,
                                                  getCacheDirectives(cms, templateFile, null, parameters, null),
                                                  subtemplateDefinitions);
         return result;

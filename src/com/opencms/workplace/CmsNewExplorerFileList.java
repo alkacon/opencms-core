@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
-* Date   : $Date: 2001/05/17 14:10:32 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2001/05/22 14:54:20 $
+* Version: $Revision: 1.25 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -46,7 +46,7 @@ import org.xml.sax.*;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.24 $ $Date: 2001/05/17 14:10:32 $
+ * @version $Revision: 1.25 $ $Date: 2001/05/22 14:54:20 $
  */
 
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannels,I_CmsConstants,I_CmsWpConstants {
@@ -463,6 +463,6 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
     }
 
     public A_CmsElement createElement(CmsObject cms, String templateFile, Hashtable parameters) {
-        return new CmsElementDump(getClass().getName(), templateFile, getCacheDirectives(cms, templateFile, null, parameters, null));
+        return new CmsElementDump(getClass().getName(), templateFile, null, getCacheDirectives(cms, templateFile, null, parameters, null));
     }
 }

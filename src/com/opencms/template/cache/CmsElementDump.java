@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementDump.java,v $
-* Date   : $Date: 2001/05/10 12:32:56 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2001/05/22 14:54:20 $
+* Version: $Revision: 1.7 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -48,8 +48,8 @@ public class CmsElementDump extends A_CmsElement {
     /**
      * Constructor for an element with the given class and template name.
      */
-    public CmsElementDump(String className, String templateName, CmsCacheDirectives cd) {
-        init(className, templateName, cd);
+    public CmsElementDump(String className, String templateName, String readAccessGroup, CmsCacheDirectives cd) {
+        init(className, templateName, readAccessGroup, cd);
     }
 
     /**
@@ -60,8 +60,8 @@ public class CmsElementDump extends A_CmsElement {
      * @param cd Cache directives for this element
      * @param defs CmsElementDefinitionCollection for this element.
      */
-    public CmsElementDump(String className, String templateName, CmsCacheDirectives cd, CmsElementDefinitionCollection defs) {
-        init(className, templateName, cd, defs);
+    public CmsElementDump(String className, String templateName, String readAccessGroup, CmsCacheDirectives cd, CmsElementDefinitionCollection defs) {
+        init(className, templateName, readAccessGroup, cd, defs);
     }
 
     /**
@@ -90,13 +90,15 @@ public class CmsElementDump extends A_CmsElement {
 
         CmsElementVariant variant = null;
 
-        Object cacheKey = templateClass.getKey(cms, m_templateName, parameters, null);
+//        Object cacheKey = templateClass.getKey(cms, m_templateName, parameters, null);
+        Object cacheKey = cd.getCacheKey(cms, parameters);
 
         // In classic mode, now the cache-control headers of the response
         // are setted. What shall we do here???
         // Now check, if there is a variant of this element in the cache.
 
         if(cd.isInternalCacheable()) {
+            checkReadAccess(cms);
             variant = getVariant(cacheKey);
         }
 

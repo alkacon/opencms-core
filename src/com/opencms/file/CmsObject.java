@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2001/05/10 12:30:53 $
- * Version: $Revision: 1.156 $
+ * Date   : $Date: 2001/05/22 14:54:18 $
+ * Version: $Revision: 1.157 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -49,7 +49,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.156 $ $Date: 2001/05/10 12:30:53 $
+ * @version $Revision: 1.157 $ $Date: 2001/05/22 14:54:18 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -1036,6 +1036,20 @@ public Vector getGroupsOfUser(String username) throws CmsException {
 public com.opencms.launcher.CmsLauncherManager getLauncherManager() {
     return m_launcherManager;
 }
+
+    /**
+     * Checks which Group can read the resource and all the parent folders.
+     *
+     * @param projectid the project to check the permission.
+     * @param res The resource name to be checked.
+     * @return The Group Id of the Group which can read the resource.
+     *          null for all Groups and
+     *          Admingroup for no Group.
+     */
+    public String getReadingpermittedGroup(int projectId, String resource) throws CmsException {
+        return m_rb.getReadingpermittedGroup(projectId, resource);
+    }
+
 /**
  * Returns the parent group of a group.
  *

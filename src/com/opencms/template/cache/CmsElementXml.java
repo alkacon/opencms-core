@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementXml.java,v $
-* Date   : $Date: 2001/05/17 14:10:32 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2001/05/22 14:54:20 $
+* Version: $Revision: 1.9 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -49,8 +49,8 @@ public class CmsElementXml extends A_CmsElement implements com.opencms.boot.I_Cm
     /**
      * Constructor for an element with the given class and template name.
      */
-    public CmsElementXml(String className, String templateName, CmsCacheDirectives cd) {
-        init(className, templateName, cd);
+    public CmsElementXml(String className, String templateName, String readAccessGroup, CmsCacheDirectives cd) {
+        init(className, templateName, readAccessGroup, cd);
     }
 
     /**
@@ -58,11 +58,12 @@ public class CmsElementXml extends A_CmsElement implements com.opencms.boot.I_Cm
      * definitions.
      * @param name the name of this element-definition.
      * @param className the classname of this element-definition.
+     * @param readAccessGroup The group that may read the element.
      * @param cd Cache directives for this element
      * @param defs CmsElementDefinitionCollection for this element.
      */
-    public CmsElementXml(String className, String templateName, CmsCacheDirectives cd, CmsElementDefinitionCollection defs) {
-        init(className, templateName, cd, defs);
+    public CmsElementXml(String className, String templateName, String readAccessGroup, CmsCacheDirectives cd, CmsElementDefinitionCollection defs) {
+        init(className, templateName, readAccessGroup, cd, defs);
     }
 
     /**
@@ -109,6 +110,8 @@ public class CmsElementXml extends A_CmsElement implements com.opencms.boot.I_Cm
         // Now check, if there is a variant of this element in the cache.
         //if(cacheable && !templateClass.shouldReload(cms, m_templateName, m_elementName, parameters, null)) {
         if(cd.isInternalCacheable()) {
+
+            checkReadAccess(cms);
             if (cd.isTimeCritical() && (m_timestamp < cd.getTimeout().getLastChange())){
                 clearVariantCache();
             }else{

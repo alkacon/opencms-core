@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsDumpLauncher.java,v $
-* Date   : $Date: 2001/05/17 14:10:31 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2001/05/22 14:54:20 $
+* Version: $Revision: 1.25 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -47,7 +47,7 @@ import com.opencms.template.cache.*;
  * be used to create output.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.24 $ $Date: 2001/05/17 14:10:31 $
+ * @version $Revision: 1.25 $ $Date: 2001/05/22 14:54:20 $
  */
 public class CmsDumpLauncher extends A_CmsLauncher implements I_CmsConstants {
 
@@ -98,7 +98,9 @@ public class CmsDumpLauncher extends A_CmsLauncher implements I_CmsConstants {
             if(cmsUri == null) {
                 // hammer nich
                 CmsElementDescriptor elemDesc = new CmsElementDescriptor(templateClass, file.getAbsolutePath());
-                cmsUri = new CmsUri(elemDesc, null, (CmsElementDefinitionCollection)null);
+                cmsUri = new CmsUri(elemDesc, cms.getReadingpermittedGroup(
+                        cms.getRequestContext().currentProject().getId(),
+                        file.getAbsolutePath()), (CmsElementDefinitionCollection)null);
                 elementCache.getUriLocator().put(uriDesc, cmsUri);
             }
         }

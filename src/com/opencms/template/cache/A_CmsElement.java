@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/A_CmsElement.java,v $
-* Date   : $Date: 2001/05/17 14:52:25 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2001/05/22 14:54:20 $
+* Version: $Revision: 1.10 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -60,6 +60,9 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
     /** Cache directives of this element. */
     private CmsCacheDirectives m_cacheDirectives;
 
+    /** The name of the group that can read this ressource. */
+    protected String m_readAccessGroup;
+
     /** Last time this element was generated.(used for CacheDirectives timeout) */
     protected long m_timestamp = 0;
 
@@ -72,9 +75,10 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
     /**
      * Initializer for an element with the given class and template name.
      */
-    protected void init(String className, String templateName, CmsCacheDirectives cd) {
+    protected void init(String className, String templateName, String readAccessGroup, CmsCacheDirectives cd) {
         m_className = className;
         m_templateName = templateName;
+        m_readAccessGroup = readAccessGroup;
         m_cacheDirectives = cd;
         m_elementDefinitions = new CmsElementDefinitionCollection();
         m_variants = new Hashtable();
@@ -84,12 +88,14 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
      * Initializer for building an element with the given element definitions.
      * @param name the name of this element-definition.
      * @param className the classname of this element-definition.
+     * @param readAccessGroup The group that may read the element.
      * @param cd Cache directives for this element
      * @param defs Vector with ElementDefinitions for this element.
      */
-    protected void init(String className, String templateName, CmsCacheDirectives cd, CmsElementDefinitionCollection defs) {
+    protected void init(String className, String templateName, String readAccessGroup, CmsCacheDirectives cd, CmsElementDefinitionCollection defs) {
         m_className = className;
         m_templateName = templateName;
+        m_readAccessGroup = readAccessGroup;
         m_cacheDirectives = cd;
         m_elementDefinitions = defs;
         m_variants = new Hashtable();
@@ -114,6 +120,42 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
         if(key != null){
             m_variants.put(key, variant);
         }
+    }
+
+    /**
+     * checks the read access.
+     * @param cms The cms Object for reading groups.
+     * @exception CmsException if no read access.
+     */
+    public void checkReadAccess(CmsObject cms) throws CmsException{
+        if (m_readAccessGroup == null || "".equals(m_readAccessGroup )){
+            // everyone can read this
+            return;
+        }
+        CmsGroup currentGroup = cms.getRequestContext().currentGroup();
+        if (m_readAccessGroup.equals(currentGroup.getName())){
+            // easy: same group; access granted
+            return;
+        }
+        // maybe it is an Admin
+        if(currentGroup.getName().equals(cms.C_GROUP_ADMIN)){
+            // ok Admins can read everything
+            return;
+        }
+        // limited access and not the same group, but maybe parentgroup?
+        CmsGroup group1 = currentGroup;
+        CmsGroup group2 = cms.readGroup(m_readAccessGroup);
+        do{
+            group1 = cms.getParent(group1.getName());
+            if(group1 != null && group1.getId() == group2.getId()){
+                // is parent; access granted
+                return;
+            }
+        }while(group1 != null);
+
+        // no way to read this sorry
+        throw new CmsException(currentGroup.getName()+" has no read access to "+m_templateName+". ",
+                                CmsException.C_ACCESS_DENIED);
     }
 
     /**

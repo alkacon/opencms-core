@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsUri.java,v $
-* Date   : $Date: 2001/05/10 12:32:56 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2001/05/22 14:54:20 $
+* Version: $Revision: 1.7 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -90,8 +90,44 @@ public class CmsUri implements I_CmsConstants {
     }
 
     public byte[] callCanonicalRoot(CmsElementCache elementCache, CmsObject cms, Hashtable parameters) throws CmsException  {
+        checkReadAccess(cms);
         A_CmsElement elem = elementCache.getElementLocator().get(cms, m_startingElement, parameters);
         return elem.getContent(elementCache, cms, m_elementDefinitions, C_ROOT_TEMPLATE_NAME, parameters);
+    }
+    /**
+     * checks the read access.
+     * @param cms The cms Object for reading groups.
+     * @exception CmsException if no read access.
+     */
+    public void checkReadAccess(CmsObject cms) throws CmsException{
+        if (m_readAccessGroup == null || "".equals(m_readAccessGroup )){
+            // everyone can read this
+            return;
+        }
+        CmsGroup currentGroup = cms.getRequestContext().currentGroup();
+        if (m_readAccessGroup.equals(currentGroup.getName())){
+            // easy: same group; access granted
+            return;
+        }
+        // maybe it is an Admin
+        if(currentGroup.getName().equals(cms.C_GROUP_ADMIN)){
+            // ok Admins can read everything
+            return;
+        }
+        // limited access and not the same group, but maybe parentgroup?
+        CmsGroup group1 = currentGroup;
+        CmsGroup group2 = cms.readGroup(m_readAccessGroup);
+        do{
+            group1 = cms.getParent(group1.getName());
+            if(group1 != null && group1.getId() == group2.getId()){
+                // is parent; access granted
+                return;
+            }
+        }while(group1 != null);
+
+        // no way to read this sorry
+        throw new CmsException(currentGroup.getName()+" has no read access. ",
+                                CmsException.C_ACCESS_DENIED);
     }
 
 }

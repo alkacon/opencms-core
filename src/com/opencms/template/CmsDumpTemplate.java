@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsDumpTemplate.java,v $
-* Date   : $Date: 2001/05/17 14:10:31 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2001/05/22 14:54:20 $
+* Version: $Revision: 1.25 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -41,7 +41,7 @@ import com.opencms.template.cache.*;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.24 $ $Date: 2001/05/17 14:10:31 $
+ * @version $Revision: 1.25 $ $Date: 2001/05/22 14:54:20 $
  */
 public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate {
 
@@ -203,7 +203,18 @@ public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate 
      * @param parameters All parameters of the current request
      * @return New element for the element cache
      */
-    public A_CmsElement createElement(CmsObject cms, String templateFile, Hashtable parameters) {
-        return new CmsElementDump(getClass().getName(), templateFile, getCacheDirectives(cms, templateFile, null, parameters, null));
+    public A_CmsElement createElement(CmsObject cms, String templateFile, Hashtable parameters){
+        String readAccessGroup = cms.C_GROUP_ADMIN;
+        try{
+            readAccessGroup = cms.getReadingpermittedGroup(
+                                cms.getRequestContext().currentProject().getId(), templateFile);
+        }catch(CmsException e){
+             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                A_OpenCms.log(C_OPENCMS_ELEMENTCACHE, getClassName() + "Could not generate my template cache element.");
+                A_OpenCms.log(C_OPENCMS_ELEMENTCACHE, getClassName() + e);
+            }
+        }
+        return new CmsElementDump(getClass().getName(), templateFile, readAccessGroup,
+                    getCacheDirectives(cms, templateFile, null, parameters, null));
     }
 }
