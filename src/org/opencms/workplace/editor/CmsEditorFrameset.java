@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorFrameset.java,v $
- * Date   : $Date: 2003/11/21 16:21:58 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/11/21 16:42:08 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.workplace.editor;
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsResourceTypeNewPage;
+import com.opencms.file.CmsResourceTypeXmlPage;
 import com.opencms.flex.jsp.CmsJspActionElement;
 
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -48,7 +49,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.1.12
  */
@@ -81,7 +82,8 @@ public class CmsEditorFrameset extends CmsEditor {
     public String getEditorUri() {
         try {
             CmsResource res = getCms().readFileHeader(getParamResource());
-            if (res.getType() == CmsResourceTypeNewPage.C_RESOURCE_TYPE_ID) {
+            if (res.getType() == CmsResourceTypeNewPage.C_RESOURCE_TYPE_ID 
+                || res.getType() == CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID) {
                 // resource a of type "new page", show the dhtml control
                 return C_PATH_EDITORS + "msdhtml/editor.html";
             } else {

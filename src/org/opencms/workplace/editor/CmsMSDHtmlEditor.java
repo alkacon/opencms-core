@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsMSDHtmlEditor.java,v $
- * Date   : $Date: 2003/11/21 16:21:58 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/11/21 16:42:08 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import com.opencms.flex.jsp.CmsJspActionElement;
 import com.opencms.util.Encoder;
 import com.opencms.workplace.I_CmsWpConstants;
 
+import org.opencms.page.CmsXmlPage;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.util.ArrayList;
@@ -53,7 +54,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.1.12
  */
@@ -100,8 +101,11 @@ public class CmsMSDHtmlEditor extends CmsEditor {
                 setAction(ACTION_DEFAULT);
                 
                     setParamTempfile(createTempFile());
+                    
                     // TODO: get the contents of the default body from the temporary file...
-                    setParamContent("<h2>TEST!!!</h2><p>Ein kleiner Text...</p>");
+                    CmsXmlPage page = new CmsXmlPage(getCms().readFile(this.getParamTempfile()));
+                    setParamContent(new String(page.getElementData("Body", "de")));
+ 
                     //setParamPagetemplate("/system/modules/com.lgt.intranet.modules.frontend/templates/lgt_intranet_main");
                     setParamPagetemplate(getJsp().property(I_CmsConstants.C_PROPERTY_TEMPLATE, getParamTempfile(), ""));
                     //setParamPagetitle("A test title!");
