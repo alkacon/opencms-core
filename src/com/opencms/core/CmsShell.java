@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/10/11 10:09:22 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2000/10/11 16:11:33 $
+ * Version: $Revision: 1.54 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  * 
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.53 $ $Date: 2000/10/11 10:09:22 $
+ * @version $Revision: 1.54 $ $Date: 2000/10/11 16:11:33 $
  */
 public class CmsShell implements I_CmsConstants {
 
@@ -59,37 +59,6 @@ public class CmsShell implements I_CmsConstants {
 
 	private CmsShellCommands shellCommands;
 	
-/**
- * Insert the method's description here.
- * Creation date: (10/05/00 %r)
- * @author: 
- */
-public CmsShell(String args[])
-{
-	try
-	{
-		Configurations conf = new Configurations(new ExtendedProperties(args[0]));
-		m_openCms = new OpenCms(conf);
-		m_cms = new CmsObject();
-		this.shellCommands = new CmsShellCommands(args, m_openCms, m_cms);
-		//debug messages.
-		System.out.println("Using Multisite Functionality - Beware that this functionality is still in alpha.");
-		System.out.println("CmsShell 2 now running");
-
-		//log in default user.
-		m_openCms.initUser(m_cms, null, null, C_USER_GUEST, C_GROUP_GUEST, C_PROJECT_ONLINE_ID);
-		if (args.length >= 2)
-		{
-			CmsSite site = m_cms.getSite(args[1]);
-			System.out.println("Multisite name: " + site.getName() + ", Description: " + site.getDescription());
-			m_openCms.initUser(m_cms, null, null, site.getGuestUser(), site.getGuestGroup(), site.getOnlineProjectId());
-		}
-	}
-	catch (Exception exc)
-	{
-		printException(exc);
-	}
-}
 	/**
  * Calls a command
  * 
@@ -105,7 +74,7 @@ private void call(Vector command)
 	String toCall;
 	command.copyInto(splittet);
 	toCall = splittet[0];
-	if (toCall.startsWith(COMMENT_CHAR))
+	if (toCall == null)
 		return;
 	Class paramClasses[] = new Class[splittet.length - 1];
 	String params[] = new String[splittet.length - 1];
@@ -165,6 +134,37 @@ private void call(Vector command)
 			printException(exc);
 		}
 	}
+/**
+ * Insert the method's description here.
+ * Creation date: (10/05/00 %r)
+ * @author: 
+ */
+public CmsShell(String args[])
+{
+	try
+	{
+		Configurations conf = new Configurations(new ExtendedProperties(args[0]));
+		m_openCms = new OpenCms(conf);
+		m_cms = new CmsObject();
+		this.shellCommands = new CmsShellCommands(args, m_openCms, m_cms);
+		//debug messages.
+		System.out.println("Using Multisite Functionality - Beware that this functionality is still in alpha.");
+		System.out.println("CmsShell 2 now running");
+
+		//log in default user.
+		m_openCms.initUser(m_cms, null, null, C_USER_GUEST, C_GROUP_GUEST, C_PROJECT_ONLINE_ID);
+		if (args.length >= 2)
+		{
+			CmsSite site = m_cms.getSite(args[1]);
+			System.out.println("Multisite name: " + site.getName() + ", Description: " + site.getDescription());
+			m_openCms.initUser(m_cms, null, null, site.getGuestUser(), site.getGuestGroup(), site.getOnlineProjectId());
+		}
+	}
+	catch (Exception exc)
+	{
+		printException(exc);
+	}
+}
 	/**
  * The main entry point for the commandline interface to the opencms. 
  *
