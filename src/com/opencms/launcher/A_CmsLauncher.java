@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/A_CmsLauncher.java,v $
- * Date   : $Date: 2000/02/15 18:01:25 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/04/04 09:59:44 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -59,12 +59,12 @@ import javax.servlet.http.*;
  * </UL>
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.11 $ $Date: 2000/02/15 18:01:25 $
+ * @version $Revision: 1.12 $ $Date: 2000/04/04 09:59:44 $
  */
 abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels {
         
     /** Boolean for additional debug output control */
-    private static final boolean C_DEBUG = true;
+    private static final boolean C_DEBUG = false;
 
     /** Value of the filesystem counter, when the last template clear cache was done. */
     private static long m_lastFsCounterTemplate = 0;
