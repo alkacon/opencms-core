@@ -8,7 +8,7 @@ import com.opencms.core.*;
  * This resource can be a A_CmsFile or a A_CmsFolder.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 1999/12/17 14:37:04 $
+ * @version $Revision: 1.2 $ $Date: 1999/12/20 17:19:47 $
  */
  class CmsResource extends A_CmsResource implements I_CmsConstants {
      
@@ -62,7 +62,12 @@ import com.opencms.core.*;
       */
      private long m_dateLastModified;
       
-     /**
+      /**
+      * The size of the file content.
+      */
+      protected int m_size;
+      
+      /**
       * The state of this resource. <br>
       * A resource can have the following states:
       * <ul>
@@ -79,6 +84,17 @@ import com.opencms.core.*;
       */
      private int m_lockedBy;   
      
+     /**
+      * The type of the launcher which is used to process this resource.
+      */
+     private int launcherType;
+     
+     /**
+      * The Java class thas is invoked by the launcher to process this resource.
+      */
+     private String launcherClassname;
+     
+     
      
      /**
       * Constructor, creates a new CmsRecource object.
@@ -92,12 +108,15 @@ import com.opencms.core.*;
       * @param accessFlags The access flags of this resource.
       * @param state The state of this resource. 
       * @param lockedBy The user id of the user who has locked this resource.
+      * @param launcherType The launcher that is require to process this recource.
+      * @param launcherClassname The name of the Java class invoked by the launcher.
       * @param dateCreated The creation date of this resource.
       * @param dateLastModified The date of the last modification of the resource.
       */
      public CmsResource(String resourceName, int resourceType, int resourceFlags,
                         int userId, int groupId, int projectId,
                         int accessFlags, int state, int lockedBy,
+                        int launcherType, String launcherClassname,
                         long dateCreated, long dateLastModified){
          
         m_resourceName=resourceName;
@@ -111,6 +130,7 @@ import com.opencms.core.*;
         m_lockedBy=lockedBy;
         m_dateCreated=dateCreated;
         m_dateLastModified=dateLastModified;
+        m_size=0;
             
      }
 
@@ -333,9 +353,18 @@ import com.opencms.core.*;
 	 * 
 	 * @return the project id for this resource.
 	 */
-      public int getProject() {
+      int getProjectId() {
           return m_projectId;
       }
+      
+     /**
+	 * Gets the length of the content (filesize).
+	 * 
+	 * @return the length of the content.
+	 */
+     public int getLength() {
+        return m_size;
+     }
   
 	
 }

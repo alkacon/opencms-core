@@ -13,7 +13,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 1999/12/17 17:20:53 $
+ * @version $Revision: 1.5 $ $Date: 1999/12/20 17:19:47 $
  */
 abstract class A_CmsAccessProperty {
 
@@ -27,7 +27,7 @@ abstract class A_CmsAccessProperty {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract Serializable createProperty(String name, Serializable object)
+	abstract Serializable addProperty(String name, Serializable object)
 		throws CmsException;
     
 	/**

@@ -13,7 +13,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 1999/12/17 17:20:53 $
+ * @version $Revision: 1.4 $ $Date: 1999/12/20 17:19:47 $
  */
 public class CmsRbProperty extends A_CmsRbProperty  {
 	
@@ -41,10 +41,10 @@ public class CmsRbProperty extends A_CmsRbProperty  {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 public Serializable createProperty(String name, Serializable object)
+	 public Serializable addProperty(String name, Serializable object)
          throws CmsException {
                
-         return m_accessProperty.createProperty(name,object);
+         return m_accessProperty.addProperty(name,object);
      }
     
 	/**

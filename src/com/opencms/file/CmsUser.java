@@ -8,7 +8,7 @@ import com.opencms.core.*;
  * This class describes the Cms user object and the methods to access it.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 1999/12/15 16:43:21 $
+ * @version $Revision: 1.5 $ $Date: 1999/12/20 17:19:47 $
  */
 
 public class CmsUser extends A_CmsUser implements I_CmsConstants {
@@ -124,6 +124,14 @@ public class CmsUser extends A_CmsUser implements I_CmsConstants {
     }
 	
 
+     /**
+     * Disables the user flags by setting them to C_FLAG_DISABLED.
+     */
+    void  setDisabled() {
+        setFlags(C_FLAG_DISABLED);
+    }
+    
+    
 	/**
 	 * Returns a string-representation for this object.
 	 * This can be used for debugging.
@@ -196,6 +204,20 @@ public class CmsUser extends A_CmsUser implements I_CmsConstants {
         value =m_additionalInfo.get(key);
         return value;
     }
+    
+     /**
+	 * Sets additional information about the user. <BR/>
+	 * Additional infos are for example emailadress, adress or surname...<BR/><BR/>
+	 * 
+	 * 
+	 * @param key The key to the additional information.
+	 * @param obj The additinoal information value.
+	 * 
+	 */
+    void setAdditionalInfo(String key, Object obj)  {
+        m_additionalInfo.put(key,obj);
+    }
+     
 	
      /**
 	 * Returns the complete Hashtable with additional information about the user. <BR/>
@@ -234,6 +256,16 @@ public class CmsUser extends A_CmsUser implements I_CmsConstants {
         value =(String)m_additionalInfo.get(C_ADDITIONAL_INFO_EMAIL);
         return value;
     }
+     
+    /**
+     * This is a shortcut for: <pre>setAdditionalInfo(C_ADDITIONAL_INFO_EMAIL,value);</pre>
+	 * 
+	 * @param The new email adress.
+     */
+    void setEmail(String value) {
+        m_additionalInfo.put(C_ADDITIONAL_INFO_EMAIL,value);
+    }
+         
 
 	/**
 	 * This is a shortcut for: <pre>getAdditionalInfo(C_ADDITIONAL_INFO_FIRSTNAME);</pre>
@@ -267,6 +299,15 @@ public class CmsUser extends A_CmsUser implements I_CmsConstants {
         value =(String)m_additionalInfo.get(C_ADDITIONAL_INFO_ADDRESS);
         return value;
     }
+    
+     /**
+	 * This is a shortcut for: <pre>setAdditionalInfo(C_ADDITIONAL_INFO_ADDRESS,value);</pre>
+     *	 
+     * @param value The user adress.
+	 */
+    void setAddress(String value) {
+        m_additionalInfo.put(C_ADDITIONAL_INFO_ADDRESS,value);
+    }
 
 	/**
 	 * This is a shortcut for: <pre>getAdditionalInfo(C_ADDITIONAL_INFO_SECTION);</pre>
@@ -277,6 +318,15 @@ public class CmsUser extends A_CmsUser implements I_CmsConstants {
         String value=null;
         value =(String)m_additionalInfo.get(C_ADDITIONAL_INFO_SECTION);
         return value;
+    }
+    
+     /**
+	 * This is a shortcut for: <pre>setAdditionalInfo(C_ADDITIONAL_INFO_SECTION,value);</pre>
+	 * 
+	 * @param value The new user section.
+	 */
+    void setSection(String value) {
+        m_additionalInfo.put(C_ADDITIONAL_INFO_SECTION,value);
     }
     
     /**
@@ -294,6 +344,14 @@ public class CmsUser extends A_CmsUser implements I_CmsConstants {
         return value;
     }
 
+     /**
+	 * This is a shortcut for: <pre>setAdditionalInfo(C_ADDITIONAL_INFO_LASTLOGIN,new Long(value));</pre>
+	 * 
+	 * @param value The new user section.
+	 */
+    void setLastlogin(long value) {
+        m_additionalInfo.put(C_ADDITIONAL_INFO_LASTLOGIN,new Long(value));
+    }
     
      /**
 	 * This is a shortcut for: <pre>getAdditionalInfo(C_ADDITIONAL_INFO_FLAGS);</pre>
@@ -310,6 +368,14 @@ public class CmsUser extends A_CmsUser implements I_CmsConstants {
         return value;
     }
  
+     /**
+	 * This is a shortcut for: <pre>serAdditionalInfo(C_ADDITIONAL_INFO_FLAGS,new Integer(value));</pre>
+	 * 
+	 * @param value The new user flags.
+	 */
+     void setFlags(int value) {
+         m_additionalInfo.put(C_ADDITIONAL_INFO_FLAGS, new Integer(value));
+     }
        
      /**
 	 * This is a shortcut for: <pre>getAdditionalInfo(C_ADDITIONAL_INFO_DEFAULTGROUP_ID);</pre>

@@ -11,7 +11,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 1999/12/16 18:13:09 $
+ * @version $Revision: 1.6 $ $Date: 1999/12/20 17:19:47 $
  */
 abstract class A_CmsAccessUser {
 
@@ -59,12 +59,10 @@ abstract class A_CmsAccessUser {
 	 * @return user The added user will be returned.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
-	 * @exception CmsDuplicateKeyException Throws CmsDuplicateKeyException if
-	 * a user with the given username exists already.
 	 */
 	abstract A_CmsUser addUser(String name, String password, 
 				               String description)
-		throws CmsException, CmsDuplicateKeyException;
+		throws CmsException;
 
 	/** 
 	 * Deletes a user from the Cms.
@@ -79,18 +77,15 @@ abstract class A_CmsAccessUser {
 		throws CmsException;
 
 	/**
-	 * Updated the userinformation.<BR/>
+	 * Writes the user information in the Cms.<BR/>
 	 * 
 	 * Only the administrator can do this.<P/>
 	 * 
-	 * @param username The name of the user to be updated.
-	 * @param additionalInfos A Hashtable with additional infos for the user. These
-	 * @param flag The new user access flags.
+	 * @param user The Cms useer to be updated
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract void updateUser(String username, 
-					Hashtable additionalInfos, int flag)
+	abstract void writeUser(A_CmsUser user)
 		throws CmsException;
 
 	/**

@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 1999/12/16 18:13:09 $
+ * @version $Revision: 1.5 $ $Date: 1999/12/20 17:19:47 $
  */
  class CmsAccessUserGroup extends A_CmsAccessUserGroup implements I_CmsConstants {
 
@@ -216,13 +216,12 @@ import com.opencms.core.*;
 	 * @return user The added user will be returned.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
-	 * @exception CmsDuplicateKeyException Throws CmsDuplicateKeyException if
-	 * a user with the given username exists already.
+
 	 */
 	 A_CmsUser addUser(String name, String password, 
 					  String group, String description, 
 					  Hashtable additionalInfos, int flags)
-        throws CmsException, CmsDuplicateKeyException {
+        throws CmsException {
         A_CmsUser user=null;
         A_CmsGroup defaultGroup=null;
                       
@@ -234,7 +233,7 @@ import com.opencms.core.*;
         additionalInfos.put(C_ADDITIONAL_INFO_DEFAULTGROUP_ID,new Integer(defaultGroup.getId()));
         additionalInfos.put(C_ADDITIONAL_INFO_FLAGS,new Integer(flags));
         additionalInfos.put(C_ADDITIONAL_INFO_LASTLOGIN,new Long(0));
-        m_accessUserInfo.writeUserInformation(user.getId(),additionalInfos);  
+        m_accessUserInfo.addUserInformation(user.getId(),additionalInfos);  
         //combine user object and additional information to the complete user object.
         user.setAdditionalInfo(additionalInfos);
         user.setDefaultGroup(defaultGroup);
@@ -263,39 +262,29 @@ import com.opencms.core.*;
          } else {
              throw new CmsException(CmsException.C_NOT_FOUND);
          }
-             
-             
         }
          
 
 	/**
-	 * Updated the userinformation.<BR/>
+	 * Writes a existing user to the CMS.<BR/>
 	 * 
 	 * Only the administrator can do this.<P/>
 	 * 
-	 * @param username The name of the user to be updated.
-	 * @param additionalInfos A Hashtable with additional infos for the user. These
-	 * @param flag The new user access flags.
+	 * @param user The name of the user to be updated.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	  void updateUser(String username, 
-					Hashtable additionalInfos, int flag)
+	  void writeUser(A_CmsUser user)
          throws CmsException {
-            A_CmsUser user =null;
             int userId=C_UNKNOWN_ID;
-            user=m_accessUser.readUser(username);
             //check if this user is existing
             if (user != null) {
-                userId=user.getId();
-                // update the flag information
-                additionalInfos.put(C_ADDITIONAL_INFO_FLAGS,new Integer(flag));
                 // write it to database
-                m_accessUserInfo.writeUserInformation(userId,additionalInfos);               
+                userId=user.getId();
+                m_accessUserInfo.writeUserInformation(userId,user.getAdditionalInfo());               
             } else {
               throw new CmsException(CmsException.C_NOT_FOUND);
             }   
-                 
      }
 
 	/**
@@ -311,16 +300,27 @@ import com.opencms.core.*;
 	 * @return Group
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
-	 * @exception MhtDuplicateKeyException Throws MhtDuplicateKeyException if 
-	 * same group already exists.
 	 */	
 	 A_CmsGroup addGroup(String name, String description, int flags,String parent)
-         throws CmsException, CmsDuplicateKeyException {
+         throws CmsException {
             A_CmsGroup group= null;
             group=m_accessGroup.addGroup(name,description,flags,parent);
          return group;
      }
 
+     /**
+	 * Writes an already existing group in the Cms.<BR/>
+	 * 
+	 * Only the admin can do this.<P/>
+	 * 
+	 * @param group The group that should be written to the Cms.
+	 * @exception CmsException  Throws CmsException if operation was not succesfull.
+	 */	
+	 void writeGroup(A_CmsGroup group)
+         throws CmsException{
+         m_accessGroup.writeGroup(group);
+     }
+     
 	/**
 	 * Delete a group from the Cms.<BR/>
 	 * Only groups that contain no subgroups can be deleted.

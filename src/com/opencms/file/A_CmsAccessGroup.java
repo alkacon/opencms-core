@@ -11,7 +11,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 1999/12/16 18:13:09 $
+ * @version $Revision: 1.5 $ $Date: 1999/12/20 17:19:47 $
  */
 abstract class A_CmsAccessGroup {
 		
@@ -83,12 +83,21 @@ abstract class A_CmsAccessGroup {
 	 * @return Group
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
-	 * @exception MhtDuplicateKeyException Throws MhtDuplicateKeyException if 
-	 * same group already exists.
 	 */	
 	abstract A_CmsGroup addGroup(String name, String description, int flags,String parent)
-		throws CmsException, CmsDuplicateKeyException;
+		throws CmsException;
 
+     /**
+	 * Writes an already existing group in the Cms.<BR/>
+	 * 
+	 * Only the admin can do this.<P/>
+	 * 
+	 * @param group The group that should be written to the Cms.
+	 * @exception CmsException  Throws CmsException if operation was not succesfull.
+	 */	
+	abstract void writeGroup(A_CmsGroup group)
+		throws CmsException;
+    
 	/**
 	 * Delete a group from the Cms.<BR/>
 	 * Only groups that contain no subgroups can be deleted.

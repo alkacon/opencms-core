@@ -15,12 +15,9 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 1999/12/16 18:13:09 $
+ * @version $Revision: 1.4 $ $Date: 1999/12/20 17:19:47 $
  */
 abstract class A_CmsRbUserGroup {
-
-
-
 
 	/**
 	 * Returns a user object.<P/>
@@ -28,12 +25,11 @@ abstract class A_CmsRbUserGroup {
 	 * <B>Security:</B>
 	 * All users are granted, except the anonymous user.
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param username The name of the user that is to be read.
 	 * @return User
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract A_CmsUser readUser(A_CmsUser callingUSer, String username)
+	abstract A_CmsUser readUser(String username)
 		throws CmsException;
 	
 	/**
@@ -42,14 +38,13 @@ abstract class A_CmsRbUserGroup {
 	 * <B>Security:</B>
 	 * All users are granted, except the anonymous user.
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param username The username of the user that is to be read.
 	 * @param password The password of the user that is to be read.
 	 * @return User
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful
 	 */		
-	abstract A_CmsUser readUser(A_CmsUser callingUser, String username, String password)
+	abstract A_CmsUser readUser(String username, String password)
 		throws CmsException;
 
 
@@ -59,12 +54,11 @@ abstract class A_CmsRbUserGroup {
 	 * <B>Security:</B>
 	 * All users are granted, except the anonymous user.
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param username The name of the user.
 	 * @return Vector of groups
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract Vector getGroupsOfUser(A_CmsUser callingUser, String username)
+	abstract Vector getGroupsOfUser(String username)
 		throws CmsException;
 
 	/**
@@ -73,13 +67,12 @@ abstract class A_CmsRbUserGroup {
 	 * <B>Security:</B>
 	 * All users are granted, except the anonymous user.
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param groupname The name of the group that is to be read.
 	 * @return Group.
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful
 	 */
-	abstract A_CmsGroup readGroup(A_CmsUser callingUser, String groupname)
+	abstract A_CmsGroup readGroup(String groupname)
 		throws CmsException;
 
 	/**
@@ -88,12 +81,11 @@ abstract class A_CmsRbUserGroup {
 	 * <B>Security:</B>
 	 * All users are granted, except the anonymous user.
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param groupname The name of the group to list users from.
 	 * @return Vector of users.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	abstract Vector getUsersOfGroup(A_CmsUser callingUser, String groupname)
+	abstract Vector getUsersOfGroup(String groupname)
 		throws CmsException;
 
 	/**
@@ -109,7 +101,7 @@ abstract class A_CmsRbUserGroup {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract boolean userInGroup(A_CmsUser callingUser, String username, String groupname)
+	abstract boolean userInGroup(String username, String groupname)
 		throws CmsException;
 
 	/** 
@@ -120,7 +112,6 @@ abstract class A_CmsRbUserGroup {
 	 * <B>Security:</B>
 	 * Only users, which are in the group "administrators" are granted.
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param name The new name for the user.
 	 * @param password The new password for the user.
 	 * @param group The default groupname for the user.
@@ -132,13 +123,11 @@ abstract class A_CmsRbUserGroup {
 	 * @return user The added user will be returned.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
-	 * @exception CmsDuplicateKeyException Throws CmsDuplicateKeyException if
-	 * a user with the given username exists already.
 	 */
-	abstract A_CmsUser addUser(A_CmsUser callingUser, String name, String password, 
+	abstract A_CmsUser addUser(String name, String password, 
 					  String group, String description, 
 					  Hashtable additionalInfos, int flags)
-		throws CmsException, CmsDuplicateKeyException;
+		throws CmsException;
 
 	/** 
 	 * Deletes a user from the Cms.
@@ -148,31 +137,26 @@ abstract class A_CmsRbUserGroup {
 	 * <B>Security:</B>
 	 * Only users, which are in the group "administrators" are granted.
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param name The name of the user to be deleted.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */
-	abstract void deleteUser(A_CmsUser callingUser, String username)
+	abstract void deleteUser(String username)
 		throws CmsException;
 
 	/**
-	 * Updated the userinformation.<BR/>
+	 * Updated the user information.<BR/>
 	 * 
 	 * Only the administrator can do this.<P/>
 	 * 
 	 * <B>Security:</B>
 	 * Only users, which are in the group "administrators" are granted.
 	 * 
-	 * @param callingUser The user who wants to use this method.
-	 * @param username The name of the user to be updated.
-	 * @param additionalInfos A Hashtable with additional infos for the user. These
-	 * @param flag The new user access flags.
+	 * @param user The  user to be updated.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract void updateUser(A_CmsUser callingUser, String username, 
-					Hashtable additionalInfos, int flag)
+    abstract void writeUser(A_CmsUser user)			
 		throws CmsException;
 
 	/**
@@ -183,7 +167,6 @@ abstract class A_CmsRbUserGroup {
 	 * <B>Security:</B>
 	 * Only users, which are in the group "administrators" are granted.
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param name The name of the new group.
 	 * @param description The description for the new group.
 	 * @int flags The flags for the new group.
@@ -192,12 +175,23 @@ abstract class A_CmsRbUserGroup {
 	 * @return Group
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
-	 * @exception MhtDuplicateKeyException Throws MhtDuplicateKeyException if 
-	 * same group already exists.
 	 */	
-	abstract A_CmsGroup addGroup(A_CmsUser callingUser, String name, String description, int flags, String parent)
-		throws CmsException, CmsDuplicateKeyException;
+	abstract A_CmsGroup addGroup(String name, String description, int flags, String parent)
+		throws CmsException;
 
+    
+     /**
+	 * Writes an already existing group in the Cms.<BR/>
+	 * 
+	 * Only the admin can do this.<P/>
+	 * 
+	 * @param group The group that should be written to the Cms.
+	 * @exception CmsException  Throws CmsException if operation was not succesfull.
+	 */	
+	abstract void writeGroup(A_CmsGroup group)
+		throws CmsException;
+    
+    
 	/**
 	 * Delete a group from the Cms.<BR/>
 	 * Only groups that contain no subgroups can be deleted.
@@ -207,11 +201,10 @@ abstract class A_CmsRbUserGroup {
 	 * <B>Security:</B>
 	 * Only users, which are in the group "administrators" are granted.
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param delgroup The name of the group that is to be deleted.
 	 * @exception CmsException  Throws CmsException if operation was not succesfull.
 	 */	
-	abstract void deleteGroup(A_CmsUser callingUser, String delgroup)
+	abstract void deleteGroup(String delgroup)
 		throws CmsException;
 
 	/**
@@ -222,12 +215,11 @@ abstract class A_CmsRbUserGroup {
 	 * <B>Security:</B>
 	 * Only users, which are in the group "administrators" are granted.
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param username The name of the user that is to be added to the group.
 	 * @param groupname The name of the group.
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */	
-	abstract void addUserToGroup(A_CmsUser callingUser, String username, String groupname)
+	abstract void addUserToGroup(String username, String groupname)
 		throws CmsException;
 
 	/**
@@ -238,12 +230,11 @@ abstract class A_CmsRbUserGroup {
 	 * <B>Security:</B>
 	 * Only users, which are in the group "administrators" are granted.
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param username The name of the user that is to be removed from the group.
 	 * @param groupname The name of the group.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-	abstract void removeUserFromGroup(A_CmsUser callingUser, String username, String groupname)
+	abstract void removeUserFromGroup(String username, String groupname)
 		throws CmsException;
 
 	/**
@@ -252,11 +243,10 @@ abstract class A_CmsRbUserGroup {
 	 * <B>Security:</B>
 	 * All users are granted, except the anonymous user.
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @return users A Vector of all existing users.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	abstract Vector getUsers(A_CmsUser callingUser)
+	abstract Vector getUsers()
         throws CmsException;
 	
 	/**
@@ -265,11 +255,10 @@ abstract class A_CmsRbUserGroup {
 	 * <B>Security:</B>
 	 * All users are granted, except the anonymous user.
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @return users A Vector of all existing groups.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	abstract Vector getGroups(A_CmsUser callingUser)
+	abstract Vector getGroups()
         throws CmsException;	
     
     
@@ -279,12 +268,11 @@ abstract class A_CmsRbUserGroup {
 	 * <B>Security:</B>
 	 * All users are granted, except the anonymous user.
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param groupname The name of the group.
 	 * @return users A Vector of all child groups or null.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	abstract Vector getChild(A_CmsUser callingUser, String groupname)
+	abstract Vector getChild(String groupname)
         throws CmsException ;	
 
 	/** 
@@ -296,12 +284,11 @@ abstract class A_CmsRbUserGroup {
 	 * Users, which are in the group "administrators" are granted.<BR/>
 	 * Current users can change their own password.
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param username The name of the user.
 	 * @param newPassword The new password.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */
-	abstract void setPassword(A_CmsUser callingUser, String username, String newPassword)
+	abstract void setPassword(String username, String newPassword)
 		throws CmsException;
 }

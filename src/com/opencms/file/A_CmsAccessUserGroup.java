@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 1999/12/16 18:13:09 $
+ * @version $Revision: 1.4 $ $Date: 1999/12/20 17:19:47 $
  */
 abstract class A_CmsAccessUserGroup {
 
@@ -97,13 +97,11 @@ abstract class A_CmsAccessUserGroup {
 	 * @return user The added user will be returned.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
-	 * @exception CmsDuplicateKeyException Throws CmsDuplicateKeyException if
-	 * a user with the given username exists already.
 	 */
 	abstract A_CmsUser addUser(String name, String password, 
 					  String group, String description, 
 					  Hashtable additionalInfos, int flags)
-		throws CmsException, CmsDuplicateKeyException;
+		throws CmsException;
 
 	/** 
 	 * Deletes a user from the Cms.
@@ -118,20 +116,17 @@ abstract class A_CmsAccessUserGroup {
 		throws CmsException;
 
 	/**
-	 * Updated the userinformation.<BR/>
+	 * Writes a existing user to the CMS.<BR/>
 	 * 
 	 * Only the administrator can do this.<P/>
 	 * 
-	 * @param username The name of the user to be updated.
-	 * @param additionalInfos A Hashtable with additional infos for the user. These
-	 * @param flag The new user access flags.
+	 * @param user The name of the user to be updated.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract void updateUser(String username, 
-					Hashtable additionalInfos, int flag)
+	abstract void writeUser(A_CmsUser user)
 		throws CmsException;
-
+    
 	/**
 	 * Add a new group to the Cms.<BR/>
 	 * 
@@ -145,12 +140,21 @@ abstract class A_CmsAccessUserGroup {
 	 * @return Group
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
-	 * @exception MhtDuplicateKeyException Throws MhtDuplicateKeyException if 
-	 * same group already exists.
 	 */	
 	abstract A_CmsGroup addGroup(String name, String description, int flags,String parent)
-		throws CmsException, CmsDuplicateKeyException;
+		throws CmsException;
 
+     /**
+	 * Writes an already existing group in the Cms.<BR/>
+	 * 
+	 * Only the admin can do this.<P/>
+	 * 
+	 * @param group The group that should be written to the Cms.
+	 * @exception CmsException  Throws CmsException if operation was not succesfull.
+	 */	
+	abstract void writeGroup(A_CmsGroup group)
+		throws CmsException;
+    
 	/**
 	 * Delete a group from the Cms.<BR/>
 	 * Only groups that contain no subgroups can be deleted.

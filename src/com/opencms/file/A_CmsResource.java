@@ -8,7 +8,7 @@ import java.util.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 1999/12/17 14:37:04 $
+ * @version $Revision: 1.5 $ $Date: 1999/12/20 17:19:47 $
  */
 abstract class A_CmsResource {
 	/**
@@ -145,6 +145,13 @@ abstract class A_CmsResource {
 	 * 
 	 * @return The project idfor this resource.
 	 */
-	abstract public int getProject();
+	abstract int getProjectId();
+    
+     /**
+	 * Gets the length of the content (filesize).
+	 * 
+	 * @return the length of the content.
+	 */
+    abstract public int getLength();
 	
 }

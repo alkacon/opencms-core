@@ -6,7 +6,7 @@ import com.opencms.core.*;
  * This class describes a Cms user group and the methods to access it.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 1999/12/15 16:43:21 $
+ * @version $Revision: 1.4 $ $Date: 1999/12/20 17:19:47 $
  */
  public class CmsGroup extends A_CmsGroup implements I_CmsConstants { 
     
@@ -103,7 +103,16 @@ import com.opencms.core.*;
      public int getFlags() {
          return m_flags;
      }
-	
+
+     /**
+	 * Returns the GROUP_FLAGS.
+	 * 
+	 * @return the GROUP_FLAGS.
+	 */
+     public void setFlags(int flags) {
+         m_flags=flags;
+     }
+     
 	/**
 	 * Returns the id of the parent group of the actual Cms group object, 
 	 * or C_UNKNOWN_ID.

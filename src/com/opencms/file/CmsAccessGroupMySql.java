@@ -12,20 +12,25 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 1999/12/16 18:13:09 $
+ * @version $Revision: 1.5 $ $Date: 1999/12/20 17:19:47 $
  */
  class CmsAccessGroupMySql extends A_CmsAccessGroup implements I_CmsConstants  {
      
     /**
     * SQL Command for writing groups.
     */   
-    private static final String C_GROUP_WRITE = "INSERT INTO GROUPS VALUES(?,?,?,?,?)";
+    private static final String C_GROUP_CREATE = "INSERT INTO GROUPS VALUES(?,?,?,?,?)";
    
     /**
     * SQL Command for reading groups.
     */   
     private static final String C_GROUP_READ = "SELECT * FROM GROUPS WHERE GROUP_NAME = ?";
   
+    /**
+    * SQL Command for updating/wrting groups
+    */   
+    private static final String C_GROUP_WRITE="UPDATE GROUPS SET GROUP_DESCRIPTION = ?, GROUP_FLAGS = ? WHERE GROUP_ID = ? ";
+
     /**
     * SQL Command for reading groups.
     */   
@@ -118,6 +123,11 @@ import com.opencms.core.*;
     * Prepared SQL Statement for a group by its id.
     */
     private PreparedStatement m_statementGroupReadId;
+    
+    /**
+    * Prepared SQL Statement for creating a group.
+    */
+    private PreparedStatement m_statementGroupCreate;
     
     /**
     * Prepared SQL Statement for writing a group.
@@ -347,11 +357,9 @@ import com.opencms.core.*;
 	 * @return Group
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
-	 * @exception MhtDuplicateKeyException Throws MhtDuplicateKeyException if 
-	 * same group already exists.
 	 */	
 	 A_CmsGroup addGroup(String name, String description, int flags,String parent)
-         throws CmsException, CmsDuplicateKeyException {
+         throws CmsException {
          
          int id=C_UNKNOWN_ID;
          int parentId=C_UNKNOWN_ID;
@@ -365,27 +373,47 @@ import com.opencms.core.*;
             }
                
             // write new group to the database
-            m_statementGroupWrite.setInt(1,0);
-            m_statementGroupWrite.setInt(2,parentId);
-            m_statementGroupWrite.setString(3,name);
-            m_statementGroupWrite.setString(4,description);
-            m_statementGroupWrite.setInt(5,flags);
-            m_statementGroupWrite.executeUpdate();
+            m_statementGroupCreate.setInt(1,0);
+            m_statementGroupCreate.setInt(2,parentId);
+            m_statementGroupCreate.setString(3,name);
+            m_statementGroupCreate.setString(4,description);
+            m_statementGroupCreate.setInt(5,flags);
+            m_statementGroupCreate.executeUpdate();
             
             // create the user group by reading it from the database.
             // this is nescessary to get the group id which is generated in the
             // database.
             group=readGroup(name);
          } catch (SQLException e){
-             if (e.getErrorCode() == 1062) {
-				throw new CmsDuplicateKeyException(e.toString());
-             } else {
-                throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
-             }
-		}
+                 throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+  		}
          return group;
      }
-        
+     
+     
+     /**
+	 * Writes an already existing group in the Cms.<BR/>
+	 * 
+	 * Only the admin can do this.<P/>
+	 * 
+	 * @param group The group that should be written to the Cms.
+	 * @exception CmsException  Throws CmsException if operation was not succesfull.
+	 */	
+	 void writeGroup(A_CmsGroup group)
+         throws CmsException {
+         try {
+            if (group != null){
+                m_statementGroupWrite.setString(1,group.getDescription());
+                m_statementGroupWrite.setInt(2,group.getFlags());
+                m_statementGroupWrite.setInt(3,group.getId());
+                m_statementGroupWrite.executeUpdate();  
+            } else {
+                throw new CmsException(CmsException.C_NO_GROUP);	
+            }
+         } catch (SQLException e){
+            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		}
+     }
 
 	/**
 	 * Delete a group from the Cms.<BR/>
@@ -543,6 +571,7 @@ import com.opencms.core.*;
          try{
               m_statementGroupRead=m_Con.prepareStatement(C_GROUP_READ);
               m_statementGroupReadId=m_Con.prepareStatement(C_GROUP_READID);
+              m_statementGroupCreate=m_Con.prepareStatement(C_GROUP_CREATE);
               m_statementGroupWrite=m_Con.prepareStatement(C_GROUP_WRITE);
               m_statementGroupDelete=m_Con.prepareStatement(C_GROUP_DELETE);
               m_statementGroupGetAll=m_Con.prepareStatement(C_GROUP_GETALL);

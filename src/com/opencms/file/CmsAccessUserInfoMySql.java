@@ -13,7 +13,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 1999/12/16 18:13:09 $
+ * @version $Revision: 1.5 $ $Date: 1999/12/20 17:19:47 $
  */
  class CmsAccessUserInfoMySql extends A_CmsAccessUserInfo {
 
@@ -86,6 +86,43 @@ import com.opencms.core.*;
         initStatements();
     }
     
+    
+     /**
+	 * Creates a new hashtable containing additional user information to the user 
+	 * information database.
+	 * 
+	 * @param id The id of the user.
+	 * @param object The hashtable including the user information
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	void addUserInformation(int id, Hashtable object)
+        throws  CmsException {
+        byte[] value=null;
+        try	{			
+            // serialize the hashtable
+            ByteArrayOutputStream bout= new ByteArrayOutputStream();            
+            ObjectOutputStream oout=new ObjectOutputStream(bout);
+            oout.writeObject(object);
+            oout.close();
+            value=bout.toByteArray();
+            // write data to database             
+            m_statementUserinfoWrite.setInt(1,id);
+            m_statementUserinfoWrite.setBytes(2,value);
+            m_statementUserinfoWrite.executeUpdate();    
+        
+         }
+        catch (SQLException e){
+            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		}
+        catch (IOException e){
+            throw new CmsException(CmsException. C_SERIALIZATION, e);			
+		}
+     
+    }
+    
+    
+    
 	/**
 	 * Reads a hashtable containing additional user information to the user 
 	 * information database.
@@ -152,16 +189,10 @@ import com.opencms.core.*;
             oout.writeObject(infos);
             oout.close();
             value=bout.toByteArray();
-           // check if this property exists already
-            if (readUserInformation(id) == null)	{
-                m_statementUserinfoWrite.setInt(1,id);
-                m_statementUserinfoWrite.setBytes(2,value);
-             	m_statementUserinfoWrite.executeUpdate();    
-         	} else {
-                m_statementUserinfoUpdate.setBytes(1,value);
-                m_statementUserinfoUpdate.setInt(2,id);
-      		    m_statementUserinfoUpdate.executeUpdate();
-     		}
+            m_statementUserinfoUpdate.setBytes(1,value);
+            m_statementUserinfoUpdate.setInt(2,id);
+      		m_statementUserinfoUpdate.executeUpdate();
+     
          }
         catch (SQLException e){
             throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			

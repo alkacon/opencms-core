@@ -6,7 +6,7 @@ import java.io.*;
  * This class describes a file in the Cms.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 1999/12/17 14:37:04 $
+ * @version $Revision: 1.2 $ $Date: 1999/12/20 17:19:47 $
  */
 public class CmsFile extends CmsResource { 	
 
@@ -14,11 +14,6 @@ public class CmsFile extends CmsResource {
      * The content of the file.
      */
     private byte[] m_fileContent;
-    
-    /**
-     * The size of the file content.
-     */
-    private int m_size;
     
     
      /**
@@ -33,6 +28,8 @@ public class CmsFile extends CmsResource {
       * @param accessFlags The access flags of this resource.
       * @param state The state of this resource. 
       * @param lockedBy The user id of the user who has locked this resource.
+      * @param launcherType The launcher that is require to process this recource.
+      * @param launcherClassname The name of the Java class invoked by the launcher.
       * @param dateCreated The creation date of this resource.
       * @param dateLastModified The date of the last modification of the resource.
       * @param fileContent Then content of the file.
@@ -40,6 +37,7 @@ public class CmsFile extends CmsResource {
      public CmsFile(String resourceName, int resourceType, int resourceFlags,
                         int userId, int groupId, int projectId,
                         int accessFlags, int state, int lockedBy,
+                        int launcherType, String launcherClassname,
                         long dateCreated, long dateLastModified,
                         byte[] fileContent){
         
@@ -47,6 +45,7 @@ public class CmsFile extends CmsResource {
         super(resourceName,resourceType,resourceFlags,
               userId,groupId,projectId,
               accessFlags,state,lockedBy,
+              launcherType,launcherClassname,
               dateCreated,dateLastModified);
         
         // set content and size.
@@ -73,16 +72,7 @@ public class CmsFile extends CmsResource {
     public byte[] getContents() {
       return m_fileContent;
     }
-	
-	/**
-	 * Gets the length of the content (filesize).
-	 * 
-	 * @return the length of the content.
-	 */
-    public int getLength() {
-        return m_size;
-    }
-	
+		
 	/**
 	 * Gets the file-extension.
 	 * 

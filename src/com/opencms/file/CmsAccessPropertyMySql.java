@@ -14,7 +14,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 1999/12/17 17:20:53 $
+ * @version $Revision: 1.3 $ $Date: 1999/12/20 17:19:47 $
  */
 public class CmsAccessPropertyMySql extends A_CmsAccessProperty  {
 
@@ -95,7 +95,7 @@ public class CmsAccessPropertyMySql extends A_CmsAccessProperty  {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	 Serializable createProperty(String name, Serializable object)
+	 Serializable addProperty(String name, Serializable object)
          throws CmsException {
          
         Serializable property=null;

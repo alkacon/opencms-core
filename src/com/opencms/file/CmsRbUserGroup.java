@@ -14,7 +14,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 1999/12/16 18:13:09 $
+ * @version $Revision: 1.5 $ $Date: 1999/12/20 17:19:47 $
  */
  class CmsRbUserGroup extends A_CmsRbUserGroup implements I_CmsConstants {
 
@@ -41,12 +41,11 @@ import com.opencms.core.*;
 	 * <B>Security:</B>
 	 * All users are granted, except the anonymous user.
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param username The name of the user that is to be read.
 	 * @return User
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	 A_CmsUser readUser(A_CmsUser callingUSer, String username)
+	 A_CmsUser readUser(String username)
          throws CmsException {
          A_CmsUser user=null;
          user=m_accessUserGroup.readUser(username);
@@ -59,14 +58,13 @@ import com.opencms.core.*;
 	 * <B>Security:</B>
 	 * All users are granted, except the anonymous user.
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param username The username of the user that is to be read.
 	 * @param password The password of the user that is to be read.
 	 * @return User
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful
 	 */		
-	 A_CmsUser readUser(A_CmsUser callingUser, String username, String password)
+	 A_CmsUser readUser(String username, String password)
          throws CmsException {
          A_CmsUser user=null;
          user=m_accessUserGroup.readUser(username,password);
@@ -80,12 +78,11 @@ import com.opencms.core.*;
 	 * <B>Security:</B>
 	 * All users are granted, except the anonymous user.
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param username The name of the user.
 	 * @return Vector of groups
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	 Vector getGroupsOfUser(A_CmsUser callingUser, String username)
+	 Vector getGroupsOfUser(String username)
          throws CmsException {
          return m_accessUserGroup.getGroupsOfUser(username);
        }
@@ -97,13 +94,12 @@ import com.opencms.core.*;
 	 * <B>Security:</B>
 	 * All users are granted, except the anonymous user.
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param groupname The name of the group that is to be read.
 	 * @return Group.
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful
 	 */
-	 A_CmsGroup readGroup(A_CmsUser callingUser, String groupname)
+	 A_CmsGroup readGroup(String groupname)
          throws CmsException {
          
          A_CmsGroup group = null;
@@ -122,7 +118,7 @@ import com.opencms.core.*;
 	 * @return Vector of users.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	 Vector getUsersOfGroup(A_CmsUser callingUser, String groupname)
+	 Vector getUsersOfGroup(String groupname)
          throws CmsException {
          return m_accessUserGroup.getUsersOfGroup(groupname);
      }
@@ -133,14 +129,13 @@ import com.opencms.core.*;
 	 * <B>Security:</B>
 	 * All users are granted, except the anonymous user.
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param nameuser The name of the user to check.
 	 * @param groupname The name of the group to check.
 	 * @return True or False
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	 boolean userInGroup(A_CmsUser callingUser, String username, String groupname)
+	 boolean userInGroup(String username, String groupname)
          throws CmsException {
          return m_accessUserGroup.userInGroup(username,groupname);
     }
@@ -153,7 +148,6 @@ import com.opencms.core.*;
 	 * <B>Security:</B>
 	 * Only users, which are in the group "administrators" are granted.
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param name The new name for the user.
 	 * @param password The new password for the user.
 	 * @param group The default groupname for the user.
@@ -165,13 +159,11 @@ import com.opencms.core.*;
 	 * @return user The added user will be returned.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
-	 * @exception CmsDuplicateKeyException Throws CmsDuplicateKeyException if
-	 * a user with the given username exists already.
 	 */
-	 A_CmsUser addUser(A_CmsUser callingUser, String name, String password, 
+	 A_CmsUser addUser(String name, String password, 
 					  String group, String description, 
 					  Hashtable additionalInfos, int flags)
-         throws CmsException, CmsDuplicateKeyException {
+         throws CmsException {
          
          A_CmsUser user=null;
          //create new user.
@@ -189,12 +181,11 @@ import com.opencms.core.*;
 	 * <B>Security:</B>
 	 * Only users, which are in the group "administrators" are granted.
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param name The name of the user to be deleted.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */
-	 void deleteUser(A_CmsUser callingUser, String username)
+	 void deleteUser(String username)
          throws CmsException {
          m_accessUserGroup.deleteUser(username);
      }
@@ -207,17 +198,14 @@ import com.opencms.core.*;
 	 * <B>Security:</B>
 	 * Only users, which are in the group "administrators" are granted.
 	 * 
-	 * @param callingUser The user who wants to use this method.
-	 * @param username The name of the user to be updated.
+	 * @param username The user to be updated.
 	 * @param additionalInfos A Hashtable with additional infos for the user. These
-	 * @param flag The new user access flags.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	 void updateUser(A_CmsUser callingUser, String username, 
-					Hashtable additionalInfos, int flag)
+	 void writeUser(A_CmsUser user)
          throws CmsException {
-         m_accessUserGroup.updateUser(username,additionalInfos,flag);
+         m_accessUserGroup.writeUser(user);     
      }
 
 	/**
@@ -228,7 +216,6 @@ import com.opencms.core.*;
 	 * <B>Security:</B>
 	 * Only users, which are in the group "administrators" are granted.
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param name The name of the new group.
 	 * @param description The description for the new group.
 	 * @int flags The flags for the new group.
@@ -237,18 +224,29 @@ import com.opencms.core.*;
 	 * @return Group
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
-	 * @exception MhtDuplicateKeyException Throws MhtDuplicateKeyException if 
-	 * same group already exists.
 	 */	
-	 A_CmsGroup addGroup(A_CmsUser callingUser, String name, String description, 
+	 A_CmsGroup addGroup(String name, String description, 
                          int flags, String parent)
-         throws CmsException, CmsDuplicateKeyException {
+         throws CmsException {
          
          A_CmsGroup group=null;
          group=m_accessUserGroup.addGroup(name,description,flags,parent);    
          return group;         
      }
 
+     /**
+	 * Writes an already existing group in the Cms.<BR/>
+	 * 
+	 * Only the admin can do this.<P/>
+	 * 
+	 * @param group The group that should be written to the Cms.
+	 * @exception CmsException  Throws CmsException if operation was not succesfull.
+	 */	
+	 void writeGroup(A_CmsGroup group)
+         throws CmsException{
+         m_accessUserGroup.writeGroup(group);
+     }
+     
 	/**
 	 * Delete a group from the Cms.<BR/>
 	 * Only groups that contain no subgroups can be deleted.
@@ -258,16 +256,15 @@ import com.opencms.core.*;
 	 * <B>Security:</B>
 	 * Only users, which are in the group "administrators" are granted.
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param delgroup The name of the group that is to be deleted.
 	 * @exception CmsException  Throws CmsException if operation was not succesfull.
 	 */	
-	 void deleteGroup(A_CmsUser callingUser, String delgroup)
+	 void deleteGroup(String delgroup)
          throws CmsException {
          A_CmsGroup group = null;
          Vector childs=null;
          // get all child groups of the group
-         childs=getChild(callingUser,delgroup);
+         childs=getChild(delgroup);
          // delete group only if it has no childs
          if (childs == null) {
             m_accessUserGroup.deleteGroup(delgroup);
@@ -285,12 +282,11 @@ import com.opencms.core.*;
 	 * <B>Security:</B>
 	 * Only users, which are in the group "administrators" are granted.
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param username The name of the user that is to be added to the group.
 	 * @param groupname The name of the group.
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */	
-	 void addUserToGroup(A_CmsUser callingUser, String username, String groupname)
+	 void addUserToGroup(String username, String groupname)
          throws CmsException {
          m_accessUserGroup.addUserToGroup(username,groupname);
      }
@@ -303,12 +299,11 @@ import com.opencms.core.*;
 	 * <B>Security:</B>
 	 * Only users, which are in the group "administrators" are granted.
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param username The name of the user that is to be removed from the group.
 	 * @param groupname The name of the group.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
-	 void removeUserFromGroup(A_CmsUser callingUser, String username, String groupname)
+	 void removeUserFromGroup(String username, String groupname)
          throws CmsException {
          m_accessUserGroup.removeUserFromGroup(username,groupname);
      }
@@ -319,11 +314,10 @@ import com.opencms.core.*;
 	 * <B>Security:</B>
 	 * All users are granted, except the anonymous user.
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @return users A Vector of all existing users.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-     Vector getUsers(A_CmsUser callingUser)
+     Vector getUsers()
        throws CmsException{
         Vector users=null;
         users=m_accessUserGroup.getUsers();
@@ -336,11 +330,10 @@ import com.opencms.core.*;
 	 * <B>Security:</B>
 	 * All users are granted, except the anonymous user.
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @return users A Vector of all existing groups.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-     Vector getGroups(A_CmsUser callingUser)
+     Vector getGroups()
         throws CmsException  {
         Vector groups=null;
         groups=m_accessUserGroup.getGroups();
@@ -354,12 +347,11 @@ import com.opencms.core.*;
 	 * <B>Security:</B>
 	 * All users are granted, except the anonymous user.
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param groupname The name of the group.
 	 * @return users A Vector of all child groups or null.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-     Vector getChild(A_CmsUser callingUser, String groupname)
+     Vector getChild(String groupname)
       throws CmsException {
         Vector childs=null;
         childs=m_accessUserGroup.getChild(groupname);
@@ -375,13 +367,12 @@ import com.opencms.core.*;
 	 * Users, which are in the group "administrators" are granted.<BR/>
 	 * Current users can change their own password.
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param username The name of the user.
 	 * @param newPassword The new password.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */
-	 void setPassword(A_CmsUser callingUser, String username, String newPassword)
+	 void setPassword(String username, String newPassword)
         throws CmsException{
          m_accessUserGroup.setPassword(username,newPassword);
        }

@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 1999/12/16 18:13:09 $
+ * @version $Revision: 1.5 $ $Date: 1999/12/20 17:19:47 $
  */
  public class CmsAccessUserMySql extends A_CmsAccessUser implements I_CmsConstants  {
      
@@ -241,15 +241,13 @@ import com.opencms.core.*;
 	 * @return user The added user will be returned.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
-	 * @exception CmsDuplicateKeyException Throws CmsDuplicateKeyException if
-	 * a user with the given username exists already.
 	 */
 	 A_CmsUser addUser(String name, String password, 
 					   String description) 				
-        throws CmsException, CmsDuplicateKeyException {
+        throws CmsException {
 
          A_CmsUser user=null;
-         
+                 
          try {     
             // write new user to the database
             m_statementUserWrite.setInt(1,0);
@@ -262,12 +260,8 @@ import com.opencms.core.*;
             user=readUser(name);
             
          } catch (SQLException e){
-             if (e.getErrorCode() == 1062) {
-				throw new CmsDuplicateKeyException(e.toString());
-             } else {
-                throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
-             }
-		}
+            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+         }
          return user;
      }
 
@@ -291,20 +285,22 @@ import com.opencms.core.*;
  
      }
 
+
 	/**
-	 * Updated the userinformation.<BR/>
+	 * Writes the user information in the Cms.<BR/>
+	 * Since all changable user information are stored in the <b>USER_ADDITIONALINFO</b>
+	 * table, this method is empty and might be required for future use.
 	 * 
 	 * Only the administrator can do this.<P/>
 	 * 
-	 * @param username The name of the user to be updated.
-	 * @param additionalInfos A Hashtable with additional infos for the user. These
-	 * @param flag The new user access flags.
+	 * @param user The Cms useer to be updated
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	 void updateUser(String username, 
-					Hashtable additionalInfos, int flag)
+	 void writeUser(A_CmsUser user)
          throws CmsException {
+         
+         // empty for future use.
      }
 
 	/**
