@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $File$
- * Date   : $Date: 2000/12/04 16:15:43 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2001/01/03 10:44:05 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -93,6 +93,7 @@ public class CmsExplorerResources extends CmsWorkplaceDefault implements I_CmsCo
 		jsOutput.append(" this.langup=\""+lang.getLanguageValue("button.parent")+"\";\n");
 		jsOutput.append(" this.langnew=\""+lang.getLanguageValue("button.new")+"\";\n");
 		jsOutput.append(" this.langadress=\""+lang.getLanguageValue("input.adress")+":\";\n");
+		jsOutput.append(" this.altlockedby=\""+lang.getLanguageValue("explorer.lockedby")+"\";\n");
 		jsOutput.append(" this.servpath=\""+ servletPath +"\";\n");
 		int filelist=getDefaultPreferences(cms);
 		jsOutput.append(" this.viewcfg = "+filelist+";\n");
