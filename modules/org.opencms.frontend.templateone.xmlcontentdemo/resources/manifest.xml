@@ -346,15 +346,16 @@
 			<destination>xmlcontent/article_0001.html</destination>
 			<type>article</type>
 			<uuidresource>e20dff06-113f-11d9-831f-b70b5b3477aa</uuidresource>
-			<datelastmodified>Mon, 18 Oct 2004 18:59:00 CEST</datelastmodified>
+			<datelastmodified>Mon, 21 Feb 2005 09:58:26 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 28 Sep 2004 13:16:45 CEST</datecreated>
+			<datecreated>Tue, 28 Sep 2004 11:16:45 GMT</datecreated>
 			<usercreated>Admin</usercreated>
+			<datereleased>Tue, 01 Feb 2005 19:00:00 GMT</datereleased>
 			<flags>0</flags>
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Sample Article 1]]></value>
+					<value><![CDATA[Sample article 1]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -364,10 +365,11 @@
 			<destination>xmlcontent/article_0002.html</destination>
 			<type>article</type>
 			<uuidresource>00b9d277-113f-11d9-831f-b70b5b3477aa</uuidresource>
-			<datelastmodified>Tue, 19 Oct 2004 18:59:00 CEST</datelastmodified>
+			<datelastmodified>Mon, 21 Feb 2005 09:58:39 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 28 Sep 2004 13:10:27 CEST</datecreated>
+			<datecreated>Tue, 28 Sep 2004 11:10:27 GMT</datecreated>
 			<usercreated>Admin</usercreated>
+			<datereleased>Tue, 01 Feb 2005 18:00:00 GMT</datereleased>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -382,15 +384,16 @@
 			<destination>xmlcontent/article_0003.html</destination>
 			<type>article</type>
 			<uuidresource>beeee83b-113f-11d9-831f-b70b5b3477aa</uuidresource>
-			<datelastmodified>Wed, 20 Oct 2004 19:00:00 CEST</datelastmodified>
+			<datelastmodified>Mon, 21 Feb 2005 09:58:50 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 28 Sep 2004 13:15:46 CEST</datecreated>
+			<datecreated>Tue, 28 Sep 2004 11:15:46 GMT</datecreated>
 			<usercreated>Admin</usercreated>
+			<datereleased>Tue, 01 Feb 2005 17:00:00 GMT</datereleased>
 			<flags>0</flags>
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Nice sample Article 3]]></value>
+					<value><![CDATA[Nice sample article 3]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -400,10 +403,11 @@
 			<destination>xmlcontent/article_0004.html</destination>
 			<type>article</type>
 			<uuidresource>f7c19c2b-1140-11d9-831f-b70b5b3477aa</uuidresource>
-			<datelastmodified>Thu, 21 Oct 2004 19:00:00 CEST</datelastmodified>
+			<datelastmodified>Mon, 21 Feb 2005 09:59:02 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 28 Sep 2004 13:24:31 CEST</datecreated>
+			<datecreated>Tue, 28 Sep 2004 11:24:31 GMT</datecreated>
 			<usercreated>Admin</usercreated>
+			<datereleased>Tue, 01 Feb 2005 16:00:00 GMT</datereleased>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -998,15 +1002,16 @@
 			<destination>xmlcontent/subfolder/article_0001.html</destination>
 			<type>article</type>
 			<uuidresource>51387b3e-2126-11d9-aca1-33454537bb5d</uuidresource>
-			<datelastmodified>Tue, 19 Oct 2004 19:01:00 CEST</datelastmodified>
+			<datelastmodified>Mon, 21 Feb 2005 09:59:25 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 18 Oct 2004 18:54:03 CEST</datecreated>
+			<datecreated>Mon, 18 Oct 2004 16:54:03 GMT</datecreated>
 			<usercreated>Admin</usercreated>
+			<datereleased>Tue, 01 Feb 2005 15:00:00 GMT</datereleased>
 			<flags>0</flags>
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Sample Article in SUBFOLDER]]></value>
+					<value><![CDATA[Sample article in SUBFOLDER]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -1016,10 +1021,11 @@
 			<destination>xmlcontent/subfolder/article_0002.html</destination>
 			<type>article</type>
 			<uuidresource>2e84d9f5-21f6-11d9-8e1f-33454537bb5d</uuidresource>
-			<datelastmodified>Wed, 20 Oct 2004 19:02:00 CEST</datelastmodified>
+			<datelastmodified>Mon, 21 Feb 2005 09:59:35 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 19 Oct 2004 19:42:01 CEST</datecreated>
+			<datecreated>Tue, 19 Oct 2004 17:42:01 GMT</datecreated>
 			<usercreated>Admin</usercreated>
+			<datereleased>Tue, 01 Feb 2005 14:00:00 GMT</datereleased>
 			<flags>0</flags>
 			<properties>
 				<property>
