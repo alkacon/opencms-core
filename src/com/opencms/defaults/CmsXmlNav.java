@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlNav.java,v $
- * Date   : $Date: 2000/04/05 15:53:07 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/04/06 10:25:57 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * 
  * @author Alexander Kandzior
  * @author Waruschan Babachan
- * @version $Revision: 1.4 $ $Date: 2000/04/05 15:53:07 $
+ * @version $Revision: 1.5 $ $Date: 2000/04/06 10:25:57 $
  */
 public class CmsXmlNav extends A_CmsNavBase {
 		
@@ -81,45 +81,6 @@ public class CmsXmlNav extends A_CmsNavBase {
 		String rootFolder=((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath()+"/";
 		return rootFolder.getBytes();
 	}
-			
-	
-	/** 
-	 * gets the navigation of root folder.
-	 * 
-     * @param cms A_CmsObject Object for accessing system resources.
-     * @param tagcontent Unused in this special case of a user method. Can be ignored.
-     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
-     * @param userObj Hashtable with parameters.
-     * @return byte[] with the content of this subelement.
-     * @exception CmsException
-     */
-    public Object getNavRoot(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
-            throws CmsException {
-		
-		int level=0;
-		try {
-			level=Integer.parseInt(tagcontent);
-		} catch(NumberFormatException e) {
-			throw new CmsException(e.getMessage());
-		}
-		String currentFolder="";
-		if (level<=0) {
-			currentFolder=currentFolder=cms.rootFolder().getAbsolutePath();
-		} else {
-			currentFolder=extractFolder(cms,level);
-		}		
-		
-		Vector resources=cms.getSubFolders(currentFolder);
-		Vector allFile=cms.getFilesInFolder(currentFolder);
-		
-		resources.ensureCapacity(resources.size() + allFile.size());
-		Enumeration e = allFile.elements();
-		while (e.hasMoreElements()) {
-			resources.addElement(e.nextElement());
-		}
-		
-		return buildNav(cms,doc,resources).getBytes();
-	}
 	
 	
 	/** 
@@ -150,7 +111,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 	}
 	
 	/** 
-	 * gets the navigation of parent folder.
+	 * gets the navigation of specified level of parent folder.
 	 * 
      * @param cms A_CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
@@ -163,15 +124,24 @@ public class CmsXmlNav extends A_CmsNavBase {
             throws CmsException {
 		
 		int level=0;
-		try {
-			level=Integer.parseInt(tagcontent);
-		} catch(NumberFormatException e) {
-			throw new CmsException(e.getMessage());
+		// tagcontent determines the folder starting from parent folder.
+		// if tagcontent is null, zero or negative, then the navigation of current
+		// folder must be showed.
+		if (tagcontent!=null) {
+			try {
+				level=Integer.parseInt(tagcontent);
+			} catch(NumberFormatException e) {
+				throw new CmsException(e.getMessage());
+			}
 		}
 		String currentFolder="";
 		if (level<=0) {
 			currentFolder=cms.getRequestContext().currentFolder().getAbsolutePath();
 		} else {
+			// level is converted to negative number, so I can use the method 
+			// "extractFolder" for positive and negative numbers. Negative number
+			// determines the parent folder level starting from current folder and
+			// positive number determines the level starting ftom root folder.
 			currentFolder=extractFolder(cms,((-1)*level));
 		}
 		Vector resources=cms.getSubFolders(currentFolder);
@@ -185,10 +155,53 @@ public class CmsXmlNav extends A_CmsNavBase {
 		
 		return buildNav(cms,doc,resources).getBytes();
 	}
-	
+			
 	
 	/** 
-	 * gets the navigation of all folder.
+	 * gets the navigation of root folder or parent folder starting from root folder.
+	 * 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param tagcontent Unused in this special case of a user method. Can be ignored.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
+     * @param userObj Hashtable with parameters.
+     * @return byte[] with the content of this subelement.
+     * @exception CmsException
+     */
+    public Object getNavRoot(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
+            throws CmsException {
+				
+		int level=0;
+		// tagcontent determines the folder starting from root folder.
+		// if tagcontent is null, then the navigation of root folder must be showed.
+		if (tagcontent!=null) {
+			try {
+				level=Integer.parseInt(tagcontent);
+			} catch(NumberFormatException e) {
+				throw new CmsException(e.getMessage());
+			}
+		}
+		String currentFolder="";
+		if (level<=0) {
+			currentFolder=currentFolder=cms.rootFolder().getAbsolutePath();
+		} else {
+			currentFolder=extractFolder(cms,level);
+		}		
+		// get all resources, it means all files and folders.
+		Vector resources=cms.getSubFolders(currentFolder);
+		Vector allFile=cms.getFilesInFolder(currentFolder);
+		
+		resources.ensureCapacity(resources.size() + allFile.size());
+		Enumeration e = allFile.elements();
+		while (e.hasMoreElements()) {
+			resources.addElement(e.nextElement());
+		}
+		
+		return buildNav(cms,doc,resources).getBytes();
+	}
+		
+	
+	/** 
+	 * gets the navigation of folders recursive.
 	 * 
      * @param cms A_CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
@@ -201,10 +214,15 @@ public class CmsXmlNav extends A_CmsNavBase {
             throws CmsException {
 		
 		int level=0;
-		try {
-			level=Integer.parseInt(tagcontent);
-		} catch(NumberFormatException e) {
-			throw new CmsException(e.getMessage());
+		// if level is zero or null or negative then all folders recursive must  
+		// be showed starting from root folder unless all folders stating from 
+		// specified level of parent folder.
+		if (tagcontent!=null) {
+			try {
+				level=Integer.parseInt(tagcontent);
+			} catch(NumberFormatException e) {
+				throw new CmsException(e.getMessage());
+			}
 		}
 		String folder="";
 		if (level<=0) {
@@ -228,7 +246,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 		CmsXmlTemplateFile xmlDataBlock=(CmsXmlTemplateFile)doc;
 		
 		String result="";
-		
+		// check wheather xml data blocks are defined.
 		if (xmlDataBlock.hasData("navEntry")) {
 			if (!xmlDataBlock.hasData("navCurrent")) {
 				xmlDataBlock.setData("navCurrent", xmlDataBlock.getDataValue("navEntry"));
@@ -243,61 +261,6 @@ public class CmsXmlNav extends A_CmsNavBase {
 		}
 		
 		return result.getBytes();
-	}
-	
-	
-	/** 
-	 * gets the root page.
-	 * 
-     * @param cms A_CmsObject Object for accessing system resources.
-     * @param tagcontent Unused in this special case of a user method. Can be ignored.
-     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
-     * @param userObj Hashtable with parameters.
-     * @return byte[] with the content of this subelement.
-     * @exception CmsException
-     */
-    public Object getPageRoot(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
-			throws CmsException {
-		
-		int level=0;
-		try {
-			level=Integer.parseInt(tagcontent);
-		} catch(NumberFormatException e) {
-			throw new CmsException(e.getMessage());
-		}
-		if (level>0) {
-			String requestedUri = cms.getRequestContext().getUri();
-			String currentFolder=cms.getRequestContext().currentFolder().getAbsolutePath();				
-			
-			Vector resources=cms.getSubFolders(currentFolder);
-			Vector allFile=cms.getFilesInFolder(currentFolder);
-			
-			resources.ensureCapacity(resources.size() + allFile.size());
-			Enumeration e = allFile.elements();
-			while (e.hasMoreElements()) {
-				resources.addElement(e.nextElement());
-			}
-			int size = resources.size();
-			
-			String navLink[] = new String[size];
-			String navText[] = new String[size];
-			float navPos[] = new float[size];
-			
-			int pos=0;
-			int max=extractNav(cms,resources,navLink,navText,navPos);
-			for(int i=0; i<max; i++) {
-				// Check if nav is current nav
-				if (navLink[i].equals(currentFolder) || navLink[i].equals(requestedUri)) {
-					if (level<i) {
-						pos=level;
-					} else {
-						pos=i;
-					}
-				}
-			}		
-			return (navLink[pos]);
-		}
-		return (((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath()+"/");
 	}
 	
 		
@@ -413,7 +376,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 	
 	
 	/** 
-	 * gets the parent page.
+	 * gets the current page or parent page starting from current folder.
 	 * 
      * @param cms A_CmsObject Object for accessing system resources.
      * @param tagcontent The level of parent's page.
@@ -426,47 +389,109 @@ public class CmsXmlNav extends A_CmsNavBase {
             throws CmsException {
 		
 		int level=0;
-		try {
-			level=Integer.parseInt(tagcontent);
-		} catch(NumberFormatException e) {
-			throw new CmsException(e.getMessage());
+		// tagcontent determines the parent folder starting from root folder.
+		if (tagcontent!=null) {
+			try {
+				level=Integer.parseInt(tagcontent);
+			} catch(NumberFormatException e) {
+				throw new CmsException(e.getMessage());
+			}
 		}
 		
-		String requestedUri = cms.getRequestContext().getUri();
-		String currentFolder=cms.getRequestContext().currentFolder().getAbsolutePath();				
-		
-		Vector resources=cms.getSubFolders(currentFolder);
-		Vector allFile=cms.getFilesInFolder(currentFolder);
-		
-		resources.ensureCapacity(resources.size() + allFile.size());
-		Enumeration e = allFile.elements();
-		while (e.hasMoreElements()) {
-			resources.addElement(e.nextElement());
-		}
-		int size = resources.size();
-		
-		String navLink[] = new String[size];
-        String navText[] = new String[size];
-        float navPos[] = new float[size];
-        
-		int pos=0;
-		int max=extractNav(cms,resources,navLink,navText,navPos);
-		for(int i=0; i<max; i++) {
-			// Check if nav is current nav
-			if (navLink[i].equals(currentFolder) || navLink[i].equals(requestedUri)) {
-				if (level<=0) {
-					pos=i;
-				} else {
+		if (level>0) {
+			String requestedUri = cms.getRequestContext().getUri();
+			String currentFolder=cms.getRequestContext().currentFolder().getAbsolutePath();				
+			
+			Vector resources=cms.getSubFolders(currentFolder);
+			Vector allFile=cms.getFilesInFolder(currentFolder);
+			
+			resources.ensureCapacity(resources.size() + allFile.size());
+			Enumeration e = allFile.elements();
+			while (e.hasMoreElements()) {
+				resources.addElement(e.nextElement());
+			}
+			int size = resources.size();
+			
+			String navLink[] = new String[size];
+			String navText[] = new String[size];
+			float navPos[] = new float[size];
+			
+			int pos=0;
+			int max=extractNav(cms,resources,navLink,navText,navPos);
+			for(int i=0; i<max; i++) {
+				// Check if nav is current nav
+				if (navLink[i].equals(currentFolder) || navLink[i].equals(requestedUri)) {
 					if ((i-level)<0) {
 						pos=0;
 					} else {
 						pos=i-level;
+					}					
+				}
+			}			
+			return (navLink[pos]);
+		}
+		
+		return cms.getRequestContext().getUri();
+	}
+	
+	
+	/** 
+	 * gets the root page or parent page starting from root folder.
+	 * 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param tagcontent Unused in this special case of a user method. Can be ignored.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
+     * @param userObj Hashtable with parameters.
+     * @return byte[] with the content of this subelement.
+     * @exception CmsException
+     */
+    public Object getPageRoot(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
+			throws CmsException {
+		
+		int level=0;
+		// the level must be a positive number.
+		// if level is zero then it means the root page unless it means the page
+		// of specified level starting from root page.
+		if (tagcontent!=null) {
+			try {
+				level=Integer.parseInt(tagcontent);
+			} catch(NumberFormatException e) {
+				throw new CmsException(e.getMessage());
+			}
+		}
+		if (level>0) {
+			String requestedUri = cms.getRequestContext().getUri();
+			String currentFolder=cms.getRequestContext().currentFolder().getAbsolutePath();				
+			
+			Vector resources=cms.getSubFolders(currentFolder);
+			Vector allFile=cms.getFilesInFolder(currentFolder);
+			
+			resources.ensureCapacity(resources.size() + allFile.size());
+			Enumeration e = allFile.elements();
+			while (e.hasMoreElements()) {
+				resources.addElement(e.nextElement());
+			}
+			int size = resources.size();
+			
+			String navLink[] = new String[size];
+			String navText[] = new String[size];
+			float navPos[] = new float[size];
+			
+			int pos=0;
+			int max=extractNav(cms,resources,navLink,navText,navPos);
+			for(int i=0; i<max; i++) {
+				// Check if nav is current nav
+				if (navLink[i].equals(currentFolder) || navLink[i].equals(requestedUri)) {
+					if (level<i) {
+						pos=level;
+					} else {
+						pos=i;
 					}
 				}
-			}
-        }
-		
-		return (navLink[pos]);
+			}		
+			return (navLink[pos]);
+		}
+		return (((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath()+"/");
 	}
 		
 	
@@ -484,18 +509,21 @@ public class CmsXmlNav extends A_CmsNavBase {
             throws CmsException {
 		
 		String property="";
-		String currentFolder=cms.getRequestContext().currentFolder().getAbsolutePath();
-				
-		property=cms.readProperty(currentFolder, tagcontent);		
-		if (property==null) {
-			property="";
+		// tagcontent must contain the property definition name.
+		if (tagcontent!=null) {		
+			String currentFolder=cms.getRequestContext().currentFolder().getAbsolutePath();
+			
+			property=cms.readProperty(currentFolder, tagcontent);		
+			if (property==null) {
+				property="";
+			}
 		}
 		return (property.getBytes());
 	}
 	
 	
 	/** 
-	 * gets a specified property of specified parent folder.
+	 * gets a specified property of specified folder starting from current folder.
 	 * 
      * @param cms A_CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
@@ -508,27 +536,32 @@ public class CmsXmlNav extends A_CmsNavBase {
             throws CmsException {
 		
 		int level=0;
-		try {
-			level=Integer.parseInt(tagcontent.substring(0,tagcontent.indexOf(",")));
-		} catch(NumberFormatException e) {
-			throw new CmsException(e.getMessage());
-		}
-		
-		String currentFolder="";
-		if (level<=0) {
-			currentFolder=cms.getRequestContext().currentFolder().getAbsolutePath();
-		} else {
-			currentFolder=extractFolder(cms,((-1)*level));
-		}
-		
-		
 		String property="";
+		// tagcontent determines the parent folder starting from current folder and
+		// the property definition name sparated by a comma.
+		if (tagcontent!=null) {
+			try {
+				level=Integer.parseInt(tagcontent.substring(0,tagcontent.indexOf(",")));
+			} catch(NumberFormatException e) {
+				throw new CmsException(e.getMessage());
+			}
 		
-		property=cms.readProperty(currentFolder, tagcontent.substring(tagcontent.indexOf(",")+1));
-		if (property==null) {
-			property="";
+			String currentFolder="";
+			if (level<=0) {
+				currentFolder=cms.getRequestContext().currentFolder().getAbsolutePath();
+			} else {
+				// level is converted to negative number, so I can use the method 
+				// "extractFolder" for positive and negative numbers. Negative number
+				// determines the parent folder level starting from current folder and
+				// positive number determines the level starting ftom root folder.
+				currentFolder=extractFolder(cms,((-1)*level));
+			}
+					
+			property=cms.readProperty(currentFolder, tagcontent.substring(tagcontent.indexOf(",")+1));
+			if (property==null) {
+				property="";
+			}
 		}
-		
 		return (property.getBytes());
 	}
 	
@@ -547,27 +580,28 @@ public class CmsXmlNav extends A_CmsNavBase {
             throws CmsException {
 		
 		int level=0;
-		try {
-			level=Integer.parseInt(tagcontent.substring(0,tagcontent.indexOf(",")));
-		} catch(NumberFormatException e) {
-			throw new CmsException(e.getMessage());
-		}
-		
-		String currentFolder="";
-		if (level<=0) {
-			currentFolder=currentFolder=cms.rootFolder().getAbsolutePath();
-		} else {
-			currentFolder=extractFolder(cms,level);
-		}
-		
-		
 		String property="";
+		// tagcontent determines the folder starting from root folder and
+		// the property definition name sparated by a comma.
+		if (tagcontent!=null) {
+			try {
+				level=Integer.parseInt(tagcontent.substring(0,tagcontent.indexOf(",")));
+			} catch(NumberFormatException e) {
+				throw new CmsException(e.getMessage());
+			}
 		
-		property=cms.readProperty(currentFolder, tagcontent.substring(tagcontent.indexOf(",")+1));
-		if (property==null) {
-			property="";
+			String currentFolder="";
+			if (level<=0) {
+				currentFolder=currentFolder=cms.rootFolder().getAbsolutePath();
+			} else {
+				currentFolder=extractFolder(cms,level);
+			}
+					
+			property=cms.readProperty(currentFolder, tagcontent.substring(tagcontent.indexOf(",")+1));
+			if (property==null) {
+				property="";
+			}
 		}
-		
 		return (property.getBytes());
 	}
 	
@@ -633,7 +667,14 @@ public class CmsXmlNav extends A_CmsNavBase {
 			for(int i=0; i<max; i++) {			
 				xmlDataBlock.setData("navText", navText[i]);
 				xmlDataBlock.setData("count", new Integer(i+1).toString());
-				xmlDataBlock.setData("navLink", servletPath + navLink[i] );
+				// this if condition is necessary because of url parameter,
+				// if there is no filename then the parameters are ignored, so I
+				// can't use e.g. ?cmsframe=body.
+				if (navLink[i].endsWith("/")) {
+					xmlDataBlock.setData("navLink", servletPath + navLink[i] + "index.html" );
+				} else {
+					xmlDataBlock.setData("navLink", servletPath + navLink[i] );
+				}
 				// Check if nav is current nav				
 				if (navLink[i].equals(currentFolder) || navLink[i].equals(requestedUri)) {
 					result.append(xmlDataBlock.getProcessedDataValue("navCurrent"));
@@ -675,13 +716,21 @@ public class CmsXmlNav extends A_CmsNavBase {
 			for(int i=0; i<max; i++) {
 				xmlDataBlock.setData("navText", navText[i]);
 				xmlDataBlock.setData("count", new Integer(i+1).toString());
-				xmlDataBlock.setData("navLink", servletPath + navLink[i] );
+				// this if condition is necessary because of url parameter,
+				// if there is no filename then the parameters are ignored, so I
+				// can't use e.g. ?cmsframe=body.
+				if (navLink[i].endsWith("/")) {
+					xmlDataBlock.setData("navLink", servletPath + navLink[i] + "index.html" );
+				} else {
+					xmlDataBlock.setData("navLink", servletPath + navLink[i] );
+				}
 				// Check if nav is current nav				
 				if (navLink[i].equals(currentFolder) || navLink[i].equals(requestedUri)) {
 					result.append(xmlDataBlock.getProcessedDataValue("navCurrent"));
 				} else {
 					result.append(xmlDataBlock.getProcessedDataValue("navEntry"));
 				}
+				// choose only folders.
 				if (navLink[i].endsWith("/")) {
 					Vector all=cms.getSubFolders(navLink[i]);
 					Vector files=cms.getFilesInFolder(navLink[i]);
