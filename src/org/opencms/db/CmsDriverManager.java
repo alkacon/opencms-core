@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/29 10:43:47 $
- * Version: $Revision: 1.93 $
+ * Date   : $Date: 2003/07/29 11:28:52 $
+ * Version: $Revision: 1.94 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.93 $ $Date: 2003/07/29 10:43:47 $
+ * @version $Revision: 1.94 $ $Date: 2003/07/29 11:28:52 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1995,7 +1995,7 @@ public class CmsDriverManager extends Object {
         clearResourceCache();
         m_accessCache.clear();
         
-        m_lockDispatcher.removeResource(this, context, foldername, false);
+        m_lockDispatcher.removeResource(this, context, foldername, true);
         
         // inform about the file-system-change
         fileSystemChanged(true);
@@ -7423,7 +7423,7 @@ public class CmsDriverManager extends Object {
         }
         
         resource = readFileHeader(context, resourcename);
-        m_lockDispatcher.removeResource(this, context, resource.getFullResourceName(), false);        
+        m_lockDispatcher.removeResource(this, context, resource.getFullResourceName(), forceUnlock);        
         
         /*
         String currentResourceName = null;       

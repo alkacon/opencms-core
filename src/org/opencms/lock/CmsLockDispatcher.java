@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/Attic/CmsLockDispatcher.java,v $
- * Date   : $Date: 2003/07/29 11:00:17 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2003/07/29 11:28:52 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Map;
  * are instances of CmsLock objects.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.19 $ $Date: 2003/07/29 11:00:17 $
+ * @version $Revision: 1.20 $ $Date: 2003/07/29 11:28:52 $
  * @since 5.1.4
  * @see com.opencms.file.CmsObject#getLock(CmsResource)
  * @see org.opencms.lock.CmsLock
@@ -102,8 +102,10 @@ public final class CmsLockDispatcher extends Object {
      * @return the new CmsLock object for the added resource
      */
     public void addResource(CmsDriverManager driverManager, CmsRequestContext context, String resourcename, CmsUUID userId, int projectId) throws CmsException {
-        if (!getLock(driverManager, context, resourcename).isNullLock()) {
-            throw new CmsLockException("Resource is already locked", CmsLockException.C_RESOURCE_LOCKED);
+        CmsLock lock = getLock(driverManager, context, resourcename);
+        
+        if (!lock.isNullLock() && !lock.getUserId().equals(context.currentUser().getId()) && lock.getProjectId()!=context.currentProject().getId()) {
+            throw new CmsLockException("Resource is already locked by another user", CmsLockException.C_RESOURCE_LOCKED_BY_OTHER_USER);
         }
 
         CmsLock newLock = new CmsLock(resourcename, userId, projectId, CmsLock.C_TYPE_EXCLUSIVE);
@@ -277,7 +279,7 @@ public final class CmsLockDispatcher extends Object {
             }
 
             return lock;
-        } else if (lock.getType() == CmsLock.C_TYPE_INHERITED || lock.getType() == CmsLock.C_TYPE_SHARED_INHERITED) {
+        } else if (!forceUnlock && (lock.getType() == CmsLock.C_TYPE_INHERITED || lock.getType() == CmsLock.C_TYPE_SHARED_INHERITED)) {
             throw new CmsLockException("Unable to unlock resource due to an inherited lock of a parent folder", CmsLockException.C_RESOURCE_LOCKED_INHERITED);
         }
 
