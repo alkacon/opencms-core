@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsDumpTemplate.java,v $
-* Date   : $Date: 2003/07/15 08:43:10 $
-* Version: $Revision: 1.36 $
+* Date   : $Date: 2003/07/15 10:17:20 $
+* Version: $Revision: 1.37 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,6 +36,8 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
+import com.opencms.file.CmsResourceTypeBinary;
+import com.opencms.file.CmsResourceTypePlain;
 import com.opencms.template.cache.A_CmsElement;
 import com.opencms.template.cache.CmsElementDump;
 import com.opencms.util.Encoder;
@@ -48,7 +50,7 @@ import java.util.Hashtable;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.36 $ $Date: 2003/07/15 08:43:10 $
+ * @version $Revision: 1.37 $ $Date: 2003/07/15 10:17:20 $
  */
 public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate {
 
@@ -93,7 +95,7 @@ public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate 
         try {
             // Encoding project:
             CmsFile file = cms.readFile(templateFile);
-            if (cms.getResourceType("plain").getResourceType() == file.getType()) {            
+            if (CmsResourceTypePlain.C_RESOURCE_TYPE_ID == file.getType()) {            
                 // We have a plain text file - so we need to deliver it in correct encoding.
                 // Here we suppose that in Cms non-xml files are stored in default content encoding
                 // (that's why we need to force this encoding for all workplace

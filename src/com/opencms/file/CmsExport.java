@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
- * Date   : $Date: 2003/07/12 12:49:03 $
- * Version: $Revision: 1.61 $
+ * Date   : $Date: 2003/07/15 10:17:20 $
+ * Version: $Revision: 1.62 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.w3c.dom.Text;
  * @author Andreas Schouten
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.61 $ $Date: 2003/07/12 12:49:03 $
+ * @version $Revision: 1.62 $ $Date: 2003/07/15 10:17:20 $
  */
 public class CmsExport implements I_CmsConstants, Serializable {
 
@@ -108,9 +108,6 @@ public class CmsExport implements I_CmsConstants, Serializable {
     
     /** Set of all exported files, required for later page body file export */
     private Set m_exportedResources = null;
-    
-    /** Stores the id of the "page" resource type to save lookup time */
-    private int m_pageType;
         
     /** Indicates if module data is exported */
     protected boolean m_exportingModuleData = false;   
@@ -277,10 +274,7 @@ public class CmsExport implements I_CmsConstants, Serializable {
         // init sets required for the body file exports 
         m_exportedPageFiles = new HashSet();
         m_exportedResources = new HashSet();
-        
-        // set the "page" file resource type id
-        m_pageType = m_cms.getResourceType("page").getResourceType();
-                
+
         // export the folders
         for (int i=0; i<folderNames.size(); i++) {
             String path = (String) folderNames.elementAt(i);
@@ -604,7 +598,7 @@ public class CmsExport implements I_CmsConstants, Serializable {
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         }
 
-        if (file.getType() == m_pageType) {
+        if (file.getType() == CmsResourceTypePage.C_RESOURCE_TYPE_ID) {
             m_exportedPageFiles.add(m_cms.readAbsolutePath(file));
         }
 

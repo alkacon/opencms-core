@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
- * Date   : $Date: 2003/07/14 20:12:41 $
- * Version: $Revision: 1.69 $
+ * Date   : $Date: 2003/07/15 10:17:20 $
+ * Version: $Revision: 1.70 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.StringTokenizer;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.69 $
+ * @version $Revision: 1.70 $
  * @since 5.1
  */
 public class CmsResourceTypePage implements I_CmsResourceType {
@@ -63,9 +63,6 @@ public class CmsResourceTypePage implements I_CmsResourceType {
     
     /** The name of this resource */
     public static final String C_RESOURCE_TYPE_NAME = "page";
-
-    /** Internal debug flag */
-    private static final int DEBUG = 0;
 
     /**
      * @see com.opencms.file.I_CmsResourceType#getResourceType()
@@ -534,60 +531,25 @@ public class CmsResourceTypePage implements I_CmsResourceType {
     }
 
     /**
-     * @see com.opencms.file.I_CmsResourceType#importResource(com.opencms.file.CmsObject, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, java.util.Map, java.lang.String, byte[], java.lang.String)
+     * @see com.opencms.file.I_CmsResourceType#importResource(com.opencms.file.CmsObject, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, java.util.Map, java.lang.String, byte[], java.lang.String)
      */
-    public CmsResource importResource(CmsObject cms, String resourcename, String destination, String type, String user, String group, String access, long lastmodified, Map properties, String launcherStartClass, byte[] content, String importPath) throws CmsException {
+    public CmsResource importResource(CmsObject cms, String resourcename, String destination, String user, String group, String access, long lastmodified, Map properties, String launcherStartClass, byte[] content, String importPath) throws CmsException {
+        // TODO: Remove owner / group / access / launcherStartClass parameter
         CmsResource importedResource = null;
         destination = importPath + destination;
-
         boolean changed = true;
-        int resourceType = cms.getResourceType(type).getResourceType();
-        int launcherType = cms.getResourceType(type).getLauncherType();
-        if ((launcherStartClass == null) || ("".equals(launcherStartClass))) {
-            launcherStartClass = cms.getResourceType(type).getLauncherClass();
-        }
-        // try to read the new owner and group
-        // TODO: fix this later
-        CmsUser resowner = null;
-        CmsGroup resgroup = null;
-        int resaccess = 0;
+
         try {
-            resowner = cms.readUser(user);
-        } catch (CmsException e) {
-            if (DEBUG > 0)
-                System.err.println("[" + this.getClass().getName() + ".importResource/1] User " + user + " not found");
-            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + ".importResource/1] User " + user + " not found");
-            }
-            resowner = cms.getRequestContext().currentUser();
-        }
-        try {
-            resgroup = cms.readGroup(group);
-        } catch (CmsException e) {
-            if (DEBUG > 0)
-                System.err.println("[" + this.getClass().getName() + ".importResource/2] Group " + group + " not found");
-            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + ".importResource/2] Group " + group + " not found");
-            }
-            resgroup = cms.getRequestContext().currentGroup();
-        }
-        try {
-            resaccess = Integer.parseInt(access);
-        } catch (Exception e) {
-            // 
-        }
-        try {
-            importedResource = cms.doImportResource(destination, resourceType, properties, launcherType, launcherStartClass, resowner.getName(), resgroup.getName(), resaccess, lastmodified, content);
-            if (importedResource != null) {
-                changed = false;
-            }
+            importedResource = cms.doImportResource(destination, getResourceType(), properties, getLauncherType(), getLauncherClass(), cms.getRequestContext().currentUser().getName(), cms.getRequestContext().currentGroup().getName(), 0, lastmodified, content);
+            changed = (importedResource == null);
         } catch (CmsException e) {
             // an exception is thrown if the resource already exists
         }
+
         if (changed) {
             // if the resource already exists it must be updated
             lockResource(cms, destination, true);
-            cms.doWriteResource(destination, properties, resowner.getName(), resgroup.getName(), resaccess, resourceType, content);
+            cms.doWriteResource(destination, properties, null, null, -1, getResourceType(), content);
             importedResource = cms.readFileHeader(destination);
         }
 

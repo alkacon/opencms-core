@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/15 08:43:10 $
-* Version: $Revision: 1.317 $
+* Date   : $Date: 2003/07/15 10:17:20 $
+* Version: $Revision: 1.318 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.317 $
+ * @version $Revision: 1.318 $
  */
 public class CmsObject extends Object {
 
@@ -2443,7 +2443,7 @@ public class CmsObject extends Object {
      */
     public CmsResource importResource(String source, String destination, String type, String user, String group, String access, long lastmodified, Map properties, String launcherStartClass, byte[] content, String importPath) throws CmsException {
         I_CmsResourceType rt = getResourceType(type);
-        return rt.importResource(this, source, destination, type, user, group, access, lastmodified, properties, launcherStartClass, content, importPath);
+        return rt.importResource(this, source, destination, user, group, access, lastmodified, properties, launcherStartClass, content, importPath);
     }
 
     /**
@@ -2820,12 +2820,12 @@ public class CmsObject extends Object {
             deletedResources = readProjectView(m_context.currentProject().getId(), "deleted");
             changedResources = readProjectView(m_context.currentProject().getId(), "changed");
 
-            updateOnlineProjectLinks(deletedResources, changedResources, null, this.getResourceType(I_CmsConstants.C_TYPE_PAGE_NAME).getResourceType());
+            updateOnlineProjectLinks(deletedResources, changedResources, null, CmsResourceTypePage.C_RESOURCE_TYPE_ID);
             publishedResources = m_driverManager.publishProject(this, m_context, report);
 
             // update the online links table for the new resources (now they are there)
-            updateOnlineProjectLinks(null, null, newResources, this.getResourceType(I_CmsConstants.C_TYPE_PAGE_NAME).getResourceType());
-
+            updateOnlineProjectLinks(null, null, newResources, CmsResourceTypePage.C_RESOURCE_TYPE_ID);
+            
             changedResources.clear();
             changedResources = null;
             newResources = null;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsResourceType.java,v $
- * Date   : $Date: 2003/07/15 07:41:42 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/07/15 10:17:20 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.1
  */
 public abstract class A_CmsResourceType implements I_CmsResourceType {
@@ -189,25 +189,17 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     }
 
     /**
-     * @see com.opencms.file.I_CmsResourceType#importResource(com.opencms.file.CmsObject, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, java.util.Map, java.lang.String, byte[], java.lang.String)
+     * @see com.opencms.file.I_CmsResourceType#importResource(com.opencms.file.CmsObject, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, java.util.Map, java.lang.String, byte[], java.lang.String)
      */
-    public CmsResource importResource(CmsObject cms, String resourcename, String destination, String type, String user, String group, String access, long lastmodified, Map properties, String launcherStartClass, byte[] content, String importPath) throws CmsException {
+    public CmsResource importResource(CmsObject cms, String resourcename, String destination, String user, String group, String access, long lastmodified, Map properties, String launcherStartClass, byte[] content, String importPath) throws CmsException {
         // TODO: Remove owner / group / access / launcherStartClass parameter
         CmsResource importedResource = null;
         destination = importPath + destination;
         boolean changed = true;
 
-        int resourceType = cms.getResourceType(type).getResourceType();
-        int launcherType = cms.getResourceType(type).getLauncherType();
-
-        if ((launcherStartClass == null) || ("".equals(launcherStartClass))) {
-            launcherStartClass = cms.getResourceType(type).getLauncherClass();
-        }
         try {
-            importedResource = cms.doImportResource(destination, resourceType, properties, launcherType, launcherStartClass, cms.getRequestContext().currentUser().getName(), cms.getRequestContext().currentGroup().getName(), 0, lastmodified, content);
-            if (importedResource != null) {
-                changed = false;
-            }
+            importedResource = cms.doImportResource(destination, getResourceType(), properties, getLauncherType(), getLauncherClass(), cms.getRequestContext().currentUser().getName(), cms.getRequestContext().currentGroup().getName(), 0, lastmodified, content);
+            changed = (importedResource == null);
         } catch (CmsException e) {
             // an exception is thrown if the resource already exists
         }
@@ -215,7 +207,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         if (changed) {
             // if the resource already exists it must be updated
             lockResource(cms, destination, true);
-            cms.doWriteResource(destination, properties, null, null, -1, resourceType, content);
+            cms.doWriteResource(destination, properties, null, null, -1, getResourceType(), content);
             importedResource = cms.readFileHeader(destination);
         }
 

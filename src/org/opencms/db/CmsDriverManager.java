@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/15 09:31:38 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2003/07/15 10:17:20 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.43 $ $Date: 2003/07/15 09:31:38 $
+ * @version $Revision: 1.44 $ $Date: 2003/07/15 10:17:20 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1401,10 +1401,8 @@ public class CmsDriverManager extends Object {
         validFilename(resourceName);
 
         // checks, if the type is valid, i.e. the user can create files of this type
-        // we can't utilize the access guard to do this, since it needs a resource to check
-        // TODO: preliminary version - improve later
-        I_CmsResourceType resType = getResourceType(context, type);
-        if (("XMLTemplate".equals(resType.getResourceTypeName()) || "jsp".equals(resType.getResourceTypeName())) && !isAdmin(context)) {
+        // we can't utilize the access guard to do this, since it needs a resource to check   
+        if (!isAdmin(context) && (CmsResourceTypeXMLTemplate.C_RESOURCE_TYPE_NAME.equals(type) || CmsResourceTypeJsp.C_RESOURCE_TYPE_NAME.equals(type))) { 
             throw new CmsException("[" + this.getClass().getName() + "] " + resourceName, CmsException.C_NO_ACCESS);
         }
 
@@ -2584,14 +2582,8 @@ public class CmsDriverManager extends Object {
 
         // fetch the ID of the resource
         int resourceID = m_vfsDriver.fetchResourceID(context.currentProject(), theResourceName, -1);
-
-        // the resource type for VFS links
-        CmsResourceTypeLink resourceTypeLink = (CmsResourceTypeLink) this.getResourceType(context, CmsResourceTypeLink.C_RESOURCE_TYPE_NAME);
-        // ID of the resource type "link"
-        int resourceTypeLinkID = resourceTypeLink.getResourceType();
-
         if (resourceID > 0) {
-            vfsLinks = m_vfsDriver.fetchVfsLinksForResourceID(context.currentProject(), resourceID, resourceTypeLinkID);
+            vfsLinks = m_vfsDriver.fetchVfsLinksForResourceID(context.currentProject(), resourceID, CmsResourceTypeLink.C_RESOURCE_TYPE_ID);
         } else {
             vfsLinks = new ArrayList(0);
         }
@@ -4040,8 +4032,7 @@ public class CmsDriverManager extends Object {
 
         // if the resource type is jsp or xml template
         // write is only allowed for administrators
-        I_CmsResourceType resType = getResourceType(context, resource.getType());
-        if (("XMLTemplate".equals(resType.getResourceTypeName()) || "jsp".equals(resType.getResourceTypeName())) && !isAdmin(context)) {
+        if (((resource.getType() == CmsResourceTypeXMLTemplate.C_RESOURCE_TYPE_ID) || (resource.getType() == CmsResourceTypeJsp.C_RESOURCE_TYPE_ID)) && !isAdmin(context)) {            
             denied |= I_CmsConstants.C_PERMISSION_WRITE;
         }
 
@@ -4463,11 +4454,6 @@ public class CmsDriverManager extends Object {
         String siteRoot = cms.getRequestContext().addSiteRoot("");
         int siteRootLen = siteRoot.length();
 
-        // the resource type for VFS links
-        CmsResourceTypeLink resourceTypeLink = (CmsResourceTypeLink) this.getResourceType(context, CmsResourceTypeLink.C_RESOURCE_TYPE_NAME);
-        // ID of the resource type "link"
-        int resourceTypeLinkID = resourceTypeLink.getResourceType();
-
         //////////////////////////
 
         // 1) reset the internal data structure 
@@ -4486,7 +4472,7 @@ public class CmsDriverManager extends Object {
         // names of the link resources
         ArrayList linkResources = new ArrayList();
 
-        int fetchedLinkCount = m_vfsDriver.fetchAllVfsLinks(context.currentProject(), linkIDs, linkContents, linkResources, resourceTypeLinkID);
+        int fetchedLinkCount = m_vfsDriver.fetchAllVfsLinks(context.currentProject(), linkIDs, linkContents, linkResources, CmsResourceTypeLink.C_RESOURCE_TYPE_ID);
 
         if (CmsAdminVfsLinkManagement.DEBUG) {
             System.err.println("[" + getClass().getName() + "] found " + fetchedLinkCount + " VFS links in project " + context.currentProject().getName());
@@ -4540,7 +4526,7 @@ public class CmsDriverManager extends Object {
 
         for (int i = 0; i < targetCount; i++) {
             String currentTarget = (String) targetResources.get(i);
-            int targetID = m_vfsDriver.fetchResourceID(context.currentProject(), currentTarget, resourceTypeLinkID);
+            int targetID = m_vfsDriver.fetchResourceID(context.currentProject(), currentTarget, CmsResourceTypeLink.C_RESOURCE_TYPE_ID);
             targetIDs[i] = targetID;
 
             if (targetID > 0) {
@@ -5227,7 +5213,7 @@ public class CmsDriverManager extends Object {
         returnValue = (Vector) m_propertyDefVectorCache.get(resType.getResourceTypeName());
         if (returnValue == null) {
             returnValue = m_vfsDriver.readAllPropertydefinitions(context.currentProject().getId(), resType);
-            Collections.sort(returnValue); // TESTFIX (a.kandzior@alkacon.com)
+            Collections.sort(returnValue);
             m_propertyDefVectorCache.put(resType.getResourceTypeName(), returnValue);
         }
         return returnValue;
