@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsXmlPage.java,v $
- * Date   : $Date: 2003/12/12 16:26:44 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/12/15 09:27:18 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,9 @@
 package org.opencms.page;
 
 import org.opencms.main.OpenCms;
-import org.opencms.util.CmsLinkProcessor;
-import org.opencms.util.CmsLinkTable;
+import org.opencms.staticexport.CmsLink;
+import org.opencms.staticexport.CmsLinkProcessor;
+import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.util.CmsStringSubstitution;
 
 import com.opencms.core.CmsException;
@@ -73,7 +74,7 @@ import org.dom4j.io.XMLWriter;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class CmsXmlPage {
     
@@ -449,7 +450,7 @@ public class CmsXmlPage {
         
         links.setContent(null);
         for (Iterator i = linkTable.iterator(); i.hasNext();) {
-            CmsLinkTable.CmsLink link = linkTable.getLink((String)i.next());
+            CmsLink link = linkTable.getLink((String)i.next());
             links.addElement("link")
                 .addAttribute("name", link.getName())
                 .addAttribute("type", link.getType())

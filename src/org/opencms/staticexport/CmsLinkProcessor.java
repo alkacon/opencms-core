@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsLinkProcessor.java,v $
- * Date   : $Date: 2003/12/12 16:26:44 $
- * Version: $Revision: 1.5 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkProcessor.java,v $
+ * Date   : $Date: 2003/12/15 09:27:18 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,10 +28,9 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package org.opencms.util;
+package org.opencms.staticexport;
 
 import org.opencms.main.OpenCms;
-import org.opencms.site.CmsSiteMatcher;
 
 import com.opencms.file.CmsObject;
 
@@ -49,8 +48,10 @@ import org.htmlparser.util.ParserException;
 import org.htmlparser.visitors.NodeVisitor;
 
 /**
- * @version $Revision: 1.5 $ $Date: 2003/12/12 16:26:44 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
+ * 
+ * @version $Revision: 1.1 $
+ * @since 5.3
  */
 public class CmsLinkProcessor extends NodeVisitor {
   
@@ -79,7 +80,6 @@ public class CmsLinkProcessor extends NodeVisitor {
      * @param linkTable the link table to use
      */
     public CmsLinkProcessor (CmsLinkTable linkTable) {
-        
         super(true, true);
         
         m_linkTable = linkTable;
@@ -97,9 +97,7 @@ public class CmsLinkProcessor extends NodeVisitor {
      * 
      * @throws ParserException if something goes wrong
      */
-    public String replaceLinks(String content) 
-        throws ParserException {
-        
+    public String replaceLinks(String content) throws ParserException {
         Lexer lexer = new Lexer(content);
         
         m_mode = C_REPLACE_LINKS;
@@ -120,9 +118,7 @@ public class CmsLinkProcessor extends NodeVisitor {
      * 
      * @throws ParserException if something goes wrong
      */
-    public String processLinks(CmsObject cms, String content) 
-        throws ParserException {
-        
+    public String processLinks(CmsObject cms, String content) throws ParserException {
         Lexer lexer = new Lexer(content);
         
         m_mode = C_PROCESS_LINKS;
@@ -143,7 +139,6 @@ public class CmsLinkProcessor extends NodeVisitor {
      * @see org.htmlparser.visitors.NodeVisitor#visitLinkTag(org.htmlparser.tags.LinkTag)
      */
     public void visitLinkTag(LinkTag linkTag) {
-              
         switch (m_mode) {
             case C_REPLACE_LINKS:
 
@@ -170,7 +165,6 @@ public class CmsLinkProcessor extends NodeVisitor {
      * @see org.htmlparser.visitors.NodeVisitor#visitImageTag(org.htmlparser.tags.ImageTag)
      */
     public void visitImageTag(ImageTag imageTag) {
-        
         switch (m_mode) {
             case C_REPLACE_LINKS:
                 
@@ -232,7 +226,6 @@ public class CmsLinkProcessor extends NodeVisitor {
      * @see org.htmlparser.visitors.NodeVisitor#visitEndTag(org.htmlparser.tags.Tag)
      */
     public void visitEndTag(Tag tag) {
-        
         Node parent;
         
         parent = tag.getParent ();
@@ -254,8 +247,7 @@ public class CmsLinkProcessor extends NodeVisitor {
      * @param link the link
      * @return the replacement
      */
-    private String replaceLink(CmsLinkTable.CmsLink link) {
- 
+    private String replaceLink(CmsLink link) { 
         return newMacro(link.getName());
     }
     
@@ -265,13 +257,12 @@ public class CmsLinkProcessor extends NodeVisitor {
      * @param link the link
      * @return processed link
      */
-    private String processLink(CmsLinkTable.CmsLink link) {
-
-        String serverURL = link.getServerURL();
+    private String processLink(CmsLink link) {
+//        String serverURL = link.getServerURL();
         
         // an internal link is substituted only, if it matches the current site
-        if (link.isInternal() 
-                && (serverURL == null || OpenCms.getSiteManager().isMatchingCurrentSite(m_cms, new CmsSiteMatcher(serverURL)))) {
+        if (link.isInternal()) {
+//                && (serverURL == null || OpenCms.getSiteManager().isMatchingCurrentSite(m_cms, new CmsSiteMatcher(serverURL)))) {
             return OpenCms.getLinkManager().substituteLink(m_cms, link.getVfsTarget());
         } else {
             return link.getTarget();
@@ -285,8 +276,7 @@ public class CmsLinkProcessor extends NodeVisitor {
      * 
      * @return the macro string
      */
-    private String newMacro (String name) {
-        
+    private String newMacro (String name) {        
         return "${" + name + "}";
     }
     
@@ -297,8 +287,7 @@ public class CmsLinkProcessor extends NodeVisitor {
      * 
      * @return the name of the macro
      */
-    private String getLinkName (String macro) {
-        
+    private String getLinkName (String macro) {        
         return macro.substring(2, macro.length()-1);
     }
 }

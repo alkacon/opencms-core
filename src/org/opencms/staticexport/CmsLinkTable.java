@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsLinkTable.java,v $
- * Date   : $Date: 2003/12/12 16:26:44 $
- * Version: $Revision: 1.4 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkTable.java,v $
+ * Date   : $Date: 2003/12/15 09:27:18 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package org.opencms.util;
+package org.opencms.staticexport;
 
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSiteMatcher;
@@ -38,118 +38,25 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2003/12/12 16:26:44 $
+ * Maintains a table of links for an element of a CmsXmlPage.<p>
+ *  
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
+ * 
+ * @version $Revision: 1.1 $
+ * @since 5.3
  */
 public class CmsLinkTable {
 
+    /** Prefix to identify a link in the content */
     private static final String C_LINK_PREFIX = "link";
     
+    /** The map to store the link table in */
     private HashMap m_linkTable;
-    
-    
-    /**
-     * Class to keep a single link entry.<p>
-     * 
-     * @version $Revision: 1.4 $ $Date: 2003/12/12 16:26:44 $
-     * @author Carsten Weinholz (c.weinholz@alkacon.com)
-     */
-    public class CmsLink {
         
-        /** The internal name of the link */
-        protected String m_name;
-       
-        /** The type of the link */
-        protected String m_type;
-        
-        /** The link target (destination) */
-        protected URI m_target;
-        
-        /** Indicates if the link is a local link within opencms */
-        protected boolean m_internal;
-        
-        /**
-         * Returns the internal name of the link.<p>
-         * 
-         * @return the internal name
-         */
-        public String getName() {
-            
-            return m_name;
-        }
-        
-        /**
-         * Returns the type of the link.<p>
-         * 
-         * @return the type of the link
-         */
-        public String getType() {
-            
-            return m_type;
-        }
-        
-        /**
-         * Returns the target (destination) of the link.<p>
-         * 
-         * @return the target
-         */
-        public String getTarget() {
-            
-            return m_target.toString();
-        }
-
-        /**
-         * Returns the host of the link.<p>
-         * 
-         * @return the host or null if undefined
-         */
-        public String getHost() {
-            
-            return m_target.getHost();
-        }
-
-        public String getServerURL() {
-        
-            if (m_target.isAbsolute()) {
-                return m_target.getScheme() + "://" + m_target.getHost();
-            } else {
-                return null;
-            }
-        }
-        
-        /**
-         * Convenience method to get a vfs link from the target.<p>
-         * If the link is internal and starts with the context (i.e. /opencms/opencms),
-         * the context is removed
-         * 
-         * @return the full link destination
-         */
-        public String getVfsTarget() {
-        
-            String context = OpenCms.getOpenCmsContext();
-            if (m_internal && m_target.getPath().startsWith(context)) {
-                return m_target.getPath().substring(context.length());
-            } else {
-                return m_target.toString();
-            }
-        } 
-        
-        /**
-         * Returns if the link is internal.<p>
-         * 
-         * @return true if the link is a local link
-         */
-        public boolean isInternal() {
-            
-            return m_internal;
-        }   
-    }
-    
     /**
      * Creates a new CmsLinkTable.<p>
      */
-    public CmsLinkTable () {
-        
+    public CmsLinkTable () {        
         m_linkTable = new HashMap();
     }
     
@@ -160,15 +67,9 @@ public class CmsLinkTable {
      * @param target link destination
      * @return the new link entry
      */
-    public CmsLink addLink (String type, String target) {
-        
-        CmsLink link = new CmsLink();
-        link.m_name = C_LINK_PREFIX + m_linkTable.size();
-        link.m_type = type;
-        link.m_target = URI.create(target);
-        link.m_internal = isInternal(link.m_target);
-
-        m_linkTable.put(link.m_name, link);
+    public CmsLink addLink (String type, String target) {        
+        CmsLink link = new CmsLink(C_LINK_PREFIX + m_linkTable.size(), type, target, isInternal(target));
+        m_linkTable.put(link.getName(), link);
         return link;
     }
 
@@ -182,14 +83,8 @@ public class CmsLinkTable {
      * @return the new link entry
      */
     public CmsLink addLink (String name, String type, String target, boolean internal) {
-
-        CmsLink link = new CmsLink();
-        link.m_name = name;
-        link.m_type = type;
-        link.m_target = URI.create(target);
-        link.m_internal = internal;
-        
-        m_linkTable.put(link.m_name, link);
+        CmsLink link = new CmsLink(name, type, target, internal);
+        m_linkTable.put(link.getName(), link);
         return link;
     }
     
@@ -199,8 +94,7 @@ public class CmsLinkTable {
      * @param name the internal name of the link
      * @return the CmsLink entry
      */
-    public CmsLink getLink (String name) {
-        
+    public CmsLink getLink (String name) {        
         return (CmsLink)m_linkTable.get(name);
     }
 
@@ -209,8 +103,7 @@ public class CmsLinkTable {
      * 
      * @return true if the link table is empty, false otherwise
      */
-    public boolean isEmpty() {
-        
+    public boolean isEmpty() {        
         return m_linkTable.isEmpty();
     }
     
@@ -219,19 +112,18 @@ public class CmsLinkTable {
      * 
      * @return a string iterator for internal link names
      */
-    public Iterator iterator() {
-    
+    public Iterator iterator() {    
         return m_linkTable.keySet().iterator();
     }
     
     /**
-     * Checks if a given link target is a local link within the opencms system.
+     * Checks if a given link target is an internal link inside the OpenCms VFS.<p>
      * 
-     * @param targetURI the link target
+     * @param target the link target
      * @return true if the target is identidfied as local
      */
-    private boolean isInternal(URI targetURI) {
-        
+    private boolean isInternal(String target) {       
+        URI targetURI = URI.create(target);
         String context = OpenCms.getOpenCmsContext();
         
         int pos = context.indexOf("/", 1);
