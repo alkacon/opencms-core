@@ -57,7 +57,11 @@ function checkFormData()
 	
 	entry = document.DBEXPORT.VNAME.value;
 	strLength=entry.length;
-	
+	if (strLength < 1){
+		alert(']]><LABEL value="error.reason.namemissing" /><![CDATA[');
+		document.DBEXPORT.VNAME.focus;
+		return false;
+	}
 	for (i=0; i < strLength; i++) 
 	{
 		if (charList.indexOf(entry.charAt(i))==-1)
@@ -66,6 +70,10 @@ function checkFormData()
 			document.DBEXPORT.VNAME.focus;
 			return false;
 		}
+	}
+	if(document.DBEXPORT.ALLRES.value.length < 1){
+		alert(']]><LABEL value="error.reason.projectdatamissing" /><![CDATA[');
+		return false;
 	}
 	return result;
 }		
