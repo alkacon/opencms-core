@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWpMain.java,v $
- * Date   : $Date: 2000/04/18 15:16:58 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/04/20 08:53:32 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.15 $ $Date: 2000/04/18 15:16:58 $
+ * @version $Revision: 1.16 $ $Date: 2000/04/20 08:53:32 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsWpMain extends CmsWorkplaceDefault {
@@ -84,10 +84,12 @@ public class CmsWpMain extends CmsWorkplaceDefault {
             A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsXmlTemplate] selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
         }
 
+		HttpSession session = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);
         A_CmsRequestContext reqCont = cms.getRequestContext();
         String newGroup = (String)parameters.get("group");
         String newProject = (String)parameters.get("project");
         String newView = (String)parameters.get(C_PARA_VIEW);
+        CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
         
 
         // Check if the user requested a group change
@@ -102,16 +104,15 @@ public class CmsWpMain extends CmsWorkplaceDefault {
             if(!(newProject.equals(reqCont.currentProject().getName()))) {
                 reqCont.setCurrentProject(Integer.parseInt(newProject));
             }
-        }                            
-        
+        }
+		
         // Check if the user requested a new view
         if(newView != null && !("".equals(newView))) {
-            HttpSession session = ((HttpServletRequest)reqCont.getRequest().getOriginalRequest()).getSession(true);
+            session = ((HttpServletRequest)reqCont.getRequest().getOriginalRequest()).getSession(true);
             session.putValue(C_PARA_VIEW, newView);
         }
 		
         // Now load the template file and start the processing
-        CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
         return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
     }            
         

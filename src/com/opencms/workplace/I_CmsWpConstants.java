@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
- * Date   : $Date: 2000/04/18 15:17:06 $
- * Version: $Revision: 1.88 $
+ * Date   : $Date: 2000/04/20 08:53:32 $
+ * Version: $Revision: 1.89 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.88 $ $Date: 2000/04/18 15:17:06 $
+ * @version $Revision: 1.89 $ $Date: 2000/04/20 08:53:32 $
  */
 public interface I_CmsWpConstants {
 
@@ -73,8 +73,11 @@ public interface I_CmsWpConstants {
     /** Parameter for viewfile  */
     public static final String C_PARA_VIEWFILE="viewfile";
 	
-	 /** Parameter for task  */
-    public static final String C_PARA_TASKID="task";
+	 /** Parameter for starttaskid  */
+    public static final String C_PARA_STARTTASKID="startTaskId";
+	
+	 /** Parameter for startprojectid  */
+    public static final String C_PARA_STARTPROJECTID="startProjectId";
     
     /** Parameter for view name */
     public static final String C_PARA_VIEW = "view";

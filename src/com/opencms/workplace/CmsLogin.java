@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLogin.java,v $
- * Date   : $Date: 2000/04/20 08:11:55 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2000/04/20 08:53:32 $
+ * Version: $Revision: 1.23 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.22 $ $Date: 2000/04/20 08:11:55 $
+ * @version $Revision: 1.23 $ $Date: 2000/04/20 08:53:32 $
  */
 public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -82,22 +82,82 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
         String username=null;
         HttpSession session=null;
         A_CmsUser user;
-		String paraTaskid = (String)parameters.get("taskid");
-		
-		if(paraTaskid == null) {
-			paraTaskid = "";
-		}
 
+		
+		String startTaskId = (String)parameters.get(C_PARA_STARTTASKID);
+		String startProjectId = (String)parameters.get(C_PARA_STARTPROJECTID);
+		
+		if (startTaskId == null) {
+			startTaskId = "";
+		}
+		if (startProjectId == null) {
+			startProjectId = "";
+		}
+				
+		if (!startProjectId.equals("")) {
+			session = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);
+			session.putValue(C_PARA_STARTPROJECTID,startProjectId);
+		}
+		
+		// check if this is a link of a task
+		if (!startTaskId.equals("")) {
+			session = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);
+			session.putValue(C_PARA_STARTTASKID,startTaskId);
+			Vector viewNames = new Vector();
+			Vector viewLinks = new Vector();
+			CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
+			configFile.getWorkplaceIniData(viewNames, viewLinks,"WORKPLACEVIEWS","VIEW");
+			String link="";
+			for (int i=0;i<viewNames.size();i++) {
+				if (((String)viewNames.elementAt(i)).equals("tasks")) {
+					link=(String)viewLinks.elementAt(i);
+					break;
+				}
+			}
+			session.putValue(C_PARA_VIEW,link);		
+			
+			CmsXmlWpConfigFile conf=new CmsXmlWpConfigFile(cms);
+			String actionPath=conf.getWorkplaceActionPath();
+			// Indicates, if this is a request of a guest user.
+			if (!cms.anonymousUser().equals(cms.getRequestContext().currentUser())) {
+				
+				// set current project to a default or to a specified project
+				Integer currentProject=null;
+				if (!startProjectId.equals("")) {
+					currentProject = new Integer(startProjectId);
+					if (!cms.accessProject(currentProject.intValue())) {
+						// check out the user information if a default project is stored there.
+						Hashtable startSettings=(Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);
+						if (startSettings != null) {
+							currentProject = (Integer)startSettings.get(C_START_PROJECT);
+						}
+					}
+				} else {
+					// check out the user information if a default project is stored there.
+					Hashtable startSettings=(Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);
+					if (startSettings != null) {
+						currentProject = (Integer)startSettings.get(C_START_PROJECT);
+					}
+				}					
+				try {
+					if (cms.accessProject(currentProject.intValue())) {
+						cms.getRequestContext().setCurrentProject(currentProject.intValue());
+					}
+				} catch (Exception e) {
+				}
+					
+				try {
+					cms.getRequestContext().getResponse().sendCmsRedirect(actionPath+"index.html");
+				} catch (Exception e) {
+					throw new CmsException(e.getMessage());	
+				}
+			}
+		}
+		
 		// the template to be displayed		
         String template=templateSelector;
 		CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);
-		
-		if (!paraTaskid.equals("")) {
-			xmlTemplateDocument.setData("taskid","?taskid="+paraTaskid);
-		} else {
-			xmlTemplateDocument.setData("taskid","");
-		}
-		
+				
         Hashtable preferences=new Hashtable();
         // get user name and password
         String name=(String)parameters.get("NAME");
@@ -127,21 +187,33 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
                 }
                 // now get the users preferences
                 user=cms.readUser(username);
-                
-                Integer currentProject;
-                Hashtable startSettings=null;
-        
-                // check out the user information if a default project is stored there.
-                startSettings=(Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);
-                if (startSettings != null) {
-                    currentProject = (Integer)startSettings.get(C_START_PROJECT);
-                    try {
-                        if (cms.accessProject(currentProject.intValue())) {
-                            cms.getRequestContext().setCurrentProject(currentProject.intValue());
-                        }
-                    } catch (Exception e) {
-                    }
-                }              
+               	
+				// set current project to a default or to a specified project
+				Integer currentProject=null;
+				startProjectId=(String)session.getValue(C_PARA_STARTPROJECTID);
+				if (startProjectId!=null && (!startProjectId.equals(""))) {
+					currentProject = new Integer(startProjectId);
+					session.removeValue(C_PARA_STARTPROJECTID);
+					if (!cms.accessProject(currentProject.intValue())) {
+						// check out the user information if a default project is stored there.
+						Hashtable startSettings=(Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);
+						if (startSettings != null) {
+							currentProject = (Integer)startSettings.get(C_START_PROJECT);
+						}
+					}
+				} else {
+					// check out the user information if a default project is stored there.
+					Hashtable startSettings=(Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);
+					if (startSettings != null) {
+						currentProject = (Integer)startSettings.get(C_START_PROJECT);
+					}
+				}
+				try {
+					if (cms.accessProject(currentProject.intValue())) {
+						cms.getRequestContext().setCurrentProject(currentProject.intValue());
+					}
+				} catch (Exception e) {
+				}
                 
                 preferences=(Hashtable)user.getAdditionalInfo(C_ADDITIONAL_INFO_PREFERENCES);
                 // check if preferences are existing, otherwiese use defaults
@@ -149,24 +221,6 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
                     preferences=getDefaultPreferences();
                 }
                 session.putValue(C_ADDITIONAL_INFO_PREFERENCES,preferences);
-				
-				// check if this is a link of a task
-				if ( (paraTaskid!=null) && (!paraTaskid.equals(""))) {
-					Vector viewNames = new Vector();
-					Vector viewLinks = new Vector();
-					CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
-					configFile.getWorkplaceIniData(viewNames, viewLinks,"WORKPLACEVIEWS","VIEW");
-					String link="";
-					for (int i=0;i<viewNames.size();i++) {
-						if (((String)viewNames.elementAt(i)).equals("tasks")) {
-							link=(String)viewLinks.elementAt(i);
-							break;
-						}
-					}
-					session.putValue(C_PARA_VIEW,link);
-					session.putValue(C_PARA_TASKID,parameters.get("taskid"));
-				}
-		
             }
         } else {
             // This is a new login!
@@ -176,6 +230,15 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
                 String[] valueNames = session.getValueNames();
                 int numValues = valueNames.length;
                 for(int i=0; i<numValues; i++) {
+					if ((!startTaskId.equals("")) && 
+						(valueNames[i].equals(C_PARA_STARTTASKID) ||
+						 valueNames[i].equals(C_PARA_VIEW)) ) {
+						continue;
+					}
+					if ((!startProjectId.equals("")) && 
+						valueNames[i].equals(C_PARA_STARTPROJECTID)) {
+						continue;
+					}
                     session.removeValue(valueNames[i]);
                 }
             }
