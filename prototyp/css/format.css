@@ -36,6 +36,19 @@ SELECT
     FONT-FAMILY: MS sans serif,arial,helvetica,sans-serif;
     FONT-SIZE: 8pt;
 }
+H2
+{
+    FONT-FAMILY: MS Sans Serif, Arial, helevitca, sans-serif;
+    FONT-SIZE: 14pt;
+    FONT-WEIGHT: bold;
+}
+H2.darkblue
+{
+    FONT-FAMILY: MS Sans Serif, Arial, helevitca, sans-serif;
+    FONT-SIZE: 14pt;
+    FONT-WEIGHT: bold;
+    COLOR:#000066;
+}
 H3
 {
     FONT-FAMILY: MS Sans Serif, Arial, helvetica, 'sans serif';

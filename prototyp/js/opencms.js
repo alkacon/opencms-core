@@ -70,6 +70,10 @@ function ChPush(imgID) //changes a imageobject on clicked or mousedown
 document.images[imgID].src = pfad + imgID + imgEndPush;
 }
 
+function ChIn(imgID) //changes a imageobject on clicked or mousedown
+{
+document.images[imgID].src = pfad + imgID + imgEndInaktiv;
+}
 
 function ChImg(imgID,src)
 {
@@ -268,3 +272,30 @@ function checkDate(eDat)
 	}
 	return true;
 }
+
+//------------------------------------------------------------------------------------
+// checkPiclistNav() 
+// 
+// author:	Matthias Schreiber
+// company:	mindfact interaktive medien ag
+// date:	07.02.2000
+// update:	
+//
+// Checks if there is a previous and/or next content document.
+// Due to the result the correct navigation document for the picture browser is loaded.
+// 
+// 
+//------------------------------------------------------------------------------------
+function checkPiclistNav() 
+{
+	version="";
+	
+	if ((EOL == true)&&(BOL == true))
+		version = "3";
+		else if (BOL == true)
+			version = "2";
+			else if (EOL == true)
+				version = "1";
+				
+	parent.frames[0].document.location.href="edit_html_piclist_head" + version + ".html";
+}	
