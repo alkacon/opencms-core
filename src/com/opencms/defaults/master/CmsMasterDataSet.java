@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterDataSet.java,v $
  * Author : $Author: e.falkenhan $
- * Date   : $Date: 2001/11/05 08:46:03 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2001/11/09 07:17:48 $
+ * Version: $Revision: 1.3 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Framfab Deutschland ag.   All Rights Reserved.
@@ -33,8 +33,8 @@ import java.util.Vector;
  * should only be used within this mastermodule.
  *
  * @author A. Schouten $
- * $Revision: 1.2 $
- * $Date: 2001/11/05 08:46:03 $
+ * $Revision: 1.3 $
+ * $Date: 2001/11/09 07:17:48 $
  */
 public class CmsMasterDataSet implements Serializable {
 
@@ -118,13 +118,16 @@ public class CmsMasterDataSet implements Serializable {
     //// generic "data members" ////
 
     /** data memeber for String values type VARCHAR2(4000) */
-    public String[] m_dataBig = new String[5];
+    public String[] m_dataBig = new String[10];
 
     /** data memeber for String values type VARCHAR2(2000) */
     public String[] m_dataMedium = new String[10];
 
     /** data memeber for String values type VARCHAR2(500) */
     public String[] m_dataSmall = new String[40];
+
+    /** data memeber for Date values */
+    public long[] m_dataDate = new long[5];
 
     /** data memeber for Integer values type int */
     public int[] m_dataInt = new int[10];

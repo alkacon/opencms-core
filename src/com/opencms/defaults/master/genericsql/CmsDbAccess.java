@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
  * Author : $Author: e.falkenhan $
- * Date   : $Date: 2001/11/08 15:12:41 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2001/11/09 07:18:00 $
+ * Version: $Revision: 1.8 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Framfab Deutschland ag.   All Rights Reserved.
@@ -665,6 +665,7 @@ public class CmsDbAccess {
         i = sqlSetTextArray(stmnt, dataset.m_dataSmall, i);
         i = sqlSetIntArray(stmnt, dataset.m_dataInt, i);
         i = sqlSetIntArray(stmnt, dataset.m_dataReference, i);
+        i = sqlSetDateArray(stmnt, dataset.m_dataDate, i);
         return i;
     }
 
@@ -708,6 +709,7 @@ public class CmsDbAccess {
         i = sqlSetTextArray(res, dataset.m_dataSmall, i);
         i = sqlSetIntArray(res, dataset.m_dataInt, i);
         i = sqlSetIntArray(res, dataset.m_dataReference, i);
+        i = sqlSetDateArray(res, dataset.m_dataDate, i);
         return i;
     }
 
@@ -841,6 +843,36 @@ public class CmsDbAccess {
         throws SQLException {
         for(int j = 0; j < array.length; j++) {
             array[j] = res.getInt(columnscounter++);
+        }
+        return columnscounter;
+    }
+
+    /**
+     * Sets an array of ints into the stmnt.
+     * @param stmnt the PreparedStatement to set the values into.
+     * @param array the array of longs to set.
+     * @param the columnscounter for the stmnt.
+     * @returns the increased columnscounter;
+     */
+    protected int sqlSetDateArray(PreparedStatement stmnt, long[] array, int columnscounter)
+        throws SQLException {
+        for(int j = 0; j < array.length; j++) {
+            stmnt.setTimestamp(columnscounter++,new Timestamp(array[j]));
+        }
+        return columnscounter;
+    }
+
+    /**
+     * Sets an array of ints from the resultset.
+     * @param res the ResultSet to get the values from.
+     * @param array the array of longs to set.
+     * @param the columnscounter for the res.
+     * @returns the increased columnscounter;
+     */
+    protected int sqlSetDateArray(ResultSet res, long[] array, int columnscounter)
+        throws SQLException {
+        for(int j = 0; j < array.length; j++) {
+            array[j] = res.getTimestamp(columnscounter++).getTime();
         }
         return columnscounter;
     }
@@ -1287,6 +1319,7 @@ public class CmsDbAccess {
         dataset.m_dataInt = backup.m_dataInt;
         dataset.m_dataMedium = backup.m_dataMedium;
         dataset.m_dataReference = backup.m_dataReference;
+        dataset.m_dataDate = backup.m_dataDate;
         dataset.m_dataSmall = backup.m_dataSmall;
         dataset.m_feedFilename = backup.m_feedFilename;
         dataset.m_feedId = backup.m_feedId;
