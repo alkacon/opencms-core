@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceUpload.java,v $
-* Date   : $Date: 2001/01/24 09:43:29 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2001/01/25 15:53:04 $
+* Version: $Revision: 1.23 $
 *
 * Copyright (C) 2000  The OpenCms Group 
 * 
@@ -45,7 +45,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.22 $ $Date: 2001/01/24 09:43:29 $
+ * @version $Revision: 1.23 $ $Date: 2001/01/25 15:53:04 $
  */
 public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
     
@@ -166,7 +166,7 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
                         // create the new file.                            
                         // todo: error handling if file already exits      
                         cms.createFile(currentFolder, filename, filecontent, type.getResourceName());
-                        
+                        cms.lockResource(currentFolder+filename);
                         // remove the values form the session
                         session.removeValue(C_PARA_FILE);
                         session.removeValue(C_PARA_FILECONTENT);
