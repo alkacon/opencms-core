@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/12/07 16:53:59 $
- * Version: $Revision: 1.92 $
+ * Date   : $Date: 2004/12/08 13:17:34 $
+ * Version: $Revision: 1.93 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import org.apache.commons.fileupload.FileUploadException;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.92 $
+ * @version $Revision: 1.93 $
  * 
  * @since 5.1
  */
@@ -1312,7 +1312,28 @@ public abstract class CmsWorkplace {
             }
             }
         return result.toString();
-                }
+    }
+    
+    /**
+     * Resolves the macros in the given String and replaces them by their localized keys.<p>
+     * 
+     * @param input the input String containing the macros
+     * @return the resolved String
+     */
+    public String resolveMacros(String input) {
+        
+        // TODO: improve resolving of macros, this is just a quick hack
+        int warning = 0;
+        while (input.indexOf("${") != -1 && input.indexOf('}') != -1) {
+            int start = input.indexOf("${");
+            int end = input.indexOf('}');
+            String macro = input.substring(start, end + 1);
+            // get the localized value for the macro
+            String value = key(macro.substring(2, macro.length() - 1));
+            input = CmsStringUtil.substitute(input, macro, value);
+        }
+        return input;
+    }
     
     /**
      * Sends a http redirect to the specified URI in the OpenCms VFS.<p>
