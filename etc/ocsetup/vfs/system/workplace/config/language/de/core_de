@@ -697,7 +697,7 @@
                 <deleteextension1>Soll die Zuordnung der Dateiendung</deleteextension1>
                 <deleteextension2>zum Dateityp </deleteextension2>
                 <deleteextension3> wirklich gelöscht werden?</deleteextension3>
-                <publishresource>wirklich direkt verröffentlicht werden?</publishresource>
+                <publishresource>wirklich direkt veröffentlicht werden?</publishresource>
                 <restoreresource>Wollen Sie die Änderungen verwerfen und die historisierte Version wiederherstellen?</restoreresource>
                 <undochanges>Wollen Sie alle nicht veröffentlichten Änderungen an der Ressource verwerfen?</undochanges>
             </message4>
