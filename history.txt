@@ -10,6 +10,9 @@ Legend:
 
 OpenCms 4.5.7  Gom Jabbar   - xx September 2001
 - Changed last button of dialog "New Ressource Of Other Type" from "next" to "finish".
+* Bugfix 1548: For editing a page file the temporary file is created in a special
+  temporary file project. This project can be created with the method createTempfileProject().
+  The projectid of the temp file project is stored in the registry.xml (<tempfileproject>).
 
 OpenCms 4.5.6  Gom Jabbar   - 06 September 2001
 * After an redirect (redirect-rules configurated in opencms.properites) a ressource
