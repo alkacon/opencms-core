@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2001/01/09 14:35:37 $
- * Version: $Revision: 1.122 $
+ * Date   : $Date: 2001/01/11 18:02:56 $
+ * Version: $Revision: 1.123 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,14 +36,14 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.122 $ $Date: 2001/01/09 14:35:37 $
+ * @version $Revision: 1.123 $ $Date: 2001/01/11 18:02:56 $
  */
 public interface I_CmsConstants
 {
 	/**
 	 * The version-string for the cvs.
 	 */
-	static String C_VERSION = "Version 4.1.49 Arakis ";
+	static String C_VERSION = "Version 4.1.50 Arakis ";
 	
 	/**
 	 * The copyright message for the cvs.
