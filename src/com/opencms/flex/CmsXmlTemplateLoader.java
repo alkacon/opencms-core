@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2002/08/21 11:29:32 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2002/08/30 14:08:42 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,18 +36,22 @@ import com.opencms.file.*;
 
 import com.opencms.flex.cache.*;
 
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+
 
 /**
  * Description of the class CmsDumpLoader here.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsXmlTemplateLoader extends com.opencms.launcher.CmsXmlLauncher implements I_CmsResourceLoader {
     
     private static CmsFlexCache m_cache;    
     
-    private static boolean DEBUG = false;
+    private static int DEBUG = 0;
 
     private A_OpenCms m_openCms = null;
     
@@ -79,9 +83,20 @@ public class CmsXmlTemplateLoader extends com.opencms.launcher.CmsXmlLauncher im
     }
     
     /** Basic processing method with CmsFile  */
-    public void load(com.opencms.file.CmsObject cms, com.opencms.file.CmsFile file, javax.servlet.http.HttpServletRequest req, javax.servlet.http.HttpServletResponse res) throws com.opencms.core.CmsException {
-        CmsFlexRequest w_req = new CmsFlexRequest(req, file, m_cache, cms); 
-        CmsFlexResponse w_res = new CmsFlexResponse(res, false);
+    public void load(com.opencms.file.CmsObject cms, com.opencms.file.CmsFile file, javax.servlet.http.HttpServletRequest req, javax.servlet.http.HttpServletResponse res) 
+    throws ServletException, IOException {    
+        CmsFlexRequest w_req; 
+        CmsFlexResponse w_res;
+        if (req instanceof CmsFlexRequest) {
+            w_req = (CmsFlexRequest)req; 
+        } else {
+            w_req = new CmsFlexRequest(req, file, m_cache, cms); 
+        }        
+        if (res instanceof CmsFlexResponse) {
+            w_res = (CmsFlexResponse)res;              
+        } else {
+            w_res = new CmsFlexResponse(res, false);
+        }                
         service(cms, file, w_req, w_res);
     }
     
@@ -92,10 +107,9 @@ public class CmsXmlTemplateLoader extends com.opencms.launcher.CmsXmlLauncher im
     }
     
     public void service(CmsObject cms, CmsResource file, CmsFlexRequest req, CmsFlexResponse res)
-    throws CmsException {
-
+    throws ServletException, IOException {
         long timer1 = 0;
-        if (DEBUG) {
+        if (DEBUG > 0) {
             timer1 = System.currentTimeMillis();        
             System.err.println("========== XmlTemplateLoader loading: " + file.getAbsolutePath());            
         }
@@ -104,30 +118,25 @@ public class CmsXmlTemplateLoader extends com.opencms.launcher.CmsXmlLauncher im
             I_CmsRequest cms_req = cms.getRequestContext().getRequest();
             byte[] result = null;
             
-            com.opencms.file.CmsFile fx = req.getCmsObject().readFile(file.getAbsolutePath());
+            com.opencms.file.CmsFile fx = req.getCmsObject().readFile(file.getAbsolutePath());            
             
-            result = generateOutput(cms, fx, fx.getLauncherClassname(), cms_req, m_openCms);
+            cms.getRequestContext().setUri(fx.getAbsolutePath());            
+            result = generateOutput(cms, fx, fx.getLauncherClassname(), cms_req, m_openCms);            
+            cms.getRequestContext().setUri(null);
+
             if(result != null) {
                 res.getOutputStream().write(result);
             }        
         }  catch (Exception e) {
             System.err.println("Error in CmsXmlTemplateLoader: " + e.toString());
-            System.err.println(com.opencms.util.Utils.getStackTrace(e));
-            throw new CmsException("Error in CmsXmlTemplateLoader processing", CmsException.C_FLEX_LOADER, e);       
+            if (DEBUG > 0) System.err.println(com.opencms.util.Utils.getStackTrace(e));
+            throw new ServletException("Error in CmsXmlTemplateLoader processing", e);       
         }
-        if (DEBUG) {
+        if (DEBUG > 0) {
             long timer2 = System.currentTimeMillis() - timer1;        
             System.err.println("========== Time delivering XmlTemplate for " + file.getAbsolutePath() + ": " + timer2 + "ms");            
         }
     }
-    
-    /** Checks if this loader loads from VFS or with a true include() call  */
-    /*
-    public boolean loadsFromCms() {
-        // The Dump loader will deliver results from the VFS
-        return true;
-    }
-     */
     
     private void log(String message) {
         if (com.opencms.boot.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING) {

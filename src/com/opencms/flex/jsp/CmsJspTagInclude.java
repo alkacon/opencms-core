@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagInclude.java,v $
-* Date   : $Date: 2002/08/21 11:29:32 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2002/08/30 14:07:27 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,7 +33,7 @@ package com.opencms.flex.jsp;
  * This Tag is used to include another OpenCms managed resource in a JSP.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsJspTagInclude extends javax.servlet.jsp.tagext.TagSupport implements I_CmsJspConstants { 
     
@@ -81,11 +81,15 @@ public class CmsJspTagInclude extends javax.servlet.jsp.tagext.TagSupport implem
                 // CmsResponse w_res = new CmsResponse(c_res, target, true);
                 c_req.getCmsRequestDispatcher(m_target).include(c_req, c_res);    
                 
-            } catch (Exception e) {
-                System.err.println("JspTagInclude: Error in Jsp 'include' tag processing: " + e);
-                System.err.println(com.opencms.util.Utils.getStackTrace(e));                
+            } catch (javax.servlet.ServletException e) {
+                if (DEBUG) System.err.println("JspTagInclude: ServletException in Jsp 'include' tag processing: " + e);
+                if (DEBUG) System.err.println(com.opencms.util.Utils.getStackTrace(e));                
+                throw new javax.servlet.jsp.JspException(e);            
+            } catch (java.io.IOException e) {
+                if (DEBUG) System.err.println("JspTagInclude: IOException in Jsp 'include' tag processing: " + e);
+                if (DEBUG) System.err.println(com.opencms.util.Utils.getStackTrace(e));                
                 throw new javax.servlet.jsp.JspException(e);
-            }
+            }            
         }
         
         return SKIP_BODY;

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsJspLoader.java,v $
-* Date   : $Date: 2002/08/21 11:29:32 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2002/08/30 14:08:21 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,12 +32,13 @@ package com.opencms.flex;
 import java.util.*;
 import java.io.*;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.*;
 
 import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.launcher.*;
-import com.opencms.flex.*;
+import com.opencms.util.Utils;
 import com.opencms.flex.cache.*;
 import com.opencms.flex.jsp.*;
 
@@ -49,7 +50,7 @@ import com.opencms.flex.jsp.*;
  * to the OpenCms Template mechanism.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsJspLoader implements I_CmsLauncher, I_CmsLogChannels, I_CmsConstants, I_CmsJspConstants, I_CmsResourceLoader {
 
@@ -63,10 +64,10 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsLogChannels, I_CmsConst
     private static CmsFlexCache m_cache;
 
     /** Special JSP directive tag start */
-    public static String C_DIRECTIVE_START = "<%@";
+    public static final String C_DIRECTIVE_START = "<%@";
 
     /** Special JSP directive tag start */
-    public static String C_DIRECTIVE_END ="%>";
+    public static final String C_DIRECTIVE_END ="%>";
     
     /** Flag for debugging output. Set to 9 for maximum verbosity. */ 
     private static int DEBUG = 0;
@@ -118,7 +119,13 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsLogChannels, I_CmsConst
         } else {
             HttpServletRequest req = (HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();
             HttpServletResponse res = (HttpServletResponse)cms.getRequestContext().getResponse().getOriginalResponse();
-            load(cms, file, req, res);
+            try {
+                // Load the resource
+                load(cms, file, req, res);
+            } catch (Exception e) {
+                // All Exceptions are caught here and get translated to a CmsException for display in the OpenCms error dialog
+                throw new CmsException("Error in Flex loader", CmsException.C_FLEX_LOADER, e, true);
+            }            
         }
     } 
 
@@ -178,10 +185,9 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsLogChannels, I_CmsConst
      * @param file The requested OpenCms VFS resource
      * @param req The original servlet request
      * @param res The original servlet response
-     * @throws CmsException In case the Loader can not process the requested resource
      */
     public void load(CmsObject cms, CmsFile file, HttpServletRequest req, HttpServletResponse res) 
-    throws CmsException {
+    throws ServletException, IOException {       
 
         long timer1 = 0;
         if (DEBUG > 0) {
@@ -203,7 +209,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsLogChannels, I_CmsConst
                 }
             }
         } catch (CmsException e) {
-            throw new CmsException("FlexJspLoader: Error while loading stream properties for " + file.getAbsolutePath() + "\n" + e, e);
+            throw new ServletException("FlexJspLoader: Error while loading stream properties for " + file.getAbsolutePath() + "\n" + e, e);
         } 
         
         if (DEBUG > 1) System.err.println("========== JspLoader stream=" + streaming + " bypass=" + bypass);
@@ -222,33 +228,21 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsLogChannels, I_CmsConst
         }
         
         if (bypass) {
-            if (DEBUG > 1) System.err.println("JspLoader.load() bypassing cache for file " + file.getAbsolutePath());
             // Bypass Flex cache for this page (this solves some compatibility issues in BEA Weblogic)        
+            if (DEBUG > 1) System.err.println("JspLoader.load() bypassing cache for file " + file.getAbsolutePath());
+            // Update the JSP first if neccessary            
             String target = updateJsp(cms, file, w_req, new HashSet(11));
-  
+            // Dispatch to external JSP
+            req.getRequestDispatcher(target).forward(w_req, res);              
+            if (DEBUG > 1) System.err.println("JspLoader.load() cache was bypassed!");
+        } else {
+            // Flex cache not bypassed            
             try {
-                // Dispatch to external file
-                req.getRequestDispatcher(target).forward(w_req, res);              
-            } catch (Exception e) {
-                System.err.println("Error in CmsJspLoader.load(): " + e.toString());
-                System.err.println(com.opencms.util.Utils.getStackTrace(e));
-                throw new CmsException("Error in CmsJspLoader.load() with bypasscache:\n" + e, CmsException.C_FLEX_LOADER, e);            
-            }
-        }
-        
-        if (! bypass) {
-            try {
-                // res.setHeader("Connection", "keep-alive");
                 w_req.getCmsRequestDispatcher(file.getAbsolutePath()).include(w_req, w_res);
             } catch (java.net.SocketException e) {        
                 // Uncritical, might happen if client (browser) does not wait until end of page delivery
                 if (DEBUG > 1) System.err.println("JspLoader.load() ignoring SocketException " + e);
-            } catch (Exception e) {            
-                System.err.println("Error in CmsJspLoader.load() while loading: " + e.toString());
-                System.err.println(com.opencms.util.Utils.getStackTrace(e));
-                throw new CmsException("Error in CmsJspLoader.load() while loading " + file.getAbsolutePath() + "\n" + e, CmsException.C_LAUNCH_ERROR, e);
-            } 
-
+            }            
             if (! streaming && ! w_res.isSuspended()) {
                 try {      
                     if (! res.isCommitted()) {
@@ -265,14 +259,8 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsLogChannels, I_CmsConst
                 } catch (java.net.SocketException e) {        
                     // Uncritical, might happen if client (browser) does not wait until end of page delivery
                     if (DEBUG > 1) System.err.println("JspLoader.load() ignoring SocketException " + e);
-                } catch (Exception e) {
-                    System.err.println("Error in CmsJspLoader.load() while writing buffer to final stream: " + e.toString());
-                    System.err.println(com.opencms.util.Utils.getStackTrace(e));
-                    throw new CmsException("Error in CmsJspLoader.load() while writing buffer to final stream for " + file.getAbsolutePath() + "\n" + e, CmsException.C_LAUNCH_ERROR, e);
-                }        
+                }       
             }
-        } else {
-            if (DEBUG > 1) System.err.println("JspLoader.load() cache was bypassed!");
         }
         
         if (DEBUG > 0) {
@@ -298,36 +286,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsLogChannels, I_CmsConst
         if (DEBUG > 0) {
             timer1 = System.currentTimeMillis();        
             System.err.println("========== JspLoader (Template) loading: " + file.getAbsolutePath());
-        }
-        
-        /*
-        CmsFlexRequest w_req = null; 
-        CmsFlexResponse w_res = null;
-        HttpServletRequest req = null;
-        HttpServletResponse res = null;       
-        
-        if (cms.getRequestContext().getRequest() instanceof com.opencms.core.CmsExportRequest) {
-            System.err.println("JspLoader.loadTemplate(): Export requested for " + file.getAbsolutePath());
-            // Export request/response has no HttpRequest/Response, so use stored request / response
-            w_req = new CmsFlexRequest(m_context, file, m_cache, cms); 
-            w_res = new CmsFlexResponse();                        
-        } else {
-            // Get original request/response from cms object
-            req = (HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();
-            res = (HttpServletResponse)cms.getRequestContext().getResponse().getOriginalResponse();       
-            // Check if original request/response is already wrapped, if not create a wrapper
-            if (req instanceof CmsFlexRequest) {
-                w_req = (CmsFlexRequest)req; 
-            } else {
-                w_req = new CmsFlexRequest(req, file, m_cache, cms); 
-            }        
-            if (res instanceof CmsFlexResponse) {
-                w_res = (CmsFlexResponse)res;              
-            } else {
-                w_res = new CmsFlexResponse(res, false);
-            }         
-        }
-        */
+        }       
 
         HttpServletRequest req = (HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();
         HttpServletResponse res = (HttpServletResponse)cms.getRequestContext().getResponse().getOriginalResponse();             
@@ -352,7 +311,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsLogChannels, I_CmsConst
             if (DEBUG > 1) System.err.println("JspLoader.loadTemplate() ignoring SocketException " + e);
         } catch (Exception e) {            
             System.err.println("Error in CmsJspLoader.loadTemplate() while loading: " + e.toString());
-            System.err.println(com.opencms.util.Utils.getStackTrace(e));
+            if (DEBUG > 0) System.err.println(com.opencms.util.Utils.getStackTrace(e));
             throw new CmsException("Error in CmsJspLoader.loadTemplate() while loading " + file.getAbsolutePath() + "\n" + e, CmsException.C_LAUNCH_ERROR, e);
         } 
 
@@ -367,7 +326,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsLogChannels, I_CmsConst
                 if (DEBUG > 1) System.err.println("JspLoader.loadTemplate() ignoring IllegalStateException " + e);
             } catch (Exception e) {
                 System.err.println("Error in CmsJspLoader.loadTemplate() while writing buffer to final stream: " + e.toString());
-                System.err.println(com.opencms.util.Utils.getStackTrace(e));
+                if (DEBUG > 0) System.err.println(com.opencms.util.Utils.getStackTrace(e));
                 throw new CmsException("Error in CmsJspLoader.loadTemplate() while writing buffer to final stream for " + file.getAbsolutePath() + "\n" + e, CmsException.C_LAUNCH_ERROR, e);
             }        
         }
@@ -426,11 +385,19 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsLogChannels, I_CmsConst
     
     /**
      * Updates a JSP page in the real file system in case the VFS resource has changed.
-     * Also processes the <%@ cms %> tags before the JSP is written to the real FS.
-     * Also recursivly updates all files that are referenced by a <%@ cms %> tag 
+     * Also processes the &lt;%@ cms %&gt; tags before the JSP is written to the real FS.
+     * Also recursivly updates all files that are referenced by a &lt;%@ cms %&gt; tag 
      * on this page to make sure the file actually exists in the real FS.
+     * 
+     * @param cms Used to access the OpenCms VFS
+     * @param file The reqested JSP file resource in the VFS
+     * @param req The current request
+     * @param res The current response
+     * @param updates A Set containing all JSP pages that have been already updated
+     * @return The file name of the updated JSP in the "real" FS
      */
-    private synchronized String updateJsp(CmsObject cms, CmsResource file, CmsFlexRequest req, Set updates) throws CmsException {
+    private synchronized String updateJsp(CmsObject cms, CmsResource file, CmsFlexRequest req, Set updates) 
+    throws IOException, ServletException {
         
         String jspTargetName = getJspName(file.getAbsolutePath());
         String jspPath = getJspPath(jspTargetName, req.isOnline());
@@ -438,7 +405,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsLogChannels, I_CmsConst
         File d = new File(jspPath).getParentFile();
         if (! (d != null) && (d.exists() && d.isDirectory() && d.canRead())) {
             log("Could not access directory for " + jspPath);
-            throw new CmsException("JspLoader: Could not access directory for " + jspPath);
+            throw new ServletException("JspLoader: Could not access directory for " + jspPath);
         }    
         
         if (updates.contains(jspTargetName)) return null;
@@ -461,8 +428,13 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsLogChannels, I_CmsConst
         String jspfilename = getJspUri(file.getAbsolutePath(), req.isOnline());               
         
         if (mustUpdate) {
-            if (DEBUG > 2) System.err.println("JspLoader writing new file: " + jspfilename);            
-            byte[] contents = req.getCmsObject().readFile(file.getAbsolutePath()).getContents();
+            if (DEBUG > 2) System.err.println("JspLoader writing new file: " + jspfilename);         
+            byte[] contents = null;
+            try {
+                contents = req.getCmsObject().readFile(file.getAbsolutePath()).getContents();
+            } catch (CmsException e) {
+                throw new ServletException("JspLoader: Could not read contents for file '" + file.getAbsolutePath() + "'", e);
+            }
             
             try {
                 FileOutputStream fs = new FileOutputStream(f);                
@@ -546,36 +518,49 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsLogChannels, I_CmsConst
                 fs.close();
                 
                 log("Updated JSP file \"" + jspfilename + "\" for resource \"" + file.getAbsolutePath() + "\"") ;
-            } catch (Exception e) {
-                throw new CmsException("JspLauncher: Could not write to file '" + f.getName() + "'\n" + e, e);
+            } catch (FileNotFoundException e) {
+                throw new ServletException("JspLauncher: Could not write to file '" + f.getName() + "'\n" + e, e);
             }
-        }              
-        
+        }                      
         return jspfilename;
-    }
-    
-    
+    }    
+        
     /**
-     * Does the job of including the JSP.
-     * This should be called from a CmsFlexRequestDispatcher only.
-     */
-    public void service(CmsObject cms, CmsResource file, CmsFlexRequest req, CmsFlexResponse res)
-    throws CmsException {
-        
-        String target = updateJsp(cms, file, req, new HashSet(11));
-        
-        try {              
-            // Important: Indicate that all output must be buffered
-            res.setOnlyBuffering(true);   
-            // Dispatch to external file
-            req.getCmsRequestDispatcher(file.getAbsolutePath(), target).include(req, res);  
-        } catch (Exception e) {
-            System.err.println("Error in CmsJspLoader.service(): " + e.toString());
-            System.err.println(com.opencms.util.Utils.getStackTrace(e));
-            throw new CmsException("Error in CmsJspLoader.doServive():\n" + e, CmsException.C_FLEX_LOADER, e);            
-        }
-    }
-    
+	 * Does the job of including the JSP.
+	 * This method should be called from a CmsFlexRequestDispatcher only.
+	 * <p>
+	 * One of the tricky issues is the correct cascading of the Exceptions, 
+	 * so that you are able to identify the true origin of the problem.
+	 * This ia achived by imprinting a String C_EXCEPTION_PREFIX to the 
+	 * exception message.
+	 * 
+	 * @param cms Used to access the OpenCms VFS
+	 * @param file The reqested JSP file resource in the VFS
+	 * @param req The current request
+	 * @param res The current response
+	 */
+	public void service(CmsObject cms, CmsResource file, CmsFlexRequest req, CmsFlexResponse res)
+	throws ServletException, IOException {              
+	    try {	
+	        // Get JSP target name on "real" file system
+	        String target = updateJsp(cms, file, req, new HashSet(11));               
+	        // Important: Indicate that all output must be buffered
+	        res.setOnlyBuffering(true);   
+	        // Dispatch to external file
+	        req.getCmsRequestDispatcher(file.getAbsolutePath(), target).include(req, res);  	        
+	    } catch (ServletException e) {          
+	        // Check if this Exception has already been marked
+	        String msg = e.getMessage();
+	        if (DEBUG > 1) System.err.println("JspLauncher: Caught ServletException " + e );
+	        if (msg.startsWith(C_LOADER_EXCEPTION_PREFIX)) throw e;
+	        // Not marked, imprint current JSP file and stack trace
+	        throw new ServletException(C_LOADER_EXCEPTION_PREFIX + " '" + file.getAbsolutePath() + "'\n\nRoot cause:\n" + Utils.getStackTrace(e) + "\n--------------- End of root cause.\n", e);           
+	    } catch (Exception e) {
+	        // Imprint current JSP file and stack trace
+	        throw new ServletException(C_LOADER_EXCEPTION_PREFIX + " '" + file.getAbsolutePath() + "'\n\nRoot cause:\n" + Utils.getStackTrace(e) + "\n--------------- End of root cause.\n", e);          
+	    }
+	}
+            
     /**     
      * Logs a message to the OpenCms log in the channel "flex_loader".
      *
