@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/22 08:35:20 $
- * Version: $Revision: 1.79 $
+ * Date   : $Date: 2003/07/22 11:14:22 $
+ * Version: $Revision: 1.80 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
+import com.opencms.core.exceptions.CmsResourceNotFoundException;
 import com.opencms.file.*;
 import com.opencms.flex.util.CmsLruHashMap;
 import com.opencms.flex.util.CmsUUID;
@@ -72,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.79 $ $Date: 2003/07/22 08:35:20 $
+ * @version $Revision: 1.80 $ $Date: 2003/07/22 11:14:22 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -4079,16 +4080,15 @@ public class CmsDriverManager extends Object {
 
          // TODO VFS links: refactor all upper methods to support the VFS link type param
          //CmsResource newResource = new CmsResource(newUuid, newUuidresource, parentFolder.getId(), newUuidfile, resourceName, resourceType, 0,  context.currentProject().getId(), accessFlags, I_CmsConstants.C_STATE_NEW, context.currentUser().getId(), launcherType, launcherClassname, lastmodified, context.currentUser().getId(), lastmodified, context.currentUser().getId(), filecontent.length, context.currentProject().getId(), I_CmsConstants.C_VFS_LINK_TYPE_MASTER);
-         
          // create the folder.
          CmsResource newResource = m_vfsDriver.importResource(context.currentProject(), parentFolder.getId(), resource, filecontent, context.currentUser().getId(), resource.isFolder());
-
+         //CmsResource newResource = new CmsResource(newUuid, newUuidresource, parentFolder.getId(), newUuidfile, resourceName, resourceType, 0,  context.currentProject().getId(), accessFlags, I_CmsConstants.C_STATE_NEW, context.currentUser().getId(), launcherType, launcherClassname, lastmodified, context.currentUser().getId(), lastmodified, context.currentUser().getId(), filecontent.length, context.currentProject().getId(), I_CmsConstants.C_VFS_LINK_TYPE_MASTER);
          //clearResourceCache(newResourceName, context.currentProject(), context.currentUser());
          clearResourceCache();
 
          // write metainfos for the folder
          m_vfsDriver.writeProperties(propertyinfos, context.currentProject().getId(), newResource, newResource.getType(), true);
-
+         //CmsResource newResource = new CmsResource(newUuid, newUuidresource, parentFolder.getId(), newUuidfile, resourceName, resourceType, 0,  context.currentProject().getId(), accessFlags, I_CmsConstants.C_STATE_NEW, context.currentUser().getId(), launcherType, launcherClassname, lastmodified, context.currentUser().getId(), lastmodified, context.currentUser().getId(), filecontent.length, context.currentProject().getId(), I_CmsConstants.C_VFS_LINK_TYPE_MASTER);
          // inform about the file-system-change
          fileSystemChanged(true);
 
@@ -5317,7 +5317,7 @@ public class CmsDriverManager extends Object {
             return readFolderInProject(context, projectId, filename);
         }
 
-        List path = readPath(context, filename, includeDeleted);
+        List path = readPathInProject(context, projectId, filename, includeDeleted);
         CmsResource resource = (CmsResource) path.get(path.size() - 1);
         int[] pathProjectId = m_vfsDriver.getProjectsForPath(projectId, filename);
 
@@ -5327,7 +5327,7 @@ public class CmsDriverManager extends Object {
             }
         }
 
-        return null;
+        throw new CmsResourceNotFoundException(filename + " is not part of project with ID " + projectId);
     }
 
     /**
@@ -5533,7 +5533,7 @@ public class CmsDriverManager extends Object {
             }
         }
 
-        return null;
+        throw new CmsResourceNotFoundException(foldername + " is not part of project with ID " + projectId);
     }
 
     /**
@@ -7304,8 +7304,8 @@ public class CmsDriverManager extends Object {
         CmsResource res = readFileHeader(context, resourceName);
         if (res.isFile())
             touchResource(context, res, timestamp);
-        else
-            touchStructure(context, res, timestamp);
+        //else
+        touchStructure(context, res, timestamp);
     }
 
     /**
@@ -7339,7 +7339,7 @@ public class CmsDriverManager extends Object {
      * @param timestamp timestamp the new timestamp of the changed resource
      */
     private void touchStructure(CmsRequestContext context, CmsResource res, long timestamp) throws CmsException {
-        
+    
         // NOTE: this is the new way to update the state !
         if (res.getState() < I_CmsConstants.C_STATE_CHANGED)
             res.setState(I_CmsConstants.C_STATE_CHANGED);
@@ -8189,13 +8189,13 @@ public class CmsDriverManager extends Object {
      *
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
-    public void writeResource(CmsRequestContext context, String resourcename, Map properties, String username, String groupname, int accessFlags, int resourceType, byte[] filecontent) throws CmsException {
-        CmsResource resource = readFileHeader(context, resourcename, true);
 
+    public void writeResource(CmsRequestContext context, CmsResource resource, Map properties, byte[] content) throws CmsException {
+       
         // check if the user has write access 
         checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);
 
-        m_vfsDriver.writeResource(context.currentProject(), resource, filecontent, C_UPDATE_STRUCTURE_STATE, context.currentUser().getId());
+        m_vfsDriver.writeResource(context.currentProject(), resource, content, C_UPDATE_STRUCTURE_STATE, context.currentUser().getId());
 
         if (resource.getState() == I_CmsConstants.C_STATE_UNCHANGED) {
             resource.setState(I_CmsConstants.C_STATE_CHANGED);
@@ -8212,6 +8212,7 @@ public class CmsDriverManager extends Object {
         // inform about the file-system-change
         fileSystemChanged(false);
     }
+
 
     /**
      * Writes a new user tasklog for a task.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/22 07:34:39 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2003/07/22 11:14:22 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.46 $ $Date: 2003/07/22 07:34:39 $
+ * @version $Revision: 1.47 $ $Date: 2003/07/22 11:14:22 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -3345,8 +3345,8 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.setInt(2, resource.getFlags());
             stmt.setInt(3, resource.getLoaderId());
             stmt.setTimestamp(4, new Timestamp(resourceDateModified));
-			stmt.setString(5, userId.toString());
-			stmt.setInt(6, resourceState);
+            stmt.setString(5, userId.toString());
+            stmt.setInt(6, resourceState);
             stmt.setInt(7, filecontent.length);
             stmt.setString(8, resource.getFileId().toString());
             stmt.setString(9, resource.isLockedBy().toString());

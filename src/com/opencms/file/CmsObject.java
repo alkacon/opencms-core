@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/22 08:35:20 $
-* Version: $Revision: 1.345 $
+* Date   : $Date: 2003/07/22 11:14:22 $
+* Version: $Revision: 1.346 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.345 $
+ * @version $Revision: 1.346 $
  */
 public class CmsObject extends Object {
 
@@ -1471,9 +1471,10 @@ public class CmsObject extends Object {
     *
     * @throws CmsException  Throws CmsException if operation was not succesful.
     */
-    protected void doWriteResource(String resourcename, Map properties, String username, String groupname, int accessFlags, int resourceType, byte[] filecontent) throws CmsException {
-        m_driverManager.writeResource(m_context, addSiteRoot(resourcename), properties, username, groupname, accessFlags, resourceType, filecontent);
+    protected void doWriteResource(CmsResource resource, Map properties, byte[] content) throws CmsException {        
+        m_driverManager.writeResource(m_context, resource, properties, content);
     }
+
 
     /**
      * Ends a task of the Cms.
@@ -2441,7 +2442,7 @@ public class CmsObject extends Object {
      * @throws CmsException if operation was not successful
      */
     public CmsResource importResource(CmsResource resource, byte[] content, Map properties, String importpath) throws CmsException {
-        return getResourceType(resource.getType()).importResource(this, resource, content, properties, importpath);
+        return getResourceType(resource.getType()).importResource(this, resource, content, properties, importpath);   
     }
 
     /**
