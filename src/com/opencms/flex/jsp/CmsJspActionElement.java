@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspActionElement.java,v $
- * Date   : $Date: 2003/03/04 17:27:12 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/03/06 19:25:29 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
 import com.opencms.flex.cache.CmsFlexRequest;
 import com.opencms.flex.cache.CmsFlexResponse;
+import com.opencms.flex.util.CmsMessages;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -64,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  * working at last in some elements.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.0 beta 2
  */
@@ -454,6 +455,62 @@ public class CmsJspActionElement {
         }
         return null;            
     }
+    
+    /**
+     * Generates an initialized instance of {@link com.opencms.flex.util.CmsMessages} for 
+     * convenient access to localized resource bundles.<p>
+     * 
+     * @param bundleName the name of the ResourceBundle to use
+     * @param language language indentificator for the locale of the bundle
+     * @return CmsMessages a message bundle initialized with the provided values
+     */       
+    public CmsMessages getMessages(String bundleName, String language) {
+        return getMessages(bundleName, language, "", "", null);
+    }
+    
+    /**
+     * Generates an initialized instance of {@link com.opencms.flex.util.CmsMessages} for 
+     * convenient access to localized resource bundles.<p>
+     * 
+     * @param bundleName the name of the ResourceBundle to use
+     * @param language language indentificator for the locale of the bundle
+     * @param defaultLanguage default for the language, will be used 
+     *         if language is null or empty String "", and defaultLanguage is not null
+     * @return CmsMessages a message bundle initialized with the provided values
+     */    
+    public CmsMessages getMessages(String bundleName, String language, String defaultLanguage) {
+        return getMessages(bundleName, language, "", "", defaultLanguage);
+    }
+    
+    /**
+     * Generates an initialized instance of {@link com.opencms.flex.util.CmsMessages} for 
+     * convenient access to localized resource bundles.<p>
+     * 
+     * @param bundleName the name of the ResourceBundle to use
+     * @param language language indentificator for the locale of the bundle
+     * @param country 2 letter country code for the locale of the bundle 
+     * @param variant a vendor or browser-specific variant code
+     * @param defaultLanguage default for the language, will be used 
+     *         if language is null or empty String "", and defaultLanguage is not null
+     * @return CmsMessages a message bundle initialized with the provided values
+     * 
+     * @see java.util.ResourceBundle
+     * @see com.opencms.flex.util.CmsMessages
+     */
+    public CmsMessages getMessages(String bundleName, String language, String country, String variant, String defaultLanguage) {
+        try {
+            if ((defaultLanguage != null) && ((language == null) || ("".equals(language)))) {
+                language = defaultLanguage;
+            }
+            if (language == null) language = "";
+            if (country == null) country = "";
+            if (variant == null) variant = "";
+            return new CmsMessages(bundleName, language, country, variant);
+        } catch (Throwable t) {
+            handleException(t);
+        }
+        return null;
+    }    
     
     /**
      * Handles any exception that might occur in the context of this element to 
