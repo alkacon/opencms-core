@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
- * Date   : $Date: 2000/04/03 10:48:32 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2000/04/04 10:03:40 $
+ * Version: $Revision: 1.19 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.18 $ $Date: 2000/04/03 10:48:32 $
+ * @version $Revision: 1.19 $ $Date: 2000/04/04 10:03:40 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -136,17 +136,17 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         if(!existsContentParam) {
             CmsXmlControlFile originalControlFile = new CmsXmlControlFile(cms, file);
                         
-            if(originalControlFile.isElementClassDefined("body")) {
-                bodyElementClassName = originalControlFile.getElementClass("body");
+            if(originalControlFile.isElementClassDefined(C_BODY_ELEMENT)) {
+                bodyElementClassName = originalControlFile.getElementClass(C_BODY_ELEMENT);
             } 
                 
-            if(originalControlFile.isElementTemplateDefined("body")) {
-                bodyElementFilename = originalControlFile.getElementTemplate("body");
+            if(originalControlFile.isElementTemplateDefined(C_BODY_ELEMENT)) {
+                bodyElementFilename = originalControlFile.getElementTemplate(C_BODY_ELEMENT);
             }
             
             if((bodyElementClassName == null) || (bodyElementFilename == null)) {
                 // Either the template class or the template file 
-                // for the "body" element could not be determined.
+                // for the body element could not be determined.
                 // BUG: Send error here
             }
                         
@@ -208,7 +208,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         // body's template class.
         tempObj = CmsTemplateClassManager.getClassInstance(cms, bodyElementClassName);
         CmsXmlTemplate bodyElementClassObject = (CmsXmlTemplate)tempObj;
-        CmsXmlTemplateFile bodyTemplateFile = bodyElementClassObject.getOwnTemplateFile(cms, tempBodyFilename, "body", parameters, null);
+        CmsXmlTemplateFile bodyTemplateFile = bodyElementClassObject.getOwnTemplateFile(cms, tempBodyFilename, C_BODY_ELEMENT, parameters, null);
 
         // Get the temporary page file object
         CmsXmlControlFile temporaryControlFile = new CmsXmlControlFile(cms, tempPageFilename);
@@ -223,8 +223,8 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
 
             bodytitle = bodyTemplateFile.getSectionTitle(body);
             
-            temporaryControlFile.setElementTemplSelector("body", body);
-            temporaryControlFile.setElementTemplate("body", tempBodyFilename);
+            temporaryControlFile.setElementTemplSelector(C_BODY_ELEMENT, body);
+            temporaryControlFile.setElementTemplate(C_BODY_ELEMENT, tempBodyFilename);
             temporaryControlFile.write();
 
             String hostName = orgReq.getScheme() + "://" + orgReq.getHeader("HOST") + orgReq.getServletPath() + "/";
@@ -288,15 +288,15 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             }
     
             if(bodychangeRequested) {
-                temporaryControlFile.setElementTemplSelector("body", body);
+                temporaryControlFile.setElementTemplSelector(C_BODY_ELEMENT, body);
                 //temporaryControlFile.write();
                 bodytitle = bodyTemplateFile.getSectionTitle(body);
             }
                  
             if(newbodyRequested) {
-                body = "body" + bodyTemplateFile.createNewSection("body");
-                temporaryControlFile.setElementTemplSelector("body", body);
-                temporaryControlFile.setElementTemplate("body", tempBodyFilename);
+                body = C_BODY_ELEMENT + bodyTemplateFile.createNewSection(C_BODY_ELEMENT);
+                temporaryControlFile.setElementTemplSelector(C_BODY_ELEMENT, body);
+                temporaryControlFile.setElementTemplate(C_BODY_ELEMENT, tempBodyFilename);
                 //temporaryControlFile.write();
                 
                 //bodyTemplateFile.write();
@@ -434,7 +434,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
 
         Object tempObj = CmsTemplateClassManager.getClassInstance(cms, bodyClassName);
         CmsXmlTemplate bodyElementClassObject = (CmsXmlTemplate)tempObj;
-        CmsXmlTemplateFile bodyTemplateFile = bodyElementClassObject.getOwnTemplateFile(cms, tempBodyFilename, "body", parameters, null);
+        CmsXmlTemplateFile bodyTemplateFile = bodyElementClassObject.getOwnTemplateFile(cms, tempBodyFilename, C_BODY_ELEMENT, parameters, null);
             
         Vector allBodys = bodyTemplateFile.getAllSections();
         int loop=0;
