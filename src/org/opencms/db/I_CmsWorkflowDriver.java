@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/I_CmsWorkflowDriver.java,v $
- * Date   : $Date: 2003/09/15 15:17:23 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/09/15 15:37:46 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,8 @@ import java.util.Vector;
  * Definitions of all required workflow driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.11 $ $Date: 2003/09/15 15:17:23 $
+ * @author Michael Emmerich (m.emmerich@alkacon.com)
+ * @version $Revision: 1.12 $ $Date: 2003/09/15 15:37:46 $
  * @since 5.1
  */
 public interface I_CmsWorkflowDriver {
