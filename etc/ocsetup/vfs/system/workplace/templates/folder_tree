@@ -41,6 +41,7 @@ function selectFolder(pathStr){
 <TREEIMG_EMPTY0><![CDATA[<img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 vspace=0 hspace=0 width=1 height=16 align=left>]]></TREEIMG_EMPTY0>
 <TREEIMG_EMPTY><![CDATA[<img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 vspace=0 hspace=0 width=16 height=16 align=left>]]></TREEIMG_EMPTY>
 <TREEIMG_VERT><![CDATA[<img src="]]><METHOD name="picsUrl">ic_tree_vert.gif</METHOD><![CDATA[" border=0 vspace=0 hspace=0 width=16 height=16 align=left>]]></TREEIMG_VERT>
+<TREEIMG_FILE><![CDATA[<img src="]]><PROCESS>icon</PROCESS><![CDATA[" border=0 vspace=0 hspace=1 width=16 height=14 align=left>]]></TREEIMG_FILE>
 <TREEIMG_FOLDEROPEN><![CDATA[<img src="]]><METHOD name="picsUrl">ic_tree_folderopen.gif</METHOD><![CDATA[" border=0 vspace=0 hspace=0 width=16 height=16 align=left>]]></TREEIMG_FOLDEROPEN>
 <TREEIMG_FOLDERCLOSE><![CDATA[<img src="]]><METHOD name="picsUrl">ic_tree_folder.gif</METHOD><![CDATA[" border=0 vspace=0 hspace=0 width=16 height=16 align=left>]]></TREEIMG_FOLDERCLOSE>
 <TREEIMG_CROSS><![CDATA[<img src="]]><METHOD name="picsUrl">ic_tree_kreuz.gif</METHOD><![CDATA[" border=0 vspace=0 hspace=0 width=16 height=16 align=left>]]></TREEIMG_CROSS>

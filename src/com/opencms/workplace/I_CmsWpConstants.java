@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
- * Date   : $Date: 2000/05/10 16:46:29 $
- * Version: $Revision: 1.92 $
+ * Date   : $Date: 2000/05/25 09:37:48 $
+ * Version: $Revision: 1.93 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.92 $ $Date: 2000/05/10 16:46:29 $
+ * @version $Revision: 1.93 $ $Date: 2000/05/25 09:37:48 $
  */
 public interface I_CmsWpConstants {
 
@@ -880,5 +880,14 @@ public interface I_CmsWpConstants {
 	/** Constant for task-log */
 	public static final int C_TASKLOGTYPE_PRIORITYCHANGED = 109;
     
+      
+    /** The prefix for the icon images */
+    public final static String C_ICON_PREFIX="ic_file_";                  
+    
+    /** The extension for the icon images */
+    public final static String C_ICON_EXTENSION=".gif";        
+
+    /** The default icon */
+    public final static String C_ICON_DEFAULT="ic_file_othertype.gif";
  
 }

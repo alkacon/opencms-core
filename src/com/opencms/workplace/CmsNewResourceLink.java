@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceLink.java,v $
- * Date   : $Date: 2000/05/19 11:26:31 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/05/25 09:37:48 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2000/05/19 11:26:31 $
+ * @version $Revision: 1.5 $ $Date: 2000/05/25 09:37:48 $
  */
 public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -97,6 +97,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
             // remove all session values 
             session.removeValue(C_PARA_FILE); 
             session.removeValue(C_PARA_LINK);    
+            session.removeValue(C_PARA_VIEWFILE); 
         }
 			
 		link=cms.getRequestContext().getRequest().getParameter(C_PARA_LINK);
@@ -161,6 +162,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
 				}   
                 // remove values from session
                 session.removeValue(C_PARA_FILE);   
+                session.removeValue(C_PARA_VIEWFILE); 
                 session.removeValue(C_PARA_LINK);  
                 // TODO: ErrorHandling
                 
@@ -180,6 +182,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
             }
         } else {
             session.removeValue(C_PARA_FILE);
+            session.removeValue(C_PARA_VIEWFILE); 
         }
 		String cancelUrl;
 		cancelUrl= (String) session.getValue("lasturl");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
- * Date   : $Date: 2000/05/11 09:40:37 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2000/05/25 09:37:47 $
+ * Version: $Revision: 1.36 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import javax.servlet.http.*;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.35 $ $Date: 2000/05/11 09:40:37 $
+ * @version $Revision: 1.36 $ $Date: 2000/05/25 09:37:47 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants,
@@ -98,16 +98,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
     
     /** The style for changed files or folders */
     private final static String C_STYLE_CHANGED="dateigeaendert";
-    
-    /** The prefix for the icon images */
-    private final static String C_ICON_PREFIX="ic_file_";                  
-    
-    /** The extension for the icon images */
-    private final static String C_ICON_EXTENSION=".gif";        
-
-    /** The default icon */
-    private final static String C_ICON_DEFAULT="ic_file_othertype.gif";
-    
+      
     /** The default context menu */
     private final static String C_DEFAULT_CONTEXTMENU="online";
 
