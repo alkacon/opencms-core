@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2002/05/24 12:51:09 $
-* Version: $Revision: 1.64 $
+* Date   : $Date: 2002/06/30 21:46:52 $
+* Version: $Revision: 1.65 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.64 $ $Date: 2002/05/24 12:51:09 $
+ * @version $Revision: 1.65 $ $Date: 2002/06/30 21:46:52 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -260,7 +260,8 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
 
         // Get the user's browser
         String browser = orgReq.getHeader("user-agent");
-        String hostName = orgReq.getScheme() + "://" + orgReq.getHeader("HOST");
+        // TESTFIX (AJS) Old code: String hostName = orgReq.getScheme() + "://" + orgReq.getHeader("HOST");
+        String hostName = orgReq.getScheme() + "://" + orgReq.getServerName() + ":" + orgReq.getServerPort();
         Encoder encoder = new Encoder();
 
         // Get all URL parameters
@@ -685,6 +686,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
                 parameters.put("editor._TEMPLATE_", "/system/workplace/templates/" + C_SELECTBOX_EDITORVIEWS_TEMPLATES[i]);
             }
         }
+        session.putValue("te_file", file);
         session.putValue("te_oldedit", editor);
         session.putValue("te_oldbody", body);
         session.putValue("te_oldbodytitle", bodytitle);
@@ -825,7 +827,23 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         String title = (String)session.getValue("te_oldbodytitle");
         return makeHtmlEntities(title);
     }
-
+    
+    public Object getCharset(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) {
+        // Try to find property on file and all parent folders
+        String prop = null;
+        try {
+            I_CmsSession session = cms.getRequestContext().getSession(true);
+            String file = (String)session.getValue("te_file");
+            prop = cms.readProperty(file, "charset");
+            while ((prop == null) && (! "".equals(file))) {
+                file = file.substring(0, file.lastIndexOf("/"));
+                prop = cms.readProperty(file + "/", "charset");
+            } 
+        } catch (Exception e) {}
+        if (prop == null) prop = "ISO-8859-1";
+        return prop;
+    }
+    
     public Object setText(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) throws CmsException {
         Hashtable parameters = (Hashtable)userObj;
 
