@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2003/01/20 23:59:28 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2003/02/26 15:47:29 $
+* Version: $Revision: 1.27 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,8 +50,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.26 $
- * $Date: 2003/01/20 23:59:28 $
+ * $Revision: 1.27 $
+ * $Date: 2003/02/26 15:47:29 $
  */
 public abstract class CmsMasterContent
     extends A_CmsContentDefinition
@@ -328,10 +328,9 @@ public abstract class CmsMasterContent
 
     /**
      * import method
-     * to importthe current content of the content definition to the database.
-     * @param cms the CmsObject to use.
+     * to import the current content of the content definition to the database.
      */
-    public void importMaster(CmsObject cms) throws Exception {
+    public void importMaster() throws Exception {
         getDbAccessObject(getSubId()).insert(m_cms, this, m_dataSet);
         // everything is written - so lockstate was updated
         m_lockstateWasChanged = false;
@@ -647,7 +646,13 @@ public abstract class CmsMasterContent
     public static boolean beforePublish( CmsObject cms, Boolean enableHistory,
         Integer projectId, Integer versionId, Long publishingDate,
         Vector changedRessources, Vector changedModuleData, CmsMasterDataSet dataset ) {
-            
+        
+        if (false && ((cms == null) && (enableHistory == null) && (projectId == null) &&
+            (versionId == null) && (publishingDate == null) && (changedRessources == null) &&
+            (changedModuleData == null) && (dataset == null))) {
+            // silly test so that eclipse does not complain about unused method parameters
+        }
+        
         return true;
     }
 
