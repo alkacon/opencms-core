@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/explorer.js,v $
- * Date   : $Date: 2000/12/06 11:09:30 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/12/07 12:51:33 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -790,16 +790,16 @@ function permShow(wert,wo){
     for(i=0;i<10;i++){
        if((a & Math.pow(2,i))>0){
             if(i==9)out+=("x");
-                else{
-                    if(b==0)out+=("r");
-                    if(b==1)out+=("v");
-                    if(b==2){
-                        out+=("w");
-                        b=-1;
-                    }
+            else{
+                if(b==0)out+=("r");
+                if(b==1)out+=("w");
+                if(b==2){
+                    out+=("v");
                 }
-            } else out+=("-");
+            }
+       } else out+=("-");
        b++;
+       if(b==3){b=0;}
     }
     return(out);
 }
