@@ -1,9 +1,7 @@
 <%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms" %><%--
 --%><%@ page import="
 	org.opencms.workplace.*,
-	org.opencms.jsp.*,
-	com.opencms.*,
-	org.opencms.*"
+	org.opencms.jsp.*"
 	buffer="none"
 	session="false"%><%
 
