@@ -15,6 +15,8 @@ OpenCms 4.5.4  Gom Jabbar   - ?? August 2001
 * Added the parameters of the element-definition to the cache-directive -key.
 * A new created page with default flag internal set results now in an 
   body-file with set internal, too.
+* Images that are filled in via drag and drop in the HTML-Control have no 
+  java-script "onClick" event any more.
 - Added redirect-informations to opencms.properties
 - Added a warning about the file.encoding. The warning will be printed 
   if you are not using the prefered properties. You may get in trouble 
