@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2003/06/30 14:28:48 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/06/30 18:13:29 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.1
  */
@@ -386,7 +386,7 @@ public class CmsFrameset extends CmsWorkplace {
      * @return a button fot the OpenCms workplace
      */
     public String button(String href, String target, String image, String label, int type) {
-        StringBuffer result = new StringBuffer(); 
+        StringBuffer result = new StringBuffer(512); 
     
         result.append("<td>");      
         switch (type) {     
@@ -403,11 +403,13 @@ public class CmsFrameset extends CmsWorkplace {
                     }
                     result.append(">");
                 }           
-                result.append("<span unselectable=\"on\" class=\"norm\"");
+                result.append("<span unselectable=\"on\" ");
                 if (href != null) {
-                    result.append(" onmouseover=\"className='over'\" onmouseout=\"className='norm'\" onmousedown=\"className='push'\" onmouseup=\"className='over'\"");
+                    result.append("class=\"norm\" onmouseover=\"className='over'\" onmouseout=\"className='norm'\" onmousedown=\"className='push'\" onmouseup=\"className='over'\"");
+                } else {
+                    result.append("class=\"disabled\"");
                 }
-                result.append("><span unselectable=\"on\" class=\"newbutton\" ");
+                result.append("><span unselectable=\"on\" class=\"combobutton\" ");
                 result.append("style=\"background-image: url('");
                 result.append(getSkinUri());
                 result.append("buttons/");
@@ -434,9 +436,11 @@ public class CmsFrameset extends CmsWorkplace {
                     }
                     result.append(">");
                 }           
-                result.append("<span unselectable=\"on\" class=\"norm\"");
+                result.append("<span unselectable=\"on\" ");
                 if (href != null) {
-                    result.append(" onmouseover=\"className='over'\" onmouseout=\"className='norm'\" onmousedown=\"className='push'\" onmouseup=\"className='over'\"");
+                    result.append("class=\"norm\" onmouseover=\"className='over'\" onmouseout=\"className='norm'\" onmousedown=\"className='push'\" onmouseup=\"className='over'\"");
+                } else {
+                    result.append("class=\"disabled\"");
                 }
                 result.append("><span unselectable=\"on\" class=\"txtbutton\">");
                 result.append(key(label));
@@ -461,9 +465,11 @@ public class CmsFrameset extends CmsWorkplace {
                     result.append(key(label));
                     result.append("\">");
                 }           
-                result.append("<span unselectable=\"on\" class=\"norm\"");
+                result.append("<span unselectable=\"on\" ");
                 if (href != null) {
-                    result.append(" onmouseover=\"className='over'\" onmouseout=\"className='norm'\" onmousedown=\"className='push'\" onmouseup=\"className='over'\"");
+                    result.append("class=\"norm\" onmouseover=\"className='over'\" onmouseout=\"className='norm'\" onmousedown=\"className='push'\" onmouseup=\"className='over'\"");
+                } else {
+                    result.append("class=\"disabled\"");
                 }
                 result.append("><img class=\"button\" src=\"");
                 result.append(getSkinUri());
