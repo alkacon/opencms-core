@@ -562,7 +562,7 @@ function checkTableElSelection(type) {
 			if (elt.tagName == type) {
 				break;
 			}
-			Elt = elt.parentElement;
+			elt = elt.parentElement;
 		}
 
 		if (elt) {
