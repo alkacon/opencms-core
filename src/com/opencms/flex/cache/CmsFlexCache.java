@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexCache.java,v $
- * Date   : $Date: 2003/07/14 20:12:41 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2003/07/22 00:29:22 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @see com.opencms.flex.cache.CmsFlexCacheKey
  * @see com.opencms.flex.cache.CmsFlexCacheEntry
@@ -606,7 +606,7 @@ public class CmsFlexCache extends java.lang.Object implements com.opencms.flex.I
                 if (DEBUG > 1) System.err.println("FlexCache: Checking timeout for resource " + key.m_resource);
                 if (e.getTimeout() < key.m_timeout) {
                     if (DEBUG > 1) System.err.println("FlexCache: Resource has reached timeout, removing from cache!");
-                    this.m_entryLruCache.remove((I_CmsFlexLruCacheObject)e);
+                    this.m_entryLruCache.remove(e);
                     return null;
                 }
                 if (DEBUG > 1) System.err.println("FlexCache: Resource timeout not reached!");
@@ -649,7 +649,7 @@ public class CmsFlexCache extends java.lang.Object implements com.opencms.flex.I
             // No variation map for this resource yet, so create one
             CmsFlexCacheVariation variationMap = new CmsFlexCacheVariation(key);
             m_resourceMap.put(key.m_resource, variationMap);
-            this.m_variationCache.add((I_CmsFlexLruCacheObject)variationMap);
+            this.m_variationCache.add(variationMap);
             if (DEBUG > 1) System.err.println("FlexCache: Added pre-calculated key for resource " + key.m_resource);
         }
         // If != null the key is already in the cache, so we just do nothing
@@ -746,9 +746,9 @@ public class CmsFlexCache extends java.lang.Object implements com.opencms.flex.I
             java.util.Map m = ((CmsFlexCacheVariation)o).m_map;
             boolean wasAdded = true;
             if (! m.containsKey(key.m_variation)) {
-                wasAdded = this.m_entryLruCache.add((I_CmsFlexLruCacheObject)theCacheEntry);
+                wasAdded = this.m_entryLruCache.add(theCacheEntry);
             } else {
-                wasAdded = this.m_entryLruCache.touch((I_CmsFlexLruCacheObject)theCacheEntry);
+                wasAdded = this.m_entryLruCache.touch(theCacheEntry);
             }
             
             if (wasAdded) {
@@ -760,13 +760,13 @@ public class CmsFlexCache extends java.lang.Object implements com.opencms.flex.I
             // No variation map for this resource yet, so create one
             CmsFlexCacheVariation list = new CmsFlexCacheVariation(key);
 
-            boolean wasAdded = this.m_entryLruCache.add((I_CmsFlexLruCacheObject)theCacheEntry);
+            boolean wasAdded = this.m_entryLruCache.add(theCacheEntry);
             
             if (wasAdded) {
                 theCacheEntry.setVariationData(key.m_variation, list.m_map);
                 list.m_map.put(key.m_variation, theCacheEntry);
                 m_resourceMap.put(key.m_resource, list);
-                this.m_variationCache.add((I_CmsFlexLruCacheObject)list);
+                this.m_variationCache.add(list);
             }
         }
         
@@ -830,7 +830,7 @@ public class CmsFlexCache extends java.lang.Object implements com.opencms.flex.I
                         this.m_entryLruCache.remove(nextObject);
                     }
                     
-                    this.m_variationCache.remove((I_CmsFlexLruCacheObject)v);
+                    this.m_variationCache.remove(v);
                     
                     v.m_map = null;
                     v.m_key = null;
@@ -858,7 +858,7 @@ public class CmsFlexCache extends java.lang.Object implements com.opencms.flex.I
      * @see com.opencms.flex.util.I_CmsFlexLruCacheObject
      * @author Alexander Kandzior (a.kandzior@alkacon.com)
      * @author Thomas Weckert (t.weckert@alkacon.com)
-     * @version $Revision: 1.22 $ 
+     * @version $Revision: 1.23 $ 
      */
     class CmsFlexCacheVariation extends Object implements com.opencms.flex.util.I_CmsFlexLruCacheObject {
         

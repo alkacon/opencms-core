@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/Attic/CmsLockDispatcher.java,v $
- * Date   : $Date: 2003/07/21 12:45:17 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/07/22 00:29:23 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import java.util.Map;
  * re-initialize itself while the app. with a clear cache event.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.6 $ $Date: 2003/07/21 12:45:17 $
+ * @version $Revision: 1.7 $ $Date: 2003/07/22 00:29:23 $
  * @since 5.1.4
  * @see com.opencms.file.CmsObject#getLock(CmsResource)
  * @see org.opencms.lock.CmsLock
@@ -84,7 +84,7 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
     private CmsLockDispatcher() {
         super();
 
-        m_lockedResources = (Map) Collections.synchronizedMap(new HashMap());
+        m_lockedResources = Collections.synchronizedMap(new HashMap());
 
         // add this class as an event listener to the Cms
         A_OpenCms.addCmsEventListener(this);
@@ -299,7 +299,7 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
         CmsLock currentLock = null;
 
         while (i.hasNext()) {
-            currentLock = (CmsLock) m_lockedResources.get((String) i.next());
+            currentLock = (CmsLock) m_lockedResources.get(i.next());
 
             if (currentLock.getProjectId() == projectId) {
                 // iterators are fail-fast!

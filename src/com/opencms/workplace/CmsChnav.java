@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChnav.java,v $
-* Date   : $Date: 2003/07/12 12:49:03 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.16 $ $Date: 2003/07/12 12:49:03 $
+ * @version $Revision: 1.17 $ $Date: 2003/07/22 00:29:22 $
  */
 
 public class CmsChnav extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -95,7 +95,7 @@ public class CmsChnav extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
         if(filename != null){
             session.putValue(C_SESSIONHEADER + C_PARA_FILE, filename);
         }
-        CmsResource resource = (CmsResource)cms.readFileHeader(filename);
+        CmsResource resource = cms.readFileHeader(filename);
 
         // get request parameters
         String navpos = (String)parameters.get(C_PARA_NAVPOS);
@@ -390,7 +390,7 @@ public class CmsChnav extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
             // now find the file after which the new file is sorted
             int pos = 0;
             for(int i = 0;i < nicenames.length;i++) {
-                if(Encoder.escapeHtml(navpos).equals((String)nicenames[i])) {
+                if(Encoder.escapeHtml(navpos).equals(nicenames[i])) {
                     pos = i;
                 }
             }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsRename.java,v $
-* Date   : $Date: 2003/07/12 12:49:02 $
-* Version: $Revision: 1.49 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.50 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Hashtable;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.49 $ $Date: 2003/07/12 12:49:02 $
+ * @version $Revision: 1.50 $ $Date: 2003/07/22 00:29:22 $
  */
 
 public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -108,7 +108,7 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,I
 
         //newFile=(String)session.getValue(C_PARA_NAME);
         String action = (String)parameters.get("action");
-        CmsResource file = (CmsResource)cms.readFileHeader(filename);
+        CmsResource file = cms.readFileHeader(filename);
         if(file.isFile()) {
             template = "file";
         }

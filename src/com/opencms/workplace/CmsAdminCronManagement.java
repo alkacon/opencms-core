@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminCronManagement.java,v $
-* Date   : $Date: 2003/02/02 15:59:52 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ public class CmsAdminCronManagement extends CmsWorkplaceDefault implements I_Cms
 
         CmsXmlTemplateFile templateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
 
-        if("cancel".equals((String)parameters.get("step"))){
+        if("cancel".equals(parameters.get("step"))){
             templateSelector = "done";
         } else if(parameters.containsKey("table")) {
             // store the updated crontable

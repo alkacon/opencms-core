@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelBackoffice.java,v $
-* Date   : $Date: 2003/06/25 13:50:29 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2003/07/22 00:29:23 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -110,7 +110,7 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
         CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
         //create appropriate class name with underscores for labels
         String moduleName = "";
-        moduleName = (String) getClass().toString(); //get name
+        moduleName = getClass().toString(); //get name
         moduleName = moduleName.substring(5); //remove 'class' substring at the beginning
         moduleName = moduleName.trim();
         moduleName = moduleName.replace('.', '_'); //replace dots with underscores

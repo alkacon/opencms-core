@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminStaticExportThread.java,v $
-* Date   : $Date: 2003/04/01 15:20:18 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.22 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ public class CmsAdminStaticExportThread extends A_CmsReportThread {
         }catch(CmsException e){
             errormessage += " "+e.getTypeText() +" "+e.getMessage();
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL,"error in static export "+e.getMessage());
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL,"error in static export "+e.getMessage());
             }
         }
     }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsRequestHttpServlet.java,v $
-* Date   : $Date: 2003/02/15 11:14:57 $
-* Version: $Revision: 1.36 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.37 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.http.HttpSession;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * 
- * @version $Revision: 1.36 $ $Date: 2003/02/15 11:14:57 $
+ * @version $Revision: 1.37 $ $Date: 2003/07/22 00:29:22 $
  */
 public class CmsRequestHttpServlet implements I_CmsRequest {
 
@@ -167,7 +167,7 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
                 }
                 // If encoding not found in session - use default one
                 if (encoding == null) {
-                    encoding = OpenCms.getDefaultEncoding();
+                    encoding = A_OpenCms.getDefaultEncoding();
                 }
                 req.setCharacterEncoding(encoding);
             }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMove.java,v $
-* Date   : $Date: 2003/07/16 14:30:03 $
-* Version: $Revision: 1.59 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.60 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ import org.opencms.workplace.CmsWorkplaceAction;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
-import com.opencms.file.CmsFile;
 import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsProject;
@@ -51,7 +50,7 @@ import java.util.Vector;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.59 $ $Date: 2003/07/16 14:30:03 $
+ * @version $Revision: 1.60 $ $Date: 2003/07/22 00:29:22 $
  */
 
 public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -98,7 +97,7 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
         }
         
         sourceFilename = (String)session.getValue(C_PARA_FILE);
-        CmsResource source = (CmsResource)cms.readFileHeader(sourceFilename);
+        CmsResource source = cms.readFileHeader(sourceFilename);
 
         // read all request parameters
         String newFolder = new String();
@@ -196,7 +195,7 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
 
                     // this is a file, so move it
                     try {
-                        cms.moveResource(cms.readAbsolutePath((CmsFile)source), newFolder + newFile);
+                        cms.moveResource(cms.readAbsolutePath(source), newFolder + newFile);
                     }
                     catch(CmsException ex) {
 

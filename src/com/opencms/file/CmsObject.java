@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/21 16:08:42 $
-* Version: $Revision: 1.342 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.343 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.342 $
+ * @version $Revision: 1.343 $
  */
 public class CmsObject extends Object {
 
@@ -630,7 +630,7 @@ public class CmsObject extends Object {
         try {
             setContextToCos();
             Hashtable properties = new Hashtable();
-            int newChannelId = org.opencms.db.CmsIdGenerator.nextId(com.opencms.defaults.master.CmsChannelBackoffice.C_TABLE_CHANNELID);
+            int newChannelId = org.opencms.db.CmsIdGenerator.nextId(I_CmsConstants.C_TABLE_CHANNELID);
             properties.put(I_CmsConstants.C_PROPERTY_CHANNELID, newChannelId + "");
             return (CmsFolder)createResource(parentChannel, newChannelName, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, properties);
         } finally {

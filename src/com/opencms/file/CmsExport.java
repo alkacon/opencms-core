@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
- * Date   : $Date: 2003/07/18 18:20:37 $
- * Version: $Revision: 1.65 $
+ * Date   : $Date: 2003/07/22 00:29:22 $
+ * Version: $Revision: 1.66 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.w3c.dom.Text;
  * @author Andreas Schouten
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.65 $ $Date: 2003/07/18 18:20:37 $
+ * @version $Revision: 1.66 $ $Date: 2003/07/22 00:29:22 $
  */
 public class CmsExport implements I_CmsConstants, Serializable {
 
@@ -587,7 +587,7 @@ public class CmsExport implements I_CmsConstants, Serializable {
         m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
         try {
             // create the manifest-entrys
-            writeXmlEntrys((CmsResource)file);
+            writeXmlEntrys(file);
             // store content in zip-file
             ZipEntry entry = new ZipEntry(source);
             m_exportZipStream.putNextEntry(entry);

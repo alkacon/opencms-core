@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
-* Date   : $Date: 2003/07/19 01:51:37 $
-* Version: $Revision: 1.73 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.74 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.w3c.dom.NodeList;
  * Content definition for XML template files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.73 $ $Date: 2003/07/19 01:51:37 $
+ * @version $Revision: 1.74 $ $Date: 2003/07/22 00:29:22 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent implements I_CmsWpConstants {
 
@@ -133,7 +133,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent implements I_CmsWpConsta
         return loop;
     }
     public Vector getAllSections() throws CmsException {
-        NodeList nl = ((Element)getXmlDocument().getDocumentElement()).getChildNodes();
+        NodeList nl = getXmlDocument().getDocumentElement().getChildNodes();
         return getNamesFromNodeList(nl, "TEMPLATE", true);
     }
 
@@ -143,15 +143,15 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent implements I_CmsWpConsta
      */
     public Vector getAllLinkTagValues()throws CmsException{
         Vector retValue = new Vector();
-        NodeList list = ((Element)getXmlDocument().getDocumentElement()).getChildNodes();
+        NodeList list = getXmlDocument().getDocumentElement().getChildNodes();
         int numElements = list.getLength();
         for(int i=0; i < numElements; i++){
-            Node n = (Node)list.item(i);
+            Node n = list.item(i);
             // we only search in the template tags
             if(n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().toLowerCase().equals(C_TEMPLATE)){
                 NodeList subList = n.getChildNodes();
                 for(int j=0; j<subList.getLength(); j++){
-                    Node subNode = (Node)subList.item(j);
+                    Node subNode = subList.item(j);
                     if(subNode.getNodeType()==Node.ELEMENT_NODE && subNode.getNodeName().equalsIgnoreCase("link")){
                         // TODO: check firstChild null?
                         String value = subNode.getFirstChild().getNodeValue();
@@ -346,7 +346,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent implements I_CmsWpConsta
         int numElements = nl.getLength();
         Vector collectNames = new Vector();
         for(int i = 0;i < numElements;i++) {
-            Node n = (Node)nl.item(i);
+            Node n = nl.item(i);
             if(n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().toLowerCase().equals(tag.toLowerCase())) {
                 String name = ((Element)n).getAttribute("name");
                 if(name == null || "".equals(name)) {
@@ -406,7 +406,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent implements I_CmsWpConsta
 
             int numElements = parameterTags.getLength();
             for(int i = 0;i < numElements;i++) {
-                Node n = (Node)parameterTags.item(i);
+                Node n = parameterTags.item(i);
                 if(n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().toLowerCase().equals("parameter")) {
                     String name = ((Element)n).getAttribute("name");
                     if(name != null && !"".equals(name)) {

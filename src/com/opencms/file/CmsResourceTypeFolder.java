@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2003/07/21 16:08:42 $
-* Version: $Revision: 1.72 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.73 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Vector;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.72 $
+ * @version $Revision: 1.73 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType {
 
@@ -124,9 +124,9 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
                     currentFolder = (CmsFolder)unvisitedFolders.nextElement();
 
                     // remove the current folder from the unvisited folders
-                    unvisited.remove((CmsFolder)currentFolder);
+                    unvisited.remove(currentFolder);
                     // add the current folder to the set of all folders to be touched
-                    allFolders.add((CmsFolder)currentFolder);
+                    allFolders.add(currentFolder);
                     // add the files in the current folder to the set of all files to be touched
                     allFiles.addAll(cms.getFilesInFolder(cms.readAbsolutePath(currentFolder), true));
                     // add all sub-folders in the current folder to visit them in the next iteration                        
@@ -134,7 +134,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
                 }
             }
         } else {
-            allFolders.add((CmsFolder)currentFolder);
+            allFolders.add(currentFolder);
         }
 
         // touch the folders that we collected before
@@ -242,7 +242,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
         if (C_BODY_MIRROR) {
             // try to copy the corresponding folder in C_VFS_PATH_BODIES to the project
             try {
-                CmsResource contentFolder = (CmsResource)cms.readFolder(I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/")) + resourceName, true);
+                CmsResource contentFolder = cms.readFolder(I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/")) + resourceName, true);
                 if (contentFolder != null) {
                     cms.doCopyResourceToProject(cms.readAbsolutePath(contentFolder));
                 }
@@ -647,11 +647,11 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
 
         //copy the values into the allFiles and allFolders Vectors
         for (int i = 0; i < folders.size(); i++) {
-            allFolders.add((CmsFolder)folders.get(i));
+            allFolders.add(folders.get(i));
             getAllResources(cms, cms.readAbsolutePath((CmsFolder)folders.get(i), true), allFiles, allFolders);
         }
         for (int i = 0; i < files.size(); i++) {
-            allFiles.add((CmsFile)files.get(i));
+            allFiles.add(files.get(i));
         }
     }
 

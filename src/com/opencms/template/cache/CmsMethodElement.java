@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsMethodElement.java,v $
-* Date   : $Date: 2003/07/19 01:51:37 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2003/07/22 00:29:23 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ public class CmsMethodElement extends A_CmsElement implements com.opencms.boot.I
      */
     public CmsMethodElement(String className, String methodName, CmsMethodCacheDirectives mcd, int variantCachesize) {
         m_methodName = methodName;
-        init(className, methodName, null, (A_CmsCacheDirectives)mcd, variantCachesize);
+        init(className, methodName, null, mcd, variantCachesize);
     }
 
     /**

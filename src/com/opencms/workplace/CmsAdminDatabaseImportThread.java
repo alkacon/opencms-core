@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatabaseImportThread.java,v $
-* Date   : $Date: 2003/03/22 07:24:54 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import com.opencms.report.I_CmsReport;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Hanjo Riege 
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  */
 public class CmsAdminDatabaseImportThread extends A_CmsReportThread {
 
@@ -77,7 +77,7 @@ public class CmsAdminDatabaseImportThread extends A_CmsReportThread {
         catch(CmsException e) {
             m_report.println(e);
             if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL, e.getMessage());
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, e.getMessage());
             }
         }
     }

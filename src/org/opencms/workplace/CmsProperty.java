@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsProperty.java,v $
- * Date   : $Date: 2003/07/21 16:30:05 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/07/22 00:29:22 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.1
  */
@@ -136,7 +136,7 @@ public class CmsProperty extends CmsDialog {
      * @throws CmsException if something goes wrong
      */
     public Vector getPropertyDefinitions() throws CmsException {
-        CmsResource res = (CmsResource)getCms().readFileHeader(getParamFile());
+        CmsResource res = getCms().readFileHeader(getParamFile());
         I_CmsResourceType type = getCms().getResourceType(res.getType());
         return getCms().readAllPropertydefinitions(type.getResourceTypeName());           
     }          
@@ -319,7 +319,7 @@ public class CmsProperty extends CmsDialog {
         CmsResource file;
         
         try {
-            file = (CmsResource)getCms().readFileHeader(resourceName);
+            file = getCms().readFileHeader(resourceName);
             // check if resource is a folder
             if (file.isFolder()) {
                 resourceName += "/";            
@@ -396,7 +396,7 @@ public class CmsProperty extends CmsDialog {
      * @throws CmsException if creation is not successful
      */
     private boolean performDefineOperation() throws CmsException {
-        CmsResource res = (CmsResource)getCms().readFileHeader(getParamFile());
+        CmsResource res = getCms().readFileHeader(getParamFile());
         String newProperty = getParamNewproperty();
         if (newProperty != null && !"".equals(newProperty.trim())) {
             getCms().createPropertydefinition(newProperty, res.getType());
@@ -447,7 +447,7 @@ public class CmsProperty extends CmsDialog {
         for (int i=0; i<propertyDef.size(); i++) {
             CmsPropertydefinition curProperty = (CmsPropertydefinition)propertyDef.elementAt(i);
             String propName = Encoder.escapeXml(curProperty.getName());
-            String paramValue = (String)request.getParameter(PREFIX_VALUE+propName);
+            String paramValue = request.getParameter(PREFIX_VALUE+propName);
                         
             // check if there is a parameter value for the current property
             boolean emptyParam = true;
@@ -463,7 +463,7 @@ public class CmsProperty extends CmsDialog {
                 }
             } else {
                 // parameter is not empty, check if the value has changed
-                String oldValue = (String)request.getParameter(PREFIX_HIDDEN+propName);
+                String oldValue = request.getParameter(PREFIX_HIDDEN+propName);
                 if (!paramValue.equals(oldValue)) {
                     getCms().writeProperty(getParamFile(), curProperty.getName(), paramValue);
                 }

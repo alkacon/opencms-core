@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsRadioButtons.java,v $
-* Date   : $Date: 2003/01/20 23:59:17 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.w3c.dom.Element;
  * 
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.13 $ $Date: 2003/01/20 23:59:17 $
+ * @version $Revision: 1.14 $ $Date: 2003/07/22 00:29:22 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -133,7 +133,7 @@ public class CmsRadioButtons extends A_CmsWpElement implements I_CmsWpElement,I_
         
         // If the radio button method returned a value, use it for preselecting an option
         if(returnObject != null) {
-            selectedOption = ((Integer)returnObject).intValue();
+            selectedOption = returnObject.intValue();
         }
         
         // process the vectors with the elelmetns of the radio buttons to be displayed.
@@ -147,7 +147,7 @@ public class CmsRadioButtons extends A_CmsWpElement implements I_CmsWpElement,I_
             radiodef.setData(C_RADIO_LINK, (String)values.elementAt(i));
             
             // Check, if an image should be displayed
-            if((String)names.elementAt(i) == null || "".equals((String)names.elementAt(i))) {
+            if((String)names.elementAt(i) == null || "".equals(names.elementAt(i))) {
                 radiodef.setData(C_RADIO_IMAGEENTRY, "");
             }
             else {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceLink.java,v $
-* Date   : $Date: 2003/07/21 12:45:17 $
-* Version: $Revision: 1.43 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.44 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.43 $ $Date: 2003/07/21 12:45:17 $
+ * @version $Revision: 1.44 $ $Date: 2003/07/22 00:29:22 $
  */
 
 public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -207,7 +207,6 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
 
                         // change old file
                         CmsFile editFile = cms.readFile(filename);
-                        String oldLink = new String( editFile.getContents() );
                         editFile.setContents(targetName.getBytes());
 
                         if(step.equals("1")){
@@ -219,7 +218,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
                             cms.writeFile(editFile);
                             cms.writeProperty(filename, C_PROPERTY_TITLE, title);
                         }
-                        linkResource = (CmsResource)editFile;
+                        linkResource = editFile;
                     } else {
                         // create the new file
                         Hashtable prop = new Hashtable();
@@ -552,7 +551,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
             // now find the file after which the new file is sorted
             int pos = 0;
             for(int i = 0;i < nicenames.length;i++) {
-                if(newpos.equals((String)nicenames[i])) {
+                if(newpos.equals(nicenames[i])) {
                     pos = i;
                 }
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/A_OpenCms.java,v $
- * Date   : $Date: 2003/07/20 15:45:00 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2003/07/22 00:29:22 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.45 $
+ * @version $Revision: 1.46 $
  */
 public abstract class A_OpenCms implements I_CmsLogChannels {
 
@@ -136,7 +136,7 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
             list = (I_CmsEventListener[])m_listeners.toArray(list);
         }
         for (int i = 0; i < list.length; i++)
-             ((I_CmsEventListener)list[i]).cmsEvent(event);
+             list[i].cmsEvent(event);
     }
 
     /**
@@ -151,7 +151,7 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
      * @param data event data
      */
     public static void fireCmsEvent(CmsObject cms, int type, java.util.Map data) {
-        OpenCms.fireCmsEvent(new CmsEvent(cms, type, data));
+        A_OpenCms.fireCmsEvent(new CmsEvent(cms, type, data));
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/21 16:08:42 $
- * Version: $Revision: 1.76 $
+ * Date   : $Date: 2003/07/22 00:29:23 $
+ * Version: $Revision: 1.77 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.76 $ $Date: 2003/07/21 16:08:42 $
+ * @version $Revision: 1.77 $ $Date: 2003/07/22 00:29:23 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1756,7 +1756,7 @@ public class CmsDriverManager extends Object {
         // write the link
         linkResource = m_vfsDriver.createFile(context.currentProject(), linkResource, context.currentUser().getId(), parentFolder.getId(), resourceName, true);
         // write its properties
-        m_vfsDriver.writeProperties(linkProperties, context.currentProject().getId(), (CmsResource) linkResource, linkResource.getType());
+        m_vfsDriver.writeProperties(linkProperties, context.currentProject().getId(), linkResource, linkResource.getType());
 
         clearResourceCache();
 
@@ -1833,7 +1833,7 @@ public class CmsDriverManager extends Object {
                 // calculate the max date by the given weeks
                 // one week has 604800000 milliseconds
                 long oneWeek = 604800000;
-                long maxDate = System.currentTimeMillis() - ((long) weeks * oneWeek);
+                long maxDate = System.currentTimeMillis() - (weeks * oneWeek);
                 //System.err.println("backup max date: "+Utils.getNiceDate(maxDate));
                 lastVersion = m_backupDriver.deleteBackups(maxDate);
             } else {
@@ -4153,17 +4153,17 @@ public class CmsDriverManager extends Object {
         m_backupDriver = backupDriver;
 
         // initalize the caches 
-        m_userCache = Collections.synchronizedMap((Map) new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".user", 50)));
-        m_groupCache = Collections.synchronizedMap((Map) new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".group", 50)));
-        m_userGroupsCache = Collections.synchronizedMap((Map) new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".usergroups", 50)));
-        m_projectCache = Collections.synchronizedMap((Map) new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".project", 50)));
-        m_resourceCache = Collections.synchronizedMap((Map) new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".resource", 2500)));
-        m_resourceListCache = Collections.synchronizedMap((Map) new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".subres", 100)));
-        m_propertyCache = Collections.synchronizedMap((Map) new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".property", 5000)));
-        m_propertyDefCache = Collections.synchronizedMap((Map) new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".propertydef", 100)));
-        m_propertyDefVectorCache = Collections.synchronizedMap((Map) new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".propertyvectordef", 100)));
-        m_accessCache = Collections.synchronizedMap((Map) new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".access", 1000)));
-        m_accessControlListCache = Collections.synchronizedMap((Map) new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".access", 1000)));
+        m_userCache = Collections.synchronizedMap(new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".user", 50)));
+        m_groupCache = Collections.synchronizedMap(new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".group", 50)));
+        m_userGroupsCache = Collections.synchronizedMap(new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".usergroups", 50)));
+        m_projectCache = Collections.synchronizedMap(new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".project", 50)));
+        m_resourceCache = Collections.synchronizedMap(new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".resource", 2500)));
+        m_resourceListCache = Collections.synchronizedMap(new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".subres", 100)));
+        m_propertyCache = Collections.synchronizedMap(new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".property", 5000)));
+        m_propertyDefCache = Collections.synchronizedMap(new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".propertydef", 100)));
+        m_propertyDefVectorCache = Collections.synchronizedMap(new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".propertyvectordef", 100)));
+        m_accessCache = Collections.synchronizedMap(new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".access", 1000)));
+        m_accessControlListCache = Collections.synchronizedMap(new CmsLruHashMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".access", 1000)));
 
         m_cachelimit = config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".maxsize", 20000);
         m_refresh = config.getString(I_CmsConstants.C_CONFIGURATION_CACHE + ".refresh", "");
@@ -4221,7 +4221,7 @@ public class CmsDriverManager extends Object {
             }
         } catch (CmsException e) {
             if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL, "Could not get registry value for " + I_CmsConstants.C_REGISTRY_HISTORY + "." + I_CmsConstants.C_ENABLE_HISTORY);
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "Could not get registry value for " + I_CmsConstants.C_REGISTRY_HISTORY + "." + I_CmsConstants.C_ENABLE_HISTORY);
             }
             return false;
         }
@@ -4523,7 +4523,7 @@ public class CmsDriverManager extends Object {
             // ignore this exception
         }
 
-        return (I_CmsPrincipal) null;
+        return null;
     }
 
     /**
@@ -4555,7 +4555,7 @@ public class CmsDriverManager extends Object {
             // ignore this exception
         }
 
-        return (I_CmsPrincipal) null;
+        return null;
     }
 
     /**
@@ -4791,7 +4791,7 @@ public class CmsDriverManager extends Object {
                         m_projectCache.remove(new Integer(publishProjectId));
                     } catch (Exception e) {
                         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                            A_OpenCms.log(A_OpenCms.C_OPENCMS_CACHE, "Could not remove project " + publishProjectId + " from cache");
+                            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CACHE, "Could not remove project " + publishProjectId + " from cache");
                         }
                     }
                     if (publishProjectId == context.currentProject().getId()) {
@@ -5278,7 +5278,7 @@ public class CmsDriverManager extends Object {
     public CmsResource readFileHeader(CmsRequestContext context, String filename, boolean includeDeleted) throws CmsException {
         // check if this method is misused to read a folder
         if (filename.endsWith("/")) {
-            return (CmsResource) readFolder(context, filename, includeDeleted);
+            return readFolder(context, filename, includeDeleted);
         }
 
         List path = readPath(context, filename, includeDeleted);
@@ -5315,7 +5315,7 @@ public class CmsDriverManager extends Object {
      */
     public CmsResource readFileHeaderInProject(CmsRequestContext context, int projectId, String filename, boolean includeDeleted) throws CmsException {
         if (filename.endsWith("/")) {
-            return (CmsResource) readFolderInProject(context, projectId, filename);
+            return readFolderInProject(context, projectId, filename);
         }
 
         List path = readPath(context, filename, includeDeleted);
@@ -5754,7 +5754,7 @@ public class CmsDriverManager extends Object {
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + "] could not read mimetypes from properties. " + exc.getMessage());
             }
         }
-        return (Hashtable) props;
+        return props;
     }
 
     /** 
@@ -5916,7 +5916,7 @@ public class CmsDriverManager extends Object {
             // see if we can find a cached parent-resource for the current parent-ID
             resourceCacheKey = getCacheKey("parent", context.currentUser(), projectId, currentParentId.toString());
             if ((currentResource = (CmsResource) m_resourceCache.get(resourceCacheKey)) == null) {
-                currentResource = (CmsResource) m_vfsDriver.readFileHeader(projectId, currentParentId, includeDeleted);
+                currentResource = m_vfsDriver.readFileHeader(projectId, currentParentId, includeDeleted);
                 m_resourceCache.put(resourceCacheKey, currentResource);
             }
 
@@ -6026,7 +6026,7 @@ public class CmsDriverManager extends Object {
         currentResourceName = currentPath = I_CmsConstants.C_ROOT;
         cacheKey = getCacheKey(null, context.currentUser(), projectId, currentPath);
         if ((currentResource = (CmsResource) m_resourceCache.get(cacheKey)) == null) {
-            currentResource = (CmsResource) m_vfsDriver.readFolder(projectId, CmsUUID.getNullUUID(), currentResourceName);
+            currentResource = m_vfsDriver.readFolder(projectId, CmsUUID.getNullUUID(), currentResourceName);
             currentResource.setFullResourceName(currentPath);
             m_resourceCache.put(cacheKey, currentResource);
         }
@@ -6057,7 +6057,7 @@ public class CmsDriverManager extends Object {
             // read the folder
             cacheKey = getCacheKey(null, context.currentUser(), projectId, currentPath);
             if ((currentResource = (CmsResource) m_resourceCache.get(cacheKey)) == null) {
-                currentResource = (CmsResource) m_vfsDriver.readFolder(projectId, lastParent.getId(), currentResourceName);
+                currentResource = m_vfsDriver.readFolder(projectId, lastParent.getId(), currentResourceName);
                 currentResource.setFullResourceName(currentPath);
                 m_resourceCache.put(cacheKey, currentResource);
             }
@@ -6096,7 +6096,7 @@ public class CmsDriverManager extends Object {
             // read the file
             cacheKey = getCacheKey(null, context.currentUser(), projectId, currentPath);
             if ((currentResource = (CmsResource) m_resourceCache.get(cacheKey)) == null) {
-                currentResource = (CmsResource) m_vfsDriver.readFileHeader(projectId, lastParent.getId(), currentResourceName, includeDeleted);
+                currentResource = m_vfsDriver.readFileHeader(projectId, lastParent.getId(), currentResourceName, includeDeleted);
                 currentResource.setFullResourceName(currentPath);
                 m_resourceCache.put(cacheKey, currentResource);
             }
@@ -7328,27 +7328,27 @@ public class CmsDriverManager extends Object {
         fileSystemChanged(res.isFolder());
     }
     
-    /**
-     * Access the driver underneath to change the timestamp of a resource.
-     * 
-     * @param context.currentUser() the currentuser who requested this method
-     * @param context.currentProject() the current project of the user 
-     * @param resourceName the name of the resource to change
-     * @param timestamp timestamp the new timestamp of the changed resource
-     */
-    private void touchStructure(CmsRequestContext context, CmsResource res, long timestamp) throws CmsException {
-        
-        // NOTE: this is the new way to update the state !
-        if (res.getState() < I_CmsConstants.C_STATE_CHANGED)
-            res.setState(I_CmsConstants.C_STATE_CHANGED);
-                
-        res.setDateLastModified(timestamp);
-        res.setUserLastModified(context.currentUser().getId());
-        m_vfsDriver.updateResourcestate(res, C_UPDATE_STRUCTURE);
-        
-        clearResourceCache();
-        fileSystemChanged(res.isFolder());        
-    }
+//    /**
+//     * Access the driver underneath to change the timestamp of a resource.
+//     * 
+//     * @param context.currentUser() the currentuser who requested this method
+//     * @param context.currentProject() the current project of the user 
+//     * @param resourceName the name of the resource to change
+//     * @param timestamp timestamp the new timestamp of the changed resource
+//     */
+//    private void touchStructure(CmsRequestContext context, CmsResource res, long timestamp) throws CmsException {
+//        
+//        // NOTE: this is the new way to update the state !
+//        if (res.getState() < I_CmsConstants.C_STATE_CHANGED)
+//            res.setState(I_CmsConstants.C_STATE_CHANGED);
+//                
+//        res.setDateLastModified(timestamp);
+//        res.setUserLastModified(context.currentUser().getId());
+//        m_vfsDriver.updateResourcestate(res, C_UPDATE_STRUCTURE);
+//        
+//        clearResourceCache();
+//        fileSystemChanged(res.isFolder());        
+//    }
     
     /**
      * Removes the deleted mark for all access control entries of a given resource
@@ -7473,7 +7473,7 @@ public class CmsDriverManager extends Object {
             // write the file in the offline project
 
             // check if the user has write access
-            checkPermissions(context, (CmsResource) restoredFolder, I_CmsConstants.C_WRITE_ACCESS);
+            checkPermissions(context, restoredFolder, I_CmsConstants.C_WRITE_ACCESS);
 
             // this sets a flag so that the file date is not set to the current time
             restoredFolder.setDateLastModified(onlineFolder.getDateLastModified());
@@ -7517,7 +7517,7 @@ public class CmsDriverManager extends Object {
             // write the file in the offline project
 
             // check if the user has write access 
-            checkPermissions(context, (CmsResource) restoredFile, I_CmsConstants.C_WRITE_ACCESS);
+            checkPermissions(context, restoredFile, I_CmsConstants.C_WRITE_ACCESS);
 
             // this sets a flag so that the file date is not set to the current time
             restoredFile.setDateLastModified(onlineFile.getDateLastModified());
@@ -7920,7 +7920,7 @@ public class CmsDriverManager extends Object {
     public void writeFile(CmsRequestContext context, CmsFile file) throws CmsException {
 
         // check if the user has write access 
-        checkPermissions(context, (CmsResource) file, I_CmsConstants.C_WRITE_ACCESS);
+        checkPermissions(context, file, I_CmsConstants.C_WRITE_ACCESS);
 
         // write-acces  was granted - write the file.
         m_vfsDriver.writeFile(context.currentProject(), file, C_UPDATE_RESOURCE_STATE, context.currentUser().getId());

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlFormTemplateFile.java,v $
-* Date   : $Date: 2003/07/14 14:29:41 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2003/07/22 00:29:23 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import org.w3c.dom.Element;
  * See the handleXxxTag Methods for more details.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.17 $ $Date: 2003/07/14 14:29:41 $
+ * @version $Revision: 1.18 $ $Date: 2003/07/22 00:29:23 $
  */
 public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsLogChannels {
 
@@ -184,7 +184,7 @@ public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsL
 
         // If the radio button method returned a value, use it for preselecting an option
         if (returnObject != null) {
-            selectedOption = ((Integer)returnObject).intValue();
+            selectedOption = returnObject.intValue();
         }
 
         // process the vectors with the elelmetns of the radio buttons to be displayed.

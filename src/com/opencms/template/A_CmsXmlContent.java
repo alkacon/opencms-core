@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2003/07/21 17:03:05 $
-* Version: $Revision: 1.81 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.82 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -87,7 +87,7 @@ import org.w3c.dom.Text;
  * getXmlDocumentTagName() and getContentDescription().
  *
  * @author Alexander Lucas
- * @version $Revision: 1.81 $ $Date: 2003/07/21 17:03:05 $
+ * @version $Revision: 1.82 $ $Date: 2003/07/22 00:29:22 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChannels {
 
@@ -601,12 +601,12 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
 
                     if (nodeValue != null) {
                         //if(child.getNodeType() == n.TEXT_NODE || child.getNodeType() == n.CDATA_SECTION_NODE) {
-                        if (child.getNodeType() == Element.CDATA_SECTION_NODE) {
+                        if (child.getNodeType() == Node.CDATA_SECTION_NODE) {
                             //result.append(child.getNodeValue());
                             result.append(nodeValue);
                         }
                         else {
-                            if (child.getNodeType() == Element.TEXT_NODE) {
+                            if (child.getNodeType() == Node.TEXT_NODE) {
                                 //String s = child.getNodeValue().trim();
                                 nodeValue = nodeValue.trim();
                                 //if(!"".equals(s)) {
@@ -921,7 +921,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() && C_DEBUG) {
             A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "handleProcessTag() started. Request for datablock \"" + blockname + "\".");
         }
-        datablock = (Element) ((Element) m_blocks.get(blockname));
+        datablock = ((Element)m_blocks.get(blockname));
         if (datablock == null) {
             if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                 String logUri = "";
@@ -1886,7 +1886,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
                 NodeList newNodes = data.getChildNodes();
                 int len = newNodes.getLength();
                 for (int i = 0; i < len; i++) {
-                    Node newElement2 = (Node) newNodes.item(i).cloneNode(true);
+                    Node newElement2 = newNodes.item(i).cloneNode(true);
                     originalBlock.appendChild(m_parser.importNode(originalBlock.getOwnerDocument(), newElement2));
                 }
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2003/07/21 14:22:47 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/07/22 00:29:23 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since FLEX alpha 1
  */
 public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
@@ -562,7 +562,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
                     } 
                     throw new CmsException(errorMessage, CmsException.C_XML_WRONG_TEMPLATE_CLASS);
                 }
-                output = callCanonicalRoot(cms, (I_CmsTemplate)tmpl, masterTemplate, newParameters);
+                output = callCanonicalRoot(cms, tmpl, masterTemplate, newParameters);
             } catch (CmsException e) {
                 if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                     A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsXmlLauncher] There were exceptions while generating output for " + cms.readAbsolutePath(file));

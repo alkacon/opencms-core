@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/07/21 12:45:17 $
-* Version: $Revision: 1.115 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.116 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ import com.opencms.boot.CmsBase;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
-import com.opencms.core.OpenCms;
 import com.opencms.flex.util.CmsStringSubstitution;
 import com.opencms.flex.util.CmsUUID;
 import com.opencms.linkmanagement.CmsPageLinks;
@@ -48,15 +47,6 @@ import java.io.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
-import java.util.StringTokenizer;
-import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -75,7 +65,7 @@ import org.w3c.dom.NodeList;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.115 $ $Date: 2003/07/21 12:45:17 $
+ * @version $Revision: 1.116 $ $Date: 2003/07/22 00:29:22 $
  */
 public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
 
@@ -1684,7 +1674,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
             if (DEBUG > 0) {
                 System.err.println("[" + this.getClass().getName() + ".convertFile()]: Encoding not set, using default encoding and setting it in <?xml...?>.");
             }
-            encoding = OpenCms.getDefaultEncoding();
+            encoding = A_OpenCms.getDefaultEncoding();
             fileContent = setEncoding(fileContent, encoding);
         }
         // check the frametemplates

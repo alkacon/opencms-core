@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/07/16 16:25:27 $
-* Version: $Revision: 1.47 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.48 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -817,7 +817,7 @@ public class CmsDbAccess {
         dataset.m_feedId = res.getInt(i++);
         dataset.m_feedReference = res.getInt(i++);
         dataset.m_feedFilename = res.getString(i++);
-        dataset.m_title = res.getString(i++);;
+        dataset.m_title = res.getString(i++);
         //// GENERIC DATA ////
         i = sqlSetTextArray(res, dataset.m_dataBig, i);
         i = sqlSetTextArray(res, dataset.m_dataMedium, i);
@@ -1255,7 +1255,7 @@ public class CmsDbAccess {
                 } catch(CmsException exc) {
                     // no channel found - write to logfile
                     if(CmsBase.isLogging()) {
-                        CmsBase.log(CmsBase.C_MODULE_DEBUG, "[CmsProjectDriver] Couldn't find channel " + channelToAdd.get(i) + " errormessage: " + exc.getMessage());
+                        CmsBase.log(I_CmsLogChannels.C_MODULE_DEBUG, "[CmsProjectDriver] Couldn't find channel " + channelToAdd.get(i) + " errormessage: " + exc.getMessage());
                     }
                 }
             }
@@ -1282,7 +1282,7 @@ public class CmsDbAccess {
                 } catch(CmsException exc) {
                     // no channel found - write to logfile
                     if(CmsBase.isLogging()) {
-                        CmsBase.log(CmsBase.C_MODULE_DEBUG, "[CmsProjectDriver] Couldn't find channel " + channelToAdd.get(i) + " errormessage: " + exc.getMessage());
+                        CmsBase.log(I_CmsLogChannels.C_MODULE_DEBUG, "[CmsProjectDriver] Couldn't find channel " + channelToAdd.get(i) + " errormessage: " + exc.getMessage());
                     }
                 }
             }
@@ -1639,7 +1639,7 @@ public class CmsDbAccess {
                 changedRessources, changedModuleData, dataset});   
         }
         catch (Exception e) {
-            CmsBase.log(CmsBase.C_MODULE_DEBUG, "[CmsProjectDriver] error calling method beforePublish in class " + contentDefinitionName );
+            CmsBase.log(I_CmsLogChannels.C_MODULE_DEBUG, "[CmsProjectDriver] error calling method beforePublish in class " + contentDefinitionName );
         }
 
         // backup the data

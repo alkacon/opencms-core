@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2003/07/18 19:03:49 $
-* Version: $Revision: 1.43 $
+* Date   : $Date: 2003/07/22 00:29:23 $
+* Version: $Revision: 1.44 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -57,8 +57,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.43 $
- * $Date: 2003/07/18 19:03:49 $
+ * $Revision: 1.44 $
+ * $Date: 2003/07/22 00:29:23 $
  */
 public class CmsChannelContent extends A_CmsContentDefinition
                                implements I_CmsContent, I_CmsLogChannels, I_CmsExtendedContentDefinition{
@@ -152,7 +152,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
         m_cms.setContextToCos();
 
         try {
-            m_channel = (CmsResource)m_cms.readFolder(channelId, true);            
+            m_channel = m_cms.readFolder(channelId, true);            
             m_channelname = m_channel.getResourceName();
             m_parentchannel = CmsResource.getParent(cms.readAbsolutePath(m_channel));
             // m_GroupId = m_channel.getGroupId();
@@ -903,7 +903,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
         } catch(CmsException e) {
             // ignore the exception
             if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(A_OpenCms.C_MODULE_INFO, "[CmsChannelContent]: error when reading subfolders of cos root: "+e.getMessage());
+                A_OpenCms.log(I_CmsLogChannels.C_MODULE_INFO, "[CmsChannelContent]: error when reading subfolders of cos root: "+e.getMessage());
             }
         } finally {
             cms.setContextToVfs();

@@ -84,7 +84,7 @@ import java.util.Vector;
  * and faster transition between different configuration syntax.
  *
  * @author <a href="mailto:stefano@apache.org">Stefano Mazzocchi</a>
- * @version $Revision: 1.6 $ $Date: 2003/07/12 11:29:22 $
+ * @version $Revision: 1.7 $ $Date: 2003/07/22 00:29:23 $
  */
 public class Configurations {
 
@@ -146,7 +146,7 @@ public class Configurations {
      * object that is not a Boolean.
      */
     public boolean getBoolean(String key) {
-        Boolean b = this.getBoolean(key, (Boolean) null);
+        Boolean b = this.getBoolean(key, null);
         if (b != null) {
             return b.booleanValue();
         } else {
@@ -767,7 +767,7 @@ public class Configurations {
             return (Vector)value;
         } else if (value instanceof String) {
             Vector v = new Vector(1);
-            v.addElement((String)value);
+            v.addElement(value);
             m_repository.put(key, v);
             return v;
         } else if (value == null) {

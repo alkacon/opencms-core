@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsShowBackofficeMedia.java,v $
-* Date   : $Date: 2003/04/01 15:20:18 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2003/07/22 00:29:23 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ public class CmsShowBackofficeMedia extends CmsXmlTemplate {
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
         // session will be created or fetched
         CmsRequestContext req = cms.getRequestContext();
-        I_CmsSession session = (I_CmsSession) req.getSession(true);
+        I_CmsSession session = req.getSession(true);
         byte[] picture = new byte[0];
         try{
         //selected media content definition

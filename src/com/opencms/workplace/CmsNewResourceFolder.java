@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceFolder.java,v $
-* Date   : $Date: 2003/07/18 14:11:18 $
-* Version: $Revision: 1.48 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.49 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.48 $ $Date: 2003/07/18 14:11:18 $
+ * @version $Revision: 1.49 $ $Date: 2003/07/22 00:29:22 $
  */
 
 public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWpConstants, I_CmsConstants {
@@ -535,7 +535,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
             // now find the file after which the new file is sorted
             int pos = 0;
             for (int i = 0; i < nicenames.length; i++) {
-                if (newpos.equals((String) nicenames[i])) {
+                if (newpos.equals(nicenames[i])) {
                     pos = i;
                 }
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2003/07/20 15:45:00 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/07/22 00:29:22 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,9 +30,9 @@
  */
 package org.opencms.workplace;
 
+import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
-import com.opencms.core.OpenCms;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
 import com.opencms.flex.jsp.CmsJspActionElement;
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.1
  */
@@ -181,7 +181,7 @@ public abstract class CmsWorkplace {
         }    
         // no startup language in user settings found, so check the users browser locale settings
         if (language == null) {
-            Vector languages = (Vector)cms.getRequestContext().getAcceptedLanguages();
+            Vector languages = cms.getRequestContext().getAcceptedLanguages();
             int numlangs = languages.size();
             for (int i = 0; i < numlangs; i++) {
                 String lang = (String)languages.elementAt(i);
@@ -325,7 +325,7 @@ public abstract class CmsWorkplace {
             boolean useVfs = true;
             // check registry for setting of workplace images
             try {
-                useVfs = (new Boolean(OpenCms.getRegistry().getSystemValue("UseWpPicturesFromVFS"))).booleanValue();
+                useVfs = (new Boolean(A_OpenCms.getRegistry().getSystemValue("UseWpPicturesFromVFS"))).booleanValue();
             } catch (CmsException e) {
                 // by default (useVfs == true) we assume that we want to use exported resources
             }            

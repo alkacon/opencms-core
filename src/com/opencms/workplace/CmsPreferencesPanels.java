@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPreferencesPanels.java,v $
-* Date   : $Date: 2003/07/12 12:49:02 $
-* Version: $Revision: 1.53 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.54 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.53 $ $Date: 2003/07/12 12:49:02 $
+ * @version $Revision: 1.54 $ $Date: 2003/07/22 00:29:22 $
  */
 
 public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWpConstants, I_CmsConstants {
@@ -717,10 +717,10 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
      */
     private Hashtable getStartSettings(CmsObject cms, Hashtable parameters) throws CmsException {
         Hashtable startSettings = new Hashtable();
-        startSettings.put(C_START_LANGUAGE, (String)parameters.get("LANGUAGE"));
+        startSettings.put(C_START_LANGUAGE, parameters.get("LANGUAGE"));
         startSettings.put(C_START_PROJECT, new Integer(Integer.parseInt((String)parameters.get("project"))));
-        startSettings.put(C_START_VIEW, (String)parameters.get("view"));
-        startSettings.put(C_START_DEFAULTGROUP, (String)parameters.get("dgroup"));
+        startSettings.put(C_START_VIEW, parameters.get("view"));
+        startSettings.put(C_START_DEFAULTGROUP, parameters.get("dgroup"));
         String lockstuff = (String)parameters.get("lockdialog");
         if (lockstuff == null){
             lockstuff = "";

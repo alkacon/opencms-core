@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChgrp.java,v $
- * Date   : $Date: 2003/07/12 12:49:03 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2003/07/22 00:29:22 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import java.util.Vector;
  * Template class for displaying the chgrp screen of the OpenCms workplace.<p>
  *
  * @author Michael Emmerich
- * @version $Revision: 1.35 $ $Date: 2003/07/12 12:49:03 $
+ * @version $Revision: 1.36 $ $Date: 2003/07/22 00:29:22 $
  */
 public class CmsChgrp extends CmsWorkplaceDefault implements I_CmsWpConstants {
 
@@ -87,7 +87,7 @@ public class CmsChgrp extends CmsWorkplaceDefault implements I_CmsWpConstants {
 		// check if the lock parameter was included in the request
 		// if not, the lock page is shown for the first time
 		filename = (String)session.getValue(C_PARA_FILE);
-		CmsResource file = (CmsResource)cms.readFileHeader(filename);
+		CmsResource file = cms.readFileHeader(filename);
 
 		// select the template to be displayed
 		if(file.isFile()) {
@@ -174,7 +174,7 @@ public class CmsChgrp extends CmsWorkplaceDefault implements I_CmsWpConstants {
 		I_CmsSession session = cms.getRequestContext().getSession(true);
 		String filename = (String)session.getValue(C_PARA_FILE);
 		if(filename != null) {
-			CmsResource file = (CmsResource)cms.readFileHeader(filename);
+			CmsResource file = cms.readFileHeader(filename);
 			String group = cms.readGroup(file).getName();
 			// fill the names and values
 			for(int z = 0;z < groups.size();z++) {

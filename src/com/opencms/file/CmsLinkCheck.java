@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsLinkCheck.java,v $
-* Date   : $Date: 2003/07/18 19:03:49 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -286,7 +286,7 @@ public class CmsLinkCheck extends CmsXmlTemplate implements I_CmsCronJob,I_CmsCo
         // create a new CmsMail object and start sending the mails
         CmsMail mail = null;
         if (MailUtils.checkEmail(mailFrom)){
-            if (MailUtils.checkEmail((String)mailTo[0])){
+            if (MailUtils.checkEmail(mailTo[0])){
                 if (mailCc.length > 0 && mailBcc.length > 0) {
                     mail=new CmsMail(mailFrom, mailTo, mailCc, mailBcc, mailSubject, mailContent, mailType);
                     mail.start();
@@ -311,20 +311,20 @@ public class CmsLinkCheck extends CmsXmlTemplate implements I_CmsCronJob,I_CmsCo
 	 */
 	private void generateFile(String content, String pathname, GregorianCalendar actDate) throws CmsException{
         StringBuffer filename = new StringBuffer("check_");
-        String year = actDate.get(GregorianCalendar.YEAR)+"";
-        String month = (actDate.get(GregorianCalendar.MONTH)+1)+"";
+        String year = actDate.get(Calendar.YEAR)+"";
+        String month = (actDate.get(Calendar.MONTH)+1)+"";
         if(month.length() == 1){
             month = "0"+month;
         }
-        String day = (actDate.get(GregorianCalendar.DATE)+"");
+        String day = (actDate.get(Calendar.DATE)+"");
         if(day.length() == 1){
             day = "0"+day;
         }
-        String hour = actDate.get(GregorianCalendar.HOUR_OF_DAY)+"";
+        String hour = actDate.get(Calendar.HOUR_OF_DAY)+"";
         if(hour.length() == 1){
             hour = "0"+hour;
         }
-        String minute = actDate.get(GregorianCalendar.MINUTE)+"";
+        String minute = actDate.get(Calendar.MINUTE)+"";
         if(minute.length() == 1){
             minute = "0"+minute;
         }
@@ -379,22 +379,22 @@ public class CmsLinkCheck extends CmsXmlTemplate implements I_CmsCronJob,I_CmsCo
      * @return String The current date as String dd.mm.yyyy hh:min
      */
     private String getDateString(GregorianCalendar actDate){
-        String month = (actDate.get(GregorianCalendar.MONTH)+1)+"";
+        String month = (actDate.get(Calendar.MONTH)+1)+"";
         if(month.length() == 1){
             month = "0"+month;
         }
-        String day = (actDate.get(GregorianCalendar.DATE)+"");
+        String day = (actDate.get(Calendar.DATE)+"");
         if(day.length() == 1){
             day = "0"+day;
         }
-        String hour = actDate.get(GregorianCalendar.HOUR_OF_DAY)+"";
+        String hour = actDate.get(Calendar.HOUR_OF_DAY)+"";
         if(hour.length() == 1){
             hour = "0"+hour;
         }
-        String minute = actDate.get(GregorianCalendar.MINUTE)+"";
+        String minute = actDate.get(Calendar.MINUTE)+"";
         if(minute.length() == 1){
             minute = "0"+minute;
         }
-        return (day+"."+month+"."+actDate.get(GregorianCalendar.YEAR)+" "+hour+":"+minute);
+        return (day+"."+month+"."+actDate.get(Calendar.YEAR)+" "+hour+":"+minute);
     }
 }

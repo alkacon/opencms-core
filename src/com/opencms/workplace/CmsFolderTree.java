@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFolderTree.java,v $
-* Date   : $Date: 2003/07/12 12:49:02 $
-* Version: $Revision: 1.59 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.60 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  *
  *
  * @author Michael Emmerich
- * @version $Revision: 1.59 $ $Date: 2003/07/12 12:49:02 $
+ * @version $Revision: 1.60 $ $Date: 2003/07/22 00:29:22 $
  */
 
 public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstants {
@@ -419,7 +419,7 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
 
             //CmsFolder folder=(CmsFolder)enum.nextElement();
             // check if this folder is visible
-            if(checkAccess(cms, (CmsResource)res)) {
+            if(checkAccess(cms, res)) {
                 subfolders = new Vector();
                 if(res.isFolder()) {
                     untestedSubfolders = cms.getSubFolders(cms.readAbsolutePath(res));
@@ -541,7 +541,7 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
                 // CHECK: The logic in CmsFolderTree was changed
                 // if((res.inProject(cms.getRequestContext().currentProject()) && checkWriteable(cms,
                 //        (CmsResource)res)) || offselect) {                
-                if(checkWriteable(cms, (CmsResource)res) || offselect) {
+                if(checkWriteable(cms, res) || offselect) {
                     template.setData(C_TREESTYLE, C_FILE_INPROJECT);
                     output.append(template.getProcessedDataValue(C_TREELINE, this));
                 } else {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceUpload.java,v $
-* Date   : $Date: 2003/07/15 18:42:07 $
-* Version: $Revision: 1.44 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.45 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.44 $ $Date: 2003/07/15 18:42:07 $
+ * @version $Revision: 1.45 $ $Date: 2003/07/22 00:29:22 $
  */
 public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
     
@@ -172,11 +172,11 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
             session.putValue(CmsNewResourceUpload.C_PARAM_OVERWRITE, dummy);
         }
         else {
-            replaceResource = "yes".equals((String) session.getValue(CmsNewResourceUpload.C_PARAM_OVERWRITE));
+            replaceResource = "yes".equals(session.getValue(CmsNewResourceUpload.C_PARAM_OVERWRITE));
         }
 
         // get the cancel parameter
-        boolean cancelUpload = "yes".equals((String) parameters.get(CmsNewResourceUpload.C_PARAM_CANCEL));
+        boolean cancelUpload = "yes".equals(parameters.get(CmsNewResourceUpload.C_PARAM_CANCEL));
 
         if (cancelUpload) {
             // the resource to upload exists, the user choosed

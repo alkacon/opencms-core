@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskNew.java,v $
-* Date   : $Date: 2003/01/20 23:59:19 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.29 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.28 $ $Date: 2003/01/20 23:59:19 $
+ * @version $Revision: 1.29 $ $Date: 2003/07/22 00:29:22 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -134,7 +134,7 @@ public class CmsTaskNew extends CmsWorkplaceDefault implements I_CmsConstants {
         String paraAll = "checked";
         String paraCompletion = "checked";
         String paraDelivery = "checked";
-        Hashtable taskSettings = (Hashtable)((Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo()).get(C_ADDITIONAL_INFO_TASKSETTINGS);
+        Hashtable taskSettings = (Hashtable)(cms.getRequestContext().currentUser().getAdditionalInfo()).get(C_ADDITIONAL_INFO_TASKSETTINGS);
         if(taskSettings != null) {
 
             // the tasksettings exists - use them
@@ -161,7 +161,7 @@ public class CmsTaskNew extends CmsWorkplaceDefault implements I_CmsConstants {
         if(C_ROLE == null) {
 
             // declare the constants
-            initConstants((CmsXmlWpTemplateFile)xmlTemplateDocument);
+            initConstants(xmlTemplateDocument);
         }
 
         // create task, if ok was pressed

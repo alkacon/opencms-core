@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
-* Date   : $Date: 2003/07/17 08:39:27 $
-* Version: $Revision: 1.78 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.79 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.78 $ $Date: 2003/07/17 08:39:27 $
+ * @version $Revision: 1.79 $ $Date: 2003/07/22 00:29:22 $
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_CmsConstants, I_CmsWpConstants {
 
@@ -325,7 +325,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
         // check if the user is allowed to perform this action
         if (!hasAccess()) {
             throw new CmsException("No access to perform the action 'createModule'", CmsException.C_REGISTRY_ERROR);
-        };
+        }
 
         // create the new module in the registry
         StringBuffer moduleString = new StringBuffer();
@@ -405,7 +405,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     public void deleteGetConflictingFileNames(String modulename, Vector filesWithProperty, Vector missingFiles, Vector wrongChecksum, Vector filesInUse, Vector resourcesForProject) throws CmsException {
 
         // Module type SIMPLE? Just do nothing here, as SIMPLE modules do not support file conflicts
-        if (this.getModuleType(modulename).equals(CmsRegistry.C_MODULE_TYPE_SIMPLE))
+        if (this.getModuleType(modulename).equals(I_CmsRegistry.C_MODULE_TYPE_SIMPLE))
             return;
 
         // the files and checksums for this module
@@ -539,7 +539,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
             // ignore the exception.
         }
 
-        if (this.getModuleType(module).equals(CmsRegistry.C_MODULE_TYPE_SIMPLE)) {
+        if (this.getModuleType(module).equals(I_CmsRegistry.C_MODULE_TYPE_SIMPLE)) {
             // SIMPLE module: Just delete all the folders of the module
 
             // check if additional resources outside the system/modules/{exportName} folder were 
@@ -1863,7 +1863,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
         // check for module type SIMPLE or TRADITIONAL
         boolean isSimpleModule = false;
         try {
-            isSimpleModule = CmsRegistry.C_MODULE_TYPE_SIMPLE.equals(newModule.getElementsByTagName("type").item(0).getFirstChild().getNodeValue());
+            isSimpleModule = I_CmsRegistry.C_MODULE_TYPE_SIMPLE.equals(newModule.getElementsByTagName("type").item(0).getFirstChild().getNodeValue());
         } catch (Exception e) {
             // value of "isSimpleModule" will be false, so traditional module is the default         
         }
@@ -2578,11 +2578,11 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
         try {
             if ((moduleType = this.getModuleData(theModulename, "type")) == null) {
                 // the default type is "traditional"
-                moduleType = CmsRegistry.C_MODULE_TYPE_TRADITIONAL;
+                moduleType = I_CmsRegistry.C_MODULE_TYPE_TRADITIONAL;
             }
         } catch (Exception e) {
             // the default type is "traditional"
-            moduleType = CmsRegistry.C_MODULE_TYPE_TRADITIONAL;
+            moduleType = I_CmsRegistry.C_MODULE_TYPE_TRADITIONAL;
         }
 
         return moduleType;
@@ -2596,7 +2596,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
      */
     public void setModuleType(String theModulename, String theModuleType) {
         if (theModuleType == null || theModuleType.equals("")) {
-            theModuleType = CmsRegistry.C_MODULE_TYPE_TRADITIONAL;
+            theModuleType = I_CmsRegistry.C_MODULE_TYPE_TRADITIONAL;
         }
         try {
             // for backward compatibility issues: check if the module has already

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetupUtils.java,v $
-* Date   : $Date: 2003/06/25 13:50:13 $
-* Version: $Revision: 1.30 $
+* Date   : $Date: 2003/07/22 00:29:23 $
+* Version: $Revision: 1.31 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.PrintWriter;
-import java.io.Writer;
 import java.text.DateFormat;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -270,7 +269,7 @@ public class CmsSetupUtils {
                 fOut = new FileWriter(file);
             }
             // write the content to the file in server filesystem
-            dOut = new PrintWriter((Writer)fOut);
+            dOut = new PrintWriter(fOut);
             dOut.println();
             dOut.println("############### currently used configuration ################");
             dOut.println("Date:                "+DateFormat.getDateTimeInstance().format(new java.util.Date(System.currentTimeMillis())));

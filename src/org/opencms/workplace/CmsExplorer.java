@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2003/07/21 11:25:13 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2003/07/22 00:29:22 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 5.1
  */
@@ -545,7 +545,7 @@ public class CmsExplorer extends CmsWorkplace {
                                 // the next res is the same res in the online-project: ignore it!
                                 if (getCms().readAbsolutePath(folder).equals(getCms().readAbsolutePath((CmsFolder)tree.get(i + 1)))) {
                                     i++;
-                                    idMixer.put((CmsFolder)tree.get(i), folder.getId());
+                                    idMixer.put(tree.get(i), folder.getId());
                                 }
                             } catch (IndexOutOfBoundsException exc) {
                             // ignore the exception, this was the last resource

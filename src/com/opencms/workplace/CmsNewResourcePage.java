@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePage.java,v $
-* Date   : $Date: 2003/07/15 12:30:13 $
-* Version: $Revision: 1.74 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.75 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.w3c.dom.Document;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.74 $ $Date: 2003/07/15 12:30:13 $
+ * @version $Revision: 1.75 $ $Date: 2003/07/22 00:29:22 $
  */
 public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpConstants, I_CmsConstants {
 
@@ -204,7 +204,7 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
         } else {
             String putValue = (String)parameters.get("root.pagetype");
             if(putValue != null){
-                session.putValue("resourctype_for_new_page", (String)parameters.get("root.pagetype"));
+                session.putValue("resourctype_for_new_page", parameters.get("root.pagetype"));
             }else{
                 session.removeValue("resourctype_for_new_page");
             }
@@ -498,7 +498,7 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
             // now find the file after which the new file is sorted
             int pos = 0;
             for(int i = 0;i < nicenames.length;i++) {
-                if(newpos.equals((String)nicenames[i])) {
+                if(newpos.equals(nicenames[i])) {
                     pos = i;
                 }
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2003/07/21 14:22:47 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/07/22 00:29:23 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -277,7 +277,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
         Enumeration params = context.getRequest().getParameterNames();
         while (params.hasMoreElements()) {
             String key = (String)params.nextElement();
-            String[] values = (String[])context.getRequest().getParameterValues(key);
+            String[] values = context.getRequest().getParameterValues(key);
             for (int i = 0; i<values.length; i++) {
                 exportUrl.append(key);
                 exportUrl.append("=");

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleAdmin.java,v $
-* Date   : $Date: 2003/07/15 12:17:05 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.28 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
-import com.opencms.file.CmsRegistry;
 import com.opencms.file.CmsResourceTypeFolder;
 import com.opencms.file.I_CmsRegistry;
 import com.opencms.template.CmsXmlTemplateFile;
@@ -134,7 +133,7 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
         table.put(C_SESSION_MODULE_ADMIN_PROP_VAL, paraVal);
         
         String moduleType = reg.getModuleType(module);
-        if (moduleType!=null && moduleType.equals(CmsRegistry.C_MODULE_TYPE_SIMPLE)) {
+        if (moduleType!=null && moduleType.equals(I_CmsRegistry.C_MODULE_TYPE_SIMPLE)) {
             table.put( C_MODULE_TYPE, "checked" );
         }
         else {
@@ -346,7 +345,7 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
             reg.setModuleDescription(name, (String)table.get(C_DESCRIPTION));
 
             // the view
-            if("".equals((String)table.get(C_VIEW))) {
+            if("".equals(table.get(C_VIEW))) {
                 if(!"".equals(getStringValue(reg.getModuleViewName(name)))) {
                     try {
                         cms.deleteResource(modulePath + "view/");
@@ -362,7 +361,7 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
             }
 
             // the adminpoint
-            if("".equals((String)table.get(C_ADMINPOINT))) {
+            if("".equals(table.get(C_ADMINPOINT))) {
                 try { // does not work when folder is not empty
                     cms.deleteResource(modulePath + "administration/");
                 }catch(Exception e) {
@@ -425,10 +424,10 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault implements I_CmsCon
             // set the module type
             String moduleType = (String)table.get(C_MODULE_TYPE);
             if (moduleType!=null && moduleType.equals("checked")) {
-                reg.setModuleType( name, CmsRegistry.C_MODULE_TYPE_SIMPLE );
+                reg.setModuleType( name, I_CmsRegistry.C_MODULE_TYPE_SIMPLE );
             }
             else {
-                reg.setModuleType( name, CmsRegistry.C_MODULE_TYPE_TRADITIONAL );
+                reg.setModuleType( name, I_CmsRegistry.C_MODULE_TYPE_TRADITIONAL );
             }               
         }catch(CmsException e) {
              if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {

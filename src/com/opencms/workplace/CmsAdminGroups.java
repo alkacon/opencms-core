@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminGroups.java,v $
-* Date   : $Date: 2003/06/25 16:20:04 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.23 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.22 $ $Date: 2003/06/25 16:20:04 $
+ * @version $Revision: 1.23 $ $Date: 2003/07/22 00:29:22 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -279,7 +279,7 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
                     // form visited for the first time, not yet changed
 
                     // read the data from the group object
-                    CmsGroup theGroup = (CmsGroup)cms.readGroup(groupname);
+                    CmsGroup theGroup = cms.readGroup(groupname);
                     if(theGroup == null) {
                         throw new CmsException("user does not exist");
                     }
@@ -287,7 +287,7 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
                     projectCoWorker = theGroup.getProjectCoWorker();
                     role = theGroup.getRole();
                     description = theGroup.getDescription();
-                    CmsGroup parent = (CmsGroup)cms.getParent(groupname);
+                    CmsGroup parent = cms.getParent(groupname);
                     if(parent != null) {
                         supergroup = cms.getParent(groupname).getName();
                     }
@@ -338,20 +338,20 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
 
                                 // form submitted, try to change the group data
                                 try {
-                                    CmsGroup theGroup = (CmsGroup)cms.readGroup(groupname);
+                                    CmsGroup theGroup = cms.readGroup(groupname);
                                     if("".equals(supergroup) || supergroup.equals(C_NO_SUPERGROUP_SELECTED)) {
                                         cms.setParentGroup(groupname, null);
                                     }
                                     else {
                                         cms.setParentGroup(groupname, supergroup);
                                     }
-                                    theGroup = (CmsGroup)cms.readGroup(groupname);
+                                    theGroup = cms.readGroup(groupname);
                                     theGroup.setDescription(description);
                                     theGroup.setProjectManager(projectManager);
                                     theGroup.setProjectCoWorker(projectCoWorker);
                                     theGroup.setRole(role);
                                     cms.writeGroup(theGroup);
-                                    theGroup = (CmsGroup)cms.readGroup(groupname);
+                                    theGroup = cms.readGroup(groupname);
 
                                     // now change the list of users of this group but take into account that
                                     // the default group of a user can't be removed

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContentDialogMsg.java,v $
-* Date   : $Date: 2003/01/20 23:59:19 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Hashtable;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.14 $ $Date: 2003/01/20 23:59:19 $
+ * @version $Revision: 1.15 $ $Date: 2003/07/22 00:29:22 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -93,7 +93,7 @@ public class CmsTaskContentDialogMsg extends CmsWorkplaceDefault implements I_Cm
             }
             CmsTask task = cms.readTask(taskid);
             CmsUser user = null;
-            if("query".equals((String)parameters.get("action"))) {
+            if("query".equals(parameters.get("action"))) {
                 
                 // this is the query-dialog
                 user = cms.readOwner(task);

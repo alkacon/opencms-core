@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskHead.java,v $
-* Date   : $Date: 2003/06/25 13:52:24 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.22 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Vector;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.21 $ $Date: 2003/06/25 13:52:24 $
+ * @version $Revision: 1.22 $ $Date: 2003/07/22 00:29:22 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -107,7 +107,7 @@ public class CmsTaskHead extends CmsWorkplaceDefault implements I_CmsConstants {
         if(session.getValue(C_SESSION_TASK_ALLPROJECTS) == null) {
             
             // YES! read the relevant userproperties
-            Hashtable taskSettings = (Hashtable)((Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo()).get(C_ADDITIONAL_INFO_TASKSETTINGS);
+            Hashtable taskSettings = (Hashtable)(cms.getRequestContext().currentUser().getAdditionalInfo()).get(C_ADDITIONAL_INFO_TASKSETTINGS);
             if(taskSettings != null) {
                 
                 // the tasksettings exists - use them

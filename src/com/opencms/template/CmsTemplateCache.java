@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsTemplateCache.java,v $
-* Date   : $Date: 2003/07/12 11:29:22 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ public class CmsTemplateCache implements I_CmsTemplateCache,I_CmsLogChannels {
      */
     public void clearCache(Object key) {
         if(key instanceof String) {
-            templateCache.remove((String)key);
+            templateCache.remove(key);
         }
         else {
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
@@ -79,7 +79,7 @@ public class CmsTemplateCache implements I_CmsTemplateCache,I_CmsLogChannels {
             A_OpenCms.log(C_OPENCMS_CACHE, "[CmsTemplateCache] Getting " + key + " from cache.");
         }
         if(key instanceof String) {
-            return (byte[])templateCache.get((String)key);
+            return (byte[])templateCache.get(key);
         }
         else {
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
@@ -97,7 +97,7 @@ public class CmsTemplateCache implements I_CmsTemplateCache,I_CmsLogChannels {
      */
     public boolean has(Object key) {
         if(key instanceof String) {
-            return templateCache.get((String)key) != null;
+            return templateCache.get(key) != null;
         }
         else {
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
@@ -114,7 +114,7 @@ public class CmsTemplateCache implements I_CmsTemplateCache,I_CmsLogChannels {
      */
     public void put(Object key, byte[] content) {
         if(key instanceof String) {
-            templateCache.put((String)key, content);
+            templateCache.put(key, content);
         }
         else {
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {

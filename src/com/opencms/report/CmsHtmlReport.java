@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/report/Attic/CmsHtmlReport.java,v $
- * Date   : $Date: 2003/07/16 14:30:03 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/07/22 00:29:22 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.StringTokenizer;
  * in the entire OpenCms system.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 5.0 rc 1
  */
@@ -266,7 +266,7 @@ public class CmsHtmlReport implements I_CmsReport {
             Object obj = m_content.get(i);
             if (obj instanceof CmsPageLinks) {
                 CmsPageLinks links = (CmsPageLinks)m_content.get(i);
-                result.append(getLinkElement((String)links.getResourceName()));                                
+                result.append(getLinkElement(links.getResourceName()));                                
                 for (int index=0; index<links.getLinkTargets().size(); index++) {                    
                     result.append(getLinkTargetElement((String)links.getLinkTargets().elementAt(index)));
                 }                                

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsExplorerHead.java,v $
-* Date   : $Date: 2003/07/07 17:24:22 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.32 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.31 $ $Date: 2003/07/07 17:24:22 $
+ * @version $Revision: 1.32 $ $Date: 2003/07/22 00:29:22 $
  */
 
 public class CmsExplorerHead extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -138,7 +138,6 @@ public class CmsExplorerHead extends CmsWorkplaceDefault implements I_CmsWpConst
         String previous = null;
         String url = null;
         String currentFilelist = null;
-        ;
         String previousFilelist = null;
         String newFilelist = null;
 

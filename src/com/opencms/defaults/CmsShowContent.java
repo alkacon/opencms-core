@@ -231,7 +231,7 @@ public class CmsShowContent extends CmsXmlTemplate {
         } catch (InvocationTargetException e) {
             // the constructor has throwed an exception, InvocationTargetExceptions of the egt-methods
             // will be catched inside the setDatablocks method and cannot propagate to this point
-            throw new CmsException(C_CONSTRUCTOR_THROWED_EXCEPTION, CmsException.C_UNKNOWN_EXCEPTION, (Exception)e.getTargetException());
+            throw new CmsException(C_CONSTRUCTOR_THROWED_EXCEPTION, CmsException.C_UNKNOWN_EXCEPTION, e.getTargetException());
         } catch (ClassCastException e) {
             // in this case the cast to A_CmsContentDefinition failed
             throw new CmsException(C_CONSTRUCTOR_IS_NOT_SUBCLASS_OF_A_CMSCONTENTDEFINITION, CmsException.C_UNKNOWN_EXCEPTION, e);

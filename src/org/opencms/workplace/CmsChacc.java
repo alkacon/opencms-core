@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChacc.java,v $
- * Date   : $Date: 2003/07/18 08:33:30 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2003/07/22 00:29:22 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.opencms.security.I_CmsPrincipal;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 5.1
  */
@@ -181,7 +181,7 @@ public class CmsChacc extends CmsDialog {
         fillParamValues(request);
         
         // set the detail mode of the "inherited" list view
-        String detail = (String)request.getParameter("view");
+        String detail = request.getParameter("view");
         if (detail != null) {
             settings.setPermissionDetailView(detail);
         }
@@ -322,8 +322,8 @@ public class CmsChacc extends CmsDialog {
         // get request parameters
         String name = getParamName();
         String type = getParamType();
-        String inherit = (String)request.getParameter("inherit");   
-        String overWriteInherited = (String)request.getParameter("overwriteinherited");   
+        String inherit = request.getParameter("inherit");   
+        String overWriteInherited = request.getParameter("overwriteinherited");   
         
         // get the new permissions
         Set permissionKeys = CmsPermissionSet.getPermissionKeys();
@@ -339,12 +339,12 @@ public class CmsChacc extends CmsDialog {
             value = CmsPermissionSet.getPermissionValue(key);
             // set the right allowed and denied permissions from request parameters
             try {
-                param = (String)request.getParameter(value+PERMISSION_ALLOW);
+                param = request.getParameter(value+PERMISSION_ALLOW);
                 paramInt = Integer.parseInt(param);
                 allowValue |= paramInt;
             } catch (Exception e) { }
             try {           
-                param = (String)request.getParameter(value+PERMISSION_DENY);
+                param = request.getParameter(value+PERMISSION_DENY);
                 paramInt = Integer.parseInt(param);
                 denyValue |= paramInt;
             } catch (Exception e) { }
@@ -722,11 +722,11 @@ public class CmsChacc extends CmsDialog {
             if (curEntry.isInherited()) {
                 // add the entry to the inherited rights list for the "long" view
                 if ("long".equals(getSettings().getPermissionDetailView())) {       
-                    inheritedEntries.add((CmsAccessControlEntry)curEntry);
+                    inheritedEntries.add(curEntry);
                 }
             } else {
                 // add the entry to the own rights list
-                ownEntries.add((CmsAccessControlEntry)curEntry);
+                ownEntries.add(curEntry);
             }
         }
         

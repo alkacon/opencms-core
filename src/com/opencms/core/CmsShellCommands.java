@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2003/07/17 12:00:40 $
-* Version: $Revision: 1.96 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.97 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.96 $ $Date: 2003/07/17 12:00:40 $
+ * @version $Revision: 1.97 $ $Date: 2003/07/22 00:29:22 $
  * 
  * @see com.opencms.file.CmsObject
  */
@@ -419,7 +419,7 @@ class CmsShellCommands implements I_CmsConstants {
      */
     public void createFolder(String folder, String newFolderName) {
         try {
-            System.out.println((CmsFolder)m_cms.createResource(folder, newFolderName, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID));
+            System.out.println(m_cms.createResource(folder, newFolderName, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID));
         } catch(Exception exc) {
             CmsShell.printException(exc);
         }
@@ -980,7 +980,7 @@ class CmsShellCommands implements I_CmsConstants {
         try {
             Vector projects = m_cms.getAllAccessibleProjects();
             for(int i = 0;i < projects.size();i++) {
-                System.out.println((CmsProject)projects.elementAt(i));
+                System.out.println(projects.elementAt(i));
             }
         } catch(Exception exc) {
             CmsShell.printException(exc);
@@ -1056,7 +1056,7 @@ class CmsShellCommands implements I_CmsConstants {
         try {
             Vector groups = m_cms.getChild(groupname);
             for(int i = 0;i < groups.size();i++) {
-                System.out.println((CmsGroup)groups.elementAt(i));
+                System.out.println(groups.elementAt(i));
             }
         } catch(Exception exc) {
             CmsShell.printException(exc);
@@ -1073,7 +1073,7 @@ class CmsShellCommands implements I_CmsConstants {
         try {
             Vector groups = m_cms.getChilds(groupname);
             for(int i = 0;i < groups.size();i++) {
-                System.out.println((CmsGroup)groups.elementAt(i));
+                System.out.println(groups.elementAt(i));
             }
         } catch(Exception exc) {
             CmsShell.printException(exc);
@@ -1096,7 +1096,7 @@ class CmsShellCommands implements I_CmsConstants {
         try {
             Vector groups = m_cms.getDirectGroupsOfUser(username);
             for(int i = 0;i < groups.size();i++) {
-                System.out.println((CmsGroup)groups.elementAt(i));
+                System.out.println(groups.elementAt(i));
             }
         } catch(Exception exc) {
             CmsShell.printException(exc);
@@ -1112,7 +1112,7 @@ class CmsShellCommands implements I_CmsConstants {
         try {
             List files = m_cms.getFilesInFolder(foldername);
             for(int i = 0;i < files.size();i++) {
-                System.out.println((CmsFile)files.get(i));
+                System.out.println(files.get(i));
             }
         } catch(Exception exc) {
             CmsShell.printException(exc);
@@ -1129,7 +1129,7 @@ class CmsShellCommands implements I_CmsConstants {
         try {
             Vector files = m_cms.getFilesWithProperty(propertyDefinition, propertyValue);
             for(int i = 0;i < files.size();i++) {
-                System.out.println((CmsFile)files.elementAt(i));
+                System.out.println(files.elementAt(i));
             }
         } catch(Exception exc) {
             CmsShell.printException(exc);
@@ -1154,7 +1154,7 @@ class CmsShellCommands implements I_CmsConstants {
         try {
             List folders = m_cms.getFolderTree();
             for(int i = 0;i < folders.size();i++) {
-                System.out.println((CmsFolder)folders.get(i));
+                System.out.println(folders.get(i));
             }
         } catch(Exception exc) {
             CmsShell.printException(exc);
@@ -1168,7 +1168,7 @@ class CmsShellCommands implements I_CmsConstants {
         try {
             Vector groups = m_cms.getGroups();
             for(int i = 0;i < groups.size();i++) {
-                System.out.println((CmsGroup)groups.elementAt(i));
+                System.out.println(groups.elementAt(i));
             }
         } catch(Exception exc) {
             CmsShell.printException(exc);
@@ -1184,7 +1184,7 @@ class CmsShellCommands implements I_CmsConstants {
         try {
             Vector groups = m_cms.getGroupsOfUser(username);
             for(int i = 0;i < groups.size();i++) {
-                System.out.println((CmsGroup)groups.elementAt(i));
+                System.out.println(groups.elementAt(i));
             }
         } catch(Exception exc) {
             CmsShell.printException(exc);
@@ -1318,7 +1318,7 @@ class CmsShellCommands implements I_CmsConstants {
         try {
             Vector res = m_cms.getResourcesInFolder(folder);
             for(int i = 0;i < res.size();i++) {
-                System.out.println((CmsResource)res.elementAt(i));
+                System.out.println(res.elementAt(i));
             }
         } catch(Exception exc) {
             CmsShell.printException(exc);
@@ -1337,7 +1337,7 @@ class CmsShellCommands implements I_CmsConstants {
         try {
             Vector resources = m_cms.getResourcesWithPropertyDefintion(propertyDefinition, propertyValue, m_cms.getResourceTypeId(resourceType));
             for(int i = 0;i < resources.size();i++) {
-                System.out.println((CmsResource)resources.elementAt(i));
+                System.out.println(resources.elementAt(i));
             }
         } catch(Exception exc) {
             CmsShell.printException(exc);
@@ -1353,7 +1353,7 @@ class CmsShellCommands implements I_CmsConstants {
         try {
             List folders = m_cms.getSubFolders(foldername);
             for(int i = 0;i < folders.size();i++) {
-                System.out.println((CmsFolder)folders.get(i));
+                System.out.println(folders.get(i));
             }
         } catch(Exception exc) {
             CmsShell.printException(exc);
@@ -1430,7 +1430,7 @@ class CmsShellCommands implements I_CmsConstants {
         try {
             Vector users = m_cms.getUsers();
             for(int i = 0;i < users.size();i++) {
-                System.out.println((CmsUser)users.elementAt(i));
+                System.out.println(users.elementAt(i));
             }
         } catch(Exception exc) {
             CmsShell.printException(exc);
@@ -1446,7 +1446,7 @@ class CmsShellCommands implements I_CmsConstants {
         try {
             Vector users = m_cms.getUsers(Integer.parseInt(type));
             for(int i = 0;i < users.size();i++) {
-                System.out.println((CmsUser)users.elementAt(i));
+                System.out.println(users.elementAt(i));
             }
         } catch(Exception exc) {
             CmsShell.printException(exc);
@@ -1462,7 +1462,7 @@ class CmsShellCommands implements I_CmsConstants {
         try {
             Vector users = m_cms.getUsersOfGroup(groupname);
             for(int i = 0;i < users.size();i++) {
-                System.out.println((CmsUser)users.elementAt(i));
+                System.out.println(users.elementAt(i));
             }
         } catch(Exception exc) {
             CmsShell.printException(exc);
@@ -1529,7 +1529,7 @@ class CmsShellCommands implements I_CmsConstants {
             Vector users = m_cms.getUsersByLastname(Lastname, iUserType,
                     iUserStatus, iWasLoggedIn, iNMax);
             for(int i = 0;i < users.size();i++) {
-                System.out.println((CmsUser)users.elementAt(i));
+                System.out.println(users.elementAt(i));
             }
         } catch(Exception exc) {
             CmsShell.printException(exc);
@@ -2003,7 +2003,7 @@ class CmsShellCommands implements I_CmsConstants {
         try {
             List files = m_cms.readAllBackupFileHeaders(filename);
             for(int i = 0;i < files.size();i++) {
-                System.out.println((CmsResource)files.get(i));
+                System.out.println(files.get(i));
             }
         } catch(Exception exc) {
             CmsShell.printException(exc);
@@ -2041,7 +2041,7 @@ class CmsShellCommands implements I_CmsConstants {
         try {
             Vector propertydefs = m_cms.readAllPropertydefinitions(resourcetype);
             for(int i = 0;i < propertydefs.size();i++) {
-                System.out.println((CmsPropertydefinition)propertydefs.elementAt(i));
+                System.out.println(propertydefs.elementAt(i));
             }
         } catch(Exception exc) {
             CmsShell.printException(exc);
@@ -2988,7 +2988,7 @@ class CmsShellCommands implements I_CmsConstants {
      */
     public void uploadFile(String lokalfile, String folder, String filename, String type) {
         try {
-            System.out.println((CmsFile)m_cms.createResource(folder, filename, m_cms.getResourceTypeId(type), null, importFile(lokalfile)));
+            System.out.println(m_cms.createResource(folder, filename, m_cms.getResourceTypeId(type), null, importFile(lokalfile)));
         } catch(Exception exc) {
             CmsShell.printException(exc);
         }
@@ -3212,7 +3212,7 @@ class CmsShellCommands implements I_CmsConstants {
         try {
             Vector projects = m_cms.getAllBackupProjects();
             for(int i = 0;i < projects.size();i++) {
-                System.out.println((CmsBackupProject)projects.elementAt(i));
+                System.out.println(projects.elementAt(i));
             }
         } catch(Exception exc) {
             CmsShell.printException(exc);

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCopyToProject.java,v $
-* Date   : $Date: 2003/07/02 11:03:12 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.7 $ $Date: 2003/07/02 11:03:12 $
+ * @version $Revision: 1.8 $ $Date: 2003/07/22 00:29:22 $
  */
 
 public class CmsCopyToProject extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -92,9 +92,9 @@ public class CmsCopyToProject extends CmsWorkplaceDefault implements I_CmsWpCons
 
         CmsResource file = null;
         if(filename.endsWith("/")){
-            file = (CmsResource)cms.readFolder(filename);
+            file = cms.readFolder(filename);
         } else {
-            file = (CmsResource)cms.readFileHeader(filename);
+            file = cms.readFileHeader(filename);
         }
         //check if the name parameter was included in the request
         // if not, the copyToProject page is shown for the first time

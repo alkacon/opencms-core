@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlControlFile.java,v $
-* Date   : $Date: 2003/07/11 21:35:49 $
-* Version: $Revision: 1.32 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.33 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.w3c.dom.NodeList;
  * Content definition for "clickable" and user requestable XML body files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.32 $ $Date: 2003/07/11 21:35:49 $
+ * @version $Revision: 1.33 $ $Date: 2003/07/22 00:29:22 $
  */
 public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChannels {
 
@@ -182,7 +182,7 @@ public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChanne
 
         int numElements = parameterTags.getLength();
         for(int i = 0;i < numElements;i++) {
-            Node n = (Node)parameterTags.item(i);
+            Node n = parameterTags.item(i);
             if(n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().toLowerCase().equals("parameter")) {
                 String name = ((Element)n).getAttribute("name");
                 if(name != null && !"".equals(name)) {
@@ -246,7 +246,7 @@ public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChanne
         int numElements = nl.getLength();
         Vector collectNames = new Vector();
         for(int i = 0;i < numElements;i++) {
-            Node n = (Node)nl.item(i);
+            Node n = nl.item(i);
             if(n.getNodeType() == Node.ELEMENT_NODE && n.getNodeName().toLowerCase().equals(tag.toLowerCase())) {
                 String name = ((Element)n).getAttribute("name");
                 if(name == null || "".equals(name)) {

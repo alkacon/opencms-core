@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2003/07/19 01:51:37 $
-* Version: $Revision: 1.38 $
+* Date   : $Date: 2003/07/22 00:29:23 $
+* Version: $Revision: 1.39 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,8 +53,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.38 $
- * $Date: 2003/07/19 01:51:37 $
+ * $Revision: 1.39 $
+ * $Date: 2003/07/22 00:29:23 $
  */
 public abstract class CmsMasterContent
     extends A_CmsContentDefinition
@@ -735,7 +735,7 @@ public abstract class CmsMasterContent
      * @return String The name of the user who has modified the cd
      */
     public String getLastModifiedByName() {
-        String retValue = m_dataSet.m_lastModifiedBy + "";;
+        String retValue = m_dataSet.m_lastModifiedBy + "";
         if(m_dataSet.m_lastModifiedByName == null) {
             try {
                 retValue = m_cms.readUser(m_dataSet.m_lastModifiedBy).getName();

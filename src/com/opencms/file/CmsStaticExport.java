@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsStaticExport.java,v $
-* Date   : $Date: 2003/07/20 15:45:00 $
-* Version: $Revision: 1.51 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.52 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * to the filesystem.
  *
  * @author Hanjo Riege
- * @version $Revision: 1.51 $ $Date: 2003/07/20 15:45:00 $
+ * @version $Revision: 1.52 $ $Date: 2003/07/22 00:29:22 $
  */
 public class CmsStaticExport implements I_CmsConstants{
 
@@ -491,7 +491,7 @@ public class CmsStaticExport implements I_CmsConstants{
     StringBuffer sb = new StringBuffer();
     StringTokenizer st = new StringTokenizer(s, "&");
     while (st.hasMoreTokens()) {
-        String pair = (String)st.nextToken();
+        String pair = st.nextToken();
         int pos = pair.indexOf('=');
         if (pos == -1) {
         // XXX

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2003/07/21 17:03:05 $
-* Version: $Revision: 1.108 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.109 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,7 +37,6 @@ import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
-import com.opencms.core.OpenCms;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
@@ -67,7 +66,7 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.108 $ $Date: 2003/07/21 17:03:05 $
+ * @version $Revision: 1.109 $ $Date: 2003/07/22 00:29:22 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -181,7 +180,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
                 // ignore this exception - the title for this template was not readable
             }
             names.add(name);
-            values.add((String)parameters.get("template"));
+            values.add(parameters.get("template"));
             return new Integer(0);
         }
     }
@@ -254,7 +253,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         // get the temporary file projectid
         int tempProject = 0;
         try{
-            tempProject = Integer.parseInt((String)cms.getRegistry().getSystemValue("tempfileproject"));
+            tempProject = Integer.parseInt(cms.getRegistry().getSystemValue("tempfileproject"));
         }catch(Exception e){
             throw new CmsException("Can not read projectId of tempfileproject for creating temporary file for editing! "+e.toString());
         }
@@ -264,7 +263,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         int curProject = cms.getRequestContext().currentProject().getId();
 
         // Get the user's browser
-        String browser = orgReq.getHeader("user-agent");;
+        String browser = orgReq.getHeader("user-agent");
         String hostName = orgReq.getScheme() + "://" + orgReq.getServerName() + ":" + orgReq.getServerPort();
 
         // Get all URL parameters
@@ -847,7 +846,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             }
             loop <<= 1;
         }
-        int currentIndex = values.indexOf((String)parameters.get("editor"));
+        int currentIndex = values.indexOf(parameters.get("editor"));
         return new Integer(currentIndex);
     }
 
@@ -928,7 +927,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
                 prop = cms.readProperty(file + "/", C_PROPERTY_CONTENT_ENCODING);
             } 
         } catch (Exception e) {}
-        if (prop == null) prop = OpenCms.getDefaultEncoding();
+        if (prop == null) prop = A_OpenCms.getDefaultEncoding();
         return prop;
     }
     

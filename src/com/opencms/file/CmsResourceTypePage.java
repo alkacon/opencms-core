@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
- * Date   : $Date: 2003/07/21 17:03:05 $
- * Version: $Revision: 1.85 $
+ * Date   : $Date: 2003/07/22 00:29:22 $
+ * Version: $Revision: 1.86 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.flex.util.CmsUUID;
 import com.opencms.linkmanagement.CmsPageLinks;
+import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.CmsXmlControlFile;
 import com.opencms.workplace.I_CmsWpConstants;
 
@@ -53,7 +54,7 @@ import java.util.StringTokenizer;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.85 $
+ * @version $Revision: 1.86 $
  * @since 5.1
  */
 public class CmsResourceTypePage implements I_CmsResourceType {
@@ -128,7 +129,7 @@ public class CmsResourceTypePage implements I_CmsResourceType {
         cms.doTouch(resourcename, timestamp);
 
         // touch its counterpart under content/bodies
-        String bodyPath = this.checkBodyPath(cms, (CmsFile)file);
+        String bodyPath = this.checkBodyPath(cms, file);
         if (bodyPath != null) {
             cms.doTouch(bodyPath, timestamp);
         }
@@ -144,7 +145,7 @@ public class CmsResourceTypePage implements I_CmsResourceType {
         if ((cms.getRequestContext().currentUser().equals(cms.readOwner(file))) || (cms.userInGroup(cms.getRequestContext().currentUser().getName(), I_CmsConstants.C_GROUP_ADMIN))) {
             cms.doChtype(resourcename, newType);
             //check if the file type name is page
-            String bodyPath = checkBodyPath(cms, (CmsFile)file);
+            String bodyPath = checkBodyPath(cms, file);
             if (bodyPath != null) {
                 cms.doChtype(bodyPath, newType);
             }
@@ -270,7 +271,7 @@ public class CmsResourceTypePage implements I_CmsResourceType {
         CmsFile file = cms.readFile(resourcename, true);
         cms.doCopyResourceToProject(resourcename);
         //check if the file type name is page
-        String bodyPath = checkBodyPath(cms, (CmsFile)file);
+        String bodyPath = checkBodyPath(cms, file);
         if (bodyPath != null) {
             cms.doCopyResourceToProject(bodyPath);
         }
@@ -284,7 +285,7 @@ public class CmsResourceTypePage implements I_CmsResourceType {
         cms.doDeleteFile(resourcename);
         // linkmanagement: delete the links on the page
         cms.deleteLinkEntrys(file.getResourceId());
-        String bodyPath = checkBodyPath(cms, (CmsFile)file);
+        String bodyPath = checkBodyPath(cms, file);
         if (bodyPath != null) {
             try {
                 cms.doDeleteFile(bodyPath);
@@ -299,7 +300,7 @@ public class CmsResourceTypePage implements I_CmsResourceType {
         // So there could be some data in the parser's cache.
         // Clear it!
         String currentProject = cms.getRequestContext().currentProject().getName();
-        CmsXmlControlFile.clearFileCache(currentProject + ":" +  cms.getRequestContext().addSiteRoot(resourcename));
+        A_CmsXmlContent.clearFileCache(currentProject + ":" +  cms.getRequestContext().addSiteRoot(resourcename));
     }
 
     /**
@@ -308,7 +309,7 @@ public class CmsResourceTypePage implements I_CmsResourceType {
     public void undeleteResource(CmsObject cms, String resourcename) throws CmsException {
         CmsFile file = cms.readFile(resourcename, true);
         cms.doUndeleteFile(resourcename);
-        String bodyPath = checkBodyPath(cms, (CmsFile)file);
+        String bodyPath = checkBodyPath(cms, file);
         if (bodyPath != null) {
             try {
                 cms.doUndeleteFile(bodyPath);
@@ -323,7 +324,7 @@ public class CmsResourceTypePage implements I_CmsResourceType {
         // So there could be some data in the parser's cache.
         // Clear it!
         String currentProject = cms.getRequestContext().currentProject().getName();
-        CmsXmlControlFile.clearFileCache(currentProject + ":" +  cms.getRequestContext().addSiteRoot(resourcename));
+        A_CmsXmlContent.clearFileCache(currentProject + ":" +  cms.getRequestContext().addSiteRoot(resourcename));
 
         // linkmanagement: create the links of the restored page
         CmsPageLinks linkObject = cms.getPageLinks(cms.readAbsolutePath(file));
@@ -405,7 +406,7 @@ public class CmsResourceTypePage implements I_CmsResourceType {
         }
         CmsFile file = cms.readFile(resourcename);
         cms.doRestoreResource(versionId, resourcename);
-        String bodyPath = checkBodyPath(cms, (CmsFile)file);
+        String bodyPath = checkBodyPath(cms, file);
         if (bodyPath != null) {
             try {
                 cms.doRestoreResource(versionId, bodyPath);
@@ -414,7 +415,7 @@ public class CmsResourceTypePage implements I_CmsResourceType {
                 // maybe only the control file was changed
                 if (e.getType() == CmsException.C_NOT_FOUND) {
                     if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                        A_OpenCms.log(A_OpenCms.C_OPENCMS_INFO, "[CmsResourceTypePage] version " + versionId + " of " + bodyPath + " not found!");
+                        A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsResourceTypePage] version " + versionId + " of " + bodyPath + " not found!");
                     }
                 } else {
                     throw e;
@@ -443,7 +444,7 @@ public class CmsResourceTypePage implements I_CmsResourceType {
         }
         CmsFile file = cms.readFile(resourcename);
         cms.doUndoChanges(resourcename);
-        String bodyPath = checkBodyPath(cms, (CmsFile)file);
+        String bodyPath = checkBodyPath(cms, file);
         if (bodyPath != null) {
             cms.doUndoChanges(bodyPath);
         }
@@ -511,7 +512,7 @@ public class CmsResourceTypePage implements I_CmsResourceType {
     public void changeLockedInProject(CmsObject cms, int newProjectId, String resourcename) throws CmsException {
         CmsFile file = cms.readFile(resourcename, true);
         cms.doChangeLockedInProject(newProjectId, resourcename);
-        String bodyPath = checkBodyPath(cms, (CmsFile)file);
+        String bodyPath = checkBodyPath(cms, file);
         if (bodyPath != null) {
             cms.doChangeLockedInProject(newProjectId, bodyPath);
         }
@@ -520,7 +521,7 @@ public class CmsResourceTypePage implements I_CmsResourceType {
         // So there could be some data in the parser's cache.
         // Clear it!
         String currentProject = cms.getRequestContext().currentProject().getName();
-        CmsXmlControlFile.clearFileCache(currentProject + ":" + cms.getRequestContext().addSiteRoot(resourcename));
+        A_CmsXmlContent.clearFileCache(currentProject + ":" + cms.getRequestContext().addSiteRoot(resourcename));
     }
 
     /**
@@ -592,7 +593,7 @@ public class CmsResourceTypePage implements I_CmsResourceType {
     private String checkBodyPath(CmsObject cms, CmsFile file) throws CmsException {
         // Use translated path name of body
         String result = I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/")) + cms.readAbsolutePath(file);
-        if (!result.equals(readBodyPath(cms, (CmsFile)file))) {
+        if (!result.equals(readBodyPath(cms, file))) {
             result = null;
         }
         return result;

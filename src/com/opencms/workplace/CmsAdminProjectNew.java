@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
-* Date   : $Date: 2003/06/25 13:52:24 $
-* Version: $Revision: 1.74 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.75 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.74 $ $Date: 2003/06/25 13:52:24 $
+ * @version $Revision: 1.75 $ $Date: 2003/07/22 00:29:22 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -362,7 +362,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
                         reqCont.setCurrentProject(C_PROJECT_ONLINE_ID);
                     }
                     if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                        A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL, e.getMessage());
+                        A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, e.getMessage());
                     }
                     throw e;
                 }

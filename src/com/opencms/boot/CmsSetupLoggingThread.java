@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetupLoggingThread.java,v $
-* Date   : $Date: 2003/06/13 10:04:21 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2003/07/22 00:29:23 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ public class CmsSetupLoggingThread extends Thread  {
             m_pipedIn.close();
         } catch(IOException e)  {
             e.printStackTrace();
-        };
+        }
     }
 
     /** Returns a vector containing messages */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsPageLoader.java,v $
- * Date   : $Date: 2003/07/21 17:03:05 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/07/22 00:29:23 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.1
  */
 public class CmsPageLoader implements I_CmsResourceLoader {   
@@ -145,6 +145,6 @@ public class CmsPageLoader implements I_CmsResourceLoader {
             throw new CmsException("Property '" + I_CmsConstants.C_XML_CONTROL_TEMPLATE_PROPERTY + "' undefined for page file " + absolutePath);
         }        
 
-        return (CmsFile)cms.readFile(templateProp);
+        return cms.readFile(templateProp);
     }    
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCopy.java,v $
-* Date   : $Date: 2003/07/17 12:00:40 $
-* Version: $Revision: 1.60 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.61 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Vector;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.60 $ $Date: 2003/07/17 12:00:40 $
+ * @version $Revision: 1.61 $ $Date: 2003/07/22 00:29:22 $
  */
 
 public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -99,7 +99,7 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
             session.putValue(C_PARA_FILE, filename);
         }
         filename = (String)session.getValue(C_PARA_FILE);
-        CmsResource file = (CmsResource)cms.readFileHeader(filename);
+        CmsResource file = cms.readFileHeader(filename);
 
         // read all request parameters
         String newFolder = new String();

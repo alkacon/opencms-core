@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/A_CmsElement.java,v $
-* Date   : $Date: 2003/07/19 01:51:37 $
-* Version: $Revision: 1.40 $
+* Date   : $Date: 2003/07/22 00:29:23 $
+* Version: $Revision: 1.41 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -277,7 +277,7 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
      * @return Element definition of <em>name</em>
      */
     public CmsElementDefinition getElementDefinition(String name) {
-        return (CmsElementDefinition)m_elementDefinitions.get(name);
+        return m_elementDefinitions.get(name);
     }
 
     /** Get cache directives for this element.

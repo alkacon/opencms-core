@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsUnlock.java,v $
-* Date   : $Date: 2003/07/18 14:11:18 $
-* Version: $Revision: 1.46 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.47 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Hashtable;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * @author Alexander Lucas
- * @version $Revision: 1.46 $ $Date: 2003/07/18 14:11:18 $
+ * @version $Revision: 1.47 $ $Date: 2003/07/22 00:29:22 $
  */
 
 public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -71,7 +71,7 @@ public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,I
         Hashtable h = cms.getRegistry().getSystemValues("unlockextension");
         if (h != null) {
             // Unlock extension found, try generate in instance and use this instead of the default
-            if ("true".equals((String)h.get("enabled"))) {
+            if ("true".equals(h.get("enabled"))) {
                 String extensionClass = (String)h.get("class");
                 if (extensionClass != null) {
                     try {
@@ -111,7 +111,7 @@ public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,I
         //check if the user wants the lock dialog
         // if yes, the lock page is shown for the first time
         filename = (String)session.getValue(C_PARA_FILE);
-        CmsResource file = (CmsResource)cms.readFileHeader(filename);
+        CmsResource file = cms.readFileHeader(filename);
 
         // select the template to be displayed
         if(file.isFile()) {

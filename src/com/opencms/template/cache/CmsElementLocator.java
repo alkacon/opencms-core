@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementLocator.java,v $
-* Date   : $Date: 2003/07/19 01:51:37 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2003/07/22 00:29:23 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -150,7 +150,7 @@ public class CmsElementLocator implements com.opencms.boot.I_CmsLogChannels {
                     CmsMethodCacheDirectives mcd = (CmsMethodCacheDirectives)cmsTemplate.getClass().getMethod(
                                                     "getMethodCacheDirectives", new Class[] {
                                                     CmsObject.class, String.class}).invoke(cmsTemplate,
-                                                    new Object[] {cms, methodName});;
+                                                    new Object[] {cms, methodName});
                     result = new CmsMethodElement(className, methodName, mcd,
                              CmsXmlTemplateLoader.getElementCache(cms).getVariantCachesize());
                     put(desc, result);
@@ -244,7 +244,7 @@ public class CmsElementLocator implements com.opencms.boot.I_CmsLogChannels {
                 if(element.hasDependenciesVariants()){
                     System.err.println("");
                     System.err.println("<"+i+"> element:"+element.toString());
-                    Vector variants = (Vector)element.getAllVariantKeys();
+                    Vector variants = element.getAllVariantKeys();
                     if(variants == null || variants.size() == 0){
                         System.err.println("    no variants.");
                     }else{

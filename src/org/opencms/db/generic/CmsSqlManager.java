@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2003/07/18 17:22:50 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/07/22 00:29:22 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import java.util.Properties;
  * Handles SQL queries from query.properties of the generic (ANSI-SQL) driver package.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.7 $ $Date: 2003/07/18 17:22:50 $
+ * @version $Revision: 1.8 $ $Date: 2003/07/22 00:29:22 $
  * @since 5.1
  */
 public class CmsSqlManager extends Object implements Serializable, Cloneable {
@@ -578,7 +578,7 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
                 if ((endIndex = currentValue.indexOf('}', startIndex)) != -1) {
                     String replaceKey = currentValue.substring(startIndex + 2, endIndex);
                     String searchPattern = currentValue.substring(startIndex, endIndex + 1);
-                    String replacePattern = (String) this.get(replaceKey);
+                    String replacePattern = this.get(replaceKey);
 
                     if (replacePattern != null) {
                         currentValue = CmsStringSubstitution.substitute(currentValue, searchPattern, replacePattern);

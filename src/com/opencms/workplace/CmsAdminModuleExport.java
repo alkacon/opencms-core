@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleExport.java,v $
-* Date   : $Date: 2003/03/11 00:00:26 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.32 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,9 +34,7 @@ import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
-import com.opencms.core.OpenCms;
 import com.opencms.file.CmsObject;
-import com.opencms.file.CmsRegistry;
 import com.opencms.file.I_CmsRegistry;
 import com.opencms.report.A_CmsReportThread;
 import com.opencms.util.Utils;
@@ -122,7 +120,7 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsCo
 			int resourceCount = 0;
 			int i = 0;
 
-			if (reg.getModuleType(moduleName).equals(CmsRegistry.C_MODULE_TYPE_SIMPLE)) {
+			if (reg.getModuleType(moduleName).equals(I_CmsRegistry.C_MODULE_TYPE_SIMPLE)) {
 				// SIMPLE MODULE
 				if (DEBUG > 0) {
 					System.out.println(moduleName + " is a simple module");
@@ -131,7 +129,7 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsCo
 				// check if additional resources outside the system/modules/{exportName} folder were 
 				// specified as module resources by reading the property {C_MODULE_PROPERTY_ADDITIONAL_RESOURCES}
 				// to the module (in the module administration)
-				String additionalResources = OpenCms.getRegistry().getModuleParameterString(moduleName, I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES);
+				String additionalResources = A_OpenCms.getRegistry().getModuleParameterString(moduleName, I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES);
 				StringTokenizer additionalResourceTokens = null;
 
 				if (additionalResources != null && !additionalResources.equals("")) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTouch.java,v $
- * Date   : $Date: 2003/07/12 12:49:03 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/07/22 00:29:22 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Hashtable;
  * This class is invoked for the workplace "touch" function in the context menu.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public final class CmsTouch extends CmsWorkplaceDefault implements I_CmsWpConstants, I_CmsConstants {
 
@@ -123,7 +123,7 @@ public final class CmsTouch extends CmsWorkplaceDefault implements I_CmsWpConsta
 		}
 
 		// create a valid Cms resource for the given resource name
-		m_Resource = (CmsResource) cms.readFileHeader(m_ResourceName);
+		m_Resource = cms.readFileHeader(m_ResourceName);
 
 		// check whether the all sub resources should be touched recusively
 		String dummy = (String) theParameters.get(I_CmsWpConstants.C_PARA_FLAGS);

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
-* Date   : $Date: 2003/07/21 16:08:42 $
-* Version: $Revision: 1.82 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.83 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpSession;
  * @author Anders Fugmann
  * @author Alexander Lucas
  *
- * @version $Revision: 1.82 $ $Date: 2003/07/21 16:08:42 $
+ * @version $Revision: 1.83 $ $Date: 2003/07/22 00:29:22 $
  *
  */
 public class CmsRequestContext implements I_CmsConstants {
@@ -594,7 +594,7 @@ public class CmsRequestContext implements I_CmsConstants {
             return;
         } else if ((getUri().startsWith(I_CmsWpConstants.C_VFS_PATH_SYSTEM)) && (! (m_req instanceof CmsExportRequest))) {
             // try to get encoding from session for special system folder only                
-            if (A_OpenCms.C_LOGGING && A_OpenCms.isLogging(A_OpenCms.C_OPENCMS_DEBUG)) {                                
+            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_DEBUG)) {                                
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG,
                     "[" + getClass().getName() + "] can't get encoding property for resource "
                     + m_req.getRequestedResource() + ", trying to get it from session.");
@@ -606,7 +606,7 @@ public class CmsRequestContext implements I_CmsConstants {
         }
         if (m_encoding == null || "".equals(m_encoding)) {
             // no encoding found - use default one
-            if (A_OpenCms.C_LOGGING && A_OpenCms.isLogging(A_OpenCms.C_OPENCMS_DEBUG)) {                                
+            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_DEBUG)) {                                
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG,
                     "[" + getClass().getName() + "] no encoding found - using default: " + A_OpenCms.getDefaultEncoding());
             }                  

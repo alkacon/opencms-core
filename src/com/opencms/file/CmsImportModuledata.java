@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImportModuledata.java,v $
-* Date   : $Date: 2003/07/02 11:03:12 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.w3c.dom.NodeList;
  * @author Edna Falkenhan
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.14 $ $Date: 2003/07/02 11:03:12 $
+ * @version $Revision: 1.15 $ $Date: 2003/07/22 00:29:22 $
  */
 public class CmsImportModuledata extends CmsImport implements I_CmsConstants, Serializable {
 
@@ -438,7 +438,7 @@ public class CmsImportModuledata extends CmsImport implements I_CmsConstants, Se
         CmsMasterMedia newMedia = new CmsMasterMedia();
         // get the file with the data of the media
         Document mediaXml = this.getXmlFile(mediaFilename);
-        Element media = (Element)mediaXml.getDocumentElement();
+        Element media = mediaXml.getDocumentElement();
         position = getTextNodeValue(media, CmsExportModuledata.C_EXPORT_TAG_MEDIA_POSITION);
         try{
             newMedia.setPosition(Integer.parseInt(position));
@@ -554,22 +554,22 @@ public class CmsImportModuledata extends CmsImport implements I_CmsConstants, Se
             cd = (CmsMasterContent)co.newInstance(objects);
         } catch (InvocationTargetException ite) {
             if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(A_OpenCms.C_OPENCMS_INFO, "[CmsImportModuledata] "+classname + " contentDefinitionConstructor: Invocation target exception!");
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsImportModuledata] "+classname + " contentDefinitionConstructor: Invocation target exception!");
             }
         } catch (NoSuchMethodException nsm) {
             if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(A_OpenCms.C_OPENCMS_INFO, "[CmsImportModuledata] "+classname + " contentDefinitionConstructor: Requested method was not found!");
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsImportModuledata] "+classname + " contentDefinitionConstructor: Requested method was not found!");
             }
         } catch (InstantiationException ie) {
             if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(A_OpenCms.C_OPENCMS_INFO, "[CmsImportModuledata] "+classname + " contentDefinitionConstructor: the reflected class is abstract!");
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsImportModuledata] "+classname + " contentDefinitionConstructor: the reflected class is abstract!");
             }
         } catch (Exception e) {
             if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(A_OpenCms.C_OPENCMS_INFO, "[CmsImportModuledata] "+classname + " contentDefinitionConstructor: Other exception! "+e);
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsImportModuledata] "+classname + " contentDefinitionConstructor: Other exception! "+e);
             }
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(A_OpenCms.C_OPENCMS_INFO, e.getMessage() );
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, e.getMessage() );
             }
         }
         return cd;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/07/18 16:15:28 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2003/07/22 00:29:22 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.29 $ $Date: 2003/07/18 16:15:28 $
+ * @version $Revision: 1.30 $ $Date: 2003/07/22 00:29:22 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1075,7 +1075,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                     links = new CmsPageLinks(next);
                     links.addLinkTarget(res.getString(m_sqlManager.get("C_LM_LINK_DEST")));
                     try {
-                        links.setResourceName(((CmsFile) m_driverManager.getVfsDriver().readFileHeader(I_CmsConstants.C_PROJECT_ONLINE_ID, next, false)).getResourceName());
+                        links.setResourceName((m_driverManager.getVfsDriver().readFileHeader(I_CmsConstants.C_PROJECT_ONLINE_ID, next, false)).getResourceName());
                     } catch (CmsException e) {
                         links.setResourceName("id=" + next + ". Sorry, can't read resource. " + e.getMessage());
                     }
@@ -1227,7 +1227,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                                 throw exc;
                             }
     
-                            m_driverManager.getVfsDriver().publishResource( (CmsResource)onlineFolder, (CmsResource)currentFolder);
+                            m_driverManager.getVfsDriver().publishResource(onlineFolder, currentFolder);
                         } else {
                             throw e;
                         }
@@ -1286,7 +1286,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                         }
                     }                                    
     
-                    m_driverManager.getVfsDriver().publishResource( (CmsResource)onlineFolder, (CmsResource)currentFolder);               
+                    m_driverManager.getVfsDriver().publishResource(onlineFolder, currentFolder);               
                     
                     // copy the access control entries of the folder
                     m_driverManager.getUserDriver().publishAccessControlEntries(context.currentProject(), onlineProject, currentFolder.getResourceAceId(), onlineFolder.getResourceAceId());                
@@ -1444,7 +1444,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                         }
                     }
     
-                    m_driverManager.getVfsDriver().publishResource((CmsResource)onlineFile, (CmsResource)currentFile);
+                    m_driverManager.getVfsDriver().publishResource(onlineFile, currentFile);
                     
                     if (currentFile.isHardLink()) {
                         m_driverManager.getVfsDriver().writeFileContent(onlineFile.getFileId(), currentFile.getContents(), I_CmsConstants.C_PROJECT_ONLINE_ID, false);
@@ -1511,7 +1511,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                                 throw exc;
                             }
     
-                            m_driverManager.getVfsDriver().publishResource( (CmsResource)onlineFile, (CmsResource)currentFile);
+                            m_driverManager.getVfsDriver().publishResource(onlineFile, currentFile);
                             if (currentFile.isHardLink()) {
                                 m_driverManager.getVfsDriver().writeFileContent(onlineFile.getFileId(), currentFile.getContents(), I_CmsConstants.C_PROJECT_ONLINE_ID, false);
                             }

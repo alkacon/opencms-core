@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
- * Date   : $Date: 2003/07/21 11:07:17 $
- * Version: $Revision: 1.145 $
+ * Date   : $Date: 2003/07/22 00:29:22 $
+ * Version: $Revision: 1.146 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,7 @@ import com.opencms.core.exceptions.CmsCheckResourceException;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsObject;
+import com.opencms.file.CmsResource;
 import com.opencms.file.CmsStaticExport;
 import com.opencms.flex.util.CmsResourceTranslator;
 import com.opencms.flex.util.CmsStringSubstitution;
@@ -89,7 +90,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.145 $
+ * @version $Revision: 1.146 $
  */
 public final class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels {
 
@@ -241,7 +242,7 @@ public final class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLog
         }
 
         // read flex jsp export url property and save in runtime configuration
-        String flexExportUrl = (String)conf.getString(CmsJspLoader.C_LOADER_JSPEXPORTURL, null);
+        String flexExportUrl = conf.getString(CmsJspLoader.C_LOADER_JSPEXPORTURL, null);
         if (null != flexExportUrl) {
             // if JSP export URL is null it will be set in initStartupClasses()
             if (flexExportUrl.endsWith(C_FOLDER_SEPARATOR)) {
@@ -253,7 +254,7 @@ public final class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLog
         }
 
         // read flex jsp error page commit property and save in runtime configuration
-        Boolean flexErrorPageCommit = (Boolean)conf.getBoolean(CmsJspLoader.C_LOADER_ERRORPAGECOMMIT, new Boolean(true));
+        Boolean flexErrorPageCommit = conf.getBoolean(CmsJspLoader.C_LOADER_ERRORPAGECOMMIT, new Boolean(true));
         setRuntimeProperty(CmsJspLoader.C_LOADER_ERRORPAGECOMMIT, flexErrorPageCommit);
         if (C_LOGGING && isLogging(C_OPENCMS_INIT))
             log(C_OPENCMS_INIT, ". JSP errorPage commit : " + (flexErrorPageCommit.booleanValue() ? "enabled" : "disabled"));
@@ -402,13 +403,13 @@ public final class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLog
         setSiteManager(CmsSiteManager.initialize(this, conf));        
         
         // read old (proprietary XML-style) locale backward compatibily support flag
-        Boolean supportOldLocales = (Boolean)conf.getBoolean("compatibility.support.oldlocales", new Boolean(false));
+        Boolean supportOldLocales = conf.getBoolean("compatibility.support.oldlocales", new Boolean(false));
         setRuntimeProperty("compatibility.support.oldlocales", supportOldLocales);
         if (C_LOGGING && isLogging(C_OPENCMS_INIT))
             log(C_OPENCMS_INIT, ". Old locale support   : " + (supportOldLocales.booleanValue() ? "enabled" : "disabled"));
 
         // convert import files from 4.x versions old webapp URL
-        String webappUrl = (String)conf.getString("compatibility.support.import.old.webappurl", null);
+        String webappUrl = conf.getString("compatibility.support.import.old.webappurl", null);
         if (webappUrl != null) {
             setRuntimeProperty("compatibility.support.import.old.webappurl", webappUrl);
         }
@@ -686,10 +687,10 @@ public final class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLog
                     // pages in the folder now
 
                     // Check if C_PROPERTY_DEFAULT_FILE is set on folder
-                    String defaultFileName = cms.readProperty(CmsFolder.getPath(cms.readAbsolutePath(folder)), I_CmsConstants.C_PROPERTY_DEFAULT_FILE);
+                    String defaultFileName = cms.readProperty(CmsResource.getPath(cms.readAbsolutePath(folder)), I_CmsConstants.C_PROPERTY_DEFAULT_FILE);
                     if (defaultFileName != null) {
                         // Property was set, so look up this file first
-                        String tmpResourceName = CmsFolder.getPath(cms.readAbsolutePath(folder)) + defaultFileName;
+                        String tmpResourceName = CmsResource.getPath(cms.readAbsolutePath(folder)) + defaultFileName;
 
                         try {
                             file = cms.readFile(tmpResourceName);
@@ -705,7 +706,7 @@ public final class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLog
                     if (file == null) {
                         // No luck with the property, so check default files specified in opencms.properties (if required)         
                         for (int i = 0; i < m_defaultFilenames.length; i++) {
-                            String tmpResourceName = CmsFolder.getPath(cms.readAbsolutePath(folder)) + m_defaultFilenames[i];
+                            String tmpResourceName = CmsResource.getPath(cms.readAbsolutePath(folder)) + m_defaultFilenames[i];
                             try {
                                 file = cms.readFile(tmpResourceName);
                                 // No exception? So we have found the default file                         

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProperties.java,v $
-* Date   : $Date: 2003/07/15 18:42:07 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.22 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.21 $ $Date: 2003/07/15 18:42:07 $
+ * @version $Revision: 1.22 $ $Date: 2003/07/22 00:29:22 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -139,7 +139,7 @@ public class CmsAdminProperties extends CmsWorkplaceDefault implements I_CmsCons
         }
         else {
             if("delete".equals(action)) {
-                if("true".equals((String)parameters.get("sure"))) {
+                if("true".equals(parameters.get("sure"))) {
 
                     // the user is sure to delete the property definition
                     cms.deletePropertydefinition(propDefName, cms.getResourceTypeId(resTypeName));

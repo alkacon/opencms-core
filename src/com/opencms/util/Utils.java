@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Utils.java,v $
-* Date   : $Date: 2003/07/21 11:05:04 $
-* Version: $Revision: 1.47 $
+* Date   : $Date: 2003/07/22 00:29:23 $
+* Version: $Revision: 1.48 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -230,7 +230,7 @@ public final class Utils {
             } catch (Exception ex) {
             ex.printStackTrace();
                 if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                    A_OpenCms.log(A_OpenCms.C_OPENCMS_INFO, "Error when publish data of module "+(String)publishModules.elementAt(i)+"!: "+ex.getMessage());
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "Error when publish data of module "+(String)publishModules.elementAt(i)+"!: "+ex.getMessage());
                 }
             }
         }
@@ -360,11 +360,11 @@ public final class Utils {
         int index = 0;
         int nextIndex = toSplit.indexOf(at);
         while (nextIndex != -1) {
-            parts.add((Object)toSplit.substring(index, nextIndex));
+            parts.add(toSplit.substring(index, nextIndex));
             index = nextIndex + at.length();
             nextIndex = toSplit.indexOf(at, index);
         }
-        parts.add((Object)toSplit.substring(index));
+        parts.add(toSplit.substring(index));
         return (String[])parts.toArray();
     }
 

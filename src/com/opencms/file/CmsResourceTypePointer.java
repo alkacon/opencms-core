@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePointer.java,v $
- * Date   : $Date: 2003/07/21 12:45:17 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/07/22 00:29:22 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Vector;
  * All resource types are created by the factory getResourceType() in CmsObject.
  *
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsResourceTypePointer extends A_CmsResourceType {
 
@@ -113,7 +113,7 @@ public class CmsResourceTypePointer extends A_CmsResourceType {
 
             while (allPropertyDefs.hasMoreElements()) {
                 CmsPropertydefinition currentPropertyDefinition = (CmsPropertydefinition)allPropertyDefs.nextElement();
-                linkPropertyDefs.add((String)currentPropertyDefinition.getName());
+                linkPropertyDefs.add(currentPropertyDefinition.getName());
             }
 
             // copy all properties of the target to the link
@@ -121,7 +121,7 @@ public class CmsResourceTypePointer extends A_CmsResourceType {
             while (i.hasNext()) {
                 String currentProperty = (String)i.next();
 
-                if (!linkPropertyDefs.contains((String)currentProperty)) {
+                if (!linkPropertyDefs.contains(currentProperty)) {
                     // add the property definition if the property is not yet defined for links
                     if (DEBUG > 0)
                         System.out.println("adding property definition " + currentProperty + " for resource type " + getResourceTypeName());

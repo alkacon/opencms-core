@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContentDetail.java,v $
-* Date   : $Date: 2003/02/15 11:14:53 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Hashtable;
  * 
  * @author Andreas Schouten
  * @author Mario Stanke
- * @version $Revision: 1.29 $ $Date: 2003/02/15 11:14:53 $
+ * @version $Revision: 1.30 $ $Date: 2003/07/22 00:29:22 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -142,55 +142,55 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsCo
             session.putValue("taskid", new Integer(taskid));
             parameters.put("taskid", taskid + "");
             task = cms.readTask(taskid);
-            if("acceptok".equals((String)parameters.get("action"))) {
+            if("acceptok".equals(parameters.get("action"))) {
                 
                 // accept the task
                 CmsTaskAction.accept(cms, taskid);
             }
             else {
-                if("accept".equals((String)parameters.get("action"))) {
+                if("accept".equals(parameters.get("action"))) {
                     
                     // show dialog
                     templateSelector = "accept";
                 }
                 else {
-                    if("take".equals((String)parameters.get("action"))) {
+                    if("take".equals(parameters.get("action"))) {
                         
                         // show dialog
                         templateSelector = "take";
                     }
                     else {
-                        if("takeok".equals((String)parameters.get("action"))) {
+                        if("takeok".equals(parameters.get("action"))) {
                             
                             // take the task
                             CmsTaskAction.take(cms, taskid);
                         }
                         else {
-                            if("forwardok".equals((String)parameters.get("action"))) {
+                            if("forwardok".equals(parameters.get("action"))) {
                                 
                                 // forward the task 
                                 CmsTaskAction.forward(cms, taskid, (String)parameters.get("USER"), (String)parameters.get("TEAM"));
                             }
                             else {
-                                if("due".equals((String)parameters.get("action"))) {
+                                if("due".equals(parameters.get("action"))) {
                                     
                                     // show dialog
                                     templateSelector = "due";
                                 }
                                 else {
-                                    if("dueok".equals((String)parameters.get("action"))) {
+                                    if("dueok".equals(parameters.get("action"))) {
                                         
                                         // change the due-date of the task
                                         CmsTaskAction.due(cms, taskid, (String)parameters.get("DATE"));
                                     }
                                     else {
-                                        if("priorityok".equals((String)parameters.get("action"))) {
+                                        if("priorityok".equals(parameters.get("action"))) {
                                             
                                             // change the priority of the task
                                             CmsTaskAction.priority(cms, taskid, (String)parameters.get("PRIORITY"));
                                         }
                                         else {
-                                            if("reaktok".equals((String)parameters.get("action"))) {
+                                            if("reaktok".equals(parameters.get("action"))) {
                                                 
                                                 // reaktivate the task
                                                 CmsTaskAction.reakt(cms, taskid, (String)parameters.get("USER"), 
@@ -201,19 +201,19 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsCo
                                                 (String)parameters.get("MSG_DELIVERY"));
                                             }
                                             else {
-                                                if("okok".equals((String)parameters.get("action"))) {
+                                                if("okok".equals(parameters.get("action"))) {
                                                     
                                                     // ok the task
                                                     CmsTaskAction.end(cms, taskid);
                                                 }
                                                 else {
-                                                    if("ok".equals((String)parameters.get("action"))) {
+                                                    if("ok".equals(parameters.get("action"))) {
                                                         
                                                         // show dialog
                                                         templateSelector = "ok";
                                                     }
                                                     else {
-                                                        if("comment".equals((String)parameters.get("action"))) {
+                                                        if("comment".equals(parameters.get("action"))) {
                                                             
                                                             // add comment
                                                             String comment = (String)parameters.get("DESCRIPTION");
@@ -222,13 +222,13 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsCo
                                                             }
                                                         }
                                                         else {
-                                                            if("messageok".equals((String)parameters.get("action"))) {
+                                                            if("messageok".equals(parameters.get("action"))) {
                                                                 
                                                                 // add message
                                                                 CmsTaskAction.message(cms, taskid, (String)parameters.get("DESCRIPTION"));
                                                             }
                                                             else {
-                                                                if("queryok".equals((String)parameters.get("action"))) {
+                                                                if("queryok".equals(parameters.get("action"))) {
                                                                     
                                                                     // add message
                                                                     CmsTaskAction.query(cms, taskid, (String)parameters.get("DESCRIPTION"));

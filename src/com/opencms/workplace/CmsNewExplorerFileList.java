@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
-* Date   : $Date: 2003/07/19 01:51:38 $
-* Version: $Revision: 1.79 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.80 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import java.util.Vector;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.79 $ $Date: 2003/07/19 01:51:38 $
+ * @version $Revision: 1.80 $ $Date: 2003/07/22 00:29:22 $
  */
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannels,I_CmsConstants,I_CmsWpConstants {
 
@@ -507,7 +507,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
                 if(rootFolder.getProjectId() != onlineProjectId) {
                     //startAt = 2;
                     grey = false;
-                    idMixer.put((CmsFolder)tree.get(1), rootFolder.getId());
+                    idMixer.put(tree.get(1), rootFolder.getId());
                 }else {
                     grey = true;
                 }
@@ -535,7 +535,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
                                 // the next res is the same res in the online-project: ignore it!
                                 if(cms.readAbsolutePath(folder).equals(cms.readAbsolutePath((CmsFolder)tree.get(i + 1)))) {
                                     i++;
-                                    idMixer.put((CmsFolder)tree.get(i), folder.getId());
+                                    idMixer.put(tree.get(i), folder.getId());
                                 }
                             }catch(IndexOutOfBoundsException exc) {
                             // ignore the exception, this was the last resource

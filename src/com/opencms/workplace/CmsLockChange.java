@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLockChange.java,v $
-* Date   : $Date: 2003/07/18 17:22:50 $
-* Version: $Revision: 1.41 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.42 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Hashtable;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.41 $ $Date: 2003/07/18 17:22:50 $
+ * @version $Revision: 1.42 $ $Date: 2003/07/22 00:29:22 $
  */
 
 public class CmsLockChange extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants{
@@ -87,7 +87,7 @@ public class CmsLockChange extends CmsWorkplaceDefault implements I_CmsWpConstan
         //check if the user wants the lock dialog
         // if yes, the lock page is shown for the first time
         filename = (String)session.getValue(C_PARA_FILE);
-        CmsResource file = (CmsResource)cms.readFileHeader(filename);
+        CmsResource file = cms.readFileHeader(filename);
 
         // select the template to be displayed
         if(file.isFile()) {

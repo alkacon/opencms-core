@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleCreate.java,v $
-* Date   : $Date: 2003/07/15 12:17:05 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.32 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
-import com.opencms.file.CmsRegistry;
 import com.opencms.file.CmsResourceTypeFolder;
 import com.opencms.file.I_CmsRegistry;
 import com.opencms.template.CmsXmlTemplateFile;
@@ -199,7 +198,7 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
                         createDateLong = (new Date()).getTime();
                     }
                     
-                    String type = isSimpleModule?CmsRegistry.C_MODULE_TYPE_SIMPLE:CmsRegistry.C_MODULE_TYPE_TRADITIONAL;
+                    String type = isSimpleModule?I_CmsRegistry.C_MODULE_TYPE_SIMPLE:I_CmsRegistry.C_MODULE_TYPE_TRADITIONAL;
 
                     HashMap exportPoints = new HashMap();
                     if (mustExportClasses) {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatatypes.java,v $
-* Date   : $Date: 2003/07/15 18:42:07 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.22 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.21 $ $Date: 2003/07/15 18:42:07 $
+ * @version $Revision: 1.22 $ $Date: 2003/07/22 00:29:22 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -94,7 +94,7 @@ public class CmsAdminDatatypes extends CmsWorkplaceDefault implements I_CmsConst
 
         // cut off leading stars and dots
         String res = name.substring(z, name.length());
-        if(res.indexOf((int)' ') != -1) {
+        if(res.indexOf(' ') != -1) {
 
             // name contained a blank
             throw new CmsException(CmsException.C_BAD_NAME);
@@ -178,7 +178,7 @@ public class CmsAdminDatatypes extends CmsWorkplaceDefault implements I_CmsConst
         }
         else {
             if("delete".equals(action)) {
-                if("true".equals((String)parameters.get("sure"))) {
+                if("true".equals(parameters.get("sure"))) {
 
                     // the user is sure to delete the property definition
                     try {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsCronScheduler.java,v $
-* Date   : $Date: 2003/06/16 13:35:20 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -75,11 +75,11 @@ class CmsCronScheduler extends Thread {
         CmsCronScheduleJobStarter jobStarter;
         while(! m_destroyed) { // do this as long as OpenCms runs
             try {
-                Calendar tmp = new GregorianCalendar(lastRun.get(GregorianCalendar.YEAR),
-                                                     lastRun.get(GregorianCalendar.MONTH),
-                                                     lastRun.get(GregorianCalendar.DATE),
-                                                     lastRun.get(GregorianCalendar.HOUR_OF_DAY),
-                                                     lastRun.get(GregorianCalendar.MINUTE)+1,
+                Calendar tmp = new GregorianCalendar(lastRun.get(Calendar.YEAR),
+                                                     lastRun.get(Calendar.MONTH),
+                                                     lastRun.get(Calendar.DATE),
+                                                     lastRun.get(Calendar.HOUR_OF_DAY),
+                                                     lastRun.get(Calendar.MINUTE)+1,
                                                      0);
                 long sleeptime = tmp.getTime().getTime() - new GregorianCalendar().getTime().getTime();
                 if(sleeptime > 0) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagInclude.java,v $
- * Date   : $Date: 2003/07/21 14:22:47 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2003/07/22 00:29:23 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import com.opencms.file.CmsResource;
 import com.opencms.file.CmsResourceTypeNewPage;
 import com.opencms.file.CmsResourceTypePage;
 import com.opencms.flex.cache.CmsFlexController;
+import com.opencms.flex.cache.CmsFlexResponse;
 import com.opencms.template.CmsXmlTemplate;
 import com.opencms.workplace.I_CmsWpConstants;
 
@@ -56,7 +57,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * Used to include another OpenCms managed resource in a JSP.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  */
 public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParamParent { 
     
@@ -379,7 +380,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
         
         try {         
             // Write out a C_FLEX_CACHE_DELIMITER char on the page, this is used as a parsing delimeter later
-            context.getOut().print((char)com.opencms.flex.cache.CmsFlexResponse.C_FLEX_CACHE_DELIMITER);
+            context.getOut().print(CmsFlexResponse.C_FLEX_CACHE_DELIMITER);
             
             // Add an element to the include list (will be initialized if empty)
             controller.getCurrentResponse().addToIncludeList(target, parameterMap);

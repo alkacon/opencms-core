@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChmod.java,v $
- * Date   : $Date: 2003/07/12 12:49:02 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2003/07/22 00:29:22 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import java.util.Hashtable;
  * Template class for displaying the chmod screen of the OpenCms workplace.<P>
  *
  * @author Michael Emmerich
- * @version $Revision: 1.38 $ $Date: 2003/07/12 12:49:02 $
+ * @version $Revision: 1.39 $ $Date: 2003/07/22 00:29:22 $
  */
 
 public class CmsChmod extends CmsWorkplaceDefault implements I_CmsWpConstants {
@@ -82,7 +82,7 @@ public class CmsChmod extends CmsWorkplaceDefault implements I_CmsWpConstants {
 		String filename = (String)parameters.get(C_PARA_FILE);
 		if(filename != null) session.putValue(C_PARA_FILE, filename);
 		filename = (String)session.getValue(C_PARA_FILE);
-		CmsResource file = (CmsResource)cms.readFileHeader(filename);
+		CmsResource file = cms.readFileHeader(filename);
 
 		// get all access flags from the request
 //		String ur = (String)parameters.get("ur");

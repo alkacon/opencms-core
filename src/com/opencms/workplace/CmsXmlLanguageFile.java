@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlLanguageFile.java,v $
-* Date   : $Date: 2003/02/28 13:25:43 $
-* Version: $Revision: 1.44 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.45 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ package com.opencms.workplace;
  * been changed to use the standard <code>java.util.ResouceBundle</code> technology.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.44 $ $Date: 2003/02/28 13:25:43 $
+ * @version $Revision: 1.45 $ $Date: 2003/07/22 00:29:22 $
  */
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
@@ -296,7 +296,7 @@ public class CmsXmlLanguageFile {
             // no startup language in user settings found, so check the users browser locale settings
             if (currentLanguage == null) {
                 if (DEBUG > 1) System.err.println("CmsXmlLanguageFile.getCurrentUserLanguage(): language not found in user preferences");        
-                Vector language = (Vector)cms.getRequestContext().getAcceptedLanguages();
+                Vector language = cms.getRequestContext().getAcceptedLanguages();
                 int numlangs = language.size();
                 for (int i = 0; i < numlangs; i++) {
                     String lang = (String) language.elementAt(i);

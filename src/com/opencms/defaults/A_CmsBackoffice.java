@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2003/07/14 16:22:21 $
-* Version: $Revision: 1.62 $
+* Date   : $Date: 2003/07/22 00:29:23 $
+* Version: $Revision: 1.63 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import java.util.Vector;
  * 
  * @author Michael Knoll
  * @author Michael Emmerich
- * @version $Revision: 1.62 $
+ * @version $Revision: 1.63 $
  */
 public abstract class A_CmsBackoffice extends CmsWorkplaceDefault implements I_CmsConstants {
 
@@ -1439,7 +1439,7 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
       }
     }
     boolean filterChanged = true;
-    if (selectBoxValue.equals((String)session.getValue(sessionSelectBoxValue))) {
+    if (selectBoxValue.equals(session.getValue(sessionSelectBoxValue))) {
         filterChanged = false;
     } else {
         filterChanged = true;
@@ -1466,7 +1466,7 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
 
     //create appropriate class name with underscores for labels
     String moduleName = "";
-    moduleName = (String) getClass().toString(); //get name
+    moduleName = getClass().toString(); //get name
     moduleName = moduleName.substring(5); //remove 'class' substring at the beginning
     moduleName = moduleName.trim();
     moduleName = moduleName.replace('.', '_'); //replace dots with underscores
@@ -1522,7 +1522,7 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
     //will not be displayed in the template
     String createButton = null;
     try {
-      createButton = (String) getCreateUrl(cms, null, null, null);
+      createButton = getCreateUrl(cms, null, null, null);
     } catch (Exception e) {
     }
     if (createButton == null) {
@@ -1545,7 +1545,7 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
     //if getSetupUrl is empty, the module setup button will not be displayed in the template.
     String setupButton = null;
     try {
-      setupButton = (String) getSetupUrl(cms, null, null, null);
+      setupButton = getSetupUrl(cms, null, null, null);
     } catch (Exception e) {
     }
     if ((setupButton == null) || (setupButton.equals(""))) {
@@ -1618,7 +1618,7 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
 
     //create appropriate class name with underscores for labels
     String moduleName = "";
-    moduleName = (String) getClass().toString(); //get name
+    moduleName = getClass().toString(); //get name
     moduleName = moduleName.substring(5); //remove 'class' substring at the beginning
     moduleName = moduleName.trim();
     moduleName = moduleName.replace('.', '_'); //replace dots with underscores
@@ -1883,7 +1883,7 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
         columns = columnsVector.size();
         //create appropriate class name with underscores for labels
         String moduleName = "";
-        moduleName = (String) getClass().toString(); //get name
+        moduleName = getClass().toString(); //get name
         moduleName = moduleName.substring(5); //remove 'class' substring at the beginning
         moduleName = moduleName.trim();
         moduleName = moduleName.replace('.', '_'); //replace dots with underscores
@@ -2123,7 +2123,7 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
     Hashtable h = cms.getRegistry().getSystemValues("unlockextension");
     if (h != null) {
         // Unlock extension found, try generate in instance and use this instead of the default
-        if ("true".equals((String)h.get("enabled"))) {
+        if ("true".equals(h.get("enabled"))) {
             String extensionClass = (String)h.get("class");
             if (extensionClass != null) {
                 try {
@@ -2233,7 +2233,7 @@ public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, Str
       }
       //create appropriate class name with underscores for labels
       String moduleName = "";
-      moduleName = (String) getClass().toString(); //get name
+      moduleName = getClass().toString(); //get name
       moduleName = moduleName.substring(5); //remove 'class' substring at the beginning
       moduleName = moduleName.trim();
       moduleName = moduleName.replace('.', '_'); //replace dots with underscores
@@ -2578,7 +2578,7 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
     }
 
     //cast the returned object to a string
-    la = (String) laObject.toString();
+    la = laObject.toString();
     if (la.equals("false")) {
         try {
             //the entry is not lockable: use standard contextmenue
@@ -2683,7 +2683,7 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
     }
 
     //cast the returned object to a string
-    la = (String) laObject.toString();
+    la = laObject.toString();
     if (la.equals("false")) {
         try {
             //the entry is not lockable: use standard contextmenue
@@ -3255,7 +3255,7 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
         //care about the previewbutten, if getPreviewUrl is empty, the preview button will not be displayed in the template
         String previewButton = null;
         try {
-            previewButton = (String)getPreviewUrl(cms, null, null, null);
+            previewButton = getPreviewUrl(cms, null, null, null);
         } catch (Exception e) {
         }
         if (!((previewButton == null) || (previewButton.equals("")))) {
@@ -3340,7 +3340,7 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
             error += template.getProcessedDataValue(C_ERRPREFIX+errorCode);
           } else {
             // now check if there is a general error message for this field
-            errorField=errorCode.substring(0, errorCode.indexOf(A_CmsContentDefinition.C_ERRSPERATOR));
+            errorField=errorCode.substring(0, errorCode.indexOf(I_CmsConstants.C_ERRSPERATOR));
             if (template.hasData(C_ERRPREFIX+errorField)) {
               error += template.getProcessedDataValue(C_ERRPREFIX+errorField);
             } else {
@@ -3391,7 +3391,7 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
          //care about the previewbutten, if getPreviewUrl is empty, the preview button will not be displayed in the template
         String previewButton = null;
         try {
-            previewButton = (String)getPreviewUrl(cms, null, null, null);
+            previewButton = getPreviewUrl(cms, null, null, null);
         } catch (Exception e) {
         }
         if (!((previewButton == null) || (previewButton.equals("")))) {
@@ -3414,7 +3414,7 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
             error += template.getProcessedDataValue(C_ERRPREFIX+errorCode);
           } else {
             // now check if there is a general error message for this field
-            errorField=errorCode.substring(0, errorCode.indexOf(A_CmsContentDefinition.C_ERRSPERATOR));
+            errorField=errorCode.substring(0, errorCode.indexOf(I_CmsConstants.C_ERRSPERATOR));
             if (template.hasData(C_ERRPREFIX+errorField)) {
               error += template.getProcessedDataValue(C_ERRPREFIX+errorField);
             } else {
@@ -3587,7 +3587,7 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
       }
       //now call the method to get the value
       try {
-        Object result=(Object)method.invoke(contentDefinition, new Object[] {});
+        Object result = method.invoke(contentDefinition, new Object[] {});
         // check if the get method returns null (default value of the CD), set the datablock to
         // to "" then.
         if (result==null) {

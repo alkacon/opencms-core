@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPublishResource.java,v $
-* Date   : $Date: 2003/07/18 14:11:18 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.24 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.List;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.23 $ $Date: 2003/07/18 14:11:18 $
+ * @version $Revision: 1.24 $ $Date: 2003/07/22 00:29:22 $
  */
 
 public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -249,9 +249,9 @@ public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpCo
     private CmsResource readResource(CmsObject cms, String resourceName) throws CmsException {
         CmsResource resource = null;
         if(resourceName.endsWith("/")){
-            resource = (CmsResource)cms.readFolder(resourceName, true);
+            resource = cms.readFolder(resourceName, true);
         } else {
-            resource = (CmsResource)cms.readFileHeader(resourceName, true);
+            resource = cms.readFileHeader(resourceName, true);
         }        
         return resource;
     }

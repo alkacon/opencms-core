@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDelete.java,v $
-* Date   : $Date: 2003/07/12 12:49:03 $
-* Version: $Revision: 1.48 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.49 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Hashtable;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.48 $ $Date: 2003/07/12 12:49:03 $
+ * @version $Revision: 1.49 $ $Date: 2003/07/22 00:29:22 $
  */
 
 public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -95,7 +95,7 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,I
         }
         filename = (String)session.getValue(C_PARA_FILE);
         String action = (String)parameters.get("action");
-        CmsResource file = (CmsResource)cms.readFileHeader(filename);
+        CmsResource file = cms.readFileHeader(filename);
         if(file.isFile()) {
             template = "file";
         }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminUsers.java,v $
-* Date   : $Date: 2003/01/20 23:59:19 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.25 $ $Date: 2003/01/20 23:59:19 $
+ * @version $Revision: 1.26 $ $Date: 2003/07/22 00:29:22 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -69,7 +69,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
 
     private void changeGroups(CmsObject cms, CmsUser theUser, String defaultGroupName,
             Vector newGroups) throws CmsException {
-        String username = (String)theUser.getName();
+        String username = theUser.getName();
         Vector oldGroups = cms.getGroupsOfUser(username);
         Vector oldGroupnames = new Vector();
         if(defaultGroupName == null) {
@@ -78,7 +78,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
         }
         theUser.setDefaultGroup(cms.readGroup(defaultGroupName));
         cms.writeUser(theUser); // update in the database
-        theUser = (CmsUser)cms.readUser(username);
+        theUser = cms.readUser(username);
         if(oldGroups != null) {
             for(int z = 0;z < oldGroups.size();z++) {
                 oldGroupnames.addElement(((CmsGroup)oldGroups.elementAt(z)).getName());
@@ -109,7 +109,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
             }
         }
         cms.writeUser(theUser); // update in the database
-        theUser = (CmsUser)cms.readUser(username);
+        theUser = cms.readUser(username);
     }
 
     /**
@@ -254,7 +254,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
                     selectedGroups.addElement(C_GROUP_USERS); // preselect Users
                     Vector groups = cms.getGroups();
                     for(int z = 0;z < groups.size();z++) {
-                        String aName = (String)((CmsGroup)groups.elementAt(z)).getName();
+                        String aName = ((CmsGroup)groups.elementAt(z)).getName();
                         if(!C_GROUP_USERS.equals(aName)) {
                             notSelectedGroups.addElement(aName);
                         }
@@ -381,7 +381,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
 
                     // form visited for the first time, not yet changed
                     // read the data from the user object
-                    CmsUser theUser = (CmsUser)cms.readUser(user);
+                    CmsUser theUser = cms.readUser(user);
                     if(theUser == null) {
                         throw new CmsException("user does not exist");
                     }
@@ -461,7 +461,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
                                     if(!pwd.equals("")) {
                                         cms.setPassword(user, pwd);
                                     } // if nothing is entered don't change the password
-                                    CmsUser theUser = (CmsUser)cms.readUser(user);
+                                    CmsUser theUser = cms.readUser(user);
                                     theUser.setEmail(email);
                                     theUser.setDescription(desc);
                                     theUser.setFirstname(firstname);

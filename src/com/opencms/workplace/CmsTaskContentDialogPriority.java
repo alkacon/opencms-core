@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContentDialogPriority.java,v $
-* Date   : $Date: 2003/02/02 15:59:52 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2003/07/22 00:29:22 $
+* Version: $Revision: 1.23 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.22 $ $Date: 2003/02/02 15:59:52 $
+ * @version $Revision: 1.23 $ $Date: 2003/07/22 00:29:22 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -148,7 +148,7 @@ public class CmsTaskContentDialogPriority extends CmsWorkplaceDefault implements
         if(C_ROLE == null) {
 
             // declare the constants
-            initConstants((CmsXmlWpTemplateFile)xmlTemplateDocument);
+            initConstants(xmlTemplateDocument);
         }
         try {
             String taskidstr = (String)parameters.get("taskid");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspNavBuilder.java,v $
- * Date   : $Date: 2003/07/12 11:29:22 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/07/22 00:29:23 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package com.opencms.flex.jsp;
 
 import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 
@@ -47,7 +46,7 @@ import java.util.Map;
  * {@link com.opencms.flex.jsp.CmsJspNavElement}.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @see com.opencms.flex.jsp.CmsJspNavElement
  * 
@@ -157,7 +156,7 @@ public class CmsJspNavBuilder {
      * @return a sorted (ascending to nav position) ArrayList of navigation elements
      */    
     public static ArrayList getNavigationForFolder(CmsObject cms, String folder) {
-        folder = CmsFile.getPath(folder);
+        folder = CmsResource.getPath(folder);
         ArrayList list = new ArrayList();
         List v = null, dir = null;
         try {
@@ -228,7 +227,7 @@ public class CmsJspNavBuilder {
      * @return a sorted (ascending to nav position) ArrayList of navigation elements
      */
     public static ArrayList getNavigationForFolder(CmsObject cms, String folder, int level) {
-        folder = CmsFile.getPath(folder);
+        folder = CmsResource.getPath(folder);
         // If level is one just use root folder
         if (level == 0) return getNavigationForFolder(cms, "/");
         String navfolder = CmsResource.getPathPart(folder, level);
@@ -267,7 +266,7 @@ public class CmsJspNavBuilder {
      * @return a sorted list of nav elements with the nav tree level property set 
      */
     public static ArrayList getNavigationTreeForFolder(CmsObject cms, String folder, int startlevel, int endlevel) {
-        folder = CmsFile.getPath(folder);
+        folder = CmsResource.getPath(folder);
         // Make sure start and end level make sense
         if (endlevel < startlevel) return new ArrayList(0);
         int currentlevel = CmsResource.getPathLevel(folder);
