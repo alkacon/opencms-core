@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2005/03/15 18:05:54 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2005/03/17 12:59:24 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
 /**
  * Monitors OpenCms memory consumtion.<p>
  * 
- * @version $Revision: 1.43 $ $Date: 2005/03/15 18:05:54 $
+ * @version $Revision: 1.44 $ $Date: 2005/03/17 12:59:24 $
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -132,7 +132,13 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /** Flag for memory warning mail send. */
     private boolean m_warningSendSinceLastStatus;
-
+    
+    /** The average memory status. */
+    private CmsMemoryStatus m_memoryAverage;
+    
+    /** The current memory status. */
+    private CmsMemoryStatus m_memoryCurrent;
+    
     /**
      * Empty constructor, required by OpenCms scheduler.<p>
      */
@@ -270,6 +276,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public void initialize(CmsMemoryMonitorConfiguration configuration) {
 
+        m_memoryAverage = new CmsMemoryStatus();
+        m_memoryCurrent = new CmsMemoryStatus();
+        
         m_warningSendSinceLastStatus = false;
         m_warningLoggedSinceLastStatus = false;
         m_lastEmailWarning = 0;
@@ -335,7 +344,10 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
         try {
             m_currentlyRunning = true;
-
+            
+            // update the memory status
+            monitor.updateStatus();
+            
             // check if the system is in a low memory condition
             if (monitor.lowMemory()) {
                 // log warning
@@ -365,15 +377,22 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     }
 
     /**
+     * Updatres the memory information of the memory monitor.<p> 
+     */
+    private void updateStatus() {
+        
+        m_memoryCurrent.update();
+        m_memoryAverage.calculateAverage(m_memoryCurrent);        
+    }
+    
+    /**
      * Returns true if the system runs low on memory.<p>
      * 
      * @return true if the system runs low on memory
      */
     public boolean lowMemory() {
 
-        long usedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-        long usage = usedMemory * 100 / Runtime.getRuntime().maxMemory();
-        return ((m_maxUsagePercent > 0) && (usage > m_maxUsagePercent));
+        return ((m_maxUsagePercent > 0) && (m_memoryCurrent.getUsage() > m_maxUsagePercent));
     }
 
     /**
@@ -697,30 +716,24 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
                 + "]";
         }
 
-        long maxMemory = Runtime.getRuntime().maxMemory() / 1048576;
-        long totalMemory = Runtime.getRuntime().totalMemory() / 1048576;
-        long usedMemory = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1048576;
-        long freeMemory = maxMemory - usedMemory;
-        long usage = usedMemory * 100 / maxMemory;
-
         content += "Memory usage report of OpenCms server "
             + OpenCms.getSystemInfo().getServerName().toUpperCase()
             + " at "
             + date
             + "\n\n"
             + "Memory maximum heap size: "
-            + maxMemory
+            + m_memoryCurrent.getMaxMemory()
             + " mb\n"
             + "Memory current heap size: "
-            + totalMemory
+            + m_memoryCurrent.getTotalMemory()
             + " mb\n\n"
             + "Memory currently used   : "
-            + usedMemory
+            + m_memoryCurrent.getUsedMemory()
             + " mb ("
-            + usage
+            + m_memoryCurrent.getUsage()
             + "%)\n"
             + "Memory currently unused : "
-            + freeMemory
+            + m_memoryCurrent.getFreeMemory()
             + " mb\n\n\n";
 
         if (warning) {
@@ -796,7 +809,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * @param warning if true, write a memory warning log entry 
      */
     private void monitorWriteLog(boolean warning) {
-
+        
         Log log = OpenCms.getLog(this);
         
         if (!log.isWarnEnabled()) {
@@ -817,18 +830,12 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
             return;
         }
 
-        long maxMemory = Runtime.getRuntime().maxMemory() / 1048576;
-        long totalMemory = Runtime.getRuntime().totalMemory() / 1048576;
-        long usedMemory = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1048576;
-        long freeMemory = maxMemory - usedMemory;
-        long usage = usedMemory * 100 / maxMemory;
-
         if (warning) {
             m_lastLogWarning = System.currentTimeMillis();
             m_warningLoggedSinceLastStatus = true;
             log.warn(
                 " W A R N I N G Memory consumption of "
-                    + usage
+                    + m_memoryCurrent.getUsage()
                     + "% has reached a critical level"
                     + " ("
                     + m_maxUsagePercent
@@ -838,25 +845,43 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
             m_lastLogStatus = System.currentTimeMillis();
         }
 
-        String memStatus = "Memory max: "
-            + maxMemory
+        String memStatus = "Memory (current) max: "
+            + m_memoryCurrent.getMaxMemory()
             + " mb  "
             + "total: "
-            + totalMemory
+            + m_memoryCurrent.getTotalMemory()
             + " mb  "
             + "free: "
-            + freeMemory
+            + m_memoryCurrent.getFreeMemory()
             + " mb  "
             + "used: "
-            + usedMemory
+            + m_memoryCurrent.getUsedMemory()
             + " mb  "
             + "percent: "
-            + usage
+            + m_memoryCurrent.getUsage()
             + "%  "
             + "limit: "
             + m_maxUsagePercent
             + "%  ";
 
+        String avgStatus = "Memory (average) max: "
+            + m_memoryAverage.getMaxMemory()
+            + " mb  "
+            + "total: "
+            + m_memoryAverage.getTotalMemory()
+            + " mb  "
+            + "free: "
+            + m_memoryAverage.getFreeMemory()
+            + " mb  "
+            + "used: "
+            + m_memoryAverage.getUsedMemory()
+            + " mb  "
+            + "percent: "
+            + m_memoryAverage.getUsage()
+            + "%  "
+            + "count: "
+            + m_memoryAverage.getCount();
+        
         if (warning) {
             log.warn(memStatus);
         } else {
@@ -901,7 +926,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
                         + form.sprintf(Long.toString(size)));
             }
             memStatus += "size monitored: " + totalSize + " (" + totalSize / 1048576 + " mb)";
+            
             log.info(memStatus);
+            log.info(avgStatus);
 
             CmsSessionManager sm = OpenCms.getSessionManager();
 
