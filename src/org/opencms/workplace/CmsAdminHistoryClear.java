@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsAdminHistoryClear.java,v $
- * Date   : $Date: 2004/02/21 17:11:42 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/03/08 12:32:41 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,9 +30,10 @@
  */
 package org.opencms.workplace;
 
-import org.opencms.file.CmsRegistry;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
+import org.opencms.threads.CmsAdminHistoryClearThread;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -44,8 +45,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
-import org.opencms.threads.CmsAdminHistoryClearThread;
-
 /**
  * Provides methods for the history clear dialog.<p> 
  * 
@@ -55,7 +54,7 @@ import org.opencms.threads.CmsAdminHistoryClearThread;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 5.1
  */
@@ -121,10 +120,8 @@ public class CmsAdminHistoryClear extends CmsReport {
      */
     public String buildClearForm() {
         StringBuffer retValue = new StringBuffer(512);
-        CmsRegistry reg = null;
-        reg = getCms().getRegistry();
-        boolean histEnabled = reg.getBackupEnabled();
-        int maxVersions = reg.getMaximumBackupVersions();
+        boolean histEnabled = OpenCms.getSystemInfo().isVersionHistoryEnabled();
+        int maxVersions = OpenCms.getSystemInfo().getVersionHistoryMaxCount();
         
         // append settings info or disabled message if history is disabled
         retValue.append(dialogBlockStart(key("label.admin.history.settings")));
@@ -193,8 +190,7 @@ public class CmsAdminHistoryClear extends CmsReport {
      * @return the HTML code for a select box of versions
      */
     public String buildSelectVersions(String attributes) {
-        int versions = getCms().getRegistry().getMaximumBackupVersions();
-        return buildSelectNumbers("versions", attributes, 0 , versions);
+        return buildSelectNumbers("versions", attributes, 0 , OpenCms.getSystemInfo().getVersionHistoryMaxCount());
     }
     
     /**

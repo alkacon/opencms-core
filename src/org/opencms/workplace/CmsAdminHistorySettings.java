@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsAdminHistorySettings.java,v $
- * Date   : $Date: 2004/02/21 17:11:42 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/03/08 12:32:41 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.workplace;
 import org.opencms.file.CmsRegistry;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 
 import java.io.IOException;
 
@@ -50,7 +51,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.1
  */
@@ -110,10 +111,8 @@ public class CmsAdminHistorySettings extends CmsDialog {
      */
     public String buildSettingsForm() {
         StringBuffer retValue = new StringBuffer(512);
-        CmsRegistry reg = null;
-        reg = getCms().getRegistry();
-        boolean histEnabled = reg.getBackupEnabled();
-        int maxVersions = reg.getMaximumBackupVersions();
+        boolean histEnabled = OpenCms.getSystemInfo().isVersionHistoryEnabled();
+        int maxVersions = OpenCms.getSystemInfo().getVersionHistoryMaxCount();
         
         retValue.append("<table border=\"0\">\n");
         retValue.append("<tr>\n");
@@ -200,10 +199,12 @@ public class CmsAdminHistorySettings extends CmsDialog {
             throw new CmsException("The entered version value must not be smaller than 1", CmsException.C_BAD_NAME);
         }
         
-        // write the changes to the registry
-        CmsRegistry reg = getCms().getRegistry();
-        reg.setBackupEnabled(enabled);
-        reg.setMaximumBackupVersions(versions);
+//        // write the changes to the registry
+//        CmsRegistry reg = getCms().getRegistry();
+//        reg.setBackupEnabled(enabled);
+//        reg.setMaximumBackupVersions(versions);
+        int warning = 0;
+        // TODO: throw special event here to indicate that history settings have changed
              
         return true;
     }

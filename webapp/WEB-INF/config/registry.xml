@@ -1,29 +1,31 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <registry>
 	<system>
+
+		<!-- system -->
 		<localehandler>
 			<class>org.opencms.i18n.CmsDefaultLocaleHandler</class>
-		</localehandler>
-		
-		<resourceinit />		
-		<synchronizemodifications />
+		</localehandler>		
+		<resourceinit />
 		<smtpserver>my.smtp.server</smtpserver>
 		<smtpserver2>alternative.smtp.server</smtpserver2>
 		<defaultmailsender>nobody@nowhere.com</defaultmailsender>
+		<tempfileproject></tempfileproject>
+
+		
+		<!-- workplace -->		
+		<synchronizemodifications />
 		<checklink>
 			<mailfrom>nobody@nowhere.com</mailfrom>
 			<mailto>nobody@nowhere.com</mailto>
 			<mailtemplate>/system/workplace/templates/urlcheckform</mailtemplate>
 		</checklink>
-		<tempfileproject></tempfileproject>
+
+
+		<!-- delete -->
 		<UseWpPicturesFromVFS>false</UseWpPicturesFromVFS>
 		<searchbylucene>off</searchbylucene>
-		<history>
-			<enabled>true</enabled>
-			<weeks></weeks>
-			<deleteversions>false</deleteversions>
-			<versions>10</versions>
-		</history>
+
 		
 		<search>
             <directory>index</directory>

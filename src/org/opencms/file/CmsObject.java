@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/03/02 21:51:02 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/03/08 12:32:58 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsObject {
 
@@ -2108,15 +2108,6 @@ public class CmsObject {
      */
     public boolean isAdmin() throws CmsException {
         return m_driverManager.isAdmin(m_context);
-    }
-
-    /**
-     * Check if the history is enabled.<p>
-     *
-     * @return boolean Is true if history is enabled
-     */
-    public boolean isHistoryEnabled() {
-        return m_driverManager.isHistoryEnabled(this);
     }
 
     /**

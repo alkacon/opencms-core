@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2004/03/07 19:24:34 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/03/08 12:33:32 $
+ * Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsRegistry extends A_CmsXmlContent {
 
@@ -779,35 +779,6 @@ public class CmsRegistry extends A_CmsXmlContent {
      */
     public String getContentDescription() {
         return "Registry";
-    }
-
-
-    /**
-      * This method gets the backup enable state.<p>
-      *
-      * @return true or false
-      */
-    public boolean getBackupEnabled() {    
-        boolean enable;
-        Hashtable histproperties = getSystemValues(I_CmsConstants.C_REGISTRY_HISTORY);
-        String value = ((String)histproperties.get(I_CmsConstants.C_REGISTRY_HISTORY_ENABLE));
-        if (value.equals("true")) {
-            enable = true;
-        } else {
-            enable = false;
-        }          
-        return enable;
-    }
-
-    /**
-      * This method gets the maximum number of backup versions for each file.<p>
-      *
-      * @return  maximum number of backup versions for each file
-      */
-    public int getMaximumBackupVersions() {    
-        Hashtable histproperties = getSystemValues(I_CmsConstants.C_REGISTRY_HISTORY);
-        String versions = ((String)histproperties.get(I_CmsConstants.C_REGISTRY_HISTORY_VERSIONS));          
-        return new Integer(versions).intValue();
     }
 
     /**
@@ -1990,38 +1961,6 @@ public class CmsRegistry extends A_CmsXmlContent {
             throw new CmsException("couldn't save registry", CmsException.C_REGISTRY_ERROR, exc);
         }
     }
-
-
-    /**
-     * This method enables/disables the backup.<p>
-     *
-     * @param enabled switch to enable/disable the backup
-     * @throws CmsException if something goes wrong
-     */
-    public void setBackupEnabled(boolean enabled) throws CmsException {
-        String value;
-        if (enabled) {
-            value="true";
-        } else {
-            value="false";
-        }
-        Hashtable histproperties = getSystemValues(I_CmsConstants.C_REGISTRY_HISTORY);
-        histproperties.put(I_CmsConstants.C_REGISTRY_HISTORY_ENABLE, value);
-        setSystemValues(I_CmsConstants.C_REGISTRY_HISTORY, histproperties);        
-    }
-
-    /**
-     * This method sets the maximum number of backup versions for each resource in the history.<p>
-     *
-     * @param versions maximum number of backup versions
-     * @throws CmsException if something goes wrong
-     */
-    public void setMaximumBackupVersions(int versions) throws CmsException {
-        Hashtable histproperties = getSystemValues(I_CmsConstants.C_REGISTRY_HISTORY);
-        histproperties.put(I_CmsConstants.C_REGISTRY_HISTORY_VERSIONS, versions+"");
-        setSystemValues(I_CmsConstants.C_REGISTRY_HISTORY, histproperties);        
-    }
-
 
     /**
      * This method sets the author of the module.

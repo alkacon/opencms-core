@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2004/02/19 11:46:11 $
-* Version: $Revision: 1.54 $
+* Date   : $Date: 2004/03/08 12:32:47 $
+* Version: $Revision: 1.55 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@ package com.opencms.defaults.master;
 import org.opencms.db.CmsPublishedResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 
 import com.opencms.defaults.A_CmsContentDefinition;
@@ -54,8 +55,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.54 $
- * $Date: 2004/02/19 11:46:11 $
+ * $Revision: 1.55 $
+ * $Date: 2004/03/08 12:32:47 $
  */
 public abstract class CmsMasterContent
     extends A_CmsContentDefinition
@@ -629,7 +630,7 @@ public abstract class CmsMasterContent
         Vector changedModuleData = new Vector();
         int versionId = 0;
         long publishDate = System.currentTimeMillis();
-        boolean historyEnabled = cms.isHistoryEnabled();
+        boolean historyEnabled = OpenCms.getSystemInfo().isVersionHistoryEnabled();
 
         try {
             if (historyEnabled) {
