@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsXmlLauncher.java,v $
-* Date   : $Date: 2002/06/21 15:35:20 $
-* Version: $Revision: 1.37 $
+* Date   : $Date: 2002/10/22 19:16:01 $
+* Version: $Revision: 1.38 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.http.*;
  * be used to create output.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.37 $ $Date: 2002/06/21 15:35:20 $
+ * @version $Revision: 1.38 $ $Date: 2002/10/22 19:16:01 $
  */
 public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_CmsConstants {
 
@@ -125,6 +125,12 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_
                 // No chance to go on here.
                 handleException(cms, e, "There was an error while parsing XML page file " + file.getAbsolutePath());
                 return "".getBytes();
+            }
+
+            if (! elementCacheEnabled && (replaceDef != null)) {
+                // Required to enable element replacement if element cache is disabled
+                doc.setElementClass(replaceDef.getName(), replaceDef.getClassName());
+                doc.setElementTemplate(replaceDef.getName(), replaceDef.getTemplateName());
             }
 
             // Get the names of the master template and the template class from
@@ -257,7 +263,7 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_
             // Element cache is deactivated. So let's go on as usual.
             try {
                 CmsFile masterTemplate = loadMasterTemplateFile(cms, templateName, doc);
-                I_CmsTemplate tmpl = getTemplateClass(cms, templateClass);
+                I_CmsTemplate tmpl = getTemplateClass(cms, templateClass);               
                 if(!(tmpl instanceof I_CmsXmlTemplate)) {
                     String errorMessage = "Error in " + file.getAbsolutePath() + ": " + templateClass + " is not a XML template class.";
                     if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
