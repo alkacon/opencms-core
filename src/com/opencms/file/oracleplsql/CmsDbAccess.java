@@ -3,8 +3,8 @@ package com.opencms.file.oracleplsql;
 import oracle.jdbc.driver.*;
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/01/05 12:50:04 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2001/01/05 12:57:27 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -52,7 +52,7 @@ import com.opencms.file.genericSql.I_CmsDbPool;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.14 $ $Date: 2001/01/05 12:50:04 $ * 
+ * @version $Revision: 1.15 $ $Date: 2001/01/05 12:57:27 $ * 
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -463,6 +463,11 @@ public CmsUser addUser(String name, String password, String description, String 
  * @exception CmsException Throws CmsException if operation was not succesful.
  */
 public void copyFile(CmsProject project, int userId, String source, String destination) throws CmsException {
+
+	if (destination.length() > C_MAX_LENGTH_RESOURCE_NAME){
+	   throw new CmsException("["+this.getClass().getName()+"] "+"Resourcename too long(>"+C_MAX_LENGTH_RESOURCE_NAME+") ",CmsException.C_BAD_NAME);
+	}
+		
 	com.opencms.file.oracleplsql.CmsDbPool pool = (com.opencms.file.oracleplsql.CmsDbPool) m_pool;
 	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
 	CallableStatement statement = null;
