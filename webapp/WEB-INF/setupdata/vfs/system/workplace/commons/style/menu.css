@@ -660,6 +660,9 @@ body.dialog {
 	font-size: 11px;
 	padding: 0;
 	margin: 0;
+	<% if(style == POPUP) { %>
+	background-color: ThreeDFace;
+	<% } %>
 }
 
 /* Button - Text button wrapper  */
