@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/02/05 13:51:07 $
- * Version: $Revision: 1.69 $
+ * Date   : $Date: 2004/02/05 22:27:14 $
+ * Version: $Revision: 1.70 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -99,7 +99,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.69 $
+ * @version $Revision: 1.70 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -970,6 +970,8 @@ public final class OpenCmsCore {
      * @return the value of the user default language
      */
     protected String getUserDefaultLanguage() {
+        // TODO: Move this into new workplace manager
+        // TODO: Use a Locale instead of a String
         return m_userDefaultLanguage;
     }
 

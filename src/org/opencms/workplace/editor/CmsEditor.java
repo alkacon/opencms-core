@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditor.java,v $
- * Date   : $Date: 2004/02/04 11:23:59 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2004/02/05 22:27:14 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,61 +55,75 @@ import javax.servlet.jsp.JspException;
  * The editor classes have to extend this class and implement action methods for common editor actions.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 5.1.12
  */
 public abstract class CmsEditor extends CmsDialog {
-    
-    /** Stores the VFS editor path */
-    public static final String C_PATH_EDITORS = C_PATH_WORKPLACE + "editors/";
-    
-    /** Constant for Internet Explorer type browsers */
-    public static final String BROWSER_IE = "IE";
-    /** Constant for Netscape type browsers */
-    public static final String BROWSER_NS = "NS";
-    
-    /** Value for the action parameter: save content */
-    public static final String EDITOR_SAVE = "save";
-    /** Value for the action parameter: exit editor */
-    public static final String EDITOR_EXIT = "exit";
-    /** Value for the action parameter: save and exit */
-    public static final String EDITOR_SAVEEXIT = "saveexit";
-    /** Value for the action parameter: change the body */
-    public static final String EDITOR_CHANGE_BODY = "changebody";
-    /** Value for the action parameter: show the editor */
-    public static final String EDITOR_SHOW = "show";
-    /** Value for the action parameter: show a preview */
-    public static final String EDITOR_PREVIEW = "preview";
-    /** Value for the action parameter: an error occured */
-    public static final String EDITOR_SHOW_ERRORMESSAGE = "error";
+
+    /** Value for the action: change the body */
+    public static final int ACTION_CHANGE_BODY = 124;
+
+    /** Value for the action: exit */
+    public static final int ACTION_EXIT = 122;
+
+    /** Value for the action: show a preview */
+    public static final int ACTION_PREVIEW = 126;
     
     /** Value for the action: save */
     public static final int ACTION_SAVE = 121;
-    /** Value for the action: exit */
-    public static final int ACTION_EXIT = 122;
+
     /** Value for the action: save and exit */
     public static final int ACTION_SAVEEXIT = 123;
-    /** Value for the action: change the body */
-    public static final int ACTION_CHANGE_BODY = 124;
+
     /** Value for the action: show the editor */
     public static final int ACTION_SHOW = 125;
-    /** Value for the action: show a preview */
-    public static final int ACTION_PREVIEW = 126;
+
     /** Value for the action: an error occured */
     public static final int ACTION_SHOW_ERRORMESSAGE = 127;
     
-    private String m_paramBackLink;
-    private String m_paramEditormode;
-    private String m_paramDirectedit;
-    private String m_paramTempFile;
-    private String m_paramContent;
-    private String m_paramNoActiveX;
-    private String m_paramEditAsText;
-    private String m_paramEditTimeStamp;
+    /** Constant for Internet Explorer type browsers */
+    public static final String BROWSER_IE = "IE";
+
+    /** Constant for Netscape type browsers */
+    public static final String BROWSER_NS = "NS";
+    
+    /** Stores the VFS editor path */
+    public static final String C_PATH_EDITORS = C_PATH_WORKPLACE + "editors/";
+
+    /** Value for the action parameter: change the body */
+    public static final String EDITOR_CHANGE_BODY = "changeelement";
+
+    /** Value for the action parameter: exit editor */
+    public static final String EDITOR_EXIT = "exit";
+
+    /** Value for the action parameter: show a preview */
+    public static final String EDITOR_PREVIEW = "preview";
+    
+    /** Value for the action parameter: save content */
+    public static final String EDITOR_SAVE = "save";
+
+    /** Value for the action parameter: save and exit */
+    public static final String EDITOR_SAVEEXIT = "saveexit";
+
+    /** Value for the action parameter: show the editor */
+    public static final String EDITOR_SHOW = "show";
+
+    /** Value for the action parameter: an error occured */
+    public static final String EDITOR_SHOW_ERRORMESSAGE = "error";
        
     /** Helper variable to store the clients browser type */
     private String m_browserType = null;
+    
+    // some private members for parameter storage
+    private String m_paramBackLink;
+    private String m_paramContent;
+    private String m_paramDirectedit;
+    private String m_paramEditAsText;
+    private String m_paramEditormode;
+    private String m_paramEditTimeStamp;
+    private String m_paramNoActiveX;
+    private String m_paramTempFile;
     
     /** Helper variable to store the uri to the editors pictures */
     private String m_picsUri = null;
@@ -124,159 +138,38 @@ public abstract class CmsEditor extends CmsDialog {
     }
     
     /**
-     * Returns the back link when closing the editor.<p>
+     * Returns the browser type currently used by the client.<p>
      * 
-     * @return the back link
+     * @param cms the CmsObject
+     * @return the brwoser type
      */
-    public final String getParamBacklink() {
-        if (m_paramBackLink == null) {
-            m_paramBackLink = "";
+    public static String getBrowserType(CmsObject cms) {
+        HttpServletRequest orgReq = (HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();
+        String browser = orgReq.getHeader("user-agent");
+        if (browser.indexOf("MSIE") > -1) {
+            return BROWSER_IE;
+        } else {
+            return BROWSER_NS;
         }
-        return m_paramBackLink;
     }
+        
+    /**
+     * Performs the exit editor action.<p>
+     * 
+     * @throws CmsException if something goes wrong
+     * @throws IOException if a redirection fails
+     * @throws JspException if including an element fails
+     */
+    public abstract void actionExit() throws CmsException, IOException, JspException;
     
     /**
-     * Sets the back link when closing the editor.<p>
+     * Performs the save content action.<p>
      * 
-     * @param backLink the back link
+     * @throws CmsException if something goes wrong
+     * @throws IOException if a redirection fails
+     * @throws JspException if including an element fails
      */
-    public final void setParamBacklink(String backLink) {
-        m_paramBackLink = backLink;
-    } 
-    
-    /**
-     * Returns the edit as text parameter.<p>
-     * 
-     * @return the edit as text parameter
-     */
-    public final String getParamEditastext() {
-        return m_paramEditAsText;
-    }
-    
-    /**
-     * Sets the  edit as text parameter.<p>
-     * 
-     * @param editAsText "true" if the resource should be handled like a text file
-     */
-    public final void setParamEditastext(String editAsText) {
-        m_paramEditAsText = editAsText;
-    }
-    
-    /**
-     * Returns the editor mode parameter.<p>
-     *  
-     * @return the editor mode parameter
-     */
-    public final String getParamEditormode() {
-        return m_paramEditormode;
-    }
-
-    /**
-     * Sets the editor mode parameter.<p>
-     * 
-     * @param mode the editor mode parameter
-     */
-    public final void setParamEditormode(String mode) {
-        m_paramEditormode = mode;
-    }
-
-    /**
-     * Returns the direct edit flag parameter.<p>
-     *  
-     * @return the direct edit flag parameter
-     */
-    public final String getParamDirectedit() {
-        return m_paramDirectedit;
-    }
-
-    /**
-     * Sets the direct edit flag parameter.<p>
-     * 
-     * @param direct the direct edit flag parameter
-     */
-    public final void setParamDirectedit(String direct) {
-        m_paramDirectedit = direct;
-    }
-    
-    /**
-     * Returns the name of the temporary file.<p>
-     * 
-     * @return the name of the temporary file
-     */
-    public final String getParamTempfile() {
-        return m_paramTempFile;
-    }
-    
-    /**
-     * Sets the name of the temporary file.<p>
-     * 
-     * @param fileName the name of the temporary file
-     */
-    public final void setParamTempfile(String fileName) {
-        m_paramTempFile = fileName;
-    }
-    
-    /**
-     * Returns the content of the editor.<p>
-     * @return the content of the editor
-     */
-    public final String getParamContent() {
-        if (m_paramContent == null) {
-            m_paramContent = "";
-        }
-        return m_paramContent;
-    }
-    
-    /**
-     * Sets the content of the editor.<p>
-     * 
-     * @param content the content of the editor
-     */
-    public final void setParamContent(String content) {
-        if (content == null) {
-            content = "";
-        }
-        m_paramContent = content;
-    }
-    
-    /**
-     * Returns the "no ActiveX" parameter to determine the presence of ActiveX functionality.<p>
-     * 
-     * @return the "no ActiveX" parameter
-     */
-    public final String getParamNoactivex() {
-        return m_paramNoActiveX;
-    }
-    
-    /**
-     * Sets the "no ActiveX" parameter to determine the presence of ActiveX functionality.<p>
-     * 
-     * @param noActiveX the "no ActiveX" parameter
-     */
-    public final void setParamNoactivex(String noActiveX) {
-        m_paramNoActiveX = noActiveX;
-    }
-    
-    /**
-     * Returns the time stamp parameter.<p>
-     * 
-     * @return the time stamp parameter
-     */
-    public final String getParamEdittimestamp() {
-        if (m_paramEditTimeStamp == null) {
-            m_paramEditTimeStamp = "";
-        }
-        return m_paramEditTimeStamp;
-    }
-    
-    /**
-     * Sets the edit time stamp parameter.<p>
-     * 
-     * @param editTimeStamp the current time in milliseconds
-     */
-    public final void setParamEdittimestamp(String editTimeStamp) {
-        m_paramEditTimeStamp = editTimeStamp;
-    }
+    public abstract void actionSave() throws CmsException, IOException, JspException;
     
     /**
      * Generates a button for the OpenCms editor.<p>
@@ -290,7 +183,7 @@ public abstract class CmsEditor extends CmsDialog {
      * 
      * @return a button for the OpenCms editor
      */
-    public final String button(String href, String target, String image, String label, int type, boolean useCustomImage) {
+    public String button(String href, String target, String image, String label, int type, boolean useCustomImage) {
         if (useCustomImage) {
             // search the picture in the "custom pics" folder
             return button(href, target, image, label, type, getPicsUri());
@@ -446,19 +339,90 @@ public abstract class CmsEditor extends CmsDialog {
     }
     
     /**
-     * Returns the browser type currently used by the client.<p>
+     * Returns the URI to the editor resource folder where button images and javascripts are located.<p>
      * 
-     * @param cms the CmsObject
-     * @return the brwoser type
+     * @return the URI to the editor resource folder
      */
-    public static String getBrowserType(CmsObject cms) {
-        HttpServletRequest orgReq = (HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();
-        String browser = orgReq.getHeader("user-agent");
-        if (browser.indexOf("MSIE") > -1) {
-            return BROWSER_IE;
-        } else {
-            return BROWSER_NS;
+    public abstract String getEditorResourceUri();
+    
+    /**
+     * Returns the back link when closing the editor.<p>
+     * 
+     * @return the back link
+     */
+    public String getParamBacklink() {
+        if (m_paramBackLink == null) {
+            m_paramBackLink = "";
         }
+        return m_paramBackLink;
+    }
+    
+    /**
+     * Returns the content of the editor.<p>
+     * @return the content of the editor
+     */
+    public String getParamContent() {
+        if (m_paramContent == null) {
+            m_paramContent = "";
+        }
+        return m_paramContent;
+    }
+
+    /**
+     * Returns the direct edit flag parameter.<p>
+     *  
+     * @return the direct edit flag parameter
+     */
+    public String getParamDirectedit() {
+        return m_paramDirectedit;
+    }
+    
+    /**
+     * Returns the edit as text parameter.<p>
+     * 
+     * @return the edit as text parameter
+     */
+    public String getParamEditastext() {
+        return m_paramEditAsText;
+    }
+    
+    /**
+     * Returns the editor mode parameter.<p>
+     *  
+     * @return the editor mode parameter
+     */
+    public String getParamEditormode() {
+        return m_paramEditormode;
+    }
+    
+    /**
+     * Returns the time stamp parameter.<p>
+     * 
+     * @return the time stamp parameter
+     */
+    public String getParamEdittimestamp() {
+        if (m_paramEditTimeStamp == null) {
+            m_paramEditTimeStamp = "";
+        }
+        return m_paramEditTimeStamp;
+    }
+    
+    /**
+     * Returns the "no ActiveX" parameter to determine the presence of ActiveX functionality.<p>
+     * 
+     * @return the "no ActiveX" parameter
+     */
+    public String getParamNoactivex() {
+        return m_paramNoActiveX;
+    }
+    
+    /**
+     * Returns the name of the temporary file.<p>
+     * 
+     * @return the name of the temporary file
+     */
+    public String getParamTempfile() {
+        return m_paramTempFile;
     }
     
     /**
@@ -474,6 +438,11 @@ public abstract class CmsEditor extends CmsDialog {
     }
     
     /**
+     * Initializes the editor content when openening the editor for the first time.<p>
+     */
+    protected abstract void initContent();
+    
+    /**
      * Determines if the online help is available in the currently selected user language.<p>
      * 
      * @return true if the online help is found, otherwise false
@@ -486,6 +455,81 @@ public abstract class CmsEditor extends CmsDialog {
             // help folder is not available
             return false;         
         }
+    }
+    
+    /**
+     * Sets the back link when closing the editor.<p>
+     * 
+     * @param backLink the back link
+     */
+    public void setParamBacklink(String backLink) {
+        m_paramBackLink = backLink;
+    } 
+    
+    /**
+     * Sets the content of the editor.<p>
+     * 
+     * @param content the content of the editor
+     */
+    public void setParamContent(String content) {
+        if (content == null) {
+            content = "";
+        }
+        m_paramContent = content;
+    }
+
+    /**
+     * Sets the direct edit flag parameter.<p>
+     * 
+     * @param direct the direct edit flag parameter
+     */
+    public void setParamDirectedit(String direct) {
+        m_paramDirectedit = direct;
+    }
+    
+    /**
+     * Sets the  edit as text parameter.<p>
+     * 
+     * @param editAsText "true" if the resource should be handled like a text file
+     */
+    public void setParamEditastext(String editAsText) {
+        m_paramEditAsText = editAsText;
+    }
+
+    /**
+     * Sets the editor mode parameter.<p>
+     * 
+     * @param mode the editor mode parameter
+     */
+    public void setParamEditormode(String mode) {
+        m_paramEditormode = mode;
+    }
+    
+    /**
+     * Sets the edit time stamp parameter.<p>
+     * 
+     * @param editTimeStamp the current time in milliseconds
+     */
+    public void setParamEdittimestamp(String editTimeStamp) {
+        m_paramEditTimeStamp = editTimeStamp;
+    }
+    
+    /**
+     * Sets the "no ActiveX" parameter to determine the presence of ActiveX functionality.<p>
+     * 
+     * @param noActiveX the "no ActiveX" parameter
+     */
+    public void setParamNoactivex(String noActiveX) {
+        m_paramNoActiveX = noActiveX;
+    }
+    
+    /**
+     * Sets the name of the temporary file.<p>
+     * 
+     * @param fileName the name of the temporary file
+     */
+    public void setParamTempfile(String fileName) {
+        m_paramTempFile = fileName;
     }
     
     /**
@@ -514,35 +558,5 @@ public abstract class CmsEditor extends CmsDialog {
         // include the common error dialog
         getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
     }
-        
-    /**
-     * Performs the exit editor action.<p>
-     * 
-     * @throws CmsException if something goes wrong
-     * @throws IOException if a redirection fails
-     * @throws JspException if including an element fails
-     */
-    public abstract void actionExit() throws CmsException, IOException, JspException;
-    
-    /**
-     * Performs the save content action.<p>
-     * 
-     * @throws CmsException if something goes wrong
-     * @throws IOException if a redirection fails
-     * @throws JspException if including an element fails
-     */
-    public abstract void actionSave() throws CmsException, IOException, JspException;
-    
-    /**
-     * Returns the URI to the editor resource folder where button images and javascripts are located.<p>
-     * 
-     * @return the URI to the editor resource folder
-     */
-    public abstract String getEditorResourceUri();
-    
-    /**
-     * Initializes the editor content when openening the editor for the first time.<p>
-     */
-    protected abstract void initContent();
 
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeXmlPage.java,v $
- * Date   : $Date: 2004/02/05 13:51:07 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/02/05 22:27:14 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,6 +48,7 @@ import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -55,7 +56,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.1
  */
 public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHtmlLinkValidatable {
@@ -129,8 +130,7 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHt
         List links = (List) new ArrayList();
         CmsFile file = null;
         CmsXmlPage xmlPage = null;
-        List languages = null;
-        String languageName = null;
+        List locales = null;
         List elementNames = null;
         String elementName = null;
         CmsLinkTable linkTable = null;
@@ -149,19 +149,19 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHt
 
         try {
             xmlPage = CmsXmlPage.read(cms, file);
-            languages = xmlPage.getLanguages();
+            locales = xmlPage.getLocales();
 
             // iterate over all languages
-            Iterator i = languages.iterator();
+            Iterator i = locales.iterator();
             while (i.hasNext()) {
-                languageName = (String) i.next();
-                elementNames = xmlPage.getNames(languageName);
+                Locale locale = (Locale)i.next();
+                elementNames = xmlPage.getNames(locale);
 
                 // iterate over all body elements per language
                 Iterator j = elementNames.iterator();
                 while (j.hasNext()) {
                     elementName = (String) j.next();
-                    linkTable = xmlPage.getLinkTable(elementName, languageName);
+                    linkTable = xmlPage.getLinkTable(elementName, locale);
 
                     // iterate over all links inside a body element
                     Iterator k = linkTable.iterator();

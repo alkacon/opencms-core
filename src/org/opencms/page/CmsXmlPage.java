@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsXmlPage.java,v $
- * Date   : $Date: 2004/02/05 13:51:07 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2004/02/05 22:27:14 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.page;
 
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLink;
 import org.opencms.staticexport.CmsLinkProcessor;
@@ -48,8 +49,10 @@ import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -74,15 +77,24 @@ import org.dom4j.io.XMLWriter;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  */
 public class CmsXmlPage {
+    
+    /** Name of the name attribute of the elements node */
+    private static final String C_ATTRIBUTE_ENABLED = "enabled";    
+
+    /** Name of the internal attribute of the link node */
+    private static final String C_ATTRIBUTE_INTERNAL = "internal";
 
     /** Name of the language attribute of the elements node */
     private static final String C_ATTRIBUTE_LANGUAGE = "language";
 
     /** Name of the name attribute of the elements node */
     private static final String C_ATTRIBUTE_NAME = "name";
+
+    /** Name of the type attribute of the elements node */
+    private static final String C_ATTRIBUTE_TYPE = "type";
     
     /** Name of the root document node */
     private static final String C_DOCUMENT_NODE = "page";
@@ -90,26 +102,47 @@ public class CmsXmlPage {
     /** Link to the external document type of this xml page */
     private static final String C_DOCUMENT_TYPE = "/system/shared/page.dtd";
 
+    /** Name of the anchor node */
+    private static final String C_NODE_ANCHOR = "anchor";
+    
+    /** Name of the element node */
+    private static final String C_NODE_CONTENT = "content";
+
     /** Name of the element node */
     private static final String C_NODE_ELEMENT = "element";
     
     /** Name of the elements node */
     public static final String C_NODE_ELEMENTS = "elements";
+
+    /** Name of the link node */
+    public static final String C_NODE_LINK = "link";
     
+    /** Name of the links node */
+    public static final String C_NODE_LINKS = "links";
+    
+    /** Name of the query node */
+    private static final String C_NODE_QUERY = "query";
+    
+    /** Name of the target node */
+    private static final String C_NODE_TARGET = "target";
+        
     /** Property to check if relative links are allowed */
     private static final String C_PROPERTY_ALLOW_RELATIVE = "allowRelativeLinks";
     
     /** Indicates if relative Links are allowed */
-    private boolean m_allowRelativeLinks = false;
+    private boolean m_allowRelativeLinks;
     
-    /** Reference for named elements */
-    private Map m_bookmarks = null;
+    /** Reference for named elements in the page */
+    private Map m_bookmarks;
 
+    /** Set of locales contained in this page */
+    private Set m_locales;
+    
     /** The document object of the page */
-    private Document m_document = null;
+    private Document m_document;
     
     /** The file that contains the page data (note: is not set when creating an empty or document based CmsXmlPage) */
-    private CmsFile m_file = null;
+    private CmsFile m_file;
     
     /**
      * Creates a new empty CmsXmlPage.<p>
@@ -204,16 +237,16 @@ public class CmsXmlPage {
      * Adds a new empty element with the given name and language.<p>
      *  
      * @param name name of the element, must be unique
-     * @param language language of the element
+     * @param locale locale of the element
      */
-    public void addElement(String name, String language) {
+    public void addElement(String name, Locale locale) {
         Element elements = m_document.getRootElement().element(C_NODE_ELEMENTS);        
         Element element = elements.addElement(C_NODE_ELEMENT)
               .addAttribute(C_ATTRIBUTE_NAME, name)
-              .addAttribute(C_ATTRIBUTE_LANGUAGE, language);       
-        element.addElement("links");
-        element.addElement("content");
-        setBookmark (name, language, element);
+              .addAttribute(C_ATTRIBUTE_LANGUAGE, locale.toString());       
+        element.addElement(C_NODE_LINKS);
+        element.addElement(C_NODE_CONTENT);
+        setBookmark(name, locale, element);
     }
 
     /**
@@ -229,11 +262,15 @@ public class CmsXmlPage {
      * Returns the bookmarked element for the given key.<p>
      * 
      * @param name the name of the element
-     * @param language the language of the element
+     * @param locale the locale of the element
      * @return the bookemarked element
      */
-    protected Element getBookmark (String name, String language) {        
-        return (Element) m_bookmarks.get(language + "_" + name);
+    protected Element getBookmark(String name, Locale locale) {     
+        if (locale != null) {
+            return (Element)m_bookmarks.get(locale.toString() + "|" + name);
+        } else {
+            return (Element)m_bookmarks.get(name);
+        }
     }
     
     /**
@@ -250,13 +287,13 @@ public class CmsXmlPage {
      * 
      * @param cms the cms object
      * @param name name of the element
-     * @param language language of the element
+     * @param locale locale of the element
      * @return the display content or the empty string "" if the element dos not exist
      * 
      * @throws CmsPageException if something goes wrong
      */
-    public String getContent(CmsObject cms, String name, String language) throws CmsPageException {    
-        return getContent(cms, name, language, false);
+    public String getContent(CmsObject cms, String name, Locale locale) throws CmsPageException {    
+        return getContent(cms, name, locale, false);
     }
 
     /**
@@ -264,27 +301,27 @@ public class CmsXmlPage {
      * 
      * @param cms the cms object
      * @param name name of the element
-     * @param language language of the element
+     * @param locale locale of the element
      * @param forEditor indicates that link processing should be done for editing purposes
      * @return the display content or the empty string "" if the element dos not exist
      * 
      * @throws CmsPageException if something goes wrong
      */
-    public String getContent(CmsObject cms, String name, String language, boolean forEditor) throws CmsPageException {
+    public String getContent(CmsObject cms, String name, Locale locale, boolean forEditor) throws CmsPageException {
 
-        Element element = getBookmark(name, language);        
+        Element element = getBookmark(name, locale);        
         String content = "";
         
         if (element != null) {
 
-            Element data = element.element("content");
-            Attribute enabled = element.attribute("enabled");
+            Element data = element.element(C_NODE_CONTENT);
+            Attribute enabled = element.attribute(C_ATTRIBUTE_ENABLED);
             
-            if (enabled == null || enabled.getValue().equals("true")) {
+            if (enabled == null || "true".equals(enabled.getValue())) {
             
                 content = data.getText();
                 
-                CmsLinkTable linkTable = getLinkTable(name, language);
+                CmsLinkTable linkTable = getLinkTable(name, locale);
                 if (!linkTable.isEmpty()) {
                     
                     CmsLinkProcessor macroReplacer = new CmsLinkProcessor(linkTable);
@@ -310,51 +347,31 @@ public class CmsXmlPage {
     public CmsFile getFile() {
         return m_file;
     }
-    
-    /**
-     * Returns all languages with available elements.<p>
-     * 
-     * @return list of languages with available elements
-     */
-    public List getLanguages() {
-    
-        List languages = new ArrayList();
-        for (Iterator i = getBookmarks().iterator(); i.hasNext();) {
-            String name = (String)i.next();
-            if (name.indexOf("_") >= 0) {
-                String language = name.substring(0, name.indexOf("_"));
-                if (! languages.contains(language)) {
-                    languages.add(language);
-                }
-            }
-        }
-        return languages;
-    }
 
     /**
      * Returns the link table of an element.<p>
      * 
      * @param name name of the element
-     * @param language language of the element
+     * @param locale locale of the element
      * @return the link table
      */
-    public CmsLinkTable getLinkTable(String name, String language) {
+    public CmsLinkTable getLinkTable(String name, Locale locale) {
 
-        Element element = getBookmark(name, language);
-        Element links = element.element("links");
+        Element element = getBookmark(name, locale);
+        Element links = element.element(C_NODE_LINKS);
         
         CmsLinkTable linkTable = new CmsLinkTable();
         
-        for (Iterator i = links.elementIterator("link"); i.hasNext();) {
+        for (Iterator i = links.elementIterator(C_NODE_LINK); i.hasNext();) {
                     
             Element lelem = (Element)i.next();
-            Attribute lname = lelem.attribute("name");
-            Attribute type = lelem.attribute("type");
-            Attribute internal = lelem.attribute("internal");
+            Attribute lname = lelem.attribute(C_ATTRIBUTE_NAME);
+            Attribute type = lelem.attribute(C_ATTRIBUTE_TYPE);
+            Attribute internal = lelem.attribute(C_ATTRIBUTE_INTERNAL);
             
-            Element target = lelem.element("target");
-            Element anchor = lelem.element("anchor");
-            Element query  = lelem.element("query");
+            Element target = lelem.element(C_NODE_TARGET);
+            Element anchor = lelem.element(C_NODE_ANCHOR);
+            Element query  = lelem.element(C_NODE_QUERY);
             
             CmsLink link = new CmsLink(
                     lname.getValue(), 
@@ -371,18 +388,27 @@ public class CmsXmlPage {
     }
     
     /**
+     * Returns a List of all locales that have at last one element in this page.<p>
+     * 
+     * @return a List of all locales that have at last one element in this page
+     */
+    public List getLocales() {    
+        return new ArrayList(m_locales);
+    }
+    
+    /**
      * Returns all available elements for a given language.<p>
      * 
-     * @param language language
+     * @param locale the locale
      * @return list of available elements
      */
-    public List getNames(String language) {
-        
+    public List getNames(Locale locale) {        
         List names = new ArrayList();
-        for (Iterator i = getBookmarks().iterator(); i.hasNext();) {
+        String localeName = locale.toString();
+            for (Iterator i = getBookmarks().iterator(); i.hasNext();) {
             String name = (String)i.next();
-            if (name.startsWith(language+"_")) {
-                names.add(name.substring(language.length()+1));
+            if (name.startsWith(localeName + "|")) {
+                names.add(name.substring(localeName.length() + 1));
             }
         }
         return names;
@@ -392,11 +418,11 @@ public class CmsXmlPage {
      * Checks if the page object contains a name specified by name and language.<p>
      * 
      * @param name the name of the element
-     * @param language the language of the element
+     * @param locale the locale of the element
      * @return true if this element exists
      */
-    public boolean hasElement(String name, String language) {    
-        return getBookmark(name, language) != null;
+    public boolean hasElement(String name, Locale locale) {    
+        return getBookmark(name, locale) != null;
     }
     
     /**
@@ -405,6 +431,7 @@ public class CmsXmlPage {
     protected void initBookmarks() {
 
         m_bookmarks = new HashMap();
+        m_locales = new HashSet();
         
         for (Iterator i = m_document.getRootElement().element(C_NODE_ELEMENTS).elementIterator(C_NODE_ELEMENT); i.hasNext();) {
    
@@ -412,7 +439,7 @@ public class CmsXmlPage {
             String elementName = elem.attribute(C_ATTRIBUTE_NAME).getValue();
             String elementLang = elem.attribute(C_ATTRIBUTE_LANGUAGE).getValue();
     
-            setBookmark(elementName, elementLang, elem);              
+            setBookmark(elementName, CmsLocaleManager.getLocale(elementLang), elem);              
         }
     }
     
@@ -429,15 +456,15 @@ public class CmsXmlPage {
      * Checks if the element of a page object is enabled.<p>
      * 
      * @param name the name of the element
-     * @param language the language of the element
+     * @param locale the locale of the element
      * @return true if the element exists and is not disabled
      */
-    public boolean isEnabled(String name, String language) {
+    public boolean isEnabled(String name, Locale locale) {
 
-        Element element = getBookmark(name, language);
+        Element element = getBookmark(name, locale);
 
         if (element != null) {
-            Attribute enabled = element.attribute("enabled");            
+            Attribute enabled = element.attribute(C_ATTRIBUTE_ENABLED);            
             return (enabled == null || Boolean.valueOf(enabled.getValue()).booleanValue());
         }
         
@@ -448,22 +475,26 @@ public class CmsXmlPage {
      * Removes a bookmark with a given key.<p>
      * 
      * @param name the name of the element
-     * @param language the language of the element
+     * @param locale the locale of the element
      * @return the element removed from the bookmarks or null
      */
-    protected Element removeBookmark(String name, String language) {
-        return (Element)m_bookmarks.remove(language + "_" + name);
+    protected Element removeBookmark(String name, Locale locale) {
+        if (locale != null) {
+            return (Element)m_bookmarks.remove(locale.toString() + "|" + name);
+        } else {
+            return (Element)m_bookmarks.remove(name);
+        }
     }
     
     /**
-     * Removes an existing element with the given name and language.<p>
+     * Removes an existing element with the given name and locale.<p>
      * 
      * @param name name of the element
-     * @param language language of the element
+     * @param locale the locale of the element
      */
-    public void removeElement(String name, String language) {        
+    public void removeElement(String name, String locale) {        
         Element elements = m_document.getRootElement().element(C_NODE_ELEMENTS);        
-        Element element = removeBookmark(name, language);
+        Element element = removeBookmark(name, CmsLocaleManager.getLocale(locale));
         elements.remove(element);
     }
 
@@ -471,17 +502,17 @@ public class CmsXmlPage {
      * Adds a bookmark for the given element.<p>
      * 
      * @param name the name of the element
-     * @param language the language of the element
+     * @param locale the locale of the element
      * @param element the element to bookmark
      */
-    protected void setBookmark (String name, String language, Element element) {        
-        if (language != null) {
-            m_bookmarks.put(language + "_" + name, element);
+    protected void setBookmark(String name, Locale locale, Element element) {        
+        if (locale != null) {
+            m_locales.add(locale);
+            m_bookmarks.put(locale.toString() + "|" + name, element);
         } else {
             m_bookmarks.put(name, element);
         }
-    }
-            
+    }            
     
     /**
      * Sets the data of an already existing element.<p>
@@ -491,16 +522,16 @@ public class CmsXmlPage {
      * 
      * @param cms the cms object
      * @param name name of the element
-     * @param language language of the element
+     * @param locale locale of the element
      * @param content character data (CDATA) of the element
      * 
      * @throws CmsPageException if something goes wrong
      */
-    public void setContent(CmsObject cms, String name, String language, String content) throws CmsPageException {
+    public void setContent(CmsObject cms, String name, Locale locale, String content) throws CmsPageException {
         
-        Element element = getBookmark(name, language);
-        Element data = element.element("content");
-        Element links = element.element("links");
+        Element element = getBookmark(name, locale);
+        Element data = element.element(C_NODE_CONTENT);
+        Element links = element.element(C_NODE_LINKS);
         CmsLinkTable linkTable = new CmsLinkTable();
         
         try {
@@ -523,21 +554,21 @@ public class CmsXmlPage {
         for (Iterator i = linkTable.iterator(); i.hasNext();) {
             CmsLink link = linkTable.getLink((String)i.next());
             
-            Element linkElement = links.addElement("link")
-                .addAttribute("name", link.getName())
-                .addAttribute("type", link.getType())
-                .addAttribute("internal", Boolean.toString(link.isInternal()));
+            Element linkElement = links.addElement(C_NODE_LINK)
+                .addAttribute(C_ATTRIBUTE_NAME, link.getName())
+                .addAttribute(C_ATTRIBUTE_TYPE, link.getType())
+                .addAttribute(C_ATTRIBUTE_INTERNAL, Boolean.toString(link.isInternal()));
                 
-            linkElement.addElement("target")
+            linkElement.addElement(C_NODE_TARGET)
                 .addCDATA(link.getTarget());
             
             if (link.getAnchor() != null) {
-                linkElement.addElement("anchor")
+                linkElement.addElement(C_NODE_ANCHOR)
                     .addCDATA(link.getAnchor());
             }
             
             if (link.getQuery() != null) {
-                linkElement.addElement("query")
+                linkElement.addElement(C_NODE_QUERY)
                     .addCDATA(link.getQuery());
             }
         }
@@ -550,16 +581,16 @@ public class CmsXmlPage {
      * since true is the default
      * 
      * @param name name name of the element
-     * @param language language of the element
+     * @param locale locale of the element
      * @param isEnabled enabled flag for the element
      */
-    public void setEnabled(String name, String language, boolean isEnabled) {
+    public void setEnabled(String name, Locale locale, boolean isEnabled) {
 
-        Element element = getBookmark(name, language);
-        Attribute enabled = element.attribute("enabled");
+        Element element = getBookmark(name, locale);
+        Attribute enabled = element.attribute(C_ATTRIBUTE_ENABLED);
         
         if (enabled == null) {
-            element.addAttribute("enabled", Boolean.toString(isEnabled));
+            element.addAttribute(C_ATTRIBUTE_ENABLED, Boolean.toString(isEnabled));
         } else if (isEnabled) {
             element.remove(enabled);
         } else {

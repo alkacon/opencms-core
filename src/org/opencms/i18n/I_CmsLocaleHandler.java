@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/I_CmsLocaleHandler.java,v $
- * Date   : $Date: 2004/02/05 13:51:07 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/05 22:27:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,8 @@ package org.opencms.i18n;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
 
+import java.util.Locale;
+
 /**
  * A locale handler returns the locale name to use for the given request context.<p>
  * 
@@ -42,7 +44,7 @@ import com.opencms.file.CmsRequestContext;
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  */
 public interface I_CmsLocaleHandler {
 
@@ -55,7 +57,7 @@ public interface I_CmsLocaleHandler {
      * @param context the request context
      * @return the locale name to use for the given request context
      */
-    String getLocaleName(CmsRequestContext context);
+    Locale getLocale(CmsRequestContext context);
     
     /**
      * Will be called during system startup.<p>

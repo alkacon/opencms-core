@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsDefaultLocaleHandler.java,v $
- * Date   : $Date: 2004/02/05 13:51:07 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/05 22:27:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,13 +37,14 @@ import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Default implementation of the locale handler.<p>
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com) 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  */
 public class CmsDefaultLocaleHandler implements I_CmsLocaleHandler {
 
@@ -65,31 +66,31 @@ public class CmsDefaultLocaleHandler implements I_CmsLocaleHandler {
     }
     
     /**
-     * @see org.opencms.i18n.I_CmsLocaleHandler#getLocaleName(com.opencms.file.CmsRequestContext)
+     * @see org.opencms.i18n.I_CmsLocaleHandler#getLocale(com.opencms.file.CmsRequestContext)
      */
-    public String getLocaleName(CmsRequestContext context) {
+    public Locale getLocale(CmsRequestContext context) {
         CmsLocaleManager localeManager = OpenCms.getLocaleManager();
         
         // get resource name (internal "Admin" cms object is in "/" site so adjust name to full path)
         String resourceName = context.addSiteRoot(context.getUri());
 
-        List defaultLocaleNames = null;
+        List defaultLocales = null;
         synchronized (m_adminCmsObject) {
             // must switch project id in stored Admin context to match current project
             try {
                 m_adminCmsObject.getRequestContext().setCurrentProject(context.currentProject().getId());            
                 // now get default locale names
-                defaultLocaleNames = localeManager.getDefaultLocaleNames(m_adminCmsObject, resourceName);
+                defaultLocales = localeManager.getDefaultLocales(m_adminCmsObject, resourceName);
             } catch (CmsException e) {
                 OpenCms.getLog(this).error("Error switching admin context project", e);
             }
         }
         
         // return the first default name 
-        if ((defaultLocaleNames != null) && (defaultLocaleNames.size() > 0)) {
-            return (String)defaultLocaleNames.get(0);
+        if ((defaultLocales != null) && (defaultLocales.size() > 0)) {
+            return (Locale)defaultLocales.get(0);
         } else {
-            return localeManager.getDefaultLocaleName();
+            return localeManager.getDefaultLocale();
         }
     }
 }

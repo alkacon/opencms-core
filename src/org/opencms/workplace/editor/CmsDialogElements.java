@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDialogElements.java,v $
- * Date   : $Date: 2004/01/28 13:05:36 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/02/05 22:27:14 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,6 +30,11 @@
  */
 package org.opencms.workplace.editor;
 
+import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.page.CmsXmlPage;
+import org.opencms.workplace.CmsDialog;
+import org.opencms.workplace.CmsWorkplaceSettings;
+
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsFile;
@@ -37,13 +42,10 @@ import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 import com.opencms.flex.jsp.CmsJspActionElement;
 
-import org.opencms.page.CmsXmlPage;
-import org.opencms.workplace.CmsDialog;
-import org.opencms.workplace.CmsWorkplaceSettings;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
@@ -60,34 +62,39 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.3.0
  */
 public class CmsDialogElements extends CmsDialog {
-
-    /** The dialog type */
-    public static final String DIALOG_TYPE = "elementselector";
-    
-    /** Prefix for the html input field for the body */
-    public static final String PREFIX_PARAM_BODY = "element-";
     
     /** Value for the action: delete the content of an element */
     public static final int ACTION_DELETECONTENT = 200;
+
     /** Value for the action: update the elements of the page */
     public static final int ACTION_UPDATE_ELEMENTS = 210;
     
     /** Request parameter value for the action: delete the content of an element */
     public static final String DIALOG_DELETECONTENT = "deletecontent";
+
+    /** The dialog type */
+    public static final String DIALOG_TYPE = "elementselector";
+    
     /** Request parameter value for the action: update the elements of the page */
     public static final String DIALOG_UPDATE_ELEMENTS = "updateelements";
     
+    /** Prefix for the html input field for the body */
+    public static final String PREFIX_PARAM_BODY = "element-";
+    
     /** List used to store information of all possible elements of the page */
     private List m_elementList = null;
+
+    /** The element locale */
+    private Locale m_elementLocale;
     
-    /** special parameters used by this dialog */
-    private String m_paramBodyname;
+    // Special parameters used by this dialog
     private String m_paramBodylanguage;
+    private String m_paramBodyname;
     private String m_paramDeleteElementContent;
     private String m_paramTempFile;
     
@@ -112,96 +119,56 @@ public class CmsDialogElements extends CmsDialog {
     } 
     
     /**
-     * Returns the current body element name.<p>
+     * Creates a list of possible elements of a template from the template property "template-elements".<p>
      * 
-     * @return the current body element name
+     * @param cms the CmsObject
+     * @param resource the resource to read from
+     * @return the list of elements in a String array with element name, nice name (if present) and mandatory flag
+     * @throws CmsException if reading the property fails
      */
-    public final String getParamBodyname() {
-        return m_paramBodyname;
+    public static List computeElements(CmsObject cms, String resource) throws CmsException {   
+        List elementList = new ArrayList();
+        String currentTemplate = cms.readProperty(resource, I_CmsConstants.C_PROPERTY_TEMPLATE, true);
+        if (currentTemplate == null || currentTemplate.length() == 0) {
+            // no template found, return empty list
+            return elementList;
+        }
+        String elements = null;
+        
+        try {
+            // read the property from the template file
+            elements = cms.readProperty(currentTemplate, I_CmsConstants.C_PROPERTY_TEMPLATE_ELEMENTS, false, null);
+        } catch (CmsException e) {
+            // ignore this exception
+        }
+        if (elements == null) {
+            // no elements defined on template file , return empty list
+            return elementList;
+        }
+        StringTokenizer T = new StringTokenizer(elements, ",");
+        while (T.hasMoreTokens()) {
+            String currentElement = T.nextToken();
+            String niceName = "";
+            String mandatory = "0";
+            int sepIndex = currentElement.indexOf("|");
+            if (sepIndex != -1) {
+                // nice name found for current element, extract it
+                niceName = currentElement.substring(sepIndex + 1);
+                currentElement = currentElement.substring(0, sepIndex);
+            }
+            if (currentElement.endsWith("*")) {
+                // element is mandatory
+                mandatory = "1";
+                currentElement = currentElement.substring(0, currentElement.length() - 1);
+            }
+            if ("".equals(niceName)) {
+                // no nice name found, use element name as nice name
+                niceName = currentElement;
+            }
+            elementList.add(new String[] {currentElement, niceName, mandatory});
+        }
+        return elementList;
     }
-
-    /**
-     * Sets the current body element name.<p>
-     * 
-     * @param bodyname the current body element name
-     */
-    public final void setParamBodyname(String bodyname) {
-        m_paramBodyname = bodyname;
-    }
-    
-    /**
-     * Returns the current body element language.<p>
-     * 
-     * @return the current body element language
-     */
-    public final String getParamBodylanguage() {
-        return m_paramBodylanguage;
-    }
-
-    /**
-     * Sets the current body element language.<p>
-     * 
-     * @param bodyLanguage the current body element language
-     */
-    public final void setParamBodylanguage(String bodyLanguage) {
-        m_paramBodylanguage = bodyLanguage;
-    }
-    
-    /**
-     * Returns the element name to delete its content.<p>
-     * 
-     * @return the element name to delete its content
-     */
-    public final String getParamDeleteElement() {
-        return m_paramDeleteElementContent;
-    }
-    
-    /**
-     * Sets the element name to delete its content.<p>
-     * 
-     * @param deleteElement the element name to delete its content
-     */
-    public final void setParamDeleteElement(String deleteElement) {
-        m_paramDeleteElementContent = deleteElement;
-    }
-    
-    /**
-     * Returns the name of the temporary file.<p>
-     * 
-     * @return the name of the temporary file
-     */
-    public final String getParamTempfile() {
-        return m_paramTempFile;
-    }
-    
-    /**
-     * Sets the name of the temporary file.<p>
-     * 
-     * @param fileName the name of the temporary file
-     */
-    public final void setParamTempfile(String fileName) {
-        m_paramTempFile = fileName;
-    }
-    
-    /**
-     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
-     */
-    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
-        // fill the parameter values in the get/set methods
-        fillParamValues(request);
-        // set the dialog type
-        setParamDialogtype(DIALOG_TYPE);
-        // set the action for the JSP switch 
-        if (DIALOG_DELETECONTENT.equals(getParamAction())) {
-            setAction(ACTION_DELETECONTENT);                            
-        } else if (DIALOG_UPDATE_ELEMENTS.equals(getParamAction())) {
-            setAction(ACTION_UPDATE_ELEMENTS);
-        } else {
-            setAction(ACTION_DEFAULT);
-            // build title for delete dialog     
-            setParamTitle(key("editor.dialog.elements.title") + ": " + CmsResource.getName(getParamResource()));
-        }      
-    } 
     
     /**
      * Deletes the content of an element specified in the parameter "deleteelement".<p>
@@ -211,7 +178,7 @@ public class CmsDialogElements extends CmsDialog {
             CmsFile file = getCms().readFile(this.getParamTempfile());
             CmsXmlPage page = CmsXmlPage.read(getCms(), file);
             // set the content of the element to an empty String
-            page.setContent(getCms(), getParamDeleteElement(), getParamBodylanguage(), "");
+            page.setContent(getCms(), getParamDeleteElement(), getElementLocale(), "");
             // write the temporary file
             getCms().writeFile(page.write(file));
         } catch (CmsException e) {
@@ -239,14 +206,14 @@ public class CmsDialogElements extends CmsDialog {
                 // get the current list element
                 String[] currentElement = (String[])i.next();               
                 String elementName = currentElement[0];
-                boolean isExisting = page.hasElement(elementName, getParamBodylanguage());
+                boolean isExisting = page.hasElement(elementName, getElementLocale());
                 boolean isMandatory = "1".equals(currentElement[2]);
                 if (isMandatory || "true".equals(getJsp().getRequest().getParameter(PREFIX_PARAM_BODY + elementName))) {
                     if (!isExisting) {
                         // create element in order to enable it properly 
-                        page.addElement(elementName, getParamBodylanguage());
+                        page.addElement(elementName, getElementLocale());
                     }
-                    page.setEnabled(elementName, getParamBodylanguage(), true);
+                    page.setEnabled(elementName, getElementLocale(), true);
                     if (isMandatory && !foundMandatory) {
                         changeBody = elementName;
                         foundMandatory = true;
@@ -254,19 +221,19 @@ public class CmsDialogElements extends CmsDialog {
                 } else {
                     if (isExisting) {
                         // disable element if it is already existing
-                        page.setEnabled(elementName, getParamBodylanguage(), false);
+                        page.setEnabled(elementName, getElementLocale(), false);
                     }
                 }
             }
             // write the temporary file
             getCms().writeFile(page.write(file));
             // set the javascript functions which should be executed
-            if (page.isEnabled(getParamBodyname(), getParamBodylanguage())) {
+            if (page.isEnabled(getParamBodyname(), getElementLocale())) {
                 changeBody = getParamBodyname();
             } else if (!foundMandatory) {
                 changeBody = ((String[])elementList.get(0))[0];
             }
-            setParamOkFunctions("window.opener.changeBody(\"" + changeBody + "\", \"" + getParamBodylanguage() + "\");window.close();");
+            setParamOkFunctions("window.opener.changeBody(\"" + changeBody + "\", \"" + getElementLocale() + "\");window.close();");
                        
             // save initialized instance of this class in request attribute for included sub-elements
             getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
@@ -329,7 +296,7 @@ public class CmsDialogElements extends CmsDialog {
                 retValue.append("\t<td style=\"white-space: nowrap;\" unselectable=\"on\">" + elementNice);
                 retValue.append("</td>\n");
                 retValue.append("\t<td class=\"textcenter\" unselectable=\"on\"><input type=\"checkbox\" name=\"" + PREFIX_PARAM_BODY + elementName + "\" value=\"true\"");
-                if (!page.hasElement(elementName, getParamBodylanguage()) || page.isEnabled(elementName, getParamBodylanguage())) {
+                if (!page.hasElement(elementName, getElementLocale()) || page.isEnabled(elementName, getElementLocale())) {
                     retValue.append(" checked=\"checked\"");
                 }
                 if (isMandatory) {
@@ -339,7 +306,7 @@ public class CmsDialogElements extends CmsDialog {
                 retValue.append("</td>\n");
                 retValue.append("\t<td class=\"textcenter\" unselectable=\"on\">");
                 retValue.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
-                if (!"".equals(page.getContent(getCms(), elementName, getParamBodylanguage()))) {
+                if (!"".equals(page.getContent(getCms(), elementName, getElementLocale()))) {
                     // current element has content that can be deleted
                     retValue.append(button("javascript:confirmDelete('" + elementName + "');", null, "deletecontent", "button.delete", 0));
                 } else {
@@ -375,55 +342,107 @@ public class CmsDialogElements extends CmsDialog {
     }
     
     /**
-     * Creates a list of possible elements of a template from the template property "template-elements".<p>
+     * Returns the current element locale.<p>
      * 
-     * @param cms the CmsObject
-     * @param resource the resource to read from
-     * @return the list of elements in a String array with element name, nice name (if present) and mandatory flag
-     * @throws CmsException if reading the property fails
+     * @return the current element locale
      */
-    public static List computeElements(CmsObject cms, String resource) throws CmsException {   
-        List elementList = new ArrayList();
-        String currentTemplate = cms.readProperty(resource, I_CmsConstants.C_PROPERTY_TEMPLATE, true);
-        if (currentTemplate == null || currentTemplate.length() == 0) {
-            // no template found, return empty list
-            return elementList;
-        }
-        String elements = null;
-        
-        try {
-            // read the property from the template file
-            elements = cms.readProperty(currentTemplate, I_CmsConstants.C_PROPERTY_TEMPLATE_ELEMENTS, false, null);
-        } catch (CmsException e) {
-            // ignore this exception
-        }
-        if (elements == null) {
-            // no elements defined on template file , return empty list
-            return elementList;
-        }
-        StringTokenizer T = new StringTokenizer(elements, ",");
-        while (T.hasMoreTokens()) {
-            String currentElement = T.nextToken();
-            String niceName = "";
-            String mandatory = "0";
-            int sepIndex = currentElement.indexOf("|");
-            if (sepIndex != -1) {
-                // nice name found for current element, extract it
-                niceName = currentElement.substring(sepIndex + 1);
-                currentElement = currentElement.substring(0, sepIndex);
-            }
-            if (currentElement.endsWith("*")) {
-                // element is mandatory
-                mandatory = "1";
-                currentElement = currentElement.substring(0, currentElement.length() - 1);
-            }
-            if ("".equals(niceName)) {
-                // no nice name found, use element name as nice name
-                niceName = currentElement;
-            }
-            elementList.add(new String[] {currentElement, niceName, mandatory});
-        }
-        return elementList;
+    public Locale getElementLocale() {
+        if (m_elementLocale == null) {
+            m_elementLocale = CmsLocaleManager.getLocale(getParamBodylanguage());
+        } 
+        return m_elementLocale;
+    }    
+    
+    /**
+     * Returns the current body element language.<p>
+     * 
+     * @return the current body element language
+     */
+    public String getParamBodylanguage() {
+        return m_paramBodylanguage;
+    }
+    
+    /**
+     * Returns the current body element name.<p>
+     * 
+     * @return the current body element name
+     */
+    public String getParamBodyname() {
+        return m_paramBodyname;
+    }
+    
+    /**
+     * Returns the element name to delete its content.<p>
+     * 
+     * @return the element name to delete its content
+     */
+    public String getParamDeleteElement() {
+        return m_paramDeleteElementContent;
+    }
+    
+    /**
+     * Returns the name of the temporary file.<p>
+     * 
+     * @return the name of the temporary file
+     */
+    public String getParamTempfile() {
+        return m_paramTempFile;
+    }
+    
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
+     */
+    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+        // fill the parameter values in the get/set methods
+        fillParamValues(request);
+        // set the dialog type
+        setParamDialogtype(DIALOG_TYPE);
+        // set the action for the JSP switch 
+        if (DIALOG_DELETECONTENT.equals(getParamAction())) {
+            setAction(ACTION_DELETECONTENT);                            
+        } else if (DIALOG_UPDATE_ELEMENTS.equals(getParamAction())) {
+            setAction(ACTION_UPDATE_ELEMENTS);
+        } else {
+            setAction(ACTION_DEFAULT);
+            // build title for delete dialog     
+            setParamTitle(key("editor.dialog.elements.title") + ": " + CmsResource.getName(getParamResource()));
+        }      
+    } 
+    
+    /**
+     * Sets the current body element language.<p>
+     * 
+     * @param bodyLanguage the current body element language
+     */
+    public void setParamBodylanguage(String bodyLanguage) {
+        m_paramBodylanguage = bodyLanguage;
+    }
+
+    /**
+     * Sets the current body element name.<p>
+     * 
+     * @param bodyname the current body element name
+     */
+    public void setParamBodyname(String bodyname) {
+        m_paramBodyname = bodyname;
+    }
+    
+    /**
+     * Sets the element name to delete its content.<p>
+     * 
+     * @param deleteElement the element name to delete its content
+     */
+    public void setParamDeleteElement(String deleteElement) {
+        m_paramDeleteElementContent = deleteElement;
+    }
+    
+    /**
+     * Sets the name of the temporary file.<p>
+     * 
+     * @param fileName the name of the temporary file
+     */
+    public void setParamTempfile(String fileName) {
+        m_paramTempFile = fileName;
     }
     
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPublishProject.java,v $
- * Date   : $Date: 2004/02/04 15:48:16 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/02/05 22:27:14 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 5.1.12
  */
@@ -367,7 +367,7 @@ public class CmsPublishProject extends CmsReport {
         String projectId = getParamProjectid();
         int id;
         if (projectId == null || "".equals(projectId.trim())) {
-            // projectid not found in request parameter, 
+            // projectid not found in request parameter,
             id = getCms().getRequestContext().currentProject().getId();
             setParamProjectname(getCms().getRequestContext().currentProject().getName());
             setParamProjectid("" + id);
@@ -376,9 +376,9 @@ public class CmsPublishProject extends CmsReport {
             try {
                 setParamProjectname(getCms().readProject(id).getName());
             } catch (CmsException e) {
-                // ignore
+                OpenCms.getLog(this).error("Error setting project name parameter", e);
+            }
         }
-    }
     }
     
     /**
@@ -391,8 +391,8 @@ public class CmsPublishProject extends CmsReport {
             setParamModifieddate(Utils.getNiceDate(res.getDateLastModified()));
             setParamModifieduser(getCms().readUser(res.getUserLastModified()).getName());
         } catch (CmsException e) {
-            // ignore
-    }
+            OpenCms.getLog(this).error("Error computing publish resources", e);
+        }
     }
     
     /**
@@ -414,7 +414,7 @@ public class CmsPublishProject extends CmsReport {
                 return (getCms().countLockedResources(id) > 0);
             }
         } catch (CmsException e) {
-            // ignore
+            OpenCms.getLog(this).error("Error displaying unlock confirmation", e);
         }
         return false;
     }
@@ -445,7 +445,7 @@ public class CmsPublishProject extends CmsReport {
                     int projectId = Integer.parseInt(getParamProjectid());
                     getCms().getRequestContext().setCurrentProject(projectId);
                 } catch (Exception e) {
-                    // ignore this exception
+                    OpenCms.getLog(this).error("Error switching project for publishing", e);
                 }
                 thread = new CmsPublishThread(getCms());
             }

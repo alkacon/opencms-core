@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsXmlPageConverter.java,v $
- * Date   : $Date: 2004/01/22 15:57:45 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/02/05 22:27:14 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import com.opencms.workplace.I_CmsWpConstants;
 
 import java.io.StringReader;
 import java.util.Iterator;
+import java.util.Locale;
 
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -47,7 +48,7 @@ import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 
 /**
- * @version $Revision: 1.3 $ $Date: 2004/01/22 15:57:45 $
+ * @version $Revision: 1.4 $ $Date: 2004/02/05 22:27:14 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public final class CmsXmlPageConverter {
@@ -65,11 +66,11 @@ public final class CmsXmlPageConverter {
      * @param cms the cms object
      * @param content the content used with xml templates
      * @param body the name of the body
-     * @param language the language of the body
+     * @param locale the locale of the body
      * @return the xml page content or null if conversion failed
      * @throws CmsException if something goes wrong
      */
-    public static CmsXmlPage convertToXmlPage(CmsObject cms, String content, String body, String language) throws CmsException {
+    public static CmsXmlPage convertToXmlPage(CmsObject cms, String content, String body, Locale locale) throws CmsException {
 
         CmsXmlPage xmlPage = null;
         
@@ -121,8 +122,8 @@ public final class CmsXmlPageConverter {
             
             bodyContent = CmsStringSubstitution.substitute(bodyContent, I_CmsWpConstants.C_MACRO_OPENCMS_CONTEXT, OpenCms.getOpenCmsContext());
             
-            xmlPage.addElement(body, language);
-            xmlPage.setContent(cms, body, language, bodyContent);
+            xmlPage.addElement(body, locale);
+            xmlPage.setContent(cms, body, locale, bodyContent);
             
             return xmlPage;
         } catch (Exception exc) {

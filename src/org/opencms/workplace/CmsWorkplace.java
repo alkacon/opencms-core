@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/02/05 08:28:07 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2004/02/05 22:27:14 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import javax.servlet.jsp.PageContext;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.47 $
+ * @version $Revision: 1.48 $
  * 
  * @since 5.1
  */
@@ -211,6 +211,7 @@ public abstract class CmsWorkplace {
      * @return the language String for the currently logged in user
      */
     protected static synchronized String initUserLanguage(CmsObject cms) {
+        // TODO: This should now return a Locale, not a String 
         // initialize the current user language
         String language = null;               
         Hashtable startSettings =

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2004/02/05 13:51:07 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2004/02/05 22:27:14 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,17 +31,18 @@
 
 package org.opencms.importexport;
 
+import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.main.OpenCms;
+import org.opencms.report.I_CmsReport;
+import org.opencms.security.CmsAccessControlEntry;
+import org.opencms.util.CmsUUID;
+
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsResourceTypePointer;
-
-import org.opencms.main.OpenCms;
-import org.opencms.report.I_CmsReport;
-import org.opencms.security.CmsAccessControlEntry;
-import org.opencms.util.CmsUUID;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -54,6 +55,7 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Stack;
 import java.util.Vector;
@@ -351,14 +353,14 @@ public abstract class A_CmsImport implements I_CmsImport {
     }
 
     /**
-     * Returns the appropriate locale name for the given destination.<p>
+     * Returns the appropriate locale for the given destination.<p>
      * 
      * @param destination the destination path (parent must exist)
      * @param properties the properties to check at first
-     * @return the name of the locale
+     * @return the locale
      * @throws CmsException if something goes wrong
      */
-    protected String getLocaleName(String destination, Map properties) throws CmsException {
+    protected Locale getLocale(String destination, Map properties) throws CmsException {
         String localeName = (String)properties.get(I_CmsConstants.C_PROPERTY_LOCALE);
         if (localeName == null) {
             localeName = m_cms.readProperty(CmsResource.getParentFolder(destination), I_CmsConstants.C_PROPERTY_LOCALE, true);
@@ -367,10 +369,10 @@ public abstract class A_CmsImport implements I_CmsImport {
             if (localeName.indexOf(",") >= 0) {
                 localeName = localeName.substring(0, localeName.indexOf(","));
             }
-        } else {
-            localeName = (String)OpenCms.getLocaleManager().getDefaultLocaleNames(m_cms, CmsResource.getParentFolder(destination)).get(0);
+            return CmsLocaleManager.getLocale(localeName);
+        } else {            
+            return (Locale)OpenCms.getLocaleManager().getDefaultLocales(m_cms, CmsResource.getParentFolder(destination)).get(0);
         }
-        return localeName;
     }
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspActionElement.java,v $
- * Date   : $Date: 2004/02/05 08:28:08 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2004/02/05 22:27:14 $
+ * Version: $Revision: 1.53 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package com.opencms.flex.jsp;
 
 import org.opencms.flex.CmsFlexController;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspTagEditable;
 import org.opencms.jsp.CmsJspTagInclude;
 import org.opencms.jsp.CmsJspTagInfo;
@@ -47,7 +48,6 @@ import org.opencms.loader.CmsPointerLoader;
 import org.opencms.loader.CmsXmlPageLoader;
 import org.opencms.loader.CmsXmlTemplateLoader;
 import org.opencms.loader.I_CmsResourceLoader;
-import org.opencms.i18n.CmsMessages;
 import org.opencms.main.OpenCms;
 import org.opencms.page.CmsXmlPage;
 import org.opencms.security.CmsSecurityException;
@@ -63,6 +63,7 @@ import com.opencms.template.CmsXmlTemplate;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -90,7 +91,7 @@ import javax.servlet.jsp.PageContext;
  * working at last in some elements.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.52 $
+ * @version $Revision: 1.53 $
  * 
  * @since 5.0 beta 2
  */
@@ -896,10 +897,10 @@ public class CmsJspActionElement {
      * 
      * @param target the target to process
      * @param element name of the element
-     * @param language language of the element
+     * @param locale locale of the element
      * @return the processed output
      */
-    public String getContent(String target, String element, String language) {
+    public String getContent(String target, String element, Locale locale) {
         try {
             I_CmsResourceLoader loader = null;
             target = toAbsolute(target);
@@ -928,8 +929,8 @@ public class CmsJspActionElement {
                         element = "body";
                     }
                     
-                    if (page.hasElement(element, language)) {
-                        return page.getContent(getCmsObject(), element, language);
+                    if (page.hasElement(element, locale)) {
+                        return page.getContent(getCmsObject(), element, locale);
                     } else {
                         return null;
                     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagTemplate.java,v $
- * Date   : $Date: 2004/02/04 17:18:07 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/02/05 22:27:14 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,8 @@ import org.opencms.main.OpenCms;
 import org.opencms.page.CmsXmlPage;
 import org.opencms.util.CmsStringSubstitution;
 
+import java.util.Locale;
+
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
@@ -44,7 +46,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * is included in another file.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsJspTagTemplate extends BodyTagSupport { 
     
@@ -208,14 +210,14 @@ public class CmsJspTagTemplate extends BodyTagSupport {
         
         if (page != null && elementlist != null) {
             String absolutePath = controller.getCmsObject().readAbsolutePath(page.getFile());
-            String localeName = OpenCms.getLocaleManager().getBestMatchingLocaleName(controller.getCmsObject().getRequestContext().getLocaleName(), OpenCms.getLocaleManager().getDefaultLocaleNames(controller.getCmsObject(), absolutePath), page.getLanguages());
+            Locale locale = OpenCms.getLocaleManager().getBestMatchingLocale(controller.getCmsObject().getRequestContext().getLocale(), OpenCms.getLocaleManager().getDefaultLocales(controller.getCmsObject(), absolutePath), page.getLocales());
             
             // check the elements in the elementlist, if the check fails don't render the body
             String elements[] = CmsStringSubstitution.split(elementlist, ",");
             boolean found = false;
             for (int i = 0; i < elements.length; i++) {
                 String el = elements[i].trim();
-                if (page.hasElement(el, localeName) && page.isEnabled(el, localeName)) {
+                if (page.hasElement(el, locale) && page.isEnabled(el, locale)) {
                     found = true;
                     if (!checkall) {
                         // found at least an element that is available
