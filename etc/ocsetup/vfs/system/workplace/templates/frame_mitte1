@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<WORKPLACE>
+<TEMPLATE>
+<![CDATA[
+<html>
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+
+<title>OpenCms</title>
+<link rel=stylesheet type="text/css" href="../css/format.css">
+
+</HEAD>
+	<body background="]]><METHOD name="picsUrl">_bg_mitte_rahmen_mitte.gif</METHOD><![CDATA[">
+		
+	</body>
+</html>
+]]>
+</TEMPLATE>
+</WORKPLACE> 

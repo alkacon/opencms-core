@@ -695,6 +695,87 @@
             <properties/>
         </file>
         <file>
+            <source>action/frame_leer.html</source>
+            <destination>system/workplace/action/frame_leer.html</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties/>
+        </file>
+        <file>
+            <source>action/frame_links1.html</source>
+            <destination>system/workplace/action/frame_links1.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>
+        <file>
+            <source>action/frame_links2.html</source>
+            <destination>system/workplace/action/frame_links2.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>
+        <file>
+            <source>action/frame_mitte1.html</source>
+            <destination>system/workplace/action/frame_mitte1.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>
+        <file>
+            <source>action/frame_rechts1.html</source>
+            <destination>system/workplace/action/frame_rechts1.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>
+        <file>
+            <source>action/frame_rechts2.html</source>
+            <destination>system/workplace/action/frame_rechts2.html</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties/>
+        </file>
+        <file>
+            <source>action/frame_rechts3.html</source>
+            <destination>system/workplace/action/frame_rechts3.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>
+        <file>
+            <source>action/frame_text.html</source>
+            <destination>system/workplace/action/frame_text.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>
+        <file>
+            <source>action/frame_title.html</source>
+            <destination>system/workplace/action/frame_title.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>
+        <file>
             <source>action/folder_tree.html</source>
             <destination>system/workplace/action/folder_tree.html</destination>
             <type>XMLTemplate</type>
@@ -1342,6 +1423,227 @@
             <user>Admin</user>
             <group>Users</group>
             <access>79</access>
+            <properties/>
+        </file>
+        <file>
+            <destination>system/workplace/administration/module</destination>
+            <type>folder</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>visiblemethod</name>
+                    <type>0</type>
+                    <value><![CDATA[com.opencms.workplace.CmsWorkplaceDefault.isAdmin]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>0</type>
+                    <value><![CDATA[icon.module]]></value>
+                </property>
+                <property>
+                    <name>Title</name>
+                    <type>0</type>
+                    <value><![CDATA[ic_admin_module]]></value>
+                </property>
+                <property>
+                    <name>NavPos</name>
+                    <type>0</type>
+                    <value><![CDATA[12]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>administration/module/delete_warning_content</source>
+            <destination>system/workplace/administration/module/delete_warning_content</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <type>1</type>
+                    <value><![CDATA[ ]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>administration/module/delete_warning_content.html</source>
+            <destination>system/workplace/administration/module/delete_warning_content.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>
+        <file>
+            <source>administration/module/head_module1</source>
+            <destination>system/workplace/administration/module/head_module1</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
+            <source>administration/module/head_module1.html</source>
+            <destination>system/workplace/administration/module/head_module1.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>
+        <file>
+            <source>administration/module/head_module2</source>
+            <destination>system/workplace/administration/module/head_module2</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
+            <source>administration/module/head_module2.html</source>
+            <destination>system/workplace/administration/module/head_module2.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>
+        <file>
+            <source>administration/module/index</source>
+            <destination>system/workplace/administration/module/index</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <type>1</type>
+                    <value><![CDATA[ ]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>administration/module/index.html</source>
+            <destination>system/workplace/administration/module/index.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>
+        <file>
+            <source>administration/module/module_delete</source>
+            <destination>system/workplace/administration/module/module_delete</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <type>1</type>
+                    <value><![CDATA[ ]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>administration/module/module_delete.html</source>
+            <destination>system/workplace/administration/module/module_delete.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>
+        <file>
+            <source>administration/module/module_new</source>
+            <destination>system/workplace/administration/module/module_new</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <type>1</type>
+                    <value><![CDATA[ ]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>administration/module/module_new.html</source>
+            <destination>system/workplace/administration/module/module_new.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>
+        <file>
+            <source>administration/module/overwrfiles_mitte_mitte</source>
+            <destination>system/workplace/administration/module/overwrfiles_mitte_mitte</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties/>
+        </file>
+        <file>
+            <source>administration/module/overwrfiles_mitte_mitte.html</source>
+            <destination>system/workplace/administration/module/overwrfiles_mitte_mitte.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>
+        <file>
+            <source>administration/module/overwrfiles_unten</source>
+            <destination>system/workplace/administration/module/overwrfiles_unten</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties/>
+        </file>
+        <file>
+            <source>administration/module/overwrfiles_unten.html</source>
+            <destination>system/workplace/administration/module/overwrfiles_unten.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>
+        <file>
+            <source>administration/module/properties</source>
+            <destination>system/workplace/administration/module/properties</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <type>1</type>
+                    <value><![CDATA[ ]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>administration/module/properties.html</source>
+            <destination>system/workplace/administration/module/properties.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
             <properties/>
         </file>
         <file>
@@ -3794,6 +4096,105 @@
             <access>79</access>
             <properties/>
         </file>
+        <file>
+            <<source>pics/system/_Bg_mitte_links.gif</source>
+            <destination>system/workplace/pics/_Bg_mitte_links.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties/>
+        </file>
+        <file>
+            <<source>pics/system/_bg_grau.gif</source>
+            <destination>system/workplace/pics/_bg_grau.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties/>
+        </file>
+        <file>
+            <<source>pics/system/_bg_mitte.gif</source>
+            <destination>system/workplace/pics/_bg_mitte.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties/>
+        </file>
+        <file>
+            <<source>pics/system/_bg_mitte2.gif</source>
+            <destination>system/workplace/pics/_bg_mitte2.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties/>
+        </file>
+        <file>
+            <<source>pics/system/_bg_mitte3.gif</source>
+            <destination>system/workplace/pics/_bg_mitte3.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties/>
+        </file>
+        <file>
+            <<source>pics/system/_bg_mitte4.gif</source>
+            <destination>system/workplace/pics/_bg_mitte4.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties/>
+        </file>
+        <file>
+            <<source>pics/system/_bg_mitte_oben.gif</source>
+            <destination>system/workplace/pics/_bg_mitte_oben.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties/>
+        </file>
+        <file>
+            <<source>pics/system/_bg_mitte_rahmen.gif</source>
+            <destination>system/workplace/pics/_bg_mitte_rahmen.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties/>
+        </file>
+        <file>
+            <<source>pics/system/_bg_mitte_rahmen_links.gif</source>
+            <destination>system/workplace/pics/_bg_mitte_rahmen_links.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties/>
+        </file>
+        <file>
+            <<source>pics/system/_bg_mitte_rahmen_mitte.gif</source>
+            <destination>system/workplace/pics/_bg_mitte_rahmen_mitte.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties/>
+        </file>
+        <file>
+            <<source>pics/system/_bg_mitte_rechts.gif</source>
+            <destination>system/workplace/pics/_bg_mitte_rechts.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties/>
+        </file>
 		<file>
             <source>pics/system/bg_grau.gif</source>
             <destination>system/workplace/pics/bg_grau.gif</destination>
@@ -3810,6 +4211,24 @@
             <user>Admin</user>
             <group>Users</group>
             <access>15</access>
+            <properties/>
+        </file>
+        <file>
+            <<source>pics/system/bg_mitte4.gif</source>
+            <destination>system/workplace/pics/bg_mitte4.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties/>
+        </file>
+        <file>
+            <<source>pics/system/bg_mitte_rechts.gif</source>
+            <destination>system/workplace/pics/bg_mitte_rechts.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
             <properties/>
         </file>
         <file>
@@ -5604,6 +6023,21 @@
             <properties/>
         </file>
         <file>
+            <source>pics/system/ic_admin_module.gif</source>
+            <destination>system/workplace/pics/ic_admin_module.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <type>5</type>
+                    <value><![CDATA[w]]></value>
+                </property>
+            </properties>
+        </file>
+          <file>
             <source>pics/system/ic_admin_newext.gif</source>
             <destination>system/workplace/pics/ic_admin_newext.gif</destination>
             <type>image</type>
@@ -5955,6 +6389,21 @@
             <properties/>
         </file>
         <file>
+            <source>pics/system/ic_local.gif</source>
+            <destination>system/workplace/pics/ic_local.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <type>5</type>
+                    <value><![CDATA[ic_local]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
             <source>pics/system/ic_lock.gif</source>
             <destination>system/workplace/pics/ic_lock.gif</destination>
             <type>image</type>
@@ -6043,6 +6492,21 @@
             <group>Users</group>
             <access>15</access>
             <properties/>
+        </file>
+        <file>
+            <source>pics/system/ic_server.gif</source>
+            <destination>system/workplace/pics/ic_server.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <type>5</type>
+                    <value><![CDATA[ic_server]]></value>
+                </property>
+            </properties>
         </file>
         <file>
             <source>pics/system/ic_task_activ.gif</source>
@@ -6386,6 +6850,21 @@
             <access>15</access>
             <properties/>
         </file>        
+      <file>
+            <source>pics/system/pixel_blue.gif</source>
+            <destination>system/workplace/pics/pixel_blue.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <type>5</type>
+                    <value><![CDATA[wait]]></value>
+                </property>
+            </properties>
+        </file>
         <file>
             <destination>system/workplace/templates</destination>
             <type>folder</type>
@@ -7139,6 +7618,69 @@
             <properties/>
         </file>
         <file>
+            <source>templates/frame_links1</source>
+            <destination>system/workplace/templates/frame_links1</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties/>
+        </file>
+        <file>
+            <source>templates/frame_links2</source>
+            <destination>system/workplace/templates/frame_links2</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties/>
+        </file>
+        <file>
+            <source>templates/frame_mitte1</source>
+            <destination>system/workplace/templates/frame_mitte1</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties/>
+        </file>
+        <file>
+            <source>templates/frame_rechts1</source>
+            <destination>system/workplace/templates/frame_rechts1</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties/>
+        </file>
+        <file>
+            <source>templates/frame_rechts3</source>
+            <destination>system/workplace/templates/frame_rechts3</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties/>
+        </file>
+        <file>
+            <source>templates/frame_text</source>
+            <destination>system/workplace/templates/frame_text</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties/>
+        </file>
+        <file>
+            <source>templates/frame_title</source>
+            <destination>system/workplace/templates/frame_title</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties/>
+        </file>
+        <file>
             <source>templates/head</source>
             <destination>system/workplace/templates/head</destination>
             <type>plain</type>
@@ -7227,6 +7769,21 @@
             <group>Users</group>
             <access>79</access>
             <properties/>
+        </file>
+        <file>
+            <source>templates/moduletemplate</source>
+            <destination>system/workplace/templates/moduletemplate</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>Title</name>
+                    <type>1</type>
+                    <value><![CDATA[ ]]></value>
+                </property>
+            </properties>
         </file>
         <file>
             <source>templates/move</source>

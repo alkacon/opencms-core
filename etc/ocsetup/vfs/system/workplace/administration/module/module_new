@@ -1,0 +1,466 @@
+<?xml version="1.0"?>
+<WORKPLACE>
+<TEMPLATE>
+<![CDATA[
+<HTML>
+
+<!-- Include external JavaScripts-->
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../../templates/js/opencms.js"></SCRIPT>
+
+<script language=JavaScript>
+<!--
+function show_help()
+{
+	return '2_2_2_2_3.html';
+}
+
+//-->
+</script>
+
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+
+<title>OpenCms</title>
+<link rel=stylesheet type="text/css" href="../../css/format.css">
+
+</HEAD>
+<body onLoad="window.top.body.admin_head.location.href='head_module2.html';" bgcolor="#ffffff" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0>
+<!-- Beginn neue Datei Anlegen -->
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=center valign=middle>
+
+<form id="UPLOAD" name="UPLOAD">
+<table border=2 cellspacing=0 cellpadding=0 width=500>
+<tr><td><table cellspacing=0 cellpadding=3 border=0 width=100% height=100%>
+	<tr><td colspan=3 class=head>]]><LABEL value="module.lable.upload"/><![CDATA[</td></tr>
+	<tr><td colspan=3 class=leerzeile>&nbsp;</td></tr>
+	<tr>
+		<td class=leerzeile width=5%>&nbsp;</td>
+		<td class=leerzeile width=90%>
+			<table border=1 width=100%>
+				<tr><td class=wizard>
+					<table border=0 width=100%>
+						<tr>
+							<td align=middle width=5%><INPUT type="radio" id=M_UPLOAD name=M_UPLOAD checked value="local"></td>
+							<td align=middle width=10%><IMG name="folder" src="]]><METHOD name="picsUrl">ic_local.gif</METHOD><![CDATA[" border=0 width=16 height=16></td>
+							<td align=left>]]><LABEL value="module.lable.local"/><![CDATA[</td>
+						</tr>
+						<tr>
+							<td align=middle><INPUT type="radio" id=M_UPLOAD name=M_UPLOAD value="server"></td>
+							<td align=middle><IMG src="]]><METHOD name="picsUrl">ic_server.gif</METHOD><![CDATA[" border=0 width=16 height=16></td>
+							<td align=left>]]><LABEL value="module.lable.server"/><![CDATA[</td>
+						</tr>
+					</table>
+				</td></tr>
+			</table>
+		</td>
+		<td class=leerzeile width=5%>&nbsp;</td>
+	</tr>
+
+	<tr><td colspan=3 class=formular>
+			<table cellspacing=0 cellpadding=5 width=100%>
+			<tr>
+				<td class=formular align=right width=60%><INPUT disabled class=button width=100 type="button" value="]]><LABEL value="button.previousscreen" /><![CDATA[" id=ZURUECK name=ZURUECK></td>
+				<td class=formular align=middle width=20%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.nextscreen" /><![CDATA[" id=WEITER name=WEITER onClick="loc=check_radio('UPLOAD', 'M_UPLOAD', 2); location='module_new.html?step='+loc"></td>
+				<td class=formular align=middle width=20%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="location='index.html';"></td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+	</table>
+</td>
+</tr>
+</table>
+</form>
+
+</td></tr>
+</table>
+<!-- Ende modul hochladen-->
+</BODY>
+</html>
+]]>
+</TEMPLATE>
+
+
+<TEMPLATE name="server">
+<![CDATA[
+<HTML>
+<!-- Include external JavaScripts-->
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../../templates/js/opencms.js"></SCRIPT>
+<head>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+	<title>OpenCms</title>
+	<link rel=stylesheet type="text/css" href="../../css/format.css">
+</HEAD>
+<body onLoad="" bgcolor="#ffffff" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0>
+<!-- Tabelle um vertikal und horizontal zu zentrieren-->
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=middle valign=center>
+
+<!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
+<form id=DBIMPORT name=DBIMPORT action="module_new.html?step=serverupload" method="post">
+<table cellspacing=0 cellpadding=0 border=0 width=500>
+	<tr><td>
+		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+			
+			<!-- Beginn Tabellenkopf blau-->
+			<tr> 
+           		<td class="head">]]><LABEL value="module.lable.uploadserver"/><![CDATA[</td>
+			</tr>
+			<!-- Ende Tabellenkopf blau-->
+			
+			<!-- Beginn Leerzeile-->
+			<tr> 
+           		<td class="leerzeile">&nbsp;</td>
+			</tr>
+			<!-- Ende Leerzeile-->
+			
+			<!-- Beginn Inhalt-->
+			<tr><td class=dialogtxt>
+				<table border=0 width=100%>
+					<tr><td class=dialogtxt>
+						<table border=0 width=100%>
+							<tr>
+								<td class=formular width=20%>Name:</td>
+								<td class=dialogtxt>
+									<select name="moduleselect" width=150 style="width:150px">
+										]]><PROCESS>entries</PROCESS><![CDATA[
+									</select>
+								</td>
+							</tr>
+							<!-- Beginn Leerzeile-->
+							<tr> 
+           						<td class="leerzeile" colspan=2>&nbsp;</td>
+							</tr>
+							<!-- Ende Leerzeile-->
+							</table>
+					</td></tr>
+				</table>
+			</td></tr>
+			
+			<!-- Beginn Buttonleisete-->
+			<tr><td class=dialogtxt>
+				<table cellspacing=0 cellpadding=5 width=100% align=center>				
+				<tr>
+					<td class=formular align=right><INPUT class=button width=100 type="button" value="]]><LABEL value="button.previousscreen" /><![CDATA[" id=OK name=OK onClick="location='module_new.html';"></td>
+					<td class=formular align=center><INPUT class=button width=100 type="submit" value="]]><LABEL value="button.nextscreen" /><![CDATA[" id=OK name=OK </td>
+					<td class=formular align=left><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL name=CANCEL onClick="location='index.html';"></td>
+				</tr>
+				</table>
+			</td>
+			</tr>
+			<!-- Ende Buttonleisete-->
+			
+			</table>
+	</td></tr>
+</table>
+</form>
+</td></tr>
+</table>
+<!-- Ende modul hochladenvon server-->
+</BODY>
+</html>
+]]>
+</TEMPLATE>
+<optionentry>
+	<![CDATA[ <option>]]><PROCESS>modulname</PROCESS><![CDATA[
+	]]>
+</optionentry>
+
+
+<TEMPLATE name="local">
+<![CDATA[
+<HTML>
+<!-- Include external JavaScripts-->
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../../templates/js/opencms.js"></SCRIPT>
+<head>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+	<title>OpenCms</title>
+	<link rel=stylesheet type="text/css" href="../../css/format.css">
+</HEAD>
+<body onLoad="" bgcolor="#ffffff" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0>
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=center valign=middle>
+
+<form name=UPLOAD action="module_new.html?step=localupload" method=POST ENCTYPE="multipart/form-data">
+<table border=2 cellspacing=0 cellpadding=0 width=500px>
+<tr><td>
+	<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+	<tr><td colspan=2 class=head>]]><LABEL value="module.lable.uploadlocal"/><![CDATA[</td></tr>
+	<tr><td colspan=2 class=leerzeile>&nbsp;</td></tr>
+	<tr>
+		<td class=formular width=10%>]]><LABEL value="module.lable.name"/><![CDATA[</td>
+		<td class=dialogtxt align=left><INPUT size="30" maxlength="30" class="textfeld3" type="file" id=DATEINAME name=DATEINAME onfocus="UPLOAD.WEITER.disabled=false"></td>
+	</tr>
+	<tr>
+		<td colspan=2 class=leerzeile>&nbsp;</td>
+	<tr>
+		<td colspan=2 class=formular>
+			<table cellspacing=0 cellpadding=5 width=100%>
+			<tr>
+				<td class=formular align=right width=60%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.previousscreen" /><![CDATA[" id=ZURUECK name=ZURUECK onClick="location='module_new.html';"></td>
+				<td class=formular align=middle width=20%><INPUT disabled class=button width=100 type="submit" value="]]><LABEL value="button.nextscreen" /><![CDATA[" id=WEITER name=WEITER></td>
+				<td class=formular align=middle width=20%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="location='index.html';"></td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+	</table>
+</td>
+</tr>
+</table>
+</form>
+</td></tr>
+</table>
+<!-- Ende modul hochladen von local Computer-->
+</BODY>
+</html>
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="files">
+<![CDATA[
+<html>
+<head>
+	<title>OpenCms</title>
+</head>
+<frameset cols="*,16,600,18,*" frameborder=0 border=0>
+	<frame src="../../action/frame_leer.html" name="empty1" scrolling="no">
+	<frameset rows="*,27,23,35,270,60,*" frameborder=0 border=0>
+		<frame src="../../action/frame_leer.html" name="left1" scrolling="no">
+		<frame src="../../action/frame_rechts1.html" name="left2" scrolling="no">
+		<frame src="../../action/frame_links1.html" name="left3" scrolling="no">
+		<frame src="../../action/frame_links2.html" name="left4" scrolling="no">
+		<frame src="../../action/frame_links2.html" name="left5" scrolling="no">
+		<frame src="../../action/frame_links2.html" name="left6" scrolling="no">
+		<frame src="../../action/frame_leer.html" name="left7" scrolling="no">
+	</frameset>
+	<frameset rows="*,27,23,35,270,60,*" frameborder=0 border=0>
+		<frame src="../../action/frame_leer.html" name="head1" scrolling="no">	
+		<frame src="../../action/frame_mitte1.html" name="head2" scrolling="no">
+		<frame src="../../action/frame_leer.html" name="title" scrolling="no">
+		<frame src="../../action/frame_leer.html" name="text" scrolling="no">
+		<frame src="overwrfiles_mitte_mitte.html" name="content">
+		<frame src="overwrfiles_unten.html" name="buttons" scrolling="no">
+		<frame src="../../action/frame_leer.html" name="down" scrolling="no">
+	</frameset>	
+	<frameset rows="*,27,23,35,270,60,*" frameborder=0 border=0>
+		<frame src="../../action/frame_leer.html" name="right1" scrolling="no">
+		<frame src="../../action/frame_rechts1.html" name="right2" scrolling="no">
+		<frame src="../../action/frame_rechts2.html" name="right3" scrolling="no">
+		<frame src="../../action/frame_rechts3.html" name="right4" scrolling="no">
+		<frame src="../../action/frame_rechts3.html" name="right5" scrolling="no">
+		<frame src="../../action/frame_rechts3.html" name="right6" scrolling="no">
+		<frame src="../../action/frame_leer.html" name="right7" scrolling="no">
+	</frameset>
+	<frame src="../../action/frame_leer.html" name="empty2">
+</frameset>
+<BODY>
+</BODY>
+</HTML>
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="errorreplace">
+<![CDATA[
+<HTML>
+<script language=JavaScript>
+<!--
+function show_help()
+{
+	return '2_2_2_2_6_1.html';
+}
+//-->
+</script>
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<title>OpenCms</title>
+<link rel=stylesheet type="text/css" href="../../css/format.css">
+</HEAD>
+<BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
+<!-- Tabelle um vertikal und horizontal zu zentrieren-->
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=middle valign=center>
+<!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
+<form id=LOCK name=LOCK>
+<table cellspacing=0 cellpadding=0 border=2 width=300>
+	<tr><td>
+		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+			<!-- Beginn Tabellenkopf blau-->
+			<tr> 
+           		<td colspan=2 class="head">]]><LABEL value="module.error.replace" /><![CDATA[</td>
+			</tr>
+			<!-- Ende Tabellenkopf blau-->
+			<!-- Beginn Leerzeile-->
+			<tr> 
+           		<td colspan=2 class="leerzeile">&nbsp;</td>
+			</tr>
+			<!-- Ende Leerzeile-->
+			<tr>
+				<td class=dialogtxt width=50%>
+					]]><LABEL value="label.modulname"/><![CDATA[: ]]><PROCESS>name</PROCESS><![CDATA[
+				</td>
+				<td class=dialogtxt width=50%>
+					]]><LABEL value="label.version"/><![CDATA[: ]]><PROCESS>version</PROCESS><![CDATA[
+				</td>
+			</tr>
+			<tr>
+				<td class=dialogtxt colspan=2>
+					]]><LABEL value="module.error.replacemessage" /><![CDATA[
+				</td>
+			</tr>
+			<!-- Beginn Leerzeile-->
+			<tr> 
+           		<td colspan=2 class="leerzeile">&nbsp;</td>
+			</tr>
+			<!-- Ende Leerzeile-->
+			<!-- Beginn Buttonleisete-->
+			<tr><td class=dialogtxt colspan=2>
+				<table cellspacing=0 cellpadding=5 width=100%>
+				<tr>
+					<td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK onClick="location.href='module_delete.html?module=]]><PROCESS>name</PROCESS><![CDATA['"></td>
+					<td class=formular align=left width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL name=CANCEL onClick="location.href='index.html'"></td>
+				</tr>
+				</table>
+			</td>
+			</tr>
+			<!-- Ende Buttonleisete-->
+			</table>
+	</td></tr>
+</table>
+</form>
+</td></tr>
+</table>
+</BODY>
+</html>
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="errordep">
+<![CDATA[
+<HTML>
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<title>Dialog</title>
+<link rel=stylesheet type="text/css" href="../../css/format.css">
+</HEAD>
+<BODY bgcolor="#ffffff"  background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
+<!-- Tabelle um vertikal und horizontal zu zentrieren-->
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=middle valign=center>
+<!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
+<form id=XXX name=XXX>
+<table cellspacing=0 cellpadding=0 border=2 width=300>
+	<tr><td>
+		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+			<!-- Beginn Tabellenkopf blau-->
+			<tr> 
+           		<td colspan=2 class="head">]]><LABLE value="module.error.dependences" /><![CDATA[</td>
+			</tr>
+			<!-- Ende Tabellenkopf blau-->
+			<!-- Beginn Leerzeile-->
+			<tr> 
+           		<td colspan=2 class="leerzeile">&nbsp;</td>
+			</tr>
+			<!-- Ende Leerzeile-->
+			<tr><td class=dialogtxt rowspan=3 valign=top><img src="]]><METHOD name="picsUrl">ic_caution.gif</METHOD><![CDATA[" border=0 width=32 height=32></td>
+				<td class=dialogtxt>]]><LABEL value="label.modulname"/><![CDATA[:  ]]><PROCESS>name</PROCESS><![CDATA[&nbsp&nbsp&nbsp&nbsp&nbsp ]]><LABEL value="label.version"/><![CDATA[: ]]><PROCESS>version</PROCESS><![CDATA[</td>
+			</tr>
+			<tr><td class=dialogtxt>]]><LABEL value="module.error.precondition" /><![CDATA[
+                                        ]]><PROCESS>precondition</PROCESS><![CDATA[
+			</td></tr>
+			<tr><td class=dialogtxt>&nbsp</td></tr>
+			<!-- Beginn Leerzeile-->
+			<tr> 
+           		<td colspan=2 class="leerzeile">&nbsp;</td>
+			</tr>
+			<!-- Ende Leerzeile-->
+			<!-- Beginn Buttonleisete-->
+			<tr><td class=dialogtxt colspan=2>
+				<table cellspacing=0 cellpadding=5 width=100%>
+				<tr>
+					<td class=formular align=middle><INPUT class=button width=100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK onClick="location.href = 'index.html'"></td>
+				</tr>
+				</table>
+			</td>
+			</tr>
+			<!-- Ende Buttonleisete-->
+			</table>
+	</td></tr>
+</table>
+</form>
+</td></tr>
+</table>
+</BODY>
+</html>
+]]>
+</TEMPLATE>
+
+
+
+
+<TEMPLATE name="done">
+<![CDATA[
+<HTML>
+<HEAD>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../../templates/js/opencms.js"></SCRIPT>
+</HEAD>
+<BODY onload="window.top.head.location.href='../../action/head.html'; parent.frames[1].location.href='../../action/administration_content_top.html?sender=/system/workplace/administration/module/'">
+<CENTER>
+<!-- Begin Logo opencms -->
+<table border=0 cellspacing=0 cellpadding=0 align=center height=100>
+	<tr>
+		<td><IMG alt=OpenCMS border=0 hspace=0 src="]]><METHOD name="picsUrl">opencms.gif</METHOD><![CDATA["></td>
+	</tr>
+</table>
+<!-- End Logo opencms -->
+
+<!-- Begin please wait text -->
+<table cellspacing=0 cellpadding=0 border=0>
+<tr>
+<td><font size="-1" face="MS Sans Serif,Arial,Helvetica">]]><LABEL value="message.wait"/><![CDATA[</font></td>
+</tr>
+</table>
+<!-- End please wait text -->
+</CENTER>
+</BODY>
+</HTML>
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="wait">
+<![CDATA[
+<HTML>
+<HEAD>
+<meta http-equiv="refresh" content="15; URL=module_new.html?step=working&time=]]><PROCESS>time</PROCESS><![CDATA[">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../../templates/js/opencms.js"></SCRIPT>
+</HEAD>
+<BODY onload="">
+<CENTER>
+<!-- Begin Logo opencms -->
+<table border=0 cellspacing=0 cellpadding=0 align=center height=100>
+	<tr>
+		<td><IMG alt=OpenCMS border=0 hspace=0 src="]]><METHOD name="picsUrl">opencms.gif</METHOD><![CDATA["></td>
+	</tr>
+</table>
+<!-- End Logo opencms -->
+
+<!-- Begin please wait text -->
+<table cellspacing=0 cellpadding=0 border=0>
+<tr>
+<td><font size="-1" face="MS Sans Serif,Arial,Helvetica">]]><LABEL value="message.wait"/><![CDATA[</font></td>
+</tr>
+</table>
+<!-- End please wait text -->
+<table cellspacing=0 cellpadding=0 border=0>
+	<tr>
+		<td><IMG width=]]><PROCESS>time</PROCESS><![CDATA[ height=20 border=0 hspace=0 src="]]><METHOD name="picsUrl">pixel_blue.gif</METHOD><![CDATA["></td>
+	</tr>
+</table>
+</CENTER>
+</BODY>
+</HTML>
+]]>
+</TEMPLATE>
+
+</WORKPLACE> 
