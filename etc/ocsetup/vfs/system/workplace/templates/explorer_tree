@@ -12,10 +12,6 @@
 <body bgcolor="#ffffff" onload="top.display_ex();">
 
 <!-- begin of folder tree -->
-<table cellspacing=0 cellpadding=0 border=0>
-<tr><td valign=top align=left nowrap><A href="javascript:updateFrame('body.explorer_content.explorer_files','explorer_files.html?filelist=/');updateFrame('body.explorer_tree','explorer_tree.html?filelist=/');;updateFrame('body.explorer_content.explorer_head','explorer_head.html?filelist=/')"><IMG border=0  src="]]><METHOD name="picsUrl">ic_tree_start.gif</METHOD><![CDATA[" vspace=0 width=16 height=16 align=bottom></a> <a href="javascript:updateFrame('body.explorer_content.explorer_files','explorer_files.html?filelist=/');updateFrame('body.explorer_tree','explorer_tree.html?filelist=/');updateFrame('body.explorer_content.explorer_head','explorer_head.html?filelist=/')" class="treefolder">]]><LABEL value="title.rootfolder" /><![CDATA[</a></td></tr>
-]]><METHOD name="getTree"></METHOD><![CDATA[
-</table>
 <!-- end of folder tree -->
 </body>
 </html> 

@@ -206,7 +206,8 @@ location.href="publish_project.html?action=working&time=]]><PROCESS>time</PROCES
 <TEMPLATE name="done">
 <![CDATA[
 <HTML>
-<BODY onload="window.top.head.location.href='head.html';">
+<BODY onload="window.top.location.reload();">
+hallo
 </BODY>
 </html>
 ]]>

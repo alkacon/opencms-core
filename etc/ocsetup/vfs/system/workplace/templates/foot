@@ -14,7 +14,7 @@
 <link rel=stylesheet type="text/css" href="../css/format.css">
 </head>
 
-<body background="]]><METHOD name="picsUrl">bg_grau.gif</METHOD><![CDATA["  bgproperties=fixed>
+<body background="]]><METHOD name="picsUrl">bg_grau.gif</METHOD><![CDATA["  bgproperties=fixed onload="JavaScript:window.setTimeout('location.reload();',300000);">
 <form 
     name="form1"
     id="form1"
