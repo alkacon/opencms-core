@@ -15,6 +15,7 @@ OpenCms 4.3.10 Bela Tegeuse - 10 May 2001
 * fixed bug in Editor: All templates are shown now correctly
 * fixed bug in SQL-Pool: deadlocks are fixed now
 - Second bodies are now called "body2" per default (instead of "body1").
+! CmsMail can now be used without CmsObject
 
 OpenCms 4.3.9 Bela Tegeuse - 30 April 2001
 ! Selecting a default-body for an new page is possible now. Thanks to Jeroen Habets.
