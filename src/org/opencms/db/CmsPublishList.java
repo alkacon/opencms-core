@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishList.java,v $
- * Date   : $Date: 2004/10/31 21:30:18 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/11/17 16:11:54 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.List;
  * creates Cms publish lists.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.13 $ $Date: 2004/10/31 21:30:18 $
+ * @version $Revision: 1.14 $ $Date: 2004/11/17 16:11:54 $
  * @since 5.3.0
  * @see org.opencms.db.CmsDriverManager#getPublishList(org.opencms.file.CmsRequestContext, CmsResource, boolean)
  */
@@ -66,6 +66,9 @@ public class CmsPublishList extends Object {
 
     /** The list of new/changed Cms folder resources to be published.<p> */
     private List m_folderList;
+    
+    /** The list of deleted Cms folder resources to be published.<p> */
+    private List m_deletedFolderList;
 
     /** The publish history ID.<p> */
     private CmsUUID m_publishHistoryId;
@@ -84,6 +87,7 @@ public class CmsPublishList extends Object {
     public CmsPublishList(CmsResource directPublishResource) {
         m_fileList = new ArrayList();
         m_folderList = new ArrayList();
+        m_deletedFolderList = new ArrayList();
         m_publishResource = directPublishResource;
 
         m_publishHistoryId = new CmsUUID();
@@ -141,8 +145,12 @@ public class CmsPublishList extends Object {
         if (resource.getState() == I_CmsConstants.C_STATE_UNCHANGED) {
             throw new IllegalArgumentException("Cms resource '" + resource.getRootPath() + "' is a unchanged resource!");
         }
-
-        m_folderList.add(resource);
+        
+        if (resource.getState() == I_CmsConstants.C_STATE_DELETED) {
+            m_deletedFolderList.add(resource);
+        } else {
+            m_folderList.add(resource);
+        }
     }
 
     /**
@@ -188,16 +196,7 @@ public class CmsPublishList extends Object {
      * @return a list of folder resources with the desired state
      */
     public List getDeletedFolderList() {
-        List result = new ArrayList();
-        for (int i = 0; i < m_folderList.size(); i++) {
-            CmsResource res = (CmsResource)m_folderList.get(i);
-            if (res.getState() == I_CmsConstants.C_STATE_DELETED) {
-                result.add(res);
-            }
-        }
-        
-        Collections.sort(result, Collections.reverseOrder());
-        return result;
+        return m_deletedFolderList;
     }
     
     /**
