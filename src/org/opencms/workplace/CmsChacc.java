@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChacc.java,v $
- * Date   : $Date: 2003/11/08 10:32:44 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2003/11/10 17:10:38 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.opencms.util.CmsUUID;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 5.1
  */
@@ -445,13 +445,12 @@ public class CmsChacc extends CmsDialog {
         StringBuffer retValue = new StringBuffer("");
         
         // get name and type of the current entry
-        String name = "";
-        try {
-            name = getCms().lookupPrincipal(entry.getPrincipal()).getName();
-        } catch (CmsException e) {
-            // ignore
-        }
+        String name = getCms().lookupPrincipal(entry.getPrincipal()).getName();
         String type = getEntryType(entry.getFlags());
+        
+        if (name == null) {
+            name = "";
+        }
         
         // set the parameters for the hidden fields
         setParamType(type);
