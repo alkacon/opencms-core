@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminHistoryProperties.java,v $
-* Date   : $Date: 2003/09/09 14:47:05 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2003/09/15 09:14:19 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -266,7 +266,7 @@ public class CmsAdminHistoryProperties extends CmsWorkplaceDefault implements I_
             long oneWeek = 604800000;
             long maxDate = System.currentTimeMillis() - (intWeeks * oneWeek);
             //TODO: the second parameter is still a dummy
-            versionId = cms.deleteBackups(maxDate,100);
+            versionId = cms.deleteBackups(maxDate, intWeeks*2);
         }
         return versionId;
     } 

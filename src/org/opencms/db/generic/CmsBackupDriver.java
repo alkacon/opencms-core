@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/09/12 17:38:06 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2003/09/15 09:14:19 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,9 +56,11 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 import source.org.apache.java.util.Configurations;
@@ -67,7 +69,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the backup driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.43 $ $Date: 2003/09/12 17:38:06 $
+ * @version $Revision: 1.44 $ $Date: 2003/09/15 09:14:19 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -234,6 +236,37 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
         return (projects);
     }
 
+
+    /**
+     * @see org.opencms.db.I_CmsBackupDriver#getBackupProjectTag(long)
+     */
+    public int getBackupProjectTag(long maxdate) throws CmsException {
+           ResultSet res = null;
+           PreparedStatement stmt = null;
+           Connection conn = null;
+           int maxVersion = 0;
+
+           try {
+               conn = m_sqlManager.getConnectionForBackup();
+               stmt = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_READ_MAXVERSION");
+               stmt.setTimestamp(1, new Timestamp(maxdate));
+               res = stmt.executeQuery();
+               if (res.next()) {
+                   maxVersion = res.getInt(1);
+               }
+           } catch (SQLException e) {
+               throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+           } catch (Exception ex) {
+               throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, ex, false);
+           } finally {
+               m_sqlManager.closeAll(conn, stmt, res);
+           }
+           return maxVersion;
+       }
+
+
+
+
     /**
      * @see org.opencms.db.I_CmsDriver#init(source.org.apache.java.util.Configurations, java.util.List, org.opencms.db.CmsDriverManager)
      */
@@ -374,14 +407,21 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
         List allHeaders = (List)new ArrayList();
         PreparedStatement stmt = null;
         Connection conn = null;
-
+        Set storage=new HashSet();
+        
+        
         try {
             conn = m_sqlManager.getConnectionForBackup();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_READ_ALL_BACKUP");
             res = stmt.executeQuery();
             while (res.next()) {
                 currentBackupResource = createCmsBackupResourceFromResultSet(res, false);
-                allHeaders.add(currentBackupResource);
+                // only add each structureIdxresourceId combination once
+                String key=currentBackupResource.getStructureId().toString()+currentBackupResource.getResourceId().toString();
+                if (!storage.contains(key)) {                                
+                    allHeaders.add(currentBackupResource);
+                    storage.add(key);
+                }
             }
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
@@ -389,11 +429,13 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             throw new CmsException("readAllBackupFileHeaders " + exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
+            storage=null;
         }
 
         return allHeaders;
     }
     
+
     /**
      * @see org.opencms.db.I_CmsBackupDriver#readBackupFile(int, com.opencms.flex.util.CmsUUID)
      */
@@ -544,6 +586,8 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
 
         return projectResources;
     }
+    
+    
      
     /**
      * @see org.opencms.db.I_CmsBackupDriver#readBackupProperties(com.opencms.file.CmsBackupResource)
@@ -578,7 +622,8 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             m_sqlManager.closeAll(conn, stmt, result);
         }
         return (returnValue);
-    }    
+    }
+    
 
     /**
      * @see org.opencms.db.I_CmsBackupDriver#writeBackupProject(com.opencms.file.CmsProject, int, long, com.opencms.file.CmsUser)
@@ -797,6 +842,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
         }
     }
 
+
     /**
      * @see org.opencms.db.I_CmsBackupDriver#readMaxBackupVersion(com.opencms.flex.util.CmsUUID)
      */
@@ -813,7 +859,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             res = stmt.executeQuery();
 
             if (res.next()) {
-                maxBackupVersion = res.getInt(m_sqlManager.get("C_RESOURCES_TAG_ID"));
+                maxBackupVersion = res.getInt(1);
             } else {
                 maxBackupVersion = 0;
             }

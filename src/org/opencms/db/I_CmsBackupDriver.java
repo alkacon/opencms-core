@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsBackupDriver.java,v $
- * Date   : $Date: 2003/09/12 10:01:54 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2003/09/15 09:14:19 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.Vector;
  * of resource that were saved during one backup process.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.19 $ $Date: 2003/09/12 10:01:54 $
+ * @version $Revision: 1.20 $ $Date: 2003/09/15 09:14:19 $
  * @since 5.1
  */
 public interface I_CmsBackupDriver {
@@ -94,6 +94,16 @@ public interface I_CmsBackupDriver {
      * @throws CmsException if an error occurs
      */
     Vector getAllBackupProjects() throws CmsException;
+
+    /**
+     * Gets the TagId of the first backup project after a given date.<p>
+     * 
+     * This method is used during the deletion process of older backup data. 
+     * @param maxdate the date to compare the backup projects with
+     * @return tag id of the first backup project after maxdate 
+     * @throws CmsException if something goes wrong
+     */
+    int getBackupProjectTag(long maxdate) throws CmsException;
 
     /**
      * Initializes the SQL manager for this driver.<p>
@@ -226,7 +236,7 @@ public interface I_CmsBackupDriver {
     /**
      * Returns the max. current backup version of a resource.<p>
      * 
-     * @param resourceId the structure ID of the resource
+     * @param resourceId the resource ID of the resource
      * @return Returns the max. current backup version of a resource.
      * @throws CmsException if something goes wrong
      */
