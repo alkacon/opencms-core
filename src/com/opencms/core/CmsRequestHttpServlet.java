@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsRequestHttpServlet.java,v $
- * Date   : $Date: 2000/03/28 09:10:40 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/04/18 14:38:35 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -28,6 +28,8 @@
 
 package com.opencms.core;
 
+import com.opencms.util.*;
+
 import java.util.*; 
 import java.io.*;
 
@@ -53,9 +55,9 @@ import javax.servlet.http.*;
  * the OpenCms document database.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 2000/03/28 09:10:40 $  
+ * @version $Revision: 1.6 $ $Date: 2000/04/18 14:38:35 $  
  */
-public class CmsRequestHttpServlet implements I_CmsConstants,     
+public class CmsRequestHttpServlet implements I_CmsConstants, I_CmsLogChannels,
                                               I_CmsRequest { 
     
      /**
@@ -127,16 +129,28 @@ public class CmsRequestHttpServlet implements I_CmsConstants,
      CmsRequestHttpServlet(HttpServletRequest req)
      throws IOException {
         m_req=req;
-        
+                
         // Test if this is a multipart-request.
         // If it is, extract all files from it.
         String type = req.getHeader("content-type");
         if ((type != null) && type.startsWith("multipart/form-data")){
             readRequest();
         }
-    }
-    
-    
+        
+        if(A_OpenCms.isLogging() && m_req.getQueryString() != null && m_req.getQueryString().indexOf("/") != -1) {
+            A_OpenCms.log(C_OPENCMS_INFO, "WARNING: unescaped \"/\" found in URL parameter! This may cause problems with some servlet environments.");
+            A_OpenCms.log(C_OPENCMS_INFO, javax.servlet.http.HttpUtils.getRequestURL(m_req).toString());
+        }
+                
+        if(m_req.getPathInfo().indexOf("?") != -1) {
+            A_OpenCms.log(C_OPENCMS_CRITICAL, "WARNING: URL parameters were not extracted properly.");
+            A_OpenCms.log(C_OPENCMS_CRITICAL, "This may be caused by a bug in your servlet environment with handling \"/\" characters. ");
+            A_OpenCms.log(C_OPENCMS_CRITICAL, "Please make sure you are escaping all special chars (including \"/\") in your HTML forms.");
+            A_OpenCms.log(C_OPENCMS_CRITICAL, m_req.getPathInfo());
+            throw new IOException("URL parameters not extracted properly by servlet environment. " + m_req.getPathInfo());            
+        }        
+     }
+        
     /**
      * This funtion returns the name of the requested resource. 
      * <P>
@@ -161,12 +175,24 @@ public class CmsRequestHttpServlet implements I_CmsConstants,
      * @param name The name of the parameter.
      * @returns The value of the parameter.
      */
-    public String getParameter(String name) {
+    public String getParameter(String name) {        
         String parameter=null;
-        parameter = (String)m_parameters.get(name);
-        if (parameter == null){
-            parameter=m_req.getParameter(name);           
-        }                    
+        // Test if this is a multipart-request.
+        // If it is, extract all files from it.
+        String type = m_req.getHeader("content-type");
+        if ((type != null) && type.startsWith("multipart/form-data")){
+            parameter = (String)m_parameters.get(name);
+        } else {
+            parameter=m_req.getParameter(name);   
+        }
+        
+        if(parameter != null && !"".equals(parameter) && (parameter.indexOf("%") != -1)) {
+            if(A_OpenCms.isLogging()) {
+                A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsRequestHttpServlet] encoding required for parameter " + name + "=" + parameter);
+            }
+            parameter = Encoder.unescape(parameter);
+        }
+                            
         return parameter;
     }
                                 
@@ -177,20 +203,15 @@ public class CmsRequestHttpServlet implements I_CmsConstants,
      * @return Enumeration of parameter names.
      */
     public Enumeration getParameterNames() {
-        Vector parameters=new Vector();
-        
-        // add all parameters from the original request
-        Enumeration reqPara=m_req.getParameterNames();
-        while (reqPara.hasMoreElements()) {
-            parameters.addElement((String)reqPara.nextElement());
+        String type = m_req.getHeader("content-type");
+        if ((type != null) && type.startsWith("multipart/form-data")){
+            // add all parameters extreacted in the multipart handling
+            return m_parameters.keys();
+        } else {
+            // add all parameters from the original request
+            return m_req.getParameterNames();
         }
-        // add all parameters extreacted in the multipart handling
-        Enumeration multPara=m_parameters.keys();
-        while (multPara.hasMoreElements()) {
-            parameters.addElement((String)multPara.nextElement());
-        }
-        
-        return parameters.elements();
+
     }
 
     /**
@@ -268,7 +289,7 @@ public class CmsRequestHttpServlet implements I_CmsConstants,
     if (boundary == null) {
       throw new IOException(C_REQUEST_NOBOUNDARY);
     }
-
+            
     // Construct the special input stream we'll read from
     CmsMultipartInputStreamHandler in =
       new CmsMultipartInputStreamHandler(m_req.getInputStream(), boundary, length);
@@ -287,7 +308,24 @@ public class CmsRequestHttpServlet implements I_CmsConstants,
     // Now that we're just beyond the first boundary, loop over each part
     boolean done = false;
     while (!done) {
-      done = readNextPart(in, boundary);
+        done = readNextPart(in, boundary);
+    }
+
+    // Unfortunately some servlet environmets cannot handle multipart
+    // requests AND URL parameters at the same time, we have to manage
+    // the URL params ourself here. So try to read th URL parameters:
+
+    StringTokenizer st = new StringTokenizer(m_req.getQueryString(), "&");
+    while(st.hasMoreTokens()) {
+        String currToken = st.nextToken();
+        if(currToken != null && !"".equals(currToken)) {
+            int idx = currToken.indexOf("=");
+            if(idx > -1) {
+                String key = currToken.substring(0,idx);
+                String value = (idx < (currToken.length()-1))?currToken.substring(idx+1):"";
+                m_parameters.put(key, value);
+            }
+        }
     }
   }
 
@@ -465,7 +503,7 @@ public class CmsRequestHttpServlet implements I_CmsConstants,
   * @return The boundary token.
   */
    private String extractBoundary(String line) {
-     int index = line.indexOf("boundary=");
+       int index = line.indexOf("boundary=");
      if (index == -1) {
        return null;
      }
@@ -566,7 +604,5 @@ public class CmsRequestHttpServlet implements I_CmsConstants,
       throw new IOException("Malformed line after disposition: " + origline);
     }
     return contentType;
-  }
-    
-    
+  }        
 }
