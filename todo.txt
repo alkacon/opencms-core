@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/Attic/todo.txt,v $
- * Date   : $Date: 2002/10/18 17:02:29 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2002/10/29 08:39:11 $
+ * Version: $Revision: 1.8 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -26,6 +26,27 @@ d Decision: Feature will be implemented, but implementation is delayed beyond ne
 
 As a small rule, there can be only a decision to implement a feature if there is
 also a volunteer to do the work!
+
+
+[ + ] Static export of JSP files
+================================================================================
+Suggested by:
+    Alexander Kandzior (a.kandzior@alkacon.com)
+
+Description:
+  JSP pages in OpenCms should be statically exportable just like
+  other pages, using the "export" and "exportname" properties.
+
+Issues:
+  The way the static export is implemented you don't have a
+  HttpRequest / HttpResponse available which is required in order
+  to get a request diapatcher to include() the JSP.
+  I will work around that by generating a http request and
+  save the results. This requires some tricky dealing with the "mode"
+  of the CmsObject, which (hopefully) should be solveable.
+
+Volunteers:
+  Alexander Kandzior (a.kandzior@alkacon.com)
 
 
 [ # ] Consolidate top-level directories
@@ -76,7 +97,6 @@ Issues:
 
 Volunteers:
   Alexander Kandzior (a.kandzior@alkacon.com)
-  Michael Emmerich (Michael.Emmerich@framfab.de)
 
 Updates:
   (08/26/02) Alexander Kandzior:
@@ -104,10 +124,13 @@ Updates:
   Even with this efforts it is still unclear if the new directory structure
   will make it to the final release.
   (10/16/02) Alexander Kandzior
-  Directroy translation is in place now.
+  Directroy translation (i.e "mapping") is in place now.
   You can use regular expressions in opencms.properties to set the translations.
   Galleries have been modified on a single codebase and can now easily switched
   from old to new directory mapping using constants in I_CmsWpConstants.
+  (10/29/02) Alexander Kandzior
+  The tool idea for the import was dropped because the translation works
+  well and noone seems to have the time to implement the translation tool.
 
 
 [ d ] Logfile rotation
@@ -309,12 +332,9 @@ Updates:
   (08/30/02) Michael Emmerich
   Most issues have been solved.
 
-  Spechial characters (Umlaute etc.) still cause problems in the registry.xml
+  Special characters (Umlaute etc.) still cause problems in the registry.xml
   (when used e.g. in module parameters). Also importing content of a previous
   version might cause problems with special characters in the WYSIWYG.
-
-  To overcome this import issues, a translation tool will be written that
-  changes imported files from the old to the new standard.
 
 
 [ ? ] English help file translations
@@ -338,9 +358,57 @@ Issues:
 
 Volunteers:
   Massimiliano Alessandri (m.alessandri@tiscali.it)
+  Mark Foley (mfoley5@csc.com.au)
 
 Updates:
   (08/26/02) Alexander Kandzior:
   Massimiliano Alessandri from Italy has volunteerd to do an Italian translation
   after an english translation is available.
+  (10/29/02) Mark Foley
+  Despite promising this for quite a while without delivering,
+  I have finally got some real time to address this properly.
+  We have a firm delivery date for a client so this means the translation
+  will be completed within the next two weeks.  I will be forwarding my translation
+  to the OpenCms group who will be able to roll it into a future release (I hope).
 
+
+[ + ] Import tool for content of pre 5.0 releases.
+================================================================================
+Suggested by:
+  Michael Emmerich (Michael.Emmerich@framfab.de)
+
+Description:
+  The changes in the handling of the character encoding (see below)
+  cause XMLTemplates of version before 5.0 to not be importable in the 5.0 release.
+  This means migrating from 4.x to 5.0 currently does not easily work.
+
+  Reason is the old templates do not specify the encoding.
+  Most templates and other XML files (e.g. those created with the "page"
+  editor) start with the line
+
+  <?xml version="1.0">
+
+  this has to be replaced by
+
+  <?xml version="1.0" encoding="UTF-8"?> or
+  <?xml version="1.0" encoding="ISO-8859-1"?>
+
+  or any other encoding you might use. Currently a manual search and
+  replace must be done like this:
+
+  1. Unpack the OpenCms export zip
+  2. Look for all XMlTemplates where the encoding is not specified
+  3. Add the encoding like in the examples above
+  4. Zip the files again (leave the file structure as it was)
+  5. Import the zip with the modified templates
+
+  This should do the trick.
+  For the 5.0 we will have a mechanism that detects "old style" exports
+  and does this automatically on the fly.
+
+Issues:
+    None known. Someone has to do the work.
+
+Volunteers:
+  Andreas Schouten (andreas.schouten@framfab.de)
+  Michael Emmerich (Michael.Emmerich@framfab.de)
