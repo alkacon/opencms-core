@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsPdfDocument.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/03/02 13:21:06 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,8 +39,8 @@ import org.opencms.search.A_CmsIndexResource;
 import org.opencms.search.CmsIndexException;
 
 import java.io.ByteArrayInputStream;
+import java.io.CharArrayWriter;
 import java.io.IOException;
-import java.io.StringWriter;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -56,7 +56,7 @@ import org.pdfbox.util.PDFTextStripper;
  * Lucene document factory class to extract index data from a cms resource 
  * containing Adobe pdf data.<p>
  * 
- * @version $Revision: 1.9 $ $Date: 2005/02/17 12:44:32 $
+ * @version $Revision: 1.10 $ $Date: 2005/03/02 13:21:06 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsPdfDocument extends CmsVfsDocument {
@@ -100,13 +100,12 @@ public class CmsPdfDocument extends CmsVfsDocument {
       
 
             // write content of PDF to String writer
-            StringWriter writer = new StringWriter();
+            CharArrayWriter writer = new CharArrayWriter();
             PDFTextStripper stripper = new PDFTextStripper();
             stripper.writeText(pdfDocument, writer);
 
             rawContent = writer.toString();
             writer.close();
-      
                        
         } catch (CryptographyException exc) {
            throw new CmsIndexException("Decrypting resource " + resource.getRootPath() + " failed.", exc);

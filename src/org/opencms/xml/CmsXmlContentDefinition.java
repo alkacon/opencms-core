@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentDefinition.java,v $
- * Date   : $Date: 2005/02/17 12:45:12 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/03/02 13:21:06 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * @since 5.5.0
  */
 public class CmsXmlContentDefinition implements Cloneable {
@@ -751,8 +751,13 @@ public class CmsXmlContentDefinition implements Cloneable {
 
         String path = CmsXmlUtils.getFirstXpathElement(elementPath);
 
-        // check if recursion is required to get value from a nested schema
         I_CmsXmlSchemaType type = (I_CmsXmlSchemaType)m_types.get(path);
+        if (type == null) {
+            // no node with the given path defined in schema
+            return null;
+        }
+        
+        // check if recursion is required to get value from a nested schema
         if (type.isSimpleType() || !CmsXmlUtils.isDeepXpath(elementPath)) {
             // no recusion required
             return type;

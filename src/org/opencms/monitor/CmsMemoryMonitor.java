@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2005/02/17 12:44:41 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2005/03/02 13:21:06 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.map.LRUMap;
 /**
  * Monitors OpenCms memory consumtion.<p>
  * 
- * @version $Revision: 1.38 $ $Date: 2005/02/17 12:44:41 $
+ * @version $Revision: 1.39 $ $Date: 2005/03/02 13:21:06 $
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -296,9 +296,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         }
 
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". MM interval log      : " + (m_intervalLog / 1000) + " min");
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". MM interval email    : " + (m_intervalEmail / 1000) + " min");
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". MM interval warning  : " + (m_intervalWarning / 1000) + " min");
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". MM interval log      : " + (m_intervalLog / 1000) + " sec");
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". MM interval email    : " + (m_intervalEmail / 1000) + " sec");
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". MM interval warning  : " + (m_intervalWarning / 1000) + " sec");
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". MM max usage         : " + m_maxUsagePercent + "%");
             if ((m_configuration.getEmailReceiver() == null) || (m_configuration.getEmailSender() == null)) {
                 OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". MM email             : disabled");
@@ -329,33 +329,39 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
         CmsMemoryMonitor monitor = OpenCms.getMemoryMonitor();
 
+        // make sure job is not launched twice
         if (m_currentlyRunning) {
             return null;
-        } else {
+        }         
+
+        try {
             m_currentlyRunning = true;
-        }
 
-        // check if the system is in a low memory condition
-        if (monitor.lowMemory()) {
-            // log warning
-            monitor.monitorWriteLog(true);
-            // send warning email
-            monitor.monitorSendEmail(true);
-            // clean up caches     
-            monitor.clearCaches();
+            // check if the system is in a low memory condition
+            if (monitor.lowMemory()) {
+                // log warning
+                monitor.monitorWriteLog(true);
+                // send warning email
+                monitor.monitorSendEmail(true);
+                // clean up caches     
+                monitor.clearCaches();
+            }
+    
+            // check if regular a log entry must be written
+            if ((System.currentTimeMillis() - monitor.m_lastLogStatus) > monitor.m_intervalLog) {
+                monitor.monitorWriteLog(false);
+            }
+    
+            // check if the memory status email must be send
+            if ((System.currentTimeMillis() - monitor.m_lastEmailStatus) > monitor.m_intervalEmail) {
+                monitor.monitorSendEmail(false);
+            }
+        } finally {            
+            // make sure state is reset even if an error occurs, 
+            // otherwise MM will not be executed after an error
+            m_currentlyRunning = false;
         }
-
-        // check if regular a log entry must be written
-        if ((System.currentTimeMillis() - monitor.m_lastLogStatus) > monitor.m_intervalLog) {
-            monitor.monitorWriteLog(false);
-        }
-
-        // check if the memory status email must be send
-        if ((System.currentTimeMillis() - monitor.m_lastEmailStatus) > monitor.m_intervalEmail) {
-            monitor.monitorSendEmail(false);
-        }
-
-        m_currentlyRunning = false;
+        
         return null;
     }
 

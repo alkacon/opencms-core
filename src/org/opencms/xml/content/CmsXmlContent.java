@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2005/02/17 12:45:12 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/03/02 13:21:06 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * @since 5.5.0
  */
 public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument {
@@ -158,7 +158,10 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
 
         // get the schema type of the requested path           
         I_CmsXmlSchemaType type = m_contentDefinition.getSchemaType(path);
-
+        if (type == null) {
+            throw new IllegalArgumentException("Unknown XML content element path according to schema: " + path);
+        }
+        
         Element parentElement;
         String elementName;
         CmsXmlContentDefinition contentDefinition;
@@ -167,7 +170,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
             String parentPath = CmsXmlUtils.removeLastXpathElement(path);
             Object o = getBookmark(parentPath, locale);
             if (o == null) {
-                throw new IllegalArgumentException("Unknown XML content element path " + path);
+                throw new IllegalArgumentException("Unknown XML content element path: " + path);
             }
             CmsXmlNestedContentDefinition parentValue = (CmsXmlNestedContentDefinition)o;
             parentElement = parentValue.getElement();
@@ -286,6 +289,9 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
     /**
      * Returns the value sequence for the selected element name in this XML content.<p>
      * 
+     * If the given element name is not valid according to the schema of this XML content,
+     * <code>null</code> is returned.<p>
+     * 
      * @param name the element name (XML node name) to the the value sequence for
      * @param locale the locale to get the value sequence for
      * 
@@ -294,6 +300,9 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
     public CmsXmlContentValueSequence getValueSequence(String name, Locale locale) {
 
         I_CmsXmlSchemaType type = m_contentDefinition.getSchemaType(name);
+        if (type == null) {
+            return null;
+        }
         return new CmsXmlContentValueSequence(name, type, locale, this);
     }
 
@@ -561,14 +570,21 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
             // create a XML content value element
             I_CmsXmlSchemaType schemaType = definition.getSchemaType(name);
 
-            // directly add simple type to schema
-            I_CmsXmlContentValue value = schemaType.createValue(this, element, locale);
-            addBookmark(path, locale, true, value);
+            if (schemaType != null) {
+                // directly add simple type to schema
+                I_CmsXmlContentValue value = schemaType.createValue(this, element, locale);
+                addBookmark(path, locale, true, value);
 
-            if (!schemaType.isSimpleType()) {
-                // recurse for nested schema
-                CmsXmlNestedContentDefinition nestedSchema = (CmsXmlNestedContentDefinition)schemaType;
-                processSchemaNode(element, path, locale, nestedSchema.getNestedContentDefinition());
+                if (!schemaType.isSimpleType()) {
+                    // recurse for nested schema
+                    CmsXmlNestedContentDefinition nestedSchema = (CmsXmlNestedContentDefinition)schemaType;
+                    processSchemaNode(element, path, locale, nestedSchema.getNestedContentDefinition());
+                }
+            } else {
+                // unknown XML node name according to schema
+                if (OpenCms.getLog(this).isErrorEnabled()) {
+                    OpenCms.getLog(this).error("XML node name '" + name + "' invalid according to schema " + definition.getSchemaLocation());
+                }
             }
 
             // increase the node counter

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexController.java,v $
- * Date   : $Date: 2005/02/28 15:53:34 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/03/02 13:21:06 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public class CmsFlexController {
     
@@ -506,7 +506,12 @@ public class CmsFlexController {
      * @param dateExpires the value to update the "expires" date with
      */
     public void updateDates(long dateLastModified, long dateExpires) {
-        ((CmsFlexRequestContextInfo)m_flexContextInfoList.get(m_flexContextInfoList.size()-1)).updateDates(dateLastModified, dateExpires);         
+        int pos = m_flexContextInfoList.size()-1;
+        if (pos < 0) {
+            // ensure a valid position is used
+            return;
+        }
+        ((CmsFlexRequestContextInfo)m_flexContextInfoList.get(pos)).updateDates(dateLastModified, dateExpires);         
     }
 
     /**
