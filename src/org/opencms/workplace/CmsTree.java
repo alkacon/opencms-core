@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsTree.java,v $
- * Date   : $Date: 2003/08/25 10:28:42 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/08/26 10:10:26 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,11 +55,14 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1
  */
 public class CmsTree extends CmsWorkplace {
+    
+    /** Indicates if only folders or files and folders should be included in the tree */
+    private boolean m_includeFiles;
 
     /** Indicates if a complete new tree should be created */
     private boolean m_newTree;
@@ -69,7 +72,7 @@ public class CmsTree extends CmsWorkplace {
     
     /** The name of the target folder to be loaded */
     private String m_targetFolder;
-    
+
     /**
      * Public constructor.<p>
      * 
@@ -82,21 +85,25 @@ public class CmsTree extends CmsWorkplace {
     /**
      * Creates the output for a tree node.<p>
      *
-     * @param name the resource name 
+     * @param name the resource name
+     * @param type the resource type 
      * @param id the resource id
      * @param parentId the resource parent id
      * @param grey if true, the node is displayed in grey
      * @return the output for a tree node
      */
-    private String getNode(String name, CmsUUID id, CmsUUID parentId, boolean grey) {
+    private String getNode(String name, int type, CmsUUID id, CmsUUID parentId, boolean grey) {
         StringBuffer result = new StringBuffer(64);
-        result.append("parent.aC(");
-        // id
-        result.append(id.hashCode());
-        result.append(",\"");
+        result.append("parent.aC(\"");
         // name
         result.append(name);
         result.append("\",");
+        // type
+        result.append(type);
+        result.append(",");
+        // id
+        result.append(id.hashCode());
+        result.append(",");
         // parent id
         result.append(parentId.hashCode());
         result.append(",");
@@ -124,7 +131,7 @@ public class CmsTree extends CmsWorkplace {
         } catch (CmsException e) {
             // should not happen
         }
-        return getNode(title, resource.getId(), resource.getParentId(), false);
+        return getNode(title, resource.getType(), resource.getId(), resource.getParentId(), false);
     }
     
     /**
@@ -152,9 +159,8 @@ public class CmsTree extends CmsWorkplace {
      */
     public String getTree() {
         // TODO: 
-        // 1. Create a version that also runs in a separate window (e.g. copy dialog)
-        // 2. Do variation that also loads resources, not only folders
-        // 3. Ensure "tree window" javascript is modified everywhere the tree is used
+        // 1. Do variation that also loads resources, not only folders
+        // 2. Ensure "tree window" javascript is modified everywhere the tree is used
 
         String targetFolder = getTargetFolder();
         String startFolder = getStartFolder();
@@ -183,7 +189,12 @@ public class CmsTree extends CmsWorkplace {
         if ((startFolder == null) || (! targetFolder.startsWith(startFolder))) {
             // no (valid) start folder given, just load current folder        
             try {
-                resources = getCms().getSubFolders(targetFolder);
+                if (includeFiles()) {
+                    resources = new ArrayList();
+                    resources.addAll(getCms().getResourcesInFolder(targetFolder));
+                } else {
+                    resources = getCms().getSubFolders(targetFolder);
+                }
             } catch (CmsException e) {
                 // return with error
                 return printError(e);
@@ -192,11 +203,19 @@ public class CmsTree extends CmsWorkplace {
             // valid start folder given, load all folders between start and current folder
             resources = new ArrayList();
             try {
-                resources.addAll(getCms().getSubFolders(startFolder));                                            
+                if (includeFiles()) {
+                    resources.addAll(getCms().getResourcesInFolder(startFolder));
+                } else {
+                    resources.addAll(getCms().getSubFolders(startFolder));
+                }                     
                 StringTokenizer tok = new StringTokenizer(targetFolder.substring(startFolder.length()), "/");
                 while (tok.hasMoreTokens()) {
                     startFolder += tok.nextToken() + "/";
-                    resources.addAll(getCms().getSubFolders(startFolder));                         
+                    if (includeFiles()) {
+                        resources.addAll(getCms().getResourcesInFolder(startFolder));
+                    } else {
+                        resources.addAll(getCms().getSubFolders(startFolder));
+                    }                      
                 }                                             
             } catch (CmsException e) {
                 // return with error 
@@ -218,9 +237,12 @@ public class CmsTree extends CmsWorkplace {
         while (i.hasNext()) {          
             CmsResource resource = (CmsResource)i.next();
             grey = !CmsProject.isInsideProject(projectResources, resource);
-            result.append(getNode(resource.getResourceName(), resource.getId(), resource.getParentId(), grey));
+            result.append(getNode(resource.getResourceName(), resource.getType(), resource.getId(), resource.getParentId(), grey));
         }
     
+        if (includeFiles()) {
+            result.append("parent.setIncludeFiles(true);");
+        }
         if (newTree()) {
             // new tree 
             result.append("parent.showTree(parent.tree_display.document, \"");
@@ -244,9 +266,19 @@ public class CmsTree extends CmsWorkplace {
     }
     
     /**
+     * Indicates if only folders or files and folders should be included in the tree.<p>
+     * 
+     * @return true if files and folders should be included in the tree
+     */
+    public boolean includeFiles() {
+        return m_includeFiles;
+    }
+    
+    /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
     protected synchronized void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+        setIncludeFiles("true".equals(request.getParameter("includefiles")));
         boolean rootloaded = "true".equals(request.getParameter("rootloaded"));
         String resource = request.getParameter("resource");
         String lastknown = request.getParameter("lastknown");
@@ -304,6 +336,15 @@ public class CmsTree extends CmsWorkplace {
         result.append("}\n");      
         return result.toString();
     }        
+
+    /**
+     * Sets the value to indicate if only folders or files and folders should be included in the tree.<p>
+     * 
+     * @param includeFiles if true if files and folders should be included in the tree
+     */
+    public void setIncludeFiles(boolean includeFiles) {
+        m_includeFiles = includeFiles;
+    }
     
     /**
      * Sets if a complete tree must be loaded.<p>
