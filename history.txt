@@ -18,6 +18,7 @@ OpenCms 4.5.33 Chusuk       - xx January 2001
   publishing if it is enabled in the properties (independent of the project).
 - Improved static export. Files are new exported if not only itself chaned but also if some subelements
   have changed.
+- Removed the redirect points. They are not needed since we have the static export.
 
 OpenCms 4.5.32 Chusuk       - 18 January 2001
 ! The digest-method for encrypting passwords is now available in the CmsObject.
