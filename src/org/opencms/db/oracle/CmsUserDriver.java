@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsUserDriver.java,v $
- * Date   : $Date: 2004/10/29 17:26:23 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2004/11/08 17:40:44 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
 /**
  * Oracle implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.32 $ $Date: 2004/10/29 17:26:23 $
+ * @version $Revision: 1.33 $ $Date: 2004/11/08 17:40:44 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -241,9 +241,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             }
             
             // write serialized user info 
-            Blob userInfo = res.getBlob("USER_INFO");
-            ((oracle.sql.BLOB)userInfo).trim(0);
-            OutputStream output = ((oracle.sql.BLOB)userInfo).getBinaryOutputStream();
+            OutputStream output = getOutputStreamFromBlob(res, "USER_INFO");
             output.write(value);
             output.close();
             value = null;
@@ -314,4 +312,27 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             }
         }
     }    
+    
+    /**
+     * Generates an Output stream that writes to a blob, also truncating the existing blob if required.<p>
+     * 
+     * Apparently Oracle requires some non-standard handling here.<p>
+     * 
+     * @param res the result set where the blob is located in 
+     * @param name the name of the database column where the blob is located
+     * @return an Output stream from a blob
+     * @throws SQLException if something goes wring
+     */
+    public static OutputStream getOutputStreamFromBlob(ResultSet res, String name) throws SQLException {
+        
+        Blob blob = res.getBlob(name);
+        
+// TODO: figure out how to implement this without being Oracle JDBC driver version dependent        
+// this is the code for Oracle 10 (dosen't work with Oracle 9)                
+//        ((oracle.sql.BLOB)blob).truncate(0);
+//        return blob.setBinaryStream(0L);
+        
+        ((oracle.sql.BLOB)blob).trim(0);
+        return ((oracle.sql.BLOB)blob).getBinaryOutputStream();
+    }
 }

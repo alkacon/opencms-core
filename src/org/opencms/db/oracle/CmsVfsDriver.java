@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/10/29 17:26:23 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2004/11/08 17:40:44 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,6 @@ import org.opencms.util.CmsUUID;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -53,7 +52,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.23 $ $Date: 2004/10/29 17:26:23 $
+ * @version $Revision: 1.24 $ $Date: 2004/11/08 17:40:44 $
  * @since 5.1
  */
 public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {     
@@ -120,9 +119,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
             }
             
             // write file content 
-            Blob blob = res.getBlob("FILE_CONTENT");
-            ((oracle.sql.BLOB)blob).trim(0);
-            OutputStream output = ((oracle.sql.BLOB)blob).getBinaryOutputStream();
+            OutputStream output = CmsUserDriver.getOutputStreamFromBlob(res, "FILE_CONTENT");
             output.write(content);
             output.close();
                 
