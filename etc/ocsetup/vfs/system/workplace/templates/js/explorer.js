@@ -1,7 +1,7 @@
   /*
   * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/explorer.js,v $
-  * Date   : $Date: 2000/12/14 14:01:00 $
-  * Version: $Revision: 1.6 $
+  * Date   : $Date: 2000/12/19 08:20:07 $
+  * Version: $Revision: 1.7 $
   *
   * Copyright (C) 2000  The OpenCms Group 
   * 
@@ -142,7 +142,7 @@
          brcfg.distanceLeft = '.style.left=';
          brcfg.distanceTop = '.style.top=';
  //onload=top.preloadPics(document) 
-         brcfg.bodyString = "<body background='/pics/system/bg_weiss.gif' onload=top.preloadPics(document) onclick=javascript:top.hideLastone(document);>";
+         brcfg.bodyString = "<body background='/pics/system/bg_weiss.gif' bgproperties=fixed onclick=javascript:top.hideLastone(document);>";
          brcfg.showKontext = "<a style=\"cursor:hand;\" onClick=\"javascript:top.showKontext(document,'";
          brcfg.showKontextEnd = ",window.event.x,window.event.y);\">";
  
@@ -407,18 +407,7 @@
  
  }
  
- /**
-  *  show images in tree
-  */
- function showImages(doc) {
-     var i;
- 
- 	for (i=0; i<doc.images.length; i++){
- 		number = doc.images[i].name;
- 		doc.images[i].src = tree.icon[number].src;
- 	}
- }
- 
+
  /**
   *  specifications of a node
   */
@@ -456,58 +445,58 @@
   *  write <img> tag
   */
  function showPic(doc, pic) {
- 	doc.write("<img name='" + pic + "' height=16 width=16 border=0 vspace=0 hspace=0 align=left>");
+ 	doc.write("<img src='" + pic + "' height=16 width=16 border=0 vspace=0 hspace=0 align=left>");
  }
  
  /**
   *  write linked <img> tag, used for open-able folders/crosses in the tree frame
   */
  function showPicLink(doc, pic, id) {
- 	doc.write("<a href=javascript:top.toggleNode(document,"+ id +")><img name='"+ pic +"' height=16 width=16 border=0 vspace=0 hspace=0 align=left></a>");
+ 	doc.write("<a href=javascript:top.toggleNode(document,"+ id +")><img src='"+ pic +"' height=16 width=16 border=0 vspace=0 hspace=0 align=left></a>");
  }
  
  function dfsTree(doc, node, depth, last, shape) {
      var loop1;
  
  	if (node.parent==null) {
- 		showPic(doc, 9); // rootdir
+ 		showPic(doc, tree.icon[9].src); // rootdir
  	} else {
  		for (loop1=0; loop1<depth-1; loop1++) {
  			if (shape[loop1+1] == 1) {
- 				showPic(doc, 10); //vert.line
+ 				showPic(doc, tree.icon[10].src); //vert.line
  			} else {
- 				showPic(doc, 0); //nothing
+ 				showPic(doc, tree.icon[0].src); //nothing
  			}
  		}
  
  		if (last) {
  			if (node.childs.length > 0) {
  				if (node.open) {
- 					showPicLink(doc, 5, node.id); //corner to close
+ 					showPicLink(doc, tree.icon[5].src, node.id); //corner to close
  				} else {
- 					showPicLink(doc, 7, node.id); //corner to open 
+ 					showPicLink(doc, tree.icon[7].src, node.id); //corner to open 
  				}
  			} else {
- 				showPic(doc, 1); //corner
+ 				showPic(doc, tree.icon[1].src); //corner
  			}
  			shape[depth] = 0;
  		} else {
  			if (node.childs.length > 0) {
  				if (node.open) {
- 					showPicLink(doc, 6, node.id); //cross to close
+ 					showPicLink(doc, tree.icon[6].src, node.id); //cross to close
  				} else {
- 					showPicLink(doc, 8, node.id); //cross to open
+ 					showPicLink(doc, tree.icon[8].src, node.id); //cross to open
  				}
  			} else {
- 				showPic(doc, 4); //cross
+ 				showPic(doc, tree.icon[4].src); //cross
  			}
  			shape[depth] = 1;
  		}
  		//if (node.open) {
  		if(node.id==vr.actDirId){
- 			showPic(doc, 3); //folderopen
+ 			showPic(doc, tree.icon[3].src); //folderopen
  		} else {
- 			showPic(doc, 2); //foldernormal
+ 			showPic(doc, tree.icon[2].src); //foldernormal
  		}
  	}
  
@@ -559,7 +548,7 @@
      doc.writeln(showTreeFoot);
  	doc.close();
  
- 	showImages(doc);
+ 	
  }
  
  function updateFrame(which, frameurl){
@@ -615,8 +604,7 @@
      
      openurl();
  }
- 
- 
+  
  /**
   *  displays preloaded pictures in head-frame
   */
@@ -645,8 +633,7 @@
   *  display "explorer_head" frame
   */
  function displayHead(doc){
- 
- 
+  
  if(vr.actDirectory=="/")dirup="";
  else dirup="<a href=javascript:top.dirUp(); onmouseover=\"top.chon(document,'bt_up');\" onmouseout=\"top.choff(document,'bt_up');\">";
  
@@ -695,52 +682,15 @@
      displayHeadPics(doc);
  }
  
- /**
-  *  load pictures into top frame 
-  */
- function preloadPics(doc){
-     var i;
  
- for(i=0;i<vi.resource.length;i++){
- 	vi.icons[i] = new Image(16,16);
- 	vi.icons[i].src = vi.resource[i].icon;
- //								  !	vi.liste[i].type
- }
- 
-     for(i=0;i<vi.liste.length;i++){
- 
-         if(vi.liste[i].lockedBy == ''){
- 		
-         } else {
-             if(vr.userName != vi.liste[i].lockedBy){
- 				vi.lockIcons[i] = new Image(16,16);
-                 vi.lockIcons[i].src=vi.iconPath+'ic_lock.gif';
-             }
-             if(vr.userName == vi.liste[i].lockedBy){
- 				vi.lockIcons[i] = new Image(16,16);
-                 vi.lockIcons[i].src=vi.iconPath+'ic_lockuser.gif';
-             }
-         }
-     }
- 	showPics(doc)
- }
- 
- function showPics(doc){
-     var i;
- 	for(i=0; i<vi.liste.length; i++){
- 		eval("doc.images['res_pic"+i+"'].src=vi.icons["+vi.liste[i].type+"].src;");
-         if(vi.liste[i].lockedBy != '')eval("doc.images['lock_"+i+"'].src=vi.lockIcons["+i+"].src");
- 	}
- }
- 
- /**
+  /**
   *  started, after window is resized (only in netscape)
   */
  function resized(doc){
      if(g_isShowing==false){
  
          g_isShowing = true;
-         showPics(doc);
+         
          rT();
          showTree(explorer_tree);
  
@@ -820,19 +770,6 @@
  function showCols(cols){
      var i;
      var check = new Array(8)
- 
- /*
-     check[0]='vi.check_title';
-     check[1]='vi.check_type';
-     check[2]='vi.check_size';
-     check[3]='vi.check_date';
-     check[4]='vi.check_status';
-     check[5]='vi.check_owner';
-     check[6]='vi.check_group';
-     check[7]='vi.check_perm';
-     check[8]='vi.check_perm';
- */
- 
      
      check[0]='vi.check_title';
      check[1]='vi.check_type';
@@ -886,31 +823,31 @@
              "td{ font-family: arial, helvetica; font-size: 9pt; }; "+
  
  			// file changed
-             "td.fc{ color: #B40000; background:#FFFFFF; } "+
+             "td.fc{ color: #B40000; } "+
              "a.fc{  color: #B40000; font-family: arial, helvetica; font-size: 9pt; } "+
              "a:visited.fc{ color: #B40000; }"+
              "a:hover.fc { background:#000088; color:#FFFFFF; text-decoration: none; } "+
  
  			// file new
-             "td.fn{ color: #0000aa; background:#FFFFFFF; } "+
+             "td.fn{ color: #0000aa; } "+
              "a.fn{  color: #0000aa; } "+
              "a:visited.fn{ color: #0000ff; } "+
              "a:hover.fn{ background:#000066 ; color:#FFFFFF; text-decoration: none; } "+
      
 	 		// file deleted
-	 		"td.fd{ color: #000000; background:#FFFFFF; text-decoration: line-through;} "+
+	 		"td.fd{ color: #000000; text-decoration: line-through;} "+
              "a.fd{ color: #000000; font-family: arial, helvetica; font-size: 9pt; text-decoration: line-through;} "+
              "a:visited.fd{ color: #000000; text-decoration: line-through;} "+
              "a:hover.fd{ background:#000066; color:#FFFFFF; text-decoration: line-through; } "+
  
  			// file not in project
-             "td.fp{ background:#FFFFFF; color: silver;} "+
+             "td.fp{ color: silver;} "+
              "a.fp{ color: #888888; } "+
              "a:visited.fp{ color: #888888;} "+
              "a:hover.fp { background:#000066; color:#FFFFFF; text-decoration: none; } "+
  
  			// normal file
-             "td.nf{ background:#FFFFFF; color:#000000; } "+
+             "td.nf{ color:#000000; } "+
              "a.nf{ color: #000000; } "+
              "a:visited.nf{ color: #000000; } "+
              "a:hover.nf { background:#000066; color:#FFFFFF; text-decoration: none; } "+
@@ -966,14 +903,22 @@
  
          wo.writeln(brcfg.showKontext + i + "'," + i + brcfg.showKontextEnd);
  
-         wo.write("<img name='res_pic"+i+"' border=0 width=16 height=16></a>");
- //        wo.write("<img src='"+vi.resource[vi.liste[i].type].icon+"' border=0 width=16 height=16></a>");
+   //      wo.write("<img name='res_pic"+i+"' border=0 width=16 height=16></a>");
+         wo.write("<img src='"+vi.resource[vi.liste[i].type].icon+"' border=0 width=16 height=16></a>");
          wo.writeln("</td>");
  
  		wo.write("<td nowrap align=center>");
+		
+		var lockIcon;
+		
          if(vi.liste[i].lockedBy!=""){
+            if(vr.userName == vi.liste[i].lockedBy){
+                 lockIcon=vi.iconPath+'ic_lockuser.gif';
+            }else{
+			 	lockIcon=vi.iconPath+'ic_lock.gif';
+			}
              lockedBystring="alt=\""+vr.lockedBy+" "+vi.liste[i].lockedBy+"\"";
- 			wo.write("<img name='lock_"+i+"' "+lockedBystring+" border=0 width=16 height=16></a>");
+			wo.write("<img src='"+lockIcon+"' border=0 width=16 height=16></a>");
          }
  		wo.write("</td>");
  
@@ -1101,7 +1046,7 @@
   */
  function whichdoc(doc){
      vi.dokument=doc;
-     preloadPics(doc);
+     //preloadPics(doc);
  }
  
  /**
