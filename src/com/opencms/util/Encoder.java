@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Encoder.java,v $
-* Date   : $Date: 2001/11/27 19:08:50 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2002/09/02 07:29:09 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ public class Encoder {
         // URLEncode the text string. This produces a very similar encoding to JavaSscript
 
         // encoding, except the blank which is not encoded into a %20.
-        String enc = URLEncoder.encode(source);
+        String enc = encode(source);
         StringTokenizer t = new StringTokenizer(enc, "+");
         while(t.hasMoreTokens()) {
             ret.append(t.nextToken());
@@ -74,6 +74,20 @@ public class Encoder {
             }
         }
         return ret.toString();
+    }
+    
+    /**
+     * Method to call the (deprecated) encode function in 
+     * the java.net.URLEncoder class, which will 
+     * yield an annoying deprecation warning during compilation.
+     * 
+     * @param source The String to encode
+     * @return The encoded String
+     */
+    public static String encode(String source) {
+        // To prevent the deprecation warning, UTF-8 could be used here as default.
+        // TODO: Must check if this is backwards compatible with Java 1.3
+        return URLEncoder.encode(source);
     }
 
     /**
@@ -91,7 +105,7 @@ public class Encoder {
 
         // URLEncode the text string. This produces a very similar encoding to JavaSscript
         // encoding, except the blank which is not encoded into a %20.
-        String enc = URLEncoder.encode(source);
+        String enc = encode(source);
         for(int z = 0;z < enc.length();z++) {
             if(enc.charAt(z) == '+') {
                 ret.append("%20");
