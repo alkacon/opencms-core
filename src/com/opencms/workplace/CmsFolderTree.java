@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFolderTree.java,v $
-* Date   : $Date: 2002/09/03 11:57:06 $
-* Version: $Revision: 1.39 $
+* Date   : $Date: 2002/10/23 14:08:32 $
+* Version: $Revision: 1.40 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.*;
  *
  *
  * @author Michael Emmerich
- * @version $Revision: 1.39 $ $Date: 2002/09/03 11:57:06 $
+ * @version $Revision: 1.40 $ $Date: 2002/10/23 14:08:32 $
  */
 
 public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstants {
@@ -312,7 +312,7 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
         StringBuffer output = new StringBuffer();
         I_CmsSession session = cms.getRequestContext().getSession(true);
         CmsXmlWpConfigFile configFile = this.getConfigFile(cms);
-        String foldername = null;
+        String foldertree = null;
         String filelist = null;
         String currentFolder;
         String oldFolder;
@@ -322,18 +322,19 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
         boolean displayFiles = false;
         boolean enableOnlineFiles = false;
 
-        //check if a folder parameter was included in the request.
-
         // if a foldername was included, overwrite the value in the session for later use.
-        foldername = cms.getRequestContext().getRequest().getParameter(C_PARA_FOLDERTREE);
-        if(foldername != null) {
-            session.putValue(C_PARA_FOLDERTREE, foldername);
-        }
-
-        // get the current folder to be displayed as maximum folder in the tree.
-        currentFolder = (String)session.getValue(C_PARA_FOLDERTREE);
-        if(currentFolder == null) {
-            currentFolder = cms.rootFolder().getAbsolutePath();
+        currentFolder = cms.getRequestContext().getRequest().getParameter(C_PARA_FOLDERTREE);       
+        
+        if (currentFolder.trim().equalsIgnoreCase("/")) {
+            currentFolder = (String)session.getValue(C_PARA_FOLDERTREE);
+            
+            if (currentFolder==null)  { 
+                currentFolder = "/";
+                session.putValue(C_PARA_FOLDERTREE, currentFolder);
+            }
+        }  
+        else if (currentFolder!=null) {
+            session.putValue(C_PARA_FOLDERTREE, currentFolder);
         }
 
         // get the current folder to be displayed as maximum folder in the tree.
