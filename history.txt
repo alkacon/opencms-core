@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/08/18 10:56:08 $
- * Version: $Revision: 1.492 $
+ * Date   : $Date: 2003/08/20 16:12:28 $
+ * Version: $Revision: 1.493 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,6 +20,9 @@ Legend:
 - General comment
 
 OpenCms 5.1.8 Salusa Secundus - August xx, 2003
+- Several performance optimizations after some profiling sessions
+- Renamed /WEB-INF/export folder to /WEB-INF/packages to avoid confusion with 
+  static export /export folder
 ! New version of static export implemented in package org.opencms.staticexport
 ! New structure of the "main" classes in package org.opencms.main
 ! The OpenCms "operating system" now implements a singleton pattern
