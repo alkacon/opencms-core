@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
  * Author : $Author: e.falkenhan $
- * Date   : $Date: 2002/01/09 08:39:10 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2002/01/17 09:22:18 $
+ * Version: $Revision: 1.5 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Framfab Deutschland ag.   All Rights Reserved.
@@ -41,8 +41,8 @@ import java.lang.*;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.4 $
- * $Date: 2002/01/09 08:39:10 $
+ * $Revision: 1.5 $
+ * $Date: 2002/01/17 09:22:18 $
  */
 public class CmsChannelContent extends A_CmsContentDefinition
                                implements I_CmsContent, I_CmsLogChannels, I_CmsExtendedContentDefinition{
@@ -355,6 +355,8 @@ public class CmsChannelContent extends A_CmsContentDefinition
                         cms.renameResource(newChannel.getAbsolutePath(), m_channelname);
                     }
                 }
+                // read the changed channel
+                newChannel =  cms.readFolder(m_parentchannel+m_channelname+"/");
                 // update the title of the channel
                 String propTitle = cms.readProperty(newChannel.getAbsolutePath(), I_CmsConstants.C_PROPERTY_TITLE);
                 if (propTitle == null){
@@ -363,33 +365,31 @@ public class CmsChannelContent extends A_CmsContentDefinition
                 if (!propTitle.equals(this.getTitle())){
                     cms.writeProperty(newChannel.getAbsolutePath(), I_CmsConstants.C_PROPERTY_TITLE, this.getTitle());
                 }
-                // read the changed channel
-                newChannel =  cms.readFolder(m_parentchannel+m_channelname+"/");
-            }
-            // check if the lockstate has changed
-            if(newChannel.isLockedBy() != this.getLockstate() ||
-               newChannel.getLockedInProject() != cms.getRequestContext().currentProject().getId()){
-                if(this.getLockstate() == I_CmsConstants.C_UNKNOWN_ID){
-                    // unlock the channel
-                    cms.unlockResource(newChannel.getAbsolutePath());
-                } else {
-                    // lock the channel
-                    cms.lockResource(newChannel.getAbsolutePath(), true);
-                }
-            };
-            // check if the owner has changed
-            if(newChannel.getOwnerId() != this.getOwner()){
-                cms.chown(newChannel.getAbsolutePath(), this.getOwnerName());
-            };
-            // check if the group has changed
+                // check if the lockstate has changed
+                if(newChannel.isLockedBy() != this.getLockstate() ||
+                    newChannel.getLockedInProject() != cms.getRequestContext().currentProject().getId()){
+                    if(this.getLockstate() == I_CmsConstants.C_UNKNOWN_ID){
+                        // unlock the channel
+                        cms.unlockResource(newChannel.getAbsolutePath());
+                    } else {
+                        // lock the channel
+                        cms.lockResource(newChannel.getAbsolutePath(), true);
+                    }
+                };
+                // check if the owner has changed
+                if(newChannel.getOwnerId() != this.getOwner()){
+                    cms.chown(newChannel.getAbsolutePath(), this.getOwnerName());
+                };
+                // check if the group has changed
 
-            if(newChannel.getGroupId() != this.getGroupId()){
-                cms.chgrp(newChannel.getAbsolutePath(), this.getGroup());
-            };
-            // check if the accessflags has changed
-            if(newChannel.getAccessFlags() != this.getAccessFlags()){
-                cms.chmod(newChannel.getAbsolutePath(), this.getAccessFlags());
-            };
+                if(newChannel.getGroupId() != this.getGroupId()){
+                    cms.chgrp(newChannel.getAbsolutePath(), this.getGroup());
+                };
+                // check if the accessflags has changed
+                if(newChannel.getAccessFlags() != this.getAccessFlags()){
+                    cms.chmod(newChannel.getAbsolutePath(), this.getAccessFlags());
+                };
+            }
             m_channel = cms.readFolder(newChannel.getAbsolutePath());
         } catch (CmsException exc){
             throw exc;
