@@ -35,7 +35,7 @@ function inputOK() {
 function checkFormData(form,field,lyr)
 {
 	if ( inputOK()==false ) {
-		alert(']]><LABEL value="error.message.datamissing" /><![CDATA[.');
+		alert(']]><LABEL value="error.message.datamissing" /><![CDATA[');
 		return false;
 	}
 
