@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspActionElement.java,v $
- * Date   : $Date: 2003/03/14 12:54:51 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/03/18 01:48:51 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  * working at last in some elements.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.0 beta 2
  */
@@ -214,27 +214,23 @@ public class CmsJspActionElement {
      */
     public void include(String target, String element, Map parameterMap) throws JspException {
         if (m_notInitialized) return;
-        try { 
-            if (parameterMap != null) {
-                try {
-                    // ensure parameters are always of type String[] not just String
-                    Iterator i = parameterMap.keySet().iterator();
-                    while (i.hasNext()) {
-                        String key = (String)i.next();
-                        Object value = parameterMap.get(key);
-                        if (value instanceof String) {
-                            String[] newValue = new String[] {(String)value };
-                            parameterMap.put(key, newValue);
-                        }
+        if (parameterMap != null) {
+            try {
+                // ensure parameters are always of type String[] not just String
+                Iterator i = parameterMap.keySet().iterator();
+                while (i.hasNext()) {
+                    String key = (String)i.next();
+                    Object value = parameterMap.get(key);
+                    if (value instanceof String) {
+                        String[] newValue = new String[] {(String)value };
+                        parameterMap.put(key, newValue);
                     }
-                } catch (UnsupportedOperationException e) {
-                    // parameter map is immutable, just use it "as is"
                 }
+            } catch (UnsupportedOperationException e) {
+                // parameter map is immutable, just use it "as is"
             }
-            CmsJspTagInclude.includeTagAction(m_context, target, element, parameterMap, m_request, m_response);
-        } catch (Throwable t) {
-            handleException(t);
-        }      
+        }
+        CmsJspTagInclude.includeTagAction(m_context, target, element, parameterMap, m_request, m_response);
     }
             
     /**
