@@ -8,6 +8,11 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.3.4 Bela Tegeuse - 06 April 2001
+
+! Redesign of OpenCms classloader
+- Worked on Tomcat compatibility
+
 OpenCms 4.3.3 Bela Tegeuse - 02 April 2001
 
 * Bugfix in zip-Import.
