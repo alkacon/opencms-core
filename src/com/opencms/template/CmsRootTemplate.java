@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsRootTemplate.java,v $
-* Date   : $Date: 2001/04/20 09:56:08 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2001/05/07 08:50:19 $
+* Version: $Revision: 1.25 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -43,7 +43,7 @@ import java.util.*;
  * generation of the master template class to be used.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.24 $ $Date: 2001/04/20 09:56:08 $
+ * @version $Revision: 1.25 $ $Date: 2001/05/07 08:50:19 $
  */
 public class CmsRootTemplate implements I_CmsLogChannels,I_CmsConstants {
 
@@ -66,7 +66,7 @@ public class CmsRootTemplate implements I_CmsLogChannels,I_CmsConstants {
         byte[] result;
 
         // Collect cache directives from subtemplates
-        CmsCacheDirectives cd = templateClass.getCacheDirectives(cms, masterTemplate.getAbsolutePath(), C_ROOT_TEMPLATE_NAME, parameters, null);
+        CmsCacheDirectives cd = templateClass.collectCacheDirectives(cms, masterTemplate.getAbsolutePath(), C_ROOT_TEMPLATE_NAME, parameters, null);
         boolean streamable = cms.getRequestContext().isStreaming() && cd.isStreamable();
         cms.getRequestContext().setStreaming(streamable);
 

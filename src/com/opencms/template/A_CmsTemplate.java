@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsTemplate.java,v $
-* Date   : $Date: 2001/02/06 13:57:36 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2001/05/07 08:49:37 $
+* Version: $Revision: 1.2 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * Abstract template class. Contains all commonly used methods for handling cache properties.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.1 $ $Date: 2001/02/06 13:57:36 $
+ * @version $Revision: 1.2 $ $Date: 2001/05/07 08:49:37 $
  */
 public abstract class A_CmsTemplate implements I_CmsConstants, I_CmsTemplate, I_CmsLogChannels {
 
@@ -217,7 +217,7 @@ public abstract class A_CmsTemplate implements I_CmsConstants, I_CmsTemplate, I_
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if this class may stream it's results, <EM>false</EM> otherwise.
      */
-    public CmsCacheDirectives getCacheDirectives(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+    public CmsCacheDirectives collectCacheDirectives(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         boolean isCacheable = isCacheable(cms, templateFile, elementName, parameters, templateSelector);
         boolean isProxyPublicCacheable = isProxyPublicCacheable(cms, templateFile, elementName, parameters, templateSelector);
         boolean isProxyPrivateCacheable = isProxyPrivateCacheable(cms, templateFile, elementName, parameters, templateSelector);
