@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestRestoreFromHistory.java,v $
- * Date   : $Date: 2004/09/01 16:06:41 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/09/20 05:41:16 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import junit.framework.TestSuite;
  * Unit tests for the history restore method.<p>
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class TestRestoreFromHistory extends OpenCmsTestCase {
     
@@ -87,6 +87,11 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
         return wrapper;
     }
 
+    /**
+     * Tests the history overflow function.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
     public void testHistoryOverflow() throws Throwable {
         
         final int C_MAX_VERSIONS = 10;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/AllTests.java,v $
- * Date   : $Date: 2004/09/01 15:10:51 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2004/09/20 05:41:16 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 5.0
  */
@@ -63,21 +63,22 @@ public final class AllTests {
         suite.addTest(TestChacc.suite());
         suite.addTest(TestCopy.suite());
         suite.addTest(TestCreateWriteResource.suite());
-        suite.addTest(TestRestoreFromHistory.suite());
-        suite.addTest(TestReadResourceTree.suite());
         suite.addTest(TestLock.suite());
-        suite.addTest(TestTouch.suite());
-        suite.addTest(TestSiblings.suite());
-        suite.addTest(TestReadResource.suite());
         suite.addTest(TestMoveRename.suite());
-        suite.addTest(TestUndoChanges.suite());
         suite.addTest(TestPermissions.suite());
-        suite.addTest(TestProperty.suite());
-        suite.addTest(TestResourceOperations.suite());
         suite.addTest(TestProjects.suite());
-        suite.addTest(TestReplace.suite());
+        suite.addTest(TestProperty.suite());
         suite.addTest(TestProperyDefinition.suite());
         suite.addTest(TestPublishing.suite());
+        suite.addTest(TestPublishIssues.suite());
+        suite.addTest(TestReadResource.suite());
+        suite.addTest(TestReadResourceTree.suite());
+        suite.addTest(TestReplace.suite());
+        suite.addTest(TestResourceOperations.suite());
+        suite.addTest(TestRestoreFromHistory.suite());
+        suite.addTest(TestSiblings.suite());
+        suite.addTest(TestTouch.suite());
+        suite.addTest(TestUndoChanges.suite());
         //$JUnit-END$
         return suite;
     }
