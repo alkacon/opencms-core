@@ -358,8 +358,8 @@
 			<workplace-preferences>
 				<workplace-generaloptions>
 					<buttonstyle>textimage</buttonstyle>
-					<reporttype>simple</reporttype>
-					<uploadapplet>false</uploadapplet>
+					<reporttype>extended</reporttype>
+					<uploadapplet>true</uploadapplet>
 				</workplace-generaloptions>
 				<workplace-startupsettings>
 					<locale>en</locale>
@@ -386,13 +386,13 @@
 					<show-state>false</show-state>
 					<show-userlastmodified>false</show-userlastmodified>
 					<show-usercreated>false</show-usercreated>
-					<show-datereleased>false</show-datereleased>
-					<show-dateexpired>false</show-dateexpired>
+					<show-datereleased>true</show-datereleased>
+					<show-dateexpired>true</show-dateexpired>
 				</explorer-displayoptions>				
 			</explorer-preferences>
 			<dialogs-preferences>
 				<dialogs-defaultsettings>
-					<filecopy>createsibling</filecopy>
+					<filecopy>createresource</filecopy>
 					<foldercopy>preservesiblings</foldercopy> 		
 					<filedeletion>preservesiblings</filedeletion> 
 					<directpublish>onlyresource</directpublish> 	
