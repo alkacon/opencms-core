@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementCache.java,v $
-* Date   : $Date: 2003/07/11 21:35:49 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2004/02/13 11:07:47 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,10 @@
 
 package com.opencms.template.cache;
 
+import org.opencms.main.CmsEvent;
+import org.opencms.main.I_CmsEventListener;
+import org.opencms.main.OpenCms;
+
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
@@ -47,7 +51,7 @@ import java.util.Vector;
  * neccessairy.
  * @author Andreas Schouten
  */
-public class CmsElementCache {
+public class CmsElementCache extends Object implements I_CmsEventListener {
 
     private CmsUriLocator m_uriLocator;
 
@@ -55,19 +59,26 @@ public class CmsElementCache {
 
     private int m_variantCachesize;
 
-    public CmsElementCache(){
-        m_uriLocator = new CmsUriLocator(10000);
-        m_elementLocator = new CmsElementLocator(50000);
-        m_variantCachesize = 100;
+    public CmsElementCache() {
+        this(10000, 50000, 100);
     }
 
     public CmsElementCache(int uriCachesize, int elementCachesize, int variantCachesize) {
         m_uriLocator = new CmsUriLocator(uriCachesize);
         m_elementLocator = new CmsElementLocator(elementCachesize);
-        if (variantCachesize < 2){
+        if (variantCachesize < 2) {
             variantCachesize = 100;
         }
         m_variantCachesize = variantCachesize;
+        
+        // add this class as an event handler to the Cms event listener
+        OpenCms.addCmsEventListener(this, new int[] { 
+                I_CmsEventListener.EVENT_PUBLISH_PROJECT, 
+                I_CmsEventListener.EVENT_PUBLISH_RESOURCE, 
+                I_CmsEventListener.EVENT_CLEAR_CACHES, 
+                I_CmsEventListener.EVENT_CLEAR_ONLINE_CACHES,
+                I_CmsEventListener.EVENT_CLEAR_OFFLINE_CACHES
+        });        
     }
 
     public CmsUriLocator getUriLocator() {
@@ -81,7 +92,7 @@ public class CmsElementCache {
     /**
      * returns the size of the variant cache for each element.
      */
-    public int getVariantCachesize(){
+    public int getVariantCachesize() {
         return m_variantCachesize;
     }
 
@@ -91,13 +102,12 @@ public class CmsElementCache {
      * @param changedResources A vector (of Strings) with the resources that have
      *                          changed during publishing.
      */
-    public void cleanupCache(Vector changedResources, Vector changedModuleRes){
-
+    public void cleanupCache(Vector changedResources, Vector changedModuleRes) {
         // chanchedResources have chanched, first we have to edit them
         Vector resForUpdate = new Vector();
-        if(changedResources != null){
-            for(int i=0; i<changedResources.size(); i++){
-                String current = (String)changedResources.elementAt(i);
+        if (changedResources != null) {
+            for (int i = 0; i < changedResources.size(); i++) {
+                String current = (String) changedResources.elementAt(i);
                 resForUpdate.add(current);
                 resForUpdate.add(current + I_CmsConstants.C_XML_CONTROL_FILE_SUFFIX);
             }
@@ -114,7 +124,7 @@ public class CmsElementCache {
      * Clears the uri and the element cache compleatly.
      * and the extern dependencies.
      */
-    public void clearCache(){
+    public void clearCache() {
         m_elementLocator.clearCache();
         m_uriLocator.clearCache();
     }
@@ -124,8 +134,8 @@ public class CmsElementCache {
      * @param int   1: print the info for the dependencies cache.
      *              2:
      */
-    public void printCacheInfo(int which){
-        if(which ==1){
+    public void printCacheInfo(int which) {
+        if (which == 1) {
             // the dependencies cache
             m_elementLocator.printCacheInfo(which);
         }
@@ -136,10 +146,10 @@ public class CmsElementCache {
      * element cache.
      * @return a Vector whith informations about the size of the caches.
      */
-    public Vector getCacheInfo(){
+    public Vector getCacheInfo() {
         Vector uriInfo = m_uriLocator.getCacheInfo();
         Vector elementInfo = m_elementLocator.getCacheInfo();
-        for (int i=0; i < elementInfo.size(); i++){
+        for (int i = 0; i < elementInfo.size(); i++) {
             uriInfo.addElement(elementInfo.elementAt(i));
         }
         return uriInfo;
@@ -153,5 +163,18 @@ public class CmsElementCache {
     public byte[] callCanonicalRoot(CmsObject cms, Hashtable parameters, String uriParam) throws CmsException {
         CmsUri uri = m_uriLocator.get(new CmsUriDescriptor(uriParam));
         return uri.callCanonicalRoot(this, cms, parameters);
+    }
+
+    /**
+     * @see org.opencms.main.I_CmsEventListener#cmsEvent(org.opencms.main.CmsEvent)
+     */
+    public void cmsEvent(CmsEvent event) {
+        switch (event.getType()) {
+            case I_CmsEventListener.EVENT_PUBLISH_PROJECT :
+            case I_CmsEventListener.EVENT_PUBLISH_RESOURCE :
+            case I_CmsEventListener.EVENT_CLEAR_CACHES :
+                clearCache();
+                break;
+        }
     }
 }

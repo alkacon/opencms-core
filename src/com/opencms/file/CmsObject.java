@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2004/02/11 11:07:28 $
- * Version: $Revision: 1.453 $
+ * Date   : $Date: 2004/02/13 11:07:47 $
+ * Version: $Revision: 1.454 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ package com.opencms.file;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsPublishList;
 import org.opencms.db.CmsPublishedResource;
-import org.opencms.loader.CmsXmlTemplateLoader;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsSessionInfoManager;
@@ -57,7 +56,6 @@ import com.opencms.core.I_CmsConstants;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -79,7 +77,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.453 $
+ * @version $Revision: 1.454 $
  */
 public class CmsObject {
 
@@ -2502,6 +2500,7 @@ public class CmsObject {
     }
     
     /**
+     * Publishes the resources of a specified publish list.<p>
      * 
      * @param report an instance of I_CmsReport to print messages
      * @param publishList a publish list
@@ -2510,40 +2509,19 @@ public class CmsObject {
      * @see #getPublishList(CmsResource, boolean, I_CmsReport)
      */
     public void publishProject(I_CmsReport report, CmsPublishList publishList) throws CmsException {
-        Vector changedResources = null;
-        Vector changedModuleMasters = null;
-        boolean success = false;
-        //CmsUUID publishHistoryId = new CmsUUID();
-        
-        // TODO: check if useful/neccessary
-        // OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP, false));
+        // TODO check if useful/neccessary
         m_driverManager.clearcache();
 
         synchronized (m_driverManager) {            
             try {                                
                 m_driverManager.publishProject(this, m_context, publishList, report);
-
-                if (CmsXmlTemplateLoader.getOnlineElementCache() != null) {
-                    CmsXmlTemplateLoader.getOnlineElementCache().cleanupCache(changedResources, changedModuleMasters);
-                }
-
-                // TODO: check if useful/neccessary
-                // OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP, false));
-                m_driverManager.clearcache();
-                success = true;
             } catch (Exception e) {
-                String stamp1 = "[" + this.getClass().getName() + ".publishProject()/1] Project:" + m_context.currentProject().getId() + " Time:" + new Date();
-                String stamp2 = "[" + this.getClass().getName() + ".publishProject()/1] User: " + m_context.currentUser().toString();
                 if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error(stamp1);
-                    OpenCms.getLog(this).error(stamp2, e);
+                    OpenCms.getLog(this).error("Error publishing resource(s): " + publishList.toString(), e);
                 }
             } finally {
-                if (!success) {
-                    if (CmsXmlTemplateLoader.getOnlineElementCache() != null) {
-                        CmsXmlTemplateLoader.getOnlineElementCache().clearCache();
-                    }
-                }
+                // TODO check if useful/neccessary
+                m_driverManager.clearcache();
                 
                 // set current project to online project if the published project was temporary
                 // and the published project is still the current project
