@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2002/04/18 09:25:43 $
-* Version: $Revision: 1.318 $
+* Date   : $Date: 2002/04/24 07:15:50 $
+* Version: $Revision: 1.319 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.w3c.dom.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.318 $ $Date: 2002/04/18 09:25:43 $
+ * @version $Revision: 1.319 $ $Date: 2002/04/24 07:15:50 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -7796,5 +7796,44 @@ protected void validName(String name, boolean blank) throws CmsException {
         } else {
             throw new CmsException("Only administrators can change usertype ",CmsException.C_NO_ACCESS);
         }
+    }
+
+    /**
+     * Returns a Vector with the resources that contains the given part in the resourcename.<br>
+     *
+     * <B>Security:</B>
+     * Access is granted, if:
+     * <ul>
+     * <li>the user has access to the project</li>
+     * <li>the user can read and view this resource</li>
+     * </ul>
+     *
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     * @param resourcename A part of resourcename
+     *
+     * @return subfolders A Vector with resources.
+     *
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+    public Vector readResourcesLikeName(CmsUser currentUser, CmsProject currentProject, String resourcename) throws CmsException {
+        Vector resources = new Vector();
+        resources = m_dbAccess.readResourcesLikeName(currentProject, resourcename);
+        Vector retValue = new Vector(resources.size());
+        //make sure that we have access to all these.
+        Enumeration e = resources.elements();
+        String lastcheck = "#"; // just a char that is not valid in a filename
+        while (e.hasMoreElements()) {
+            CmsResource res = (CmsResource) e.nextElement();
+            if (!res.getAbsolutePath().startsWith(lastcheck)) {
+                if (accessOther(currentUser, currentProject, res, C_ACCESS_PUBLIC_READ + C_ACCESS_PUBLIC_VISIBLE) ||
+                    accessOwner(currentUser, currentProject, res, C_ACCESS_OWNER_READ + C_ACCESS_OWNER_VISIBLE) ||
+                    accessGroup(currentUser, currentProject, res, C_ACCESS_GROUP_READ + C_ACCESS_GROUP_VISIBLE)) {
+                    retValue.addElement(res);
+                    lastcheck = res.getAbsolutePath();
+                }
+            }
+        }
+        return retValue;
     }
 }

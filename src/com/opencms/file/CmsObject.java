@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2002/04/11 15:21:58 $
-* Version: $Revision: 1.228 $
+* Date   : $Date: 2002/04/24 07:16:12 $
+* Version: $Revision: 1.229 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.228 $ $Date: 2002/04/11 15:21:58 $
+ * @version $Revision: 1.229 $ $Date: 2002/04/24 07:16:12 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -3851,5 +3851,25 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
      */
     public void changeUserType(String username, int userType) throws CmsException{
         m_rb.changeUserType(m_context.currentUser(), m_context.currentProject(), username, userType);
+    }
+
+    /**
+     * Returns a Vector with the resources that contains the given part in the resourcename.<br>
+     *
+     * <B>Security:</B>
+     * Access is granted, if:
+     * <ul>
+     * <li>the user has access to the project</li>
+     * <li>the user can read and view this resource</li>
+     * </ul>
+     *
+     * @param resourcename A part of resourcename
+     *
+     * @return subfolders A Vector with resources.
+     *
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+    public Vector readResourcesLikeName(String resourcename) throws CmsException {
+        return m_rb.readResourcesLikeName(m_context.currentUser(), m_context.currentProject(), resourcename);
     }
 }

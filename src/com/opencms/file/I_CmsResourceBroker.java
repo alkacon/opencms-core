@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
-* Date   : $Date: 2002/04/11 15:21:58 $
-* Version: $Revision: 1.173 $
+* Date   : $Date: 2002/04/24 07:16:34 $
+* Version: $Revision: 1.174 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.173 $ $Date: 2002/04/11 15:21:58 $
+ * @version $Revision: 1.174 $ $Date: 2002/04/24 07:16:34 $
  *
  */
 
@@ -3582,4 +3582,23 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
      */
     public void changeUserType(CmsUser currentUser, CmsProject currentProject, CmsUser user, int userType) throws CmsException;
 
+    /**
+     * Returns a Vector with the resources that contains the given part in the resourcename.<br>
+     *
+     * <B>Security:</B>
+     * Access is granted, if:
+     * <ul>
+     * <li>the user has access to the project</li>
+     * <li>the user can read and view this resource</li>
+     * </ul>
+     *
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     * @param resourcename A part of resourcename
+     *
+     * @return subfolders A Vector with resources.
+     *
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+    public Vector readResourcesLikeName(CmsUser currentUser, CmsProject currentProject, String resourcename) throws CmsException;
 }

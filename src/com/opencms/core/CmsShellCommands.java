@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2002/04/05 06:36:35 $
-* Version: $Revision: 1.47 $
+* Date   : $Date: 2002/04/24 07:17:27 $
+* Version: $Revision: 1.48 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  *
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.47 $ $Date: 2002/04/05 06:36:35 $
+ * @version $Revision: 1.48 $ $Date: 2002/04/24 07:17:27 $
  */
 public class CmsShellCommands implements I_CmsConstants {
 
@@ -3517,7 +3517,7 @@ public class CmsShellCommands implements I_CmsConstants {
      * @param username The name of the user to change
      * @param userType The new type of the user
      */
-    public void changeUserType(String username, String userType) throws CmsException{
+    public void changeUserType(String username, String userType){
         try{
             m_cms.changeUserType(username, Integer.parseInt(userType));
             CmsUser user = null;
@@ -3533,4 +3533,34 @@ public class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(e);
         }
     }
+
+    /**
+     * Returns the resources that contains the given part in the resourcename.<br>
+     *
+     * <B>Security:</B>
+     * Access is granted, if:
+     * <ul>
+     * <li>the user has access to the project</li>
+     * <li>the user can read and view this resource</li>
+     * </ul>
+     *
+     * @param resourcename A part of resourcename
+     *
+     * @return subfolders A Vector with resources.
+     *
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+    public void readResourcesLikeName(String resourcename) {
+        try{
+            Vector resources = m_cms.readResourcesLikeName(resourcename);
+            for(int i=0; i< resources.size(); i++){
+                CmsResource res = (CmsResource)resources.elementAt(i);
+                System.out.println(res.toString());
+            }
+        } catch (Exception e){
+            CmsShell.printException(e);
+        }
+    }
+
+
 }
