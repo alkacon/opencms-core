@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkProcessor.java,v $
- * Date   : $Date: 2004/03/02 21:52:34 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/03/22 16:27:20 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,29 +35,33 @@ import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
 
-import org.htmlparser.Node;
 import org.htmlparser.Parser;
-import org.htmlparser.RemarkNode;
-import org.htmlparser.StringNode;
 import org.htmlparser.lexer.Lexer;
-import org.htmlparser.tags.CompositeTag;
 import org.htmlparser.tags.ImageTag;
 import org.htmlparser.tags.LinkTag;
-import org.htmlparser.tags.Tag;
 import org.htmlparser.util.ParserException;
-import org.htmlparser.visitors.NodeVisitor;
 
 /**
- * @author Carsten Weinholz (c.weinholz@alkacon.com)
+ * Handles the link replacement required e.g. to process elements for XML pages.<p>
  * 
- * @version $Revision: 1.14 $
+ * @author Carsten Weinholz (c.weinholz@alkacon.com)
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * 
+ * @version $Revision: 1.15 $
  * @since 5.3
  */
-public class CmsLinkProcessor extends NodeVisitor {
+public class CmsLinkProcessor {
     
+    /** HTML end */
+    private static final String C_HTML_END = "\n</body></html>";
+    
+    /** HTML start */
+    private static final String C_HTML_START = "<html><body>\n";
+    
+    /** Processing mode "process links" */
     private static final int C_PROCESS_LINKS = 1;
   
-    /** Processing modes */
+    /** Processing mode "replace links" */
     private static final int C_REPLACE_LINKS = 0;
 
     /** The current cms instance */
@@ -73,24 +77,21 @@ public class CmsLinkProcessor extends NodeVisitor {
     private boolean m_processEditorLinks;
     
     /** The relative path for relative links, if not set, relative links are treated as external links */
-    private String m_relativePath;
-    
-    /** The processed content */
-    private StringBuffer m_result;
+    private String m_relativePath;   
     
     /**
      * Creates a new CmsLinkProcessor.<p>
      * 
      * @param linkTable the link table to use
      */
-    public CmsLinkProcessor (CmsLinkTable linkTable) {
-        super(true);        
+    public CmsLinkProcessor (CmsLinkTable linkTable) {        
         m_linkTable = linkTable;
     }
     
     /**
      * Starts link processing for the given content in processing mode.<p>
-     * Macros are replaced by links.
+     * 
+     * Macros are replaced by links.<p>
      * 
      * @param cms the cms object
      * @param content the content to process
@@ -100,24 +101,18 @@ public class CmsLinkProcessor extends NodeVisitor {
      * @throws ParserException if something goes wrong
      */
     public String processLinks(CmsObject cms, String content, boolean processEditorLinks) throws ParserException {
-        Lexer lexer = new Lexer(content);
-        
+                
         m_processEditorLinks = processEditorLinks;
         m_mode = C_PROCESS_LINKS;
-        m_cms = cms;
-        
-        m_result = new StringBuffer();
-        
-        Parser parser = new Parser();
-        parser.setLexer(lexer);
-        parser.visitAllNodesWith(this);
-        
-        return m_result.toString();        
+        m_cms = cms;        
+
+        return processContent(content);
     }
     
     /**
      * Starts link processing for the given content in replacement mode.<p>
-     * Links are replaced by macros.
+     * 
+     * Links are replaced by macros.<p>
      * 
      * @param cms the cms object
      * @param content the content to process
@@ -127,49 +122,20 @@ public class CmsLinkProcessor extends NodeVisitor {
      * @throws ParserException if something goes wrong
      */
     public String replaceLinks(CmsObject cms, String content, String relativePath) throws ParserException {
-        Lexer lexer = new Lexer(content);
-        
+                                
         m_relativePath = relativePath;
         m_mode = C_REPLACE_LINKS;
         m_cms = cms; 
         
-        m_result = new StringBuffer();
-        
-        Parser parser = new Parser();
-        parser.setLexer(lexer);
-        parser.visitAllNodesWith(this);
-        
-        return m_result.toString();
+        return processContent(content);
     }
-
-    /**
-     * Visitor method to process a tag (end).<p>
-     * 
-     * @param tag the tag to process
-     * 
-     * @see org.htmlparser.visitors.NodeVisitor#visitEndTag(org.htmlparser.tags.Tag)
-     */    
-    public void visitEndTag(Tag tag) {
-        Node parent = tag.getParent ();
-        // process only those nodes not processed by a parent
-        if (parent == null) {
-            // an orphan end tag
-            m_result.append(tag.toHtml());
-        } else if (parent.getParent() == null) {
-            // a top level tag with no parents
-            m_result.append(parent.toHtml());
-        }
-    }
-
     
     /**
-     * Visitor method to process an image tag.<p>
+     * Process an image tag.<p>
      * 
      * @param imageTag the tag to process
-     * 
-     * @see org.htmlparser.visitors.NodeVisitor#visitImageTag(org.htmlparser.tags.ImageTag)
      */
-    public void visitImageTag(ImageTag imageTag) {             
+    protected void processImageTag(ImageTag imageTag) {             
         switch (m_mode) {
             case C_REPLACE_LINKS:
                 if (imageTag.getAttribute("src") != null) {
@@ -197,13 +163,11 @@ public class CmsLinkProcessor extends NodeVisitor {
     }
     
     /**
-     * Visitor method to process a single link.<p>
+     * Process a link tag.<p>
      * 
      * @param linkTag the tag to process
-     * 
-     * @see org.htmlparser.visitors.NodeVisitor#visitLinkTag(org.htmlparser.tags.LinkTag)
      */
-    public void visitLinkTag(LinkTag linkTag) {
+    protected void processLinkTag(LinkTag linkTag) {
         switch (m_mode) {
             case C_REPLACE_LINKS:
                 if (linkTag.getAttribute("href") != null) {
@@ -231,48 +195,6 @@ public class CmsLinkProcessor extends NodeVisitor {
                 break;
         }
     }
-
-    /**
-     * Visitor method to process a remark.<p>
-     * 
-     * @param node the node to process
-     * 
-     * @see org.htmlparser.visitors.NodeVisitor#visitRemarkNode(org.htmlparser.RemarkNode)
-     */
-    public void visitRemarkNode(RemarkNode node) {        
-        m_result.append(node.toHtml());
-    }
-
-    /**
-     * Visitor method to process a string node.<p>
-     * 
-     * @param node the string node to process
-     * 
-     * @see org.htmlparser.visitors.NodeVisitor#visitStringNode(org.htmlparser.StringNode)
-     */
-    public void visitStringNode(StringNode node) {
-        if (null == node.getParent ()) {
-            m_result.append(node.toHtml());
-        }
-    }    
-    
-    /**
-     * Visitor method to process a tag (start).<p>
-     * 
-     * @param tag the tag to process
-     * 
-     * @see org.htmlparser.visitors.NodeVisitor#visitTag(org.htmlparser.tags.Tag)
-     */
-    public void visitTag(Tag tag) {
-        // process only those nodes that won't be processed by an end tag,
-        // nodes without parents or parents without an end tag, since
-        // the complete processing of all children should happen before
-        // we turn this node back into html text        
-        if ((tag.getParent() == null)
-        && (!(tag instanceof CompositeTag) || null == ((CompositeTag)tag).getEndTag ())) {
-            m_result.append(tag.toHtml());
-        }
-    }
     
     /**
      * Internal method to get the name of a macro string.<p>
@@ -281,7 +203,7 @@ public class CmsLinkProcessor extends NodeVisitor {
      * 
      * @return the name of the macro
      */
-    private String getLinkName (String macro) {        
+    private String getLinkName(String macro) {        
         return macro.substring(2, macro.length()-1);
     }
       
@@ -292,8 +214,40 @@ public class CmsLinkProcessor extends NodeVisitor {
      * 
      * @return the macro string
      */
-    private String newMacro (String name) {        
-        return "${" + name + "}";
+    private String newMacro(String name) {
+        StringBuffer result = new StringBuffer(name.length() + 4);
+        result.append("${");
+        result.append(name);
+        result.append("}");
+        return result.toString();
+    }
+    
+    /**
+     * Initialized the parser and processes the content input.<p>
+     * 
+     * @param content the content to process
+     * @return the processed content with replaced links
+     * 
+     * @throws ParserException if something goes wrong
+     */    
+    private String processContent(String content) throws ParserException  {
+        // we must make sure that the content passed to the parser always is 
+        // a "valid" HTML page, i.e. is surrounded by <html><body>...</body></html> 
+        // otherwise you will get strange results for some specific HTML constructs
+        StringBuffer newContent = new StringBuffer(content.length() + 32);
+        newContent.append(C_HTML_START);
+        newContent.append(content);
+        newContent.append(C_HTML_END);
+        // create the link visitor
+        CmsLinkVisitor visitor = new CmsLinkVisitor(this);
+        // create the parser and parse the input
+        Parser parser = new Parser();
+        Lexer lexer = new Lexer(newContent.toString());
+        parser.setLexer(lexer);        
+        parser.visitAllNodesWith(visitor);
+        // remove the addition HTML  
+        String result = visitor.getHtml();
+        return result.substring(C_HTML_START.length(), result.length() - C_HTML_END.length());        
     }
     
     /**
