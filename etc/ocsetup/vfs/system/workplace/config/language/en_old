@@ -796,7 +796,7 @@ A new task was reactivated for you or your role.</content>
 				</priority>
 				<forward>
 					<title>Forward</title>					
-					<head>Task fo</head>
+					<head>Task for</head>
 					<logmessage>Task forwarded to</logmessage>
 				</forward>
 				<reakt>
