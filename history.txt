@@ -8,6 +8,9 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.3.17 Bela Tegeuse - 01 June 2001
+* Changed the variant cache in the elements from Hashtable to CmsLruCache.
+
 OpenCms 4.3.16 Bela Tegeuse - 31 May 2001
 ! Added the administration point for clear cache.
 * fixed bug in publishProject if no ElementCache exists.
