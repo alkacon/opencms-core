@@ -33,7 +33,9 @@ PACKAGE opencmsResource IS
   PROCEDURE chstate(pUserId IN NUMBER, pProjectId IN NUMBER, pResourceName IN VARCHAR2, pState IN NUMBER);
   PROCEDURE copyResource(pToProjectID IN NUMBER, pFromProjectID IN NUMBER, pResourceName IN VARCHAR2);
 
-  FUNCTION getFilesInFolder(pUserId NUMBER, pProjectId NUMBER, pResourceName VARCHAR2) RETURN userTypes.anyCursor;
+  --FUNCTION getFilesInFolder(pUserId NUMBER, pProjectId NUMBER, pResourceName VARCHAR2) RETURN userTypes.anyCursor;
+  FUNCTION getFilesInFolder(pUserId NUMBER, pProjectId NUMBER, pResourceName VARCHAR2) RETURN userTypes.resourceTable;
+
   FUNCTION getFoldersInFolder(pUserId NUMBER, pProjectId NUMBER, pResourceName VARCHAR2) RETURN userTypes.anyCursor;
   FUNCTION getParent(pResourceName VARCHAR2) RETURN VARCHAR2;
   FUNCTION getParentId(pProjectID NUMBER, pResourceId NUMBER) RETURN NUMBER;

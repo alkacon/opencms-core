@@ -5,7 +5,10 @@ PACKAGE BODY opencmsresource IS
 --------------------------------------------------------------------------------------------------------------
   bAnyList VARCHAR2(32767);
   bResourceList VARCHAR2(32767) := '';
-  FUNCTION addInList(pName VARCHAR2) RETURN BOOLEAN;
+  bPathList userTypes.nameTable;
+  bResList userTypes.resourceTable;
+  --FUNCTION addInList(pName VARCHAR2) RETURN BOOLEAN;
+  FUNCTION addPathInList(pName VARCHAR2) RETURN BOOLEAN;
 --------------------------------------------------------------------------------------------------------------
 -- this procedure is called from DbAccess. It calls the second lockResource-procedure and returns a resultset
 -- which is needed to update the resource-cache
@@ -30,6 +33,7 @@ PACKAGE BODY opencmsresource IS
     curResource userTypes.anyCursor;
     recResource cms_resources%ROWTYPE;
     vFolderName cms_resources.resource_name%TYPE;
+    tableResource userTypes.resourceTable;
   BEGIN
    -- if pFolderName is the id and not the path then read the resource_name for the resource
    -- read all Information about this resource
@@ -69,22 +73,13 @@ PACKAGE BODY opencmsresource IS
       -- if the resource is folder then lock all subresources
       IF substr(vFolderName, -1) = '/' THEN
         -- all files in folder
-        curResource := getFilesInFolder(pUserId, pProjectId, vFolderName);
-        LOOP
-		  BEGIN
-            FETCH curResource INTO recResource;
-            EXIT WHEN curResource%NOTFOUND;
-            IF recResource.state != opencmsConstants.C_STATE_DELETED THEN
-              lockResource(pUserId, pProjectId, recResource.resource_name, 'TRUE');
-            END IF;
-          EXCEPTION
-            WHEN invalid_cursor THEN
-              exit;
-          END;
+        tableResource := getFilesInFolder(pUserId, pProjectId, vFolderName);
+        FOR i IN 1..tableResource.COUNT LOOP
+          recResource := tableResource(i);
+          IF recResource.state != opencmsConstants.C_STATE_DELETED THEN
+            lockResource(pUserId, pProjectId, recResource.resource_name, 'TRUE');
+          END IF;
         END LOOP;
-        IF curResource%ISOPEN THEN
-          CLOSE curResource;
-        END IF;
         -- all folders in the folder and their files and folders etc.
         curResource := getFoldersInFolder(pUserId, pProjectId, vFolderName);
         LOOP
@@ -138,6 +133,7 @@ PACKAGE BODY opencmsresource IS
     curResource userTypes.anyCursor;
     recResource cms_resources%ROWTYPE;
     vFolderName cms_resources.resource_name%TYPE;
+    tableResource userTypes.resourceTable;
   BEGIN
    -- if pFolderName is the id and not the path then read the resource_name for the resource
    -- read all Information about this resource
@@ -172,22 +168,13 @@ PACKAGE BODY opencmsresource IS
       -- if the resource is folder then lock all subresources
       IF substr(vFolderName, -1) = '/' THEN
         -- all files in folder
-        curResource := getFilesInFolder(pUserId, pProjectId, vFolderName);
-        LOOP
-          BEGIN
-            FETCH curResource INTO recResource;
-            EXIT WHEN curResource%NOTFOUND;
-            IF recResource.state != opencmsConstants.C_STATE_DELETED THEN
-              unlockResource(pUserId, pProjectId, recResource.resource_name);
-            END IF;
-          EXCEPTION
-            WHEN invalid_cursor THEN
-              exit;
-          END;
+        tableResource := getFilesInFolder(pUserId, pProjectId, vFolderName);
+        FOR i IN 1..tableResource.COUNT LOOP
+          recResource := tableResource(i);
+          IF recResource.state != opencmsConstants.C_STATE_DELETED THEN
+            unlockResource(pUserId, pProjectId, recResource.resource_name);
+          END IF;
         END LOOP;
-        IF curResource%ISOPEN THEN
-          CLOSE curResource;
-        END IF;
         -- all folders in the folder and their files and folders etc.
         curResource := getFoldersInFolder(pUserId, pProjectId, vFolderName);
         LOOP
@@ -535,16 +522,15 @@ PACKAGE BODY opencmsresource IS
   PROCEDURE removeFolder(pUserId NUMBER, pProjectId NUMBER, pResourceID NUMBER, pResourceName VARCHAR2) IS
     curSubResource userTypes.anyCursor;
     recSubResource cms_resources%ROWTYPE;
+    tableResource userTypes.resourceTable;
   BEGIN
-    curSubResource := getFilesInFolder(pUserId, pProjectId, pResourceName);
-    LOOP
-      FETCH curSubResource INTO recSubResource;
-      EXIT WHEN curSubResource%NOTFOUND;
+    tableResource := getFilesInFolder(pUserId, pProjectId, pResourceName);
+    FOR i IN 1..tableResource.COUNT LOOP
+      recSubResource := tableResource(i);
       IF recSubResource.state != opencmsConstants.C_STATE_DELETED THEN
         userErrors.raiseUserError(userErrors.C_NOT_EMPTY);
       END IF;
     END LOOP;
-    CLOSE curSubResource;
     curSubResource := getFoldersInFolder(pUserId, pProjectId, pResourceName);
     LOOP
       FETCH curSubResource INTO recSubResource;
@@ -758,7 +744,7 @@ PACKAGE BODY opencmsresource IS
 -- returns a cursor for the files in this folder
 -- => same procedure as getFoldersInFolder but with resource_type != C_TYPE_FOLDER
 ----------------------------------------------------------------------------------------------
-  FUNCTION getFilesInFolder(pUserId NUMBER, pProjectId NUMBER, pResourceName VARCHAR2) RETURN userTypes.anyCursor IS
+  FUNCTION getFilesInFolder(pUserId NUMBER, pProjectId NUMBER, pResourceName VARCHAR2) RETURN userTypes.resourceTable IS
     CURSOR curFilesProject(cParentId NUMBER) IS
            select * from cms_resources
                     where parent_id = cParentId
@@ -768,6 +754,8 @@ PACKAGE BODY opencmsresource IS
     recResource cms_resources%ROWTYPE;
     recFiles    cms_resources%ROWTYPE;
     vQueryString VARCHAR2(32767) := '';
+    retResources userTypes.resourceTable;
+    newIndex NUMBER;
   BEGIN
     bAnyList := '';
     curResource := readFolder(pUserId, pProjectId, pResourceName);
@@ -775,8 +763,7 @@ PACKAGE BODY opencmsresource IS
     IF curResource%NOTFOUND THEN
       -- error reading the folder: open cursor with select that returns no rows
       CLOSE curResource;
-      --OPEN curResource FOR select * from cms_resources where resource_id = -1;
-      RETURN curResource;
+      RETURN retResources;
     END IF;
     CLOSE curResource;
     -- has the user access for the folder
@@ -789,8 +776,9 @@ PACKAGE BODY opencmsresource IS
         IF (opencmsAccess.accessOwner(pUserId, pProjectId, recFiles.resource_id, opencmsConstants.C_ACCESS_OWNER_READ) = 1
             OR opencmsAccess.accessOther(pUserId, pProjectId, recFiles.resource_id, opencmsConstants.C_ACCESS_PUBLIC_READ) = 1
             OR opencmsAccess.accessGroup(pUserId, pProjectId, recFiles.resource_id, opencmsConstants.C_ACCESS_GROUP_READ) = 1) THEN
-          IF addInList(recFiles.resource_name) THEN
-            vQueryString := vQueryString||' union select * from cms_resources where resource_id = '||to_char(recFiles.resource_id);
+          IF addPathInList(recFiles.resource_name) THEN
+          	newIndex := retResources.COUNT + 1;
+            retResources(newIndex) := recFiles;
           END IF;
         END IF;
       END LOOP;
@@ -811,8 +799,9 @@ PACKAGE BODY opencmsresource IS
               IF (opencmsAccess.accessOwner(pUserId, opencmsConstants.C_PROJECT_ONLINE_ID, recFiles.resource_id, opencmsConstants.C_ACCESS_OWNER_READ) = 1
                  OR opencmsAccess.accessOther(pUserId, opencmsConstants.C_PROJECT_ONLINE_ID, recFiles.resource_id, opencmsConstants.C_ACCESS_PUBLIC_READ) = 1
                  OR opencmsAccess.accessGroup(pUserId, opencmsConstants.C_PROJECT_ONLINE_ID, recFiles.resource_id, opencmsConstants.C_ACCESS_GROUP_READ) = 1) THEN
-                IF addInList(recFiles.resource_name) THEN
-                  vQueryString := vQueryString||' union select * from cms_resources where resource_id = '||to_char(recFiles.resource_id);
+                IF addPathInList(recFiles.resource_name) THEN
+                  newIndex := retResources.COUNT + 1;
+                  retResources(newIndex) := recFiles;
                 END IF;
               END IF;
             END LOOP;
@@ -820,14 +809,9 @@ PACKAGE BODY opencmsresource IS
           END IF;
         END IF;
       END IF;
-      -- open cursor with the string vQueryString without the first "union"
-      vQueryString := substr(vQueryString, 8);
-      IF substr(vQueryString,1,6) = 'select' THEN
-        OPEN curResource FOR 'select * from ('||vQueryString||') order by resource_name';
-      END IF;
     END IF;
     bAnyList := '';
-    RETURN curResource;
+    RETURN retResources;
   END getFilesInFolder;
 ---------------------------------------------------------------------------------------------
 -- returns a cursor for the folders in this folder
@@ -864,7 +848,7 @@ PACKAGE BODY opencmsresource IS
         IF (opencmsAccess.accessOwner(pUserId, pProjectId, recFiles.resource_id, opencmsConstants.C_ACCESS_OWNER_READ) = 1
             OR opencmsAccess.accessOther(pUserId, pProjectId, recFiles.resource_id, opencmsConstants.C_ACCESS_PUBLIC_READ) = 1
             OR opencmsAccess.accessGroup(pUserId, pProjectId, recFiles.resource_id, opencmsConstants.C_ACCESS_GROUP_READ) = 1) THEN
-          IF addInList(recFiles.resource_name) THEN
+          IF addPathInList(recFiles.resource_name) THEN
             vQueryString := vQueryString||' union select * from cms_resources where resource_id = '||to_char(recFiles.resource_id);
           END IF;
         END IF;
@@ -886,7 +870,7 @@ PACKAGE BODY opencmsresource IS
               IF (opencmsAccess.accessOwner(pUserId, opencmsConstants.C_PROJECT_ONLINE_ID, recFiles.resource_id, opencmsConstants.C_ACCESS_OWNER_READ) = 1
                  OR opencmsAccess.accessOther(pUserId, opencmsConstants.C_PROJECT_ONLINE_ID, recFiles.resource_id, opencmsConstants.C_ACCESS_PUBLIC_READ) = 1
                  OR opencmsAccess.accessGroup(pUserId, opencmsConstants.C_PROJECT_ONLINE_ID, recFiles.resource_id, opencmsConstants.C_ACCESS_GROUP_READ) = 1) THEN
-                IF addInList(recFiles.resource_name) THEN
+                IF addPathInList(recFiles.resource_name) THEN
                   vQueryString := vQueryString||' union select * from cms_resources where resource_id = '||to_char(recFiles.resource_id);
                 END IF;
               END IF;
@@ -1022,6 +1006,7 @@ PACKAGE BODY opencmsresource IS
 -- private function checks if this path is already in the list, if not => edit the list
 -- and returns boolean
 ---------------------------------------------------------------------------------------
+/*
   FUNCTION addInList(pName VARCHAR2) RETURN BOOLEAN IS
     vCount NUMBER;
   BEGIN
@@ -1033,6 +1018,29 @@ PACKAGE BODY opencmsresource IS
       RETURN FALSE;
 	END IF;
   END addInList;
+*/
+---------------------------------------------------------------------------------------
+-- private function checks if this path is already in the list, if not => edit the list
+-- and returns boolean
+---------------------------------------------------------------------------------------
+  FUNCTION addPathInList(pName VARCHAR2) RETURN BOOLEAN IS
+    newIndex NUMBER;
+    element NUMBER;
+  BEGIN
+    FOR element IN 1..bPathList.COUNT
+    LOOP
+      IF bPathList(element) = pName THEN
+        RETURN FALSE;
+      END IF;
+	END LOOP;
+	IF element > 1 THEN
+	  newIndex := element+1;
+	ELSE
+	  newIndex := 1;
+	END IF;
+    bPathList(newIndex) := pName;
+	RETURN TRUE;
+  END addPathInList;
 -------------------------------------------------------------------------
 END;
 /

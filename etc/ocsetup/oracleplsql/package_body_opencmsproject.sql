@@ -1,7 +1,7 @@
 CREATE OR REPLACE
 PACKAGE BODY OpenCmsProject IS
    -- variable/funktions/procedures which are used only in this package
-   bAnyList VARCHAR2(1000) := '';
+   bAnyList VARCHAR2(32767) := '';
    PROCEDURE helperCopyResourceToProject(pUserId IN NUMBER, pProjectId IN NUMBER, pOnlineProjectId IN NUMBER, pResourceName IN VARCHAR2);
    FUNCTION addInList(pAnyId NUMBER) RETURN BOOLEAN;
 --------------------------------------------------------------------
@@ -215,6 +215,7 @@ PACKAGE BODY OpenCmsProject IS
     recResource cms_resources%ROWTYPE;
     recUpdResource cms_resources%ROWTYPE;
     recSubResource cms_resources%ROWTYPE;
+    tableResource userTypes.resourceTable;
   BEGIN
     opencmsResource.copyResource(pProjectId, pOnlineProjectId, pResourceName);
     -- copy meta-information
@@ -249,22 +250,11 @@ PACKAGE BODY OpenCmsProject IS
     -- now the subfolders/files of the folder
     IF substr(pResourceName, -1, 1) = '/'  THEN
       -- all files in the folder
-      curSubResource := opencmsResource.getFilesInFolder(pUserId, pOnlineProjectId, pResourceName);
-      IF curSubResource IS NOT NULL THEN
-        LOOP
-          BEGIN
-            FETCH curSubResource INTO recSubResource;
-            EXIT WHEN curSubResource%NOTFOUND;
-            helperCopyResourceToProject(pUserId, pProjectId, pOnlineProjectId, recSubResource.resource_name);
-          EXCEPTION
-            WHEN invalid_cursor THEN
-              exit;
-          END;
-        END LOOP;
-      END IF;
-      IF curSubResource%ISOPEN THEN
-        CLOSE curSubResource;
-      END IF;
+      tableResource := opencmsResource.getFilesInFolder(pUserId, pProjectId, pResourceName);
+      FOR i IN 1..tableResource.COUNT LOOP
+        recSubResource := tableResource(i);
+        helperCopyResourceToProject(pUserId, pProjectId, pOnlineProjectId, recSubResource.resource_name);
+      END LOOP;
       -- all folder in the folder
       curSubResource := opencmsResource.getFoldersInFolder(pUserId, pOnlineProjectId, pResourceName);
       IF curSubResource IS NOT NULL THEN
@@ -690,16 +680,16 @@ PACKAGE BODY OpenCmsProject IS
       rollback;
       IF curFolders%ISOPEN THEN
         CLOSE curFolders;
-      END IF;  
+      END IF;
       IF curFiles%ISOPEN THEN
 		CLOSE curFiles;
-	  END IF;	
+	  END IF;
       IF curNewFolder%ISOPEN THEN
         CLOSE curNewFolder;
       END IF;
       IF curNewFile%ISOPEN THEN
         CLOSE curNewFile;
-      END IF;  
+      END IF;
       RAISE;
   END publishProject;
 -----------------------------------------------------------------------------------------
