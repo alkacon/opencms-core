@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsXmlPage.java,v $
- * Date   : $Date: 2004/01/19 08:22:02 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/01/20 11:06:00 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@
  */
 package org.opencms.page;
 
+import org.opencms.locale.CmsLocaleManager;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLink;
 import org.opencms.staticexport.CmsLinkProcessor;
@@ -74,7 +75,7 @@ import org.dom4j.io.XMLWriter;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  */
 public class CmsXmlPage {
     
@@ -86,9 +87,6 @@ public class CmsXmlPage {
     
     /** Link to the external document type of this xml page */
     private static final String C_DOCUMENT_TYPE = "/system/shared/page.dtd";
-    
-    /** String to indicate default language */
-    private static final String C_DEFAULT_LANGUAGE = "(default)";
     
     /** Reference for named elements */
     private Map m_bookmarks = null;
@@ -159,10 +157,11 @@ public class CmsXmlPage {
      * @return the bookemarked element
      */
     protected Element getBookmark (String name, String language) {        
-        Element element = (Element) m_bookmarks.get(language + "_" + name);
-        
-        if (element == null) {
-            element = (Element) m_bookmarks.get(name);
+
+        Element element = null;
+        String localeNames[] = CmsLocaleManager.getLocaleNames(language);
+        for (int i = 0; i < localeNames.length && element == null; i++) {
+            element = (Element) m_bookmarks.get(localeNames[i] + "_" + name);
         }
     
         return element;
@@ -580,34 +579,6 @@ public class CmsXmlPage {
         } else {
             enabled.setValue(Boolean.toString(isEnabled));
         }
-    }
-    
-    /**
-     * Sets the default flag of an already existing element.<p>
-     * The element is registered as default element for the given
-     * element name. If another element was registered already as default,
-     * its default flag is removed.
-     * 
-     * @param name the name of the element
-     * @param language the language of the element
-     */
-    public void setDefault(String name, String language) {
-        
-        Element element = getBookmark(name, language);
-        Attribute isDefault = element.attribute("default");
-        
-        if (isDefault == null) {
-            element.addAttribute("default", "true");
-        } else {
-            isDefault.setValue("true");
-        }
-        
-        Element lastDefault = getBookmark(name, null);
-        if (lastDefault != null) {
-            lastDefault.remove(lastDefault.attribute("default"));
-        }
-        
-        setBookmark(name, null, element);
     }
     
     /**
