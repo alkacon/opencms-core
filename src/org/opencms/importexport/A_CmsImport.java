@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2003/11/08 10:32:44 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/01/12 14:43:55 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -547,5 +547,4 @@ public abstract class A_CmsImport implements I_CmsImport {
             }
         }
     }
-
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/01/08 13:15:30 $
- * Version: $Revision: 1.303 $
+ * Date   : $Date: 2004/01/12 14:43:55 $
+ * Version: $Revision: 1.304 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.w3c.dom.Document;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.303 $ $Date: 2004/01/08 13:15:30 $
+ * @version $Revision: 1.304 $ $Date: 2004/01/12 14:43:55 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -8250,11 +8250,26 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @throws CmsException if operation was not succesful
      */
     public void writeProperties(CmsRequestContext context, String resource, Map propertyinfos) throws CmsException {
+        writeProperties(context, resource, propertyinfos, false);
+    }
+    
+    /**
+     * Writes a couple of propertyinformation for a file or folder.<p>
+     *
+     * Only the user is granted, who has the right to write the resource.
+     *
+     * @param context the current request context
+     * @param resource the name of the resource of which the propertyinformation has to be read
+     * @param propertyinfos a Hashtable with propertydefinition- propertyinfo-pairs as strings
+     * @param addDefinition flag to indicate if unknown definition should be added
+     * @throws CmsException if operation was not succesful
+     */    
+    public void writeProperties(CmsRequestContext context, String resource, Map propertyinfos, boolean addDefinition) throws CmsException {
         CmsResource res = readFileHeader(context, resource);
 
         // check if the user has write access 
         checkPermissions(context, res, I_CmsConstants.C_WRITE_ACCESS);
-        m_vfsDriver.writeProperties(propertyinfos, context.currentProject().getId(), res, res.getType(), false);
+        m_vfsDriver.writeProperties(propertyinfos, context.currentProject().getId(), res, res.getType(), addDefinition);
         m_propertyCache.clear();
 
         if (res.isFile()) {
@@ -8285,6 +8300,21 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @throws CmsException if operation was not succesful
      */
     public void writeProperty(CmsRequestContext context, String resource, String property, String value) throws CmsException {
+        writeProperty(context, resource, property, value, false);
+    }
+    
+    /**
+     * Writes a propertyinformation for a file or folder.<p>
+     *
+     * Only the user is granted, who has the right to write the resource.
+     *
+     * @param context the current request context
+     * @param resource the name of the resource of which the propertyinformation has to be read
+     * @param property the propertydefinition-name of which the propertyinformation has to be set
+     * @param value the value for the propertyinfo to be set
+     * @throws CmsException if operation was not succesful
+     */    
+    public void writeProperty(CmsRequestContext context, String resource, String property, String value, boolean addDefinition) throws CmsException {
 
         // read the resource
         CmsResource res = readFileHeader(context, resource);
@@ -8292,7 +8322,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         // check the security
         checkPermissions(context, res, I_CmsConstants.C_WRITE_ACCESS);
 
-        m_vfsDriver.writeProperty(property, context.currentProject().getId(), value, res, res.getType(), false);
+        m_vfsDriver.writeProperty(property, context.currentProject().getId(), value, res, res.getType(), addDefinition);
         m_propertyCache.clear();
         // set the file-state to changed
         if (res.isFile()) {

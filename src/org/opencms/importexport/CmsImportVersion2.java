@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2003/11/14 10:09:12 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/01/12 14:43:55 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,9 @@
 package org.opencms.importexport;
 
 import org.opencms.loader.CmsPageLoader;
+import org.opencms.loader.CmsXmlPageLoader;
 import org.opencms.main.OpenCms;
+import org.opencms.page.CmsXmlPage;
 import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsStringSubstitution;
 import org.opencms.util.CmsUUID;
@@ -678,9 +680,7 @@ public class CmsImportVersion2 extends A_CmsImport {
             if (!resname.startsWith("/")) {
                 resname = "/" + resname;
             }
-            
 
-            
             m_report.print("( " + counter + " / " + size + " ) ", I_CmsReport.C_FORMAT_NOTE);
             m_report.print(m_report.key("report.merge") + " " , I_CmsReport.C_FORMAT_NOTE);
             m_report.print(resname, I_CmsReport.C_FORMAT_DEFAULT);
@@ -719,25 +719,38 @@ public class CmsImportVersion2 extends A_CmsImport {
                     Map properties = m_cms.readProperties(resname);
                     // now get the content of the bodyfile and insert it into the control file                   
                     bodyfile = m_cms.readFile(bodyname);
+                    
                     pagefile.setContents(bodyfile.getContents());
                     // set the type to 'newpage'                               
                     pagefile.setType(CmsResourceTypeNewPage.C_RESOURCE_TYPE_ID);
-                    pagefile.setLoaderId(CmsPageLoader.C_RESOURCE_LOADER_ID);      
+                    pagefile.setLoaderId(CmsPageLoader.C_RESOURCE_LOADER_ID);
+                    /*
+                    CmsXmlPage xmlPage = CmsXmlPageConverter.convertToXmlPage(m_cms, new String(bodyfile.getContents()), "body", "en", m_report); 
                     
+                    if (xmlPage != null) {
+                        xmlPage.write(pagefile);
+                        
+                        // set the type to xml page
+                        pagefile.setType(CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID);
+                        pagefile.setLoaderId(CmsXmlPageLoader.C_RESOURCE_LOADER_ID);
+                    }
+                    */    
                     // write all changes                     
                     m_cms.writeFile(pagefile);
                     // add the template property to the controlfile
-                    m_cms.writeProperty(resname, I_CmsConstants.C_PROPERTY_TEMPLATE, mastertemplate);
-                    m_cms.writeProperties(resname, properties);
+                    m_cms.writeProperty(resname, I_CmsConstants.C_PROPERTY_TEMPLATE, mastertemplate, true);
+                    m_cms.writeProperties(resname, properties, true);
                     m_cms.touch(resname, pagefile.getDateLastModified(), false, pagefile.getUserLastModified());
                     // done, ulock the resource                   
                     m_cms.unlockResource(resname, false);
                     // finally delete the old body file, it is not needed anymore
                     m_cms.lockResource(bodyname);
                     m_cms.deleteResource(bodyname, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
-                    m_report.println(" " + m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+                    m_report.println(" " + m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK); 
+                    
                 } else {
-                    // there are more than one template nodes in this control file.
+                
+                    // there are more than one template nodes in this control file
                     // convert the resource into a plain text file
                     // lock the resource, so that it can be manipulated
                     m_cms.lockResource(resname);
@@ -748,11 +761,11 @@ public class CmsImportVersion2 extends A_CmsImport {
                     // don, ulock the resource                   
                     m_cms.unlockResource(resname, false);
                     m_report.println(" " + m_report.key("report.notconverted"), I_CmsReport.C_FORMAT_OK);
-                    
                 }
 
             } catch (Exception e) {
-                throw new CmsException(e.toString());
+                m_report.println(e);
+                // throw new CmsException(e.toString());
             } finally {
                 // free mem
                 pagefile = null;
@@ -850,6 +863,7 @@ public class CmsImportVersion2 extends A_CmsImport {
          }
          // translate OpenCms 4.x paths to the new directory structure 
          fileContent = setDirectories(fileContent, m_cms.getRequestContext().getDirectoryTranslator().getTranslations());
+                  
          // create output ByteArray
          try {
              returnValue = fileContent.getBytes(encoding);

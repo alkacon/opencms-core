@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2004/01/08 13:15:30 $
-* Version: $Revision: 1.435 $
+* Date   : $Date: 2004/01/12 14:43:54 $
+* Version: $Revision: 1.436 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.435 $
+ * @version $Revision: 1.436 $
  */
 public class CmsObject {
 
@@ -4350,6 +4350,19 @@ public class CmsObject {
     }
 
     /**
+     * Writes a couple of Properties for a file or folder.
+     *
+     * @param name the resource-name of which the Property has to be set.
+     * @param properties a Hashtable with property-definitions and property values as Strings.
+     * @param addDefinition flag to indicate if unknown definitions should be added
+     *
+     * @throws CmsException if operation was not successful.
+     */
+    public void writeProperties(String name, Map properties, boolean addDefinition) throws CmsException {
+        m_driverManager.writeProperties(m_context, addSiteRoot(name), properties, addDefinition);
+    }
+    
+    /**
      * Writes a property for a file or folder.
      *
      * @param name the resource-name for which the property will be set.
@@ -4362,6 +4375,20 @@ public class CmsObject {
         m_driverManager.writeProperty(m_context, addSiteRoot(name), property, value);
     }
 
+    /**
+     * Writes a property for a file or folder.
+     *
+     * @param name the resource-name for which the property will be set.
+     * @param property the property-definition name.
+     * @param value the value for the property to be set.
+     * @param addDefinition flag to indicate if unknown definitions should be added
+     *
+     * @throws CmsException if operation was not successful.
+     */
+    public void writeProperty(String name, String property, String value, boolean addDefinition) throws CmsException {
+        m_driverManager.writeProperty(m_context, addSiteRoot(name), property, value, addDefinition);
+    }
+    
     /**
      * Writes the property-definition for the resource type.
      *
