@@ -54,7 +54,8 @@
 			/* checking versions */
 			servletEngine = config.getServletContext().getServerInfo();
 			JDKVersion = System.getProperty("java.version");
-
+			
+			CmsSetupUtils.writeVersionInfo(servletEngine, JDKVersion, config.getServletContext().getRealPath("/"));
 			supportedJDK = CmsSetupUtils.compareJDKVersions(JDKVersion, requiredJDK);
 			supportedServletEngine = CmsSetupUtils.supportedServletEngine(servletEngine, supportedEngines);
 			unsupportedServletEngine = CmsSetupUtils.unsupportedServletEngine(servletEngine, unsupportedEngines);
