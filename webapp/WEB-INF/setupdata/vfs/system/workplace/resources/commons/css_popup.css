@@ -200,7 +200,7 @@ span.dialogblockhead {
 	position:absolute;
 	top: -7px;
 	left: 5px;
-	background: Menu;
+	background-color: Menu;
 	padding: 0 3px;
 	white-space: nowrap;
 }
@@ -341,12 +341,11 @@ div.dialogpermissioninherit {
 }
 
 /* definitions for "tab-style" dialogs */
-/* definitions for "tab-style" dialogs */
 .dialogtab {
 	border-top: 1px solid ThreeDHighlight;
 	border-left: 1px solid ThreeDHighlight;
 	border-right: 2px solid ThreeDShadow;
-	background: Menu;
+	background-color: ThreeDFace;
 	text-align: center;
 	color: #000;
 	white-space: nowrap;
@@ -356,7 +355,7 @@ div.dialogpermissioninherit {
 	border-top: 2px solid ThreeDHighlight;
 	border-left: 2px solid ThreeDHighlight;
 	border-right: 2px solid ThreeDShadow;
-	background: Menu;
+	background-color: ThreeDFace;
 	text-align: center;
 	color: CaptionText;
 	font-weight: bold;
@@ -370,7 +369,7 @@ div.dialogpermissioninherit {
 
 .dialogtabrow {
 	height: 1px;
-	background: ThreeDHighlight;
+	background-color: ThreeDHighlight;
 }
 
 .dialogtabcontent {
@@ -389,7 +388,7 @@ a.tab {
 }
 
 a.tab:hover {
-	color: CaptionText;
+	color: GrayText;
 }
 
 span.tabactive {
