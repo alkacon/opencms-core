@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsStringSubstitution.java,v $
- * Date   : $Date: 2004/06/18 10:50:42 $
- * Version: $Revision: 1.14 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
+ * Date   : $Date: 2004/07/18 16:34:26 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,10 +47,10 @@ import org.apache.oro.text.perl.Perl5Util;
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.1 $
  * @since 5.0
  */
-public final class CmsStringSubstitution {
+public final class CmsStringUtil {
     
     /** Regex that matches an end body tag. */
     private static final Pattern C_BODY_END_REGEX = Pattern.compile("<\\s*/\\s*body[^>]*>", Pattern.CASE_INSENSITIVE);
@@ -89,7 +89,7 @@ public final class CmsStringSubstitution {
      * Default constructor (empty), private because this class has only 
      * static methods.<p>
      */
-    private CmsStringSubstitution() {
+    private CmsStringUtil() {
         // empty
     }
     
@@ -102,10 +102,10 @@ public final class CmsStringSubstitution {
      * @return the escaped String
      */
     public static String escapeJavaScript(String source) {
-        source = CmsStringSubstitution.substitute(source, "\\", "\\\\");
-        source = CmsStringSubstitution.substitute(source, "\"", "\\\"");
-        source = CmsStringSubstitution.substitute(source, "\r\n", "\\n");        
-        source = CmsStringSubstitution.substitute(source, "\n", "\\n");
+        source = CmsStringUtil.substitute(source, "\\", "\\\\");
+        source = CmsStringUtil.substitute(source, "\"", "\\\"");
+        source = CmsStringUtil.substitute(source, "\r\n", "\\n");        
+        source = CmsStringUtil.substitute(source, "\n", "\\n");
         return source;
     }
         
@@ -391,7 +391,7 @@ public final class CmsStringSubstitution {
     public static String substituteContextPath(String htmlContent, String context) {
         if (m_contextSearch == null) {
             m_contextSearch = "([^\\w/])" + context;
-            m_contextReplace = "$1" + CmsStringSubstitution.escapePattern(I_CmsWpConstants.C_MACRO_OPENCMS_CONTEXT) + "/"; 
+            m_contextReplace = "$1" + CmsStringUtil.escapePattern(I_CmsWpConstants.C_MACRO_OPENCMS_CONTEXT) + "/"; 
         }       
         return substitutePerl(htmlContent, m_contextSearch, m_contextReplace, "g");            
     }
@@ -416,5 +416,38 @@ public final class CmsStringSubstitution {
             }
         }
         return content;
+    }
+
+    /**
+     * Checks if the given class name is a valid Java class name.<p>
+     * 
+     * @param className the name to check
+     * @return true if the given class name is a valid Java class name
+     */
+    public static boolean isValidJavaClassName(String className) {
+    
+        int length = className.length();
+        boolean nodot = true;
+        for (int i = 0; i < length; i++) {
+            char ch = className.charAt(i);
+            if (nodot) {
+                if (ch == '.') {
+                    return false;
+                } else if (Character.isJavaIdentifierStart(ch)) {
+                    nodot = false;
+                } else {
+                    return false;
+                }
+            } else {
+                if (ch == '.') {
+                    nodot = true;
+                } else if (Character.isJavaIdentifierPart(ch)) {
+                    nodot = false;
+                } else {
+                    return false;
+                }
+            }
+        }      
+        return true;
     }
 }

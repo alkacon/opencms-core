@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsPropertyUtils.java,v $
- * Date   : $Date: 2004/06/13 23:40:50 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/07/18 16:34:26 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.3
  */
 public final class CmsPropertyUtils {
@@ -96,8 +96,8 @@ public final class CmsPropertyUtils {
             }
 
             for (int j = 0; j < value.length; j++) {
-                value[j] = CmsStringSubstitution.substitute(value[j], "\\,", ",");
-                value[j] = CmsStringSubstitution.substitute(value[j], "\\=", "=");
+                value[j] = CmsStringUtil.substitute(value[j], "\\,", ",");
+                value[j] = CmsStringUtil.substitute(value[j], "\\=", "=");
             }
 
             if (value.length > 1) {

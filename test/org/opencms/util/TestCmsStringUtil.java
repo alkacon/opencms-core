@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/Attic/TestCmsStringSubstitution.java,v $
- * Date   : $Date: 2004/07/07 18:44:19 $
+ * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsStringUtil.java,v $
+ * Date   : $Date: 2004/07/18 16:39:02 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -43,14 +43,14 @@ import junit.framework.TestCase;
  * 
  * @since 5.0
  */
-public class TestCmsStringSubstitution extends TestCase {
+public class TestCmsStringUtil extends TestCase {
 
     /**
      * Default JUnit constructor.<p>
      * 
      * @param arg0 JUnit parameters
      */
-    public TestCmsStringSubstitution(String arg0) {
+    public TestCmsStringUtil(String arg0) {
         super(arg0);
     }
 
@@ -64,16 +64,16 @@ public class TestCmsStringSubstitution extends TestCase {
         String search = "/opencms/opencms/";
         String replace = "\\${path}";
 
-        test = CmsStringSubstitution.substitute(content, search, replace);
+        test = CmsStringUtil.substitute(content, search, replace);
         System.out.println(test);
         assertEquals(test, "<a href=\"\\${path}test.jpg\">");
 
-        test = CmsStringSubstitution.substitute(test, replace, search);
+        test = CmsStringUtil.substitute(test, replace, search);
         assertEquals(test, "<a href=\"/opencms/opencms/test.jpg\">");
 
         content = "[0-9]$1/[^a]|/([}>\"'\\[]\\s*)/pics/";
         result = "[0-9]$1/[^a]|/([}>\"'\\[]\\s*)/pucs/";
-        test = CmsStringSubstitution.substitute(content, "i", "u");
+        test = CmsStringUtil.substitute(content, "i", "u");
         assertEquals(test, result);
     }
 
@@ -82,9 +82,9 @@ public class TestCmsStringSubstitution extends TestCase {
      */
     public void testEscapePattern() {
         String test;
-        test = CmsStringSubstitution.escapePattern("/opencms/opencms");
+        test = CmsStringUtil.escapePattern("/opencms/opencms");
         assertEquals(test, "\\/opencms\\/opencms");
-        test = CmsStringSubstitution.escapePattern("/opencms/$");
+        test = CmsStringUtil.escapePattern("/opencms/$");
         assertEquals(test, "\\/opencms\\/\\$");
     }
     
@@ -96,9 +96,9 @@ public class TestCmsStringSubstitution extends TestCase {
         String content = "<p>A paragraph with text...<img src=\"/opencms/opencms/empty.gif\"></p>\n<a href=\"/opencms/opencms/test.jpg\">";
         String search = "/opencms/opencms/";
         String replace = "${path}";
-        test = CmsStringSubstitution.substitute(content, search, replace);
+        test = CmsStringUtil.substitute(content, search, replace);
         assertEquals(test, "<p>A paragraph with text...<img src=\"${path}empty.gif\"></p>\n<a href=\"${path}test.jpg\">");
-        test = CmsStringSubstitution.substitute(test, replace, search);
+        test = CmsStringUtil.substitute(test, replace, search);
         assertEquals(test, "<p>A paragraph with text...<img src=\"/opencms/opencms/empty.gif\"></p>\n<a href=\"/opencms/opencms/test.jpg\">");
     }
     
@@ -110,7 +110,7 @@ public class TestCmsStringSubstitution extends TestCase {
             "<edittemplate><![CDATA[<H4><IMG style=\"WIDTH: 77px; HEIGHT: 77px\" alt=\"Homepage animation\" hspace=8 src=\"/opencms/opencms/pics/alkacon/x_hp_ani04.gif\" align=right vspace=8 border=0><IMG style=\"WIDTH: 307px; HEIGHT: 52px\" alt=\"Homepage animation\" hspace=0 src=\"/opencms/opencms/pics/alkacon/x_hp_ani05.gif\" vspace=8 border=0></H4>\n<P>Alkacon Software provides software development services for the digital business. We are specialized in web - based content management solutions build on open source Java Software. </P>\n<P>Alkacon Software is a major contributor to the <A href=\"http://www.opencms.org\" target=_blank>OpenCms Project</A>. OpenCms is an enterprise - ready content management platform build in Java from open source components. OpenCms can easily be deployed on almost any existing IT infrastructure and provides powerful features especially suited for large enterprise internet or intranet applications. </P>\n<P>Alkacon Software offers standard <A href=\"/alkacon/en/services/opencms/index.html\" target=_self>service and support </A>packages for OpenCms, providing an optional layer of security and convenience often required for mission critical OpenCms installations.</P>\n<UL>\n<LI><IMG style=\"WIDTH: 125px; HEIGHT: 34px\" alt=OpenCms hspace=3 src=\"/opencms/opencms/pics/alkacon/logo_opencms_125.gif\" align=right border=0>Learn more about our <A href=\"/alkacon/en/services/index.html\" target=_self>Services</A> \n<LI>Subscribe to our&nbsp;<A href=\"/alkacon/en/company/contact/newsletter.html\" target=_self>Company Newsletter</A> \n<LI>Questions? <A href=\"/alkacon/en/company/contact/index.html\" target=_self>Contact us</A></LI></UL>\n<P>&nbsp;</P>]]></edittemplate>";
         String search = "/pics/";
         String replace = "/system/galleries/pics/";
-        String test = CmsStringSubstitution.substitute(content, search, replace);
+        String test = CmsStringUtil.substitute(content, search, replace);
         assertEquals(
             test,
             "<edittemplate><![CDATA[<H4><IMG style=\"WIDTH: 77px; HEIGHT: 77px\" alt=\"Homepage animation\" hspace=8 src=\"/opencms/opencms/system/galleries/pics/alkacon/x_hp_ani04.gif\" align=right vspace=8 border=0><IMG style=\"WIDTH: 307px; HEIGHT: 52px\" alt=\"Homepage animation\" hspace=0 src=\"/opencms/opencms/system/galleries/pics/alkacon/x_hp_ani05.gif\" vspace=8 border=0></H4>\n<P>Alkacon Software provides software development services for the digital business. We are specialized in web - based content management solutions build on open source Java Software. </P>\n<P>Alkacon Software is a major contributor to the <A href=\"http://www.opencms.org\" target=_blank>OpenCms Project</A>. OpenCms is an enterprise - ready content management platform build in Java from open source components. OpenCms can easily be deployed on almost any existing IT infrastructure and provides powerful features especially suited for large enterprise internet or intranet applications. </P>\n<P>Alkacon Software offers standard <A href=\"/alkacon/en/services/opencms/index.html\" target=_self>service and support </A>packages for OpenCms, providing an optional layer of security and convenience often required for mission critical OpenCms installations.</P>\n<UL>\n<LI><IMG style=\"WIDTH: 125px; HEIGHT: 34px\" alt=OpenCms hspace=3 src=\"/opencms/opencms/system/galleries/pics/alkacon/logo_opencms_125.gif\" align=right border=0>Learn more about our <A href=\"/alkacon/en/services/index.html\" target=_self>Services</A> \n<LI>Subscribe to our&nbsp;<A href=\"/alkacon/en/company/contact/newsletter.html\" target=_self>Company Newsletter</A> \n<LI>Questions? <A href=\"/alkacon/en/company/contact/index.html\" target=_self>Contact us</A></LI></UL>\n<P>&nbsp;</P>]]></edittemplate>");
@@ -125,7 +125,7 @@ public class TestCmsStringSubstitution extends TestCase {
             + "<cms:link>/mymodule/pics/test.gif</cms:link> <img src=\"/mymodule/pics/test.gif\"> script = '/mymodule/pics/test.gif' <cms:link> /mymodule/system/galleries/pics/othertest.gif </cms:link>";
         String search = "([>\"']\\s*)/pics/";
         String replace = "$1/system/galleries/pics/";
-        String test = CmsStringSubstitution.substitutePerl(content, search, replace, "g");
+        String test = CmsStringUtil.substitutePerl(content, search, replace, "g");
         assertEquals(test, 
             "<cms:link>/system/galleries/pics/test.gif</cms:link> <img src=\"/system/galleries/pics/test.gif\"> script = '/system/galleries/pics/test.gif' <cms:link> /system/galleries/pics/othertest.gif </cms:link>\n"
             + "<cms:link>/mymodule/pics/test.gif</cms:link> <img src=\"/mymodule/pics/test.gif\"> script = '/mymodule/pics/test.gif' <cms:link> /mymodule/system/galleries/pics/othertest.gif </cms:link>");    
@@ -166,15 +166,15 @@ public class TestCmsStringSubstitution extends TestCase {
         
         // search = "([>\"']\\s*)" + context;
         search = "([^\\w/])" + context;
-        replace = "$1" + CmsStringSubstitution.escapePattern(I_CmsWpConstants.C_MACRO_OPENCMS_CONTEXT) + "/";
+        replace = "$1" + CmsStringUtil.escapePattern(I_CmsWpConstants.C_MACRO_OPENCMS_CONTEXT) + "/";
         
-        String test = CmsStringSubstitution.substitutePerl(content, search, replace, "g");
+        String test = CmsStringUtil.substitutePerl(content, search, replace, "g");
         
         System.err.println(this.getClass().getName() + ".testCmsContentReplacement():");   
         System.err.println(test);  
         assertEquals(test, result);      
         
-        test = CmsStringSubstitution.substituteContextPath(content, context);  
+        test = CmsStringUtil.substituteContextPath(content, context);  
         assertEquals(test, result);            
     }
     
@@ -189,13 +189,13 @@ public class TestCmsStringSubstitution extends TestCase {
             + "\"http://www.opencms.org/dtd/6.0/opencms-importexport.dtd\">\n"
             + "<opencms/>";
         
-        result = CmsStringSubstitution.extractXmlEncoding(xml);        
+        result = CmsStringUtil.extractXmlEncoding(xml);        
         assertEquals(result, "UTF-8");
         
         xml = "<?xml version=\"1.0\" encoding='ISO-8859-1'?>\n" 
             + "<opencms/>";
 
-        result = CmsStringSubstitution.extractXmlEncoding(xml);        
+        result = CmsStringUtil.extractXmlEncoding(xml);        
         assertEquals(result, "ISO-8859-1");        
     }
                                          
@@ -208,35 +208,35 @@ public class TestCmsStringSubstitution extends TestCase {
         String innerContent = "This is body content in the body\n<h1>A headline</h1>\nSome text in the body\n";
                 
         content = "<html><body>" + innerContent + "</body></html>";        
-        result = CmsStringSubstitution.extractHtmlBody(content);        
+        result = CmsStringUtil.extractHtmlBody(content);        
         assertEquals(result, innerContent);                  
         
         content = "<html><body style='css' background-color:#ffffff>" + innerContent + "</body></html>";        
-        result = CmsStringSubstitution.extractHtmlBody(content);        
+        result = CmsStringUtil.extractHtmlBody(content);        
         assertEquals(result, innerContent);   
         
         content = "<html>\n<title>Test</title>\n<body style='css' background-color:#ffffff>" + innerContent + "</body>\n</html>";        
-        result = CmsStringSubstitution.extractHtmlBody(content);        
+        result = CmsStringUtil.extractHtmlBody(content);        
         assertEquals(result, innerContent);          
         
         content = "<html>< body style='css' background-color:#ffffff>" + innerContent + "</ BODY>";        
-        result = CmsStringSubstitution.extractHtmlBody(content);        
+        result = CmsStringUtil.extractHtmlBody(content);        
         assertEquals(result, innerContent);                   
         
         content = "<BODY>" + innerContent + "</boDY></html></body><body>somemoretext</BODY>";        
-        result = CmsStringSubstitution.extractHtmlBody(content);        
+        result = CmsStringUtil.extractHtmlBody(content);        
         assertEquals(result, innerContent);  
 
         content = innerContent + "</boDY></html>";        
-        result = CmsStringSubstitution.extractHtmlBody(content);        
+        result = CmsStringUtil.extractHtmlBody(content);        
         assertEquals(result, innerContent);   
         
         content = "<html><BODY>" + innerContent;        
-        result = CmsStringSubstitution.extractHtmlBody(content);        
+        result = CmsStringUtil.extractHtmlBody(content);        
         assertEquals(result, innerContent);
         
         content = innerContent;        
-        result = CmsStringSubstitution.extractHtmlBody(content);        
+        result = CmsStringUtil.extractHtmlBody(content);        
         assertEquals(result, innerContent);           
     }
 }
