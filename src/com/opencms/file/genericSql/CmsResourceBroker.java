@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/09 13:14:11 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2000/06/09 13:26:59 $
+ * Version: $Revision: 1.41 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.40 $ $Date: 2000/06/09 13:14:11 $
+ * @version $Revision: 1.41 $ $Date: 2000/06/09 13:26:59 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2313,7 +2313,32 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 public CmsFile readFile(CmsUser currentUser, CmsProject currentProject,
 							 String filename)
          throws CmsException {
-      return null;
+         CmsFile cmsFile = null;
+		 // read the resource from the currentProject, or the online-project
+		 try {
+			 cmsFile = m_dbAccess.readFile(currentProject.getId(), 
+										 onlineProject(currentUser, currentProject).getId(),
+										 filename);
+		 } catch(CmsException exc) {
+			 // the resource was not readable
+			 if(currentProject.equals(onlineProject(currentUser, currentProject))) {
+				 // this IS the onlineproject - throw the exception
+				 throw exc;
+			 } else {
+				 // try to read the resource in the onlineproject
+				 cmsFile = m_dbAccess.readFile(onlineProject(currentUser, currentProject).getId(), 
+											   onlineProject(currentUser, currentProject).getId(),
+											   filename);
+			 }
+		 }
+		 if( accessRead(currentUser, currentProject, (CmsResource)cmsFile) ) {
+				
+			// acces to all subfolders was granted - return the file.
+			return cmsFile;
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + filename, 
+				 CmsException.C_ACCESS_DENIED);
+		}
      }
     
      /**
@@ -2337,10 +2362,28 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * */
 	 public CmsFile readFile(CmsUser currentUser, CmsProject currentProject,
 							 int projectId, String filename)
-         throws CmsException {
-      return null;
+		throws CmsException {
+         CmsFile cmsFile = null;
+		 // read the resource from the projectId, 
+		 try {
+			 cmsFile = m_dbAccess.readFile(projectId, 
+										 onlineProject(currentUser, currentProject).getId(),
+										 filename);
+             if( accessRead(currentUser, currentProject, (CmsResource)cmsFile) ) {
+				
+			// acces to all subfolders was granted - return the file.
+			    return cmsFile;
+		    } else {
+			     throw new CmsException("[" + this.getClass().getName() + "] " + filename, 
+				 CmsException.C_ACCESS_DENIED);
+		}
+		 } catch(CmsException exc) {
+			throw exc;
+		 }
+		 
      }
      
+        
 	 /**
 	 * Reads a file header from the Cms.<BR/>
 	 * The reading excludes the filecontent. <br>
