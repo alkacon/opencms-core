@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2002/07/12 17:47:15 $
-* Version: $Revision: 1.46 $
+* Date   : $Date: 2002/07/24 13:21:17 $
+* Version: $Revision: 1.47 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -879,75 +879,82 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
         //return var
         byte[] processResult = null;
 
-        // session will be created or fetched
-        I_CmsSession session = (CmsSession) cms.getRequestContext().getSession(true);
-        //get the class of the content definition
-        Class cdClass = getContentDefinitionClass();
+        //create new language file object
+        CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
+                    
+        if(cms.isAdmin() || cms.isManagerOfProject()){
+            // session will be created or fetched
+            I_CmsSession session = (CmsSession) cms.getRequestContext().getSession(true);
+            //get the class of the content definition
+            Class cdClass = getContentDefinitionClass();
 
-        //get (stored) id parameter
-        String id = (String) parameters.get("id");
-        if (id == null) {
-            id = "";
-        }
-
-        // get value of hidden input field action
-        String action = (String) parameters.get("action");
-
-        //no button pressed, go to the default section!
-        //publish dialog, displays the title of the entry to be published
-        if (action == null || action.equals("")) {
-            if (id != "") {
-                //set template section
-                templateSelector = "publish";
-                //create new language file object
-                CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
-
-                //get the dialog from the langauge file and set it in the template
-                template.setData("publishtitle", lang.getLanguageValue("messagebox.title.publishresource"));
-                template.setData("publishdialog1", lang.getLanguageValue("messagebox.message1.publishresource"));
-                template.setData("newsentry", id);
-                template.setData("publishdialog2", lang.getLanguageValue("messagebox.message4.publishresource"));
-                template.setData("setaction", "default");
+            //get (stored) id parameter
+            String id = (String) parameters.get("id");
+            if (id == null) {
+                id = "";
             }
-            // confirmation button pressed, process data!
-        } else {
-            //set template section
-            templateSelector = "done";
-            //remove marker
-            session.removeValue("idsave");
-            //publish the content definition instance
-            Integer idInteger = null;
-            try {
-                idInteger = Integer.valueOf(id);
-            } catch (Exception e) {
+
+            // get value of hidden input field action
+            String action = (String) parameters.get("action");
+        
+            //no button pressed, go to the default section!
+            //publish dialog, displays the title of the entry to be published
+            if (action == null || action.equals("")) {
+                if (id != "") {
+                    //set template section
+                    templateSelector = "publish";
+
+                    //get the dialog from the langauge file and set it in the template
+                    template.setData("publishtitle", lang.getLanguageValue("messagebox.title.publishresource"));
+                    template.setData("publishdialog1", lang.getLanguageValue("messagebox.message1.publishresource"));
+                    template.setData("newsentry", id);
+                    template.setData("publishdialog2", lang.getLanguageValue("messagebox.message4.publishresource"));
+                    template.setData("setaction", "default");
+                }
+                // confirmation button pressed, process data!
+            } else {
+                //set template section
+                templateSelector = "done";
+                //remove marker
+                session.removeValue("idsave");
+                //publish the content definition instance
+                Integer idInteger = null;
+                try {
+                    idInteger = Integer.valueOf(id);
+                } catch (Exception e) {
+                    //access content definition constructor by reflection
+                    Object o = null;
+                    o = getContentDefinition(cms, cdClass, id);
+                    //get publish method and publish content definition instance
+                    try {
+                        ((I_CmsExtendedContentDefinition) o).publishResource(cms);
+                    } catch (Exception e1) {
+                        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                            A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: publish method throwed an exception!");
+                        }
+                        templateSelector = "publisherror";
+                        template.setData("publisherror", e1.getMessage());
+                    }
+                    //finally start the processing
+                    processResult = startProcessing(cms, template, elementName, parameters, templateSelector);
+                    return processResult;
+                }
+
                 //access content definition constructor by reflection
                 Object o = null;
-                o = getContentDefinition(cms, cdClass, id);
+                o = getContentDefinition(cms, cdClass, idInteger);
                 //get publish method and publish content definition instance
                 try {
                     ((I_CmsExtendedContentDefinition) o).publishResource(cms);
-                } catch (Exception e1) {
-                    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                        A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: publish method throwed an exception!");
-                    }
+                }catch (Exception e) {
                     templateSelector = "publisherror";
-                    template.setData("publisherror", e1.getMessage());
+                    template.setData("publisherror", e.getMessage());
                 }
-                //finally start the processing
-                processResult = startProcessing(cms, template, elementName, parameters, templateSelector);
-                return processResult;
             }
-
-            //access content definition constructor by reflection
-            Object o = null;
-            o = getContentDefinition(cms, cdClass, idInteger);
-            //get publish method and publish content definition instance
-            try {
-                ((I_CmsExtendedContentDefinition) o).publishResource(cms);
-            }catch (Exception e) {
-                templateSelector = "publisherror";
-                template.setData("publisherror", e.getMessage());
-            }
+        } else {
+            templateSelector = "publisherror";
+            template.setData("publisherror", lang.getLanguageValue("error.message.publishresource")+
+                             "<br>"+lang.getLanguageValue("error.reason.publishresource"));
         }
 
         //finally start the processing
