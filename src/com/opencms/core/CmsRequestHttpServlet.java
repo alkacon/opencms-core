@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsRequestHttpServlet.java,v $
- * Date   : $Date: 2000/04/19 12:55:18 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/04/20 15:27:07 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -56,7 +56,7 @@ import javax.servlet.http.*;
  * 
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.7 $ $Date: 2000/04/19 12:55:18 $  
+ * @version $Revision: 1.8 $ $Date: 2000/04/20 15:27:07 $  
  */
 public class CmsRequestHttpServlet implements I_CmsConstants, I_CmsLogChannels,
                                               I_CmsRequest { 
@@ -187,12 +187,12 @@ public class CmsRequestHttpServlet implements I_CmsConstants, I_CmsLogChannels,
             parameter=m_req.getParameter(name);   
         }
         
-        if(parameter != null && !"".equals(parameter) && (parameter.indexOf("%") != -1)) {
+     /*   if(parameter != null && !"".equals(parameter) && (parameter.indexOf("%") != -1)) {
             if(A_OpenCms.isLogging()) {
                 A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsRequestHttpServlet] encoding required for parameter " + name + "=" + parameter);
             }
             parameter = Encoder.unescape(parameter);
-        }
+        }*/
                             
         return parameter;
     }
