@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/02/11 18:48:32 $
- * Version: $Revision: 1.450 $
+ * Date   : $Date: 2003/02/12 12:06:07 $
+ * Version: $Revision: 1.451 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,12 +20,15 @@ Legend:
 - General comment
 
 OpenCms 5.0 (next version)
+! Improved "new module" options, it's now possible to select if exportable 
+ "classes/" and/or "lib/" folders should be created for the module
 ! Updated and improved english workplace online help is now available as a separate module "org.opencms.help.en"
 * Fixed issue with hardcoded servlet context path in <edittemplate>, it's now possible to 
   rename the servlet context and the images still work in the editor
 * Fixed issue #55 from Bugzilla (compatibility.support.oldlocales not working if no new modules installed)
 * Fixed issue where an absolute link to the local machine with an URI outside of OpenCms
   was incorrectly treated as an OpenCms internal link by the link replacement engine
+- When exporting a module the modules "uploadeddate" and "uploadedby" registry information is discarded
 - Added global method getOpenCmsContext() in com.opencms.core.A_OpenCms for universal access to the 
   servlet context and servlet name
 - Some final touches where added to the JSP / XMLTemplate integration for easier including of sub - elements
