@@ -6,17 +6,15 @@ import java.sql.*;
 import com.opencms.core.*;
 
 /**
- * Implementation of I_CmsAccessProperty interface.
  * This class contains methods to read, write and delete property objects
- * in the property database
- * This interface describes the access to propertys in the Cms.<BR/>
+ * in the property database.
  * Only the system can access propertys. Propertys are for internal use
  * only. A property is a serializable object.
  * 
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 1999/12/13 18:41:03 $
+ * @version $Revision: 1.2 $ $Date: 1999/12/14 18:02:13 $
  */
 public class CmsAccessProperty extends A_CmsAccessProperty  {
 
@@ -40,6 +38,10 @@ public class CmsAccessProperty extends A_CmsAccessProperty  {
      */   
     private static final String C_PROPERTY_DELETE="DELETE FROM  PROPERTIES WHERE PROPERTY_NAME = ?";
     
+    /**
+     * Name of the column PROPERTY_VALUE in the SQL table PROPERTIES.
+     */
+    private static final String C_PROPERTY_VALUE="PROPERTY_VALUE";
     /**
      * This is the connection object to the database
      */
@@ -85,7 +87,7 @@ public class CmsAccessProperty extends A_CmsAccessProperty  {
            	ResultSet res = s.executeQuery();
 			
             if(res.next()) {
-				value = res.getBytes("PROPERTY_VALUE");
+				value = res.getBytes(C_PROPERTY_VALUE);
                 // now deserialize the object
                 ByteArrayInputStream bin= new ByteArrayInputStream(value);
                 ObjectInputStream oin = new ObjectInputStream(bin);
@@ -122,15 +124,13 @@ public class CmsAccessProperty extends A_CmsAccessProperty  {
         
         try	{			
             // serialize the object
-            System.err.println("Serializing");
             ByteArrayOutputStream bout= new ByteArrayOutputStream();            
             ObjectOutputStream oout=new ObjectOutputStream(bout);
             oout.writeObject(object);
             oout.close();
             value=bout.toByteArray();
             
-            System.err.println("Writing to DB");
-	        // check if this property exists already
+            // check if this property exists already
             if (readProperty(name) == null)	{
                 PreparedStatement s = getConnection().prepareStatement(C_PROPERTY_WRITE);
                	s.setEscapeProcessing(false);       
@@ -149,15 +149,12 @@ public class CmsAccessProperty extends A_CmsAccessProperty  {
 			}
         }
         catch (SQLException e){
-            System.err.println(e);
             throw new CmsException(CmsException.C_SQL_ERROR, e);			
 		}
         catch (IOException e){
-             System.err.println(e);
             throw new CmsException(CmsException. C_SERIALIZATION, e);			
 		}
          catch (ClassNotFoundException e){
-              System.err.println(e);
             throw new CmsException(CmsException. C_SERIALIZATION, e);			
 		}	
     }
@@ -203,12 +200,9 @@ public class CmsAccessProperty extends A_CmsAccessProperty  {
       throws CmsException {
       
         try {
-            System.err.println("Getting connection to "+conUrl);
-			m_Con = DriverManager.getConnection(conUrl);
-            System.err.println("Done");
-		} catch (SQLException e)	{
-            System.err.println(e.toString());
-			throw new CmsException(CmsException.C_SQL_ERROR, e);
+        	m_Con = DriverManager.getConnection(conUrl);
+       	} catch (SQLException e)	{
+         	throw new CmsException(CmsException.C_SQL_ERROR, e);
 		}
     }
     

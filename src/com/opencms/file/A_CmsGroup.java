@@ -7,7 +7,7 @@ import java.util.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 1999/12/14 12:15:33 $
+ * @version $Revision: 1.4 $ $Date: 1999/12/14 18:02:13 $
  */
 abstract public class A_CmsGroup { 
 	
@@ -47,12 +47,14 @@ abstract public class A_CmsGroup {
 	abstract public int getFlags();
 	
 	/**
-	 * Decides, if this group has a parent.
+	 * Returns the id of the parent group of the actual Cms group object, 
+	 * or C_UNKNOWN_ID.
 	 * 
-	 * @return PARENT_GROUP_ID != C_UNKNOWN_ID
+	 * @return PARENT_GROUP_ID or C_UNKNOWN_ID
 	 */
-	abstract public boolean hasParent();
+	abstract public int getParentId();
 
+   
 		
 	/**
 	 * Returns a string-representation for this object.

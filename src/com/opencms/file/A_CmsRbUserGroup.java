@@ -14,9 +14,9 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 1999/12/13 16:34:38 $
+ * @version $Revision: 1.1 $ $Date: 1999/12/14 18:02:13 $
  */
-abstract class A_CmsRbUser {
+abstract class A_CmsRbUserGroup {
 
 	/**
 	 * Determines, if the users current group is the admin-group.

@@ -6,7 +6,7 @@ import com.opencms.core.*;
  * This class describes a Cms user group and the methods to access it.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 1999/12/14 12:15:33 $
+ * @version $Revision: 1.2 $ $Date: 1999/12/14 18:02:13 $
  */
  public class CmsGroup extends A_CmsGroup implements I_CmsConstants { 
     
@@ -39,21 +39,20 @@ import com.opencms.core.*;
      * Constructor, creates a new Cms group object.
      * 
      * @param id The id of the new group.
+     * @param parent The parent group of the new group (or C_UNKNOWN_ID).
      * @param name The name of the new group.
      * @param description The description of the new group.
      * @param flags The flags of the new group.
-     * @param parent The parent group of the new group (or C_UNKNOWN_ID).
+     
      */
-    public CmsGroup (int id, String name, String description, int flags,
-                    int parent) {
+    public CmsGroup (int id, int parent,String name, String description, 
+                     int flags) {
         m_id=id;
         m_name=name;
         m_description=description;
         m_flags=flags;
         m_parentId=parent;
-
-    }
-    
+    }  
     
     
 	/**
@@ -106,16 +105,13 @@ import com.opencms.core.*;
      }
 	
 	/**
-	 * Decides, if this group has a parent.
+	 * Returns the id of the parent group of the actual Cms group object, 
+	 * or C_UNKNOWN_ID.
 	 * 
-	 * @return PARENT_GROUP_ID != C_UNKNOWN_ID
+	 * @return PARENT_GROUP_ID or C_UNKNOWN_ID
 	 */
-     public boolean hasParent() {
-         boolean parent=false;
-         if (m_parentId != C_UNKNOWN_ID) {
-             parent = true;
-         }
-         return true;
+     public int getParentId() {
+      return m_parentId;         
      }
 
 		

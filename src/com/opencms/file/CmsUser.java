@@ -8,7 +8,7 @@ import com.opencms.core.*;
  * This class describes the Cms user object and the methods to access it.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 1999/12/14 12:15:33 $
+ * @version $Revision: 1.3 $ $Date: 1999/12/14 18:02:14 $
  */
 
 public class CmsUser extends A_CmsUser implements I_CmsConstants {
@@ -58,6 +58,9 @@ public class CmsUser extends A_CmsUser implements I_CmsConstants {
         m_additionalInfo=info;  
           
         //add aditional infos in the hastable
+        if (m_additionalInfo == null) {
+            m_additionalInfo=new Hashtable();
+        }
         m_additionalInfo.put(C_ADDITIONAL_INFO_DEFAULTGROUP,group);
         m_additionalInfo.put(C_ADDITIONAL_INFO_FLAGS,new Integer(flags));
         m_additionalInfo.put(C_ADDITIONAL_INFO_LASTLOGIN,new Long(0));

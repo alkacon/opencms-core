@@ -1,29 +1,41 @@
 package com.opencms.file;
 
+
 import java.util.*;
-import javax.servlet.http.*;
+import java.io.*;
+import java.sql.*;
+
 
 import com.opencms.core.*;
 
 /**
- * This abstract class describes the access to users in the Cms.<BR/>
+ * This class contains the methods to read, write and delete CmsUser 
+ * objects in a MySql user database.
  * 
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 1999/12/14 18:02:13 $
+ * @version $Revision: 1.1 $ $Date: 1999/12/14 18:02:13 $
  */
-abstract class A_CmsAccessUser {
+ public class CmsAccessUserMySql extends A_CmsAccessUser implements I_CmsConstants  {
+     
+     
+     /**
+     * This is the connection object to the database
+     */
+    private Connection m_Con  = null;
 
-	/**
+   	/**
 	 * Returns a user object.<P/>
 	 * 
 	 * @param username The name of the user that is to be read.
 	 * @return User
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract A_CmsUser readUser(String username)
-		throws CmsException;
+	 A_CmsUser readUser(String username)
+         throws CmsException {
+         return null;
+     }
 	
 	/**
 	 * Returns a user object if the password for the user is correct.<P/>
@@ -34,8 +46,10 @@ abstract class A_CmsAccessUser {
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful
 	 */		
-	abstract A_CmsUser readUser(String username, String password)
-		throws CmsException;
+	 A_CmsUser readUser(String username, String password)
+         throws CmsException {
+         return null;
+     }
 
 	/** 
 	 * Adds a user to the Cms.
@@ -56,10 +70,12 @@ abstract class A_CmsAccessUser {
 	 * @exception CmsDuplicateKeyException Throws CmsDuplicateKeyException if
 	 * a user with the given username exists already.
 	 */
-	abstract A_CmsUser addUser(String name, String password, 
+	 A_CmsUser addUser(String name, String password, 
 					  String group, String description, 
 					  Hashtable additionalInfos, int flags)
-		throws CmsException, CmsDuplicateKeyException;
+         throws CmsException, CmsDuplicateKeyException {
+         return null;
+     }
 
 	/** 
 	 * Deletes a user from the Cms.
@@ -70,8 +86,9 @@ abstract class A_CmsAccessUser {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */
-	abstract void deleteUser(String username)
-		throws CmsException;
+	 void deleteUser(String username)
+         throws CmsException {
+     }
 
 	/**
 	 * Updated the userinformation.<BR/>
@@ -84,16 +101,19 @@ abstract class A_CmsAccessUser {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract void updateUser(String username, 
+	 void updateUser(String username, 
 					Hashtable additionalInfos, int flag)
-		throws CmsException;
+         throws CmsException {
+     }
 
 	/**
 	 * Returns all users<P/>
 	 * 
 	 * @return users A Vector of all existing users.
 	 */
-	abstract Vector getUsers();
+     Vector getUsers() {
+         return null;
+     }
 
 
 	/** 
@@ -106,6 +126,35 @@ abstract class A_CmsAccessUser {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */
-	abstract void setPassword(String username, String newPassword)
-		throws CmsException;
+	 void setPassword(String username, String newPassword)
+         throws CmsException {
+     }
+     
+     /**
+     * Selects a free database connection.
+     * 
+     * @return Database connection to the property database.
+     */
+    private Connection getConnection() {
+        return m_Con;
+    }
+    
+     /**
+     * Connects to the property database.
+     * 
+     * @param conUrl The connection string to the database.
+     * 
+     * @exception CmsException Throws CmsException if connection fails.
+     */
+    private void initConnections(String conUrl)	
+      throws CmsException {
+      
+        try {
+        	m_Con = DriverManager.getConnection(conUrl);
+       	} catch (SQLException e)	{
+         	throw new CmsException(CmsException.C_SQL_ERROR, e);
+		}
+    }
+   
 }
+
