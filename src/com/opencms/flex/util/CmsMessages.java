@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/util/Attic/CmsMessages.java,v $
- * Date   : $Date: 2003/06/05 19:02:04 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/10/01 14:05:07 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.ResourceBundle;
  * that can be checked to see if the instance was properly initialized.
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.0 beta 2
  */
@@ -82,7 +82,8 @@ public final class CmsMessages extends Object {
      * <code>new Locale(language, "", "")</code>.<p>
      * 
      * @param baseName the base ResourceBundle name
-     * @param language ISO language indentificator for the locale of the bundle     */
+     * @param language ISO language indentificator for the locale of the bundle
+     */
     public CmsMessages(String baseName, String language) {
         this(baseName, language, "", "");      
     }
@@ -122,59 +123,15 @@ public final class CmsMessages extends Object {
     public CmsMessages(String baseName, String language, String country, String variant) {
         this(baseName, new Locale(language, country, variant));
     }
-            
-    /**
-     * Checks if the bundle was properly initialized.
-     * 
-     * @return <code>true</code> if bundle was initialized, <code>false</code> otherwise
-     */
-    public boolean isInitialized() {
-        return (m_bundle != null);
-    }
-        
-    /**
-     * Gets the localized resource string for a given message key.<p>
-     * 
-     * If the key was not found in the bundle, the return value is
-     * <code>"??? " + keyName + " ???"</code>. This will also be returned 
-     * if the bundle was not properly initialized first.
-     * 
-     * @param keyName the key for the desired string 
-     * @return the resource string for the given key 
-     */
-    public String key(String keyName) {   
-        try {            
-            if (m_bundle != null) return m_bundle.getString(keyName);
-        } catch (MissingResourceException e) {
-            // not found, return warning
-        }
-        return "??? " + keyName + " ???";
-    }    
     
     /**
-     * Directly calls the getString(String) method of the wrapped ResourceBundle.<p>
+     * Formats an unknown key.<p>
      * 
-     * If you use this this class on a template, you should consider using 
-     * the {@link #key(String)} method to get the value from the ResourceBundle because it
-     * handles the exception for you in a convenient way. 
-     * 
-     * @param keyName the key  
-     * @return the resource string for the given key
-     * @throws MissingResourceException in case the key is not found of the bundle is not initialized
+     * @param keyName the key to format
+     * @return the formatted unknown key
      */
-    public String getString(String keyName) throws MissingResourceException {              
-        if (m_bundle != null) return m_bundle.getString(keyName);
-        else throw new MissingResourceException("ResourceBundle not initialized", this.getClass().getName(), keyName);
-    }       
-
-    /**
-     * Returns a formatted date.<p>
-     * 
-     * @param timestamp the date timestamp to format
-     * @return a formatted date
-     */
-    public String getDate(long timestamp) {
-        return getDate(new Date(timestamp));
+    public static String formatUnknownKey(String keyName) {
+        return "??? " + keyName + " ???";        
     }
     
     /**
@@ -199,15 +156,15 @@ public final class CmsMessages extends Object {
         DateFormat df = DateFormat.getDateInstance(style, m_locale);
         return df.format(date);
     }
-    
+
     /**
-     * Returns a formatted date with a time.<p>
+     * Returns a formatted date.<p>
      * 
      * @param timestamp the date timestamp to format
-     * @return a formatted date with a time
-     */    
-    public String getDateTime(long timestamp) {
-        return getDateTime(new Date(timestamp));
+     * @return a formatted date
+     */
+    public String getDate(long timestamp) {
+        return getDate(new Date(timestamp));
     }
     
     /**
@@ -232,5 +189,81 @@ public final class CmsMessages extends Object {
         DateFormat df = DateFormat.getDateInstance(style, m_locale);
         DateFormat tf = DateFormat.getTimeInstance(style, m_locale);
         return df.format(date) + " " + tf.format(date);
+    }    
+    
+    /**
+     * Returns a formatted date with a time.<p>
+     * 
+     * @param timestamp the date timestamp to format
+     * @return a formatted date with a time
+     */    
+    public String getDateTime(long timestamp) {
+        return getDateTime(new Date(timestamp));
+    }
+    
+    /**
+     * Directly calls the getString(String) method of the wrapped ResourceBundle.<p>
+     * 
+     * If you use this this class on a template, you should consider using 
+     * the {@link #key(String)} method to get the value from the ResourceBundle because it
+     * handles the exception for you in a convenient way. 
+     * 
+     * @param keyName the key  
+     * @return the resource string for the given key
+     * @throws MissingResourceException in case the key is not found of the bundle is not initialized
+     */
+    public String getString(String keyName) throws MissingResourceException {              
+        if (m_bundle != null) return m_bundle.getString(keyName);
+        else throw new MissingResourceException("ResourceBundle not initialized", this.getClass().getName(), keyName);
+    }       
+            
+    /**
+     * Checks if the bundle was properly initialized.
+     * 
+     * @return <code>true</code> if bundle was initialized, <code>false</code> otherwise
+     */
+    public boolean isInitialized() {
+        return (m_bundle != null);
+    }
+        
+    /**
+     * Gets the localized resource string for a given message key.<p>
+     * 
+     * If the key was not found in the bundle, the return value is
+     * <code>"??? " + keyName + " ???"</code>. This will also be returned 
+     * if the bundle was not properly initialized first.
+     * 
+     * @param keyName the key for the desired string 
+     * @return the resource string for the given key 
+     */
+    public String key(String keyName) {   
+        return key(keyName, false);
+    }    
+
+    /**
+     * Gets the localized resource string for a given message key.<p>
+     * 
+     * If the key was not found in the bundle, the return value 
+     * depends on the setting of the allowNull parameter. If set to false,
+     * the return value is always a String in the format
+     * <code>"??? " + keyName + " ???"</code>.
+     * If set to true, null is returned if the key is not found. 
+     * This will also be returned 
+     * if the bundle was not properly initialized first.
+     * 
+     * @param keyName the key for the desired string 
+     * @param allowNull if true, 'null' is an allowed return value
+     * @return the resource string for the given key 
+     */
+    public String key(String keyName, boolean allowNull) {   
+        try {            
+            if (m_bundle != null) return m_bundle.getString(keyName);
+        } catch (MissingResourceException e) {
+            // not found, return warning
+            if (allowNull) {
+                return null;
+            }
+        }
+        return formatUnknownKey(keyName);
     }    
 }

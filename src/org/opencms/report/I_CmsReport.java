@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/I_CmsReport.java,v $
- * Date   : $Date: 2003/09/11 10:03:15 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/10/01 14:05:07 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,11 +39,11 @@ import com.opencms.linkmanagement.CmsPageLinks;
  * like publish, import, export etc.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com) 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public interface I_CmsReport {
 
-    // soms statics to indicate the formatting
+    // some statics to indicate the formatting
     int C_FORMAT_DEFAULT = 0;
     int C_FORMAT_WARNING = 1;
     int C_FORMAT_HEADLINE = 2;
@@ -52,6 +52,14 @@ public interface I_CmsReport {
         
     /** The name of the property file */
     String C_BUNDLE_NAME = "com.opencms.workplace.workplace";
+    
+    /**
+     * Adds a bundle specified by it's name to the List of resource bundles.<p>
+     * 
+     * @param bundleName the name of the resource bundle with localized strings
+     * @param locale a 2-letter language code according to ISO 639 
+     */
+    void addBundle(String bundleName, String locale);
         
     /**
      * Adds a line break to the report.<p>

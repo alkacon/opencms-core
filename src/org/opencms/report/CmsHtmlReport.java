@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsHtmlReport.java,v $
- * Date   : $Date: 2003/09/25 14:38:59 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/10/01 14:05:07 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.StringTokenizer;
  * in the entire OpenCms system.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsHtmlReport implements I_CmsReport {
     
@@ -64,7 +64,7 @@ public class CmsHtmlReport implements I_CmsReport {
     private int m_indexNext;
     
     /** Localized message access object */
-    private CmsMessages m_messages;        
+    private List m_messages;        
     
     /** Flag to indicate if exception should be displayed long or short */
     private boolean m_showExceptionStackTracke; 
@@ -88,9 +88,26 @@ public class CmsHtmlReport implements I_CmsReport {
      * @param bundleName the name of the resource bundle with localized strings
      */    
     public CmsHtmlReport(String bundleName, String locale) {
-        m_messages = new CmsMessages(bundleName, locale);
+        m_messages = (List) new ArrayList();
+        addBundle(bundleName, locale);
         m_content = new ArrayList(256);
         m_showExceptionStackTracke = true;
+    }      
+    
+    /**
+     * Adds a bundle specified by it's name to the List of resource bundles.<p>
+     * 
+     * @param bundleName the name of the resource bundle with localized strings
+     * @param locale a 2-letter language code according to ISO 639 
+     */
+    public void addBundle(String bundleName, String locale) {
+        CmsMessages msg = new CmsMessages(bundleName, locale);
+
+        if (m_messages.contains(msg)) {
+            m_messages.remove(msg);
+        }
+
+        m_messages.add(msg);
     }    
     
     /**
@@ -127,7 +144,7 @@ public class CmsHtmlReport implements I_CmsReport {
         StringBuffer buf = new StringBuffer();
         if (m_showExceptionStackTracke) {
             buf.append("<span class='throw'>");
-            buf.append(m_messages.key("report.exception"));
+            buf.append(key("report.exception"));
             String exception = Encoder.escapeXml(Utils.getStackTrace(throwable));
             exception = CmsStringSubstitution.substitute(exception, "\\", "\\\\");
             StringTokenizer tok = new StringTokenizer(exception, "\r\n");
@@ -138,7 +155,7 @@ public class CmsHtmlReport implements I_CmsReport {
             buf.append("</span>");
         } else {
             buf.append("<span class='throw'>");
-            buf.append(m_messages.key("report.exception"));
+            buf.append(key("report.exception"));
             buf.append(throwable.toString());
             buf.append("</span>");
             buf.append(C_LINEBREAK);
@@ -157,7 +174,7 @@ public class CmsHtmlReport implements I_CmsReport {
     private StringBuffer getLinkElement(String link) {
         StringBuffer buf = new StringBuffer();
         buf.append("<span class='link1'>");
-        buf.append(m_messages.key("report.checking"));
+        buf.append(key("report.checking"));
         buf.append("</span>");        
         // TODO: Check for absolute path when link management is working again
         buf.append(link);
@@ -175,7 +192,7 @@ public class CmsHtmlReport implements I_CmsReport {
      */    
     private StringBuffer getLinkTargetElement(String target) {
         StringBuffer buf = new StringBuffer("<span class='link2'>");
-        buf.append(m_messages.key("report.broken_link_to"));
+        buf.append(key("report.broken_link_to"));
         buf.append("<span class='link3'>");
         // TODO: Check for absolute path when link management is working again
         buf.append(target);
@@ -213,7 +230,15 @@ public class CmsHtmlReport implements I_CmsReport {
      * @see org.opencms.report.I_CmsReport#key(java.lang.String)
      */
     public String key(String keyName) {
-        return m_messages.key(keyName);
+        for (int i=0, l=m_messages.size(); i < l; i++) {
+            CmsMessages msg = (CmsMessages)m_messages.get(i);
+            String key = msg.key(keyName, (i < (l-1)));
+            if (key != null) {
+                return key;
+            }
+        }         
+        // if not found, check in 
+        return CmsMessages.formatUnknownKey(keyName);
     }
 
     /**

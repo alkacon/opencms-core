@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/09/30 16:03:44 $
-* Version: $Revision: 1.421 $
+* Date   : $Date: 2003/10/01 14:05:08 $
+* Version: $Revision: 1.422 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.421 $
+ * @version $Revision: 1.422 $
  */
 public class CmsObject {
 
@@ -2721,6 +2721,7 @@ public class CmsObject {
                 Map eventData = (Map) new HashMap();
                 eventData.put("report", report);
                 eventData.put("publishHistoryId", new Integer(publishHistoryId).toString());
+                eventData.put("context", m_context);
                 CmsEvent exportPointEvent = new CmsEvent(this, I_CmsEventListener.EVENT_PUBLISH_PROJECT, eventData, false);
                 OpenCms.fireCmsEvent(exportPointEvent);                 
             }

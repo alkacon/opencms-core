@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/09/30 16:03:44 $
- * Version: $Revision: 1.118 $
+ * Date   : $Date: 2003/10/01 14:05:07 $
+ * Version: $Revision: 1.119 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.118 $ $Date: 2003/09/30 16:03:44 $
+ * @version $Revision: 1.119 $ $Date: 2003/10/01 14:05:07 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -288,15 +288,15 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     }
 
     /**
-     * @see org.opencms.db.I_CmsProjectDriver#createProjectResource(int, java.lang.String)
+     * @see org.opencms.db.I_CmsProjectDriver#createProjectResource(int, java.lang.String, java.lang.Object)
      */
-    public void createProjectResource(int projectId, String resourceName) throws CmsException {
+    public void createProjectResource(int projectId, String resourceName, Object reservedParam) throws CmsException {
         // do not create entries for online-project
         PreparedStatement stmt = null;
         Connection conn = null;
 
         try {
-            readProjectResource(projectId, resourceName);
+            readProjectResource(projectId, resourceName, reservedParam);
             throw new CmsException("[" + this.getClass().getName() + "] ", CmsException.C_FILE_EXISTS);
         } catch (CmsException e) {
             if (e.getType() == CmsException.C_FILE_EXISTS) {
@@ -305,7 +305,14 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         }
 
         try {
-            conn = m_sqlManager.getConnection();
+            if (reservedParam == null) {
+                // get a JDBC connection from the OpenCms standard {online|offline|backup} pools
+                conn = m_sqlManager.getConnection();
+            } else {
+                // get a JDBC connection from the reserved JDBC pools
+                conn = m_sqlManager.getConnection(((Integer) reservedParam).intValue());
+            }
+            
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTRESOURCES_CREATE");
 
             // write new resource to the database
@@ -1976,16 +1983,23 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     }
 
     /**
-     * @see org.opencms.db.I_CmsProjectDriver#readProjectResource(int, java.lang.String)
+     * @see org.opencms.db.I_CmsProjectDriver#readProjectResource(int, java.lang.String, java.lang.Object)
      */
-    public String readProjectResource(int projectId, String resourcename) throws CmsException {
+    public String readProjectResource(int projectId, String resourcename, Object reservedParam) throws CmsException {
         PreparedStatement stmt = null;
         Connection conn = null;
         ResultSet res = null;
         String resName = null;
 
         try {
-            conn = m_sqlManager.getConnection();
+            if (reservedParam == null) {
+                // get a JDBC connection from the OpenCms standard {online|offline|backup} pools
+                conn = m_sqlManager.getConnection();
+            } else {
+                // get a JDBC connection from the reserved JDBC pools
+                conn = m_sqlManager.getConnection(((Integer) reservedParam).intValue());
+            }
+            
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTRESOURCES_READ");
 
             // select resource from the database

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2003/09/29 19:09:42 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2003/10/01 14:05:08 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import javax.servlet.http.HttpServletResponse;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
     
@@ -649,13 +649,15 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             try {
                 String foldername = cms.readAbsolutePath(res);
                 String exportname = cms.readProperty(foldername, I_CmsConstants.C_PROPERTY_EXPORTNAME);
-                if (! exportname.endsWith("/")) {
-                    exportname = exportname + "/";
+                if (exportname != null) {
+                    if (! exportname.endsWith("/")) {
+                        exportname = exportname + "/";
+                    }
+                    if (! exportname.startsWith("/")) {
+                        exportname = "/" + exportname;
+                    }
+                    m_exportnameResources.put(exportname, foldername);
                 }
-                if (! exportname.startsWith("/")) {
-                    exportname = "/" + exportname;
-                }
-                m_exportnameResources.put(exportname, foldername);
             } catch (CmsException e) {
                 // ignore exception, folder will no be added
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/30 16:03:44 $
- * Version: $Revision: 1.256 $
+ * Date   : $Date: 2003/10/01 14:05:07 $
+ * Version: $Revision: 1.257 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.256 $ $Date: 2003/09/30 16:03:44 $
+ * @version $Revision: 1.257 $ $Date: 2003/10/01 14:05:07 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1383,7 +1383,7 @@ public class CmsDriverManager extends Object {
                     }
                 }
                 try {
-                    m_projectDriver.createProjectResource(context.currentProject().getId(), resource);
+                    m_projectDriver.createProjectResource(context.currentProject().getId(), resource, null);
                 } catch (CmsException exc) {
                     // if the subfolder exists already - all is ok
                 } finally {
@@ -1945,7 +1945,7 @@ public class CmsDriverManager extends Object {
             // create a new task for the project
             CmsTask task = createProject(context, name, group.getName(), System.currentTimeMillis(), I_CmsConstants.C_TASK_PRIORITY_NORMAL);
             CmsProject tempProject = m_projectDriver.createProject(context.currentUser(), group, managergroup, task, name, description, I_CmsConstants.C_PROJECT_STATE_INVISIBLE, I_CmsConstants.C_PROJECT_STATE_INVISIBLE, null);
-            m_projectDriver.createProjectResource(tempProject.getId(), "/");
+            m_projectDriver.createProjectResource(tempProject.getId(), "/", null);
             cms.getRegistry().setSystemValue("tempfileproject", "" + tempProject.getId());
             OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_PROJECT_MODIFIED, Collections.singletonMap("project", tempProject)));
             return tempProject;

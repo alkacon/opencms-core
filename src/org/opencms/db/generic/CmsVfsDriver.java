@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/10/01 07:58:17 $
- * Version: $Revision: 1.140 $
+ * Date   : $Date: 2003/10/01 14:05:07 $
+ * Version: $Revision: 1.141 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import source.org.apache.java.util.Configurations;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.140 $ $Date: 2003/10/01 07:58:17 $
+ * @version $Revision: 1.141 $ $Date: 2003/10/01 14:05:07 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -438,13 +438,13 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             try {
                 String rootFolder = null;
                 try {
-                    rootFolder = m_driverManager.getProjectDriver().readProjectResource(project.getId(), I_CmsConstants.C_ROOT);
+                    rootFolder = m_driverManager.getProjectDriver().readProjectResource(project.getId(), I_CmsConstants.C_ROOT, null);
                 } catch (CmsException exc) {
                     // NOOP
                 }
 
                 if (rootFolder == null) {
-                    m_driverManager.getProjectDriver().createProjectResource(project.getId(), folder.getName());
+                    m_driverManager.getProjectDriver().createProjectResource(project.getId(), folder.getName(), null);
                 }
 
                 //createProjectResource(project.getId(), foldername);
@@ -2288,56 +2288,58 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
      */
     public void writeProperty(String meta, int projectId, String value, CmsResource resource, int resourceType, boolean addDefinition) throws CmsException {
         CmsPropertydefinition propdef = null;
+
         try {
+            // test if the definition for the property exists
             propdef = readPropertyDefinition(meta, projectId, resourceType);
         } catch (CmsException ex) {
-            // do nothing
+            propdef = null;
         }
+
+        // adjust the resource name in case of a folder that has the property attached
         String resourceName = resource.getRootPath();
-        // hack: this never should happen, but it does.......
-        if ((resource.isFolder()) && (!resourceName.endsWith("/"))) {
-            resourceName += "/";
+        if (resource.isFolder() && !resourceName.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
+            resourceName += I_CmsConstants.C_FOLDER_SEPARATOR;
         }
 
         if (propdef == null) {
-            // there is no propertydefinition for with the overgiven name for the resource
-            // add this definition or throw an exception
+            // create the definition of the property optionally if it is missing
             if (addDefinition) {
-                createPropertyDefinition(meta, projectId, resourceType);
+                propdef = createPropertyDefinition(meta, projectId, resourceType);
             } else {
                 throw new CmsException("[" + this.getClass().getName() + ".writeProperty/1] " + meta, CmsException.C_NOT_FOUND);
             }
-        } else {
-            // write the property into the db
-            PreparedStatement stmt = null;
-            Connection conn = null;
-            try {
-                conn = m_sqlManager.getConnection(projectId);
-                if (readProperty(propdef.getName(), projectId, resource, resourceType) != null) {
-                    // property exists already - use update.
-                    // create statement
-                    stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_PROPERTIES_UPDATE");
-                    stmt.setString(1, m_sqlManager.validateNull(value));
-                    stmt.setString(2, resource.getResourceId().toString());
+        }
+        
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        
+        try {
+            conn = m_sqlManager.getConnection(projectId);
+            if (readProperty(propdef.getName(), projectId, resource, resourceType) != null) {
+                // property exists already - use update.
+                // create statement
+                stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_PROPERTIES_UPDATE");
+                stmt.setString(1, m_sqlManager.validateNull(value));
+                stmt.setString(2, resource.getResourceId().toString());
                     stmt.setString(3, resource.getStructureId().toString() /* resourceName */);
-                    stmt.setInt(4, propdef.getId());
-                    stmt.executeUpdate();
-                } else {
-                    // property dosen't exist - use create.
-                    // create statement
-                    stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_PROPERTIES_CREATE");
-                    stmt.setInt(1, m_sqlManager.nextId(m_sqlManager.readQuery(projectId, "C_TABLE_PROPERTIES")));
-                    stmt.setInt(2, propdef.getId());
-                    stmt.setString(3, resource.getResourceId().toString());
+                stmt.setInt(4, propdef.getId());
+                stmt.executeUpdate();
+            } else {
+                // property dosen't exist - use create.
+                // create statement
+                stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_PROPERTIES_CREATE");
+                stmt.setInt(1, m_sqlManager.nextId(m_sqlManager.readQuery(projectId, "C_TABLE_PROPERTIES")));
+                stmt.setInt(2, propdef.getId());
+                stmt.setString(3, resource.getResourceId().toString());
                     stmt.setString(4, resource.getStructureId().toString() /* resourceName */);
-                    stmt.setString(5, m_sqlManager.validateNull(value));
-                    stmt.executeUpdate();
-                }
-            } catch (SQLException exc) {
-                throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
-            } finally {
-                m_sqlManager.closeAll(conn, stmt, null);
+                stmt.setString(5, m_sqlManager.validateNull(value));
+                stmt.executeUpdate();
             }
+        } catch (SQLException exc) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, null);
         }
     }
 

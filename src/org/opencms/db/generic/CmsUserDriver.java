@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/09/30 16:03:44 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2003/10/01 14:05:07 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.38 $ $Date: 2003/09/30 16:03:44 $
+ * @version $Revision: 1.39 $ $Date: 2003/10/01 14:05:07 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -218,7 +218,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#createUserInGroup(org.opencms.util.CmsUUID, org.opencms.util.CmsUUID)
+     * @see org.opencms.db.I_CmsUserDriver#createUserInGroup(org.opencms.util.CmsUUID, org.opencms.util.CmsUUID, java.lang.Object)
      */
     public void createUserInGroup(CmsUUID userid, CmsUUID groupid, Object reservedParam) throws CmsException {
         Connection conn = null;

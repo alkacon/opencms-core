@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2003/09/30 16:03:44 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2003/10/01 14:05:08 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.31 $ $Date: 2003/09/30 16:03:44 $
+ * @version $Revision: 1.32 $ $Date: 2003/10/01 14:05:08 $
  * @since 5.1
  */
 public interface I_CmsProjectDriver {
@@ -98,11 +98,12 @@ public interface I_CmsProjectDriver {
     /**
      * Creates a new projectResource from a given CmsResource object.<p>
      *
-     * @param projectId The project in which the resource will be used.
-     * @param resourceName The resource to be written to the Cms.
+     * @param projectId The project in which the resource will be used
+     * @param resourceName The resource to be written to the Cms
+     * @param reservedParam reserved optional parameter, should be null on standard OpenCms installations
      * @throws CmsException Throws CmsException if operation was not succesful
      */
-    void createProjectResource(int projectId, String resourceName) throws CmsException;
+    void createProjectResource(int projectId, String resourceName, Object reservedParam) throws CmsException;
 
     /**
      * Creates a serializable object in the systempropertys.<p>
@@ -369,10 +370,11 @@ public interface I_CmsProjectDriver {
      * 
      * @param projectId the ID of the project for which the resource path is read
      * @param resourcename the project's resource path
-     * @return string the project's resource path
+     * @param reservedParam reserved optional parameter, should be null on standard OpenCms installations
+     * @return String the project's resource path
      * @throws CmsException if something goes wrong
      */
-    String readProjectResource(int projectId, String resourcename) throws CmsException;
+    String readProjectResource(int projectId, String resourcename, Object reservedParam) throws CmsException;
 
     /**
      * Reads the project resources for a specified project.<p>
