@@ -1,8 +1,8 @@
 package com.opencms.template.cache;
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsLruCache.java,v $
- * Date   : $Date: 2001/05/17 13:06:15 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2001/05/28 08:51:27 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -35,14 +35,14 @@ package com.opencms.template.cache;
  * chain. If an object is inserted or used it is set to the tail of the chain. If an
  * object has to be remouved it will be the head object.
  *
- * @author
+ * @author Hanjo Riege
  * @version 1.0
  */
 
 public class CmsLruCache {
 
     // enables the login. Just for debugging.
-    private static final boolean C_DEBUG = false;
+    private static final boolean C_DEBUG = true;
 
     // the array to store everthing
     private CacheItem[] m_cache;
@@ -118,7 +118,7 @@ public class CmsLruCache {
                     newItem = item;
                 }else{
                     newItem = head;
-                    remove(head);
+                    removeFromTable(head);
                     newItem.chain = null;
                     item.chain = newItem;
                 }
@@ -137,7 +137,7 @@ public class CmsLruCache {
                     // cache full, we have to remove the old head
                     CacheItem helper = head.next;
                     newItem = head;
-                    remove(head);
+                    removeFromTable(head);
                     newItem.next = null;
                     newItem.chain = null;
                     head = helper;
@@ -205,12 +205,12 @@ public class CmsLruCache {
     }
 
     /**
-     * deletes one element from the cache.
+     * deletes one item from the cache. Not from the sequence chain.
      * @param oldItem The item to be deleted.
      */
-    private void remove(CacheItem oldItem){
+    private void removeFromTable(CacheItem oldItem){
         if(C_DEBUG){
-            System.err.println("mgm--removing from cache: "+(String)oldItem.key);
+            System.err.println("--removing from cache: "+(String)oldItem.key);
         }
         int hashIndex = ((oldItem.key).hashCode() & 0x7FFFFFFF) % m_maxSize;
         CacheItem item = m_cache[hashIndex];
@@ -226,6 +226,73 @@ public class CmsLruCache {
                     item = item.chain;
                 }
             }
+        }
+    }
+
+    /**
+     * removes one item from the cache and from the sequence chain.
+     */
+    private void removeItem(CacheItem item){
+
+        //first remove it from the hashtable
+        removeFromTable(item);
+        // now from the sequence chain
+        if((item != head) && (item != tail)){
+            item.previous.next = item.next;
+            item.next.previous = item.previous;
+        }else{
+            if(item == head){
+                head = item.next;
+                head.previous = null;
+            }
+            if (item == tail){
+                tail = item.previous;
+                tail.next = null;
+            }
+        }
+    }
+
+    /**
+     * Deletes all elements that depend on the template.
+     * use only if the cache is for elements.
+     */
+    public void deleteElementsByTemplate(String templateName){
+        CacheItem item = head;
+        while (item != null){
+            if(templateName.equals(((CmsElementDescriptor)item.key).getTemplateName())){
+                removeItem(item);
+            }
+            item = item.next;
+        }
+    }
+
+    /**
+     * Deletes all elements that depend on the class.
+     * use only if this cache is for elements.
+     */
+    public void deleteElementsByClass(String className){
+        CacheItem item = head;
+        while (item != null){
+            if(className.equals(((CmsElementDescriptor)item.key).getClassName())){
+                removeItem(item);
+            }
+            item = item.next;
+        }
+    }
+
+    /**
+     * Deletes the uri from the Cache. Use only if this is the cache for uris.
+     *
+     */
+    public void deleteUri(String uri){
+        CacheItem item = head;
+        while (item != null){
+            if(uri.equals(((CmsUriDescriptor)item.key).getKey())){
+                removeItem(item);
+                // found the uri, ready.
+                return;
+            }
+            item = item.next;
         }
     }
 

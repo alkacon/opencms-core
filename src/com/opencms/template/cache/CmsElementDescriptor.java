@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementDescriptor.java,v $
-* Date   : $Date: 2001/05/07 08:57:24 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2001/05/28 08:51:27 $
+* Version: $Revision: 1.3 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -83,5 +83,38 @@ public class CmsElementDescriptor {
      */
     public String getTemplateName() {
         return m_templateName;
+    }
+
+    /**
+     * We have to return a hashcode for the hashtable. We can use the hashcode
+     * from the Strings m_className and m_templatename.
+     * @return The hashCode.
+     */
+    public int hashCode(){
+        return (m_className + m_templateName).hashCode();
+    }
+
+	/**
+	 * Compares the overgiven object with this object.
+	 *
+	 * @return true, if the object is identically else it returns false.
+	 */
+	public boolean equals(Object obj) {
+		// check if the object is a CmsElementDescriptor object
+		if (obj instanceof CmsElementDescriptor) {
+			// same key ?
+            // TODO: mgm-  Speed check: test if (()obj.getClassName.equ.. && ()obj.getTemp.equ..)) is faster
+			if (((CmsElementDescriptor)obj).getKey().equals(getKey()) ){
+				return true;
+			}
+		}
+		return false;
+	}
+
+    /**
+     * toString methode
+     */
+    public String toString(){
+        return m_className + " | " + m_templateName;
     }
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsUriLocator.java,v $
-* Date   : $Date: 2001/05/15 14:01:40 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2001/05/28 08:51:27 $
+* Version: $Revision: 1.3 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -63,7 +63,7 @@ public class CmsUriLocator {
      * @param uri - the Uri to put in this locator.
      */
     public void put(CmsUriDescriptor desc, CmsUri uri) {
-        m_uris.put(desc.getKey(), uri);
+        m_uris.put(desc, uri);
     }
 
     /**
@@ -72,6 +72,6 @@ public class CmsUriLocator {
      * @returns the uri that was found.
      */
     public CmsUri get(CmsUriDescriptor desc) {
-        return (CmsUri) m_uris.get(desc.getKey());
+        return (CmsUri) m_uris.get(desc);
     }
 }

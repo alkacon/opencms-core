@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementLocator.java,v $
-* Date   : $Date: 2001/05/17 14:10:32 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2001/05/28 08:51:27 $
+* Version: $Revision: 1.9 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -69,7 +69,7 @@ public class CmsElementLocator implements com.opencms.boot.I_CmsLogChannels {
      * @param element - the Element to put in this locator.
      */
     private void put(CmsElementDescriptor desc, A_CmsElement element) {
-        m_elements.put(desc.getKey(), element);
+        m_elements.put(desc, element);
     }
 
     /**
@@ -79,7 +79,7 @@ public class CmsElementLocator implements com.opencms.boot.I_CmsLogChannels {
      */
     public A_CmsElement get(CmsObject cms, CmsElementDescriptor desc, Hashtable parameters) {
         A_CmsElement result;
-        result = (A_CmsElement)m_elements.get(desc.getKey());
+        result = (A_CmsElement)m_elements.get(desc);
         if(result == null) {
             // the element was not found in the element cache
             // we have to generate it

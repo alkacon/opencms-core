@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsUriDescriptor.java,v $
-* Date   : $Date: 2001/05/03 16:00:41 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2001/05/28 08:51:27 $
+* Version: $Revision: 1.2 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -59,4 +59,37 @@ public class CmsUriDescriptor {
     public String getKey(){
         return m_uri;
     }
+
+	/**
+	 * Compares the overgiven object with this object.
+	 *
+	 * @return true, if the object is identically else it returns false.
+	 */
+	public boolean equals(Object obj) {
+		// check if the object is a CmsUriDescriptor object
+		if (obj instanceof CmsUriDescriptor) {
+			// same key?
+			if (((CmsUriDescriptor)obj).getKey().equals(m_uri) ){
+				return true;
+			}
+		}
+		return false;
+	}
+
+    /**
+     * We have to return a hashcode for the hashtable. We can use the hashcode
+     * from the String uri.
+     * @return The hashCode.
+     */
+    public int hashCode(){
+        return m_uri.hashCode();
+    }
+
+    /**
+     * toString methode
+     */
+    public String toString(){
+        return m_uri;
+    }
+
 }
