@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2004/10/22 14:37:39 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2004/10/25 14:17:57 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import java.util.Properties;
  * Generic (ANSI-SQL) implementation of the SQL manager.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.42 $ $Date: 2004/10/22 14:37:39 $
+ * @version $Revision: 1.43 $ $Date: 2004/10/25 14:17:57 $
  * @since 5.1
  */
 public class CmsSqlManager implements Serializable, Cloneable {
@@ -72,13 +72,13 @@ public class CmsSqlManager implements Serializable, Cloneable {
     /** A map holding all SQL queries. */
     protected Map m_queries;
 
-    /** A map to cache queries with replaced search pattern to minimize costs of regex/matching operations. */
+    /** A map to cache queries with replaced search patterns. */
     protected Map m_cachedQueries;
 
-    /** The connection pool URL of this SQL manager. */
+    /** The pool URL to get connections from the JDBC driver manager, including DBCP's pool URL prefix. */
     protected String m_poolUrl;
     
-    /** The type ID of the driver (vfs, user, project, workflow or backup) where this SQL manager belongs to. */
+    /** The type ID of the driver (vfs, user, project, workflow or backup) from where this SQL manager is referenced. */
     protected int m_driverType;
 
     /**
@@ -95,8 +95,8 @@ public class CmsSqlManager implements Serializable, Cloneable {
     /**
      * Initializes this SQL manager.<p>
      * 
-     * @param driverType the type ID of the driver (vfs,user,project,workflow or backup) where this SQL manager belongs to
-     * @param poolUrl the connection pool URL of this SQL manager
+     * @param driverType the type ID of the driver (vfs,user,project,workflow or backup) from where this SQL manager is referenced
+     * @param poolUrl the pool URL to get connections from the JDBC driver manager
      */
     public void init(int driverType, String poolUrl) {
         
@@ -125,7 +125,7 @@ public class CmsSqlManager implements Serializable, Cloneable {
            sqlManager = (org.opencms.db.generic.CmsSqlManager)objectInstance;
         } catch (Throwable t) {
             OpenCms.getLog(org.opencms.db.generic.CmsSqlManager.class.getName()).error(". SQL manager class '" + classname  + "' could not be instanciated", t);
-            return null;
+            sqlManager = null;
         }
         
         return sqlManager;
@@ -133,14 +133,14 @@ public class CmsSqlManager implements Serializable, Cloneable {
     }
 
     /**
-     * Replaces the search pattern {@link #C_QUERY_PROJECT_SEARCH_PATTERN} in SQL queries by the pattern _ONLINE_ or _OFFLINE_ 
-     * depending on the ID of the current project.<p> 
+     * Replaces the project search pattern in SQL queries by the pattern _ONLINE_ or _OFFLINE_ depending on the 
+     * specified project ID.<p> 
      * 
      * @param projectId the ID of the current project
      * @param query the SQL query
      * @return String the SQL query with the table key search pattern replaced
      */
-    protected static String replaceTableKey(int projectId, String query) {
+    protected static String replaceProjectPattern(int projectId, String query) {
 
         // make the statement project dependent
         String replacePattern = (projectId == I_CmsConstants.C_PROJECT_ONLINE_ID || projectId < 0) ? "_ONLINE_"
@@ -334,11 +334,19 @@ public class CmsSqlManager implements Serializable, Cloneable {
      */     
     public Connection getConnection(I_CmsRuntimeInfo runtimeInfo, int projectId) throws SQLException {
         
-        if (runtimeInfo == null) {            
-            // makes eclipse happy...
+        Connection conn = getConnection(projectId);
+        StringBuffer buf = new StringBuffer();
+        
+        buf.append("autocommit=").append(conn.getAutoCommit() ? "true" : "false").append(" ");
+        buf.append("closed=").append(conn.isClosed() ? "true" : "false").append(" ");
+        //buf.append("pool=").append(m_poolUrl).append(" ");
+        buf.append("info=").append(conn.toString());
+        
+        if (runtimeInfo != null) {            
+            runtimeInfo.push(buf.toString());
         }
         
-        return getConnection(projectId);
+        return conn;
     }    
 
     /**
@@ -518,7 +526,7 @@ public class CmsSqlManager implements Serializable, Cloneable {
 
         if (!m_cachedQueries.containsKey(queryKey)) {
             // make the statement project dependent
-            query = CmsSqlManager.replaceTableKey(projectId, query);
+            query = CmsSqlManager.replaceProjectPattern(projectId, query);
 
             // to minimize costs, all statements with replaced expressions are cached in a map
             m_cachedQueries.put(queryKey, query);
@@ -576,11 +584,12 @@ public class CmsSqlManager implements Serializable, Cloneable {
             if (m_queries != null) {
                 m_queries.clear();
             }
-
+        } catch (Throwable t) {
+            // intentionally left blank
+        } finally {
             m_cachedQueries = null;
             m_queries = null;
-        } catch (Throwable t) {
-            // ignore
+            m_poolUrl = null;            
         }
 
         super.finalize();
@@ -668,13 +677,13 @@ public class CmsSqlManager implements Serializable, Cloneable {
     }
     
     /**
-     * Returns the connection pool URL of this SQL manager.<p>
+     * Returns the pool URL to get connections from the JDBC driver manager.<p>
      * 
-     * @return the connection pool URL
+     * @return the pool URL to get connections from the JDBC driver manager
      */
-    public String getPoolUrl() {
-        
-        return m_poolUrl;
-    }    
+//    public String getPoolUrl() {
+//        
+//        return m_poolUrl;
+//    }    
 
 }
