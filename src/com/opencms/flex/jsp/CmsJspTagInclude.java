@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagInclude.java,v $
-* Date   : $Date: 2002/09/03 19:45:27 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2002/09/04 11:54:36 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * This Tag is used to include another OpenCms managed resource in a JSP.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspConstants { 
     
@@ -100,7 +100,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspConstant
      */
     public void setProperty(String property) {
         if (property != null) {
-            this.m_property = property.toLowerCase();
+            this.m_property = property;
         }
     }
 
