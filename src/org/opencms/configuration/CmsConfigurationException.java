@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsConfigurationException.java,v $
- * Date   : $Date: 2004/06/21 09:54:32 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/07/27 11:09:56 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,9 +41,12 @@ import org.opencms.main.CmsException;
  */
 public class CmsConfigurationException extends CmsException {
     
-    /** Administrator privileges are required. */
+    /** General configuration error. */
     public static final int C_CONFIGURATION_ERROR = 300;
     
+    /** Required module dependencies not fullfilled. */
+    public static final int C_CONFIGURATION_MODULE_DEPENDENCIES = 301;
+
     /**
      * Default constructor for a CmsConfigurationException.<p>
      */
@@ -109,6 +112,8 @@ public class CmsConfigurationException extends CmsException {
         switch (type) {
             case C_CONFIGURATION_ERROR:
                 return "Error in the OpenCms configuration.";              
+            case C_CONFIGURATION_MODULE_DEPENDENCIES:
+                return "Module dependencies not fullfilled.";   
             default:
                 return super.getErrorDescription(type);
         }

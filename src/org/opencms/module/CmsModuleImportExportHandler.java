@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleImportExportHandler.java,v $
- * Date   : $Date: 2004/07/20 13:34:39 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/07/27 11:09:56 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.xml.sax.SAXException;
  * Import/export handler implementation for Cms modules.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2004/07/20 13:34:39 $
+ * @version $Revision: 1.3 $ $Date: 2004/07/27 11:09:56 $
  * @since 5.3
  */
 public class CmsModuleImportExportHandler extends Object implements I_CmsImportExportHandler {
@@ -430,7 +430,7 @@ public class CmsModuleImportExportHandler extends Object implements I_CmsImportE
                 CmsModuleDependency dependency = (CmsModuleDependency)it.next();
                 missingModules += "Module: " + dependency.getName() + " Version: " + dependency.getVersion() + "\n";                
             }
-            throw new CmsConfigurationException("The following dependencies for the module are not fulfilled:\n" + missingModules, CmsConfigurationException.C_CONFIGURATION_ERROR);
+            throw new CmsConfigurationException("The following dependencies for the module are not fulfilled:\n" + missingModules, CmsConfigurationException.C_CONFIGURATION_MODULE_DEPENDENCIES);
         }
         
         Vector exclusion = new Vector();

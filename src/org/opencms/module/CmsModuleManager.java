@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleManager.java,v $
- * Date   : $Date: 2004/07/19 17:05:08 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/07/27 11:09:56 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -237,7 +237,7 @@ public class CmsModuleManager {
             // perform dependency check
             List dependencies = checkDependencies(module, C_DEPENDENCY_MODE_DELETE);
             if (! dependencies.isEmpty()) {
-                throw new CmsConfigurationException(CmsConfigurationException.C_CONFIGURATION_ERROR);                
+                throw new CmsConfigurationException(CmsConfigurationException.C_CONFIGURATION_MODULE_DEPENDENCIES);                
             }
             try {
                 I_CmsModuleAction moduleAction = (I_CmsModuleAction)m_moduleActionInstances.get(moduleName);
