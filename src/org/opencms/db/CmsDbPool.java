@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbPool.java,v $
- * Date   : $Date: 2003/11/10 08:12:58 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2003/11/17 07:44:45 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.apache.commons.pool.impl.GenericObjectPool;
  * based pools might be added probably later.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.15 $ $Date: 2003/11/10 08:12:58 $
+ * @version $Revision: 1.16 $ $Date: 2003/11/17 07:44:45 $
  * @since 5.1
  */
 public final class CmsDbPool extends Object {
@@ -156,10 +156,7 @@ public final class CmsDbPool extends Object {
         Class.forName(jdbcDriver).newInstance();
 
         // initialize a keyed object pool to store connections
-        GenericObjectPool connectionPool = null;
-
-        // use the generic pool
-        connectionPool = new GenericObjectPool(null);
+        GenericObjectPool connectionPool = new GenericObjectPool(null);
 
         // initialize an object pool to store connections
         connectionPool.setMaxActive(maxActive);
@@ -168,25 +165,29 @@ public final class CmsDbPool extends Object {
         connectionPool.setWhenExhaustedAction(whenExhaustedAction);
 
         connectionPool.setTestOnBorrow(testOnBorrow && (testQuery != null));
+        
+        // configuration of idle connection handling, 
+        // hardcoded values are taken from from the DBCP documentation  
         connectionPool.setTestWhileIdle(true);
+        connectionPool.setTimeBetweenEvictionRunsMillis(10000);
+        connectionPool.setNumTestsPerEvictionRun(5);
+        connectionPool.setMinEvictableIdleTimeMillis(5000);
 
-        // initialize a connection factory to make the DriverManager taking connections from the pool
+        // initialize a connection factory to make the DriverManager use connections from the pool
         ConnectionFactory connectionFactory = new DriverManagerConnectionFactory(jdbcUrl, username, password);
 
-        // initialize a keyed object pool to store PreparedStatements
-        // i still have to rtfm how pooling of PreparedStatements with DBCP works
-        //KeyedObjectPoolFactory statementFactory = new StackKeyedObjectPoolFactory();
-        //KeyedObjectPoolFactory statementFactory = new StackKeyedObjectPoolFactory(null, 5000, 0);
-
-        // Set up statement pool, if desired
-        GenericKeyedObjectPoolFactory statementFactory = null;
+        // initialize a statement pool, if desired
+        GenericKeyedObjectPoolFactory statementFactory;
         if (poolingStmts) {
-            statementFactory = new GenericKeyedObjectPoolFactory(null, maxActiveStmts, whenStmtsExhaustedAction, maxWaitStmts, maxIdleStmts);
+            statementFactory = new GenericKeyedObjectPoolFactory(null, maxActiveStmts, whenStmtsExhaustedAction, maxWaitStmts, maxIdleStmts, false, false, 10000, 5, 5000, true);
+        } else {
+            statementFactory = null;
         }
         
-        // initialize a factory to obtain pooled connections and prepared statements
-        new PoolableConnectionFactory(connectionFactory, connectionPool, statementFactory, testQuery, false, true);
-
+        // initialize a poolable connection factory to obtain pooled connections and prepared statements
+        PoolableConnectionFactory factory = new PoolableConnectionFactory(connectionFactory, connectionPool, statementFactory, testQuery, false, true);        
+        factory.setDefaultAutoCommit(true);
+        
         // initialize a new pooling driver using the pool
         PoolingDriver driver = new PoolingDriver();
         driver.registerPool(poolUrl, connectionPool);
