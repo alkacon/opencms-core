@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2001/10/04 15:13:20 $
-* Version: $Revision: 1.219 $
+* Date   : $Date: 2001/10/05 06:59:18 $
+* Version: $Revision: 1.220 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import com.opencms.launcher.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.219 $ $Date: 2001/10/04 15:13:20 $ *
+ * @version $Revision: 1.220 $ $Date: 2001/10/05 06:59:18 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -8879,11 +8879,33 @@ public CmsTask readTask(int id) throws CmsException {
      */
     protected void removeTemporaryFile(CmsFile file) throws CmsException{
         PreparedStatement statement = null;
+        PreparedStatement statementCont = null;
+        PreparedStatement statementProp = null;
         Connection con = null;
+        ResultSet res = null;
         String tempFilename = file.getPath() + C_TEMP_PREFIX + file.getName()+"%";
         try{
             con = DriverManager.getConnection(m_poolName);
-            // create statement
+            // get all temporary files of the resource
+            statement = con.prepareStatement(m_cq.get("C_RESOURCES_GETTEMPFILES"));
+            statement.setString(1, tempFilename);
+            res = statement.executeQuery();
+            while(res.next()){
+                int fileId = res.getInt("FILE_ID");
+                int resourceId = res.getInt("RESOURCE_ID");
+                // delete the properties
+                statementProp = con.prepareStatement(m_cq.get("C_PROPERTIES_DELETEALL"));
+                statementProp.setInt(1, resourceId);
+                statementProp.executeQuery();
+                statementProp.close();
+                // delete the file content
+                statementCont = con.prepareStatement(m_cq.get("C_FILE_DELETE"));
+                statementCont.setInt(1, fileId);
+                statementCont.executeUpdate();
+                statementCont.close();
+            }
+            res.close();
+            statement.close();
             statement = con.prepareStatement(m_cq.get("C_RESOURCES_DELETETEMPFILES"));
             statement.setString(1, tempFilename);
             statement.executeUpdate();
@@ -8891,6 +8913,27 @@ public CmsTask readTask(int id) throws CmsException {
             throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
         } finally {
             // close all db-resources
+            if(res != null) {
+                 try {
+                     res.close();
+                 } catch(SQLException exc) {
+                     // nothing to do here
+                 }
+            }
+            if(statementProp != null) {
+                 try {
+                     statementProp.close();
+                 } catch(SQLException exc) {
+                     // nothing to do here
+                 }
+            }
+            if(statementCont != null) {
+                 try {
+                     statementCont.close();
+                 } catch(SQLException exc) {
+                     // nothing to do here
+                 }
+            }
             if(statement != null) {
                  try {
                      statement.close();

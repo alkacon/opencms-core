@@ -1332,15 +1332,36 @@ PACKAGE BODY opencmsresource IS
 -- remove the temporary files of the given resource
 ---------------------------------------------------------------------------------------
   PROCEDURE removeTemporaryFiles(pFilename IN VARCHAR2) IS
+  	CURSOR cTempfiles(cFilename VARCHAR2) IS
+  		select resource_id, file_id 
+  			from cms_resources
+  			where resource_name like cFilename;
   	vPath VARCHAR2(250);
   	vName VARCHAR2(250);
   	vTempfile VARCHAR2(250);
+  	vResourceId NUMBER;
+  	vFileId NUMBER;
   BEGIN
   	vPath := substr(pFilename,0, instr(pFilename,'/',-1));
   	vName := substr(pFilename,instr(pFilename,'/',-1)+1);
   	vTempfile := vPath||'~'||vName||'%';
+  	OPEN cTempfiles(vTempfile);
+  	LOOP
+  	  FETCH cTempfiles INTO vResourceId, vFileId;
+  	  EXIT WHEN cTempfiles%NOTFOUND;
+  	  delete from cms_files where file_id = vFileId;
+  	  delete from cms_properties where resource_id = vResourceId;
+  	END LOOP;
+  	CLOSE cTempfiles;
   	delete from cms_resources where resource_name like vTempfile;
   	commit;
+  EXCEPTION
+  	WHEN OTHERS THEN
+  	  commit;
+  	  IF cTempfiles%ISOPEN THEN
+  	    CLOSE cTempfiles;
+  	  END IF;
+  	  RAISE;
   END;
 -------------------------------------------------------------------------
 END;
