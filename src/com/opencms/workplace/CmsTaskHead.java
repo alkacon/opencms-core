@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskHead.java,v $
-* Date   : $Date: 2004/02/22 13:52:27 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2004/05/13 13:58:10 $
+* Version: $Revision: 1.32 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 
 package com.opencms.workplace;
 
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
@@ -46,7 +47,7 @@ import java.util.Vector;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.31 $ $Date: 2004/02/22 13:52:27 $
+ * @version $Revision: 1.32 $ $Date: 2004/05/13 13:58:10 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -105,13 +106,14 @@ public class CmsTaskHead extends CmsWorkplaceDefault {
         if(session.getValue(C_SESSION_TASK_ALLPROJECTS) == null) {
             
             // YES! read the relevant userproperties
-            Hashtable taskSettings = (Hashtable)(cms.getRequestContext().currentUser().getAdditionalInfo()).get(C_ADDITIONAL_INFO_TASKSETTINGS);
-            if(taskSettings != null) {
+            CmsUserSettings settings = new CmsUserSettings(cms.getRequestContext().currentUser());
+            String startupFilter = settings.getTaskStartupFilter();
+            boolean allProjects = settings.getTaskShowAllProjects();
                 
-                // the tasksettings exists - use them
-                session.putValue(C_SESSION_TASK_ALLPROJECTS, taskSettings.get(C_TASK_VIEW_ALL));
-                session.putValue(C_SESSION_TASK_FILTER, new String((String)taskSettings.get(C_TASK_FILTER)));
-            }
+            // the tasksettings exists - use them
+            session.putValue(C_SESSION_TASK_ALLPROJECTS, new Boolean(allProjects));
+            session.putValue(C_SESSION_TASK_FILTER, startupFilter);
+       
         }
         
         // is this the result of a submit?

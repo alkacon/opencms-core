@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsTemplateCache.java,v $
-* Date   : $Date: 2004/03/08 07:30:22 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2004/05/13 13:58:10 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@ package com.opencms.template;
 
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.monitor.CmsMemoryMonitor;
 
 import org.apache.commons.collections.map.LRUMap;
 
@@ -42,14 +43,11 @@ public class CmsTemplateCache implements I_CmsTemplateCache {
     
     /** Default constructor to create a template cache */
     public CmsTemplateCache() {
-        try {
-            if (OpenCms.getMemoryMonitor().enabled()) {
-                OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"templateCache", templateCache);
-            }
-        } catch (Throwable t) {
-            OpenCms.getLog(this).error("Could not access memory monitor", t);
+        CmsMemoryMonitor monitor = OpenCms.getMemoryMonitor();
+        if ((monitor != null) && monitor.enabled()) {
+            monitor.register(this.getClass().getName()+"."+"templateCache", templateCache);
         }
-            
+        
         if(OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled() ) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader init          : XMLTemplate template cache initialized successfully");
         }

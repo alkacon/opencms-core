@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPreferences.java,v $
- * Date   : $Date: 2004/03/12 17:03:42 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/05/13 13:58:10 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 5.1.12
  */
@@ -297,9 +297,10 @@ public class CmsPreferences extends CmsTabDialog {
         CmsWorkplaceAction.updatePreferences(getCms(), getJsp().getRequest());
 
         try {
-            int projectId = Integer.parseInt(m_userSettings.getStartProject());
-            getCms().getRequestContext().setCurrentProject(getCms().readProject(projectId));
-            getSettings().setProject(projectId);            
+            String projectName = m_userSettings.getStartProject();
+            CmsProject project = getCms().readProject(projectName);
+            getCms().getRequestContext().setCurrentProject(project);
+            getSettings().setProject(project.getId());            
         } catch (Exception e) {
             // ignore this exception
         }
@@ -573,18 +574,16 @@ public class CmsPreferences extends CmsTabDialog {
             List options = new ArrayList(allProjects.size());
             List values = new ArrayList(allProjects.size());
             int checkedIndex = 0;
-            int startProjectId = -1;
-            try {
-                startProjectId = Integer.parseInt(getParamTabWpProject());
-            } catch (NumberFormatException e) {
-                // ignore this exception
-            }
-            
+            String startProject = "";
+         
+            startProject = getParamTabWpProject();
+  
             for (int i=0; i<allProjects.size(); i++) {
                 CmsProject project = (CmsProject)allProjects.get(i);
                 options.add(project.getName());
-                values.add("" + project.getId());
-                if (startProjectId == project.getId()) {
+                //values.add("" + project.getId());
+                values.add(project.getName());
+                if (startProject.equals(project.getName())) {
                     checkedIndex = i;
                 }
             }
@@ -689,7 +688,7 @@ public class CmsPreferences extends CmsTabDialog {
     public String buildUserInformation() {
         StringBuffer result = new StringBuffer(512);
         CmsUser user = getSettings().getUser();
-        CmsUserSettings settings = new CmsUserSettings(user);
+  
         
         result.append("<table border=\"0\" cellspacing=\"0\" cellpadding=\"4\">\n");
         result.append("<tr>\n");
@@ -705,11 +704,7 @@ public class CmsPreferences extends CmsTabDialog {
         result.append("\t<td rowspan=\"3\" style=\"vertical-align: top;\">" + key("input.adress") + "</td>\n");
         
         String address = user.getAddress();
-        if ((settings.getAddressZip() != null && !"".equals(settings.getAddressZip())) 
-                || (settings.getAddressTown() != null && !"".equals(settings.getAddressTown()))) {
-            address += "<br>" + settings.getAddressZip();
-            address += " " + settings.getAddressTown();
-        }        
+    
         result.append("\t<td rowspan=\"3\" class=\"textbold\" style=\"vertical-align: top;\">" + address + "</td>\n");        
         result.append("</tr>\n");
         
@@ -917,7 +912,7 @@ public class CmsPreferences extends CmsTabDialog {
      * @return the "message when accepted" setting
      */
     public String getParamTabWfMessageAccepted() {
-        return isParamEnabled(m_userSettings.taskMessageAccepted());
+        return isParamEnabled(m_userSettings.getTaskMessageAccepted());
     }
     
     /**
@@ -926,7 +921,7 @@ public class CmsPreferences extends CmsTabDialog {
      * @return the "message when completed" setting
      */
     public String getParamTabWfMessageCompleted() {
-        return isParamEnabled(m_userSettings.taskMessageCompleted());
+        return isParamEnabled(m_userSettings.getTaskMessageCompleted());
     }
     
     /**
@@ -935,7 +930,7 @@ public class CmsPreferences extends CmsTabDialog {
      * @return the "message when forwarded" setting
      */
     public String getParamTabWfMessageForwarded() {
-        return isParamEnabled(m_userSettings.taskMessageForwarded());
+        return isParamEnabled(m_userSettings.getTaskMessageForwarded());
     }
     
     /**
@@ -944,7 +939,7 @@ public class CmsPreferences extends CmsTabDialog {
      * @return "true" if the "inform all role members" input field is checked, otherwise ""
      */
     public String getParamTabWfMessageMembers() {
-        return isParamEnabled(m_userSettings.taskMessageMembers());
+        return isParamEnabled(m_userSettings.getTaskMessageMembers());
     }
     
     /**
@@ -953,7 +948,7 @@ public class CmsPreferences extends CmsTabDialog {
      * @return the "show all projects" setting
      */
     public String getParamTabWfShowAllProjects() {
-        return isParamEnabled(m_userSettings.taskShowAllProjects());
+        return isParamEnabled(m_userSettings.getTaskShowAllProjects());
     }
     
     /**
@@ -1034,7 +1029,7 @@ public class CmsPreferences extends CmsTabDialog {
      * @return "true" if the "display lock dialog" input field is checked, otherwise ""
      */
     public String getParamTabDiShowLock() {
-        return isParamEnabled(m_userSettings.showLockDialog());
+        return isParamEnabled(m_userSettings.getDialogShowLock());
     }
     
     /**
@@ -1484,7 +1479,7 @@ public class CmsPreferences extends CmsTabDialog {
      * @param value "true" to enable the "display lock dialog" setting, all others to disable
      */
     public void setParamTabDiShowLock(String value) {
-        m_userSettings.setShowLockDialog("true".equals(value));
+        m_userSettings.setDialogShowLock("true".equals(value));
     }
 
     /**

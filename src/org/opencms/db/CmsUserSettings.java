@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2004/02/26 11:35:34 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/05/13 13:58:10 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,23 +30,25 @@
  */
 package org.opencms.db;
 
+import org.opencms.configuration.CmsWorkplaceConfiguration;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
-import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
+import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsReport;
 import org.opencms.workplace.I_CmsWpConstants;
 
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Object to conveniently access and modify the users workplace settings.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.10 $
+ * @author  Michael Emmerich (m.emmerich@alkacon.com)
+ * @version $Revision: 1.11 $
  * 
  * @since 5.1.12
  */
@@ -84,44 +86,53 @@ public class CmsUserSettings {
     
     /** Identifier for the explorer number of file entries per page setting key */
     public static final String C_EXPLORER_FILEENTRIES = "USER_EXPLORER_FILEENTRIES";
-    private static final String C_REPORTTYPE_DEFAULT = CmsReport.REPORT_TYPE_SIMPLE;
+    
+    /** Identifierprefix for all keys in the user additional info table */
+    public static final String C_PREFERENCES = "USERPREFERENCES_";
     
     /** Identifier for the workplace button style setting key */
     public static final String C_WORKPLACE_BUTTONSTYLE = "WORKPLACE_BUTTONSTYLE";
     
     /** Identifier for the workplace report type setting key */
     public static final String C_WORKPLACE_REPORTTYPE = "WORKPLACE_REPORTTYPE";
-    
-    private HashMap m_editorSettings;
-    
+    private boolean m_dialogDirectpublish;
+    private int m_dialogFileCopy;
+    private int m_dialogFileDelete;
+    private int m_dialogFolderCopy;
+    private int m_directeditButtonStyle;
+    private int m_editorButtonStyle;
+    private HashMap m_editorSettings; 
     private int m_explorerButtonStyle;
     private int m_explorerFileEntries;
     private int m_explorerSettings;
-    
-    /** Locale to avoid multiple locale constructs out of Strings */
     private Locale m_locale;
+    private String m_project;
+    private boolean m_showLock;
     private int m_taskMessages;
-    private Hashtable m_taskSettings;
-    private String m_town;
+    private boolean m_taskShowProjects;
+    private String m_taskStartupfilter;
+    private boolean m_uploadApplet;
+  
     private CmsUser m_user;
-    private Hashtable m_workplaceSettings;
-    private String m_zipCode;
+    private String m_view;
+    
+    /** member variables to store all the data of the user settings */
+    private int m_workplaceButtonStyle;
+    private String m_workplaceReportType;
 
     /**
      * Creates an empty new user settings object.<p>
      */
-    public CmsUserSettings() {
+    public CmsUserSettings() {   
+        m_workplaceButtonStyle = C_BUTTONSTYLE_DEFAULT;
+        m_workplaceReportType = CmsReport.REPORT_TYPE_SIMPLE;        
         m_explorerButtonStyle = C_BUTTONSTYLE_DEFAULT;
         m_explorerFileEntries = C_ENTRYS_PER_PAGE_DEFAULT;
         m_explorerSettings = I_CmsWpConstants.C_FILELIST_NAME;
         m_editorSettings = new HashMap();
-        m_taskSettings = new Hashtable();
         m_taskMessages = 0;
-        m_workplaceSettings = new Hashtable();
         m_user = null;
-        m_town = "";
-        m_zipCode = "";
-        m_taskSettings.put(I_CmsConstants.C_TASK_FILTER, new String("a1"));
+      
     }
     
     /**
@@ -132,38 +143,14 @@ public class CmsUserSettings {
     public CmsUserSettings(CmsUser user) {
         init(user);
     }
-    
-    /**
-     * Returns the town of the user.<p>
-     * 
-     * @return the town of the user
-     */
-    public String getAddressTown() {
-        return m_town;
-    }
-    
-    /**
-     * Returns the zipcode of the user.<p>
-     * 
-     * @return the zipcode of the user
-     */
-    public String getAddressZip() {
-        return m_zipCode;
-    }
-    
+           
     /**
      * Gets the default copy mode when copying a file of the user.<p>
      * 
      * @return the default copy mode when copying a file of the user
      */
     public int getDialogCopyFileMode() {
-        int mode = I_CmsConstants.C_COPY_AS_SIBLING;
-        try {
-            mode = Integer.parseInt((String)m_workplaceSettings.get(C_DIALOG_COPY_FILE_MODE));
-        } catch (Throwable t) {
-            // ignore this exception
-        }
-        return mode;
+        return m_dialogFileCopy;
     }
     
     /**
@@ -172,13 +159,7 @@ public class CmsUserSettings {
      * @return the default copy mode when copying a folder of the user
      */
     public int getDialogCopyFolderMode() {
-        int mode = I_CmsConstants.C_COPY_AS_SIBLING;
-        try {
-            mode = Integer.parseInt((String)m_workplaceSettings.get(C_DIALOG_COPY_FOLDER_MODE));
-        } catch (Throwable t) {
-            // ignore this exception
-        }
-        return mode;
+         return m_dialogFolderCopy;
     }
     
     /**
@@ -187,13 +168,7 @@ public class CmsUserSettings {
      * @return the default setting for file deletion
      */
     public int getDialogDeleteFileMode() {
-        int mode = I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS;
-        try {
-            mode = Integer.parseInt((String)m_workplaceSettings.get(C_DIALOG_DELETE_MODE));
-        } catch (Throwable t) {
-            // ignore this exception
-        }
-        return mode;
+        return m_dialogFileDelete;
     }
     
     /**
@@ -202,11 +177,16 @@ public class CmsUserSettings {
      * @return the default setting for direct publishing: true if siblings should be published, otherwise false
      */
     public boolean getDialogPublishSiblings() {
-        Boolean publishSiblings = (Boolean)m_workplaceSettings.get(C_DIALOG_PUBLISH_SIBLINGS);
-        if (publishSiblings == null) {
-            return false;
-        }
-        return publishSiblings.booleanValue();
+        return  m_dialogDirectpublish; 
+    }
+    
+    /**
+     * Determines if the lock dialog should be shown.<p>
+     * 
+     * @return true if the lock dialog is shown, otherwise false
+     */
+    public boolean getDialogShowLock() {
+        return m_showLock;
     }
     
     /**
@@ -215,13 +195,7 @@ public class CmsUserSettings {
      * @return the style of the direct edit buttons of the user
      */
     public int getDirectEditButtonStyle() {
-        int style = C_BUTTONSTYLE_DEFAULT;
-        try {
-            style = Integer.parseInt((String)m_editorSettings.get(C_DIRECT_EDIT_BUTTONSTYLE));
-        } catch (Throwable t) {
-            // ignore this exception
-        }
-        return style;
+        return m_directeditButtonStyle;       
     }
     
     /**
@@ -230,13 +204,16 @@ public class CmsUserSettings {
      * @return the style of the editor buttons of the user
      */
     public int getEditorButtonStyle() {
-        int style = 0;
-        try {
-            style = Integer.parseInt((String)m_editorSettings.get(C_EDITOR_BUTTONSTYLE));
-        } catch (Throwable t) {
-            // ignore this exception
-        }
-        return style;
+        return m_editorButtonStyle;
+    }
+    
+    /**
+     * Returns the editor settings of the user.<p>
+     * 
+     * @return the editor settings of the user
+     */
+    public Map getEditorSettings() {
+        return m_editorSettings;
     }
    
    /**
@@ -257,15 +234,22 @@ public class CmsUserSettings {
        return m_explorerFileEntries;
    }
     
+   
+   /**
+    * Returns the explorer start settings.<p>
+    * 
+    * @return the explorer start settings
+    */
+   public int getExplorerSettings() {
+       return m_explorerSettings;
+   }
+   
     /** 
      * Returns the locale of the user.<p>
      * 
      * @return the loclae of the user
      */
     public Locale getLocale() {
-        if (m_locale == null) {
-            m_locale = CmsLocaleManager.getLocale((String)m_workplaceSettings.get(I_CmsConstants.C_START_LOCALE)); 
-        }
         return m_locale; 
     }
     
@@ -285,8 +269,7 @@ public class CmsUserSettings {
      * @return the start project of the user
      */
     public String getStartProject() {
-        Integer projectId = (Integer)m_workplaceSettings.get(I_CmsConstants.C_START_PROJECT);       
-        return projectId.toString();
+        return m_project;
     }
     
     /**
@@ -295,7 +278,60 @@ public class CmsUserSettings {
      * @return the current start view of the user
      */
     public String getStartView() {
-        return (String)m_workplaceSettings.get(I_CmsConstants.C_START_VIEW);
+        return m_view;
+    }
+    
+    /**
+     * Determines if a message should be sent if the task is accepted.<p>
+     * 
+     * @return true if a message should be sent if the task is accepted, otherwise false
+     */
+    public boolean getTaskMessageAccepted() {
+        return ((m_taskMessages & I_CmsConstants.C_TASK_MESSAGES_ACCEPTED) > 0); 
+    }
+    
+    /**
+     * Determines if a message should be sent if the task is completed.<p>
+     * 
+     * @return true if a message should be sent if the task is completed, otherwise false
+     */
+    public boolean getTaskMessageCompleted() {
+        return ((m_taskMessages & I_CmsConstants.C_TASK_MESSAGES_COMPLETED) > 0); 
+    }
+    
+    /**
+     * Determines if a message should be sent if the task is forwarded.<p>
+     * 
+     * @return true if a message should be sent if the task is forwarded, otherwise false
+     */
+    public boolean getTaskMessageForwarded() {
+        return ((m_taskMessages & I_CmsConstants.C_TASK_MESSAGES_FORWARDED) > 0); 
+    }
+    
+    /**
+     * Determines if all role members should be informed about the task.<p>
+     * 
+     * @return true if all role members should be informed about the task, otherwise false
+     */
+    public boolean getTaskMessageMembers() {
+        return ((m_taskMessages & I_CmsConstants.C_TASK_MESSAGES_MEMBERS) > 0); 
+    }
+    
+    /**
+     * Returns the task messages value for the tasks view.<p>
+     * 
+     * @return task messages value for the tasks view
+     */
+    public int getTaskMessageValue() {
+        return m_taskMessages;
+    }
+    
+    /**
+     * Determines if all projects should be shown in tasks view.<p>
+     * @return true if all projects should be shown in tasks view, otherwise false
+     */
+    public boolean getTaskShowAllProjects() {
+        return m_taskShowProjects;
     }
     
     /**
@@ -304,8 +340,9 @@ public class CmsUserSettings {
      * @return the startup filter for the tasks view
      */
     public String getTaskStartupFilter() {
-        return (String)m_taskSettings.get(I_CmsConstants.C_TASK_FILTER);
+        return m_taskStartupfilter;
     }
+    
     
     /**
      * Returns the current user for the settings.<p>
@@ -322,13 +359,7 @@ public class CmsUserSettings {
      * @return the style of the workplace buttons of the user
      */
     public int getWorkplaceButtonStyle() {
-        int style = C_BUTTONSTYLE_DEFAULT;
-        try {
-            style = Integer.parseInt((String)m_workplaceSettings.get(C_WORKPLACE_BUTTONSTYLE));
-        } catch (Throwable t) {
-            // ignore this exception
-        }
-        return style;
+        return m_workplaceButtonStyle;
     }
     
     /**
@@ -337,13 +368,7 @@ public class CmsUserSettings {
      * @return the type of the report (simple or extended) of the user
      */
     public String getWorkplaceReportType() {
-        String type = C_REPORTTYPE_DEFAULT;
-        try {
-            type = (String)m_workplaceSettings.get(C_WORKPLACE_REPORTTYPE);
-        } catch (Throwable t) {
-            // ignore this exception
-        }
-        return type;
+        return m_workplaceReportType;
     }
     
     /**
@@ -353,88 +378,286 @@ public class CmsUserSettings {
      */
     public void init(CmsUser user) {
         m_user = user; 
+
+        // try to initaliaze the User Settings with the values stored in the user object.
+        // if no values are found, the default user settings will be used.
+        
+        // workplace button style
         try {
-            m_explorerFileEntries = Integer.parseInt((String)m_user.getAdditionalInfo(C_EXPLORER_FILEENTRIES));
+            m_workplaceButtonStyle = ((Integer)m_user.getAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS + CmsWorkplaceConfiguration.N_BUTTONSTYLE)).intValue();
         } catch (Throwable t) {
-            m_explorerFileEntries = C_ENTRYS_PER_PAGE_DEFAULT;
+            m_workplaceButtonStyle = OpenCms.getWorkplaceManager().getDefaultUserSettings().getWorkplaceButtonStyle();
         }
+        // workplace report type
+        m_workplaceReportType = ((String)m_user.getAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS + CmsWorkplaceConfiguration.N_REPORTTYPE));
+        if (m_workplaceReportType == null) {
+            m_workplaceReportType = OpenCms.getWorkplaceManager().getDefaultUserSettings().getWorkplaceReportType();
+        }
+        // workplace uploadapplet mode
         try {
-            m_explorerButtonStyle = Integer.parseInt((String)m_user.getAdditionalInfo(C_EXPLORER_BUTTONSTYLE));
+            m_uploadApplet = ((Boolean)m_user.getAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS + CmsWorkplaceConfiguration.N_UPLOADAPPLET)).booleanValue();
         } catch (Throwable t) {
-            m_explorerButtonStyle = C_BUTTONSTYLE_DEFAULT;
+            m_uploadApplet  = OpenCms.getWorkplaceManager().getDefaultUserSettings().useUploadApplet();           
         }
+        // locale
+        m_locale = (Locale)m_user.getAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS + CmsWorkplaceConfiguration.N_LOCALE); 
+        if (m_locale == null) {            
+            m_locale =  OpenCms.getWorkplaceManager().getDefaultUserSettings().getLocale();   
+        }
+        // start project
         try {
-            String explorerSettingsString = (String)m_user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_EXPLORERSETTINGS);
-            m_explorerSettings = Integer.parseInt(explorerSettingsString);
-        } catch (NumberFormatException e) {
-            // explorer start settings are not present, set them to default
-            m_explorerSettings = I_CmsWpConstants.C_FILELIST_NAME;
-            setShowExplorerFileTitle(true);
-            setShowExplorerFileType(true);
-            setShowExplorerFileDateLastModified(true);
+            m_project = ((String)m_user.getAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS + CmsWorkplaceConfiguration.N_PROJECT));
+        } catch (Throwable t) {
+            m_project = null;
         }
-        m_editorSettings = (HashMap)m_user.getAdditionalInfo(C_ADDITIONAL_INFO_EDITORSETTINGS);
+        if (m_project == null) {
+             m_project = OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartProject();
+        }
+        // start view
+        m_view = ((String)m_user.getAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS + CmsWorkplaceConfiguration.N_WORKPLACEVIEW)); 
+        if (m_view == null) {
+            m_view = OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartView();
+        }
+        // explorer button style
+        try {
+            m_explorerButtonStyle = ((Integer)m_user.getAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_EXPLORERGENERALOPTIONS + CmsWorkplaceConfiguration.N_BUTTONSTYLE)).intValue();
+        } catch (Throwable t) {
+            m_explorerButtonStyle = OpenCms.getWorkplaceManager().getDefaultUserSettings().getExplorerButtonStyle();
+        }
+        // explorer file entires        
+        try {
+            m_explorerFileEntries = ((Integer)m_user.getAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_EXPLORERGENERALOPTIONS + CmsWorkplaceConfiguration.N_ENTRIES)).intValue();
+        } catch (Throwable t) {
+            m_explorerFileEntries = OpenCms.getWorkplaceManager().getDefaultUserSettings().getExplorerFileEntries();
+        }
+        // explorer settings
+        try {
+            m_explorerSettings = ((Integer)m_user.getAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_EXPLORERGENERALOPTIONS + CmsWorkplaceConfiguration.N_EXPLORERDISPLAYOPTIONS)).intValue();
+        } catch (Throwable t) {
+            m_explorerSettings = OpenCms.getWorkplaceManager().getDefaultUserSettings().getExplorerSettings();           
+        }
+        // dialog file copy mode
+        try {
+            m_dialogFileCopy = ((Integer)m_user.getAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS + CmsWorkplaceConfiguration.N_FILECOPY)).intValue();
+        } catch (Throwable t) {
+            m_dialogFileCopy  = OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogCopyFileMode();           
+        }
+        // dialog folder copy mode
+        try {
+            m_dialogFolderCopy = ((Integer)m_user.getAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS + CmsWorkplaceConfiguration.N_FOLDERCOPY)).intValue();
+        } catch (Throwable t) {
+            m_dialogFolderCopy  = OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogCopyFolderMode();           
+        }
+        // dialog file delete mode
+        try {
+            m_dialogFileDelete = ((Integer)m_user.getAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS + CmsWorkplaceConfiguration.N_FILEDELETION)).intValue();
+        } catch (Throwable t) {
+            m_dialogFileDelete  = OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogDeleteFileMode();           
+        }
+        // dialog directpublish mode
+        try {
+            m_dialogDirectpublish = ((Boolean)m_user.getAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS + CmsWorkplaceConfiguration.N_DIRECTPUBLISH)).booleanValue();
+        } catch (Throwable t) {
+            m_dialogDirectpublish  = OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogPublishSiblings();           
+        }
+        // dialog show lock mode
+        try {
+            m_showLock = ((Boolean)m_user.getAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS + CmsWorkplaceConfiguration.N_SHOWLOCK)).booleanValue();
+        } catch (Throwable t) {
+            m_showLock  = OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogShowLock();           
+        }
+        // editor button style
+        try {
+            m_editorButtonStyle = ((Integer)m_user.getAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_EDITORGENERALOPTIONS + CmsWorkplaceConfiguration.N_BUTTONSTYLE)).intValue();
+        } catch (Throwable t) {
+            m_editorButtonStyle = OpenCms.getWorkplaceManager().getDefaultUserSettings().getEditorButtonStyle();
+        }
+        // directedit button style
+        try {
+            m_directeditButtonStyle = ((Integer)m_user.getAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_EDITORGENERALOPTIONS + CmsWorkplaceConfiguration.N_DIRECTEDITSTYLE)).intValue();
+        } catch (Throwable t) {
+            m_directeditButtonStyle = OpenCms.getWorkplaceManager().getDefaultUserSettings().getDirectEditButtonStyle();
+        }
+        // editor settings
+        m_editorSettings = (HashMap)m_user.getAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_EDITORPREFERREDEDITORS);
         if (m_editorSettings == null) {
-            m_editorSettings = new HashMap();
+            m_editorSettings = new HashMap(OpenCms.getWorkplaceManager().getDefaultUserSettings().getEditorSettings());
         }
-        m_workplaceSettings = (Hashtable)m_user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_STARTSETTINGS);
-        m_taskSettings = (Hashtable)m_user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_TASKSETTINGS);
-        m_zipCode = (String)m_user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_ZIPCODE);
-        m_town = (String)m_user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_TOWN);
+        // task startupfilter
+        m_taskStartupfilter = (String)m_user.getAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKFLOWGENERALOPTIONS + CmsWorkplaceConfiguration.N_STARTUPFILTER); 
+        if (m_taskStartupfilter == null) {            
+            m_taskStartupfilter =  OpenCms.getWorkplaceManager().getDefaultUserSettings().getTaskStartupFilter();
+        } 
+        // task show all projects
         try {
-            m_taskMessages = ((Integer)m_taskSettings.get(I_CmsConstants.C_TASK_MESSAGES)).intValue();
-        } catch (Exception e) {
-            m_taskMessages = 0;
+            m_taskShowProjects = ((Boolean)m_user.getAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKFLOWGENERALOPTIONS + CmsWorkplaceConfiguration.N_SHOWPROJECTS)).booleanValue();
+        } catch (Throwable t) {
+            m_taskShowProjects  = OpenCms.getWorkplaceManager().getDefaultUserSettings().getTaskShowAllProjects();           
+        }
+        // task messages
+        try {
+            m_taskMessages = ((Integer)m_user.getAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKFLOWDEFAULTSETTINGS)).intValue();
+        } catch (Throwable t) {
+            m_taskMessages = OpenCms.getWorkplaceManager().getDefaultUserSettings().getTaskMessageValue();
+        }
+ 
+        try {
+            save(null);
+        } catch (CmsException e) {
+            // to nothing here            
         }
     }
     
     /**
      * Saves the changed settings of the user to the user object.<p>
      * 
+     * If the given CmsObject is null, the additional user infos are only updated in memory
+     * and not saved into the database.<p>
+     * 
      * @param cms the CmsObject needed to write the user to the db
      * @throws CmsException if user cannot be written to the db
      */
     public void save(CmsObject cms) throws CmsException {
-        m_user.setAdditionalInfo(C_EXPLORER_BUTTONSTYLE, "" + m_explorerButtonStyle);
-        m_user.setAdditionalInfo(C_EXPLORER_FILEENTRIES, "" + m_explorerFileEntries);
-        m_user.setAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_EXPLORERSETTINGS, "" + m_explorerSettings);
-        m_user.setAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_STARTSETTINGS, m_workplaceSettings);
-        m_user.setAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_TOWN, m_town);
-        m_user.setAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_ZIPCODE, m_zipCode);
-        m_taskSettings.put(I_CmsConstants.C_TASK_MESSAGES, new Integer(m_taskMessages));
-        m_user.setAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_TASKSETTINGS, m_taskSettings);
-        if (m_editorSettings.size() > 0) {
-            m_user.setAdditionalInfo(C_ADDITIONAL_INFO_EDITORSETTINGS, m_editorSettings);
+            
+        // only set those values that are different than the default values
+        // if the user info should be updated in the databas (i.e. the CmsObject != null)
+        // all values that are equal to the defaul values must be deleted form the additinal
+        // user settings.
+        
+        // workplace button style
+        if (getWorkplaceButtonStyle() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getWorkplaceButtonStyle()) { 
+            m_user.setAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS + CmsWorkplaceConfiguration.N_BUTTONSTYLE, new Integer(getWorkplaceButtonStyle()));
+        } else if (cms != null) {
+            m_user.deleteAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS + CmsWorkplaceConfiguration.N_BUTTONSTYLE);
         }
+        // workplace report type
+        if (!getWorkplaceReportType().equals(OpenCms.getWorkplaceManager().getDefaultUserSettings().getWorkplaceReportType())) { 
+            m_user.setAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS + CmsWorkplaceConfiguration.N_REPORTTYPE, getWorkplaceReportType());
+        } else if (cms != null) {
+            m_user.deleteAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS + CmsWorkplaceConfiguration.N_REPORTTYPE);
+        }
+        // workplace uploadapplet
+        if (useUploadApplet() != OpenCms.getWorkplaceManager().getDefaultUserSettings().useUploadApplet()) { 
+            m_user.setAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS + CmsWorkplaceConfiguration.N_UPLOADAPPLET, new Boolean(useUploadApplet()));
+        } else if (cms != null) {
+            m_user.deleteAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS + CmsWorkplaceConfiguration.N_UPLOADAPPLET);
+        }
+        // locale
+        if (!getLocale().equals(OpenCms.getWorkplaceManager().getDefaultUserSettings().getLocale())) { 
+            m_user.setAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS + CmsWorkplaceConfiguration.N_LOCALE, getLocale());
+        } else if (cms != null) {
+            m_user.deleteAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS + CmsWorkplaceConfiguration.N_LOCALE);
+        }
+        // startproject       
+        if (getStartProject() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartProject()) { 
+            m_user.setAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS + CmsWorkplaceConfiguration.N_PROJECT, getStartProject());
+        } else if (cms != null) {
+            m_user.deleteAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS + CmsWorkplaceConfiguration.N_PROJECT);
+        }
+        // view
+        if (!getStartView().equals(OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartView())) { 
+            m_user.setAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS + CmsWorkplaceConfiguration.N_WORKPLACEVIEW, getStartView());
+        } else if (cms != null) {
+            m_user.deleteAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS + CmsWorkplaceConfiguration.N_WORKPLACEVIEW);
+        }
+        // explorer button style    
+        if (getExplorerButtonStyle() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getExplorerButtonStyle()) {          
+            m_user.setAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_EXPLORERGENERALOPTIONS + CmsWorkplaceConfiguration.N_BUTTONSTYLE, new Integer(getExplorerButtonStyle()));
+        } else if (cms != null) {
+            m_user.deleteAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_EXPLORERGENERALOPTIONS + CmsWorkplaceConfiguration.N_BUTTONSTYLE);
+        }
+        // explorer file entires
+        if (getExplorerFileEntries() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getExplorerFileEntries()) {
+            m_user.setAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_EXPLORERGENERALOPTIONS + CmsWorkplaceConfiguration.N_ENTRIES, new Integer(getExplorerFileEntries())); 
+        } else if (cms != null) {
+            m_user.deleteAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_EXPLORERGENERALOPTIONS + CmsWorkplaceConfiguration.N_ENTRIES);
+        }
+        // explorer settings
+        if (getExplorerSettings() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getExplorerSettings()) {       
+            m_user.setAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_EXPLORERGENERALOPTIONS + CmsWorkplaceConfiguration.N_EXPLORERDISPLAYOPTIONS, new Integer(getExplorerSettings()));
+        } else if (cms != null) {
+            m_user.deleteAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_EXPLORERGENERALOPTIONS + CmsWorkplaceConfiguration.N_EXPLORERDISPLAYOPTIONS);
+        }
+        // dialog file copy mode
+        if (getDialogCopyFileMode() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogCopyFileMode()) {       
+            m_user.setAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS + CmsWorkplaceConfiguration.N_FILECOPY, new Integer(getDialogCopyFileMode()));
+        } else if (cms != null) {
+            m_user.deleteAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS + CmsWorkplaceConfiguration.N_FILECOPY);
+        }
+        // dialog folder copy mode
+        if (getDialogCopyFolderMode() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogCopyFolderMode()) {       
+            m_user.setAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS + CmsWorkplaceConfiguration.N_FOLDERCOPY, new Integer(getDialogCopyFolderMode()));
+        } else if (cms != null) {
+            m_user.deleteAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS + CmsWorkplaceConfiguration.N_FOLDERCOPY);
+        }
+        // dialog file delete mode
+        if (getDialogDeleteFileMode() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogDeleteFileMode()) {       
+            m_user.setAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS + CmsWorkplaceConfiguration.N_FILEDELETION, new Integer(getDialogDeleteFileMode()));
+        } else if (cms != null) {
+            m_user.deleteAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS + CmsWorkplaceConfiguration.N_FILEDELETION);
+        }
+        // dialog directpublish mode
+        if (getDialogPublishSiblings() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogPublishSiblings()) {       
+            m_user.setAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS + CmsWorkplaceConfiguration.N_DIRECTPUBLISH, new Boolean(getDialogPublishSiblings()));
+        } else if (cms != null) {
+            m_user.deleteAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS + CmsWorkplaceConfiguration.N_DIRECTPUBLISH);
+        }
+        // dialog directpublish mode
+        if (getDialogShowLock() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogShowLock()) {       
+            m_user.setAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS + CmsWorkplaceConfiguration.N_SHOWLOCK, new Boolean(getDialogShowLock()));
+        } else if (cms != null) {
+            m_user.deleteAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS + CmsWorkplaceConfiguration.N_SHOWLOCK);
+        }
+        // editor button style    
+        if (getEditorButtonStyle() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getEditorButtonStyle()) {          
+            m_user.setAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_EDITORGENERALOPTIONS + CmsWorkplaceConfiguration.N_BUTTONSTYLE, new Integer(getEditorButtonStyle()));
+        } else if (cms != null) {
+            m_user.deleteAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_EDITORGENERALOPTIONS + CmsWorkplaceConfiguration.N_BUTTONSTYLE);
+        }
+        // directedit button style    
+        if (getDirectEditButtonStyle() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getDirectEditButtonStyle()) {          
+            m_user.setAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_EDITORGENERALOPTIONS + CmsWorkplaceConfiguration.N_DIRECTEDITSTYLE, new Integer(getDirectEditButtonStyle()));
+        } else if (cms != null) {
+            m_user.deleteAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_EDITORGENERALOPTIONS + CmsWorkplaceConfiguration.N_DIRECTEDITSTYLE);
+        }
+        // editorsettings
+        if (m_editorSettings.size() > 0) {
+            m_user.setAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_EDITORPREFERREDEDITORS, m_editorSettings);
+        } else if (cms != null) {
+            m_user.deleteAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_EDITORPREFERREDEDITORS);
+        }
+        // task startup filter
+        if (!getTaskStartupFilter().equals(OpenCms.getWorkplaceManager().getDefaultUserSettings().getTaskStartupFilter())) { 
+            m_user.setAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKFLOWGENERALOPTIONS + CmsWorkplaceConfiguration.N_STARTUPFILTER, getTaskStartupFilter());
+        } else if (cms != null) {
+            m_user.deleteAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKFLOWGENERALOPTIONS + CmsWorkplaceConfiguration.N_STARTUPFILTER);
+        }
+        // task show all projects
+        if (getTaskShowAllProjects() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getTaskShowAllProjects()) {          
+            m_user.setAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKFLOWGENERALOPTIONS + CmsWorkplaceConfiguration.N_SHOWPROJECTS, new Boolean(getTaskShowAllProjects()));
+        } else if (cms != null) {
+            m_user.deleteAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKFLOWGENERALOPTIONS + CmsWorkplaceConfiguration.N_SHOWPROJECTS);
+        }
+        // task messages        
+        if (getTaskMessageValue() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getTaskMessageValue()) {
+              m_user.setAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKFLOWDEFAULTSETTINGS, new Integer(m_taskMessages));
+        } else if (cms != null) {
+            m_user.deleteAdditionalInfo(C_PREFERENCES + CmsWorkplaceConfiguration.N_WORKFLOWDEFAULTSETTINGS);
+        }     
+      
+        // only write the updated date to the DB if we have the cms object
+        if (cms != null) {           
+            cms.writeUser(m_user);
+        }
+    }
 
-        cms.writeUser(m_user);
-    }
-    
-    /**
-     * Sets the town of the user.<p>
-     * 
-     * @param value the town of the user 
-     */
-    public void setAddressTown(String value) {
-        m_town = value;
-    }
-
-    /**
-     * Sets the zipcode of the user.<p>
-     * 
-     * @param value the zipcode of the user 
-     */
-    public void setAddressZip(String value) {
-        m_zipCode = value;
-    }
-    
     /**
      * Sets the default copy mode when copying a file of the user.<p>
      * 
      * @param mode the default copy mode when copying a file of the user
      */
     public void setDialogCopyFileMode(int mode) {
-        m_workplaceSettings.put(C_DIALOG_COPY_FILE_MODE, "" + mode);
+        m_dialogFileCopy = mode;
     }
     
     /**
@@ -443,7 +666,7 @@ public class CmsUserSettings {
      * @param mode the default copy mode when copying a folder of the user
      */
     public void setDialogCopyFolderMode(int mode) {
-        m_workplaceSettings.put(C_DIALOG_COPY_FOLDER_MODE, "" + mode);
+        m_dialogFolderCopy = mode;
     }
     
     /**
@@ -452,7 +675,7 @@ public class CmsUserSettings {
      * @param mode the default setting for file deletion
      */
     public void setDialogDeleteFileMode(int mode) {
-        m_workplaceSettings.put(C_DIALOG_DELETE_MODE, "" + mode);
+        m_dialogFileDelete = mode;
     }
     
     /**
@@ -461,7 +684,16 @@ public class CmsUserSettings {
      * @param publishSiblings the default setting for direct publishing: true if siblings should be published, otherwise false
      */
     public void setDialogPublishSiblings(boolean publishSiblings) {
-        m_workplaceSettings.put(C_DIALOG_PUBLISH_SIBLINGS, new Boolean(publishSiblings));
+        m_dialogDirectpublish = publishSiblings;
+    }
+    
+    /**
+     *  Sets if the lock dialog should be shown.<p>
+     * 
+     * @param show true if the lock dialog should be shown, otherwise false
+     */
+    public void setDialogShowLock(boolean show) {
+        m_showLock = show;
     }
     
     /**
@@ -470,7 +702,7 @@ public class CmsUserSettings {
      * @param style the style of the direct edit buttons of the user
      */
     public void setDirectEditButtonStyle(int style) {
-        m_editorSettings.put(C_DIRECT_EDIT_BUTTONSTYLE, "" + style);
+        m_directeditButtonStyle = style;
     }
     
     /**
@@ -479,39 +711,43 @@ public class CmsUserSettings {
      * @param style the style of the editor buttons of the user
      */
     public void setEditorButtonStyle(int style) {
-        m_editorSettings.put(C_EDITOR_BUTTONSTYLE, "" + style);
+        m_editorButtonStyle = style;
     }
    
+    /**
+     * Sets the editor settings of the user.<p>
+     * 
+     * @param settings the editor settings of the user
+     */
+    public void setEditorSettings(Map settings) {
+        m_editorSettings = new HashMap(settings);
+    }
+    
    /**
     * Sets the style of the explorer buttons of the user.<p>
     * 
     * @param style the style of the explorer buttons of the user
     */
-   public void setExplorerButtonStyle(int style) {
-       m_explorerButtonStyle = style;
-   }
+    public void setExplorerButtonStyle(int style) {
+        m_explorerButtonStyle = style;
+    }
    
    /**
     * Sets the number of displayed files per page of the user.<p>
     * 
     * @param entries the number of displayed files per page of the user
     */
-   public void setExplorerFileEntries(int entries) {
-       m_explorerFileEntries = entries;
-   }
+    public void setExplorerFileEntries(int entries) {
+        m_explorerFileEntries = entries;
+    }
     
     /**
-     * Sets a specific explorer setting depending on the set parameter.<p>
-     * 
-     * @param set true if the setting should be set, otherwise false
-     * @param setting the settings constant value for the explorer settings
-     */
-    private void setExplorerSetting(boolean set, int setting) {
-        if (set) {
-            m_explorerSettings |= setting;
-        } else {
-            m_explorerSettings &= ~setting;
-        }
+    * Sets the explorer start settings.<p>
+    * 
+    * @param settings explorer start settings tu use
+    */
+    public void setExplorerSettings(int settings) {
+        m_explorerSettings = settings;
     }
     
     /**
@@ -521,7 +757,6 @@ public class CmsUserSettings {
      */
     public void setLocale(Locale locale) {
         m_locale = locale;
-        m_workplaceSettings.put(I_CmsConstants.C_START_LOCALE, locale.toString());
     }
     
     /**
@@ -626,27 +861,14 @@ public class CmsUserSettings {
    public void setShowExplorerFileUserLastModified(boolean show) {
        setExplorerSetting(show, I_CmsWpConstants.C_FILELIST_USER_LASTMODIFIED);
    }
-    
-    /**
-     *  Sets if the lock dialog should be shown.<p>
-     * 
-     * @param show true if the lock dialog should be shown, otherwise false
-     */
-    public void setShowLockDialog(boolean show) {
-        if (show) {
-            m_workplaceSettings.put(I_CmsConstants.C_START_LOCKDIALOG, "on");
-        } else {
-            m_workplaceSettings.put(I_CmsConstants.C_START_LOCKDIALOG, "");
-        }
-    }
 
     /**
      * Sets the start project of the user.<p>
      * 
-     * @param projectId the start project id of the user
+     * @param project the start project id of the user
      */
-    public void setStartProject(String projectId) {
-        m_workplaceSettings.put(I_CmsConstants.C_START_PROJECT, new Integer(projectId));
+    public void setStartProject(String project) {
+        m_project = project;
     }
     
     /**
@@ -655,9 +877,9 @@ public class CmsUserSettings {
      * @param view the current start view of the user
      */
     public void setStartView(String view) {
-        m_workplaceSettings.put(I_CmsConstants.C_START_VIEW, view);
+       m_view = view;
     }
-
+    
     /**
      * Sets if a message should be sent if the task is accepted.<p>
      * 
@@ -693,19 +915,15 @@ public class CmsUserSettings {
     public void setTaskMessageMembers(boolean message) {
         setTaskMessageSetting(message, I_CmsConstants.C_TASK_MESSAGES_MEMBERS);
     }
-    
+
+
     /**
-     * Sets a specific task message setting depending on the set parameter.<p>
+     * Sets the task message values.<p>
      * 
-     * @param set true if the setting should be set, otherwise false
-     * @param setting the settings constant value for the task message settings
+     * @param value the value of the task messages
      */
-    private void setTaskMessageSetting(boolean set, int setting) {
-        if (set) {
-            m_taskMessages |= setting;
-        } else {
-            m_taskMessages &= ~setting;
-        }
+    public void setTaskMessageValue(int value) {
+        m_taskMessages = value;    
     }
     
     /**
@@ -714,7 +932,7 @@ public class CmsUserSettings {
      * @param show true if all projects should be shown in tasks view, otherwise false
      */
     public void setTaskShowAllProjects(boolean show) {
-        m_taskSettings.put(I_CmsConstants.C_TASK_VIEW_ALL, new Boolean(show));
+        m_taskShowProjects = show;
     }
     
     /**
@@ -723,7 +941,7 @@ public class CmsUserSettings {
      * @param filter the startup filter for the tasks view
      */
     public void setTaskStartupFilter(String filter) {
-        m_taskSettings.put(I_CmsConstants.C_TASK_FILTER, filter);
+       m_taskStartupfilter = filter;
     }
     
     /**
@@ -741,11 +959,7 @@ public class CmsUserSettings {
      * @param use true if the upload applet should be used, otherwise false
      */
     public void setUseUploadApplet(boolean use) {
-        if (use) {
-            m_workplaceSettings.put(I_CmsConstants.C_START_UPLOADAPPLET, "on");
-        } else {
-            m_workplaceSettings.put(I_CmsConstants.C_START_UPLOADAPPLET, "");
-        }
+       m_uploadApplet = use;
     }
     
     /**
@@ -754,7 +968,7 @@ public class CmsUserSettings {
      * @param style the style of the workplace buttons of the user
      */
     public void setWorkplaceButtonStyle(int style) {
-        m_workplaceSettings.put(C_WORKPLACE_BUTTONSTYLE, "" + style);
+        m_workplaceButtonStyle = style;
     }
     
     /**
@@ -763,7 +977,7 @@ public class CmsUserSettings {
      * @param type the type of the report (simple or extended) of the user
      */
     public void setWorkplaceReportType(String type) {
-        m_workplaceSettings.put(C_WORKPLACE_REPORTTYPE, type);
+        m_workplaceReportType = type;
     }
     
     /**
@@ -857,78 +1071,41 @@ public class CmsUserSettings {
    }
     
     /**
-     * Determines if the lock dialog should be shown.<p>
-     * 
-     * @return true if the lock dialog is shown, otherwise false
-     */
-    public boolean showLockDialog() {
-        String show = null;
-        try {
-            show = (String)m_workplaceSettings.get(I_CmsConstants.C_START_LOCKDIALOG);
-        } catch (NullPointerException e) {
-            // do nothing
-        }
-        return ("on".equals(show));
-    }
-    
-    /**
-     * Determines if a message should be sent if the task is accepted.<p>
-     * 
-     * @return true if a message should be sent if the task is accepted, otherwise false
-     */
-    public boolean taskMessageAccepted() {
-        return ((m_taskMessages & I_CmsConstants.C_TASK_MESSAGES_ACCEPTED) > 0); 
-    }
-    
-    /**
-     * Determines if a message should be sent if the task is completed.<p>
-     * 
-     * @return true if a message should be sent if the task is completed, otherwise false
-     */
-    public boolean taskMessageCompleted() {
-        return ((m_taskMessages & I_CmsConstants.C_TASK_MESSAGES_COMPLETED) > 0); 
-    }
-    
-    /**
-     * Determines if a message should be sent if the task is forwarded.<p>
-     * 
-     * @return true if a message should be sent if the task is forwarded, otherwise false
-     */
-    public boolean taskMessageForwarded() {
-        return ((m_taskMessages & I_CmsConstants.C_TASK_MESSAGES_FORWARDED) > 0); 
-    }
-    
-    /**
-     * Determines if all role members should be informed about the task.<p>
-     * 
-     * @return true if all role members should be informed about the task, otherwise false
-     */
-    public boolean taskMessageMembers() {
-        return ((m_taskMessages & I_CmsConstants.C_TASK_MESSAGES_MEMBERS) > 0); 
-    }
-    
-    /**
-     * Determines if all projects should be shown in tasks view.<p>
-     * @return true if all projects should be shown in tasks view, otherwise false
-     */
-    public boolean taskShowAllProjects() {
-        Boolean show = (Boolean)m_taskSettings.get(I_CmsConstants.C_TASK_VIEW_ALL);
-        return show.booleanValue();
-    }
-    
-    /**
      * Determines if the upload applet should be used.<p>
      * 
      * @return true if the if the upload applet should be used, otherwise false
      */
     public boolean useUploadApplet() {
-        String use = null;
-        try {
-            use = (String)m_workplaceSettings.get(I_CmsConstants.C_START_UPLOADAPPLET);
-        } catch (NullPointerException e) {
-            // do nothing
+        return m_uploadApplet;
+    }
+   
+   
+    /**
+     * Sets a specific explorer setting depending on the set parameter.<p>
+     * 
+     * @param set true if the setting should be set, otherwise false
+     * @param setting the settings constant value for the explorer settings
+     */
+    private void setExplorerSetting(boolean set, int setting) {
+        if (set) {
+            m_explorerSettings |= setting;
+        } else {
+            m_explorerSettings &= ~setting;
         }
-        return ("on".equals(use));
+    }
+    
+    /**
+     * Sets a specific task message setting depending on the set parameter.<p>
+     * 
+     * @param set true if the setting should be set, otherwise false
+     * @param setting the settings constant value for the task message settings
+     */
+    private void setTaskMessageSetting(boolean set, int setting) {
+        if (set) {
+            m_taskMessages |= setting;
+        } else {
+            m_taskMessages &= ~setting;
+        }
     }
     
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleManager.java,v $
- * Date   : $Date: 2004/05/13 11:08:31 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/05/13 13:58:10 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
+import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.util.CmsStringSubstitution;
 
 import java.util.ArrayList;
@@ -57,7 +58,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public class CmsLocaleManager implements I_CmsEventListener {
     
@@ -92,9 +93,10 @@ public class CmsLocaleManager implements I_CmsEventListener {
         
         LRUMap lruMap = new LRUMap(256);
         m_localeCache = Collections.synchronizedMap(lruMap);
-        if (OpenCms.getMemoryMonitor().enabled()) {
+        CmsMemoryMonitor monitor = OpenCms.getMemoryMonitor();
+        if ((monitor != null) && monitor.enabled()) {
             // map must be of type "LRUMap" so that memory monitor can acecss all information
-            OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_localeCache", lruMap);
+            monitor.register(this.getClass().getName() + "." + "m_localeCache", lruMap);
         }
         
         // register this object as event listener

@@ -22,7 +22,8 @@
 	enableadvancedpropertytabs,
 	maxfileuploadsize?, 
 	labeledfolders?,
-	explorertypes+ )>
+	explorertypes+,
+	default-preferences )>
 
 <!--
 # The default locale of the OpenCms workplace that is selected if a user
@@ -323,3 +324,98 @@
 <!ELEMENT ignoredproperties (property*)>
 <!ELEMENT property EMPTY>
 <!ATTLIST property name CDATA #REQUIRED>
+
+<!--
+# The default user preferences of the OpenCms workplace contains the default data 
+# for the user workplace preferences
+-->
+<!ELEMENT default-preferences (workplace-preferences,
+				explorer-preferences,
+				dialogs-preferences,
+				editors-preferences,
+				workflow-preferences)>
+
+<!ELEMENT workplace-preferences (workplace-generaloptions,
+								 workplace-startupsettings)>
+<!ELEMENT workplace-generaloptions (buttonstyle,
+									reporttype,
+									uploadapplet)>
+<!ELEMENT buttonstyle (#PCDATA)>									
+<!ELEMENT reporttype (#PCDATA)>
+<!ELEMENT uploadapplet (#PCDATA)>									
+									
+<!ELEMENT workplace-startupsettings (locale,
+									 project,
+									 workplaceview)>
+<!ELEMENT locale (#PCDATA)>									
+<!ELEMENT project (#PCDATA)>
+<!ELEMENT workplaceview (#PCDATA)>										 
+						
+						
+<!ELEMENT explorer-preferences (explorer-generaloptions,
+								explorer-displayoptions)>	
+<!ELEMENT explorer-generaloptions (buttonstyle,
+								   entries)>
+<!ELEMENT entries (#PCDATA)>	
+
+<!ELEMENT explorer-displayoptions (show-title,
+								   show-type,
+								   show-datelastmodified,
+								   show-datecreated,
+								   show-lockedby,
+								   show-permissions,
+								   show-size,
+								   show-state,
+								   show-userlastmodified,
+								   show-usercreated
+								   )>									
+									
+<!ELEMENT show-title (#PCDATA)>	
+<!ELEMENT show-type (#PCDATA)>	
+<!ELEMENT show-datelastmodified (#PCDATA)>	
+<!ELEMENT show-datecreated (#PCDATA)>	
+<!ELEMENT show-lockedby (#PCDATA)>	
+<!ELEMENT show-permissions (#PCDATA)>	
+<!ELEMENT show-size (#PCDATA)>	
+<!ELEMENT show-state (#PCDATA)>	
+<!ELEMENT show-userlastmodified (#PCDATA)>	
+<!ELEMENT show-usercreated (#PCDATA)>
+
+<!ELEMENT dialogs-preferences (dialogs-defaultsettings)>
+<!ELEMENT dialogs-defaultsettings (filecopy,
+								   foldercopy,
+								   filedeletion,
+								   directpublish,
+								   showlock)>
+<!ELEMENT filecopy (#PCDATA)>									 
+<!ELEMENT foldercopy (#PCDATA)>	
+<!ELEMENT filedeletion (#PCDATA)>	
+<!ELEMENT directpublish (#PCDATA)>	
+<!ELEMENT showlock (#PCDATA)>	
+
+<!ELEMENT editors-preferences (editors-generaloptions,
+							   editors-preferrededitors)>
+<!ELEMENT editors-generaloptions (buttonstyle,
+								 directeditstyle)>	
+<!ELEMENT directeditstyle (#PCDATA)>	
+<!ELEMENT editors-preferrededitors (editor*) >		
+<!ELEMENT editor EMPTY >	
+<!ATTLIST editor type CDATA #REQUIRED>
+<!ATTLIST editor value CDATA #REQUIRED>	
+
+<!ELEMENT workflow-preferences (workflow-generaloptions,
+								workflow-defaultsettings)>
+<!ELEMENT workflow-generaloptions (startupfilter,
+								   showprojects)>	
+<!ELEMENT startupfilter (#PCDATA)>	
+<!ELEMENT showprojects (#PCDATA)>		
+<!ELEMENT workflow-defaultsettings (message-accepted,
+								    message-forwarded,
+								    message-completed,
+								    informrolemembers
+								   )>								   
+
+<!ELEMENT message-accepted (#PCDATA)>	
+<!ELEMENT message-forwarded (#PCDATA)>	
+<!ELEMENT message-completed (#PCDATA)>	
+<!ELEMENT informrolemembers (#PCDATA)>	

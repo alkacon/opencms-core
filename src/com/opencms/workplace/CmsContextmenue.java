@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsContextmenue.java,v $
-* Date   : $Date: 2004/02/13 13:41:43 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2004/05/13 13:58:10 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,9 +29,9 @@
 
 package com.opencms.workplace;
 
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
 
 import com.opencms.template.A_CmsXmlContent;
 
@@ -46,7 +46,7 @@ import org.w3c.dom.NodeList;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ICON&gt;</code>.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.19 $ $Date: 2004/02/13 13:41:43 $
+ * @version $Revision: 1.20 $ $Date: 2004/05/13 13:58:10 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -83,20 +83,10 @@ public class CmsContextmenue extends A_CmsWpElement implements I_CmsWpElement {
         if(name != null) {
 
             // get the current langueag
-            Hashtable startSettings = null;
             String currentLocale = null;
-            startSettings = (Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_STARTSETTINGS);
 
-            // try to read it form the user additional info
-            if(startSettings != null) {
-                currentLocale = startSettings.get(I_CmsConstants.C_START_LOCALE).toString();
-            }
-
-            // if no language was found so far, set it to default
-            if(currentLocale == null) {
-                currentLocale = C_DEFAULT_LANGUAGE;
-            }
-
+            CmsUserSettings settings = new CmsUserSettings(cms.getRequestContext().currentUser());
+            currentLocale = settings.getLocale().toString();
             // create the result
             StringBuffer result = new StringBuffer();
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2004/05/06 08:06:07 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/05/13 13:58:10 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,9 @@
 
 package org.opencms.workplace;
 
+import org.opencms.configuration.CmsDefaultUserSettings;
 import org.opencms.db.CmsExportPoint;
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
@@ -64,7 +66,7 @@ import javax.servlet.http.HttpSession;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 5.3.1
  */
@@ -134,6 +136,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     /** The configured workplace views */
     private List m_views;
     
+    /** The default user seetings */
+    private CmsUserSettings m_defaultUserSettings;
+    
     /**
      * Creates a new instance for the workplace manager, will be called by the workplace configuration manager.<p>
      */
@@ -157,6 +162,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         // TODO: Set workplace encoding independent from main system (use UTF-8 as default)
         m_defaultEncoding = OpenCms.getSystemInfo().getDefaultEncoding();
         // m_defaultEncoding = C_DEFAULT_WORKPLACE_ENCODING;
+        m_defaultUserSettings = new CmsUserSettings();
         
         // register this object as event listener
         OpenCms.addCmsEventListener(this, new int[] {
@@ -288,6 +294,48 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     }      
     
     /**
+     * Returns the Workplace default user settings.<p>
+     * 
+     * @return  the Workplace default user settings
+     */
+    public CmsUserSettings getDefaultUserSettings() {
+        return m_defaultUserSettings;
+    }      
+    
+    /**
+     * Returns the additional infos of the default user.<p>
+     * 
+     * @return  the additional infos of the user
+     */
+    public Hashtable getDefaultUserAdditionalInfos() {
+        Hashtable startSettings = new Hashtable();
+        startSettings.put(I_CmsConstants.C_START_LOCALE, m_defaultUserSettings.getLocale().toString());
+        startSettings.put(I_CmsConstants.C_START_PROJECT, new Integer(m_defaultUserSettings.getStartProject()));
+        startSettings.put(I_CmsConstants.C_START_VIEW,  m_defaultUserSettings.getStartView());
+        startSettings.put(CmsUserSettings.C_WORKPLACE_REPORTTYPE, m_defaultUserSettings.getWorkplaceReportType());
+        
+        String applet = "";
+        if (m_defaultUserSettings.useUploadApplet()) {
+            applet = "on";    
+        } 
+        startSettings.put(I_CmsConstants.C_START_UPLOADAPPLET, applet);
+        
+        startSettings.put(CmsUserSettings.C_DIALOG_COPY_FILE_MODE,  new Integer(m_defaultUserSettings.getDialogCopyFileMode()));
+        startSettings.put(CmsUserSettings.C_DIALOG_COPY_FOLDER_MODE,  new Integer(m_defaultUserSettings.getDialogCopyFolderMode()));        
+        startSettings.put(CmsUserSettings.C_DIALOG_DELETE_MODE,  new Integer(m_defaultUserSettings.getDialogDeleteFileMode()));
+        startSettings.put(CmsUserSettings.C_DIALOG_PUBLISH_SIBLINGS,  new Boolean(m_defaultUserSettings.getDialogPublishSiblings()));
+        
+        String showLock = "";
+        if (m_defaultUserSettings.getDialogShowLock()) {
+            showLock = "on";    
+        }        
+        startSettings.put(I_CmsConstants.C_START_LOCKDIALOG, showLock);
+                     
+        return startSettings;
+    }
+    
+    
+    /**
      * Returns all instanciated dialog handlers for the workplace.<p>
      * 
      * @return all instanciated dialog handlers for the workplace
@@ -330,7 +378,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
      * @param type the resource type for which the settings are required
      * @return the explorer type settings for the specified resource type
      */
-    public CmsExplorerTypeSettings getEplorerTypeSetting(String type) {
+    public CmsExplorerTypeSettings getExplorerTypeSetting(String type) {
         return (CmsExplorerTypeSettings)m_explorerTypeSettingsMap.get(type);
         
     }
@@ -416,10 +464,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
             // no session available, try to read the locale form the user additional info
             if (! user.isGuestUser()) {
                 // check user settings only for "real" users
-                Hashtable userInfo = (Hashtable)user.getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_STARTSETTINGS);  
-                if (userInfo != null) {
-                    locale = CmsLocaleManager.getLocale((String)userInfo.get(I_CmsConstants.C_START_LOCALE));
-                }    
+                CmsUserSettings settings = new CmsUserSettings(user);
+                locale = settings.getLocale();
+  
             }
             List acceptedLocales = (new CmsAcceptLanguageHeaderParser(req, getDefaultLocale())).getAcceptedLocales();
             if ((locale != null) && (! acceptedLocales.contains(locale))) {
@@ -578,6 +625,22 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Workplace init       : Default locale is '" + m_defaultLocale + "'");
         }        
     }
+    
+    /**
+     * Sets the Workplace default user settings.<p>
+     * 
+     * @param defaultUserSettings the user settings to set
+     */
+    public void setDefaultUserSettings(CmsDefaultUserSettings defaultUserSettings) {
+        m_defaultUserSettings = defaultUserSettings;
+        
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Workplace init       : Default user settings are " + m_defaultUserSettings);
+        }        
+    }
+         
+    
+    
     /**
      * Sets the default property editing mode on resources.<p>
      *

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskNew.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.40 $
+* Date   : $Date: 2004/05/13 13:58:10 $
+* Version: $Revision: 1.41 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,12 +29,13 @@
 
 package com.opencms.workplace;
 
-import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
-
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
+import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
+
 import com.opencms.template.A_CmsXmlContent;
 
 import java.util.Hashtable;
@@ -45,7 +46,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.40 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.41 $ $Date: 2004/05/13 13:58:10 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -130,24 +131,23 @@ public class CmsTaskNew extends CmsWorkplaceDefault {
         String paraAll = "checked";
         String paraCompletion = "checked";
         String paraDelivery = "checked";
-        Hashtable taskSettings = (Hashtable)(cms.getRequestContext().currentUser().getAdditionalInfo()).get(C_ADDITIONAL_INFO_TASKSETTINGS);
-        if(taskSettings != null) {
-
-            // the tasksettings exists - use them
-            int messageAt = ((Integer)taskSettings.get(C_TASK_MESSAGES)).intValue();
-            if((messageAt & C_TASK_MESSAGES_ACCEPTED) != C_TASK_MESSAGES_ACCEPTED) {
-                paraAcceptation = "";
-            }
-            if((messageAt & C_TASK_MESSAGES_COMPLETED) != C_TASK_MESSAGES_COMPLETED) {
-                paraCompletion = "";
-            }
-            if((messageAt & C_TASK_MESSAGES_FORWARDED) != C_TASK_MESSAGES_FORWARDED) {
-                paraDelivery = "";
-            }
-            if((messageAt & C_TASK_MESSAGES_MEMBERS) != C_TASK_MESSAGES_MEMBERS) {
-                paraAll = "";
-            }
+        CmsUserSettings settings = new CmsUserSettings(cms.getRequestContext().currentUser());
+        
+        // the tasksettings exists - use them
+        int messageAt = settings.getTaskMessageValue();
+        if((messageAt & C_TASK_MESSAGES_ACCEPTED) != C_TASK_MESSAGES_ACCEPTED) {
+            paraAcceptation = "";
         }
+        if((messageAt & C_TASK_MESSAGES_COMPLETED) != C_TASK_MESSAGES_COMPLETED) {
+            paraCompletion = "";
+        }
+        if((messageAt & C_TASK_MESSAGES_FORWARDED) != C_TASK_MESSAGES_FORWARDED) {
+            paraDelivery = "";
+        }
+        if((messageAt & C_TASK_MESSAGES_MEMBERS) != C_TASK_MESSAGES_MEMBERS) {
+            paraAll = "";
+        }
+
         xmlTemplateDocument.setData(C_TASKPARA_ACCEPTATION, paraAcceptation);
         xmlTemplateDocument.setData(C_TASKPARA_ALL, paraAll);
         xmlTemplateDocument.setData(C_TASKPARA_COMPLETION, paraCompletion);

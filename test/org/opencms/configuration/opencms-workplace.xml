@@ -23,6 +23,7 @@
     	<autolock>true</autolock>
     	<enableusermanagement>true</enableusermanagement>
 		<defaultpropertiesonstructure>true</defaultpropertiesonstructure>
+		<enableadvancedpropertytabs>true</enableadvancedpropertytabs>
     	<maxfileuploadsize>-1</maxfileuploadsize>
     	<labeledfolders>
     		<resource uri="/system/"/>
@@ -356,5 +357,68 @@
 				</accesscontrol>
 			</explorertype>
 		</explorertypes>
+		<default-preferences>
+			<workplace-preferences>
+				<workplace-generaloptions>
+					<buttonstyle>text</buttonstyle>
+					<reporttype>simple</reporttype>
+					<uploadapplet>true</uploadapplet>
+				</workplace-generaloptions>
+				<workplace-startupsettings>
+					<locale>de</locale>
+					<project>4</project>
+					<workplaceview>/system/workplace/jsp/explorer_fs.html</workplaceview>
+				</workplace-startupsettings>
+			</workplace-preferences>
+			<explorer-preferences>
+				<explorer-generaloptions>
+					<buttonstyle>image</buttonstyle>
+					<entries>40</entries>
+				</explorer-generaloptions>
+				<explorer-displayoptions>
+					<show-title>true</show-title>
+					<show-type>true</show-type>
+					<show-datelastmodified>true</show-datelastmodified>
+					<show-datecreated>true</show-datecreated>
+					<show-lockedby>false</show-lockedby>
+					<show-permissions>true</show-permissions>
+					<show-size>true</show-size>
+					<show-state>false</show-state>
+					<show-userlastmodified>true</show-userlastmodified>
+					<show-usercreated>true</show-usercreated>
+				</explorer-displayoptions>										
+			</explorer-preferences>
+			<dialogs-preferences>
+				<dialogs-defaultsettings>
+					<filecopy>createsibling</filecopy>
+					<foldercopy>preservesiblings</foldercopy> 		
+					<filedeletion>reservesiblings</filedeletion> 
+					<directpublish>onlyresource</directpublish> 	
+					<showlock>true</showlock>
+				</dialogs-defaultsettings>	
+			</dialogs-preferences>			
+			<editors-preferences>
+				<editors-generaloptions>
+					<buttonstyle>text</buttonstyle>
+					<directeditstyle>text</directeditstyle>
+				</editors-generaloptions>	
+				<editors-preferrededitors>
+					<editor type="plain" value="/system/workplace/jsp/editors/simple/editor.html" />
+					<editor type="xmlpage" value="bestavailable" />	
+				</editors-preferrededitors>
+			</editors-preferences>	
+			<workflow-preferences>
+				<workflow-generaloptions>
+					<startupfilter>mynewtasks</startupfilter>
+					<showprojects>true</showprojects>
+				</workflow-generaloptions>			
+				<workflow-defaultsettings>
+					<message-accepted>true</message-accepted>
+					<message-forwarded>true</message-forwarded>
+					<message-completed>true</message-completed>
+					<informrolemembers>true</informrolemembers>
+				</workflow-defaultsettings>
+			</workflow-preferences>	
+		</default-preferences>
     </workplace>     
 </opencms>    

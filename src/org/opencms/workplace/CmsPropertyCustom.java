@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPropertyCustom.java,v $
- * Date   : $Date: 2004/04/07 08:17:14 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/05/13 13:58:10 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.3.3
  */
@@ -332,7 +332,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
         try {
             CmsResource res = getCms().readFileHeader(getParamResource());        
             String resTypeName = getCms().getResourceType(res.getType()).getResourceTypeName();
-            setExplorerTypeSettings(OpenCms.getWorkplaceManager().getEplorerTypeSetting(resTypeName));
+            setExplorerTypeSettings(OpenCms.getWorkplaceManager().getExplorerTypeSetting(resTypeName));
             setShowNavigation(getExplorerTypeSettings().isShowNavigation());
         } catch (CmsException e) {
             // error reading file, show error dialog

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLoginNew.java,v $
- * Date   : $Date: 2004/03/07 19:22:11 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2004/05/13 13:58:10 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,9 @@
 
 package com.opencms.workplace;
 
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
@@ -48,14 +50,13 @@ import com.opencms.template.CmsXmlTemplateFile;
 
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Template class for displaying the login screen of the OpenCms workplace.<P>
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.32 $ 
  */
 
 public class CmsLoginNew extends CmsXmlTemplate {
@@ -243,11 +244,9 @@ public class CmsLoginNew extends CmsXmlTemplate {
             }            
         } else {    
             // check out the user information if a default project is stored there.
-            Hashtable startSettings = (Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_STARTSETTINGS);
-            if (startSettings != null) {
-                Integer i = (Integer)startSettings.get(I_CmsConstants.C_START_PROJECT);
-                if (i != null) currentProject = i.intValue();
-            }
+            CmsUserSettings settings = new CmsUserSettings(cms.getRequestContext().currentUser());
+            CmsProject project = cms.readProject(settings.getStartProject());
+            currentProject = project.getId();
         }
 
         // try to set the current project

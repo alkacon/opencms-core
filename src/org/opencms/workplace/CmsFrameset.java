@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2004/04/30 01:51:05 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2004/05/13 13:58:10 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@
  */
 package org.opencms.workplace;
 
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsProject;
 import org.opencms.file.I_CmsResourceType;
@@ -59,7 +60,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.46 $
+ * @version $Revision: 1.47 $
  * 
  * @since 5.1
  */
@@ -114,7 +115,7 @@ public class CmsFrameset extends CmsWorkplace {
             I_CmsResourceType resType = (I_CmsResourceType)i.next();
             int resTypeId = resType.getResourceType();
             // get explorer type settings for current resource type
-            CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getEplorerTypeSetting(resType.getResourceTypeName());
+            CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(resType.getResourceTypeName());
             if (settings != null) {
                 // append the context menu of the current resource type 
                 result.append(settings.getContextMenu().getJSEntries(getCms(), settings, resTypeId, getSettings().getUserSettings().getLocale()));
@@ -153,12 +154,8 @@ public class CmsFrameset extends CmsWorkplace {
      * @return the file settings for the Workplace explorer view
      */
     public int getExplorerSettings() {
-        String explorerSettings = (String)getCms().getRequestContext().currentUser().getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_EXPLORERSETTINGS);
-        if (explorerSettings != null) {
-            return new Integer(explorerSettings).intValue();
-        } else {
-            return I_CmsWpConstants.C_FILELIST_NAME + I_CmsWpConstants.C_FILELIST_TITLE + I_CmsWpConstants.C_FILELIST_TYPE + I_CmsWpConstants.C_FILELIST_DATE_LASTMODIFIED;
-        }
+        CmsUserSettings settings = new CmsUserSettings(getCms().getRequestContext().currentUser());
+        return settings.getExplorerSettings();
     }
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2004/02/14 00:22:01 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/05/13 13:58:10 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,14 +31,12 @@
 
 package org.opencms.file;
 
-import java.util.Hashtable;
-
-
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsUUID;
-import org.opencms.workplace.I_CmsWpConstants;
+
+import java.util.Hashtable;
 
 /**
  * A user in the OpenCms system.<p>
@@ -46,7 +44,7 @@ import org.opencms.workplace.I_CmsWpConstants;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsUser implements I_CmsPrincipal, Cloneable {
 
@@ -216,6 +214,18 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
         return user;
     }
 
+    
+    /**
+     * Delete additional information about the user. <p>
+     * Additional infos are for example emailadress, adress or surname...<BR/><BR/>
+     *
+     * @param key The key of the additional information to delete
+     */
+    public void deleteAdditionalInfo(String key) {
+        m_additionalInfo.remove(key);
+    }
+
+    
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
@@ -251,15 +261,14 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
      */
     public Object getAdditionalInfo(String key) {
         Object value = m_additionalInfo.get(key);
-        if (value == null && I_CmsConstants.C_ADDITIONAL_INFO_STARTSETTINGS.equals(key)) {
+       /* if (value == null && I_CmsConstants.C_ADDITIONAL_INFO_STARTSETTINGS.equals(key)) {
             Hashtable startSettings = new Hashtable();
-            startSettings.put(I_CmsConstants.C_START_LOCALE, OpenCms.getWorkplaceManager().getDefaultLocale().toString());
-            startSettings.put(I_CmsConstants.C_START_PROJECT, new Integer(I_CmsConstants.C_PROJECT_ONLINE_ID));
-            startSettings.put(I_CmsConstants.C_START_VIEW, I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "action/explorer.html");
-            startSettings.put(I_CmsConstants.C_START_LOCKDIALOG, "");
+
+            startSettings = OpenCms.getWorkplaceManager().getDefaultUserAdditionalInfos();
+
             m_additionalInfo.put(key, startSettings);
             value = startSettings;
-        }
+        }*/
         return value;
     }
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWorkplaceDefault.java,v $
-* Date   : $Date: 2004/02/22 13:52:26 $
-* Version: $Revision: 1.72 $
+* Date   : $Date: 2004/05/13 13:58:10 $
+* Version: $Revision: 1.73 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 
 package com.opencms.workplace;
 
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsUser;
@@ -60,7 +61,7 @@ import java.util.Vector;
  * Most special workplace classes may extend this class.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.72 $ $Date: 2004/02/22 13:52:26 $
+ * @version $Revision: 1.73 $ $Date: 2004/05/13 13:58:10 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -197,14 +198,10 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsConstant
 
         // select the right language to use
         String currentLanguage = null;
-        Hashtable startSettings = null;
-        startSettings = (Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);
-        if(startSettings != null) {
-            currentLanguage = startSettings.get(C_START_LOCALE).toString();
-        }
-        else {
-            currentLanguage = C_DEFAULT_LANGUAGE;
-        }
+
+        CmsUserSettings settings = new CmsUserSettings(cms.getRequestContext().currentUser());
+        currentLanguage = settings.getLocale().toString();
+
         while(keys.hasMoreElements()) {
             String key = (String)keys.nextElement();
             result = result + key + parameters.get(key);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsNewResourceFolder.java,v $
- * Date   : $Date: 2004/04/01 10:19:08 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/05/13 13:58:10 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.3.3
  */
@@ -134,7 +134,7 @@ public class CmsNewResourceFolder extends CmsNewResource {
                 sendCmsRedirect(CmsWorkplace.C_PATH_DIALOGS + "property.html" + params);
             } else if (createIndex) {
                 // create an index file in the new folder, redirect to new xmlpage dialog
-                String newUri = OpenCms.getWorkplaceManager().getEplorerTypeSetting(CmsResourceTypeXmlPage.C_RESOURCE_TYPE_NAME).getNewResourceUri();
+                String newUri = OpenCms.getWorkplaceManager().getExplorerTypeSetting(CmsResourceTypeXmlPage.C_RESOURCE_TYPE_NAME).getNewResourceUri();
                 try {
                     sendCmsRedirect(C_PATH_DIALOGS + newUri);
                 } catch (Exception e) {

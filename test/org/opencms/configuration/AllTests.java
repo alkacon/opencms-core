@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/configuration/AllTests.java,v $
- * Date   : $Date: 2004/04/05 05:42:01 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/05/13 13:58:10 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,21 +29,21 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.configuration;
+package org.opencms.configuration; 
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public final class AllTests {
 
     /**
      * Hide constructor to prevent generation of class instances.<p>
      */
-    private AllTests() {
+    private AllTests() { 
         // empty
     }
     

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2004/03/12 16:00:48 $
-* Version: $Revision: 1.83 $
+* Date   : $Date: 2004/05/13 13:58:10 $
+* Version: $Revision: 1.84 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,11 @@
 
 package com.opencms.defaults;
 
+import org.opencms.db.CmsUserSettings;
+import org.opencms.file.CmsGroup;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
+import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
@@ -35,16 +40,9 @@ import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 
-import com.opencms.core.CmsSession;
-import com.opencms.core.I_CmsRequest;
 import com.opencms.core.I_CmsSession;
 import com.opencms.defaults.master.CmsPlausibilizationException;
 import com.opencms.legacy.CmsXmlTemplateLoader;
-
-import org.opencms.file.CmsGroup;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProject;
-import org.opencms.file.CmsUser;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.CmsXmlTemplateFile;
 import com.opencms.template.I_CmsXmlTemplate;
@@ -58,8 +56,6 @@ import java.lang.reflect.Method;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * Abstract class for generic backoffice display. It automatically
@@ -79,7 +75,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Knoll
  * @author Michael Emmerich
- * @version $Revision: 1.83 $
+ * @version $Revision: 1.84 $
  */
 public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
 
@@ -2126,12 +2122,9 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
         byte[] processResult = null;
 
         // now check if the "do you really want to lock" dialog should be shown.
-        Hashtable startSettings = (Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_STARTSETTINGS);
-        String showLockDialog = "off";
-        if (startSettings != null) {
-            showLockDialog = (String)startSettings.get(I_CmsConstants.C_START_LOCKDIALOG);
-        }
-        if (!showLockDialog.equalsIgnoreCase("on")) {
+        CmsUserSettings settings = new CmsUserSettings(cms.getRequestContext().currentUser());
+
+        if (settings.getDialogShowLock()) {
             parameters.put("action", "go");
         }
 

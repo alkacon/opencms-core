@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2004/04/08 14:46:52 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/05/13 13:58:10 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.1
  */
@@ -186,7 +186,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                 return C_PATH_WORKPLACE + "editors/dialogs/property.html";
             }
             String resTypeName = jsp.getCmsObject().getResourceType(res.getType()).getResourceTypeName();
-            CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getEplorerTypeSetting(resTypeName);
+            CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(resTypeName);
             if (settings.isPropertiesEnabled()) {
                 // special properties for this type enabled, display customized dialog
                 return URI_PROPERTY_CUSTOM_DIALOG;
@@ -725,7 +725,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             // set the current explorer resource to the new created folder
             getSettings().setExplorerResource(newFolder);
 
-            String newUri = OpenCms.getWorkplaceManager().getEplorerTypeSetting(CmsResourceTypeXmlPage.C_RESOURCE_TYPE_NAME).getNewResourceUri();
+            String newUri = OpenCms.getWorkplaceManager().getExplorerTypeSetting(CmsResourceTypeXmlPage.C_RESOURCE_TYPE_NAME).getNewResourceUri();
             newUri += "?" + PARAM_DIALOGMODE + "=" + MODE_WIZARD_CREATEINDEX;
             try {
                 // redirect to new xmlpage dialog

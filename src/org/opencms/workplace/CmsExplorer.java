@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2004/05/06 12:24:51 $
- * Version: $Revision: 1.65 $
+ * Date   : $Date: 2004/05/13 13:58:10 $
+ * Version: $Revision: 1.66 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,6 +30,11 @@
  */
 package org.opencms.workplace;
 
+import org.opencms.db.CmsUserSettings;
+import org.opencms.file.CmsFolder;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
+import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
@@ -37,11 +42,6 @@ import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
-
-import org.opencms.file.CmsFolder;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProject;
-import org.opencms.file.CmsResource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.65 $
+ * @version $Revision: 1.66 $
  * 
  * @since 5.1
  */
@@ -190,17 +190,8 @@ public class CmsExplorer extends CmsWorkplace {
      * @return the int value of the default preferences
      */
     private int getUserPreferences() {
-        int result;
-        String explorerSettings = (String)getSettings().getUser().getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_EXPLORERSETTINGS);
-        if (explorerSettings != null) {
-            result = new Integer(explorerSettings).intValue();
-        } else {
-            result = I_CmsWpConstants.C_FILELIST_NAME 
-                + I_CmsWpConstants.C_FILELIST_TITLE
-                + I_CmsWpConstants.C_FILELIST_TYPE
-                + I_CmsWpConstants.C_FILELIST_DATE_LASTMODIFIED;
-        }
-        return result;
+        CmsUserSettings settings = new CmsUserSettings(getCms().getRequestContext().currentUser());
+        return settings.getExplorerSettings();       
     }
         
     /**

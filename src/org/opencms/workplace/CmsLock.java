@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsLock.java,v $
- * Date   : $Date: 2004/03/16 11:19:16 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/05/13 13:58:10 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.1.12
  */
@@ -224,7 +224,7 @@ public class CmsLock extends CmsDialog implements I_CmsDialogHandler {
      * @return true if dialogs should be shown, otherwise false
      */
     public boolean showConfirmation() {
-        return getSettings().getUserSettings().showLockDialog();
+        return getSettings().getUserSettings().getDialogShowLock();
     }
     
     /**
