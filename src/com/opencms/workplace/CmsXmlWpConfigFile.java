@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpConfigFile.java,v $
- * Date   : $Date: 2000/02/17 18:41:47 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/04/12 14:46:44 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.14 $ $Date: 2000/02/17 18:41:47 $
+ * @version $Revision: 1.15 $ $Date: 2000/04/12 14:46:44 $
  */
 public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChannels, I_CmsConstants {
 
@@ -212,7 +212,17 @@ public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChann
      */
     public String getHelpPath() throws CmsException {
         return getDataValue("path.help");
-    }    
+    } 
+	
+	
+	/**
+     * Gets the mailserver.
+     * @return The mailserver name.
+     * @exception CmsException if the corresponding XML tag doesn't exist in the workplace definition file.
+     */
+	public String getMailServer() throws CmsException {
+		return getDataValue("mailserver");
+	}
     
     /**
      * Gets the available workplace views defined in the config file.
