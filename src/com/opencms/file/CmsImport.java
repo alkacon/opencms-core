@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
- * Date   : $Date: 2001/07/16 14:10:18 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2001/07/24 12:06:38 $
+ * Version: $Revision: 1.47 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -45,7 +45,7 @@ import source.org.apache.java.util.*;
  * into the cms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.46 $ $Date: 2001/07/16 14:10:18 $
+ * @version $Revision: 1.47 $ $Date: 2001/07/24 12:06:38 $
  */
 public class CmsImport implements I_CmsConstants, Serializable {
 
@@ -495,6 +495,7 @@ private void importFile(String source, String destination, String type, String u
     } catch (Exception exc) {
         // an error while importing the file
         success = false;
+exc.printStackTrace();
         System.out.println("Error");
     }
     byte[] digestContent = {0};
@@ -514,10 +515,17 @@ private void importFile(String source, String destination, String type, String u
  * Imports the resources and writes them to the cms even if there already exist conflicting files
  */
 public void importResources() throws CmsException {
-    importResources(null, null, null, null, null);
     if (m_cms.isAdmin()){
         importGroups();
         importUsers();
+    }
+    importResources(null, null, null, null, null);
+    if (m_importZip != null){
+        try{
+            m_importZip.close();
+        } catch (IOException exc) {
+            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+        }
     }
 }
 /**
@@ -728,13 +736,6 @@ private boolean inExcludeList(Vector excludeList, String path) {
             }
         } catch (Exception exc){
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
-        }
-        if (m_importZip != null){
-            try{
-                m_importZip.close();
-            } catch (IOException exc) {
-                throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
-            }
         }
     }
 
