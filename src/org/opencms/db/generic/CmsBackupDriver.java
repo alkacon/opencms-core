@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/08/14 15:37:25 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2003/08/18 19:19:23 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the backup driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.27 $ $Date: 2003/08/14 15:37:25 $
+ * @version $Revision: 1.28 $ $Date: 2003/08/18 19:19:23 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
@@ -483,7 +483,7 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
         String managerGroup = new String();
         
         try {
-            CmsUser owner = m_driverManager.getUserDriver().readUser(currentProject.getOwnerId());
+            CmsUser owner = m_driverManager.readUser(currentProject.getOwnerId());
             ownerName = owner.getName() + " " + owner.getFirstname() + " " + owner.getLastname();
         } catch (CmsException e) {
             // the owner could not be read

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsUser.java,v $
- * Date   : $Date: 2003/08/14 15:37:27 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2003/08/18 19:19:55 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.opencms.security.I_CmsPrincipal;
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.46 $
+ * @version $Revision: 1.47 $
  */
 public class CmsUser implements I_CmsPrincipal, Cloneable {
 
@@ -417,6 +417,44 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
      */
     public boolean isGuestUser() {
         return OpenCms.getDefaultUsers().getUserGuest().equals(getName());
+    }
+    
+    /**
+     * Returns <code>true</code> if this user is a system user.<p>
+     * 
+     * @return true if this user is a system user
+     */    
+    public boolean isSystemUser() {
+        return isSystemUser(m_type);
+    }
+    
+    /**
+     * Returns <code>true</code> if this user is a web user.<p>
+     * 
+     * @return true if this user is a web user
+     */      
+    public boolean isWebUser() {
+        return isWebUser(m_type);
+    }
+    
+    /**
+     * Returns <code>true</code> if the provided user type indicates a system user type.<p>
+     * 
+     * @param type the user type
+     * @return true if the provided user type indicates a system user type
+     */      
+    public static boolean isSystemUser(int type) {
+        return (type & 1) > 0;
+    }
+    
+    /**
+     * Returns <code>true</code> if the provided user type indicates a web user type.<p>
+     * 
+     * @param type the user type
+     * @return true if the provided user type indicates a web user type
+     */    
+    public static boolean isWebUser(int type) {
+        return (type & 2) > 0;
     }
 
     /**

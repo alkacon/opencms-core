@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
- * Date   : $Date: 2003/08/15 17:38:04 $
- * Version: $Revision: 1.92 $
+ * Date   : $Date: 2003/08/18 19:19:55 $
+ * Version: $Revision: 1.93 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpSession;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  *
- * @version $Revision: 1.92 $
+ * @version $Revision: 1.93 $
  */
 public class CmsRequestContext {
 
@@ -432,7 +432,7 @@ public class CmsRequestContext {
         }
         // if no user found try to read webUser
         if (m_user == null) {
-            m_user = m_driverManager.readWebUser(this, user);
+            m_user = m_driverManager.readWebUser(user);
         }
 
         // check, if the user is disabled

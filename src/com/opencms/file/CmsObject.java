@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/08/15 18:35:23 $
-* Version: $Revision: 1.380 $
+* Date   : $Date: 2003/08/18 19:19:55 $
+* Version: $Revision: 1.381 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.380 $
+ * @version $Revision: 1.381 $
  */
 public class CmsObject {
 
@@ -3641,7 +3641,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful
      */
     public CmsUser readUser(CmsUUID userId) throws CmsException {
-        return (m_driverManager.readUser(m_context, userId));
+        return (m_driverManager.readUser(userId));
     }
 
     /**
@@ -3696,7 +3696,7 @@ public class CmsObject {
      * @throws CmsException  Throws CmsException if operation was not succesful
     */
     public CmsUser readWebUser(String username) throws CmsException {
-        return (m_driverManager.readWebUser(m_context, username));
+        return (m_driverManager.readWebUser(username));
     }
 
     /**

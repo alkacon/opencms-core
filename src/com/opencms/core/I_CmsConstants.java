@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2003/08/14 15:37:24 $
-* Version: $Revision: 1.261 $
+* Date   : $Date: 2003/08/18 19:20:44 $
+* Version: $Revision: 1.262 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.261 $ $Date: 2003/08/14 15:37:24 $
+ * @version $Revision: 1.262 $ $Date: 2003/08/18 19:20:44 $
  */
 public interface I_CmsConstants {
 
@@ -142,12 +142,7 @@ public interface I_CmsConstants {
     /**
      * A user-type
      */
-    int C_USER_TYPE_WEBUSER = 1;
-
-    /**
-     * A user-type
-     */
-    int C_USER_TYPE_SYSTEMANDWEBUSER = 2;
+    int C_USER_TYPE_WEBUSER = 2;
 
     /**
      * Key for additional info address.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/18 11:14:21 $
- * Version: $Revision: 1.165 $
+ * Date   : $Date: 2003/08/18 19:19:23 $
+ * Version: $Revision: 1.166 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.165 $ $Date: 2003/08/18 11:14:21 $
+ * @version $Revision: 1.166 $ $Date: 2003/08/18 19:19:23 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -583,7 +583,7 @@ public class CmsDriverManager extends Object {
                     user = readUser(username);
                 } catch (CmsException e) {
                     if (e.getType() == CmsException.C_NO_USER) {
-                        user = readWebUser(context, username);
+                        user = readWebUser(username);
                     } else {
                         throw e;
                     }
@@ -812,7 +812,7 @@ public class CmsDriverManager extends Object {
         CmsUser theUser = null;
         try {
             // try to read the webuser
-            theUser = this.readWebUser(context, username);
+            theUser = this.readWebUser(username);
         } catch (CmsException e) {
             // try to read the systemuser
             if (e.getType() == CmsException.C_NO_USER) {
@@ -996,7 +996,7 @@ public class CmsDriverManager extends Object {
      * Clears the user cache for the given user
      */
     protected void clearUserCache(CmsUser user) {
-        m_userCache.remove(new CacheId(user));
+        removeUserFromCache(user);
         m_accessCache.clear();
         m_resourceListCache.clear();
     }
@@ -1637,7 +1637,7 @@ public class CmsDriverManager extends Object {
         CmsUUID agentId = CmsUUID.getNullUUID();
         validTaskname(taskname); // check for valid Filename
         try {
-            agentId = m_userDriver.readUser(agentName, I_CmsConstants.C_USER_TYPE_SYSTEMUSER).getId();
+            agentId = readUser(agentName, I_CmsConstants.C_USER_TYPE_SYSTEMUSER).getId();
         } catch (Exception e) {
             // ignore that this user doesn't exist and create a task for the role
         }
@@ -1665,7 +1665,7 @@ public class CmsDriverManager extends Object {
      * @throws CmsException Throws CmsException if something goes wrong.
      */
     public CmsTask createTask(CmsUser currentUser, int projectid, String agentName, String roleName, String taskName, String taskComment, int taskType, long timeout, int priority) throws CmsException {
-        CmsUser agent = m_userDriver.readUser(agentName, I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
+        CmsUser agent = readUser(agentName, I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
         CmsGroup role = m_userDriver.readGroup(roleName);
         java.sql.Timestamp timestamp = new java.sql.Timestamp(timeout);
         java.sql.Timestamp now = new java.sql.Timestamp(System.currentTimeMillis());
@@ -2292,7 +2292,7 @@ public class CmsDriverManager extends Object {
      * @throws CmsException Throws CmsException if operation was not succesfull.
      */
     public void deleteUser(CmsRequestContext context, CmsUUID userId) throws CmsException {
-        CmsUser user = readUser(context, userId);
+        CmsUser user = readUser(userId);
         deleteUser(context, user.getName());
     }
 
@@ -2333,7 +2333,7 @@ public class CmsDriverManager extends Object {
      * @throws CmsException Throws CmsException if operation was not succesfull.
      */
     public void deleteWebUser(CmsRequestContext context, CmsUUID userId) throws CmsException {
-        CmsUser user = readUser(context, userId);
+        CmsUser user = readUser(userId);
         m_userDriver.deleteUser(user.getName());
         // delete user from cache
         clearUserCache(user);
@@ -2635,9 +2635,9 @@ public class CmsDriverManager extends Object {
         CmsGroup newRole = m_userDriver.readGroup(newRoleName);
         CmsUser newUser = null;
         if (newUserName.equals("")) {
-            newUser = m_userDriver.readUser(m_workflowDriver.findAgent(newRole.getId()));
+            newUser = readUser(m_workflowDriver.findAgent(newRole.getId()));
         } else {
-            newUser = m_userDriver.readUser(newUserName, I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
+            newUser = readUser(newUserName, I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
         }
 
         m_projectDriver.forwardTask(taskid, newRole.getId(), newUser.getId());
@@ -4382,7 +4382,7 @@ public class CmsDriverManager extends Object {
      * for this resource.
      */
     public CmsUser lockedBy(CmsRequestContext context, String resourcename) throws CmsException {
-        return readUser(context, m_lockDispatcher.getLock(this, context, resourcename).getUserId());
+        return readUser(m_lockDispatcher.getLock(this, context, resourcename).getUserId());
     }
 
     /**
@@ -4480,7 +4480,7 @@ public class CmsDriverManager extends Object {
             // write the user back to the cms.
             m_userDriver.writeUser(newUser);
             // update cache
-            m_userCache.put(new CacheId(newUser), newUser);
+            putUserInCache(newUser);
             // clear invalidated caches
             m_accessControlListCache.clear();
             m_groupCache.clear();
@@ -4522,7 +4522,7 @@ public class CmsDriverManager extends Object {
             // write the user back to the cms.
             m_userDriver.writeUser(newUser);
             // update cache
-            m_userCache.put(new CacheId(newUser), newUser);
+            putUserInCache(newUser);
             return (newUser);
         } else {
             // No Access!
@@ -4550,7 +4550,7 @@ public class CmsDriverManager extends Object {
         }
 
         try {
-            CmsUser user = m_userDriver.readUser(principalId);
+            CmsUser user = readUser(principalId);
             if (user != null) {
                 return (I_CmsPrincipal) user;
             }
@@ -4581,7 +4581,7 @@ public class CmsDriverManager extends Object {
         }
 
         try {
-            CmsUser user = m_userDriver.readUser(principalName, I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
+            CmsUser user = readUser(principalName, I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
             if (user != null) {
                 return (I_CmsPrincipal) user;
             }
@@ -4965,7 +4965,7 @@ public class CmsDriverManager extends Object {
      * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public CmsUser readAgent(CmsRequestContext context, CmsTask task) throws CmsException {
-        return readUser(context, task.getAgentUser());
+        return readUser(task.getAgentUser());
     }
 
     /**
@@ -5834,7 +5834,7 @@ public class CmsDriverManager extends Object {
      * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public CmsUser readOriginalAgent(CmsRequestContext context, CmsTask task) throws CmsException {
-        return readUser(context, task.getOriginalUser());
+        return readUser(task.getOriginalUser());
     }
 
     /**
@@ -5849,7 +5849,7 @@ public class CmsDriverManager extends Object {
      * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public CmsUser readOwner(CmsRequestContext context, CmsProject project) throws CmsException {
-        return readUser(context, project.getOwnerId());
+        return readUser(project.getOwnerId());
     }
 
     /**
@@ -5880,7 +5880,7 @@ public class CmsDriverManager extends Object {
      * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public CmsUser readOwner(CmsRequestContext context, CmsTask task) throws CmsException {
-        return readUser(context, task.getInitiatorUser());
+        return readUser(task.getInitiatorUser());
     }
 
     /**
@@ -5895,7 +5895,7 @@ public class CmsDriverManager extends Object {
      * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public CmsUser readOwner(CmsRequestContext context, CmsTaskLog log) throws CmsException {
-        return readUser(context, log.getUser());
+        return readUser(log.getUser());
     }
 
     /**
@@ -6783,7 +6783,7 @@ public class CmsDriverManager extends Object {
      */
     public Vector readTasksForUser(CmsRequestContext context, int projectId, String userName, int taskType, String orderBy, String sort) throws CmsException {
 
-        CmsUser user = m_userDriver.readUser(userName, I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
+        CmsUser user = readUser(userName, I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
         CmsProject project = null;
         // try to read the project, if projectId == -1 we must return the tasks of all projects
         if (projectId != I_CmsConstants.C_UNKNOWN_ID) {
@@ -6803,17 +6803,13 @@ public class CmsDriverManager extends Object {
      * @return User
      * @throws CmsException Throws CmsException if operation was not succesful
      */
-    public CmsUser readUser(CmsRequestContext context, CmsUUID id) throws CmsException {
+    public CmsUser readUser(CmsUUID id) throws CmsException {
         CmsUser user = null;
-
         try {
-            CacheId cacheId = new CacheId(id);
-
-            // try to read the user from cache
-            user = (CmsUser) m_userCache.get(cacheId);
+            user = getUserFromCache(id);
             if (user == null) {
                 user = m_userDriver.readUser(id);
-                m_userCache.put(cacheId, user);
+                putUserInCache(user);
             }
         } catch (CmsException ex) {
             return new CmsUser(CmsUUID.getNullUUID(), id + "", "deleted user");
@@ -6828,25 +6824,12 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context the current request context
      * @param username The name of the user that is to be read.
      * @return User
      * @throws CmsException Throws CmsException if operation was not succesful
      */
-    public CmsUser readUser(String userName) throws CmsException {
-
-        CmsUser user = null;
-        // try to read the user from cache
-        user = (CmsUser) m_userCache.get(new CacheId(userName + I_CmsConstants.C_USER_TYPE_SYSTEMUSER));
-        if (user == null) {
-            user = (CmsUser) m_userCache.get(new CacheId(userName + I_CmsConstants.C_USER_TYPE_SYSTEMANDWEBUSER));
-        }
-        if (user == null) {
-            user = m_userDriver.readUser(userName, I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
-            m_userCache.put(new CacheId(user), user);
-        }
-
-        return user;
+    public CmsUser readUser(String username) throws CmsException {
+        return readUser(username, I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
     }
 
     /**
@@ -6855,26 +6838,47 @@ public class CmsDriverManager extends Object {
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param context the current request context
      * @param username The name of the user that is to be read.
      * @param type The type of the user.
      * @return User
      * @throws CmsException Throws CmsException if operation was not succesful
      */
     public CmsUser readUser(String username, int type) throws CmsException {
-
-        CmsUser user = null;
-        // try to read the user from cache
-        user = (CmsUser) m_userCache.get(new CacheId(username + type));
-        if (user == null) {
-            user = (CmsUser) m_userCache.get(new CacheId(username + I_CmsConstants.C_USER_TYPE_SYSTEMANDWEBUSER));
-        }
+        CmsUser user = getUserFromCache(username, type);
         if (user == null) {
             user = m_userDriver.readUser(username, type);
-            m_userCache.put(new CacheId(user), user);
+            putUserInCache(user);
         }
         return user;
     }
+    
+    private static final String C_USER_CACHE_SEP = "\u0000";
+    
+    private String getUserCacheKey(String username, int type) {
+        return username + C_USER_CACHE_SEP + CmsUser.isSystemUser(type);
+    }
+    
+    private String getUserCacheKey(CmsUUID id) {
+        return id.toString();
+    }
+           
+    private CmsUser getUserFromCache(String username, int type) {
+        return (CmsUser)m_userCache.get(getUserCacheKey(username, type));
+    }
+
+    private CmsUser getUserFromCache(CmsUUID id) {
+        return (CmsUser)m_userCache.get(getUserCacheKey(id));
+    }
+        
+    private void putUserInCache(CmsUser user) {
+        m_userCache.put(getUserCacheKey(user.getName(), user.getType()), user);
+        m_userCache.put(getUserCacheKey(user.getId()), user);
+    }
+    
+    private void removeUserFromCache(CmsUser user) {
+        m_userCache.remove(getUserCacheKey(user.getName(), user.getType()));
+        m_userCache.remove(getUserCacheKey(user.getId()));
+    }    
 
     /**
      * Returns a user object if the password for the user is correct.<P/>
@@ -6890,41 +6894,23 @@ public class CmsDriverManager extends Object {
      * @throws CmsException  Throws CmsException if operation was not succesful
      */
     public CmsUser readUser(String username, String password) throws CmsException {
-
-        CmsUser user = null;
-        // don't read user from cache because password may be changed
-        if (user == null) {
-            user = m_userDriver.readUser(username, password, I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
-            m_userCache.put(new CacheId(user), user);
-        }
+        // don't read user from cache here because password may have changed
+        CmsUser user = m_userDriver.readUser(username, password, I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
+        putUserInCache(user);
         return user;
     }
 
     /**
-     * Returns a user object if the password for the user is correct.<P/>
-     *
-     * <B>Security:</B>
-     * All users are granted.
-     *
-     * @param context the current request context
-     * @param username The username of the user that is to be read.
-     * @return User
-     *
-     * @throws CmsException  Throws CmsException if operation was not succesful
+     * Read a web user from the database.<p>
+     * 
+     * @param username the web user to read
+     * @return the read web user
+     * @throws CmsException if the user could not be read 
      */
-    public CmsUser readWebUser(CmsRequestContext context, String username) throws CmsException {
-
-        CmsUser user = (CmsUser) m_userCache.get(new CacheId(username + I_CmsConstants.C_USER_TYPE_WEBUSER));
-        if (user == null) {
-            user = (CmsUser) m_userCache.get(new CacheId(username + I_CmsConstants.C_USER_TYPE_SYSTEMANDWEBUSER));
-        }
-        // store user in cache
-        if (user == null) {
-            user = m_userDriver.readUser(username, I_CmsConstants.C_USER_TYPE_WEBUSER);
-            m_userCache.put(new CacheId(user), user);
-        }
-        return user;
+    public CmsUser readWebUser(String username) throws CmsException {
+        return readUser(username, I_CmsConstants.C_USER_TYPE_WEBUSER);
     }
+    
 
     /**
      * Returns a user object if the password for the user is correct.<P/>
@@ -6940,12 +6926,11 @@ public class CmsDriverManager extends Object {
      * @throws CmsException  Throws CmsException if operation was not succesful
      */
     public CmsUser readWebUser(String username, String password) throws CmsException {
-        // don't read user from cache here because password may be changed
+        // don't read user from cache here because password may have changed
         CmsUser user = m_userDriver.readUser(username, password, I_CmsConstants.C_USER_TYPE_WEBUSER);
-        // store user in cache
-        m_userCache.put(new CacheId(user), user);
+        putUserInCache(user);
         return user;
-    }
+    }    
 
     /**
      * Reaktivates a task from the Cms.
@@ -8318,7 +8303,6 @@ public class CmsDriverManager extends Object {
     public void writeUser(CmsRequestContext context, CmsUser user) throws CmsException {
         // Check the security
         if (isAdmin(context) || (context.currentUser().equals(user))) {
-
             // prevent the admin to be set disabled!
             if (isAdmin(context)) {
                 user.setEnabled();
@@ -8326,7 +8310,7 @@ public class CmsDriverManager extends Object {
             m_userDriver.writeUser(user);
             // update the cache
             clearUserCache(user);
-            m_userCache.put(new CacheId(user), user);
+            putUserInCache(user);
         } else {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] writeUser() " + user.getName(), CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);                                                                
         }
@@ -8347,12 +8331,11 @@ public class CmsDriverManager extends Object {
      */
     public void writeWebUser(CmsRequestContext context, CmsUser user) throws CmsException {
         // Check the security
-        if ((user.getType() == I_CmsConstants.C_USER_TYPE_WEBUSER) || (user.getType() == I_CmsConstants.C_USER_TYPE_SYSTEMANDWEBUSER)) {
-
+        if (user.isWebUser()) {
             m_userDriver.writeUser(user);
             // update the cache
             clearUserCache(user);
-            m_userCache.put(new CacheId(user), user);
+            putUserInCache(user);
         } else {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] writeWebUser() " + user.getName(), CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
