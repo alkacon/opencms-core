@@ -21,37 +21,34 @@ top.help_url='Administration/index.html';
 
 <body onLoad="parent.frames[0].location.href='administration_head.html'" bgcolor="#FFFFFF" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA[" bgproperties=fixed>
 
-<table cellspacing=0 cellpadding=0 border=0>
-	<tr>
-		<td><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=1 height=1></td>
-		<td><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=120 height=1></td>
-		<td><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=120 height=1></td>
-		<td><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=120 height=1></td>
-		<td><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=120 height=1></td>
-		<td><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=120 height=1></td>
-	</tr>
-	]]><PROCESS>iconTable</PROCESS><![CDATA[
-
-</table>
-
+]]><PROCESS>iconTable</PROCESS><![CDATA[
 </body>
 </html>
 ]]>
 </TEMPLATE>
 
-<list_row><![CDATA[
-	<tr valign="top" align="center">
-		<td><img src="]]><PROCESS>emptyPic</PROCESS><![CDATA[" border=0 width=1 height=120></td>
-		]]><PROCESS>entrys</PROCESS><![CDATA[
- 	</tr>]]>
+<list_row>
+	<PROCESS>entrys</PROCESS>
 </list_row>
 
 <defaulticon><![CDATA[
-<td><a href="javascript:document.location.href=']]><PROCESS>linkTo</PROCESS><![CDATA['"> <img src="]]><PROCESS>picture</PROCESS><![CDATA[" border=0 width=32 height=32 vspace=4><br>]]><PROCESS>linkName</PROCESS><![CDATA[ </a></td>]]> 
+<div style="height:120px; float:left;">
+<table width=120 height=120 align=left>
+<tr>
+<td align=center><a href="javascript:document.location.href=']]><PROCESS>linkTo</PROCESS><![CDATA['"> <img src="]]><PROCESS>picture</PROCESS><![CDATA[" border=0 width=32 height=32 vspace=4><br>]]><PROCESS>linkName</PROCESS><![CDATA[ </a></td>
+</tr>
+</table>
+</div>]]> 
 </defaulticon>
 
 <deactivatedicon><![CDATA[
-<td><img src="]]><PROCESS>picture</PROCESS><![CDATA[" border=0 width=32 height=32 vspace=4><br><font color="silver">]]><PROCESS>linkName</PROCESS><![CDATA[ </font></td>]]> 
+<div style="height:120px; float:left;">
+<table width=120 height=120 align=left>
+<tr>
+<td align=center><img src="]]><PROCESS>picture</PROCESS><![CDATA[" border=0 width=32 height=32 vspace=4><br><font color="silver">]]><PROCESS>linkName</PROCESS><![CDATA[ </font></td>
+</tr>
+</table>
+</div>]]> 
 </deactivatedicon>
 
 <noicon></noicon>
