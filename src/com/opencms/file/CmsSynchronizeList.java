@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsSynchronizeList.java,v $
-* Date   : $Date: 2001/07/31 15:50:14 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2002/04/11 11:35:49 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -38,7 +38,7 @@ import com.opencms.util.*;
  * in the virtual filesystem (VFS) and the server filesystem (SFS)
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.5 $ $Date: 2001/07/31 15:50:14 $
+ * @version $Revision: 1.6 $ $Date: 2002/04/11 11:35:49 $
  */
 public class CmsSynchronizeList implements I_CmsConstants, Serializable {
 
@@ -72,7 +72,7 @@ public class CmsSynchronizeList implements I_CmsConstants, Serializable {
      *
      * @param syncPath The path on the filesystem for synchronization.
      */
-    public CmsSynchronizeList(String syncPath){
+    public CmsSynchronizeList(String syncPath) throws CmsException{
         m_synchronizePath = syncPath;
         try {
             m_synchronizeList = (Hashtable)readSyncList();
@@ -80,6 +80,7 @@ public class CmsSynchronizeList implements I_CmsConstants, Serializable {
                 m_synchronizeList = new Hashtable();
             }
         } catch (Exception e){
+            throw new CmsException("Could not read synchronize.list in path "+m_synchronizePath, e);
         }
     }
 
