@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
-* Date   : $Date: 2001/12/20 15:29:37 $
-* Version: $Revision: 1.45 $
+* Date   : $Date: 2002/01/18 08:29:01 $
+* Version: $Revision: 1.46 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import com.opencms.template.cache.*;
  * @author Anders Fugmann
  * @author Alexander Lucas
  *
- * @version $Revision: 1.45 $ $Date: 2001/12/20 15:29:37 $
+ * @version $Revision: 1.46 $ $Date: 2002/01/18 08:29:01 $
  *
  */
 public class CmsRequestContext implements I_CmsConstants {
@@ -92,6 +92,13 @@ public class CmsRequestContext implements I_CmsConstants {
      */
     private Vector m_links;
 
+    /**
+     * In export mode this vector is used to store all dependencies this request
+     * may have. It is saved to the database and if one of the dependencies changes
+     * the request will be exported again.
+     */
+    private Vector m_dependencies;
+
     /** Starting point for element cache */
     private CmsElementCache m_elementCache = null;
 
@@ -123,6 +130,21 @@ public class CmsRequestContext implements I_CmsConstants {
      */
     public Vector getLinkVector(){
         return m_links;
+    }
+
+    /**
+     * adds a dependency.
+     * @param dependency. The rootpath of the resource.
+     */
+    public void addDependency(String rootName){
+        m_dependencies.add(rootName);
+    }
+
+    /**
+     * returns all dependencies the templatemechanism has registered.
+     */
+    public Vector getDependencies(){
+        return m_dependencies;
     }
 
     /**
@@ -242,6 +264,7 @@ public class CmsRequestContext implements I_CmsConstants {
         m_req = req;
         m_resp = resp;
         m_links = new Vector();
+        m_dependencies = new Vector();
 
         try {
             m_user = m_rb.readUser(null, null, user);

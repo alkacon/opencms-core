@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2001/12/06 14:44:32 $
-* Version: $Revision: 1.87 $
+* Date   : $Date: 2002/01/18 08:29:02 $
+* Version: $Revision: 1.88 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.87 $ $Date: 2001/12/06 14:44:32 $
+ * @version $Revision: 1.88 $ $Date: 2002/01/18 08:29:02 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -995,6 +995,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
                                 parameters, templateSelector).getCacheKey(cms, parameters);
         if(cms.getRequestContext().isElementCacheEnabled() && (cacheKey != null) &&
                 (cms.getRequestContext().currentProject().equals(cms.onlineProject()) )) {
+            boolean exportmode = cms.getMode() == cms.C_MODUS_EXPORT;
             Hashtable externVarDeps = cms.getVariantDependencies();
             long exTimeForVariant = Long.MAX_VALUE;
             long now = System.currentTimeMillis();
@@ -1008,6 +1009,9 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
                 for (int i = 0; i < cosDeps.size(); i++){
                     A_CmsContentDefinition contentDef = (A_CmsContentDefinition)cosDeps.elementAt(i);
                     String key = cms.getSiteName() + cms.C_ROOTNAME_COS + "/"+contentDef.getClass().getName() +"/"+contentDef.getUniqueId(cms);
+                    if(exportmode){
+                        cms.getRequestContext().addDependency(key);
+                    }
                     allDeps.add(key);
                     if(contentDef.isTimedContent()){
                         long time = ((I_CmsTimedContentDefinition)cosDeps.elementAt(i)).getPublicationDate();
@@ -1030,12 +1034,18 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
                 for(int i=0; i<cosClassDeps.size(); i++){
                     String key = cms.getSiteName() + cms.C_ROOTNAME_COS + "/" + ((Class)cosClassDeps.elementAt(i)).getName() +"/";
                     allDeps.add(key);
+                    if(exportmode){
+                        cms.getRequestContext().addDependency(key);
+                    }
                 }
             }
             // now for the vfs
             if(vfsDeps != null){
                 for(int i = 0; i < vfsDeps.size(); i++){
                     allDeps.add(((CmsResource)vfsDeps.elementAt(i)).getResourceName());
+                    if(exportmode){
+                        cms.getRequestContext().addDependency(((CmsResource)vfsDeps.elementAt(i)).getResourceName());
+                    }
                 }
             }
             // now put them all in the extern store

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExportLink.java,v $
-* Date   : $Date: 2002/01/11 13:40:25 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2002/01/18 08:29:01 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -163,6 +163,13 @@ public class CmsExportLink {
      */
     public void setDeqendencies(Vector dependencies){
         m_dependencies = dependencies;
+    }
+
+    /**
+     * sets the id.
+     */
+    public void setLinkId(int id){
+        m_linkId = id;
     }
 
     /**

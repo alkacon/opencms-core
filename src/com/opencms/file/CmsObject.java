@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2002/01/15 13:33:12 $
-* Version: $Revision: 1.215 $
+* Date   : $Date: 2002/01/18 08:29:01 $
+* Version: $Revision: 1.216 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.215 $ $Date: 2002/01/15 13:33:12 $
+ * @version $Revision: 1.216 $ $Date: 2002/01/18 08:29:01 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -1398,9 +1398,11 @@ public CmsFile exportResource(CmsFile file) throws CmsException {
  *
  * @exception CmsException if operation was not successful.
  */
-public void exportStaticResources(Vector startpoints) throws CmsException {
+public void exportStaticResources(Vector startpoints, Vector projectResources,
+            CmsPublishedResources changedResources) throws CmsException {
 
-    m_rb.exportStaticResources(m_context.currentUser(), m_context.currentProject() , this, startpoints);
+    m_rb.exportStaticResources(m_context.currentUser(), m_context.currentProject(),
+             this, startpoints, projectResources, changedResources);
 }
 
 /**
@@ -2277,6 +2279,7 @@ public void publishProject(int id) throws CmsException {
     boolean success = false;
     boolean doStatExp = readProject(id).doStaticExport();
     try{
+        Vector projectResources = readProjectView(id, "all");
         allChanged = m_rb.publishProject(this, m_context.currentUser(), m_context.currentProject(), id);
         changedResources = allChanged.getChangedResources();
         changedModuleMasters = allChanged.getChangedModuleMasters();
@@ -2287,7 +2290,8 @@ public void publishProject(int id) throws CmsException {
             try{
                 int oldId = m_context.currentProject().getId();
                 m_context.setCurrentProject(C_PROJECT_ONLINE_ID);
-                this.exportStaticResources(this.getStaticExportStartPoints());
+                this.exportStaticResources(this.getStaticExportStartPoints(),
+                                 projectResources, allChanged);
                 m_context.setCurrentProject(oldId);
             } catch (Exception ex){
                 System.err.println("Error while exporting static resources:");
@@ -2553,6 +2557,25 @@ public void deleteExportLink(String link) throws CmsException {
  */
 public void deleteExportLink(CmsExportLink link) throws CmsException{
     m_rb.deleteExportLink(link);
+}
+/**
+ * Reads all export links that depend on the resource.
+ * @param res. The resourceName() of the resources that has changed (or the String
+ *              that describes a contentdefinition).
+ * @return a Vector(of Strings) with the linkrequest names.
+ */
+ public Vector getDependingExportLinks(Vector res) throws CmsException{
+    return m_rb.getDependingExportLinks(res);
+ }
+/**
+ * Sets one exportLink to procecced.
+ *
+ * @param link the cmsexportlink.
+ *
+ * @exception CmsException if something goes wrong.
+ */
+public void writeExportLinkProcessedState(CmsExportLink link) throws CmsException {
+    m_rb.writeExportLinkProcessedState(link);
 }
 /**
  * Reads a file from the Cms.

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/A_CmsElement.java,v $
-* Date   : $Date: 2002/01/11 13:36:59 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2002/01/18 08:29:02 $
+* Version: $Revision: 1.29 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -332,6 +332,11 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
             if(!m_cacheDirectives.userSetExport()){
                 ((CmsCacheDirectives)m_cacheDirectives).setExport(export);
             }
+        }
+        // In Exportmodus set this template as dependency for the request
+        if(cms.getMode() == cms.C_MODUS_EXPORT && m_templateName != null){
+            cms.getRequestContext().addDependency(cms.getSiteName()
+                    + cms.C_ROOTNAME_VFS + m_templateName);
         }
         proxySettings.merge(m_cacheDirectives);
         // now for the subelements

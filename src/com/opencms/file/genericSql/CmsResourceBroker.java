@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2002/01/15 13:33:42 $
-* Version: $Revision: 1.303 $
+* Date   : $Date: 2002/01/18 08:29:01 $
+* Version: $Revision: 1.304 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.303 $ $Date: 2002/01/15 13:33:42 $
+ * @version $Revision: 1.304 $ $Date: 2002/01/18 08:29:01 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -4371,11 +4371,13 @@ public CmsProject onlineProject(CmsUser currentUser, CmsProject currentProject) 
  *
  * @exception CmsException if operation was not successful.
  */
-public void exportStaticResources(CmsUser currentUser, CmsProject currentProject, CmsObject cms, Vector startpoints) throws CmsException {
+public synchronized void exportStaticResources(CmsUser currentUser, CmsProject currentProject,
+                     CmsObject cms, Vector startpoints, Vector projectResources,
+                     CmsPublishedResources changedResources) throws CmsException {
 
     if(isAdmin(currentUser, currentProject) || isProjectManager(currentUser, currentProject) ||
         isUser(currentUser, currentProject)) {
-        new CmsStaticExport(cms, startpoints, true);
+        new CmsStaticExport(cms, startpoints, true, projectResources, changedResources);
     } else {
          throw new CmsException("[" + this.getClass().getName() + "] exportResources",
              CmsException.C_NO_ACCESS);
@@ -4787,6 +4789,26 @@ public void exportStaticResources(CmsUser currentUser, CmsProject currentProject
     public void deleteExportLink(CmsExportLink link) throws CmsException {
         m_dbAccess.deleteExportLink(link);
     }
+    /**
+     * Sets one exportLink to procecced.
+     *
+     * @param link the cmsexportlink.
+     *
+     * @exception CmsException if something goes wrong.
+     */
+    public void writeExportLinkProcessedState(CmsExportLink link) throws CmsException {
+        m_dbAccess.writeExportLinkProcessedState(link);
+    }
+
+    /**
+     * Reads all export links that depend on the resource.
+     * @param res. The resourceName() of the resource that has changed (or the String
+     *              that describes a contentdefinition).
+     * @return a Vector(of Strings) with the linkrequest names.
+     */
+     public Vector getDependingExportLinks(Vector res) throws CmsException{
+        return m_dbAccess.getDependingExportLinks(res);
+     }
 
 /**
  * Reads a file from a previous project of the Cms.<BR/>

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Utils.java,v $
-* Date   : $Date: 2002/01/11 13:36:59 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2002/01/18 08:29:02 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -152,6 +152,21 @@ public class Utils implements I_CmsConstants,I_CmsLogChannels {
         }
         return result;
     }
+
+    /**
+     * Returns the absolute path for the resource.<BR/>
+     * Example: input: /default/vfs/folderA/index.html
+     *          output: /folderA/index.html
+     *
+     * @param resource The resourceName of a resource (That means incl. the
+     *                  site name and the vfs stuff.
+     *
+     * @return the absolute path for this resource.
+     */
+     public static String getAbsolutePathForResource(String resource){
+        int rootIndex = resource.indexOf("/", resource.indexOf("/",1)+1);
+        return resource.substring(rootIndex);
+     }
 
     /**
      * Returns a string representation of the full name of a user.

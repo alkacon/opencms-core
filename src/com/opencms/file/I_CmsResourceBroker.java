@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
-* Date   : $Date: 2002/01/15 13:33:13 $
-* Version: $Revision: 1.167 $
+* Date   : $Date: 2002/01/18 08:29:01 $
+* Version: $Revision: 1.168 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.167 $ $Date: 2002/01/15 13:33:13 $
+ * @version $Revision: 1.168 $ $Date: 2002/01/18 08:29:01 $
  *
  */
 
@@ -1013,7 +1013,9 @@ public CmsProject createProject(CmsUser currentUser, CmsProject currentProject, 
      *
      * @exception CmsException if operation was not successful.
      */
-    public void exportStaticResources(CmsUser currentUser, CmsProject currentProject, CmsObject cms, Vector startpoints) throws CmsException ;
+    public void exportStaticResources(CmsUser currentUser, CmsProject currentProject,
+                 CmsObject cms, Vector startpoints, Vector projectResources,
+                 CmsPublishedResources changedResources) throws CmsException ;
 
      /**
       * Forwards a task to a new user.
@@ -2019,6 +2021,23 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
      * @param link the cmsExportLink object to delete.
      */
     public void deleteExportLink(CmsExportLink link) throws CmsException ;
+
+    /**
+     * Reads all export links that depend on the resource.
+     * @param res. The resourceName() of the resources that has changed (or the String
+     *              that describes a contentdefinition).
+     * @return a Vector(of Strings) with the linkrequest names.
+     */
+     public Vector getDependingExportLinks(Vector res) throws CmsException;
+
+    /**
+     * Sets one exportLink to procecced.
+     *
+     * @param link the cmsexportlink.
+     *
+     * @exception CmsException if something goes wrong.
+     */
+    public void writeExportLinkProcessedState(CmsExportLink link) throws CmsException ;
 
     /**
      * Reads a file from a previous project of the Cms.<BR/>

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsStaticExport.java,v $
-* Date   : $Date: 2002/01/11 13:36:58 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2002/01/18 08:29:01 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@ package com.opencms.file;
 
 import com.opencms.core.*;
 import com.opencms.launcher.*;
+import com.opencms.util.Utils;
 import java.util.*;
 import java.io.*;
 import java.net.*;
@@ -39,7 +40,7 @@ import org.apache.oro.text.perl.*;
  * to the filesystem.
  *
  * @author Hanjo Riege
- * @version $Revision: 1.7 $ $Date: 2002/01/11 13:36:58 $
+ * @version $Revision: 1.8 $ $Date: 2002/01/18 08:29:01 $
  */
 public class CmsStaticExport implements I_CmsConstants{
 
@@ -52,6 +53,17 @@ public class CmsStaticExport implements I_CmsConstants{
      * The resources to export.
      */
     private Vector m_startpoints;
+
+    /**
+     * indicates that this is called after publish project
+     */
+    private boolean m_afterPublish = false;
+
+    /**
+     * If called after publish project this vector contains all resouces that
+     * are part of the project. We only export links if they are in the project.
+     */
+    private Vector m_projectResources = null;
 
     private static Perl5Util c_perlUtil = null;
 
@@ -94,38 +106,78 @@ public class CmsStaticExport implements I_CmsConstants{
      *
      * @param cms the cms-object to work with.
      * @param startpoints. The resources to export (Vector of Strings)
+     * @param doTheExport. must be set to true to export something, otherwise only the linkrules are generated.
+     * @param projectResources. Contains the resources belonging to the project, if started after publishProject.
      *
      * @exception CmsException the CmsException is thrown if something goes wrong.
      */
-    public CmsStaticExport(CmsObject cms, Vector startpoints, boolean doTheExport) throws CmsException{
-
+    public CmsStaticExport(CmsObject cms, Vector startpoints, boolean doTheExport,
+                     Vector projectResources, CmsPublishedResources changedResources)
+                     throws CmsException{
         m_cms = cms;
         m_startpoints = startpoints;
         m_exportPath = cms.getStaticExportPath();
         c_perlUtil = new Perl5Util();
+        if(changedResources != null){
+            m_afterPublish = true;
+        }
 
         if(!doTheExport){
             // this is just to generate the dynamic rulesets
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT, "[CmsStaticExport] Generating the dynamic rulesets.");
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT,
+                                "[CmsStaticExport] Generating the dynamic rulesets.");
             }
             createDynamicRules();
         }else{
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT, "[CmsStaticExport] Starting the static export.");
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT,
+                                    "[CmsStaticExport] Starting the static export.");
             }
             createDynamicRules();
             checkExportPath();
-            Vector exportLinks = getStartLinks();
+            Vector exportLinks = null;
+            if(m_afterPublish){
+                exportLinks = getChangedLinks(changedResources);
+            }else{
+                exportLinks = getStartLinks();
+            }
+            // we only need the names of the projectResources
+            if(projectResources != null){
+                m_projectResources = new Vector(projectResources.size());
+                for(int i=0; i<projectResources.size(); i++){
+                    m_projectResources.addElement(
+                        ((CmsResource)projectResources.elementAt(i)).getAbsolutePath());
+                }
+            }
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT, "[CmsStaticExport] got "+exportLinks.size()+" links to start with.");
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT,
+                        "[CmsStaticExport] got "+exportLinks.size()+" links to start with.");
             }
             for(int i=0; i < exportLinks.size(); i++){
-//mgm at work                if(linkHasChanged((String)exportLinks.elementAt(i))){
-                    exportLink((String)exportLinks.elementAt(i), exportLinks);
-//                }
+                String aktLink = (String)exportLinks.elementAt(i);
+                exportLink(aktLink, exportLinks);
             }
         }
+    }
+
+    /**
+     * Checks if the link is part of the project if the export was started after
+     * publish project.
+     *
+     * @param link The link.
+     */
+    private boolean linkIsInProject(String link){
+        if(m_projectResources == null){
+            // we want to export all
+            return true;
+        }
+        for(int i=0; i<m_projectResources.size(); i++){
+            if(link.startsWith((String)m_projectResources.elementAt(i))){
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -133,11 +185,12 @@ public class CmsStaticExport implements I_CmsConstants{
      *
      * @param link The link to be checked.
      * @return true if the link should be exported.
-     * /
+     */
     private boolean linkHasChanged(String link){
+        CmsExportLink linkObject = null;
         try{
-            // first look if this link was exported before (then it is saved in the database
-            CmsExportLink linkObject = m_cms.readExportLink(link);
+            // first look if this link was exported before (then it is saved in the database)
+            linkObject = m_cms.readExportLink(link);
             if(linkObject == null){
                 return true;
             }else{
@@ -147,11 +200,13 @@ public class CmsStaticExport implements I_CmsConstants{
                     for(int i=0; i<deps.size(); i++){
                         CmsResource res = m_cms.readFileHeader((String)deps.elementAt(i));
                         if(linkObject.getLastExportDate() < res.getDateLastModified()){
-                            //mgm at work
+                            // ok one of the deps has changed since the last export
+                            m_cms.deleteExportLink(linkObject);
+                            return true;
                         }
                     }
                 }catch(CmsException e){
-                    // we have to export it again
+                    // one of the files was deleted, we have to export it again
                     m_cms.deleteExportLink(linkObject);
                     return true;
                 }
@@ -164,6 +219,19 @@ public class CmsStaticExport implements I_CmsConstants{
             }
             return true;
         }
+        //set the processed flag to true
+        if(linkObject != null){
+            linkObject.setProcessedState(true);
+            // write the linkObject to the database. Only the state has changed so
+            // we dont need to write the whole object.
+            try{
+                m_cms.writeExportLinkProcessedState(linkObject);
+            }catch(CmsException exp){
+                linkObject.setProcessedState(false);
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -194,6 +262,8 @@ public class CmsStaticExport implements I_CmsConstants{
      * Generates the dynamic rules for the export. It looks for all folders that
      * have the property exportname. For each folder found it generates a rule that
      * replaces the folder name (incl. path) with the exportname.
+     * In addition it looks for the property dynamic. and creates rules for linking
+     * between static and dynamic pages.
      * These rules are used for export and for extern links.
      */
     private void createDynamicRules(){
@@ -233,7 +303,8 @@ public class CmsStaticExport implements I_CmsConstants{
                     String resName = resource.getAbsolutePath();
                     String propertyValue = m_cms.readProperty(resName, C_PROPERTY_EXPORT);
                     if(propertyValue != null && (propertyValue.equalsIgnoreCase("dynamic")
-                              || propertyValue.equalsIgnoreCase("https") || propertyValue.equalsIgnoreCase("false"))){
+                                  || propertyValue.equalsIgnoreCase("https")
+                                  || propertyValue.equalsIgnoreCase("false"))){
                         // first we can create the dynamic rule for extern (it is the same for true and https)
                         if(propertyValue.equalsIgnoreCase("false")){
                             m_dynamicExportRulesExtern.addElement("s#^"+resName+".*#export value was set to false#");
@@ -270,7 +341,9 @@ public class CmsStaticExport implements I_CmsConstants{
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT, "[CmsStaticExport] exporting "+link);
         }
         String deleteFileOnError = null;
-         OutputStream outStream = null;
+        OutputStream outStream = null;
+        CmsExportLink dbLink = new CmsExportLink(link, System.currentTimeMillis(), null);
+
         try{
             // first lets create our request and response objects for the export
             CmsExportRequest dReq = new CmsExportRequest();
@@ -333,7 +406,7 @@ public class CmsStaticExport implements I_CmsConstants{
                                 + m_exportPath + correctur + externLink + ": " + e.getMessage());
                 }
             }else{
-                // we dont want to write this file but we have to generate it to get link in it.
+                // we dont want to write this file but we have to generate it to get links in it.
                 dRes.putOutputStream(new ByteArrayOutputStream());
             }
 
@@ -349,15 +422,37 @@ public class CmsStaticExport implements I_CmsConstants{
                             + launcherId + " could not be found.");
             }
             ((CmsExportRequest)cmsForStaticExport.getRequestContext().getRequest()).setRequestedResource(link);
+            cmsForStaticExport.getRequestContext().addDependency(file.getResourceName());
             launcher.initlaunch(cmsForStaticExport, file, startTemplateClass, null);
 
-            // at last we need the links on the page for the further export
+            // we need the links on the page for the further export
             Vector linksToAdd = cmsForStaticExport.getRequestContext().getLinkVector();
             for(int i=0; i<linksToAdd.size(); i++){
                 if(!allLinks.contains(linksToAdd.elementAt(i))){
-                    allLinks.add(linksToAdd.elementAt(i));
+                    if(!m_afterPublish
+                        || (m_cms.readExportLink((String)linksToAdd.elementAt(i)) == null)){
+                            // after publish we only add this link if it is was
+                            // not exported befor. TODO: we dont need the method
+                            // readExportLink. A new method that only checks for
+                            // existence will do it.
+                            allLinks.add(linksToAdd.elementAt(i));
+                    }
                 }
             }
+            // now get the dependencies and write the link to the database
+            Vector depsToAdd = cmsForStaticExport.getRequestContext().getDependencies();
+            for(int i=0; i<depsToAdd.size(); i++){
+                dbLink.addDependency((String)depsToAdd.elementAt(i));
+            }
+            try{
+                dbLink.setProcessedState(true);
+                m_cms.writeExportLink(dbLink);
+            }catch(CmsException e){
+                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT, "[CmsStaticExport] write ExportLink "+dbLink.getLink()+" failed: "+e.toString());
+                }
+            }
+
             // at last close the outputstream
             if(outStream != null){
                 outStream.close();
@@ -369,18 +464,19 @@ public class CmsStaticExport implements I_CmsConstants{
             if(deleteFileOnError != null){
                 try{
                     File deleteMe = new File(deleteFileOnError);
-                    if(deleteMe.exists() && deleteMe.length() == 0){
+                    if(deleteMe.exists() ){//&& deleteMe.length() == 0){
                         if(outStream != null){
                             outStream.close();
                         }
                         deleteMe.delete();
+                        m_cms.deleteExportLink(link);
                     }
                 }catch(Exception e){
                 }
             }
         }catch(Exception e){
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT, "[CmsStaticExport]  export "+link+" failed: "+e.toString());
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT, "[CmsStaticExport]  export "+link+" failed : "+e.toString());
             }
         }
     }
@@ -424,6 +520,42 @@ public class CmsStaticExport implements I_CmsConstants{
             }
         }
         return retValue;
+    }
+
+    /**
+     * returns a vector with all links that must be new exported .
+     *
+     * @return the links (vector of strings).
+     */
+    private Vector getChangedLinks(CmsPublishedResources changedResources) throws CmsException{
+
+        Vector resToCheck = new Vector();
+        if(changedResources == null){
+            return new Vector();
+        }
+        Vector addVector = changedResources.getChangedModuleMasters();
+        if(addVector != null){
+            for(int i=0; i<addVector.size(); i++){
+                resToCheck.add(addVector.elementAt(i));
+            }
+        }
+        addVector = changedResources.getChangedResources();
+        if(addVector != null){
+            for(int i=0; i<addVector.size(); i++){
+                resToCheck.add(addVector.elementAt(i));
+            }
+        }
+        Vector returnValue = m_cms.getDependingExportLinks(resToCheck);
+        // we also need all "new" files
+        if(addVector != null){
+            for(int i=0; i<addVector.size(); i++){
+                String res = Utils.getAbsolutePathForResource((String)addVector.elementAt(i));
+                if((!res.endsWith("/")) && (!returnValue.contains(res))){
+                    returnValue.add(res);
+                }
+            }
+        }
+        return returnValue;
     }
 
     /**
