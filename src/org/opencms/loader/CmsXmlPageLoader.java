@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsXmlPageLoader.java,v $
- * Date   : $Date: 2004/01/20 11:06:43 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/01/20 15:59:40 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since 5.3
  */
 public class CmsXmlPageLoader implements I_CmsResourceLoader {   
@@ -68,6 +68,9 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
 
     /** Template part identifier (request parameter) */
     public static final String C_TEMPLATE_ELEMENT = "__element";
+
+    /** Current instance of the xml page attached as request attribute */
+    public static final String C_XMLPAGE_OBJECT = "org.opencms.loader.CmsXmlPageLoader_page";
     
     /**
      * @see org.opencms.loader.I_CmsResourceLoader#destroy()
@@ -115,6 +118,10 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
      */
     public void load(CmsObject cms, CmsFile file, HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {        
         try {
+            // init the page object and attach it as attribute of the request
+            CmsXmlPage page = CmsXmlPage.read(cms, file);
+            req.setAttribute(C_XMLPAGE_OBJECT, page);
+            
             CmsResourceLoaderFacade loaderFacade = OpenCms.getLoaderManager().getLoaderFacade(cms, file);        
             loaderFacade.getLoader().load(cms, loaderFacade.getFile(), req, res);
         } catch (CmsException e) {
@@ -158,9 +165,14 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
     public void service(CmsObject cms, CmsResource file, ServletRequest req, ServletResponse res) throws ServletException, IOException {
         
         String absolutePath = cms.readAbsolutePath(file);
+        
         try {
             // get the requested page
-            CmsXmlPage page = CmsXmlPage.read(cms, cms.readFile(absolutePath));
+            CmsXmlPage page = (CmsXmlPage)req.getAttribute(C_XMLPAGE_OBJECT); 
+                
+            if (page == null) {      
+                page = CmsXmlPage.read(cms, cms.readFile(absolutePath));
+            }
             
             // get the element selector
             // TODO: Check this, maybe use a request attribute instead of a parameter
