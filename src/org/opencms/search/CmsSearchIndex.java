@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2005/03/02 15:51:57 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2005/03/04 13:42:37 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.search.documents.CmsHighlightExtractor;
 import org.opencms.search.documents.I_CmsDocumentFactory;
@@ -44,7 +43,6 @@ import org.opencms.search.documents.I_TermHighlighter;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -52,8 +50,6 @@ import java.util.Map;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanQuery;
@@ -65,7 +61,7 @@ import org.apache.lucene.search.Searcher;
 /**
  * Implements the search within an index and the management of the index configuration.<p>
  *   
- * @version $Revision: 1.31 $ $Date: 2005/03/02 15:51:57 $
+ * @version $Revision: 1.32 $ $Date: 2005/03/04 13:42:37 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -81,6 +77,15 @@ public class CmsSearchIndex {
     /** A search query to return all documents in the index. */
     public static final String C_SEARCH_QUERY_RETURN_ALL = "*";
 
+    /** Constant for additional param to enable excerpt creation (default: true). */
+    public static String C_EXCERPT = CmsSearchIndex.class.getName() + ".createExcerpt";
+    
+    /** Constant for additional param to enable permission checks (default: true). */
+    public static String C_PERMISSIONS = CmsSearchIndex.class.getName() + ".checkPermissions";
+    
+    /** Contsnat for additional param to set the thread priority during search. */
+    public static String C_PRIORITY = CmsSearchIndex.class.getName() + ".priority";
+    
     /** The incremental mode for this index. */
     private boolean m_incremental;
 
@@ -99,12 +104,24 @@ public class CmsSearchIndex {
     /** The rebuild mode for this index. */
     private String m_rebuild;
 
+    /** The permission check mode for this index. */
+    private boolean m_checkPermissions;
+    
+    /** The excerpt mode for this index. */
+    private boolean m_createExcerpt;
+    
+    /** The thread priority for a search. */
+    private int m_priority;
+    
+    /** The map of additional params for this index. */
+    private HashMap m_params;
+    
     /** Documenttypes of folders/channels. */
     private Map m_documenttypes;
 
-    /** The configures sources for this index. */
+    /** The configured sources for this index. */
     private List m_sourceNames;
-
+    
     /**
      * Creates a new CmsSearchIndex.<p>
      */
@@ -112,6 +129,10 @@ public class CmsSearchIndex {
 
         m_sourceNames = new ArrayList();
         m_documenttypes = new HashMap();
+        m_params = new HashMap();
+        m_createExcerpt = true;
+        m_checkPermissions = true;
+        m_priority = -1;
     }
 
     /**
@@ -135,9 +156,9 @@ public class CmsSearchIndex {
             try {
                 sourceName = (String)m_sourceNames.get(i);
                 indexSource = OpenCms.getSearchManager().getIndexSource(sourceName);
+                
                 resourceNames = indexSource.getResourcesNames();
                 searchIndexSourceDocumentTypes = indexSource.getDocumentTypes();
-
                 for (int j = 0, m = resourceNames.size(); j < m; j++) {
     
                     resourceName = (String)resourceNames.get(j);
@@ -155,15 +176,17 @@ public class CmsSearchIndex {
      * The content is read using the document factory matching the index resource's
      * Cms resource types and mimetypes.<p>
      * 
+     * @param cms the cms object
      * @param indexResource an index resource
      * @return the raw content
      */
-    protected String getRawContent(A_CmsIndexResource indexResource) {
+    protected String getRawContent(CmsObject cms, A_CmsIndexResource indexResource) {
 
         String rawContent = null;
 
         try {
             rawContent = OpenCms.getSearchManager().getDocumentFactory(indexResource).getRawContent(
+                cms,
                 indexResource,
                 m_locale);
         } catch (CmsException e) {
@@ -173,17 +196,30 @@ public class CmsSearchIndex {
         }
 
         return rawContent;
-    }    
-
+    }
+        
     /**
      * Returns an excerpt of the content of a specified index resource.<p>
      * 
+     * @param cms the cms object
      * @param indexResource an index resource
      * @param searchQuery the search query
      * @return an excerpt of the content of the specified index resource
      * @throws CmsException if something goes wrong
      */
-    protected String getExcerpt(A_CmsIndexResource indexResource, String searchQuery) throws CmsException {
+    protected String getExcerpt(CmsObject cms, A_CmsIndexResource indexResource, String searchQuery) throws CmsException {
+        return getExcerpt(getRawContent(cms, indexResource), searchQuery);
+    }
+    
+    /**
+     * Returns an excerpt of the given content related to the given search query.<p>
+     * 
+     * @param rawContent the content
+     * @param searchQuery the search query
+     * @return an excerpt of the content
+     * @throws CmsException if something goes wrong
+     */
+    protected String getExcerpt(String rawContent, String searchQuery) throws CmsException {
 
         int highlightFragmentSizeInBytes = 60;
         int maxNumFragmentsRequired = 5;
@@ -192,13 +228,11 @@ public class CmsSearchIndex {
         String excerpt = null;
         Analyzer analyzer = null;
         Query query = null;
-        CmsHighlightExtractor highlighter = null;
-        String rawContent = null;  
+        CmsHighlightExtractor highlighter = null;  
         I_TermHighlighter termHighlighter = null;
         int maxExcerptLength = OpenCms.getSearchManager().getMaxExcerptLength();
 
         try {
-            rawContent = getRawContent(indexResource);
            
             if (rawContent != null) {
 
@@ -208,7 +242,7 @@ public class CmsSearchIndex {
 
                     analyzer = OpenCms.getSearchManager().getAnalyzer(m_locale);
                     query = QueryParser.parse(searchQuery, I_CmsDocumentFactory.DOC_CONTENT, analyzer);
-                    termHighlighter = (I_TermHighlighter)Class.forName(OpenCms.getSearchManager().getHighlighter()).newInstance();
+                    termHighlighter = OpenCms.getSearchManager().getHighlighter();
                     highlighter = new CmsHighlightExtractor(termHighlighter, query, analyzer);
 
                     excerpt = highlighter.getBestFragments(
@@ -323,6 +357,16 @@ public class CmsSearchIndex {
     }
 
     /**
+     * Get the additional parameters of this index.<p>
+     * 
+     * @return the additional parameters
+     */
+    public Map getParams() {
+        
+        return m_params;
+    }
+    
+    /**
      * Gets the set of documenttypes of a folder or channel.<p>
      * The set contains Strings with the names of the documenttypes.
      * 
@@ -347,7 +391,7 @@ public class CmsSearchIndex {
         }
         return documenttypes;
     }
-
+        
     /**
      * Performs a search on the index within the given fields.<p>
      * 
@@ -362,183 +406,147 @@ public class CmsSearchIndex {
      * @return the List of results found or an empty list
      * @throws CmsException if something goes wrong
      */
-    public List search(CmsObject cms, String searchRoot, String searchQuery, String fields, int page, int matchesPerPage) throws CmsException {
+    public synchronized List search(CmsObject cms, String searchRoot, String searchQuery, String fields, int page, int matchesPerPage) throws CmsException {
 
-        List searchResults = null;
+        List searchResults = new ArrayList();
+        
         Query query = null;
         Searcher searcher = null;
-        IndexReader reader = null;
         Hits hits = null;
         Document luceneDocument = null;
-        A_CmsIndexResource indexResource = null;
-        List foundDocuments = null;
         double maxScore = -1.0;
-        List scores = null;
         CmsSearchResult searchResult = null;
         double score = -1;
         String excerpt = null;
-        Field field = null;
-        String path = null;
         
         long totalSearchDuration = -System.currentTimeMillis();
         long luceneSearchDuration = 0;
-        
-        Map searchCache = OpenCms.getSearchManager().getResultCache();
-        String cacheKey = cms.getRequestContext().currentUser().getName()
-            + "_"
-            + cms.getRequestContext().getRemoteAddress()
-            + "_"
-            + m_name
-            + "_"
-            + searchQuery
-            + "_"
-            + searchRoot
-            + "_"
-            + fields
-            + "_"
-            + page
-            + "_"
-            + matchesPerPage;
-
-        // try to find the search result in the cache if we are in the Online project
-        if (cms.getRequestContext().currentProject().getId() == I_CmsConstants.C_PROJECT_ONLINE_ID) {
-            searchResults = (ArrayList)searchCache.get(cacheKey);
-            if (searchResults != null) {
-                return searchResults;
-            }
-        }
-
-        // change the project     
-        CmsRequestContext context = cms.getRequestContext();
-        CmsProject currentProject = context.currentProject();
-        context.setCurrentProject(cms.readProject(m_project));
-
-        // complete the search root
-        if (searchRoot != null && !"".equals(searchRoot)) {
-            // add the site root to the search root
-            searchRoot = cms.getRequestContext().getSiteRoot() + searchRoot;
-        } else {
-            // just use the site root as the search root
-            searchRoot = cms.getRequestContext().getSiteRoot();
-        }
 
         if (OpenCms.getLog(this).isDebugEnabled()) {
             OpenCms.getLog(this).debug(
                 "Searching for \"" + searchQuery + "\" in fields \"" + fields + "\" of index " + m_name);
         }
 
+        CmsRequestContext context = cms.getRequestContext();
+        CmsProject currentProject = context.currentProject();
+        
         try {
+            
+            if (m_priority >= 0) {
+                Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
+            }
+            
+            if (hits == null) {
+                // change the project     
+                context.setCurrentProject(cms.readProject(m_project));
 
-            if (!C_SEARCH_QUERY_RETURN_ALL.equals(searchQuery)) {
-                
-                // a query search- return the documents in the index matching the query expr.
-                
-                // add the search root to the search query to make Lucene return only documents with a path value 
-                // starting with the specified search root
-                searchQuery = "(" + searchQuery + ")" + " AND " + I_CmsDocumentFactory.DOC_PATH + ":" + searchRoot + "*";
-                
-                // increase Lucene's max-claus-count to a value higher than the default of 1024
-                BooleanQuery.setMaxClauseCount(Integer.MAX_VALUE);
-                
-                if (fields != null) {
-                    BooleanQuery fieldsQuery = new BooleanQuery();
-                    BooleanQuery.setMaxClauseCount(Integer.MAX_VALUE);
-                    String fList[] = org.opencms.util.CmsStringUtil.splitAsArray(fields, ' ');
-                    for (int i = 0; i < fList.length; i++) {
-                        fieldsQuery.add(QueryParser.parse(searchQuery, fList[i], OpenCms.getSearchManager().getAnalyzer(
-                            m_locale)), false, false);
-                    }    
-                    
-                    query = fieldsQuery;
+                // complete the search root
+                if (searchRoot != null && !"".equals(searchRoot)) {
+                    // add the site root to the search root
+                    searchRoot = cms.getRequestContext().getSiteRoot() + searchRoot;
                 } else {
-                    query = QueryParser.parse(searchQuery, I_CmsDocumentFactory.DOC_CONTENT, OpenCms.getSearchManager()
-                        .getAnalyzer(m_locale));
+                    // just use the site root as the search root
+                    searchRoot = cms.getRequestContext().getSiteRoot();
                 }
 
+                if (!C_SEARCH_QUERY_RETURN_ALL.equals(searchQuery)) {                
+                    // add the search root to the search query to make Lucene return only documents with a path value 
+                    // starting with the specified search root
+                    searchQuery = "(" + searchQuery + ")" + " AND " + I_CmsDocumentFactory.DOC_PATH + ":" + searchRoot + "*";
+             
+                
+                    // increase Lucene's max-clause-count to a value higher than the default of 1024
+                    BooleanQuery.setMaxClauseCount(Integer.MAX_VALUE);
+                
+                    if (fields != null) {
+                        BooleanQuery fieldsQuery = new BooleanQuery();
+                        BooleanQuery.setMaxClauseCount(Integer.MAX_VALUE);
+                        String fList[] = org.opencms.util.CmsStringUtil.splitAsArray(fields, ' ');
+                        for (int i = 0; i < fList.length; i++) {
+                            fieldsQuery.add(QueryParser.parse(searchQuery, fList[i], OpenCms.getSearchManager().getAnalyzer(
+                                m_locale)), false, false);
+                        }    
+                    
+                        query = fieldsQuery;
+                    } else {
+                        query = QueryParser.parse(searchQuery, I_CmsDocumentFactory.DOC_CONTENT, 
+                            OpenCms.getSearchManager().getAnalyzer(m_locale));
+                    }
+                } else {
+                    searchQuery = I_CmsDocumentFactory.DOC_PATH + ":" + searchRoot + "*";
+                    query = QueryParser.parse(searchQuery, I_CmsDocumentFactory.DOC_CONTENT, 
+                        OpenCms.getSearchManager().getAnalyzer(m_locale));
+                }   
+                 
                 luceneSearchDuration = -System.currentTimeMillis();
                 searcher = new IndexSearcher(m_path);
                 hits = searcher.search(query);
-                luceneSearchDuration += System.currentTimeMillis();
-                
-                foundDocuments = new ArrayList(hits.length());
-                scores = new ArrayList(hits.length());
-                
-                for (int i = 0, n = hits.length(); i < n; i++) {                    
-                    luceneDocument = hits.doc(i); 
-                    foundDocuments.add(luceneDocument);
-                    scores.add(new Double(hits.score(i)));
-                }
-            } else {
-                
-                // a non-query search- return all documents in the index
-                try {
-                    reader = IndexReader.open(m_path);
-                    foundDocuments = new ArrayList();
-                    scores = new ArrayList();
-                    
-                    for (int i = 0, n = reader.numDocs(); i < n; i++) {
-                        
-                        if (!reader.isDeleted(i)) {
-                            luceneDocument = reader.document(i);
+                luceneSearchDuration += System.currentTimeMillis();  
+            }  
 
-                            // skip documents with a path value which doesn't start with the specified search root                            
-                            if ((field = luceneDocument.getField(I_CmsDocumentFactory.DOC_PATH)) != null) {
-                                path = field.stringValue();
-                                
-                                if (path.startsWith(searchRoot)) {
-                                    foundDocuments.add(luceneDocument);
-                                    // there is no score on a non-query search,
-                                    // use zero as the same default score for all docs
-                                    scores.add(new Double(0));
+            if (hits !=  null) {         
+                maxScore = (hits.length() > 0) ? hits.score(0) : 0.0;
+                
+                int start = -1, end = -1;     
+                if (matchesPerPage > 0 && page > 0 && hits.length() > 0) {
+                    // calculate the final size of the search result
+                    start = matchesPerPage * (page-1);                
+                    end = start + matchesPerPage;                       
+                    // ensure that both i and n are inside the range of foundDocuments.size()
+                    start = (start > hits.length()) ? hits.length() : start;  
+                    end = (end > hits.length()) ? hits.length() : end;
+                } else {
+                    // return all found documents in the search result
+                    start = 0;
+                    end = hits.length(); 
+                }
+                          
+                if (m_checkPermissions) {
+                    // filter out resources from the search result where the current user has no read permissions
+                    for (int i = 0, cnt = 0; i < hits.length() && cnt < end; i++) {
+                        try {
+                            luceneDocument = hits.doc(i);
+                            score = (hits.score(i) / maxScore) * 100.0;
+                        
+                            if (getIndexResource(cms, luceneDocument) != null) {
+                                // user has read permission
+                                if (cnt >= start) {
+                                    // do not use the resource to obtain the raw content, read it from the lucene document !
+                                    if (m_createExcerpt) {
+                                        excerpt = getExcerpt(luceneDocument.getField(I_CmsDocumentFactory.DOC_CONTENT).stringValue(), searchQuery);                    
+                                    }
+                                    searchResult = new CmsSearchResult((int)score, luceneDocument, excerpt);
+                                    searchResults.add(searchResult);
                                 }
-                            }
+                                cnt++;
+                            }      
+                        } catch (Exception exc) {
+                            // happens if resource was deleted or current user has not the permission to view the current resource at least
                         }
                     }
-                } finally {
-                    if (reader != null) {
-                        reader.close();
-                    }
-                }
-            }
-         
-            int start = -1, end = -1;     
-            searchResults = new ArrayList();
-            if (matchesPerPage > 0 && page > 0 && foundDocuments.size() > 0) {
-                // calculate the final size of the search result
-                start = matchesPerPage * (page-1);                
-                end = start + matchesPerPage;                       
-                // ensure that both i and n are inside the range of foundDocuments.size()
-                start = (start > foundDocuments.size()) ? foundDocuments.size() : start;  
-                end = (end > foundDocuments.size()) ? foundDocuments.size() : end;
-            } else {
-                // return all found documents in the search result
-                start = 0;
-                end = foundDocuments.size(); 
-            }
-            
-            // filter out resources from the search result where the current user has no read permissions or that are 
-            // not subresources of the search root folder. note that the score/maxScore has to be calculated for the
-            // *complete* search result to have correct scores even just for a range of the search result!
-            for (int i = 0, n = foundDocuments.size(); i < n; i++) {
-                try {
-                    luceneDocument = (Document)foundDocuments.get(i);
-                    indexResource = getIndexResource(cms, luceneDocument);
-
-                    if (indexResource != null) {
-                        score = ((Double)scores.get(i)).doubleValue();
-                        maxScore = (maxScore < score) ? score : maxScore;
-                        score = (score / maxScore) * 100.0;
-                        
-                        if (i >= start && i < end && indexResource.getRootPath().startsWith(searchRoot)) {
-                            excerpt = getExcerpt(indexResource, searchQuery);
+                } else {
+                    // without permission check
+                    for (int i = start; i < end; i++) {
+                        try {
+                            luceneDocument = hits.doc(i);
+                            score = (hits.score(i) / maxScore) * 100.0;
+                            if (m_createExcerpt) {
+                                excerpt = getExcerpt(luceneDocument.getField(I_CmsDocumentFactory.DOC_CONTENT).stringValue(), searchQuery);                    
+                            }
                             searchResult = new CmsSearchResult((int)score, luceneDocument, excerpt);
                             searchResults.add(searchResult);
+                        } catch (Exception exc) {
+                            // happens if resource was deleted or current user has not the permission to view the current resource at least
                         }
                     }
-                } catch (Exception exc) {
-                    // happens if resource was deleted or current user has not the permission to view the current resource at least
                 }
+                
+                // save the total count of search results at the last index of the search result 
+                searchResults.add(new Integer(hits.length()));            
+            } else {
+                searchResults.add(new Integer(0));
             }
+            
         } catch (Exception exc) {
             throw new CmsException("[" + this.getClass().getName() + "] " + "Search on " + m_path + " failed. ", exc);
         } finally {
@@ -551,21 +559,17 @@ public class CmsSearchIndex {
                 }
             }
 
+            // set thread to default priority
+            Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
+            
             // switch back to the original project
             context.setCurrentProject(currentProject);
         }
-        
-        Collections.sort(searchResults);
-
-        // save the total count of search results at the last index of the search result
-        searchResults.add(new Integer(foundDocuments.size()));        
-        searchCache.put(cacheKey, searchResults);
 
         totalSearchDuration += System.currentTimeMillis();
         
         if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug(hits.length() + " results found in "
-                + totalSearchDuration + " ms" + " (Lucene: " + luceneSearchDuration + " ms)");
+            OpenCms.getLog(this).debug(hits.length() + " results found in " + totalSearchDuration + " ms" + " (Lucene: " + luceneSearchDuration + " ms)");
         }
         
         return searchResults;
@@ -589,26 +593,11 @@ public class CmsSearchIndex {
     protected A_CmsIndexResource getIndexResource(CmsObject cms, Document doc) throws Exception {
 
         CmsSearchManager searchManager = OpenCms.getSearchManager();
-        String indexSourceName = null;
-        CmsSearchIndexSource indexSource = null;
-        I_CmsIndexer indexer = null;
-        A_CmsIndexResource result = null;
-        String className = null;
-
-        for (int i = 0, n = m_sourceNames.size(); i < n; i++) {
-            indexSourceName = (String)m_sourceNames.get(i);
-            indexSource = searchManager.getIndexSource(indexSourceName);
-
-            className = indexSource.getIndexerClassName();
-            indexer = (I_CmsIndexer)Class.forName(className).newInstance();
-            result = indexer.getIndexResource(cms, doc);
-
-            if (result != null) {
-                break;
-            }
-        }
-
-        return result;
+        String indexSourceName = doc.getField(I_CmsDocumentFactory.DOC_SOURCE).stringValue();
+        CmsSearchIndexSource indexSource = searchManager.getIndexSource(indexSourceName);
+        I_CmsIndexer indexer = indexSource.getIndexer();
+        
+        return indexer.getIndexResource(cms, doc);
     }
 
     /**
@@ -617,10 +606,28 @@ public class CmsSearchIndex {
      * @param sourceName a source name
      */
     public void addSourceName(String sourceName) {
-
         m_sourceNames.add(sourceName);
     }
 
+    /**
+     * Adds a parameter.<p>
+     * 
+     * @param key the key/name of the parameter
+     * @param value the value of the parameter
+     */
+    public void addConfigurationParameter(String key, String value) {
+
+        m_params.put(key, value);
+
+        if (C_PERMISSIONS.equals(key)) {
+            m_checkPermissions = Boolean.valueOf(value).booleanValue();
+        } else if (C_EXCERPT.equals(key)) {
+            m_createExcerpt = Boolean.valueOf(value).booleanValue();
+        } else if (C_PRIORITY.equals(key)) {
+            m_priority = Integer.parseInt(value);
+        }
+    }
+    
     /**
      * Sets the logical key/name of this search index.<p>
      * 

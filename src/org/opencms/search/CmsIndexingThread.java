@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsIndexingThread.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/03/04 13:42:37 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.search;
 
+import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.search.documents.I_CmsDocumentFactory;
@@ -44,7 +45,7 @@ import org.apache.lucene.index.IndexWriter;
  * The indexing of a single resource was wrapped into a single thread
  * in order to prevent the indexer from hanging.<p>
  *  
- * @version $Revision: 1.11 $ $Date: 2005/02/17 12:44:32 $
+ * @version $Revision: 1.12 $ $Date: 2005/03/04 13:42:37 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.3.1
  */
@@ -53,6 +54,9 @@ public class CmsIndexingThread extends Thread {
     /** Internal debug flag. */
     private static final boolean DEBUG = false;
 
+    /** The cms object. */
+    CmsObject m_cms;
+    
     /** The index writer. */
     IndexWriter m_writer;
 
@@ -70,6 +74,8 @@ public class CmsIndexingThread extends Thread {
 
     /**
      * Creates a new indexing thread for a single resource.<p>
+     * 
+     * @param cms the cms object
      * @param writer the writer
      * @param res the resource to index
      * @param index the index
@@ -77,6 +83,7 @@ public class CmsIndexingThread extends Thread {
      * @param threadManager the thread manager
      */
     public CmsIndexingThread(
+        CmsObject cms,
         IndexWriter writer,
         A_CmsIndexResource res,
         CmsSearchIndex index,
@@ -85,6 +92,7 @@ public class CmsIndexingThread extends Thread {
 
         super("OpenCms: Indexing '" + res.getName() + "'");
 
+        m_cms = cms;
         m_writer = writer;
         m_res = res;
         m_index = index;
@@ -116,7 +124,7 @@ public class CmsIndexingThread extends Thread {
                     OpenCms.getLog(this).debug("Creating lucene index document");
                 }
 
-                Document doc = documentFactory.newInstance(m_res, m_index.getLocale());
+                Document doc = documentFactory.newInstance(m_cms, m_res, m_index.getLocale());
                 if (doc == null) {
                     throw new CmsIndexException("Creating index document failed");
                 }

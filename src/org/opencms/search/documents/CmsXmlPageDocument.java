@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsXmlPageDocument.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/03/04 13:42:45 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.apache.lucene.document.Field;
  * Lucene document factory class to extract index data from a cms resource 
  * of type <code>CmsResourceTypeXmlPage</code>.<p>
  * 
- * @version $Revision: 1.16 $ $Date: 2005/02/17 12:44:32 $
+ * @version $Revision: 1.17 $ $Date: 2005/03/04 13:42:45 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsXmlPageDocument extends CmsVfsDocument {
@@ -62,41 +62,40 @@ public class CmsXmlPageDocument extends CmsVfsDocument {
     /**
      * Creates a new instance of this lucene document factory.<p>
      * 
-     * @param cms the cms object
      * @param name name of the documenttype
      */
-    public CmsXmlPageDocument (CmsObject cms, String name) {
-        super(cms, name);
+    public CmsXmlPageDocument (String name) {
+        super(name);
     }
     
     /**
      * Returns the raw text content of a given vfs resource of type <code>CmsResourceTypeXmlPage</code>.<p>
      * 
-     * @see org.opencms.search.documents.CmsVfsDocument#getRawContent(org.opencms.search.A_CmsIndexResource, java.lang.String)
+     * @see org.opencms.search.documents.CmsVfsDocument#getRawContent(org.opencms.file.CmsObject, org.opencms.search.A_CmsIndexResource, java.lang.String)
      */
-    public String getRawContent(A_CmsIndexResource indexResource, String language) throws CmsException {
+    public String getRawContent(CmsObject cms, A_CmsIndexResource indexResource, String language) throws CmsException {
 
         CmsResource resource = (CmsResource)indexResource.getData();
         String rawContent = null;
         
         try {
-            CmsFile file = CmsFile.upgrade(resource, m_cms);
-            String absolutePath = m_cms.getSitePath(file);
-            CmsXmlPage page = CmsXmlPageFactory.unmarshal(m_cms, file);
+            CmsFile file = CmsFile.upgrade(resource, cms);
+            String absolutePath = cms.getSitePath(file);
+            CmsXmlPage page = CmsXmlPageFactory.unmarshal(cms, file);
             
             List pageLocales = page.getLocales();
             if (pageLocales.size() == 0) {
-                pageLocales = OpenCms.getLocaleManager().getDefaultLocales(m_cms, absolutePath);
+                pageLocales = OpenCms.getLocaleManager().getDefaultLocales(cms, absolutePath);
             }
             Locale locale = OpenCms.getLocaleManager().getBestMatchingLocale(
                     CmsLocaleManager.getLocale(language), 
-                    OpenCms.getLocaleManager().getDefaultLocales(m_cms, absolutePath), 
+                    OpenCms.getLocaleManager().getDefaultLocales(cms, absolutePath), 
                     pageLocales);
             
             List elements = page.getNames(locale);
             StringBuffer content = new StringBuffer();
             for (Iterator i = elements.iterator(); i.hasNext();) {
-                String value = page.getStringValue(m_cms, (String)i.next(), locale);
+                String value = page.getStringValue(cms, (String)i.next(), locale);
                 if (value != null) {
                     content.append(value);
                 }                
@@ -115,12 +114,12 @@ public class CmsXmlPageDocument extends CmsVfsDocument {
     /**
      * Generates a new lucene document instance from contents of the given resource.<p>
      * 
-     * @see org.opencms.search.documents.I_CmsDocumentFactory#newInstance(org.opencms.search.A_CmsIndexResource, java.lang.String)
+     * @see org.opencms.search.documents.I_CmsDocumentFactory#newInstance(org.opencms.file.CmsObject, org.opencms.search.A_CmsIndexResource, java.lang.String)
      */
-    public Document newInstance (A_CmsIndexResource resource, String language) throws CmsException {
+    public Document newInstance (CmsObject cms, A_CmsIndexResource resource, String language) throws CmsException {
                    
-        Document document = super.newInstance(resource, language);
-        document.add(Field.Text(I_CmsDocumentFactory.DOC_CONTENT, getRawContent(resource, language)));
+        Document document = super.newInstance(cms, resource, language);
+        document.add(Field.Text(I_CmsDocumentFactory.DOC_CONTENT, getRawContent(cms, resource, language)));
         
         return document;
     }

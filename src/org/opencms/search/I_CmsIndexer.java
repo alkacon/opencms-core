@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/I_CmsIndexer.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/03/04 13:42:37 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.apache.lucene.index.IndexWriter;
 /**
  * Interface for an indexer indexing Cms resources.<p>
  * 
- * @version $Revision: 1.7 $ $Date: 2005/02/17 12:44:32 $
+ * @version $Revision: 1.8 $ $Date: 2005/03/04 13:42:37 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  */
@@ -69,16 +69,17 @@ public interface I_CmsIndexer {
      * Creates new index entries for all resources below the given path.<p>
      * 
      * @param cms the current user's CmsObject
+     * @param source the source of the resources
      * @param path the path to the root of the subtree to index
      * 
      * @throws CmsIndexException if something goes wrong
      */
-    void updateIndex(CmsObject cms, String path) throws CmsIndexException;
+    void updateIndex(CmsObject cms, String source, String path) throws CmsIndexException;
 
     /**
      * Returns an index resource for a specified Lucene search result document.<p>
      * 
-     * Implementations of this method have to if the current user has read permissions
+     * Implementations of this method have to check if the current user has read permissions
      * on the Cms resource represented by the Lucene document.<p>
      * 
      * If this check fails, the implementation must return null as a result.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSearchConfiguration.java,v $
- * Date   : $Date: 2005/02/17 12:43:50 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/03/04 13:42:29 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.dom4j.Element;
  * Lucene search configuration class.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.3.5
  */
 public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
@@ -205,7 +205,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
         // add <exerpt> element
         searchElement.addElement(N_EXCERPT).addText(String.valueOf(m_searchManager.getMaxExcerptLength()));
         // add <highlighter> element
-        searchElement.addElement(N_HIGHLIGHTER).addText(m_searchManager.getHighlighter());
+        searchElement.addElement(N_HIGHLIGHTER).addText(m_searchManager.getHighlighter().getClass().getName());
         
         // <documenttypes> 
         Element documenttypesElement = searchElement.addElement(N_DOCUMENTTYPES);
@@ -289,6 +289,14 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
                 // add <source> element
                 sourcesElement.addElement(N_SOURCE).addText((String)sourcesIterator.next());
             }
+            // iterate additional params
+            Map params = searchIndex.getParams();
+            Iterator paramIterator = params.keySet().iterator();
+            while (paramIterator.hasNext()) {
+                String paramKey = (String) paramIterator.next();
+                // add <param name=""> element(s)                
+                indexElement.addElement(I_CmsXmlConfiguration.N_PARAM).addAttribute(I_CmsXmlConfiguration.A_NAME, paramKey).addText((String)params.get(paramKey));
+            }
         }
         // </indexes>
         
@@ -305,7 +313,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
             // add <indexer class=""> element
             Element indexerElement = indexsourceElement.addElement(N_INDEXER).addAttribute(N_CLASS, searchIndexSource.getIndexerClassName());
             Map params = searchIndexSource.getParams();
-            Iterator paramIterator = params.entrySet().iterator();
+            Iterator paramIterator = params.keySet().iterator();
             while (paramIterator.hasNext()) {
                 String paramKey = (String) paramIterator.next();
                 // add <param name=""> element(s)                

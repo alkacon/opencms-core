@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsVfsIndexer.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/03/04 13:42:37 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.apache.lucene.index.IndexWriter;
 /**
  * Implementation for an indexer indexing VFS Cms resources.<p>
  * 
- * @version $Revision: 1.16 $ $Date: 2005/02/17 12:44:32 $
+ * @version $Revision: 1.17 $ $Date: 2005/03/04 13:42:37 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -87,9 +87,9 @@ public class CmsVfsIndexer implements I_CmsIndexer {
     }
 
     /**
-     * @see org.opencms.search.I_CmsIndexer#updateIndex(CmsObject, java.lang.String)
+     * @see org.opencms.search.I_CmsIndexer#updateIndex(CmsObject, java.lang.String, java.lang.String)
      */
-    public void updateIndex(CmsObject cms, String path) throws CmsIndexException {
+    public void updateIndex(CmsObject cms, String source, String path) throws CmsIndexException {
 
         boolean folderReported = false;
         List resources = null;
@@ -110,7 +110,7 @@ public class CmsVfsIndexer implements I_CmsIndexer {
                 // we only have to index those resources that are not marked as internal
                 if (!res.isInternal()) {                
                     if (res instanceof CmsFolder) {
-                        updateIndex(cms, cms.getRequestContext().removeSiteRoot(res.getRootPath()));
+                        updateIndex(cms, source, cms.getRequestContext().removeSiteRoot(res.getRootPath()));
                         continue;
                     }
     
@@ -127,8 +127,8 @@ public class CmsVfsIndexer implements I_CmsIndexer {
                         m_report.print(m_report.key("search.dots"), I_CmsReport.C_FORMAT_DEFAULT);
                     }
     
-                    A_CmsIndexResource ires = new CmsVfsIndexResource(res);
-                    m_threadManager.createIndexingThread(m_writer, ires, m_index);
+                    A_CmsIndexResource ires = new CmsVfsIndexResource(source, res);
+                    m_threadManager.createIndexingThread(cms, m_writer, ires, m_index);
                 } 
             }
 
@@ -187,7 +187,7 @@ public class CmsVfsIndexer implements I_CmsIndexer {
 
             if (cms.hasPermissions(resource, CmsPermissionSet.ACCESS_READ)) {
 
-                result = new CmsVfsIndexResource(resource);
+                result = new CmsVfsIndexResource(doc.getField(I_CmsDocumentFactory.DOC_SOURCE).stringValue(), resource);
             }
         }
 

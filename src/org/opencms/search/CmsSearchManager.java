@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2005/03/04 13:42:37 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import org.opencms.report.CmsLogReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.scheduler.I_CmsScheduledJob;
 import org.opencms.search.documents.I_CmsDocumentFactory;
+import org.opencms.search.documents.I_TermHighlighter;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -61,7 +62,7 @@ import org.apache.lucene.index.IndexWriter;
  * Implements the general management and configuration of the search and 
  * indexing facilities in OpenCms.<p>
  * 
- * @version $Revision: 1.28 $ $Date: 2005/02/17 12:44:32 $
+ * @version $Revision: 1.29 $ $Date: 2005/03/04 13:42:37 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -79,11 +80,8 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     /** A map of document factories keyed by their matching Cms resource types and/or mimetypes. */
     private Map m_documentTypes;
     
-    /** 
-     * The package/class name of the class to highlight the search terms in the excerpt of a search result.
-     * A highlighter is a class implementing org.opencms.search.documents.I_TermHighlighter.
-     */
-    private String m_highlighter;
+    /** The class used to highlight the search terms in the excerpt of a search result. */
+    private I_TermHighlighter m_highlighter;
 
     /** A list of search indexes. */
     private List m_indexes;
@@ -235,13 +233,11 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     }
     
     /**
-     * Returns the package/class name of the highlighter.<p>
+     * Returns the highlighter.<p>
      * 
-     * A highlighter is a class implementing org.opencms.search.documents.I_TermHighlighter.<p>
-     * 
-     * @return the package/class name of the highlighter
+     * @return the highlighter
      */
-    public String getHighlighter() {
+    public I_TermHighlighter getHighlighter() {
 
         return m_highlighter;
     }
@@ -405,7 +401,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     }
     
     /**
-     * Sets the package/class name of the highlighter.<p>
+     * Sets the highlighter.<p>
      *
      * A highlighter is a class implementing org.opencms.search.documents.I_TermHighlighter.<p>
      *
@@ -413,7 +409,11 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      */
     public void setHighlighter(String highlighter) {
 
-        m_highlighter = highlighter;
+        try {
+            m_highlighter = (I_TermHighlighter)Class.forName(highlighter).newInstance();
+        } catch (Exception exc) {
+            m_highlighter = null;
+        }
     }
     
     /**
@@ -592,7 +592,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
                     // update the index
                     indexer.init(report, index, indexSource, writer, threadManager);
-                    indexer.updateIndex(m_cms, resourceName);
+                    indexer.updateIndex(m_cms, indexSource.getName(), resourceName);
                 }
 
                 // wait for indexing threads to finish
@@ -773,7 +773,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 try {
                     c = Class.forName(className);
                     documentFactory = (I_CmsDocumentFactory)c.getConstructor(
-                        new Class[] {m_cms.getClass(), String.class}).newInstance(new Object[] {m_cms, name});
+                        new Class[] {String.class}).newInstance(new Object[] {name});
                 } catch (ClassNotFoundException exc) {
                     throw new CmsIndexException("["
                         + this.getClass().getName()

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsPdfDocument.java,v $
- * Date   : $Date: 2005/03/02 13:21:06 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/03/04 13:42:45 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.pdfbox.util.PDFTextStripper;
  * Lucene document factory class to extract index data from a cms resource 
  * containing Adobe pdf data.<p>
  * 
- * @version $Revision: 1.10 $ $Date: 2005/03/02 13:21:06 $
+ * @version $Revision: 1.11 $ $Date: 2005/03/04 13:42:45 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsPdfDocument extends CmsVfsDocument {
@@ -64,26 +64,25 @@ public class CmsPdfDocument extends CmsVfsDocument {
     /**
      * Creates a new instance of this lucene document factory.<p>
      * 
-     * @param cms the cms object
      * @param name name of the documenttype
      */
-    public CmsPdfDocument (CmsObject cms, String name) {
-        super(cms, name);
+    public CmsPdfDocument (String name) {
+        super(name);
     }
     
     /**
      * Returns the raw text content of a given vfs resource containing Adobe pdf data.<p>
      * 
-     * @see org.opencms.search.documents.CmsVfsDocument#getRawContent(org.opencms.search.A_CmsIndexResource, java.lang.String)
+     * @see org.opencms.search.documents.CmsVfsDocument#getRawContent(org.opencms.file.CmsObject, org.opencms.search.A_CmsIndexResource, java.lang.String)
      */
-    public String getRawContent(A_CmsIndexResource indexResource, String language) throws CmsException {
+    public String getRawContent(CmsObject cms, A_CmsIndexResource indexResource, String language) throws CmsException {
 
         CmsResource resource = (CmsResource)indexResource.getData();
         PDDocument pdfDocument = null;
         String rawContent = null;
         
         try {
-            CmsFile file = m_cms.readFile(m_cms.getRequestContext().removeSiteRoot(resource.getRootPath()), CmsResourceFilter.IGNORE_EXPIRATION);
+            CmsFile file = cms.readFile(cms.getRequestContext().removeSiteRoot(resource.getRootPath()), CmsResourceFilter.IGNORE_EXPIRATION);
             if (!(file.getLength() > 0)) {
                 throw new CmsIndexException("Resource " + resource.getRootPath() + " has no content.");
             }
@@ -106,6 +105,7 @@ public class CmsPdfDocument extends CmsVfsDocument {
 
             rawContent = writer.toString();
             writer.close();
+      
                        
         } catch (CryptographyException exc) {
            throw new CmsIndexException("Decrypting resource " + resource.getRootPath() + " failed.", exc);
@@ -128,12 +128,12 @@ public class CmsPdfDocument extends CmsVfsDocument {
     /**
      * Generates a new lucene document instance from contents of the given resource.<p>
      * 
-     * @see org.opencms.search.documents.I_CmsDocumentFactory#newInstance(org.opencms.search.A_CmsIndexResource, java.lang.String)
+     * @see org.opencms.search.documents.I_CmsDocumentFactory#newInstance(org.opencms.file.CmsObject, org.opencms.search.A_CmsIndexResource, java.lang.String)
      */
-    public Document newInstance (A_CmsIndexResource resource, String language) throws CmsException {
+    public Document newInstance (CmsObject cms, A_CmsIndexResource resource, String language) throws CmsException {
                    
-        Document document = super.newInstance(resource, language);
-        document.add(Field.Text(I_CmsDocumentFactory.DOC_CONTENT, getRawContent(resource, language)));
+        Document document = super.newInstance(cms, resource, language);
+        document.add(Field.Text(I_CmsDocumentFactory.DOC_CONTENT, getRawContent(cms, resource, language)));
         
         return document;
     }

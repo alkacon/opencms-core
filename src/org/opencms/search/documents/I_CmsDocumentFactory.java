@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/I_CmsDocumentFactory.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/03/04 13:42:45 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@
  */
 package org.opencms.search.documents;
 
+import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.search.A_CmsIndexResource;
 
@@ -41,7 +42,7 @@ import org.apache.lucene.document.Document;
 /**
  * Implementation interface for lucene document factories used in OpenCms.<p>
  * 
- * @version $Revision: 1.12 $ $Date: 2005/02/17 12:44:32 $
+ * @version $Revision: 1.13 $ $Date: 2005/03/04 13:42:45 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  */
@@ -65,6 +66,9 @@ public interface I_CmsDocumentFactory {
     /** Search field for document path within a site. */
     String DOC_PATH = "path";
 
+    /** (Internal used) Search field for the document source. */
+    String DOC_SOURCE = "source";
+    
     /** Search field for document title. */
     String DOC_TITLE = "title";
     
@@ -99,20 +103,22 @@ public interface I_CmsDocumentFactory {
     /**
      * Returns the raw content of a given resource according to the concrete file type.<p>
      * 
+     * @param cms the cms object
      * @param resource a cms resource
      * @param language the requested language
      * @return the raw textual content of the resource
      * @throws CmsException if somethin goes wrong
      */
-    String getRawContent(A_CmsIndexResource resource, String language) throws CmsException;
+    String getRawContent(CmsObject cms, A_CmsIndexResource resource, String language) throws CmsException;
     
     /**
      * Creates a new instance of a lucene document type for the concrete file type.<p>
      * 
+     * @param cms the cms object
      * @param resource a cms resource
      * @param language the requested language
      * @return a lucene document for the given resource
      * @throws CmsException if something goes wrong
      */
-    Document newInstance(A_CmsIndexResource resource, String language) throws CmsException;
+    Document newInstance(CmsObject cms, A_CmsIndexResource resource, String language) throws CmsException;
 }

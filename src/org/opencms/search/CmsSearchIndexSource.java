@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndexSource.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/03/04 13:42:37 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
 
 package org.opencms.search;
 
+import org.opencms.main.OpenCms;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,7 +44,7 @@ import java.util.Map;
  * to be indexed.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.3.6
  */
 public class CmsSearchIndexSource implements Serializable, Cloneable {
@@ -53,6 +55,9 @@ public class CmsSearchIndexSource implements Serializable, Cloneable {
     /** The class name of the indexer. */
     private String m_indexerClassName;
 
+    /** The indexer. */
+    private I_CmsIndexer m_indexer;
+    
     /** A map of optional key/value parameters. */
     private Map m_params;
 
@@ -82,6 +87,16 @@ public class CmsSearchIndexSource implements Serializable, Cloneable {
         return m_documentTypes;
     }
 
+    /**
+     * Returns the indexer.<p>
+     * 
+     * @return the indexer
+     */
+    public I_CmsIndexer getIndexer() {
+        
+        return m_indexer;
+    }
+    
     /**
      * Returns the class name of the indexer.<p>
      *
@@ -140,6 +155,12 @@ public class CmsSearchIndexSource implements Serializable, Cloneable {
     public void setIndexerClassName(String indexerClassName) {
 
         m_indexerClassName = indexerClassName;
+        
+        try {
+            m_indexer = (I_CmsIndexer)Class.forName(m_indexerClassName).newInstance();
+        } catch (Exception exc) {
+            OpenCms.getLog(this).error("Cannot create an instance of indexer " + m_indexerClassName, exc);   
+        }
     }
 
     /**

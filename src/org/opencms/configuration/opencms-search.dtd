@@ -98,7 +98,8 @@
 	rebuild,
 	project,
 	locale,
-	sources
+	sources,
+	param*
 )>
 
 <!--

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsVfsDocument.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/03/04 13:42:45 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,18 +51,13 @@ import org.apache.lucene.document.Field;
  * Lucene document factory class to extract index data from a vfs resource 
  * of any type derived from <code>CmsResource</code>.<p>
  * 
- * @version $Revision: 1.12 $ $Date: 2005/02/17 12:44:32 $
+ * @version $Revision: 1.13 $ $Date: 2005/03/04 13:42:45 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsVfsDocument implements I_CmsDocumentFactory {
 
     /** The vfs prefix for document keys. */
     public static final String C_DOCUMENT_KEY_PREFIX = "VFS";
-    
-    /**
-     * The cms object.
-     */
-    protected CmsObject m_cms;
     
     /**
      * Name of the documenttype.
@@ -72,11 +67,9 @@ public class CmsVfsDocument implements I_CmsDocumentFactory {
     /**
      * Creates a new instance of this lucene document factory.<p>
      * 
-     * @param cms the cms object
      * @param name name of the documenttype
      */
-    public CmsVfsDocument(CmsObject cms, String name) {
-        m_cms = cms;
+    public CmsVfsDocument(String name) {
         m_name = name;
     }
 
@@ -84,12 +77,13 @@ public class CmsVfsDocument implements I_CmsDocumentFactory {
      * Returns the raw text content of a vfs resource.<p>
      * NOT IMPLEMENTED.
      * 
+     * @param cms the cms object 
      * @param resource the resource
      * @param language the language requested
      * @return the raw text content
      * @throws CmsException if something goes wrong
      */
-    public String getRawContent(A_CmsIndexResource resource, String language) throws CmsException {        
+    public String getRawContent(CmsObject cms, A_CmsIndexResource resource, String language) throws CmsException {        
         if (resource == null) {
             throw new CmsIndexException("Can not get raw content for language " + language + " from a 'null' resource");
         }
@@ -99,22 +93,22 @@ public class CmsVfsDocument implements I_CmsDocumentFactory {
     /**
      * Generates a new lucene document instance from contents of the given resource.<p>
      * 
-     * @see org.opencms.search.documents.I_CmsDocumentFactory#newInstance(org.opencms.search.A_CmsIndexResource, java.lang.String)
+     * @see org.opencms.search.documents.I_CmsDocumentFactory#newInstance(org.opencms.file.CmsObject, org.opencms.search.A_CmsIndexResource, java.lang.String)
      */
-    public Document newInstance (A_CmsIndexResource resource, String language) throws CmsException {
+    public Document newInstance (CmsObject cms, A_CmsIndexResource resource, String language) throws CmsException {
         
         Document document = new Document();
         CmsResource res = (CmsResource)resource.getData();
-        String path = m_cms.getRequestContext().removeSiteRoot(resource.getRootPath());
+        String path = cms.getRequestContext().removeSiteRoot(resource.getRootPath());
         String value;
 
-        if ((value = m_cms.readPropertyObject(path, I_CmsConstants.C_PROPERTY_TITLE, false).getValue()) != null) {
+        if ((value = cms.readPropertyObject(path, I_CmsConstants.C_PROPERTY_TITLE, false).getValue()) != null) {
             document.add(Field.Text(I_CmsDocumentFactory.DOC_TITLE, value));
         }
-        if ((value = m_cms.readPropertyObject(path, I_CmsConstants.C_PROPERTY_KEYWORDS, false).getValue()) != null) {
+        if ((value = cms.readPropertyObject(path, I_CmsConstants.C_PROPERTY_KEYWORDS, false).getValue()) != null) {
             document.add(Field.Text(I_CmsDocumentFactory.DOC_KEYWORDS, value));
         }        
-        if ((value = m_cms.readPropertyObject(path, I_CmsConstants.C_PROPERTY_DESCRIPTION, false).getValue()) != null) {
+        if ((value = cms.readPropertyObject(path, I_CmsConstants.C_PROPERTY_DESCRIPTION, false).getValue()) != null) {
             document.add(Field.Text(I_CmsDocumentFactory.DOC_DESCRIPTION, value));
         }                
 
@@ -124,7 +118,8 @@ public class CmsVfsDocument implements I_CmsDocumentFactory {
             DateField.timeToString(res.getDateLastModified())));
     
         document.add(Field.Keyword(I_CmsDocumentFactory.DOC_PATH, resource.getRootPath()));
-
+        document.add(Field.Keyword(I_CmsDocumentFactory.DOC_SOURCE, resource.getSource()));
+        
         return document;
     }
         

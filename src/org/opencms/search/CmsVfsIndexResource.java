@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/Attic/CmsVfsIndexResource.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/03/04 13:42:37 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.search.documents.CmsVfsDocument;
  * Contains the data of a VFS Cms resource specified by a Lucene 
  * search result document.<p>
  * 
- * @version $Revision: 1.10 $ $Date: 2005/02/17 12:44:32 $
+ * @version $Revision: 1.11 $ $Date: 2005/03/04 13:42:37 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -50,13 +50,15 @@ public class CmsVfsIndexResource extends A_CmsIndexResource {
     /** 
      * Creates a new instance to wrap the given <code>CmsResource</code>.<p>
      * 
+     * @param source the source of the data object
      * @param res the data object
      */
-    public CmsVfsIndexResource(CmsResource res) {
+    public CmsVfsIndexResource(String source, CmsResource res) {
 
         m_data = res;
         m_id = res.getResourceId();
         m_name = res.getName();
+        m_source = source;
         
         try {
             I_CmsResourceType resourceType = OpenCms.getResourceManager().getResourceType(res.getTypeId());

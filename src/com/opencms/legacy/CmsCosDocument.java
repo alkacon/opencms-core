@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsCosDocument.java,v $
- * Date   : $Date: 2005/02/18 15:18:52 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/03/04 13:42:22 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.apache.lucene.document.Field;
  * Lucene document factory class to extract index data from a cos resource 
  * of any type derived from <code>CmsMasterDataSet</code>.<p>
  * 
- * @version $Revision: 1.10 $ $Date: 2005/02/18 15:18:52 $
+ * @version $Revision: 1.11 $ $Date: 2005/03/04 13:42:22 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
@@ -90,12 +90,13 @@ public class CmsCosDocument implements I_CmsCosDocumentFactory {
      * For indexing purposes, the contents of the arrays <code>m_dataSmall</code>, <code>m_dataMedium</code> 
      * and <code>m_dataBig</code> are collected in a string.
      * 
+     * @param cms the cms object
      * @param indexResource the resource
      * @param language the language requested
      * @return the raw text content
      * @throws CmsException if something goes wrong
      */
-    public String getRawContent(A_CmsIndexResource indexResource, String language) throws CmsException {        
+    public String getRawContent(CmsObject cms, A_CmsIndexResource indexResource, String language) throws CmsException {        
         
         CmsMasterDataSet resource = (CmsMasterDataSet)indexResource.getData();
         String rawContent = null;
@@ -140,9 +141,9 @@ public class CmsCosDocument implements I_CmsCosDocumentFactory {
     /**
      * Generates a new lucene document instance from contents of the given resource.<p>
      * 
-     * @see org.opencms.search.documents.I_CmsDocumentFactory#newInstance(org.opencms.search.A_CmsIndexResource, java.lang.String)
+     * @see org.opencms.search.documents.I_CmsDocumentFactory#newInstance(org.opencms.file.CmsObject, org.opencms.search.A_CmsIndexResource, java.lang.String)
      */
-    public Document newInstance (A_CmsIndexResource resource, String language) throws CmsException {
+    public Document newInstance (CmsObject cms, A_CmsIndexResource resource, String language) throws CmsException {
         
         Document document = new Document();
         CmsMasterDataSet content = (CmsMasterDataSet)resource.getData();
@@ -161,9 +162,10 @@ public class CmsCosDocument implements I_CmsCosDocumentFactory {
         document.add(Field.Keyword(I_CmsCosDocumentFactory.DOC_CHANNEL, ((CmsCosIndexResource)resource).getChannel()));
         document.add(Field.Keyword(I_CmsCosDocumentFactory.DOC_CONTENT_DEFINITION, ((CmsCosIndexResource)resource).getContentDefinition()));
         document.add(Field.Keyword(I_CmsDocumentFactory.DOC_PATH, path));
+        document.add(Field.Keyword(I_CmsDocumentFactory.DOC_SOURCE, resource.getSource()));
         
         document.add(Field.UnIndexed(I_CmsCosDocumentFactory.DOC_CONTENT_ID, resource.getId().toString()));
-        document.add(Field.Text(I_CmsDocumentFactory.DOC_CONTENT, getRawContent(resource, language)));
+        document.add(Field.Text(I_CmsDocumentFactory.DOC_CONTENT, getRawContent(cms, resource, language)));
 
         return document;
     }

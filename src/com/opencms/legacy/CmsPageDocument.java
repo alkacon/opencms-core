@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsPageDocument.java,v $
- * Date   : $Date: 2005/02/18 15:18:52 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/03/04 13:42:22 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.htmlparser.parserapplications.StringExtractor;
  * Lucene document factory class to extract index data from a cms resource 
  * of type <code>CmsResourceTypePage</code>.<p>
  * 
- * @version $Revision: 1.5 $ $Date: 2005/02/18 15:18:52 $
+ * @version $Revision: 1.6 $ $Date: 2005/03/04 13:42:22 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -58,25 +58,24 @@ public class CmsPageDocument extends CmsVfsDocument {
     /**
      * Creates a new instance of this lucene document factory.<p>
      * 
-     * @param cms the cms object
      * @param name name of the documenttype
      */
-    public CmsPageDocument (CmsObject cms, String name) {
-        super(cms, name);
+    public CmsPageDocument (String name) {
+        super(name);
     }
     
     /**
      * Gets the raw text content of a cms resource.<p>
      * 
-     * @see org.opencms.search.documents.CmsVfsDocument#getRawContent(org.opencms.search.A_CmsIndexResource, java.lang.String)
+     * @see org.opencms.search.documents.CmsVfsDocument#getRawContent(org.opencms.file.CmsObject, org.opencms.search.A_CmsIndexResource, java.lang.String)
      */
-    public String getRawContent(A_CmsIndexResource indexResource, String language) throws CmsException {
+    public String getRawContent(CmsObject cms, A_CmsIndexResource indexResource, String language) throws CmsException {
 
         CmsResource resource = (CmsResource)indexResource.getData();
         String rawContent = null;
         
         try {
-            CmsXmlTemplateFile file = new CmsXmlTemplateFile(m_cms, m_cms.getRequestContext().removeSiteRoot(resource.getRootPath()));        
+            CmsXmlTemplateFile file = new CmsXmlTemplateFile(cms, cms.getRequestContext().removeSiteRoot(resource.getRootPath()));        
             String content = file.getProcessedTemplateContent(null, null);
             
             StringExtractor extractor = new StringExtractor(content);
@@ -91,12 +90,12 @@ public class CmsPageDocument extends CmsVfsDocument {
     /**
      * Creates a new lucene document instance for a resource of type <code>CmsResourceTypePage</code>.<p>
      * 
-     * @see org.opencms.search.documents.I_CmsDocumentFactory#newInstance(org.opencms.search.A_CmsIndexResource, java.lang.String)
+     * @see org.opencms.search.documents.I_CmsDocumentFactory#newInstance(org.opencms.file.CmsObject, org.opencms.search.A_CmsIndexResource, java.lang.String)
      */
-    public Document newInstance (A_CmsIndexResource resource, String language) throws CmsException {
+    public Document newInstance (CmsObject cms, A_CmsIndexResource resource, String language) throws CmsException {
                    
-        Document document = super.newInstance(resource, language);
-        document.add(Field.Text(I_CmsDocumentFactory.DOC_CONTENT, getRawContent(resource, language)));
+        Document document = super.newInstance(cms, resource, language);
+        document.add(Field.Text(I_CmsDocumentFactory.DOC_CONTENT, getRawContent(cms, resource, language)));
         
         return document;
     }
