@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/08/04 11:20:24 $
- * Version: $Revision: 1.489 $
+ * Date   : $Date: 2003/08/08 14:11:22 $
+ * Version: $Revision: 1.490 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -18,6 +18,12 @@ Legend:
 ! New Feature
 * Bug fixed
 - General comment
+
+OpenCms 5.1.6 Salusa Secundus - August 8, 2003
+! New feature in opencms.properties allows free naming of default groups / users 
+! Export version set to 4, new format for the export, older versions are still supported
+* Fixed more issues regarding the new locking mechanism
+* Fixed more issues regarding the new VFS database stucture
 
 OpenCms 5.1.5 Salusa Secundus - August 4, 2003
 ! Introduced org.opencms.security.CmsSecurityException 
