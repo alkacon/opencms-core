@@ -4,7 +4,7 @@ package com.opencms.core;
  * This exception is thrown for security reasons in the Cms.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.12 $ $Date: 2000/01/12 10:13:53 $
+ * @version $Revision: 1.13 $ $Date: 2000/01/13 09:45:49 $
  */
 public class CmsException extends Exception {
 	
@@ -142,21 +142,6 @@ public class CmsException extends Exception {
 	 /** 
 	 * Contructs a CmsException with reserved error code
 	 * <p>
-	 * Available error codes are: 
-	 * <ul>
-	 * <li> <b>0:</b> Unknown exception </li>
-	 * <li> <b>1:</b> Access denied </li>
-	 * <li> <b>2:</b> Not found </li>
-	 * <li> <b>3:</b> Bad name </li>
-	 * <li> <b>4:</b> Sql exception </li>
-	 * <li> <b>5:</b> Folder not empty </li>
-	 * <li> <b>6:</b> Admin access required </li>
-	 * <li> <b>7:</b> Serialization/Deserialization failed </li>
-	 * <li> <b>8:</b> Unknown User Group </li>
-	 * <li> <b>9:</b> Group not empty </li>
-	 * <li> <b>10:</b> Unknown User </li>
-     * <li> <b>11:</b> No removal from Default Group </li>
-      * </ul>
 	 * 
 	 * @param i Exception code
 	 */
@@ -168,21 +153,6 @@ public class CmsException extends Exception {
 	 /** 
 	 * Constructs a  CmsException with reserved error code and additional information
 	 * <p>
-	 * Available error codes are: 
-	 * <ul>
-	 * <li> <b>0:</b> Unknown exception </li>
-	 * <li> <b>1:</b> Access denied </li>
-	 * <li> <b>2:</b> Not found </li>
-	 * <li> <b>3:</b> Bad name </li>
-	 * <li> <b>4:</b> Sql exception </li>
-	 * <li> <b>5:</b> Folder not empty </li>
-	 * <li> <b>6:</b> Admin access required </li>
-	 * <li> <b>7:</b> Serialization/Deserialization failed </li>
-	 * <li> <b>8:</b> Unknown User Group </li>
-	 * <li> <b>9:</b> Group not empty </li>
-	 * <li> <b>10:</b> Unknown User </li>
-     * <li> <b>11:</b> No removal from Default Group </li>
-	 * </ul>
 	 * 
 	 * @param s Exception description
 	 * @param i Exception code
@@ -206,22 +176,6 @@ public class CmsException extends Exception {
 	 /** 
 	 * Creates a CmsException with reserved error code and a forwarded other exception
 	 * <p>
-	 * Available error codes are: 
-	 * <ul>
-	 * <li> <b>0:</b> Unknown exception </li>
-	 * <li> <b>1:</b> Access denied </li>
-	 * <li> <b>2:</b> Not found </li>
-	 * <li> <b>3:</b> Bad name </li>
-	 * <li> <b>4:</b> Sql exception </li>
-	 * <li> <b>5:</b> Folder not empty </li>
-	 * <li> <b>6:</b> Admin access required </li>
-	 * <li> <b>7:</b> Serialization/Deserialization failed </li>
-	 * <li> <b>8:</b> Unknown User Group </li>
-	 * <li> <b>9:</b> Group not empty </li>
-	 * <li> <b>10:</b> Unknown User </li>
-     * <li> <b>11:</b> No removal from Default Group </li>
-	 * </ul>
-	 * 
 	 * 
 	 * @param i Exception code
 	 * @param e Forawarded general exception
@@ -235,21 +189,6 @@ public class CmsException extends Exception {
 	 /** 
 	 * Creates a CmsException with reserved error code, a forwarded other exception and a detail message
 	 * <p>
-	 * Available error codes are: 
-	 * <ul>
-	 * <li> <b>0:</b> Unknown exception </li>
-	 * <li> <b>1:</b> Access denied </li>
-	 * <li> <b>2:</b> Not found </li>
-	 * <li> <b>3:</b> Bad name </li>
-	 * <li> <b>4:</b> Sql exception </li>
-	 * <li> <b>5:</b> Folder not empty </li>
-	 * <li> <b>6:</b> Admin access required </li>
-	 * <li> <b>7:</b> Serialization/Deserialization failed </li>
-	 * <li> <b>8:</b> Unknown User Group </li>
-	 * <li> <b>9:</b> Group not empty </li>
-	 * <li> <b>10:</b> Unknown User </li>
-     * <li> <b>11:</b> No removal from Default Group </li>
-	 * </ul>
 	 * 
 	 * @param s Exception description 
 	 * @param i Exception code
@@ -288,6 +227,9 @@ public class CmsException extends Exception {
 		return m_Exception;
 	}
     
+    /**
+     * Overwrites the standart toString method.
+     */
     public String toString(){
          StringBuffer output=new StringBuffer();
          output.append("[CmsException]: ");

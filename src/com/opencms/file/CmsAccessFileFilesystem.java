@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.7 $ $Date: 2000/01/11 16:34:00 $
+ * @version $Revision: 1.8 $ $Date: 2000/01/13 09:45:49 $
  */
  class CmsAccessFileFilesystem implements I_CmsAccessFile, I_CmsConstants  {
    
@@ -39,9 +39,7 @@ import com.opencms.core.*;
     public CmsAccessFileFilesystem(A_CmsMountPoint mountpoint)	
         throws CmsException {
         m_mountpoint = (CmsMountPoint) mountpoint;
-        //m_fileseperator=System.getProperty("file.seperator").charAt(0);
-        
-      }
+    }
     
 	 /**
 	 * Creates a new file with the given content and resourcetype.
@@ -79,7 +77,7 @@ import com.opencms.core.*;
                throw new CmsException(e.getMessage());
              }
          } else {
-             throw new CmsException(CmsException.C_FILE_EXISTS);
+             throw new CmsException(filename,CmsException.C_FILE_EXISTS);
          }
          return readFile(project,onlineProject,filename);
      }
@@ -114,13 +112,13 @@ import com.opencms.core.*;
                throw new CmsException(e.getMessage());
              }
          } else {
-             throw new CmsException(CmsException.C_FILE_EXISTS);
+             throw new CmsException(filename,CmsException.C_FILE_EXISTS);
          }
          return readFile(project,onlineProject,filename);
       
      }
      
-       /**
+     /**
 	 * Creates a new resource from an given CmsResource object.
      *
 	 * @param project The project in which the resource will be used.
@@ -173,10 +171,11 @@ import com.opencms.core.*;
 				    s.close();
 			   } catch (Exception e) {
                       throw new CmsException(e.getMessage());
-               }
-					   
+              }
 		    } 
-		  }
+         } else {
+             throw new CmsException(filename,CmsException.C_NOT_FOUND);
+         }
 		  return file;
      }
 	
@@ -216,7 +215,7 @@ import com.opencms.core.*;
                               new byte[0],
                               0);
          } else {
-             throw new CmsException(CmsException.C_NOT_FOUND);
+             throw new CmsException(filename,CmsException.C_NOT_FOUND);
          }
       return file;
        }
@@ -234,8 +233,15 @@ import com.opencms.core.*;
 	 */
 	 public Vector readAllFileHeaders(String filename)
          throws CmsException {
-         // to be implemented
-         return null;
+         Vector files=new Vector();
+         // Since the files in the filesystem all belong to the same project, this method only
+         // only returnes a fector which contains one or no file header. It is the same
+         // file header that is returnes by the readFileHeader method.
+         CmsFile file=readFileHeader(null,filename);
+         if (file != null){
+             files.addElement(file);
+         }
+         return files;
      }
 	
 	/**
@@ -264,7 +270,7 @@ import com.opencms.core.*;
                throw new CmsException(e.getMessage());
              }
          } else {
-             throw new CmsException(CmsException.C_NOT_FOUND);
+             throw new CmsException(file.getAbsolutePath(),CmsException.C_FILE_EXISTS);
          }
      }
 	
@@ -309,13 +315,13 @@ import com.opencms.core.*;
                 if (discFile.isFile()) {
 					boolean success=discFile.renameTo(newDiscFile);
 					if (!success) {
-                        throw new CmsException(CmsException.C_FILESYSTEM_ERROR);
+                        throw new CmsException(oldname,CmsException.C_FILESYSTEM_ERROR);
 					}
                 } else {
-                    throw new CmsException(CmsException.C_NOT_FOUND);
+                    throw new CmsException(oldname,CmsException.C_NOT_FOUND);
                 }
             } else {
-                  throw new CmsException(CmsException.C_NOT_FOUND);
+                  throw new CmsException(oldname,CmsException.C_NOT_FOUND);
             }
      }
 	
@@ -336,13 +342,13 @@ import com.opencms.core.*;
              if(discFile.isFile()) {
 				boolean success=discFile.delete();
 				if (!success) {
-						 throw new CmsException(CmsException.C_FILESYSTEM_ERROR);
+						 throw new CmsException(filename,CmsException.C_FILESYSTEM_ERROR);
 				}
              } else {
-                 throw new CmsException(CmsException.C_NOT_FOUND);
+                 throw new CmsException(filename,CmsException.C_NOT_FOUND);
              }
          } 	else {
-             throw new CmsException(CmsException.C_NOT_FOUND);
+             throw new CmsException(filename,CmsException.C_NOT_FOUND);
          }
      }
 	
@@ -377,7 +383,7 @@ import com.opencms.core.*;
                throw new CmsException(e.getMessage());
              }
          } else {
-             throw new CmsException(CmsException.C_FILE_EXISTS);
+             throw new CmsException(destination,CmsException.C_FILE_EXISTS);
          }
      }
 	
@@ -405,10 +411,10 @@ import com.opencms.core.*;
 		  if (!discFolder.exists())	{
 			boolean success=discFolder.mkdir();
 			if (!success) {
-				throw new CmsException(CmsException.C_FILESYSTEM_ERROR);
+				throw new CmsException(foldername,CmsException.C_FILESYSTEM_ERROR);
 			}
           } else {
-              throw new CmsException(CmsException.C_FILE_EXISTS);
+              throw new CmsException(foldername,CmsException.C_FILE_EXISTS);
           }
         return readFolder(project,foldername);
      }
@@ -427,7 +433,7 @@ import com.opencms.core.*;
                                    CmsFolder folder,
                                    String foldername)
          throws CmsException {
-         // to be implemeneted
+         // this method is not required in this access module so far.
          return null;
      }
      
@@ -462,7 +468,7 @@ import com.opencms.core.*;
                                       discFolder.lastModified());
 		   }
 	     } else {
-             throw new CmsException(CmsException.C_NOT_FOUND);
+             throw new CmsException(foldername,CmsException.C_NOT_FOUND);
          }
 	   return folder;       
     }
@@ -480,7 +486,7 @@ import com.opencms.core.*;
          throws CmsException {
          
                   
-         // Since the folder informations of all folders in a disc filesystem is 
+         // Since the folder informations of all folders in a disc filesystem are 
          // controlled by its mountpoint, nothing is done here.
      }
 
@@ -500,6 +506,18 @@ import com.opencms.core.*;
 	 */	
 	 public void deleteFolder(A_CmsProject project, String foldername, boolean force)
          throws CmsException {
+         
+      	 File discFolder=new File(absoluteName(foldername));
+		    // check if file exists	
+            if (discFolder.exists()) {
+                // it is really a folder
+				if (discFolder.isDirectory()) {
+					boolean success=discFolder.delete();
+					if (!success) {
+						throw new CmsException("Error deleting folder");
+					}
+				}
+			}
      }
 	
 	 /**
@@ -578,7 +596,9 @@ import com.opencms.core.*;
                                        A_CmsProject onlineProject,
                                        String resource) 
          throws CmsException {
-         // to be implemented
+         
+         // all files in a file system mounpoint belong to the online project,
+         // so nothing is done here.
      }
      
      /**
@@ -591,7 +611,10 @@ import com.opencms.core.*;
      */
     public Vector publishProject(A_CmsProject project, A_CmsProject onlineProject)
         throws CmsException {
-        // to be implemented
+        
+         // all files in a file system mounpoint belong to the online project,
+         // so nothing is done here.
+        
         return null;
     }
     
