@@ -1,8 +1,8 @@
 
 /*
 * File   : $File$
-* Date   : $Date: 2001/05/17 14:10:32 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2001/07/18 08:14:29 $
+* Version: $Revision: 1.6 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -138,7 +138,9 @@ public class CmsAdminModuleDelete extends CmsWorkplaceDefault implements I_CmsCo
         }
         if((step != null) && ("fromerrorpage".equals(step))) {
             Vector exclusion = (Vector)session.getValue(C_SESSION_MODULE_EXCLUSION);
-            Vector resourcesForProject = (Vector)session.getValue(C_SESSION_MODULE_PROJECTFILES);
+            // use the root folder instead of: Vector resourcesForProject = (Vector)session.getValue(C_SESSION_MODULE_PROJECTFILES);
+            Vector resourcesForProject = new Vector();
+            resourcesForProject.add("/");
             if(exclusion == null) {
                 exclusion = new Vector();
             }

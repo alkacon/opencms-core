@@ -1,8 +1,8 @@
 
 /*
 * File   : $File$
-* Date   : $Date: 2001/05/17 14:10:32 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2001/07/18 08:14:29 $
+* Version: $Revision: 1.8 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -258,7 +258,9 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault implements I_CmsConst
                 session.removeValue(C_MODULE_NAV);
             }
         }
-        Vector projectFiles = reg.importGetResourcesForProject(zipName);
+        // just use the rootfolder instead of: Vector projectFiles = reg.importGetResourcesForProject(zipName);
+        Vector projectFiles = new Vector();
+        projectFiles.add("/");
         Thread doTheImport = new CmsAdminModuleImport(cms, reg, zipName, conflictFiles, projectFiles);
         doTheImport.start();
         session.putValue(C_MODULE_THREAD, doTheImport);

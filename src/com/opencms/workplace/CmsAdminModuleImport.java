@@ -1,8 +1,8 @@
 
 /*
 * File   : $File$
-* Date   : $Date: 2001/06/22 16:01:33 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2001/07/18 08:14:29 $
+* Version: $Revision: 1.7 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -61,27 +61,32 @@ public class CmsAdminModuleImport extends Thread implements I_CmsConstants {
     }
     public void run() {
         CmsRequestContext reqCont = m_cms.getRequestContext();
+        String at = "ceateProject: ";
         try {
 
             // create a Project to import the module.
             CmsProject project = m_cms.createProject("ImportModule", "A System generated Project to import The Module " + m_moduleName, C_GROUP_ADMIN, C_GROUP_ADMIN, ""+C_PROJECT_TYPE_TEMPORARY);
             reqCont.setCurrentProject(project.getId());
 
+            at = "copyResourcesToProject: ";
             // copy the resources to the project
             for(int i = 0;i < m_projectFiles.size();i++) {
                 m_cms.copyResourceToProject((String)m_projectFiles.elementAt(i));
             }
 
+            at = "import Data: ";
             // now import the module
             m_registry.importModule(m_moduleName, m_conflictFiles);
 
+            at = "unlock project: ";
             // now unlock and publish the project
             m_cms.unlockProject(project.getId());
+            at = "publishProject: ";
             m_cms.publishProject(project.getId());
         }
         catch(CmsException e) {
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL, e.getMessage());
+                A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL, "import Module failed at "+at+ e.getMessage());
             }
         }
     }
