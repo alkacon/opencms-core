@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/10/04 18:44:11 $
- * Version: $Revision: 1.153 $
+ * Date   : $Date: 2000/10/05 15:39:54 $
+ * Version: $Revision: 1.154 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import com.opencms.util.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.153 $ $Date: 2000/10/04 18:44:11 $ * 
+ * @version $Revision: 1.154 $ $Date: 2000/10/05 15:39:54 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	
@@ -3195,6 +3195,7 @@ public Vector getSiteMatrixInfo() throws CmsException
 			a.put("categoryid", new Integer(res.getInt("CATEGORY_ID")));
 			a.put("langid", new Integer(res.getInt("LANGUAGE_ID")));
 			a.put("countryid", new Integer(res.getInt("COUNTRY_ID")));
+			a.put("url", res.getString("URL"));
 
 			shortname = res.getString("LANG_SNAME");
 			if (shortname != null) a.put("lang_sname", shortname);
