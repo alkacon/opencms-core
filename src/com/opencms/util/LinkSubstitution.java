@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/LinkSubstitution.java,v $
-* Date   : $Date: 2002/03/17 17:34:10 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2002/03/18 16:20:19 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -215,7 +215,8 @@ public class LinkSubstitution {
                     if(httpsMode && !retValue.startsWith("http")){
                         retValue = cms.getUrlPrefixArray()[3] + retValue;
                     }else{
-                        if(modus == cms.C_MODUS_EXPORT && (retValue != null) && retValue.startsWith(cms.getUrlPrefixArray()[0])){
+                        if(cms.relativLinksInExport() && modus == cms.C_MODUS_EXPORT
+                                && (retValue != null) && retValue.startsWith(cms.getUrlPrefixArray()[0])){
                             // we want the path relative
                             retValue = getRelativePath(cms.getRequestContext().getRequest().getRequestedResource(), retValue.substring((cms.getUrlPrefixArray()[0]).length()));
                         }
@@ -231,7 +232,7 @@ public class LinkSubstitution {
         if(httpsMode && !retValue.startsWith("http")){
             retValue = cms.getUrlPrefixArray()[3] + retValue;
         }else{
-            if(modus == cms.C_MODUS_EXPORT && (retValue != null) && retValue.startsWith(cms.getUrlPrefixArray()[0])){
+            if(cms.relativLinksInExport() && modus == cms.C_MODUS_EXPORT && (retValue != null) && retValue.startsWith(cms.getUrlPrefixArray()[0])){
                 // we want the path relative
                 retValue = getRelativePath(cms.getRequestContext().getRequest().getRequestedResource(), retValue.substring((cms.getUrlPrefixArray()[0]).length()));
             }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2002/03/05 12:55:35 $
-* Version: $Revision: 1.80 $
+* Date   : $Date: 2002/03/18 16:20:08 $
+* Version: $Revision: 1.81 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import com.opencms.template.cache.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.80 $ $Date: 2002/03/05 12:55:35 $
+ * @version $Revision: 1.81 $ $Date: 2002/03/18 16:20:08 $
  *
  * */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
@@ -158,6 +158,12 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
      * Is the static export enabled of diabled
      */
     private static boolean c_staticExportEnabled = false;
+
+    /**
+     * the link in the static export that link to pages that are exportet too
+     * are generated relative. This is only bugfree if the linkrules stay standard.
+     */
+    private static boolean c_exportRelativeLinks = false;
 
     /**
      * contains the four url prefixe for the lnikreplacement.
@@ -347,6 +353,8 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
             // at last the target for the export
             m_staticExportPath = com.opencms.boot.CmsBase.getAbsoluteWebPath(CmsBase.getAbsoluteWebPath(conf.getString(C_STATICEXPORT_PATH)));
 
+            // should the links in static export be relative?
+            c_exportRelativeLinks = conf.getBoolean("relativelinks_in_export", false);
             // is the static export enabled?
             String activCheck = conf.getString("staticexport.enabled", "false");
             if("true".equalsIgnoreCase(activCheck)){
@@ -470,6 +478,14 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
     public static boolean isStaticExportEnabled(){
         return c_staticExportEnabled;
     }
+
+    /**
+     * Returns true if the links in the static export should be relative.
+     */
+    public static boolean relativLinksInExport(){
+        return c_exportRelativeLinks;
+    }
+
     /**
      * This method gets the requested document from the OpenCms and returns it to the
      * calling module.
