@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2001/02/28 14:24:31 $
-* Version: $Revision: 1.48 $
+* Date   : $Date: 2001/04/27 17:03:31 $
+* Version: $Revision: 1.49 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.48 $ $Date: 2001/02/28 14:24:31 $
+ * @version $Revision: 1.49 $ $Date: 2001/04/27 17:03:31 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -597,7 +597,6 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
             }
         }
 
-        //System.err.println("returning template file name for Element " + elementName + " in File " + doc + ": " + result);
         return result;
     }
 
@@ -660,53 +659,6 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     }
 
     /**
-     * Indicates if the results of this class are cacheable.
-     * <P>
-     * Checks if the templateCache is set and if all subtemplates
-     * are cacheable.
-     *
-     * @param cms CmsObject Object for accessing system resources
-     * @param templateFile Filename of the template file
-     * @param elementName Element name of this template in our parent template.
-     * @param parameters Hashtable with all template class parameters.
-     * @param templateSelector template section that should be processed.
-     * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
-     */
-/*    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
-        boolean cacheable;
-        try {
-            if(!cms.getRequestContext().currentProject().equals(cms.onlineProject())) {
-
-                // never cache offline-resources
-                return false;
-            }
-            else {
-                if(templateSelector == null || "".equals(templateSelector)) {
-                    templateSelector = (String)parameters.get(C_FRAME_SELECTOR);
-                }
-                cacheable = ((m_cache != null) && subtemplatesCacheable(cms, templateFile, elementName, parameters, templateSelector));
-                if(C_DEBUG && A_OpenCms.isLogging()) {
-                    String errorMessage = getClassName() + "Template class " + getClass().getName() + " with file " + templateFile + " is ";
-                    if(cacheable) {
-                        errorMessage = errorMessage + "cacheable.";
-                    }
-                    else {
-                        errorMessage = errorMessage + "not cacheable.";
-                    }
-                    A_OpenCms.log(C_OPENCMS_DEBUG, errorMessage);
-                }
-            }
-        }
-        catch(CmsException exc) {
-
-            // there was an exception => don't cache this res.
-            cacheable = false;
-        }
-        return cacheable;
-    }
-    */
-
-    /**
      * Indicates if the current template class is able to stream it's results
      * directly to the response oputput stream.
      * <P>
@@ -764,49 +716,46 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
             doc = this.getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
             doc.init(cms, templateFile);
             subtemplates = doc.getAllSubElements();
-        }
-        catch(Exception e) {
-            System.err.println(e);
-            return new CmsCacheDirectives(false);
-        }
 
-        // Loop through all subelements and get their cache directives
-        int numSubtemplates = subtemplates.size();
-        for(int i = 0;i < numSubtemplates;i++) {
-            String elName = (String)subtemplates.elementAt(i);
-            String className = null;
-            String templateName = null;
-            try {
+            // Loop through all subelements and get their cache directives
+            int numSubtemplates = subtemplates.size();
+            for(int i = 0;i < numSubtemplates;i++) {
+                String elName = (String)subtemplates.elementAt(i);
+                String className = null;
+                String templateName = null;
+
                 className = getTemplateClassName(elName, doc, parameters);
                 templateName = getTemplateFileName(elName, doc, parameters);
-            }
-            catch(CmsException e) {
-                // There was an error while reading the class name or template name
-                // from the subtemplate.
-                // So we cannot determine the cacheability.
-                if(A_OpenCms.isLogging()) {
-                    A_OpenCms.log(C_OPENCMS_INFO, getClassName() + "Could not determine cacheability of subelement " + elName + " in template file " + doc.getFilename() + ". There were missing datablocks.");
+
+                if(className != null) {
+                    I_CmsTemplate templClass = (I_CmsTemplate)CmsTemplateClassManager.getClassInstance(cms, className);
+                    CmsCacheDirectives cd2 = templClass.getCacheDirectives(cms, templateName, elName, parameters, null);
+                    /*System.err.println("*                INT PUB PRV EXP STR");
+                    debugPrint(elementName, result.m_cd);
+                    System.err.println(" ");
+                    debugPrint(elName, cd2.m_cd);
+                    System.err.println(" " + templClass.getClass());
+                    System.err.println("*                -------------------");
+                    */
+                    //result.merge(templClass.getCacheDirectives(cms, templateName, elName, parameters, null));
+                    result.merge(cd2);
+                    /*debugPrint(elementName, result.m_cd);
+                    System.err.println(" ");
+                    System.err.println("* ");*/
+                } else {
+                    // This template file includes a subelement not exactly defined.
+                    // The name of it's template class is missing at the moment, so
+                    // we cannot say anything about the cacheablility.
+                    // Set it to false.
+                    return new CmsCacheDirectives(false);
                 }
+            }
+        }
+        catch(CmsException e) {
+            if(A_OpenCms.isLogging()) {
+                A_OpenCms.log(C_OPENCMS_INFO, getClassName() + "Cannot determine cache directives for my template file " + templateFile + " (" + e + "). ");
+                A_OpenCms.log(C_OPENCMS_INFO, getClassName() + "Resuming normal operation, setting cacheability to false.");
                 return new CmsCacheDirectives(false);
-            }
-            try {
-                I_CmsTemplate templClass = (I_CmsTemplate)CmsTemplateClassManager.getClassInstance(cms, className);
-                CmsCacheDirectives cd2 = templClass.getCacheDirectives(cms, templateName, elName, parameters, null);
-                /*System.err.println("*                INT PUB PRV EXP STR");
-                debugPrint(elementName, result.m_cd);
-                System.err.println(" ");
-                debugPrint(elName, cd2.m_cd);
-                System.err.println(" " + templClass.getClass());
-                System.err.println("*                -------------------");
-                */
-                //result.merge(templClass.getCacheDirectives(cms, templateName, elName, parameters, null));
-                result.merge(cd2);
-                /*debugPrint(elementName, result.m_cd);
-                System.err.println(" ");
-                System.err.println("* ");*/
-            }
-            catch(Exception e) {
-                System.err.println("E: " + e);
             }
         }
         return result;
@@ -923,60 +872,6 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
             }
         }
         return result.getBytes();
-    }
-
-    /**
-     * Checks if all subtemplates are cacheable.
-     * @param cms CmsObject Object for accessing system resources
-     * @param templateFile Filename of the template file
-     * @param elementName Element name of this template in our parent template.
-     * @param parameters Hashtable with all template class parameters.
-     * @param templateSelector template section that should be processed.
-     * @return <code>true</code> if all subtemplates are cacheable, <code>false</code> otherwise.
-     */
-    public boolean subtemplatesCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
-        boolean cacheable = true;
-        CmsXmlTemplateFile doc = null;
-        Vector subtemplates = null;
-        try {
-            doc = this.getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
-            doc.init(cms, templateFile);
-            subtemplates = doc.getAllSubElements();
-        }
-        catch(Exception e) {
-            System.err.println(e);
-            return false;
-        }
-        int numSubtemplates = subtemplates.size();
-        for(int i = 0;i < numSubtemplates;i++) {
-            String elName = (String)subtemplates.elementAt(i);
-            String className = null;
-            String templateName = null;
-            try {
-                className = getTemplateClassName(elName, doc, parameters);
-                templateName = getTemplateFileName(elName, doc, parameters);
-            }
-            catch(CmsException e) {
-
-                // There was an error while reading the class name or template name
-
-                // from the subtemplate.
-
-                // So we cannot determine the cacheability.
-                if(A_OpenCms.isLogging()) {
-                    A_OpenCms.log(C_OPENCMS_INFO, getClassName() + "Could not determine cacheability of subelement " + elName + " in template file " + doc.getFilename() + ". There were missing datablocks.");
-                }
-                return false;
-            }
-            try {
-                I_CmsTemplate templClass = (I_CmsTemplate)CmsTemplateClassManager.getClassInstance(cms, className);
-                cacheable = cacheable && templClass.isCacheable(cms, templateName, elName, parameters, null);
-            }
-            catch(Exception e) {
-                System.err.println("E: " + e);
-            }
-        }
-        return cacheable;
     }
 
     /**
