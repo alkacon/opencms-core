@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2002/01/31 10:16:47 $
-* Version: $Revision: 1.41 $
+* Date   : $Date: 2002/01/31 16:24:06 $
+* Version: $Revision: 1.42 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -65,6 +65,8 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault implements I_C
 
   private static String C_DEFAULT_SELECTOR="(default)";
   private static String C_DONE_SELECTOR="done";
+
+    private static String C_CHECKBOX_PREV="checkbox_";
 
     /** The style for unchanged files or folders */
     private final static String C_STYLE_UNCHANGED = "dateingeandert";
@@ -3408,6 +3410,7 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
           value=result+"";
         }
         template.setData(datablockName,value);
+
         // set the escaped value into datablock for unescaping
         String escapedValue = value;
         if(!"".equals(escapedValue.trim())){
@@ -3442,6 +3445,7 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
     while(keys.hasMoreElements()) {
           String key=(String) keys.nextElement();
           String value=parameters.get(key).toString();
+
           // not check if this parameter might be an uploaded file
           boolean isFile=false;
           // loop through all uploaded files and check if one of those is equal to the value of
@@ -3618,4 +3622,44 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
         template.setData("users",userOptions);
         template.setData("username",curUserName);
      }
+
+
+     /**
+  * user-method to create a checkbox with the according hidden field
+  * @param cms the CmsObject
+  * @param tagcontent params of the user-method
+  * @param doc
+  * @param userObject
+  * @return Object
+  */
+  public Object checkbox(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
+                         Object userObject) throws CmsException {
+        String name = null;
+        String param = "";
+        String value= "";
+        String checked=null;
+
+        CmsXmlTemplateFile temp=(CmsXmlTemplateFile)doc;
+        // separate name from other parameter (if given) ...
+        int index = tagcontent.indexOf(",");
+        if( index > -1 && index <= tagcontent.length()) {
+            name = tagcontent.substring(0, index);
+            param = tagcontent.substring(index+1, tagcontent.length() );
+        } else {
+            name = tagcontent;
+        }
+        // find out if the box was already selected ...
+        value=temp.getDataValue(name);
+        if (value.equals("on")) {
+          checked="checked";
+        } else {
+          checked="";
+        }
+
+        String buf =
+        "<input type=hidden name=\""+name+"\" value=\"off\">"+
+        "<input type=checkbox name=\""+name+"\" "+checked+" "+param+">\n";
+
+        return buf.toString();
+    }
 }
