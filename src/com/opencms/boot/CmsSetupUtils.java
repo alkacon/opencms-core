@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetupUtils.java,v $
-* Date   : $Date: 2001/11/12 12:55:21 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2001/11/15 17:10:16 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -215,7 +215,6 @@ public class CmsSetupUtils {
     public static boolean supportedServletEngine(String thisEngine, String[] supportedEngines)  {
         boolean supported = false;
         engineCheck: for(int i = 0; i < supportedEngines.length; i++)  {
-            System.out.println("sse " + thisEngine + " -> " + supportedEngines[i] + " -> " + thisEngine.indexOf(supportedEngines[i]));
             if (thisEngine.indexOf(supportedEngines[i]) >= 0) {
                 supported = true;
                 break engineCheck;
@@ -232,7 +231,6 @@ public class CmsSetupUtils {
      */
     public static int unsupportedServletEngine(String thisEngine, String[] unsupportedEngines)  {
         engineCheck: for(int i = 0; i < unsupportedEngines.length; i++)  {
-            System.out.println("use " + thisEngine + " -> " + unsupportedEngines[i] + " -> " + thisEngine.indexOf(unsupportedEngines[i]));
             if (thisEngine.indexOf(unsupportedEngines[i]) >= 0) {
                 return i;
             }
