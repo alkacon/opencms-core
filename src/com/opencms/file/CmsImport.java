@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
- * Date   : $Date: 2001/07/26 07:55:38 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2001/07/26 09:26:53 $
+ * Version: $Revision: 1.49 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -45,7 +45,7 @@ import source.org.apache.java.util.*;
  * into the cms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.48 $ $Date: 2001/07/26 07:55:38 $
+ * @version $Revision: 1.49 $ $Date: 2001/07/26 09:26:53 $
  */
 public class CmsImport implements I_CmsConstants, Serializable {
 
@@ -443,7 +443,7 @@ private void importResource(String source, String destination, String type, Stri
         type = fitFileType(path, name, content, type, properties);
 
         CmsResource res = m_cms.importResource(source, destination, type, user, group, access,
-                                    properties,launcherStartClass, content, m_importPath);
+                                    properties, launcherStartClass, content, m_importPath);
         if(res != null){
             fullname = res.getAbsolutePath();
         }

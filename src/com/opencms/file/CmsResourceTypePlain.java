@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePlain.java,v $
- * Date   : $Date: 2001/07/26 07:55:38 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2001/07/26 09:26:53 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -380,6 +380,7 @@ public class CmsResourceTypePlain implements I_CmsResourceType, I_CmsConstants, 
             System.out.println("chown((" + user + ") failed ");
         }
         if(launcherStartClass != null){
+            file = cms.readFile(fullname);
             file.setLauncherClassname(launcherStartClass);
             cms.writeFile(file);
         }
