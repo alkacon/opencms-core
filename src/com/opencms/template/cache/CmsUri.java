@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsUri.java,v $
-* Date   : $Date: 2001/07/03 11:53:57 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2001/07/04 16:24:21 $
+* Version: $Revision: 1.12 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -97,6 +97,20 @@ public class CmsUri implements I_CmsConstants {
         // check the proxistuff and set the response header
         CmsCacheDirectives proxySettings = new CmsCacheDirectives(true);
         elem.checkProxySettings(cms, proxySettings, parameters);
+
+        // now for the subelements
+        if(m_elementDefinitions != null){
+            Enumeration elementNames = m_elementDefinitions.getAllElementNames();
+            while(elementNames.hasMoreElements()){
+                String name = (String)elementNames.nextElement();
+                CmsElementDefinition currentDef = m_elementDefinitions.get(name);
+                A_CmsElement currentEle = elementCache.getElementLocator().get(
+                                        cms, new CmsElementDescriptor(currentDef.getClassName(),
+                                        currentDef.getTemplateName()), parameters);
+                currentEle.checkProxySettings(cms, proxySettings, parameters);
+            }
+        }
+
         I_CmsResponse resp = cms.getRequestContext().getResponse();
         // set the streaming
         cms.getRequestContext().setStreaming(cms.getRequestContext().isStreaming() && proxySettings.isStreamable());
@@ -104,10 +118,10 @@ public class CmsUri implements I_CmsConstants {
         if(!resp.containsHeader("Cache-Control")) {
             // only if the resource is cacheable and if the current project is online,
             // then the browser may cache the resource
-            if(proxySettings.isProxyPublicCacheable() || proxySettings.isProxyPrivateCacheable()){
+            if(proxySettings.isProxyPrivateCacheable()){
                 // set max-age to 5 minutes. In this time a proxy may cache this content.
                 resp.setHeader("Cache-Control", "max-age=300");
-                if(proxySettings.isProxyPrivateCacheable()) {
+                if(!proxySettings.isProxyPublicCacheable()){
                     resp.addHeader("Cache-Control", "private");
                 }
            }else{
