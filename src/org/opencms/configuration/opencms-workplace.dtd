@@ -372,7 +372,9 @@
 -->										
 <!ELEMENT workplace-startupsettings (locale,
 									 project,
-									 workplaceview)>
+									 workplaceview,
+									 folder,
+									 site)>
 <!--
 # A locale for the default workplace language (e.g. "en" or "de").
 -->	
@@ -387,7 +389,17 @@
 # The complete URI to the startup view (e.g. /system/workplace/jsp/explorer_fs.html
 # for the explorer view).
 -->	
-<!ELEMENT workplaceview (#PCDATA)>										 
+<!ELEMENT workplaceview (#PCDATA)>	
+
+<!--
+# The name of the start folder (e.g. "/" for the root folder).
+-->									
+<!ELEMENT folder (#PCDATA)>
+
+<!--
+# The name of the start site (e.g. "" or "/sites/default/").
+-->									
+<!ELEMENT site (#PCDATA)>									 
 						
 <!--
 # The explorer preferences define the preferences workplace explorer.

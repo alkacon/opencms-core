@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2004/06/14 12:02:26 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/06/16 14:20:11 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -191,6 +191,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     /** The node name of the file deletion node. */
     public static final String N_FILEDELETION = "filedeletion";
     
+    /** The node name of the start folder node. */
+    public static final String N_FOLDER = "folder";
+    
     /** The node name of the folder copy node. */
     public static final String N_FOLDERCOPY = "foldercopy";
     
@@ -237,7 +240,10 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     public static final String N_SHOWLOCK = "showlock";
     
     /** The node name of the showprojects node. */
-    public static final String N_SHOWPROJECTS = "showprojects";    
+    public static final String N_SHOWPROJECTS = "showprojects"; 
+    
+    /** The node name of the start site node. */
+    public static final String N_SITE = "site";
     
     /** The node name of the size column node. */
     protected static final String N_SIZE = "show-size";
@@ -421,6 +427,10 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
                                 "setStartProject", 0);
         digester.addCallMethod("*/" + N_WORKPLACE + "/" +N_USER + "/" + N_WORKPLACEPREFERENCES + "/"+ N_WORKPLACESTARTUPSETTINGS  + "/" + N_WORKPLACEVIEW,
                                 "setStartView", 0); 
+        digester.addCallMethod("*/" + N_WORKPLACE + "/" +N_USER + "/" + N_WORKPLACEPREFERENCES + "/"+ N_WORKPLACESTARTUPSETTINGS  + "/" + N_FOLDER,
+            "setStartFolder", 0);
+        digester.addCallMethod("*/" + N_WORKPLACE + "/" +N_USER + "/" + N_WORKPLACEPREFERENCES + "/"+ N_WORKPLACESTARTUPSETTINGS  + "/" + N_SITE,
+            "setStartSite", 0);
 
         // add explorer preferences generaloptions rules 
         digester.addCallMethod("*/" + N_WORKPLACE + "/" +N_USER + "/" + N_EXPLORERPREFERENCES + "/"+ N_EXPLORERGENERALOPTIONS + "/" + N_BUTTONSTYLE,
@@ -534,7 +544,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
             .addAttribute(A_ORDER, view.getOrder().toString());                
         }            
                 
-        // add <exportpoints> subnide
+        // add <exportpoints> subnode
         Element resourceloadersElement = workplaceElement.addElement(N_EXPORTPOINTS);
         Set points = m_workplaceManager.getExportPoints();
         i = points.iterator();
@@ -639,9 +649,13 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         // add the <project> node
         workplaceStartupsettings.addElement(N_PROJECT).setText(m_workplaceManager.getDefaultUserSettings().getStartProject());
         // add the <view> node
-        workplaceStartupsettings.addElement(N_WORKPLACEVIEW).setText(m_workplaceManager.getDefaultUserSettings().getStartView());
+        workplaceStartupsettings.addElement(N_WORKPLACEVIEW).setText(m_workplaceManager.getDefaultUserSettings().getStartView());       
+        // add the <folder> node
+        workplaceStartupsettings.addElement(N_FOLDER).setText(m_workplaceManager.getDefaultUserSettings().getStartFolder());
+        // add the <site> node
+        workplaceStartupsettings.addElement(N_SITE).setText(m_workplaceManager.getDefaultUserSettings().getStartSite());
        
-        // add the <explorer-prefernces> node
+        // add the <explorer-preferences> node
         Element explorerPreferences = defaultPreferences.addElement(N_EXPLORERPREFERENCES);
         // add the <explorer-generaloptions> node
         Element explorerGeneraloptions = explorerPreferences.addElement(N_EXPLORERPREFERENCES);
@@ -673,10 +687,10 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         explorerDisplayoptions.addElement(N_USERCREATED).setText(m_workplaceManager.getDefaultUserSettings().getShowExplorerFileUserCreated());
         //  add the <show-datereleased> node
         explorerDisplayoptions.addElement(N_DATERELEASED).setText(m_workplaceManager.getDefaultUserSettings().getShowExplorerFileDateReleased());
-        //  add the <show-dareexpired> node
+        //  add the <show-dateexpired> node
         explorerDisplayoptions.addElement(N_DATEEXPIRED).setText(m_workplaceManager.getDefaultUserSettings().getShowExplorerFileDateExpired());
       
-        //  add the <dialog-prefernces> node
+        //  add the <dialog-preferences> node
         Element dialogPreferences = defaultPreferences.addElement(N_DIALOGSPREFERENCES);
         // add the <dialog-defaultsettings> node
         Element dialogDefaultSettings = dialogPreferences.addElement(N_DIALOGSDEFAULTSETTINGS);
@@ -691,7 +705,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         //  add the <showlock> node
         dialogDefaultSettings.addElement(N_SHOWLOCK).setText(m_workplaceManager.getDefaultUserSettings().getDialogShowLockString());
         
-        // add the <editors-prefernces> node
+        // add the <editors-preferences> node
         Element editorsPreferences = defaultPreferences.addElement(N_EDITORPREFERENCES);
         // add the <editors-generaloptions> node
         Element editorGeneraloptions = editorsPreferences.addElement(N_EDITORGENERALOPTIONS);
