@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $File$
- * Date   : $Date: 2001/01/18 08:53:39 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2001/01/22 13:35:22 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -156,7 +156,7 @@ public class CmsAdminModuleAdminEdit extends CmsWorkplaceDefault implements I_Cm
 					paraNames.addElement(name);
 					paraDescr.addElement(description);
 					paraTyp.addElement(type);
-					paraVal.addElement(value);
+					paraVal.addElement(newValue);
 					templateSelector = "done";
 				}else{
 					session.putValue("parametername", name);
