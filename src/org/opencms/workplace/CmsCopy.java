@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsCopy.java,v $
- * Date   : $Date: 2004/01/06 17:06:05 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2004/02/09 17:05:57 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.opencms.site.CmsSiteManager;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 5.1
  */
@@ -217,12 +217,18 @@ public class CmsCopy extends CmsDialog {
     public void actionCopy() throws JspException {
         // save initialized instance of this class in request attribute for included sub-elements
         getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-        CmsResource res = null;
+        CmsResource resource = null;
         try {
-            res = getCms().readFileHeader(getParamResource());
+            resource = getCms().readFileHeader(getParamResource());
             if (performCopyOperation())  {
                 // if no exception is caused and "true" is returned copy operation was successful
-                getJsp().include(C_FILE_EXPLORER_FILELIST);
+                if (resource.isFolder() && (!getParamTarget().startsWith("/") 
+                        || CmsResource.getParentFolder(getParamResource()).equals(CmsResource.getParentFolder(getParamTarget())))) {
+                    // reload the explorer tree to show correct structure if folder was copied
+                    setParamOkLink(C_FILE_EXPLORER_FILELIST); 
+                    setParamOkFunctions("top.reloadTreeFolder(\"" + CmsResource.getParentFolder(getParamResource()) + "\");");
+                }
+                closeDialog();
             } else  {
                 // "false" returned, display "please wait" screen
                 getJsp().include(C_FILE_DIALOG_SCREEN_WAIT);
@@ -234,7 +240,7 @@ public class CmsCopy extends CmsDialog {
                 + key("target") + ": " + getParamTarget() + "\n</p>\n";
             // check if this exception requires a confirmation or error screen
             if ((e.getType() == CmsException.C_FILE_EXISTS) 
-            && !(res.isFolder())) {
+            && !(resource.isFolder())) {
                 // file copy but file already exists, now check target file type
                 int targetType = -1;
                 boolean restoreSiteRoot = false;
@@ -253,7 +259,7 @@ public class CmsCopy extends CmsDialog {
                         getCms().getRequestContext().restoreSiteRoot();
                     }
                 }
-                if (res.getType() == targetType) {               
+                if (resource.getType() == targetType) {               
                     // file type of target is the same as source, show confirmation dialog
                     setParamMessage(message + key("confirm.message." + getParamDialogtype()));
                     getJsp().include(C_FILE_DIALOG_SCREEN_CONFIRM); 

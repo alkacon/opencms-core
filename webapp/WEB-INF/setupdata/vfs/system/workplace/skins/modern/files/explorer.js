@@ -991,7 +991,14 @@ function openFolder(folderName) {
 
 function updateTreeFolder(folderName) {
 	if (window.body.explorer_body && window.body.explorer_body.explorer_tree) {
-		window.body.explorer_body.explorer_tree.updateCurrentFolder(window.body.explorer_body.explorer_tree.tree_display.document, folderName)
+		window.body.explorer_body.explorer_tree.updateCurrentFolder(window.body.explorer_body.explorer_tree.tree_display.document, folderName, false);
+	}
+}
+
+
+function reloadTreeFolder(folderName) {
+	if (window.body.explorer_body && window.body.explorer_body.explorer_tree) {
+		window.body.explorer_body.explorer_tree.updateCurrentFolder(window.body.explorer_body.explorer_tree.tree_display.document, folderName, true);
 	}
 }
 

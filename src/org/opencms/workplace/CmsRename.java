@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsRename.java,v $
- * Date   : $Date: 2004/01/06 17:06:05 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/02/09 17:05:57 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 5.1
  */
@@ -146,9 +146,15 @@ public class CmsRename extends CmsDialog {
         // save initialized instance of this class in request attribute for included sub-elements
         getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
         try {
-            performRenameOperation();
+            CmsResource resource = getCms().readFileHeader(getParamResource());
+            performRenameOperation(resource);
             // if no exception is caused rename operation was successful
-            getJsp().include(C_FILE_EXPLORER_FILELIST);          
+            if (resource.isFolder()) {
+                // reload the explorer tree to show correct structure if folder was renamed
+                setParamOkLink(C_FILE_EXPLORER_FILELIST); 
+                setParamOkFunctions("top.reloadTreeFolder(\"" + CmsResource.getParentFolder(getParamResource()) + "\");");
+            }
+            closeDialog();        
         } catch (CmsException e) {
             // prepare common message part
             String message = "<p>\n" 
@@ -167,10 +173,11 @@ public class CmsRename extends CmsDialog {
     /**
      * Performs the resource renaming.<p>
      * 
+     * @param resource the resource to rename
      * @return true, if the resource was renamed, otherwise false
      * @throws CmsException if renaming is not successful
      */
-    private boolean performRenameOperation() throws CmsException {
+    private boolean performRenameOperation(CmsResource resource) throws CmsException {
    
         String target = getParamTarget();
         if (target == null) {
@@ -185,8 +192,7 @@ public class CmsRename extends CmsDialog {
         String parentFolder = CmsResource.getParentFolder(getParamResource());
         
         // check if resource is a folder, if so, add absolute path to parent folder to target
-        CmsResource res = getCms().readFileHeader(getParamResource());
-        if (res.isFolder() && !getParamResource().endsWith("/")) {
+        if (resource.isFolder() && !getParamResource().endsWith("/")) {
             target = parentFolder + target;
         }
         

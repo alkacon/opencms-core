@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsMove.java,v $
- * Date   : $Date: 2004/01/06 17:06:05 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/02/09 17:05:57 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.opencms.site.CmsSiteManager;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 5.1
  */
@@ -138,9 +138,15 @@ public class CmsMove extends CmsDialog {
         // save initialized instance of this class in request attribute for included sub-elements
         getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
         try {
-            if (performMoveOperation())  {
+            CmsResource sourceRes = getCms().readFileHeader(getParamResource());
+            if (performMoveOperation(sourceRes))  {
                 // if no exception is caused and "true" is returned move operation was successful
-                getJsp().include(C_FILE_EXPLORER_FILELIST);
+                if (sourceRes.isFolder()) {
+                    // reload the explorer tree to show correct structure if folder was moved
+                    setParamOkLink(C_FILE_EXPLORER_FILELIST); 
+                    setParamOkFunctions("top.reloadTreeFolder(\"" + CmsResource.getParentFolder(getParamResource()) + "\");");
+                }
+                closeDialog();
             } else  {
                 // "false" returned, display "please wait" screen
                 getJsp().include(C_FILE_DIALOG_SCREEN_WAIT);
@@ -168,13 +174,13 @@ public class CmsMove extends CmsDialog {
     /**
      * Performs the resource moving.<p>
      * 
-     * @return true, if the resource was copied, otherwise false
+     * @param sourceRes the resource to move
+     * @return true, if the resource was successfully moved, otherwise false
      * @throws CmsException if copying is not successful
      */
-    private boolean performMoveOperation() throws CmsException {
+    private boolean performMoveOperation(CmsResource sourceRes) throws CmsException {
 
         // on folder move operation display "please wait" screen, not for simple file move operation
-        CmsResource sourceRes = getCms().readFileHeader(getParamResource());
         if (sourceRes.isFolder() && ! DIALOG_WAIT.equals(getParamAction())) {
             // return false, this will trigger the "please wait" screen
             return false;

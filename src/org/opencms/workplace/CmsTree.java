@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsTree.java,v $
- * Date   : $Date: 2004/02/09 14:49:06 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/02/09 17:05:57 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 5.1
  */
@@ -224,12 +224,12 @@ public class CmsTree extends CmsWorkplace {
             }
             // set the tree site to avoid discrepancies between selector and tree
             getSettings().setTreeSite(getTreeType(), preSelection);
-        }  
+        }
         
         boolean includeRootSite = true;
         boolean showSiteUrls = false;
         if (C_TYPE_PAGELINK.equals(getTreeType())) {
-            // in wysiwyg editor link dialog, don't show root site, but show site URL
+            // in wysiwyg editor link dialog, don't show root site, but show site URLs
             includeRootSite = false;
             showSiteUrls = true;
         }

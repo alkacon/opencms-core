@@ -357,7 +357,7 @@ function setNoChilds(nodeId) {
 }
 
 
-// returns the node od from a given name
+// returns the node id from a given name
 function getNodeIdByName(nodeName) {
 	var result = "";
 	var node = tree.root;
@@ -524,15 +524,15 @@ function doActionInsertSelected(doc, nodeId) {
 }
 
 
-// called if a new folder is loded from the explorer file list
-function updateCurrentFolder(doc, folderName) {
+// called if a new folder is loaded from the explorer file list
+function updateCurrentFolder(doc, folderName, reloadCurrent) {
 	if ((folderName != "/") && (folderName.charAt(folderName.length-1) == '/')) {
 			folderName = folderName.substring(0, folderName.length-1);
 	}
 	var nodeId = getNodeIdByName(folderName);
 	if (nodeId != null) {
 		// node was already loaded, update it
-		if (vr.actDirId != nodeId) {
+		if (vr.actDirId != nodeId || reloadCurrent) {
 			setCurrentFolder(nodeId);
 			loadNode(doc, nodeId, null, "&rootloaded=true");
 		}
