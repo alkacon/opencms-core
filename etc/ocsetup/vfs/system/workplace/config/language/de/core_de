@@ -137,6 +137,7 @@
                 <chpwd>Leider konnte das Kennwort nicht geändert werden.</chpwd>
                 <chtype>Leider konnte der Dateityp nicht geändert werden.</chtype>
                 <copy>Leider konnte die Datei nicht kopiert werden.</copy>
+                <copytoproject>Leider konnte die Ressource nicht in das Projekt übernommen werden.</copytoproject>
                 <createasproject>Sie haben nicht das Recht ein Projekt anzulegen.</createasproject>
                 <datamissing>Sie haben noch nicht alle notwendigen Einträge in das Formular gemacht.</datamissing>
                 <delete>Leider konnte die Datei nicht gelöscht werden.</delete>
@@ -186,6 +187,7 @@
                 <chpwd3>Das Kennwort muß mindestens aus 4 Zeichen bestehen.</chpwd3>
                 <chtype>Sie haben dazu keine Berechtigung.</chtype>
                 <copy>Eventuell existiert der Zielordner nicht.</copy>
+                <copytoproject>Eventuell haben Sie nicht die Berechtigung für diese Aktion.</copytoproject>
                 <delete>Die Datei ist gesperrt von</delete>
                 <deleteuser>Die Benutzer Admin und Guest können nicht gelöscht werden.</deleteuser>
                 <deleteextension>siehe Details</deleteextension>
@@ -249,6 +251,7 @@
                 <chpwd2>Geben Sie das alte Kennwort erneut ein.</chpwd2>
                 <chtype>Kontaktieren Sie Ihren Systemadministrator.</chtype>
                 <copy></copy>
+                <copytoproject>Bitte kontaktieren Sie den Manager des Projektes oder Ihren Systemadministrator.</copytoproject>
                 <delete>Bitte versuchen Sie es später erneut, oder kontaktieren Sie Ihren Systemadministrator.</delete>
                 <deleteextension>Kontaktieren Sie Ihren Systemadministrator.</deleteextension>
                 <deleteuser></deleteuser>
@@ -292,6 +295,7 @@
                 <chpwd>Kennwort ändern</chpwd>
                 <chtype>Dateityp ändern</chtype>
                 <copy>Datei kopieren</copy>
+                <copytoproject>In Projekt übernehmen</copytoproject>
                 <delete>Datei löschen</delete>
                 <deleteextension>Dateierweiterung löschen</deleteextension>
                 <deleteuser>Benutzer löschen</deleteuser>
@@ -390,6 +394,7 @@
                 <chgrp>Gruppe ändern</chgrp>
                 <chown>Eigentümer ändern</chown>
                 <copy>Kopieren</copy>
+                <copytoproject>In Projekt übernehmen</copytoproject>
                 <delete>Löschen</delete>
                 <edit>Seite editieren</edit>
                 <editlink>Verknüpfung editieren</editlink>
@@ -619,6 +624,7 @@
             <title>
                 <ok>Abhaken</ok>
                 <accept>Annehmen</accept>
+                <copytoproject>In Projekt Übernehmen</copytoproject>
                 <delete>Datei löschen</delete>
                 <deletefolder>Ordner löschen</deletefolder>
                 <deletepropertyinfo>Eigenschaft löschen von</deletepropertyinfo>
@@ -626,6 +632,7 @@
                 <lockfolder>Ordner sperren</lockfolder>
                 <lockchange>Datei Sperrung übernehmen</lockchange>
                 <lockchangefolder>Ordner Sperrung übernehmen</lockchangefolder>
+                <lockedinfolder>Ressourcen freigeben</lockedinfolder>
                 <publishresource>Direkt veröffentlichen</publishresource>
                 <syncfolder>Ordner synchronisieren</syncfolder>
                 <undochanges>Änderungen verwerfen</undochanges>
@@ -635,6 +642,7 @@
             <message1>
                 <ok>Aufgabe wirklich abhaken?</ok>
                 <accept>Aufgabe annehmen?</accept>
+                <copytoproject>Wollen Sie die Ressource<![CDATA[&nbsp;]]></copytoproject>
                 <delete>Soll die Datei wirklich gelöscht werden?</delete>
                 <deletefolder>Soll der Ordner wirklich gelöscht werden?</deletefolder>
                 <deletepropertyinfo>Wollen Sie die gewählte Eigenschaft wirklich löschen?</deletepropertyinfo>
@@ -642,6 +650,7 @@
                 <lockfolder>Soll der Ordner wirklich zur Bearbeitung gesperrt werden?</lockfolder>
                 <lockchange>Wollen Sie die Sperrung wirklich übernehmen?</lockchange>
                 <lockchangefolder>Wollen Sie die Sperrung wirklich übernehmen?</lockchangefolder>
+                <lockedinfolder>Im Ordner existieren noch gesperrte Ressourcen. Sollen die Ressourcen freigegeben werden?</lockedinfolder>
                 <publishresource>Soll die Ressource</publishresource>
                 <syncfolder>Wollen Sie wirklich synchronisieren?</syncfolder>
                 <undochanges>Die Ressource</undochanges>
@@ -651,6 +660,7 @@
             <message2>
                 <ok><![CDATA[&nbsp;]]></ok>
                 <accept><![CDATA[&nbsp;]]></accept>
+                <copytoproject><![CDATA[&nbsp;]]>wirklich in das Projekt übernehmen?</copytoproject>
                 <delete><![CDATA[&nbsp;]]></delete>
                 <deletefolder><![CDATA[&nbsp;]]></deletefolder>
                 <deletepropertyinfo><![CDATA[&nbsp;]]></deletepropertyinfo>
