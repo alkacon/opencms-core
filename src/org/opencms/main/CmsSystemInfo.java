@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2004/10/25 14:27:55 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2004/11/02 11:33:15 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * @since 5.3
  */
 public class CmsSystemInfo {
@@ -151,7 +151,8 @@ public class CmsSystemInfo {
         File f = new File(path);
         if (f.isAbsolute()) {
             // apparently this is an absolute path already
-            return f.getAbsolutePath();
+            //return f.getAbsolutePath();
+            return path;
         }
         return CmsFileUtil.normalizePath(getWebApplicationRfsPath() + path);
     }

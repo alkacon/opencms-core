@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2004/08/27 08:57:22 $
- * Version: $Revision: 1.76 $
+ * Date   : $Date: 2004/11/02 11:33:15 $
+ * Version: $Revision: 1.77 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import org.apache.commons.collections.map.LRUMap;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.76 $
+ * @version $Revision: 1.77 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
 
@@ -1140,13 +1140,12 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      */
     public void setExportPath(String path) {
 
-        m_staticExportPath = path;
-        if (!m_staticExportPath.endsWith(File.separator)) {
+       m_staticExportPath = path;
+       if (!m_staticExportPath.endsWith(File.separator)) {      
             m_staticExportPath += File.separator;
         }
         m_staticExportPathUnmodified = m_staticExportPath;
         m_staticExportPath = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebApplication(m_staticExportPath);
-        
     } 
    
     /**
