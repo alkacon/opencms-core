@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/Attic/CmsEncoderTest.java,v $
- * Date   : $Date: 2004/05/05 21:25:09 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/05/08 03:11:26 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,30 +35,70 @@ import junit.framework.TestCase;
 /**
  * Tests for the CmsEncoder.<p>
  * 
- * Important: This file is encoded in UTF-8 Unicode!.<p>
+ * IMPORTANT: This file is encoded in UTF-8 Unicode!<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @since 5.3
  */
 public class CmsEncoderTest extends TestCase {
 
+    private static final String C_STRING_1 = "Test: äöüÄÖÜß€";     
+    private static final String C_STRING_2 = "Test: äöüÄÖÜß&#8364;";
+    private static final String C_STRING_3 = "Test: &#228;&#246;&#252;&#196;&#214;&#220;&#223;&#8364;";
+    private static final String C_STRING_4 = "äöü€#|#12|&#12|&#;ÄÖÜtest";
+    private static final String C_STRING_5 = "&#228;&#246;&#252;&#8364;#|#12|&#12|&#;&#196;&#214;&#220;test";
+    
+    private static final String C_ENC_ISO_8859_1 = "ISO-8859-1";
+    private static final String C_ENC_ISO_8859_15 = "ISO-8859-15";
+    private static final String C_ENC_UTF_8 = "UTF-8";
+    private static final String C_ENC_US_ASCII = "US-ASCII";
+    private static final String C_ENC_WINDOWS_1252 = "Cp1252";
+    
+    private static final String[][] TESTS_ENCODE = { 
+        {C_STRING_1, C_STRING_2, C_ENC_ISO_8859_1},
+        {C_STRING_1, C_STRING_1, C_ENC_ISO_8859_15},
+        {C_STRING_1, C_STRING_1, C_ENC_UTF_8},
+        {C_STRING_1, C_STRING_3, C_ENC_US_ASCII},
+        {C_STRING_1, C_STRING_1, C_ENC_WINDOWS_1252},
+        {C_STRING_4, C_STRING_5, C_ENC_US_ASCII},
+    };    
+
+    private static final String[][] TESTS_DECODE = { 
+        {C_STRING_3, C_STRING_2, C_ENC_ISO_8859_1},
+        {C_STRING_3, C_STRING_1, C_ENC_ISO_8859_15},
+        {C_STRING_3, C_STRING_1, C_ENC_UTF_8},
+        {C_STRING_3, C_STRING_3, C_ENC_US_ASCII},
+        {C_STRING_3, C_STRING_1, C_ENC_WINDOWS_1252},
+        {C_STRING_5, C_STRING_4, C_ENC_UTF_8},
+    };      
+    
     /**
-     * @see CmsEncoder#encodeForHtml(String, String)
+     * @see CmsEncoder#encodeHtmlEntities(String, String)
      */
     public void testEncodeForHtml() {
         
-        // the usual euro symbol and german umlauts test
-        String test = "Test: äöüÄÖÜß€";
+        for (int i=0; i<TESTS_ENCODE.length; i++) {
+            String source = TESTS_ENCODE[i][0];
+            String dest = TESTS_ENCODE[i][1];
+            String encoding = TESTS_ENCODE[i][2];
+            
+            String result = CmsEncoder.encodeHtmlEntities(source, encoding);
+            assertEquals(result, dest);            
+        }
+    } 
+    
+    /**
+     * @see CmsEncoder#decodeHtmlEntities(String, String) 
+     */
+    public void testDecodeHtmlEntities() {
         
-        // ISO-8859-1 does not contain the euro symbol
-        assertEquals(CmsEncoder.encodeForHtml(test, "ISO-8859-1"), "Test: äöüÄÖÜß&#8364;");
-        // ISO-8859-15 does
-        assertEquals(CmsEncoder.encodeForHtml(test, "ISO-8859-15"), test);
-        // UTF-8 should be able to encode almost everything
-        assertEquals(CmsEncoder.encodeForHtml(test, "UTF-8"), test);
-        // US-ASCII contains only the first 128 chars
-        assertEquals(CmsEncoder.encodeForHtml(test, "US-ASCII"), "Test: &#228;&#246;&#252;&#196;&#214;&#220;&#223;&#8364;");
-        // cp1252 is used by MS Windows (for western european based languages)
-        assertEquals(CmsEncoder.encodeForHtml(test, "Cp1252"), test);
-    }    
+        for (int i=0; i<TESTS_DECODE.length; i++) {
+            String source = TESTS_DECODE[i][0];
+            String dest = TESTS_DECODE[i][1];
+            String encoding = TESTS_DECODE[i][2];
+            
+            String result = CmsEncoder.decodeHtmlEntities(source, encoding);
+            assertEquals(result, dest);            
+        }    
+    }
 }
