@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlFormTemplateFile.java,v $
-* Date   : $Date: 2002/08/02 12:17:31 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2002/08/26 13:00:41 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@ package com.opencms.defaults;
 import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.template.*;
+import com.opencms.workplace.I_CmsWpConstants;
+
 import org.w3c.dom.*;
 import org.xml.sax.*;
 import java.util.*;
@@ -43,7 +45,7 @@ import java.lang.reflect.*;
  * See the handleXxxTag Methods for more details.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.10 $ $Date: 2002/08/02 12:17:31 $
+ * @version $Revision: 1.11 $ $Date: 2002/08/26 13:00:41 $
  */
 public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsLogChannels {
 
@@ -185,7 +187,7 @@ public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsL
      * Handles any occurence of the special XML tag <code>&lt;RADIOBUTTON&gt;</code> for
      * generating HTML form radio buttons.
      * <P>
-     * The definition of a HTML radio button will be taken from /content/internal/HTMLFormDefs.
+     * The definition of a HTML radio button will be taken from I_CmsWpConstants.C_CONTENTINTERNALPATH + "HTMLFormDefs".
      * If the file is missing, this method will crash. Ensure this file is created and filled
      * with all required XML tags.
      * <P>
@@ -273,7 +275,7 @@ public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsL
 
         // process the vectors with the elelmetns of the radio buttons to be displayed.
         int numValues = values.size();
-        CmsXmlTemplateFile radiodef = new CmsXmlTemplateFile(m_cms, "/content/internal/HTMLFormDefs");
+        CmsXmlTemplateFile radiodef = new CmsXmlTemplateFile(m_cms, I_CmsWpConstants.C_CONTENTINTERNALPATH + "HTMLFormDefs");
         if(radioClass == null || "".equals(radioClass)) {
             radiodef.setData(C_RADIO_CLASS, "");
         }
@@ -315,7 +317,7 @@ public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsL
      * Handles any occurence of the special XML tag <code>&lt;SELECT&gt;</code> for
      * generating HTML form select boxes.
      * <P>
-     * The definition of a HTML selectbox will be taken from /content/internal/HTMLFormDefs.
+     * The definition of a HTML selectbox will be taken from I_CmsWpConstants.C_CONTENTINTERNALPATH + "HTMLFormDefs".
      * If the file is missing, this method will crash. Ensure this file is created and filled
      * with all required XML tags.
      * <P>
@@ -362,7 +364,7 @@ public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsL
         }
 
         // Get input definition file
-        CmsXmlTemplateFile inputdef = new CmsXmlTemplateFile(m_cms, "/content/internal/HTMLFormDefs");
+        CmsXmlTemplateFile inputdef = new CmsXmlTemplateFile(m_cms, I_CmsWpConstants.C_CONTENTINTERNALPATH + "HTMLFormDefs");
 
         // Set the prefix string of the select box
         if(selectClass == null || "".equals(selectClass)) {

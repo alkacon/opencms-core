@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsHelperMastertemplates.java,v $
-* Date   : $Date: 2001/12/10 14:33:43 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2002/08/26 13:00:40 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import java.util.*;
 
 /**
  * Helper class to receive all mastertemplates that are currently in the system.
- * @version $Revision: 1.4 $ $Date: 2001/12/10 14:33:43 $
+ * @version $Revision: 1.5 $ $Date: 2002/08/26 13:00:40 $
  */
 
 public class CmsHelperMastertemplates {
@@ -43,10 +43,11 @@ public class CmsHelperMastertemplates {
     /**
      * Gets the templates displayed in the template select box.
      * @param cms The CmsObject.
-     * @param names The names of the new rescources.
-     * @param values The links that are connected with each resource.
-     * @returns The vectors names and values are filled with the information found in the
-     * workplace.ini.
+     * @param names Will be filled with the display names of found the templates.
+     * @param values Will be filled with the file names of the found templates.
+     * @param currentTemplate The file name of the currently selected template.
+     * @return The index of the currently selected template and the vectors names and values, filled with the information 
+     * about the available templates. The index refers to the vectors.
      * @exception Throws CmsException if something goes wrong.
      */
     public static Integer getTemplates(CmsObject cms, Vector names, Vector values, String currentTemplate) throws CmsException {
@@ -56,43 +57,20 @@ public class CmsHelperMastertemplates {
     /**
      * Gets the templates displayed in the template select box.
      * @param cms The CmsObject.
-     * @param names The names of the new rescources.
-     * @param values The links that are connected with each resource.
-     * @param defaultReturnValue the default-returnvalue for this methos. It is used, if no currentTemplate was found.
-     * @returns The vectors names and values are filled with the information found in the
-     * workplace.ini.
+     * @param names Will be filled with the display names of found the templates.
+     * @param values Will be filled with the file names of the found templates.
+     * @param currentTemplate The file name of the currently selected template.
+     * @param defaultReturnValue The index used if no currentTemplate was found.
+     * @return The index of the currently selected template and the vectors names and values, filled with the information 
+     * about the available templates. The index refers to the vectors.
      * @exception Throws CmsException if something goes wrong.
      */
     public static Integer getTemplates(CmsObject cms, Vector names, Vector values, String currentTemplate, int defaultReturnValue) throws CmsException {
 
-        Vector files = cms.getFilesInFolder(I_CmsWpConstants.C_CONTENTTEMPLATEPATH);
-
-        // get all module Templates
-        Vector modules = new Vector();
-        modules = cms.getSubFolders(I_CmsConstants.C_MODULES_PATH);
-        for(int i = 0;i < modules.size();i++) {
-            Vector moduleTemplateFiles = new Vector();
-            moduleTemplateFiles = cms.getFilesInFolder(((CmsFolder)modules.elementAt(i)).getAbsolutePath() + "templates/");
-            for(int j = 0;j < moduleTemplateFiles.size();j++) {
-                files.addElement(moduleTemplateFiles.elementAt(j));
-            }
-        }
-        Enumeration enum = files.elements();
-        while(enum.hasMoreElements()) {
-            CmsFile file = (CmsFile)enum.nextElement();
-            if(file.getState() != I_CmsConstants.C_STATE_DELETED && checkVisible(cms, file)) {
-                String nicename = cms.readProperty(file.getAbsolutePath(), I_CmsConstants.C_PROPERTY_TITLE);
-                if(nicename == null) {
-                    nicename = file.getName();
-                }
-                names.addElement(nicename);
-                values.addElement(file.getAbsolutePath());
-            }
-        }
-        Utils.bubblesort(names, values);
+        // first read the available templates from the VFS
+        getTemplateElements(cms, I_CmsWpConstants.C_TEMPLATEDIR, names, values);
 
         // find the correct index for the current template
-
         if(currentTemplate != null) {
             for(int i = 0; i < values.size(); i++) {
                 String template = (String) values.get(i);
@@ -106,10 +84,58 @@ public class CmsHelperMastertemplates {
         return new Integer(defaultReturnValue);
     }
 
+    /**
+     * Gets the templates displayed in the template select box.
+     * @param cms The CmsObject.
+     * @param subFolder The sub folder name in the modules to look for information.
+     * @param names Will be filled with the display names of found the templates.
+     * @param values Will be filled with the file names of the found templates.
+     * @exception Throws CmsException if something goes wrong.
+     */
+    public static void getTemplateElements(CmsObject cms, String subFolder, Vector names, Vector values) throws CmsException {
+
+        // get all template elements in the default folder
+        Vector files = cms.getFilesInFolder(I_CmsWpConstants.C_DEFAULTMODULEPATH + subFolder);
+
+        // get all selected template elements in the module folders
+        Vector modules = new Vector();
+        modules = cms.getSubFolders(I_CmsConstants.C_MODULES_PATH);
+        for(int i = 0;i < modules.size();i++) {
+            Vector moduleTemplateFiles = new Vector();
+            String folder = ((CmsFolder)modules.elementAt(i)).getAbsolutePath();
+            if (! folder.equals(I_CmsWpConstants.C_DEFAULTMODULEPATH)) {
+                // make sure the default folder is not included twice,
+                // this might happen if the default folder is inside module directory
+                moduleTemplateFiles = cms.getFilesInFolder(folder + subFolder);
+                for(int j = 0;j < moduleTemplateFiles.size();j++) {
+                    files.addElement(moduleTemplateFiles.elementAt(j));
+                }
+            }
+        }
+        
+        // now read the "nice name" (ie. title property) for the found elements
+        Enumeration enum = files.elements();
+        while(enum.hasMoreElements()) {
+            CmsFile file = (CmsFile)enum.nextElement();
+            if(file.getState() != I_CmsConstants.C_STATE_DELETED && checkVisible(cms, file)) {
+                String nicename = cms.readProperty(file.getAbsolutePath(), I_CmsConstants.C_PROPERTY_TITLE);
+                if(nicename == null) {
+                    nicename = file.getName();
+                }
+                names.addElement(nicename);
+                values.addElement(file.getAbsolutePath());
+            }
+        }
+        
+        // finally sort the found elemets
+        Utils.bubblesort(names, values);        
+        
+        // no explicit return value, but the parameter vectors are filled with the found values
+    }
 
     /**
-     * Check if this template should be displayed in the selectbox (tis is only if
-     *  the visible flag is set for the current user or if he is admin).
+     * Check if this template should be displayed in the selectbox (this is only 
+     * true if the visible flag is set for the current user or if he is admin).
      * @param cms The CmsObject
      * @param res The resource to be checked.
      * @return True or false.

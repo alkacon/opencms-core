@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
-* Date   : $Date: 2002/06/10 15:52:10 $
-* Version: $Revision: 1.66 $
+* Date   : $Date: 2002/08/26 13:00:40 $
+* Version: $Revision: 1.67 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.66 $ $Date: 2002/06/10 15:52:10 $
+ * @version $Revision: 1.67 $ $Date: 2002/08/26 13:00:40 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -345,7 +345,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
                 allResources = allResources + ";" + picspath + ";"
                         + downloadpath + ";" + linkpath + ";" + htmlPath;
                 if(extendedNavigation){
-                    allResources = allResources + ";/content/elements/";
+                    allResources = allResources + ";" + C_DEFAULTMODULEPATH + "elements/";
                 }
                 // 'allResurces' has the "form res1;res2;...resk;"
                 // this is because the simpler 'getParameterValues' method doesn't work with Silverstream

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsCompatibleCheck.java,v $
-* Date   : $Date: 2001/07/31 15:50:13 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2002/08/26 13:00:41 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 package com.opencms.file;
 
 import com.opencms.template.*;
+import com.opencms.workplace.I_CmsWpConstants;
 import com.opencms.core.*;
 import org.w3c.dom.*;
 
@@ -66,7 +67,7 @@ public class CmsCompatibleCheck implements I_CmsConstants{
         if ( name == null){
             return false;
         }
-        if (name.startsWith("/content/bodys/")){
+        if (name.startsWith(I_CmsWpConstants.C_CONTENTBODYPATH)){
             // this is a body file
             if (!C_TYPE_PLAIN_NAME.equals(type)){
                 // only plain files allowed in content/bodys
@@ -93,8 +94,8 @@ public class CmsCompatibleCheck implements I_CmsConstants{
                 return false;
             }
 
-        } else if (name.startsWith("/content/templates/")
-                    || (name.startsWith("/system/modules/") && name.indexOf("/templates/") > -1)){
+        } else if (name.startsWith(I_CmsWpConstants.C_CONTENTTEMPLATEPATH)
+                    || (name.startsWith("/system/modules/") && name.indexOf("/" + I_CmsWpConstants.C_TEMPLATEDIR) > -1)){
             // this is a template file
             if (!C_TYPE_PLAIN_NAME.equals(type)){
                 // only plain templates are allowed
@@ -203,7 +204,7 @@ public class CmsCompatibleCheck implements I_CmsConstants{
     }
 
     /**
-     * helper for checking the templates from /content/templates.
+     * helper for checking the templates from C_CONTENTBODYPATH.
      * This helper checks a elementdef Node if it sticks to the rules.
      * @param el the Element to check.
      * @return true if the elementdef is ok.
@@ -231,7 +232,7 @@ public class CmsCompatibleCheck implements I_CmsConstants{
     }
 
     /**
-     * helper for checking the templates from /content/templates.
+     * helper for checking the templates from C_CONTENTBODYPATH.
      * This helper checks a template Node if it sticks to the rules.
      * @param el the Element to check.
      * @return true if the template is ok.

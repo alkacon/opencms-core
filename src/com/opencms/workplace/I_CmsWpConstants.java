@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
-* Date   : $Date: 2002/07/24 16:22:15 $
-* Version: $Revision: 1.111 $
+* Date   : $Date: 2002/08/26 13:00:40 $
+* Version: $Revision: 1.112 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ package com.opencms.workplace;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.111 $ $Date: 2002/07/24 16:22:15 $
+ * @version $Revision: 1.112 $ $Date: 2002/08/26 13:00:40 $
  */
 
 public interface I_CmsWpConstants {
@@ -44,26 +44,38 @@ public interface I_CmsWpConstants {
     /** Constant for the current language */
     public final static String C_CURRENT_LANGUAGE = "uk";
 
-
-    /** Parameter for creating projects: copy content to project */
-    public static final String C_CONTENTPATH = "/content/";
-
-
     /** Parameter for the default language */
     public static final String C_DEFAULT_LANGUAGE = "uk";
 
+    /** Parameter for content body folder */
+    // public static final String C_CONTENTBODYPATH = "/system/bodies/";
+    public static final String C_CONTENTBODYPATH = "/content/bodys/";
+
+    /** Parameter for default module */
+    // public static final String C_DEFAULTMODULEPATH = "/system/modules/default/";
+    public static final String C_DEFAULTMODULEPATH = "/content/";
+    
+    /** Path to module demo folder */
+    // public static final String C_MODULEDEMOPATH = "/system/modules/moduledemos/";
+    public static final String C_MODULEDEMOPATH = "/moduledemos/";
 
     /** Parameter for content templates folder */
-    public static final String C_CONTENTTEMPLATEPATH = C_CONTENTPATH + "templates/";
+    public static final String C_TEMPLATEDIR = "templates/";
 
     /** Parameter for content internal folder */
-    public static final String C_CONTENTINTERNALPATH = C_CONTENTPATH + "internal/";
+    public static final String C_INTERNALDIR = "internal/";
 
     /** Parameter for content default_bodies folder */
-    public static final String C_CONTENTDEFAULTBODIESPATH = C_CONTENTPATH + "default_bodies/";
+    public static final String C_DEFAULTBODIESDIR = "default_bodies/";
 
-    /** Parameter for content body folder */
-    public static final String C_CONTENTBODYPATH = C_CONTENTPATH + "bodys/";
+    /** Parameter for content templates folder */
+    public static final String C_CONTENTTEMPLATEPATH = C_DEFAULTMODULEPATH + C_TEMPLATEDIR;
+
+    /** Parameter for content internal folder */
+    public static final String C_CONTENTINTERNALPATH = C_DEFAULTMODULEPATH + C_INTERNALDIR;
+
+    /** Parameter for content default_bodies folder */
+    public static final String C_CONTENTDEFAULTBODIESPATH = C_DEFAULTMODULEPATH + C_DEFAULTBODIESDIR;
 
 
     // Parameters that are used in html requests
@@ -1246,7 +1258,7 @@ public interface I_CmsWpConstants {
     public final static String C_ICON_DEFAULT = "ic_file_othertype.gif";
 
      /** Parameter for content layouts folder */
-    public static final String C_CONTENTLAYOUTPATH = C_CONTENTPATH + "default_bodies/";
+    public static final String C_CONTENTLAYOUTPATH = C_DEFAULTMODULEPATH + "default_bodies/";
 
     /** Parameter for layout  */
     public static final String C_PARA_LAYOUT = "default_body";

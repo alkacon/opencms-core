@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceFolder.java,v $
-* Date   : $Date: 2002/04/05 08:45:59 $
-* Version: $Revision: 1.30 $
+* Date   : $Date: 2002/08/26 13:00:41 $
+* Version: $Revision: 1.31 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.30 $ $Date: 2002/04/05 08:45:59 $
+ * @version $Revision: 1.31 $ $Date: 2002/08/26 13:00:41 $
  */
 
 public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -438,44 +438,19 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
     /**
      * Gets the templates displayed in the template select box.
      * @param cms The CmsObject.
-     * @param lang The langauge definitions.
-     * @param names The names of the new rescources.
-     * @param values The links that are connected with each resource.
+     * @param names Will be filled with the display names of the found templates.
+     * @param values Will be filled with the file names of the found templates.
      * @param parameters Hashtable of parameters (not used yet).
-     * @returns The vectors names and values are filled with the information found in the
-     * workplace.ini.
+     * @return The return value is always 0
      * @exception Throws CmsException if something goes wrong.
      */
-
     public Integer getTemplates(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
             Vector values, Hashtable parameters) throws CmsException {
 
-        //Vector files=cms.getFilesInFolder(C_CONTENTTEMPLATEPATH);
-        Vector files = cms.getFilesInFolder(C_CONTENTTEMPLATEPATH);
+        // Gather templates from the VFS
+        CmsHelperMastertemplates.getTemplateElements(cms, I_CmsWpConstants.C_TEMPLATEDIR, names, values);
 
-        // get all module Templates
-        Vector modules = new Vector();
-        modules = cms.getSubFolders(C_MODULES_PATH);
-        for(int i = 0;i < modules.size();i++) {
-            Vector moduleTemplateFiles = new Vector();
-            moduleTemplateFiles = cms.getFilesInFolder(((CmsFolder)modules.elementAt(i)).getAbsolutePath() + "templates/");
-            for(int j = 0;j < moduleTemplateFiles.size();j++) {
-                files.addElement(moduleTemplateFiles.elementAt(j));
-            }
-        }
-        Enumeration enum = files.elements();
-        while(enum.hasMoreElements()) {
-            CmsFile file = (CmsFile)enum.nextElement();
-            if(file.getState() != C_STATE_DELETED) {
-                String nicename = cms.readProperty(file.getAbsolutePath(), C_PROPERTY_TITLE);
-                if(nicename == null) {
-                    nicename = file.getName();
-                }
-                names.addElement(nicename);
-                values.addElement(file.getAbsolutePath());
-            }
-        }
-        bubblesort(names, values);
+        // Always return 0
         return new Integer(0);
     }
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePage.java,v $
-* Date   : $Date: 2002/05/13 14:49:34 $
-* Version: $Revision: 1.47 $
+* Date   : $Date: 2002/08/26 13:00:41 $
+* Version: $Revision: 1.48 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.47 $ $Date: 2002/05/13 14:49:34 $
+ * @version $Revision: 1.48 $ $Date: 2002/08/26 13:00:41 $
  */
 
 public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -515,46 +515,21 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
     }
 
     /**
-     * Gets the content layouts displayed in the content layouts select box.
+     * Gets the default bodies displayed on the "new page" dialog.
      * @param cms The CmsObject.
-     * @param lang The langauge definitions.
-     * @param names The names of the new rescources.
-     * @param values The links that are connected with each resource.
+     * @param names Will be filled with the display names of the found default bodies.
+     * @param values Will be filled with the file names of the found default bodies.
      * @param parameters Hashtable of parameters (not used yet).
-     * @returns The vectors names and values are filled with the information found in the
-     * workplace.ini.
+     * @return The return value is always 0
      * @exception Throws CmsException if something goes wrong.
      */
-
     public Integer getLayouts(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
             Vector values, Hashtable parameters) throws CmsException {
 
-        Vector files = cms.getFilesInFolder(C_CONTENTLAYOUTPATH);
+        // Gather templates from the VFS
+        CmsHelperMastertemplates.getTemplateElements(cms, I_CmsWpConstants.C_DEFAULTBODIESDIR, names, values);
 
-        // get all default bodies from the modules
-        Vector modules = new Vector();
-        modules = cms.getSubFolders(C_MODULES_PATH);
-        for(int i = 0;i < modules.size();i++) {
-            Vector moduleTemplateFiles = new Vector();
-            moduleTemplateFiles = cms.getFilesInFolder(((CmsFolder)modules.elementAt(i)).getAbsolutePath() + "default_bodies/");
-            for(int j = 0;j < moduleTemplateFiles.size();j++) {
-                files.addElement(moduleTemplateFiles.elementAt(j));
-            }
-        }
-
-        Enumeration enum = files.elements();
-        while(enum.hasMoreElements()) {
-            CmsFile file = (CmsFile)enum.nextElement();
-            if(file.getState() != C_STATE_DELETED) {
-                String nicename = cms.readProperty(file.getAbsolutePath(), C_PROPERTY_TITLE);
-                if(nicename == null) {
-                    nicename = file.getName();
-                }
-                names.addElement(nicename);
-                values.addElement(file.getAbsolutePath());
-            }
-        }
-        bubblesort(names, values);
+        // Always return 0
         return new Integer(0);
     }
 }

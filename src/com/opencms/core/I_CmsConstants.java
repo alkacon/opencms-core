@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2002/08/08 09:36:25 $
-* Version: $Revision: 1.200 $
+* Date   : $Date: 2002/08/26 13:00:41 $
+* Version: $Revision: 1.201 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  *
- * @version $Revision: 1.200 $ $Date: 2002/08/08 09:36:25 $
+ * @version $Revision: 1.201 $ $Date: 2002/08/26 13:00:41 $
  */
 public interface I_CmsConstants {
 
@@ -98,9 +98,6 @@ public interface I_CmsConstants {
      * flag for groups
      */
     static final int C_FLAG_GROUP_ROLE = 8;
-
-    /** Path to the workplace ini file */
-    static final String C_PATH_INTERNAL_TEMPLATES = "/content/internal/";
 
     /** Path to the root of all modules */
     public static final String C_MODULES_PATH = "/system/modules/";

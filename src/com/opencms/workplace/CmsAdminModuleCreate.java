@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleCreate.java,v $
-* Date   : $Date: 2002/08/08 09:39:12 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2002/08/26 13:00:40 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -197,10 +197,10 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
                     
                     
                     tryToCreateFolder(cms, modulePath, "lib");
-                    tryToCreateFolder(cms, modulePath, "templates");
+                    tryToCreateFolder(cms, modulePath, I_CmsWpConstants.C_TEMPLATEDIR);
                     tryToCreateFolder(cms, modulePath, "contenttemplates");
                     tryToCreateFolder(cms, modulePath, "frametemplates");
-                    tryToCreateFolder(cms, modulePath, "default_bodies");
+                    tryToCreateFolder(cms, modulePath, I_CmsWpConstants.C_DEFAULTBODIESDIR);
                     tryToCreateFolder(cms, modulePath, "elements");
                     tryToCreateFolder(cms, modulePath, "language");
                     tryToCreateFolder(cms, modulePath + "language/", "de");
