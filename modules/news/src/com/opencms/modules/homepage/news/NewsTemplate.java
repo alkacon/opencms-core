@@ -64,7 +64,7 @@ public class NewsTemplate extends CmsXmlTemplate {
         }
         catch(NumberFormatException e) {
           System.err.println("[NewsTemplate.getNewsList] NumberFormatException! "+ e.getMessage());
-          System.err.println("channelId: " + channelId);
+          System.err.println("[NewsTemplate.getNewsList] channelId: " + channelId);
 			    return "";
         }
       }

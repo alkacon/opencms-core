@@ -25,26 +25,33 @@ public class NewsBackoffice extends A_CmsBackoffice {
    * when clicking directly on one entry in the list ...
 	 */
    /*
-	public String getUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject)
-	throws Exception{
-		return "system/modules/com.opencms.modules.homepage.news/administration/news/EditBackoffice.html";
+	public String getUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
+    Object userObject) throws Exception{
+		return "system/modules/com.opencms.modules.homepage.news/" +
+               "administration/news/EditBackoffice.html";
 	}*/
 
 	/**
 	 */
-	public String getCreateUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject)
+	public String getCreateUrl(CmsObject cms, String tagcontent,
+                                A_CmsXmlContent doc, Object userObject)
 	throws Exception{
-		return "system/modules/com.opencms.modules.homepage.news/administration/news/EditBackoffice.html";
+		return "system/modules/com.opencms.modules.homepage.news/"
+                + "administration/news/EditBackoffice.html";
 	}
 
-	public String getBackofficeUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject)
+	public String getBackofficeUrl(CmsObject cms, String tagcontent,
+                                    A_CmsXmlContent doc, Object userObject)
 	throws Exception {
-		return "system/modules/com.opencms.modules.homepage.news/administration/news/Backoffice.html";
+		return "system/modules/com.opencms.modules.homepage.news/"+
+                "administration/news/Backoffice.html";
 	}
 
-	public String getEditUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject)
+	public String getEditUrl(CmsObject cms, String tagcontent,
+                             A_CmsXmlContent doc, Object userObject)
 	throws Exception {
-		return "system/modules/com.opencms.modules.homepage.news/administration/news/EditBackoffice.html";
+		return "system/modules/com.opencms.modules.homepage.news/" +
+               "administration/news/EditBackoffice.html";
 	}
 
 	public byte[] getContentEdit(CmsObject cms,
@@ -60,10 +67,11 @@ public class NewsBackoffice extends A_CmsBackoffice {
     String error = "";
 		GregorianCalendar actDate = new GregorianCalendar();
 		// session will be created or fetched
-		I_CmsSession session = (CmsSession) cms.getRequestContext().getSession(true);
+		I_CmsSession session =
+                (CmsSession)cms.getRequestContext().getSession(true);
 		// get value of hidden input field action
 		String action = (String) parameters.get("action");
-    if(action == null) action = "";
+        if(action == null) action = "";
 		//get value of id
 		String id = (String) parameters.get("id");
 		if (id == null) id = "";
@@ -89,17 +97,20 @@ public class NewsBackoffice extends A_CmsBackoffice {
 			String a_info2 = (String)parameters.get("a_info2");
 			String a_info3 = (String)parameters.get("a_info3");
 			// create an Object to access the Id
-			NewsChannelContentDefinition temp = new NewsChannelContentDefinition(channelName);
+			NewsChannelContentDefinition temp =
+            new NewsChannelContentDefinition(channelName);
 			int channelId = temp.getIntId();
 			GregorianCalendar date = null;
 			headline.trim();
 			try{
 				date = NewsContentDefinition.string2date(sDate);
 			}catch(ParseException e) {
-				System.err.println("[" + this.getClass().getName() + "] " + e.getMessage());
+				System.err.println("[" + this.getClass().getName() + "] "
+                        + e.getMessage());
 				dateError = true;
 			}
-			NewsContentDefinition editCD = new NewsContentDefinition(cms, new  Integer(idIntValue2));
+			NewsContentDefinition editCD =
+                    new NewsContentDefinition(cms, new  Integer(idIntValue2));
 			// ensure something was filled in!
 			if((headline.equals("") || headline == null || dateError == true)) {
 					templateSelector = "default";
@@ -109,7 +120,8 @@ public class NewsBackoffice extends A_CmsBackoffice {
 					template.setData("link", link);
 					template.setData("linkText", linkText);
 					template.setData("author", author);
-					template.setData("date", NewsContentDefinition.date2string(actDate));
+					template.setData("date",
+                    NewsContentDefinition.date2string(actDate));
 					template.setData("a_info1", a_info1);
 					template.setData("a_info2", a_info2);
 					template.setData("a_info3", a_info3);
@@ -136,7 +148,7 @@ public class NewsBackoffice extends A_CmsBackoffice {
 			editCD.setText(text);
 			editCD.setAuthor(author);
 			editCD.setLink(link);
-			editCD.setLink(linkText);
+			editCD.setLinkText(linkText);
 			editCD.setDate(date);
 			editCD.setChannel(channelId);
 			editCD.setA_info1(a_info1);
@@ -165,7 +177,7 @@ public class NewsBackoffice extends A_CmsBackoffice {
 		}
 		//START: first time here and got valid id parameter:
 		//		 Fill the template with data!
-    if(id != null && !id.equals("")) {
+        if(id != null && !id.equals("")) {
 				//get data from cd object
 				int idIntValue = Integer.valueOf(id).intValue();
 				NewsContentDefinition newsCD = new NewsContentDefinition(cms, new  Integer(idIntValue));
@@ -181,7 +193,7 @@ public class NewsBackoffice extends A_CmsBackoffice {
 				template.setData("a_info1", newsCD.getA_info1());
 				template.setData("a_info2", newsCD.getA_info2());
 				template.setData("a_info3", newsCD.getA_info3());
-        template.setData("setaction", "save");
+                template.setData("setaction", "save");
 				// re-display data in selectbox
 				session.putValue("checkSelectChannel", newsCD.getChannel());
 			return startProcessing(cms, template, elementName, parameters, templateSelector);
@@ -197,8 +209,6 @@ public class NewsBackoffice extends A_CmsBackoffice {
 								String templateSelector)
 								throws CmsException {
 		// session will be created or fetched
-
-     System.err.println("---NEW -"+template.toString());
 
 		I_CmsSession session = (CmsSession) cms.getRequestContext().getSession(true);
 		// get value of hidden input field action
@@ -303,6 +313,11 @@ public class NewsBackoffice extends A_CmsBackoffice {
 				template.setData("error", e.toString());
 				template.setData("headline", "headline");
 				template.setData("descript", description);
+                template.setData("text", text);
+                template.setData("link", link);
+                template.setData("linkText", linkText);
+                template.setData("author", author);
+                template.setData("date", NewsContentDefinition.date2string(actDate));
 				template.setData("a_info1", a_info1);
 				template.setData("a_info2", a_info2);
 				template.setData("a_info3", a_info3);

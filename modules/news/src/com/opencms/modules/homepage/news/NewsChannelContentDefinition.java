@@ -75,7 +75,7 @@ public class NewsChannelContentDefinition extends A_CmsContentDefinition impleme
 		PreparedStatement statement = null;
 		ResultSet res = null;
 		try {
-      con = DriverManager.getConnection(c_pool);
+            con = DriverManager.getConnection(c_pool);
 		 	statement = con.prepareStatement(C_SELECT_ID);
 			statement.setInt(1, ID.intValue());  // choose id of the Element  "where id == "
 			res = statement.executeQuery();
@@ -93,18 +93,18 @@ public class NewsChannelContentDefinition extends A_CmsContentDefinition impleme
 			try{
 				res.close();
 			}catch (Exception exc) {
-        // ignore this exception
+                // ignore this exception
 			}
-      try{
-        statement.close();
-      } catch(Exception exc) {
-        // ignore the exception
-      }
-      try{
-        con.close();
-      } catch(Exception exc) {
-        // ignore the exception
-      }
+             try{
+                statement.close();
+            } catch(Exception exc) {
+                // ignore the exception
+            }
+            try{
+                con.close();
+            } catch(Exception exc) {
+                // ignore the exception
+            }
 		}
 	}
 
@@ -138,12 +138,12 @@ public class NewsChannelContentDefinition extends A_CmsContentDefinition impleme
 			}catch (Exception e) {
 				// ignore the exception
 			}
-      try{
+            try{
 				statement.close();
 			}catch (Exception e) {
 				// ignore the exception
 			}
-      try{
+            try{
 				con.close();
 			}catch (Exception e) {
 				// ignore the exception
@@ -164,7 +164,7 @@ public class NewsChannelContentDefinition extends A_CmsContentDefinition impleme
 		m_lockstate = C_NOT_LOCKED;
 		newElement = true;
 		try{
-      m_id = com.opencms.dbpool.CmsIdGenerator.nextId(c_pool, C_TABLE_CHANNELS);
+          m_id = com.opencms.dbpool.CmsIdGenerator.nextId(c_pool, C_TABLE_CHANNELS);
 		} catch(CmsException e){
 			//System.err.println("Exception in NewsChannelContentDefinition.NewsChannelContentDefinition(String, String)!");
 			System.err.println("[" + this.getClass().getName() + "] " + e.getMessage());
@@ -195,7 +195,7 @@ public class NewsChannelContentDefinition extends A_CmsContentDefinition impleme
 		PreparedStatement statement = null;
 		if(newElement == true) {
 			try {
-        con = DriverManager.getConnection(c_pool);
+                con = DriverManager.getConnection(c_pool);
 				// write the data to database
 		 		statement = con.prepareStatement(C_INSERT_CHANNEL);
 				statement.setInt(1, m_id);
@@ -209,15 +209,15 @@ public class NewsChannelContentDefinition extends A_CmsContentDefinition impleme
 					CmsException.C_SQL_ERROR, e);
 			}finally{
 				try{
-          statement.close();
-        }catch(Exception e) {
-          // ignore the exception
-        }
-        try{
-          con.close();
-        }catch(Exception e) {
-          // ignore the exception
-        }
+                    statement.close();
+                }catch(Exception e) {
+                    // ignore the exception
+                }
+                try{
+                    con.close();
+                }catch(Exception e) {
+                    // ignore the exception
+                }
 			}
 		}else {
 			update(cms);
@@ -234,7 +234,7 @@ public class NewsChannelContentDefinition extends A_CmsContentDefinition impleme
 		PreparedStatement statement = null;
 		if(!NewsContentDefinition.channelIsUsed(m_id)){
 		try {
-      con = DriverManager.getConnection(c_pool);
+           con = DriverManager.getConnection(c_pool);
 			// delet data from database
 		 	statement = con.prepareStatement(C_DELETE_CHANNEL);
 			statement.setInt(1, m_id);
@@ -242,20 +242,20 @@ public class NewsChannelContentDefinition extends A_CmsContentDefinition impleme
 		}catch(Exception e) {
 			throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
 		}finally{
-		  try{
-        statement.close();
-      }catch(Exception e){
-        // ignore the exception
-      }
-      try{
-        con.close();
-      }catch(Exception e){
-        // ignore the exception
-      }
+            try{
+                statement.close();
+            }catch(Exception e){
+                // ignore the exception
+            }
+            try{
+                con.close();
+            }catch(Exception e){
+                // ignore the exception
+            }
 		}
-		}else{
-			// System.err.println("NewsChannelContentDefinition.delete() Channel " +m_id+ " wird noch verwendet und kann nicht gelöscht werden!");
-		  throw new CmsException("The channel is still in use and can't be deleted!");
+    }else{
+        // System.err.println("NewsChannelContentDefinition.delete() Channel " +m_id+ " wird noch verwendet und kann nicht gelöscht werden!");
+        throw new CmsException("The channel is still in use and can't be deleted!");
     }
 	}
 
@@ -264,7 +264,7 @@ public class NewsChannelContentDefinition extends A_CmsContentDefinition impleme
 		PreparedStatement statement = null;
 		ResultSet res = null;
 		try {
-      con = DriverManager.getConnection(c_pool);
+            con = DriverManager.getConnection(c_pool);
 			// write the data to database
 		 	statement = con.prepareStatement(C_UPDATE_CHANNEL);
 			statement.setString(1, m_name);
@@ -281,12 +281,12 @@ public class NewsChannelContentDefinition extends A_CmsContentDefinition impleme
 			}catch (SQLException e) {
 				// ignore the exception
 			}
-      try{
+            try{
 				statement.close();
 			}catch (SQLException e) {
 				// ignore the exception
 			}
-      try{
+            try{
 				con.close();
 			}catch (SQLException e) {
 				// ignore the exception
@@ -345,9 +345,9 @@ public class NewsChannelContentDefinition extends A_CmsContentDefinition impleme
 	 *
 	 * @return a Vector with all Elementes
 	 */
-	public static Vector getChannelList(){
+	public static Vector getChannelList() throws CmsException{
 		Vector list = new Vector();
-    Connection con = null;
+        Connection con = null;
 		PreparedStatement statement = null;
 		ResultSet res = null;
 		int id = -1;
@@ -355,7 +355,7 @@ public class NewsChannelContentDefinition extends A_CmsContentDefinition impleme
 		String descr = null;
 		int lockstate = -1;
 		try {
-      con = DriverManager.getConnection(c_pool);
+            con = DriverManager.getConnection(c_pool);
 		 	statement = con.prepareStatement(C_GET_ALL);
 			res = statement.executeQuery();
 			while(res.next()){
@@ -369,21 +369,22 @@ public class NewsChannelContentDefinition extends A_CmsContentDefinition impleme
 			}
 		}catch(Exception e) {
 			System.err.println("Exception in NewsChannelContentDefinition.getChannelList()!");
+            throw new CmsException(e.getMessage());
 		}finally{
 			try{
 				res.close();
 			}catch (SQLException e) {
-        // ignore the exception
+            // ignore the exception
 			}
-      try{
+            try{
 				statement.close();
 			}catch (SQLException e) {
-        // ignore the exception
-			}
-      try{
+            // ignore the exception
+            }
+            try{
 				con.close();
 			}catch (SQLException e) {
-        // ignore the exception
+            // ignore the exception
 			}
 		}
 		return list;
@@ -440,12 +441,6 @@ public class NewsChannelContentDefinition extends A_CmsContentDefinition impleme
 	 */
 	public void setLockstate(int lockstate) {
 		m_lockstate = lockstate;
-		/*try{
-			update(null);
-		}catch(CmsException e) {
-			//System.err.println("NewsChannelContentDefinition: CmsException in setLockstate()!");
-			System.err.println("[" + this.getClass().getName() + "] " + e.getMessage());
-		}*/
 	}
 
 	/**

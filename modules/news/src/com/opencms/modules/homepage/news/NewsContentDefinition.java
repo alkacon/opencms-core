@@ -47,7 +47,7 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 	private static final String  C_INSERT_ENTRY = "insert into news_entry values(?,?,?,?,?,?,?,?,?,?,?,?,?)";
 	private static final String  C_DELETE_ENTRY = "delete from news_entry where ID = ?";
 	private static final String  C_COUNT = "select count(*) from news_entry";
-  private static final String  C_SELECT_ID = "select * from news_entry where ID = ?";
+    private static final String  C_SELECT_ID = "select * from news_entry where ID = ?";
 	private static final String  C_GET_ALL = "select * from news_entry";
 	private static final String  C_UPDATE_ENTRY = "update news_entry set headline = ?, description = ?, text = ?, author = ?, link = ?, linkText = ?, date = ?, lockstate = ?, channel = ?, a_info1 = ?, a_info2 = ?, a_info3 = ? where id = ?";
 	private static final String  C_ORDER = "select * from news_entry order by ? desc";
@@ -56,8 +56,8 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 	private static final String  C_SELECT_DAY = "select * from news_entry where date = ? and channel = ?";
 	private static final String  C_SELECT_FIRST_N_OF_CHANNEL = "select * from news_entry where channel = ? order by date desc";
 
-  public static final String	 C_TABLE_NEWS = "NEWS_ENTRY";
-  public static final int      C_NOT_LOCKED = -1;
+    public static final String	 C_TABLE_NEWS = "NEWS_ENTRY";
+    public static final int      C_NOT_LOCKED = -1;
 
 	/**
 	 * Constructor
@@ -109,12 +109,12 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 			}catch (Exception e) {
 				// ignore the exception
 			}
-      try{
+            try{
 				statement.close();
 			}catch (Exception e) {
 				// ignore the exception
 			}
-      try{
+            try{
 				con.close();
 			}catch (Exception e) {
 				// ignore the exception
@@ -212,7 +212,7 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 			// Element not jet in Database -> insert Statement
 			try {
 				// write the data to database
-        con = DriverManager.getConnection(c_pool);
+                con = DriverManager.getConnection(c_pool);
 		 		statement = con.prepareStatement(C_INSERT_ENTRY);
 				statement.setInt(1, m_id);
 				statement.setString(2, m_headline);
@@ -233,16 +233,16 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 				throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(),
 				CmsException.C_SQL_ERROR, e);
 			}finally{
-        try{
+                try{
 				    statement.close();
-			  }catch (Exception e) {
-				  // ignore the exception
-			  }
-        try{
-				  con.close();
-			  }catch (Exception e) {
-				  // ignore the exception
-			  }
+			    }catch (Exception e) {
+                    // ignore the exception
+			    }
+                try{
+                    con.close();
+			    }catch (Exception e) {
+				    // ignore the exception
+			    }
 			}
 		}else {
 			// Element is already in Database -> update statement
@@ -257,12 +257,12 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 	 * @param the new date (java.sql.Date)
 	 */
 	private void update(CmsObject cms, java.sql.Date sqlDate) throws CmsException {
-    Connection con = null;
+        Connection con = null;
 		PreparedStatement statement = null;
 		ResultSet res = null;
 		try {
 			// write the data to database
-      con = DriverManager.getConnection(c_pool);
+            con = DriverManager.getConnection(c_pool);
 		 	statement = con.prepareStatement(C_UPDATE_ENTRY);
 			statement.setString(1, m_headline);
 			statement.setString(2, m_description);
@@ -282,12 +282,12 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 			throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(),
 				CmsException.C_SQL_ERROR, e);
 		}finally{
-      try{
+            try{
 				statement.close();
 			}catch (Exception e) {
 				// ignore the exception
 			}
-      try{
+            try{
 				con.close();
 			}catch (Exception e) {
 				// ignore the exception
@@ -305,7 +305,7 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 		ResultSet res = null;
 		try {
 			// delet data from database
-      con = DriverManager.getConnection(c_pool);
+            con = DriverManager.getConnection(c_pool);
 		 	statement = con.prepareStatement(C_DELETE_ENTRY);
 			statement.setInt(1, m_id);
 			statement.execute();
@@ -318,7 +318,7 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 			}catch (Exception e) {
 				// ignore the exception
 			}
-      try{
+            try{
 				con.close();
 			}catch (Exception e) {
 				// ignore the exception
@@ -382,9 +382,15 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 	 */
 	public static Vector getFilterMethods(CmsObject cms) {
 		Vector filterMethods = new Vector();
-		Vector channels = NewsChannelContentDefinition.getChannelList(); // get all actual channels
-		String showText = "";
+    String showText = "";
 		Integer actChannelId = null;  // has to be Integer because of Reflection!
+    Vector channels = null;
+    try {
+	  	channels = NewsChannelContentDefinition.getChannelList(); // get all actual channels
+    }
+    catch(CmsException e) {
+      return null;
+    }
 	  // add the always shown first filterMethod...
 		try {
 			filterMethods.addElement(new CmsFilterMethod("Sort all by ...", NewsContentDefinition.class.getMethod("getSortedList", new Class[] {String.class}), new Object[] {}));
@@ -414,9 +420,8 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 	 * @return a Vector with all Elementes
 	 */
 	public static Vector getNewsList(Integer channel, String stringN) {
-    System.err.println("channel: "+channel.intValue() + "Param: " + stringN);
 		Vector list = new Vector();
-    Connection con = null;
+        Connection con = null;
 		PreparedStatement statement = null;
 		ResultSet res = null;
 		int i =  0;
@@ -429,7 +434,7 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 			n = -1;
 		}
 		try {
-      con = DriverManager.getConnection(c_pool);
+            con = DriverManager.getConnection(c_pool);
 		 	statement = con.prepareStatement(C_SELECT_FIRST_N_OF_CHANNEL);
 			statement.setInt(1, channel.intValue());
 			res = statement.executeQuery();
@@ -460,12 +465,12 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 			}catch (Exception e) {
 				// ignore the exception
 			}
-      try{
+            try{
 				statement.close();
 			}catch (Exception e) {
 				// ignore the exception
 			}
-      try{
+            try{
 				con.close();
 			}catch (Exception e) {
 				// ignore the exception
@@ -481,7 +486,7 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 	 */
 	public static Vector getSortedList(String str) {
 		Vector list = new Vector();
-    Connection con = null;
+        Connection con = null;
 		PreparedStatement statement = null;
 		ResultSet res = null;
 		if(str == null || str == " ") { str = ""; }
@@ -489,7 +494,7 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 		str.toLowerCase();
 		//System.err.println("[NewsContentDefinition.getSortedList()] Start - str: " +str);
 		try {
-      con = DriverManager.getConnection(c_pool);
+            con = DriverManager.getConnection(c_pool);
 		 	statement = con.prepareStatement(C_ORDER);
 			if( str.equals("") ) {
 				statement.setString(1, "date");
@@ -548,12 +553,12 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 			}catch (Exception e) {
 				// ignore the exception
 			}
-      try{
+            try{
 				statement.close();
 			}catch (Exception e) {
 				// ignore the exception
 			}
-      try{
+            try{
 				con.close();
 			}catch (Exception e) {
 				// ignore the exception
@@ -570,9 +575,9 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 	 */
 	public static Vector getSortedList2() {
 
-    String str = "";
+        String str = "";
 		Vector list = new Vector();
-    Connection con = null;
+        Connection con = null;
 		PreparedStatement statement = null;
 		ResultSet res = null;
 		if(str == null || str == " ") { str = ""; }
@@ -580,7 +585,7 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 		str.toLowerCase();
 		//System.err.println("[NewsContentDefinition.getSortedList()] Start - str: " +str);
 		try {
-      con = DriverManager.getConnection(c_pool);
+            con = DriverManager.getConnection(c_pool);
 		 	statement = con.prepareStatement(C_ORDER);
 			if( str.equals("") ) {
 				statement.setString(1, "date");
@@ -639,12 +644,12 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 			}catch (Exception e) {
 				// ignore the exception
 			}
-      try{
+            try{
 				statement.close();
 			}catch (Exception e) {
 				// ignore the exception
 			}
-      try{
+            try{
 				con.close();
 			}catch (Exception e) {
 				// ignore the exception
@@ -656,10 +661,10 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 	 * one filter method
 	 * @return a Vector with all selected Elementes
 	 */
-	public static Vector getDynamicList(Integer channelId, Integer flag, String str) {
+	public static Vector getDynamicList(Integer channelId, Integer flag, String str) throws CmsException {
 		Vector list = new Vector();
 		java.sql.Date day = null;
-    Connection con = null;
+        Connection con = null;
 		PreparedStatement statement = null;
 		ResultSet res = null;
 		int month = 1;
@@ -671,8 +676,8 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 				System.err.println("[NewsContentDefinition.getDynamicList()] Exception while trying to parse the month: "+e.getMessage());
 			}
 			if(month <1 || month >12) month = 1;
-		}else {
-			// "day"
+		    }else {
+			    // "day"
 			if( (str == null) || (str.equals("")) || (str.equals(" "))) {
 				try{
 					day = string2sqlDate("01.01.2000"); // this default value seems to be needed by A_Backoffice
@@ -688,7 +693,7 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 			}
 		}
 		try{
-      con = DriverManager.getConnection(c_pool);
+            con = DriverManager.getConnection(c_pool);
 			if(flag.equals(C_FLAG_MONTH)){
 				statement = con.prepareStatement(C_SELECT_MONTH);
 				statement.setInt(1, month);
@@ -719,9 +724,10 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 														));
 			}
 		}catch(Exception e) {
-			System.err.println("[NewsContentDefinition.getDynamicList() Exception while trying to execute the statement:]" + e.getMessage());
+      throw new CmsException(e.getMessage());
+			//System.err.println("[NewsContentDefinition.getDynamicList() Exception while trying to execute the statement:]" + e.getMessage());
 		}finally{
-      try{
+            try{
 				res.close();
 			}catch (Exception e) {
 				// ignore the exception
@@ -731,7 +737,7 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 			}catch (Exception e) {
 				// ignore the exception
 			}
-      try{
+            try{
 				con.close();
 			}catch (Exception e) {
 				// ignore the exception
@@ -753,7 +759,7 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 		ResultSet res = null;
 		int ret = -1;
 		try {
-      con = DriverManager.getConnection(c_pool);
+            con = DriverManager.getConnection(c_pool);
 		 	statement = con.prepareStatement(C_SELECT_CHANNEL_ID);
 			statement.setInt(1, channelId);
 			res = statement.executeQuery();
@@ -761,7 +767,7 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 				ret = res.getInt(1);
 				//System.err.println("channelIsUsed: " + res.getInt(1) );
 			}
-			System.err.println("channelIsUsed: " + res.getInt(1) );
+			//System.err.println("channelIsUsed: " + res.getInt(1) );
 		}catch(SQLException e) {
 			System.err.println("Exception in NewsContentDefinition.channelIsUsed()!");
 		}finally{
@@ -775,7 +781,7 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 			}catch (Exception e) {
 				// ignore the exception
 			}
-      try{
+            try{
 				con.close();
 			}catch (Exception e) {
 				// ignore the exception
