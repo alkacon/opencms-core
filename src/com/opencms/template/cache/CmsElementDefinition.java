@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementDefinition.java,v $
-* Date   : $Date: 2001/05/08 13:04:00 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2001/05/09 12:28:49 $
+* Version: $Revision: 1.3 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -28,7 +28,6 @@
 package com.opencms.template.cache;
 
 import java.util.*;
-import java.io.*;
 import com.opencms.file.*;
 
 /**
@@ -37,7 +36,8 @@ import com.opencms.file.*;
  * stores information about an element, like the name, className, templateName
  * and parameters for the pointed element.
  *
- * @author: Andreas Schouten
+ * @author Andreas Schouten
+ * @author Alexander Lucas
  */
 public class CmsElementDefinition implements Cloneable {
 
@@ -182,6 +182,10 @@ public class CmsElementDefinition implements Cloneable {
         return m_templateName;
     }
 
+    /**
+     * Get a string representation of this definition.
+     * @return String representation.
+     */
     public String toString() {
         StringBuffer result = new StringBuffer();
 

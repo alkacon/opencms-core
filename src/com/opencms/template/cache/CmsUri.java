@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsUri.java,v $
-* Date   : $Date: 2001/05/08 13:04:00 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2001/05/09 12:28:49 $
+* Version: $Revision: 1.5 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -42,7 +42,7 @@ import com.opencms.file.*;
  *
  * @author: Andreas Schouten
  */
-public class CmsUri {
+public class CmsUri implements I_CmsConstants {
 
     /**
      * The name of the group that can read this ressource,
@@ -61,7 +61,6 @@ public class CmsUri {
      */
     private CmsElementDefinitionCollection m_elementDefinitions = null;
 
-    //private CmsCacheDirectives m_mergedCacheDirectives();
 
     /**
      * Constructor.
@@ -91,9 +90,8 @@ public class CmsUri {
     }
 
     public byte[] callCanonicalRoot(CmsStaging staging, CmsObject cms, Hashtable parameters) throws CmsException  {
-        System.err.println("*** CANONICAL ROOT REQUESTED for " + m_startingElement.getClassName() + "/" + m_startingElement.getTemplateName());
         A_CmsElement elem = staging.getElementLocator().get(cms, m_startingElement, parameters);
-        return elem.getContent(staging, cms, m_elementDefinitions, parameters);
+        return elem.getContent(staging, cms, m_elementDefinitions, C_ROOT_TEMPLATE_NAME, parameters);
     }
 
 }

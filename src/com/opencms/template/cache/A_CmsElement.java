@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/A_CmsElement.java,v $
-* Date   : $Date: 2001/05/08 13:04:00 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2001/05/09 12:28:49 $
+* Version: $Revision: 1.5 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -35,12 +35,12 @@ import com.opencms.file.*;
 import com.opencms.template.*;
 
 /**
- * An instance of CmsElement represents an requestable Element in the OpenCms
+ * An instance of A_CmsElement represents an requestable Element in the OpenCms
  * staging-area. It contains all informations to generate the content of this
  * element. It also stores the variants of once generated content to speed up
  * performance.
  *
- * It points to other depending elements. Theses elements are called to generate
+ * It may point to other depending elements. Theses elements are called to generate
  * their content on generation-time.
  *
  * @author Andreas Schouten
@@ -49,7 +49,7 @@ import com.opencms.template.*;
 public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels {
 
     /** Set to <code>true</true> for additional debug output */
-    private boolean C_DEBUG = true;
+    private boolean C_DEBUG = false;
 
     /** The class-name of this element definition. */
     protected String m_className;
@@ -57,23 +57,17 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
     /** The template-name of this element definition. */
     protected String m_templateName;
 
-    /** The name of this element. */
-    protected String m_elementName;
-
     /** Cache directives of this element. */
     private CmsCacheDirectives m_cacheDirectives;
 
-    /**
-     * A Vector with definitions declared in this element.
-     */
+    /** All definitions declared in this element. */
     protected CmsElementDefinitionCollection m_elementDefinitions;
-
 
     /** Hashtable for element variant cache */
     private Hashtable m_variants;
 
     /**
-     * Constructor for an element with the given class and template name.
+     * Initializer for an element with the given class and template name.
      */
     protected void init(String className, String templateName, CmsCacheDirectives cd) {
         m_className = className;
@@ -84,8 +78,7 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
     }
 
     /**
-     * A construcor which creates an element with the given element
-     * definitions.
+     * Initializer for building an element with the given element definitions.
      * @param name the name of this element-definition.
      * @param className the classname of this element-definition.
      * @param cd Cache directives for this element
@@ -112,7 +105,8 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
      * @param def - the ElementVariant to add.
      */
     public void addVariant(Object key, CmsElementVariant variant) {
-        if(C_DEBUG && CmsBase.isLogging()) {
+        //if(C_DEBUG && CmsBase.isLogging()) {
+        if(CmsBase.isLogging()) {
             CmsBase.log(C_OPENCMS_STAGING, toString() + " adding variant \"" + key + "\" to cache. ");
         }
         m_variants.put(key, variant);
@@ -125,7 +119,8 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
      */
     public CmsElementVariant getVariant(Object key) {
         CmsElementVariant result = (CmsElementVariant)m_variants.get(key);
-        if(C_DEBUG && CmsBase.isLogging()) {
+        //if(C_DEBUG && CmsBase.isLogging()) {
+        if(CmsBase.isLogging()) {
             if(result != null) {
                 CmsBase.log(C_OPENCMS_STAGING, toString() + " getting variant \"" + key + "\" from cache. ");
             } else {
@@ -149,82 +144,183 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
      * @return Element definition of <em>name</em>
      */
     public CmsElementDefinition getElementDefinition(String name) {
-        /*CmsElementDefinition result = null;
-        int numDefs = m_elementDefinitions.size();
-        for(int i = 0; i < numDefs; i++) {
-            CmsElementDefinition loop = (CmsElementDefinition)m_elementDefinitions.elementAt(i);
-            String elName = loop.getName();
-            if(elName.equals(name)) {
-                result = loop;
-            }
-        }
-        return result;*/
         return (CmsElementDefinition)m_elementDefinitions.get(name);
     }
 
+    /** Get cache directives for this element.
+     *  @return cache directives.
+     */
     public CmsCacheDirectives getCacheDirectives() {
         return m_cacheDirectives;
     }
-    public abstract byte[] getContent(CmsStaging staging, CmsObject cms, CmsElementDefinitionCollection efDefs, Hashtable parameters) throws CmsException;
 
+    /**
+     * Abstract method for getting the content of this element.
+     * Element classes may have different implementations for getting
+     * the contents. Common tasks of all implementations are checking
+     * the variant cache and creating the variant if required.
+     * @param staging Entry point for the element cache
+     * @param cms CmsObject for accessing system resources
+     * @param elDefs Definitions of this element's subelements
+     * @param parameters All parameters of this request
+     * @return Byte array with the processed content of this element.
+     * @exception CmsException
+     */
+    public abstract byte[] getContent(CmsStaging staging, CmsObject cms, CmsElementDefinitionCollection efDefs, String elementName, Hashtable parameters) throws CmsException;
+
+    /**
+     * Get a template class from the template class manager.
+     * @param cms CmsObject for accessing system resources.
+     * @param classname Name of the requested class.
+     * @exception CmsException if the loaded class is no OpenCms template class
+     */
     protected I_CmsTemplate getTemplateClass(CmsObject cms, String classname) throws CmsException {
         Object o = CmsTemplateClassManager.getClassInstance(cms, classname);
-
         // Check, if the loaded class really is a OpenCms template class.
-        I_CmsTemplate cmsTemplate = (I_CmsTemplate)o;
-        return cmsTemplate;
+        if(o instanceof I_CmsTemplate) {
+            return (I_CmsTemplate)o;
+        } else {
+            throw new CmsException(classname + " is no OpenCms template class.", CmsException.C_XML_NO_TEMPLATE_CLASS);
+        }
     }
 
-
-    public byte[] resolveVariant(CmsObject cms, CmsElementVariant variant, CmsStaging staging, CmsElementDefinitionCollection elDefs, Hashtable parameters) {
-        if(C_DEBUG) System.err.println("= Start resolving variant " + variant);
+    /**
+     * Resolve given variant of this element and get content of all sub elements.
+     * @param cms CmsObject for accessing system resources
+     * @param variant Variant that should be resolved
+     * @param staging Entry point for element cache
+     * @param elDefs Definitions for all subelements
+     * @param elementName Current name of the subelement during resolving
+     * @param parameters All parameters of this request
+     * @return Byte array with processed element content
+     * @exception CmsException if resolving fails.
+     */
+    public byte[] resolveVariant(CmsObject cms, CmsElementVariant variant, CmsStaging staging, CmsElementDefinitionCollection elDefs, String elementName, Hashtable parameters) throws CmsException {
+        boolean resolveDebug = false;
+        if(resolveDebug) System.err.println("= Start resolving variant " + variant);
         int len = variant.size();
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
             for(int i=0; i<len; i++) {
-                if(C_DEBUG) System.err.print("= Part " + i + " is a ");
+                if(resolveDebug) System.err.print("= Part " + i + " is a ");
                 Object o = variant.get(i);
+                // Decide what to do with the current part.
+                // If it's a String or byte array, just print it out.
+                // If it's a link to a sub element, get this element and call its getContent() method
                 if(o instanceof String) {
-                    if(C_DEBUG) System.err.println("String");
+                    if(resolveDebug) System.err.println("String");
                     baos.write(((String)o).getBytes());
                 } else if(o instanceof byte[]) {
-                    if(C_DEBUG) System.err.println("byte array");
+                    if(resolveDebug) System.err.println("byte array");
                     baos.write((byte[])o);
                 } else if(o instanceof CmsElementLink) {
-                    if(C_DEBUG) System.err.println("Link");
+                    if(resolveDebug) System.err.println("Link");
+
                     // we have to resolve the element link right NOW!
+                    // Look for the element definition
                     String lookupName = ((CmsElementLink)o).getElementName();
-                    if(C_DEBUG) System.err.println("= Trying to resolve link \"" + lookupName +"\".");
-                    System.err.println("*+*+*+ ELEMENTDEFS");
-                    System.err.println(elDefs.toString());
+                    if(resolveDebug) System.err.println("= Trying to resolve link \"" + lookupName +"\".");
                     CmsElementDefinition elDef = elDefs.get(lookupName);
                     if(elDef != null) {
+                        // We have successfully found an element definition.
+                        // Try to get the corresponding element using the element locator
                         A_CmsElement subEl = staging.getElementLocator().get(cms, elDef.getDescriptor(), parameters);
-                        if(C_DEBUG) System.err.println("= Element defintion for \"" + lookupName +"\" says: ");
-                        if(C_DEBUG) System.err.println("= -> Class    : " + elDef.getClassName());
-                        if(C_DEBUG) System.err.println("= -> Template : " + elDef.getTemplateName());
+                        if(resolveDebug) System.err.println("= Element defintion for \"" + lookupName +"\" says: ");
+                        if(resolveDebug) System.err.println("= -> Class    : " + elDef.getClassName());
+                        if(resolveDebug) System.err.println("= -> Template : " + elDef.getTemplateName());
+                        String errorMessage = "";
                         if(subEl != null) {
-                            if(C_DEBUG) System.err.println("= Element object found for \"" + lookupName +"\". Calling getContent on this object. ");
-                            byte[] buffer = subEl.getContent(staging, cms, elDefs, parameters);
+                            // An element could be found. Very fine.
+                            // So we can go on and call its getContent() method
+                            if(resolveDebug) System.err.println("= Element object found for \"" + lookupName +"\". Calling getContent on this object. ");
+                            byte[] buffer = null;
+                            try {
+                                buffer = subEl.getContent(staging, cms, elDefs, elementName, parameters);
+                            } catch(Exception e) {
+                                // An error occured while getting the element's content.
+                                // Do some error handling here.
+                                subEl = null;
+                                buffer = null;
+                                if(e instanceof CmsException) {
+                                    CmsException ce = (CmsException)e;
+                                    if(ce.getType() == ce.C_ACCESS_DENIED) {
+                                        // This was an access denied exception.
+                                        // If we are streaming, we have to catch it and print an error message
+                                        // If we are not streaming, we can throw it again and force an authorization request
+                                        if(cms.getRequestContext().isStreaming()) {
+                                            if(CmsBase.isLogging()) {
+                                                CmsBase.log(C_OPENCMS_CRITICAL, toString() + " Access denied in element " + lookupName);
+                                                CmsBase.log(C_OPENCMS_CRITICAL, toString() + " Streaming is active, so authentication box cannot be requested.");
+                                            }
+                                            errorMessage = "Access denied";
+                                        } else {
+                                            if(CmsBase.isLogging()) {
+                                                CmsBase.log(C_OPENCMS_CRITICAL, toString() + " Access denied in element " + lookupName);
+                                            }
+                                            throw ce;
+                                        }
+                                    } else {
+                                        // Any other CmsException. This may be critical
+                                        if(CmsBase.isLogging()) {
+                                            CmsBase.log(C_OPENCMS_CRITICAL, toString() + " Error in element " + lookupName);
+                                            CmsBase.log(C_OPENCMS_CRITICAL, toString() + e);
+                                        }
+                                    }
+                                } else {
+                                    // Any other Non-CmsException.
+                                    if(CmsBase.isLogging()) {
+                                        CmsBase.log(C_OPENCMS_CRITICAL, toString() + " Non-CmsException in element " + lookupName);
+                                        CmsBase.log(C_OPENCMS_CRITICAL, toString() + e);
+                                    }
+                                }
+                            }
+                            // If we have some results print them out.
                             if(buffer != null) {
                                 baos.write(buffer);
                             }
                         } else {
-                            baos.write(("[" + lookupName + "] ???").getBytes());
-                            if(C_DEBUG) System.err.println("= Cannot find Element object for \"" + lookupName +"\". Ignoring this link. ");
+                            // The subelement object is null, i.e. the element could not be found.
+                            // Do nothing but a little bit logging here.
+                            if(resolveDebug) System.err.println("= Cannot find Element object for \"" + lookupName +"\". Ignoring this link. ");
+                            if(CmsBase.isLogging()) {
+                                CmsBase.log(C_OPENCMS_STAGING, toString() + " Cannot find Element object for \"" + lookupName +"\". Ignoring this link. ");
+                            }
+                        }
+
+                        // If the element could not be generated properly, print a little error
+                        // message instead of the element's results.
+                        if(subEl == null) {
+                            baos.write(("[" + lookupName + "] ??? ").getBytes());
+                            baos.write(errorMessage.getBytes());
                         }
                     } else {
-                        if(C_DEBUG) System.err.println("= No element definition found for \"" + lookupName +"\". Ignoring this link. ");
+                        // No element definition could be found.
+                        // Do some logging only and ignore this element
+                        baos.write(("[" + lookupName + "] Element not defined.").getBytes());
+                        if(CmsBase.isLogging()) {
+                            CmsBase.log(C_OPENCMS_STAGING, toString() + " No element definition found for \"" + lookupName +"\". Ignoring this link. ");
+                        }
+                        if(resolveDebug) {
+                            System.err.println("= No element definition found for \"" + lookupName +"\". Ignoring this link. ");
+                            System.err.println(elDefs.toString());
+                        }
                     }
                 }
             }
-        } catch(Exception e) {
-            System.err.println("Error while resolving element variant");
-            e.printStackTrace();
+            return baos.toByteArray();
+        } catch(IOException e) {
+            // Something went wrong while writing to the OutputStream
+            if(CmsBase.isLogging()) {
+                CmsBase.log(C_OPENCMS_CRITICAL, toString() + " Critical: IOException while writing to OutputStream. ");
+            }
+            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
         }
-        return baos.toByteArray();
     }
 
+    /**
+     * Get a string representation of this element.
+     * @return String representation.
+     */
     public String toString() {
         String part1 = getClass().getName();
         part1 = part1.substring(part1.lastIndexOf(".") + 1);
@@ -234,5 +330,4 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
 
         return "[" + part1 + " (" + part2 + "/" + part3 + ")]";
     }
-
 }

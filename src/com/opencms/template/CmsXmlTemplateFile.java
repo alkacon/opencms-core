@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
-* Date   : $Date: 2001/05/08 13:03:51 $
-* Version: $Revision: 1.36 $
+* Date   : $Date: 2001/05/09 12:28:56 $
+* Version: $Revision: 1.37 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -41,7 +41,7 @@ import java.io.*;
  * Content definition for XML template files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.36 $ $Date: 2001/05/08 13:03:51 $
+ * @version $Revision: 1.37 $ $Date: 2001/05/09 12:28:56 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
@@ -320,16 +320,18 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
      */
     public Hashtable getParameters(String elementName) throws CmsException {
         Hashtable result = new Hashtable();
-        Element elementDefinition = getData("elementdef." + elementName);
-        NodeList parameterTags = elementDefinition.getChildNodes();
+        if(hasData("elementdef." + elementName)) {
+            Element elementDefinition = getData("elementdef." + elementName);
+            NodeList parameterTags = elementDefinition.getChildNodes();
 
-        int numElements = parameterTags.getLength();
-        for(int i = 0;i < numElements;i++) {
-            Node n = (Node)parameterTags.item(i);
-            if(n.getNodeType() == n.ELEMENT_NODE && n.getNodeName().toLowerCase().equals("parameter")) {
-                String name = ((Element)n).getAttribute("name");
-                if(name != null && !"".equals(name)) {
-                    result.put(name, getTagValue((Element)n));
+            int numElements = parameterTags.getLength();
+            for(int i = 0;i < numElements;i++) {
+                Node n = (Node)parameterTags.item(i);
+                if(n.getNodeType() == n.ELEMENT_NODE && n.getNodeName().toLowerCase().equals("parameter")) {
+                    String name = ((Element)n).getAttribute("name");
+                    if(name != null && !"".equals(name)) {
+                        result.put(name, getTagValue((Element)n));
+                    }
                 }
             }
         }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementLocator.java,v $
-* Date   : $Date: 2001/05/07 16:22:56 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2001/05/09 12:28:49 $
+* Version: $Revision: 1.4 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -40,7 +40,8 @@ import com.opencms.template.*;
  * if they are notc used a long time - written to an external database. The
  * locator manages all the reading, writing and management of the CmsElement's.
  *
- * @author: Andreas Schouten
+ * @author Andreas Schouten
+ * @author Alexander Lucas
  */
 public class CmsElementLocator implements com.opencms.boot.I_CmsLogChannels {
 
@@ -58,6 +59,9 @@ public class CmsElementLocator implements com.opencms.boot.I_CmsLogChannels {
 
     /**
      * Adds a new Element to this locator.
+     * This method is kept private and must not be used from outside.
+     * New elements automatically are generated and stored by the Locator,
+     * so no one really needs to use this method.
      * @param descriptor - the descriptor for this element.
      * @param element - the Element to put in this locator.
      */

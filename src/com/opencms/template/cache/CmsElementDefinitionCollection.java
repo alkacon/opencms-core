@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementDefinitionCollection.java,v $
-* Date   : $Date: 2001/05/09 11:47:41 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2001/05/09 12:28:49 $
+* Version: $Revision: 1.2 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -32,20 +32,30 @@ import java.io.*;
 import com.opencms.file.*;
 
 /**
- * An instance of CmsElementDefinitions represents an "pointer" to other
- * elements. This pointers are stored in CmsElement's. An ElementDfinitions
- * stores information about an element, like the name, className, templateName
- * and parameters for the pointed element.
+ * Used to collect a set of element definitions.
+ * Two CmsElementDefinitionCollections can be merged using the join constructor.
  *
- * @author: Alexander Lucas
+ * @author: Alexander Lucas <alexander.lucas@framfab.de>
  */
 public class CmsElementDefinitionCollection {
 
+    /** Hashtable for storing all definitions */
     private Hashtable m_eldefs = new Hashtable();
 
+    /** Default constructor */
     public CmsElementDefinitionCollection() {
     }
 
+    /**
+     * Join cunstructor.
+     * Two CmsElementDefinitionCollections can be merged using this constructor.
+     * If a definition is defined in both source collections
+     * the single parts of this definitions will be merged.
+     * If a <em>part</em> of a definition is defined twice, the collection
+     * primary will be preferred.
+     * @param primary Source CmsElementDefinitionCollection
+     * @param secondary Source CmsElementDefinitionCollection
+     */
     public CmsElementDefinitionCollection(CmsElementDefinitionCollection primary, CmsElementDefinitionCollection secondary) {
         Vector allKeys = new Vector();
         Enumeration keys1 = primary.m_eldefs.keys();
@@ -68,19 +78,27 @@ public class CmsElementDefinitionCollection {
         }
     }
 
+    /**
+     * Add a definition to the collection.
+     * @param def CmsElementDefinition that should be added
+     */
     public void add(CmsElementDefinition def) {
-        try {
-            m_eldefs.put(def.getName(), def);
-        } catch(NullPointerException e) {
-            System.err.println("*** NULL " + def);
-            System.err.println("*** " + def.getName());
-        }
+        m_eldefs.put(def.getName(), def);
     }
 
+    /**
+     * Geta definition from the collection.
+     * @param name Name of the element definition requested
+     * @return CmsElementDefinition for <code>name</code> or <code>null</code>, if not defined.
+     */
     public CmsElementDefinition get(String name) {
         return (CmsElementDefinition)m_eldefs.get(name);
     }
 
+    /**
+     * Get a string representation of this collection.
+     * @return String representation.
+     */
     public String toString() {
         StringBuffer result = new StringBuffer();
         result.append("-----------------------------------------------------------------\n");

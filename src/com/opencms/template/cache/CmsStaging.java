@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsStaging.java,v $
-* Date   : $Date: 2001/05/03 16:00:41 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2001/05/09 12:28:49 $
+* Version: $Revision: 1.2 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -64,8 +64,12 @@ public class CmsStaging {
     }
 
     public byte[] callCanonicalRoot(CmsObject cms, Hashtable parameters) throws CmsException {
+        long time1 = System.currentTimeMillis();
         CmsUri uri = m_uriLocator.get(new CmsUriDescriptor(cms.getRequestContext().getUri()));
-        return uri.callCanonicalRoot(this, cms, parameters);
+        byte[]result = uri.callCanonicalRoot(this, cms, parameters);
+        long time2 = System.currentTimeMillis();
+        System.err.println("%%% Time for getting URI " + cms.getRequestContext().getUri() + ": " + (time2 - time1) + " ms");
+        return result;
     }
 
 }

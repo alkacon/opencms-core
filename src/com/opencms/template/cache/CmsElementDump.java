@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementDump.java,v $
-* Date   : $Date: 2001/05/08 13:04:00 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2001/05/09 12:28:49 $
+* Version: $Revision: 1.5 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -28,21 +28,19 @@
 package com.opencms.template.cache;
 
 import java.util.*;
-import java.io.*;
 import com.opencms.core.*;
 import com.opencms.file.*;
 import com.opencms.template.*;
 
 /**
- * An instance of CmsElement represents an requestable Element in the OpenCms
+ * An instance of CmsElementDump represents an requestable dump element in the OpenCms
  * staging-area. It contains all informations to generate the content of this
  * element. It also stores the variants of once generated content to speed up
  * performance.
  *
- * It points to other depending elements. Theses elements are called to generate
- * their content on generation-time.
+ * This special case of an element doesn't point to other depending elements.
+ * It may only be used for dumping plain text or binary data.
  *
- * @author Andreas Schouten
  * @author Alexander Lucas
  */
 public class CmsElementDump extends A_CmsElement {
@@ -59,15 +57,24 @@ public class CmsElementDump extends A_CmsElement {
      * definitions.
      * @param name the name of this element-definition.
      * @param className the classname of this element-definition.
-     * @param cd Cache directives for this element     *
+     * @param cd Cache directives for this element
      * @param defs CmsElementDefinitionCollection for this element.
      */
     public CmsElementDump(String className, String templateName, CmsCacheDirectives cd, CmsElementDefinitionCollection defs) {
         init(className, templateName, cd, defs);
     }
 
-
-    public byte[] getContent(CmsStaging staging, CmsObject cms, CmsElementDefinitionCollection elDefs, Hashtable parameters) throws CmsException  {
+    /**
+     * Get the content of this element.
+     * @param staging Entry point for the element cache
+     * @param cms CmsObject for accessing system resources
+     * @param elDefs Definitions of this element's subelements
+     * @param parameters All parameters of this request
+     * @return Byte array with the processed content of this element.
+     * @exception CmsException
+     */
+    public byte[] getContent(CmsStaging staging, CmsObject cms, CmsElementDefinitionCollection elDefs, String elementName, Hashtable parameters) throws CmsException  {
+        long time1 = System.currentTimeMillis();
         byte[] result = null;
 
         // Get template class.
@@ -95,19 +102,17 @@ public class CmsElementDump extends A_CmsElement {
         }
 
         if(variant != null) {
-            result = resolveVariant(cms, variant, staging, elDefs, parameters);
+            result = resolveVariant(cms, variant, staging, elDefs, elementName, parameters);
         } else {
             // This element was not found in the variant cache.
             // We have to generate it.
             try {
-                System.err.println(toString() + " : Variante muss generiert werden.");
-                result = templateClass.getContent(cms, m_templateName, m_elementName, parameters);
+                result = templateClass.getContent(cms, m_templateName, elementName, parameters);
                 if(cd.isInternalCacheable()) {
                     variant = new CmsElementVariant();
                     variant.add(result);
                     addVariant(cacheKey, variant);
                 }
-                System.err.println(toString() + " : New variant is: " + variant);
 
             }
             catch(CmsException e) {
@@ -118,6 +123,8 @@ public class CmsElementDump extends A_CmsElement {
                 result = null;
             }
         }
+        long time2 = System.currentTimeMillis();
+        System.err.println("% Time for getting content of \"" + elementName + "\": " + (time2 - time1) + " ms");
         return result;
     }
 }

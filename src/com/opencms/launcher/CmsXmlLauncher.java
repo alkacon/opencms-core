@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsXmlLauncher.java,v $
-* Date   : $Date: 2001/05/08 13:04:09 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2001/05/09 12:29:17 $
+* Version: $Revision: 1.24 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -55,7 +55,7 @@ import javax.servlet.http.*;
  * be used to create output.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.23 $ $Date: 2001/05/08 13:04:09 $
+ * @version $Revision: 1.24 $ $Date: 2001/05/09 12:29:17 $
  */
 public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_CmsConstants {
 
@@ -70,77 +70,110 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_
      */
     protected byte[] generateOutput(CmsObject cms, CmsFile file, String startTemplateClass, I_CmsRequest req, A_OpenCms openCms) throws CmsException {
         byte[] output = null;
-        CmsXmlControlFile doc = null;
-        try {
 
-            //doc.init(cms, file);
-            doc = new CmsXmlControlFile(cms, file);
-        }
-        catch(Exception e) {
-            // there was an error while parsing the document
-            handleException(cms, e, "There was an error while parsing XML file " + file.getAbsolutePath());
-            return "".getBytes();
-        }
-        String templateClass = doc.getTemplateClass();
-        if(templateClass == null || "".equals(templateClass)) {
-            templateClass = startTemplateClass;
-        }
-        if(templateClass == null || "".equals(templateClass)) {
-            templateClass = "com.opencms.template.CmsXmlTemplate";
-        }
-        String templateName = doc.getMasterTemplate();
-
-        CmsFile masterTemplate = loadMasterTemplateFile(cms, templateName, doc);
-        /* Previously, the template class was loaded here.
-           We avoid doing this so early, since in staging mode the template
-           class is not needed here.
-           Moved this stuff into the "classic way" branch */
-
-        // Now look for parameters in the page file...
+        // Hashtable for collecting all parameters.
         Hashtable newParameters = new Hashtable();
 
-        // ... first the params of the master template...
-        Enumeration masterTemplateParams = doc.getParameterNames();
-        while(masterTemplateParams.hasMoreElements()) {
-            String paramName = (String)masterTemplateParams.nextElement();
-            String paramValue = doc.getParameter(paramName);
-            newParameters.put(C_ROOT_TEMPLATE_NAME + "." + paramName, paramValue);
+        // Parameters used for element cache
+        boolean isStaging = cms.getRequestContext().isStaging();
+        CmsStaging staging = null;
+        String uri = cms.getRequestContext().getUri();
+        CmsUriDescriptor uriDesc = null;
+        CmsUriLocator uriLoc = null;
+        CmsUri cmsUri = null;
+
+        String templateClass = null;
+        String templateName = null;
+        CmsXmlControlFile doc = null;
+
+        if(isStaging) {
+            // Get the global staging object
+            staging = openCms.getStaging();
+
+            // Prepare URI Locator
+            uriDesc = new CmsUriDescriptor(uri);
+            uriLoc = staging.getUriLocator();
+            cmsUri = uriLoc.get(uriDesc);
         }
 
-        // ... and now the params of all subtemplates
-        Enumeration elementDefinitions = doc.getElementDefinitions();
-        while(elementDefinitions.hasMoreElements()) {
-            String elementName = (String)elementDefinitions.nextElement();
-            if(doc.isElementClassDefined(elementName)) {
-                newParameters.put(elementName + "._CLASS_", doc.getElementClass(elementName));
+        if(cmsUri == null || !isStaging) {
+            // Entry point to page file analysis.
+            // For performance reasons this should only be done if the element
+            // cache is not activated or if it's activated but no URI object could be found.
+
+            // Parse the page file
+            try {
+                doc = new CmsXmlControlFile(cms, file);
             }
-            if(doc.isElementTemplateDefined(elementName)) {
-                newParameters.put(elementName + "._TEMPLATE_", doc.getElementTemplate(elementName));
+            catch(Exception e) {
+                // there was an error while parsing the document.
+                // No chance to go on here.
+                handleException(cms, e, "There was an error while parsing XML page file " + file.getAbsolutePath());
+                return "".getBytes();
             }
-            if(doc.isElementTemplSelectorDefined(elementName)) {
-                newParameters.put(elementName + "._TEMPLATESELECTOR_", doc.getElementTemplSelector(elementName));
+
+            // Get the names of the master template and the template class from
+            // the parsed page file. Fall back to default value, if template class
+            // is not defined
+            templateClass = doc.getTemplateClass();
+            if(templateClass == null || "".equals(templateClass)) {
+                templateClass = startTemplateClass;
             }
-            Enumeration parameters = doc.getElementParameterNames(elementName);
-            while(parameters.hasMoreElements()) {
-                String paramName = (String)parameters.nextElement();
-                String paramValue = doc.getElementParameter(elementName, paramName);
-                if(paramValue != null) {
-                    newParameters.put(elementName + "." + paramName, paramValue);
+            if(templateClass == null || "".equals(templateClass)) {
+                templateClass = "com.opencms.template.CmsXmlTemplate";
+            }
+            templateName = doc.getMasterTemplate();
+
+            // Previously, the template class was loaded here.
+            // We avoid doing this so early, since in staging mode the template
+            // class is not needed here.
+
+            // Now look for parameters in the page file...
+            // ... first the params of the master template...
+            Enumeration masterTemplateParams = doc.getParameterNames();
+            while(masterTemplateParams.hasMoreElements()) {
+                String paramName = (String)masterTemplateParams.nextElement();
+                String paramValue = doc.getParameter(paramName);
+                newParameters.put(C_ROOT_TEMPLATE_NAME + "." + paramName, paramValue);
+            }
+
+            // ... and now the params of all subtemplates
+            Enumeration elementDefinitions = doc.getElementDefinitions();
+            while(elementDefinitions.hasMoreElements()) {
+                String elementName = (String)elementDefinitions.nextElement();
+                if(doc.isElementClassDefined(elementName)) {
+                    newParameters.put(elementName + "._CLASS_", doc.getElementClass(elementName));
                 }
-                else {
-                    if(A_OpenCms.isLogging()) {
-                        A_OpenCms.log(C_OPENCMS_INFO, getClassName() + "Empty parameter \"" + paramName + "\" found.");
+                if(doc.isElementTemplateDefined(elementName)) {
+                    newParameters.put(elementName + "._TEMPLATE_", doc.getElementTemplate(elementName));
+                }
+                if(doc.isElementTemplSelectorDefined(elementName)) {
+                    newParameters.put(elementName + "._TEMPLATESELECTOR_", doc.getElementTemplSelector(elementName));
+                }
+                Enumeration parameters = doc.getElementParameterNames(elementName);
+                while(parameters.hasMoreElements()) {
+                    String paramName = (String)parameters.nextElement();
+                    String paramValue = doc.getElementParameter(elementName, paramName);
+                    if(paramValue != null) {
+                        newParameters.put(elementName + "." + paramName, paramValue);
+                    }
+                    else {
+                        if(A_OpenCms.isLogging()) {
+                            A_OpenCms.log(C_OPENCMS_INFO, getClassName() + "Empty parameter \"" + paramName + "\" found.");
+                        }
                     }
                 }
             }
         }
 
-        // Now check URL parameters
+        // URL parameters ary really dynamic.
+        // We cannot store them in an element cache.
+        // Therefore these parameters must be collected in ANY case!
+
         String datafor = req.getParameter("datafor");
         if(datafor == null) {
             datafor = "";
-        }
-        else {
+        } else {
             if(!"".equals(datafor)) {
                 datafor = datafor + ".";
             }
@@ -161,35 +194,23 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_
             }
         }
 
-        // ---- staging stuff --------
-            if(cms.getRequestContext().isStaging()) {
+        if(isStaging && cmsUri == null) {
+            // ---- staging stuff --------
+            // No URI could be found in cache.
+            // So create a new URI object with a start element and store it using the UriLocator
+            CmsElementDescriptor elemDesc = new CmsElementDescriptor(templateClass, templateName);
+            CmsElementDefinitionCollection eldefs = doc.getElementDefinitionCollection();
+            cmsUri = new CmsUri(elemDesc, null, eldefs);
+            staging.getUriLocator().put(uriDesc, cmsUri);
+        }
 
-            CmsStaging staging = null;
-            // Get the currently requested URI
-            String uri = cms.getRequestContext().getUri();
-
-            staging = openCms.getStaging();
-
-            CmsUriDescriptor uriDesc = new CmsUriDescriptor(uri);
-            CmsUriLocator uriLoc = staging.getUriLocator();
-            CmsUri cmsUri = uriLoc.get(uriDesc);
-
-            if(cmsUri == null) {
-                // hammer nich
-                CmsElementDescriptor elemDesc = new CmsElementDescriptor(templateClass, templateName);
-                CmsElementDefinitionCollection eldefs = doc.getElementDefinitionCollection();
-                cmsUri = new CmsUri(elemDesc, null, eldefs);
-
-                //staging.getElementLocator().put(elemDesc, tmpl.createElement(cms, templateName, newParameters));
-                staging.getUriLocator().put(uriDesc, cmsUri);
-            }
-
-            // YES - we stage!
-            output = staging.callCanonicalRoot(cms, newParameters);
+        if(isStaging) {
+                output = staging.callCanonicalRoot(cms, newParameters);
         } else {
-        // ----- End of staging stuff ------
-            // NO - traditional way
+            // ----- traditional stuff ------
+            // Element cache is deactivated. So let's go on as usual.
             try {
+                CmsFile masterTemplate = loadMasterTemplateFile(cms, templateName, doc);
                 I_CmsTemplate tmpl = getTemplateClass(cms, templateClass);
                 if(!(tmpl instanceof I_CmsXmlTemplate)) {
                     String errorMessage = "Error in " + file.getAbsolutePath() + ": " + templateClass + " is not a XML template class.";

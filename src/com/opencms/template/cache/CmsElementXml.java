@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementXml.java,v $
-* Date   : $Date: 2001/05/08 13:04:00 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2001/05/09 12:28:49 $
+* Version: $Revision: 1.5 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -28,14 +28,13 @@
 package com.opencms.template.cache;
 
 import java.util.*;
-import java.io.*;
 import com.opencms.boot.*;
 import com.opencms.core.*;
 import com.opencms.file.*;
 import com.opencms.template.*;
 
 /**
- * An instance of CmsElement represents an requestable Element in the OpenCms
+ * An instance of CmsElementXML represents an requestable Element in the OpenCms
  * staging-area. It contains all informations to generate the content of this
  * element. It also stores the variants of once generated content to speed up
  * performance.
@@ -43,7 +42,6 @@ import com.opencms.template.*;
  * It points to other depending elements. Theses elements are called to generate
  * their content on generation-time.
  *
- * @author Andreas Schouten
  * @author Alexander Lucas
  */
 public class CmsElementXml extends A_CmsElement implements com.opencms.boot.I_CmsLogChannels {
@@ -67,7 +65,17 @@ public class CmsElementXml extends A_CmsElement implements com.opencms.boot.I_Cm
         init(className, templateName, cd, defs);
     }
 
-    public byte[] getContent(CmsStaging staging, CmsObject cms, CmsElementDefinitionCollection elDefs, Hashtable parameters) throws CmsException  {
+    /**
+     * Get the content of this element.
+     * @param staging Entry point for the element cache
+     * @param cms CmsObject for accessing system resources
+     * @param elDefs Definitions of this element's subelements
+     * @param parameters All parameters of this request
+     * @return Byte array with the processed content of this element.
+     * @exception CmsException
+     */
+    public byte[] getContent(CmsStaging staging, CmsObject cms, CmsElementDefinitionCollection elDefs, String elementName, Hashtable parameters) throws CmsException  {
+        long time1 = System.currentTimeMillis();
         byte[] result = null;
 
         // Merge own element definitions with our parent's definitions
@@ -82,7 +90,7 @@ public class CmsElementXml extends A_CmsElement implements com.opencms.boot.I_Cm
             if(CmsBase.isLogging()) {
                 CmsBase.log(C_OPENCMS_CRITICAL, toString() + " Could not load my template class \"" + m_className + "\". ");
                 CmsBase.log(C_OPENCMS_CRITICAL, e.toString());
-                return e.getMessage().getBytes();
+                return e.toString().getBytes();
             }
         }
 
@@ -105,22 +113,52 @@ public class CmsElementXml extends A_CmsElement implements com.opencms.boot.I_Cm
             //variant = getVariant(templateClass.getKey(cms, m_templateName, parameters, null));
             variant = getVariant(cd.getCacheKey(cms, parameters));
             if(variant != null) {
-                result = resolveVariant(cms, variant, staging, mergedElDefs, parameters);
+                result = resolveVariant(cms, variant, staging, mergedElDefs, elementName, parameters);
             }
         }
         if(variant == null) {
             // This element was not found in the variant cache.
-            // We have to generate it.
+            // We have to generate it by calling the "classic" getContent() method on the template
+            // class.
             try {
                 if(cd.isInternalCacheable()) {
                     System.err.println(toString() + " ### Variant not in cache. Must be generated.");
                 } else {
                     System.err.println(toString() + " ### Element not cacheable. Generating variant temporarily.");
                 }
-                result = templateClass.getContent(cms, m_templateName, m_elementName, parameters);
-                variant = getVariant(cd.getCacheKey(cms, parameters));
-                if(variant != null) {
-                    result = resolveVariant(cms, variant, staging, mergedElDefs, parameters);
+                // startProcessing() later will be responsible for generating our new variant.
+                // since the method resolveVariant (THIS method) will be called recursively
+                // by startProcessing(), we have to pass the current element definitions.
+                // Unfortunately, there is no other way than putting them into our parameter
+                // hashtable. For compatibility reasons we are not allowed to change
+                // the interface of getContent() or startProcessing()
+                parameters.put("_ELDEFS_", mergedElDefs);
+                try {
+                    result = templateClass.getContent(cms, m_templateName, elementName, parameters);
+                } catch(Exception e) {
+                    if(e instanceof CmsException) {
+                        CmsException ce = (CmsException)e;
+                        if(ce.getType() == ce.C_ACCESS_DENIED) {
+                            // This was an access denied exception.
+                            // This is not very critical at the moment.
+                            if(CmsBase.isLogging()) {
+                                CmsBase.log(C_OPENCMS_DEBUG, toString() + " Access denied in getContent for template class " + m_className);
+                            }
+                        } else {
+                            // Any other CmsException.
+                            // This could be more critical.
+                            if(CmsBase.isLogging()) {
+                                CmsBase.log(C_OPENCMS_INFO, toString() + " Error in getContent for template class " + m_className);
+                            }
+                        }
+                        throw ce;
+                    } else {
+                        // No CmsException. This is really, really bad!
+                        if(CmsBase.isLogging()) {
+                            CmsBase.log(C_OPENCMS_CRITICAL, toString() + " Non OpenCms error occured in getContent for template class " + m_className);
+                        }
+                        throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
+                    }
                 }
             }
             catch(CmsException e) {
@@ -131,8 +169,8 @@ public class CmsElementXml extends A_CmsElement implements com.opencms.boot.I_Cm
                 result = null;
             }
         }
+        long time2 = System.currentTimeMillis();
+        System.err.println("% Time for getting content of \"" + elementName + "\": " + (time2 - time1) + " ms");
         return result;
     }
-
-
 }

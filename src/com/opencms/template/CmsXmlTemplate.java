@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2001/05/08 13:03:51 $
-* Version: $Revision: 1.55 $
+* Date   : $Date: 2001/05/09 12:28:56 $
+* Version: $Revision: 1.56 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.55 $ $Date: 2001/05/08 13:03:51 $
+ * @version $Revision: 1.56 $ $Date: 2001/05/09 12:28:56 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -864,6 +864,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
         byte[] result = null;
 
         if(cms.getRequestContext().isStaging()) {
+            CmsElementDefinitionCollection mergedElDefs = (CmsElementDefinitionCollection)parameters.get("_ELDEFS_");
             // We are in staging mode. Create a new variant instead of a completely processed subtemplate
             CmsElementVariant variant = new CmsElementVariant();
             xmlTemplateDocument.generateStagingVariant(this, parameters, elementName, templateSelector, variant);
@@ -877,8 +878,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
                 //currElem.addVariant(getKey(cms, xmlTemplateDocument.getAbsoluteFilename(), parameters, templateSelector), variant);
                 currElem.addVariant(currElem.getCacheDirectives().getCacheKey(cms, parameters), variant);
             }
-            //return ((CmsElementXml)currElem).resolveVariant(cms, variant, staging, parameters);
-            return null;
+            result = ((CmsElementXml)currElem).resolveVariant(cms, variant, staging, mergedElDefs, elementName, parameters);
         } else {
             // Classic way. Staging is not activated, so let's genereate the template as usual
             // Try to process the template file
@@ -1154,14 +1154,16 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
                     templateSelector = xmlTemplateDocument.getSubtemplateSelector(elName);
                 }
                 Hashtable templateParameters = xmlTemplateDocument.getParameters(elName);
-
                 if(className != null || templateName != null || templateSelector != null || templateParameters.size() > 0) {
                     CmsElementDefinition elDef = new CmsElementDefinition(elName, className, templateName, templateSelector, templateParameters);
                     subtemplateDefinitions.add(elDef);
                 }
             }
         } catch(Exception e) {
-            System.err.println("=== E");
+            if(A_OpenCms.isLogging()) {
+                A_OpenCms.log(C_OPENCMS_STAGING, getClassName() + "Could not generate my template cache element.");
+                A_OpenCms.log(C_OPENCMS_STAGING, getClassName() + e);
+            }
         }
         CmsElementXml result = new CmsElementXml(getClass().getName(),
                                                  templateFile,

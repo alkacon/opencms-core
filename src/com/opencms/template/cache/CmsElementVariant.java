@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementVariant.java,v $
-* Date   : $Date: 2001/05/03 16:00:41 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2001/05/09 12:28:49 $
+* Version: $Revision: 1.2 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -36,7 +36,8 @@ import com.opencms.file.*;
  * element. This is the generated output (content) of an element. This cache
  * stores all generated strings of this element and all links to other elements.
  *
- * @author: Andreas Schouten
+ * @author Andreas Schouten
+ * @author Alexander Lucas
  */
 public class CmsElementVariant {
 
@@ -95,7 +96,10 @@ public class CmsElementVariant {
         return m_content.get(i);
     }
 
-
+    /**
+     * Get a string representation of this variant.
+     * @return String representation.
+     */
     public String toString() {
         int len = m_content.size();
         StringBuffer result = new StringBuffer("[CmsElementVariant] (" + len + ") :");
