@@ -69,14 +69,16 @@ if (encodingOk) {
 							<td>
 							To continue the setup process:
 							<ul>
-							<li>change the encoding of OpenCms by setting the <tt>defaultContentEncoding</tt> property in <tt>WEB-INF/config/opencms.properties</tt> 
-							to your encoding,</li>
+							<li>Change the encoding of your Java VM. 
+							To do that you must modify the <tt>file.encoding</tt> setting.
+							Using Apache Tomcat, a different encoding can be set in the environment 
+							variable <tt>CATALINA_OPTS</tt> by the -D parameter e.g.:<br><tt>CATALINA_OPTS=-Dfile.encoding=ISO-8859-1</tt></li>
 							<p>
-							<li><b>OR</b> change the encoding of your Java VM. Using Apache Tomcat, a different encoding is set in the environment 
-							variable CATALINA_OPTS by the -D parameter:<br><tt>CATALINA_OPTS=-Dfile.encoding=ISO-8859-1</tt></li>
+							<li>If you want to use an encoding different from <b>ISO-8859-1</b>, you must also
+							adjust the <tt>defaultContentEncoding</tt> setting in <tt>WEB-INF/config/opencms.properties</tt>.</li>
 							</ul>
+							Unless you have specific encoding requirements, you should use the default <b>ISO-8859-1</b> setting.
 							Please refer to the <a href="http://java.sun.com/j2se/1.4/docs/guide/intl/encoding.doc.html" target="_blank">Sun documentation</a> for a list of supported encodings for your OS.
-							It is recommended to set both encodings to <tt>ISO-8859-1</tt>.
 							</td>
 							</tr>
 						</table>
