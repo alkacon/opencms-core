@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/09/12 10:01:54 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2003/09/12 14:46:21 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,12 +43,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  * MySQL implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.20 $ $Date: 2003/09/12 10:01:54 $
+ * @version $Revision: 1.21 $ $Date: 2003/09/12 14:46:21 $
  * @since 5.1
  */
 public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {        
@@ -185,8 +186,8 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
     /**
      * @see org.opencms.db.I_CmsVfsDriver#readProperties(int, com.opencms.file.CmsResource, int)
      */
-    public HashMap readProperties(int projectId, CmsResource resource, int resourceType) throws CmsException {
-        HashMap original = super.readProperties(projectId, resource, resourceType);
+    public Map readProperties(int projectId, CmsResource resource, int resourceType) throws CmsException {
+        Map original = super.readProperties(projectId, resource, resourceType);
         if (CmsSqlManager.singleByteEncoding())
             return original;
         HashMap result = new HashMap(original.size());

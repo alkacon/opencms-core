@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2003/09/12 11:39:14 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2003/09/12 14:46:21 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,16 +31,17 @@
 
 package org.opencms.db;
 
+import org.opencms.report.I_CmsReport;
 import org.opencms.workflow.CmsTask;
 
 import com.opencms.core.CmsException;
+import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsProject;
 import com.opencms.file.CmsRequestContext;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsUser;
 import com.opencms.flex.util.CmsUUID;
-import org.opencms.report.I_CmsReport;
 
 import java.io.Serializable;
 import java.util.Hashtable;
@@ -51,7 +52,7 @@ import java.util.Vector;
  * Definitions of all required project driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.18 $ $Date: 2003/09/12 11:39:14 $
+ * @version $Revision: 1.19 $ $Date: 2003/09/12 14:46:21 $
  * @since 5.1
  */
 public interface I_CmsProjectDriver {
@@ -312,7 +313,7 @@ public interface I_CmsProjectDriver {
      * @return a vector of changed or deleted resources
      * @throws CmsException if something goes wrong
      */    
-    Vector publishProject(CmsRequestContext context, CmsProject onlineProject, boolean backupEnabled, int backupTagId, I_CmsReport report, Hashtable exportpoints, CmsResource directPublishResource, int maxVersions) throws CmsException;
+    Vector publishProject(CmsRequestContext context, CmsProject onlineProject, boolean backupEnabled, int backupTagId, I_CmsReport report, Hashtable exportpoints, CmsResource directPublishResource, int maxVersions) throws Exception;
 
     /**
      * Select all projectResources from an given project.<p>
@@ -467,5 +468,26 @@ public interface I_CmsProjectDriver {
      * @throws CmsException if something goes wrong
      */
     int nextPublishVersionId() throws CmsException;
+    
+    /**
+     * Publishes a new or changed folder.<p>
+     * 
+     * @throws CmsException
+     */
+    void publishFolder(CmsRequestContext context, I_CmsReport report, int m, int n, CmsProject onlineProject, CmsFolder currentFolder, boolean backupEnabled, long publishDate, int publishHistoryId, int backupTagId, int maxVersions) throws Exception;
+
+    /**
+     * Publishes a deleted folder.<p>
+     * 
+     * @throws CmsException
+     */
+    void publishDeletedFolder(CmsRequestContext context, I_CmsReport report, int m, int n, CmsProject onlineProject, CmsFolder offlineFolder, boolean backupEnabled, long publishDate, int publishHistoryId, int backupTagId, int maxVersions) throws Exception;
+
+    /**
+     * Publishes a new, changed or deleted file.<p>
+     * 
+     * @throws CmsException
+     */
+    public void publishFile(CmsRequestContext context, I_CmsReport report, int m, int n, CmsProject onlineProject, CmsResource offlineResource, boolean backupEnabled, long publishDate, int publishHistoryId, int backupTagId, int maxVersions) throws Exception;
         
 }

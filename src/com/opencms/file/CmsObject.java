@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/09/12 10:01:53 $
-* Version: $Revision: 1.402 $
+* Date   : $Date: 2003/09/12 14:46:21 $
+* Version: $Revision: 1.403 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.402 $
+ * @version $Revision: 1.403 $
  */
 public class CmsObject {
 
@@ -1761,19 +1761,6 @@ public class CmsObject {
     }
 
     /**
-     * checks a project for broken links that would appear if the project is published.
-     *
-     * @param projectId
-     * @param report A cmsReport object for logging while the method is still running.
-     * @param changed A vecor (of CmsResources) with the changed resources in the project.
-     * @param deleted A vecor (of CmsResources) with the deleted resources in the project.
-     * @param newRes A vecor (of CmsResources) with the new resources in the project.
-     */
-    public void getBrokenLinks(int projectId, I_CmsReport report, Vector changed, Vector deleted, Vector newRes) throws CmsException {
-        m_driverManager.getBrokenLinks(projectId, report, changed, deleted, newRes);
-    }
-
-    /**
     * Gets information about the cache size.
     * <br>
     * The size of the following caching areas is returned:
@@ -2715,7 +2702,7 @@ public class CmsObject {
 
             clearcache();
             success = true;
-        } catch (Exception e) {
+        } catch (Exception e) {                      
             String stamp1 = "[" + this.getClass().getName() + ".publishProject()/1] Project:" + m_context.currentProject().getId() + " Time:" + new Date();
             String stamp2 = "[" + this.getClass().getName() + ".publishProject()/1] User: " + m_context.currentUser().toString();
             if (DEBUG > 0) {
