@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsUserDriver.java,v $
- * Date   : $Date: 2003/09/17 16:15:06 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2003/09/18 07:19:02 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
 /**
  * Oracle/OCI implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.14 $ $Date: 2003/09/17 16:15:06 $
+ * @version $Revision: 1.15 $ $Date: 2003/09/18 07:19:02 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -66,11 +66,8 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
 
         CmsUUID id = new CmsUUID();
         PreparedStatement stmt = null;
-        PreparedStatement stmt2 = null;
-        PreparedStatement nextStmt = null;
         Connection conn = null;
-        ResultSet res = null;
-
+    
         try {
 
             conn = m_sqlManager.getConnection();
@@ -119,8 +116,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
 
         PreparedStatement stmt = null;
         Connection conn = null;
-        ResultSet res = null;
-
+     
         try {
 
             conn = m_sqlManager.getConnection();
@@ -171,9 +167,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
     public void writeUser(CmsUser user) throws CmsException {
 
         PreparedStatement stmt = null;
-        PreparedStatement stmt2 = null;
-        PreparedStatement nextStmt = null;
-        ResultSet res = null;
+
         Connection conn = null;
         
         try {
