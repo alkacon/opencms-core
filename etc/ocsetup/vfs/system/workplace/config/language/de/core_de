@@ -679,7 +679,7 @@
 			<error>
 				<parametertitle>Eigenschaft für Modul ändern</parametertitle>
 				<parametermessage>Leider konnte die Eigenschaft nicht geändert werden.</parametermessage>
-				<parameterreason>Ihre Eingabe war im falschen Format.</parameterreason>
+				<parameterreason>Ihre Eingabe war im falschen Format. Bitte keine Sonderzeichen im Namen und einen zum Typ passenden Wert.</parameterreason>
 				<replace>Modul überschreiben</replace>
 				<replacemessage>Modul existiert schon in anderer Version. Bitte löschen Sie erst die alte Version.</replacemessage>
 				<dependences>Modul-Abhängigkeiten wurden verletzt:</dependences>
