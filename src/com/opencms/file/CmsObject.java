@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/10/02 16:37:49 $
-* Version: $Revision: 1.423 $
+* Date   : $Date: 2003/10/06 11:12:27 $
+* Version: $Revision: 1.424 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.423 $
+ * @version $Revision: 1.424 $
  */
 public class CmsObject {
 
@@ -513,6 +513,9 @@ public class CmsObject {
      * Clears all internal DB-Caches.
      */
     public void clearcache() {
+        // clear all caches
+        OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP, false));
+        // clear all caches of driver manager
         m_driverManager.clearcache();
         System.gc();
     }
