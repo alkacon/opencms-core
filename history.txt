@@ -14,6 +14,10 @@ OpenCms 4.7.6 Ecaz - XX Xpril 2002
   Now you can use the editors capability to show details (like paragraphs) of the opened document.
   The setting of internal and external links has been revised. Now you can set anchor links, add 
   style definitions, etc. Special characters can be added within the WYSIWYG-editor.
+! Added a search form for searching resources in the virtual filesystem. A resource can be searched
+  by a property or by a part of its resourcename.
+* Fixed bug when changing the navigation of a resource. Special characters are escaped and the default
+  entry for the navigation position is set to "no change".
 - Added some resource types that should be exported when the default is set to dynamic. 
 - Added pic and download folder to the static export if default is set to dynamic.
 

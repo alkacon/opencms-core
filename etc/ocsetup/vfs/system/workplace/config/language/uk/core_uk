@@ -67,11 +67,9 @@
             <send>Send</send>
             <submit>Set</submit>
             <showdetails>Show details</showdetails>
-            <specialchars>Special characters</specialchars>            
             <syncfolder>Synchronize folder</syncfolder>
             <table>Table</table>
             <test>Test</test>
-            <toggledetails>Toggle Details</toggledetails>            
             <ul>Bullet List</ul>
             <underline>Underline</underline>
             <undo>Undo</undo>
@@ -133,15 +131,6 @@
                 <testresult>Result:</testresult>
             </label>
         </staticexport>
-        
-        <flex>
-            <cache>
-                <label>
-                    <title>Flex Cache Administration</title>
-                </label>
-            </cache>
-        </flex>
-        
         <elementcache>
             <label>
                 <title>Clear elementcache</title>
@@ -177,10 +166,12 @@
                 <adduser> Sorry, the user could not be created.</adduser>
                 <addgroup>Sorry, the group could not be created..</addgroup>
                 <database>Sorry, the database could not be imported / exported.</database>
+                <linkcheckerror>The url could not be connected. You can store the link now or you can change it.</linkcheckerror>
                 <lock>Sorry, the file could not be locked.</lock>
                 <lockchange>Sorry, the file lock could not be stolen.</lockchange>
                 <login>Sorry, the user could not log in to the system.</login>
                 <projectlockchange>Sorry, the project could not be unlocked.</projectlockchange>
+                <newlink>Sorry, the link could not be created.</newlink>
                 <newproject>Sorry, the new project could not be created.</newproject>
                 <newprop>Sorry, the new propertydefinition could not be created.</newprop>
                 <newextension>Sorry, the new file extension could not be assigned.</newextension>
@@ -244,6 +235,7 @@
                 <projectlockchange>There was an error.</projectlockchange>
                 <namemissing>The field Name must be filled out.</namemissing>
                 <titlemissing>The field Title must be filled out.</titlemissing>
+                <newlink>Maybe you don't have the needed permissions or this link already exist.</newlink>
                 <newproject>The entered project data is invalid.</newproject>
                 <newextformat>Your input was in the wrong format.</newextformat>
                 <newprop>see details</newprop>
@@ -296,6 +288,7 @@
                 <login>Please check the entered data or contact your system administrator.</login>
                 <picnogallery>Please first create a gallery with the menu item Administration/Picture Galleries.</picnogallery>
                 <projectlockchange>Please try again later, or contact your system administrator.</projectlockchange>
+                <newlink>Please check the entered data or contact your system administrator.</newlink>
                 <newproject>Please check the entered data or contact your system administrator.</newproject>
                 <newprop>Please try again later, or contact your system administrator.</newprop>
                 <newextformat>Please enter only one file extension at a time. You need not enter the star and the dot.</newextformat>
@@ -342,6 +335,7 @@
                 <lockchange>Steal Lock</lockchange>
                 <login>Login Error</login>
                 <projectlockchange>Release lock for project</projectlockchange>
+                <newlink>New Link</newlink>
                 <newprop>New property for resource type</newprop>
                 <newextension>Associate new file extension</newextension>
                 <newproject>New Project</newproject>
@@ -365,6 +359,7 @@
         <fileicon>
                 <binary>Binary</binary>
                 <compatiblePlain>compatiblePlain</compatiblePlain>
+                <externallink>External Link</externallink>
                 <folder>Folder</folder>
                 <image>Image</image>
                 <linkto>Link</linkto>
@@ -385,15 +380,18 @@
             <database>Database- management</database>
             <datatypes>Resource type- management</datatypes>
             <downloadgallery>Download galleries<![CDATA[<br>]]>management</downloadgallery>
+            <extlinkgallery>External links<![CDATA[<br>]]>management</extlinkgallery>
             <export>Export</export>
             <exportmoduledata>Export Moduldata</exportmoduledata>
             <groups>Edit Groups</groups> 
             <imagelist>image list</imagelist>
             <import>Import</import>
+            <linkcheckviewer>LinkCheck Viewer</linkcheckviewer>
             <logfileviewer>Logfileviewer</logfileviewer>
             <module>Module- management</module>
             <mountpoint>Mountpoints</mountpoint> 
             <newgallery>new gallery</newgallery>
+            <newlink>New external link</newlink>
             <newproject>New Project</newproject>
             <picgallery>Picture galleries<![CDATA[<br>]]>management</picgallery>
             <processmanagement>Scheduler</processmanagement>
@@ -518,15 +516,7 @@
             <lastelement>at the last position</lastelement>
             <lastname>Name</lastname>
             <left>Left</left>
-            <linkname>Name</linkname>
             <linkto>Link</linkto>
-            <linktarget>Target</linktarget>
-            <linktargetself>Same window</linktargetself>
-            <linktargetblank>New window</linktargetblank>
-            <linktargettop>Top window</linktargettop>            
-            <linkanchor>Anchor</linkanchor>
-            <linkstyle>Styledefinitions</linkstyle>
-            <linkstyleclass>Stylesheet class</linkstyleclass>                        
             <nolinkvalue>Please insert the link!</nolinkvalue>
             <lockedby>Locked by</lockedby>
             <lockuser>Disable User</lockuser>
@@ -550,7 +540,7 @@
             <newpwd>New Password</newpwd>       
             <newpwdrepeat>Confirm Password</newpwdrepeat>   
             <next>next</next>
-			<nochange>No change</nochange>
+            <nochange>No changes</nochange>
             <none>-- none --</none>
             <oldpwd>Current Password</oldpwd>
             <owner>Owner</owner>
@@ -668,7 +658,6 @@
             <search>Search</search>
             <selectfolder>Select folder...</selectfolder>
             <size>Size</size>
-            <specialchar>Insert special character</specialchar>
             <state>State</state>
             <suredeletingproject1>Are you sure that you want to delete the project</suredeletingproject1>
             <suredeletingproject2>and delete all changes that are made in this project?</suredeletingproject2>
@@ -1079,8 +1068,8 @@ A new task was reactivated for you or your role.</content>
             <admindatatypes>Resource type management</admindatatypes>
             <adminproperties>Property management</adminproperties>
             <changelink>Change Link</changelink>
-            <changetable>Modify table</changetable>            
             <changed>Date Changed</changed>
+            <changetable>Modify table</changetable>
             <chgrp>Change Group of</chgrp>
             <chmod>Change Permissions of</chmod>
             <chown>Change Owner of</chown>

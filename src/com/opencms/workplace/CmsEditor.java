@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsEditor.java,v $
-* Date   : $Date: 2002/02/25 13:44:13 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2002/05/02 06:31:38 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.29 $ $Date: 2002/02/25 13:44:13 $
+ * @version $Revision: 1.30 $ $Date: 2002/05/02 06:31:38 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -112,6 +112,14 @@ public class CmsEditor extends CmsWorkplaceDefault {
         String saveerror = "";
         // Get all editor parameters
         String file = (String)parameters.get(C_PARA_FILE);
+        // clear session values on first load
+        String initial = (String)parameters.get(C_PARA_INITIAL);
+        if(initial != null) {
+            // remove all session values
+            session.removeValue("lasturl");
+        }
+        // get the lasturl parameter
+        String lasturl = getLastUrl(cms, parameters);
         // try to get the value from the session because we might come from the error page
         if((file == null) || ("".equals(file))){
             file = (String)session.getValue(C_PARA_FILE);
@@ -195,7 +203,6 @@ public class CmsEditor extends CmsWorkplaceDefault {
             //return "".getBytes();
             return null;
         }
-
         // Load the template file and get the browser specific section name
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms,
                 templateFile, elementName, parameters, templateSelector);

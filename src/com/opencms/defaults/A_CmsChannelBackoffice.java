@@ -82,8 +82,10 @@ public abstract class A_CmsChannelBackoffice extends A_CmsBackoffice {
         Vector channels = cd.getAvailableChannels(cms);
         int size = channels.size();
         for (int i=0; i < size; i++) {
-            values.add(channels.elementAt(i));
-            names.add(channels.elementAt(i));
+            if(isVisible(cms, (String)channels.elementAt(i))){
+                values.add(channels.elementAt(i));
+                names.add(channels.elementAt(i));
+            }
         }
         return new Integer(retValue);
     }
@@ -388,5 +390,89 @@ public abstract class A_CmsChannelBackoffice extends A_CmsBackoffice {
      */
     protected String selectBoxContent(CmsObject cms) {
         return "";
+    }
+
+    protected boolean isVisible(CmsObject cms, String channelname){
+        try{
+            if(cms.isAdmin()){
+                return true;
+            } else {
+                CmsUser curUser = cms.getRequestContext().currentUser();
+                CmsProject curProject = cms.getRequestContext().currentProject();
+                CmsResource channel = cms.readFolder("//cos"+channelname);
+                if(accessGroup(cms, curUser, curProject, channel, I_CmsConstants.C_ACCESS_GROUP_VISIBLE)
+                    || accessOwner(curUser, channel, I_CmsConstants.C_ACCESS_OWNER_VISIBLE)
+                    || accessOther(channel, I_CmsConstants.C_ACCESS_PUBLIC_VISIBLE)){
+                    return false;
+                }
+            }
+        } catch (CmsException e){
+            A_OpenCms.log(A_OpenCms.C_OPENCMS_INFO, "[A_CmsChannelBackoffice] error when checking if visible: "+e.toString());
+        }
+        return false;
+    }
+
+    /**
+     * Checks, if the group may access this resource.
+     *
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     * @param resource The resource to check.
+     * @param flags The flags to check.
+     *
+     * @return wether the user has access, or not.
+     */
+    protected boolean accessGroup(CmsObject cms, CmsUser currentUser, CmsProject currentProject,
+                                CmsResource resource, int flags)
+        throws CmsException {
+
+        // is the user in the group for the resource?
+        if(cms.userInGroup(currentUser.getName(), cms.readGroup(resource).getName())) {
+            if((resource.getAccessFlags() & flags) == flags ) {
+                return true;
+            }
+        }
+        // the resource isn't accesible by the user.
+        return false;
+    }
+
+    /**
+     * Checks, if others may access this resource.
+     *
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     * @param resource The resource to check.
+     * @param flags The flags to check.
+     *
+     * @return wether the user has access, or not.
+     */
+    protected boolean accessOther(CmsResource resource, int flags) throws CmsException{
+        if ((resource.getAccessFlags() & flags) == flags){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Checks, if the owner may access this resource.
+     *
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     * @param resource The resource to check.
+     * @param flags The flags to check.
+     *
+     * @return wether the user has access, or not.
+     */
+    protected boolean accessOwner(CmsUser currentUser, CmsResource resource, int flags)
+        throws CmsException {
+        // is the resource owned by this user?
+        if(resource.getOwnerId() == currentUser.getId()) {
+            if( (resource.getAccessFlags() & flags) == flags ) {
+                return true ;
+            }
+        }
+        // the resource isn't accesible by the user.
+        return false;
     }
 }

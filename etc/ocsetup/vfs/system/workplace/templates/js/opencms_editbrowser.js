@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/opencms_editbrowser.js,v $
-* Date   : $Date: 2001/07/31 15:50:12 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2002/05/02 06:31:38 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,6 +44,7 @@ var ctrl='picctrl';
 var list='piclist';
 var browser='picturebrowser';
 var uploadurl = "administration_content_picgallery_upload.html?type=pic&action=upload&lasturl=piclist.html&folder=";
+var newurl = "administration_content_picgallery_upload.html?type=pic&action=upload&lasturl=piclist.html&folder=";
 
 function updateSelection()
 { 
@@ -61,6 +62,7 @@ var DO_NEXT=1;
 var DO_PREV=2;
 var DO_SEARCH=3;
 var DO_UPLOAD=4;
+var DO_NEW=5;
 
 
 <!-- The update flag is set by the upload dialog. When it is set to one, the -->
@@ -110,6 +112,12 @@ function doEdit(para)
      //gallery=document.form1.galerie.value;
      gallery=document.form1.galerie.options[document.form1.galerie.selectedIndex].value;
      parent.frames[1].location.href = uploadurl + gallery;
+     break;
+   }
+   case 5: // new resource, open the new dialog.
+   {
+     gallery=document.form1.galerie.options[document.form1.galerie.selectedIndex].value;
+     parent.frames[1].location.href = newurl + gallery;
      break;
    }
    default:
