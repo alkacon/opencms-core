@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsRestoreResource.java,v $
-* Date   : $Date: 2003/09/12 17:38:05 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2003/12/05 16:22:27 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,13 +28,14 @@
 
 package com.opencms.workplace;
 
-import org.opencms.workplace.CmsWorkplaceAction;
-
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 import com.opencms.util.Utils;
+
+import org.opencms.main.OpenCms;
+import org.opencms.workplace.CmsWorkplaceAction;
 
 import java.util.Hashtable;
 
@@ -43,7 +44,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.16 $ $Date: 2003/09/12 17:38:05 $
+ * @version $Revision: 1.17 $ $Date: 2003/12/05 16:22:27 $
  */
 
 public class CmsRestoreResource extends CmsWorkplaceDefault {
@@ -57,7 +58,7 @@ public class CmsRestoreResource extends CmsWorkplaceDefault {
      * @param parameters Parameters of the request and the template.
      * @param templateSelector Selector of the template tag to be displayed.
      * @return Bytearre containgine the processed data of the template.
-     * @throws Throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong.
      */
 
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
@@ -69,7 +70,7 @@ public class CmsRestoreResource extends CmsWorkplaceDefault {
 
         // clear session values on first load
         String initial = (String)parameters.get(C_PARA_INITIAL);
-        if(initial != null) {
+        if (initial != null) {
             // remove all session values
             session.removeValue(C_PARA_RESOURCE);
             //session.removeValue("versionid");
@@ -80,12 +81,12 @@ public class CmsRestoreResource extends CmsWorkplaceDefault {
         // get the lasturl parameter
         String lasturl = getLastUrl(cms, parameters);
         String restore = (String)parameters.get("restore");
-        if(restore != null) {
+        if (restore != null) {
             session.putValue("restore", restore);
         }
         restore = (String)session.getValue("restore");
         String filename = (String)parameters.get(C_PARA_RESOURCE);
-        if(filename != null) {
+        if (filename != null) {
             session.putValue(C_PARA_RESOURCE, filename);
         }
         filename = (String)session.getValue(C_PARA_RESOURCE);
@@ -94,35 +95,42 @@ public class CmsRestoreResource extends CmsWorkplaceDefault {
         String action = (String)parameters.get("action");
 
         CmsResource file = null;
-        if(filename.endsWith("/")){
+        if (filename.endsWith("/")) {
             file = cms.readFolder(filename);
         } else {
             file = cms.readFileHeader(filename);
         }
         //check if the name parameter was included in the request
         // if not, the restoreresource page is shown for the first time
-        if((restore != null)){
-            if(action != null) {
+        if (restore != null) {
+            if (action != null) {
                 // restore the resource
-                try{
-                    cms.restoreResource(Integer.parseInt(version),cms.readAbsolutePath(file));
+                try {
+                    // check the autolock resource setting and lock the resource if necessary
+                    if ("true".equals(OpenCms.getRuntimeProperty("workplace.autolock.resources"))) {
+                        if (cms.getLock(filename).isNullLock()) {
+                            // resource is not locked, lock it automatically
+                            cms.lockResource(filename);
+                        }       
+                    }
+                    cms.restoreResource(Integer.parseInt(version), cms.readAbsolutePath(file));
                     session.removeValue(C_PARA_RESOURCE);
                     //template = "done";
                     // return to filelist
                     try {
-                        if(lasturl == null || "".equals(lasturl)) {
+                        if (lasturl == null || "".equals(lasturl)) {
                             cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath()
                                         + CmsWorkplaceAction.getExplorerFileUri(cms));
-                        }else {
+                        } else {
                             cms.getRequestContext().getResponse().sendRedirect(lasturl);
                         }
-                    }catch(Exception e) {
+                    } catch (Exception e) {
                             throw new CmsException("Redirect fails :"
                                     + getConfigFile(cms).getWorkplaceActionPath()
                                     + CmsWorkplaceAction.getExplorerFileUri(cms), CmsException.C_UNKNOWN_EXCEPTION, e);
                     }
                     return null;
-                } catch(CmsException e){
+                } catch (CmsException e) {
                     session.removeValue(C_PARA_RESOURCE);
                     xmlTemplateDocument.setData("details", Utils.getStackTrace(e));
                     xmlTemplateDocument.setData("lasturl", lasturl);
@@ -133,7 +141,7 @@ public class CmsRestoreResource extends CmsWorkplaceDefault {
             }
         }
         // set the required datablocks
-        if(action == null) {
+        if (action == null) {
             xmlTemplateDocument.setData("CHANGEDATE", Utils.getNiceDate(file.getDateLastModified()));
             xmlTemplateDocument.setData("USER", cms.readUser(file.getUserLastModified()).getName());
             xmlTemplateDocument.setData("FILENAME", file.getName());

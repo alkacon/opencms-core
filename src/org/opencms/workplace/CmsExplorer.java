@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2003/11/08 10:32:44 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2003/12/05 16:22:27 $
+ * Version: $Revision: 1.56 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.55 $
+ * @version $Revision: 1.56 $
  * 
  * @since 5.1
  */
@@ -263,7 +263,12 @@ public class CmsExplorer extends CmsWorkplace {
 
         content.append("top.showlinks=");        
         content.append(showVfsLinks);
-        content.append(";\n");        
+        content.append(";\n");
+        
+        // the autolock setting
+        content.append("top.autolock=");        
+        content.append(getSettings().getAutoLockResources());
+        content.append(";\n");
 
         // the help_url
         content.append("top.head.helpUrl='explorer/index.html';\n");

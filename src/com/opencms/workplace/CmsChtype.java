@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChtype.java,v $
- * Date   : $Date: 2003/10/14 12:40:23 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2003/12/05 16:22:27 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,18 +34,19 @@ import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
 
+import org.opencms.main.OpenCms;
+import org.opencms.workplace.CmsWorkplaceAction;
+
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
 
-import org.opencms.workplace.CmsWorkplaceAction;
-
 /**
  * Template class for displaying the type screen of the OpenCms workplace.<p>
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.28 $ $Date: 2003/10/14 12:40:23 $
+ * @version $Revision: 1.29 $ $Date: 2003/12/05 16:22:27 $
  */
 public class CmsChtype extends CmsWorkplaceDefault {
 
@@ -105,6 +106,14 @@ public class CmsChtype extends CmsWorkplaceDefault {
 
             // get the new resource type
             int type = cms.getResourceTypeId(newtype);
+            
+            // check the autolock resource setting and lock the resource if necessary
+            if ("true".equals(OpenCms.getRuntimeProperty("workplace.autolock.resources"))) {
+                if (cms.getLock(filename).isNullLock()) {
+                    // resource is not locked, lock it automatically
+                    cms.lockResource(filename);
+                }       
+            }
             
             // read all properties of the file, store them in a map and delete them
             Map fileProperties = cms.readProperties(filename);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsProperty.java,v $
- * Date   : $Date: 2003/11/05 10:33:21 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2003/12/05 16:22:27 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @since 5.1
  */
@@ -420,6 +420,8 @@ public class CmsProperty extends CmsDialog implements I_CmsDialogHandler {
                 // lock is not shared and belongs to the current user in the current project, so properties are editable
                 return true;
             }
+        } else if ("1".equals(getParamLock())) {
+            return true;
         }
         // lock is null or belongs to other user and/or project, properties are not editable
         return false;
@@ -503,6 +505,7 @@ public class CmsProperty extends CmsDialog implements I_CmsDialogHandler {
     private boolean performEditOperation(HttpServletRequest request) throws CmsException {
         Vector propertyDef = getPropertyDefinitions();
         Map activeProperties = getCms().readProperties(getParamResource());
+        boolean lockChecked = false;
         
         // check all property definitions of the resource for new values
         for (int i=0; i<propertyDef.size(); i++) {
@@ -520,12 +523,22 @@ public class CmsProperty extends CmsDialog implements I_CmsDialogHandler {
             if (emptyParam) {
                 // parameter is empty, check if the property has to be deleted
                 if (activeProperties.containsKey(curProperty.getName())) {
+                    if (!lockChecked) {
+                        // lock resource if autolock is enabled
+                        checkLock(getParamResource());
+                        lockChecked = true;
+                    }
                     getCms().deleteProperty(getParamResource(), curProperty.getName());
                 }
             } else {
                 // parameter is not empty, check if the value has changed
                 String oldValue = request.getParameter(PREFIX_HIDDEN+propName);
                 if (!paramValue.equals(oldValue)) {
+                    if (!lockChecked) {
+                        // lock resource if autolock is enabled
+                        checkLock(getParamResource());
+                        lockChecked = true;
+                    }
                     getCms().writeProperty(getParamResource(), curProperty.getName(), paramValue);
                 }
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2003/12/04 11:21:44 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2003/12/05 16:22:27 $
+ * Version: $Revision: 1.53 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -102,7 +102,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.52 $
+ * @version $Revision: 1.53 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1607,6 +1607,10 @@ public final class OpenCmsCore {
         // set the property whether siblings should get published if a file gets published directly
         String directPublishSiblings = configuration.getString("workplace.directpublish.siblings", "false");
         setRuntimeProperty("workplace.directpublish.siblings", directPublishSiblings);
+        
+        // set the property if the automatic locking of resources is enabled in explorer view
+        String autoLockResources = configuration.getString("workplace.autolock.resources", "false");
+        setRuntimeProperty("workplace.autolock.resources", autoLockResources);
 
         m_exportHeaders = null;
         // try to initialize default directory file names (e.g. index.html)

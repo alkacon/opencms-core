@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsReplace.java,v $
- * Date   : $Date: 2003/08/19 16:18:40 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/12/05 16:22:27 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,11 +28,12 @@
 
 package com.opencms.workplace;
 
-import org.opencms.workplace.CmsWorkplaceAction;
-
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
+
+import org.opencms.main.OpenCms;
+import org.opencms.workplace.CmsWorkplaceAction;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -42,7 +43,7 @@ import java.util.Vector;
  * This class is invoked for the workplace "replace" function in the context menu.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public final class CmsReplace extends CmsWorkplaceDefault {
 
@@ -86,8 +87,15 @@ public final class CmsReplace extends CmsWorkplaceDefault {
             // the resource was uploaded, switch to the next screen to select its type
             m_TemplateSection = "step1";
         } else if ("2".equals(m_NextStep)) {
+            // check the autolock resource setting and lock the resource if necessary
+            if ("true".equals(OpenCms.getRuntimeProperty("workplace.autolock.resources"))) {
+                if (cms.getLock(m_OldResourceName).isNullLock()) {
+                    // resource is not locked, lock it automatically
+                    cms.lockResource(m_OldResourceName);
+                }       
+            }
+            
             // the type of the new resource was selected, so replace the old with the new resource
-            //cms.lockResource(m_OldResourceName, true);
             cms.replaceResource(m_OldResourceName, cms.getResourceTypeId(m_UploadResourceType), null, m_UploadResourceContent);
             //cms.unlockResource( m_OldResourceName ); 
 

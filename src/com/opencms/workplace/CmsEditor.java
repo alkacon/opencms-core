@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsEditor.java,v $
-* Date   : $Date: 2003/09/25 14:38:59 $
-* Version: $Revision: 1.59 $
+* Date   : $Date: 2003/12/05 16:22:27 $
+* Version: $Revision: 1.60 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.http.HttpServletRequest;
  * <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.59 $ $Date: 2003/09/25 14:38:59 $
+ * @version $Revision: 1.60 $ $Date: 2003/12/05 16:22:27 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -165,13 +165,20 @@ public class CmsEditor extends CmsWorkplaceDefault {
 
         // If there is a file parameter and no content, try to read the file.
         // If the user requested a "save file", also load the file.
-        if(existsFileParam && (content == null || saveRequested)) {
+        if (existsFileParam && (content == null || saveRequested)) {
             editFile = readFile(cms, file);
             lock = cms.getLock(file);
             
             // block any editing immediately in case of insuffient locks
             if (lock.isNullLock()) {
-                throw new CmsLockException("Resource is not locked", CmsLockException.C_RESOURCE_UNLOCKED);
+                // check the autolock resource setting and lock the resource if necessary
+                if ("true".equals(OpenCms.getRuntimeProperty("workplace.autolock.resources"))) {
+                    // resource is not locked, lock it automatically
+                    cms.lockResource(file);  
+                    lock = cms.getLock(file);
+                } else {
+                    throw new CmsLockException("Resource is not locked", CmsLockException.C_RESOURCE_UNLOCKED);
+                }
             }
             if (lock.getType() == CmsLock.C_TYPE_INHERITED) {
                 cms.lockResource(file);

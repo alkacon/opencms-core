@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsHistory.java,v $
-* Date   : $Date: 2003/09/23 07:50:25 $
-* Version: $Revision: 1.36 $
+* Date   : $Date: 2003/12/05 16:22:27 $
+* Version: $Revision: 1.37 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,8 +29,6 @@
 
 package com.opencms.workplace;
 
-import org.opencms.lock.CmsLock;
-
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsBackupProject;
@@ -39,6 +37,9 @@ import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
 import com.opencms.util.Encoder;
 import com.opencms.util.Utils;
+
+import org.opencms.lock.CmsLock;
+import org.opencms.main.OpenCms;
 
 import java.util.Hashtable;
 import java.util.List;
@@ -49,7 +50,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.36 $ $Date: 2003/09/23 07:50:25 $
+ * @version $Revision: 1.37 $ $Date: 2003/12/05 16:22:27 $
  */
 
 public class CmsHistory extends CmsWorkplaceDefault {
@@ -63,7 +64,7 @@ public class CmsHistory extends CmsWorkplaceDefault {
      * @param parameters Parameters of the request and the template.
      * @param templateSelector Selector of the template tag to be displayed.
      * @return Bytearre containgine the processed data of the template.
-     * @throws Throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong.
      */
 
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
@@ -75,7 +76,7 @@ public class CmsHistory extends CmsWorkplaceDefault {
 
         // clear session values on first load
         String initial = (String)parameters.get(C_PARA_INITIAL);
-        if(initial != null) {
+        if (initial != null) {
             // remove all session values
             session.removeValue(C_PARA_RESOURCE);
             session.removeValue("lasturl");
@@ -84,7 +85,7 @@ public class CmsHistory extends CmsWorkplaceDefault {
 
         // get the filename
         String filename = (String)parameters.get(C_PARA_RESOURCE);
-        if(filename != null) {
+        if (filename != null) {
             session.putValue(C_PARA_RESOURCE, filename);
         }
         filename = (String)session.getValue(C_PARA_RESOURCE);
@@ -94,39 +95,39 @@ public class CmsHistory extends CmsWorkplaceDefault {
         Integer id = null;
         CmsBackupResource backupFile = null;
         String theFileName = "";
-        if(versionId != null) {
+        if (versionId != null) {
             id = new Integer(Integer.parseInt(versionId));
             session.putValue("version", versionId);
             backupFile = (CmsBackupResource)cms.readBackupFileHeader(filename, id.intValue());
             theFileName = backupFile.getName();
-        }
-        else {
+        } else {
             CmsFile offlineFile = (CmsFile)cms.readFileHeader(filename);
             theFileName = offlineFile.getName();
         }
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
 
         // test if the project paremeter was included, display the detail dialog.
-        if(id != null) {
+        if (id != null) {
             template = "detail";
             CmsBackupProject project = cms.readBackupProject(id.intValue());
             xmlTemplateDocument.setData("PROJECT", project.getName());
             String title = cms.readProperty(filename, C_PROPERTY_TITLE);
-            if(title == null) {
+            if (title == null) {
                 title = "";
             }
-            if(cms.getRequestContext().currentProject().getId() == C_PROJECT_ONLINE_ID){
+            if (cms.getRequestContext().currentProject().getId() == C_PROJECT_ONLINE_ID) {
                 // This is the online project, show the buttons close and show version only
-                xmlTemplateDocument.setData("BUTTONRESTORE",xmlTemplateDocument.getProcessedDataValue("DISABLERESTORE", this));
+                xmlTemplateDocument.setData("BUTTONRESTORE", xmlTemplateDocument.getProcessedDataValue("DISABLERESTORE", this));
             } else {
-                // This is an offline project, show all buttons if the resource is locked
-                CmsFile currentFile = (CmsFile)cms.readFileHeader(filename);
-                CmsLock lock =cms.getLock(currentFile);                
-                if (!lock.isNullLock()) {
+                // This is an offline project, show all buttons if the resource is locked to the current user or auto lock is enabled
+                CmsLock lock =cms.getLock(filename); 
+                
+                if ((!lock.isNullLock() && lock.getUserId() == cms.getRequestContext().currentUser().getId()) 
+                        || (lock.isNullLock() && "true".equals(OpenCms.getRuntimeProperty("workplace.autolock.resources")))) {
                     // show the button for restore the version
-                    xmlTemplateDocument.setData("BUTTONRESTORE",xmlTemplateDocument.getProcessedDataValue("ENABLERESTORE", this));
+                    xmlTemplateDocument.setData("BUTTONRESTORE", xmlTemplateDocument.getProcessedDataValue("ENABLERESTORE", this));
                 } else {
-                    xmlTemplateDocument.setData("BUTTONRESTORE",xmlTemplateDocument.getProcessedDataValue("DISABLERESTORE", this));
+                    xmlTemplateDocument.setData("BUTTONRESTORE", xmlTemplateDocument.getProcessedDataValue("DISABLERESTORE", this));
                 }
             }
             String editedBy = backupFile.getLastModifiedByName();
@@ -156,27 +157,27 @@ public class CmsHistory extends CmsWorkplaceDefault {
      * @param values Vector to be filled with the appropriate values in this method.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the current value in the vectors.
-     * @throws CmsException
+     * @throws CmsException if something goes wrong.
      */
 
     public Integer getFiles(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
             Vector values, Hashtable parameters) throws CmsException {
         I_CmsSession session = cms.getRequestContext().getSession(true);
         String filename = (String)session.getValue(C_PARA_RESOURCE);
-        if(filename != null) {
+        if (filename != null) {
             List allFiles = cms.readAllBackupFileHeaders(filename);
             // vector is already sorted by version id
             //if(allFiles.size() > 0) {
             //    allFiles = sort(allFiles, Utils.C_SORT_PUBLISHED_DOWN);
             //}
             // fill the names and values
-            for(int i = 0;i < allFiles.size();i++) {
+            for (int i = 0; i < allFiles.size(); i++) {
                 CmsBackupResource file = ((CmsBackupResource)allFiles.get(i));
                 long updated = file.getDateCreated();
                 String userName = "";
-                try{
+                try {
                     userName = cms.readUser(file.getUserLastModified()).getName();
-                } catch(CmsException exc){
+                } catch (CmsException exc) {
                     userName = file.getLastModifiedByName();
                 }
                 long lastModified = file.getDateLastModified();

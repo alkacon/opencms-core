@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2003/11/20 13:03:08 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2003/12/05 16:22:27 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,12 +31,12 @@
 */
 package org.opencms.workplace;
 
-import org.opencms.util.CmsStringSubstitution;
-
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsResource;
 import com.opencms.flex.jsp.CmsJspActionElement;
 import com.opencms.workplace.I_CmsWpConstants;
+
+import org.opencms.util.CmsStringSubstitution;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -46,7 +46,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for building the dialog windows of OpenCms.<p> 
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 5.1
  */
@@ -82,6 +82,7 @@ public class CmsDialog extends CmsWorkplace {
     public static final String PARAM_TITLE = "title";
     public static final String PARAM_MESSAGE = "message";
     public static final String PARAM_THREAD = "thread";
+    public static final String PARAM_LOCK = "lock";
 
     private String m_paramAction;
     private String m_paramResource;
@@ -190,7 +191,7 @@ public class CmsDialog extends CmsWorkplace {
      */
     public void setParamAction(String value) {
         m_paramAction = value;
-    }    
+    }
 
     /**
      * Returns the value of the file parameter, 
@@ -378,7 +379,7 @@ public class CmsDialog extends CmsWorkplace {
      */    
     public String buttonActionClose() {
         return buttonActionCancel();
-    }    
+    }  
 
     /**
      * Returns the start html for the outer dialog window border.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChacc.java,v $
- * Date   : $Date: 2003/11/10 17:10:38 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2003/12/05 16:22:27 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.opencms.util.CmsUUID;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 5.1
  */
@@ -256,6 +256,8 @@ public class CmsChacc extends CmsDialog {
         String name = getParamName();
         String type = getParamType();
         try {
+            // lock resource if autolock is enabled
+            checkLock(getParamResource());
             getCms().rmacc(file, type, name);
             return true;
         } catch (CmsException e) {
@@ -282,6 +284,8 @@ public class CmsChacc extends CmsDialog {
                
         if (checkNewEntry(name, arrayPosition)) {
             try {
+                // lock resource if autolock is enabled
+                checkLock(getParamResource());
                 getCms().chacc(file, getTypes()[arrayPosition], name, "");
                 return true;
             } catch (CmsException e) {
@@ -389,6 +393,8 @@ public class CmsChacc extends CmsDialog {
                 flags &= ~I_CmsConstants.C_ACCESSFLAGS_OVERWRITE;
             }
             
+            // lock resource if autolock is enabled
+            checkLock(getParamResource());            
             // try to change the access entry           
             getCms().chacc(file, type, name, allowValue, denyValue, flags);
             return true;
