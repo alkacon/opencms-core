@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateBean.java,v $
- * Date   : $Date: 2005/02/17 13:44:58 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/02/18 16:15:19 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods to create the HTML for the frontend output in the main JSP template one.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class CmsTemplateBean extends CmsJspActionElement {
     
@@ -253,7 +253,7 @@ public class CmsTemplateBean extends CmsJspActionElement {
                     m_properties.put(CmsTemplateNavigation.C_PARAM_HEADNAV_MENUDEPTH, getConfigurationValue("headnav.menudepth", "1"));
                     m_properties.put(CmsTemplateNavigation.C_PARAM_SHOWMENUS, getConfigurationValue("headnav.menus", "true"));
                 }
-                include(C_FOLDER_ELEMENTS + "nav_head.jsp", "menus", m_properties);
+                include(C_FOLDER_ELEMENTS + "nav_head_menus.jsp", null, m_properties);
             }
         } else {
             // include the page information

@@ -83,7 +83,7 @@ if (cms.template("head")) {
         }
         if (cms.showHeadNavigation()) {
             // include head navigation row
-            cms.include(CmsTemplateBean.C_FOLDER_ELEMENTS + "nav_head.jsp", "navrow", cms.getProperties());
+            cms.include(CmsTemplateBean.C_FOLDER_ELEMENTS + "nav_head.jsp", null, cms.getProperties());
         }        
 		%><div class="main">
 		<table class="main" border="0" cellpadding="0" cellspacing="0">	

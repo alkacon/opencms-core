@@ -8,6 +8,6 @@ CmsTemplateNavigation cms = new CmsTemplateNavigation(pageContext, request, resp
 // false: no folder or file without the property "style_head_nav_showitem" explicitly set will be shown in head navigation menu
 cms.setHeadNavItemDefaultValue(true);
 
-out.print(cms.buildNavigationHead(cms.key("link.home"), "navtop", "navspacer"));
+out.print(cms.buildNavigationHeadMenus("menu"));
 
 %>

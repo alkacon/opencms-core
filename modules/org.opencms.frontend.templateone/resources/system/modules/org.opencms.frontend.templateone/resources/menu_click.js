@@ -9,7 +9,7 @@ boolean isMouseOver = cms.getRequestContext().getUri().endsWith("over.js");
 %>//********************************************************
 // Do not remove this notice.
 //
-// Copyright 2000-2005 by Mike Hall.
+// Copyright 2000-2004 by Mike Hall.
 // See http://www.brainjar.com for terms of use.
 //********************************************************
 // Modified by Andreas Zahner (a.zahner@alkacon.com)
@@ -265,11 +265,16 @@ function depressButton(button) {
 		y += 1;
 	}
 	// /AZ
-
+	
 	button.menu.style.left = x + "px";
 	button.menu.style.top  = y + "px";
-	button.menu.style.visibility = "visible";
-
+	if (browser.isNS) {
+		// AZ: workaround to avoid display issues in NS based browsers
+		tempMenu = button.menu;
+		setTimeout("showMainMenu();", 0);
+	} else {
+		button.menu.style.visibility = "visible";
+	}
 	// For IE; size, position and show the menu's IFRAME as well.
 
 	if (button.menu.iframeEl != null) {
@@ -629,4 +634,10 @@ function getPageOffsetTop(el) {
 	y += getPageOffsetTop(el.offsetParent);
 
 	return y;
+}
+
+// AZ: workaround to avoid display issues in NS based browsers
+var tempMenu;
+function showMainMenu() {
+	tempMenu.style.visibility = "visible";
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateNavigation.java,v $
- * Date   : $Date: 2005/02/17 12:45:43 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/02/18 16:15:19 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.jsp.CmsJspNavElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -72,7 +73,7 @@ import javax.servlet.jsp.PageContext;
  * request parameters.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsTemplateNavigation extends CmsJspActionElement {
     
@@ -366,6 +367,31 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
      */
     public String buildNavigationHeadMenus(String styleClass) {
         
+        CmsTemplateParts parts = null;
+        boolean cacheNavEnabled = ! getRequestContext().currentProject().isOnlineProject();
+        String cacheKey = null;
+        if (cacheNavEnabled) {
+            // cache naviagtion in offline project to avoid performance issues
+            parts = CmsTemplateParts.getInstance(this);
+            // create unique cache key with: site, head nav folder, area folder, menu depth, show submenus flag
+            StringBuffer key = new StringBuffer(8);
+            key.append(getRequestContext().getSiteRoot());
+            key.append("_");
+            key.append(getHeadNavFolder().hashCode());
+            key.append("_");
+            key.append(getStartFolder().hashCode());
+            key.append("_");
+            key.append(getMenuDepth());
+            key.append("_");
+            key.append(showMenus());
+            cacheKey = key.toString();
+            String cachedNav = parts.getPart(cacheKey);
+            if (CmsStringUtil.isNotEmpty(cachedNav)) {
+                // found previously cached navigation menu structure, return it
+                return cachedNav;
+            }
+        }
+        
         StringBuffer result = new StringBuffer(4096);
         
         if (showMenus()) {
@@ -387,6 +413,11 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
                     List subNav = getNavigation().getNavigationForFolder(subfolder);
                     result.append(getMenuNavigation(subNav, styleClass, "menu" + count, 1));   
                 }
+            }
+            
+            if (cacheNavEnabled) {
+                // cache the generated navigation submenu output
+                parts.setPart(cacheKey, result.toString());
             }
         }
         return result.toString();
@@ -486,78 +517,6 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
         }
         return result;    
     }
-
-
-    
-//    /**
-//     * Returns the html for the head navigation menus.<p>
-//     * 
-//     * This method only creates the menu entries, be sure to
-//     * build the head row calling the menus, too.<p>
-//     * 
-//     * @param styleClass the CSS class name of the &lt;div&gt; and &lt;a&gt; nodes
-//     * @return the html for the head navigation menus
-//     */
-//    public String buildNavigationHeadMenus(String styleClass) {
-//        StringBuffer result = new StringBuffer(4096);
-//        // only create navigation if the template is configured to show it
-//        List navElements = getNavigation().getNavigationForFolder(getHeadNavFolder());
-// 
-//        int count = -1;
-//        String showItemProperty;
-//        for (int i=0; i<navElements.size(); i++) {
-//            CmsJspNavElement foldernav = (CmsJspNavElement)navElements.get(i);
-//            showItemProperty = property(C_PROPERTY_HEADNAV_USE, foldernav.getResourceName(), getHeadNavItemDefaultStringValue());
-//            boolean showItem = Boolean.valueOf(showItemProperty).booleanValue();
-//            if (foldernav.isFolderLink() && showItem) {
-//                // create a menu entry for every found folder
-//                count++;
-//                String subfolder = foldernav.getResourceName();
-//                
-//                // get all navigation elements in the sub folder
-//                List pages = getNavigation().getNavigationForFolder(subfolder);
-//                result.append("<div id=\"xbmenu");
-//                result.append(count);
-//                result.append("\" class=\"");
-//                result.append(styleClass);
-//                result.append("\">\n");
-//                result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"1\" width=\"150\">\n");
-//                            
-//                for (int k=0; k<pages.size(); k++) {
-//                    // add the current page to the menu
-//                    CmsJspNavElement nav = (CmsJspNavElement)pages.get(k);
-//                    String target = nav.getResourceName();
-//                    showItemProperty = property(C_PROPERTY_HEADNAV_USE, target, getHeadNavItemDefaultStringValue());
-//                    boolean showEntry = Boolean.valueOf(showItemProperty).booleanValue();
-//                    if (showEntry) {
-//                        if (nav.isFolderLink()) { 
-//                            // check folders
-//                            if (! (CmsResource.getParentFolder(target).equals(getStartFolder()))) {
-//                                target = link(target);
-//                            } else {
-//                                target = null;
-//                            }
-//                        } else {
-//                            target = link(target);
-//                        }   
-//                        if (target != null) {
-//                            // create the entry
-//                            result.append("\t<tr><td><a class=\"");
-//                            result.append(styleClass);
-//                            result.append("\" href=\"");
-//                            result.append(target);
-//                            result.append("\">");
-//                            result.append(nav.getNavText());
-//                            result.append("</a></td></tr>\n");               
-//                        }
-//                    }
-//                }
-//                result.append("</table>\n");
-//                result.append("</div>\n");      
-//            }
-//        }
-//        return result.toString();
-//    }
     
     /**
      * Returns the html for the left navigation tree.<p>

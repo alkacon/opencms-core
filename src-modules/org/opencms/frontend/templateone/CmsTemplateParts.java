@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateParts.java,v $
- * Date   : $Date: 2005/02/17 12:45:43 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/02/18 16:15:19 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,10 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 
-import org.apache.commons.collections.FastHashMap;
+import java.util.Collections;
+import java.util.Map;
+
+import org.apache.commons.collections.map.LRUMap;
 
 
 /**
@@ -43,7 +46,7 @@ import org.apache.commons.collections.FastHashMap;
  * An instance of this class is stored in the OpenCms runtime properties.<p> 
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public final class CmsTemplateParts implements I_CmsEventListener {
     
@@ -56,7 +59,7 @@ public final class CmsTemplateParts implements I_CmsEventListener {
     private static final String C_PROJECT_ONLINE = "on";
     
     private CmsJspActionElement m_jsp;
-    private FastHashMap m_parts;
+    private Map m_parts;
     private String m_project;
     
     /**
@@ -66,8 +69,19 @@ public final class CmsTemplateParts implements I_CmsEventListener {
      */
     private CmsTemplateParts() {
         
-        // create new Map and add an event listener
-        m_parts = new FastHashMap();
+        // create new Map
+        LRUMap cacheParts = new LRUMap(256);
+        m_parts = Collections.synchronizedMap(cacheParts);
+        if (OpenCms.getRunLevel() > 1) {
+            if ((OpenCms.getMemoryMonitor() != null) && OpenCms.getMemoryMonitor().enabled()) {
+                // map must be of type "LRUMap" so that memory monitor can access all information
+                OpenCms.getMemoryMonitor().register(
+                    CmsTemplateParts.class.getName() + "." + "m_parts",
+                    cacheParts);
+            }
+        }
+        
+        // add an event listener
         OpenCms.addCmsEventListener(this);
     }
     
@@ -112,8 +126,8 @@ public final class CmsTemplateParts implements I_CmsEventListener {
             case I_CmsEventListener.EVENT_PUBLISH_PROJECT:
             case I_CmsEventListener.EVENT_CLEAR_CACHES:
             case I_CmsEventListener.EVENT_FLEX_PURGE_JSP_REPOSITORY:
-                // create empty Map
-                m_parts = new FastHashMap();
+                // flush Map
+                m_parts.clear();
                 // set the new runtime property
                 OpenCms.setRuntimeProperty(C_RUNTIME_PROPERTY_NAME, this);
                 if (OpenCms.getLog(CmsTemplateParts.class).isDebugEnabled()) {
@@ -143,9 +157,7 @@ public final class CmsTemplateParts implements I_CmsEventListener {
             if (part == null) {
                 // part not found, get the content of the JSP element and put it to the Map store
                 part = getJsp().getContent(target, element, getJsp().getRequestContext().getLocale());   
-                m_parts.setFast(false);
                 m_parts.put(partKey, part);
-                m_parts.setFast(true);
                 if (OpenCms.getLog(CmsTemplateParts.class).isDebugEnabled()) {
                     OpenCms.getLog(CmsTemplateParts.class).debug("Value for key \"" + partKey + "\" not found, including JSP");
                 }
@@ -160,6 +172,29 @@ public final class CmsTemplateParts implements I_CmsEventListener {
             }
         }
         return part;
+    }
+    /**
+     * Returns a previously cached part of template one with the specified key, or null, if no part is found.<p>
+     * 
+     * @param partKey the key to identify the part
+     * @return a previously cached part of template one with the specified key
+     */
+    protected String getPart(String partKey) {
+        
+        return (String)m_parts.get(partKey);
+    }
+    
+    /**
+     * Sets a part in the cache with the specified key and value.<p>
+     * 
+     * @param partKey the key to identify the part
+     * @param value the value to cache
+     */
+    protected void setPart(String partKey, String value) {
+        
+        m_parts.put(partKey, value);
+        // save modified class to runtime properties
+        OpenCms.setRuntimeProperty(C_RUNTIME_PROPERTY_NAME, this);
     }
     
     /**
