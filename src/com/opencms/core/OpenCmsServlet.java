@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
- * Date   : $Date: 2000/02/16 10:44:16 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2000/02/16 18:57:40 $
+ * Version: $Revision: 1.19 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -65,12 +65,11 @@ import com.opencms.file.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.18 $ $Date: 2000/02/16 10:44:16 $  
+* @version $Revision: 1.19 $ $Date: 2000/02/16 18:57:40 $  
 * 
 */
 
-public class OpenCmsServlet extends HttpServlet implements I_CmsConstants 
-{
+public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_CmsLogChannels {
     /**
      * The name of the property driver entry in the configuration file.
      */
@@ -85,8 +84,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants
      * The name of the initializer classname entry in the configuration file.
      */
      static final String C_INILITALIZER_CLASSNAME="initializer.classname";
-     
-     
+          
      /**
       * The configuration for the OpenCms servlet.
       */
@@ -97,6 +95,11 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants
       */
      private CmsSession m_sessionStorage;
  
+     /**
+      * Database scheduler for keeping the connection alive.
+      */
+     private CmsSchedulerDbConnector m_schedulerDbConnector;
+          
      /**
       * The reference to the OpenCms system.
       */
@@ -139,13 +142,22 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants
         // invoke the OpenCms
         m_opencms=new OpenCms(propertyDriver,propertyConnect,initializerClassname);
         
+        // build the database scheduler for keeping connections alive
+        CmsObject cms=new CmsObject();
+        try {
+            cms.init(null, null, C_USER_ADMIN, C_GROUP_ADMIN, C_PROJECT_ONLINE);
+    	} catch (CmsException e) {
+    		throw new ServletException("Could not initialize cms object for DB scheduler. " + e);
+    	}
+        m_schedulerDbConnector = new CmsSchedulerDbConnector(cms, 120);
+        m_schedulerDbConnector.start();
+        
         //initalize the session storage
         m_sessionStorage=new CmsSession();
         
     }
-     
-    
-     /**
+         
+    /**
 	 * Method invoked on each HTML GET request.
 	 * <p>
 	 * (Overloaded Servlet API method, requesting a document).
@@ -207,7 +219,21 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants
             errorHandling(req,res,e);
         } 
 	}
-    
+
+    /**
+     * Destroys all running threads before closing the VM.
+     */
+    public void destroy() {
+        if(A_OpenCms.isLogging()) {
+            A_OpenCms.log(C_OPENCMS_INFO, "[OpenCmsServlet] Performing Shutdown....");
+        }
+        m_schedulerDbConnector.destroy();
+			
+        if(A_OpenCms.isLogging()) {
+	        A_OpenCms.log(C_OPENCMS_CRITICAL, "[OpenCmsServlet] Shutdown Completed");
+        }
+    }
+        
     /**
      * This method handled the user authentification for each request sent to the
      * OpenCms. <p>
