@@ -1,0 +1,117 @@
+<%@ page import="org.opencms.workplace.administration.*" buffer="none" %><%	
+
+	// initialize the workplace class
+	CmsPropertyChange wp = new CmsPropertyChange(pageContext, request, response);
+	
+//////////////////// start of switch statement 
+	
+switch (wp.getAction()) {
+
+case CmsPropertyChange.ACTION_CANCEL:
+//////////////////// ACTION: cancel button pressed
+
+	wp.actionCloseDialog();
+
+break;
+
+case CmsPropertyChange.ACTION_OK:		
+case CmsPropertyChange.ACTION_WAIT:
+
+//////////////////// ACTION: main change property value action (with optional wait and final result screen)
+
+	wp.actionChange();
+	
+	if (wp.getAction() == CmsPropertyChange.ACTION_SHOWRESULT) {
+//////////////////// ACTION: show change result
+	wp.setParamAction(CmsPropertyChange.DIALOG_CANCEL);
+%><%= wp.htmlStart(null) %>
+<%= wp.bodyStart("dialog", null) %>
+
+<%= wp.dialogStart() %>
+<%= wp.dialogContentStart(wp.getParamTitle()) %>
+
+<%= wp.key("input.propertychange.result") %> "<%= wp.getParamNewValue() %>":
+<%= wp.dialogSpacer() %>
+
+<%= wp.dialogWhiteBoxStart() %>
+<div style="height: <%= wp.getResultListHeight() %>px; overflow: auto;">
+<%= wp.buildResultList() %>
+</div>
+<%= wp.dialogWhiteBoxEnd() %>
+
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
+<%= wp.paramsAsHidden() %>
+<input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
+<%= wp.dialogContentEnd() %>
+<%= wp.dialogButtonsClose() %>
+</form>
+
+<%= wp.dialogEnd() %>
+<%= wp.bodyEnd() %>
+<%= wp.htmlEnd() %>
+<%	
+	}
+
+break;
+
+
+case CmsPropertyChange.ACTION_DEFAULT:
+default:
+
+//////////////////// ACTION: show property change dialog (default)
+
+	wp.setParamAction(CmsPropertyChange.DIALOG_OK);
+
+%><%= wp.htmlStart(null) %>
+<%= wp.bodyStart("dialog", "onunload=\"top.closeTreeWin();\"") %>
+
+<%= wp.dialogStart() %>
+<%= wp.dialogContentStart(wp.getParamTitle()) %>
+
+<%= wp.dialogBlockStart(null) %>
+<%= wp.key("input.propertychange.info") %><br>
+<%= wp.key("input.propertychange.info2") %>
+<%= wp.dialogBlockEnd() %>
+<%= wp.dialogSpacer() %>
+
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
+
+<%= wp.paramsAsHidden() %>
+<input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
+
+<table border="0" width="100%">
+<tr>
+	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.propertychange.resource") %></td>
+	<td class="maxwidth"><input name="<%= wp.PARAM_RESOURCE %>" type="text" value="" class="maxwidth"></td>
+	<td><input name="selectfolder" type="button" value="<%= wp.key("button.search") %>" onClick="top.openTreeWin('changeproperty', true, 'main', '<%= wp.PARAM_RESOURCE %>', document);" class="dialogbutton" style="width: 60px;">
+</tr>
+<tr>
+	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.propertychange.recursive") %></td>
+	<td colspan="2" class="maxwidth"><input name="<%= wp.PARAM_RECURSIVE %>" type="checkbox" value="true"></td>    
+</tr>
+<tr>
+	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.property") %></td>
+	<td colspan="2" class="maxwidth"><%= wp.buildSelectProperty("name=\"" + wp.PARAM_PROPERTYNAME + "\" size=\"1\"") %></td>
+</tr>
+<tr>
+	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.propertychange.oldvalue") %></td>
+	<td colspan="2" class="maxwidth"><input name="<%= wp.PARAM_OLDVALUE %>" type="text" value="" class="maxwidth"></td>
+</tr>
+<tr>
+	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.editpropertyinfo") %></td>
+	<td colspan="2" class="maxwidth"><input name="<%= wp.PARAM_NEWVALUE %>" type="text" value="" class="maxwidth"></td>
+</tr>
+</table>
+
+<%= wp.dialogContentEnd() %>
+<%= wp.dialogButtonsOkCancel() %>
+
+</form>
+
+<%= wp.dialogEnd() %>
+<%= wp.bodyEnd() %>
+<%= wp.htmlEnd() %>
+<%
+} 
+//////////////////// end of switch statement 
+%>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/10/31 21:30:18 $
- * Version: $Revision: 1.81 $
+ * Date   : $Date: 2004/11/09 15:31:50 $
+ * Version: $Revision: 1.82 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.81 $
+ * @version $Revision: 1.82 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -713,6 +713,26 @@ public class CmsObject {
             m_securityManager, 
             resource);
     }    
+    
+    /**
+     * Returns a list with all sub resources of a given folder that have set the given property.<p>
+     *
+     * All users are granted.
+     *
+     * @param resourcename the name of the resource to change the property value
+     * @param propertyDefinition the name of the propertydefinition to change the value
+     * @param oldValue the old value of the propertydefinition
+     * @param newValue the new value of the propertydefinition
+     * @param recursive if true, change recursively all property values on sub-resources (only for folders)
+     *
+     * @return the resources where the property value has been changed
+     *
+     * @throws CmsException if operation was not succesful
+     */
+    public List changePropertyValue(String resourcename, String propertyDefinition, String oldValue, String newValue, boolean recursive) throws CmsException {
+        
+        return m_securityManager.changePropertyValue(m_context, readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION), propertyDefinition, oldValue, newValue, recursive);
+    }
     
     /**
      * Writes a property for a specified resource.<p>

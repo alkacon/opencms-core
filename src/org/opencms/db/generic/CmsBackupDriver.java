@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2004/10/29 17:26:24 $
- * Version: $Revision: 1.109 $
+ * Date   : $Date: 2004/11/09 15:31:50 $
+ * Version: $Revision: 1.110 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com) 
- * @version $Revision: 1.109 $ $Date: 2004/10/29 17:26:24 $
+ * @version $Revision: 1.110 $ $Date: 2004/11/09 15:31:50 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -1215,9 +1215,15 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
         PreparedStatement stmt = null;
 
         try {
-            if (internalCountProperties(metadef) != 0) {
+            if (internalCountProperties(runtimeInfo, metadef, I_CmsConstants.C_PROJECT_ONLINE_ID) != 0
+            || internalCountProperties(runtimeInfo, metadef, Integer.MAX_VALUE) != 0) {
+
                 throw new CmsException(
-                    "[" + this.getClass().getName() + "] " + metadef.getName(),
+                    "["
+                        + this.getClass().getName()
+                        + "] "
+                        + metadef.getName()
+                        + "could not be deleted because property is attached to resources",
                     CmsException.C_UNKNOWN_EXCEPTION);
             }
 
@@ -1236,12 +1242,15 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
     
     /**
      * Returns the amount of properties for a propertydefinition.<p>
-     *
+     * 
+     * @param runtimeInfo the current runtime info
      * @param metadef the propertydefinition to test
+     * @param projectId the ID of the current project
+     * 
      * @return the amount of properties for a propertydefinition
      * @throws CmsException if something goes wrong
      */
-    protected int internalCountProperties(CmsPropertydefinition metadef) throws CmsException {
+    protected int internalCountProperties(I_CmsRuntimeInfo runtimeInfo, CmsPropertydefinition metadef, int projectId) throws CmsException {
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -1249,8 +1258,8 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
         int returnValue;
         try {
             // create statement
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_PROPERTIES_READALL_COUNT");
+            conn = m_sqlManager.getConnection(runtimeInfo);
+            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_PROPERTIES_READALL_COUNT");
             stmt.setString(1, metadef.getId().toString());
             res = stmt.executeQuery();
 

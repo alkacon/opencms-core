@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2004/11/08 15:55:29 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/11/09 15:31:50 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,11 +51,14 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workflow.CmsTask;
 import org.opencms.workflow.CmsTaskLog;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.collections.map.LRUMap;
@@ -67,7 +70,7 @@ import org.apache.commons.collections.map.LRUMap;
  * are granted, the security manager invokes a method on the OpenCms driver manager to access the database.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -480,6 +483,65 @@ public final class CmsSecurityManager {
             runtimeInfo.clear();
         }
 
+    }
+    
+    /**
+     * Changes the value of the specified propertydefinition on resources from the old value to the new value.<p>
+     *
+     * @param context the current request context
+     * @param resource the resource on which property definition values are changed
+     * @param propertyDefinition the name of the propertydefinition to change the value
+     * @param oldValue the old value of the propertydefinition
+     * @param newValue the new value of the propertydefinition
+     * @param recursive if true, change recursively all property values on sub-resources (only for folders)
+     * 
+     * @return the resources where the property value has been changed
+     *
+     * @throws CmsException if operation was not successful
+     */
+    public List changePropertyValue(CmsRequestContext context, CmsResource resource, String propertyDefinition, String oldValue, String newValue, boolean recursive) throws CmsException {
+        
+        // collect the resources to look up
+        List resources = new ArrayList();
+        if (recursive) {
+            resources = getResourcesWithProperty(context, resource.getRootPath(), propertyDefinition);
+        } else {
+            resources.add(resource);
+        }
+        
+        Pattern oldPattern;
+        try {
+            // compile regular expression pattern
+            oldPattern = Pattern.compile(oldValue);
+        } catch (PatternSyntaxException e) {
+            throw new CmsException(e.getMessage());    
+        }
+        
+        List changedResources = new ArrayList(resources.size());
+        for (int i=0; i<resources.size(); i++) {
+            // loop through found resources and check property values
+            CmsResource res = (CmsResource)resources.get(i);
+            CmsProperty property = readPropertyObject(context, res.getRootPath(), propertyDefinition, false);
+            String structureValue = property.getStructureValue();
+            String resourceValue = property.getResourceValue();
+            boolean changed = false;
+            if (structureValue != null && oldPattern.matcher(structureValue).matches()) {
+                // change structure value
+                property.setStructureValue(newValue);
+                changed = true;
+            }
+            if (resourceValue != null && oldPattern.matcher(resourceValue).matches()) {
+                // change resource value
+                property.setResourceValue(newValue);
+                changed = true;
+            }
+            if (changed) {
+                // write property object if something has changed
+                writePropertyObject(context, res, property);
+                changedResources.add(res);
+            }           
+        }
+        return changedResources;
     }
 
     /**

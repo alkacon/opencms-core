@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/11/08 15:06:44 $
- * Version: $Revision: 1.213 $
+ * Date   : $Date: 2004/11/09 15:31:50 $
+ * Version: $Revision: 1.214 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.213 $ $Date: 2004/11/08 15:06:44 $
+ * @version $Revision: 1.214 $ $Date: 2004/11/09 15:31:50 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -468,8 +468,16 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         PreparedStatement stmt = null;
 
         try {
-            if (internalCountProperties(metadef) != 0) {
-                throw new CmsException("[" + this.getClass().getName() + "] " + metadef.getName(), CmsException.C_UNKNOWN_EXCEPTION);
+            if (internalCountProperties(runtimeInfo, metadef, I_CmsConstants.C_PROJECT_ONLINE_ID) != 0
+                || internalCountProperties(runtimeInfo, metadef, Integer.MAX_VALUE) != 0) {
+
+                throw new CmsException(
+                    "["
+                        + this.getClass().getName()
+                        + "] "
+                        + metadef.getName()
+                        + "could not be deleted because property is attached to resources",
+                    CmsException.C_UNKNOWN_EXCEPTION);
             }
             
             conn = m_sqlManager.getConnection(runtimeInfo);
@@ -477,7 +485,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             for (int i = 0; i < 2; i++) {
                 if (i == 0) {
                     // delete the offline propertydef
-                    stmt = m_sqlManager.getPreparedStatement(conn, "C_PROPERTYDEF_DELETE");
+                    stmt = m_sqlManager.getPreparedStatement(conn, Integer.MAX_VALUE, "C_PROPERTYDEF_DELETE");
                 } else if (i == 1) {
                     // delete the online propertydef
                     stmt = m_sqlManager.getPreparedStatement(conn, I_CmsConstants.C_PROJECT_ONLINE_ID, "C_PROPERTYDEF_DELETE");
@@ -485,7 +493,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                 
                 stmt.setString(1, metadef.getId().toString());
                 stmt.executeUpdate();
-                m_sqlManager.closeAll(null, conn, stmt, null);
+                m_sqlManager.closeAll(null, null, stmt, null);
             }
         } catch (SQLException exc) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
@@ -552,12 +560,15 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
 
     /**
      * Returns the amount of properties for a propertydefinition.<p>
-     *
+     * 
+     * @param runtimeInfo the current runtime info
      * @param metadef the propertydefinition to test
+     * @param projectId the ID of the current project
+     * 
      * @return the amount of properties for a propertydefinition
      * @throws CmsException if something goes wrong
      */
-    protected int internalCountProperties(CmsPropertydefinition metadef) throws CmsException {
+    protected int internalCountProperties(I_CmsRuntimeInfo runtimeInfo, CmsPropertydefinition metadef, int projectId) throws CmsException {
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -565,8 +576,8 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         int returnValue;
         try {
             // create statement
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_PROPERTIES_READALL_COUNT");
+            conn = m_sqlManager.getConnection(runtimeInfo);
+            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_PROPERTIES_READALL_COUNT");
             stmt.setString(1, metadef.getId().toString());
             res = stmt.executeQuery();
 
@@ -578,7 +589,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         } catch (SQLException exc) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
-            m_sqlManager.closeAll(null, conn, stmt, res);
+            m_sqlManager.closeAll(runtimeInfo, conn, stmt, res);
         }
         return returnValue;
     }

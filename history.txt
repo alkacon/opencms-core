@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/11/08 15:06:44 $
- * Version: $Revision: 1.586 $
+ * Date   : $Date: 2004/11/09 15:31:50 $
+ * Version: $Revision: 1.587 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@ OpenCms 5.x.x Caladan - xxx, 2004
 ! Modified VFS to allow multiple folder resource types
 ! Added new resource types for image, download, link and html galleries
 ! Added XML content handler interface for special action in the XML content lifecycle
-! Default implementation of XML contnet handler is org.opencms.xml.content.CmsDefaultXmlContentHandler
+! Default implementation of XML content handler is org.opencms.xml.content.CmsDefaultXmlContentHandler
 ! Resource "type change" dialog can now also change the type of a folder (e.g. to a gallery type)
 ! Added new "Image gallery" dialog for WYSIWYG editor (also available as XML content widget) 
 * Fixed issue with deleted users or groups causing "orphan" ACE entries 
