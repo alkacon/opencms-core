@@ -6,8 +6,7 @@
 <tabledataend><![CDATA[</a></td>]]></tabledataend>
 <tablerowbegin><![CDATA[<tr>]]></tablerowbegin>
 <tablerowend><![CDATA[</tr>]]></tablerowend>
-<urlbegin><![CDATA[<a href="]]><method name="getServletPath"/><method name="getUrl"/><![CDATA[?idview=]]><PROCESS>uniqueid</PROCESS></urlbegin>
-<urlend><![CDATA[">]]></urlend>
+<url><![CDATA[<a href="]]><method name="getServletPath"/><method name="getUrl"/><![CDATA[?parentId=]]><PROCESS>uniqueid</PROCESS><![CDATA[ target="body">]]></url>
 
 <lockuser><![CDATA[<td><img src="]]><method name="getServletPath"/><![CDATA[/pics/system/ic_lock.gif" alt="" border=0 width=16 height=16></td>]]></lockuser>
 <lock><![CDATA[<td><img src="]]><method name="getServletPath"/><![CDATA[/pics/system/ic_lockuser.gif" alt="" border=0 width=16 height=16></td>]]></lock>

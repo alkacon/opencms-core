@@ -197,15 +197,6 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 		return returnProcess;
 	}
 
-  if (idview != null) {
-      if (id == null) id = idview;
-      parameters.put("id", id);
-      if (idsave != null)
-					parameters.put("idsave", idsave);
-      returnProcess = getContentView(cms, template, elementName, parameters, templateSelector);
-    return returnProcess;
-  }
-
 	//go to the appropriate getContent methods
 	if ((id == null) && (idsave == null) && (action == null) && (idlock==null) && (iddelete == null) && (idedit == null))  {
   	//process the head frame containing the filter
@@ -468,9 +459,6 @@ private byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, St
 	return processResult;
 }
 
-public byte[] getContentView(CmsObject cms,CmsXmlWpTemplateFile templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
-  return getContentEdit(cms, templateFile, elementName, parameters, templateSelector);
-}
 /**
  * gets the content of a edited entry form.
  * Has to be overwritten in your backoffice class!
