@@ -5,10 +5,11 @@
    <!ATTLIST element language CDATA "all">
    <!ATTLIST element enabled (true|false) #IMPLIED>
 <!ELEMENT links (link*)>	
-<!ELEMENT link (target, query?)>	
+<!ELEMENT link (target, anchor?, query?)>	
    <!ATTLIST link name CDATA #REQUIRED>
    <!ATTLIST link internal (true|false) #REQUIRED>
    <!ATTLIST link type (A|IMG) #REQUIRED>
 <!ELEMENT target (#PCDATA)>
+<!ELEMENT anchor (#PCDATA)>
 <!ELEMENT query (#PCDATA)>
 <!ELEMENT content (#PCDATA)>
