@@ -2,66 +2,22 @@
 
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
 	
-	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>	
-	<xsd:element name="headlinks" type="OpenCmsHeadlinks"/>
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templateone/schemas/headlink.xsd"/>
 	
-	<xsd:complexType name="OpenCmsHeadlinks">
+	<xsd:element name="TemplateOneLinks" type="OpenCmsTemplateOneLinks"/>
+	
+	<xsd:complexType name="OpenCmsTemplateOneLinks">
 		<xsd:sequence>
-			<xsd:element name="headlink" type="OpenCmsHeadlink" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="TemplateOneLink" type="OpenCmsTemplateOneLink" minOccurs="0" maxOccurs="unbounded"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
-	<xsd:complexType name="OpenCmsHeadlink">
+	<xsd:complexType name="OpenCmsTemplateOneLink">
 		<xsd:sequence>
-			<xsd:element name="link1.url" type="OpenCmsString" />
-			<xsd:element name="link1.text" type="OpenCmsString" />
-			<xsd:element name="link1.target" type="OpenCmsString" />
-			<xsd:element name="link2.url" type="OpenCmsString" />
-			<xsd:element name="link2.text" type="OpenCmsString" />
-			<xsd:element name="link2.target" type="OpenCmsString" />
-			<xsd:element name="link3.url" type="OpenCmsString" />
-			<xsd:element name="link3.text" type="OpenCmsString" />
-			<xsd:element name="link3.target" type="OpenCmsString" />
-			<xsd:element name="link4.url" type="OpenCmsString" />
-			<xsd:element name="link4.text" type="OpenCmsString" />
-			<xsd:element name="link4.target" type="OpenCmsString" />
-			<xsd:element name="link5.url" type="OpenCmsString" />
-			<xsd:element name="link5.text" type="OpenCmsString" />
-			<xsd:element name="link5.target" type="OpenCmsString" />
-			<xsd:element name="link6.url" type="OpenCmsString" />
-			<xsd:element name="link6.text" type="OpenCmsString" />
-			<xsd:element name="link6.target" type="OpenCmsString" />
-			<xsd:element name="link7.url" type="OpenCmsString" />
-			<xsd:element name="link7.text" type="OpenCmsString" />
-			<xsd:element name="link7.target" type="OpenCmsString" />
-			<xsd:element name="link8.url" type="OpenCmsString" />
-			<xsd:element name="link8.text" type="OpenCmsString" />
-			<xsd:element name="link8.target" type="OpenCmsString" />
-			<xsd:element name="link9.url" type="OpenCmsString" />
-			<xsd:element name="link9.text" type="OpenCmsString" />
-			<xsd:element name="link9.target" type="OpenCmsString" />
-			<xsd:element name="link10.url" type="OpenCmsString" />
-			<xsd:element name="link10.text" type="OpenCmsString" />
-			<xsd:element name="link10.target" type="OpenCmsString" />
+			<xsd:element name="Headlink" type="OpenCmsHeadlink" minOccurs="0" maxOccurs="10" />			
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
 	</xsd:complexType>
-	
-	<xsd:annotation>
-		<xsd:appinfo>
-			<layouts>
-				<layout element="link1.url" widget="org.opencms.workplace.xmlwidgets.CmsXmlVfsFileWidget" />
-				<layout element="link2.url" widget="org.opencms.workplace.xmlwidgets.CmsXmlVfsFileWidget" />
-				<layout element="link3.url" widget="org.opencms.workplace.xmlwidgets.CmsXmlVfsFileWidget" />
-				<layout element="link4.url" widget="org.opencms.workplace.xmlwidgets.CmsXmlVfsFileWidget" />
-				<layout element="link5.url" widget="org.opencms.workplace.xmlwidgets.CmsXmlVfsFileWidget" />
-				<layout element="link6.url" widget="org.opencms.workplace.xmlwidgets.CmsXmlVfsFileWidget" />
-				<layout element="link7.url" widget="org.opencms.workplace.xmlwidgets.CmsXmlVfsFileWidget" />
-				<layout element="link8.url" widget="org.opencms.workplace.xmlwidgets.CmsXmlVfsFileWidget" />
-				<layout element="link9.url" widget="org.opencms.workplace.xmlwidgets.CmsXmlVfsFileWidget" />
-				<layout element="link10.url" widget="org.opencms.workplace.xmlwidgets.CmsXmlVfsFileWidget" />
-			</layouts>
-		</xsd:appinfo>
-	</xsd:annotation>
 
 </xsd:schema>

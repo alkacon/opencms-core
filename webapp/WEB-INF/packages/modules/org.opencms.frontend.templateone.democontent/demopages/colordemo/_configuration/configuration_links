@@ -1,68 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<headlinks xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templateone/schemas/links.xsd">
-  <headlink language="en">
-    <link1.url>/</link1.url>
-    <link1.text><![CDATA[START PAGE]]></link1.text>
-    <link1.target><![CDATA[_self]]></link1.target>
-    <link2.url>http://www.alkacon.com</link2.url>
-    <link2.text><![CDATA[ALKACON SOFTWARE]]></link2.text>
-    <link2.target><![CDATA[_blank]]></link2.target>
-    <link3.url>http://www.opencms.org</link3.url>
-    <link3.text><![CDATA[OPENCMS.ORG]]></link3.text>
-    <link3.target><![CDATA[_blank]]></link3.target>
-    <link4.url>http://www.opencms.org/opencms/en/support/references/index.html</link4.url>
-    <link4.text><![CDATA[REFERENCE SITES]]></link4.text>
-    <link4.target><![CDATA[_blank]]></link4.target>
-    <link5.url>http://www.opencms.org/opencms/en/support/solution_providers/index.html</link5.url>
-    <link5.text><![CDATA[SOLUTION PROVIDERS]]></link5.text>
-    <link5.target><![CDATA[_blank]]></link5.target>
-    <link6.url/>
-    <link6.text/>
-    <link6.target/>
-    <link7.url/>
-    <link7.text/>
-    <link7.target/>
-    <link8.url/>
-    <link8.text/>
-    <link8.target/>
-    <link9.url/>
-    <link9.text/>
-    <link9.target/>
-    <link10.url/>
-    <link10.text/>
-    <link10.target/>
-  </headlink>
-  <headlink language="de">
-    <link1.url>/</link1.url>
-    <link1.text><![CDATA[STARTSEITE]]></link1.text>
-    <link1.target><![CDATA[_self]]></link1.target>
-    <link2.url>http://www.alkacon.com</link2.url>
-    <link2.text><![CDATA[ALKACON SOFTWARE]]></link2.text>
-    <link2.target><![CDATA[_blank]]></link2.target>
-    <link3.url>http://www.opencms.org</link3.url>
-    <link3.text><![CDATA[OPENCMS.ORG]]></link3.text>
-    <link3.target><![CDATA[_blank]]></link3.target>
-    <link4.url>http://www.opencms.org/opencms/en/support/references/index.html</link4.url>
-    <link4.text><![CDATA[REFERENCE SITES]]></link4.text>
-    <link4.target><![CDATA[_blank]]></link4.target>
-    <link5.url>http://www.opencms.org/opencms/en/support/solution_providers/index.html</link5.url>
-    <link5.text><![CDATA[SOLUTION PROVIDERS]]></link5.text>
-    <link5.target><![CDATA[_blank]]></link5.target>
-    <link6.url/>
-    <link6.text/>
-    <link6.target/>
-    <link7.url/>
-    <link7.text/>
-    <link7.target/>
-    <link8.url/>
-    <link8.text/>
-    <link8.target/>
-    <link9.url/>
-    <link9.text/>
-    <link9.target/>
-    <link10.url/>
-    <link10.text/>
-    <link10.target/>
-  </headlink>
-</headlinks>
+<TemplateOneLinks xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templateone/schemas/links.xsd">
+  <TemplateOneLink language="en">
+    <Headlink>
+      <link.url><![CDATA[/]]></link.url>
+      <link.text><![CDATA[START PAGE]]></link.text>
+      <link.target><![CDATA[_self]]></link.target>
+    </Headlink>
+    <Headlink>
+      <link.url><![CDATA[http://www.alkacon.com]]></link.url>
+      <link.text><![CDATA[ALKACON SOFTWARE]]></link.text>
+      <link.target><![CDATA[_blank]]></link.target>
+    </Headlink>
+    <Headlink>
+      <link.url><![CDATA[http://www.opencms.org]]></link.url>
+      <link.text><![CDATA[OPENCMS.ORG]]></link.text>
+      <link.target><![CDATA[_blank]]></link.target>
+    </Headlink>
+    <Headlink>
+      <link.url><![CDATA[http://www.opencms.org/opencms/en/support/references/index.html]]></link.url>
+      <link.text><![CDATA[REFERENCE SITES]]></link.text>
+      <link.target><![CDATA[_blank]]></link.target>
+    </Headlink>
+    <Headlink>
+      <link.url><![CDATA[http://www.opencms.org/opencms/en/support/solution_providers/index.html]]></link.url>
+      <link.text><![CDATA[SOLUTION PROVIDERS]]></link.text>
+      <link.target><![CDATA[_blank]]></link.target>
+    </Headlink>
+  </TemplateOneLink>
+  <TemplateOneLink language="de">
+    <Headlink>
+      <link.url><![CDATA[/]]></link.url>
+      <link.text><![CDATA[STARTSEITE]]></link.text>
+      <link.target><![CDATA[_self]]></link.target>
+    </Headlink>
+    <Headlink>
+      <link.url><![CDATA[http://www.alkacon.com]]></link.url>
+      <link.text><![CDATA[ALKACON SOFTWARE]]></link.text>
+      <link.target><![CDATA[_blank]]></link.target>
+    </Headlink>
+    <Headlink>
+      <link.url><![CDATA[http://www.opencms.org]]></link.url>
+      <link.text><![CDATA[OPENCMS.ORG]]></link.text>
+      <link.target><![CDATA[_blank]]></link.target>
+    </Headlink>
+    <Headlink>
+      <link.url><![CDATA[http://www.opencms.org/opencms/en/support/references/index.html]]></link.url>
+      <link.text><![CDATA[REFERENCE SITES]]></link.text>
+      <link.target><![CDATA[_blank]]></link.target>
+    </Headlink>
+    <Headlink>
+      <link.url><![CDATA[http://www.opencms.org/opencms/en/support/solution_providers/index.html]]></link.url>
+      <link.text><![CDATA[SOLUTION PROVIDERS]]></link.text>
+      <link.target><![CDATA[_blank]]></link.target>
+    </Headlink>
+  </TemplateOneLink>
+</TemplateOneLinks>

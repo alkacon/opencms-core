@@ -1490,6 +1490,24 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/modules/org.opencms.frontend.templateone/schemas/headlink.xsd</source>
+			<destination>system/modules/org.opencms.frontend.templateone/schemas/headlink.xsd</destination>
+			<type>plain</type>
+			<uuidresource>a0cfb416-4f43-11d9-8c98-2de49c45b2e5</uuidresource>
+			<datelastmodified>Thu, 16 Dec 2004 10:42:34 GMT+01:00</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 16 Dec 2004 10:19:46 GMT+01:00</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Single head link schema]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/modules/org.opencms.frontend.templateone/schemas/imprint.xsd</source>
 			<destination>system/modules/org.opencms.frontend.templateone/schemas/imprint.xsd</destination>
 			<type>plain</type>

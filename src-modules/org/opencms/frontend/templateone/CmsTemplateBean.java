@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateBean.java,v $
- * Date   : $Date: 2004/11/15 17:09:19 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/12/16 11:01:42 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods to create the HTML for the frontend output in the main JSP template one.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsTemplateBean extends CmsJspActionElement {
     
@@ -399,12 +399,13 @@ public class CmsTemplateBean extends CmsJspActionElement {
         if (configuration != null) {
             // configuration found, create link list
             Locale locale = getRequestContext().getLocale();
-            for (int i=1; i<11; i++) {
-                String prefix = "link" + i;
-                try {
-                    String url = configuration.getStringValue(null, prefix + ".url", locale);
-                    String text = configuration.getStringValue(null, prefix + ".text", locale);
-                    String target = configuration.getStringValue(null, prefix + ".target", locale);
+            int count = configuration.getIndexCount("Headlink", locale);
+            for (int i=1; i<=count; i++) {
+                String prefix = "Headlink[" + i + "]";
+                try {                    
+                    String url = configuration.getStringValue(null, prefix + "/link.url", locale);
+                    String text = configuration.getStringValue(null, prefix + "/link.text", locale);
+                    String target = configuration.getStringValue(null, prefix + "/link.target", locale);
                     if (CmsStringUtil.isEmpty(url) || CmsStringUtil.isEmpty(text)) {
                         // values for link found in configuration file are not complete, stop loop
                         break;    
@@ -448,6 +449,12 @@ public class CmsTemplateBean extends CmsJspActionElement {
                     if (url.startsWith("/")) {
                         url = link(url);    
                     }
+                    // try to get localized version for found text
+                    String localizedText = key(text);
+                    if (! localizedText.startsWith(CmsMessages.C_UNKNOWN_KEY_EXTENSION)) {
+                        text = localizedText;
+                    }
+                    
                 } catch (Exception e) {
                     // problem extracting information from property
                     if (OpenCms.getLog(this).isErrorEnabled()) {
