@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsVfsConfiguration.java,v $
- * Date   : $Date: 2005/03/10 16:23:06 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/03/15 18:05:54 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,8 +46,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
-import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.digester.Digester;
 
 import org.dom4j.Element;
@@ -207,7 +207,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
                     Element mapping = resourceType.addElement(N_MAPPING);
                     mapping.addAttribute(A_SUFFIX, (String)mappings.get(j));
                 }
-                ExtendedProperties prop = resType.getConfiguration();
+                Map prop = resType.getConfiguration();
                 if (prop != null) {
                     List sortedRuntimeProperties = new ArrayList(prop.keySet());
                     Collections.sort(sortedRuntimeProperties);
@@ -354,12 +354,12 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
             // add the loader node
             Element loaderNode = resourceloadersElement.addElement(N_LOADER);
             loaderNode.addAttribute(A_CLASS, loader.getClass().getName());
-            ExtendedProperties loaderConfiguratrion = loader.getConfiguration();
-            if (loaderConfiguratrion != null) {
-                Iterator it = loaderConfiguratrion.getKeys();
+            Map loaderConfiguration = loader.getConfiguration();
+            if (loaderConfiguration != null) {
+                Iterator it = loaderConfiguration.keySet().iterator();
                 while (it.hasNext()) {
                     String name = (String)it.next();
-                    String value = loaderConfiguratrion.get(name).toString();
+                    String value = loaderConfiguration.get(name).toString();
                     Element paramNode = loaderNode.addElement(N_PARAM);
                     paramNode.addAttribute(A_NAME, name);
                     paramNode.addText(value);

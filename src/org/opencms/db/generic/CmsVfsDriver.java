@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2005/02/26 13:51:00 $
- * Version: $Revision: 1.229 $
+ * Date   : $Date: 2005/03/15 18:05:54 $
+ * Version: $Revision: 1.230 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,12 +32,12 @@
 package org.opencms.db.generic;
 
 import org.opencms.configuration.CmsConfigurationManager;
+import org.opencms.db.CmsConsistencyException;
+import org.opencms.db.CmsDataAccessException;
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDriverManager;
-import org.opencms.db.CmsConsistencyException;
 import org.opencms.db.CmsObjectNotFoundException;
 import org.opencms.db.CmsSqlException;
-import org.opencms.db.CmsDataAccessException;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsVfsDriver;
 import org.opencms.file.CmsFile;
@@ -68,15 +68,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections.ExtendedProperties;
-
 
 /**
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.229 $ $Date: 2005/02/26 13:51:00 $
+ * @version $Revision: 1.230 $ $Date: 2005/03/15 18:05:54 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -738,9 +736,9 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
      */
     public void init(CmsDbContext dbc, CmsConfigurationManager configurationManager, List successiveDrivers, CmsDriverManager driverManager) {
         
-        ExtendedProperties configuration = configurationManager.getConfiguration();
-        String poolUrl = configuration.getString("db.vfs.pool");
-        String classname = configuration.getString("db.vfs.sqlmanager");
+        Map configuration = configurationManager.getConfiguration();
+        String poolUrl = (String)configuration.get("db.vfs.pool");
+        String classname = (String)configuration.get("db.vfs.sqlmanager");
         m_sqlManager = this.initSqlManager(classname);
         m_sqlManager.init(I_CmsVfsDriver.C_DRIVER_TYPE_ID, poolUrl);
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/03/09 16:51:03 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2005/03/15 18:05:55 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.41 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -1676,7 +1676,7 @@ public final class CmsSecurityManager {
      *
      * @return the configurations of the properties file
      */
-    public ExtendedProperties getConfigurations() {
+    public Map getConfigurations() {
 
         return m_driverManager.getConfigurations();
     }
@@ -2232,8 +2232,16 @@ public final class CmsSecurityManager {
     public void init(CmsConfigurationManager configurationManager, I_CmsDbContextFactory runtimeInfoFactory)
     throws CmsException {
 
-        ExtendedProperties config = configurationManager.getConfiguration();
-
+        Map configuration = configurationManager.getConfiguration();
+        
+        ExtendedProperties config;
+        if (configuration instanceof ExtendedProperties) {
+            config = (ExtendedProperties)configuration;
+        } else {
+            config = new ExtendedProperties();
+            config.putAll(configuration);            
+        }
+        
         try {
             // initialize the key generator
             m_keyGenerator = (I_CmsCacheKey)Class.forName(

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContent.java,v $
- * Date   : $Date: 2005/02/17 12:43:50 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/03/15 18:05:54 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,17 +46,17 @@ import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-
-import org.apache.commons.collections.ExtendedProperties;
+import java.util.Map;
 
 /**
  * Resource type descriptor for the type "xmlcontent".<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 5.5
  */
@@ -156,15 +156,15 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#getConfiguration()
      */
-    public ExtendedProperties getConfiguration() {
+    public Map getConfiguration() {
 
-        ExtendedProperties result = new ExtendedProperties();
+        Map result = new HashMap();
         result.put(I_CmsResourceType.C_CONFIGURATION_RESOURCE_TYPE_ID, new Integer(m_resourceType));
         result.put(I_CmsResourceType.C_CONFIGURATION_RESOURCE_TYPE_NAME, m_resourceTypeName);
         if (m_schema != null) {
             result.put(C_CONFIGURATION_SCHEMA, m_schema);
         }
-        ExtendedProperties additional = super.getConfiguration();
+        Map additional = super.getConfiguration();
         if (additional != null) {
             result.putAll(additional);
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsLinkCheck.java,v $
- * Date   : $Date: 2005/02/18 15:18:52 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/03/15 18:05:54 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,6 +64,7 @@ import java.util.Enumeration;
 import java.util.GregorianCalendar;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -304,8 +305,11 @@ public class CmsLinkCheck extends CmsXmlTemplate implements I_CmsScheduledJob {
      * @return the String that is written to the OpenCms log
      * @throws CmsException if something goes wrong 
      */
-    public String launch(CmsObject cms, ExtendedProperties parameters) throws CmsException {
-        String parameter = parameters.getString((String)parameters.getKeys().next(), "");
+    public String launch(CmsObject cms, Map parameters) throws CmsException {
+        String parameter = (String)parameters.get((String)parameters.keySet().iterator().next());
+        if (parameter == null) {
+            parameter = "";
+        }
         linksUrlCheck(cms, parameter);
         return "CmsLinkCheck.launch(): Links checked.";
     }

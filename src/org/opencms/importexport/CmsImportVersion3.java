@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2005/03/15 18:05:54 $
+ * Version: $Revision: 1.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,10 +50,9 @@ import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 import java.util.zip.ZipFile;
-
-import org.apache.commons.collections.ExtendedProperties;
 
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -459,9 +458,9 @@ public class CmsImportVersion3 extends A_CmsImport {
      
         boolean convert = false;
         
-        ExtendedProperties config = OpenCms.getPasswordHandler().getConfiguration();
+        Map config = OpenCms.getPasswordHandler().getConfiguration();
         if (config != null && config.containsKey(I_CmsPasswordHandler.C_CONVERT_DIGEST_ENCODING)) {
-            convert = config.getBoolean(I_CmsPasswordHandler.C_CONVERT_DIGEST_ENCODING);
+            convert = Boolean.valueOf((String)config.get(I_CmsPasswordHandler.C_CONVERT_DIGEST_ENCODING)).booleanValue();
         } 
             
         if (convert) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/I_CmsScheduledJob.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/03/15 18:05:55 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,14 +33,14 @@ package org.opencms.scheduler;
 
 import org.opencms.file.CmsObject;
 
-import org.apache.commons.collections.ExtendedProperties;
+import java.util.Map;
 
 /**
  * Identifies a class that can be scheduled with the OpenCms scheduler.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  *  
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.3
  */
 public interface I_CmsScheduledJob {
@@ -67,5 +67,5 @@ public interface I_CmsScheduledJob {
      * @see CmsScheduledJobInfo
      * @see CmsScheduledJobInfo#setReuseInstance(boolean)
      */
-    String launch(CmsObject cms, ExtendedProperties parameters) throws Exception;    
+    String launch(CmsObject cms, Map parameters) throws Exception;    
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2005/03/09 11:59:13 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2005/03/15 18:05:54 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexWriter;
@@ -63,7 +62,7 @@ import org.apache.lucene.index.IndexWriter;
  * Implements the general management and configuration of the search and 
  * indexing facilities in OpenCms.<p>
  * 
- * @version $Revision: 1.31 $ $Date: 2005/03/09 11:59:13 $
+ * @version $Revision: 1.32 $ $Date: 2005/03/15 18:05:54 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -369,14 +368,14 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      * @return the finish message
      * @throws Exception if something goes wrong
      */
-    public final String launch(CmsObject cms, ExtendedProperties parameters) throws Exception {
+    public final String launch(CmsObject cms, Map parameters) throws Exception {
 
         // Note: launch is normally called with uninitialized object data,
         // so we have to create our own instance
         CmsSearchManager manager = OpenCms.getSearchManager();
 
         I_CmsReport report = null;
-        boolean writeLog = parameters.getBoolean("writeLog", false);
+        boolean writeLog = Boolean.valueOf((String)parameters.get("writeLog")).booleanValue();
 
         if (writeLog) {
             report = new CmsLogReport(I_CmsReport.C_BUNDLE_NAME, cms.getRequestContext().getLocale(), getClass());

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2005/03/10 16:23:06 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/03/15 18:05:54 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.digester.Digester;
 
 import org.dom4j.Element;
@@ -628,9 +627,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             contextElement.addElement(N_ENCODING).setText(jobInfo.getContextInfo().getEncoding());
             contextElement.addElement(N_REMOTEADDR).setText(jobInfo.getContextInfo().getRemoteAddr());
             Element parameterElement = jobElement.addElement(N_PARAMETERS);
-            ExtendedProperties jobParameters = jobInfo.getConfiguration();
+            Map jobParameters = jobInfo.getConfiguration();
             if (jobParameters != null) {
-                Iterator it = jobParameters.getKeys();
+                Iterator it = jobParameters.keySet().iterator();
                 while (it.hasNext()) {
                     String name = (String)it.next();
                     String value = jobParameters.get(name).toString();
@@ -669,9 +668,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             .addAttribute(A_CLASS, m_passwordHandler.getClass().getName());
         passwordhandlerElement.addElement(N_PASSWORDENCODING).addText(m_passwordHandler.getInputEncoding());
         passwordhandlerElement.addElement(N_DIGESTTYPE).addText(m_passwordHandler.getDigestType());
-        ExtendedProperties handlerParameters = m_passwordHandler.getConfiguration();
+        Map handlerParameters = m_passwordHandler.getConfiguration();
         if (handlerParameters != null) {
-            Iterator it = handlerParameters.getKeys();
+            Iterator it = handlerParameters.keySet().iterator();
             while (it.hasNext()) {
                 String name = (String)it.next();
                 String value = handlerParameters.get(name).toString();

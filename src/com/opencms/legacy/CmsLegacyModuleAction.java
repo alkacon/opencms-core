@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsLegacyModuleAction.java,v $
- * Date   : $Date: 2005/02/18 15:18:52 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/03/15 18:05:55 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,9 +52,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
-
-import org.apache.commons.collections.ExtendedProperties;
 
 /**
  * Provided backward compatiblity for legacy (5.0) module "publishClass" 
@@ -121,9 +120,9 @@ public class CmsLegacyModuleAction extends A_CmsModuleAction {
      */
     public void initialize(CmsObject adminCms, CmsConfigurationManager configurationManager, CmsModule module) {
         
-        ExtendedProperties config = adminCms.getConfigurations();
-        String dbName = config.getString(CmsDbPool.C_KEY_DATABASE_NAME).toLowerCase();
-        String poolUrl = config.getString("db.cos.pool");
+        Map config = adminCms.getConfigurations();
+        String dbName = config.get(CmsDbPool.C_KEY_DATABASE_NAME).toString().toLowerCase();
+        String poolUrl = config.get("db.cos.pool").toString();
         
         CmsDbAccess dbAccess = new CmsDbAccess(poolUrl);
         boolean masterAvailable = dbAccess.checkTables();

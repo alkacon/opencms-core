@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2005/02/26 13:53:31 $
- * Version: $Revision: 1.76 $
+ * Date   : $Date: 2005/03/15 18:05:54 $
+ * Version: $Revision: 1.77 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,6 +58,7 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -101,7 +102,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.76 $
+ * @version $Revision: 1.77 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -136,7 +137,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     private CmsFlexCache m_cache;
 
     /** The resource loader configuration. */
-    private ExtendedProperties m_configuration;
+    private Map m_configuration;
 
     /** Flag to indicate if error pages are marked as "commited". */
     // TODO: This is a hack, investigate this issue with different runtime environments
@@ -150,7 +151,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      */
     public CmsJspLoader() {
 
-        m_configuration = new ExtendedProperties();
+        m_configuration = new TreeMap();
     }
 
     /**
@@ -169,7 +170,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      */
     public void addConfigurationParameter(String paramName, String paramValue) {
 
-        m_configuration.addProperty(paramName, paramValue);
+        m_configuration.put(paramName, paramValue);
     }
 
     /** Destroy this ResourceLoder, this is a NOOP so far.  */
@@ -251,12 +252,10 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
-    public ExtendedProperties getConfiguration() {
+    public Map getConfiguration() {
 
-        // return only a copy of the configuration
-        ExtendedProperties copy = new ExtendedProperties();
-        copy.combine(m_configuration);
-        return copy;
+        // return the configuration in an immutable form
+        return Collections.unmodifiableMap(m_configuration);        
     }
 
     /**
@@ -283,11 +282,14 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      */
     public void initConfiguration() {
 
-        m_jspRepository = m_configuration.getString("jsp.repository");
+        ExtendedProperties config = new ExtendedProperties();
+        config.putAll(m_configuration);            
+        
+        m_jspRepository = config.getString("jsp.repository");
         if (m_jspRepository == null) {
             m_jspRepository = OpenCms.getSystemInfo().getWebApplicationRfsPath();
         }
-        m_jspWebAppRepository = m_configuration.getString("jsp.folder", "/WEB-INF/jsp/");
+        m_jspWebAppRepository = config.getString("jsp.folder", "/WEB-INF/jsp/");
         if (!m_jspWebAppRepository.endsWith("/")) {
             m_jspWebAppRepository += "/";
         }
@@ -297,7 +299,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             System.err.println("JspLoader: Setting jsp repository to " + m_jspRepository);
         }
         // get the "error pages are commited or not" flag from the configuration
-        m_errorPagesAreNotCommited = m_configuration.getBoolean("jsp.errorpage.committed", true);
+        m_errorPagesAreNotCommited = config.getBoolean("jsp.errorpage.committed", true);
 
         // output setup information
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) { 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Attic/CmsWorkflowDriver.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2005/03/15 18:05:54 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,12 +32,12 @@
 package org.opencms.db.generic;
 
 import org.opencms.configuration.CmsConfigurationManager;
+import org.opencms.db.CmsDataAccessException;
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbUtil;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsObjectNotFoundException;
 import org.opencms.db.CmsSqlException;
-import org.opencms.db.CmsDataAccessException;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsWorkflowDriver;
 import org.opencms.file.CmsGroup;
@@ -58,8 +58,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.commons.collections.ExtendedProperties;
+import java.util.Map;
 
 
 /**
@@ -67,7 +66,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.41 $ $Date: 2005/02/17 12:43:47 $
+ * @version $Revision: 1.42 $ $Date: 2005/03/15 18:05:54 $
  * @since 5.1
  */
 public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkflowDriver {
@@ -184,9 +183,9 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
      */
     public void init(CmsDbContext dbc, CmsConfigurationManager configurationManager, List successiveDrivers, CmsDriverManager driverManager) {
         
-        ExtendedProperties configuration = configurationManager.getConfiguration();
-        String poolUrl = configuration.getString("db.workflow.pool");
-        String classname = configuration.getString("db.workflow.sqlmanager");
+        Map configuration = configurationManager.getConfiguration();
+        String poolUrl = (String)configuration.get("db.workflow.pool");
+        String classname = (String)configuration.get("db.workflow.sqlmanager");
         m_sqlManager = this.initSqlManager(classname);
         m_sqlManager.init(I_CmsWorkflowDriver.C_DRIVER_TYPE_ID, poolUrl);        
 

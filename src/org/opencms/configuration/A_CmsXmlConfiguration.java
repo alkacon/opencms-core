@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/A_CmsXmlConfiguration.java,v $
- * Date   : $Date: 2005/02/17 12:43:50 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/03/15 18:05:54 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,7 @@ package org.opencms.configuration;
 
 import org.opencms.main.OpenCms;
 
-import org.apache.commons.collections.ExtendedProperties;
+import java.util.Map;
 
 /**
  * Abstract base implementation for xml configurations.<p>
@@ -60,7 +60,7 @@ public abstract class A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
-    public ExtendedProperties getConfiguration() {
+    public Map getConfiguration() {
         
         // simple default configuration does not support parameters
         if (OpenCms.getLog(this).isDebugEnabled()) {

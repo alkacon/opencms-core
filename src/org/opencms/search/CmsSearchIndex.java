@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2005/03/13 09:50:05 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2005/03/15 18:05:54 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,8 +50,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
-import org.apache.commons.collections.ExtendedProperties;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
@@ -66,7 +66,7 @@ import org.apache.lucene.search.Searcher;
 /**
  * Implements the search within an index and the management of the index configuration.<p>
  *   
- * @version $Revision: 1.39 $ $Date: 2005/03/13 09:50:05 $
+ * @version $Revision: 1.40 $ $Date: 2005/03/15 18:05:54 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -229,12 +229,18 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
-    public ExtendedProperties getConfiguration() {
+    public Map getConfiguration() {
 
-        ExtendedProperties result = new ExtendedProperties();
-        result.put(C_PRIORITY, new Integer(m_priority));
-        result.put(C_EXCERPT, new Boolean(m_createExcerpt));
-        result.put(C_PERMISSIONS, new Boolean(m_checkPermissions));
+        Map result = new TreeMap();
+        if (m_priority > 0) {
+            result.put(C_PRIORITY, new Integer(m_priority));
+        }
+        if (! m_createExcerpt) {
+            result.put(C_EXCERPT, new Boolean(m_createExcerpt));
+        }
+        if (! m_checkPermissions) {
+            result.put(C_PERMISSIONS, new Boolean(m_checkPermissions));
+        }
         return result;
     }
 

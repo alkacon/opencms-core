@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/03/13 09:48:39 $
- * Version: $Revision: 1.478 $
+ * Date   : $Date: 2005/03/15 18:05:54 $
+ * Version: $Revision: 1.479 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -95,7 +95,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.478 $ $Date: 2005/03/13 09:48:39 $
+ * @version $Revision: 1.479 $ $Date: 2005/03/15 18:05:54 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -256,7 +256,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     private I_CmsBackupDriver m_backupDriver;
 
     /** The configuration of the property-file. */
-    private ExtendedProperties m_configuration;
+    private Map m_configuration;
 
     /** The list of initialized JDBC pools. */
     private List m_connectionPools;
@@ -343,8 +343,16 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         CmsSecurityManager securityManager,
         I_CmsDbContextFactory runtimeInfoFactory) throws CmsException {
 
-        ExtendedProperties configuration = configurationManager.getConfiguration();
+        Map configuration = configurationManager.getConfiguration();
 
+        ExtendedProperties config;
+        if (configuration instanceof ExtendedProperties) {
+            config = (ExtendedProperties)configuration;
+        } else {
+            config = new ExtendedProperties();
+            config.putAll(configuration);            
+        }
+        
         // initialize static hastables
         CmsDbUtil.init();
 
@@ -387,7 +395,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         }
 
         // read the pool names to initialize
-        String driverPoolNames[] = configuration.getStringArray(I_CmsConstants.C_CONFIGURATION_DB + ".pools");
+        String driverPoolNames[] = config.getStringArray(I_CmsConstants.C_CONFIGURATION_DB + ".pools");
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             String names = "";
             for (int p = 0; p < driverPoolNames.length; p++) {
@@ -398,7 +406,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
         // initialize each pool
         for (int p = 0; p < driverPoolNames.length; p++) {
-            driverManager.newPoolInstance(configuration, driverPoolNames[p]);
+            driverManager.newPoolInstance(config, driverPoolNames[p]);
         }
         
         // initialize the runtime info factory with the generated driver manager
@@ -411,38 +419,38 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         }
 
         // read the vfs driver class properties and initialize a new instance 
-        drivers = Arrays.asList(configuration.getStringArray(I_CmsConstants.C_CONFIGURATION_VFS));
-        driverName = configuration.getString((String)drivers.get(0) + ".vfs.driver");
+        drivers = Arrays.asList(config.getStringArray(I_CmsConstants.C_CONFIGURATION_VFS));
+        driverName = config.getString((String)drivers.get(0) + ".vfs.driver");
         drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
         vfsDriver = (I_CmsVfsDriver)driverManager.newDriverInstance(configurationManager, driverName, drivers);
 
         // read the user driver class properties and initialize a new instance 
-        drivers = Arrays.asList(configuration.getStringArray(I_CmsConstants.C_CONFIGURATION_USER));
-        driverName = configuration.getString((String)drivers.get(0) + ".user.driver");
+        drivers = Arrays.asList(config.getStringArray(I_CmsConstants.C_CONFIGURATION_USER));
+        driverName = config.getString((String)drivers.get(0) + ".user.driver");
         drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
         userDriver = (I_CmsUserDriver)driverManager.newDriverInstance(configurationManager, driverName, drivers);
 
         // read the project driver class properties and initialize a new instance 
-        drivers = Arrays.asList(configuration.getStringArray(I_CmsConstants.C_CONFIGURATION_PROJECT));
-        driverName = configuration.getString((String)drivers.get(0) + ".project.driver");
+        drivers = Arrays.asList(config.getStringArray(I_CmsConstants.C_CONFIGURATION_PROJECT));
+        driverName = config.getString((String)drivers.get(0) + ".project.driver");
         drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
         projectDriver = (I_CmsProjectDriver)driverManager.newDriverInstance(configurationManager, driverName, drivers);
 
         // read the workflow driver class properties and initialize a new instance 
-        drivers = Arrays.asList(configuration.getStringArray(I_CmsConstants.C_CONFIGURATION_WORKFLOW));
-        driverName = configuration.getString((String)drivers.get(0) + ".workflow.driver");
+        drivers = Arrays.asList(config.getStringArray(I_CmsConstants.C_CONFIGURATION_WORKFLOW));
+        driverName = config.getString((String)drivers.get(0) + ".workflow.driver");
         drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
         workflowDriver = (I_CmsWorkflowDriver)driverManager.newDriverInstance(configurationManager, driverName, drivers);
 
         // read the backup driver class properties and initialize a new instance 
-        drivers = Arrays.asList(configuration.getStringArray(I_CmsConstants.C_CONFIGURATION_BACKUP));
-        driverName = configuration.getString((String)drivers.get(0) + ".backup.driver");
+        drivers = Arrays.asList(config.getStringArray(I_CmsConstants.C_CONFIGURATION_BACKUP));
+        driverName = config.getString((String)drivers.get(0) + ".backup.driver");
         drivers = (drivers.size() > 1) ? drivers.subList(1, drivers.size()) : null;
         backupDriver = (I_CmsBackupDriver)driverManager.newDriverInstance(configurationManager, driverName, drivers);
 
         try {
             // invoke the init method of the driver manager
-            driverManager.init(configuration, vfsDriver, userDriver, projectDriver, workflowDriver, backupDriver);
+            driverManager.init(config, vfsDriver, userDriver, projectDriver, workflowDriver, backupDriver);
             if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
                 OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Driver manager init  : phase 4 ok - finished");
             }
@@ -3281,7 +3289,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      *
      * @return the Configurations of the properties-file
      */
-    public ExtendedProperties getConfigurations() {
+    public Map getConfigurations() {
 
         return m_configuration;
     }
@@ -3387,7 +3395,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         }
 
         return allGroups;
-    }
+    }                                 
 
     /**
      * Returns the HTML link validator.<p>
@@ -3398,7 +3406,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     public CmsHtmlLinkValidator getHtmlLinkValidator() {
 
         return m_htmlLinkValidator;
-    }
+    }       
 
     /**
      * Returns the lock state of a resource.<p>
@@ -3846,7 +3854,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Initializes the driver and sets up all required modules and connections.<p>
      * 
-     * @param config the OpenCms configuration
+     * @param configuration the OpenCms configuration
      * @param vfsDriver the vfsdriver
      * @param userDriver the userdriver
      * @param projectDriver the projectdriver
@@ -3856,7 +3864,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * @throws Exception if something goes wrong
      */
     public void init(
-        ExtendedProperties config,
+        Map configuration,
         I_CmsVfsDriver vfsDriver,
         I_CmsUserDriver userDriver,
         I_CmsProjectDriver projectDriver,
@@ -3874,8 +3882,16 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         m_projectDriver = projectDriver;
         m_workflowDriver = workflowDriver;
         m_backupDriver = backupDriver;
-
-        m_configuration = config;
+        
+        m_configuration = configuration;
+        
+        ExtendedProperties config;
+        if (configuration instanceof ExtendedProperties) {
+            config = (ExtendedProperties)configuration;
+        } else {
+            config = new ExtendedProperties();
+            config.putAll(configuration);            
+        }
 
         // initialize the key generator
         m_keyGenerator = (I_CmsCacheKey)Class.forName(
@@ -4594,16 +4610,16 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     /**
      * Method to create a new instance of a pool.<p>
      * 
-     * @param configurations the configurations from the propertyfile
+     * @param configuration the configurations from the propertyfile
      * @param poolName the configuration name of the pool
      * @throws CmsException if something goes wrong
      */
-    public void newPoolInstance(ExtendedProperties configurations, String poolName) throws CmsException {
+    public void newPoolInstance(Map configuration, String poolName) throws CmsException {
 
         PoolingDriver driver;
 
         try {
-            driver = CmsDbPool.createDriverManagerConnectionPool(configurations, poolName);
+            driver = CmsDbPool.createDriverManagerConnectionPool(configuration, poolName);
         } catch (Exception exc) {
             String message = "Critical error while initializing connection pool " + poolName;
             if (OpenCms.getLog(this).isFatalEnabled()) {

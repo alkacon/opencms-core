@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2005/03/07 07:10:50 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2005/03/15 18:05:54 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,14 +68,13 @@ import java.util.Map;
 
 import javax.mail.internet.InternetAddress;
 
-import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.logging.Log;
 
 /**
  * Monitors OpenCms memory consumtion.<p>
  * 
- * @version $Revision: 1.42 $ $Date: 2005/03/07 07:10:50 $
+ * @version $Revision: 1.43 $ $Date: 2005/03/15 18:05:54 $
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -323,9 +322,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     }
 
     /**
-     * @see org.opencms.scheduler.I_CmsScheduledJob#launch(org.opencms.file.CmsObject, org.apache.commons.collections.ExtendedProperties)
+     * @see org.opencms.scheduler.I_CmsScheduledJob#launch(CmsObject, Map)
      */
-    public String launch(CmsObject cms, ExtendedProperties parameters) throws Exception {
+    public String launch(CmsObject cms, Map parameters) throws Exception {
 
         CmsMemoryMonitor monitor = OpenCms.getMemoryMonitor();
 

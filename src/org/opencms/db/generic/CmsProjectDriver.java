@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.206 $
+ * Date   : $Date: 2005/03/15 18:05:54 $
+ * Version: $Revision: 1.207 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,25 +32,16 @@
 package org.opencms.db.generic;
 
 import org.opencms.configuration.CmsConfigurationManager;
+import org.opencms.db.CmsDataAccessException;
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsObjectNotFoundException;
 import org.opencms.db.CmsPublishList;
 import org.opencms.db.CmsPublishedResource;
 import org.opencms.db.CmsSqlException;
-import org.opencms.db.CmsDataAccessException;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsProjectDriver;
 import org.opencms.file.*;
-import org.opencms.file.CmsFile;
-import org.opencms.file.CmsFolder;
-import org.opencms.file.CmsGroup;
-import org.opencms.file.CmsProject;
-import org.opencms.file.CmsProperty;
-import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.CmsUser;
-import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
@@ -75,13 +66,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.collections.ExtendedProperties;
-
 
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.206 $ $Date: 2005/02/17 12:43:47 $
+ * @version $Revision: 1.207 $ $Date: 2005/03/15 18:05:54 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -491,9 +480,9 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
      */
     public void init(CmsDbContext dbc, CmsConfigurationManager configurationManager, List successiveDrivers, CmsDriverManager driverManager) {
         
-        ExtendedProperties configuration = configurationManager.getConfiguration();
-        String poolUrl = configuration.getString("db.project.pool");
-        String classname = configuration.getString("db.project.sqlmanager");
+        Map configuration = configurationManager.getConfiguration();
+        String poolUrl = configuration.get("db.project.pool").toString();
+        String classname = configuration.get("db.project.sqlmanager").toString();
         m_sqlManager = this.initSqlManager(classname);
         m_sqlManager.init(I_CmsProjectDriver.C_DRIVER_TYPE_ID, poolUrl);        
 

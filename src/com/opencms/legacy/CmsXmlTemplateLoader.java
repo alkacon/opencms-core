@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2005/03/13 09:38:24 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2005/03/15 18:05:55 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,10 +53,12 @@ import com.opencms.template.cache.*;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -87,7 +89,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -115,14 +117,14 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
     private static Hashtable m_variantDeps;
     
     /** The resource loader configuration. */
-    private ExtendedProperties m_configuration;
+    private Map m_configuration;
         
     /**
      * The constructor of the class is empty and does nothing.
      */
     public CmsXmlTemplateLoader() {
         m_templateCache = new CmsTemplateCache();
-        m_configuration = new ExtendedProperties();
+        m_configuration = new TreeMap();
     }
     
     /**
@@ -595,17 +597,20 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
      */
     public void initConfiguration() {
         
+        ExtendedProperties config = new ExtendedProperties();
+        config.putAll(m_configuration);                    
+        
         // check if the element cache is enabled
-        boolean elementCacheEnabled = m_configuration.getBoolean("elementcache.enabled", false);
+        boolean elementCacheEnabled = config.getBoolean("elementcache.enabled", false);
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader init          : XMLTemplate element cache " + (elementCacheEnabled ? "enabled" : "disabled"));
         }
         if (elementCacheEnabled) {
             try {
                 m_elementCache = new CmsElementCache(
-                    m_configuration.getInteger("elementcache.uri", 10000), 
-                    m_configuration.getInteger("elementcache.elements", 50000), 
-                    m_configuration.getInteger("elementcache.variants", 100));
+                    config.getInteger("elementcache.uri", 10000), 
+                    config.getInteger("elementcache.elements", 50000), 
+                    config.getInteger("elementcache.variants", 100));
             } catch (Exception e) {
                 if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
                     OpenCms.getLog(CmsLog.CHANNEL_INIT).warn(". Loader init          : XMLTemplate element cache non-critical error " + e.toString());
@@ -955,16 +960,16 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
      */
     public void addConfigurationParameter(String paramName, String paramValue) {
-        m_configuration.addProperty(paramName, paramValue);        
+        
+        m_configuration.put(paramName, paramValue);        
     }
 
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
-    public ExtendedProperties getConfiguration() {
-        // return only a copy of the configuration
-        ExtendedProperties copy = new ExtendedProperties();
-        copy.combine(m_configuration);
-        return copy; 
+    public Map getConfiguration() {
+        
+        // return the configuration in an immutable form
+        return Collections.unmodifiableMap(m_configuration);  
     }
 }

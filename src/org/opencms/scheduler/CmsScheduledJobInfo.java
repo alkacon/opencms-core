@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsScheduledJobInfo.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/03/15 18:05:55 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,9 @@ import org.opencms.configuration.I_CmsConfigurationParameterHandler;
 import org.opencms.main.CmsContextInfo;
 import org.opencms.main.OpenCms;
 
-import org.apache.commons.collections.ExtendedProperties;
+import java.util.Collections;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Describes a scheduled job for the OpenCms scheduler.<p>
@@ -353,7 +355,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
     private String m_jobName;
 
     /** The parameters used for this job entry. */
-    private ExtendedProperties m_parameters;
+    private Map m_parameters;
 
     /** Indicates if the job instance should be re-used if the job is run. */
     private boolean m_reuseInstance;
@@ -365,7 +367,8 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
 
         m_reuseInstance = false;
         m_frozen = false;
-        m_parameters = new ExtendedProperties();
+        // parameters are stored in a tree map 
+        m_parameters = new TreeMap();
     }
 
     /**
@@ -374,7 +377,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
     public void addConfigurationParameter(String paramName, String paramValue) {
 
         // add the configured parameter
-        m_parameters.addProperty(paramName, paramValue);
+        m_parameters.put(paramName, paramValue);
         if (OpenCms.getLog(this).isDebugEnabled()) {
             OpenCms.getLog(this).debug(
                 "addConfigurationParameter(" + paramName + ", " + paramValue + ") called on " + this);
@@ -394,7 +397,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
-    public ExtendedProperties getConfiguration() {
+    public Map getConfiguration() {
 
         // this configuration does not support parameters
         if (OpenCms.getLog(this).isDebugEnabled()) {
@@ -485,7 +488,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
      *
      * @return the parameters
      */
-    public ExtendedProperties getParameters() {
+    public Map getParameters() {
 
         return m_parameters;
     }
@@ -505,6 +508,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
         if (OpenCms.getLog(this).isDebugEnabled()) {
             OpenCms.getLog(this).debug("initConfiguration() called on " + this);
         }
+        m_parameters = Collections.unmodifiableMap(m_parameters);
         m_frozen = true;
     }
 

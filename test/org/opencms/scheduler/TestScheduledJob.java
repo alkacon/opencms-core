@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/scheduler/TestScheduledJob.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/03/15 18:10:45 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,7 @@ package org.opencms.scheduler;
 
 import org.opencms.file.CmsObject;
 
-import org.apache.commons.collections.ExtendedProperties;
+import java.util.Map;
 
 /**
  * Test class for OpenCms scheduled jobs.<p>
@@ -58,9 +58,9 @@ public class TestScheduledJob implements I_CmsScheduledJob {
     }
 
     /**
-     * @see org.opencms.scheduler.I_CmsScheduledJob#launch(org.opencms.file.CmsObject, org.apache.commons.collections.ExtendedProperties)
+     * @see org.opencms.scheduler.I_CmsScheduledJob#launch(CmsObject, Map)
      */
-    public String launch(CmsObject cms, ExtendedProperties parameters) throws Exception {
+    public String launch(CmsObject cms, Map parameters) throws Exception {
 
         m_runCount++;
         m_instanceRunCount++;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsConfigurationManager.java,v $
- * Date   : $Date: 2005/02/17 12:43:50 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/03/15 18:05:54 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,8 +47,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
-import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.digester.Digester;
 
 import org.dom4j.Document;
@@ -110,7 +110,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
     private Digester m_digester;
 
     /** The legacy configuration based on "opencms.properties". */
-    private ExtendedProperties m_legacyConfiguration;
+    private Map m_legacyConfiguration;
     
     /**
      * Creates a new OpenCms configuration manager.<p>
@@ -231,7 +231,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
-    public ExtendedProperties getConfiguration() {
+    public Map getConfiguration() {
 
         return m_legacyConfiguration;
     }
@@ -338,7 +338,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
      * 
      * @param legacyConfiguration the configuration read from the legacy "opencms.properties"
      */
-    public void setConfiguration(ExtendedProperties legacyConfiguration) {
+    public void setConfiguration(Map legacyConfiguration) {
         
         m_legacyConfiguration = legacyConfiguration;
     }

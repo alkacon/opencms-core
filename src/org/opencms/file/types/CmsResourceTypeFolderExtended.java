@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeFolderExtended.java,v $
- * Date   : $Date: 2005/03/09 16:51:03 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/03/15 18:05:54 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,8 @@ package org.opencms.file.types;
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.util.CmsStringUtil;
 
+import java.util.Map;
+
 import org.apache.commons.collections.ExtendedProperties;
 
 /**
@@ -45,7 +47,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsResourceTypeFolderExtended extends CmsResourceTypeFolder {
 
@@ -79,7 +81,7 @@ public class CmsResourceTypeFolderExtended extends CmsResourceTypeFolder {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#getConfiguration()
      */
-    public ExtendedProperties getConfiguration() {
+    public Map getConfiguration() {
 
         ExtendedProperties result = new ExtendedProperties();
         result.put(I_CmsResourceType.C_CONFIGURATION_RESOURCE_TYPE_ID, new Integer(m_resourceType));
@@ -87,7 +89,7 @@ public class CmsResourceTypeFolderExtended extends CmsResourceTypeFolder {
         if (! CmsStringUtil.isEmpty(getFolderClassName())) {
             result.put(C_CONFIGURATION_FOLDER_CLASS, m_folderClassName);
         }
-        ExtendedProperties additional = super.getConfiguration();
+        Map additional = super.getConfiguration();
         if (additional != null) {
             result.putAll(additional);
         }

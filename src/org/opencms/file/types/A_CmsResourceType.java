@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2005/02/17 12:43:50 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/03/15 18:10:23 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,6 +48,7 @@ import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -55,19 +56,16 @@ import java.util.SortedMap;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 
-import org.apache.commons.collections.ExtendedProperties;
-
 /**
  * Base implementation for resource type classes.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * @since 5.1
  */
-public abstract class A_CmsResourceType implements I_CmsResourceType {
-    
+public abstract class A_CmsResourceType implements I_CmsResourceType {    
     
     /** Flag for showing that this is an additional resource type which defined in a module. */
     private boolean m_addititionalModuleResourceType = false;
@@ -81,7 +79,6 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     /** Property parameters that are given in the xml configuration. */
     private SortedMap m_propertyValues;
     
-    
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
      */
@@ -90,8 +87,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         if (paramName.startsWith(C_CONFIGURATION_PROPERTY_CREATE)) {
             createPropertyConfiguration(paramName, paramValue);
         }
-    }
-    
+    }    
     
     /**
      * @see org.opencms.file.types.I_CmsResourceType#addMappingType(java.lang.String)
@@ -107,8 +103,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
             m_mappings = new ArrayList();
         }   
         m_mappings.add(mapping);
-    }
-    
+    }    
 
     /**
      * @see org.opencms.file.types.I_CmsResourceType#changeLastModifiedProjectId(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource)
@@ -213,7 +208,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         List properties
     ) throws CmsException {
         
-        // add the predefined property values from XMl configuration to the resource
+        // add the predefined property values from the XML configuration to the resource
         List newProperties;       
         if (properties == null) {
             newProperties = new ArrayList();
@@ -275,23 +270,22 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
-    public ExtendedProperties getConfiguration() {
+    public Map getConfiguration() {
 
+        Map result = null;
         if (getPropertyValues() != null) {
-            ExtendedProperties result = new ExtendedProperties();
+            result = new HashMap();
             Iterator i = getPropertyValues().keySet().iterator();
             while (i.hasNext()) {
                 String key = (String)i.next();               
                 result.put(C_CONFIGURATION_PROPERTY_CREATE + key, getPropertyValues().get(key));
             }
-            return result;
         }
         
-        // this configuration does not support parameters
         if (OpenCms.getLog(this).isDebugEnabled()) {
             OpenCms.getLog(this).debug("getConfiguration() called on " + this);
         }
-        return null;
+        return result;
     }
 
     /**
@@ -633,43 +627,46 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
      * @return ready defined property objects
      */
     protected List createPropertyObjects(CmsObject cms) {
-        
-        if (m_propertyValues != null) {
-            List propertyObjects = new ArrayList(m_propertyValues.size());
-            Iterator i = m_propertyValues.keySet().iterator();
-            while (i.hasNext()) {
-                String key = (String)i.next();
-                // create new property object
-                CmsProperty property = new CmsProperty();
-                property.setAutoCreatePropertyDefinition(true);
-                // set property key name             
-                property.setKey(key);
-                String value = (String)m_propertyValues.get(key);
-                StringTokenizer T = new StringTokenizer(value.trim(), "|");     
-                // determine property value
-                String propValue = T.nextToken();
-                // substitute eventual String macros in property value
-                propValue = CmsStringUtil.substituteMacros(propValue, new CmsStringMapper(cms, null));  
-                // get eventual property record information from parameter value
-                String propRecord = "";
-                if (T.hasMoreTokens()) {
-                    // the record to write the property to is given
-                    propRecord = T.nextToken();
-                }                    
-                
-                if (C_PROPERTY_ON_RESOURCE.equals(propRecord) || (CmsStringUtil.isEmpty(propRecord) && ! OpenCms.getWorkplaceManager().isDefaultPropertiesOnStructure())) {
-                    // set the resource property value
-                    property.setResourceValue(propValue);
-                } else {
-                    // set the structure property value
-                    property.setStructureValue(propValue);
-                }
-                // add property to list
-                propertyObjects.add(property);
-            }
-            return propertyObjects;
+
+        if (m_propertyValues == null) {
+            // no default properties are defined
+            return Collections.EMPTY_LIST;
         }
-        return Collections.EMPTY_LIST;
+
+        List propertyObjects = new ArrayList(m_propertyValues.size());
+        Iterator i = m_propertyValues.keySet().iterator();
+        while (i.hasNext()) {
+            String key = (String)i.next();
+            // create new property object
+            CmsProperty property = new CmsProperty();
+            property.setAutoCreatePropertyDefinition(true);
+            // set property key name             
+            property.setKey(key);
+            String value = (String)m_propertyValues.get(key);
+            StringTokenizer toker = new StringTokenizer(value.trim(), "|");
+            // determine property value
+            String propValue = toker.nextToken();
+            // substitute eventual String macros in property value
+            propValue = CmsStringUtil.substituteMacros(propValue, new CmsStringMapper(cms, null));
+            // get eventual property record information from parameter value
+            String propRecord = "";
+            if (toker.hasMoreTokens()) {
+                // the record to write the property to is given
+                propRecord = toker.nextToken();
+            }
+            if (C_PROPERTY_ON_RESOURCE.equals(propRecord)
+                || (CmsStringUtil.isEmpty(propRecord) && !OpenCms.getWorkplaceManager()
+                    .isDefaultPropertiesOnStructure())) {
+                // set the resource property value
+                property.setResourceValue(propValue);
+            } else {
+                // set the structure property value
+                property.setStructureValue(propValue);
+            }
+            // add property to list
+            propertyObjects.add(property);
+        }
+        return propertyObjects;
     }
     
     /**

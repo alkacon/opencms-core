@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeJsp.java,v $
- * Date   : $Date: 2005/02/17 12:43:50 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/03/15 18:05:54 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,9 +42,9 @@ import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
-import org.apache.commons.collections.ExtendedProperties;
+import java.util.Map;
 
 /**
  * Resource type descriptor for the type "jsp".<p>
@@ -57,7 +57,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsResourceTypeJsp extends A_CmsResourceType {
 
@@ -112,11 +112,11 @@ public class CmsResourceTypeJsp extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#getConfiguration()
      */
-    public ExtendedProperties getConfiguration() {
+    public Map getConfiguration() {
 
-        ExtendedProperties result = new ExtendedProperties();
+        Map result = new HashMap();
         result.put(C_CONFIGURATION_JSP_ENCODING, m_defaultEncoding);
-        ExtendedProperties additional = super.getConfiguration();
+        Map additional = super.getConfiguration();
         if (additional != null) {
             result.putAll(additional);
         }

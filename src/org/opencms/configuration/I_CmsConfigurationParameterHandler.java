@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/I_CmsConfigurationParameterHandler.java,v $
- * Date   : $Date: 2005/02/17 12:43:50 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/03/15 18:05:54 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@
 
 package org.opencms.configuration;
 
-import org.apache.commons.collections.ExtendedProperties;
+import java.util.Map;
 
 /**
  * Used for classes that are configurable using 
@@ -74,7 +74,7 @@ public interface I_CmsConfigurationParameterHandler {
      * 
      * @return the configuration of this resource loader, or <code>null</code>
      */
-    ExtendedProperties getConfiguration();
+    Map getConfiguration();
     
     /**
      * Initializes a configuration after all parameters have been added.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsStaticExportJob.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/03/15 18:05:55 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,10 +39,9 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.scheduler.I_CmsScheduledJob;
 
 import java.io.IOException;
+import java.util.Map;
 
 import javax.servlet.ServletException;
-
-import org.apache.commons.collections.ExtendedProperties;
 
 /**
  * A schedulable OpenCms job to write a complete static export (e.g. nightly exports).<p>
@@ -55,14 +54,14 @@ import org.apache.commons.collections.ExtendedProperties;
  * </pre>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsStaticExportJob implements I_CmsScheduledJob {
     
     /**
-     * @see org.opencms.scheduler.I_CmsScheduledJob#launch(org.opencms.file.CmsObject, org.apache.commons.collections.ExtendedProperties)
+     * @see org.opencms.scheduler.I_CmsScheduledJob#launch(CmsObject, Map)
      */
-    public String launch(CmsObject cms, ExtendedProperties parameter) throws Exception {
+    public String launch(CmsObject cms, Map parameters) throws Exception {
 
         I_CmsReport report = null;
         

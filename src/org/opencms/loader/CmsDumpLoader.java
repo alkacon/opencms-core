@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsDumpLoader.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2005/03/15 18:05:54 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,14 +45,12 @@ import org.opencms.workplace.CmsWorkplace;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.collections.ExtendedProperties;
-
 
 /**
  * Dump loader for binary or other unprocessed resource types.<p>
@@ -61,17 +59,18 @@ import org.apache.commons.collections.ExtendedProperties;
  * by other loaders.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.50 $
+ * @version $Revision: 1.51 $
  */
 public class CmsDumpLoader implements I_CmsResourceLoader {
-    
+
     /** The id of this loader. */
     public static final int C_RESOURCE_LOADER_ID = 1;
-    
+
     /**
      * The constructor of the class is empty and does nothing.<p>
      */
     public CmsDumpLoader() {
+
         // NOOP
     }
 
@@ -79,68 +78,78 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
      */
     public void addConfigurationParameter(String paramName, String paramValue) {
+
         // this resource loader requires no parameters     
-    }    
-        
+    }
+
     /** 
      * Destroy this ResourceLoder, this is a NOOP so far.<p>
      */
     public void destroy() {
+
         // NOOP
     }
 
     /**
      * @see org.opencms.loader.I_CmsResourceLoader#dump(org.opencms.file.CmsObject, org.opencms.file.CmsResource, java.lang.String, java.util.Locale, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public byte[] dump(CmsObject cms, CmsResource resource, String element, Locale locale, HttpServletRequest req, HttpServletResponse res) 
-    throws CmsException {
-        
+    public byte[] dump(
+        CmsObject cms,
+        CmsResource resource,
+        String element,
+        Locale locale,
+        HttpServletRequest req,
+        HttpServletResponse res) throws CmsException {
+
         return CmsFile.upgrade(resource, cms).getContents();
     }
-   
+
     /**
      * @see org.opencms.loader.I_CmsResourceLoader#export(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public byte[] export(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res) 
+    public byte[] export(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res)
     throws IOException, CmsException {
+
         CmsFile file = CmsFile.upgrade(resource, cms);
-        
+
         // if no request and response are given, the resource only must be exported and no
         // output must be generated
         if ((req != null) && (res != null)) {
             // overwrite headers if set as default
             for (Iterator i = OpenCms.getStaticExportManager().getExportHeaders().listIterator(); i.hasNext();) {
                 String header = (String)i.next();
-                
+
                 // set header only if format is "key: value"
-                String parts[] = CmsStringUtil.splitAsArray(header, ':'); 
+                String parts[] = CmsStringUtil.splitAsArray(header, ':');
                 if (parts.length == 2) {
                     res.setHeader(parts[0], parts[1]);
                 }
             }
-            load(cms, file, req, res);  
+            load(cms, file, req, res);
         }
-        
+
         return file.getContents();
     }
-    
+
     /**
      * Will always return <code>null</code> since this loader does not 
      * need to be cnofigured.<p>
      * 
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
-    public ExtendedProperties getConfiguration() {
+    public Map getConfiguration() {
+
         return null;
-    }    
-    
+    }
+
     /**
      * @see org.opencms.loader.I_CmsResourceLoader#getLoaderId()
      */
     public int getLoaderId() {
+
         return C_RESOURCE_LOADER_ID;
-    }            
-    
+    }
+
     /**
      * Return a String describing the ResourceLoader,
      * which is <code>"The OpenCms default resource loader for unprocessed files"</code>.<p>
@@ -148,38 +157,42 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
      * @return a describing String for the ResourceLoader 
      */
     public String getResourceLoaderInfo() {
+
         return "The OpenCms default resource loader for unprocessed files";
     }
-    
+
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#initConfiguration()
      */
     public void initConfiguration() {
-        
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) { 
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader init          : " + this.getClass().getName() + " initialized");
-        }         
+
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
+                ". Loader init          : " + this.getClass().getName() + " initialized");
+        }
     }
 
     /**
      * @see org.opencms.loader.I_CmsResourceLoader#isStaticExportEnabled()
      */
     public boolean isStaticExportEnabled() {
-        
+
         return true;
     }
-    
+
     /**
      * @see org.opencms.loader.I_CmsResourceLoader#isStaticExportProcessable()
      */
     public boolean isStaticExportProcessable() {
+
         return false;
     }
-    
+
     /**
      * @see org.opencms.loader.I_CmsResourceLoader#isUsableForTemplates()
      */
     public boolean isUsableForTemplates() {
+
         return false;
     }
 
@@ -187,44 +200,44 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
      * @see org.opencms.loader.I_CmsResourceLoader#isUsingUriWhenLoadingTemplate()
      */
     public boolean isUsingUriWhenLoadingTemplate() {
+
         return false;
     }
-    
+
     /**
      * @see org.opencms.loader.I_CmsResourceLoader#load(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public void load(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res) 
+    public void load(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res)
     throws IOException, CmsException {
 
         // check if the current request was done by a workplace user
         boolean isWorkplaceUser = CmsWorkplace.isWorkplaceUser(req);
 
-        if (! isWorkplaceUser) {
+        if (!isWorkplaceUser) {
             // check if the request contains a last modified header
-            long lastModifiedHeader = req.getDateHeader(I_CmsConstants.C_HEADER_IF_MODIFIED_SINCE);                
+            long lastModifiedHeader = req.getDateHeader(I_CmsConstants.C_HEADER_IF_MODIFIED_SINCE);
             if (lastModifiedHeader > -1) {
                 // last modified header is set, compare it to the requested resource
                 if ((resource.getState() == I_CmsConstants.C_STATE_UNCHANGED)
-                && (resource.getDateLastModified() == lastModifiedHeader)) {                
+                    && (resource.getDateLastModified() == lastModifiedHeader)) {
                     long now = System.currentTimeMillis();
-                    if ((resource.getDateReleased() < now)
-                    && (resource.getDateExpired() > now)) {
+                    if ((resource.getDateReleased() < now) && (resource.getDateExpired() > now)) {
                         CmsFlexController.setDateExpiresHeader(res, resource.getDateExpired());
                         res.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
                         return;
-                    }                            
+                    }
                 }
             }
         }
-        
+
         // make sure we have the file contents available
         CmsFile file = CmsFile.upgrade(resource, cms);
-                
+
         // set response status to "200 - OK" (required for static export "on-demand")
-        res.setStatus(HttpServletResponse.SC_OK);           
+        res.setStatus(HttpServletResponse.SC_OK);
         // set content length header
         res.setContentLength(file.getContents().length);
-        
+
         if (isWorkplaceUser) {
             // prevent caching for Workplace users
             res.setDateHeader(I_CmsConstants.C_HEADER_LAST_MODIFIED, System.currentTimeMillis());
@@ -235,7 +248,7 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
             res.setDateHeader(I_CmsConstants.C_HEADER_LAST_MODIFIED, file.getDateLastModified());
 
             // set "Expires" only if cache control is not already set
-            if (!res.containsHeader(I_CmsConstants.C_HEADER_CACHE_CONTROL)) {                
+            if (!res.containsHeader(I_CmsConstants.C_HEADER_CACHE_CONTROL)) {
                 long expireTime = resource.getDateExpired();
                 if (expireTime == CmsResource.DATE_EXPIRED_DEFAULT) {
                     expireTime--;
@@ -245,16 +258,16 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
                 CmsFlexController.setDateExpiresHeader(res, expireTime);
             }
         }
-                         
-        service(cms, file, req, res);        
+
+        service(cms, file, req, res);
     }
-        
+
     /**
      * @see org.opencms.loader.I_CmsResourceLoader#service(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.ServletRequest, javax.servlet.ServletResponse)
      */
     public void service(CmsObject cms, CmsResource resource, ServletRequest req, ServletResponse res)
     throws CmsException, IOException {
-        
+
         res.getOutputStream().write(CmsFile.upgrade(resource, cms).getContents());
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.80 $
+ * Date   : $Date: 2005/03/15 18:05:54 $
+ * Version: $Revision: 1.81 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,12 +32,12 @@
 package org.opencms.db.generic;
 
 import org.opencms.configuration.CmsConfigurationManager;
+import org.opencms.db.CmsDataAccessException;
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsObjectNotFoundException;
 import org.opencms.db.CmsSerializationException;
 import org.opencms.db.CmsSqlException;
-import org.opencms.db.CmsDataAccessException;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsUserDriver;
 import org.opencms.file.CmsGroup;
@@ -74,7 +74,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.80 $ $Date: 2005/02/17 12:43:47 $
+ * @version $Revision: 1.81 $ $Date: 2005/03/15 18:05:54 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -494,9 +494,18 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
      */
     public void init(CmsDbContext dbc, CmsConfigurationManager configurationManager, List successiveDrivers, CmsDriverManager driverManager) {
         
-        ExtendedProperties configuration = configurationManager.getConfiguration();
-        String poolUrl = configuration.getString("db.user.pool");
-        String classname = configuration.getString("db.user.sqlmanager");
+        Map configuration = configurationManager.getConfiguration();
+        
+        ExtendedProperties config;
+        if (configuration instanceof ExtendedProperties) {
+            config = (ExtendedProperties)configuration;
+        } else {
+            config = new ExtendedProperties();
+            config.putAll(configuration);            
+        }
+        
+        String poolUrl = config.get("db.user.pool").toString();
+        String classname = config.get("db.user.sqlmanager").toString();
         m_sqlManager = this.initSqlManager(classname);
         m_sqlManager.init(I_CmsUserDriver.C_DRIVER_TYPE_ID, poolUrl);        
 
@@ -506,12 +515,12 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Assigned pool        : " + poolUrl);
         }
 
-        m_digestAlgorithm = configuration.getString(I_CmsConstants.C_CONFIGURATION_DB + ".user.digest.type", "MD5");
+        m_digestAlgorithm = config.getString(I_CmsConstants.C_CONFIGURATION_DB + ".user.digest.type", "MD5");
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Digest configured    : " + m_digestAlgorithm);
         }
 
-        m_digestFileEncoding = configuration.getString(I_CmsConstants.C_CONFIGURATION_DB + ".user.digest.encoding", CmsEncoder.C_UTF8_ENCODING);
+        m_digestFileEncoding = config.getString(I_CmsConstants.C_CONFIGURATION_DB + ".user.digest.encoding", CmsEncoder.C_UTF8_ENCODING);
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Digest file encoding : " + m_digestFileEncoding);
         }
@@ -633,7 +642,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
     }
-
+    
     /**
      * @see org.opencms.db.I_CmsUserDriver#readAccessControlEntry(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID)
      */

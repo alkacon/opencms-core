@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsDefaultPasswordHandler.java,v $
- * Date   : $Date: 2005/02/17 12:44:41 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/03/15 18:05:54 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,9 +39,11 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.collections.ExtendedProperties;
 
 /**
  * Default implementation for OpenCms password validation,
@@ -50,7 +52,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  *
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.1.11 
  */
 public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
@@ -64,22 +66,18 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
     /**  The minimum length of a password. */
     public static final int C_PASSWORD_MINLENGTH = 4;
 
-    /*
-     * The secure random number generator.
-     */
+    /** The secure random number generator. */
     private static SecureRandom prng = null;
     
-    /*
-     * The configuration of the password handler.
-     */
-    private static ExtendedProperties m_configuration;
+    /** The configuration of the password handler. */
+    private Map m_configuration;
     
     /**
      * The constructor does not perform any operation.<p>
      */
     public CmsDefaultPasswordHandler() {
         
-        m_configuration = new ExtendedProperties();
+        m_configuration = new HashMap();
     }
     
     /**
@@ -127,15 +125,14 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
      */
     public void addConfigurationParameter(String paramName, String paramValue) {
 
-        m_configuration.addProperty(paramName, paramValue);
+        m_configuration.put(paramName, paramValue);
     }
     
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
-    public ExtendedProperties getConfiguration() {
+    public Map getConfiguration() {
 
-        // TODO: should be immutable
         return m_configuration;
     }
     
@@ -152,6 +149,7 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
                 throw new CmsConfigurationException();
             }
         }
+        m_configuration = Collections.unmodifiableMap(m_configuration);
     } 
     
     /**

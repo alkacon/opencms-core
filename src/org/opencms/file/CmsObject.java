@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.109 $
+ * Date   : $Date: 2005/03/15 18:05:55 $
+ * Version: $Revision: 1.110 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
+import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
@@ -52,8 +53,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections.ExtendedProperties;
-
 /**
  * This pivotal class provides all authorized access to the OpenCms resources.<p>
  * 
@@ -68,7 +67,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.109 $
+ * @version $Revision: 1.110 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -1067,11 +1066,11 @@ public class CmsObject {
     }
 
     /**
-     * Gets the configurations of the OpenCms properties file.<p>
+     * Returns the configuration read fromr the <code>opencms.properties</code> file.<p>
      * 
-     * @return the configurations of the properties file
+     * @return the configuration read fromr the <code>opencms.properties</code> file
      */
-    public ExtendedProperties getConfigurations() {
+    public Map getConfigurations() {
 
         return m_securityManager.getConfigurations();
     }

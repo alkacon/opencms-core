@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSearchConfiguration.java,v $
- * Date   : $Date: 2005/03/10 16:23:06 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/03/15 18:05:54 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.digester.Digester;
 
 import org.dom4j.Element;
@@ -55,7 +54,7 @@ import org.dom4j.Element;
  * Lucene search configuration class.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.3.5
  */
 public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
@@ -291,9 +290,9 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
                 sourcesElement.addElement(N_SOURCE).addText((String)sourcesIterator.next());
             }
             // iterate additional params
-            ExtendedProperties indexConfiguration = searchIndex.getConfiguration();
+            Map indexConfiguration = searchIndex.getConfiguration();
             if (indexConfiguration != null) {
-                Iterator it = indexConfiguration.getKeys();
+                Iterator it = indexConfiguration.keySet().iterator();
                 while (it.hasNext()) {
                     String name = (String)it.next();
                     String value = indexConfiguration.get(name).toString();
