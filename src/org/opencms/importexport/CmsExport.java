@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2004/07/18 16:32:33 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2004/07/20 13:34:46 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,15 +83,9 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.42 $ $Date: 2004/07/18 16:32:33 $
+ * @version $Revision: 1.43 $ $Date: 2004/07/20 13:34:46 $
  */
 public class CmsExport implements Serializable {
-
-    /** Manifest tag: channels. */
-    public static String C_EXPORT_TAG_CHANNELS = "channels";
-    
-    /** Manifest tag: files. */
-    public static String C_EXPORT_TAG_FILES = "files";
 
     /** The CmsObject to do the operations. */
     private CmsObject m_cms;
@@ -108,9 +102,6 @@ public class CmsExport implements Serializable {
     /** Counter for the export. */
     private int m_exportCount;
 
-    /** The channelid and the resourceobject of the exported channels. */
-    private Set m_exportedChannelIds;
-
     /** Set of all exported pages, required for later page body file export. */
     private Set m_exportedPageFiles;
 
@@ -120,20 +111,17 @@ public class CmsExport implements Serializable {
     /** The export ZIP file to store resources in. */
     private String m_exportFileName;
 
-    /** Indicates if module data is exported. */
-    private boolean m_exportingCosData;
-
     /** Indicates if the user data and group data should be included to the export. */
     private boolean m_exportUserdata;
 
     /** The export ZIP stream to write resources to. */
     private ZipOutputStream m_exportZipStream;
 
-    /** The top level file node where all resources are appended to. */
-    private Element m_fileNode;
-
     /** The report for the log messages. */
     private I_CmsReport m_report;
+
+    /** The top level file node where all resources are appended to. */
+    private Element m_resourceNode;
 
     /** The SAX writer to write the output to. */
     private SAXWriter m_saxWriter;
@@ -184,7 +172,6 @@ public class CmsExport implements Serializable {
         setCms(cms);
         setReport(report);
         setExportFileName(exportFile);
-        setExportingCosData(false);
 
         m_excludeSystem = excludeSystem;
         m_excludeUnchanged = excludeUnchanged;
@@ -294,15 +281,7 @@ public class CmsExport implements Serializable {
      * @throws CmsException if something goes wrong
      * @throws SAXException if something goes wrong procesing the manifest.xml
      */
-    private void addChildResources(String folderName) throws CmsException, SAXException {
-
-        if (isExportingCosData()) {
-            // collect channel id information if required
-            String channelId = getCms().readFolder(folderName, CmsResourceFilter.IGNORE_EXPIRATION).getResourceId().toString();
-            if (channelId != null) {
-                getExportedChannelIds().add(channelId);
-            }
-        }
+    protected void addChildResources(String folderName) throws CmsException, SAXException {
 
         // get all subFolders
         List subFolders = getCms().getSubFolders(folderName, CmsResourceFilter.IGNORE_EXPIRATION);
@@ -356,6 +335,269 @@ public class CmsExport implements Serializable {
             // release folder memory
             subFolders.set(i, null);
         }
+    }
+
+    /**
+     * Closes the export ZIP file and saves the XML document for the manifest.<p>
+     * 
+     * @param exportNode the export root node
+     * @throws SAXException if something goes wrong procesing the manifest.xml
+     * @throws IOException if something goes wrong while closing the export file
+     */
+    protected void closeExportFile(Element exportNode) throws IOException, SAXException {
+        // close the <export> Tag
+        getSaxWriter().writeClose(exportNode);
+
+        // close the XML document 
+        CmsXmlSaxWriter xmlSaxWriter = (CmsXmlSaxWriter)getSaxWriter().getContentHandler();
+        xmlSaxWriter.endDocument();
+
+        // create zip entry for the manifest XML document
+        ZipEntry entry = new ZipEntry(I_CmsConstants.C_EXPORT_XMLFILENAME);
+        getExportZipStream().putNextEntry(entry);
+
+        // write the XML to the zip stream
+        getExportZipStream().write(xmlSaxWriter.getWriter().toString().getBytes(OpenCms.getSystemInfo().getDefaultEncoding()));
+
+        // close the zip entry for the manifest XML document
+        getExportZipStream().closeEntry();
+
+        // finally close the zip stream
+        getExportZipStream().close();
+    }
+    
+    /**
+     * Writes the output element to the XML output writer and detaches it 
+     * from it's parent element.<p> 
+     * 
+     * @param parent the parent element
+     * @param output the output element 
+     * @throws SAXException if something goes wrong procesing the manifest.xml
+     */
+    protected void digestElement(Element parent, Element output) throws SAXException {
+        m_saxWriter.write(output);
+        parent.remove(output);
+    }
+    
+    /**
+     * Exports all resources and possible sub-folders form the provided list of resources.
+     * 
+     * @param parent the parent node to add the resources to
+     * @param resourcesToExport the list of resources to export
+     * @throws CmsException if something goes wrong
+     * @throws SAXException if something goes wrong procesing the manifest.xml
+     */
+    protected void exportAllResources(Element parent, String[] resourcesToExport) throws CmsException, SAXException {
+        // export all the resources
+        String resourceNodeName = getResourceNodeName();
+        m_resourceNode = parent.addElement(resourceNodeName);
+        getSaxWriter().writeOpen(m_resourceNode);
+
+        // distinguish folder and file names   
+        Vector folderNames = new Vector();
+        Vector fileNames = new Vector();
+        for (int i = 0; i < resourcesToExport.length; i++) {
+            if (resourcesToExport[i].endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
+                folderNames.addElement(resourcesToExport[i]);
+            } else {
+                fileNames.addElement(resourcesToExport[i]);
+            }
+        }
+
+        // remove the possible redundancies in the list of resources
+        checkRedundancies(folderNames, fileNames);
+
+        // init sets required for the body file exports 
+        m_exportedResources = new HashSet();
+        m_exportedPageFiles = new HashSet();
+
+        // export the folders
+        for (int i = 0; i < folderNames.size(); i++) {
+            String path = (String)folderNames.elementAt(i);
+            // first add superfolders to the xml-config file
+            addParentFolders(path);
+            addChildResources(path);
+            m_exportedResources.add(path);
+        }
+        // export the files
+        addFiles(fileNames);
+        // export all body files that have not already been exported
+        addPageBodyFiles();
+        
+        // write the XML
+        getSaxWriter().writeClose(m_resourceNode);
+        parent.remove(m_resourceNode);
+        m_resourceNode = null;
+    }
+
+    /**
+     * Returns the OpenCms context object this export was initialized with.<p>
+     * 
+     * @return the OpenCms context object this export was initialized with
+     */
+    protected CmsObject getCms() {
+        return m_cms;
+    }
+
+    /**
+     * Returns the name of the export file.<p>
+     * 
+     * @return the name of the export file
+     */
+    protected String getExportFileName() {
+        return m_exportFileName;
+    }
+    
+    /**
+     * Returns the name of the main export node.<p>
+     * 
+     * @return the name of the main export node
+     */
+    protected String getExportNodeName() {
+        
+        return I_CmsConstants.C_EXPORT_TAG_EXPORT;
+    }
+
+    /**
+     * Returns the zip output stream to write to.<p>
+     * 
+     * @return the zip output stream to write to
+     */
+    protected ZipOutputStream getExportZipStream() {
+        return m_exportZipStream;
+    }
+
+    /**
+     * Returns the report to write progess messages to.<p>
+     * 
+     * @return the report to write progess messages to
+     */
+    protected I_CmsReport getReport() {
+        return m_report;
+    }
+    
+    
+    /**
+     * Returns the name for the main resource node.<p>
+     * 
+     * @return the name for the main resource node
+     */
+    protected String getResourceNodeName() {
+        
+        return "files";
+    }    
+
+    /**
+     * Returns the SAX baesed xml writer to write the XML output to.<p>
+     * 
+     * @return the SAX baesed xml writer to write the XML output to
+     */
+    protected SAXWriter getSaxWriter() {
+        return m_saxWriter;
+    }
+    
+    /**
+     * Checks if a property should be written to the export or not.<p>
+     * 
+     * @param property the property to check
+     * @return if true, the property is to be ignored, otherwise it should be exported
+     */
+    protected boolean isIgnoredProperty(CmsProperty property) {
+        
+        if (property == null) {
+            return true;
+        }
+        // default implementation is to export all properties not null
+        return false;
+    }
+    
+    /**
+     * Opens the export ZIP file and initializes the internal XML document for the manifest.<p>
+     * 
+     * @return the node in the XML document where all files are appended to
+     * @throws SAXException if something goes wrong procesing the manifest.xml
+     * @throws IOException if something goes wrong while closing the export file
+     */
+    protected Element openExportFile() throws IOException, SAXException {
+        // create the export-zipstream
+        setExportZipStream(new ZipOutputStream(new FileOutputStream(getExportFileName())));
+        // generate the SAX XML writer 
+        CmsXmlSaxWriter saxHandler = new CmsXmlSaxWriter(new StringWriter(4096), OpenCms.getSystemInfo().getDefaultEncoding());
+        // initialize the dom4j writer object as member variable
+        setSaxWriter(new SAXWriter(saxHandler, saxHandler));
+        // the XML document to write the XMl to
+        Document doc = DocumentHelper.createDocument();
+        // start the document
+        saxHandler.startDocument();
+
+        // the node in the XML document where the file entries are appended to        
+        String exportNodeName = getExportNodeName();
+        // add main export node to XML document
+        Element exportNode = doc.addElement(exportNodeName);
+        getSaxWriter().writeOpen(exportNode);
+
+        // add the info element. it contains all infos for this export
+        Element info = exportNode.addElement(I_CmsConstants.C_EXPORT_TAG_INFO);
+        info.addElement(I_CmsConstants.C_EXPORT_TAG_CREATOR).addText(getCms().getRequestContext().currentUser().getName());
+        info.addElement(I_CmsConstants.C_EXPORT_TAG_OC_VERSION).addText(OpenCms.getSystemInfo().getVersionName());
+        info.addElement(I_CmsConstants.C_EXPORT_TAG_DATE).addText(CmsDateUtil.getDateTimeShort(System.currentTimeMillis()));
+        info.addElement(I_CmsConstants.C_EXPORT_TAG_PROJECT).addText(getCms().getRequestContext().currentProject().getName());
+        info.addElement(I_CmsConstants.C_EXPORT_TAG_VERSION).addText(I_CmsConstants.C_EXPORT_VERSION);
+        
+        // write the XML
+        digestElement(exportNode, info);
+
+        return exportNode;
+    }
+
+    /**
+     * Sets the OpenCms context object this export was initialized with.<p>
+     * 
+     * @param cms the OpenCms context object this export was initialized with
+     */
+    protected void setCms(CmsObject cms) {
+        m_cms = cms;
+    }
+
+    /**
+     * Sets the name of the export file.<p>
+     * 
+     * @param exportFileName the name of the export file
+     */
+    protected void setExportFileName(String exportFileName) {
+        // ensure the export file name ends with ".zip"
+        if (!exportFileName.toLowerCase().endsWith(".zip")) {
+            m_exportFileName = exportFileName + ".zip";
+        } else {                
+            m_exportFileName = exportFileName;
+        }
+    }
+    
+    /**
+     * Sets the zip output stream to write to.<p>
+     * 
+     * @param exportZipStream the zip output stream to write to
+     */
+    protected void setExportZipStream(ZipOutputStream exportZipStream) {
+        m_exportZipStream = exportZipStream;
+    }
+
+    /**
+     * Sets the report to write progess messages to.<p>
+     * 
+     * @param report the report to write progess messages to
+     */
+    protected void setReport(I_CmsReport report) {
+        m_report = report;
+    }
+
+    /**
+     * Sets the SAX baesed xml writer to write the XML output to.<p>
+     * 
+     * @param saxWriter the SAX baesed xml writer to write the XML output to
+     */
+    protected void setSaxWriter(SAXWriter saxWriter) {
+        m_saxWriter = saxWriter;
     }
 
     /**
@@ -452,103 +694,138 @@ public class CmsExport implements Serializable {
     }
 
     /**
-     * Closes the export ZIP file and saves the XML document for the manifest.<p>
+     * Writes the data for a resource (like access-rights) to the <code>manifest.xml</code> file.<p>
      * 
-     * @param exportNode the export root node
-     * @throws SAXException if something goes wrong procesing the manifest.xml
-     * @throws IOException if something goes wrong while closing the export file
-     */
-    protected void closeExportFile(Element exportNode) throws IOException, SAXException {
-        // close the <export> Tag
-        getSaxWriter().writeClose(exportNode);
-
-        // close the XML document 
-        CmsXmlSaxWriter xmlSaxWriter = (CmsXmlSaxWriter)getSaxWriter().getContentHandler();
-        xmlSaxWriter.endDocument();
-
-        // create zip entry for the manifest XML document
-        ZipEntry entry = new ZipEntry(I_CmsConstants.C_EXPORT_XMLFILENAME);
-        getExportZipStream().putNextEntry(entry);
-
-        // write the XML to the zip stream
-        getExportZipStream().write(xmlSaxWriter.getWriter().toString().getBytes(OpenCms.getSystemInfo().getDefaultEncoding()));
-
-        // close the zip entry for the manifest XML document
-        getExportZipStream().closeEntry();
-
-        // finally close the zip stream
-        getExportZipStream().close();
-    }
-    
-    /**
-     * Writes the output element to the XML output writer and detaches it 
-     * from it's parent element.<p> 
-     * 
-     * @param parent the parent element
-     * @param output the output element 
-     * @throws SAXException if something goes wrong procesing the manifest.xml
-     */
-    protected void digestElement(Element parent, Element output) throws SAXException {
-        m_saxWriter.write(output);
-        parent.remove(output);
-    }
-
-    /**
-     * Exports all resources and possible sub-folders form the provided list of resources.
-     * 
-     * @param parent the parent node to add the resources to
-     * @param resourcesToExport the list of resources to export
+     * @param resource the resource to get the data from
+     * @param source flag to show if the source information in the xml file must be written
      * @throws CmsException if something goes wrong
      * @throws SAXException if something goes wrong procesing the manifest.xml
      */
-    protected void exportAllResources(Element parent, String[] resourcesToExport) throws CmsException, SAXException {
-        // export all the resources
-        String fileNodeName;
-        if (isExportingCosData()) {
-            // module (COS) data is exported
-            fileNodeName = C_EXPORT_TAG_CHANNELS;
-        } else {
-            // standard export, only VFS resources are exported
-            fileNodeName = C_EXPORT_TAG_FILES;
-        }
-        m_fileNode = parent.addElement(fileNodeName);
-        getSaxWriter().writeOpen(m_fileNode);
+    private void appendResourceToManifest(CmsResource resource, boolean source) throws CmsException, SAXException {
+        CmsProperty property = null;
+        String key = null, value = null;
+        Element propertyElement = null;
+        
+        // define the file node
+        Element fileElement = m_resourceNode.addElement(I_CmsConstants.C_EXPORT_TAG_FILE);
 
-        // distinguish folder and file names   
-        Vector folderNames = new Vector();
-        Vector fileNames = new Vector();
-        for (int i = 0; i < resourcesToExport.length; i++) {
-            if (resourcesToExport[i].endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
-                folderNames.addElement(resourcesToExport[i]);
-            } else {
-                fileNames.addElement(resourcesToExport[i]);
+        // only write <source> if resource is a file
+        String fileName = trimResourceName(getCms().getSitePath(resource));
+        if (resource.isFile()) {
+            if (source) {
+                fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_SOURCE).addText(fileName);
+            }
+        } else {
+            // output something to the report for the folder
+            getReport().print(" ( " + ++m_exportCount + " ) ", I_CmsReport.C_FORMAT_NOTE);
+            getReport().print(getReport().key("report.exporting"), I_CmsReport.C_FORMAT_NOTE);
+            getReport().print(getCms().getSitePath(resource));
+            getReport().print(getReport().key("report.dots"));
+            getReport().println(getReport().key("report.ok"), I_CmsReport.C_FORMAT_OK);
+        }
+
+        // <destination>
+        fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_DESTINATION).addText(fileName);
+        // <type>
+        fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_TYPE).addText(OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getTypeName());
+        
+        if (resource.isFile()) {
+            //  <uuidresource>
+            fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_UUIDRESOURCE).addText(resource.getResourceId().toString());
+            //  <uuidcontent>
+            fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_UUIDCONTENT).addText(resource.getContentId().toString());
+        }
+        
+        // <datelastmodified>
+        fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_DATELASTMODIFIED).addText(CmsDateUtil.getHeaderDate(resource.getDateLastModified()));
+        // <userlastmodified>
+        fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_USERLASTMODIFIED).addText(getCms().readUser(resource.getUserLastModified()).getName());
+        // <datecreated>
+        fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_DATECREATED).addText(CmsDateUtil.getHeaderDate(resource.getDateCreated()));
+        // <usercreated>
+        fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_USERCREATED).addText(getCms().readUser(resource.getUserCreated()).getName());                
+        // <release>
+        if (resource.getDateReleased() != CmsResource.DATE_RELEASED_DEFAULT) {
+            fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_DATERELEASED).addText(CmsDateUtil.getHeaderDate(resource.getDateReleased()));
+        }
+        // <expire>
+        if (resource.getDateExpired() != CmsResource.DATE_EXPIRED_DEFAULT) {
+            fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_DATEEXPIRED).addText(CmsDateUtil.getHeaderDate(resource.getDateExpired()));
+        }
+        // <flags>
+        int resFlags = resource.getFlags();
+        resFlags &= ~I_CmsConstants.C_RESOURCEFLAG_LABELLINK;
+        fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_FLAGS).addText(Integer.toString(resFlags));
+
+        // write the properties to the manifest
+        Element propertiesElement = fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_PROPERTIES);
+        List properties = getCms().readPropertyObjects(getCms().getSitePath(resource), false);
+        for (int i = 0, n = properties.size(); i < n; i++) {
+            property = (CmsProperty)properties.get(i);
+            
+            if (isIgnoredProperty(property)) {
+                continue;
+            }  
+            
+            key = property.getKey();          
+            
+            for (int j = 0; j < 2; j++) {
+                // iterations made here:
+                // 0) append individual/structure property value
+                // 1) append shared/resource property value
+                if ((j == 0 && (value = property.getStructureValue()) != null)
+                    || (j == 1 && (value = property.getResourceValue()) != null)) {
+                    propertyElement = propertiesElement.addElement(I_CmsConstants.C_EXPORT_TAG_PROPERTY);
+
+                    if (j == 1) {
+                        // add a type attrib. to the property node in case of a shared/resource property value
+                        propertyElement.addAttribute(
+                            I_CmsConstants.C_EXPORT_TAG_PROPERTY_ATTRIB_TYPE,
+                            I_CmsConstants.C_EXPORT_TAG_PROPERTY_ATTRIB_TYPE_SHARED);
+                    }
+
+                    propertyElement.addElement(I_CmsConstants.C_EXPORT_TAG_NAME).addText(key);
+                    propertyElement.addElement(I_CmsConstants.C_EXPORT_TAG_VALUE).addCDATA(value);
+                }
             }
         }
+        
+        // append the nodes for access control entries
+        Element acl = fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_ENTRIES);
 
-        // remove the possible redundancies in the list of resources
-        checkRedundancies(folderNames, fileNames);
+        // read the access control entries
+        Vector fileAcEntries = getCms().getAccessControlEntries(getCms().getSitePath(resource), false);
+        Iterator i = fileAcEntries.iterator();
 
-        // init sets required for the body file exports 
-        m_exportedResources = new HashSet();
-        m_exportedPageFiles = new HashSet();
+        // create xml elements for each access control entry
+        while (i.hasNext()) {
+            CmsAccessControlEntry ace = (CmsAccessControlEntry)i.next();
+            Element a = acl.addElement(I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_ENTRY);
 
-        // export the folders
-        for (int i = 0; i < folderNames.size(); i++) {
-            String path = (String)folderNames.elementAt(i);
-            // first add superfolders to the xml-config file
-            addParentFolders(path);
-            addChildResources(path);
-            m_exportedResources.add(path);
+            // now check if the principal is a group or a user
+            int flags = ace.getFlags();
+            String acePrincipalName = "";
+            CmsUUID acePrincipal = ace.getPrincipal();
+            if ((flags & I_CmsConstants.C_ACCESSFLAGS_GROUP) > 0) {
+                // the principal is a group
+                acePrincipalName = I_CmsPrincipal.C_PRINCIPAL_GROUP + "."
+                    + getCms().readGroup(acePrincipal).getName();
+            } else {
+                // the principal is a user
+                acePrincipalName = I_CmsPrincipal.C_PRINCIPAL_USER + "."
+                    + getCms().readUser(acePrincipal).getName();
+            }
+
+            a.addElement(I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_PRINCIPAL).addText(acePrincipalName);
+            a.addElement(I_CmsConstants.C_EXPORT_TAG_FLAGS).addText(Integer.toString(flags));
+
+            Element b = a.addElement(I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_PERMISSIONSET);
+            b.addElement(I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_ALLOWEDPERMISSIONS).addText(Integer.toString(ace.getAllowedPermissions()));
+            b.addElement(I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_DENIEDPERMISSIONS).addText(Integer.toString(ace.getDeniedPermissions()));
         }
-        // export the files
-        addFiles(fileNames);
-        // export all body files that have not already been exported
-        addPageBodyFiles();
         
         // write the XML
-        getSaxWriter().writeClose(m_fileNode);
-        parent.remove(m_fileNode);
-        m_fileNode = null;
+        digestElement(m_resourceNode, fileElement);
     }
 
     /**
@@ -639,141 +916,6 @@ public class CmsExport implements Serializable {
     }
 
     /**
-     * Writes the data for a resource (like access-rights) to the <code>manifest.xml</code> file.<p>
-     * 
-     * @param resource the resource to get the data from
-     * @param source flag to show if the source information in the xml file must be written
-     * @throws CmsException if something goes wrong
-     * @throws SAXException if something goes wrong procesing the manifest.xml
-     */
-    private void appendResourceToManifest(CmsResource resource, boolean source) throws CmsException, SAXException {
-        CmsProperty property = null;
-        String key = null, value = null;
-        Element propertyElement = null;
-        
-        // define the file node
-        Element fileElement = m_fileNode.addElement(I_CmsConstants.C_EXPORT_TAG_FILE);
-
-        // only write <source> if resource is a file
-        String fileName = trimResourceName(getCms().getSitePath(resource));
-        if (resource.isFile()) {
-            if (source) {
-                fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_SOURCE).addText(fileName);
-            }
-        } else {
-            // output something to the report for the folder
-            getReport().print(" ( " + ++m_exportCount + " ) ", I_CmsReport.C_FORMAT_NOTE);
-            getReport().print(getReport().key("report.exporting"), I_CmsReport.C_FORMAT_NOTE);
-            getReport().print(getCms().getSitePath(resource));
-            getReport().print(getReport().key("report.dots"));
-            getReport().println(getReport().key("report.ok"), I_CmsReport.C_FORMAT_OK);
-        }
-
-        // <destination>
-        fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_DESTINATION).addText(fileName);
-        // <type>
-        fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_TYPE).addText(OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getTypeName());
-        
-        if (resource.isFile()) {
-            //  <uuidresource>
-            fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_UUIDRESOURCE).addText(resource.getResourceId().toString());
-            //  <uuidcontent>
-            fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_UUIDCONTENT).addText(resource.getContentId().toString());
-        }
-        
-        // <datelastmodified>
-        fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_DATELASTMODIFIED).addText(CmsDateUtil.getHeaderDate(resource.getDateLastModified()));
-        // <userlastmodified>
-        fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_USERLASTMODIFIED).addText(getCms().readUser(resource.getUserLastModified()).getName());
-        // <datecreated>
-        fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_DATECREATED).addText(CmsDateUtil.getHeaderDate(resource.getDateCreated()));
-        // <usercreated>
-        fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_USERCREATED).addText(getCms().readUser(resource.getUserCreated()).getName());                
-        // <release>
-        if (resource.getDateReleased() != CmsResource.DATE_RELEASED_DEFAULT) {
-            fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_DATERELEASED).addText(CmsDateUtil.getHeaderDate(resource.getDateReleased()));
-        }
-        // <expire>
-        if (resource.getDateExpired() != CmsResource.DATE_EXPIRED_DEFAULT) {
-            fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_DATEEXPIRED).addText(CmsDateUtil.getHeaderDate(resource.getDateExpired()));
-        }
-        // <flags>
-        int resFlags = resource.getFlags();
-        resFlags &= ~I_CmsConstants.C_RESOURCEFLAG_LABELLINK;
-        fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_FLAGS).addText(Integer.toString(resFlags));
-
-        // write the properties to the manifest
-        Element propertiesElement = fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_PROPERTIES);
-        List properties = getCms().readPropertyObjects(getCms().getSitePath(resource), false);
-        for (int i = 0, n = properties.size(); i < n; i++) {
-            property = (CmsProperty)properties.get(i);
-            key = property.getKey();
-
-            // make sure the channel ID property is not exported with module data
-            if (isExportingCosData() && I_CmsConstants.C_PROPERTY_CHANNELID.equals(key)) {
-                continue;
-            }
-            
-            for (int j = 0; j < 2; j++) {
-                // iterations made here:
-                // 0) append individual/structure property value
-                // 1) append shared/resource property value
-                if ((j == 0 && (value = property.getStructureValue()) != null)
-                    || (j == 1 && (value = property.getResourceValue()) != null)) {
-                    propertyElement = propertiesElement.addElement(I_CmsConstants.C_EXPORT_TAG_PROPERTY);
-
-                    if (j == 1) {
-                        // add a type attrib. to the property node in case of a shared/resource property value
-                        propertyElement.addAttribute(
-                            I_CmsConstants.C_EXPORT_TAG_PROPERTY_ATTRIB_TYPE,
-                            I_CmsConstants.C_EXPORT_TAG_PROPERTY_ATTRIB_TYPE_SHARED);
-                    }
-
-                    propertyElement.addElement(I_CmsConstants.C_EXPORT_TAG_NAME).addText(key);
-                    propertyElement.addElement(I_CmsConstants.C_EXPORT_TAG_VALUE).addCDATA(value);
-                }
-            }
-        }
-        
-        // append the nodes for access control entries
-        Element acl = fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_ENTRIES);
-
-        // read the access control entries
-        Vector fileAcEntries = getCms().getAccessControlEntries(getCms().getSitePath(resource), false);
-        Iterator i = fileAcEntries.iterator();
-
-        // create xml elements for each access control entry
-        while (i.hasNext()) {
-            CmsAccessControlEntry ace = (CmsAccessControlEntry)i.next();
-            Element a = acl.addElement(I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_ENTRY);
-
-            // now check if the principal is a group or a user
-            int flags = ace.getFlags();
-            String acePrincipalName = "";
-            CmsUUID acePrincipal = ace.getPrincipal();
-            if ((flags & I_CmsConstants.C_ACCESSFLAGS_GROUP) > 0) {
-                // the principal is a group
-                acePrincipalName = I_CmsPrincipal.C_PRINCIPAL_GROUP + "."
-                    + getCms().readGroup(acePrincipal).getName();
-            } else {
-                // the principal is a user
-                acePrincipalName = I_CmsPrincipal.C_PRINCIPAL_USER + "."
-                    + getCms().readUser(acePrincipal).getName();
-            }
-
-            a.addElement(I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_PRINCIPAL).addText(acePrincipalName);
-            a.addElement(I_CmsConstants.C_EXPORT_TAG_FLAGS).addText(Integer.toString(flags));
-
-            Element b = a.addElement(I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_PERMISSIONSET);
-            b.addElement(I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_ALLOWEDPERMISSIONS).addText(Integer.toString(ace.getAllowedPermissions()));
-            b.addElement(I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_DENIEDPERMISSIONS).addText(Integer.toString(ace.getDeniedPermissions()));
-        }
-        
-        // write the XML
-        digestElement(m_fileNode, fileElement);
-    }
-
-    /**
      * Exports one single user with all its data.<p>
      * 
      * @param parent the parent node to add the users to
@@ -849,185 +991,6 @@ public class CmsExport implements Serializable {
             exportUser(parent, user);
             getReport().println(getReport().key("report.ok"), I_CmsReport.C_FORMAT_OK);
         }
-    }
-
-    /**
-     * Returns the OpenCms context object this export was initialized with.<p>
-     * 
-     * @return the OpenCms context object this export was initialized with
-     */
-    protected CmsObject getCms() {
-        return m_cms;
-    }
-
-    /**
-     * Returns the set of already exported channel Ids.<p>
-     * 
-     * @return the set of already exported channel Ids
-     */
-    protected Set getExportedChannelIds() {
-        return m_exportedChannelIds;
-    }
-
-    /**
-     * Returns the name of the export file.<p>
-     * 
-     * @return the name of the export file
-     */
-    protected String getExportFileName() {
-        return m_exportFileName;
-    }
-
-    /**
-     * Returns the zip output stream to write to.<p>
-     * 
-     * @return the zip output stream to write to
-     */
-    protected ZipOutputStream getExportZipStream() {
-        return m_exportZipStream;
-    }
-
-    /**
-     * Returns the report to write progess messages to.<p>
-     * 
-     * @return the report to write progess messages to
-     */
-    protected I_CmsReport getReport() {
-        return m_report;
-    }
-
-    /**
-     * Returns the SAX baesed xml writer to write the XML output to.<p>
-     * 
-     * @return the SAX baesed xml writer to write the XML output to
-     */
-    protected SAXWriter getSaxWriter() {
-        return m_saxWriter;
-    }
-
-    /**
-     * Returns true if this is a COS data export, false if this is a VFS or module export.<p>
-     * 
-     * @return true if this is a module data export, false if this is a VFS or module export
-     */
-    protected boolean isExportingCosData() {
-        int todo = 0;
-        // TODO: remove COS reference
-        return m_exportingCosData;
-    }
-
-    /**
-     * Opens the export ZIP file and initializes the internal XML document for the manifest.<p>
-     * 
-     * @return the node in the XML document where all files are appended to
-     * @throws SAXException if something goes wrong procesing the manifest.xml
-     * @throws IOException if something goes wrong while closing the export file
-     */
-    protected Element openExportFile() throws IOException, SAXException {
-        // create the export-zipstream
-        setExportZipStream(new ZipOutputStream(new FileOutputStream(getExportFileName())));
-        // generate the SAX XML writer 
-        CmsXmlSaxWriter saxHandler = new CmsXmlSaxWriter(new StringWriter(4096), OpenCms.getSystemInfo().getDefaultEncoding());
-        // initialize the dom4j writer object as member variable
-        setSaxWriter(new SAXWriter(saxHandler, saxHandler));
-        // the XML document to write the XMl to
-        Document doc = DocumentHelper.createDocument();
-        // start the document
-        saxHandler.startDocument();
-
-        // the node in the XML document where the file entries are appended to        
-        String exportNodeName;
-        if (isExportingCosData()) {
-            // module (COS) data is exported
-            exportNodeName = I_CmsConstants.C_EXPORT_TAG_MODULEXPORT;
-        } else {
-            // standard export, only VFS resources are exported
-            exportNodeName = I_CmsConstants.C_EXPORT_TAG_EXPORT;
-        }
-        // add main export node to XML document
-        Element exportNode = doc.addElement(exportNodeName);
-        getSaxWriter().writeOpen(exportNode);
-
-        // add the info element. it contains all infos for this export
-        Element info = exportNode.addElement(I_CmsConstants.C_EXPORT_TAG_INFO);
-        info.addElement(I_CmsConstants.C_EXPORT_TAG_CREATOR).addText(getCms().getRequestContext().currentUser().getName());
-        info.addElement(I_CmsConstants.C_EXPORT_TAG_OC_VERSION).addText(OpenCms.getSystemInfo().getVersionName());
-        info.addElement(I_CmsConstants.C_EXPORT_TAG_DATE).addText(CmsDateUtil.getDateTimeShort(System.currentTimeMillis()));
-        info.addElement(I_CmsConstants.C_EXPORT_TAG_PROJECT).addText(getCms().getRequestContext().currentProject().getName());
-        info.addElement(I_CmsConstants.C_EXPORT_TAG_VERSION).addText(I_CmsConstants.C_EXPORT_VERSION);
-        
-        // write the XML
-        digestElement(exportNode, info);
-
-        return exportNode;
-    }
-
-    /**
-     * Sets the OpenCms context object this export was initialized with.<p>
-     * 
-     * @param cms the OpenCms context object this export was initialized with
-     */
-    protected void setCms(CmsObject cms) {
-        m_cms = cms;
-    }
-
-    /**
-     * Sets the set of already exported channel Ids.<p>
-     * 
-     * @param exportedChannelIds the set of already exported channel Ids
-     */
-    protected void setExportedChannelIds(Set exportedChannelIds) {
-        m_exportedChannelIds = exportedChannelIds;
-    }
-
-    /**
-     * Sets the name of the export file.<p>
-     * 
-     * @param exportFileName the name of the export file
-     */
-    protected void setExportFileName(String exportFileName) {
-        // ensure the export file name ends with ".zip"
-        if (!exportFileName.toLowerCase().endsWith(".zip")) {
-            m_exportFileName = exportFileName + ".zip";
-        } else {                
-            m_exportFileName = exportFileName;
-        }
-    }
-
-    /**
-     * Sets the flag for indicating if this is a COS data export.<p>
-     * 
-     * @param exportingModuleData the flag for indicating if this is a COS data export
-     */
-    protected void setExportingCosData(boolean exportingModuleData) {
-        m_exportingCosData = exportingModuleData;
-    }
-
-    /**
-     * Sets the zip output stream to write to.<p>
-     * 
-     * @param exportZipStream the zip output stream to write to
-     */
-    protected void setExportZipStream(ZipOutputStream exportZipStream) {
-        m_exportZipStream = exportZipStream;
-    }
-
-    /**
-     * Sets the report to write progess messages to.<p>
-     * 
-     * @param report the report to write progess messages to
-     */
-    protected void setReport(I_CmsReport report) {
-        m_report = report;
-    }
-
-    /**
-     * Sets the SAX baesed xml writer to write the XML output to.<p>
-     * 
-     * @param saxWriter the SAX baesed xml writer to write the XML output to
-     */
-    protected void setSaxWriter(SAXWriter saxWriter) {
-        m_saxWriter = saxWriter;
     }
 
     /**

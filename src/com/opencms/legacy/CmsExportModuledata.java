@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsExportModuledata.java,v $
-* Date   : $Date: 2004/07/18 16:27:13 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2004/07/20 13:34:15 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,6 +35,8 @@
 package com.opencms.legacy;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.importexport.CmsExport;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
@@ -71,7 +73,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.8 $ $Date: 2004/07/18 16:27:13 $
+ * @version $Revision: 1.9 $ $Date: 2004/07/20 13:34:15 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -79,9 +81,6 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
 
     /** Manifest tag: master. */   
     public static String C_EXPORT_TAG_MASTER = "master";
-    
-    /** Manifest tag: master ID. */   
-    public static String C_EXPORT_TAG_MASTER_ID = "master_id";    
 
     /** Manifest tag: access_flags. */   
     public static String C_EXPORT_TAG_MASTER_ACCESSFLAGS = "access_flags";
@@ -127,6 +126,9 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
     
     /** Manifest tag: group_name. */   
     public static String C_EXPORT_TAG_MASTER_GROUP = "group_name";
+    
+    /** Manifest tag: master ID. */   
+    public static String C_EXPORT_TAG_MASTER_ID = "master_id";    
     
     /** Manifest tag: media. */   
     public static String C_EXPORT_TAG_MASTER_MEDIA = "media";
@@ -182,6 +184,9 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
     /** Manifest tag: media_width. */   
     public static String C_EXPORT_TAG_MEDIA_WIDTH = "media_width";
     
+    /** The channelid and the resourceobject of the exported channels. */
+    private Set m_exportedChannelIds;    
+    
     /** Holds information about contents that have already been exported. */
     private Vector m_exportedMasters = new Vector();
 
@@ -200,7 +205,6 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
         setCms(cms);
         setReport(report);
         setExportFileName(exportFile);
-        setExportingCosData(true);
         setExportedChannelIds(new HashSet());
 
         // save the site root
@@ -271,6 +275,67 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
             getCms().getRequestContext().restoreSiteRoot();
         }
     }
+    
+    /**
+     * @see org.opencms.importexport.CmsExport#addChildResources(java.lang.String)
+     */
+    protected void addChildResources(String folderName) throws CmsException, SAXException {
+        
+        // collect channel id information
+        String channelId = getCms().readFolder(folderName, CmsResourceFilter.IGNORE_EXPIRATION).getResourceId().toString();
+        if (channelId != null) {
+            getExportedChannelIds().add(channelId);
+        }
+        
+        // continue with super implementation
+        super.addChildResources(folderName);
+    }
+
+    /**
+     * Returns the set of already exported channel Ids.<p>
+     * 
+     * @return the set of already exported channel Ids
+     */
+    protected Set getExportedChannelIds() {
+        return m_exportedChannelIds;
+    }        
+    
+    /**
+     * @see org.opencms.importexport.CmsExport#getExportNodeName()
+     */
+    protected String getExportNodeName() {
+        
+        return I_CmsConstants.C_EXPORT_TAG_MODULEXPORT;
+    }        
+    
+    /**
+     * @see org.opencms.importexport.CmsExport#getResourceNodeName()
+     */
+    protected String getResourceNodeName() {
+        
+        return "channels";
+    }        
+    
+    /** 
+     * @see org.opencms.importexport.CmsExport#isIgnoredProperty(org.opencms.file.CmsProperty)
+     */
+    protected boolean isIgnoredProperty(CmsProperty property) {
+        
+        if (property == null) {
+            return true;
+        }
+        // don't export "channel" property
+        return I_CmsConstants.C_PROPERTY_CHANNELID.equals(property.getKey());
+    }
+
+    /**
+     * Sets the set of already exported channel Ids.<p>
+     * 
+     * @param exportedChannelIds the set of already exported channel Ids
+     */
+    protected void setExportedChannelIds(Set exportedChannelIds) {
+        m_exportedChannelIds = exportedChannelIds;
+    }    
 
     /**
      * Exports the content definition data,
