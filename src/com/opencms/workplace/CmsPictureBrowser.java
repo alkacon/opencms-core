@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPictureBrowser.java,v $
-* Date   : $Date: 2001/07/31 15:50:19 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2001/08/21 17:58:04 $
+* Version: $Revision: 1.29 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  *
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.28 $ $Date: 2001/07/31 15:50:19 $
+ * @version $Revision: 1.29 $ $Date: 2001/08/21 17:58:04 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -131,6 +131,12 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
                 xmlTemplateDocument.setData(C_PARA_PAGE, pageText);
                 xmlTemplateDocument.setData(C_PARA_FILTER, filter);
                 xmlTemplateDocument.setData(C_PARA_MAXPAGE, "" + maxpage);
+                String setOnClick = (String)parameters.get("setonclick");
+                if(setOnClick == null || !"true".equals(setOnClick)){
+                    xmlTemplateDocument.setData("setonclick", "");
+                }else{
+                    xmlTemplateDocument.setData("setonclick", "true");
+                }
                 parameters.put("_PICLIST_", filteredPics);
             }
         }
@@ -335,6 +341,7 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
                 type = lang.getDataValue("input.unknown");
             }
 
+
             // Set all datablocks for the current picture list entry
             xmlTemplateDocument.setData("picsource", hostName + picsUrl + file.getName());
             xmlTemplateDocument.setData("filepath", file.getAbsolutePath());
@@ -342,6 +349,13 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
             xmlTemplateDocument.setData("filename", filename);
             xmlTemplateDocument.setData("size", file.getLength() + " Byte");
             xmlTemplateDocument.setData("type", type);
+            // look if the onclick event must be set
+            String paraSetOnClick = (String)parameters.get("setonclick");
+            String setOnClick = "";
+            if ("true".equals(paraSetOnClick)){
+                setOnClick = xmlTemplateDocument.getProcessedDataValue("clickentry");
+            }
+            xmlTemplateDocument.setData("toclickornot", setOnClick);
             result.append(xmlTemplateDocument.getProcessedDataValue("piclistentry", this, userObj));
 
             // if this is not the last entry on the current page,

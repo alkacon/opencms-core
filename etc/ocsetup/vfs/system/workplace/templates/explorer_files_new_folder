@@ -211,7 +211,7 @@ function setColor(arr){
 var picBrowserWindow = null;
 function goPictureSet(theTextbox){
     pictureIsFor = theTextbox;
-    picBrowserWindow = window.open('picturebrowser.html?initial=true', 'PicBrowser', 'width=550, height=500, resizable=yes, top=200, left=450');
+    picBrowserWindow = window.open('picturebrowser.html?initial=true&setonclick=true', 'PicBrowser', 'width=550, height=500, resizable=yes, top=200, left=450');
     picBrowserWindow.opener = self;
     picBrowserWindow.focus();
 }

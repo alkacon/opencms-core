@@ -6,20 +6,20 @@
 <head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 <title>]]><LABEL value="label.imagelist" /><![CDATA[ </title>
 <SCRIPT LANGUAGE="JavaScript">
-	var selectedGallery=0;
-	
-	function sendLink(theLink){
-		if(opener.recivePicture){
-			opener.recivePicture(theLink);
-		}
-	}
+    var selectedGallery=0;
+    
+    function sendLink(theLink){
+        if(opener.recivePicture){
+            opener.recivePicture(theLink);
+        }
+    }
 </SCRIPT>
 </head>
 
 <!-- Beginn Aufbau der Frames Task -->
 <frameset rows="70,*" border=0 frameborder=0 framespacing=0>
-	<frame name="edit_html_piclist_head" src="picctrl.html?folder=]]><PROCESS>folder</PROCESS><![CDATA[&page=]]><PROCESS>page</PROCESS><![CDATA[&filter=]]><PROCESS>filter</PROCESS><![CDATA[" marginwidth=1 marginheight=5 leftmargin=1 topmargin=1 noresize scrolling=no>
-	<frame name="edit_html_piclist_content" src="piclist.html?folder=]]><PROCESS>folder</PROCESS><![CDATA[&page=]]><PROCESS>page</PROCESS><![CDATA[&filter=]]><PROCESS>filter</PROCESS><![CDATA[" marginwidth=8 marginheight=8 leftmargin=8 topmargin=8>
+    <frame name="edit_html_piclist_head" src="picctrl.html?folder=]]><PROCESS>folder</PROCESS><![CDATA[&page=]]><PROCESS>page</PROCESS><![CDATA[&filter=]]><PROCESS>filter</PROCESS><![CDATA[" marginwidth=1 marginheight=5 leftmargin=1 topmargin=1 noresize scrolling=no>
+    <frame name="edit_html_piclist_content" src="piclist.html?folder=]]><PROCESS>folder</PROCESS><![CDATA[&page=]]><PROCESS>page</PROCESS><![CDATA[&filter=]]><PROCESS>filter</PROCESS><![CDATA[&setonclick=]]><PROCESS>setonclick</PROCESS><![CDATA[" marginwidth=8 marginheight=8 leftmargin=8 topmargin=8>
 </frameset>
 <!-- Ende Definition Frames Task -->
 
