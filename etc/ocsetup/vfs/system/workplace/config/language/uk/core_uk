@@ -203,7 +203,7 @@
                 <extNav1>The chosen logo is no valid image file or the path does not exist.</extNav1>
                 <extNav2>To create a link in stat. navigation a path and a text are required.</extNav2>
                 <extNav3>The chosen colour is not in the format #000000 to #FFFFFF.</extNav3>
-                <foldercreate>Possible this folder already exist.</foldercreate>
+                <foldercreate>Maybe you don't have the needed permissions or this folder already exist.</foldercreate>
                 <gallerynoright>You don't have the rights to create this new galery in this project.</gallerynoright>
                 <lock>Either you don't have the needed permissions, or the contents of this file are locked by someone else.</lock>
                 <lockchange>The file is locked by another user.</lockchange>
