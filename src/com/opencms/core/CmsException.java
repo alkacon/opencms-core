@@ -4,7 +4,7 @@ package com.opencms.core;
  * This exception is thrown for security reasons in the Cms.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.16 $ $Date: 2000/01/24 18:56:36 $
+ * @version $Revision: 1.17 $ $Date: 2000/01/25 13:48:52 $
  */
 public class CmsException extends Exception {
 	
@@ -12,6 +12,8 @@ public class CmsException extends Exception {
      * Stores the error code of the CmsException.
      */
     private int m_Type = 0;
+    
+    private String m_message="NO MESSAGE";
 	
     /**
      * Stores a forwared exception.
@@ -221,6 +223,7 @@ public class CmsException extends Exception {
 	 */
 	public CmsException(String s) {
 		super(s);
+        m_message=s;
 	}
 	
 	 /** 
@@ -244,6 +247,7 @@ public class CmsException extends Exception {
 	public CmsException(String s, int i) {
 		super(s);
 		m_Type = i;
+        m_message=s;
 	}	
 	
 	/** 
@@ -255,6 +259,7 @@ public class CmsException extends Exception {
 	public CmsException(String s, Exception e){
 		super(s);
 		m_Exception = e;
+        m_message=s;
 	}
 	
 	 /** 
@@ -282,6 +287,7 @@ public class CmsException extends Exception {
 		super(s);
 		m_Type = i;
 		m_Exception = e;
+        m_message=s;
 	}		
 	
 	/**
@@ -320,7 +326,7 @@ public class CmsException extends Exception {
          output.append(m_Type+" ");
          output.append(CmsException.C_EXTXT[m_Type]+"\n");
          output.append("Detailed Error: ");
-         output.append(super.getMessage());
+         output.append(m_message);
 
          return output.toString();
     }
