@@ -11,26 +11,143 @@
 <PROCESS>TEMPLATE_END</PROCESS>
 </template>
 
+<!-- Media backoffice template remove it if not used -->
+
+<media_preview>
+<![CDATA[
+    window.open(']]><method name="getServletPath"/><![CDATA[system/modules/de.framfab.opencms.modules.Article/administration/Article/showMedia.html','Fenster1','width=310,height=400,left=0,top=0');
+]]>
+</media_preview>
+
+<media_upload>
+<![CDATA[
+    <input type="file" name="media_name" style="width:350px">
+]]>
+</media_upload>
+
+<media_edit>
+<![CDATA[
+    <input type="text" name="media_name" style="width:350px" value="]]><process>media_name</process><![CDATA[">
+    <input type="hidden" name="posEdit" value="]]><process>posEdit</process><![CDATA[">
+]]>
+</media_edit>
+
+<media_content>
+<![CDATA[
+<SCRIPT language="JavaScript">
+    ]]><PROCESS>preview</PROCESS><![CDATA[
+</script>
+
+<center>
+<table cellspacing=5>
+<tr>
+    <td>
+        ]]><process>media_file</process><![CDATA[
+    </td>
+    <td>
+        Alt-Text:
+    </td>
+    <td>
+        <input name="media_alt_text" style="width:350px" value="]]><process>media_alt_text</process><![CDATA[">
+    </td>
+    <td>
+        Position:
+    </td>
+    <td>
+        ]]><select name="media_position" width="150" style="width:150px" method="getMediaPosition"/><![CDATA[
+    </td>    
+</tr>
+<tr>
+    <td colspan=5>
+        <input type=button value="Delete" onClick="setMediaAction(1);">&nbsp;&nbsp;
+        <input type=button value="Edit" onClick="setMediaAction(2);">&nbsp;&nbsp;
+        <input type=button value="Preview" onClick="setMediaAction(3);">&nbsp;&nbsp;
+        <input type=button value="Add" onClick="setMediaAction(4);">&nbsp;&nbsp;
+        <input type=button value="Clear" onClick="setMediaAction(5);">&nbsp;&nbsp;
+    </td>
+</td>
+</table>
+
+<br><br>
+
+<table width=100%>
+    <tr>
+        <td>
+        </td>
+        <td>
+            <b>Name:
+        </td>
+        <td>
+            <b>Text:
+        </td>
+        <td>
+            <b>Position:
+        </td>
+        <td>
+            <b>Dateigröße:
+        </td>
+        <td>
+            <b>Typ:
+        </td>
+    </tr>
+    ]]><process>media_line</process><![CDATA[
+</table>
+</center>
+<input type=hidden name="media_action">
+]]>
+</media_content>
+
+<media_row>
+<![CDATA[
+    <tr>
+        <td>
+            <input type="radio" value="]]><process>pos</process><![CDATA[" name="pos">
+        </td>
+        <td>
+            ]]><process>media_row_name</process><![CDATA[
+        </td>
+        <td>
+            ]]><process>media_title</process><![CDATA[
+        </td>
+        <td>
+            ]]><process>media_position</process><![CDATA[
+        </td>
+        <td>
+            ]]><process>media_size</process><![CDATA[
+        </td>
+        <td>
+            ]]><process>media_type</process><![CDATA[
+        </td>
+    </tr>
+]]>
+</media_row>
+
+<TEMPLATE name="Media">
+<PROCESS>TEMPLATE_START</PROCESS>
+<method name="getContentMedia"/>
+<PROCESS>TEMPLATE_END</PROCESS>
+</TEMPLATE>
+
 <!-- channel backoffice template remove it if not used -->
 <TEMPLATE name="Channels">
 <PROCESS>TEMPLATE_START</PROCESS>
 <![CDATA[ 
 <table cellpadding="3" cellspacing="2" border="0" align="center">
 <tr>
-	<td class="formular">ausgewählte Channels</td><td></td><td class="formular">verfügbare Channels</td>
+    <td class="formular">ausgewählte Channels</td><td></td><td class="formular">verfügbare Channels</td>
 </tr>
 <tr>
-	<td class="formular">
-		]]><SELECT class="textfeld" name="channelSelected" size="20" width="400" method="getSelectedChannels" onchange=""/><![CDATA[</td>
-	</td>
-	<td class="formular">
-		<INPUT  class="button" name="ADD" id="ADD" value="]]><LABEL value="button.add"/>"<![CDATA[ width="100" type="button" onclick="javascript:moveChannel(document.Editor.channelSelected,document.Editor.channelAvailable);copySelection();">
-		<br>&nbsp;<br>
-		<INPUT  class="button" name="REMOVE" id="REMOVE" value="]]><LABEL value="button.remove"/>"<![CDATA[ width="100" type="button" onclick="javascript:moveChannel(document.Editor.channelAvailable,document.Editor.channelSelected);copySelection();"></td>
-	</td>
-	<td class="formular">
-		]]><SELECT class="textfeld" name="channelAvailable" size="20" width="400" method="getAvailableChannels" onchange=""/><![CDATA[</td>
-	</td>
+    <td class="formular">
+        ]]><SELECT class="textfeld" name="channelSelected" size="20" width="400" method="getSelectedChannels" onchange=""/><![CDATA[</td>
+    </td>
+    <td class="formular">
+        <INPUT  class="button" name="ADD" id="ADD" value="]]><LABEL value="button.add"/>"<![CDATA[ width="100" type="button" onclick="javascript:moveChannel(document.Editor.channelSelected,document.Editor.channelAvailable);copySelection();">
+        <br>&nbsp;<br>
+        <INPUT  class="button" name="REMOVE" id="REMOVE" value="]]><LABEL value="button.remove"/>"<![CDATA[ width="100" type="button" onclick="javascript:moveChannel(document.Editor.channelAvailable,document.Editor.channelSelected);copySelection();"></td>
+    </td>
+    <td class="formular">
+        ]]><SELECT class="textfeld" name="channelAvailable" size="20" width="400" method="getAvailableChannels" onchange=""/><![CDATA[</td>
+    </td>
 </tr>
 <input type=hidden name="availablechannels">
 <input type=hidden name="selectedchannels">
@@ -47,10 +164,10 @@
 <TEMPLATE name="done">
 <![CDATA[
 <HEAD>
-	<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../../../../workplace/templates/js/opencms.js"></SCRIPT>
+    <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../../../../workplace/templates/js/opencms.js"></SCRIPT>
 </HEAD>
 <HTML>
-	<BODY onLoad="window.top.body.admin_head.location.href=']]><method name="getServletPath"/><method name="getBackofficeUrl"/><![CDATA[';">
+    <BODY onLoad="window.top.body.admin_head.location.href=']]><method name="getServletPath"/><method name="getBackofficeUrl"/><![CDATA[';">
 </BODY>
 </HTML>
 ]]>
@@ -64,30 +181,30 @@
  <head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
     <title>Comments Backoffice</title>
     <link rel=stylesheet type="text/css" href="]]><METHOD name="getServletPath"/><![CDATA[system/workplace/css/format.css">     
-	<script language="JavaScript">
-    var pfad="]]><METHOD name="picsUrl"/><![CDATA[";  	  
-	 function doEdit(para) {
-		switch(para) {
-		case 1:	{
-				document.Editor.action.value = "exit";
-				document.Editor.submit();
-				break;
-				}
-		case 2:	{	
-				document.Editor.action.value = "saveexit";
-				document.Editor.submit();
-				break;
-				}
-		case 3: {
-				document.Editor.action.value = "save";
-				document.Editor.submit();
-				break;
-				}
-		  }
-	  }	 	  
-	 </script>
-	 <script LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><METHOD name="getServletPath"/><![CDATA[system/workplace/templates/js/opencms_channelbackoffice.js"></script>	 
-   	 <script LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><METHOD name="getServletPath"/><![CDATA[system/workplace/templates/js/opencms.js""></script>
+    <script language="JavaScript">
+    var pfad="]]><METHOD name="picsUrl"/><![CDATA[";      
+     function doEdit(para) {
+        switch(para) {
+        case 1: {
+                document.Editor.action.value = "exit";
+                document.Editor.submit();
+                break;
+                }
+        case 2: {   
+                document.Editor.action.value = "saveexit";
+                document.Editor.submit();
+                break;
+                }
+        case 3: {
+                document.Editor.action.value = "save";
+                document.Editor.submit();
+                break;
+                }
+          }
+      }       
+     </script>
+     <script LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><METHOD name="getServletPath"/><![CDATA[system/workplace/templates/js/opencms_channelbackoffice.js"></script>  
+     <script LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><METHOD name="getServletPath"/><![CDATA[system/workplace/templates/js/opencms.js""></script>
 </head>
 ]]>
 </BOHEAD>
@@ -106,9 +223,9 @@
 <BOERROR>
 <![CDATA[
 <table cellspacing=0 cellpadding=0 border=0 width="100%" height=32>
-	<tr valign=bottom>
-		<td class=menu ><center><font color=red>]]><process>error</process><![CDATA[</font></center></td>
-	</tr>
+    <tr valign=bottom>
+        <td class=menu ><center><font color=red>]]><process>error</process><![CDATA[</font></center></td>
+    </tr>
 </table>
 <hr>
 ]]>

@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsShowBackofficeMedia.java,v $
  * Author : $Author: a.schouten $
- * Date   : $Date: 2001/11/19 15:11:08 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2001/11/20 16:41:07 $
+ * Version: $Revision: 1.2 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Framfab Deutschland ag.   All Rights Reserved.
@@ -60,7 +60,6 @@ public class CmsShowBackofficeMedia extends CmsXmlTemplate {
 		// session will be created or fetched
 		CmsRequestContext req = cms.getRequestContext();
 		I_CmsSession session = (I_CmsSession) req.getSession(true);
-        System.err.println("**CmsShowMedia getContent**");
 		byte[] picture = new byte[0];
         try{
 		//selected media content definition
@@ -71,13 +70,10 @@ public class CmsShowBackofficeMedia extends CmsXmlTemplate {
         }catch(Exception e){
                 e.printStackTrace(System.err);
         }
-        System.err.println("**CmsShowMedia getContent selectedmediaCD="+selectedmediaCD);
         //no CmsMasterMedia
 		if(selectedmediaCD != null){
                 picture = selectedmediaCD.getMedia();
-                System.err.println("**CmsShowMedia getContent picture="+picture);
                 String mType = selectedmediaCD.getMimetype();
-                System.err.println("**CmsShowMedia getContent mType="+mType);
                 if (mType == null || mType.equals("")) {
                     mType = "application/octet-stream";
                 }

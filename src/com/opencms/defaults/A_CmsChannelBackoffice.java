@@ -28,6 +28,7 @@ import com.opencms.defaults.master.*;
 import com.opencms.core.*;
 import com.opencms.file.*;
 import com.opencms.workplace.*;
+import com.opencms.template.*;
 
 import java.util.*;
 
@@ -61,7 +62,7 @@ public abstract class A_CmsChannelBackoffice extends A_CmsBackoffice {
         }
         return new Integer(retValue);
     }
-    
+
     /**
      * UserMethod creates a selectBox for available channels
      *
@@ -86,4 +87,257 @@ public abstract class A_CmsChannelBackoffice extends A_CmsBackoffice {
         }
         return new Integer(retValue);
     }
+
+    /**
+     * UserMethod creates a selectBox for selected channels
+     *
+     * @param cms CmsObject Object for accessing system resources
+     * @param lang CmsXmlLanguageFile
+     * @param values Vector for the values in the selectBox
+     * @param names Vector for the names in the selectBox
+     * @param parameters Hashtable with all template class parameters.
+     * @return Integer selected Index Value of selectBox
+     * @throws com.opencms.core.CmsException in case of unrecoverable errors
+     */
+    public Integer getMediaPosition(CmsObject cms,CmsXmlLanguageFile lang,Vector values,Vector names,Hashtable parameters)
+                    throws CmsException{
+        //get session
+        I_CmsSession session = cms.getRequestContext().getSession(true);
+        CmsMasterContent masterCD = (CmsMasterContent)session.getValue(getContentDefinitionClass().getName());
+        //selected media content definition
+        CmsMasterMedia selectedmediaCD=null;
+        //media_position
+        String media_position = null;
+        int media_positionInt=0;
+        //try to get the medias from session
+        try{
+                media_position=(String)session.getValue("media_position");
+                media_positionInt=Integer.parseInt(media_position)-1;
+        }catch(Exception e){
+                media_positionInt=0;
+        }
+        String selectBoxContent="";
+        try{
+            //get the content
+            selectBoxContent=selectBoxContent(cms);
+        }catch(Exception e){
+            e.printStackTrace(System.err);
+        }
+        StringTokenizer t = new StringTokenizer(selectBoxContent,";");
+        while(t.hasMoreElements()){
+            String s=t.nextToken();
+            if(s!=null && !s.equals("")){
+                int z=s.indexOf(":");
+                values.add(s.substring(0,z));
+                names.add(s.substring(z+1));
+            }
+        }
+        return new Integer(media_positionInt);
+    }
+
+	 /**
+	     * get the complete page to edit,delete and upload files and pictures
+	     * <P>
+	     * This method can be called using <code>&lt;METHOD name="getTitle"&gt;</code>
+	     * in the template file.
+	     *
+	     * @param cms CmsObject Object for accessing system resources.
+	     * @param tagcontent Unused in this special case of a user method. Can be ignored.
+	     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.
+	     * @param userObj Hashtable with parameters.
+	     * @return String or byte[] with the content of this subelement.
+	     * @exception CmsException
+	     */
+	    public Object getContentMedia(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
+	        //return value
+	        String content="";
+	        System.err.println("");
+	        String row="";
+	        //get the template
+	        CmsXmlTemplateFile templateFile = (CmsXmlTemplateFile) doc;
+	        I_CmsSession session = cms.getRequestContext().getSession(true);
+	        CmsMasterContent masterCD = (CmsMasterContent)session.getValue(getContentDefinitionClass().getName());
+	        //get the parameter
+	        Hashtable parameters = (Hashtable)userObject;
+	        // get the action
+	        String media_action = (String) parameters.get("media_action");
+	        media_action=(media_action!=null?media_action.trim():"");
+	        // get the media_name
+	        String media_name = (String) parameters.get("media_name");
+	        media_name=(media_name!=null?media_name.trim():"");
+	        // get the alt_text
+	        String media_title = (String) parameters.get("media_alt_text");
+	        media_title=(media_title!=null?media_title.trim():"");
+	        // get the pos
+	        String pos = (String) parameters.get("pos");
+	        pos=(pos!=null?pos.trim():"");
+	        if(pos.equals("")){
+	            //if your are in the edit modus get another pos
+	            pos = (String) parameters.get("posEdit");
+	            pos=(pos!=null?pos.trim():"");
+	        }
+	        int posInt=I_CmsConstants.C_UNKNOWN_ID;
+	        if(!pos.equals("")){
+	            try{
+	                posInt=Integer.parseInt(pos);
+	            }catch(Exception e){
+	                posInt=I_CmsConstants.C_UNKNOWN_ID;
+	            }
+	        }
+	        // get the media_position
+	        String media_position = (String) parameters.get("media_position");
+	        media_position=(media_position!=null?media_position.trim():"");
+	        int media_positionInt=0;
+	        if(!media_position.equals("")){
+	            try{
+	                media_positionInt=Integer.parseInt(media_position);
+	            }catch(Exception e){
+	                media_positionInt=0;
+	            }
+	        }
+	        //the media_type
+	        int media_type=0;
+	        //the media_mimetype
+	        String media_mimetype="";
+	        //media content definition
+	        CmsMasterMedia mediaCD=null;
+	        //selected media content definition
+	        CmsMasterMedia selectedmediaCD=null;
+	        //get all media files from this content definition
+	        Vector dbmedia = masterCD.getMedia();
+	        //Vector
+	        Vector media = null;
+	        //try to get the medias from session
+	        try{
+	                media=(Vector)session.getValue("media");
+	        }catch(Exception e){
+	                e.printStackTrace(System.err);
+	        }
+	        //get the selected CmsMasterMedia
+	        if(dbmedia!=null){
+	        //if you are here for the fist time - get the medias from db
+	            if(media==null){
+	            //copy medias in your vector
+	                media=(Vector)dbmedia.clone();
+	            }
+	            for(int i=0;i<media.size();i++){
+	                if(posInt==i){
+	                    selectedmediaCD=(CmsMasterMedia)media.elementAt(i);
+	                }
+	            }
+	        }
+	        //delete media
+	        if(media_action.equals("delPicture")){
+	            if(selectedmediaCD!=null){
+	                masterCD.deleteMedia(selectedmediaCD);
+	                //remove CD from vector
+	                media.removeElementAt(posInt);
+	            }
+	        }else if(media_action.equals("addPicture") && !media_name.equals("unknown")){
+	                // get the picture file and/or file from the RequestContext if there is any
+	                CmsRequestContext reqCont = cms.getRequestContext();
+	                Enumeration enum = reqCont.getRequest().getFileNames();
+	                String filename = "";
+	                byte[] mediafile = null;
+	                //get the file
+	                while (enum.hasMoreElements()) {
+	                    filename = (String) enum.nextElement();
+	                    if (!filename.equals("unknown")) {
+	                        mediafile = reqCont.getRequest().getFile(filename);
+	                        //set the media_mimetype
+	                        media_mimetype=CmsMasterMedia.computeMimetype(cms,filename);
+	                        //set the type
+	                        if(!media_mimetype.startsWith("image")){
+	                            media_type=1;
+	                        }
+	                    }
+	                }
+	                if(mediafile!=null){
+	                    //new media
+	                    mediaCD=new CmsMasterMedia(media_positionInt,0,0,mediafile.length,media_mimetype,media_type,media_title,media_name,"default",mediafile);
+	                    if(mediaCD!=null){
+	                        //add media
+	                        masterCD.addMedia(mediaCD);
+	                        //add Cd to vector
+	                        media.addElement(mediaCD);
+	                        //set media_position back to default
+	                        media_position="";
+	                    }
+	                }else{
+	                    //set new values
+	                    selectedmediaCD.setName(media_name);
+	                    selectedmediaCD.setTitle(media_title);
+	                    selectedmediaCD.setPosition(media_positionInt);
+	                    //set media_position back to default
+	                    media_position="";
+	                    //update media
+	                    masterCD.updateMedia(selectedmediaCD);
+	                    //update the vector
+	                    media.insertElementAt(selectedmediaCD,posInt);
+	                    //remove old CD
+	                    media.removeElementAt(posInt+1);
+	                }
+	        }
+	        //empty the input fields and select box
+	        if(media_action.equals("clear")){
+	            //set media_position back to default
+	            media_position="";
+	        }
+	        //open window on reload
+	        if(media_action.equals("prevPicture")){
+	            //set the url
+	            templateFile.setData("preview",templateFile.getProcessedDataValue("media_preview",this));
+	        }else{
+	        System.err.println("prevPicture else");
+	            //set the url to default
+	            templateFile.setData("preview","");
+	        }
+	        //special template for edit
+	        if(media_action.equals("editPicture")){
+	            //set media_position back to default
+	            media_position=""+selectedmediaCD.getPosition();
+	            //put the media_position in session
+	            session.putValue("media_position",media_position);
+	            //fill the template
+	            templateFile.setData("media_name",selectedmediaCD.getName());
+	            templateFile.setData("posEdit",pos);
+	            templateFile.setData("media_alt_text",selectedmediaCD.getTitle());
+	            templateFile.setData("media_file",templateFile.getProcessedDataValue("media_edit",this));
+	        }else{
+	            //put the media_position in session
+	            session.putValue("media_position",media_position);
+	            //no edit - build normal template
+	            templateFile.setData("media_file",templateFile.getProcessedDataValue("media_upload",this));
+	        }
+	        //fill the list
+	        if(media!=null){
+	            for(int i=0;i<media.size();i++){
+	                mediaCD= (CmsMasterMedia)media.elementAt(i);
+	                templateFile.setData("pos",""+i);
+	                templateFile.setData("media_row_name",mediaCD.getName());
+	                templateFile.setData("media_title",mediaCD.getTitle());
+	                templateFile.setData("media_position",""+mediaCD.getPosition());
+	                templateFile.setData("media_size",""+mediaCD.getSize());
+	                templateFile.setData("media_type",""+mediaCD.getType());
+	                //set String
+	                row+=templateFile.getProcessedDataValue("media_row",this);
+	            }
+	            templateFile.setData("media_line",row);
+	        }
+	        //build the content
+	        content=templateFile.getProcessedDataValue("media_content",this);
+	        //put the vector in session
+	        if(media!=null){
+	        session.putValue("media",media);
+	        }
+	        //put the vector in session
+	        if(selectedmediaCD!=null){
+	            session.putValue("selectedmediaCD",selectedmediaCD);
+	        }
+	        //return
+	        return content;
+    }
+
+    //abtract for selectBox
+    protected abstract String selectBoxContent(CmsObject cms);
 }
