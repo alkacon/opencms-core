@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsProject.java,v $
-* Date   : $Date: 2001/09/21 06:29:56 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2001/12/07 09:47:43 $
+* Version: $Revision: 1.32 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import com.opencms.util.SqlHelper;
  * @author Michael Emmerich
  * @author Anders Fugmann
  * @author Jan Krag
- * @version $Revision: 1.31 $ $Date: 2001/09/21 06:29:56 $
+ * @version $Revision: 1.32 $ $Date: 2001/12/07 09:47:43 $
  */
 public class CmsProject implements I_CmsConstants, Cloneable{
 
@@ -258,6 +258,18 @@ public CmsProject(ResultSet res, com.opencms.file.genericSql.CmsQueries m_cq) th
         return m_type;
     }
 
+    /**
+     * Do static export after publish.
+     *
+     * @return true is static export is enabled.
+     */
+    public boolean doStaticExport(){
+        if(m_type > 9){
+            return true;
+        } else {
+            return false;
+        }
+    }
     /**
      * Sets the description of this project.
      *

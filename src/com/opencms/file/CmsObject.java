@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2001/11/23 20:17:22 $
-* Version: $Revision: 1.209 $
+* Date   : $Date: 2001/12/07 09:47:43 $
+* Version: $Revision: 1.210 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.209 $ $Date: 2001/11/23 20:17:22 $
+ * @version $Revision: 1.210 $ $Date: 2001/12/07 09:47:43 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -2240,12 +2240,22 @@ public void publishProject(int id) throws CmsException {
     Vector changedResources = null;
     Vector changedModuleMasters = null;
     boolean success = false;
+    boolean doStatExp = readProject(id).doStaticExport();
     try{
         allChanged = m_rb.publishProject(this, m_context.currentUser(), m_context.currentProject(), id);
         changedResources = allChanged.getChangedResources();
         changedModuleMasters = allChanged.getChangedModuleMasters();
         getOnlineElementCache().cleanupCache(changedResources, changedModuleMasters);
         clearcache();
+        // do static export if the static-export flag is set for the project
+        if (doStatExp){
+            try{
+                this.exportStaticResources(this.getStaticExportStartPoints());
+            } catch (Exception ex){
+                System.err.println("Error while exporting static resources:");
+                ex.printStackTrace();
+            }
+        }
         success = true;
     }catch (Exception e){
         System.err.println("###################################");

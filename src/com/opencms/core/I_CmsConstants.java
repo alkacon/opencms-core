@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2001/11/19 09:28:11 $
-* Version: $Revision: 1.189 $
+* Date   : $Date: 2001/12/07 09:47:57 $
+* Version: $Revision: 1.190 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  *
- * @version $Revision: 1.189 $ $Date: 2001/11/19 09:28:11 $
+ * @version $Revision: 1.190 $ $Date: 2001/12/07 09:47:57 $
  */
 public interface I_CmsConstants {
 
@@ -288,6 +288,22 @@ public interface I_CmsConstants {
      * The project will be deleted after publishing
      */
     static final int C_PROJECT_TYPE_TEMPORARY = 1;
+
+    /**
+     * This constant defines a invisible project-type.
+     * The project exists only for temporary files
+     * and will never be displayed, published or deleted
+     */
+    static final int C_PROJECT_TYPE_INVISIBLE = 3;
+
+    /**
+     * This constant defines the staticexport-type.
+     * After publishing the static export is called.
+     * This value is added to the other type value,
+     * e.g. for the normal project-type the type value
+     * is (0 + 10) = 10
+     */
+    static final int C_PROJECT_TYPE_STATICEXPORT = 10;
 
     /**
      * This constant defines a unlocked project.
