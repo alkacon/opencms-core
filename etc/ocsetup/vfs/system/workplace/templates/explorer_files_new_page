@@ -16,24 +16,24 @@ function simpleEscape(text) {
 	if(text)return text.replace(/\//g, "%2F");
 }
 
-function checkinputfield(nr){
-    if(nr==1){
-        if(document.LINK.LINKNAME.value!=""){
-            document.LINK.WEITER.disabled=false;
-        }
-        else document.LINK.WEITER.disabled=true;
-    }
-    if(nr==2){
-        if(document.LINK.NEUNAME.value!=""){
-            document.LINK.WEITER.disabled=false;
-         }
-         else document.LINK.WEITER.disabled=true;
-    }
+
+function checkforchars(whichform){
+
+	for(i=0;i<whichform.value.length;i++){
+	    if(whichform.value.charAt(i)=="%")alert(']]><LABEL value="error.message.badcharacter" /><![CDATA['+whichform.value.charAt(i));
+	    if(whichform.value.charAt(i)=="#")alert(']]><LABEL value="error.message.badcharacter" /><![CDATA['+whichform.value.charAt(i));
+	    if(whichform.value.charAt(i)=="&")alert(']]><LABEL value="error.message.badcharacter" /><![CDATA['+whichform.value.charAt(i));
+	}
+	
+	
 }
+
 
 function checkIt(wasdenn){
 	
 	if(wasdenn==1){
+		checkforchars(document.LINK.NEUNAME);
+
 		if(document.LINK.NEUNAME.value=="" || document.LINK.LINKNAME.value=="")
 		{
 			alert(']]><LABEL value="error.message.datamissing" /><![CDATA[');
@@ -41,6 +41,9 @@ function checkIt(wasdenn){
 	}
 	
 	if(wasdenn==2){
+	
+		checkforchars(document.NEU.NEUNAME);
+	
 		if(document.NEU.NEUNAME.value=="" )
 		{
 				alert(']]><LABEL value="error.message.datamissing" /><![CDATA[');
