@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlLanguageFile.java,v $
-* Date   : $Date: 2002/09/03 11:57:07 $
-* Version: $Revision: 1.30 $
+* Date   : $Date: 2002/09/19 12:15:42 $
+* Version: $Revision: 1.31 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import java.io.*;
  * Content definition for language files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.30 $ $Date: 2002/09/03 11:57:07 $
+ * @version $Revision: 1.31 $ $Date: 2002/09/19 12:15:42 $
  */
 
 public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChannels,I_CmsWpConstants,I_CmsConstants {
@@ -236,7 +236,7 @@ public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChann
     public String getEncoding() {
         String result = null;
         try {
-            result = getLanguageValue("content-encoding");
+            result = getLanguageValue(C_PROPERTY_CONTENT_ENCODING);
         } catch (CmsException e) {;}
         if ((result != null) && result.startsWith("?") && result.endsWith("?")) {
             return null;
