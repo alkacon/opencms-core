@@ -2,8 +2,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsDumpStylesheet.java,v $
-* Date   : $Date: 2001/06/19 13:48:55 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2001/06/20 07:48:09 $
+* Version: $Revision: 1.4 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -39,7 +39,7 @@ import java.util.*;
  * Dump the correct stylesheet for the current browser.
  *
  * @author Alexander Lucas <alexander.lucas@framfab.de>
- * @version $Revision: 1.3 $ $Date: 2001/06/19 13:48:55 $
+ * @version $Revision: 1.4 $ $Date: 2001/06/20 07:48:09 $
  */
 public class CmsDumpStylesheet extends CmsDumpTemplate {
 
@@ -101,8 +101,7 @@ public class CmsDumpStylesheet extends CmsDumpTemplate {
     public CmsCacheDirectives getCacheDirectives(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
 
         // First build our own cache directives.
-        CmsCacheDirectives result = new CmsCacheDirectives(false);
-        result.setProxyPrivateCacheable(true);
+        CmsCacheDirectives result = new CmsCacheDirectives(false,true,false,false,true);
         return result;
     }
 
