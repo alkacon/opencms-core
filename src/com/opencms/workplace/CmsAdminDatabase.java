@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatabase.java,v $
-* Date   : $Date: 2002/02/14 14:25:48 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2002/02/20 11:06:50 $
+* Version: $Revision: 1.22 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.21 $ $Date: 2002/02/14 14:25:48 $
+ * @version $Revision: 1.22 $ $Date: 2002/02/20 11:06:50 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -98,6 +98,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
                 xmlTemplateDocument.setData("userdata",
                         xmlTemplateDocument.getProcessedDataValue("userdatabox", this, parameters));
             }
+            xmlTemplateDocument.setData("moduleselect", this.getModuleSelectbox(cms, xmlTemplateDocument));
         }
 
         // first we look if the thread is allready running
@@ -318,6 +319,40 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
             values.addElement(value);
         }
         return 0;
+    }
+
+    /**
+     * Gets all exportable modules for a select box
+     * <P>
+     * The method returns a string with option tags that contains the module information
+     * to be used for building a select box.
+     *
+     * @param cms CmsObject Object for accessing system resources.
+     * @param template The current template
+     * @return String with the modules optiontags.
+     * @exception CmsException
+     */
+    public String getModuleSelectbox(CmsObject cms, CmsXmlWpTemplateFile template) throws CmsException {
+        StringBuffer selectBox = new StringBuffer();
+        if(template.hasData("selectoption")){
+            // get all exportable modules
+            Hashtable modules = new Hashtable();
+            cms.getRegistry().getModuleExportables(modules);
+            Enumeration keys = modules.keys();
+            // fill the names and values
+            while(keys.hasMoreElements()) {
+                String name = (String)keys.nextElement();
+                String value = (String)modules.get(name);
+                template.setData("name",name);
+                template.setData("value",value);
+                try{
+                    selectBox.append(template.getProcessedDataValue("selectoption",this));
+                } catch (Exception e){
+                    // do not throw exception because selectbox might not exist
+                }
+            }
+        }
+        return selectBox.toString();
     }
 
     /** Parse the string which holds all resources
