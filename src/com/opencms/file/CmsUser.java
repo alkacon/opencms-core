@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsUser.java,v $
- * Date   : $Date: 2004/02/04 17:18:08 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2004/02/06 20:52:43 $
+ * Version: $Revision: 1.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.opencms.util.CmsUUID;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.54 $
+ * @version $Revision: 1.55 $
  */
 public class CmsUser implements I_CmsPrincipal, Cloneable {
 
@@ -253,7 +253,7 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
         Object value = m_additionalInfo.get(key);
         if (value == null && I_CmsConstants.C_ADDITIONAL_INFO_STARTSETTINGS.equals(key)) {
             Hashtable startSettings = new Hashtable();
-            startSettings.put(I_CmsConstants.C_START_LANGUAGE, OpenCms.getUserDefaultLanguage());
+            startSettings.put(I_CmsConstants.C_START_LOCALE, OpenCms.getWorkplaceManager().getDefaultLocale().toString());
             startSettings.put(I_CmsConstants.C_START_PROJECT, new Integer(I_CmsConstants.C_PROJECT_ONLINE_ID));
             startSettings.put(I_CmsConstants.C_START_VIEW, I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "action/explorer.html");
             startSettings.put(I_CmsConstants.C_START_LOCKDIALOG, "");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2004/02/05 08:28:08 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2004/02/06 20:52:43 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,24 +44,15 @@ import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
-import com.opencms.file.CmsRequestContext;
 import com.opencms.file.CmsResource;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.Enumeration;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
-import java.util.StringTokenizer;
-import java.util.Vector;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -76,7 +67,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -92,30 +83,11 @@ public class CmsJspLoader implements I_CmsResourceLoader {
     /** Special JSP directive tag start (<code>&lt;%@</code>)*/
     public static final String C_DIRECTIVE_START = "<%@";
     
-    /** Parameter constant to indicate a body previously discovered in an XMLTemplate */
-    private static final String C_EXPORT_BODY = "_flex_export_body";       
-    
-    /** Parameter constant to indicate encoding used in calling template */
-    private static final String C_EXPORT_ENCODING = "_flex_export_encoding";     
-    
-    /** Header constant to indicate the found links in the response return headers */
-    private static final String C_EXPORT_HEADER = "_flex_export_links";
-
-    /** Separator constant to separate return headers */
-    private static final String C_EXPORT_HEADER_SEP = "/";
-
-    // Static export related stuff
-    /** Parameter constant to indicate that the export is requested */
-    private static final String C_EXPORT_PARAM = "_flex_export"; 
-    
     /** Extension for JSP managed by OpenCms (<code>.jsp</code>) */
     public static final String C_JSP_EXTENSION = ".jsp";      
     
     /** Name of "error pages are commited or not" runtime property*/ 
     public static final String C_LOADER_ERRORPAGECOMMIT = "flex.jsp.errorpagecommit";
-    
-    /** Name of export URL runtime property */
-    public static final String C_LOADER_JSPEXPORTURL = "flex.jsp.exporturl";
 
     /** The id of this loader */
     public static final int C_RESOURCE_LOADER_ID = 6;
@@ -129,9 +101,6 @@ public class CmsJspLoader implements I_CmsResourceLoader {
     /** Flag to indicate if error pages are mared a "commited" */
     // TODO: This is a hack, investigate this issue with different runtime environments
     private static boolean m_errorPagesAreNotCommited = false; // should work for Tomcat 4.1
-    
-    /** Export URL for JSP pages */
-    private static String m_jspExportUrl;
     
     /** The directory to store the generated JSP pages in (absolute path) */
     private static String m_jspRepository = null;
@@ -197,18 +166,6 @@ public class CmsJspLoader implements I_CmsResourceLoader {
         return m_jspWebAppRepository + (online?"/online":"/offline") + getJspName(name);  
     }
     
-    /**
-     * Set's the JSP export URL.<p>
-     * 
-     * This is required after <code>init()</code> called if the URL was not set in <code>opencms.
-     * properties</code>.
-     * 
-     * @param value the JSP export URL
-     */
-    public static void setJspExportUrl(String value) {
-        m_jspExportUrl = value;
-    }
-
     /** Destroy this ResourceLoder, this is a NOOP so far.  */
     public void destroy() {
         // NOOP
@@ -265,198 +222,6 @@ public class CmsJspLoader implements I_CmsResourceLoader {
             exportStream.write(file.getContents());
         }
     }
-        
-//    /**
-//     * Checks if the request parameter C_EXPORT_PARAM is set, if so sets the CmsObject 
-//     * working mode to C_MODUS_EXPORT.
-//     * 
-//     * @param cms provides the current cms context
-//     * @param req the current request 
-//     * @return int the mode previously set in the CmsObject
-//     */
-//    private int exportCheckMode(CmsObject cms, HttpServletRequest req) {
-//        // int oldMode = cms.getMode();
-//        String exportUri = req.getParameter(C_EXPORT_PARAM); 
-//        if (exportUri != null) {
-//            if (!exportUri.equals(cms.getRequestContext().getUri())) {
-//                // URI is not the same, so this is a sub - element
-//                cms.getRequestContext().setUri(exportUri);
-//            }
-//            // cms.setMode(I_CmsConstants.C_MODUS_EXPORT);
-//        }   
-//        // check body
-//        String body = req.getParameter(C_EXPORT_BODY);
-//        if (body != null) {
-//            cms.getRequestContext().setAttribute(I_CmsConstants.C_XML_BODY_ELEMENT, body);
-//        }
-//        // check encoding
-//        String encoding = req.getParameter(C_EXPORT_ENCODING);
-//        if (encoding != null) {
-//            cms.getRequestContext().setEncoding(encoding);
-//        }
-//        // return oldMode;     
-//        return 0;     
-//    }
-    
-    /**
-     * Perform an export of the requested JSP page.<p>
-     * 
-     * The export of a JSP is done in the following way:
-     * <ul>
-     * <li>A HttpURLConnection is openend to the address configured in the runtime property with
-     * the name {@link #C_LOADER_JSPEXPORTURL}, which usually should be the current OpenCms server.
-     * <li>The URI of the <code>file</code> is appended to the connection as path information, so
-     * this will be the page requested and exported.
-     * <li>All current request parameters are encoded and also added to the request as parameters.
-     * <li>The currently requested URI is also appended as value of the special parameter {@link
-     * #C_EXPORT_PARAM}.
-     * <li>When processing this special request, the mode of the <code>CmsObject</code> will be
-     * set to <code>C_MODUS_EXPORT</code>, which is the required mode if you want to generate
-     * the result for an export.
-     * <li>All links found while processing the exported JSP will be written in a special header
-     * of the response, called {@link #C_EXPORT_HEADER}.
-     * <li>The response result will be checked for the headers and all links found will be added to
-     * the link vector of the currently processed page.
-     * <li>The content of the resonse will be read into a byte array and returned as result of this
-     * call.
-     * </ul>
-     *  
-     * @param cms provides the current cms context
-     * @param file the JSP file requested
-     * @return the contents of the JSP page for the export
-     * @throws CmsException in case something goes wrong
-     */
-    private byte[] exportJsp(CmsObject cms, CmsFile file) throws CmsException {
-        
-        // check if we are properly initialized
-        if (m_jspExportUrl == null) {
-            throw new CmsException("JSP export URL not set, can not export JSP", CmsException.C_FLEX_LOADER);
-        }
-        
-        ByteArrayOutputStream bytes = null;        
-        CmsRequestContext context = cms.getRequestContext();
-        
-        // generate export URL
-        StringBuffer exportUrl = new StringBuffer(m_jspExportUrl); 
-        exportUrl.append(cms.readAbsolutePath(file));
-        exportUrl.append("?");
-        
-        // add parameters to export call
-        Enumeration params = context.getRequest().getParameterNames();
-        while (params.hasMoreElements()) {
-            String key = (String)params.nextElement();
-            String[] values = context.getRequest().getParameterValues(key);
-            for (int i = 0; i<values.length; i++) {
-                exportUrl.append(key);
-                exportUrl.append("=");
-                exportUrl.append(CmsEncoder.encode(values[i]));
-                exportUrl.append("&");
-            }
-        }
-        // add the export parameter to the request
-        exportUrl.append(C_EXPORT_PARAM);
-        exportUrl.append("=");
-        exportUrl.append(cms.getRequestContext().getUri());
-        // add the original requested body file to the request
-        String body = (String)cms.getRequestContext().getAttribute(I_CmsConstants.C_XML_BODY_ELEMENT);
-        if (body != null) {
-            exportUrl.append("&");
-            exportUrl.append(C_EXPORT_BODY);
-            exportUrl.append("=");
-            exportUrl.append(CmsEncoder.encode(body));            
-        }
-        // add the encoding used for the output page to the request
-        String encoding = cms.getRequestContext().getEncoding();
-        exportUrl.append("&");
-        exportUrl.append(C_EXPORT_ENCODING);
-        exportUrl.append("=");
-        exportUrl.append(CmsEncoder.encode(encoding));        
-        
-        if (DEBUG > 2) {
-            System.err.println("CmsJspLoader.exportJsp(): JSP export URL is " + exportUrl);
-        }
-
-        // perform the export with an URLConnection
-        URL export;
-        HttpURLConnection urlcon;
-        DataInputStream input;
-                
-        try {
-            export = new URL(new String(exportUrl));
-            urlcon = (HttpURLConnection) export.openConnection();
-            // set request type to POST
-            urlcon.setRequestMethod("POST");
-            HttpURLConnection.setFollowRedirects(false);
-            // input and output stream
-            input = new DataInputStream(urlcon.getInputStream());
-            bytes = new ByteArrayOutputStream(urlcon.getContentLength()>0?urlcon.getContentLength():1024);
-        } catch (Exception e) {
-            // all exceptions here will be IO related
-            throw new CmsException("IO related error while exporting JSP for URI " + cms.getRequestContext().getUri(), 
-                CmsException.C_FLEX_LOADER, e);
-        }
-        
-        // check if links are present in the exported page 
-        String cmslinks = urlcon.getHeaderField(C_EXPORT_HEADER);
-        if (cmslinks != null) {
-            // add all the links to the current cms context
-            StringTokenizer tok = new StringTokenizer(cmslinks, C_EXPORT_HEADER_SEP);
-            while (tok.hasMoreTokens()) {
-                String link = CmsEncoder.decode(tok.nextToken());
-                cms.getRequestContext().addLink(link);
-                if (DEBUG > 3) {
-                    System.err.println("CmsJspLoader.exportJsp(): Extracted link " + link);
-                }
-            }
-        }
-        // now read the page content and write it to the byte array
-        try {
-            int b;
-            while ((b = input.read()) > 0) {
-                bytes.write(b);
-            }
-        } catch (IOException e) {
-            throw new CmsException("IO error writing bytes to buffer exporting JSP for URI " + cms.getRequestContext().getUri(),
-                CmsException.C_FLEX_LOADER, e);            
-        }
-
-        return bytes.toByteArray();
-    }
-
-//    /**
-//     * Restores the mode stored in the <code>oldMode</code> paameter to the CmsObject.
-//     * 
-//     * @param cms provides the current cms context
-//     * @param oldMode the old mode to restore in the CmsObject
-//     */
-//    private void exportResetMode(CmsObject cms, int oldMode) {
-//        cms.setMode(oldMode);
-//    }
-
-    /**
-     * Returns the links found in the currently processed page as response headers,
-     * so that the static export can pick them up later.
-     *
-     * @param cms provides the current cms context
-     * @param res the response to set the headers in
-     */
-    private void exportSetLinkHeader(CmsObject cms, HttpServletResponse res) {
-        // get the links found on the page from the current request context
-        Vector v = cms.getRequestContext().getLinkVector();
-        // making the vector a set removes the duplicate entries
-        Set s = new HashSet(v);
-        StringBuffer links = new StringBuffer(s.size() * 64);
-        Iterator i = s.iterator();
-        // build a string out of the found links
-        while (i.hasNext()) {
-            links.append(CmsEncoder.encode((String)i.next()));
-            if (i.hasNext()) {
-                links.append(C_EXPORT_HEADER_SEP);
-            }
-        }
-        // set the export header and we are finished
-        res.setHeader(C_EXPORT_HEADER, new String(links));
-    }
     
     /**
      * @see org.opencms.loader.I_CmsResourceLoader#getLoaderId()
@@ -498,11 +263,9 @@ public class CmsJspLoader implements I_CmsResourceLoader {
         // Get the cache from the runtime properties
         m_cache = (CmsFlexCache)OpenCms.getRuntimeProperty(C_LOADER_CACHENAME);
         // Get the export URL from the runtime properties
-        m_jspExportUrl = (String)OpenCms.getRuntimeProperty(C_LOADER_JSPEXPORTURL);
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) { 
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". JSP Loader           : JSP repository (absolute path): " + m_jspRepository);        
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". JSP Loader           : JSP repository (web application path): " + m_jspWebAppRepository);              
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". JSP Loader           : JSP export URL: " + m_jspExportUrl);
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader init          : " + this.getClass().getName() + " initialized");   
         }
         // Get the "error pages are commited or not" flag from the runtime properties
@@ -610,11 +373,6 @@ public class CmsJspLoader implements I_CmsResourceLoader {
                         // we need to re-encode the output here. 
                         result = CmsEncoder.changeEncoding(result, OpenCms.getDefaultEncoding(), cms.getRequestContext().getEncoding());
 
-                        // Check for export request links 
-                        if (exportmode) {
-                            exportSetLinkHeader(cms, f_res);
-                        }
-
                         // Process headers and write output                                          
                         res.setContentLength(result.length);
                         CmsFlexResponse.processHeaders(f_res.getHeaders(), res);
@@ -668,76 +426,67 @@ public class CmsJspLoader implements I_CmsResourceLoader {
             System.err.println("========== JspLoader (Template) loading: " + cms.readAbsolutePath(file));
         }       
 
-        if (false) {
-            // TODO: Re-implement export code
-            if (DEBUG > 1) {
-                System.err.println("FlexJspLoader.loadTemplate(): Export requested for " + cms.readAbsolutePath(file));
-            }
-            // export the JSP
-            result = exportJsp(cms, file);
-        } else {
-            HttpServletRequest req = (HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();
-            HttpServletResponse res = (HttpServletResponse)cms.getRequestContext().getResponse().getOriginalResponse();             
-                        
-            CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
+        HttpServletRequest req = (HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();
+        HttpServletResponse res = (HttpServletResponse)cms.getRequestContext().getResponse().getOriginalResponse();             
                     
-            CmsFlexRequest f_req; 
-            CmsFlexResponse f_res;
+        CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
+                
+        CmsFlexRequest f_req; 
+        CmsFlexResponse f_res;
+    
+        if (controller != null) {
+            // re-use currently wrapped request / response
+            f_req = controller.getCurrentRequest();
+            f_res = controller.getCurrentResponse();
+        } else {
+            // create new request / response wrappers
+            controller = new CmsFlexController(cms, file, m_cache, req, res);
+            req.setAttribute(CmsFlexController.ATTRIBUTE_NAME, controller);
+            f_req = new CmsFlexRequest(req, controller);
+            f_res = new CmsFlexResponse(res, controller, false, false);
+            controller.pushRequest(f_req);
+            controller.pushResponse(f_res);
+        }
         
-            if (controller != null) {
-                // re-use currently wrapped request / response
-                f_req = controller.getCurrentRequest();
-                f_res = controller.getCurrentResponse();
-            } else {
-                // create new request / response wrappers
-                controller = new CmsFlexController(cms, file, m_cache, req, res);
-                req.setAttribute(CmsFlexController.ATTRIBUTE_NAME, controller);
-                f_req = new CmsFlexRequest(req, controller);
-                f_res = new CmsFlexResponse(res, controller, false, false);
-                controller.pushRequest(f_req);
-                controller.pushResponse(f_res);
+        try {
+            f_req.getRequestDispatcher(cms.readAbsolutePath(file)).include(f_req, f_res);
+        } catch (java.net.SocketException e) {        
+            // Uncritical, might happen if client (browser) does not wait until end of page delivery
+            if (DEBUG > 1) {
+                System.err.println("JspLoader.loadTemplate() ignoring SocketException " + e);
             }
-            
-            try {
-                f_req.getRequestDispatcher(cms.readAbsolutePath(file)).include(f_req, f_res);
-            } catch (java.net.SocketException e) {        
-                // Uncritical, might happen if client (browser) does not wait until end of page delivery
-                if (DEBUG > 1) {
-                    System.err.println("JspLoader.loadTemplate() ignoring SocketException " + e);
+        } catch (Exception e) {            
+            System.err.println("Error in CmsJspLoader.loadTemplate() while loading: " + e.toString());
+            if (DEBUG > 0) {
+                e.printStackTrace(System.err);
+            }
+            throw new CmsException("Error in CmsJspLoader.loadTemplate() while loading " + cms.readAbsolutePath(file) + "\n" + e, CmsException.C_LOADER_ERROR, e);
+        } 
+
+        if (! f_res.isSuspended()) {
+            try {      
+                if ((res == null) || (! res.isCommitted())) {
+                    // If a JSP errorpage was triggered the response will be already committed here
+                    result = f_res.getWriterBytes();                                                
+                    // Encoding project:
+                    // The byte array will internally be encoded in the OpenCms
+                    // default encoding. In case another encoding is set
+                    // in the 'content-encoding' property of the file,
+                    // we need to re-encode the output here
+                    result = CmsEncoder.changeEncoding(result, OpenCms.getDefaultEncoding(), cms.getRequestContext().getEncoding());                                              
                 }
-            } catch (Exception e) {            
-                System.err.println("Error in CmsJspLoader.loadTemplate() while loading: " + e.toString());
+            } catch (IllegalStateException e) {
+                // Uncritical, might happen if JSP error page was used
+                if (DEBUG > 1) {
+                    System.err.println("JspLoader.loadTemplate() ignoring IllegalStateException " + e);
+                }
+            } catch (Exception e) {
+                System.err.println("Error in CmsJspLoader.loadTemplate() while writing buffer to final stream: " + e.toString());
                 if (DEBUG > 0) {
                     e.printStackTrace(System.err);
                 }
-                throw new CmsException("Error in CmsJspLoader.loadTemplate() while loading " + cms.readAbsolutePath(file) + "\n" + e, CmsException.C_LOADER_ERROR, e);
-            } 
-    
-            if (! f_res.isSuspended()) {
-                try {      
-                    if ((res == null) || (! res.isCommitted())) {
-                        // If a JSP errorpage was triggered the response will be already committed here
-                        result = f_res.getWriterBytes();                                                
-                        // Encoding project:
-                        // The byte array will internally be encoded in the OpenCms
-                        // default encoding. In case another encoding is set
-                        // in the 'content-encoding' property of the file,
-                        // we need to re-encode the output here
-                        result = CmsEncoder.changeEncoding(result, OpenCms.getDefaultEncoding(), cms.getRequestContext().getEncoding());                                              
-                    }
-                } catch (IllegalStateException e) {
-                    // Uncritical, might happen if JSP error page was used
-                    if (DEBUG > 1) {
-                        System.err.println("JspLoader.loadTemplate() ignoring IllegalStateException " + e);
-                    }
-                } catch (Exception e) {
-                    System.err.println("Error in CmsJspLoader.loadTemplate() while writing buffer to final stream: " + e.toString());
-                    if (DEBUG > 0) {
-                        e.printStackTrace(System.err);
-                    }
-                    throw new CmsException("Error in CmsJspLoader.loadTemplate() while writing buffer to final stream for " + cms.readAbsolutePath(file) + "\n" + e, CmsException.C_LOADER_ERROR, e);
-                }        
-            }
+                throw new CmsException("Error in CmsJspLoader.loadTemplate() while writing buffer to final stream for " + cms.readAbsolutePath(file) + "\n" + e, CmsException.C_LOADER_ERROR, e);
+            }        
         }
         
         if (DEBUG > 0) {

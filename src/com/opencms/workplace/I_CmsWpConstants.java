@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
-* Date   : $Date: 2003/07/31 13:19:36 $
-* Version: $Revision: 1.130 $
+* Date   : $Date: 2004/02/06 20:52:42 $
+* Version: $Revision: 1.131 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,20 +29,24 @@
 
 package com.opencms.workplace;
 
+import java.util.Locale;
+
 /**
  * Interface defining all constants used in OpenCms
  * workplace classes and elements.
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.130 $ $Date: 2003/07/31 13:19:36 $
+ * @version $Revision: 1.131 $ $Date: 2004/02/06 20:52:42 $
  */
 
 public interface I_CmsWpConstants {
 
-
+    /** Parameter for the default locale */
+    Locale C_DEFAULT_LOCALE = Locale.ENGLISH;    
+    
     /** Parameter for the default language */
-    String C_DEFAULT_LANGUAGE = "en";
+    String C_DEFAULT_LANGUAGE = C_DEFAULT_LOCALE.getLanguage();
     
     /** Parameter for content body folder */
     String C_VFS_PATH_BODIES = "/system/bodies/";
@@ -74,6 +78,13 @@ public interface I_CmsWpConstants {
     /** Path to externallink gallery folder */
     String C_VFS_GALLERY_EXTERNALLINKS = C_VFS_PATH_GALLERIES + "externallinks/";
 
+    /** 
+     * Path to the login folder.<p>
+     * It's important to note that this does NOT end with a / 
+     * as most other path constants do!<p>
+     */
+    String C_VFS_PATH_LOGIN = C_VFS_PATH_SYSTEM + "login";
+    
     /** Path to the workplace */
     String C_VFS_PATH_WORKPLACE = C_VFS_PATH_SYSTEM + "workplace/";
 

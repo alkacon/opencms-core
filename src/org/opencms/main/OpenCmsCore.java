@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/02/05 22:27:14 $
- * Version: $Revision: 1.70 $
+ * Date   : $Date: 2004/02/06 20:52:43 $
+ * Version: $Revision: 1.71 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -99,7 +99,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.70 $
+ * @version $Revision: 1.71 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1331,19 +1331,6 @@ public final class OpenCmsCore {
         // initialize the link manager
         m_linkManager = new CmsLinkManager();
 
-        // read flex jsp export url property and save in runtime configuration
-        String flexExportUrl = configuration.getString(CmsJspLoader.C_LOADER_JSPEXPORTURL, null);
-        if (null != flexExportUrl) {
-            // if JSP export URL is null it will be set in initStartupClasses()
-            if (flexExportUrl.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
-                flexExportUrl = flexExportUrl.substring(0, flexExportUrl.length() - 1);
-            }
-            setRuntimeProperty(CmsJspLoader.C_LOADER_JSPEXPORTURL, flexExportUrl);
-            if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).info(". JSP export URL       : using value from opencms.properties - " + flexExportUrl);
-            }
-        }
-
         // read flex jsp error page commit property and save in runtime configuration
         Boolean flexErrorPageCommit = configuration.getBoolean(CmsJspLoader.C_LOADER_ERRORPAGECOMMIT, new Boolean(true));
         setRuntimeProperty(CmsJspLoader.C_LOADER_ERRORPAGECOMMIT, flexErrorPageCommit);
@@ -1575,12 +1562,12 @@ public final class OpenCmsCore {
 
         // get an Admin cms context object with site root set to "/"
         CmsObject adminCms = initCmsObject(null, null, getDefaultUsers().getUserAdmin(), null);
+        // initialize the workplace manager
+        m_workplaceManager = CmsWorkplaceManager.initialize(configuration, adminCms);
         // initialize the locale manager
         m_localeManager = CmsLocaleManager.initialize(configuration, adminCms);  
         // initialize the site manager
         m_siteManager = CmsSiteManager.initialize(configuration, adminCms);
-        // initialize the workplace manager
-        m_workplaceManager = CmsWorkplaceManager.initialize(configuration, adminCms);
                 
         // initializes the cron manager
         // TODO enable the cron manager
@@ -1996,29 +1983,6 @@ public final class OpenCmsCore {
             if (!webAppNames.contains(context)) {
                 webAppNames.add(context);
                 setRuntimeProperty("compatibility.support.webAppNames", webAppNames);
-            }
-
-            // check for the JSP export URL runtime property
-            String jspExportUrl = (String)getRuntimeProperty(CmsJspLoader.C_LOADER_JSPEXPORTURL);
-            if (jspExportUrl == null) {
-                // not initialized yet, so we use the value from the first request
-                StringBuffer url = new StringBuffer(256);
-                url.append(req.getScheme());
-                url.append("://");
-                url.append(req.getServerName());
-                url.append(":");
-                url.append(req.getServerPort());
-                url.append(context);
-                String flexExportUrl = new String(url);
-                // check if the URL ends with a "/", this is not allowed
-                if (flexExportUrl.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
-                    flexExportUrl = flexExportUrl.substring(0, flexExportUrl.length() - 1);
-                }
-                setRuntimeProperty(CmsJspLoader.C_LOADER_JSPEXPORTURL, flexExportUrl);
-                CmsJspLoader.setJspExportUrl(flexExportUrl);
-                if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                    getLog(CmsLog.CHANNEL_INIT).info(". JSP export URL       : using value from first request - " + flexExportUrl);
-                }
             }
 
             // initialize 1 instance per class listed in the startup node          

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/I_CmsReport.java,v $
- * Date   : $Date: 2004/02/05 08:28:08 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/02/06 20:52:42 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,8 @@
  
 package org.opencms.report;
 
-
 import java.util.List;
+import java.util.Locale;
 
 /** 
  * This is the interface for the report classes which are used for the output
@@ -40,7 +40,7 @@ import java.util.List;
  * like publish, import, export etc.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com) 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public interface I_CmsReport {
         
@@ -71,7 +71,7 @@ public interface I_CmsReport {
      * @param bundleName the name of the resource bundle with localized strings
      * @param locale a 2-letter language code according to ISO 639 
      */
-    void addBundle(String bundleName, String locale);
+    void addBundle(String bundleName, Locale locale);
     
     /**
      * Adds an error object to the list of errors that occured during the report.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2004/02/06 16:44:56 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/02/06 20:52:43 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,22 +30,24 @@
  */
 package org.opencms.db;
 
+import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.workplace.CmsReport;
+
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsUser;
 import com.opencms.workplace.I_CmsWpConstants;
 
-import org.opencms.workplace.CmsReport;
-
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Locale;
 
 /**
  * Object to conveniently access and modify the users workplace settings.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.1.12
  */
@@ -81,6 +83,9 @@ public class CmsUserSettings {
     private String m_town;
     private String m_zipCode;
     private CmsUser m_user;
+    
+    /** Locale to avoid multiple locale constructs out of Strings */
+    private Locale m_locale;
 
     /**
      * Creates an empty new user settings object.<p>
@@ -546,21 +551,25 @@ public class CmsUserSettings {
     }
     
     /** 
-     * Returns the start language of the user.<p>
+     * Returns the locale of the user.<p>
      * 
-     * @return the start language of the user
+     * @return the loclae of the user
      */
-    public String getStartLanguage() {
-        return (String)m_workplaceSettings.get(I_CmsConstants.C_START_LANGUAGE);
+    public Locale getLocale() {
+        if (m_locale == null) {
+            m_locale = CmsLocaleManager.getLocale((String)m_workplaceSettings.get(I_CmsConstants.C_START_LOCALE)); 
+        }
+        return m_locale; 
     }
     
     /**
-     * Sets the start language of the user.<p>
+     * Sets the locale of the user.<p>
      * 
-     * @param language the start language of the user
+     * @param locale the locale of the user
      */
-    public void setStartLanguage(String language) {
-        m_workplaceSettings.put(I_CmsConstants.C_START_LANGUAGE, language);
+    public void setLocale(Locale locale) {
+        m_locale = locale;
+        m_workplaceSettings.put(I_CmsConstants.C_START_LOCALE, locale.toString());
     }
     
     /** 

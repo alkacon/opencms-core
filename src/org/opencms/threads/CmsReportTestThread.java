@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/CmsReportTestThread.java,v $
- * Date   : $Date: 2003/09/08 18:21:28 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/06 20:52:43 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import com.opencms.file.CmsObject;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.1.10
  */
 public class CmsReportTestThread extends A_CmsReportThread {
@@ -57,7 +57,7 @@ public class CmsReportTestThread extends A_CmsReportThread {
     public CmsReportTestThread(CmsObject cms, int count) {
         super(cms, "OpenCms: Report test");
         m_count = count;
-        initHtmlReport();
+        initHtmlReport(cms.getRequestContext().getLocale());
         start();
     }
 

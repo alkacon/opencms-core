@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWorkplaceDefault.java,v $
-* Date   : $Date: 2004/02/05 08:28:07 $
-* Version: $Revision: 1.66 $
+* Date   : $Date: 2004/02/06 20:52:42 $
+* Version: $Revision: 1.67 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import java.util.Vector;
  * Most special workplace classes may extend this class.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.66 $ $Date: 2004/02/05 08:28:07 $
+ * @version $Revision: 1.67 $ $Date: 2004/02/06 20:52:42 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -199,7 +199,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsConstant
         Hashtable startSettings = null;
         startSettings = (Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);
         if(startSettings != null) {
-            currentLanguage = (String)startSettings.get(C_START_LANGUAGE);
+            currentLanguage = startSettings.get(C_START_LOCALE).toString();
         }
         else {
             currentLanguage = C_DEFAULT_LANGUAGE;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/CmsHtmlLinkValidatorThread.java,v $
- * Date   : $Date: 2004/01/28 11:53:52 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/02/06 20:52:43 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import com.opencms.file.CmsResource;
  * A report thread for the HTML link validator.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5 $ $Date: 2004/01/28 11:53:52 $
+ * @version $Revision: 1.6 $ $Date: 2004/02/06 20:52:43 $
  */
 public class CmsHtmlLinkValidatorThread extends A_CmsReportThread {
     
@@ -81,7 +81,7 @@ public class CmsHtmlLinkValidatorThread extends A_CmsReportThread {
         m_savePublishList = false;  
         m_settings = null;
         
-        initHtmlReport();
+        initHtmlReport(cms.getRequestContext().getLocale());
         start();
     }
     
@@ -112,7 +112,7 @@ public class CmsHtmlLinkValidatorThread extends A_CmsReportThread {
         m_savePublishList = true;
         m_settings = settings;
                 
-        initHtmlReport();
+        initHtmlReport(cms.getRequestContext().getLocale());
         start();
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2004/02/05 08:28:08 $
- * Version: $Revision: 1.285 $
+ * Date   : $Date: 2004/02/06 20:52:43 $
+ * Version: $Revision: 1.286 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.285 $ $Date: 2004/02/05 08:28:08 $
+ * @version $Revision: 1.286 $ $Date: 2004/02/06 20:52:43 $
  */
 public interface I_CmsConstants {
 
@@ -710,7 +710,7 @@ public interface I_CmsConstants {
     String C_TASK_MESSAGES = "TaskMessages";
 
     /** Start preferenses Language */
-    String C_START_LANGUAGE = "StartLanguage";
+    String C_START_LOCALE = "StartLanguage";
 
     /** Start preferenses Project */
     String C_START_PROJECT = "StartProject";

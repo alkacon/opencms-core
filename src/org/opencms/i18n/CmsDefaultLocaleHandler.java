@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsDefaultLocaleHandler.java,v $
- * Date   : $Date: 2004/02/05 22:27:14 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/02/06 20:52:43 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Locale;
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com) 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  */
 public class CmsDefaultLocaleHandler implements I_CmsLocaleHandler {
 
@@ -68,18 +68,18 @@ public class CmsDefaultLocaleHandler implements I_CmsLocaleHandler {
     /**
      * @see org.opencms.i18n.I_CmsLocaleHandler#getLocale(com.opencms.file.CmsRequestContext)
      */
-    public Locale getLocale(CmsRequestContext context) {
-        CmsLocaleManager localeManager = OpenCms.getLocaleManager();
-        
+    public Locale getLocale(CmsRequestContext context) {        
         // get resource name (internal "Admin" cms object is in "/" site so adjust name to full path)
         String resourceName = context.addSiteRoot(context.getUri());
 
+        CmsLocaleManager localeManager = OpenCms.getLocaleManager();
+        
         List defaultLocales = null;
         synchronized (m_adminCmsObject) {
             // must switch project id in stored Admin context to match current project
             try {
                 m_adminCmsObject.getRequestContext().setCurrentProject(context.currentProject().getId());            
-                // now get default locale names
+                // now get default m_locale names
                 defaultLocales = localeManager.getDefaultLocales(m_adminCmsObject, resourceName);
             } catch (CmsException e) {
                 OpenCms.getLog(this).error("Error switching admin context project", e);
@@ -92,5 +92,5 @@ public class CmsDefaultLocaleHandler implements I_CmsLocaleHandler {
         } else {
             return localeManager.getDefaultLocale();
         }
-    }
+    }        
 }

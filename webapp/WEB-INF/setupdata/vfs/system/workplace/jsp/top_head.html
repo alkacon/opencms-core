@@ -25,7 +25,7 @@
         window.top.body.location.href = link;
     }
     
-    var localePrefix = "../help/<%= wp.getSettings().getLanguage() %>/";
+    var localePrefix = "../help/<%= wp.getLocale() %>/";
 	var helpUrl = "index.html"; 
     
     function openHelp() {

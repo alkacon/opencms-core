@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsMessages.java,v $
- * Date   : $Date: 2004/02/05 08:28:08 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/06 20:52:43 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.ResourceBundle;
  * that can be checked to see if the instance was properly initialized.
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.0 beta 2
  */
@@ -65,7 +65,7 @@ public class CmsMessages extends Object {
      * Constructor for the messages with an initialized <code>java.util.Locale</code>.
      * 
      * @param baseName the base ResourceBundle name
-     * @param locale the locale to use, eg. "de", "en" etc.
+     * @param locale the m_locale to use, eg. "de", "en" etc.
      */
     public CmsMessages(String baseName, Locale locale) {
         try {
@@ -85,7 +85,7 @@ public class CmsMessages extends Object {
      * <code>new Locale(language, "", "")</code>.<p>
      * 
      * @param baseName the base ResourceBundle name
-     * @param language ISO language indentificator for the locale of the bundle
+     * @param language ISO language indentificator for the m_locale of the bundle
      */
     public CmsMessages(String baseName, String language) {
         this(baseName, language, "", "");      
@@ -101,8 +101,8 @@ public class CmsMessages extends Object {
      * <code>new Locale(language, country, "")</code>.
      * 
      * @param baseName the base ResourceBundle name
-     * @param language ISO language indentificator for the locale of the bundle
-     * @param country ISO 2 letter country code for the locale of the bundle 
+     * @param language ISO language indentificator for the m_locale of the bundle
+     * @param country ISO 2 letter country code for the m_locale of the bundle 
      */
     public CmsMessages(String baseName, String language, String country) {
         this(baseName, language, country, "");              
@@ -119,8 +119,8 @@ public class CmsMessages extends Object {
      * <code>new Locale(language, country, variant)</code>.
      * 
      * @param baseName the base ResourceBundle name
-     * @param language language indentificator for the locale of the bundle
-     * @param country 2 letter country code for the locale of the bundle 
+     * @param language language indentificator for the m_locale of the bundle
+     * @param country 2 letter country code for the m_locale of the bundle 
      * @param variant a vendor or browser-specific variant code
      */    
     public CmsMessages(String baseName, String language, String country, String variant) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/A_CmsReportThread.java,v $
- * Date   : $Date: 2004/01/22 14:03:35 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/02/06 20:52:42 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,19 +31,19 @@
  
 package org.opencms.report;
 
-import com.opencms.file.CmsObject;
-import com.opencms.workplace.CmsXmlLanguageFile;
-
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 
+import com.opencms.file.CmsObject;
+
 import java.util.List;
+import java.util.Locale;
 
 /** 
  * Provides a common Thread class for the reports.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com) 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public abstract class A_CmsReportThread extends Thread {
 
@@ -182,9 +182,10 @@ public abstract class A_CmsReportThread extends Thread {
         
     /**
      * Initialize a HTML report for this Thread.<p>
+     * 
+     * @param locale the locale for the report output messages
      */
-    protected void initHtmlReport() {
-        String locale = CmsXmlLanguageFile.getCurrentUserLanguage(m_cms);
+    protected void initHtmlReport(Locale locale) {
         m_report = new CmsHtmlReport(locale);
     }
     
@@ -193,19 +194,20 @@ public abstract class A_CmsReportThread extends Thread {
      * 
      * This method is reserved for older report threads that still use
      * XML templates to generate their output.<p>
+     * 
+     * @param locale the locale for the report output messages
      */
-    protected void initOldHtmlReport() {
-        String locale = CmsXmlLanguageFile.getCurrentUserLanguage(m_cms);
+    protected void initOldHtmlReport(Locale locale) {
         m_report = new CmsHtmlReport(locale, true);
     }    
     
     /**
      * Initialize a HTML report for this Thread with a specified resource bundle.<p>
      * 
+     * @param locale the locale for the report output messages
      * @param bundleName the name of the resource bundle with localized strings
      */
-    protected void initHtmlReport(String bundleName) {
-        String locale = CmsXmlLanguageFile.getCurrentUserLanguage(m_cms);
+    protected void initHtmlReport(Locale locale, String bundleName) {
         m_report = new CmsHtmlReport(bundleName, locale);
     }    
     

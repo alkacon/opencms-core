@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2004/02/04 15:48:16 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/06 20:52:43 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,9 @@
 
 package org.opencms.workplace;
 
-import com.opencms.file.CmsObject;
-
+import org.opencms.i18n.CmsAcceptLanguageHeaderParser;
+import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.i18n.I_CmsLocaleHandler;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.main.OpenCmsCore;
@@ -40,11 +41,17 @@ import org.opencms.workplace.editor.CmsWorkplaceEditorManager;
 import org.opencms.workplace.editor.I_CmsEditorActionHandler;
 import org.opencms.workplace.editor.I_CmsEditorHandler;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.file.CmsFolder;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsRequestContext;
+import com.opencms.workplace.I_CmsWpConstants;
+
+import java.util.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.collections.ExtendedProperties;
 
@@ -55,11 +62,11 @@ import org.apache.commons.collections.ExtendedProperties;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.3.1
  */
-public final class CmsWorkplaceManager {
+public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     
     private boolean m_autoLockResources;
     private Map m_dialogHandler;
@@ -71,6 +78,9 @@ public final class CmsWorkplaceManager {
     private boolean m_showUserGroupIcon;
     private CmsWorkplaceEditorManager m_editorManager;
     
+    /** Set of installed workplace locales */
+    private Set m_locales;
+    
     /**
      * Creates an initialized instance and fills all member variables with their configuration values.<p>
      * 
@@ -78,7 +88,7 @@ public final class CmsWorkplaceManager {
      * @param cms an OpenCms context object that must have been initialized with "Admin" permissions
      * @throws Exception if a configuration goes wrong
      */
-    public CmsWorkplaceManager(ExtendedProperties configuration, CmsObject cms) throws Exception {
+    private CmsWorkplaceManager(ExtendedProperties configuration, CmsObject cms) throws Exception {
         // initialize "dialoghandler" registry classes
         try {
             List dialogHandlerClasses = OpenCms.getRegistry().getDialogHandler();
@@ -174,6 +184,108 @@ public final class CmsWorkplaceManager {
         
         // initialize the workplace editor manager
         m_editorManager = new CmsWorkplaceEditorManager(cms);
+        
+        initHandler(cms);
+    }
+
+    /**
+     * @see org.opencms.i18n.I_CmsLocaleHandler#initHandler(com.opencms.file.CmsObject)
+     */
+    public void initHandler(CmsObject cms) {
+        // initialize the workplace locale set
+        m_locales = initWorkplaceLocales(cms);
+    }    
+    
+    /**
+     * @see org.opencms.i18n.I_CmsLocaleHandler#getLocale(com.opencms.file.CmsRequestContext)
+     */
+    public Locale getLocale(CmsRequestContext context) {
+        
+        // try to read locale from session
+        HttpServletRequest req = (HttpServletRequest)context.getRequest().getOriginalRequest();
+        HttpSession session = req.getSession(false);
+        if (session != null) {
+            CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplace.C_SESSION_WORKPLACE_SETTINGS);
+            if (settings != null) {
+                return settings.getUserSettings().getLocale();
+            }
+        }        
+        
+        // no session available, try to read the locale form the user additional info
+        Locale locale = null;
+        if (! context.currentUser().isGuestUser()) {
+            // check user settings only for "real" users
+            Hashtable userInfo = (Hashtable)context.currentUser().getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_STARTSETTINGS);  
+            if (userInfo != null) {
+                locale = CmsLocaleManager.getLocale((String)userInfo.get(I_CmsConstants.C_START_LOCALE));
+            }    
+        }
+        List acceptedLocales = (new CmsAcceptLanguageHeaderParser(req)).getAcceptedLocales();
+        if ((locale != null) && (! acceptedLocales.contains(locale))) {
+            acceptedLocales.add(0, locale);
+        }
+        locale = OpenCms.getLocaleManager().getFirstMatchingLocale(acceptedLocales, m_locales);
+        
+        // if no locale was found, use the default
+        if (locale == null) {
+            locale = getDefaultLocale();
+        }
+        return locale;
+    }
+    
+    /**
+     * Initilizes the workplace locale set.<p>
+     * 
+     * Currently, this is defined by the existence of a special folder 
+     * <code>/system/workplace/locales/{locale-name}/".
+     * This is likley to change in future implementations.
+     * 
+     * @param cms an OpenCms context object that must have been initialized with "Admin" permissions
+     * @return the workplace locale set
+     */
+    private Set initWorkplaceLocales(CmsObject cms) {
+        m_locales = new HashSet();
+        List localeFolders;
+        try {
+            localeFolders = cms.getSubFolders(I_CmsWpConstants.C_VFS_PATH_LOCALES);
+        } catch (CmsException e) {
+            OpenCms.getLog(this).error("Unable to read locales folder " + I_CmsWpConstants.C_VFS_PATH_LOCALES, e);
+            localeFolders = new ArrayList();
+        }
+        Iterator i = localeFolders.iterator();
+        while (i.hasNext()) {
+            CmsFolder folder = (CmsFolder)i.next();
+            Locale locale = CmsLocaleManager.getLocale(folder.getName());
+            // add locale
+            m_locales.add(locale);
+            // TODO: Check if it's a good idea to add the general locales here automatically like this: 
+            // add less specialized locale
+            m_locales.add(new Locale(locale.getLanguage(), locale.getCountry()));    
+            // add even less specialized locale            
+            m_locales.add(new Locale(locale.getLanguage()));         
+        }        
+        return m_locales;
+    }
+    
+    /**
+     * Returns the set of available workplace locales.<p>
+     * 
+     * Please note: Be careful not to modify the returned Set as it is not a clone.<p>
+     * 
+     * @return the set of available workplace locales
+     */
+    public Set getLocales() {
+        return m_locales;        
+    }
+    
+    /**
+     * Returns the Workplace default locale.<p>
+     * 
+     * @return  the Workplace default locale
+     */
+    public Locale getDefaultLocale() {
+        // TODO: This should be made configurable
+        return I_CmsWpConstants.C_DEFAULT_LOCALE;
     }
     
     /**
@@ -278,5 +390,4 @@ public final class CmsWorkplaceManager {
     public boolean showUserGroupIcon() {
         return m_showUserGroupIcon;
     }
-
 }

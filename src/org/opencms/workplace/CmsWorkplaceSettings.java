@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2004/02/04 15:48:16 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2004/02/06 20:52:43 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,12 +30,12 @@
  */
 package org.opencms.workplace;
 
-import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsUser;
-
 import org.opencms.db.CmsPublishList;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.main.OpenCms;
+
+import com.opencms.core.I_CmsConstants;
+import com.opencms.file.CmsUser;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -45,7 +45,7 @@ import java.util.Map;
  * will be stored in the session of a user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  * @since 5.1
  */
 public class CmsWorkplaceSettings {
@@ -53,14 +53,13 @@ public class CmsWorkplaceSettings {
     private String m_currentSite;
     private String m_explorerFlaturl;
     private String m_explorerMode;
-
     private int m_explorerPage;
+    
     private String m_explorerProjectFilter;
     private int m_explorerProjectId;
     private String m_explorerResource;
     private boolean m_explorerShowLinks;
 
-    private String m_language;
     private CmsWorkplaceMessages m_messages;
     private String m_permissionDetailView;
     private int m_project;
@@ -69,6 +68,7 @@ public class CmsWorkplaceSettings {
     private Map m_resourceTypes;
     private Map m_treeSite;
     private Map m_treeType;
+    
     private CmsUser m_user;
     private CmsUserSettings m_userSettings;
     private String m_viewUri;
@@ -151,15 +151,6 @@ public class CmsWorkplaceSettings {
      */
     public boolean getExplorerShowLinks() {
         return m_explorerShowLinks;
-    }
-
-    /**
-     * Returns the currently selected user language.<p>
-     * 
-     * @return the currently selected user language
-     */
-    public String getLanguage() {
-        return m_language;
     }
 
     /**
@@ -355,15 +346,6 @@ public class CmsWorkplaceSettings {
      */
     public synchronized void setExplorerShowLinks(boolean b) {
         m_explorerShowLinks = b;
-    }
-
-    /**
-     * Sets the selected user language.<p>
-     * 
-     * @param value the selected user language
-     */
-    public synchronized void setLanguage(String value) {
-        m_language = value;
     }
 
     /**

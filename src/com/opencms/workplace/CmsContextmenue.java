@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsContextmenue.java,v $
-* Date   : $Date: 2003/07/31 13:19:36 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2004/02/06 20:52:42 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.w3c.dom.NodeList;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ICON&gt;</code>.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.17 $ $Date: 2003/07/31 13:19:36 $
+ * @version $Revision: 1.18 $ $Date: 2004/02/06 20:52:42 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -83,24 +83,24 @@ public class CmsContextmenue extends A_CmsWpElement implements I_CmsWpElement {
 
             // get the current langueag
             Hashtable startSettings = null;
-            String currentLanguage = null;
+            String currentLocale = null;
             startSettings = (Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_STARTSETTINGS);
 
             // try to read it form the user additional info
             if(startSettings != null) {
-                currentLanguage = (String)startSettings.get(I_CmsConstants.C_START_LANGUAGE);
+                currentLocale = startSettings.get(I_CmsConstants.C_START_LOCALE).toString();
             }
 
             // if no language was found so far, set it to default
-            if(currentLanguage == null) {
-                currentLanguage = C_DEFAULT_LANGUAGE;
+            if(currentLocale == null) {
+                currentLocale = C_DEFAULT_LANGUAGE;
             }
 
             // create the result
             StringBuffer result = new StringBuffer();
 
             // check if this contextmenu is already cached
-            output = (String)m_storage.get(currentLanguage + name + cms.getRequestContext().getUri());
+            output = (String)m_storage.get(currentLocale + name + cms.getRequestContext().getUri());
             if(output == null) {
 
                 // Get list definition and language values
@@ -148,7 +148,7 @@ public class CmsContextmenue extends A_CmsWpElement implements I_CmsWpElement {
                 result.append(context.getProcessedDataValue("CONTEXTFOOT", callingObject,
                         parameters));
                 output = result.toString();
-                m_storage.put(currentLanguage + name + cms.getRequestContext().getUri(), output);
+                m_storage.put(currentLocale + name + cms.getRequestContext().getUri(), output);
             }
         }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsHtmlReport.java,v $
- * Date   : $Date: 2004/02/05 08:28:08 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/02/06 20:52:42 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import com.opencms.core.CmsException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.StringTokenizer;
 
 /**
@@ -46,7 +47,7 @@ import java.util.StringTokenizer;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class CmsHtmlReport extends A_CmsReport {
     
@@ -78,10 +79,10 @@ public class CmsHtmlReport extends A_CmsReport {
      * Constructs a new report using the provided locale and the default OpenCms 
      * workplace resource bundle for the output language.<p>
      * 
-     * @param locale a 2-letter language code according to ISO 639
+     * @param locale a locale to use for the output language
      * @see I_CmsReport#C_BUNDLE_NAME 
      */    
-    public CmsHtmlReport(String locale) {
+    public CmsHtmlReport(Locale locale) {
         this(C_BUNDLE_NAME, locale, false);
     }
     
@@ -93,11 +94,11 @@ public class CmsHtmlReport extends A_CmsReport {
      * XML templates to generate their output. It allows to specifiy to write 
      * HTML instead of JavaScript output.<p>
      * 
-     * @param locale a 2-letter language code according to ISO 639
+     * @param locale the locale to use for the report output messages
      * @param writeHtml true, if this report should generate HTML instead of JavaScript output
      * @see I_CmsReport#C_BUNDLE_NAME 
      */    
-    public CmsHtmlReport(String locale, boolean writeHtml) {
+    public CmsHtmlReport(Locale locale, boolean writeHtml) {
         this(C_BUNDLE_NAME, locale, writeHtml);
     }    
     
@@ -105,10 +106,10 @@ public class CmsHtmlReport extends A_CmsReport {
      * Constructs a new report using the provided locale and resource bundle
      * for the output language.<p>
      * 
-     * @param locale a 2-letter language code according to ISO 639 
+     * @param locale the locale to use for the report output messages
      * @param bundleName the name of the resource bundle with localized strings
      */    
-    public CmsHtmlReport(String bundleName, String locale) {
+    public CmsHtmlReport(String bundleName, Locale locale) {
         this(bundleName, locale, false);
     }
     
@@ -121,10 +122,10 @@ public class CmsHtmlReport extends A_CmsReport {
      * HTML instead of JavaScript output.<p>
      *  
      * @param bundleName the name of the resource bundle with localized strings
-     * @param locale a 2-letter language code according to ISO 639 
+     * @param locale the locale to use for the report output messages
      * @param writeHtml true, if this report should generate HTML instead of JavaScript output
      */
-    protected CmsHtmlReport(String bundleName, String locale, boolean writeHtml) {
+    protected CmsHtmlReport(String bundleName, Locale locale, boolean writeHtml) {
         init();
         addBundle(bundleName, locale);
         

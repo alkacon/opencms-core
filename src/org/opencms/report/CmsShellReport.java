@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsShellReport.java,v $
- * Date   : $Date: 2004/01/22 14:03:35 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/02/06 20:52:42 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,13 +33,15 @@ package org.opencms.report;
 
 import com.opencms.workplace.I_CmsWpConstants;
 
+import java.util.Locale;
+
 /**
  * Report class used for the shell.<p>
  * 
  * It stores nothing. It just prints everthing to <code>System.out</code>.
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)  
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class CmsShellReport extends A_CmsReport {
         
@@ -49,18 +51,18 @@ public class CmsShellReport extends A_CmsReport {
      * @see java.lang.Object#Object()
      */
     public CmsShellReport() {
-        // generate a message object with the default (english) language
-        this(C_BUNDLE_NAME, I_CmsWpConstants.C_DEFAULT_LANGUAGE);    
+        // generate a message object with the default (english) locale
+        this(C_BUNDLE_NAME, I_CmsWpConstants.C_DEFAULT_LOCALE);    
     }
 
     /**
      * Constructs a new report using the provided locale and resource bundle
      * for the output language.<p>
      * 
-     * @param locale a 2-letter language code according to ISO 639 
+     * @param locale the locale to use for the report output messages
      * @param bundleName the name of the resource bundle with localized strings
      */      
-    public CmsShellReport(String bundleName, String locale) {
+    public CmsShellReport(String bundleName, Locale locale) {
         init();     
         addBundle(bundleName, locale);
     }

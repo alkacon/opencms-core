@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLoginNew.java,v $
- * Date   : $Date: 2004/02/05 08:28:07 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2004/02/06 20:52:42 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  */
 
 public class CmsLoginNew extends CmsXmlTemplate {
@@ -179,14 +179,12 @@ public class CmsLoginNew extends CmsXmlTemplate {
                 preferences = getDefaultPreferences();
             }
             // check of the users language setting (if he has one)
-            session.removeValue(I_CmsConstants.C_START_LANGUAGE);
-            String language = CmsXmlLanguageFile.getCurrentUserLanguage(cms);
+            session.removeValue(I_CmsConstants.C_START_LOCALE);
             
-            if (DEBUG > 1) System.err.println("CmsLoginNew: language: " + language);
-            preferences.put(I_CmsConstants.C_START_LANGUAGE, language);
+            preferences.put(I_CmsConstants.C_START_LOCALE, cms.getRequestContext().getLocale().toString());
             session.putValue(I_CmsConstants.C_ADDITIONAL_INFO_PREFERENCES, preferences);    
 
-            langFile = new CmsXmlLanguageFile(cms, language);
+            langFile = new CmsXmlLanguageFile(cms, cms.getRequestContext().getLocale().getLanguage());
             if (DEBUG > 1) System.err.println("CmsLoginNew: encoding: " + langFile.getEncoding());           
             cms.getRequestContext().setEncoding(langFile.getEncoding(), true);        
             

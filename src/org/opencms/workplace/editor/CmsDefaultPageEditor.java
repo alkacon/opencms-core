@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2004/02/05 22:27:14 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2004/02/06 20:52:43 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  * 
  * @since 5.1.12
  */
@@ -244,7 +244,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
             // create the list of options and values
             Locale curLocale = (Locale)locales.get(counter);
             selectList.add(curLocale.toString());
-            options.add(curLocale.getDisplayName(new Locale(getSettings().getLanguage())));
+            options.add(curLocale.getDisplayName(getLocale()));
             if (curLocale.equals(getElementLocale())) {
                 // set the selected index of the selector
                 currentIndex = counter;

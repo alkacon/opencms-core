@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/A_CmsReport.java,v $
- * Date   : $Date: 2004/02/05 08:28:08 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/02/06 20:52:42 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,13 +35,14 @@ import org.opencms.i18n.CmsMessages;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Base report class.<p> 
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)  
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public abstract class A_CmsReport implements I_CmsReport {
     
@@ -64,9 +65,9 @@ public abstract class A_CmsReport implements I_CmsReport {
     private List m_errors = new ArrayList();
     
     /**
-     * @see org.opencms.report.I_CmsReport#addBundle(java.lang.String, java.lang.String)
+     * @see org.opencms.report.I_CmsReport#addBundle(String, Locale)
      */
-    public void addBundle(String bundleName, String locale) {
+    public void addBundle(String bundleName, Locale locale) {
         CmsMessages msg = new CmsMessages(bundleName, locale);
         if (m_messages.contains(msg)) {
             m_messages.remove(msg);

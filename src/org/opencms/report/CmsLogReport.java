@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsLogReport.java,v $
- * Date   : $Date: 2004/01/22 14:03:35 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/02/06 20:52:42 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,13 +35,15 @@ import org.opencms.main.OpenCms;
 
 import com.opencms.workplace.I_CmsWpConstants;
 
+import java.util.Locale;
+
 /**
  * Report class used for the logfile.<p>
  * 
  * This prints all messages in the logfile at INFO level.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)  
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsLogReport extends A_CmsReport {
 
@@ -57,18 +59,18 @@ public class CmsLogReport extends A_CmsReport {
      * @see java.lang.Object#Object()
      */
     public CmsLogReport() {
-        // generate a message object with the default (english) language
-        this(C_BUNDLE_NAME, I_CmsWpConstants.C_DEFAULT_LANGUAGE);    
+        // generate a message object with the default (english) locale
+        this(C_BUNDLE_NAME, I_CmsWpConstants.C_DEFAULT_LOCALE);    
     }
 
     /**
      * Constructs a new report using the provided locale and resource bundle
      * for the output language.<p>
      * 
-     * @param locale a 2-letter language code according to ISO 639 
+     * @param locale the locale to use for the report output messages
      * @param bundleName the name of the resource bundle with localized strings
      */      
-    public CmsLogReport(String bundleName, String locale) {
+    public CmsLogReport(String bundleName, Locale locale) {
         this(bundleName, locale, CmsLogReport.class);        
     }
     
@@ -77,11 +79,11 @@ public class CmsLogReport extends A_CmsReport {
      * Constructs a new report using the provided locale and resource bundle
      * for the output language.<p>
      * 
-     * @param locale a 2-letter language code according to ISO 639 
+     * @param locale the locale to use for the report output messages
      * @param bundleName the name of the resource bundle with localized strings
      * @param clazz the the class for the logger channel 
      */      
-    public CmsLogReport(String bundleName, String locale, Class clazz) {
+    public CmsLogReport(String bundleName, Locale locale, Class clazz) {
         init();
         addBundle(bundleName, locale);
         m_buffer = new StringBuffer();

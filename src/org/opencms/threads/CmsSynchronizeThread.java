@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/CmsSynchronizeThread.java,v $
- * Date   : $Date: 2003/09/11 12:45:37 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/02/06 20:52:43 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Vector;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.1.10
  */
 public class CmsSynchronizeThread extends A_CmsReportThread {
@@ -63,7 +63,7 @@ public class CmsSynchronizeThread extends A_CmsReportThread {
     public CmsSynchronizeThread(CmsObject cms, Vector resources) {
         super(cms, "OpenCms: Synchronizing to project " + cms.getRequestContext().currentProject().getName());
         m_resources = resources;
-        initHtmlReport();
+        initHtmlReport(cms.getRequestContext().getLocale());
         start();
     }
     

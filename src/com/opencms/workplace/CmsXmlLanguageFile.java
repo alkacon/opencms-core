@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlLanguageFile.java,v $
-* Date   : $Date: 2004/02/05 08:28:07 $
-* Version: $Revision: 1.55 $
+* Date   : $Date: 2004/02/06 20:52:42 $
+* Version: $Revision: 1.56 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ package com.opencms.workplace;
  * been changed to use the standard <code>java.util.ResouceBundle</code> technology.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.55 $ $Date: 2004/02/05 08:28:07 $
+ * @version $Revision: 1.56 $ $Date: 2004/02/06 20:52:42 $
  */
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.OpenCms;
@@ -257,62 +257,12 @@ public class CmsXmlLanguageFile {
     }
         
     /**
-     * Returns the language set for the current user.<p>
-     * 
-     * This is look up in the following places:<ol>
-     * <li>the current users session
-     * <li>the current users workplace preferences
-     * <li>the current users browser settings</ol>
-     * 
-     * If a result is found it is stored in the users session.<p>
+     * Returns the Workplace locale setting of the current user.<p>
      * 
      * @param cms for accessing system resources
-     * @return 2-letter ISO code of the preferred language (e.g. "en", "de", ...)
+     * @return the locale of the current user as a String (e.g. "en", "de", ...)
      */
     public static String getCurrentUserLanguage(CmsObject cms) {
-        // check out the which language is to be used as default
-        String currentLanguage = null;                                   
-        I_CmsSession session = cms.getRequestContext().getSession(false);
-        // check if there is a session        
-        if (session != null) {
-            // if so, try to read users current language from the session
-            currentLanguage = (String)session.getValue(I_CmsConstants.C_START_LANGUAGE); 
-        }                 
-        if (currentLanguage == null) {
-            if (DEBUG > 1) System.err.println("CmsXmlLanguageFile.getCurrentUserLanguage(): language not found in session");
-            // language is not stored in the session yet, must check it out the hard way
-            Hashtable startSettings =
-                (Hashtable) cms.getRequestContext().currentUser().getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_STARTSETTINGS);  
-            // try to read it form the user additional info
-            if (startSettings != null) {
-                currentLanguage = (String) startSettings.get(I_CmsConstants.C_START_LANGUAGE);
-            }    
-            // no startup language in user settings found, so check the users browser locale settings
-            if (currentLanguage == null) {
-                if (DEBUG > 1) System.err.println("CmsXmlLanguageFile.getCurrentUserLanguage(): language not found in user preferences");        
-                Vector language = cms.getRequestContext().getAcceptedLanguages();
-                int numlangs = language.size();
-                for (int i = 0; i < numlangs; i++) {
-                    String lang = (String) language.elementAt(i);
-                    try {
-                        cms.readFolder(I_CmsWpConstants.C_VFS_PATH_LOCALES + lang);
-                        currentLanguage = lang;
-                        break;
-                    } catch (CmsException e) {
-                        // browser language is not supported in OpenCms, continue looking
-                    }
-                }
-            }
-            // if no language was found so far, set it to the default language
-            if (currentLanguage == null) {
-                if (DEBUG > 1) System.err.println("CmsXmlLanguageFile.getCurrentUserLanguage(): language not found at all (using default)");        
-                currentLanguage = I_CmsWpConstants.C_DEFAULT_LANGUAGE;
-            }
-            // store language in session
-            if (session != null) {
-                session.putValue(I_CmsConstants.C_START_LANGUAGE, currentLanguage);
-            }
-        }
-        return currentLanguage;
+        return cms.getRequestContext().getLocale().toString();
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsTouch.java,v $
- * Date   : $Date: 2004/01/06 17:06:05 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/02/06 20:52:43 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 5.1
  */
@@ -191,7 +191,7 @@ public class CmsTouch extends CmsDialog {
      */
     public String getCurrentDateTime() {
         // get the current date & time 
-        Locale locale = new Locale(getSettings().getLanguage());
+        Locale locale = getLocale();
         TimeZone zone = TimeZone.getDefault();
         GregorianCalendar cal = new GregorianCalendar(zone, locale);
         cal.setTimeInMillis(System.currentTimeMillis());

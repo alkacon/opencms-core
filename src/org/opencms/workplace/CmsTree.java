@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsTree.java,v $
- * Date   : $Date: 2004/01/30 16:49:27 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/02/06 20:52:43 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,6 +30,11 @@
  */
 package org.opencms.workplace;
 
+import org.opencms.main.OpenCms;
+import org.opencms.site.CmsSite;
+import org.opencms.site.CmsSiteManager;
+import org.opencms.util.CmsUUID;
+
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsFolder;
@@ -40,14 +45,10 @@ import com.opencms.file.I_CmsResourceType;
 import com.opencms.flex.jsp.CmsJspActionElement;
 import com.opencms.workplace.I_CmsWpConstants;
 
-import org.opencms.main.OpenCms;
-import org.opencms.site.CmsSite;
-import org.opencms.site.CmsSiteManager;
-import org.opencms.util.CmsUUID;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
@@ -62,7 +63,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 5.1
  */
@@ -114,8 +115,9 @@ public class CmsTree extends CmsWorkplace {
         String servletUrl = cms.getRequestContext().getRequest().getServletUrl();
         
         // get the localized workplace messages
-        String language = initUserLanguage(cms);
-        CmsWorkplaceMessages messages = new CmsWorkplaceMessages(cms, language);
+        // TODO: Why a new message object, can it not be obtained from session?
+        Locale locale = cms.getRequestContext().getLocale();
+        CmsWorkplaceMessages messages = new CmsWorkplaceMessages(cms, locale);
         
         retValue.append("function initTreeResources() {\n");
         retValue.append("\tinitResources(\"" + encoding + "\", \"" + C_PATH_WORKPLACE + "\", \"" + skinUri + "\", \"" + servletUrl + "\");\n");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleManager.java,v $
- * Date   : $Date: 2004/02/05 22:27:14 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/02/06 20:52:43 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -54,38 +55,38 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsLocaleManager {
     
-    /** Runtime property name for locale handler */
+    /** Runtime property name for m_locale handler */
     public static final String C_LOCALE_HANDLER = "class_locale_handler";
 
-    /** The set of available locale names */
+    /** The set of available m_locale names */
     private List m_availableLocales;
     
-    /** The default locale, this is the first configured locale */
+    /** The default m_locale, this is the first configured m_locale */
     private Locale m_defaultLocale;
     
-    /** The default locale names (must be a subset of the available locale names) */
+    /** The default m_locale names (must be a subset of the available m_locale names) */
     private List m_defaultLocales;    
     
-    /** The configured locale handler */
+    /** The configured m_locale handler */
     private I_CmsLocaleHandler m_localeHandler;
     
-    /** A cache for accelerated locale lookup, this should never get so large to require a "real" cache */
+    /** A cache for accelerated m_locale lookup, this should never get so large to require a "real" cache */
     private static Map m_localeCache = new HashMap();
     
     /**
      * Initializes the CmsLocaleManager with the provided values.<p>
      *
-     * @param localeHandler the configured locale handler
+     * @param localeHandler the configured m_locale handler
      * @param availableLocales the available (i.e. allowed) locales
      * @param defaultLocales the default locales
      */
     public CmsLocaleManager(I_CmsLocaleHandler localeHandler, List availableLocales, List defaultLocales) {
 
-        // set the locale handler
+        // set the m_locale handler
         m_localeHandler = localeHandler;    
         
         // set available locales
@@ -111,18 +112,18 @@ public class CmsLocaleManager {
         // set default locales
         m_defaultLocales = checkLocaleNames(defaultLocales);
         
-        // set default locale 
+        // set default m_locale 
         m_defaultLocale = (Locale)m_defaultLocales.get(0);        
     }
     
     /**
-     * Returns a locale created from the given full name.<p>
+     * Returns a m_locale created from the given full name.<p>
      * 
      * The full name must consist of language code, 
      * country code(optional), variant(optional) separated by "_".<p>
      * 
-     * @param localeName the full locale name
-     * @return the locale or <code>null</code> if not available
+     * @param localeName the full m_locale name
+     * @return the m_locale or <code>null</code> if not available
      */
     public static Locale getLocale(String localeName) {
         Locale locale;
@@ -141,10 +142,10 @@ public class CmsLocaleManager {
     }    
     
     /**
-     * Returns a List of locales from a comma-separated string of locale names.<p>
+     * Returns a List of locales from a comma-separated string of m_locale names.<p>
      * 
-     * @param localeNames a comma-separated string of locale names
-     * @return a List of locales derived from the given locale names
+     * @param localeNames a comma-separated string of m_locale names
+     * @return a List of locales derived from the given m_locale names
      */
     public static List getLocales(String localeNames) {        
         if (localeNames == null) {
@@ -154,10 +155,10 @@ public class CmsLocaleManager {
     }
     
     /**
-     * Returns a List of locales from an array of locale names.<p>
+     * Returns a List of locales from an array of m_locale names.<p>
      * 
-     * @param localeNames array of locale names
-     * @return a List of locales derived from the given locale names
+     * @param localeNames array of m_locale names
+     * @return a List of locales derived from the given m_locale names
      */
     public static List getLocales(String[] localeNames) {
         List result = new ArrayList(localeNames.length);
@@ -169,19 +170,19 @@ public class CmsLocaleManager {
     
     /**
      * Initializes the CmsLocaleManager by reading the properties
-     * <code>locale.available</code> and
-     * <code>locale.default</code>
+     * <code>m_locale.available</code> and
+     * <code>m_locale.default</code>
      * in <code>opencms.properties</code>.<p>
      * 
      * @param configuration the OpenCms configuration
      * @param cms an OpenCms context object that must have been initialized with "Admin" permissions
-     * @return the initialized locale manager
+     * @return the initialized m_locale manager
      */
     public static CmsLocaleManager initialize(
         ExtendedProperties configuration, 
         CmsObject cms
     ) {
-        // initialize the locale handler 
+        // initialize the m_locale handler 
         I_CmsLocaleHandler localeHandler = null;
         String localeHandlerClass = OpenCms.getRegistry().getLocaleHandler();
         try {
@@ -194,7 +195,7 @@ public class CmsLocaleManager {
             if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
                 OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Locale handler class : error initializing locale handler class '" + localeHandlerClass + "' (using default locale handler instead)");
             }
-            // use default locale handler            
+            // use default m_locale handler            
             localeHandler = new CmsDefaultLocaleHandler();
             localeHandler.initHandler(cms);
         }
@@ -208,7 +209,7 @@ public class CmsLocaleManager {
         }
         List availableLocales = getLocales(localeNames);
 
-        // init default locale names
+        // init default m_locale names
         localeNames = configuration.getStringArray("locale.default");        
         if ((localeNames == null) || (localeNames.length == 0)) {
             // traditional OpenCms default values
@@ -240,13 +241,13 @@ public class CmsLocaleManager {
     }
 
     /**
-     * Returns a list of available locale names derived from the given locale names.<p>
+     * Returns a list of available m_locale names derived from the given m_locale names.<p>
      * 
      * Each name in the given list is checked against the internal hash map of allowed locales, 
-     * and is appended to the resulting list only if the locale exists.<p>
+     * and is appended to the resulting list only if the m_locale exists.<p>
      * 
-     * @param localeNames array of locale names to check
-     * @return list of available locale names derived from the given locale names
+     * @param localeNames array of m_locale names to check
+     * @return list of available m_locale names derived from the given m_locale names
      */
     private List checkLocaleNames(List locales) {
         if (locales == null) {
@@ -264,20 +265,20 @@ public class CmsLocaleManager {
     }
     
     /**
-     * Returns the list of available locale names configured in <code>opencms.properties</code>.<p>
+     * Returns the list of available m_locale names configured in <code>opencms.properties</code>.<p>
      *
-     * @return the list of available locale names, e.g. <code>en, de</code>
+     * @return the list of available m_locale names, e.g. <code>en, de</code>
      */
     public List getAvailableLocales() {
         return m_availableLocales;
     }
 
     /**
-     * Returns an array of available locale names for the given resource.<p>
+     * Returns an array of available m_locale names for the given resource.<p>
      * 
      * @param cms the current cms permission object
      * @param resourceName the name of the resource
-     * @return an array of available locale names
+     * @return an array of available m_locale names
      */
     public List getAvailableLocales(CmsObject cms, String resourceName) {
     
@@ -300,34 +301,35 @@ public class CmsLocaleManager {
     }
         
     /**
-     * Returns a List of available locales from a comma separated string of locale names.<p>
+     * Returns a List of available locales from a comma separated string of m_locale names.<p>
      * 
      * All names are filtered against the allowed available locales 
      * configured in <code>opencms.properties</code>.<P>
      * 
-     * @param names a comma-separated String of locale names
-     * @return List of locales created from the given locale names
+     * @param names a comma-separated String of m_locale names
+     * @return List of locales created from the given m_locale names
      */
     public List getAvailableLocales(String names) {
         return checkLocaleNames(getLocales(names));
     }
     
     /**
-     * Returns the best matching locale from the given locales.<p>
+     * Returns the best matching m_locale from the given locales.<p>
      * 
-     * The best matching locale is the first locale (eventually simplified) in the given list with the
-     * maximum number of parts similar to a (part of a) locale in the filter list.
+     * The best matching m_locale is the first locale (eventually simplified) 
+     * in the given list with the maximum number of parts similar to a (part of a) 
+     * locale in the filter list.
      * 
      * Example:
-     * getBestMatch([en_GB, de], {de, en, en_US} -> en
+     * getBestMatchingLocale([en_GB, de], {de, en, en_US} -> en
      *      since en_GB <> de = 0, en_GB <> en = 1, en_GB <> en_US = 1, de <> de = 1, de <> en = 0, de <> en_US = 0 
      * 
-     * @param requestedLocale the originally requested locale
-     * @param locales a list of locale names
-     * @param filter a list of locale names to use as filter
-     * @return the best matching locale name or null if no name matches
+     * @param requestedLocale the originally requested m_locale
+     * @param locales a list of m_locale names
+     * @param filter a list of m_locale names to use as filter
+     * @return the best matching m_locale name or null if no name matches
      */
-    public Locale getBestMatchingLocale(Locale requestedLocale, List locales, List filter) {
+    public Locale getBestMatchingLocale(Locale requestedLocale, List locales, Collection filter) {
     
         if ((filter == null) || (locales == null)) {
             return null;
@@ -357,20 +359,66 @@ public class CmsLocaleManager {
     }
     
     /**
-     * Returns the default locale configured in <code>opencms.properties</code>.<p>
+     * Returns the first matching locale.<p>
+     * 
+     * @param locales must be a ascending sourted list of locales in order of preference
+     * @param filter the filter to check the locales agains
+     * @return the first precise or simplified match
+     */
+    public Locale getFirstMatchingLocale(List locales, Collection filter) {
+        
+        Iterator i;
+        // first try a precise match
+        i = locales.iterator();
+        while (i.hasNext()) {
+            Locale locale = (Locale)i.next();
+            if (filter.contains(locale)) {
+                // precise match
+                return locale;
+            }
+        }
+
+        // now try a match only with language and country
+        i = locales.iterator();
+        while (i.hasNext()) {
+            Locale locale = (Locale)i.next();
+            locale = new Locale(locale.getLanguage(), locale.getCountry(), "");
+            if (filter.contains(locale)) {
+                // match
+                return locale;
+            }
+        }
+        
+        // finally try a match only with language
+        i = locales.iterator();
+        while (i.hasNext()) {
+            Locale locale = (Locale)i.next();
+            locale = new Locale(locale.getLanguage(), "", "");
+            if (filter.contains(locale)) {
+                // match
+                return locale;
+            }
+        }        
+        
+        // no match
+        return null;
+    }
+    
+    /**
+     * Returns the default m_locale configured in <code>opencms.properties</code>.<p>
      *
-     * The default locale is the first locale of the configured default locales.
+     * The default m_locale is the first m_locale of the configured default locales.
      *
-     * @return the default locale
+     * @return the default m_locale
      */    
     public Locale getDefaultLocale() {
         return m_defaultLocale;
     }
 
     /**
-     * Returns the list of default locale names configured in <code>opencms.properties</code>.<p>
+     * Returns the list of default m_locale names configured in <code>opencms.properties</code>.<p>
      * 
-     * @return the list of default locale names, e.g. <code>en, de</code>
+     * @return the list of default m_locale names, e.g. <code>en, de</code>
      */
     public List getDefaultLocales() {
         return m_defaultLocales;
@@ -381,7 +429,7 @@ public class CmsLocaleManager {
      * 
      * @param cms the current cms permission object
      * @param resourceName the name of the resource
-     * @return an array of default locale names
+     * @return an array of default m_locale names
      */    
     public List getDefaultLocales(CmsObject cms, String resourceName) {
         
@@ -404,10 +452,10 @@ public class CmsLocaleManager {
     }
     
     /**
-     * Returns the configured locale handler.<p>
-     * This handler is used to derive the appropriate locale for a request.
+     * Returns the configured m_locale handler.<p>
+     * This handler is used to derive the appropriate m_locale for a request.
      * 
-     * @return the locale handler
+     * @return the m_locale handler
      */
     public I_CmsLocaleHandler getLocaleHandler() {
         return m_localeHandler;
@@ -416,8 +464,8 @@ public class CmsLocaleManager {
     /**
      * Returns the number of parts matching in the given locales.<p>
      * 
-     * @param locale1 the first locale 
-     * @param locale2 the second locale 
+     * @param locale1 the first m_locale 
+     * @param locale2 the second m_locale 
      * @return the number of matching parts (0-3)
      */
     private int match(Locale locale1, Locale locale2) {

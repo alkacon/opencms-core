@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPreferences.java,v $
- * Date   : $Date: 2004/02/06 16:44:55 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/02/06 20:52:43 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import com.opencms.workplace.I_CmsWpConstants;
 
 import org.opencms.db.CmsUserSettings;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.editor.CmsWorkplaceEditorConfiguration;
@@ -69,7 +70,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.1.12
  */
@@ -77,10 +78,13 @@ public class CmsPreferences extends CmsTabDialog {
     
     /** Value for the action: cancel button */
     public static final int ACTION_CANCEL = 200;
+    
     /** Value for the action: change the password */
     public static final int ACTION_CHPWD = 202;
+    
     /** Value for the action: show error screen */
     public static final int ACTION_ERROR = 203;
+    
     /** Value for the action: reload the workplace */
     public static final int ACTION_RELOAD = 201;
     
@@ -89,8 +93,10 @@ public class CmsPreferences extends CmsTabDialog {
     
     /** Request parameter value for the action: cancel button */
     public static final String DIALOG_CANCEL = "cancel";
+    
     /** Request parameter value for the action: change the password */
     public static final String DIALOG_CHPWD = "chpwd";
+
     /** Request parameter value for the action: reload the workplace */
     public static final String DIALOG_RELOAD = "reload";
 
@@ -269,11 +275,11 @@ public class CmsPreferences extends CmsTabDialog {
      * Performs the save operation of the modified user settings.<p>
      */
     public void actionSave() {
+        HttpServletRequest request = getJsp().getRequest();
         // save initialized instance of this class in request attribute for included sub-elements
-        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);         
+        request.setAttribute(C_SESSION_WORKPLACE_CLASS, this);                 
         
         // special case: set the preferred editor settings the user settings object      
-        HttpServletRequest request = (HttpServletRequest)getCms().getRequestContext().getRequest().getOriginalRequest();
         Enumeration enum = request.getParameterNames();
         while (enum.hasMoreElements()) {
             // search all request parameters for the presence of the preferred editor parameters
@@ -299,10 +305,11 @@ public class CmsPreferences extends CmsTabDialog {
         
         // update the preferences and project after saving
         CmsWorkplaceAction.updatePreferences(getCms());
+
         try {
             int projectId = Integer.parseInt(m_userSettings.getStartProject());
             getCms().getRequestContext().setCurrentProject(projectId);
-            getSettings().setProject(projectId);
+            getSettings().setProject(projectId);            
         } catch (Exception e) {
             // ignore this exception
         }
@@ -446,7 +453,7 @@ public class CmsPreferences extends CmsTabDialog {
             }
             return buildSelect(htmlAttributes, options, values, checkedIndex);
         } catch (CmsException e) {
-            return getSettings().getLanguage();
+            return getLocale().toString();
         }
     }
     
@@ -905,7 +912,7 @@ public class CmsPreferences extends CmsTabDialog {
      * @return the start language setting
      */
     public String getParamTabWpLanguage() {
-        return m_userSettings.getStartLanguage();
+        return m_userSettings.getLocale().toString();
     }
     
     /**
@@ -1289,7 +1296,7 @@ public class CmsPreferences extends CmsTabDialog {
      * @param value the start language setting
      */
     public void setParamTabWpLanguage(String value) {
-        m_userSettings.setStartLanguage(value);
+        m_userSettings.setLocale(CmsLocaleManager.getLocale(value));
     }
 
     /**

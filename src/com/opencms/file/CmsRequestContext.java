@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
- * Date   : $Date: 2004/02/05 22:27:14 $
- * Version: $Revision: 1.111 $
+ * Date   : $Date: 2004/02/06 20:52:42 $
+ * Version: $Revision: 1.112 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,8 +46,6 @@ import com.opencms.workplace.I_CmsWpConstants;
 
 import java.util.HashMap;
 import java.util.Locale;
-import java.util.StringTokenizer;
-import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -59,7 +57,7 @@ import javax.servlet.http.HttpSession;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  *
- * @version $Revision: 1.111 $
+ * @version $Revision: 1.112 $
  */
 public class CmsRequestContext {
 
@@ -68,13 +66,6 @@ public class CmsRequestContext {
 
     /** The current project */
     private CmsProject m_currentProject;
-    
-    /**
-     * In export mode this vector is used to store all dependencies this request
-     * may have. It is saved to the database and if one of the dependencies changes
-     * the request will be exported again.
-     */
-    private Vector m_dependencies;
     
     /** Directroy name translator */
     private CmsResourceTranslator m_directoryTranslator;
@@ -90,12 +81,6 @@ public class CmsRequestContext {
 
     /** File name translator */
     private CmsResourceTranslator m_fileTranslator;
-
-    /** Current languages */
-    private Vector m_language;
-
-    /** In export mode the links in pages will be stored in this vector for further processing */
-    private Vector m_links;
     
     /** The remote ip address */
     String m_remoteAddr;
@@ -130,31 +115,12 @@ public class CmsRequestContext {
     public CmsRequestContext() {
         m_eventControlled = false;
         m_updateSession = true;
-        m_language = new Vector();
         m_savedSiteRoot = null;
         if ((OpenCms.getSiteManager() != null) && (OpenCms.getSiteManager().getDefaultSite() != null)) { 
             m_siteRoot = OpenCms.getSiteManager().getDefaultSite().getSiteRoot();
         } else {
             setSiteRoot("/");
         }
-    }
-
-    /**
-     * Adds a dependency.
-     * 
-     * @param rootName The root name of the resource
-     */
-    public void addDependency(String rootName) {
-        m_dependencies.add(rootName);
-    }
-
-    /**
-     * Adds a link for the static export.<p>
-     * 
-     * @param link the link to add
-     */
-    public void addLink(String link) {
-        m_links.add(link);
     }
     
     /**
@@ -217,18 +183,7 @@ public class CmsRequestContext {
      */
     public CmsUser currentUser() {
         return (m_user);
-    }
-    
-    /**
-     * Get a Vector of all accepted languages for this request.
-     * Languages are coded in international shortcuts like "en" or "de".
-     * If the browser has sent special versions of languages (e.g. "de-ch" for Swiss-German)
-     * these extensions will be cut off.
-     * @return Vector of Strings with language codes or <code>null</code> if no request object is available.
-     */
-    public Vector getAcceptedLanguages() {
-        return m_language;
-    }    
+    } 
 
     /**
      * Returns the adjusted site root for a resoure.<p>
@@ -259,15 +214,6 @@ public class CmsRequestContext {
             return null;
         }
         return m_attributeMap.get(attributeName);
-    }
-
-    /**
-     * Returns all dependencies the templatemechanism has registered.
-     * 
-     * @return all registered dependencies
-     */
-    public Vector getDependencies() {
-        return m_dependencies;
     }
         
     /**
@@ -311,15 +257,6 @@ public class CmsRequestContext {
     */
     public String getFolderUri() {
         return getUri().substring(0, getUri().lastIndexOf("/") + 1);
-    }
-
-    /**
-     * Returns all links that the template mechanism has registered.
-     * 
-     * @return all registered links
-     */
-    public Vector getLinkVector() {
-        return m_links;
     }
     
     /**
@@ -451,8 +388,6 @@ public class CmsRequestContext {
         m_driverManager = driverManager;
         m_req = req;
         m_resp = resp;
-        m_links = new Vector();
-        m_dependencies = new Vector();
         setSiteRoot(site);
         
         //CmsProject project = null;
@@ -483,35 +418,7 @@ public class CmsRequestContext {
         m_directoryTranslator = directoryTranslator;
         m_fileTranslator = fileTranslator;
 
-        // Analyze the user's preferred languages coming with the request
-        if (req != null) {
-            try {
-                HttpServletRequest httpReq =
-                    (HttpServletRequest) req.getOriginalRequest();
-                String accLangs = null;
-                if (httpReq != null) {
-                    accLangs = httpReq.getHeader("Accept-Language");
-                }
-                if (accLangs != null) {
-                    StringTokenizer toks = new StringTokenizer(accLangs, ",");
-                    while (toks.hasMoreTokens()) {
-                        // Loop through all languages and cut off trailing extensions
-                        String current = toks.nextToken().trim();
-                        if (current.indexOf("-") > -1) {
-                            current =
-                                current.substring(0, current.indexOf("-"));
-                        }
-                        if (current.indexOf(";") > -1) {
-                            current =
-                                current.substring(0, current.indexOf(";"));
-                        }
-                        m_language.addElement(current);
-
-                    }
-                }
-            } catch (UnsupportedOperationException e) {
-                // noop
-            }
+        if (req != null) {          
 
             // Initialize locale
             initLocale();
@@ -561,7 +468,14 @@ public class CmsRequestContext {
         CmsLocaleManager localeManager = OpenCms.getLocaleManager();
         if (localeManager != null) {
             // locale manager is initialized
-            m_locale = localeManager.getLocaleHandler().getLocale(this);
+            if (getUri().startsWith(I_CmsWpConstants.C_VFS_PATH_WORKPLACE)
+             || getUri().startsWith(I_CmsWpConstants.C_VFS_PATH_LOGIN)) {
+                // the workplace/login requires a special locale handler
+                m_locale = OpenCms.getWorkplaceManager().getLocale(this);
+            } else {
+                // request for resource outside of workplace, use default handler
+                m_locale = localeManager.getLocaleHandler().getLocale(this);
+            }
                         
             if (m_locale == null) {
                 m_locale = OpenCms.getLocaleManager().getDefaultLocale();
@@ -695,8 +609,7 @@ public class CmsRequestContext {
      * @throws CmsException if operation was not successful
      */
     public CmsProject setCurrentProject(int projectId) throws CmsException {
-        CmsProject newProject =
-            m_driverManager.readProject(projectId);
+        CmsProject newProject = m_driverManager.readProject(projectId);
         if (newProject != null) {
             m_currentProject = newProject;
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2004/02/05 08:28:08 $
- * Version: $Revision: 1.450 $
+ * Date   : $Date: 2004/02/06 20:52:42 $
+ * Version: $Revision: 1.451 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.450 $
+ * @version $Revision: 1.451 $
  */
 public class CmsObject {
 
@@ -2002,27 +2002,23 @@ public class CmsObject {
     }
 
     /**
-     * Returns a Vector with all subfolders of a given folder.
+     * Returns a Vector with all subfolders of a given folder.<p>
      *
-     * @param foldername the complete path to the folder.
-     *
-     * @return subfolders a Vector with all subfolders for the given folder.
-     *
-     * @throws CmsException if the user has not the rights to access or read the resource.
+     * @param foldername the complete path to the folder
+     * @return all subfolders (CmsFolder Objects) for the given folder
+     * @throws CmsException if the user has not the permissions to access or read the resource
      */
     public List getSubFolders(String foldername) throws CmsException {
         return (m_driverManager.getSubFolders(m_context, addSiteRoot(foldername), false));
     }
 
     /**
-     * Returns a Vector with all subfolders of a given folder.
+     * Returns a Vector with all subfolders of a given folder.<p>
      *
-     * @param foldername the complete path to the folder.
-     * @param includeDeleted Include if the folder is marked as deleted
-     *
-     * @return subfolders a Vector with all subfolders (CmsFolder Objects) for the given folder.
-     *
-     * @throws CmsException if the user has not the rights to access or read the resource.
+     * @param foldername the complete path to the folder
+     * @param includeDeleted if true folders marked as deleted are also included
+     * @return all subfolders (CmsFolder Objects) for the given folder
+     * @throws CmsException if the user has not the permissions to access or read the resource
      */
     public List getSubFolders(String foldername, boolean includeDeleted) throws CmsException {
         return (m_driverManager.getSubFolders(m_context, addSiteRoot(foldername), includeDeleted));

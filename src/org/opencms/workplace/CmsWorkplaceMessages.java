@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceMessages.java,v $
- * Date   : $Date: 2004/02/05 08:28:07 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/02/06 20:52:43 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Set;
  * Provides access to the localized lables for the workplace.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 5.1
  */
@@ -66,8 +66,8 @@ public class CmsWorkplaceMessages {
     /** CmsObject provided with the constructror */
     private CmsObject m_cms;
     
-    /** Locale (2 letter ISO country code like "en") */
-    private String m_locale;
+    /** Locale for the selected language */
+    private Locale m_locale;
 
     // static data storages to prevent multiple lookups
     /** Map of locales from the installed modules */
@@ -89,7 +89,7 @@ public class CmsWorkplaceMessages {
      * @param cms for accessing system resources
      * @param locale the locale to initialize 
      */
-    public CmsWorkplaceMessages(CmsObject cms, String locale) {
+    public CmsWorkplaceMessages(CmsObject cms, Locale locale) {
         m_cms = cms;
         m_locale = locale;
         m_messages = new CmsMessages(C_BUNDLE_NAME, m_locale);   
@@ -137,7 +137,7 @@ public class CmsWorkplaceMessages {
      * @param locale the selected locale
      * @return an initialized set of module messages
      */
-    private synchronized Set collectModuleMessages(CmsObject cms, String locale) {
+    private synchronized Set collectModuleMessages(CmsObject cms, Locale locale) {
         HashSet bundles = new HashSet();
         Enumeration en = cms.getRegistry().getModuleNames();
         if (en != null) {
@@ -145,7 +145,7 @@ public class CmsWorkplaceMessages {
                 String bundleName = ((String)en.nextElement()) + ".workplace";
                 // this should result in a name like "my.module.name.workplace"
                 try {
-                    ResourceBundle bundle = ResourceBundle.getBundle(bundleName, new Locale(locale));
+                    ResourceBundle bundle = ResourceBundle.getBundle(bundleName, locale);
                     bundles.add(bundle);
                 } catch (MissingResourceException e) {
                     // can be ignored

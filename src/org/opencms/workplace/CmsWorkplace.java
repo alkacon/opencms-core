@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/02/05 22:27:14 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2004/02/06 20:52:43 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,22 +30,23 @@
  */
 package org.opencms.workplace;
 
+import org.opencms.db.CmsUserSettings;
+import org.opencms.i18n.CmsEncoder;
+import org.opencms.i18n.CmsMessages;
+import org.opencms.main.OpenCms;
+import org.opencms.site.CmsSite;
+import org.opencms.site.CmsSiteManager;
+import org.opencms.util.CmsStringSubstitution;
+
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
 import com.opencms.file.CmsResource;
+import com.opencms.file.CmsUser;
 import com.opencms.file.I_CmsResourceType;
 import com.opencms.flex.jsp.CmsJspActionElement;
 import com.opencms.workplace.I_CmsWpConstants;
-
-import org.opencms.db.CmsUserSettings;
-import org.opencms.i18n.CmsMessages;
-import org.opencms.i18n.CmsEncoder;
-import org.opencms.main.OpenCms;
-import org.opencms.site.CmsSite;
-import org.opencms.site.CmsSiteManager;
-import org.opencms.util.CmsStringSubstitution;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -56,8 +57,8 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
-import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -69,7 +70,7 @@ import javax.servlet.jsp.PageContext;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.48 $
+ * @version $Revision: 1.49 $
  * 
  * @since 5.1
  */
@@ -77,49 +78,56 @@ public abstract class CmsWorkplace {
     
     /** Key name for the session workplace settings */
     protected static final String C_SESSION_WORKPLACE_SETTINGS = "__CmsWorkplace.WORKPLACE_SETTINGS";
+    
     /** Key name for the session workplace class */
     protected static final String C_SESSION_WORKPLACE_CLASS    = "__CmsWorkplace.WORKPLACE_CLASS";
     
-    /** Path definitions for workplace */
     /** Constant for the JSP workplace path */
     protected static final String C_PATH_WORKPLACE = I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "jsp/";
+    
     /** Constant for the JSP dialogs path */
     protected static final String C_PATH_DIALOGS = C_PATH_WORKPLACE + "dialogs/";
+    
     /** Constant for the JSP common files (e.g. error page) path */
     protected static final String C_PATH_DIALOG_COMMON = C_PATH_DIALOGS + "common/";
     
     /** Constant for the JSP explorer filelist file */
     protected static final String C_FILE_EXPLORER_FILELIST = C_PATH_WORKPLACE + "explorer_files.html";
+    
     /** Constant for the JSP common wait screen */
     protected static final String C_FILE_DIALOG_SCREEN_WAIT = C_PATH_DIALOG_COMMON + "wait.html";
+    
     /** Constant for the JSP common error dialog */
     protected static final String C_FILE_DIALOG_SCREEN_ERROR = C_PATH_DIALOG_COMMON + "error.html";
+    
     /** Constant for the JSP common confirmation dialog */
     protected static final String C_FILE_DIALOG_SCREEN_CONFIRM = C_PATH_DIALOG_COMMON + "confirmation.html";
+    
     /** Constant for the JSP common report page */
     protected static final String C_FILE_REPORT_OUTPUT = C_PATH_DIALOG_COMMON + "report.html";
+    
     /** Constant for the JSP common close dialog page */
     protected static final String C_FILE_DIALOG_CLOSE = C_PATH_DIALOG_COMMON + "closedialog.html";
-    
-    private static String m_file_explorer_filelist; 
-    
-    private CmsJspActionElement m_jsp;
-    private CmsObject m_cms;
-    private HttpSession m_session;
-    private CmsWorkplaceSettings m_settings;
-    private String m_resourceUri = null;
     
     /** Helper variable to store the id of the current project */
     private int m_currentProjectId = -1;
     
     /** Helper variable to deliver the html start part */
     public static final int HTML_START = 0;
+
     /** Helper variable to deliver the html end part */
     public static final int HTML_END = 1;
     
     /** The debug flag */
     public static final boolean DEBUG = false;
-        
+
+    private static String m_file_explorer_filelist;     
+    private CmsJspActionElement m_jsp;
+    private CmsObject m_cms;
+    private HttpSession m_session;
+    private CmsWorkplaceSettings m_settings;
+    private String m_resourceUri = null;
+    
     /**
      * Public constructor.<p>
      * 
@@ -203,46 +211,7 @@ public abstract class CmsWorkplace {
         // save the workplace settings in the session
         session.setAttribute(C_SESSION_WORKPLACE_SETTINGS, settings);        
     }
-    
-    /**
-     * Returns the language for the currently logged in user.<p>
-     * 
-     * @param cms the CmsObject
-     * @return the language String for the currently logged in user
-     */
-    protected static synchronized String initUserLanguage(CmsObject cms) {
-        // TODO: This should now return a Locale, not a String 
-        // initialize the current user language
-        String language = null;               
-        Hashtable startSettings =
-            (Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_STARTSETTINGS);  
-        // try to read it form the user additional info
-        if (startSettings != null) {
-            language = (String)startSettings.get(I_CmsConstants.C_START_LANGUAGE);
-        }    
-        // no startup language in user settings found, so check the users browser locale settings
-        if (language == null) {
-            Vector languages = cms.getRequestContext().getAcceptedLanguages();
-            int numlangs = languages.size();
-            for (int i = 0; i < numlangs; i++) {
-                String lang = (String)languages.elementAt(i);
-                try {
-                    cms.readFolder(I_CmsWpConstants.C_VFS_PATH_LOCALES + lang);
-                    // if we get past that readFolder() the language is supported
-                    language = lang;
-                    break;
-                } catch (CmsException e) {
-                    // browser language is not supported in OpenCms, continue looking
-                }
-            }
-        }
-        // if no language was found so far, use the default language
-        if (language == null) {
-            language = I_CmsWpConstants.C_DEFAULT_LANGUAGE;
-        }
-        return language;
-    }
-    
+        
     /**
      * Initializes the current users workplace settings by reading the values 
      * from the users preferences.<p>
@@ -255,23 +224,18 @@ public abstract class CmsWorkplace {
      * @return initialized object with the current users workplace settings 
      */    
     static synchronized CmsWorkplaceSettings initWorkplaceSettings(CmsObject cms, CmsWorkplaceSettings settings) {                
-        // initialize the current user language
-        String language = initUserLanguage(cms);
-        
-        // save language in settings
-        settings.setLanguage(language);        
-        
-        // initialize messages and also store them in settings
-        CmsWorkplaceMessages messages = new CmsWorkplaceMessages(cms, language);
-        settings.setMessages(messages);        
-        
         // save current workplace user & user settings object
-        settings.setUser(cms.getRequestContext().currentUser());
-        settings.setUserSettings(new CmsUserSettings(settings.getUser()));
+        CmsUser user = cms.getRequestContext().currentUser();
+        settings.setUser(user);
+        settings.setUserSettings(new CmsUserSettings(user));
         
         // save current project
         settings.setProject(cms.getRequestContext().currentProject().getId());
         
+        // initialize messages and also store them in settings
+        CmsWorkplaceMessages messages = new CmsWorkplaceMessages(cms, settings.getUserSettings().getLocale());
+        settings.setMessages(messages);        
+                        
         // save current site
         String siteRoot = cms.getRequestContext().getSiteRoot();
         boolean access = false;
@@ -347,6 +311,19 @@ public abstract class CmsWorkplace {
      */
     public CmsObject getCms() {
         return m_cms;
+    }
+    
+    /**
+     * Returns the current users locale setting.<p>
+     * 
+     * This is a convenience method that just 
+     * executes the following code: 
+     * <code>getCms().getRequestContext().getLocale()</code>.<p>
+     * 
+     * @return the current users locale setting
+     */
+    public Locale getLocale() {
+        return getCms().getRequestContext().getLocale();
     }
 
     /**
@@ -558,7 +535,7 @@ public abstract class CmsWorkplace {
         }
         result.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + calendarPath + "calendar-" + style + ".css\">\n");
         result.append("<script type=\"text/javascript\" src=\"" + calendarPath + "calendar.js\"></script>\n");
-        result.append("<script type=\"text/javascript\" src=\"" + calendarPath + "lang/calendar-" + getSettings().getLanguage() + ".js\"></script>\n");
+        result.append("<script type=\"text/javascript\" src=\"" + calendarPath + "lang/calendar-" + getLocale().getLanguage() + ".js\"></script>\n");
         result.append("<script type=\"text/javascript\" src=\"" + calendarPath + "calendar-setup.js\"></script>\n");
         return result.toString();
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/I_CmsLocaleHandler.java,v $
- * Date   : $Date: 2004/02/05 22:27:14 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/02/06 20:52:43 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,26 +36,26 @@ import com.opencms.file.CmsRequestContext;
 import java.util.Locale;
 
 /**
- * A locale handler returns the locale name to use for the given request context.<p>
+ * A m_locale handler returns the m_locale name to use for the given request context.<p>
  * 
  * By implementing this interface, and configuring <code>registry.xml</code>
- * accordingly, the behaviour for the locale selection can be fine-tuned
+ * accordingly, the behaviour for the m_locale selection can be fine-tuned
  * to the exact need of the OpenCms installation.<p>
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  */
 public interface I_CmsLocaleHandler {
 
     /**
-     * Returns the locale name to use for the given request context.<p>
+     * Returns the m_locale name to use for the given request context.<p>
      * 
      * Note: the request context is not initialized completely, but it already 
      * has the requested resource URI set.<p> 
      * 
      * @param context the request context
-     * @return the locale name to use for the given request context
+     * @return the m_locale name to use for the given request context
      */
     Locale getLocale(CmsRequestContext context);
     

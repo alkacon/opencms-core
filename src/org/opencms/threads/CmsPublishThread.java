@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/CmsPublishThread.java,v $
- * Date   : $Date: 2004/01/28 11:53:52 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/02/06 20:52:43 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import com.opencms.file.CmsObject;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since 5.1.10
  */
 public class CmsPublishThread extends A_CmsReportThread {
@@ -69,7 +69,7 @@ public class CmsPublishThread extends A_CmsReportThread {
         m_publishList = null;
         m_settings = null;
         
-        initHtmlReport();
+        initHtmlReport(cms.getRequestContext().getLocale());
     } 
     
     /**
@@ -88,7 +88,7 @@ public class CmsPublishThread extends A_CmsReportThread {
         m_publishList = null;
         m_settings = settings;
         
-        initHtmlReport();
+        initHtmlReport(cms.getRequestContext().getLocale());
     }  
     
     /**
@@ -107,7 +107,7 @@ public class CmsPublishThread extends A_CmsReportThread {
         m_directPublishSiblings = false;
         m_publishList = publishList;  
         
-        initHtmlReport();
+        initHtmlReport(cms.getRequestContext().getLocale());
     }
     
     /**
