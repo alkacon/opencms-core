@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminGroups.java,v $
-* Date   : $Date: 2001/02/19 11:11:12 $
-* Version: $Revision: 1.14 $Selector
+* Date   : $Date: 2001/02/28 10:21:53 $
+* Version: $Revision: 1.15 $Selector
 
 *
 * Copyright (C) 2000  The OpenCms Group
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.14 $ $Date: 2001/02/19 11:11:12 $
+ * @version $Revision: 1.15 $ $Date: 2001/02/28 10:21:53 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -568,12 +568,17 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
 
     public Integer getSuperGroups(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
             Vector values, Hashtable parameters) throws CmsException {
+
         int retValue = -1;
         I_CmsSession session = cms.getRequestContext().getSession(true);
         String actualGroup = (String)session.getValue("GROUPNAME");
         String temp = (String)parameters.get("GROUPNAME");
         if(temp != null) {
             actualGroup = temp;
+        }
+        if(parameters.get("NEW") != null) {
+            // user pressed the NEW-button so we dont need the actual Group
+            actualGroup = "";
         }
         String supergroup = (String)session.getValue("SUPERGROUP");
         temp = (String)parameters.get("SUPERGROUP");
