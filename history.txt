@@ -8,7 +8,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 4.7.5 Ecaz - ?? April 2002
+OpenCms 4.7.5 Ecaz - 12 April 2002
 ! Database import can now upload the zip file from the local client. It will be
   copied to the export path on the server and then imported. An old file with the
   same name on the server will be overwritten. Same like when uploading modules.
