@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/A_CmsOnDemandStaticExportHandler.java,v $
- * Date   : $Date: 2005/01/25 09:34:35 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/01/31 13:25:28 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import java.util.Set;
  * as optimization for non-dynamic content.<p>
  * 
  * @author <a href="mailto:m.moossen@alkacon.com">Michael Moossen</a> 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 6.0
  * @see I_CmsStaticExportHandler
  */
@@ -120,9 +120,9 @@ public abstract class A_CmsOnDemandStaticExportHandler implements I_CmsStaticExp
             return;
         }
 
-        Iterator it = publishedResources.iterator();
-        while (it.hasNext()) {
-            CmsPublishedResource res = (CmsPublishedResource)it.next();
+        Iterator itPubRes = publishedResources.iterator();
+        while (itPubRes.hasNext()) {
+            CmsPublishedResource res = (CmsPublishedResource)itPubRes.next();
             if (res.isUnChanged() || !res.isVfsResource()) {
                 // unchanged resources and non vfs resources don't need to be deleted
                 continue;
@@ -131,9 +131,9 @@ public abstract class A_CmsOnDemandStaticExportHandler implements I_CmsStaticExp
             // ensure all siblings are scrubbed if the resource has one
             List siblings = getSiblingsList(cms, res.getRootPath());
 
-            Iterator sibIt = siblings.iterator();
-            while (sibIt.hasNext()) {
-                String vfsName = (String)sibIt.next();
+            Iterator itSibs = siblings.iterator();
+            while (itSibs.hasNext()) {
+                String vfsName = (String)itSibs.next();
 
                 // get the link name for the published file 
                 String rfsName = OpenCms.getStaticExportManager().getRfsName(cms, vfsName);
@@ -183,14 +183,14 @@ public abstract class A_CmsOnDemandStaticExportHandler implements I_CmsStaticExp
                         }
                     }
 
-                    String exportFileName = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getExportPath()
+                    String rfsExportFileName = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getExportPath()
                         + rfsName.substring(OpenCms.getStaticExportManager().getRfsPrefix().length() + 1));
 
-                    purgeFile(exportFileName);
+                    purgeFile(rfsExportFileName);
                     scrubedFiles.add(rfsName);
 
                     if (!res.isFolder()) {
-                        List fileList = getRelatedFilesToPurge(exportFileName);
+                        List fileList = getRelatedFilesToPurge(rfsExportFileName);
                         Iterator iter = fileList.iterator();
                         while (iter.hasNext()) {
                             File file = (File)iter.next();
