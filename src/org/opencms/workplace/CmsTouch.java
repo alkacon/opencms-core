@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsTouch.java,v $
- * Date   : $Date: 2003/07/11 10:49:16 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/07/11 12:38:54 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.1
  */
@@ -181,8 +181,15 @@ public class CmsTouch extends CmsDialog {
     public String buildCheckRecursive() {
         StringBuffer retValue = new StringBuffer(256);
         
+        CmsResource res = null;
+        try {
+            res = getCms().readFileHeader(getParamFile());
+        } catch (CmsException e) {
+            return "";
+        }    
+        
         // show the checkbox only for folders
-        if (CmsResource.isFolder(getParamFile())) {
+        if (res.isFolder()) {
             retValue.append("<tr>\n\t<td colspan=\"2\" style=\"white-space: nowrap;\" unselectable=\"on\">");
             retValue.append("<input type=\"checkbox\" name=\""+PARAM_RECURSIVE+"\" value=\"true\">&nbsp;"+key("input.changesubresources"));
             retValue.append("</td>\n</tr>\n");
@@ -227,8 +234,9 @@ public class CmsTouch extends CmsDialog {
      */
     private boolean performTouchOperation() throws CmsException {
 
-        // on recursive folder touch display "please wait" screen, not for simple file touching
-        if (CmsResource.isFolder(getParamFile()) && "true".equals(getParamRecursive()) && ! DIALOG_WAIT.equals(getParamAction())) {
+        // on folder copy display "please wait" screen, not for simple file copy
+        CmsResource sourceRes = getCms().readFileHeader(getParamFile());
+        if (sourceRes.isFolder() && ! DIALOG_WAIT.equals(getParamAction())) {
             // return false, this will trigger the "please wait" screen
             return false;
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsMove.java,v $
- * Date   : $Date: 2003/07/09 11:38:18 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/07/11 12:38:54 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.1
  */
@@ -168,8 +168,9 @@ public class CmsMove extends CmsDialog {
      */
     private boolean performMoveOperation() throws CmsException {
 
-        // on folder move display "please wait" screen, not for simple file copy
-        if (CmsResource.isFolder(getParamFile()) && ! DIALOG_WAIT.equals(getParamAction())) {
+        // on folder copy display "please wait" screen, not for simple file copy
+        CmsResource sourceRes = getCms().readFileHeader(getParamFile());
+        if (sourceRes.isFolder() && ! DIALOG_WAIT.equals(getParamAction())) {
             // return false, this will trigger the "please wait" screen
             return false;
         }

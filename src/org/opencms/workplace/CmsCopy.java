@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsCopy.java,v $
- * Date   : $Date: 2003/07/09 11:38:18 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/07/11 12:38:54 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.1
  */
@@ -153,7 +153,9 @@ public class CmsCopy extends CmsDialog {
     public void actionCopy() throws JspException {
         // save initialized instance of this class in request attribute for included sub-elements
         getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
+        CmsResource res = null;
         try {
+            res = getCms().readFileHeader(getParamFile());
             if (performCopyOperation())  {
                 // if no exception is caused and "true" is returned copy operation was successful
                 getJsp().include(C_FILE_EXPLORER_FILELIST);
@@ -168,7 +170,7 @@ public class CmsCopy extends CmsDialog {
                 + key("target") + ": " + getParamTarget() + "\n</p>\n";
             // check if this exception requires a confirmation or error screen
             if ((e.getType() == CmsException.C_FILE_EXISTS) 
-            && !(CmsResource.isFolder(getParamFile()))) {
+            && !(res.isFolder())) {
                 // file copy but file already exists, show confirmation dialog
                 setParamMessage(message + key("confirm.message." + getParamDialogtype()));
                 getJsp().include(C_FILE_DIALOG_SCREEN_CONFIRM);        
@@ -190,7 +192,8 @@ public class CmsCopy extends CmsDialog {
     private boolean performCopyOperation() throws CmsException {
 
         // on folder copy display "please wait" screen, not for simple file copy
-        if (CmsResource.isFolder(getParamFile()) && ! DIALOG_WAIT.equals(getParamAction())) {
+        CmsResource sourceRes = getCms().readFileHeader(getParamFile());
+        if (sourceRes.isFolder() && ! DIALOG_WAIT.equals(getParamAction())) {
             // return false, this will trigger the "please wait" screen
             return false;
         }
