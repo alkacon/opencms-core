@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
- * Date   : $Date: 2000/11/20 14:59:06 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/12/12 11:11:39 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.util.*;
  * to the filesystem.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.11 $ $Date: 2000/11/20 14:59:06 $
+ * @version $Revision: 1.12 $ $Date: 2000/12/12 11:11:39 $
  */
 public class CmsExport implements I_CmsConstants {
 	
@@ -228,11 +228,17 @@ public void addSingleFiles(Vector fileNames) throws CmsException {
 	if (fileNames != null) {
 		for (int i = 0; i < fileNames.size(); i++) {
             String fileName = (String) fileNames.elementAt(i);
-            CmsFile file = m_cms.readFile(fileName);
-            if(file.getState() != C_STATE_DELETED) {
-                addSuperFolders(fileName);
-                exportFile(file);
-            }
+			try {
+				CmsFile file = m_cms.readFile(fileName);
+				if(file.getState() != C_STATE_DELETED) {
+				    addSuperFolders(fileName);
+				    exportFile(file);
+				}
+			} catch(CmsException exc) {
+				if(exc.getType() != exc.C_RESOURCE_DELETED) {
+					throw exc;
+				}
+			}
 		}
 	}
 }
@@ -364,7 +370,9 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
 			CmsResource file = (CmsResource) subFiles.elementAt(i);
             int state = file.getState();
             if(m_isOnlineProject || (!m_excludeUnchanged) || state == C_STATE_NEW || state == C_STATE_CHANGED) {
-                exportFile(m_cms.readFile(file.getAbsolutePath()));
+				if(state != C_STATE_DELETED) {
+					exportFile(m_cms.readFile(file.getAbsolutePath()));
+				}
             }
 		}
 		
