@@ -8,76 +8,26 @@
 switch (wp.getAction()) {
 
 case CmsProperty.ACTION_SAVE_EDIT:
-//////////////////// ACTION: save edited properties for the current resource type
+//////////////////// ACTION: save edited properties for the current resource type and close dialog
 
 	wp.actionEdit(request);
+	wp.closeDialog();
 
 break;
 
 
 case CmsProperty.ACTION_SAVE_DEFINE:
 //////////////////// ACTION: save new property definition for the current resource type
-
+	
 	wp.actionDefine();
 
 break;
 
 
-case CmsProperty.ACTION_SHOW_EDIT:
-//////////////////// ACTION: show edit properties window
-
-	wp.setParamAction(wp.DIALOG_SAVE_EDIT);
-	
-%><%= wp.htmlStart("help.explorer.contextmenu.properties") %>
-<script type="text/javascript">
-<!--
-function toggleDelete(propName) {
-	var hiddenValue = document.getElementById("<%= wp.PREFIX_HIDDEN %>"+propName).value;
-	var checked = document.getElementById("<%= wp.PREFIX_USEPROPERTY %>"+propName).checked;
-	var field = document.getElementById("<%= wp.PREFIX_VALUE %>"+propName);
-	if (checked == true) {
-		field.value = hiddenValue;
-	} else {
-		field.value = "";
-	}
-}
-
-function checkValue(propName) {
-	var newVal = document.getElementById("<%= wp.PREFIX_VALUE %>"+propName).value;
-	var field = document.getElementById("<%= wp.PREFIX_USEPROPERTY %>"+propName);
-	if (newVal != null && newVal != "") {
-		field.checked = true;
-	} else {
-		field.checked = false;
-	}
-}
-//-->
-</script>
-<%= wp.bodyStart("dialog") %>
-
-<%= wp.dialogStart() %>
-<%= wp.dialogContentStart(wp.getParamTitle()) %>
-
-<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin">
-<%= wp.paramsAsHidden() %>
-
-<%= wp.buildEditForm() %>
-
-<%= wp.dialogContentEnd() %>
-<% wp.setParamAction(wp.DIALOG_SHOW_DEFAULT); %>
-<%= wp.dialogButtonRowOkCancel(null,"onclick=\"location.href='" + wp.getDialogUri() + "?" + wp.paramsAsRequest() + "';\"") %>
-</form>
-
-<%= wp.dialogEnd() %>
-<%= wp.bodyEnd() %>
-<%= wp.htmlEnd() %>
-<%
-break;
-
-
 case CmsProperty.ACTION_SHOW_DEFINE:
-//////////////////// ACTION: show define properties window
-
+//////////////////// ACTION: show define properties window, but first save changed property values
+	
+	wp.actionEdit(request);
 	wp.setParamAction(wp.DIALOG_SAVE_DEFINE);
 	
 %><%= wp.htmlStart("help.explorer.contextmenu.properties") %>
@@ -117,7 +67,7 @@ function checkName() {
 
 <%= wp.dialogContentEnd() %>
 <% wp.setParamAction(wp.DIALOG_SHOW_DEFAULT); %>
-<%= wp.dialogButtonRowOkCancel("disabled=\"disabled\"","onclick=\"location.href='" + wp.getDialogUri() + "?" + wp.paramsAsRequest() + "';\"") %>
+<%= wp.dialogButtonRowOkCancel("disabled=\"disabled\"", "onclick=\"location.href='" + wp.getDialogUri() + "?" + wp.paramsAsRequest() + "';\"") %>
 </form>
 
 <%= wp.dialogEnd() %>
@@ -128,32 +78,57 @@ break;
 
 
 case CmsProperty.ACTION_DEFAULT:
+case CmsProperty.ACTION_SHOW_EDIT:
 default:
-//////////////////// ACTION: show property overview dialog (default)
+//////////////////// ACTION: show edit properties window (default)
 
-
-
+wp.setParamAction(wp.DIALOG_SAVE_EDIT);
+	
 %><%= wp.htmlStart("help.explorer.contextmenu.properties") %>
+<script type="text/javascript">
+<!--
+function toggleDelete(propName) {
+	var hiddenValue = document.getElementById("<%= wp.PREFIX_HIDDEN %>"+propName).value;
+	var checked = document.getElementById("<%= wp.PREFIX_USEPROPERTY %>"+propName).checked;
+	var field = document.getElementById("<%= wp.PREFIX_VALUE %>"+propName);
+	if (checked == true) {
+		field.value = hiddenValue;
+	} else {
+		field.value = "";
+	}
+}
+
+function checkValue(propName) {
+	var newVal = document.getElementById("<%= wp.PREFIX_VALUE %>"+propName).value;
+	var field = document.getElementById("<%= wp.PREFIX_USEPROPERTY %>"+propName);
+	if (newVal != null && newVal != "") {
+		field.checked = true;
+	} else {
+		field.checked = false;
+	}
+}
+
+function definePropertyForm() {
+	document.main.<%= wp.PARAM_ACTION %>.value = "<%= wp.DIALOG_SHOW_DEFINE %>";
+	document.main.submit();
+}
+//-->
+</script>
 <%= wp.bodyStart("dialog") %>
 
 <%= wp.dialogStart() %>
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 
 <%@ include file="common/resourceinfo.txt" %>
-
 <%= wp.dialogSpacer() %>
 
-<%= wp.dialogWhiteBoxStart() %>
-<%= wp.buildPropertiesList() %>
-<%= wp.dialogWhiteBoxEnd() %>
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin">
+<%= wp.paramsAsHidden() %>
 
-<%= wp.dialogSpacer() %>
-
-<%= wp.buildActionButtons() %>
+<%= wp.buildEditForm() %>
 
 <%= wp.dialogContentEnd() %>
-<form name="close" action="" method="post" class="nomargin">
-<%= wp.dialogButtonRowClose() %>
+<%= wp.dialogButtonRowOkCancelDefine() %>
 </form>
 
 <%= wp.dialogEnd() %>

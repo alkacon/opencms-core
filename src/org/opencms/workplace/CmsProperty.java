@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsProperty.java,v $
- * Date   : $Date: 2004/01/20 12:37:08 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2004/01/27 10:49:10 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,10 +30,8 @@
  */
 package org.opencms.workplace;
 
-import org.opencms.lock.CmsLock;
-import org.opencms.main.OpenCms;
-
 import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsPropertydefinition;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsResourceTypeXmlPage;
@@ -41,8 +39,10 @@ import com.opencms.file.I_CmsResourceType;
 import com.opencms.flex.jsp.CmsJspActionElement;
 import com.opencms.util.Encoder;
 
+import org.opencms.lock.CmsLock;
+import org.opencms.main.OpenCms;
+
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
 
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  * 
  * @since 5.1
  */
@@ -78,6 +78,9 @@ public class CmsProperty extends CmsDialog implements I_CmsDialogHandler {
     /** Value for the action: save defined property */
     public static final int ACTION_SAVE_DEFINE = 400;
     
+    /** Constant for the "Define" button in the build button method */
+    public static final int BUTTON_DEFINE = 201;
+    
     /** Request parameter value for the action: show edit properties form */
     public static final String DIALOG_SHOW_EDIT = "edit";
     /** Request parameter value for the action: show define property form */
@@ -94,7 +97,7 @@ public class CmsProperty extends CmsDialog implements I_CmsDialogHandler {
     public static final String PREFIX_VALUE = "value-";
     /** Prefix for the hidden fields */
     public static final String PREFIX_HIDDEN = "hidden-";
-    /** Prefix for the use property fields */
+    /** Prefix for the use property checkboxes */
     public static final String PREFIX_USEPROPERTY = "use-";
     
     /** Request parameter name for the new property definition */
@@ -103,8 +106,12 @@ public class CmsProperty extends CmsDialog implements I_CmsDialogHandler {
     /** The URI to the standard property dialog */
     public static final String URI_PROPERTY_DIALOG = C_PATH_DIALOGS + "property_standard.html"; 
 
+    /** Request parameter members */
     private String m_paramNewproperty;
     private String m_paramUseTempfileProject;
+    
+    /** Helper object storing the current editable state of the resource */
+    private Boolean m_isEditable = null;
     
     /**
      * Default constructor needed for dialog handler implementation.<p>
@@ -144,7 +151,6 @@ public class CmsProperty extends CmsDialog implements I_CmsDialogHandler {
             }
         } catch (CmsException e) {
             // ignore this exception
-            System.err.println(e.getMessage());
         }
         return URI_PROPERTY_DIALOG;
     }
@@ -221,13 +227,7 @@ public class CmsProperty extends CmsDialog implements I_CmsDialogHandler {
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
         // set the action for the JSP switch 
-        if (DIALOG_SHOW_DEFAULT.equals(getParamAction())) {
-            setAction(ACTION_DEFAULT);
-            setParamTitle(key("title.property") + ": " + CmsResource.getName(getParamResource()));
-        } else if (DIALOG_SHOW_EDIT.equals(getParamAction())) {
-            setAction(ACTION_SHOW_EDIT);
-            setParamTitle(key("title.editpropertyinfo") + ": " + CmsResource.getName(getParamResource()));                            
-        } else if (DIALOG_SHOW_DEFINE.equals(getParamAction())) {
+        if (DIALOG_SHOW_DEFINE.equals(getParamAction())) {
             setAction(ACTION_SHOW_DEFINE);
             setParamTitle(key("title.newpropertydef") + ": " + CmsResource.getName(getParamResource()));
         } else if (DIALOG_SAVE_EDIT.equals(getParamAction())) {
@@ -235,59 +235,47 @@ public class CmsProperty extends CmsDialog implements I_CmsDialogHandler {
         } else if (DIALOG_SAVE_DEFINE.equals(getParamAction())) {
             setAction(ACTION_SAVE_DEFINE);
         } else { 
-            // set the default action               
-            setAction(ACTION_DEFAULT); 
-            setParamTitle(key("title.property") + ": " + CmsResource.getName(getParamResource()));
+            // set the default action: show edit form               
+            setAction(ACTION_DEFAULT);
+            if (!isEditable()) {
+                setParamTitle(key("title.property") + ": " + CmsResource.getName(getParamResource()));
+            } else {
+                setParamTitle(key("title.editpropertyinfo") + ": " + CmsResource.getName(getParamResource()));
+            }
         }      
-    } 
+    }
     
     /**
-     * Creates the HTML String for the list of set properties of the selected resource.<p>
-     * 
-     * @return the HTML output String of the property list
-     * @throws JspException if problems including sub-elements occur
+     * @see org.opencms.workplace.CmsDialog#dialogButtonRowHtml(java.lang.StringBuffer, int, java.lang.String)
      */
-    public String buildPropertiesList() throws JspException {
-        StringBuffer retValue = new StringBuffer(256);
-        Map properties = null;
-        try {
-            properties = getCms().readProperties(getParamResource());
-        } catch (CmsException e) {
-            // error getting properties, show error dialog
-            setParamErrorstack(e.getStackTraceAsString());
-            String message = "Error reading properties from resource " + getParamResource();
-            setParamMessage(message + key("error.message." + getParamDialogtype()));
-            setParamReasonSuggestion(getErrorSuggestionDefault());
-            getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
-        }        
-        
-        Iterator i = properties.keySet().iterator();
-        boolean setProperties = i.hasNext();
-        
-        // create table if properties are present
-        if (setProperties) {
-            retValue.append("<table border=\"0\">\n");
+    protected void dialogButtonRowHtml(StringBuffer result, int button, String attribute) {
+        attribute = appendDelimiter(attribute);
+
+        switch (button) {
+        case BUTTON_DEFINE :
+            result.append("<input name=\"define\" type=\"button\" value=\"");
+            result.append(key("button.newpropertydef"));
+            result.append("\" class=\"dialogbutton\"");
+            result.append(attribute);
+            result.append(">\n");
+            break;
+        default :
+            super.dialogButtonRowHtml(result, button, attribute);
         }
-        
-        // iterate over all set properties
-        while (i.hasNext()) {
-            String key = Encoder.escapeXml((String)i.next());           
-            String value = Encoder.escapeXml((String)properties.get(key));
-            retValue.append("<tr>\n\t<td>");
-            retValue.append(key+":</td>\n");
-            retValue.append("\t<td>"+value+"</td>\n");
-            retValue.append("</tr>\n");
-        }
-        
-        // close table if properties are present
-        if (setProperties) {
-            retValue.append("</table>");
+    }
+    
+    /**
+     * Builds a button row with an "Ok", a "Cancel" and a "Define" button.<p>
+     * 
+     * @return the button row
+     */
+    public String dialogButtonRowOkCancelDefine() {
+        if (isEditable()) {
+            return dialogButtonRow(new int[] {BUTTON_OK, BUTTON_CANCEL, BUTTON_DEFINE}, new String[] {null, null, "onclick=\"definePropertyForm();\""});
         } else {
-            // no propertis present, show error message
-            retValue.append(key("error.message.noprop"));
+            return dialogButtonRow(new int[] {BUTTON_CLOSE}, new String[] {null});
+            
         }
-        
-        return retValue.toString();
     }
     
     /**
@@ -299,12 +287,13 @@ public class CmsProperty extends CmsDialog implements I_CmsDialogHandler {
         StringBuffer retValue = new StringBuffer(256);
         Vector propertyDef = new Vector();
         try {
+            // get all property definitions
             propertyDef = getPropertyDefinitions();
         } catch (CmsException e) {
-            // ignore
+            // ignore this exception
         }
         
-        for (int i=0; i<propertyDef.size(); i++) {
+        for (int i = 0; i < propertyDef.size(); i++) {
             CmsPropertydefinition curProperty = (CmsPropertydefinition)propertyDef.elementAt(i);
             retValue.append(Encoder.escapeXml(curProperty.getName()));
             if ((i+1) < propertyDef.size()) {
@@ -322,6 +311,11 @@ public class CmsProperty extends CmsDialog implements I_CmsDialogHandler {
      */
     public String buildEditForm() {
         StringBuffer retValue = new StringBuffer(1024);
+        
+        String disabled = "";
+        if (!isEditable()) {
+            disabled = " disabled=\"disabled\"";
+        }
         
         // get all properties for the resource
         Vector propertyDef = new Vector();
@@ -352,7 +346,9 @@ public class CmsProperty extends CmsDialog implements I_CmsDialogHandler {
             retValue.append("\t<td class=\"textbold\" style=\"white-space: nowrap;\">"+key("input.usedproperty")+"</td>\n");            
             retValue.append("</tr>\n");
             retValue.append("<tr><td><span style=\"height: 6px;\"></span></td></tr>\n");
-            for (int i=0; i<propertyDef.size(); i++) {
+            
+            for (int i = 0; i < propertyDef.size(); i++) {
+                // walk through all property definitions for the resource
                 CmsPropertydefinition curProperty = (CmsPropertydefinition)propertyDef.elementAt(i);
                 String propName = Encoder.escapeXml(curProperty.getName());
                 retValue.append("<tr>\n");
@@ -363,118 +359,91 @@ public class CmsProperty extends CmsDialog implements I_CmsDialogHandler {
                     // the property is used, so create text field with value, checkbox and hidden field
                     String propValue = Encoder.escapeXml((String)activeProperties.get(curProperty.getName()));
                     retValue.append("<input type=\"text\" class=\"maxwidth\" value=\"");
-                    retValue.append(propValue+"\" name=\""+PREFIX_VALUE+propName+"\" id=\""+PREFIX_VALUE+propName+"\" onKeyup=\"checkValue('"+propName+"');\">");
+                    retValue.append(propValue+"\" name=\""+PREFIX_VALUE+propName+"\" id=\""+PREFIX_VALUE+propName+"\" onKeyup=\"checkValue('"+propName+"');\"" + disabled + ">");
                     retValue.append("<input type=\"hidden\" name=\""+PREFIX_HIDDEN+propName+"\" id=\""+PREFIX_HIDDEN+propName+"\" value=\""+propValue+"\"></td>\n");
                     retValue.append("\t<td class=\"textcenter\">");
-                    retValue.append("<input type=\"checkbox\" name=\""+PREFIX_USEPROPERTY+propName+"\" id=\""+PREFIX_USEPROPERTY+propName+"\" value=\"true\"");
+                    retValue.append("<input type=\"checkbox\" name=\""+PREFIX_USEPROPERTY+propName+"\" id=\""+PREFIX_USEPROPERTY+propName+"\" value=\"true\"" + disabled);
                     retValue.append(" checked=\"checked\" onClick=\"toggleDelete('"+propName+"');\">");
                     retValue.append("</td>\n");
                 } else {
                     // property is not used, create an empty text input field
                     retValue.append("<input type=\"text\" class=\"maxwidth\" ");
-                    retValue.append("name=\""+PREFIX_VALUE+propName+"\"></td>\n");
+                    retValue.append("name=\""+PREFIX_VALUE+propName+"\"" + disabled + "></td>\n");
                     retValue.append("\t<td>&nbsp;</td>");
                 }
                 retValue.append("</tr>\n");
             }
+            
             retValue.append("</table>");
             
         } else {
             // there are no properties defined for this resource, show nothing
-            retValue.append("no props defined!");
+            retValue.append("no properties defined!");
         }
         
         return retValue.toString();
     }
     
     /**
-     * Creates the HTML String for the buttons "edit" and "define properties" depending on the lock state of the resource.<p>
-     *  
-     * @return the HTML output String for the buttons
-     */
-    public String buildActionButtons() {       
-        if (isEditable()) {
-            StringBuffer retValue = new StringBuffer(256);
-            String dialogLink = getJsp().link(URI_PROPERTY_DIALOG);
-            
-            retValue.append("<table border=\"0\">\n");
-            retValue.append("<tr>\n\t<td>\n");
-            
-            //  create button to switch to the edit properties window
-            setParamAction(DIALOG_SHOW_EDIT);
-            retValue.append("<form action=\""+dialogLink+"\" method=\"post\" class=\"nomargin\" name=\"define\">\n");
-            retValue.append(paramsAsHidden());
-            retValue.append("<input type=\"submit\" class=\"dialogbutton\" style=\"margin-left: 0;\" name=\"ok\" value=\""+key("button.edit")+"\">\n");
-            retValue.append("</form>\n");
-            
-            retValue.append("\t</td>\n");
-            retValue.append("\t<td>\n");
-            
-            
-            // create button to switch to the define property window
-            setParamAction(DIALOG_SHOW_DEFINE);
-            retValue.append("<form action=\""+dialogLink+"\" method=\"post\" class=\"nomargin\" name=\"define\">\n");
-            retValue.append(paramsAsHidden());
-            retValue.append("<input type=\"submit\" class=\"dialogbutton\" name=\"ok\" value=\""+key("button.newpropertydef")+"\">\n");
-            retValue.append("</form>\n");
-            
-            retValue.append("\t</td>\n</tr>\n");
-            retValue.append("</table>");
-            
-            return retValue.toString();
-        } else {
-            // resource is not locked, don't display edit buttons
-            return "";
-        }
-    }
-    
-    /**
-     * Returns whether the properties are editable or not depending on the lock state of the resource.<p>
+     * Returns whether the properties are editable or not depending on the lock state of the resource and the current project.<p>
      * 
      * @return true if properties are editable, otherwise false
      */
-    public boolean isEditable() {
-        String resourceName = getParamResource();
-        CmsResource file = null;
-        CmsLock lock = null;
-    
-        try {
-            file = getCms().readFileHeader(resourceName);
-            // check if resource is a folder
-            if (file.isFolder()) {
-                resourceName += "/";            
-            }
-        } catch (CmsException e) {
-            // ignore
-        }
-    
-        try {
-            // get the lock for the resource
-            lock = getCms().getLock(resourceName);
-        } catch (CmsException e) {
-            lock = CmsLock.getNullLock();
-        
-            if (OpenCms.getLog(this).isErrorEnabled()) { 
-                OpenCms.getLog(this).error("Error getting lock state for resource " + resourceName, e);
-            }             
-        }
-    
-        if (!lock.isNullLock()) {
-            // determine if resource is editable...
-            if (lock.getType() != CmsLock.C_TYPE_SHARED_EXCLUSIVE && lock.getType() != CmsLock.C_TYPE_SHARED_INHERITED
-                    && lock.getUserId().equals(getCms().getRequestContext().currentUser().getId())) {
-                // lock is not shared and belongs to the current user
-                if (getCms().getRequestContext().currentProject().getId() == lock.getProjectId() 
-                        || "true".equals(getParamUsetempfileproject())) {
-                    // resource is locked in the current project or the tempfileproject is used
-                    return true;
+    protected boolean isEditable() {
+        if (m_isEditable == null) {  
+            
+            if (getCms().getRequestContext().currentProject().getId() == I_CmsConstants.C_PROJECT_ONLINE_ID) {
+                // we are in the online project, no editing allowed
+                m_isEditable = new Boolean(false);
+                
+            } else {
+                // we are in an offline project, check lock state
+                String resourceName = getParamResource();
+                CmsResource file = null;
+                CmsLock lock = null;
+                try {
+                    file = getCms().readFileHeader(resourceName);
+                    // check if resource is a folder
+                    if (file.isFolder()) {
+                        resourceName += "/";            
+                    }
+                } catch (CmsException e) {
+                    // ignore this exception
                 }
+            
+                try {
+                    // get the lock for the resource
+                    lock = getCms().getLock(resourceName);
+                } catch (CmsException e) {
+                    lock = CmsLock.getNullLock();
+                
+                    if (OpenCms.getLog(this).isErrorEnabled()) { 
+                        OpenCms.getLog(this).error("Error getting lock state for resource " + resourceName, e);
+                    }             
+                }
+            
+                if (!lock.isNullLock()) {
+                    // determine if resource is editable...
+                    if (lock.getType() != CmsLock.C_TYPE_SHARED_EXCLUSIVE && lock.getType() != CmsLock.C_TYPE_SHARED_INHERITED
+                            && lock.getUserId().equals(getCms().getRequestContext().currentUser().getId())) {
+                        // lock is not shared and belongs to the current user
+                        if (getCms().getRequestContext().currentProject().getId() == lock.getProjectId() 
+                                || "true".equals(getParamUsetempfileproject())) {
+                            // resource is locked in the current project or the tempfileproject is used
+                            m_isEditable = new Boolean(true);
+                            return m_isEditable.booleanValue();
+                        }
+                    }
+                } else if (getSettings().getAutoLockResources()) {
+                    m_isEditable = new Boolean(true);
+                    return m_isEditable.booleanValue();
+                }
+                // lock is null or belongs to other user and/or project, properties are not editable
+                m_isEditable = new Boolean(false);
             }
-        } else if (getSettings().getAutoLockResources()) {
-            return true;
         }
-        // lock is null or belongs to other user and/or project, properties are not editable
-        return false;
+        
+        return m_isEditable.booleanValue();
     }
 
     /**
@@ -540,19 +509,15 @@ public class CmsProperty extends CmsDialog implements I_CmsDialogHandler {
         // save initialized instance of this class in request attribute for included sub-elements
         getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
         try {
-            performEditOperation(request);
-            // set the request parameters before returning to the overview
-            setParamAction(DIALOG_SHOW_DEFAULT);
-            getCms().getRequestContext().getResponse().sendCmsRedirect(getJsp().getRequestContext().getUri()+"?"+paramsAsRequest());              
+            if (isEditable()) {
+                performEditOperation(request);
+            }         
         } catch (CmsException e) {
-            // error defining property, show error dialog
+            // error editing property, show error dialog
             setParamErrorstack(e.getStackTraceAsString());
             setParamReasonSuggestion(getErrorSuggestionDefault());
-                getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
-     
-            } catch (IOException exc) {
-                getJsp().include(C_FILE_EXPLORER_FILELIST);
-            }
+            getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
+        } 
     }
     
     /**

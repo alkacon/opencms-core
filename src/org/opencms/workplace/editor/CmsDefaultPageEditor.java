@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2004/01/23 14:42:21 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2004/01/27 10:49:10 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * 
  * @since 5.1.12
  */
@@ -286,44 +286,23 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      * @return the html for the body language selectbox
      */
     public String buildSelectBodyLanguage(String attributes) {
-        
-        String localeNames[] = OpenCms.getLocaleManager().getAvailableLocaleNames(getCms(), getCms().readAbsolutePath(m_file));
+        // get locale names based on properties and global settings
+        String localeNames[] = OpenCms.getLocaleManager().getAvailableLocaleNames(getCms(), getParamTempfile());
 
         List options = new ArrayList(localeNames.length);
         List selectList = new ArrayList(localeNames.length);
         int currentIndex = -1;
         for (int counter = 0; counter < localeNames.length; counter++) {
+            // create the list of options and values
             Locale curLocale = OpenCms.getLocaleManager().getLocale(localeNames[counter]);
             selectList.add(curLocale.toString());
             options.add(curLocale.getDisplayName(new Locale(getSettings().getLanguage())));
             if (curLocale.toString().equals(getParamBodylanguage())) {
+                // set the selected index of the selector
                 currentIndex = counter;
             }
         }
-        /*
-        String languages[] = null;
-        try {
-            languages = getCms().getLanguages(getCms().readAbsolutePath(m_file));
-        } catch (CmsException exc) {
-            languages = new String[] {OpenCms.getDefaultLanguage()};
-        }
-        
-        List options = new ArrayList(languages.length);
-        List selectList = new ArrayList(languages.length);
-        int currentIndex = -1;
-        for (int counter = 0; counter < languages.length; counter++) {
-            String curLocaleName[] = Utils.split(languages[counter],"_");
-            Locale curLocale = new Locale(
-                    curLocaleName[0], 
-                    (curLocaleName.length > 1) ? curLocaleName[1] : "", 
-                    (curLocaleName.length > 2) ? curLocaleName[2] : "");
-            selectList.add(languages[counter]);            
-            options.add(curLocale.getDisplayName(new Locale(getSettings().getLanguage())));
-            if (languages[counter].equals(getParamBodylanguage())) {
-                currentIndex = counter;
-            }
-        }
-        */
+       
         if (currentIndex == -1) {
             // no matching body language found, use first body language in list
             if (selectList != null && selectList.size() > 0) {
