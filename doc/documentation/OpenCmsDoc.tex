@@ -1,14 +1,12 @@
 %============================================================
-% Die OpenCms Dokumentation
+% The OpenCms 5.0 documentation - book part
 %============================================================
 
 \documentclass[a4paper,titlepage,12pt]{scrbook}
 
 %--------------------------------------------------
-% use some packages...
+% Package declarations 
 %--------------------------------------------------
-%\usepackage{german}           % do not use because this is english!
-%\usepackage{t1enc}        % what for?
 \usepackage[latin1]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{xspace}
@@ -21,17 +19,10 @@
 \usepackage{makeidx}
 \usepackage{fancyhdr}                    % for header and footer
 \makeindex                               % necessary to make an index
-%\usepackage[small,bf]{caption}
 %--------------------------------------------------
 
-%\setlength{\captionmargin}{15pt}
-%\DeclareGraphicsRule{.jpg}{bmp}{}{}
-
-%\textwidth15cm
-%\textheight23cm
-
-\newfont{\titleFont}{cmssbx10 scaled 3300} % Der Font für den Titel
-\typearea[6mm]{14}                         % setzte den Satzspiegel
+\newfont{\titleFont}{cmssbx10 scaled 3300} % Title font
+\typearea[6mm]{14}                         % Text font
 
 %\areaset[16mm]{15.1cm}{22.3cm}
 %\addtolength{\oddsidemargin}{0.6cm}
@@ -41,7 +32,7 @@
 % fancyhdr
 %--------------------------------------------------
 \pagestyle{fancy}
-\fancyhead{}                           % clear all fields
+\fancyhead{}                            % Clear all fields
 \fancyhead[RE,LO]{\small \slshape \leftmark \normalsize}
 \fancyhead[RO,LE]{\includegraphics[width=0.13\linewidth]{pics/logo}}
 \fancyfoot[LE,RO]{\thepage}
@@ -52,15 +43,15 @@
 %--------------------------------------------------
 
 %\addtolength{\topmargin}{-1.5cm}
-\setcounter{topnumber}{1}              % allow only one figure at top
-\setcounter{bottomnumber}{1}           % allow only one figure at bottom
+\setcounter{topnumber}{1}              % Allow only one figure at top
+\setcounter{bottomnumber}{1}           % Allow only one figure at bottom
 \setlength{\parindent}{0em}
 \setlength{\parskip}{1ex plus0.5ex minus0.5ex}
-\renewcommand{\baselinestretch}{1.1}   % set line spacing to 1.1
+\renewcommand{\baselinestretch}{1.1}   % Set line spacing to 1.1
 %\renewcommand{\textfraction}{0.0}
 
 %--------------------------------------------------
-% Trennvorschläge
+% Hyphenation suggestions
 %--------------------------------------------------
 \hyphenation{Cms-Xml-Content CmsXml-Wp-Template-File
 CmsXml-Form-Temp-late-File com open-cms temp-late Cms-Xml-Temp-late
@@ -69,19 +60,22 @@ temp-late sec-ond Cms-Xml-Conten de-sign-ed Cms-Xml-Wp-Temp-late-File
 cre-at-ed fet-ched cal-ling get-Ses-sion met-hod Cms-Ses-sion
 ses-sionCms-Sess-ion get-Re-qu-est-Con-text-get-Sess-ion 
 }
-%
-%--------------------------------------------------
 
 %============================================================
-% Anfang des Dokumentes
+% Main document starts here
 %============================================================
+
 \begin{document}
-% this is for the generated JavaDocs ...
+
+%--------------------------------------------------
+% Some variables
+%--------------------------------------------------
+
+% This is for the generated JavaDocs ...
 \input html2latex/html2latex
 
 % some new commands and enviroments
 
-% \newcommand{\zB}{z.\,B.\xspace} % only for German language
 \newcommand{\sgw}{0.8\linewidth}  % standard graphic width
 
 % XML
@@ -107,7 +101,7 @@ ses-sionCms-Sess-ion get-Re-qu-est-Con-text-get-Sess-ion
 \newcommand{\jtabe}{\hspace{2.5cm} }
 \newcommand{\jtabf}{\hspace{3cm} }
 
-% markup
+% Markup
 \newcommand{\name}{\it}
 \newcommand{\meth}{\it}
 \newcommand{\dir}{\it}
@@ -116,21 +110,20 @@ ses-sionCms-Sess-ion get-Re-qu-est-Con-text-get-Sess-ion
 \newcommand{\class}{\it}
 \newcommand{\backbug}{}
 
-% macro for hypertext-references (has to be used in install...
+% Macros for hypertext-references (has to be used in install...
 % tex-files for correct conversion into html)
 \def\rqtilde{\ensuremath{\tilde{\;}}\xspace}
 \def\rqhttp#1#2{\texttt{#2}}
 
-
-% Variables
-%\newcounter{realpage}            % die tatsächliche Seitenzahl
+%--------------------------------------------------
+% Table of contents and chapters start here
+%--------------------------------------------------
 
 \input{title}
-%\setcounter{realpage}{\value{page}}  % speichern
-%\addtocounter{realpage}{1}           % + 1
+
 \frontmatter
-%\setcounter{page}{\value{realpage}}  % und wieder zurück!
 \tableofcontents
+
 \mainmatter
 \include{documentationnotes}
 \include{install_opencms_5_0}
@@ -148,7 +141,6 @@ ses-sionCms-Sess-ion get-Re-qu-est-Con-text-get-Sess-ion
 \include{systemArchitecture}
 \include{core_development}
 \include{newProject}
-
 \include{templateMechanism}
 \include{modules}
 
@@ -172,8 +164,7 @@ ses-sionCms-Sess-ion get-Re-qu-est-Con-text-get-Sess-ion
 %\end{appendix}
 \printindex  % print the index at the end of the document
 \end{document}
-%============================================================
-% End of it all
-%============================================================
 
-% Master
+%============================================================
+% End of the document
+%============================================================
