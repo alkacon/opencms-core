@@ -267,17 +267,17 @@ function show_help()
 			</tr>
 			<tr>
 				<td class=dialogtxt valign=top>]]><LABEL value="module.lable.parameter"/><![CDATA[:</td>
-				<td class=dialogtxt colspan=3>]]><PROCESS>paraname</PROCESS><![CDATA[</td>
+				<td class=dialogtxt colspan=3>]]><PROCESS>paraname</PROCESS><![CDATA[&nbsp; </td>
 				
 			</tr>
 			<tr>
 				<td class=dialogtxt valign=top>]]><LABEL value="module.lable.description"/><![CDATA[:</td>
-				<td class=dialogtxt colspan=3>]]><PROCESS>paratext</PROCESS><![CDATA[</td>
+				<td class=dialogtxt colspan=3>]]><PROCESS>paratext</PROCESS><![CDATA[&nbsp; </td>
 			</tr>
 
 			<tr>
 				<td class=dialogtxt>]]><LABEL value="module.lable.type"/><![CDATA[:</td>
-				<td class=dialogtxt colspan=3>]]><PROCESS>paratype</PROCESS><![CDATA[</td>
+				<td class=dialogtxt colspan=3>]]><PROCESS>paratype</PROCESS><![CDATA[&nbsp; </td>
 			</tr>
 
 			<tr>
