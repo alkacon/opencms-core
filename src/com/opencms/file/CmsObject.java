@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2002/10/23 15:12:46 $
-* Version: $Revision: 1.247 $
+* Date   : $Date: 2002/11/04 17:15:24 $
+* Version: $Revision: 1.248 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import com.opencms.report.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.247 $ $Date: 2002/10/23 15:12:46 $
+ * @version $Revision: 1.248 $ $Date: 2002/11/04 17:15:24 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -830,6 +830,44 @@ public CmsFile createFile(String folder, String filename, byte[] contents, Strin
 public CmsFile createFile(String folder, String filename, byte[] contents, String type, Hashtable properties) throws CmsException {
     return (CmsFile)createResource(folder, filename, type, properties, contents);
 }
+
+    /**
+     * Replaces and existing resource by another file with different content
+     * and different file type.
+     * 
+     * @param filename the resource to replace
+     * @param type the type of the new resource
+     * @param newContent the content of the new resource
+     */
+    public void replaceResource(String filename, String type, Hashtable newProperties, byte[] newContent) throws CmsException {
+        // save the properties of the old file
+        Hashtable oldProperties = null;
+        try {
+            oldProperties = this.readAllProperties(filename);
+        }
+        catch (CmsException e) {
+            oldProperties = new Hashtable();
+        }
+        
+        // add the properties that might have been collected during
+        // a file-upload-dialogue chain etc.
+        if (newProperties!=null) {
+            oldProperties.putAll( newProperties );
+        }
+
+        try {
+            // delete the old file
+            this.deleteResource(filename);
+
+            // re-create the resource with the new content and the properties
+            // of the old file that we deleted before
+            this.createResource(filename, type, oldProperties, newContent, null);
+        }
+        catch (CmsException e1) {
+            throw new CmsException( CmsException.C_FILESYSTEM_ERROR, e1 );
+        }
+    }
+
 /**
  * Creates a new folder.
  *

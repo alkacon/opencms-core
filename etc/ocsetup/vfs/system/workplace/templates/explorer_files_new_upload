@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0"?>
 <WORKPLACE>
 <TEMPLATE>
 <![CDATA[
@@ -12,21 +12,32 @@ top.help_url='FunkButtonNeu/DateiHochladen.html';
 
 <head>
 
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
-
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
-
+<link rel=stylesheet type="text/css" href="../css/format.css">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript">
+var submitted = false;
+function doSubmit() {
+	submitted = true;
+    document.forms.UPLOAD.WEITER.disabled = true;
+    document.forms.UPLOAD.CANCEL_FOLDER.disabled = true;
+}
+function enableContinue() {
+    if (! submitted) {
+    	document.forms.UPLOAD.WEITER.disabled = false;
+    }
+}
+</SCRIPT>
 
 </HEAD>
 
-<body bgcolor="#ffffff" background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0>
+<body bgcolor="#ffffff" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0>
 
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=center valign=middle>
 
-<form name=UPLOAD action="explorer_files_new_upload.html" method=POST ENCTYPE="multipart/form-data" >
+<form name=UPLOAD action="explorer_files_new_upload.html" method="POST" ENCTYPE="multipart/form-data" onsubmit="doSubmit();return true;" >
 <table border=2 cellspacing=0 cellpadding=0 width=500px>
 <tr><td>
     <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
@@ -34,10 +45,10 @@ top.help_url='FunkButtonNeu/DateiHochladen.html';
     <tr><td colspan=2 class=leerzeile>&nbsp;</td></tr>
     <tr>
         <td class=formular width=10%>]]><LABEL value="input.name" /><![CDATA[:</td>
-        <td class=dialogtxt align=left><INPUT size="30" class="textfeld3" type="file" id=DATEINAME name=DATEINAME onfocus="UPLOAD.WEITER.disabled=false"></td>
+        <td class=dialogtxt align=left><INPUT size="30" maxlength="30" class="textfeld3" type="file" id=DATEINAME name=DATEINAME onfocus="enableContinue();"></td>
     </tr>
     <tr>
-        <td class=formular colspan=2><input type=checkbox name="unzip" name="unzip">&nbsp;]]><LABEL value="button.unzip" /><![CDATA[</td>
+        <td class=formular colspan=2><input type=checkbox id="unzip" name="unzip">&nbsp;]]><LABEL value="button.unzip" /><![CDATA[</td>
     <tr>
         <td colspan=2 class=formular>
             <table cellspacing=0 cellpadding=5 width=100%>
@@ -78,12 +89,12 @@ top.help_url='FunkButtonNeu/index.html';
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 <title>OpenCms</title>
 
-<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
+<link rel=stylesheet type="text/css" href="../css/format.css">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
 
 </HEAD>
 
-<body bgcolor="#ffffff" background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA[" marginwidth=0 marginheight=0 leftmargin=0 topmargin=0>
+<body bgcolor="#ffffff" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA[" marginwidth=0 marginheight=0 leftmargin=0 topmargin=0>
 
 <!-- Beginn upload Datei Folgeseite 1 -->
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
@@ -96,7 +107,7 @@ top.help_url='FunkButtonNeu/index.html';
     <tr><td colspan=3 class=leerzeile>&nbsp;</td></tr>
     <tr><td colspan=3 class=leerzeile>]]><LABEL value="label.upload" /><![CDATA[ : ]]><PROCESS>FILENAME</PROCESS><![CDATA[</td></tr>
     <tr><td colspan=3 class=leerzeile>&nbsp;</td></tr>
-
+    
     <tr>
         <td class=leerzeile width=5%>&nbsp;</td>
         <td class=leerzeile>]]><LABEL value="input.suggestfiletype" /><![CDATA[ :</td>
@@ -145,33 +156,80 @@ top.help_url='FunkButtonNeu/index.html';
 <TEMPLATE name="overwrite">
 <![CDATA[
 <HTML>
-
+    
     <script language=JavaScript>
     <!--
     top.help_url='FunkButtonNeu/index.html';
     //-->
     </script>
-
+    
     <head>
     <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
-
+    
     <title>OpenCms</title>
-    <link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
-
+    <link rel=stylesheet type="text/css" href="../css/format.css">
+    
     </HEAD>
     <BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
-
+    
     <!-- table to center the page-->
     <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
     <tr><td align=middle valign=center>
-
+    
     <!-- table to set up the dialog box-->
     <form id=OVERWRITE name=OVERWRITE>
-    ]]><MESSAGEBOX title="messagebox.title.overwrite" message1="messagebox.message1.overwrite" message2="messagebox.message2.overwrite" button1="button.ok" button2="button.cancel" link1="explorer_files_new_upload.html" link2="explorer_files_new_upload.html"><PROCESS>FILENAME</PROCESS></MESSAGEBOX><![CDATA[
-    </td></tr>
-    </form>
+    
+	<table cellspacing=0 cellpadding=0 border=2 width=300>
+		<tr><td>
+			<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+				
+				<!-- Begin tablehead blue-->
+				<tr> 
+	           		<td colspan=2 class="head">]]><LABEL value="title.upload" /><![CDATA[</td>
+				</tr>
+				<!-- End tablehead blue-->
+				
+				<!-- Begin empty row-->
+				<tr> 
+	           		<td colspan=2 class="leerzeile">&nbsp;</td>
+				</tr>
+				<!-- End empty row-->
+				
+				<tr>
+					<td class=dialogtxt colspan=2>
+						]]><LABEL value="messagebox.message1.resourceexists" /><PROCESS>FILENAME</PROCESS><LABEL value="messagebox.message2.resourceexists" /><![CDATA[
+					</td>
+				</tr>
+				<tr>
+					<td class=dialogtxt colspan=2>
+						]]><LABEL value="messagebox.message3.resourceexists" /><![CDATA[
+					</td>
+				</tr>
+				
+				<!-- Begin empty row-->
+				<tr> 
+	           		<td colspan=2 class="leerzeile">&nbsp;</td>
+				</tr>
+				<!-- End empty row-->
+				
+				<!-- Begin buttons-->
+				<tr><td class=dialogtxt colspan=2>
+					<table cellspacing=0 cellpadding=5 width=100%>
+					<tr>
+						<td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK onClick="location.href='explorer_files_new_upload.html?overwrite=yes&STEP=]]><PROCESS>LAST_STEP</PROCESS><![CDATA['"></td>
+						<td class=formular align=left width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=Cancel name=CANCEL onClick="location.href='explorer_files_new_upload.html?cancel=yes&STEP='"></td>
+					</tr>
+					</table>
+				</td>
+				</tr>
+				<!-- End buttons-->
+				
+				</table>
+		</td></tr>
+	</table>
+	</form>
     </table>
-
+        
     </BODY>
     </html>
     ]]>
@@ -213,12 +271,12 @@ function check_text_local()
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 <title>OpenCms</title>
 
-<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
+<link rel=stylesheet type="text/css" href="../css/format.css">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
 
 </HEAD>
 
-<body  bgcolor="#ffffff" background="]]><METHOD name="resourcesUri">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth = 0 marginheight = 0 leftmargin=0 topmargin=0>
+<body  bgcolor="#ffffff" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth = 0 marginheight = 0 leftmargin=0 topmargin=0>
 
 <!-- Beginn neue Datei Docloader und EMailformulareditor Anlegen -->
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
@@ -250,9 +308,9 @@ function check_text_local()
     </tr>
     <tr>
         <td class=formular>]]><LABEL value="input.title" /><![CDATA[:</td>
-        <td class=dialogtxt><INPUT class="textfeld2" id=title name=title onfocus="UPLOADPIC.FERTIG.disabled=false;"></td>
+        <td class=dialogtxt><INPUT class="textfeld2" id=title name=title onfocus="UPLOADPIC.FERTIG.disabled=false;" value="]]><PROCESS>TITLE</PROCESS><![CDATA["></td>
     </tr>
-
+                                
     <!--Beginn Buttons-->
     <tr><td colspan=2 class=formular>
             <table cellspacing=0 cellpadding=5 width=100%>
@@ -263,7 +321,7 @@ function check_text_local()
                 <td class=formular align=middle width=20%><INPUT class=button width = 100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="location='explorer_files.html';"></td>
             </tr>
             </table>
-        </td>
+        </td>               
     </tr>
     </table>
 </TD></TR>
@@ -272,6 +330,14 @@ function check_text_local()
 </TD></TR>
 </TABLE>
 <!-- Ende neue Datei Anlegen -->
+
+<script language=JavaScript>
+<!--
+if (document.forms.UPLOADPIC.title.value!="") {
+	document.forms.UPLOADPIC.FERTIG.disabled=false;
+}
+//-->
+</script>
 
 </body>
 </HTML>

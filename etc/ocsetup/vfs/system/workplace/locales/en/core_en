@@ -802,6 +802,7 @@
                 <lockchangefolder>Really steal the Folder Lock?</lockchangefolder>
                 <lockedinfolder>There are locked resources in the folder. Unlock all resources?</lockedinfolder>
                 <publishresource>Do you really want to publish</publishresource>
+				<resourceexists>The file <![CDATA[&nbsp;]]></resourceexists>
                 <syncfolder>Really synchronize?</syncfolder>
                 <undochanges>The resource</undochanges>
                 <unlock> Really unlock the File?</unlock>
@@ -819,6 +820,7 @@
                 <lockchange>The File is currently locked by another user.</lockchange>
                 <lockchangefolder>The Folder is currently locked by another user.</lockchangefolder>
                 <publishresource>last modified on</publishresource>
+				<resourceexists><![CDATA[&nbsp;]]> already exists!</resourceexists>
                 <syncfolder>The files in OpenCms system or the server filesystem will be updated.</syncfolder>
                 <undochanges>was last modified on</undochanges>
                 <unlock> Other Users can then edit the File again.</unlock>
@@ -829,6 +831,7 @@
                 <deletepropdef2>of resource type </deletepropdef2>
                 <deletepropdef3>?</deletepropdef3>
                 <publishresource>by</publishresource>
+				<resourceexists>Do you want to overwrite this file?</resourceexists>
                 <undochanges>by</undochanges>
             </message3>
             <message4>

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceUpload.java,v $
-* Date   : $Date: 2001/07/31 15:50:19 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2002/11/04 17:15:24 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,9 +45,14 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.29 $ $Date: 2001/07/31 15:50:19 $
+ * @version $Revision: 1.30 $ $Date: 2002/11/04 17:15:24 $
  */
 public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
+    
+    private static final String C_PARAM_OVERWRITE = "overwrite";
+    private static final String C_PARAM_CANCEL = "cancel";
+
+    private static final int DEBUG = 0;    
 
     /** Vector containing all names of the radiobuttons */
     private Vector m_names = null;
@@ -74,12 +79,13 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
 
         // clear session values on first load
         String initial = (String)parameters.get(C_PARA_INITIAL);
-        if(initial != null) {
-
+        if (initial != null) {
             // remove all session values
             session.removeValue(C_PARA_FILE);
             session.removeValue(C_PARA_FILECONTENT);
             session.removeValue(C_PARA_NEWTYPE);
+            session.removeValue(C_PARA_TITLE);
+            session.removeValue(CmsNewResourceUpload.C_PARAM_OVERWRITE);
             session.removeValue("lasturl");
         }
         String lastUrl = getLastUrl(cms, parameters);
@@ -98,7 +104,15 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
         if(currentFolder == null) {
             currentFolder = cms.rootFolder().getAbsolutePath();
         }
-        String title = (String)parameters.get(C_PARA_TITLE);
+
+        String title = (String) parameters.get(C_PARA_TITLE);
+        if (title!=null && !"".equals(title.trim())) {
+            session.putValue(C_PARA_TITLE, title);
+        }
+        else {
+            title = (String)session.getValue(C_PARA_TITLE);
+        }
+        
         String newname = (String)parameters.get(C_PARA_NAME);
 
         // get filename and file content if available
@@ -134,6 +148,41 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
         // get the document to display
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
         xmlTemplateDocument.setData("lasturl", lastUrl);
+        
+        // get the overwrite parameter
+        String dummy = (String) parameters.get(CmsNewResourceUpload.C_PARAM_OVERWRITE);
+        boolean replaceResource = false;
+        if (dummy != null) {
+            replaceResource = "yes".equals(dummy);
+            session.putValue(CmsNewResourceUpload.C_PARAM_OVERWRITE, dummy);
+        }
+        else {
+            replaceResource = "yes".equals((String) session.getValue(CmsNewResourceUpload.C_PARAM_OVERWRITE));
+        }
+
+        // get the cancel parameter
+        boolean cancelUpload = "yes".equals((String) parameters.get(CmsNewResourceUpload.C_PARAM_CANCEL));
+
+        if (cancelUpload) {
+            // the resource to upload exists, the user choosed
+            // cancel in the warning dialogue... clear the session
+            // values now.
+            session.removeValue(C_PARA_FILE);
+            session.removeValue(C_PARA_FILECONTENT);
+            session.removeValue(C_PARA_NEWTYPE);
+            session.removeValue(C_PARA_TITLE);
+            session.removeValue(CmsNewResourceUpload.C_PARAM_OVERWRITE);
+        }
+        
+        if (DEBUG > 0) {
+            System.out.println("\nstep: " + step);
+            System.out.println("filename: " + filename);
+            System.out.println("currentFolder: " + currentFolder);
+            System.out.println("title: " + title);
+            System.out.println("newtype: " + newtype);
+            System.out.println("overwrite: " + replaceResource);
+            System.out.println("cancel: " + cancelUpload);
+        }                
 
         // there was a file uploaded, so select its type
         if(step != null) {
@@ -159,6 +208,8 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
                                 session.removeValue(C_PARA_FILE);
                                 session.removeValue(C_PARA_FILECONTENT);
                                 session.removeValue(C_PARA_NEWTYPE);
+                                session.removeValue(C_PARA_TITLE);
+                                session.removeValue(CmsNewResourceUpload.C_PARAM_OVERWRITE);
                                 // return to the filelist
                                 try {
                                     //cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);
@@ -187,6 +238,18 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
                     // get the selected resource and check if it is an image
                     I_CmsResourceType type = cms.getResourceType(newtype);
                     if(newtype.equals(C_TYPE_IMAGE_NAME)) {
+                        // check if the resource already exists to get its title
+                        try {
+                            String oldTitle = cms.readProperty( currentFolder + filename, I_CmsConstants.C_PROPERTY_TITLE );
+                            
+                            if (oldTitle!=null) {
+                                xmlTemplateDocument.setData("TITLE", oldTitle);
+                            }
+                        }
+                        catch (CmsException e) {
+                            // the resource doesn't exists yet...
+                            xmlTemplateDocument.setData("TITLE", "");
+                        }                        
 
                         // the file type is an image
                         template = "image";
@@ -197,23 +260,29 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
                     else {
 
                         // create the new file.
-                        // todo: error handling if file already exits
-
-                        try{
-                            cms.createResource(currentFolder, filename, type.getResourceTypeName(), new Hashtable(), filecontent);
-                        }catch(CmsException e){
-                            // remove the values form the session
-                            session.removeValue(C_PARA_FILE);
-                            session.removeValue(C_PARA_FILECONTENT);
-                            session.removeValue(C_PARA_NEWTYPE);
-                            xmlTemplateDocument.setData("details", Utils.getStackTrace(e));
-                            return startProcessing(cms, xmlTemplateDocument, "", parameters, "error2");
-
+                        try {
+                            cms.createResource(currentFolder + filename, type.getResourceTypeName(), new Hashtable(), filecontent, null);
                         }
+                        catch (CmsException e) {
+                            if (replaceResource) {
+                                cms.lockResource(currentFolder + filename, true);
+                                cms.replaceResource(currentFolder + filename, type.getResourceTypeName(), null, filecontent);
+                                //cms.unlockResource( currentFolder + filename );
+                                session.putValue(CmsNewResourceUpload.C_PARAM_OVERWRITE, "no");
+                            }
+                            else {
+                                xmlTemplateDocument.setData("LAST_STEP", step);
+                                xmlTemplateDocument.setData("FILENAME", filename);
+                                return startProcessing(cms, xmlTemplateDocument, "", parameters, "overwrite");
+                            }
+                        }
+
                         // remove the values form the session
                         session.removeValue(C_PARA_FILE);
                         session.removeValue(C_PARA_FILECONTENT);
                         session.removeValue(C_PARA_NEWTYPE);
+                        session.removeValue(C_PARA_TITLE);
+                        session.removeValue(CmsNewResourceUpload.C_PARAM_OVERWRITE);
 
                         // return to the filelist
                         try {
@@ -248,16 +317,33 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
                         I_CmsResourceType type = cms.getResourceType(newtype);
                         Hashtable prop = new Hashtable();
                         // check if a file title was given
-                        if(title != null) {
+                        if (title != null) {
                             prop.put(C_PROPERTY_TITLE, title);
                         }
-                        CmsResource file = cms.createResource(currentFolder, filename,
-                                               type.getResourceTypeName(), prop, filecontent);
+
+                        try {
+                            cms.createResource(currentFolder + filename, type.getResourceTypeName(), prop, filecontent, null);
+                        }
+                        catch (CmsException e) {
+                            if (replaceResource) {
+                                cms.lockResource(currentFolder + filename, true);
+                                cms.replaceResource(currentFolder + filename, type.getResourceTypeName(), prop, filecontent);
+                                //cms.unlockResource( currentFolder + filename );
+                                session.putValue(CmsNewResourceUpload.C_PARAM_OVERWRITE, "no");
+                            }
+                            else {
+                                xmlTemplateDocument.setData("LAST_STEP", step);
+                                xmlTemplateDocument.setData("FILENAME", filename);
+                                return startProcessing(cms, xmlTemplateDocument, "", parameters, "overwrite");
+                            }
+                        }
 
                         // remove the values form the session
                         session.removeValue(C_PARA_FILE);
                         session.removeValue(C_PARA_FILECONTENT);
                         session.removeValue(C_PARA_NEWTYPE);
+                        session.removeValue(C_PARA_TITLE);
+                        session.removeValue(CmsNewResourceUpload.C_PARAM_OVERWRITE);
                         session.removeValue("lasturl");
 
                         // return to the filelist

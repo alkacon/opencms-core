@@ -801,6 +801,7 @@
                 <lockchangefolder>Wollen Sie die Sperrung wirklich übernehmen?</lockchangefolder>
                 <lockedinfolder>Im Ordner existieren noch gesperrte Ressourcen. Sollen die Ressourcen freigegeben werden?</lockedinfolder>
                 <publishresource>Soll die Ressource</publishresource>
+				<resourceexists>Die Datei <![CDATA[&nbsp;]]></resourceexists>
                 <syncfolder>Wollen Sie wirklich synchronisieren?</syncfolder>
                 <undochanges>Die Ressource</undochanges>
                 <unlock> Soll die Datei wirklich freigegeben werden?</unlock>
@@ -818,6 +819,7 @@
                 <lockchange>Die Datei wird zur Zeit von einem anderen Benutzer gesperrt.</lockchange>
                 <lockchangefolder>Der Ordner wird zur Zeit von einem anderen Benutzer gesperrt.</lockchangefolder>
                 <publishresource>zuletzt geändert am</publishresource>
+				<resourceexists><![CDATA[&nbsp;]]> existiert bereits!</resourceexists>
                 <syncfolder>Die Dateien im OpenCms-System bzw. auf der Festplatte werden dabei auf den neusten Stand gebracht.</syncfolder>
                 <undochanges>wurde zuletzt geändert am</undochanges>
                 <unlock> Die Datei kann dann auch wieder online gestellt werden.</unlock>
@@ -828,6 +830,7 @@
                 <deletepropdef2>für Dateityp </deletepropdef2>
                 <deletepropdef3> wirklich gelöscht werden?</deletepropdef3>
                 <publishresource>von</publishresource>
+				<resourceexists>Soll die bestehende Datei überschrieben werden?</resourceexists>
                 <undochanges>von</undochanges>
             </message3>
             <message4>
