@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2004/02/27 14:53:32 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2004/03/01 11:43:36 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -277,6 +277,7 @@ public class CmsImportVersion4 extends A_CmsImport {
        String source, destination, type, uuidresource, uuidcontent, userlastmodified, usercreated, flags, timestamp;
        long datelastmodified, datecreated;
        int resType;
+       int loaderId = I_CmsConstants.C_UNKNOWN_ID;
 
        List fileNodes, acentryNodes;
        Element currentElement, currentEntry;
@@ -321,8 +322,13 @@ public class CmsImportVersion4 extends A_CmsImport {
                type = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_TYPE);
                if (C_RESOURCE_TYPE_NEWPAGE_NAME.equals(type)) {
                    resType = C_RESOURCE_TYPE_NEWPAGE_ID;
+               } else if (C_RESOURCE_TYPE_PAGE_NAME.equals(type)) {
+                   resType = C_RESOURCE_TYPE_PAGE_ID;
+               } else if (C_RESOURCE_TYPE_LINK_NAME.equals(type)) {
+                   resType = C_RESOURCE_TYPE_LINK_ID;
                } else {
                    resType = m_cms.getResourceTypeId(type);
+                   loaderId = m_cms.getResourceType(resType).getLoaderId();
                }
                // <uuidresource>
                uuidresource = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_UUIDRESOURCE);
@@ -367,7 +373,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                    // get all properties
                    properties = getPropertiesFromXml(currentElement, resType, propertyName, propertyValue, deleteProperties);
                    // import the resource               
-                   CmsResource res = importResource(source, destination, resType,  uuidresource, uuidcontent, datelastmodified, userlastmodified, datecreated, usercreated, flags, properties);
+                   CmsResource res = importResource(source, destination, resType,  loaderId, uuidresource, uuidcontent, datelastmodified, userlastmodified, datecreated, usercreated, flags, properties);
                    // if the resource was imported add the access control entrys if available
                    if (res != null) {
                        // write all imported access control entries for this file
@@ -424,6 +430,7 @@ public class CmsImportVersion4 extends A_CmsImport {
     * @param source the path to the source-file
     * @param destination the path to the destination-file in the cms
     * @param resType the resource-type of the file
+    * @param loaderId the loader id of the resource
     * @param uuidresource  the resource uuid of the resource
     * @param uuidcontent the file uuid of the resource
     * @param datelastmodified the last modification date of the resource
@@ -438,14 +445,14 @@ public class CmsImportVersion4 extends A_CmsImport {
         String source, 
         String destination,         
         int resType, 
+        int loaderId, 
         String uuidresource, 
         String uuidcontent, 
         long datelastmodified, 
         String userlastmodified, 
         long datecreated, 
         String usercreated, 
-        String flags, 
-        Map properties
+        String flags, Map properties
     ) {
 
         byte[] content = null;
@@ -513,6 +520,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                     content = pageContent.toByteArray();
                 }
                 resType = CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID;
+                loaderId = m_cms.getResourceType(resType).getLoaderId();
             }
             
             // create a new CmsResource                         
@@ -526,7 +534,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                 new Integer(flags).intValue(), 
                 m_cms.getRequestContext().currentProject().getId(), 
                 I_CmsConstants.C_STATE_NEW, 
-                m_cms.getResourceType(resType).getLoaderId(), 
+                loaderId, 
                 datecreated, 
                 newUsercreated, 
                 datelastmodified, 
