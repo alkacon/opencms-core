@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/08/27 08:57:17 $
- * Version: $Revision: 1.185 $
+ * Date   : $Date: 2004/08/27 09:02:02 $
+ * Version: $Revision: 1.186 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.185 $ $Date: 2004/08/27 08:57:17 $
+ * @version $Revision: 1.186 $ $Date: 2004/08/27 09:02:02 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1765,7 +1765,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 rootPath = res.getString("RESOURCE_PATH");
                 resourceState = res.getInt("RESOURCE_STATE");
                 resourceType = res.getInt("RESOURCE_TYPE");
-                siblingCount = res.getInt("SIBLING_COUNT");;
+                siblingCount = res.getInt("SIBLING_COUNT");
                 backupTagId = res.getInt("PUBLISH_TAG");
                 
                 publishedResources.add(new CmsPublishedResource(structureId, resourceId, backupTagId, rootPath, resourceType, resourceState, siblingCount));
