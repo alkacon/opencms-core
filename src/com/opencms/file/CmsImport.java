@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
- * Date   : $Date: 2000/10/31 14:46:46 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2000/11/02 16:04:58 $
+ * Version: $Revision: 1.31 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import source.org.apache.java.util.*;
  * into the cms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.30 $ $Date: 2000/10/31 14:46:46 $
+ * @version $Revision: 1.31 $ $Date: 2000/11/02 16:04:58 $
  */
 public class CmsImport implements I_CmsConstants {
 
@@ -359,7 +359,7 @@ public Vector getResourcesForProject() throws CmsException {
  * @param fileCodes code of the written files (for the registry) 
  *       not used when null
  */
-private void importFile(String source, String destination, String type, String user, String group, String access, Hashtable properties, Vector writtenFilenames, Vector fileCodes) {
+private void importFile(String source, String destination, String type, String user, String group, String access, Hashtable properties, String launcherStartClass, Vector writtenFilenames, Vector fileCodes) {
 	// print out the information for shell-users
 	System.out.print("Importing ");
 	System.out.print(source + ", ");
@@ -367,7 +367,8 @@ private void importFile(String source, String destination, String type, String u
 	System.out.print(type + ", ");
 	System.out.print(user + ", ");
 	System.out.print(group + ", ");
-	System.out.print(access + "... ");
+	System.out.print(access + ", ");
+	System.out.print(launcherStartClass + "... ");
 	boolean success = false;
 	byte[] content = null;
 	String fullname = null;
@@ -408,6 +409,11 @@ private void importFile(String source, String destination, String type, String u
 			m_cms.chmod(fullname, Integer.parseInt(access));
 			m_cms.chgrp(fullname, group);
 			m_cms.chown(fullname, user);
+            if(launcherStartClass != null) {
+                CmsFile f = m_cms.readFile(fullname);
+                f.setLauncherClassname(launcherStartClass);                
+                m_cms.writeFile(f);
+            }
 			// for debugging: check whether the kernel and this method determine the same status
 			int kernelstate = m_cms.readFileHeader(fullname).getState();
 			if ((state != kernelstate)) {
@@ -454,7 +460,7 @@ public void importResources() throws CmsException {
 public void importResources(Vector excludeList, Vector writtenFilenames, Vector fileCodes, String propertyName, String propertyValue) throws CmsException {
 	NodeList fileNodes, propertyNodes;
 	Element currentElement, currentProperty;
-	String source, destination, type, user, group, access;
+	String source, destination, type, user, group, access, launcherStartClass;
 	Hashtable properties;
 	Vector types = new Vector(); // stores the file types for which the property already exists
 
@@ -475,6 +481,7 @@ public void importResources(Vector excludeList, Vector writtenFilenames, Vector 
 			user = getTextNodeValue(currentElement, C_EXPORT_TAG_USER);
 			group = getTextNodeValue(currentElement, C_EXPORT_TAG_GROUP);
 			access = getTextNodeValue(currentElement, C_EXPORT_TAG_ACCESS);
+            launcherStartClass = getTextNodeValue(currentElement, C_EXPORT_TAG_LAUNCHER_START_CLASS);
 			if (!inExcludeList(excludeList, m_importPath + destination)) {
 
 				// get all properties for this file
@@ -504,7 +511,7 @@ public void importResources(Vector excludeList, Vector writtenFilenames, Vector 
 				}
 
 				// import the specified file and write maybe put it on the lists writtenFilenames,fileCodes
-				importFile(source, destination, type, user, group, access, properties, writtenFilenames, fileCodes);
+				importFile(source, destination, type, user, group, access, properties, launcherStartClass, writtenFilenames, fileCodes);
 			} else {
 				System.out.print("skipping " + destination);
 			}

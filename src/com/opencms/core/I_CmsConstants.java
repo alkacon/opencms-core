@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2000/11/01 09:40:25 $
- * Version: $Revision: 1.107 $
+ * Date   : $Date: 2000/11/02 16:04:48 $
+ * Version: $Revision: 1.108 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.107 $ $Date: 2000/11/01 09:40:25 $
+ * @version $Revision: 1.108 $ $Date: 2000/11/02 16:04:48 $
  */
 public interface I_CmsConstants
 {
@@ -868,7 +868,12 @@ public interface I_CmsConstants
 	 * A tag in the manifest-file.
 	 */
 	public static String C_EXPORT_TAG_PROPERTIES = "properties";
-
+     
+ 	/**
+ 	 * A tag in the manifest-file.
+ 	 */
+ 	public static String C_EXPORT_TAG_LAUNCHER_START_CLASS = "startclass";
+    
 	/**
 	 * A string in the configuration-file.
 	 */

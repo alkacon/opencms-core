@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
- * Date   : $Date: 2000/11/01 18:15:32 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/11/02 16:04:58 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.util.*;
  * to the filesystem.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.9 $ $Date: 2000/11/01 18:15:32 $
+ * @version $Revision: 1.10 $ $Date: 2000/11/02 16:04:58 $
  */
 public class CmsExport implements I_CmsConstants {
 	
@@ -433,7 +433,7 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
 	 */
 	private void writeXmlEntrys(CmsResource resource)
 		throws CmsException {
-		String source, type, user, group, access;
+		String source, type, user, group, access, launcherStartClass;
 
 		// get all needed informations from the resource
 		source = getSourceFilename(resource.getAbsolutePath());
@@ -441,6 +441,7 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
 		user = m_cms.readOwner(resource).getName();
 		group = m_cms.readGroup(resource).getName();
 		access = resource.getAccessFlags() + "";
+        launcherStartClass = resource.getLauncherClassname();
 		
 		// write these informations to the xml-manifest
 		Element file = m_docXml.createElement(C_EXPORT_TAG_FILE);
@@ -455,6 +456,9 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
 		addElement(file, C_EXPORT_TAG_USER, user);
 		addElement(file, C_EXPORT_TAG_GROUP, group);
 		addElement(file, C_EXPORT_TAG_ACCESS, access);
+        if(launcherStartClass != null && !"".equals(launcherStartClass) && !C_UNKNOWN_LAUNCHER.equals(launcherStartClass)) {
+            addElement(file, C_EXPORT_TAG_LAUNCHER_START_CLASS, launcherStartClass);
+        }
 		
 		// append the node for properties
 		Element properties = m_docXml.createElement(C_EXPORT_TAG_PROPERTIES);
