@@ -419,8 +419,9 @@
 								   show-size,
 								   show-state,
 								   show-userlastmodified,
-								   show-usercreated
-								   )>																		
+								   show-usercreated,
+								   show-datereleased,
+								   show-dateexpired)>																		
 <!ELEMENT show-title (#PCDATA)>	
 <!ELEMENT show-type (#PCDATA)>	
 <!ELEMENT show-datelastmodified (#PCDATA)>	
@@ -431,6 +432,8 @@
 <!ELEMENT show-state (#PCDATA)>	
 <!ELEMENT show-userlastmodified (#PCDATA)>	
 <!ELEMENT show-usercreated (#PCDATA)>
+<!ELEMENT show-datereleased (#PCDATA)>
+<!ELEMENT show-dateexpired (#PCDATA)>
 
 <!--
 # The dialogs preferences define the default settings for several workplace dialogs.

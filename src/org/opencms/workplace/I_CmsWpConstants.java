@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/I_CmsWpConstants.java,v $
- * Date   : $Date: 2004/02/20 07:21:06 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/06/08 13:24:46 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import java.util.Locale;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 2004/02/20 07:21:06 $
+ * @version $Revision: 1.4 $ $Date: 2004/06/08 13:24:46 $
  */
 
 public interface I_CmsWpConstants {
@@ -1197,6 +1197,12 @@ public interface I_CmsWpConstants {
     /** Flag for displaying the date created column */
     int C_FILELIST_DATE_CREATED = 1024;   
     
+    /** Flag for displaying the date released column */
+    int C_FILELIST_DATE_RELEASED = 4096;   
+    
+    /** Flag for displaying the date expired column */
+    int C_FILELIST_DATE_EXPIRED = 8192; 
+    
     /** Flag for displaying the owner column */
     int C_FILELIST_USER_CREATED = 32; 
 
@@ -1331,5 +1337,16 @@ public interface I_CmsWpConstants {
     
     /** Context macro */    
     String C_MACRO_OPENCMS_CONTEXT = "${OpenCmsContext}";
+
+    // Contants for explorer filelist
+    
+    /** Layoutstyle for resources after release date and before expire date */
+    int C_LAYOUTSTYLE_INRANGE = 0;
+    
+    /** Layoutstyle for resources before release date  */
+    int C_LAYOUTSTYLE_BEFORERELEASE = 1;
+    
+    /** Layoutstyle for resources after expire date  */
+    int C_LAYOUTSTYLE_AFTEREXPIRE = 2;
 
 }

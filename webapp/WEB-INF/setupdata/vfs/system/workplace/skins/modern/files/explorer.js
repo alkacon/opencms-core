@@ -82,20 +82,23 @@ function menuItem(name, link, target, rules){
 }
 
 
-//            1     2     3      4     5         6     7      8        9                 10                   11           12              13           14        15        16                   17                 18
-function file(name, path, title, type, linkType, size, state, project, dateLastModified, userWhoLastModified, dateCreated, userWhoCreated, permissions, lockedBy, lockType, lockedInProjectName, lockedInProjectId, isInsideCurrentProject){
+//            1     2     3      4     5         6     7      8      9        10                11                   12           13              14            15           16           17        18        19                   20                 21
+function file(name, path, title, type, linkType, size, state, layoutstyle, project, dateLastModified, userWhoLastModified, dateCreated, userWhoCreated, dateReleased, dateExpired, permissions, lockedBy, lockType, lockedInProjectName, lockedInProjectId, isInsideCurrentProject){
 	this.name = name;
 	this.path = path;
-	this.title = title;
+	this.title = title
 	this.type = type;
 	this.linkType = linkType;
 	this.size = size;
 	this.state = state;
+	this.layoutstyle = layoutstyle;
 	this.project = project;
 	this.dateLastModified = dateLastModified;
 	this.userWhoLastModified = userWhoLastModified
 	this.dateCreated = dateCreated;
 	this.userWhoCreated = userWhoCreated;
+	this.dateReleased = dateReleased;
+	this.dateExpired = dateExpired;
 	this.permissions = permissions;
 	this.lockedBy = lockedBy;
 	this.lockType = lockType;
@@ -105,11 +108,11 @@ function file(name, path, title, type, linkType, size, state, project, dateLastM
 }
 
 
-function aF(name, path, title, type, linkType, size, state, project, dateLastModified, userWhoLastModified, dateCreated, userWhoCreated, permissions, lockedBy, lockType, lockedInProjectName, lockedInProjectId, isInsideCurrentProject){
+function aF(name, path, title, type, linkType, size, state, layoutstyle, project, dateLastModified, userWhoLastModified, dateCreated, userWhoCreated, dateReleased, dateExpired, permissions, lockedBy, lockType, lockedInProjectName, lockedInProjectId, isInsideCurrentProject){
 	if(path == "") {
 		path=vr.actDirectory;
 	}
-	vi.liste[vi.liste.length] = new file(name, path, title, type, linkType, size, state, project, dateLastModified, userWhoLastModified, dateCreated, userWhoCreated, permissions, lockedBy, lockType, lockedInProjectName, lockedInProjectId, isInsideCurrentProject);
+	vi.liste[vi.liste.length] = new file(name, path, title, type, linkType, size, state, layoutstyle, project, dateLastModified, userWhoLastModified, dateCreated, userWhoCreated, dateReleased, dateExpired, permissions, lockedBy, lockType, lockedInProjectName, lockedInProjectId, isInsideCurrentProject);
 }
 
 
@@ -131,6 +134,8 @@ function vars_index() {
 	this.check_userWhoLastModified;
 	this.check_dateCreated;
 	this.check_userWhoCreated;
+	this.check_dateReleased;
+	this.check_dateExpired;
 	this.check_state;
 	this.check_lockedBy;
 
@@ -226,10 +231,12 @@ function showCols(cols) {
 	check[10] = 'vi.check_dateCreated';
 	check[11] = 'vi.check_userWhoLastModified';
 	check[5] = 'vi.check_userWhoCreated';
+	check[12] = 'vi.check_dateReleased';
+	check[13] = 'vi.check_dateExpired';
 	check[4] = 'vi.check_state';
 	check[8] = 'vi.check_lockedBy';
 
-	for (i = 0; i <= 11; i++) {
+	for (i = 0; i <= 13; i++) {
 		if (i != 6) {
 			if ((cols & Math.pow(2, i)) > 0) {
 				eval(check[i] + "=true;");
@@ -364,18 +371,21 @@ function printList(wo) {
 	wo.writeln("<td nowrap unselectable=\"on\" class=\"t\" width=\"20\">&nbsp;</td>");
 	wo.writeln("<td nowrap unselectable=\"on\" class=\"t\" width=\"20\">&nbsp;</td>");
 
-	if (vi.check_name)					wo.writeln("<td nowrap unselectable=\"on\" class=\"t100\">&nbsp;" + vr.descr[0] + "&nbsp;</td>");
-	if (vi.check_title)					wo.writeln("<td nowrap unselectable=\"on\" class=\"t100\">&nbsp;" + vr.descr[1] + "&nbsp;</td>");
-	if (vi.check_type)					wo.writeln("<td nowrap unselectable=\"on\" class=\"t75\">&nbsp;"  + vr.descr[2] + "&nbsp;</td>");
-	if (vi.check_size)					wo.writeln("<td nowrap unselectable=\"on\" class=\"t75\">&nbsp;"  + vr.descr[3] + "&nbsp;</td>");
-	if (vi.check_permissions)			wo.writeln("<td nowrap unselectable=\"on\" class=\"t75\">&nbsp;"  + vr.descr[4] + "&nbsp;</td>");
+	if (vi.check_name)			wo.writeln("<td nowrap unselectable=\"on\" class=\"t100\">&nbsp;" + vr.descr[0] + "&nbsp;</td>");
+	if (vi.check_title)			wo.writeln("<td nowrap unselectable=\"on\" class=\"t100\">&nbsp;" + vr.descr[1] + "&nbsp;</td>");
+	if (vi.check_type)			wo.writeln("<td nowrap unselectable=\"on\" class=\"t75\">&nbsp;"  + vr.descr[2] + "&nbsp;</td>");
+	if (vi.check_size)			wo.writeln("<td nowrap unselectable=\"on\" class=\"t75\">&nbsp;"  + vr.descr[3] + "&nbsp;</td>");
+	if (vi.check_permissions)		wo.writeln("<td nowrap unselectable=\"on\" class=\"t75\">&nbsp;"  + vr.descr[4] + "&nbsp;</td>");
 	if (vi.check_dateLastModified)		wo.writeln("<td nowrap unselectable=\"on\" class=\"t125\">&nbsp;" + vr.descr[5] + "&nbsp;</td>");
 	if (vi.check_userWhoLastModified)	wo.writeln("<td nowrap unselectable=\"on\" class=\"t125\">&nbsp;"  + vr.descr[6] + "&nbsp;</td>");
-	if (vi.check_dateCreated)			wo.writeln("<td nowrap unselectable=\"on\" class=\"t125\">&nbsp;" + vr.descr[7] + "&nbsp;</td>");
+	if (vi.check_dateCreated)		wo.writeln("<td nowrap unselectable=\"on\" class=\"t125\">&nbsp;" + vr.descr[7] + "&nbsp;</td>");
 	if (vi.check_userWhoCreated)		wo.writeln("<td nowrap unselectable=\"on\" class=\"t125\">&nbsp;"  + vr.descr[8] + "&nbsp;</td>");
-	if (vi.check_state)					wo.writeln("<td nowrap unselectable=\"on\" class=\"t75\">&nbsp;"  + vr.descr[9] + "&nbsp;</td>");
-	if (vi.check_lockedBy)				wo.writeln("<td nowrap unselectable=\"on\" class=\"t100\">&nbsp;"  + vr.descr[10] + "&nbsp;</td>");
-
+	if (vi.check_dateReleased)		wo.writeln("<td nowrap unselectable=\"on\" class=\"t125\">&nbsp;" + vr.descr[9] + "&nbsp;</td>");
+	if (vi.check_dateExpired)		wo.writeln("<td nowrap unselectable=\"on\" class=\"t125\">&nbsp;" + vr.descr[10] + "&nbsp;</td>");
+	if (vi.check_state)			wo.writeln("<td nowrap unselectable=\"on\" class=\"t75\">&nbsp;"  + vr.descr[11] + "&nbsp;</td>");
+	if (vi.check_lockedBy)			wo.writeln("<td nowrap unselectable=\"on\" class=\"t100\">&nbsp;"  + vr.descr[12] + "&nbsp;</td>");
+	
+	
 	wo.writeln("</tr>");
 
 	for (var i = 0; i < vi.liste.length; i++) {
@@ -395,17 +405,27 @@ function printList(wo) {
 			vi_text = vi.resource[vi.liste[i].type].text;
 		}
 
+
+		ssclass = "class = \"";
+
 		if (!vi.liste[i].isInsideCurrentProject || noaccess) {
-			ssclass = "fp";
+			ssclass += "fp";
 		} else {
-			ssclass = "nf";
+			if (vi.liste[i].state == 0)
+			ssclass += "nf";
 			if (vi.liste[i].state == 1)
-			ssclass = "fc";
+			ssclass += "fc";
 			if (vi.liste[i].state == 2)
-			ssclass = "fn";
+			ssclass += "fn";
 			if (vi.liste[i].state == 3)
-			ssclass = "fd";
+			ssclass += "fd";
 		}
+		
+
+		ssclass += "\"";
+		 
+		if ((vi.liste[i].layoutstyle) == 1) ssclass += " style=\"font-style:italic;\"";
+		if ((vi.liste[i].layoutstyle) == 2) ssclass += " style=\"font-style:italic;\"";	
 
 		var vi_bg = "";
 		if (vi.liste[i].linkType != 0) {
@@ -475,18 +495,18 @@ function printList(wo) {
 		}
 
 		if (vi.check_name) {
-			wo.write("<td nowrap unselectable=\"on\" id=\"td3_" + i + "\" class=\"" + ssclass + "\">&nbsp;");
+			wo.write("<td nowrap unselectable=\"on\" id=\"td3_" + i + "\" " + ssclass + ">&nbsp;");
 			if (vi.liste[i].type == 0) {
 				if ((mode == "projectview") || showlinks) {
 					wo.write(vi.liste[i].path);
 				} else if (vi.liste[i].state == 3) {
 					wo.write(vi.liste[i].name);
 				} else if (flaturl != "") {
-					wo.write("<a href=\"javascript:top." + openfolderMethod + "('" + vi.liste[i].name + "')\" id=\"a" + i + "\" class=\"" + ssclass + "\">");
+					wo.write("<a href=\"javascript:top." + openfolderMethod + "('" + vi.liste[i].name + "')\" id=\"a" + i + "\" " + ssclass + ">");
 					wo.write(vi.liste[i].name);
 					wo.write("</a>");
 				} else {
-					wo.write("<a href=\"javascript:top." + openfolderMethod + "('" + vi.liste[i].name + "')\" id=\"a" + i + "\" class=\"" + ssclass + "\">");
+					wo.write("<a href=\"javascript:top." + openfolderMethod + "('" + vi.liste[i].name + "')\" id=\"a" + i + "\" " + ssclass + ">");
 					wo.write(vi.liste[i].name);
 					wo.write("</a>");
 				}
@@ -498,25 +518,27 @@ function printList(wo) {
 				} else if (flaturl != "") {
 					wo.write("<a href=\"javascript:top.openwinfull('");
 					wo.write(vr.servpath + vr.actDirectory + vi.liste[i].name);
-					wo.writeln("')\" id=\"a" + i + "\" class=\"" + ssclass + "\">&" + vi.liste[i].name + "</a>");
+					wo.writeln("')\" id=\"a" + i + "\" " + ssclass + ">&" + vi.liste[i].name + "</a>");
 				} else {
 					wo.write("<a href=\"javascript:top.openwinfull('");
 					wo.write(vr.servpath + vr.actDirectory + vi.liste[i].name);
-					wo.writeln("')\" id=\"a" + i + "\" class=\"" + ssclass + "\">" + vi.liste[i].name + "</a>");
+					wo.writeln("')\" id=\"a" + i + "\" " + ssclass + ">" + vi.liste[i].name + "</a>");
 				}
 			}
 			wo.writeln("</td>");
 		}
-		if (vi.check_title)			wo.writeln("<td nowrap unselectable=\"on\" class=\"" + ssclass + "\">&nbsp;" + vi.liste[i].title + "&nbsp;</td>");
-		if (vi.check_type)			wo.writeln("<td nowrap unselectable=\"on\" class=\"" + ssclass + "\">&nbsp;" + vi_text + "</td>");
-		if (vi.check_size)			wo.writeln("<td nowrap unselectable=\"on\" class=\"" + ssclass + "\">&nbsp;" + vi.liste[i].size + "</td>");
-		if (vi.check_permissions)		wo.writeln("<td nowrap unselectable=\"on\" class=\"" + ssclass + "\">&nbsp;" + vi.liste[i].permissions + "</td>");
-		if (vi.check_dateLastModified)		wo.writeln("<td nowrap unselectable=\"on\" class=\"" + ssclass + "\">&nbsp;" + vi.liste[i].dateLastModified + "</td>");
-		if (vi.check_userWhoLastModified)	wo.writeln("<td nowrap unselectable=\"on\" class=\"" + ssclass + "\">&nbsp;" + vi.liste[i].userWhoLastModified + "</td>");
-		if (vi.check_dateCreated)		wo.writeln("<td nowrap unselectable=\"on\" class=\"" + ssclass + "\">&nbsp;" + vi.liste[i].dateCreated + "</td>");
-		if (vi.check_userWhoCreated)		wo.writeln("<td nowrap unselectable=\"on\" class=\"" + ssclass + "\">&nbsp;" + vi.liste[i].userWhoCreated + "</td>");
-		if (vi.check_state)			wo.writeln("<td nowrap unselectable=\"on\" class=\"" + ssclass + "\">&nbsp;" + vr.stati[vi.liste[i].state] + "</td>");
-		if (vi.check_lockedBy)			wo.writeln("<td nowrap unselectable=\"on\" class=\"" + ssclass + "\">&nbsp;" + vi.liste[i].lockedBy + "</td>");
+		if (vi.check_title)			wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi.liste[i].title + "&nbsp;</td>");
+		if (vi.check_type)			wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi_text + "</td>");
+		if (vi.check_size)			wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi.liste[i].size + "</td>");
+		if (vi.check_permissions)		wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi.liste[i].permissions + "</td>");
+		if (vi.check_dateLastModified)		wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi.liste[i].dateLastModified + "</td>");
+		if (vi.check_userWhoLastModified)	wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi.liste[i].userWhoLastModified + "</td>");
+		if (vi.check_dateCreated)		wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi.liste[i].dateCreated + "</td>");
+		if (vi.check_userWhoCreated)		wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi.liste[i].userWhoCreated + "</td>");
+		if (vi.check_dateReleased)		wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi.liste[i].dateReleased + "</td>");
+		if (vi.check_dateExpired)		wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi.liste[i].dateExpired + "</td>");
+		if (vi.check_state)			wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vr.stati[vi.liste[i].state] + "</td>");
+		if (vi.check_lockedBy)			wo.writeln("<td nowrap unselectable=\"on\" " + ssclass + ">&nbsp;" + vi.liste[i].lockedBy + "</td>");
 
 		wo.writeln("</td></tr>");
 	}

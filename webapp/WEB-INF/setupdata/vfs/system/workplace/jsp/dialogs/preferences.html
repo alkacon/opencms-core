@@ -131,28 +131,29 @@ case 2:
 			<td><input type="checkbox" name="<%= wp.PARAM_EXPLORER_FILETITLE %>" value="true"<%= wp.isChecked(wp.getParamTabExFileTitle()) %>> <%= wp.key("input.title") %></td>
 			<td style="width: 40px;">&nbsp;</td>
 			<td><input type="checkbox" name="<%= wp.PARAM_EXPLORER_FILEDATELASTMODIFIED %>" value="true"<%= wp.isChecked(wp.getParamTabExFileDateLastModified()) %>> <%= wp.key("input.datelastmodified") %></td>
-			<td rowspan="5" style="width: 20px;">&nbsp;</td>
-			<td rowspan="5" style="vertical-align: bottom;"><!-- <input type="button" class="dialogbutton" style="margin-left: 0px;" value="<%= wp.key("button.default") %>" onclick="setToDefault();">--></td>
+			<td style="width: 40px;">&nbsp;</td>
+			<td><input type="checkbox" name="<%= wp.PARAM_EXPLORER_FILEDATERELEASED %>" value="true"<%= wp.isChecked(wp.getParamTabExFileDateReleased()) %>> <%= wp.key("input.datereleased") %></td>			
 		</tr>
 		<tr>
 			<td><input type="checkbox" name="<%= wp.PARAM_EXPLORER_FILETYPE %>" value="true"<%= wp.isChecked(wp.getParamTabExFileType()) %>> <%= wp.key("input.type") %></td>
 			<td>&nbsp;</td>
 			<td><input type="checkbox" name="<%= wp.PARAM_EXPLORER_FILEUSERLASTMODIFIED %>" value="true"<%= wp.isChecked(wp.getParamTabExFileUserLastModified()) %>> <%= wp.key("input.userlastmodified") %></td>
+			<td>&nbsp;</td>
+			<td><input type="checkbox" name="<%= wp.PARAM_EXPLORER_FILEDATEEXPIRED %>" value="true"<%= wp.isChecked(wp.getParamTabExFileDateExpired()) %>> <%= wp.key("input.dateexpired") %></td>
 		</tr>
 		<tr>
 			<td><input type="checkbox" name="<%= wp.PARAM_EXPLORER_FILESIZE %>" value="true"<%= wp.isChecked(wp.getParamTabExFileSize()) %>> <%= wp.key("input.size") %></td>
 			<td>&nbsp;</td>
 			<td><input type="checkbox" name="<%= wp.PARAM_EXPLORER_FILEDATECREATED %>" value="true"<%= wp.isChecked(wp.getParamTabExFileDateCreated()) %>> <%= wp.key("input.datecreated") %></td>
+			<td>&nbsp;</td>
+			<td><input type="checkbox" name="<%= wp.PARAM_EXPLORER_FILESTATE %>" value="true"<%= wp.isChecked(wp.getParamTabExFileState()) %>> <%= wp.key("input.state") %></td>
 		</tr>
 		<tr>
 			<td><input type="checkbox" name="<%= wp.PARAM_EXPLORER_FILEPERMISSIONS %>" value="true"<%= wp.isChecked(wp.getParamTabExFilePermissions()) %>> <%= wp.key("input.permissions") %></td>
 			<td>&nbsp;</td>
 			<td><input type="checkbox" name="<%= wp.PARAM_EXPLORER_FILEUSERCREATED %>" value="true"<%= wp.isChecked(wp.getParamTabExFileUserCreated()) %>> <%= wp.key("input.usercreated") %></td>
-		</tr>
-		<tr>
-			<td><input type="checkbox" name="<%= wp.PARAM_EXPLORER_FILELOCKEDBY %>" value="true"<%= wp.isChecked(wp.getParamTabExFileLockedBy()) %>> <%= wp.key("input.lockedby") %></td>
 			<td>&nbsp;</td>
-			<td><input type="checkbox" name="<%= wp.PARAM_EXPLORER_FILESTATE %>" value="true"<%= wp.isChecked(wp.getParamTabExFileState()) %>> <%= wp.key("input.state") %></td>
+			<td><input type="checkbox" name="<%= wp.PARAM_EXPLORER_FILELOCKEDBY %>" value="true"<%= wp.isChecked(wp.getParamTabExFileLockedBy()) %>> <%= wp.key("input.lockedby") %></td>		
 		</tr>
 		</table>
 		<%= wp.dialogBlockEnd() %>

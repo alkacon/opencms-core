@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsDefaultUserSettings.java,v $
- * Date   : $Date: 2004/05/14 10:31:00 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/06/08 13:24:46 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.workplace.I_CmsWpConstants;
  * user preferences.<p>
  *  
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsDefaultUserSettings extends CmsUserSettings {
    
@@ -71,7 +71,6 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     
     /** value for "true" */
     private static String C_TRUEVALUE = "true";
-
    
     /**  array of the possible "button styles */
     public  static final String[] m_buttonStyles = {
@@ -82,8 +81,8 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
 
     /** array list for fast lookup */
     public static final java.util.List m_buttonStyle =
-        java.util.Arrays.asList(m_buttonStyles);   
-    
+        java.util.Arrays.asList(m_buttonStyles);
+        
     /**  array of the "task startupfilter" nicenames */
     public  static final String[] m_startupFilterNames = {
             "mynewtasks",
@@ -99,11 +98,11 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
             "activetaskscreatedbyme",
             "completedtaskscreatedbyme"
     };
-    
+   
     /** array list for fast lookup */
     public static final java.util.List m_startupFilterName =
         java.util.Arrays.asList(m_startupFilterNames); 
-    
+          
    /**  array of the "task startupfilter" values */
     public  static final String[] m_startupFilterValues = {
             "a1",
@@ -119,11 +118,24 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
             "d2",
             "d3"
     };
-   
-      
+    
     /** array list for fast lookup */
     public static final java.util.List m_startupFilterValue =
         java.util.Arrays.asList(m_startupFilterValues);  
+    
+    /**
+     * Returns a string representaion of a boolean value.<p>
+     * 
+     * @param value the boolean value to get the string from
+     * @return string representaion of a boolean value
+     */
+    private String getBoolRepresentation(boolean value) {
+        if (value) {
+            return "true";
+        } else {
+            return "false";
+        }
+    }
         
    /**
     * Gets the default copy mode when copying a file of the user.<p>
@@ -217,6 +229,20 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     public String getExplorerButtonStyleString() {
         return m_buttonStyles[getExplorerButtonStyle()];
     }
+
+   /**
+    * Checks if  a specific explorer setting depending is set.<p>
+    * 
+    * @param setting the settings constant value for the explorer settings
+    * @return "true" if the explorer setting is set, otherwise "false"
+    */
+   private String getExplorerSetting(int setting) {
+       if ((getExplorerSettings() & setting) > 0) {
+           return "true";
+       } else {
+        return "false";
+       }
+   }
     
     /**
      * Gets if the file creation date should be shown in explorer view.<p>
@@ -226,6 +252,15 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     public String getShowExplorerFileDateCreated() {
         return getExplorerSetting(I_CmsWpConstants.C_FILELIST_DATE_CREATED);
     }
+   
+   /**
+    * Gets if the file expired by should be shown in explorer view.<p>
+    * 
+    * @return "true" if the file date expired by should be shown, otherwise "false"
+    */
+   public String getShowExplorerFileDateExpired() {
+       return getExplorerSetting(I_CmsWpConstants.C_FILELIST_DATE_EXPIRED);
+   }
 
     /**
      * Gets if the file last modified date should be shown in explorer view.<p>
@@ -235,6 +270,15 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     public String getShowExplorerFileDateLastModified() {
         return getExplorerSetting(I_CmsWpConstants.C_FILELIST_DATE_LASTMODIFIED);
     }
+   
+   /**
+    * Gets if the file released by should be shown in explorer view.<p>
+    * 
+    * @return "true" if the file date released by should be shown, otherwise "false"
+    */
+   public String getShowExplorerFileDateReleased() {
+       return getExplorerSetting(I_CmsWpConstants.C_FILELIST_DATE_RELEASED);
+   }
 
     /**
      * Gets if the file locked by should be shown in explorer view.<p>
@@ -522,6 +566,15 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     public void setShowExplorerFileDateCreated(String show) {
         setShowExplorerFileDateCreated(Boolean.valueOf(show).booleanValue());
     }
+    
+    /**
+     * Sets if the file expire date should be shown in explorer view.<p>
+     * 
+     * @param show true if the file expire date should be shown, otherwise false
+     */
+    public void setShowExplorerFileDateExpired(String show) {
+        setShowExplorerFileDateExpired(Boolean.valueOf(show).booleanValue());
+    }    
 
     /**
      * Sets if the file last modified date should be shown in explorer view.<p>
@@ -531,6 +584,15 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     public void setShowExplorerFileDateLastModified(String show) {
         setShowExplorerFileDateLastModified(Boolean.valueOf(show).booleanValue());
     }
+    
+    /**
+     * Sets if the file release date should be shown in explorer view.<p>
+     * 
+     * @param show true if the file relese date should be shown, otherwise false
+     */
+    public void setShowExplorerFileDateReleased(String show) {
+        setShowExplorerFileDateReleased(Boolean.valueOf(show).booleanValue());
+    }    
 
     /**
      * Sets if the file locked by should be shown in explorer view.<p>
@@ -732,34 +794,6 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
 
         setWorkplaceButtonStyle(buttonstyleValue);
     }
-    
-    /**
-     * Returns a string representaion of a boolean value.<p>
-     * 
-     * @param value the boolean value to get the string from
-     * @return string representaion of a boolean value
-     */
-    private String getBoolRepresentation(boolean value) {
-        if (value) {
-            return "true";
-        } else {
-            return "false";
-        }
-    }
-
-   /**
-    * Checks if  a specific explorer setting depending is set.<p>
-    * 
-    * @param setting the settings constant value for the explorer settings
-    * @return "true" if the explorer setting is set, otherwise "false"
-    */
-   private String getExplorerSetting(int setting) {
-       if ((getExplorerSettings() & setting) > 0) {
-           return "true";
-       } else {
-        return "false";
-       }
-   }
     
     
    

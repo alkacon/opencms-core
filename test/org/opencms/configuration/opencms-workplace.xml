@@ -386,6 +386,8 @@
 					<show-state>false</show-state>
 					<show-userlastmodified>true</show-userlastmodified>
 					<show-usercreated>true</show-usercreated>
+					<show-datereleased>true</show-datereleased>
+					<show-dateexpired>true</show-dateexpired>
 				</explorer-displayoptions>										
 			</explorer-preferences>
 			<dialogs-preferences>

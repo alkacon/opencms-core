@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2004/05/14 10:31:00 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/06/08 13:24:46 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -101,8 +101,14 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     /** The node name of the datecreated column node */
     protected static final String N_DATECREATED = "show-datecreated";
     
+    /** The node name of the date expired node */
+    protected static final String N_DATEEXPIRED = "show-dateexpired";      
+    
     /** The node name of the datelastmodified column node */
     protected static final String N_DATELASTMODIFIED = "show-datelastmodified";
+    
+    /** The node name of the date released node */
+    protected static final String N_DATERELEASED = "show-datereleased";    
     
     /** The name of the node for the default locale */
     protected static final String N_DEFAULTLOCALE = "defaultlocale";
@@ -443,6 +449,10 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
                 "setShowExplorerFileUserLastModified", 0);
         digester.addCallMethod("*/" + N_WORKPLACE + "/" +N_USER + "/" + N_EXPLORERPREFERENCES + "/"+ N_EXPLORERDISPLAYOPTIONS + "/" + N_USERCREATED, 
                 "setShowExplorerFileUserCreated", 0);
+        digester.addCallMethod("*/" + N_WORKPLACE + "/" +N_USER + "/" + N_EXPLORERPREFERENCES + "/"+ N_EXPLORERDISPLAYOPTIONS + "/" + N_DATERELEASED, 
+            "setShowExplorerFileDateReleased", 0);      
+        digester.addCallMethod("*/" + N_WORKPLACE + "/" +N_USER + "/" + N_EXPLORERPREFERENCES + "/"+ N_EXPLORERDISPLAYOPTIONS + "/" + N_DATEEXPIRED, 
+            "setShowExplorerFileDateExpired", 0);
 
         // add dialog preferences rules
         digester.addCallMethod("*/" + N_WORKPLACE + "/" +N_USER + "/" + N_DIALOGSPREFERENCES + "/"+ N_DIALOGSDEFAULTSETTINGS + "/"  + N_FILECOPY,
@@ -661,6 +671,10 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         explorerDisplayoptions.addElement(N_USERLASTMODIFIED).setText(m_workplaceManager.getDefaultUserSettings().getShowExplorerFileUserLastModified());
         //  add the <show-usercreated> node
         explorerDisplayoptions.addElement(N_USERCREATED).setText(m_workplaceManager.getDefaultUserSettings().getShowExplorerFileUserCreated());
+        //  add the <show-datereleased> node
+        explorerDisplayoptions.addElement(N_DATERELEASED).setText(m_workplaceManager.getDefaultUserSettings().getShowExplorerFileDateReleased());
+        //  add the <show-dareexpired> node
+        explorerDisplayoptions.addElement(N_DATEEXPIRED).setText(m_workplaceManager.getDefaultUserSettings().getShowExplorerFileDateExpired());
       
         //  add the <dialog-prefernces> node
         Element dialogPreferences = defaultPreferences.addElement(N_DIALOGSPREFERENCES);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2004/05/14 10:31:00 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/06/08 13:24:46 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Map;
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @author  Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.1.12
  */
@@ -96,6 +96,7 @@ public class CmsUserSettings {
         m_workplaceReportType = CmsReport.REPORT_TYPE_SIMPLE;        
         m_explorerButtonStyle = C_BUTTONSTYLE_DEFAULT;
         m_explorerFileEntries = C_ENTRYS_PER_PAGE_DEFAULT;
+
         m_explorerSettings = I_CmsWpConstants.C_FILELIST_NAME;
         m_editorSettings = new HashMap();
         m_taskMessages = 0;
@@ -758,6 +759,24 @@ public class CmsUserSettings {
     }
 
     /**
+     * Sets if the file release date should be shown in explorer view.<p>
+     * 
+     * @param show true if the file release date should be shown, otherwise false
+     */
+    public void setShowExplorerFileDateReleased(boolean show) {
+        setExplorerSetting(show, I_CmsWpConstants.C_FILELIST_DATE_RELEASED);
+    }
+    
+    /**
+     * Sets if the file expire date should be shown in explorer view.<p>
+     * 
+     * @param show true if the file expire date should be shown, otherwise false
+     */
+    public void setShowExplorerFileDateExpired(boolean show) {
+        setExplorerSetting(show, I_CmsWpConstants.C_FILELIST_DATE_EXPIRED);
+    }
+    
+    /**
      * Sets if the file locked by should be shown in explorer view.<p>
      * 
      * @param show true if the file locked by should be shown, otherwise false
@@ -1026,6 +1045,24 @@ public class CmsUserSettings {
      */
     public boolean showExplorerFileUserCreated() {
         return ((m_explorerSettings & I_CmsWpConstants.C_FILELIST_USER_CREATED) > 0); 
+    }
+    
+    /**
+     * Determines if the file date released should be shown in explorer view.<p>
+     * 
+     * @return true if the file date released should be shown, otherwise false
+     */
+    public boolean showExplorerFileDateReleased() {
+        return ((m_explorerSettings & I_CmsWpConstants.C_FILELIST_DATE_RELEASED) > 0); 
+    }
+    
+    /**
+     * Determines if the file date expired should be shown in explorer view.<p>
+     * 
+     * @return true if the file date expired should be shown, otherwise false
+     */
+    public boolean showExplorerFileDateExpired() {
+        return ((m_explorerSettings & I_CmsWpConstants.C_FILELIST_DATE_EXPIRED) > 0); 
     }
     
    /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPreferences.java,v $
- * Date   : $Date: 2004/05/13 13:58:10 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/06/08 13:24:46 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 5.1.12
  */
@@ -131,6 +131,12 @@ public class CmsPreferences extends CmsTabDialog {
     
     /** Request parameter name for the explorer file user last modified */
     public static final String PARAM_EXPLORER_FILEUSERLASTMODIFIED = "tabexfileuserlastmodified";
+ 
+    /** Request parameter name for the explorer file date released */
+    public static final String PARAM_EXPLORER_FILEDATERELEASED = "tabexfiledatereleased";
+ 
+    /** Request parameter name for the explorer file date expired */
+    public static final String PARAM_EXPLORER_FILEDATEEXPIRED = "tabexfiledateexpired"; 
     
     /** Request parameter name for the new password */
     public static final String PARAM_NEWPASSWORD = "newpassword";
@@ -889,6 +895,25 @@ public class CmsPreferences extends CmsTabDialog {
     }
     
     /**
+     * Returns the "display file date released" setting.<p>
+     * 
+     * @return "true" if the file date released input field is checked, otherwise ""
+     */
+    public String getParamTabExFileDateReleased() {
+        return isParamEnabled(m_userSettings.showExplorerFileDateReleased());
+    }
+
+    /**
+     * Returns the "display file date expired" setting.<p>
+     * 
+     * @return "true" if the file date expired input field is checked, otherwise ""
+     */
+    public String getParamTabExFileDateExpired() {
+        return isParamEnabled(m_userSettings.showExplorerFileDateExpired());
+    }
+    
+    
+    /**
      * Returns the "display file last modified by" setting.<p>
      * 
      * @return "true" if the file last modified by input field is checked, otherwise ""
@@ -1315,7 +1340,25 @@ public class CmsPreferences extends CmsTabDialog {
     public void setParamTabExFileUserCreated(String value) {
         m_userSettings.setShowExplorerFileUserCreated("true".equals(value));
     }
-
+    
+    /**
+     * Sets the "display file released date" setting.<p>
+     * 
+     * @param value "true" to enable the "display file released date" setting, all others to disable
+     */
+    public void setParamTabExFileDateReleased(String value) {
+        m_userSettings.setShowExplorerFileDateReleased("true".equals(value));
+    }
+    
+    /**
+     * Sets the "display file expired date" setting.<p>
+     * 
+     * @param value "true" to enable the "display file expired date" setting, all others to disable
+     */
+    public void setParamTabExFileDateExpired(String value) {
+        m_userSettings.setShowExplorerFileDateExpired("true".equals(value));
+    }
+    
     /**
      * Sets the "display file last modified by" setting.<p>
      * 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2004/06/07 15:50:47 $
- * Version: $Revision: 1.71 $
+ * Date   : $Date: 2004/06/08 13:24:46 $
+ * Version: $Revision: 1.72 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.71 $
+ * @version $Revision: 1.72 $
  * 
  * @since 5.1
  */
@@ -73,6 +73,7 @@ public class CmsExplorer extends CmsWorkplace {
      */
     public CmsExplorer(CmsJspActionElement jsp) {
         super(jsp);
+        // get the localized default messages
     }
     
     /**
@@ -321,6 +322,12 @@ public class CmsExplorer extends CmsWorkplace {
         boolean showUserWhoLastModified = (preferences & I_CmsWpConstants.C_FILELIST_USER_LASTMODIFIED) > 0;
         boolean showDateCreated = (preferences & I_CmsWpConstants.C_FILELIST_DATE_CREATED) > 0;
         boolean showUserWhoCreated = (preferences & I_CmsWpConstants.C_FILELIST_USER_CREATED) > 0;
+        
+        // TODO: get those values from the user preferences
+        //boolean showDateReleased = (preferences & I_CmsWpConstants.C_FILELIST_DATE_RELEASED) > 0;
+        //boolean showDateExpired = (preferences & I_CmsWpConstants.C_FILELIST_DATE_EXPIRED) > 0;
+        boolean showDateReleased = true;
+        boolean showDateExpired = true;
 
         // now get the entries for the filelist
         List resources = getRessources(getSettings().getExplorerResource());
@@ -443,13 +450,23 @@ public class CmsExplorer extends CmsWorkplace {
             // position 7: state
             content.append(res.getState());
             content.append(",");     
-                   
-            // position 8: project
+
+            // position 8: layoutstyle
+            int layoutstyle = I_CmsWpConstants.C_LAYOUTSTYLE_INRANGE;
+            if (res.getDateReleased() > getCms().getRequestContext().getRequestTime()) {
+                layoutstyle = I_CmsWpConstants.C_LAYOUTSTYLE_BEFORERELEASE;
+            } else if ((res.getDateExpired() < getCms().getRequestContext().getRequestTime())) {
+                layoutstyle = I_CmsWpConstants.C_LAYOUTSTYLE_AFTEREXPIRE;
+            }
+            content.append(layoutstyle);
+            content.append(',');  
+            
+            // position 9: project
             int projectId = lock.isNullLock() ? res.getProjectLastModified() : lock.getProjectId();
             content.append(projectId);
             content.append(",");      
                                    
-            // position 9: date of last modification
+            // position 10: date of last modification
             if (showDateLastModified) {
                 content.append("\"");
                 content.append(getSettings().getMessages().getDateTime(res.getDateLastModified()));
@@ -459,7 +476,7 @@ public class CmsExplorer extends CmsWorkplace {
                 content.append("\"\",");
             }
             
-            // position 10: user who last modified the resource
+            // position 11: user who last modified the resource
             if (showUserWhoLastModified) {
                 content.append("\"");  
                 try {            
@@ -472,7 +489,7 @@ public class CmsExplorer extends CmsWorkplace {
                 content.append("\"\",");
             }
             
-            // position 11: date of creation
+            // position 12: date of creation
             if (showDateCreated) {
                 content.append("\"");
                 content.append(getSettings().getMessages().getDateTime(res.getDateCreated()));
@@ -482,7 +499,7 @@ public class CmsExplorer extends CmsWorkplace {
                 content.append("\"\",");
             }     
                 
-            // position 12 : user who created the resource 
+            // position 13 : user who created the resource 
             if (showUserWhoCreated) {
                 content.append("\"");
                 try {
@@ -495,7 +512,37 @@ public class CmsExplorer extends CmsWorkplace {
                 content.append("\"\",");
             }
             
-            // position 13: permissions
+            // position 14: date of release
+            if (showDateReleased) {
+                content.append("\"");
+                long release = res.getDateReleased();
+                if (release != CmsResource.DATE_RELEASED_DEFAULT) {
+                    content.append(getSettings().getMessages().getDateTime(release));
+                } else {
+                    content.append(CmsTouch.C_RELEASE_EXPIRE_DEFAULT);        
+                }
+                content.append("\",");
+                
+            } else {
+                content.append("\"\",");
+            }  
+            
+            // position 15: date of expiration
+            if (showDateExpired) {
+                content.append("\"");
+                long expire = res.getDateExpired();
+                if (expire != CmsResource.DATE_EXPIRED_DEFAULT) {
+                    content.append(getSettings().getMessages().getDateTime(expire));
+                } else {
+                    content.append(CmsTouch.C_RELEASE_EXPIRE_DEFAULT);        
+                }
+                content.append("\",");
+                
+            } else {
+                content.append("\"\",");
+            } 
+            
+            // position 16: permissions
             if (showPermissions) {
                 content.append("\"");  
                 try {            
@@ -508,7 +555,7 @@ public class CmsExplorer extends CmsWorkplace {
                 content.append("\"\",");
             }     
             
-            // position 14: locked by
+            // position 17: locked by
             if (lock.isNullLock()) {
                 content.append("\"\",");
             } else {
@@ -521,11 +568,11 @@ public class CmsExplorer extends CmsWorkplace {
                 content.append("\",");                
             }
             
-            // position 15: type of lock
+            // position 18: type of lock
             content.append(lock.getType());
             content.append(",");     
                        
-            // position 16: name of project where the resource is locked in
+            // position 19: name of project where the resource is locked in
             int lockedInProject = I_CmsConstants.C_UNKNOWN_ID;
             if (lock.isNullLock() && res.getState() != I_CmsConstants.C_STATE_UNCHANGED) {
                 // resource is unlocked and modified
@@ -555,11 +602,11 @@ public class CmsExplorer extends CmsWorkplace {
             content.append(lockedInProjectName);
             content.append("\",");
             
-            // position 17: id of project where resource belongs to
+            // position 20: id of project where resource belongs to
             content.append(lockedInProject);
             content.append(",\"");
             
-            // position 18: project state, I=resource is inside current project, O=resource is outside current project        
+            // position 21: project state, I=resource is inside current project, O=resource is outside current project        
             if (CmsProject.isInsideProject(projectResources, res)) {
                 content.append("I");
             } else {
