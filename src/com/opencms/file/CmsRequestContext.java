@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
-* Date   : $Date: 2002/09/03 19:41:09 $
-* Version: $Revision: 1.52 $
+* Date   : $Date: 2002/09/12 08:49:17 $
+* Version: $Revision: 1.53 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import com.opencms.template.cache.*;
  * @author Anders Fugmann
  * @author Alexander Lucas
  *
- * @version $Revision: 1.52 $ $Date: 2002/09/03 19:41:09 $
+ * @version $Revision: 1.53 $ $Date: 2002/09/12 08:49:17 $
  *
  */
 public class CmsRequestContext implements I_CmsConstants {
@@ -562,11 +562,11 @@ public class CmsRequestContext implements I_CmsConstants {
             if (m_encoding == null) {
                 // no encoding found - use default one
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, "no encoding found - use default one");
-                m_encoding = OpenCms.getEncoding();
+                m_encoding = OpenCms.getDefaultEncoding();
             }
         } catch (Throwable t) {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, "an error [" + t + "] has occured while determining content encoding - use default one");
-            m_encoding = OpenCms.getEncoding();
+            setEncoding(OpenCms.getDefaultEncoding());
         }
         A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, "["
             + getClass().getName() + "] resource=" + requestedResource
