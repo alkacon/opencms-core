@@ -8,6 +8,10 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.3.25 Bela Tegeuse - 16 July 2001
+- Update of OpenCms setup-wizard.
+- Reorganisation for tomcat-support.
+
 OpenCms 4.3.24 Bela Tegeuse - 11 July 2001
 ! Initial checkin of OpenCms setup-wizard.
 - Reorganisation for tomcat-support.
