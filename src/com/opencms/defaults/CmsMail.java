@@ -1,11 +1,11 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsMail.java,v $
-* Date   : $Date: 2001/01/24 09:41:53 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2001/05/09 15:06:12 $
+* Version: $Revision: 1.4 $
 *
-* Copyright (C) 2000  The OpenCms Group 
-* 
+* Copyright (C) 2000  The OpenCms Group
+*
 * This File is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -13,15 +13,15 @@
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
 * of the License, or (at your option) any later version.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-* 
+*
 * For further information about OpenCms, please see the
 * OpenCms Website: http://www.opencms.com
-* 
+*
 * You should have received a copy of the GNU General Public License
 * long with this program; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
@@ -59,7 +59,7 @@ import java.util.*;
  * <P>
  * Example:<br><code>
  * String from = "waruschan.babachan@framfab.de";<br>
- * String[] to = {"alexander.lucas@framfab.de"};<br>		
+ * String[] to = {"alexander.lucas@framfab.de"};<br>
  * String subject = "Testmail";<br>
  * String content = "Hello World!";<br>
  * &nbsp;<br>
@@ -70,13 +70,13 @@ import java.util.*;
  * @author Waruschan Babachan <waruschan.babachan@framfab.de>
  * @author mla
  * @author Alexander Lucas <alexander.lucas@framfab.de>
- * 
- * @version $Name:  $ $Revision: 1.3 $ $Date: 2001/01/24 09:41:53 $
+ *
+ * @version $Name:  $ $Revision: 1.4 $ $Date: 2001/05/09 15:06:12 $
  * @since OpenCms 4.1.37. Previously, this class was part of the <code>com.opencms.workplace</code> package.
  */
 public class CmsMail extends Thread implements I_CmsLogChannels {
-    
-    // constants	
+
+    // constants
     private String c_FROM = "";
     private String[] c_TO = null;
     private String[] c_BCC = null;
@@ -90,12 +90,31 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
     private String m_defaultSender = null;
     private Vector attachContent = new Vector();
     private Vector attachType = new Vector();
-    
+
+    /**
+     * The constuctors without CmsObject
+     */
+    public CmsMail(String from, String[] to, String subject, String content, String type) throws CmsException {
+        this(null, from, to, subject, content, type);
+    }
+    public CmsMail(CmsUser from, CmsUser[] to, String subject, String content, String type) throws CmsException {
+        this(null, from, to, subject, content, type);
+    }
+    public CmsMail(CmsUser from, CmsGroup to, String subject, String content, String type) throws CmsException {
+        this(null, from, to, subject, content, type);
+    }
+    public CmsMail(String from, String[] to, String[] cc, String[] bcc, String subject, String content, String type) throws com.opencms.core.CmsException {
+        this(null, from, to, cc, bcc, subject, content, type);
+    }
+    public CmsMail(String from, String[] to, String[] bcc, String subject, String content, String type) throws CmsException {
+        this(null, from, to, bcc, subject, content, type);
+    }
+
     /**
      * Create a new email object with a <code>CmsUser</code> as sender and an array of
-     * <code>CmsUser</code>'s as recipient(s). Email addresses will be taken from 
+     * <code>CmsUser</code>'s as recipient(s). Email addresses will be taken from
      * the CmsUser properties.
-     * 
+     *
      * @param cms Cms object
      * @param from User object that contains the address of sender.
      * @param to User object that contains the address of recipient.
@@ -104,10 +123,10 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
      * @param type ContentType of email.
      */
     public CmsMail(CmsObject cms, CmsUser from, CmsUser[] to, String subject, String content, String type) throws CmsException {
-        
+
         // Get Registry
-        I_CmsRegistry reg = cms.getRegistry();
-        
+        I_CmsRegistry reg = com.opencms.core.OpenCms.getRegistry();
+
         // check sender email address
         String fromAddress = from.getEmail();
         if(fromAddress == null || fromAddress.equals("")) {
@@ -119,7 +138,7 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
         if(fromAddress.indexOf("@") == -1 || fromAddress.indexOf(".") == -1) {
             throw new CmsException("[" + this.getClass().getName() + "] " + "Error in sending email,Unknown sender email address: " + fromAddress, CmsException.C_BAD_NAME);
         }
-        
+
         // check recipient email address
         Vector v = new Vector(to.length);
         for(int i = 0;i < to.length;i++) {
@@ -150,25 +169,25 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
         c_TYPE = type;
         c_CMS = cms;
     }
-    
+
     /**
      * Create a new email object with a <code>CmsUser</code> as sender and a
-     * <code>CmsGroup</code> as recipient(s). The sender's address will be taken from 
+     * <code>CmsGroup</code> as recipient(s). The sender's address will be taken from
      * the CmsUser properties, the recipient's addresses from all CmsUsers
      * belonging to the given group.
-     * 
+     *
      * @param cms Cms object.
      * @param from User object that contains the address of sender.
      * @param to Group object that contains the address of recipient.
      * @param subject Subject of email.
-     * @param content Content of email.	
+     * @param content Content of email.
      * @param type ContentType of email.
      */
     public CmsMail(CmsObject cms, CmsUser from, CmsGroup to, String subject, String content, String type) throws CmsException {
-        
+
         // Get Registry
-        I_CmsRegistry reg = cms.getRegistry();
-        
+        I_CmsRegistry reg = com.opencms.core.OpenCms.getRegistry();
+
         // check sender email address
         String fromAddress = from.getEmail();
         if(fromAddress == null || fromAddress.equals("")) {
@@ -180,7 +199,7 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
         if(fromAddress.indexOf("@") == -1 || fromAddress.indexOf(".") == -1) {
             throw new CmsException("[" + this.getClass().getName() + "] " + "Error in sending email,Unknown sender email address: " + fromAddress, CmsException.C_BAD_NAME);
         }
-        
+
         // check recipient email address
         Vector vu = cms.getUsersOfGroup(to.getName());
         Vector v = new Vector(vu.size());
@@ -213,11 +232,11 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
         c_TYPE = type;
         c_CMS = cms;
     }
-    
+
     /**
      * Create a new email object with given FROM, TO, CC and BCC addresses.
      *
-     * @see #CmsMail(CmsObject,String, String[], String[], String, String, String) 
+     * @see #CmsMail(CmsObject,String, String[], String[], String, String, String)
      *
      * @param cms Cms object.
      * @param from Address of sender.
@@ -252,11 +271,11 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
         }
         c_CC = users;
     }
-    
+
     /**
      * Create a new email object with given FROM, TO and BCC addresses.
      *
-     * @see #CmsMail(CmsObject,String, String[], String, String, String) 
+     * @see #CmsMail(CmsObject,String, String[], String, String, String)
      *
      * @param cms Cms object.
      * @param from Address of sender.
@@ -290,10 +309,10 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
         }
         c_BCC = users;
     }
-    
+
     /**
      * Create a new email object with given FROM and TO addresses.
-     * 
+     *
      * @param cms Cms object.
      * @param from Address of sender.
      * @param to Array with address(es) of recipient(s).
@@ -302,7 +321,7 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
      * @param type ContentType of email.
      */
     public CmsMail(CmsObject cms, String from, String[] to, String subject, String content, String type) throws CmsException {
-        
+
         // check sender email address
         if(from == null) {
             throw new CmsException("[" + this.getClass().getName() + "] " + "Error in sending email,Unknown sender email address.", CmsException.C_BAD_NAME);
@@ -313,7 +332,7 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
         if(from.indexOf("@") == -1 || from.indexOf(".") == -1) {
             throw new CmsException("[" + this.getClass().getName() + "] " + "Error in sending email,Unknown sender email address: " + from, CmsException.C_BAD_NAME);
         }
-        
+
         // check recipient email address
         Vector v = new Vector(to.length);
         for(int i = 0;i < to.length;i++) {
@@ -339,17 +358,17 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
         c_TO = users;
         c_SUBJECT = (subject == null ? "" : subject);
         c_CONTENT = (content == null ? "" : content);
-        I_CmsRegistry reg = cms.getRegistry();
+        I_CmsRegistry reg = com.opencms.core.OpenCms.getRegistry();
         c_MAILSERVER = reg.getSystemValue("smtpserver");
         c_ALTERNATIVE_MAILSERVER = reg.getSystemValue("smtpserver2");
         c_TYPE = type;
         c_CMS = cms;
     }
-    
+
     /**
      * Add a new attachment of the given content type to this <code>CmsMail</code>
      * object. The attachment will get a random name.
-     * 
+     *
      * @param content Content of the attachment.
      * @param type Content type of the attachment.
      */
@@ -357,32 +376,32 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
         attachContent.addElement(content);
         attachType.addElement(type);
     }
-    
+
     /**
-     * Internal method for building a new <code>MimeMessage</code> object 
-     * with the given content, attachments, SMTP host properties, FROM, TO, 
+     * Internal method for building a new <code>MimeMessage</code> object
+     * with the given content, attachments, SMTP host properties, FROM, TO,
      * CC and BCC addresses.
-     * Will be called from the thread connecting to the SMTP server 
+     * Will be called from the thread connecting to the SMTP server
      * and sending the mail.
      * @param smtpHost Name of the SMTP host that should be connected.
      * @return <code>Message</code> object that can be used as argument for the <code>Transport</code> class.
      * @exception No exceptions occuring while building the mail will be caught.
      */
     private Message buildMessage(String smtpHost) throws Exception {
-        
+
         // First check the smtpHost parameter
         if(smtpHost == null || "".equals(smtpHost)) {
             throw new CmsException("No SMTP server given.");
         }
-        
+
         // create some properties and get the default Session
         Properties props = System.getProperties();
         props.put("mail.smtp.host", smtpHost);
         Session session = Session.getDefaultInstance(props, null);
-        
+
         // Build a new message object
         MimeMessage msg = new MimeMessage(session);
-        
+
         // Check and set all addresses.
         InternetAddress[] to = new InternetAddress[c_TO.length];
         for(int i = 0;i < c_TO.length;i++) {
@@ -406,20 +425,22 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
             }
             msg.setRecipients(Message.RecipientType.BCC, bcc);
         }
-        
-        // Set subject 
+
+        // Set subject
         msg.setSubject(c_SUBJECT, "ISO-8859-1");
-        
+
         // Set content and attachments
-        Enumeration enum = c_CMS.getRequestContext().getRequest().getFileNames();
         Vector v = new Vector();
-        while(enum.hasMoreElements()) {
-            v.addElement(enum.nextElement());
+        if (c_CMS != null){
+            Enumeration enum = c_CMS.getRequestContext().getRequest().getFileNames();
+            while(enum.hasMoreElements()) {
+                v.addElement(enum.nextElement());
+            }
         }
         int size = v.size();
         int numAttach = attachContent.size();
         if(size != 0 || numAttach != 0) {
-            
+
             // create and fill the first message part
             MimeBodyPart mbp1 = new MimeBodyPart();
             Multipart mp = new MimeMultipart();
@@ -430,12 +451,12 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
                 mbp1.setText(c_CONTENT, "ISO-8859-1");
             }
             mp.addBodyPart(mbp1);
-            
+
             // Check, if there are any attachments
             for(int i = 0;i < numAttach;i++) {
-                
-                // create another message part					                
-                // attach the file to the message				
+
+                // create another message part
+                // attach the file to the message
                 MimeBodyPart mbpAttach = new MimeBodyPart();
                 if("text/html".equals((String)attachType.elementAt(i))) {
                     mbpAttach.setDataHandler(new DataHandler(new CmsByteArrayDataSource((String)attachContent.elementAt(i), "text/html")));
@@ -467,7 +488,7 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
         msg.setSentDate(new Date());
         return msg;
     }
-    
+
     /**
      * Helper method for printing nice classnames in error messages
      * @return class name in [ClassName] format
@@ -476,7 +497,7 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
         String name = getClass().getName();
         return "[" + name.substring(name.lastIndexOf(".") + 1) + "] ";
     }
-    
+
     /**
      * Try sending the mail.
      * This can take a few seconds to several minutes. We don't want
@@ -485,7 +506,7 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
      * get his response immediately, then.
      */
     public void run() {
-        
+
         // Build the message
         Message msg = null;
         try {
@@ -493,29 +514,29 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
         }
         catch(Exception e) {
             A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "Error while building Email object: " + e.getMessage());
-            
+
             // Do not continue here. We don't have a Message object we can send.
             return ;
         }
-        
-        // Now the message is ready.        
+
+        // Now the message is ready.
         // Try to send it...
         try {
             Transport.send(msg);
         }
         catch(Exception e) {
-            
-            // Emergency! An error occured while connecting to the SMTP server            
-            // We cannot inform the user at this point since this code runs            
-            // in a thread and the initiating request is completed for a long time.            
+
+            // Emergency! An error occured while connecting to the SMTP server
+            // We cannot inform the user at this point since this code runs
+            // in a thread and the initiating request is completed for a long time.
             // Get nested Exception used for pretty printed error message in logfile
             for(;e instanceof MessagingException;e = ((MessagingException)e).getNextException()) {
                 ;
             }
-            
-            // First print out an error message...            
+
+            // First print out an error message...
             A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "Error while transmitting mail to SMTP server: " + e);
-            
+
             // ... and now try an alternative server (if given)
             if(c_ALTERNATIVE_MAILSERVER != null && !"".equals(c_ALTERNATIVE_MAILSERVER)) {
                 A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "Trying alternative server...");
@@ -525,7 +546,7 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
                     A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "...OK. Mail sent.");
                 }
                 catch(Exception e2) {
-                    
+
                     // Get nested Exception used for pretty printed error message in logfile
                     for(;e2 instanceof MessagingException;e2 = ((MessagingException)e2).getNextException()) {
                         ;
