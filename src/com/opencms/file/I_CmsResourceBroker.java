@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2001/01/04 09:42:24 $
- * Version: $Revision: 1.137 $
+ * Date   : $Date: 2001/01/09 14:26:37 $
+ * Version: $Revision: 1.138 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.137 $ $Date: 2001/01/04 09:42:24 $
+ * @version $Revision: 1.138 $ $Date: 2001/01/09 14:26:37 $
  * 
  */
 
@@ -1242,18 +1242,7 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
 											 CmsProject currentProject,
 											 String resourceType) 
 		throws CmsException;
-	 /**
-	 * Returns the session storage after a securtity check.
-	 * 
-	 * <B>Security:</B>
-	 * All users except the guest user are granted.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param storage The storage of all active users.
-	 * @return The storage of all active users.
-	 */
-	public CmsCoreSession getSessionStorage(CmsUser currentUser, CmsCoreSession storage);
-   	/**
+ 	/**
 	 * Returns a Vector with all subfolders.<br>
 	 * 
 	 * Subfolders can be read from an offline project and the online project. <br>

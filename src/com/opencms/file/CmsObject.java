@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2001/01/04 09:41:34 $
- * Version: $Revision: 1.148 $
+ * Date   : $Date: 2001/01/09 14:26:22 $
+ * Version: $Revision: 1.149 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.launcher.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.148 $ $Date: 2001/01/04 09:41:34 $ 
+ * @version $Revision: 1.149 $ $Date: 2001/01/09 14:26:22 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -64,11 +64,6 @@ public class CmsObject implements I_CmsConstants {
 	private CmsRequestContext m_context = null;
 	
 	/**
-	 * The session storage of the cms
-	 */
-	private CmsCoreSession m_sessionStorage = null;
-
-	/**
 	 * The launcher manager used with this object,
 	 * Is needed to clear the template caches.
 	 */
@@ -80,13 +75,6 @@ public class CmsObject implements I_CmsConstants {
 	 */
 	public CmsObject () {
 	}
-/**
- * Constructor 
- * @param storage The reference to the session storage.
- */
-public CmsObject(CmsCoreSession storage) {
-	m_sessionStorage = storage;
-}
 /**
  * Accept a task from the Cms.
  * 
@@ -1014,13 +1002,6 @@ public CmsResourceType getResourceType(int resourceType) throws CmsException {
  */
 public CmsResourceType getResourceType(String resourceType) throws CmsException {
 	return (m_rb.getResourceType(m_context.currentUser(), m_context.currentProject(), resourceType));
-}
-/**
- * Returns the session storage.
- * @return the storage of all active users.
- */
-public CmsCoreSession getSessionStorage() {
-	return m_rb.getSessionStorage(m_context.currentUser(), m_sessionStorage);
 }
 /**
  * Returns a Vector with all subfolders of a given folder.

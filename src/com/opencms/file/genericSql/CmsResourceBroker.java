@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2001/01/08 17:07:30 $
- * Version: $Revision: 1.221 $
+ * Date   : $Date: 2001/01/09 14:25:49 $
+ * Version: $Revision: 1.222 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.221 $ $Date: 2001/01/08 17:07:30 $
+ * @version $Revision: 1.222 $ $Date: 2001/01/09 14:25:49 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -3108,23 +3108,6 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
 			// was not found - throw exception
 			throw new CmsException("[" + this.getClass().getName() + "] " + resourceType, 
 				CmsException.C_NOT_FOUND);
-		}
-	}
-	 /**
-	 * Returns the session storage after a securtity check.
-	 * 
-	 * <B>Security:</B>
-	 * All users except the guest user are granted.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param storage The storage of all active users.
-	 * @return The storage of all active users or null.
-	 */
-	public CmsCoreSession getSessionStorage(CmsUser currentUser, CmsCoreSession storage) {
-		if (currentUser.getName().equals(C_USER_GUEST)) {
-			return null;    
-		} else {
-			return storage;            
 		}
 	}
    	/**
