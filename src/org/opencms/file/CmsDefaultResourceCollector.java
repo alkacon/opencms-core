@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsDefaultResourceCollector.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/03/10 09:19:39 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,21 +31,27 @@
 
 package org.opencms.file;
 
+import org.opencms.jsp.CmsJspNavBuilder;
+import org.opencms.jsp.CmsJspNavElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.PrintfFormat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A default resource collector to generate some example list of resources from the VFS.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.5.2
  */
 public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
@@ -132,8 +138,11 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
         "singleFile",
         "allInFolder",
         "allInFolderDateReleasedDesc",
+        "allInFolderNavPos",
         "allInSubTree",
-        "allInSubTreeDateReleasedDesc"};
+        "allInSubTreeDateReleasedDesc",
+        "allInSubTreeNavPos"
+    };
 
     /** Array list for fast collector name lookup. */
     private static final List m_collectors = Collections.unmodifiableList(Arrays.asList(m_collectorNames));
@@ -162,15 +171,17 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
                 return null;
             case 1:
                 // "allInFolder"
-                return getCreateInFolder(cms, param);
             case 2:
                 // "allInFolderDateReleasedDesc"
-                return getCreateInFolder(cms, param);
             case 3:
-                // "allInSubTree"
-                return null;
+                // "allInFolderNavPos"
+                return getCreateInFolder(cms, param);                
             case 4:
+                // "allInSubTree"
+            case 5:
                 // "allInSubTreeDateReleasedDesc"
+            case 6:
+                // "allInSubTreeNavPos"
                 return null;
             default:
                 throw new CmsException("Invalid resource collector selected: " + collectorName);
@@ -193,15 +204,17 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
                 return null;
             case 1:
                 // "allInFolder"
-                return param;
             case 2:
                 // "allInFolderDateReleasedDesc"
-                return param;
             case 3:
-                // "allInSubTree"
-                return null;
+                // "allInFolderNavPos"
+                return param;                
             case 4:
+                // "allInSubTree"
+            case 5:
                 // "allInSubTreeDateReleasedDesc"
+            case 6:
+                // "allInSubTreeNavPos"
                 return null;
             default:
                 throw new CmsException("Invalid resource collector selected: " + collectorName);
@@ -229,11 +242,17 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
                 // "allInFolderDateReleasedDesc"
                 return allInFolderDateReleasedDesc(cms, param, false);
             case 3:
+                // allInFolderNavPos"
+                return allInFolderNavPos(cms, param, false);
+            case 4:
                 // "allInSubTree"
                 return getAllInFolder(cms, param, true);
-            case 4:
+            case 5:
                 // "allInSubTreeDateReleasedDesc"
                 return allInFolderDateReleasedDesc(cms, param, true);
+            case 6:
+                // "allInSubTreeNavPos"
+                return allInFolderNavPos(cms, param, true);
             default:
                 throw new CmsException("Invalid resource collector selected: " + collectorName);
         }
@@ -262,11 +281,87 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
 
         Collections.sort(result, CmsResource.COMPARE_DATE_RELEASED);
 
-        if ((data.getCount() > 0) && (result.size() > data.getCount())) {
-            // cut off all items > count
-            result = result.subList(0, data.getCount());
+        return shrinkToFit(result, data.getCount());
+    }
+    
+    /**
+     * Collects all resources in a folder (or subtree) sorted by the NavPos property.<p>
+     * 
+     * @param cms the current user's Cms object
+     * @param param the collector's parameter(s)
+     * @param readSubTree if true, collects all resources in the subtree
+     * @return a List of Cms resources found by the collector
+     * @throws CmsException if something goes wrong
+     */
+    protected List allInFolderNavPos(CmsObject cms, String param, boolean readSubTree) throws CmsException {
+
+        CmsCollectorData data = new CmsCollectorData(param);
+        String foldername = CmsResource.getFolderPath(data.getFileName());
+
+        CmsResourceFilter filter = CmsResourceFilter.DEFAULT.addRequireType(data.getType());
+        List foundResources = cms.readResources(foldername, filter, readSubTree);
+
+        // check if all found resources have the required nav. properties set or not
+        Map navElementMap = new HashMap();
+        for (int i = 0, n = foundResources.size(); i < n; i++) {
+
+            CmsResource resource = (CmsResource)foundResources.get(i);
+            CmsJspNavElement navElement = CmsJspNavBuilder.getNavigationForResource(cms, cms.getSitePath(resource));
+
+            if (navElement != null && navElement.isInNavigation()) {
+
+                // the Cms resources are saved in a map keyed by their nav elements
+                // to save time sorting the resources by the value of their NavPos property
+                navElementMap.put(navElement, resource);
+            } else if (OpenCms.getLog(this).isInfoEnabled()) {
+                
+                // printing a log messages makes it a little easier to indentify 
+                // resource having not the required nav. properties set
+                OpenCms.getLog(this).info("Resource w/o nav. properties found: " + navElement.getResourceName());
+            }
         }
 
+        List result = null;
+        if (navElementMap.size() == foundResources.size()) {
+
+            // all found resources have the required nav. properties set
+            // sort the nav. elements, and get back the found Cms resources
+            // from the map in the correct order then
+            List navElementList = new ArrayList(navElementMap.keySet());
+            result = new ArrayList();
+
+            Collections.sort(navElementList);
+            for (int i = 0, n = navElementList.size(); i < n; i++) {
+
+                CmsJspNavElement navElement = (CmsJspNavElement)navElementList.get(i);
+                result.add(navElementMap.get(navElement));
+            }
+        } else {
+
+            // not all found resources have the required nav. properties set
+            // sort the resources by release date
+            result = foundResources;
+            Collections.sort(result, CmsResource.COMPARE_DATE_RELEASED);
+        }
+
+        return shrinkToFit(result, data.getCount());
+    }
+    
+    /**
+     * Shrinks a List to fit a maximum size.<p>
+     * 
+     * @param result a List
+     * @param maxSize the maximum size of the List
+     * 
+     * @return the shrinked list
+     */
+    protected List shrinkToFit(List result, int maxSize) {
+        
+        if ((maxSize > 0) && (result.size() > maxSize)) {
+            // cut off all items > count
+            result = result.subList(0, maxSize);
+        }
+        
         return result;
     }
 
@@ -292,12 +387,7 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
         Collections.sort(result, CmsResource.COMPARE_ROOT_PATH);
         Collections.reverse(result);
 
-        if ((data.getCount() > 0) && (result.size() > data.getCount())) {
-            // cut off all items > count
-            result = result.subList(0, data.getCount());
-        }
-
-        return result;
+        return shrinkToFit(result, data.getCount());
     }
 
     /**
