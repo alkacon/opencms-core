@@ -6,6 +6,15 @@
 	CmsGalleryImages wp = new CmsGalleryImages(pageContext, request, response);	
 %>
 <html>
+<head>
+<script language="javascript">
+<!--
+	function reload() {
+		self.location.href="<%=wp.getJsp().link(wp.getJsp().getRequestContext().getUri()+"?"+wp.paramsAsRequest())%>";
+	}
+//-->
+</script>	
+</head>
 <body>
 <div style="text-align: center; width: 100%; margin-top: 5px">
 <%= wp.buildGalleryItemPreview() %>

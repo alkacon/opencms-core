@@ -9,31 +9,38 @@
 	CmsGalleryHtmls wp = new CmsGalleryHtmls(pageContext, request, response);
 	
 %><%= wp.htmlStart(null) %>
-	<link rel="stylesheet" type="text/css" href="gallery.css">	
+	<link rel="stylesheet" type="text/css" href="<%=wp.getJsp().link(wp.C_PATH_GALLERIES+"gallery.css")%>">	
 	<script type="text/javascript">
 	<!--
-		function validateGalleryPath() {
+		function refresh() {
 			try {
-				top.gallery_fs.gallery_head.displayGallery();
+				var field_id = top.gallery_fs.gallery_head.document.list.<%= wp.PARAM_FIELDID %>.value;
+				var dialogmode = top.gallery_fs.gallery_head.document.list.<%= wp.PARAM_DIALOGMODE %>.value;
+				var previewUri = top.gallery_fs.gallery_head.previewUri;
+				if (top.gallery_fs.gallery_head.action == "deleteResource") {
+					top.preview_fs.gallery_buttonbar.location.href="<%=wp.getJsp().link("html_buttonbar.jsp")%>";
+					top.preview_fs.gallery_preview.location.href="<%=wp.getJsp().link("html_preview.jsp")%>";
+				}
+				if (previewUri != null) {
+			  		top.preview_fs.gallery_buttonbar.location.href="<%=wp.getJsp().link("html_buttonbar.jsp")%>?<%= wp.PARAM_FIELDID %>="+field_id+"&<%= wp.PARAM_DIALOGMODE %>="+dialogmode+"&resourcepath="+previewUri;
+			  		top.preview_fs.gallery_preview.location.href="<%=wp.getJsp().link("html_preview.jsp")%>?resourcepath="+previewUri;
+				}
 			} catch(e) {
-			
+
 			}
-			var field_id = top.gallery_fs.gallery_head.document.forms['list'].<%= wp.PARAM_FIELDID %>.value;
-			var dialogmode = top.gallery_fs.gallery_head.document.forms['list'].<%= wp.PARAM_DIALOGMODE %>.value;
-			top.preview_fs.gallery_buttonbar.location.href="<%=wp.getJsp().link("html_buttonbar.jsp")%>?<%= wp.PARAM_FIELDID %>="+field_id+"&<%= wp.PARAM_DIALOGMODE %>="+dialogmode+"&resourcepath="+top.gallery_fs.gallery_head.previewUri;
-			top.preview_fs.gallery_preview.location.href="<%=wp.getJsp().link("html_preview.jsp")%>?resourcepath="+top.gallery_fs.gallery_head.previewUri;
 		}
 		
 		function preview(uri) {
 			top.gallery_fs.gallery_head.previewUri = uri;
-			top.preview_fs.gallery_buttonbar.location.href="<%=wp.getJsp().link("html_buttonbar.jsp")%>?<%= wp.PARAM_FIELDID %>=<%= wp.getParamFieldId() %>&<%= wp.PARAM_DIALOGMODE %>=<%= wp.getParamDialogMode() %>&resourcepath="+uri;
+			var dialogmode = top.gallery_fs.gallery_head.document.forms['list'].<%= wp.PARAM_DIALOGMODE %>.value;
+			top.preview_fs.gallery_buttonbar.location.href="<%=wp.getJsp().link("html_buttonbar.jsp")%>?<%= wp.PARAM_FIELDID %>=<%= wp.getParamFieldId() %>&<%= wp.PARAM_DIALOGMODE %>="+dialogmode+"&resourcepath="+uri;
 			top.preview_fs.gallery_preview.location.href="<%=wp.getJsp().link("html_preview.jsp")%>?resourcepath="+uri;					
 		}												
 	//-->
 	</script>
 </head>
 
-<body class="dialog" unselectable="on"<%=CmsStringUtil.isEmpty(wp.getParamGalleryPath())?" onload=\"validateGalleryPath();\"":""%>>
+<body class="dialog" unselectable="on" onload="refresh();">
 <table border="0" cellpadding="0" cellspacing="0" class="maxwidth">
 <%@ include file="gallery_list_headline.txt" %>
 <%= wp.buildGalleryItems() %>

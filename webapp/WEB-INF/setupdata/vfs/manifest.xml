@@ -5444,6 +5444,32 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/commons/opengallery.jsp</source>
+			<destination>system/workplace/commons/opengallery.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>b2cde417-477a-11d9-8209-b37cba9d1f6d</uuidresource>
+			<datelastmodified>Mon, 06 Dec 2004 14:58:15 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 06 Dec 2004 12:33:49 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Dialog - Open gallery]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/commons/preferences.jsp</source>
 			<destination>system/workplace/commons/preferences.jsp</destination>
 			<type>jsp</type>
@@ -12502,6 +12528,19 @@
 			<datelastmodified>Mon, 22 Nov 2004 13:01:13 CET</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 22 Nov 2004 12:43:14 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/buttons/apply_in.gif</source>
+			<destination>system/workplace/resources/buttons/apply_in.gif</destination>
+			<type>image</type>
+			<uuidresource>f3412437-4792-11d9-9228-b37cba9d1f6d</uuidresource>
+			<datelastmodified>Mon, 06 Dec 2004 15:27:25 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 06 Dec 2004 15:27:25 CET</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsGalleryHtmls.java,v $
- * Date   : $Date: 2004/12/03 17:08:21 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/12/07 17:19:35 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.5.2
  */
@@ -107,7 +107,11 @@ public class CmsGalleryHtmls extends CmsGallery {
      * @see org.opencms.workplace.commons.CmsGallery#applyButton()
      */
     public String applyButton() {
-        return button("javascript:pasteContent()", null, "apply", "button.paste", 0);        
+        if (MODE_VIEW.equals(getParamDialogMode())) {
+            return button(null, null, "apply_in", "button.paste", 0); 
+        } else {
+            return button("javascript:pasteContent()", null, "apply", "button.paste", 0);
+        }
     }
     
     /**

@@ -19,6 +19,7 @@
 <script type="text/javascript">
 <!--
 	var previewUri = null;
+	var action;
 	function displayGallery() {
 		var mainForm = document.forms["main"];
 		<% if (wp.galleriesExists()) { %>
@@ -53,7 +54,7 @@
 
 </head>
 
-<body style="background-color: ThreeDFace; margin: 0; padding: 2px;" <%= CmsStringUtil.isEmpty(wp.getParamGalleryPath())==true?"onload=\"displayGallery();\"":"" %>>
+<body onload="self.focus();" style="background-color: ThreeDFace; margin: 0; padding: 2px;" <%= CmsStringUtil.isEmpty(wp.getParamGalleryPath())==true?"onload=\"displayGallery();\"":"" %>>
 
 <form name="main" action="<%= cms.link("html_fs_head.jsp") %>" target="gallery_fs" method="post" class="nomargin">
 <input type="hidden" name="<%= wp.PARAM_DIALOGMODE %>" value="<%= wp.getParamDialogMode() %>">

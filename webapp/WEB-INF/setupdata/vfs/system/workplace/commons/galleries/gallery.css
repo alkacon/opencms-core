@@ -1,5 +1,8 @@
 a { text-decoration: none; color: #0000AA; }
 a:hover { text-decoration: underline; }
+
+a.list { text-decoration: none; color: #000;}
+a:hover.list { text-decoration: underline; color: #0000AA;}
 		
 td.fc{ color: #b40000; } 
 a.fc{ color: #b40000; } 

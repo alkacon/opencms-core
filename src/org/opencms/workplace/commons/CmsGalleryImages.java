@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsGalleryImages.java,v $
- * Date   : $Date: 2004/12/03 17:08:21 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/12/07 17:19:35 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.5.2
  */
@@ -109,11 +109,15 @@ public class CmsGalleryImages extends CmsGallery {
      * @see org.opencms.workplace.commons.CmsGallery#applyButton()
      */
     public String applyButton() {
-        String uri = getParamResourcePath();
-        if (CmsStringUtil.isEmpty(getParamDialogMode())) {
-            uri = getJsp().link(uri);
+        if (MODE_VIEW.equals(getParamDialogMode())) {
+            return button(null, null, "apply_in", "button.paste", 0); 
+        } else {
+            String uri = getParamResourcePath();
+            if (CmsStringUtil.isEmpty(getParamDialogMode())) {
+                uri = getJsp().link(uri);
+            }
+            return button("javascript:pasteResource('"+uri+"',document.form.title.value, document.form.title.value);", null, "apply", "button.paste", 0);
         }
-        return button("javascript:pasteResource('"+uri+"',document.form.title.value, document.form.title.value);", null, "apply", "button.paste", 0);        
     }
     
     /**

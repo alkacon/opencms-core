@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsGallery.java,v $
- * Date   : $Date: 2004/12/03 17:08:21 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/12/07 17:19:35 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,6 +45,7 @@ import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
+import org.opencms.workplace.I_CmsWpConstants;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -61,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.5.2
  */
@@ -101,6 +102,8 @@ public abstract class CmsGallery extends CmsDialog {
     
     /** Request parameter value for the dialog mode: editor. */
     public static final String MODE_EDITOR = "editor";
+    /** Request parameter value for the dialog mode: view. */
+    public static final String MODE_VIEW = "view";
     /** Request parameter value for the dialog mode: widget. */
     public static final String MODE_WIDGET = "widget";
     
@@ -158,11 +161,31 @@ public abstract class CmsGallery extends CmsDialog {
      */
     public String applyButton() {
         
-        String uri = getParamResourcePath();
-        if (CmsStringUtil.isEmpty(getParamDialogMode())) {
-            uri = getJsp().link(uri);
+        if (MODE_VIEW.equals(getParamDialogMode())) {
+            return button(null, null, "apply_in", "button.paste", 0); 
+        } else {
+            String uri = getParamResourcePath();
+            if (CmsStringUtil.isEmpty(getParamDialogMode())) {
+                uri = getJsp().link(uri);
+            }
+            return button("javascript:link('"+uri+"',document.form.title.value, document.form.title.value);", null, "apply", "button.paste", 0);
         }
-        return button("javascript:link('"+uri+"',document.form.title.value, document.form.title.value);", null, "apply", "button.paste", 0);        
+    }
+    
+    /**
+     * Generates an publish button for the gallery button bar.<p>
+     * 
+     * This button is disabled if the urrent user has no publish rights.<p>
+     * 
+     * @return an publish button for the gallery button bar
+     */
+    public String publishButton() {
+       
+        if (getCms().hasPublishPermissions(getParamResourcePath())) {
+            return button("javascript:publishResource(\'" + getParamResourcePath() + "\');", null, "publish", "messagebox.title.publishresource", 0);
+        }                        
+            
+        return button(null, null, "publish_in", "", 0);
     }
     
     /**
@@ -203,39 +226,48 @@ public abstract class CmsGallery extends CmsDialog {
                 if (res != null) {
                     setCurrentResource(res);
                     // check if the current user has write/lock permissions to the resource
-                    if (isEditable() && ACTION_EDITPROPERTY.equals(getParamAction())) {
+                    if (hasWritePermissions() && ACTION_EDITPROPERTY.equals(getParamAction())) {
                         writeTitleProperty(res);
                     }
                     String title = getPropertyValue(res, I_CmsConstants.C_PROPERTY_TITLE);
                     buttonBar.append("<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"align: left; width:100%; background-color: ThreeDFace; margin: 0; border-right: 1px solid ThreeDShadow\">");
                     buttonBar.append("<tr align=\"left\">");
-                    buttonBar.append(buttonBarStartTab(0, 0)); 
+                    buttonBar.append(buttonBarStartTab(0, 0));                     
                     // apply button
-                    buttonBar.append(applyButton());
+                    buttonBar.append(applyButton());  
+                    // publish button
+                    buttonBar.append(publishButton());
                     // delete button
                     buttonBar.append(deleteButton());
                     buttonBar.append(buttonBarSeparator(5, 5));                    
                     buttonBar.append("<td nowrap><b>");
                     buttonBar.append(key("input.title"));
                     buttonBar.append("</b>&nbsp;</td>");
-                    buttonBar.append("<td width=\"80%\">");
+                    buttonBar.append("<td width=\"95%\">");
                     buttonBar.append("<input name=\"title\" value=\"");
                     buttonBar.append(title);
                     buttonBar.append("\" style=\"width: 95%\">");
                     buttonBar.append("</td>\r\n"); 
+                    // hidden field 
+                    buttonBar.append("<input type=\"hidden\" name=\""+PARAM_PROPERTYVALUE+"\" value=\""+title+"\">\r\n");
                     // edit property button
                     buttonBar.append(editPropertyButton());
-                    buttonBar.append(buttonBarSpacer(5));
                     // target select
                     buttonBar.append(targetSelectBox());
                     // preview button
                     buttonBar.append(previewButton());
-                    buttonBar.append(buttonBarHorizontalLine());
                     buttonBar.append(buttonBar(HTML_END));
                 }
+            } else {
+                buttonBar.append("<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\"><tr><td>");
+                buttonBar.append("<img height=\"22\" border=\"0\" src=\""+getJsp().link(I_CmsWpConstants.C_VFS_PATH_SYSTEMPICS+"empty.gif")+"\">");
+                buttonBar.append("</td></tr></table>");
             }
         } catch (CmsException e) {
-            // ignore this exception
+            // resource is deleted. display empty table
+            buttonBar.append("<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\"><tr><td>");
+            buttonBar.append("<img height=\"22\" border=\"0\" src=\""+getJsp().link(I_CmsWpConstants.C_VFS_PATH_SYSTEMPICS+"empty.gif")+"\">");
+            buttonBar.append("</td></tr></table>");
         }
         return buttonBar.toString();
     }
@@ -298,10 +330,10 @@ public abstract class CmsGallery extends CmsDialog {
                     result.append("\');\" title=\"");
                     result.append(key("button.preview"));
                     result.append("\">");
-                    result.append(title);
+                    result.append(resName);
                     result.append("</a></td>\n");
                     result.append("\t<td class=\""+tdClass+"\">");
-                    result.append(resName);
+                    result.append(title);
                     result.append("</td>\n");
                     // display the Link URL for Link Gallery
                     
@@ -447,7 +479,7 @@ public abstract class CmsGallery extends CmsDialog {
     /**
      * Generates a delete button for the gallery button bar.<p>
      * 
-     * If the current resource is not 'editable' the disabled button will be returned.<p>
+     * This button is disabled if the urrent user has no write rights.<p>
      * 
      * Overwrite this method if neccessary in the specified gallery class.<p>
      * 
@@ -455,7 +487,7 @@ public abstract class CmsGallery extends CmsDialog {
      */
     public String deleteButton() {
         try {
-            if (isEditable()) {
+            if (hasWritePermissions()) {
                 return button("javascript:deleteResource(\'" + getParamResourcePath() + "\');", null, "deletecontent", "title.delete", 0);
             }                         
         } catch (CmsException e) {
@@ -475,12 +507,12 @@ public abstract class CmsGallery extends CmsDialog {
      */
     public String editPropertyButton() {
         try {
-            if (isEditable()) {
-                return button("javascript:editProperty('"+getParamResourcePath()+"');", null, "edit_property", "input.editpropertyinfo", 0);    
+            if (hasWritePermissions()) {
+                return button("javascript:editProperty('"+getParamResourcePath()+"');", null, "edit_property", "input.editpropertyinfo", 0);        
             }
         } catch (CmsException e) {
             // ignore
-        }
+        }  
         return button(null, null, "edit_property_in", "", 0);                
     }
     
@@ -815,7 +847,7 @@ public abstract class CmsGallery extends CmsDialog {
      * @return true if the required permissions are satisfied
      * @throws CmsException if something goes wrong
      */
-    protected boolean isEditable() throws CmsException {
+    protected boolean hasWritePermissions() throws CmsException {
         return getCms().hasPermissions(getCurrentResource(), CmsPermissionSet.ACCESS_WRITE, false, CmsResourceFilter.ALL);
     }
     
@@ -872,11 +904,16 @@ public abstract class CmsGallery extends CmsDialog {
     public String targetSelectBox() {
         
         StringBuffer targetSelectBox = new StringBuffer();
+        targetSelectBox.append(buttonBarSpacer(5));
         targetSelectBox.append("<td nowrap><b>");
         targetSelectBox.append(key("target"));
         targetSelectBox.append("</b>&nbsp;</td>");
         targetSelectBox.append("<td>\r\n");    
-        targetSelectBox.append("<select name=\"linktarget\" id=\"linktarget\" size=\"1\" style=\"width:150px\">");        
+        targetSelectBox.append("<select name=\"linktarget\" id=\"linktarget\" size=\"1\" style=\"width:150px\"");
+        if (MODE_VIEW.equals(getParamDialogMode())) {
+            targetSelectBox.append(" disabled");
+        }
+        targetSelectBox.append(">");        
         targetSelectBox.append(getTargetOptions());
         targetSelectBox.append("</select>");        
         targetSelectBox.append("</td>");

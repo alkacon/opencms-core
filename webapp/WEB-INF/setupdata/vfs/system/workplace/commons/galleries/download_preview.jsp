@@ -7,6 +7,14 @@
 %>
 <%= wp.htmlStart(null) %>
 	<link rel="stylesheet" type="text/css" href="gallery.css">
+
+<script language="javascript">
+<!--
+	function reload() {
+		self.location.href="<%=wp.getJsp().link(wp.getJsp().getRequestContext().getUri()+"?"+wp.paramsAsRequest())%>";
+	}
+//-->
+</script>
 </head>
 <body class="dialog" style="background-color: ThreeDFace;" height="100%" unselectable="on">
 <div style="text-align: center; width: 100%; margin-top: 5px">

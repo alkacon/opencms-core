@@ -108,14 +108,25 @@
 	}
 	
 	function deleteResource(uri) {
-		top.gallery_fs.gallery_list.location.href="<%=wp.getJsp().link(wp.C_PATH_DIALOGS+"delete.jsp")%>?resource="+uri;			
+		top.gallery_fs.gallery_head.action = "deleteResource";
+		top.gallery_fs.gallery_list.location.href="<%=wp.getJsp().link(wp.C_PATH_DIALOGS+"delete.jsp")%>?resource="+uri;				
+	}
+	
+	function publishResource(uri) {
+		top.gallery_fs.gallery_list.location.href="<%=wp.getJsp().link(wp.C_PATH_DIALOGS+"publishresource.jsp")%>?resource="+uri;				
 	}
 	
 	function editProperty(uri) {			
-		document.form.<%= wp.PARAM_PROPERTYVALUE %>.value = document.form.title.value;
-		document.form.submit();
-		top.gallery_fs.gallery_head.displayGallery();			
-	}		
+		// do submit only if there are changes
+		if (document.form.title.value != document.form.<%= wp.PARAM_PROPERTYVALUE %>.value) {
+			top.gallery_fs.gallery_head.action = "editProperty";
+			document.form.<%= wp.PARAM_PROPERTYVALUE %>.value = document.form.title.value;
+			document.form.submit();
+			top.gallery_fs.gallery_head.displayGallery();		
+			top.preview_fs.gallery_preview.reload();
+		}		
+	}	
+
 	
 //-->
 </script>

@@ -17,7 +17,4 @@
     <frame <%= wp.getFrameSource("gallery_fs", cms.link("img_fs_head.jsp" + params)) %> style="border-bottom: 1px solid Window;">
     <frame <%= wp.getFrameSource("preview_fs", cms.link("img_fs_preview.jsp" + params)) %> style="border-top: 1px solid Window;">    
 </frameset>
-
-<body>
-</body>
 </html>
