@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
- * Date   : $Date: 2000/05/02 10:08:29 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2000/05/19 08:29:12 $
+ * Version: $Revision: 1.23 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.22 $ $Date: 2000/05/02 10:08:29 $
+ * @version $Revision: 1.23 $ $Date: 2000/05/19 08:29:12 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -384,22 +384,29 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
     }
 
      /** 
-      * Check if this resource is writeable by the user.
+      * Check if this resource should is writeable.
       * @param cms The CmsObject
       * @param res The resource to be checked.
       * @return True or false.
       * @exception CmsException if something goes wrong.
       */
      private boolean checkWriteable(A_CmsObject cms, CmsResource res)
-     throws CmsException {
+		 throws CmsException {
          boolean access=false;
          int accessflags=res.getAccessFlags();
+         
+         boolean groupAccess = false;
+         Enumeration allGroups = cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()).elements();
+         while((!groupAccess) && allGroups.hasMoreElements()) {
+             groupAccess = cms.readGroup(res).equals((A_CmsGroup)allGroups.nextElement());
+         }
          
          if ( ((accessflags & C_ACCESS_PUBLIC_WRITE) > 0) ||
 			  (cms.getRequestContext().isAdmin()) ||
               (cms.readOwner(res).equals(cms.getRequestContext().currentUser()) && (accessflags & C_ACCESS_OWNER_WRITE) > 0) ||
-              (cms.readGroup(res).equals(cms.getRequestContext().currentGroup()) && (accessflags & C_ACCESS_GROUP_WRITE) > 0)) {    
-              access=true;
+              ( groupAccess && (accessflags & C_ACCESS_GROUP_WRITE) > 0)) {    
+            
+             access=true;
          }
                
          return access;
