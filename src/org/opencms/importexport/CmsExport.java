@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2003/08/18 13:12:10 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/08/18 15:40:06 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.w3c.dom.Text;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.7 $ $Date: 2003/08/18 13:12:10 $
+ * @version $Revision: 1.8 $ $Date: 2003/08/18 15:40:06 $
  */
 public class CmsExport implements Serializable {
 
@@ -293,7 +293,16 @@ public class CmsExport implements Serializable {
         // check all exported page files if their body has already been exported
         i = m_exportedPageFiles.iterator();
         while (i.hasNext()) {
-            String body = bodyPath + (String)i.next();
+            String filename= (String)i.next();
+            // check if the stie path is within the filename. If so, this export is
+            // started from the root site and must be modified.
+            // this is not nice, but it works.
+            if (filename.startsWith("/sites/")) {
+                filename=filename.substring(1, filename.length());
+                filename=filename.substring(filename.indexOf("/")+1, filename.length());
+                filename=filename.substring(filename.indexOf("/"), filename.length());
+            }           
+            String body = bodyPath + filename;
              bodyFileNames.add(body);
         }
 
