@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/09/03 14:08:37 $
- * Version: $Revision: 1.110 $
+ * Date   : $Date: 2003/09/04 13:00:39 $
+ * Version: $Revision: 1.111 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.110 $ $Date: 2003/09/03 14:08:37 $
+ * @version $Revision: 1.111 $ $Date: 2003/09/04 13:00:39 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -3045,7 +3045,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
      * @param file The file of which the remporary files should be deleted
      * @throws CmsException Throws CmsException if operation was not succesful.
      */
-    public void removeTemporaryFile(CmsFile file) throws CmsException {
+    public void removeTemporaryFile(CmsResource file) throws CmsException {
         PreparedStatement stmt = null;
         PreparedStatement statementCont = null;
         PreparedStatement statementProp = null;
