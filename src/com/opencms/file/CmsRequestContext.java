@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
-* Date   : $Date: 2003/03/07 15:44:44 $
-* Version: $Revision: 1.66 $
+* Date   : $Date: 2003/03/07 16:15:49 $
+* Version: $Revision: 1.67 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.http.HttpSession;
  * @author Anders Fugmann
  * @author Alexander Lucas
  *
- * @version $Revision: 1.66 $ $Date: 2003/03/07 15:44:44 $
+ * @version $Revision: 1.67 $ $Date: 2003/03/07 16:15:49 $
  *
  */
 public class CmsRequestContext implements I_CmsConstants {
@@ -117,7 +117,7 @@ public class CmsRequestContext implements I_CmsConstants {
     /** Current encoding */
     private String m_encoding = null;
 
-    /** The URI for getUri() */
+    /** The URI for getUri() in case it is "overwritten"  */
     private String m_uri = null;
     
     /** Directroy name translator */
@@ -372,11 +372,10 @@ public class CmsRequestContext implements I_CmsConstants {
     public String getUri() {
         if (m_uri != null) return m_uri;
         if( m_req != null ) {
-            m_uri = m_req.getRequestedResource();
+            return( m_req.getRequestedResource() );
         } else {
-            m_uri = C_ROOT;
+            return (C_ROOT);
         }
-        return m_uri;
     }
 
     /**
