@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsResponse.java,v $
-* Date   : $Date: 2004/01/25 12:42:45 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2004/02/14 22:58:32 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.io.*;
  * @author Michael Emmerich
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.17 $ $Date: 2004/01/25 12:42:45 $  
+ * @version $Revision: 1.18 $ $Date: 2004/02/14 22:58:32 $  
  */
 public interface I_CmsResponse {
     
@@ -133,7 +133,7 @@ public interface I_CmsResponse {
     
     /**
      * Returns the content type of the response which has previously
-     * been set using {@link #setContentType}.
+     * been set using {@link #setContentType(String)}.
      * 
      * @return the content type of the response.
      */

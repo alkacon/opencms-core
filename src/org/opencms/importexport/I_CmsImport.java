@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/I_CmsImport.java,v $
- * Date   : $Date: 2004/02/13 13:41:44 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/02/14 22:56:49 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.w3c.dom.Document;
  * This interface describes a import class which is used to import resources into the VFS.<p>
  * 
  * OpenCms supports different import versions, for each version a own import class must be implemented.
- * A group of common used methods can be found in {@link com.opencms.importexport.A_CmsImport}.<p>
+ * A group of common used methods can be found in {@link org.opencms.importexport.A_CmsImport}.<p>
  * 
  * Implementations of this interface must be registered in the registry in the <code>importclasses</code> node,
  * e.g.:<br>

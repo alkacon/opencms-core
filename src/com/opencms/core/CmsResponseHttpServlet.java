@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsResponseHttpServlet.java,v $
-* Date   : $Date: 2004/02/11 16:12:05 $
-* Version: $Revision: 1.38 $
+* Date   : $Date: 2004/02/14 22:58:32 $
+* Version: $Revision: 1.39 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.38 $ $Date: 2004/02/11 16:12:05 $
+ * @version $Revision: 1.39 $ $Date: 2004/02/14 22:58:32 $
  */
 public class CmsResponseHttpServlet implements I_CmsResponse {
 
@@ -305,7 +305,7 @@ public class CmsResponseHttpServlet implements I_CmsResponse {
     
     /**
      * Returns the content type of the response which has previously
-     * been set using {@link #setContentType}.
+     * been set using {@link #setContentType(String)}.
      * 
      * @return the content type of the response.
      */

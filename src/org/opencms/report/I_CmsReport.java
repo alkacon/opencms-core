@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/I_CmsReport.java,v $
- * Date   : $Date: 2004/02/06 20:52:42 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/02/14 22:56:49 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.util.Locale;
  * like publish, import, export etc.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com) 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public interface I_CmsReport {
         
@@ -116,7 +116,7 @@ public interface I_CmsReport {
      * Gets the localized resource string for a given message key.<p>
      * 
      * The internal implementation should be passing the
-     * <code>keyName</code> to the class {@link com.opencms.flex.util.CmsMessages}.<p>
+     * <code>keyName</code> to the class {@link org.opencms.i18n.CmsMessages}.<p>
      *
      * @param keyName the key for the desired string
      * @return the resource string for the given key
