@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProperty.java,v $
- * Date   : $Date: 2004/06/25 16:33:32 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/07/08 15:24:16 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import java.util.RandomAccess;
  * control about which resource types support which property definitions.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.16 $ $Date: 2004/06/25 16:33:32 $
+ * @version $Revision: 1.17 $ $Date: 2004/07/08 15:24:16 $
  * @since build_5_1_14
  */
 public class CmsProperty extends Object implements Serializable, Cloneable, Comparable {
@@ -300,9 +300,12 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
     /**
      * Searches in a list for the first occurence of a Cms property object with the given key.<p> 
      *
+     * To check if the "null property" has been returned if a property was 
+     * not found, use {@link #isNullProperty()} on the result.<p> 
+     *
      * @param key a property key
      * @param list a list of Cms property objects
-     * @return the index of the first occurrence of the key in they specified list, or the "null-property" {@link #C_NULL_PROPERTY} if the key is not found
+     * @return the index of the first occurrence of the key in they specified list, or the "null-property" if the key is not found
      */    
     public static final CmsProperty get(String key, List list) {
         CmsProperty property = null;
@@ -625,7 +628,6 @@ public class CmsProperty extends Object implements Serializable, Cloneable, Comp
      * Creates a clone of this property.<p>
      *  
      * @return a clone of this property
-     * @see java.lang.Object#clone()
      */
     public Object clone() {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2004/06/25 16:32:54 $
- * Version: $Revision: 1.82 $
+ * Date   : $Date: 2004/07/08 15:23:54 $
+ * Version: $Revision: 1.83 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.List;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.82 $ $Date: 2004/06/25 16:32:54 $
+ * @version $Revision: 1.83 $ $Date: 2004/07/08 15:23:54 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -564,7 +564,7 @@ public interface I_CmsVfsDriver {
      * back to "unchanged".<p>
      * 
      * Only file state attribs. get updated here. Use {@link #writeResource(CmsProject, CmsResource, int)}
-     * or {@link #writeResource(CmsProject, CmsFolder, int)} instead to write the complete file header.<p>
+     * instead to write the complete file header.<p>
      * 
      * Please refer to the javadoc of {@link #writeResource(CmsProject, CmsResource, int)} to read
      * how setting resource state values affects the file state.<p>

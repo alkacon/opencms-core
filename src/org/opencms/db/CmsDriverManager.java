@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/07/07 18:01:09 $
- * Version: $Revision: 1.397 $
+ * Date   : $Date: 2004/07/08 15:23:53 $
+ * Version: $Revision: 1.398 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.397 $ $Date: 2004/07/07 18:01:09 $
+ * @version $Revision: 1.398 $ $Date: 2004/07/08 15:23:53 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -1134,7 +1134,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * 
      * @see CmsObject#lockResource(String, int)
      * @see I_CmsResourceType#lockResource(CmsObject, CmsDriverManager, CmsResource, int)
-     * @see #internalLockResource(CmsRequestContext, CmsResource, int)
      */
     public void lockResource(CmsRequestContext context, CmsResource resource, int mode) throws CmsException {
 
@@ -2075,7 +2074,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @throws CmsException in case of i/o errors (NOT because of insufficient permissions)
      * 
      * @see #checkPermissions(CmsRequestContext, CmsResource, CmsPermissionSet, boolean, CmsResourceFilter)
-     * @see #checkPermissions(CmsRequestContext, CmsResource, CmsPermissionSet, int) 
      */
     public int hasPermissions(
         CmsRequestContext context, 
@@ -2188,7 +2186,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @throws CmsVfsResourceNotFoundException if the required resource is not readable
      * 
      * @see #hasPermissions(CmsRequestContext, CmsResource, CmsPermissionSet, boolean, CmsResourceFilter)
-     * @see #checkPermissions(CmsRequestContext, CmsResource, CmsPermissionSet, int)
      */
     public void checkPermissions(
         CmsRequestContext context, 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/07/05 15:43:19 $
- * Version: $Revision: 1.555 $
+ * Date   : $Date: 2004/07/08 15:26:02 $
+ * Version: $Revision: 1.556 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,16 +20,26 @@ Legend:
 - General comment
 
 OpenCms 5.3.6 Ix - mm dd, 2004
-! Improved core search configuration by adding configurable "input sources" for the 
-  search indexer
+! Improved core search configuration by adding configurable "input sources" for the indexers
 * Removed legacy dependency on search configuration
-! Added first version of new scheduler based on OpenSymphony Quatz
-- Removed "package path" configuration option
-- Moved "file upload extension mappings" from DB table to XML configuration
+! Added new scheduler that replaces the old OpenCms "CronScheduler" based on OpenSymphony Quartz
+! New scheduler has (almost) full support for cron expressions
+! Execution context for scheduled jobs can be described in detail
+! Each scheduled job can have a list of parameters (instead of only one String as a parameter)
+! Threads are more carefully managed by the scheduler
+- Configuration of scheduler moved from registry.xml to opencms-system.xml
+- Removed "package path" configuration option, path is now hardcoded
+- Moved "file upload extension mappings" from DB table to opencms-vfs.xml
+- Removed unrequired "CMS_SYSTEMPROPERTIES" table from DB schema
 ! New API for resource types
-! Default resource types now are located in package org.opencms.file.types
+! Default resource types of the core now are located in package org.opencms.file.types
+! Resource types can now be located in other packages (not only org.opencms.file)
 - Refactored several methods in CmsObject and DriverManager to improve code quality
 ! Added several Junit test cases for CmsObject/DriverManager methods
+! Additional methods for creation of a user in a well defined context added
+- Configuration of static export moved from opencms.properties to opencms-importexport.xml
+- Improved the JavaDocs
+- Officially deprecated everything in com.opencms.* 
 
 OpenCms 5.3.5 Ix - June 16, 2004
 - Important: This version contains changes to the OpenCms VFS database schema

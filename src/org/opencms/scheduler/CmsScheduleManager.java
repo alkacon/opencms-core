@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsScheduleManager.java,v $
- * Date   : $Date: 2004/07/08 12:59:33 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/07/08 15:24:16 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,6 +56,9 @@ import org.quartz.impl.StdSchedulerFactory;
 /**
  * Manages the OpenCms scheduled jobs.<p>
  * 
+ * Please see the documentation of the class {@link org.opencms.scheduler.CmsScheduledJobInfo} 
+ * for a full description of the OpenCms scheduling capabilities.<p>
+ * 
  * The OpenCms scheduler implementation internally uses the
  * <a href="http://www.opensymphony.com/quartz/">Quartz scheduler</a> from
  * the <a href="http://www.opensymphony.com/">OpenSymphony project</a>.<p>
@@ -66,8 +69,10 @@ import org.quartz.impl.StdSchedulerFactory;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  *  
- * @version $Revision: 1.3 $
- * @since 5.3
+ * @version $Revision: 1.4 $
+ * @since 5.3.6
+ * 
+ * @see org.opencms.scheduler.CmsScheduledJobInfo
  */
 public class CmsScheduleManager implements Job {
 

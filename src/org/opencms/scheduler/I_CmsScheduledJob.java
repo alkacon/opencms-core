@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/I_CmsScheduledJob.java,v $
- * Date   : $Date: 2004/07/07 18:01:08 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/07/08 15:24:16 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,18 +40,18 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  *  
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.3
  */
 public interface I_CmsScheduledJob {
 
     /**
-     * This method will be called when a scheduled job is executed.<p>
+     * This method will be called when this scheduled job is executed.<p>
      * 
-     * Depending on the configuration of the job, a new instance of 
-     * this class will be instanciated every time the job is run, 
+     * Depending on the configuration of this job, a new instance of 
+     * the configured class will be instanciated every time the job is launched, 
      * or a new instance will be generated only the first time the 
-     * job is run, and re-used afterwards.<p>
+     * job is launched, and re-used afterwards.<p>
      * 
      * @param cms will be initialized with the configured users cms context
      * @param parameters the configured parameters

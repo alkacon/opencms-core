@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsUUID.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/07/08 15:24:47 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.doomdark.uuid.UUIDGenerator;
  * This class is just a facade wrapper for the "real" UUID implementation.<p> 
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.0.0
  */
@@ -214,8 +214,8 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
     }
             
     /**
-     * @see java.lang.Object#clone()
-     */      
+     * Creates a clone of this CmsUUID.<p>
+     */  
     public Object clone() {        
         return new CmsUUID((UUID)m_uuid.clone());
     }
