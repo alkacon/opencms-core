@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPreferencesPanels.java,v $
- * Date   : $Date: 2000/08/28 13:17:44 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2000/10/11 18:14:59 $
+ * Version: $Revision: 1.24 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import java.util.*;
  * TODO: use predefined constants in this class, clean up this class and add more comments!
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.23 $ $Date: 2000/08/28 13:17:44 $
+ * @version $Revision: 1.24 $ $Date: 2000/10/11 18:14:59 $
  */
 public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWpConstants,
 																		 I_CmsConstants {
@@ -637,7 +637,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
 		for (int i=0; i<allLangFolders.size(); i++) {
 			
 			CmsFolder folder = (CmsFolder)allLangFolders.elementAt(i);
-			allLangFiles = cms.getFilesInFolder(folder.getAbsolutePath());
+			allLangFiles = cms.getFilesInFolderRecursively(folder.getAbsolutePath());
 			CmsFile file=(CmsFile)allLangFiles.elementAt(0);
 			CmsXmlLanguageFile langFile=new CmsXmlLanguageFile(cms,file.getAbsolutePath());
 			names.addElement(langFile.getDataValue("name"));
