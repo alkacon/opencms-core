@@ -12,6 +12,7 @@ function show_help()
 }
 //-->
 </script>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
 
 
 <head>

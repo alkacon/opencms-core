@@ -301,12 +301,13 @@ function doAction(action) {
 function doPAction(action) // which action on layer Project is clicked
 {
 	hidemenu(letztelyr);
+	var encLasturl = simpleEscape(location.href);
 	
 	switch(action)
 	{
 		case 1:
 		{
-			location.href='administration_content_lockchange.html?projectid=' + kontextparam+ '&initial=true';
+			location.href='administration_content_lockchange.html?lasturl=' + encLasturl + '&projectid=' + kontextparam+ '&initial=true';
 			break;
 		}
 		case 2:
@@ -316,12 +317,12 @@ function doPAction(action) // which action on layer Project is clicked
 		}
 		case 3:
 		{
-			location.href='administration_content_publish_project.html?projectid=' + kontextparam+ '&initial=true';
+			location.href='administration_content_publish_project.html?lasturl=' + encLasturl + '&projectid=' + kontextparam+ '&initial=true';
 			break;
 		}
 		case 4:
 		{
-			location.href='administration_content_delete_project.html?projectid=' + kontextparam+ '&initial=true';
+			location.href='administration_content_delete_project.html?lasturl=' + encLasturl + '&projectid=' + kontextparam+ '&initial=true';
 			break;
 		}
 		case 10:
@@ -331,7 +332,7 @@ function doPAction(action) // which action on layer Project is clicked
 		}
 		case 20:
 		{
-			location.href='administration_content_projecthistory_react.html';
+			location.href='administration_content_projecthistory_react.html?lasturl=' + encLasturl;
 			break;
 		}
 		case 99:
