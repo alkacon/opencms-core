@@ -38,22 +38,10 @@
             <resourceClass>com.opencms.file.CmsResourceTypeImage</resourceClass>
         </restype>
         <restype>
-            <name>script</name>
-            <launcherType>1</launcherType>
-            <launcherClass></launcherClass>
-            <resourceClass>com.opencms.file.CmsResourceTypeScript</resourceClass>
-        </restype>
-        <restype>
             <name>link</name>
             <launcherType>4</launcherType>
             <launcherClass></launcherClass>
             <resourceClass>com.opencms.file.CmsResourceTypeLink</resourceClass>
-        </restype>
-        <restype>
-            <name>newspage</name>
-            <launcherType>3</launcherType>
-            <launcherClass></launcherClass>
-            <resourceClass>com.opencms.file.CmsResourceTypeNewspage</resourceClass>
         </restype>
         <restype>
             <name>pdfpage</name>

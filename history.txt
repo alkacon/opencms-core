@@ -10,6 +10,7 @@ Legend:
 
 OpenCms 4.3.38 Bela Tegeuse - 31 July 2001
 * Fixed bug: A resource can not be locked if one of the parent resources is locked in another project.
+- Reorganised the context-menus for resources.
 
 OpenCms 4.3.37 Bela Tegeuse - 31 July 2001
 * General bugfixing.

@@ -9555,21 +9555,6 @@
             <properties/>
         </file>
         <file>
-            <source>system/workplace/restypes/script</source>
-            <destination>system/workplace/restypes/script</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>383</access>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <type>1</type>
-                    <value><![CDATA[]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
             <source>system/workplace/restypes/XMLTemplate</source>
             <destination>system/workplace/restypes/XMLTemplate</destination>
             <type>plain</type>
