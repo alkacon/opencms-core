@@ -273,6 +273,51 @@
             <properties/>
         </file>
         <file>
+            <source>pics/system/bt_setup.gif</source>
+            <destination>pics/system/bt_setup.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
+            <source>pics/system/bt_setup_in.gif</source>
+            <destination>pics/system/bt_setup_in.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
+            <source>pics/system/bt_setup_off.gif</source>
+            <destination>pics/system/bt_setup_off.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
+            <source>pics/system/bt_setup_on.gif</source>
+            <destination>pics/system/bt_setup_on.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
+            <source>pics/system/bt_setup_push.gif</source>
+            <destination>pics/system/bt_setup_push.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
             <source>pics/system/bt_aligncenter_off.gif</source>
             <destination>pics/system/bt_aligncenter_off.gif</destination>
             <type>image</type>
@@ -2084,6 +2129,15 @@
         <file>
             <source>pics/system/ic_admin_datatypes.gif</source>
             <destination>pics/system/ic_admin_datatypes.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
+            <source>pics/system/ic_noaccess.gif</source>
+            <destination>pics/system/ic_noaccess.gif</destination>
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>
