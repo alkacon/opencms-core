@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsUser.java,v $
-* Date   : $Date: 2001/07/31 15:50:14 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2001/08/30 12:18:03 $
+* Version: $Revision: 1.29 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -36,7 +36,7 @@ import com.opencms.core.*;
  * This class describes the Cms user object and the methods to access it.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.28 $ $Date: 2001/07/31 15:50:14 $
+ * @version $Revision: 1.29 $ $Date: 2001/08/30 12:18:03 $
  */
 
 public class CmsUser implements I_CmsConstants, Cloneable {
@@ -125,7 +125,9 @@ public class CmsUser implements I_CmsConstants, Cloneable {
     private long m_lastlogin = C_UNKNOWN_LONG;
 
     /**
-     * The typ of the user.
+     * Defines if the user is a webuser or a systemuser.
+     * C_USER_TYPE_SYSTEMUSER for systemuser (incl. guest).
+     * C_USER_TYPE_WEBUSER for webuser.
      */
     private int m_type = C_UNKNOWN_INT;
 
@@ -363,7 +365,9 @@ public class CmsUser implements I_CmsConstants, Cloneable {
         return m_section;
     }
      /**
-     * Gets the type.
+     * Gets the type of the user (webuser or a systemuser).
+     * C_USER_TYPE_SYSTEMUSER for systemuser (incl. guest).
+     * C_USER_TYPE_WEBUSER for webuser.
      *
      * @return the type, or C_UNKNOWN_INT.
      */
