@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/opencms_edit.js,v $
- * Date   : $Date: 2000/03/08 17:09:37 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/03/23 15:35:06 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -93,7 +93,7 @@ function setTextDelayed()
 
 function doSubmit()
 {
-	document.EDITOR.CONTENT.value = escape(document.EDITOR.edit1.Text);
+	document.EDITOR.content.value = escape(document.EDITOR.edit1.Text);
 }
 
 // Function action on button click for Netscape Navigator
@@ -103,21 +103,21 @@ function doNsEdit(para)
 	{
 	case 1:
 	{
-		document.EDITOR.CONTENT.value = escape(document.EDITOR.edit1.value);
+		document.EDITOR.content.value = escape(document.EDITOR.edit1.value);
 		document.EDITOR.action.value = "exit";
 		document.EDITOR.submit();
 		break;
 	}
 	case 2:
 	{
-		document.EDITOR.CONTENT.value = escape(document.EDITOR.edit1.value);
+		document.EDITOR.content.value = escape(document.EDITOR.edit1.value);
 		document.EDITOR.action.value = "saveexit";
 		document.EDITOR.submit();
 		break;
 	}
 	case 3:
 	{
-		document.EDITOR.CONTENT.value = escape(document.EDITOR.edit1.value);
+		document.EDITOR.content.value = escape(document.EDITOR.edit1.value);
 		document.EDITOR.action.value = "save";
 		document.EDITOR.submit();
 		break;

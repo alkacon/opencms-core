@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/opencms_edithtml.js,v $
- * Date   : $Date: 2000/03/08 14:42:47 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/03/23 15:35:06 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -395,7 +395,7 @@ function setText()
 // Submitts the Document to the OpenCms System
 function doSubmit() 
 {
-   document.EDITOR.CONTENT.value = escape(document.EDITOR.EDIT_HTML.DocumentHTML);
+   document.EDITOR.content.value = escape(document.EDITOR.EDIT_HTML.DocumentHTML);
 }
 
 
