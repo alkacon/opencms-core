@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2003/08/18 19:20:44 $
-* Version: $Revision: 1.262 $
+* Date   : $Date: 2003/08/19 07:44:51 $
+* Version: $Revision: 1.263 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.262 $ $Date: 2003/08/18 19:20:44 $
+ * @version $Revision: 1.263 $ $Date: 2003/08/19 07:44:51 $
  */
 public interface I_CmsConstants {
 
@@ -1064,11 +1064,16 @@ public interface I_CmsConstants {
     * The name of the error tag prefix in backoffice templates
     */
     String C_ERRPREFIX = "err";
+    
+    /**
+     * The vfs path of the sites master folder
+     */
+    String VFS_FOLDER_SITES = "/sites";
 
     /**
      * The vfs path of the default site
      */
-    String VFS_FOLDER_DEFAULT_SITE = "/sites/default";
+    String VFS_FOLDER_DEFAULT_SITE = VFS_FOLDER_SITES + "/default";
     
     /**
      * The vfs path of the cos channel folders
