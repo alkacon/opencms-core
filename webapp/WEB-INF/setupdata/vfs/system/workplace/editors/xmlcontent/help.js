@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
  
-var iframes = new Array();
+var selectBoxes;
  
 function Browser() {
 	this.isIE = false;  // Internet Explorer
@@ -70,11 +70,9 @@ function showHelp(id, fieldId) {
 
     var text = document.getElementById("help" + id);
     
-    // generate iframe around help text for Internet Explorer to avoid display issues 
-    if (browser.isIE && iframes[id] == null) {
-    	iframes[id] = text.parentNode.insertBefore(document.createElement("IFRAME"), text);
-    	iframes[id].style.display = "none";
-   		iframes[id].style.position = "absolute";
+    // get all select boxes for Internet Explorer
+    if (browser.isIE && selectBoxes == null) {
+    	selectBoxes = document.getElementsByTagName("select");
     }
     
     var icon = document.getElementById("img" + id);
@@ -124,12 +122,14 @@ function showHelp(id, fieldId) {
     text.style.visibility = "visible";
     
     if (browser.isIE) {
-    	// activate iframe
-    	iframes[id].style.left = text.style.left;
-    	iframes[id].style.top  =  text.style.top;
-    	iframes[id].style.width  =  text.offsetWidth + "px";
-    	iframes[id].style.height =  text.offsetHeight + "px";
-    	iframes[id].style.display = "";	
+    	// hide select boxes which are in help bubble area to avoid display issues
+    	for (var i=0; i<selectBoxes.length; i++) {
+    		var topPos = findPosY(selectBoxes[i]);
+    		if (topPos + selectBoxes[i].offsetHeight >= y && topPos <= y + textHeight) {
+    			// hide this select box
+    			selectBoxes[i].style.display = "none";
+    		}
+    	}
     }
 }
 
@@ -139,8 +139,12 @@ function hideHelp(id, fieldId) {
     text.style.left = "0px";
     text.style.top =  "0px";
     if (browser.isIE) {
-    	// deactivate iframe
-    	iframes[id].style.display = "none";	
+    	// show select boxes which were hidden
+    	for (var i=0; i<selectBoxes.length; i++) {
+    		if (selectBoxes[i].style.display == "none") {
+    			selectBoxes[i].style.display = "";
+    		}
+    	}
     }
 }
 
