@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/29 07:59:35 $
- * Version: $Revision: 1.78 $
+ * Date   : $Date: 2000/06/29 08:17:41 $
+ * Version: $Revision: 1.79 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.78 $ $Date: 2000/06/29 07:59:35 $
+ * @version $Revision: 1.79 $ $Date: 2000/06/29 08:17:41 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2335,8 +2335,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
         throws CmsException	{
         // Check the security
         if( user.getType() == C_USER_TYPE_WEBUSER) {
-			
-			
+				
 			m_dbAccess.writeUser(user);
             // update the cache
             m_userCache.put(user.getName(),user);
