@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsDefaultPage.java,v $
- * Date   : $Date: 2003/11/28 16:13:11 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/11/28 17:00:18 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,8 +30,12 @@
  */
 package org.opencms.page;
 
+import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringSubstitution;
+
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
+import com.opencms.workplace.I_CmsWpConstants;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -45,19 +49,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.html.dom.HTMLBuilder;
 import org.dom4j.Document;
 import org.dom4j.Element;
-import org.dom4j.Node;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
-import org.xml.sax.XMLReader;
 
 /**
- * Simple DOM based implementation of CmsDefaultPage.<p>
+ * Simple implementation of CmsDefaultPage.<p>
  * 
- * @version $Revision: 1.4 $ $Date: 2003/11/28 16:13:11 $
+ * @version $Revision: 1.5 $ $Date: 2003/11/28 17:00:18 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsDefaultPage extends CmsXmlPage implements Serializable  {
@@ -65,7 +66,7 @@ public class CmsDefaultPage extends CmsXmlPage implements Serializable  {
     /** The document object of the page */
     private Document m_document = null;
     
-    /** Referencemap for names elements */
+    /** Reference for named elements */
     private Map m_elements = null;
     
     /**
@@ -128,13 +129,15 @@ public class CmsDefaultPage extends CmsXmlPage implements Serializable  {
         Element element = (Element)m_elements.get(language+"_"+name);
         Element editdata = element.element("editdata");
         Element displaydata = element.element("displaydata");
-        String cdata = new String(data);
+        String content = new String(data);
+        String cdata = CmsStringSubstitution.substituteContextPath(content, OpenCms.getOpenCmsContext()  + "/");
         
         editdata.setContent(null);
         editdata.addCDATA(cdata);
-        
+
+        // TODO: convert editdata to displaydata
         displaydata.setContent(null);
-        displaydata.addCDATA(cdata);
+        displaydata.addCDATA(content);
     }
     
     /**
@@ -151,7 +154,11 @@ public class CmsDefaultPage extends CmsXmlPage implements Serializable  {
         if (element != null) {
             
             Element editdata = element.element("editdata");
-            return editdata.getText().getBytes();
+            
+            // set the context & servlet path in editor content
+            String content = CmsStringSubstitution.substitute(editdata.getText(), I_CmsWpConstants.C_MACRO_OPENCMS_CONTEXT + "/", OpenCms.getOpenCmsContext() + "/");
+ 
+            return content.getBytes();
         } else {
             return null;
         }
@@ -206,6 +213,7 @@ public class CmsDefaultPage extends CmsXmlPage implements Serializable  {
         Element element = (Element)m_elements.get(language+"_"+name);
         Element displaydata = element.element("displaydata");
         
+        // TODO: if displaydata contains link macros, replace them
         return displaydata.getText().getBytes();
     }
     

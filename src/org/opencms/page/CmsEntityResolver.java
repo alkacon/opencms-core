@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsEntityResolver.java,v $
- * Date   : $Date: 2003/11/26 15:59:47 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/11/28 17:00:18 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,8 +40,8 @@ import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2003/11/26 15:59:47 $
- * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
+ * @version $Revision: 1.2 $ $Date: 2003/11/28 17:00:18 $
+ * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsEntityResolver implements EntityResolver {
 
@@ -52,17 +52,28 @@ public class CmsEntityResolver implements EntityResolver {
     private CmsObject m_cms = null;
     
     
+    /**
+     * Creates a new entity resolver to read the dtd.
+     * 
+     * @param cms the cms object
+     */
     public CmsEntityResolver(CmsObject cms) {
         m_cms = cms;
     }
     
+    /**
+     * @see org.xml.sax.EntityResolver#resolveEntity(java.lang.String, java.lang.String)
+     */
     public InputSource resolveEntity(String publicId, String systemId) {
-        if (publicId == null && systemId.startsWith(C_FILE_PREFIX + "/")) try {
-            String dtdPath = systemId.substring(C_FILE_PREFIX.length());
-            InputStream in = new ByteArrayInputStream(m_cms.readFile(dtdPath).getContents());
-            return new InputSource( in );
-        } catch (CmsException exc) {
-            // noop
+        if (publicId == null && systemId.startsWith(C_FILE_PREFIX + "/")) {
+            
+            try {
+                String dtdPath = systemId.substring(C_FILE_PREFIX.length());
+                InputStream in = new ByteArrayInputStream(m_cms.readFile(dtdPath).getContents());
+                return new InputSource (in);
+            } catch (CmsException exc) {
+                // noop
+            }
         }
 
         return null;

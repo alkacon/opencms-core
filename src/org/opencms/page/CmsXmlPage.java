@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsXmlPage.java,v $
- * Date   : $Date: 2003/11/27 16:25:12 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/11/28 17:00:18 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * @version $Revision: 1.3 $ $Date: 2003/11/27 16:25:12 $
+ * @version $Revision: 1.4 $ $Date: 2003/11/28 17:00:18 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public abstract class CmsXmlPage extends CmsFile {
@@ -104,6 +104,7 @@ public abstract class CmsXmlPage extends CmsFile {
      * @param cms the cms object
      * @param file the xml file
      * @return a new instance of the implementation class
+     * @throws CmsPageException if something goes wrong
      */
     public static CmsXmlPage newInstance(CmsObject cms, CmsFile file) 
         throws CmsPageException {
@@ -111,6 +112,7 @@ public abstract class CmsXmlPage extends CmsFile {
         CmsXmlPage newPage = null;
         
         try {
+            // TODO: define where the name of the implementing class should be located
             Class pageImplementation = Class.forName ("org.opencms.page.CmsDefaultPage");
             newPage = (CmsXmlPage)pageImplementation.getConstructor(new Class[] {com.opencms.file.CmsFile.class})
                 .newInstance(new Object[] {file});
