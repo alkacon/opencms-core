@@ -1,7 +1,7 @@
   /*
   * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/explorer.js,v $
-  * Date   : $Date: 2001/01/02 15:23:01 $
-  * Version: $Revision: 1.9 $
+  * Date   : $Date: 2001/01/03 10:43:08 $
+  * Version: $Revision: 1.10 $
   *
   * Copyright (C) 2000  The OpenCms Group 
   * 
@@ -280,8 +280,8 @@
          '</frameset>' +
          '</html>'
  
-     var frametree = '<html><body><font face="helvetica" size=2>tree</body></html>'
-     var framehead= '<html><body><font face="helvetica" size=2>head</body></html>'
+     var frametree = '<html><body><font face="helvetica" size=2></body></html>'
+     var framehead= '<html><body><font face="helvetica" size=2></body></html>'
      var framebody = '<html><body><font face="helvetica" size=2>body</body></html>'
  
  	explorer = window.body.document;
@@ -919,8 +919,8 @@
             }else{
 			 	lockIcon=vi.iconPath+'ic_lock.gif';
 			}
-             lockedBystring="alt=\""+vr.lockedBy+" "+vi.liste[i].lockedBy+"\"";
-			wo.write("<img src='"+lockIcon+"' border=0 width=16 height=16></a>");
+             lockedBystring="alt=\""+vr.altlockedby+" "+vi.liste[i].lockedBy+"\"";
+			wo.write("<img src='"+lockIcon+"' "+lockedBystring+" border=0 width=16 height=16></a>");
          }
  		wo.write("</td>");
  
