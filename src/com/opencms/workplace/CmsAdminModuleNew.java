@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $File$
- * Date   : $Date: 2000/09/25 15:43:40 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2001/01/10 08:51:07 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -112,11 +112,19 @@ public class CmsAdminModuleNew  extends CmsWorkplaceDefault implements I_CmsCons
 		if (step != null){
 			if ("server".equals(step)){
 				File modulefolder = new File(cms.readExportPath()+reg.C_MODULE_PATH);
-				String[] modules = modulefolder.list();
+				if (!modulefolder.exists()) {
+					boolean success = modulefolder.mkdir();
+					if ((!success) && A_OpenCms.isLogging()) {
+						A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsAccessFilesystem] Couldn't create folder " + cms.readExportPath()+reg.C_MODULE_PATH + ".");
+					}
+				}
 				String listentrys = "";
-				for (int i=0; i<modules.length; i++){
-					xmlTemplateDocument.setData("modulname",modules[i]);
-					listentrys += xmlTemplateDocument.getProcessedDataValue("optionentry");
+				if (modulefolder.exists()) {
+					String[] modules = modulefolder.list();
+					for (int i=0; i<modules.length; i++){
+						xmlTemplateDocument.setData("modulname",modules[i]);
+						listentrys += xmlTemplateDocument.getProcessedDataValue("optionentry");
+					}
 				}
 				xmlTemplateDocument.setData("entries",listentrys);
 				templateSelector = "server";
@@ -168,7 +176,11 @@ public class CmsAdminModuleNew  extends CmsWorkplaceDefault implements I_CmsCons
 			}else if("serverupload".equals(step)){
 				String filename = (String)parameters.get("moduleselect");
 				session.removeValue(C_MODULE_NAV);
-				templateSelector = importModule(cms, reg, xmlTemplateDocument, session, cms.readExportPath()+reg.C_MODULE_PATH+filename);
+				if ((filename == null) || ("".equals(filename))){
+					templateSelector = C_DONE;
+				}else{
+					templateSelector = importModule(cms, reg, xmlTemplateDocument, session, cms.readExportPath()+reg.C_MODULE_PATH+filename);
+				}
 			}
 		}		
 		// Now load the template file and start the processing
