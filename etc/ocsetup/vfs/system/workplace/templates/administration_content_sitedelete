@@ -17,7 +17,9 @@
 <tr><td align=middle valign=center>
 
 <!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
-<form id=SITEDELETE name=SITEDELETE action="administration_content_sitedelete.html?site_id=]]><PROCESS>id</PROCESS><![CDATA[" method="post">
+<!-- <form id=SITEDELETE name=SITEDELETE action="administration_content_sitedelete.html?site_id=]]><PROCESS>id</PROCESS><![CDATA[" method="post"> -->
+<form id=SITEDELETE name=SITEDELETE>
+<input type=hidden name="site_id" value="]]><PROCESS>id</PROCESS><![CDATA[">
 <table cellspacing=0 cellpadding=0 border=2 width=300>
 	<tr><td>
 		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
@@ -53,7 +55,7 @@
 					<td class=dialogtxt>]]><PROCESS>language</PROCESS><![CDATA[</td>
 				</tr>
 				<tr>
-					<td class=dialogtxt>]]><LABEL value="sitemanagement.label.category" /><![CDATA[:</td>
+					<td class=dialogtxt>]]><LABEL value="sitemanagement.label.categories" /><![CDATA[:</td>
 					<td class=dialogtxt>]]><PROCESS>category</PROCESS><![CDATA[</td>
 				</tr>
 				<tr>
@@ -77,12 +79,14 @@
 					 ]]><LABEL value="sitemanagement.label.suredeletingsite1" /><![CDATA[ ]]><PROCESS>name</PROCESS><![CDATA[ ]]><LABEL value="label.suredeletingsite2" /><![CDATA[
 				</td>
 			</tr>
+			
+	<!--
 			<tr>
 				<td class=dialogtxt colspan=2>
 					 &nbsp;
 				</td>
 			</tr>
-			
+	-->		
 			<!-- Beginn Leerzeile-->
 			<tr> 
  		<td colspan=2 class="leerzeile">&nbsp;</td>
@@ -94,7 +98,7 @@
 				<table cellspacing=0 cellpadding=5 width=100%>
 				<tr>
 					<td class=formular align=right width=50%>]]><SUBMITBUTTON class="button" name="ok" value="ok" width="100" action="" /><![CDATA[</td>
-					<td class=formular align=left width=50%>]]><TEXTBUTTON class="button" name="cancel" value="cancel" width="100" action="location.href='/system/workplace/action/sitematrix.html'" /><![CDATA[</td>
+					<td class=formular align=left width=50%>]]><TEXTBUTTON class="button" name="cancel" value="cancel" width="100" action="document.location.href='sitematrix.html'" /><![CDATA[</td>
 				</tr>
 				</table>
 			</td>
@@ -120,8 +124,7 @@
 <HEAD>
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
 </HEAD>
-<!-- <BODY onload="window.top.head.location.href='../action/head.html'; parent.frames[0].location.reload()"> -->
-<BODY>
+<BODY onload="document.location='sitematrix.html'">
 <CENTER>
 <!-- Begin Logo opencms -->
 <table border=0 cellspacing=0 cellpadding=0 align=center height=100>
@@ -146,7 +149,7 @@
 
 <TEMPLATE name="error">
 <![CDATA[
-]]><ERRORPAGE title="sitemanagement.title.deletesite" message="sitemanagement.error.message.deletesite" reason="sitemanagement.error.deletesite" suggestion="sitemanagement.error.suggestion.deletesite" ref="/system/workplace/action/sitematrix.html"><process>details</process></ERRORPAGE><![CDATA[
+]]><ERRORPAGE title="sitemanagement.title.deletesite" message="sitemanagement.error.message.deletesite" reason="sitemanagement.error.deletesite" suggestion="sitemanagement.error.suggestion.deletesite" ref="sitematrix.html"><process>details</process></ERRORPAGE><![CDATA[
 ]]>
 </TEMPLATE>
 

@@ -5,6 +5,7 @@
 		<sitemanagement>
 			<title>
 				<deletesite>Delete site</deletesite>
+				<siteproperty>Site properties</siteproperty>
 			</title>
 			<label>
 				<createnewsite>Create new site</createnewsite>
@@ -36,11 +37,13 @@
 					<newsite>The entered data is invalid.</newsite>				
 					<editsite>The entered data is invalid.</editsite>				
 					<datamissing>The fields need to be filled out</datamissing>				
+					<deletesite></deletesite>
 				</reason>
 				
 				<suggestion>
 					<newsite>Please check the entered data or contact your system administrator.</newsite>								
 					<editsite>Please check the entered data or contact your system administrator.</editsite>
+					<deletesite></deletesite>
 				</suggestion>
 			</error>
 		</sitemanagement>
