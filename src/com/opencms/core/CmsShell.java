@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/10/31 13:11:24 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2000/10/31 13:46:36 $
+ * Version: $Revision: 1.56 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  * 
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.55 $ $Date: 2000/10/31 13:11:24 $
+ * @version $Revision: 1.56 $ $Date: 2000/10/31 13:46:36 $
  */
 public class CmsShell implements I_CmsConstants {
 
@@ -60,14 +60,35 @@ public class CmsShell implements I_CmsConstants {
 	private CmsShellCommands shellCommands;
 	
 	/**
+	 * If this member is set to true, all commands are echoed
+	 */
+	private boolean m_echo = false;
+	
+/**
  * Calls a command
  * 
  * @param command The command to be called.
  */
 private void call(Vector command)
 {
+	if(m_echo) {
+		// all commands should be echoed to the shell
+		for(int i=0; i < command.size(); i++) {
+			System.out.print(command.elementAt(i) + " ");
+		}
+		System.out.println();
+	}
+	
 	if ((command == null) || (command.size() == 0))
 	{
+		return;
+	} else if(command.elementAt(0).equals("echo") && command.elementAt(1).equals("on")) {
+		// all commands should be echoed
+		m_echo = true;
+		return;
+	} else if(command.elementAt(0).equals("echo") && command.elementAt(1).equals("off")) {
+		// all commands should not be echoed (default)
+		m_echo = false;
 		return;
 	}
 	String splittet[] = new String[command.size()];

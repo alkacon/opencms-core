@@ -1,3 +1,4 @@
+echo on
 login Admin admin
 addResourceType plain 1 ""
 addResourceType XMLTemplate 3 ""
