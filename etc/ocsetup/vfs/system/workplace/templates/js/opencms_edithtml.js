@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/opencms_edithtml.js,v $
- * Date   : $Date: 2000/05/02 15:57:50 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/05/25 15:23:35 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -29,6 +29,8 @@
 //------------------------------------------------------//
 // Script for  html editcontrol
 //------------------------------------------------------//
+ 
+var binlist=null;
 
 // Definition of constants, which button is clicked
 var CLOSE=1;
@@ -254,12 +256,14 @@ function doEditHTML(para)
 		document.EDITOR.target = "_top";		
 		doSubmit();
 		document.EDITOR.submit();
+		//if (binlist!=null) binlist.close();
 		break;
 	case SAVECLOSE:
 		document.EDITOR.action.value = "saveexit";
 		document.EDITOR.target = "_top";		
 		doSubmit();
 		document.EDITOR.submit();
+		//if (binlist!=null) binlist.close();
 		break;
 	case SAVE:
 		document.EDITOR.action.value = "save";
@@ -368,8 +372,15 @@ function doEditHTML(para)
 		DECMD_IMAGE_onclick();
 		break;		
     case 43:
-        window.open("picturebrowser.html", "PicBrowser", "width=500, height=500, resizable=yes, top=200, left=450");
+        window.open("picturebrowser.html?initial=true", "PicBrowser", "width=500, height=500, resizable=yes, top=200, left=450");
 		break;
+	case 44: 
+		binlist = window.open('downloadbrowser.html?initial=true','DownBrowser', "width=500, height=500, resizable=yes, top=200, left=450");
+        binlist.focus(); 
+	 	break;
+	case 45:
+		DECMD_HYPERLINK_NODIALOG_onclick();
+		break;	
  	default:
 		alert("Sorry, leider kann die Funktion nicht ausgeführt werden.");			
 	}	
@@ -715,6 +726,11 @@ function DECMD_IMAGE_onclick()
   EDITOR.EDIT_HTML.ExecCommand(DECMD_IMAGE,OLECMDEXECOPT_PROMPTUSER);
   EDITOR.EDIT_HTML.focus();
 }
+function DECMD_HYPERLINK_NODIALOG_onclick()
+{  
+  EDITOR.EDIT_HTML.ExecCommand(DECMD_HYPERLINK,OLECMDEXECOPT_DONTPROMPTUSER, EDITOR.URL.value);
+  EDITOR.EDIT_HTML.focus();
+}
 
 function getChars(value) {
 	ret = "";
@@ -728,4 +744,15 @@ function getChars(value) {
 		}
 	}
 	return ret + "";
+}
+
+// sends URL string from seperate browser window to a hidden field within the opener document
+function sendURLString(destFormName,destFieldName,strURL){  
+	var obj1='top.window.opener.self.document.'+ destFormName;
+	var obj2='top.window.opener.self.document.'+ destFormName +'.'+ destFieldName;
+	
+	if (eval(obj1) && eval(obj2)) { 
+		eval(obj2 +'.value="'+strURL+'"');   
+		top.window.opener.doEditHTML(45); 
+	}
 }

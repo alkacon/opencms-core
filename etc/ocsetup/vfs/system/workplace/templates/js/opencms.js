@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/opencms.js,v $
- * Date   : $Date: 2000/05/23 09:36:40 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2000/05/25 15:23:35 $
+ * Version: $Revision: 1.20 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -188,7 +188,7 @@ function openwin(url, name, w, h) //opens a new window with parameter URL, Windo
 	   		}
 		workplace.focus();
      }
-
+	return workplace;
 }
 
 function openwinfull(url, name, w, h) //opens a new window with parameter URL, Windowname (free choosable), width and height
