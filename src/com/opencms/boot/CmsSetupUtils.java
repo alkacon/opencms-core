@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetupUtils.java,v $
-* Date   : $Date: 2003/01/20 23:59:26 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2003/02/03 11:32:20 $
+* Version: $Revision: 1.27 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -83,14 +83,14 @@ public class CmsSetupUtils {
 
             // make a backup copy
             if(backup)  {
-               backup(originalFile, backupFile);
+               this.copyFile(originalFile, backupFile);
             }
 
             //save to temporary file
-            backup(originalFile, tempFile);
+            this.copyFile(originalFile, tempFile);
 
             // save properties
-            save(extProp, tempFile, originalFile);
+            this.save(extProp, tempFile, originalFile);
 
             // delete temp file
             File temp = new File(m_configFolder + tempFile);
@@ -102,26 +102,49 @@ public class CmsSetupUtils {
 
     }
 
-    /** Copies a given file. (backup)
-     *  @param originalFile source file
-     *  @param backupFile target file
+    /** 
+     * Copies a given file.
+     * 
+     * @param sourceFilename source file
+     * @param destFilename destination file
      */
-    private void backup(String originalFile, String backupFile) {
+    public void copyFile(String sourceFilename, String destFilename) {
         try {
-            LineNumberReader lnr = new LineNumberReader(new FileReader(new File(m_configFolder
-                    + originalFile)));
-            FileWriter fw = new FileWriter(new File(m_configFolder + backupFile));
-            while (true)  {
+            LineNumberReader lnr = new LineNumberReader(new FileReader(new File(m_configFolder + sourceFilename)));
+            FileWriter fw = new FileWriter(new File(m_configFolder + destFilename));
+            
+            while (true) {
                 String line = lnr.readLine();
-                if(line == null) break;
-                fw.write(line+'\n');
+                if (line == null)
+                    break;
+                fw.write(line + '\n');
             }
+            
             lnr.close();
             fw.close();
         }
         catch (IOException e) {
-          m_errors.addElement("Could not save " + originalFile + " to " + backupFile + " \n");
-          m_errors.addElement(e.toString()+"\n");
+            m_errors.addElement("Could not copy " + sourceFilename + " to " + destFilename + " \n");
+            m_errors.addElement(e.toString() + "\n");
+        }
+    }
+    
+    /**
+     * Restores the registry.xml either to or from a backup file, depending
+     * whether the setup wizard is executed the first time (the backup registry
+     * doesnt exist) or not (the backup registry exists).
+     * 
+     * @param originalRegistryFilename something like "registry.ori"
+     * @param registryFilename the registry's real file name "registry.xml"
+     */
+    public void backupRegistry(String registryFilename, String originalRegistryFilename) {
+        File originalRegistry = new File(m_configFolder + originalRegistryFilename);
+        
+        if (originalRegistry.exists()) {
+            this.copyFile(originalRegistryFilename,registryFilename);
+        }
+        else {
+            this.copyFile(registryFilename,originalRegistryFilename);
         }
     }
 

@@ -23,7 +23,10 @@
 			
 		/* Save Properties to file "opencms.properties" and 2nd time */
 		CmsSetupUtils Utils = new CmsSetupUtils(Bean.getBasePath());
-		Utils.saveProperties(Bean.getProperties(),"opencms.properties",true);								
+		Utils.saveProperties(Bean.getProperties(),"opencms.properties",true);
+		
+		// Restore the registry.xml either to or from a backup file
+		Utils.backupRegistry("registry.xml", "registry.ori");							
 	}
     
     /* next page */
