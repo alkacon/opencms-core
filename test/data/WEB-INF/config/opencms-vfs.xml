@@ -19,7 +19,6 @@
 			<type class="org.opencms.file.CmsResourceTypeImage" />
 			<type class="org.opencms.file.CmsResourceTypeJsp" />
 			<type class="org.opencms.file.CmsResourceTypeXmlPage" />
-			<type class="org.opencms.file.CmsResourceTypeXmlContent" />
 		</resourcetypes>
 		<translations>
 			<filetranslations enabled="true">
