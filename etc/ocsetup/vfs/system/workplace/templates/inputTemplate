@@ -3,7 +3,7 @@
 	<inputfield><![CDATA[<input class="]]><PROCESS>class</PROCESS><![CDATA[" value="]]><PROCESS>value</PROCESS><![CDATA[" size=]]><PROCESS>size</PROCESS><![CDATA[ maxlength=]]><PROCESS>length</PROCESS><![CDATA[ name="]]><PROCESS>name</PROCESS><![CDATA[" id="]]><PROCESS>name</PROCESS><![CDATA["]]><PROCESS>action</PROCESS>></inputfield>
 	<password><![CDATA[<input type ="password" class="]]><PROCESS>class</PROCESS><![CDATA[" size=]]><PROCESS>size</PROCESS><![CDATA[ maxlength=]]><PROCESS>length</PROCESS><![CDATA[ name="]]><PROCESS>name</PROCESS><![CDATA[" id="]]><PROCESS>name</PROCESS><![CDATA["]]>></password>
 	<selectbox>
-		<start><![CDATA[<select ]]><PROCESS>class</PROCESS><![CDATA[name="]]><PROCESS>name</PROCESS><![CDATA[" width=]]><PROCESS>width</PROCESS><![CDATA[ style="width:]]><PROCESS>width</PROCESS><![CDATA[px" onchange="]]><PROCESS>onchange</PROCESS><![CDATA[" size="]]><PROCESS>size</PROCESS><![CDATA[">]]></start>
+		<start><![CDATA[<select ]]><PROCESS>class</PROCESS><![CDATA[name="]]><PROCESS>name</PROCESS><![CDATA[" id="]]><PROCESS>name</PROCESS><![CDATA[" width=]]><PROCESS>width</PROCESS><![CDATA[ style="width:]]><PROCESS>width</PROCESS><![CDATA[px" onchange="]]><PROCESS>onchange</PROCESS><![CDATA[" size="]]><PROCESS>size</PROCESS><![CDATA[">]]></start>
 		<end><![CDATA[</select>]]></end>
 		<class>class=<PROCESS>classname</PROCESS> </class>
 		<option><![CDATA[<option value="]]><PROCESS>value</PROCESS><![CDATA[">]]><PROCESS>name</PROCESS></option>

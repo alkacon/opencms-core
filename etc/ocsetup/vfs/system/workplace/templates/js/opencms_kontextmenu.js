@@ -187,11 +187,8 @@ function doAction(action) {
 		} case 3: {
 			location.href='unlock.html?file='+ kontextparam;
 			break;
-		}
-		
-		case 4:
-		{
-			location.href='explorer_files_copy.html';
+		} case 4: {
+			location.href='copy.html?file='+ kontextparam;
 			break;
 		}
 		case 5:

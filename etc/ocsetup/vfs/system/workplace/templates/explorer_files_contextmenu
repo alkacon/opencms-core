@@ -56,7 +56,7 @@
 	<contextdisabled name="explorer.context.htmledit"/>
 	<contextdisabled name="explorer.context.edit"/>
 	<contextspacer/>
-	<contextentry name="explorer.context.copy" href="#"/>
+	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
 	<contextdisabled name="explorer.context.rename"/>
 	<contextdisabled name="explorer.context.move"/>
 	<contextdisabled name="explorer.context.delete"/>
@@ -76,7 +76,7 @@
 	<contextdisabled name="explorer.context.htmledit"/>
 	<contextdisabled name="explorer.context.edit"/>
 	<contextspacer/>
-	<contextentry name="explorer.context.copy" href="#"/>
+	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
 	<contextdisabled name="explorer.context.rename"/>
 	<contextdisabled name="explorer.context.move"/>
 	<contextdisabled name="explorer.context.delete"/>
@@ -96,7 +96,7 @@
 	<contextentry name="explorer.context.htmledit" href="javascript:doAction(DO_HTMLEDIT)"/>
 	<contextentry name="explorer.context.edit" href="javascript:doAction(DO_EDIT)"/>
 	<contextspacer/>
-	<contextentry name="explorer.context.copy" href="#"/>
+	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
 	<contextentry name="explorer.context.rename" href="javascript:doAction(DO_RENAME)"/>
 	<contextentry name="explorer.context.move" href="#"/>
 	<contextentry name="explorer.context.delete" href="javascript:doAction(DO_DELETE)"/>
@@ -117,7 +117,7 @@
 	<contextspacer/>
 	<contextdisabled name="explorer.context.edit"/>
 	<contextspacer/>
-	<contextentry name="explorer.context.copy" href="#"/>
+	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
 	<contextdisabled name="explorer.context.rename"/>
 	<contextdisabled name="explorer.context.move"/>
 	<contextdisabled name="explorer.context.delete"/>
@@ -136,7 +136,7 @@
 	<contextspacer/>
 	<contextdisabled name="explorer.context.edit"/>
 	<contextspacer/>
-	<contextentry name="explorer.context.copy" href="#"/>
+	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
 	<contextdisabled name="explorer.context.rename"/>
 	<contextdisabled name="explorer.context.move"/>
 	<contextdisabled name="explorer.context.delete"/>
@@ -155,7 +155,7 @@
 	<contextspacer/>
 	<contextentry name="explorer.context.edit" href="#"/>
 	<contextspacer/>
-	<contextentry name="explorer.context.copy" href="#"/>
+	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
 	<contextentry name="explorer.context.rename" href="javascript:doAction(DO_RENAME)"/>
 	<contextentry name="explorer.context.move" href="#"/>
 	<contextentry name="explorer.context.delete" href="javascript:doAction(DO_DELETE)"/>
@@ -176,7 +176,7 @@
 	<contextspacer/>
 	<contextdisabled name="explorer.context.edit"/>
 	<contextspacer/>
-	<contextentry name="explorer.context.copy" href="#"/>
+	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
 	<contextdisabled name="explorer.context.rename"/>
 	<contextdisabled name="explorer.context.move"/>
 	<contextdisabled name="explorer.context.delete"/>
@@ -195,7 +195,7 @@
 	<contextspacer/>
 	<contextdisabled name="explorer.context.edit"/>
 	<contextspacer/>
-	<contextentry name="explorer.context.copy" href="#"/>
+	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
 	<contextdisabled name="explorer.context.rename"/>
 	<contextdisabled name="explorer.context.move"/>
 	<contextdisabled name="explorer.context.delete"/>
@@ -214,7 +214,7 @@
 	<contextspacer/>
 	<contextentry name="explorer.context.edit" href="javascript:doAction(DO_EDIT)"/>
 	<contextspacer/>
-	<contextentry name="explorer.context.copy" href="#"/>
+	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
 	<contextentry name="explorer.context.rename" href="javascript:doAction(DO_RENAME)"/>
 	<contextentry name="explorer.context.move" href="#"/>
 	<contextentry name="explorer.context.delete" href="javascript:doAction(DO_DELETE)"/>
@@ -236,7 +236,7 @@
 	<contextdisabled name="explorer.context.edit"/>
 	<contextdisabled name="explorer.context.editcontrolfile" />
 	<contextspacer/>
-	<contextentry name="explorer.context.copy" href="#"/>
+	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
 	<contextdisabled name="explorer.context.rename"/>
 	<contextdisabled name="explorer.context.move"/>
 	<contextdisabled name="explorer.context.delete"/>
@@ -256,7 +256,7 @@
 	<contextdisabled name="explorer.context.edit"/>
     <contextdisabled name="explorer.context.editcontrolfile" />
 	<contextspacer/>
-	<contextentry name="explorer.context.copy" href="#"/>
+	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
 	<contextdisabled name="explorer.context.rename"/>
 	<contextdisabled name="explorer.context.move"/>
 	<contextdisabled name="explorer.context.delete"/>
@@ -276,7 +276,7 @@
 	<contextentry name="explorer.context.edit" href="javascript:doAction(DO_TEMPLATEEDIT)"/>
 	<contextentry name="explorer.context.editcontrolfile" href="javascript:doAction(DO_EDIT)"/>
 	<contextspacer/>
-	<contextentry name="explorer.context.copy" href="#"/>
+	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
 	<contextentry name="explorer.context.rename" href="javascript:doAction(DO_RENAME)"/>
 	<contextentry name="explorer.context.move" href="#"/>
 	<contextentry name="explorer.context.delete" href="javascript:doAction(DO_DELETE)"/>
@@ -296,7 +296,7 @@
 <contextmenue name="image">
 	<contextentry name="explorer.context.lock" href="javascript:doAction(DO_LOCK)"/>
 	<contextspacer/>
-	<contextentry name="explorer.context.copy" href="#"/>
+	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
 	<contextdisabled name="explorer.context.rename"/>
 	<contextdisabled name="explorer.context.move"/>
 	<contextdisabled name="explorer.context.delete"/>
@@ -312,7 +312,7 @@
 <contextmenue name="imagelock">
 	<contextentry name="explorer.context.overridelock" href="javascript:doAction(DO_LOCKUSER)"/>
 	<contextspacer/>
-	<contextentry name="explorer.context.copy" href="#"/>
+	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
 	<contextdisabled name="explorer.context.rename"/>
 	<contextdisabled name="explorer.context.move"/>
 	<contextdisabled name="explorer.context.delete"/>
@@ -328,7 +328,7 @@
 <contextmenue name="imagelockuser">
 	<contextentry name="explorer.context.unlock" href="javascript:doAction(DO_UNLOCK)"/>
 	<contextspacer/>
-	<contextentry name="explorer.context.copy" href="#"/>
+	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
 	<contextentry name="explorer.context.rename" href="javascript:doAction(DO_RENAME)"/>
 	<contextentry name="explorer.context.move" href="#"/>
 	<contextentry name="explorer.context.delete" href="javascript:doAction(DO_DELETE)"/>
@@ -346,7 +346,7 @@
 <contextmenue name="binary">
 	<contextentry name="explorer.context.lock" href="javascript:doAction(DO_LOCK)"/>
 	<contextspacer/>
-	<contextentry name="explorer.context.copy" href="#"/>
+	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
 	<contextdisabled name="explorer.context.rename"/>
 	<contextdisabled name="explorer.context.move"/>
 	<contextdisabled name="explorer.context.delete"/>
@@ -363,7 +363,7 @@
 <contextmenue name="binarylock">
 	<contextentry name="explorer.context.overridelock" href="javascript:doAction(DO_LOCKUSER)"/>
 	<contextspacer/>
-	<contextentry name="explorer.context.copy" href="#"/>
+	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
 	<contextdisabled name="explorer.context.rename"/>
 	<contextdisabled name="explorer.context.move"/>
 	<contextdisabled name="explorer.context.delete"/>
@@ -380,7 +380,7 @@
 <contextmenue name="binarylockuser">
 	<contextentry name="explorer.context.unlock" href="javascript:doAction(DO_UNLOCK)"/>
 	<contextspacer/>
-	<contextentry name="explorer.context.copy" href="#"/>
+	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
 	<contextentry name="explorer.context.rename" href="javascript:doAction(DO_RENAME)"/>
 	<contextentry name="explorer.context.move" href="#"/>
 	<contextentry name="explorer.context.delete" href="javascript:doAction(DO_DELETE)"/>
