@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminUsers.java,v $
-* Date   : $Date: 2004/09/27 15:22:10 $
-* Version: $Revision: 1.47 $
+* Date   : $Date: 2004/09/28 09:13:06 $
+* Version: $Revision: 1.48 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.47 $ $Date: 2004/09/27 15:22:10 $
+ * @version $Revision: 1.48 $ $Date: 2004/09/28 09:13:06 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -384,6 +384,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
                     disabled = theUser.getDisabled();
                     zipcode = (String)theUser.getAdditionalInfo(C_ADDITIONAL_INFO_ZIPCODE);
                     town = (String)theUser.getAdditionalInfo(C_ADDITIONAL_INFO_TOWN);
+                    defaultGroup = (String)theUser.getAdditionalInfo(C_ADDITIONAL_INFO_DEFAULTGROUP);
                     Vector groups = cms.getDirectGroupsOfUser(user);
                     if(groups != null) {
                         selectedGroups = new Vector();
