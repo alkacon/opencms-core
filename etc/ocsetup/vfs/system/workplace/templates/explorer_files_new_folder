@@ -2,179 +2,248 @@
 <WORKPLACE>
 <TEMPLATE>
 <![CDATA[
-<HTML>
 
-<script language=JavaScript>
-<!--
-top.help_url='FunkButtonNeu/AnlegenNeuerOrdner.html';
-
-function checkforchars(whichform){
-allesklar=true;
-    for(i=0;i<whichform.value.length;i++){
-        if(whichform.value.charAt(i)=="%"){
-            allesklar=false;
-            alert(']]><LABEL value="error.message.badcharacter" /><![CDATA['+whichform.value.charAt(i));
-        }
-        if(whichform.value.charAt(i)=="#"){
-            allesklar=false;
-            alert(']]><LABEL value="error.message.badcharacter" /><![CDATA['+whichform.value.charAt(i));
-            }
-        if(whichform.value.charAt(i)=="&"){
-            allesklar=false;
-            alert(']]><LABEL value="error.message.badcharacter" /><![CDATA['+whichform.value.charAt(i));
-            }
-    }
-    
-    return allesklar;
-}
-
-
-ns = (document.layers)? true:false;
-ie = (document.all)? true:false;
-
-function checkIt(whichone){
-    
-    if(whichone==2){
-        if(ie) formu=document.NEU;
-        else formu=document.NEWWITHOUTLINK.document.NEU;
-
-        if(checkforchars(formu.NEUNAME)==true)location='explorer_files_new_folder.html?step=1&newfolder='+escape(formu.NEUNAME.value)+'&title='+escape(formu.NEUTITEL.value);
-    }
-    if(whichone==1){
-
-        if(ie) formu=document.LINK;
-        else formu=document.NEWLINK.document.LINK;
-
-        if(formu.LINKNAME.value!=""){
-            if(checkforchars(formu.NEUNAME)==true && checkforchars(formu.LINKNAME)==true)location='explorer_files_new_folder.html?step=1&newfolder='+escape(formu.NEUNAME.value)+'&title='+escape(formu.NEUTITEL.value)+'&navtitle='+escape(formu.LINKNAME.value)+'&navpos='+formu.LINKPOS.value;
-        }else{
-         alert(']]><LABEL value="error.message.datamissing" /><![CDATA[');
-        }
-    }
-}
-
-function checkInTheBox(){
-    //if(ie) thedoc=document.LINK;
-    //else thedoc=document.NEWLINK.document.LINK;
-    
-    //thedoc.SETLINK.checked=false;
-    saveLayerData('LINK','NEU','NEWLINK','NEWWITHOUTLINK');
-    switchlyr('NEWWITHOUTLINK','NEWLINK');
-}
-//-->
-</script>
-
+<html>
 <head>
 
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
-<title>OpenCms</title>
+<script language="JavaScript">
+
+    function switchlyr(show, hide){
+        hidelyr(hide);
+        showlyr(show);
+    }
+
+    function showlyr(welche){
+        document.getElementById(welche).style.visibility = "visible";
+    }
+
+    function hidelyr(welche){
+        document.getElementById(welche).style.visibility = "hidden";
+    }
+
+    function checkForm(whichone){
+        var okay=true;
+        var lengthOkay=true;
+        var inp=document.getElementById("name"+whichone).value;
+
+        for(var i=0;i<inp.length;i++){
+            if(inp.charAt(i)=='%' || inp.charAt(i)=='#' || inp.charAt(i)=='&'){
+                okay=false;
+                badchar=inp.charAt(i);
+            }
+        }
+
+        if(okay==false)alert("]]><LABEL value="error.message.badcharacter" /><![CDATA["+badchar);
+
+        if(document.getElementById("name"+whichone).value.length<1)lengthOkay=false;
+        if(document.getElementById("title"+whichone).value.length<1)lengthOkay=false;
+        if(whichone==1){
+            if(document.getElementById("navtext").value.length<1)lengthOkay=false;
+        }
+
+        if(!lengthOkay)alert("]]><LABEL value="error.message.datamissing" /><![CDATA[");
+
+        if(okay && lengthOkay){
+            if(whichone==2)document.location.href='explorer_files_new_folder.html?step=1&newfolder='+escape(document.getElementById("name"+whichone).value)+'&title='+escape(document.getElementById("title"+whichone).value);
+            if(whichone==1)document.location.href='explorer_files_new_folder.html?step=1&newfolder='+escape(document.getElementById("name"+whichone).value)+'&title='+escape(document.getElementById("title"+whichone).value)+'&navtitle='+escape(document.getElementById("navtext").value)+'&navpos='+document.getElementById("navpos").value;
+        }
+    }
+
+    function switchLayerData(from,to){
+        var tempA=document.getElementById("name"+from).value;
+        var tempB=document.getElementById("title"+from).value;
+
+        document.getElementById("name"+to).value=tempA;
+        document.getElementById("title"+to).value=tempB;
+    }
+
+    function switchLayer2(t){
+        switchLayerData(2,1);
+        switchlyr('isInNav','notInNav');
+        t.checked=false;
+    }
+
+    function switchLayer1(t){
+        switchLayerData(1,2);
+        switchlyr('notInNav','isInNav');
+        t.checked=true;
+    }
+
+</script>
 
 <link rel=stylesheet type="text/css" href="../css/format.css">
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms_choosebrowser.js"></SCRIPT>
 
-</HEAD>
+</head>
 
-<body bgcolor="#ffffff" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0 onload="]]><PROCESS>doOnload</PROCESS><![CDATA[">
+<body>
 
-<!-- Beginn neue Datei Anlegen -->
-<div id="NEWWITHOUTLINK" style="FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif; FONT-SIZE: 8pt; position: absolute; LEFT: 0px; TOP: 0px; width:100%; height:100%; VISIBILITY: hidden; Z-INDEX: 1;">
-<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
-<tr><td align=center valign=middle>
+<!-- 2 -->
 
-<form id="NEU" name="NEU">
-<table border=2 cellspacing=0 cellpadding=0 width=555px>
-<tr><td><table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
-    <tr><td colspan=2 class=head>]]><PROCESS>frameTitle</PROCESS><![CDATA[</td></tr>
-    <tr><td colspan=2 class=leerzeile>&nbsp;</td></tr>
-    <tr>
-        <td class=formular width=35%>]]><LABEL value="input.name" /><![CDATA[:</td>
-        <td class=dialogtxt> <input class="textfeld2" value="]]><PROCESS>name</PROCESS><![CDATA[" size=40 maxlength=100 name="NEUNAME" id="NEUNAME" > </td>
-    </tr>
-    <tr>
-        <td class=formular>]]><LABEL value="input.title" /><![CDATA[:</td>
-        <td class=dialogtxt> <input class="textfeld2" value="]]><PROCESS>title</PROCESS><![CDATA[" size=40 maxlength=100 name="NEUTITEL" id="NEUTITEL" ></td>
-    </tr>
-    <tr>
-        <td class=dialogtxt colspan=2><INPUT type="checkbox" id=SETLINK name=SETLINK onclick="saveLayerData('NEU','LINK','NEWWITHOUTLINK','NEWLINK');this.checked=false;switchlyr('NEWLINK','NEWWITHOUTLINK');"> ]]><LABEL value="input.addtonav" /><![CDATA[</td>
-    </tr>
-    
-    <tr><td colspan=2 class="leerzeile"><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=1 height=70px></td></tr>
+<div id="notInNav" style="visibility:hidden; FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif; FONT-SIZE: 8pt; position: absolute; LEFT: 0px; TOP: 0px; width:100%; height:100%; ">
 
-    <tr><td colspan=2 class=formular>
-            <table cellspacing=0 cellpadding=5 width=100%>
-            <tr>
-                <td class=formular align=right width=60%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.previousscreen" /><![CDATA[" id=ZURUECK name=ZURUECK onClick="location='explorer_files_new.html';"></td>
-                <td class=formular align=center width=20%><INPUT class=button width=100 type="button" value="]]><PROCESS>endbutton</PROCESS><![CDATA[" id=WEITER name=WEITER onClick="javascript:checkIt(2)"></td>
-                <td class=formular align=center width=20%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="location='explorer_files.html';"></td>
-            </tr>
-            </table>
-        </td>
-    </tr>
+<br>
+<br>
+<br>
+
+<form>
+    <table border=2 cellspacing=0 cellpadding=0 width=530px align=center>
+        <tr>
+            <td>
+                <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+                    <tr>
+                        <td colspan=2 class=head>
+                            ]]><PROCESS>frameTitle</PROCESS><![CDATA[
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan=2 class=dialogtxt>
+                            <br>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class=formular width=100>
+                            ]]><LABEL value="input.name" /><![CDATA[:
+                        </td>
+                        <td class=dialogtxt>
+                            <input type="textfield" id="name2" maxlength=100 style="width:400px;" class="textfeld2" value="]]><PROCESS>name</PROCESS><![CDATA[">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class=formular>
+                            ]]><LABEL value="input.title" /><![CDATA[:
+                        </td>
+                        <td class=dialogtxt>
+                            <input type="textfield" id="title2" maxlength=100 style="width:400px;" class="textfeld2" value="]]><PROCESS>title</PROCESS><![CDATA[">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan=2 class=dialogtxt>
+                        <input type="checkbox" onClick="javascript:switchLayer2(this);" checked>&nbsp;&nbsp;]]><LABEL value="input.addtonav" /><![CDATA[
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class=formular>
+                            <br>
+                        </td>
+                        <td class=dialogtxt>
+                            <br>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class=formular>
+                            <br>
+                        </td>
+                        <td class=dialogtxt>
+                            <br>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan=2 class=dialogtxt>&nbsp;<br><br>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class=dialogtxt colspan=2 align=right>
+                            <input class=button type="button" value="]]><LABEL value="button.previousscreen" /><![CDATA[" onClick="location='explorer_files_new.html';">
+                            <input class=button type="button" value="]]><PROCESS>endbutton</PROCESS><![CDATA[" onClick=checkForm(2);>
+                            <input class=button type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" onClick="location='explorer_files.html';">
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
     </table>
-</td>
-</tr>
-</table>
 </form>
-</td></tr>
-</table>
+
 </div>
-<!-- Ende neue Datei Anlegen -->
 
 
-<!-- Beginn Layer -->
-<div id="NEWLINK" style="FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif; FONT-SIZE: 8pt; position: absolute; LEFT: 0px; TOP: 0px; width:100%; height:100%; VISIBILITY: visible; Z-INDEX: 100;">
-<link rel=stylesheet type="text/css" href="../css/format.css">
-<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
-<tr><td align=center valign=middle>
+<!-- *********************************************************************************************************** -->
 
-<form id="LINK" name="LINK">
-<table border=2 cellspacing=0 cellpadding=0 width=555px>
-<tr><td><table cellspacing=0 cellpadding=5 border=0 width=100%>
-<tr><td colspan=2 class=head>]]><PROCESS>frameTitle</PROCESS><![CDATA[</td></tr>
-    <tr><td colspan=2 class=leerzeile>&nbsp;</td></tr>
-    <tr>
-        <td class=formular width=35%>]]><LABEL value="input.name" /><![CDATA[:</td>
-        <td class=dialogtxt> <input class="textfeld2" value="]]><PROCESS>name</PROCESS><![CDATA[" size=40 maxlength=100 name="NEUNAME" id="NEUNAME" ></td>
+
+<!-- 1 -->
+
+<div id="isInNav" style="visibility:visible; FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif; FONT-SIZE: 8pt; position: absolute; LEFT: 0px; TOP: 0px; width:100%; height:100%; ">
+
+<br>
+<br>
+<br>
+
+<form>
+    <table border=2 cellspacing=0 cellpadding=0 width=530px align=center>
+        <tr>
+            <td>
     
-    </tr>
-    <tr>
-        <td class=formular>]]><LABEL value="input.title" /><![CDATA[:</td>
-        <td class=dialogtxt> <input class="textfeld2" value="]]><PROCESS>title</PROCESS><![CDATA[" size=40 maxlength=100 name="NEUTITEL" id="NEUTITEL" ></td>
-    </tr>
-    <tr>
-        <td class=dialogtxt colspan=2><INPUT type="checkbox" id=SETLINK name=SETLINK checked onclick="saveLayerData('LINK','NEU','NEWLINK','NEWWITHOUTLINK');switchlyr('NEWWITHOUTLINK','NEWLINK');this.checked=true;"> ]]><LABEL value="input.addtonav" /><![CDATA[</td>
-    </tr>
-    <tr><td colspan=2 class=leerzeile><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=1 height=10px</td></tr>
-    <tr>
-        <td class=formular>]]><LABEL value="input.navtitle" /><![CDATA[:</td>
-        <td class=dialogtxt><input class="textfeld2" value="]]><PROCESS>navtext</PROCESS><![CDATA[" size=40 maxlength=100 name="LINKNAME" id="LINKNAME" ><![CDATA[</td>
-    </tr>
-    <tr>
-        <td class=formular>]]><LABEL value="input.insert" /><![CDATA[</td>
-        <td class=dialogtxt>
-            ]]><SELECT class="textfeld" name="LINKPOS" width="370" method="getNavPos" /><![CDATA[
-        </td>
-    </tr>
-
-    <tr><td colspan=2 class=formular>
-            <table cellspacing=0 cellpadding=5 width=100%>
-            <tr>
-                <td class=formular align=right width=60%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.previousscreen" /><![CDATA[" id=ZURUECK name=ZURUECK onClick="location='explorer_files_new.html';"></td>
-                <td class=formular align=center width=20%><INPUT class=button width=100 type="button" value="]]><PROCESS>endbutton</PROCESS><![CDATA[" id=WEITER name=WEITER onClick="javascript:checkIt(1)"></td>
-                <td class=formular align=center width=20%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="location='explorer_files.html';"></td></tr>
-            </table>
-        </td>
-    </tr>
+                <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+                    <tr>
+                        <td colspan=2 class=head>
+                            ]]><PROCESS>frameTitle</PROCESS><![CDATA[
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan=2 class=dialogtxt>
+                            <br>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class=formular width=100>
+                            ]]><LABEL value="input.name" /><![CDATA[:
+                        </td>
+                        <td class=dialogtxt>
+                            <input type="textfield" id="name1" maxlength=100 style="width:400px;" class="textfeld2" value="]]><PROCESS>title</PROCESS><![CDATA[">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class=formular>
+                            ]]><LABEL value="input.title" /><![CDATA[:
+                        </td>
+                        <td class=dialogtxt>
+                            <input type="textfield" id="title1" maxlength=100 style="width:400px;" class="textfeld2" value="]]><PROCESS>title</PROCESS><![CDATA[">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan=2 class=dialogtxt>
+                        <input type="checkbox" onClick="javascript:switchLayer1(this);" checked>&nbsp;&nbsp;]]><LABEL value="input.addtonav" /><![CDATA[
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class=formular>
+                            navtext:
+                        </td>
+                        <td class=dialogtxt>
+                            <input type="textfield" id="navtext" maxlength=100 style="width:400px;" class="textfeld2"> 
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class=formular>
+                            navpos:
+                        </td>
+                        <td class=dialogtxt>
+                            ]]><SELECT class="textfeld" name="navpos" width="400" method="getNavPos" /><![CDATA[
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan=2 class=dialogtxt>&nbsp;
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class=dialogtxt colspan=2 align=right>
+                            <input class=button type="button" value="]]><LABEL value="button.previousscreen" /><![CDATA[" onClick="location='explorer_files_new.html';">
+                            <input class=button type="button" value="]]><PROCESS>endbutton</PROCESS><![CDATA[" onClick=checkForm(1);>
+                            <input class=button type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" onClick="location='explorer_files.html';">
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
     </table>
-</td>
-</tr>
-</table>
 </form>
-</td></tr>
-</table>
+
 </div>
+
 </body>
 </HTML>
+
+
 ]]>
 </TEMPLATE>
 
