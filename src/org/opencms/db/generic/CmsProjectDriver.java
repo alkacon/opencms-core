@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/07/08 08:18:05 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/07/08 14:35:29 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.12 $ $Date: 2003/07/08 08:18:05 $
+ * @version $Revision: 1.13 $ $Date: 2003/07/08 14:35:29 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1178,10 +1178,6 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                     newFolder = (CmsFolder) currentFolder.clone();
                     newFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
                     m_driverManager.getVfsDriver().createFolder(currentUser, onlineProject, newFolder, newFolder.getParentId(), newFolder.getResourceName());
-                    
-//                    newFolder = m_driverManager.getVfsDriver().createFolder(currentUser, onlineProject, currentFolder, currentFolder.getParentId(), currentFolder.getResourceName());
-//                    newFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
-//                    m_driverManager.getVfsDriver().updateResourcestate(newFolder);
                 } catch (CmsException e) {
                     // if the folder already exists in the online project
                     if (e.getType() == CmsException.C_FILE_EXISTS) {
@@ -1193,7 +1189,6 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                         }
 
                         m_driverManager.getVfsDriver().updateOnlineResourceFromOfflineResource( (CmsResource)onlineFolder, (CmsResource)currentFolder);
-//                        newFolder = m_driverManager.readFolder(currentUser, onlineProject, currentFolder.getId(), false);
                     } else {
                         throw e;
                     }
@@ -1215,7 +1210,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                 
                 if (backupEnabled) {
                     // backup the offline resource
-                    m_driverManager.getBackupDriver().writeBackupResource(currentUser, publishProject, currentFolder, new byte[0], props, backupVersionId, publishDate);
+                    m_driverManager.getBackupDriver().writeBackupResource(currentUser, publishProject, currentFolder, props, backupVersionId, publishDate);
                 }
 
                 if (currentFolder.getState()!=I_CmsConstants.C_STATE_UNCHANGED) {
@@ -1271,7 +1266,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                 
                 if (backupEnabled) {
                     // backup the offline resource
-                    m_driverManager.getBackupDriver().writeBackupResource(currentUser, publishProject, currentFolder, new byte[0], props, backupVersionId, publishDate);
+                    m_driverManager.getBackupDriver().writeBackupResource(currentUser, publishProject, currentFolder, props, backupVersionId, publishDate);
                 }
                 
                 if (currentFolder.getState()!=I_CmsConstants.C_STATE_UNCHANGED) {
@@ -1332,7 +1327,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                 
                 if (backupEnabled) {
                     Map props = m_driverManager.getVfsDriver().readProperties(publishProjectId, currentFile, currentFile.getType());
-                    m_driverManager.getBackupDriver().writeBackupResource(currentUser, publishProject, currentFile, currentFile.getContents(), props, backupVersionId, publishDate);
+                    m_driverManager.getBackupDriver().writeBackupResource(currentUser, publishProject, currentFile, props, backupVersionId, publishDate);
                 }
                 
                 try {
@@ -1424,7 +1419,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
 
                 if (backupEnabled) {
                     // backup the offline resource
-                    m_driverManager.getBackupDriver().writeBackupResource(currentUser, publishProject, currentFile, currentFile.getContents(), props, backupVersionId, publishDate);
+                    m_driverManager.getBackupDriver().writeBackupResource(currentUser, publishProject, currentFile, props, backupVersionId, publishDate);
                 }
                 
                 if (currentFile.getState()!=I_CmsConstants.C_STATE_UNCHANGED) {
@@ -1459,10 +1454,6 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                     newFile = (CmsFile) currentFile.clone();
                     newFile.setState(I_CmsConstants.C_STATE_UNCHANGED);
                     m_driverManager.getVfsDriver().createFile(onlineProject, newFile, currentUser.getId(), newFile.getParentId(), newFile.getResourceName());
-                    
-//                    newFile = m_driverManager.getVfsDriver().createFile(onlineProject, currentFile, currentUser.getId(), currentFile.getParentId(), currentFile.getResourceName());
-//                    newFile.setState(I_CmsConstants.C_STATE_UNCHANGED);
-//                    m_driverManager.getVfsDriver().updateResourcestate(newFile);
                 } catch (CmsException e) {
                     if (e.getType() == CmsException.C_FILE_EXISTS) {
                         CmsFile onlineFile = null;
@@ -1495,7 +1486,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
 
                 if (backupEnabled) {
                     // backup the offline resource
-                    m_driverManager.getBackupDriver().writeBackupResource(currentUser, publishProject, currentFile, currentFile.getContents(), props, backupVersionId, publishDate);
+                    m_driverManager.getBackupDriver().writeBackupResource(currentUser, publishProject, currentFile, props, backupVersionId, publishDate);
                 }
                 
                 if (currentFile.getState()!=I_CmsConstants.C_STATE_UNCHANGED) {
@@ -1538,7 +1529,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
             if (backupEnabled) {
                 Map props = m_driverManager.getVfsDriver().readProperties(publishProjectId, currentFolder, currentFolder.getType());
                 // backup the offline resource
-                m_driverManager.getBackupDriver().writeBackupResource(currentUser, publishProject, currentFolder, new byte[0], props, backupVersionId, publishDate);
+                m_driverManager.getBackupDriver().writeBackupResource(currentUser, publishProject, currentFolder, props, backupVersionId, publishDate);
             }
             
             CmsResource delOnlineFolder = m_driverManager.readFolder(currentUser, onlineProject, currentFolder.getId(), true);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/08 10:16:53 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2003/07/08 14:35:29 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * This is the driver manager.
  * 
- * @version $Revision: 1.26 $ $Date: 2003/07/08 10:16:53 $
+ * @version $Revision: 1.27 $ $Date: 2003/07/08 14:35:29 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -4486,7 +4486,7 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
     *
     * @throws CmsException  Throws CmsException if operation was not succesful.
     */
-    public Vector readAllBackupFileHeaders(CmsUser currentUser, CmsProject currentProject, String filename) throws CmsException {
+    public List readAllBackupFileHeaders(CmsUser currentUser, CmsProject currentProject, String filename) throws CmsException {
         CmsResource cmsFile = readFileHeader(currentUser, currentProject, filename);
 
         // check if the user has read access
@@ -4983,7 +4983,7 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
      *
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
-    public CmsBackupResource readFileHeaderForHist(CmsUser currentUser, CmsProject currentProject, int versionId, String filename) throws CmsException {
+    public CmsBackupResource readBackupFileHeader(CmsUser currentUser, CmsProject currentProject, int versionId, String filename) throws CmsException {
         CmsResource cmsFile = readFileHeader(currentUser, currentProject, filename);
         CmsBackupResource resource = null;
 
@@ -5012,7 +5012,7 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
      *
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
-    public CmsBackupResource readFileForHist(CmsUser currentUser, CmsProject currentProject, int versionId, String filename) throws CmsException {
+    public CmsBackupResource readBackupFile(CmsUser currentUser, CmsProject currentProject, int versionId, String filename) throws CmsException {
         CmsBackupResource backupResource = null;
 
         try {
@@ -6257,7 +6257,7 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
         CmsFile offlineFile = null;
         int state = I_CmsConstants.C_STATE_CHANGED;
         // read the backup file
-        backupFile = readFileForHist(currentUser, currentProject, versionId, filename);
+        backupFile = readBackupFile(currentUser, currentProject, versionId, filename);
         // try to read the owner and the group
         CmsUUID ownerId = currentUser.getId();
         CmsUUID groupId = currentUser.getDefaultGroupId();
@@ -8837,5 +8837,19 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
         
         return resource;
     }
+    
+    /*
+    public void writeBackupResource(CmsUser currentUser, CmsProject publishProject, CmsResource resource, Map properties, long publishDate, int versionId) throws CmsException {
+        int version = 0;
+        int maxVersionCount = 0;
+        
+        maxVersionCount = m_backupDriver.getMaxResourceVersionCount();
+        
+        version = m_backupDriver.readMaxBackupVersion(resource.getId());
+        version++;
+        
+        m_backupDriver.writeBackupResource(currentUser, publishProject, resource, properties, version, publishDate);
+    }
+    */
     
 }

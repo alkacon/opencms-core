@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2003/07/04 16:00:24 $
-* Version: $Revision: 1.237 $
+* Date   : $Date: 2003/07/08 14:35:29 $
+* Version: $Revision: 1.238 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.237 $ $Date: 2003/07/04 16:00:24 $
+ * @version $Revision: 1.238 $ $Date: 2003/07/08 14:35:29 $
  */
 public interface I_CmsConstants {
 
@@ -1258,6 +1258,11 @@ public interface I_CmsConstants {
      * A string in the configuration-file.
      */
     String C_CONFIGURATION_CACHE = "cache";
+    
+    /**
+     * Prefix for history/backup config keys.
+     */
+    String C_CONFIGURATION_HISTORY = "history";    
 
     /**
      * A string in the configuration-file.

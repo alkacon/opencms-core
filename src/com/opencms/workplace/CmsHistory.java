@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsHistory.java,v $
-* Date   : $Date: 2003/07/08 10:16:53 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2003/07/08 14:35:29 $
+* Version: $Revision: 1.28 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import com.opencms.util.Encoder;
 import com.opencms.util.Utils;
 
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -47,7 +48,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.27 $ $Date: 2003/07/08 10:16:53 $
+ * @version $Revision: 1.28 $ $Date: 2003/07/08 14:35:29 $
  */
 
 public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -95,7 +96,7 @@ public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,
         if(versionId != null) {
             id = new Integer(Integer.parseInt(versionId));
             session.putValue("version", versionId);
-            backupFile = (CmsBackupResource)cms.readFileHeaderForHist(filename, id.intValue());
+            backupFile = (CmsBackupResource)cms.readBackupFileHeader(filename, id.intValue());
             theFileName = backupFile.getName();
         }
         else {
@@ -161,14 +162,14 @@ public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,
         I_CmsSession session = cms.getRequestContext().getSession(true);
         String filename = (String)session.getValue(C_PARA_FILE);
         if(filename != null) {
-            Vector allFiles = cms.readAllBackupFileHeaders(filename);
+            List allFiles = cms.readAllBackupFileHeaders(filename);
             // vector is already sorted by version id
             //if(allFiles.size() > 0) {
             //    allFiles = sort(allFiles, Utils.C_SORT_PUBLISHED_DOWN);
             //}
             // fill the names and values
             for(int i = 0;i < allFiles.size();i++) {
-                CmsBackupResource file = ((CmsBackupResource)allFiles.elementAt(i));
+                CmsBackupResource file = ((CmsBackupResource)allFiles.get(i));
                 long updated = file.getDateCreated();
                 String userName = "";
                 try{

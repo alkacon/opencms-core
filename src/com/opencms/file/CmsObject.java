@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/08 10:16:54 $
-* Version: $Revision: 1.299 $
+* Date   : $Date: 2003/07/08 14:35:29 $
+* Version: $Revision: 1.300 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.299 $
+ * @version $Revision: 1.300 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -2611,7 +2611,7 @@ public CmsUser readAgent(CmsTask task) throws CmsException {
  *
  * @throws CmsException  if operation was not successful.
  */
-public Vector readAllBackupFileHeaders(String filename) throws CmsException {
+public List readAllBackupFileHeaders(String filename) throws CmsException {
     return (m_driverManager.readAllBackupFileHeaders(m_context.currentUser(), m_context.currentProject(), getSiteRoot(filename)));
 }
 
@@ -2946,8 +2946,8 @@ public CmsResource readFileHeader(String folder, String filename) throws CmsExce
  * @throws CmsException , if the user has not the rights
  * to read the file headers, or if the file headers couldn't be read.
  */
-public CmsResource readFileHeaderForHist(String filename, int versionId) throws CmsException {
-    return (m_driverManager.readFileHeaderForHist(m_context.currentUser(), m_context.currentProject(), versionId, getSiteRoot(filename)));
+public CmsResource readBackupFileHeader(String filename, int versionId) throws CmsException {
+    return (m_driverManager.readBackupFileHeader(m_context.currentUser(), m_context.currentProject(), versionId, getSiteRoot(filename)));
 }
 
 /**
@@ -2963,8 +2963,8 @@ public CmsResource readFileHeaderForHist(String filename, int versionId) throws 
  * @throws CmsException , if the user has not the rights
  * to read the file, or if the file couldn't be read.
  */
-public CmsBackupResource readFileForHist(String filename, int versionId) throws CmsException {
-    return (m_driverManager.readFileForHist(m_context.currentUser(), m_context.currentProject(), versionId, getSiteRoot(filename)));
+public CmsBackupResource readBackupFile(String filename, int versionId) throws CmsException {
+    return (m_driverManager.readBackupFile(m_context.currentUser(), m_context.currentProject(), versionId, getSiteRoot(filename)));
 }
 /**
  * Reads all file headers of a project from the Cms.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsBackupDriver.java,v $
- * Date   : $Date: 2003/07/02 11:03:12 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/07/08 14:35:29 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import com.opencms.flex.util.CmsUUID;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
@@ -55,7 +56,7 @@ import source.org.apache.java.util.Configurations;
  * of resource that were saved during one backup process.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $ $Date: 2003/07/02 11:03:12 $
+ * @version $Revision: 1.5 $ $Date: 2003/07/08 14:35:29 $
  * @since 5.1
  */
 public interface I_CmsBackupDriver {
@@ -125,7 +126,7 @@ public interface I_CmsBackupDriver {
      * @return Vector with all backup file headers
      * @throws CmsException if something goes wrong
      */
-    Vector readAllBackupFileHeaders(CmsUUID resourceId) throws CmsException;
+    List readAllBackupFileHeaders(CmsUUID resourceId) throws CmsException;
 
     /**
      * Reads a backup file including the file content.<p>
@@ -187,6 +188,34 @@ public interface I_CmsBackupDriver {
      * @param publishDate long timestamp when the resource was published.
      * @throws CmsException if something goes wrong
      */
-    void writeBackupResource(CmsUser currentUser, CmsProject publishProject, CmsResource resource, byte[] content, Map properties, int versionId, long publishDate) throws CmsException;
+    void writeBackupResource(CmsUser currentUser, CmsProject publishProject, CmsResource resource, Map properties, int versionId, long publishDate) throws CmsException;
+    
+    /**
+     * Returns the max. number of backup version of a resource.<p>
+     * 
+     * @return the max. number of backup version of a resource
+     */
+    int getMaxResourceVersionCount();
+    
+    /**
+     * Returns the max. current backup version of a resource.<p>
+     * 
+     * @param resourceId the structure ID of the resource
+     * @return Returns the max. current backup version of a resource.
+     * @throws CmsException if something goes wrong
+     */
+    int readMaxBackupVersion(CmsUUID resourceId) throws CmsException;
+    
+    /**
+     * Deletes backup versions of a resource.<p>
+     * 
+     * Deletes the m-n oldest backup versions, if m is the number of backup versions, and n
+     * the number of max. allowed backup versions.
+     * 
+     * @param existingBackups a list of backup resources ordered by their ascending creation date
+     * @throws CmsException if something goes wrong
+     * @see org.opencms.db.I_CmsBackupDriver#getMaxResourceVersionCount()
+     */
+    void deleteBackups(List existingBackups) throws CmsException;
 
 }
