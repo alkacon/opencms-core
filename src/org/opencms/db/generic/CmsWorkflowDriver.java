@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Attic/CmsWorkflowDriver.java,v $
- * Date   : $Date: 2004/02/23 23:27:03 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2004/05/26 15:04:24 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.29 $ $Date: 2004/02/23 23:27:03 $
+ * @version $Revision: 1.30 $ $Date: 2004/05/26 15:04:24 $
  * @since 5.1
  */
 public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkflowDriver {
@@ -218,7 +218,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
      * @return the CmsTash created from the data
      * @throws SQLException if something goes wrong
      */
-    protected final CmsTask internalCreateTask(ResultSet res) throws SQLException {
+    protected CmsTask internalCreateTask(ResultSet res) throws SQLException {
         int autofinish = res.getInt(m_sqlManager.readQuery("C_TASK_AUTOFINISH"));
         java.sql.Timestamp endtime = CmsDbUtil.getTimestamp(res, m_sqlManager.readQuery("C_TASK_ENDTIME"));
         int escalationtype = res.getInt(m_sqlManager.readQuery("C_TASK_ESCALATIONTYPE"));

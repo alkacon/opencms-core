@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2004/04/20 12:41:51 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2004/05/26 15:04:24 $
+ * Version: $Revision: 1.56 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.55 $ $Date: 2004/04/20 12:41:51 $
+ * @version $Revision: 1.56 $ $Date: 2004/05/26 15:04:24 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -532,8 +532,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
      * @return CmsGroup the new CmsGroup object
      * @throws SQLException in case the result set does not include a requested table attribute
      */
-    protected final CmsGroup internalCreateGroup(ResultSet res, boolean hasGroupIdInResultSet) throws SQLException {
-        // this method is final to allow the java compiler to inline this code!
+    protected CmsGroup internalCreateGroup(ResultSet res, boolean hasGroupIdInResultSet) throws SQLException {
         CmsUUID groupId = null;
 
         if (hasGroupIdInResultSet) {
@@ -555,8 +554,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
      * @throws IOException if there is an error in deserializing the user info
      * @throws ClassNotFoundException if there is an error in deserializing the user info
      */
-    protected final CmsUser internalCreateUser(ResultSet res, boolean hasGroupIdInResultSet) throws SQLException, IOException, ClassNotFoundException {
-        // this method is final to allow the java compiler to inline this code!
+    protected CmsUser internalCreateUser(ResultSet res, boolean hasGroupIdInResultSet) throws SQLException, IOException, ClassNotFoundException {
 
         // deserialize the additional userinfo hash
         ByteArrayInputStream bin = new ByteArrayInputStream(m_sqlManager.getBytes(res, m_sqlManager.readQuery("C_USERS_USER_INFO")));
@@ -588,8 +586,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
      * @return byte[] the byte array which is written to the db
      * @throws IOException if something goes wrong
      */
-    protected final byte[] internalSerializeAdditionalUserInfo(Hashtable additionalUserInfo) throws IOException {
-        // this method is final to allow the java compiler to inline this code!
+    protected byte[] internalSerializeAdditionalUserInfo(Hashtable additionalUserInfo) throws IOException {
 
         // serialize the hashtable
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
