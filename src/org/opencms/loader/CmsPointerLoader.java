@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsPointerLoader.java,v $
- * Date   : $Date: 2004/03/22 16:40:40 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2004/03/25 15:08:52 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * Loader for "pointers" to resources in the VFS or to external resources.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  */
 public class CmsPointerLoader implements I_CmsResourceLoader {
     
@@ -151,6 +151,13 @@ public class CmsPointerLoader implements I_CmsResourceLoader {
     }
 
     /**
+     * @see org.opencms.loader.I_CmsResourceLoader#isStaticExportProcessable()
+     */
+    public boolean isStaticExportProcessable() {
+        return false;
+    }
+    
+    /**
      * @see org.opencms.loader.I_CmsResourceLoader#isUsableForTemplates()
      */
     public boolean isUsableForTemplates() {
@@ -181,5 +188,5 @@ public class CmsPointerLoader implements I_CmsResourceLoader {
      */ 
     public void service(CmsObject cms, CmsResource file, ServletRequest req, ServletResponse res) {
         throw new RuntimeException("service() not a supported operation for resources of type " + this.getClass().getName());  
-    }     
+    }
 }

@@ -39,3 +39,4 @@ drop table cms_tasktype;
 drop table cms_users;
 drop table cms_webusers;
 drop table cms_publish_history;
+drop table cms_published_resources;

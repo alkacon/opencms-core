@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/I_CmsResourceLoader.java,v $
- * Date   : $Date: 2004/03/25 11:45:05 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/03/25 15:08:52 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * @since FLEX alpha 1
  * 
  * @see org.opencms.flex.CmsFlexRequest
@@ -159,6 +159,14 @@ public interface I_CmsResourceLoader extends I_CmsConfigurationParameterHandler 
      */
     boolean isStaticExportEnabled();
 
+    
+    /**
+     * Signals if the loader implementation requires processing during static export of resources.<p>
+     * 
+     * @return true if static export processing is required, false otherwise
+     */
+    boolean isStaticExportProcessable();
+    
     /**
      * Signals if the loader implementation is usable for creating templates.<p>
      * 
@@ -210,5 +218,5 @@ public interface I_CmsResourceLoader extends I_CmsConfigurationParameterHandler 
      * @see org.opencms.flex.CmsFlexRequestDispatcher
      */   
     void service(CmsObject cms, CmsResource resource, ServletRequest req, ServletResponse res) 
-    throws ServletException, IOException, CmsException;    
+    throws ServletException, IOException, CmsException;
 }

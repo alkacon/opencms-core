@@ -37,6 +37,7 @@
     <property name="opencms.inputlib.logging"     		location="${opencms.input.libs}/commons-logging-1.0.3.jar" /> 
     <property name="opencms.inputlib.collections"     	location="${opencms.input.libs}/commons-collections-3.0.jar" />
     <property name="opencms.inputlib.fileupload"   		location="${opencms.input.libs}/commons-fileupload-1.0.jar" />
+    <property name="opencms.inputlib.httpclient"   		location="${opencms.input.libs}/commons-httpclient-2.0.jar" />
     <property name="opencms.inputlib.log4j"     		location="${opencms.input.libs}/log4j-1.2.8.jar" /> 
     <property name="opencms.inputlib.dom4j"     		location="${opencms.input.libs}/dom4j-1.4.jar" />
     <property name="opencms.inputlib.htmlparser"		location="${opencms.input.libs}/htmlparser-1.4.jar" />
@@ -79,6 +80,7 @@
                 <available file="${opencms.inputlib.logging}"/>
                 <available file="${opencms.inputlib.collections}"/> 
                 <available file="${opencms.inputlib.fileupload}"/>
+                <available file="${opencms.inputlib.httpclient}"/>
                 <available file="${opencms.inputlib.dom4j}"/> 
                 <available file="${opencms.inputlib.log4j}"/> 
                 <available file="${opencms.inputlib.htmlparser}"/>
@@ -147,6 +149,7 @@ ${opencms.inputlib.digester}
 ${opencms.inputlib.logging}
 ${opencms.inputlib.collections}
 ${opencms.inputlib.fileupload}
+${opencms.inputlib.httpclient}
 ${opencms.inputlib.dom4j}
 ${opencms.inputlib.log4j}
 ${opencms.inputlib.htmlparser}
@@ -199,6 +202,7 @@ ${opencms.inputlib.pdfbox}
                        ${opencms.inputlib.logging}:
                        ${opencms.inputlib.collections}:
                        ${opencms.inputlib.fileupload}:
+                       ${opencms.inputlib.httpclient}:
                        ${opencms.inputlib.dom4j}:
                        ${opencms.inputlib.log4j}:
                        ${opencms.inputlib.htmlparser}:

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/03/22 16:29:00 $
- * Version: $Revision: 1.154 $
+ * Date   : $Date: 2004/03/25 15:08:52 $
+ * Version: $Revision: 1.155 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.154 $ $Date: 2004/03/22 16:29:00 $
+ * @version $Revision: 1.155 $ $Date: 2004/03/25 15:08:52 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -430,6 +430,30 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         }
     }
 
+
+    /**
+     * @see org.opencms.db.I_CmsProjectDriver#deleteStaticExportPublishedResource(org.opencms.file.CmsProject, java.lang.String, int, java.lang.String)
+     */
+    public void deleteStaticExportPublishedResource(CmsProject currentProject, String resourceName, int linkType, String linkParameter) throws CmsException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        
+        try {
+            conn = m_sqlManager.getConnection(currentProject);
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_STATICEXPORT_DELETE_PUBLISHED_RESOURCES");
+            stmt.setString(1, resourceName);
+            stmt.setInt(2, linkType);
+            stmt.setString(3, linkParameter);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, null);
+        }
+    }
+    
+    
+    
     /**
      * @see org.opencms.db.I_CmsProjectDriver#destroy()
      */
@@ -533,6 +557,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         return m_sqlManager;
     }
 
+    
+    
     /**
      * @see org.opencms.db.I_CmsDriver#init(org.apache.commons.collections.ExtendedProperties, java.util.List, org.opencms.db.CmsDriverManager)
      */
@@ -1834,6 +1860,43 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         return publishedResources;      
     }
 
+
+    /**
+     * @see org.opencms.db.I_CmsProjectDriver#readStaticExportResources(org.opencms.file.CmsProject, boolean)
+     */
+    public List readStaticExportResources(CmsProject currentProject, boolean parameterResources) throws CmsException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+        List returnValue = new ArrayList();
+        
+        // the parameter mode triggers either to read resources with parameter links or those without.
+        // is set to TRUE, all resources with parameter links are read
+        int parameterMode = 0;
+        if (parameterResources) parameterMode = 1;
+       
+        
+        try {
+           conn = m_sqlManager.getConnection(currentProject);
+           stmt = m_sqlManager.getPreparedStatement(conn, "C_STATICEXPORT_READ_ALL_PUBLISHED_RESOURCES");
+           stmt.setInt(1, parameterMode);
+           res = stmt.executeQuery();
+           // add all resourcenames to the list of return values
+           while (res.next()) {
+            returnValue.add(res.getString(1));               
+           }           
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, res);
+        }  
+       
+       
+       return returnValue;
+       
+    }
+ 
+    
     /**
      * Reads a serializable object from the systempropertys.
      *
@@ -1933,6 +1996,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         Connection conn = null;
         PreparedStatement stmt = null;
 
+        
         try {
             conn = m_sqlManager.getConnection(currentProject);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_WRITE_PUBLISH_HISTORY");
@@ -1955,6 +2019,49 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         }
     }    
 
+    
+    /**
+     * @see org.opencms.db.I_CmsProjectDriver#writeStaticExportPublishedResource(java.lang.String)
+     */
+    public void writeStaticExportPublishedResource(CmsProject currentProject, String resourceName, int linkType, String linkParameter) throws CmsException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+        int returnValue = 0;
+        // first check if a record with this resource name does already exist
+        try {
+            conn = m_sqlManager.getConnection(currentProject);
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_STATICEXPORT_READ_PUBLISHED_RESOURCES");
+            stmt.setString(1, resourceName);
+            res = stmt.executeQuery();
+            if (res.next()) {
+                returnValue = res.getInt(1);
+            }           
+        } catch (SQLException e) {         
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, res);
+        }  
+        
+        // there was no entry found, so add it to the database
+        if (returnValue == 0) {                      
+            try {
+                conn = m_sqlManager.getConnection(currentProject);
+                stmt = m_sqlManager.getPreparedStatement(conn, "C_STATICEXPORT_WRITE_PUBLISHED_RESOURCES");
+                stmt.setString(1, new CmsUUID().toString());
+                stmt.setString(2, resourceName);
+                stmt.setInt(3, linkType);
+                stmt.setString(4, linkParameter);
+                stmt.executeUpdate();
+            } catch (SQLException e) {         
+                throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+            } finally {
+                m_sqlManager.closeAll(conn, stmt, null);
+            }
+        }
+    }
+    
+    
     /**
      * Writes a serializable object to the systemproperties.
      *

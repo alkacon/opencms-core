@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsServlet.java,v $
- * Date   : $Date: 2004/03/19 17:45:02 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/03/25 15:08:52 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  */
 public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
     
@@ -86,7 +86,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
         // write OpenCms server identification in the response header
         res.setHeader("Server", "OpenCms/" + OpenCms.getSystemInfo().getVersionNumber());
-         
+        
         if (OpenCmsCore.getInstance().getRunLevel() < 3) {
             // check if setup was completed correctly
             init(getServletConfig());
@@ -132,7 +132,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
         }
         switch (errorCode) {
             case 404:
-                String path = req.getPathInfo();      
+                String path = req.getPathInfo();                                     
                 CmsObject cms = null;            
                 CmsStaticExportData exportData = null;
                 try {
@@ -145,7 +145,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
                     }
                 }
                 if (exportData != null) {
-                    synchronized (this) {
+                   synchronized (this) {
                         try {
                             OpenCms.getStaticExportManager().export(req, res, cms, exportData);
                         } catch (Throwable t) {

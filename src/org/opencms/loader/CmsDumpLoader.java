@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsDumpLoader.java,v $
- * Date   : $Date: 2004/03/25 11:45:05 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2004/03/25 15:08:52 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * by other loaders.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  */
 public class CmsDumpLoader implements I_CmsResourceLoader {
     
@@ -108,17 +108,21 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
             exportStream.write(file.getContents());
         }
         
-        // overwrite headers if set as default
-        for (Iterator i = OpenCms.getStaticExportManager().getExportHeaders().listIterator(); i.hasNext();) {
-            String header = (String)i.next();
-            
-            // set header only if format is "key: value"
-            String parts[] = CmsStringSubstitution.split(header, ":"); 
-            if (parts.length == 2) {
-                res.setHeader(parts[0], parts[1]);
+        // if no request and response are given, the resource only must be exported and no
+        // output must be generated
+        if ((req != null) && (res != null)) {
+            // overwrite headers if set as default
+            for (Iterator i = OpenCms.getStaticExportManager().getExportHeaders().listIterator(); i.hasNext();) {
+                String header = (String)i.next();
+                
+                // set header only if format is "key: value"
+                String parts[] = CmsStringSubstitution.split(header, ":"); 
+                if (parts.length == 2) {
+                    res.setHeader(parts[0], parts[1]);
+                }
             }
+            load(cms, file, req, res);  
         }
-        load(cms, file, req, res);  
     }
     
     /**
@@ -166,6 +170,13 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
     }
     
     /**
+     * @see org.opencms.loader.I_CmsResourceLoader#isStaticExportProcessable()
+     */
+    public boolean isStaticExportProcessable() {
+        return false;
+    }
+    
+    /**
      * @see org.opencms.loader.I_CmsResourceLoader#isUsableForTemplates()
      */
     public boolean isUsableForTemplates() {
@@ -184,7 +195,7 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
      */
     public void load(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res) 
     throws IOException, CmsException {
-        
+
         // check if the request contains a last modified header
         long lastModifiedHeader = req.getDateHeader(I_CmsConstants.C_HEADER_IF_MODIFIED_SINCE);                
         if (lastModifiedHeader > -1) {
@@ -192,7 +203,7 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
             if ((resource.getState() == I_CmsConstants.C_STATE_UNCHANGED) && (resource.getDateLastModified() == lastModifiedHeader)) {
                 res.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
                 return;
-            }            
+            }
         }
         
         // make sure we have the file contents available

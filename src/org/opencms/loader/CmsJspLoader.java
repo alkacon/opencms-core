@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2004/03/25 11:45:05 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2004/03/25 15:08:52 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -96,7 +96,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.49 $
+ * @version $Revision: 1.50 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -252,7 +252,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
                     // just make sure we don't have any null pointers etc.
                     OpenCms.getLog(this).error("Could not access modification date from controller", t);
                 }
-                // reset saved controller                
+                // reset saved controller
                 req.setAttribute(CmsFlexController.ATTRIBUTE_NAME, oldController);
             }
         }
@@ -443,9 +443,9 @@ public class CmsJspLoader implements I_CmsResourceLoader {
                         
                         // check if the content was modified since the last request
                         if (CmsFlexController.isNotModifiedSince(f_req, controller.getDateLastModified())) {
-                            res.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-                            return;
-                        }                   
+                                res.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+                                return;
+                            }            
                         
                         // If a JSP errorpage was triggered the response will be already committed here
                         byte[] result = f_res.getWriterBytes();
@@ -506,6 +506,13 @@ public class CmsJspLoader implements I_CmsResourceLoader {
     public boolean isStaticExportEnabled() {
         return true;
     }    
+    
+     /**
+     * @see org.opencms.loader.I_CmsResourceLoader#isStaticExportProcessable()
+     */
+    public boolean isStaticExportProcessable() {
+        return true;
+    }
     
     /**
      * Updates a JSP page in the "real" file system in case the VFS resource has changed.<p>
@@ -717,7 +724,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
             } catch (FileNotFoundException e) {
                 throw new ServletException("JspLoader: Could not write to file '" + f.getName() + "'\n" + e, e);
             }
-        }      
+        }                      
         
         // update "last modified" date on controller
         controller.updateDateLastModified(f.lastModified());        

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsXmlPageLoader.java,v $
- * Date   : $Date: 2004/03/22 16:40:40 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2004/03/25 15:08:52 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * @since 5.3
  */
 public class CmsXmlPageLoader implements I_CmsResourceLoader {   
@@ -90,7 +90,7 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
         
         // get the requested page
         CmsXmlPage page = (CmsXmlPage)req.getAttribute(absolutePath);
-            
+
         if (page == null) {
             // make sure a page is only read once (not every time for each element)
             page = CmsXmlPage.read(cms, CmsFile.upgrade(resource, cms));
@@ -155,6 +155,13 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
     }
 
     /**
+     * @see org.opencms.loader.I_CmsResourceLoader#isStaticExportProcessable()
+     */
+    public boolean isStaticExportProcessable() {
+        return true;
+    }
+    
+    /**
      * @see org.opencms.loader.I_CmsResourceLoader#isUsableForTemplates()
      */
     public boolean isUsableForTemplates() {
@@ -173,7 +180,7 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
      */
     public void load(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res) 
     throws ServletException, IOException, CmsException {        
-              
+        
         CmsTemplateLoaderFacade loaderFacade = OpenCms.getLoaderManager().getTemplateLoaderFacade(cms, resource);
         loaderFacade.getLoader().load(cms, loaderFacade.getLoaderStartResource(), req, res);
     }
@@ -190,7 +197,7 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
         // get the requested page
         CmsXmlPage page = (CmsXmlPage)req.getAttribute(absolutePath);
             
-        if (page == null) {
+        if (page == null) {      
             // make sure a page is only read once (not every time for each element)
             page = CmsXmlPage.read(cms, CmsFile.upgrade(resource, cms));
             req.setAttribute(absolutePath, page);
@@ -209,5 +216,5 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
         if (result != null) {
             res.getOutputStream().write(result);
         }        
-    }    
+    }
 }

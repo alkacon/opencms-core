@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2004/03/22 16:33:49 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/03/25 15:08:52 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -106,7 +106,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderIncludeExtension {
     
@@ -854,6 +854,14 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
     }
     
     /**
+     * @see org.opencms.loader.I_CmsResourceLoader#isStaticExportProcessable()
+     */
+    public boolean isStaticExportProcessable() {
+        return true;
+    }
+    
+    
+    /**
      * @see org.opencms.loader.I_CmsResourceLoader#isUsableForTemplates()
      */
     public boolean isUsableForTemplates() {
@@ -983,5 +991,5 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
         ExtendedProperties copy = new ExtendedProperties();
         copy.combine(m_configuration);
         return copy; 
-    }  
+    }
 }

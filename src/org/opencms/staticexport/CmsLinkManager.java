@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2004/03/12 16:00:48 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2004/03/25 15:08:52 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.net.URL;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  */
 public class CmsLinkManager {
     
@@ -318,7 +318,7 @@ public class CmsLinkManager {
                     }                        
                 } else {
                     // "export" value found, if it was "true" we export
-                    result = "true".equalsIgnoreCase(exportValue.trim());
+                    result = Boolean.valueOf(exportValue).booleanValue();
                 }
             } catch (Throwable t) {
                 // no export required (probably security issues, e.g. no access for export user)

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/03/19 17:45:02 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/03/25 15:08:52 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class CmsObject {
 
@@ -915,6 +915,23 @@ public class CmsObject {
     public void deleteResource(String filename, int deleteOption) throws CmsException {
         getResourceType(readFileHeader(filename).getType()).deleteResource(this, filename, deleteOption);
     }
+    
+    
+    
+    /**
+     * Deletes an entry in the published resource table.<p>
+     * 
+     * @param resourceName The name of the resource to be deleted in the static export
+     * @param linkType the type of resource deleted (0= non-paramter, 1=parameter)
+     * @param linkParameter the parameters of the resource
+     * @throws CmsException if something goes wrong
+     */
+    public void deleteStaticExportPublishedResource(String resourceName, int linkType, String linkParameter) throws CmsException {
+        m_driverManager.deleteStaticExportPublishedResource(m_context, resourceName, linkType, linkParameter);
+    }
+    
+    
+    
     /**
      * Deletes a user from the Cms.<p>
      * 
@@ -1902,6 +1919,7 @@ public class CmsObject {
         }
     }
 
+    
     /**
      * Returns a Vector with all subfolders of a given folder.<p>
      *
@@ -3140,6 +3158,18 @@ public class CmsObject {
     }
 
     /**
+     * Returns a list of all template resources which must be processed during a static export.<p>
+     * 
+     * @param parameterResources flag for reading resources with parameters (true) or without (false)
+     * @return List of template resources
+     * @throws CmsException if something goes wrong
+     */
+    public List readStaticExportResources(boolean parameterResources) throws CmsException {
+        return m_driverManager.readStaticExportResources(m_context, parameterResources);
+    }
+    
+    
+    /**
      * Reads the task with the given id.
      *
      * @param id the id of the task to be read.
@@ -3504,7 +3534,6 @@ public class CmsObject {
      * @param oldPassword the old password
      * @param newPassword the new password
      * @throws CmsException if the user data could not be read from the database
-     * @throws CmsSecurityException if the specified username and old password could not be verified
      */
     public void setPassword(String username, String oldPassword, String newPassword) throws CmsException {
         m_driverManager.resetPassword(username, oldPassword, newPassword);
@@ -3789,6 +3818,22 @@ public class CmsObject {
     public void writeProperty(String name, String property, String value, boolean addDefinition) throws CmsException {
         m_driverManager.writeProperty(m_context, addSiteRoot(name), property, value, addDefinition);
     }
+    
+    
+    /**
+     * Inserts an entry in the published resource table.<p>
+     * 
+     * This is done during static export.
+     * @param resourceName The name of the resource to be added to the static export
+     * @param linkType the type of resource exported (0= non-paramter, 1=parameter)
+     * @param linkParameter the parameters added to the resource
+     * @throws CmsException if something goes wrong
+     */
+    public void writeStaticExportPublishedResource(String resourceName, int linkType, String linkParameter) throws CmsException {
+        m_driverManager.writeStaticExportPublishedResource(m_context, resourceName, linkType, linkParameter);
+    }
+    
+    
 
     /**
      * Writes a new user tasklog for a task.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/03/25 11:45:05 $
- * Version: $Revision: 1.340 $
+ * Date   : $Date: 2004/03/25 15:08:52 $
+ * Version: $Revision: 1.341 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.340 $ $Date: 2004/03/25 11:45:05 $
+ * @version $Revision: 1.341 $ $Date: 2004/03/25 15:08:52 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -507,6 +507,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * Sets the internal list of configured resource types.<p>
      * 
      * @param resourceTypes the list of configured resource types
+     * @throws CmsException if something goes wrong
      */
     private void setResourceTypes(List resourceTypes) throws CmsException {
         m_resourceTypes = new I_CmsResourceType[resourceTypes.size() * 2];
@@ -2662,6 +2663,24 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         }
     }
 
+    
+    /**
+     * Deletes an entry in the published resource table.<p>
+     * 
+     * @param context the current request context
+     * @param resourceName The name of the resource to be deleted in the static export
+     * @param linkType the type of resource deleted (0= non-paramter, 1=parameter)
+     * @param linkParameter the parameters ofthe resource
+     * @throws CmsException if something goes wrong
+     */
+    public void deleteStaticExportPublishedResource(CmsRequestContext context, String resourceName, int linkType, String linkParameter) throws CmsException {
+        // TODO: any security restrictions nescessary?
+        m_projectDriver.deleteStaticExportPublishedResource(context.currentProject(), resourceName, linkType, linkParameter);
+    }
+ 
+    
+    
+    
     /**
      * Deletes a user from the Cms.<p>
      *
@@ -3715,6 +3734,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         }
     }
 
+
+    
     /**
      * Gets the sub files of a folder.<p>
      * 
@@ -5091,7 +5112,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                     while (i.hasNext()) {
                         CmsPublishedResource currentCosResource = (CmsPublishedResource) i.next();
                         m_projectDriver.writePublishHistory(context.currentProject(), publishList.getPublishHistoryId(), tagId, currentCosResource.getContentDefinitionName(), currentCosResource.getMasterId(), currentCosResource.getType(), currentCosResource.getState());
-                    }
+                    }                 
+                    
                 }
             } catch (CmsException e) {
                 throw e;
@@ -5610,7 +5632,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         } else {
             resource.setFullResourceName(filename);
         }
-        
+
         // update date info in context
         updateContextDates(context, resource);
 
@@ -5744,7 +5766,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
         // check if the user has write access to the folder
         checkPermissions(context, folder, I_CmsConstants.C_READ_ACCESS);
-        
+
         // update date info in context
         updateContextDates(context, folder);        
 
@@ -5810,7 +5832,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
         // now set the full resource name
         folder.setFullResourceName(foldername);
-        
+
         // update date info in context
         updateContextDates(context, folder);          
 
@@ -6684,6 +6706,21 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
         return siblings;
     }
+    
+    
+    /**
+     * Returns a list of all template resources which must be processed during a static export.<p>
+     * 
+     * @param context the current request context
+     * @param parameterResources flag for reading resources with parameters (true) or without (false)
+     * @return List of template resources
+     * @throws CmsException if something goes wrong
+     */
+    public List readStaticExportResources(CmsRequestContext context, boolean parameterResources) throws CmsException {
+        // TODO: any security restrictions nescessary?
+        return m_projectDriver.readStaticExportResources(context.currentProject(), parameterResources);
+    }
+    
 
     /**
      * Read a task by id.<p>
@@ -8041,7 +8078,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
         OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resource", res)));
     }
-    
+
     /**
      * Writes a propertyinformation for a file or folder.<p>
      *
@@ -8151,6 +8188,25 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         
         OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", resource)));
     }
+    
+    
+    /**
+     * Inserts an entry in the published resource table.<p>
+     * 
+     * This is done during static export.
+     * @param context the current request context
+     * @param resourceName The name of the resource to be added to the static export
+     * @param linkType the type of resource exported (0= non-paramter, 1=parameter)
+     * @param linkParameter the parameters added to the resource
+     * @throws CmsException if something goes wrong
+     */
+    public void writeStaticExportPublishedResource(CmsRequestContext context, String resourceName, int linkType, String linkParameter) throws CmsException {
+        // TODO: any security restrictions nescessary?
+        m_projectDriver.writeStaticExportPublishedResource(context.currentProject(), resourceName, linkType, linkParameter);
+    }
+ 
+    
+    
 
     /**
      * Writes a new user tasklog for a task.<p>
@@ -8875,6 +8931,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         CmsFlexRequestContextInfo info = (CmsFlexRequestContextInfo)context.getAttribute(I_CmsConstants.C_HEADER_LAST_MODIFIED);
         if (info != null) {
             info.updateDateLastModified(resource.getDateLastModified());
-        }
+}
     }
 }
