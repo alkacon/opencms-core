@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsAccessProject.java,v $
- * Date   : $Date: 2000/04/07 15:57:37 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/04/19 10:15:59 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -38,7 +38,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.10 $ $Date: 2000/04/07 15:57:37 $
+ * @version $Revision: 1.11 $ $Date: 2000/04/19 10:15:59 $
  */
 interface I_CmsAccessProject {
 
@@ -52,6 +52,16 @@ interface I_CmsAccessProject {
 	 public A_CmsProject readProject(int id)
 		throws CmsException;
 	
+	/**
+	 * Reads a project from the Cms.
+	 * 
+	 * @param task The task of the project to read.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	 public A_CmsProject readProject(A_CmsTask task)
+		throws CmsException;
+	 
 	/**
 	 * Creates a project.
 	 * 

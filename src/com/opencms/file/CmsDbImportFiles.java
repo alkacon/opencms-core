@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsDbImportFiles.java,v $
- * Date   : $Date: 2000/04/13 21:30:42 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/04/19 10:15:59 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.template.*;
  * imports an generated (with db export) XML file
  * 
  * @author Michaela Schleich
- * @version $Revision: 1.16 $ $Date: 2000/04/13 21:30:42 $
+ * @version $Revision: 1.17 $ $Date: 2000/04/19 10:15:59 $
  */
 class CmsDbImportFiles implements I_CmsConstants {
 	
@@ -220,6 +220,14 @@ class CmsDbImportFiles implements I_CmsConstants {
 			try {
 				System.out.print("Importing: " + m_fName);
 				System.out.flush();
+				try {
+					// try to delete a possible existing old file
+					m_RB.lockResource(m_user, m_project, picimportPath + m_fName, true);
+					m_RB.deleteFile(m_user, m_project, picimportPath + m_fName);
+				} catch(CmsException exc) {
+					// the old resource dosen't exist - ignore the exception.
+				}
+				
 				CmsFile newFile = m_RB.createFile(m_user, null, m_project, picimportPath ,m_fName, fContent, m_fTypename, h_fProperty);
 				m_RB.lockResource(m_user,m_project,newFile.getAbsolutePath(), true);
 				m_RB.chown(m_user, m_project, newFile.getAbsolutePath(), m_fUser);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/04/17 10:37:10 $
- * Version: $Revision: 1.107 $
+ * Date   : $Date: 2000/04/19 10:15:59 $
+ * Version: $Revision: 1.108 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.107 $ $Date: 2000/04/17 10:37:10 $
+ * @version $Revision: 1.108 $ $Date: 2000/04/19 10:15:59 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -219,45 +219,33 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 public A_CmsProject readProject(A_CmsUser currentUser, A_CmsProject currentProject, 
 									 A_CmsResource res)
 		 throws CmsException {
-         int projectId=res.getProjectId();
-
-         A_CmsProject project=null;
-         
-         // for read all projets that are in the system.
-         // this has to be this way because there is no way to access all projects
-         // from the resource broker directly.
-        
-         Vector projects=m_projectRb.getAllProjects(this.C_PROJECT_STATE_ARCHIVE);
-         if (projects != null) {
-             for (int i=0;i<projects.size();i++) {
-                 if (((A_CmsProject)projects.elementAt(i)).getId() == projectId) {
-                     project=(A_CmsProject)projects.elementAt(i);
-                 }                                                                                  
-             }
-         }
-         if (project==null) {
-            projects=m_projectRb.getAllProjects(this.C_PROJECT_STATE_LOCKED);                                                       
-            if (projects != null) {
-                 for (int i=0;i<projects.size();i++) {
-                     if (((A_CmsProject)projects.elementAt(i)).getId() == projectId) {
-                        project=(A_CmsProject)projects.elementAt(i);
-                    }                                                                                  
-                }
-            }
-         }
-        if (project==null) {
-            projects=m_projectRb.getAllProjects(this.C_PROJECT_STATE_UNLOCKED);                                                
-            if (projects != null) {
-                 for (int i=0;i<projects.size();i++) {
-                     if (((A_CmsProject)projects.elementAt(i)).getId() == projectId) {
-                        project=(A_CmsProject)projects.elementAt(i);
-                    }                                                                                  
-                }
-            }
-         }
-		 return project;
+		 
+		 return readProject(currentUser, currentProject, res.getProjectId());
 	 }
      
+     /**
+	 * Reads a project from the Cms.
+	 * 
+	 * <B>Security</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param task The task to read the project of.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	 public A_CmsProject readProject(A_CmsUser currentUser, A_CmsProject currentProject, 
+									 A_CmsTask task)
+		 throws CmsException {
+		 
+		 // read the parent of the task, until it has no parents.
+		 while(task.getParent() != C_UNKNOWN_ID) {
+			 task = readTask(currentUser, currentProject, task.getParent());
+		 }
+		 
+		 return m_projectRb.readProject(task);
+	 }
 	
 	/**
 	 * Creates a project.

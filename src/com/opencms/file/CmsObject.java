@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/04/17 10:37:10 $
- * Version: $Revision: 1.68 $
+ * Date   : $Date: 2000/04/19 10:15:59 $
+ * Version: $Revision: 1.69 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.68 $ $Date: 2000/04/17 10:37:10 $ 
+ * @version $Revision: 1.69 $ $Date: 2000/04/19 10:15:59 $ 
  * 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
@@ -237,7 +237,20 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 		return( c_rb.readProject(m_context.currentUser(), 
 								 m_context.currentProject(), res) );
 	}
-		
+	
+	/**
+	 * Reads a project from the Cms.
+	 * 
+	 * @param task The task of the project to read.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	public A_CmsProject readProject(A_CmsTask task)
+		throws CmsException { 
+		return( c_rb.readProject(m_context.currentUser(), 
+								 m_context.currentProject(), task) );
+	}
+	
 	/**
 	 * Creates a project.
 	 * 

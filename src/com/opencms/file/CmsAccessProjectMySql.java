@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessProjectMySql.java,v $
- * Date   : $Date: 2000/04/13 20:12:19 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2000/04/19 10:15:59 $
+ * Version: $Revision: 1.22 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.util.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.21 $ $Date: 2000/04/13 20:12:19 $
+ * @version $Revision: 1.22 $ $Date: 2000/04/19 10:15:59 $
  */
 class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 
@@ -143,6 +143,11 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 	/**
      * SQL Command for reading projects.
      */    
+    private static final String C_PROJECT_READ_BY_TASK = "Select * from " + C_DATABASE_PREFIX + "PROJECTS where " + C_TASK_ID + " = ?";
+	
+	/**
+     * SQL Command for reading projects.
+     */    
     private static final String C_PROJECT_READ2 = "Select * from " + C_DATABASE_PREFIX + "PROJECTS where " + C_PROJECT_NAME + " = ? and " + C_PROJECT_CREATEDATE + " = ?";
 	
 	/**
@@ -234,6 +239,49 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 		 }
 	 }
 	
+	/**
+	 * Reads a project from the Cms.
+	 * 
+	 * @param task The task of the project to read.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	 public A_CmsProject readProject(A_CmsTask task)
+		 throws CmsException {
+		 try {
+			 ResultSet result;
+			 // create the statement
+			 PreparedStatement statementReadProject = 
+				m_con.prepareStatement(C_PROJECT_READ_BY_TASK);
+			 
+			 statementReadProject.setInt(1,task.getId());
+			 result = statementReadProject.executeQuery();			
+			
+			 // if resultset exists - return it
+			 if(result.next()) {
+				 return new CmsProject(result.getInt(C_PROJECT_ID),
+									   result.getString(C_PROJECT_NAME),
+									   result.getString(C_PROJECT_DESCRIPTION),
+									   result.getInt(C_TASK_ID),
+									   result.getInt(C_USER_ID),
+									   result.getInt(C_GROUP_ID),
+									   result.getInt(C_MANAGERGROUP_ID),
+									   result.getInt(C_PROJECT_FLAGS),
+									   SqlHelper.getTimestamp(result,C_PROJECT_CREATEDATE),
+									   SqlHelper.getTimestamp(result,C_PROJECT_PUBLISHDATE),
+									   result.getInt(C_PROJECT_PUBLISHED_BY),
+									   result.getInt(C_PROJECT_COUNT_LOCKED));
+			 } else {
+				 // project not found!
+				 throw new CmsException("[" + this.getClass().getName() + "] " + task, 
+					 CmsException.C_NOT_FOUND);
+			 }
+		 } catch( Exception exc ) {
+			 throw new CmsException( "[" + this.getClass().getName() + "] " + exc.getMessage(), 
+				 CmsException.C_SQL_ERROR, exc);
+		 }
+	 }
+	 
 	/**
 	 * Creates a project.
 	 * 

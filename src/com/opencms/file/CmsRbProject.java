@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbProject.java,v $
- * Date   : $Date: 2000/04/07 15:57:37 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/04/19 10:15:59 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -38,7 +38,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.13 $ $Date: 2000/04/07 15:57:37 $
+ * @version $Revision: 1.14 $ $Date: 2000/04/19 10:15:59 $
  */
 class CmsRbProject implements I_CmsRbProject, I_CmsConstants {
 	
@@ -70,6 +70,18 @@ class CmsRbProject implements I_CmsRbProject, I_CmsConstants {
 		 return( m_accessProject.readProject(id) );
 	 }
 	
+	/**
+	 * Reads a project from the Cms.
+	 * 
+	 * @param task The task of the project to read.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	 public A_CmsProject readProject(A_CmsTask task)
+		 throws CmsException {
+		 return m_accessProject.readProject(task);
+	 }
+	 
 	/**
 	 * Creates a project.
 	 * 
