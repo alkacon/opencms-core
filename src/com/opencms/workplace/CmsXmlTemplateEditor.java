@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2003/02/15 11:14:53 $
-* Version: $Revision: 1.84 $
+* Date   : $Date: 2003/02/25 13:08:36 $
+* Version: $Revision: 1.85 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
 import com.opencms.file.CmsResource;
+import com.opencms.flex.util.CmsStringSubstitution;
 import com.opencms.linkmanagement.CmsPageLinks;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.CmsTemplateClassManager;
@@ -47,11 +48,12 @@ import com.opencms.template.CmsXmlTemplate;
 import com.opencms.template.CmsXmlTemplateFile;
 import com.opencms.util.Encoder;
 import com.opencms.util.Utils;
-import com.opencms.flex.util.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -63,7 +65,7 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.84 $ $Date: 2003/02/15 11:14:53 $
+ * @version $Revision: 1.85 $ $Date: 2003/02/25 13:08:36 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -671,8 +673,13 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
 		content = bodyTemplateFile.getEditableTemplateContent(this, parameters, body, editor.equals(C_SELECTBOX_EDITORVIEWS[0]), style);
 		
 		// set the context & servlet path in editor content
-		String contextPath = A_OpenCms.getOpenCmsContext(); 
-		content = CmsStringSubstitution.substitute(content,CmsStringSubstitution.escapePattern(C_MACRO_OPENCMS_CONTEXT),CmsStringSubstitution.escapePattern(contextPath));
+        String contextPath = CmsStringSubstitution.escapePattern(A_OpenCms.getOpenCmsContext()); 
+        List webAppNames = (List)A_OpenCms.getRuntimeProperty("compatibility.support.webAppNames");  
+        if (webAppNames == null) webAppNames = new ArrayList(); 
+        for (int i=0; i<webAppNames.size(); i++) {
+            content = CmsStringSubstitution.substitute(content, CmsStringSubstitution.escapePattern((String)webAppNames.get(i)),contextPath);
+        }
+		content = CmsStringSubstitution.substitute(content,CmsStringSubstitution.escapePattern(C_MACRO_OPENCMS_CONTEXT),contextPath);
         
         // escape content
         content = Encoder.escapeWBlanks(content, Encoder.C_URI_ENCODING);
