@@ -16,7 +16,7 @@ function show_help()
 <link rel=stylesheet type="text/css" href="css/format.css">
 
 </HEAD>
-<BODY bgcolor="#ffffff"  background="pics/bg_weiss.gif"  bgproperties=fixed marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
+<BODY bgcolor="#ffffff"  background="pics/bg_weiss.gif"  bgproperties=fixed marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="window.top.body.admin_head.admincontenturl='administration_content_project.html';">
 
 <!-- Tabelle um vertikal und horizontal zu zentrieren-->
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
@@ -47,11 +47,27 @@ function show_help()
 						<table border=0 width=100% height=200px>
 							<tr>
 								<td class=formular width=10%>Projektname:</td>
-								<td class=dialogtxt><input type="text" size=56 class="textfeld2" name="NAME" id="NAME"></td>
-<!--		
-								<td class=formular width=10%>Gruppe:</td>
+								<td class=dialogtxt><input type="text" class="textfeld" name="NAME" id="NAME"></td>
+								<td class=formular width=30%>Gruppe Projektmitarbeiter:</td>
 								<td class=dialogtxt>
-									<select name="GROUP" width=250 style="width:150px" >
+									<select name="GROUP" style="width:150px" >
+										<option value="01">Administrators
+										<option value="02" selected>HTML Programmers
+										<option value="03">Screen Designers
+										<option value="04">Editors
+										<option value="05">Guests
+										<option value="05">Users
+									</select></td>
+							</tr>
+							<tr>
+								<td class=formular valign=top>Beschreibung:</td>
+								<td class=dialogtxt>
+									<TEXTAREA rows=2 cols=20 style="width:150px" id=DESCRIPTION name=DESCRIPTION>
+									</TEXTAREA>
+								</td>
+								<td class=formular>Gruppe Projektleiter:</td>
+								<td class=dialogtxt>
+									<select name="GROUP" style="width:150px" >
 										<option value="01">Administrators
 										<option value="02">HTML Programmers
 										<option value="03">Screen Designers
@@ -59,19 +75,11 @@ function show_help()
 										<option value="05">Guests
 										<option value="05">Users
 									</select></td>
--->
-							</tr>
-							<tr>
-								<td class=formular valign=top>Beschreibung:</td>
-								<td class=dialogtxt>
-									<TEXTAREA rows=2 cols=55 style="width:430px" id=DESCRIPTION name=DESCRIPTION>
-									</TEXTAREA>
-								</td>
 							</tr>
 							
-							<tr><td class="leerzeile" colspan=2>&nbsp;</td></tr>	
+							<tr><td class="leerzeile" colspan=4>&nbsp;</td></tr>	
 							<tr>
-							<td class=dialogtxt colspan=2>
+							<td class=dialogtxt colspan=4>
 							<table border=0 width=100%>
 							<tr>
 								<td class=formular>Verzeichnisse:</td>

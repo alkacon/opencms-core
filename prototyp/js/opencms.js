@@ -3,6 +3,8 @@
 // m.schleich 03.01.2000
 //------------------------------------------
 
+var admincontenturl="administration_content_top.html";
+
 // Formularfelder (Textfelder) auf Inhalt überprüfen
 function check_textfeld(formular, feld)
 {
@@ -19,7 +21,7 @@ return true;
 	aktTag= aktDat.getDate();
 	aktMonat= aktDat.getMonth()+1;
 	aktJahr= aktDat.getFullYear();
-
+	
 //------------------------------------------------------------------------------------
 // special functions
 // m.schleich 05.01.1999
