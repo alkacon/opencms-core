@@ -88,7 +88,9 @@ PACKAGE BODY OpenCmsGroup IS
     vCursor userTypes.anyCursor;
     vGroupId cms_groups.group_id%TYPE;
     vGroupName cms_groups.group_name%TYPE;
+    vAdminGroup cms_groups.group_id%TYPE;
   BEGIN
+    select group_id into vAdminGroup from cms_groups where group_name = opencmsConstants.C_GROUP_ADMIN;
     select user_id, managergroup_id into vProjectOwner, vProjectManager
            from cms_projects
            where project_id = pProjectId;
@@ -101,7 +103,7 @@ PACKAGE BODY OpenCmsGroup IS
     LOOP
       FETCH vCursor INTO vGroupID, vGroupName;
       EXIT WHEN vCursor%NOTFOUND;
-      IF vGroupID = vProjectManager THEN
+      IF vGroupID = vProjectManager OR vGroupID = vAdminGroup THEN
         GOTO ENDTRUE;
       END IF;
     END LOOP;
