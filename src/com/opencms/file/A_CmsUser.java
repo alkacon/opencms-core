@@ -6,7 +6,8 @@ import java.util.*;
  * This abstract class describes a user.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 1999/12/13 16:34:38 $
+ * @author Michael Emmerich
+ * @version $Revision: 1.3 $ $Date: 1999/12/14 11:13:42 $
  */
 public abstract class A_CmsUser {
 	
@@ -22,7 +23,7 @@ public abstract class A_CmsUser {
 	 * 
 	 * @return the id of this user.
 	 */
-	abstract long getID();
+	abstract long getId();
 	
 	/**
 	 * Gets the description of this user.
@@ -38,26 +39,6 @@ public abstract class A_CmsUser {
      */
     abstract public boolean getDisabled();
 	
-	/**
-	 * Returns the USER_FLAGS.
-	 * 
-	 * @return the USER_FLAGS.
-	 */
-	abstract public int getFlags();
-	
-	/**
-	 * Returns the last login date.
-	 * 
-	 * @return the last login date.
-	 */	 
-	abstract public long getLastLoginDate();
-	
-	/**
-	 * Returns the default group for this user.
-	 * 
-	 * @return the default group for this user.
-	 */
-	abstract public A_CmsGroup getDefaultGroup();
 
 	/**
 	 * Returns the current group for this user.
@@ -82,13 +63,7 @@ public abstract class A_CmsUser {
 	 */
     abstract public boolean equals(Object obj);
 
-	/**
-	 * Returns the hashcode for this object.
-	 * 
-	 * @return the hashcode for this object.
-	 */
-    abstract public int hashCode();
-	
+
 	/**
 	 * Returns additional information about the user. <BR/>
 	 * Additional infos are for example emailadress, adress or surname...<BR/><BR/>
@@ -102,43 +77,76 @@ public abstract class A_CmsUser {
 	 * does not exists, it returns null.
 	 * 
 	 */
-	abstract public String getAdditionalInfo(String key);
+	abstract public Object getAdditionalInfo(String key);
+    
+    /**
+	 * Returns the complete Hashtable with additional information about the user. <BR/>
+	 * Additional infos are for example emailadress, adress or surname...<BR/><BR/>
+	 * 
+	 * The additional infos must be requested via the CmsObject.
+	 * 
+	 * 
+	 * Returns additional information about the user. 
+	 * 
+	 */
+    abstract public Hashtable getAdditionalInfo();
 	
 	/**
 	 * This is a shortcut for: <pre>getAdditionalInfo(C_ADDITIONAL_INFO_EMAIL);</pre>
 	 * 
 	 * @return the USER_EMAIL, or null.
 	 */
-	abstract public String getAdditionalInfoEmail();
+	abstract public String getEmail();
 
 	/**
 	 * This is a shortcut for: <pre>getAdditionalInfo(C_ADDITIONAL_INFO_FIRSTNAME);</pre>
 	 * 
 	 * @return the USER_FIRSTNAME, or null.
 	 */
-	abstract public String getAdditionalInfoFirstname();
+	abstract public String getFirstname();
 
 	/**
 	 * This is a shortcut for: <pre>getAdditionalInfo(C_ADDITIONAL_INFO_SURNAME);</pre>
 	 * 
 	 * @return the USER_SURNAME, or null.
 	 */
-	abstract public String getAdditionalInfoSurname();
+	abstract public String getLastname();
 	
 	/**
 	 * This is a shortcut for: <pre>getAdditionalInfo(C_ADDITIONAL_INFO_ADDRESS);</pre>
 	 * 
 	 * @return the USER_ADDRESS, or null.
 	 */
-	abstract public String getAdditionalInfoAddress();
+	abstract public String getAddress();
 
 	/**
 	 * This is a shortcut for: <pre>getAdditionalInfo(C_ADDITIONAL_INFO_SECTION);</pre>
 	 * 
 	 * @return the USER_SECTION, or null.
 	 */
-	abstract public String getAdditionalInfoSection();
+	abstract public String getSection();
+    
+    /**
+	 * This is a shortcut for: <pre>getAdditionalInfo(C_ADDITIONAL_INFO_DEFAULTGROUP);</pre>
+	 * 
+	 * @return the USER_DEFAULTGROUP, or null.
+	 */
+	abstract public A_CmsGroup getDefaultGroup();
+    
+    /**
+	 * This is a shortcut for: <pre>getAdditionalInfo(C_ADDITIONAL_INFO_LASTLOGIN);</pre>
+	 * 
+	 * @return the USER_LASTLOGIN, or null.
+	 */
+	abstract public long getLastlogin();
 
+    /**
+	 * This is a shortcut for: <pre>getAdditionalInfo(C_ADDITIONAL_INFO_FLAGS);</pre>
+	 * 
+	 * @return the USER_FLAGS, or null.
+	 */
+	abstract public int getFlags();
+    
 	// the following methods are not used, because the functionality is handled by
 	// a A_CmsObjectBase:
 	/*

@@ -5,7 +5,7 @@ package com.opencms.core;
  * class to get access to this contsnats.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 1999/12/10 11:10:23 $
+ * @version $Revision: 1.3 $ $Date: 1999/12/14 11:13:42 $
  */
 public interface I_CmsConstants
 {
@@ -104,7 +104,7 @@ public interface I_CmsConstants
 	/**
 	 * Key for additional info surname.
 	 */
-	 final static String C_ADDITIONAL_INFO_SURNAME	= "USER_SURNAME";
+	 final static String C_ADDITIONAL_INFO_LASTNAME	= "USER_LASTNAME";
 
 	/**
 	 * Key for additional info address.
@@ -115,7 +115,22 @@ public interface I_CmsConstants
 	 * Key for additional info section.
 	 */
 	 final static String C_ADDITIONAL_INFO_SECTION	= "USER_SECTION";
+     
+     /**
+	 * Key for additional info default group.
+	 */
+	 final static String C_ADDITIONAL_INFO_DEFAULTGROUP	= "USER_DEFAULTGROUP";
+     
+     /**
+	 * Key for additional info last login.
+	 */
+	 final static String C_ADDITIONAL_INFO_LASTLOGIN	= "USER_LASTLOGIN";
 
+     /**
+	 * Key for additional info flags.
+	 */
+	 final static String C_ADDITIONAL_INFO_FLAGS	= "USER_FLAGS";
+     
 	/**
 	 * This constant is used to order the tasks by date.
 	 */
@@ -263,4 +278,7 @@ public interface I_CmsConstants
 	 * Is set, if the resource was deleted in this project.
 	 */	
 	 static final int C_STATE_DELETED		= 3;
+     
+  
+        
 }
