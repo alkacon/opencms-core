@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2004/10/29 13:46:41 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/11/02 14:07:51 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import org.opencms.workplace.explorer.CmsExplorerTypeAccess;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -631,9 +632,12 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         // add <dialoghandlers> subnode
         Element dialogElement = workplaceElement.addElement(N_DIALOGHANDLERS);
         Map dialogs = m_workplaceManager.getDialogHandler();
-        i = dialogs.keySet().iterator();
-        while (i.hasNext()) {          
-            String name = (String)i.next();
+        //i = dialogs.keySet().iterator();
+        String keys[] = (String[])dialogs.keySet().toArray(new String[0]);
+        Arrays.sort(keys);
+
+        for (int j = 0; j < keys.length; j++) {      
+            String name = keys[j];
             dialogElement.addElement(N_DIALOGHANDLER)
                 .addAttribute(A_CLASS, dialogs.get(name).getClass().getName());
         }             
