@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/I_CmsExtendedContentDefinition.java,v $
-* Date   : $Date: 2001/10/22 11:36:01 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2001/10/23 13:38:15 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -68,47 +68,4 @@ public interface I_CmsExtendedContentDefinition {
      * @return int The id of the cd
      */
     public int getLockedInProject();
-
-    /**
-     * Returns the url for the history of an entry
-     *
-     * @param cms The cms object
-     * @param tagcontent
-     * @param doc
-     * @param userObject
-     *
-     * @return String The url for the history
-     * @exception Exception Throws an exception if no url could be returned
-     */
-    public String getHistoryUrl(CmsObject cms, String tagcontent,
-                                 A_CmsXmlContent doc, Object userObject) throws Exception;
-
-    /**
-     * Returns the url for the direct publish of an entry
-     *
-     * @param cms The cms object
-     * @param tagcontent
-     * @param doc
-     * @param userObject
-     *
-     * @return String The url for the direct publish
-     * @exception Exception Throws an exception if no url could be returned
-     */
-    public String getPublishUrl(CmsObject cms, String tagcontent,
-                                 A_CmsXmlContent doc, Object userObject) throws Exception;
-
-    /**
-     * Returns the url for undeleting a deleted entry
-     *
-     * @param cms The cms object
-     * @param tagcontent
-     * @param doc
-     * @param userObject
-     *
-     * @return String The url for undeleting
-     * @exception Exception Throws an exception if no url could be returned
-     */
-    public String getUndeleteUrl(CmsObject cms, String tagcontent,
-                                 A_CmsXmlContent doc, Object userObject) throws Exception;
-
 }
