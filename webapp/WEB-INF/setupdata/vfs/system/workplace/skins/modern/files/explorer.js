@@ -200,7 +200,7 @@ function dU(doc, pages, actpage) {
 
 
 function updateWindowStore() {
-	if ((mode == "projectview") || (mode == "galleryview")) {
+	if ((mode == "projectview") || (mode == "galleryview") || window.body.admin_head) {
 		win = new windowStore(window.body.document, window.body.admin_head.document, null, window.body.admin_content.document);
 	} else {
 		win = new windowStore(window.body.document, window.body.explorer_head.document, null, window.body.explorer_body.explorer_files.document);
